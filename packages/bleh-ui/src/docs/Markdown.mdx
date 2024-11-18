@@ -1,0 +1,218 @@
+---
+id: Markdown
+title: Markdown
+description: a page with many mdx & markdown features
+status: experimental
+menu: ["Playground", "Markdown"]
+tags: # Tags for filtering and categorization
+  - playground
+  - markdown
+  - mdx
+---
+
+# Markdown / MDX Stress Test
+
+This is a page to stress test markdown & mdx syntax usages to see if everything renders without issues.
+
+## Basic Markdown
+
+BAsic markdown is supported.
+
+### Headings
+
+See the bold Text above? This is a heading. Not gonna demonstrate them, they are used everwhere on a page, but this is what you'd use in markdown or mdx files to write one:
+
+```markdown
+# H1 Most important
+
+## H2 Heading
+
+### H3 Heading
+
+#### H4 Heading
+
+##### H5 Heading
+
+###### H6 Least important
+```
+
+### Emphasizing Text
+
+#### Italic Text
+
+_Italic text_ is done with underscores `_String to highlight_`
+
+#### Bold Text
+
+**Bold text** is done with double asterisks `**String to highlight**`
+
+#### Bold + Italic Text
+
+**_Bold + Italic text_** is done with tripple asterisks `***String to highlight***`
+
+### Code
+
+Code can be displayed inline or in a code-block, use single backticks for inline-code or tripple backticks for code blocks.
+
+Look at this: `export const App = () => <div>App</div>` this was inline code.
+
+And here is a code-block:
+
+```jsx
+export const App = () => {
+  return (
+    <div>
+      <p>App</p>
+    </div>
+  );
+};
+```
+
+### Blockquote
+
+This is how a regular blockquote looks. There are more variants of blockquotes but they are belonging to the Github flavored Markdown though.
+
+> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu
+
+### Links
+
+Link look pretty basic [tiramisu croissant gummies](http://www.asdasdsd.com)
+
+### Images
+
+Images work as well.
+
+```markdown
+![alt text](https://picsum.photos/seed/2/640/480 "Image title")
+```
+
+![alt text](https://picsum.photos/seed/2/640/480 "Random office pic")
+
+### Lists
+
+#### Ordered List
+
+Simple list:
+
+1. First item
+2. Second item
+3. Third item
+4. Fourth item
+
+---
+
+1. First item
+2. Second item
+3. Third item
+   1. Indented item
+   2. Indented item
+4. Fourth item
+
+---
+
+#### Unordered Lists
+
+Simple list:
+
+- First item
+- Second item
+- Third item
+- Fourth item
+
+List with a sublist:
+
+- First item
+- Second item
+- Third item
+  - Indented item
+  - Indented item
+- Fourth item
+
+## Github flavored Markdown
+
+### Tables
+
+| **Product Name**                  | **Category**     | **Price** | **Discount** | **Stock** | **Ratings**     | **Brand**  | **Color**   | **Shipping**      | **In Stock** |
+| --------------------------------- | ---------------- | --------- | ------------ | --------- | --------------- | ---------- | ----------- | ----------------- | ------------ |
+| **Wireless Bluetooth Headphones** | Electronics      | $79.99    | 10% off      | 124       | ⭐⭐⭐⭐☆ (4.5) | SoundWave  | Black       | Free Shipping     | Yes          |
+| **Leather Sofa Set**              | Furniture        | $999.00   | 15% off      | 15        | ⭐⭐⭐⭐⭐ (5)  | HomeLux    | Brown       | Free Shipping     | No           |
+| **Smartphone 6 Pro**              | Electronics      | $699.00   | 5% off       | 57        | ⭐⭐⭐⭐⭐ (5)  | TechSmart  | Blue        | Free Shipping     | Yes          |
+| **Gaming Laptop 15"**             | Electronics      | $1,499.00 | 20% off      | 32        | ⭐⭐⭐⭐☆ (4.2) | GamerX     | Gray        | Free Shipping     | Yes          |
+| **Organic Green Tea**             | Food & Beverages | $15.99    | No Discount  | 302       | ⭐⭐⭐⭐☆ (4.4) | PureLeaf   | Green       | Standard Shipping | Yes          |
+| **Men’s Running Shoes**           | Apparel          | $79.99    | 30% off      | 85        | ⭐⭐⭐⭐☆ (4.6) | FitStep    | Red         | Free Shipping     | Yes          |
+| **Stainless Steel Watch**         | Accessories      | $249.00   | 10% off      | 67        | ⭐⭐⭐⭐⭐ (5)  | TimeMaster | Silver      | Free Shipping     | No           |
+| **Coffee Maker 12 Cup**           | Kitchen          | $89.99    | No Discount  | 121       | ⭐⭐⭐⭐⭐ (5)  | BrewMaster | Black       | Standard Shipping | Yes          |
+| **Children’s Toy Set**            | Toys & Games     | $24.99    | 15% off      | 205       | ⭐⭐⭐⭐☆ (4.3) | FunTime    | Multi-color | Free Shipping     | Yes          |
+
+### Footnotes
+
+- Super cheap, buy now [^1]
+
+[^1]: It's actually expensive.
+
+### Strikethrough
+
+~one~ or ~~two~~ tildes.
+
+### Tasklist
+
+- [ ] to do
+- [x] done
+
+### Highlighted blockquotes
+
+> [!NOTE]  
+> Highlights information that users should take into account, even when skimming.
+
+> [!IMPORTANT]  
+> Crucial information necessary for users to succeed.
+
+> [!WARNING]  
+> Critical content demanding immediate user attention due to potential risks.
+
+> [!CAUTION]  
+> Negative potential consequences of an action.
+
+> [!TIP]  
+> Optional information to help a user be more successful. Maybe with more text
+
+## Blockquotes
+
+### Simple case
+
+> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu
+> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.
+
+### With cite
+
+> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu
+> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.
+>
+> - Dorothy from wizard of oz
+
+### Two paragraphs in a blockquote
+
+> Dorothy followed her through many of the beautiful rooms in her castle.
+>
+> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
+
+### Nested blockquote
+
+> Dorothy followed her through many of the beautiful rooms in her castle.
+>
+> > The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
+
+### Blockquotes with Other Elements
+
+> #### The quarterly results look great!
+>
+> - Revenue was off the chart.
+> - Profits were higher than ever.
+>
+> ---
+>
+> Kinda fancy looking, right?
+
+### Keyboard Combinations
+
+To enable fruitcake mode, press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Space</kbd>.

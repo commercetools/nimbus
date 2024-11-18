@@ -1,0 +1,12 @@
+{
+  "name": "my-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/bleh-ui",
+    "packages/bleh-ui-icons",
+    "apps/docs"
+  ],
+  "scripts": {
+    "dev": "bun --filter '*' dev"
+  }
+}

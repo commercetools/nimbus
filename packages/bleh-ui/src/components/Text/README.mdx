@@ -1,0 +1,121 @@
+---
+id: Text
+title: Text
+description: the Text component is used to display text
+documents: Text
+status: stable
+menu: ["Media", "Text"]
+tags: # Tags for filtering and categorization
+  - text
+  - typography
+propTables:
+  - Text
+---
+
+# Text
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur
+
+## Usage
+
+```jsx-live
+import { Text } from '@bleh-ui/react';
+
+const App = () => (
+    <Text>Display Text</Text>
+);
+```
+
+## Sizes
+
+You can size text with two properties: `fontSize` and `textStyle`. Use `fontSize` to only set the size of the text.
+Use `textStyle` to set the size and an appropriate `line-height` for that size.
+
+```jsx-live
+const App = () => (
+  <Flex flexDirection="column">
+    {["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl","5xl","6xl","7xl"].map((size) => (
+      <Text key={size} asChild textStyle={size}>
+        <span>Displays text in `{size}` size</span>
+      </Text>
+    ))}
+  </Flex>
+)
+```
+
+## Weights
+
+Use the `fontWeight` prop to change the weight of the text:
+
+```jsx-live
+import { Stack, Text } from "@bleh-ui/react"
+
+const App = () => {
+  return (
+    <Stack>
+      <Text fontWeight="100">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="200">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="300">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="400">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="500">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="600">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="700">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="800">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="900">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+    </Stack>
+  )
+}
+```
+
+## Truncation
+
+Use the `truncate` prop to truncate the text after a single line.
+
+```jsx-live
+import { Flex, Text } from "@bleh-ui/react"
+
+const App = () => (
+    <Flex maxW="300px">
+      <Text truncate>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    </Flex>
+  )
+```
+
+## Line Clamp
+
+Use the `lineClamp` prop to truncate the text after a certain number of lines.
+
+```jsx-live
+import { Flex, Text } from "@bleh-ui/react"
+
+const App = () => (
+    <Flex maxW="300px">
+      <Text lineClamp="2">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat.
+      </Text>
+    </Flex>
+  )
+```
+
+## Colors
+
+Use the `color` prop to change the color of the text.
+
+```jsx-live
+import { Stack, Text } from "@bleh-ui/react"
+
+const App = () => (
+    <Stack>
+      <Text color="primary.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="info.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="success.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="danger.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="error.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+    </Stack>
+  )
+```
