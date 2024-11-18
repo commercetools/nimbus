@@ -34,3 +34,6 @@ bun install
 ```bash
 bun dev
 ```
+3. Open the dev-server/app in the browser:
+
+http://localhost:5173/
