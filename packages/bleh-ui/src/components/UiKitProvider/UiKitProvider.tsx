@@ -51,7 +51,7 @@ export function UiKitProvider({ children, ...props }: ColorModeProviderProps) {
   const colorScheme = useColorScheme();
   return (
     <ChakraProvider value={colorScheme === "dark" ? darkSystem : system}>
-      <ColorModeProvider {...props}>
+      <ColorModeProvider enableSystem={false} {...props}>
         <>
           <Toaster />
           {children}
