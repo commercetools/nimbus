@@ -59,8 +59,7 @@ function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
         999,
     };
   });
-  console.log("itemMetas", itemMetas);
-  console.log("fixedRoot", fixedRoot);
+
   return orderBy(fixedRoot, ["order"]);
 }
 

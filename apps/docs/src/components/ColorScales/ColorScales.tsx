@@ -1,24 +1,29 @@
-import { Box, useColorMode, useColorModeValue } from "@bleh-ui/react";
-import { themeColorScalesAtom } from "../../atoms/themeColorScales";
-import { useAtomValue } from "jotai";
-import { JSONTree } from "react-json-tree";
+import { Box } from "@bleh-ui/react";
 
-export const ColorScales = () => {
-  const themeColorScales = useAtomValue(themeColorScalesAtom);
-  const { toggleColorMode } = useColorMode();
-  const colorMode = useColorModeValue("light", "dark");
+import { useMemo } from "react";
+import { ColorScale } from "./ColorScale";
+
+type ColorScalesProps = {
+  ids: string | string[];
+};
+
+export const ColorScales = (props: ColorScalesProps) => {
+  const ids = useMemo(() => {
+    const ids =
+      typeof props.ids === "string"
+        ? props.ids.split(",").map((v) => v.trim())
+        : props.ids;
+
+    return ids;
+  }, [props.ids]);
+
   return (
     <Box>
-      <Box asChild color="#808080">
-        <button onClick={() => toggleColorMode()}>
-          toggle colormode: {colorMode}
-        </button>
-      </Box>
-      <Box bg="bleh.5" color="white">
-        My background-color is bleh.5
-      </Box>
-      <JSONTree data={themeColorScales} />
-      <pre>{JSON.stringify(themeColorScales, null, 2)}</pre>
+      {ids.map((id) => (
+        <Box key={id} mb="8">
+          <ColorScale id={id} />
+        </Box>
+      ))}
     </Box>
   );
 };

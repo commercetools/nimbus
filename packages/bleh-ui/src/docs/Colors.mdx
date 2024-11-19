@@ -11,10 +11,61 @@ tags: # Tags for filtering and categorization
 
 # Colors
 
+In our design system, colors are organized into **scales** based on **contrast** levels to ensure clarity and **usability** across various contexts. Each scale provides a range of tones, from subtle backgrounds to high-contrast elements like text and interactive borders, enabling a consistent and accessible user experience.
+
+The scales are _interchangeable_, meaning a color like red can be swapped with green without losing the intended contrast levels. This flexibility ensures that our designs remain adaptable while maintaining visual hierarchy. Additionally, _the contrast-based approach eliminates the need for a separate "dark mode" design_, as the scales naturally support both light and dark environments seamlessly.
+
+## Scale steps
+
+Below is a list of steps with corresponding use cases for various background, border, and text styles in the design system:
+
+| **Step** | **Use Case**                                           |
+| -------- | ------------------------------------------------------ |
+| 1        | App background                                         |
+| 2        | Subtle background                                      |
+| 3        | UI element background                                  |
+| 4        | Hovered UI element background                          |
+| 5        | Active / Selected UI element background                |
+| 6        | Subtle borders and separators                          |
+| 7        | UI element border and focus rings                      |
+| 8        | Hovered UI element border                              |
+| 9        | Solid backgrounds                                      |
+| 10       | Hovered solid backgrounds                              |
+| 11       | Low-contrast text                                      |
+| 12       | High-contrast text                                     |
+| contrast | a contrast color (black/white) that works on step 9+10 |
+
 ## System Colors
 
-<ColorScales ids="red, green" />
+Colors available for decoration or reference.
 
-## Commercetools Colors
+<br />
+
+<ColorScales ids="tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky" />
+
+## Blacks & Whites
+
+Black and white color scales do not adapt to the selected color-mode. Means a white will always be white, a black will always be black.
+
+> [!TIP]  
+> Use the `neutral` color scales if you want to refer to a gray-tone that works on the current background color (light-/dark-mode dependent).
+
+<br />
+
+<ColorScales ids="black, white" />
+
+## Brand Colors
+
+Custom colors, tailored to the brand.
+
+<br />
+
+<ColorScales ids="ctViolet, ctTeal, ctYellow" />
 
 ## Semantic Colors
+
+Colors with meaning, used to communicate status or state.
+
+<br />
+
+<ColorScales ids="primary, neutral, info, success, danger, error" />

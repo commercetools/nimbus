@@ -18,57 +18,6 @@
     },
     "mdx": "\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be used in any other component.\n\nThis is the list of available icons:\n\n<IconSearch />\n"
   },
-  "Colors": {
-    "meta": {
-      "id": "Colors",
-      "title": "Colors",
-      "description": "available colors",
-      "documents": "Colors",
-      "status": "experimental",
-      "menu": [
-        "Tokens",
-        "Colors"
-      ],
-      "tags": [
-        "colors"
-      ],
-      "filePath": "../../packages/bleh-ui/src/docs/Colors.mdx",
-      "route": "tokens/colors",
-      "toc": [
-        {
-          "value": "System Colors",
-          "href": "#system-colors",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Commercetools Colors",
-          "href": "#commercetools-colors",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Semantic Colors",
-          "href": "#semantic-colors",
-          "depth": 2,
-          "numbering": [
-            1,
-            3
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Colors\n\n## System Colors\n\n<ColorScales ids=\"red, green\" />\n\n## Commercetools Colors\n\n## Semantic Colors\n"
-  },
   "Tokens": {
     "meta": {
       "id": "Tokens",
@@ -89,25 +38,76 @@
     },
     "mdx": "\n# Tokens\n\nA colleciton of design tokens\n"
   },
-  "Components": {
+  "Colors": {
     "meta": {
-      "id": "Components",
-      "title": "Components",
-      "description": "resuable react components",
-      "order": 6,
+      "id": "Colors",
+      "title": "Colors",
+      "description": "available colors",
+      "documents": "Colors",
       "status": "experimental",
       "menu": [
-        "Components"
+        "Tokens",
+        "Colors"
       ],
       "tags": [
-        "components",
-        "react"
+        "colors"
       ],
-      "filePath": "../../packages/bleh-ui/src/docs/Components.mdx",
-      "route": "components",
-      "toc": []
+      "filePath": "../../packages/bleh-ui/src/docs/Colors.mdx",
+      "route": "tokens/colors",
+      "toc": [
+        {
+          "value": "Scale steps",
+          "href": "#scale-steps",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "System Colors",
+          "href": "#system-colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Blacks & Whites",
+          "href": "#blacks--whites",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Brand Colors",
+          "href": "#brand-colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Semantic Colors",
+          "href": "#semantic-colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
     },
-    "mdx": "\n# Components\n\ncomponents index\n"
+    "mdx": "\n# Colors\n\nIn our design system, colors are organized into **scales** based on **contrast** levels to ensure clarity and **usability** across various contexts. Each scale provides a range of tones, from subtle backgrounds to high-contrast elements like text and interactive borders, enabling a consistent and accessible user experience.\n\nThe scales are _interchangeable_, meaning a color like red can be swapped with green without losing the intended contrast levels. This flexibility ensures that our designs remain adaptable while maintaining visual hierarchy. Additionally, _the contrast-based approach eliminates the need for a separate \"dark mode\" design_, as the scales naturally support both light and dark environments seamlessly.\n\n## Scale steps\n\nBelow is a list of steps with corresponding use cases for various background, border, and text styles in the design system:\n\n| **Step** | **Use Case**                                           |\n| -------- | ------------------------------------------------------ |\n| 1        | App background                                         |\n| 2        | Subtle background                                      |\n| 3        | UI element background                                  |\n| 4        | Hovered UI element background                          |\n| 5        | Active / Selected UI element background                |\n| 6        | Subtle borders and separators                          |\n| 7        | UI element border and focus rings                      |\n| 8        | Hovered UI element border                              |\n| 9        | Solid backgrounds                                      |\n| 10       | Hovered solid backgrounds                              |\n| 11       | Low-contrast text                                      |\n| 12       | High-contrast text                                     |\n| contrast | a contrast color (black/white) that works on step 9+10 |\n\n## System Colors\n\nColors available for decoration or reference.\n\n<br />\n\n<ColorScales ids=\"tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky\" />\n\n## Blacks & Whites\n\nBlack and white color scales do not adapt to the selected color-mode. Means a white will always be white, a black will always be black.\n\n> [!TIP]  \n> Use the `neutral` color scales if you want to refer to a gray-tone that works on the current background color (light-/dark-mode dependent).\n\n<br />\n\n<ColorScales ids=\"black, white\" />\n\n## Brand Colors\n\nCustom colors, tailored to the brand.\n\n<br />\n\n<ColorScales ids=\"ctViolet, ctTeal, ctYellow\" />\n\n## Semantic Colors\n\nColors with meaning, used to communicate status or state.\n\n<br />\n\n<ColorScales ids=\"primary, neutral, info, success, danger, error\" />\n"
   },
   "Markdown": {
     "meta": {
@@ -431,6 +431,26 @@
     },
     "mdx": "\n# Markdown / MDX Stress Test\n\nThis is a page to stress test markdown & mdx syntax usages to see if everything renders without issues.\n\n## Basic Markdown\n\nBAsic markdown is supported.\n\n### Headings\n\nSee the bold Text above? This is a heading. Not gonna demonstrate them, they are used everwhere on a page, but this is what you'd use in markdown or mdx files to write one:\n\n```markdown\n# H1 Most important\n\n## H2 Heading\n\n### H3 Heading\n\n#### H4 Heading\n\n##### H5 Heading\n\n###### H6 Least important\n```\n\n### Emphasizing Text\n\n#### Italic Text\n\n_Italic text_ is done with underscores `_String to highlight_`\n\n#### Bold Text\n\n**Bold text** is done with double asterisks `**String to highlight**`\n\n#### Bold + Italic Text\n\n**_Bold + Italic text_** is done with tripple asterisks `***String to highlight***`\n\n### Code\n\nCode can be displayed inline or in a code-block, use single backticks for inline-code or tripple backticks for code blocks.\n\nLook at this: `export const App = () => <div>App</div>` this was inline code.\n\nAnd here is a code-block:\n\n```jsx\nexport const App = () => {\n  return (\n    <div>\n      <p>App</p>\n    </div>\n  );\n};\n```\n\n### Blockquote\n\nThis is how a regular blockquote looks. There are more variants of blockquotes but they are belonging to the Github flavored Markdown though.\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n\n### Links\n\nLink look pretty basic [tiramisu croissant gummies](http://www.asdasdsd.com)\n\n### Images\n\nImages work as well.\n\n```markdown\n![alt text](https://picsum.photos/seed/2/640/480 \"Image title\")\n```\n\n![alt text](https://picsum.photos/seed/2/640/480 \"Random office pic\")\n\n### Lists\n\n#### Ordered List\n\nSimple list:\n\n1. First item\n2. Second item\n3. Third item\n4. Fourth item\n\n---\n\n1. First item\n2. Second item\n3. Third item\n   1. Indented item\n   2. Indented item\n4. Fourth item\n\n---\n\n#### Unordered Lists\n\nSimple list:\n\n- First item\n- Second item\n- Third item\n- Fourth item\n\nList with a sublist:\n\n- First item\n- Second item\n- Third item\n  - Indented item\n  - Indented item\n- Fourth item\n\n## Github flavored Markdown\n\n### Tables\n\n| **Product Name**                  | **Category**     | **Price** | **Discount** | **Stock** | **Ratings**     | **Brand**  | **Color**   | **Shipping**      | **In Stock** |\n| --------------------------------- | ---------------- | --------- | ------------ | --------- | --------------- | ---------- | ----------- | ----------------- | ------------ |\n| **Wireless Bluetooth Headphones** | Electronics      | $79.99    | 10% off      | 124       | ⭐⭐⭐⭐☆ (4.5) | SoundWave  | Black       | Free Shipping     | Yes          |\n| **Leather Sofa Set**              | Furniture        | $999.00   | 15% off      | 15        | ⭐⭐⭐⭐⭐ (5)  | HomeLux    | Brown       | Free Shipping     | No           |\n| **Smartphone 6 Pro**              | Electronics      | $699.00   | 5% off       | 57        | ⭐⭐⭐⭐⭐ (5)  | TechSmart  | Blue        | Free Shipping     | Yes          |\n| **Gaming Laptop 15\"**             | Electronics      | $1,499.00 | 20% off      | 32        | ⭐⭐⭐⭐☆ (4.2) | GamerX     | Gray        | Free Shipping     | Yes          |\n| **Organic Green Tea**             | Food & Beverages | $15.99    | No Discount  | 302       | ⭐⭐⭐⭐☆ (4.4) | PureLeaf   | Green       | Standard Shipping | Yes          |\n| **Men’s Running Shoes**           | Apparel          | $79.99    | 30% off      | 85        | ⭐⭐⭐⭐☆ (4.6) | FitStep    | Red         | Free Shipping     | Yes          |\n| **Stainless Steel Watch**         | Accessories      | $249.00   | 10% off      | 67        | ⭐⭐⭐⭐⭐ (5)  | TimeMaster | Silver      | Free Shipping     | No           |\n| **Coffee Maker 12 Cup**           | Kitchen          | $89.99    | No Discount  | 121       | ⭐⭐⭐⭐⭐ (5)  | BrewMaster | Black       | Standard Shipping | Yes          |\n| **Children’s Toy Set**            | Toys & Games     | $24.99    | 15% off      | 205       | ⭐⭐⭐⭐☆ (4.3) | FunTime    | Multi-color | Free Shipping     | Yes          |\n\n### Footnotes\n\n- Super cheap, buy now [^1]\n\n[^1]: It's actually expensive.\n\n### Strikethrough\n\n~one~ or ~~two~~ tildes.\n\n### Tasklist\n\n- [ ] to do\n- [x] done\n\n### Highlighted blockquotes\n\n> [!NOTE]  \n> Highlights information that users should take into account, even when skimming.\n\n> [!IMPORTANT]  \n> Crucial information necessary for users to succeed.\n\n> [!WARNING]  \n> Critical content demanding immediate user attention due to potential risks.\n\n> [!CAUTION]  \n> Negative potential consequences of an action.\n\n> [!TIP]  \n> Optional information to help a user be more successful. Maybe with more text\n\n## Blockquotes\n\n### Simple case\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.\n\n### With cite\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.\n>\n> - Dorothy from wizard of oz\n\n### Two paragraphs in a blockquote\n\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\n### Nested blockquote\n\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> > The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\n### Blockquotes with Other Elements\n\n> #### The quarterly results look great!\n>\n> - Revenue was off the chart.\n> - Profits were higher than ever.\n>\n> ---\n>\n> Kinda fancy looking, right?\n\n### Keyboard Combinations\n\nTo enable fruitcake mode, press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Space</kbd>.\n"
   },
+  "Components": {
+    "meta": {
+      "id": "Components",
+      "title": "Components",
+      "description": "resuable react components",
+      "order": 6,
+      "status": "experimental",
+      "menu": [
+        "Components"
+      ],
+      "tags": [
+        "components",
+        "react"
+      ],
+      "filePath": "../../packages/bleh-ui/src/docs/Components.mdx",
+      "route": "components",
+      "toc": []
+    },
+    "mdx": "\n# Components\n\ncomponents index\n"
+  },
   "Media": {
     "meta": {
       "id": "Media",
@@ -731,30 +751,6 @@
     },
     "mdx": "\n# Input\n\nadd description here.\n\n<PropTable id=\"Input\" />\n"
   },
-  "Kbd": {
-    "meta": {
-      "id": "Kbd",
-      "title": "Kbd",
-      "description": "marks a string as keyboard input",
-      "documents": "Kbd",
-      "status": "stable",
-      "propTables": [
-        "Kbd"
-      ],
-      "menu": [
-        "Typography",
-        "Kbd"
-      ],
-      "tags": [
-        "keyboard",
-        "key"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Kbd/README.mdx",
-      "route": "typography/kbd",
-      "toc": []
-    },
-    "mdx": "\n# Kbd\n\nAdd description later.\n"
-  },
   "Tabs": {
     "meta": {
       "id": "Tabs",
@@ -787,38 +783,6 @@
     },
     "mdx": "\n# Tabs\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTables ids=\"TabsRoot, TabsList, TabsTrigger, TabsContent\" />\n"
   },
-  "Dialog": {
-    "meta": {
-      "id": "Dialog",
-      "title": "Dialog",
-      "description": "displays a dialog",
-      "documents": "Dialog",
-      "status": "stable",
-      "menu": [
-        "Components",
-        "Dialog"
-      ],
-      "tags": [
-        "dialog",
-        "modal"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Dialog/README.mdx",
-      "route": "components/dialog",
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Dialog\n\n## Props\n\n<PropTables ids=\"DialogRoot, DialogFooter, DialogHeader, DialogBody, DialogBackdrop, DialogTitle, DialogDescription, DialogTrigger, DialogActionTrigger\" />\n"
-  },
   "Link": {
     "meta": {
       "id": "Link",
@@ -842,28 +806,29 @@
     },
     "mdx": "\n# Link\n\nAdd description later.\n"
   },
-  "Heading": {
+  "Kbd": {
     "meta": {
-      "id": "Heading",
-      "title": "Heading",
-      "description": "renders a heading",
-      "documents": "Heading",
+      "id": "Kbd",
+      "title": "Kbd",
+      "description": "marks a string as keyboard input",
+      "documents": "Kbd",
       "status": "stable",
+      "propTables": [
+        "Kbd"
+      ],
       "menu": [
         "Typography",
-        "Heading"
+        "Kbd"
       ],
       "tags": [
-        "heading"
+        "keyboard",
+        "key"
       ],
-      "propTables": [
-        "Heading"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Heading/README.mdx",
-      "route": "typography/heading",
+      "filePath": "../../packages/bleh-ui/src/components/Kbd/README.mdx",
+      "route": "typography/kbd",
       "toc": []
     },
-    "mdx": "\n# Heading\n\nAdd description later.\n"
+    "mdx": "\n# Kbd\n\nAdd description later.\n"
   },
   "Em": {
     "meta": {
@@ -887,56 +852,6 @@
       "toc": []
     },
     "mdx": "\n# Em\n\nAdd description later.\n"
-  },
-  "Code": {
-    "meta": {
-      "id": "Code",
-      "title": "Code",
-      "description": "renders code blocks",
-      "documents": "Code",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "Code"
-      ],
-      "tags": [
-        "code"
-      ],
-      "propTables": [
-        "Code"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Code/README.mdx",
-      "route": "typography/code",
-      "toc": []
-    },
-    "mdx": "\n# Code\n\nAdd description later.\n"
-  },
-  "Box": {
-    "meta": {
-      "id": "Box",
-      "title": "Box",
-      "description": "the Box component is the lowest level component that can be used as fallback element for other components",
-      "documents": "Box",
-      "status": "experimental",
-      "menu": [
-        "Layout",
-        "Box"
-      ],
-      "tags": [
-        "box",
-        "layout",
-        "container",
-        "div",
-        "low level"
-      ],
-      "propTables": [
-        "Box"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Box/README.mdx",
-      "route": "layout/box",
-      "toc": []
-    },
-    "mdx": "\n# Box\n\nAdd description.\n"
   },
   "Table": {
     "meta": {
@@ -970,49 +885,28 @@
     },
     "mdx": "\n# Table\n\n## Props\n\nRender the PropsTable with a `<PropsTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
   },
-  "Breadcrumb": {
+  "Heading": {
     "meta": {
-      "id": "Breadcrumb",
-      "title": "Breadcrumbs",
-      "description": "renders a breadcrumb navigation",
-      "documents": "Breadcrumb",
+      "id": "Heading",
+      "title": "Heading",
+      "description": "renders a heading",
+      "documents": "Heading",
       "status": "stable",
       "menu": [
-        "Components",
-        "Breadcrumb"
+        "Typography",
+        "Heading"
       ],
       "tags": [
-        "navigation",
-        "breadcrumb"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Breadcrumb/README.mdx",
-      "route": "components/breadcrumb",
-      "toc": []
-    },
-    "mdx": "\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
-  },
-  "Stack": {
-    "meta": {
-      "id": "Stack",
-      "title": "Stack",
-      "description": "displays a Stack",
-      "documents": "Stack",
-      "status": "stable",
-      "menu": [
-        "Layout",
-        "Stack"
-      ],
-      "tags": [
-        "stack"
+        "heading"
       ],
       "propTables": [
-        "Stack"
+        "Heading"
       ],
-      "filePath": "../../packages/bleh-ui/src/components/Stack/README.mdx",
-      "route": "layout/stack",
+      "filePath": "../../packages/bleh-ui/src/components/Heading/README.mdx",
+      "route": "typography/heading",
       "toc": []
     },
-    "mdx": "\n# Stack\n\nAdd description later.\n"
+    "mdx": "\n# Heading\n\nAdd description later.\n"
   },
   "Highlight": {
     "meta": {
@@ -1037,6 +931,29 @@
       "toc": []
     },
     "mdx": "\n# Highlight\n\nAdd description later.rr\n"
+  },
+  "Stack": {
+    "meta": {
+      "id": "Stack",
+      "title": "Stack",
+      "description": "displays a Stack",
+      "documents": "Stack",
+      "status": "stable",
+      "menu": [
+        "Layout",
+        "Stack"
+      ],
+      "tags": [
+        "stack"
+      ],
+      "propTables": [
+        "Stack"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Stack/README.mdx",
+      "route": "layout/stack",
+      "toc": []
+    },
+    "mdx": "\n# Stack\n\nAdd description later.\n"
   },
   "List": {
     "meta": {
@@ -1063,52 +980,108 @@
     },
     "mdx": "\n# List\n\nAdd description later.\n"
   },
-  "Blockquote": {
+  "Breadcrumb": {
     "meta": {
-      "id": "Blockquote",
-      "title": "Blockquote",
-      "description": "displays a blockquote",
-      "documents": "Blockquote",
-      "status": "experimental",
-      "menu": [
-        "Typography",
-        "Blockquote"
-      ],
-      "tags": [
-        "typography",
-        "blockquote",
-        "quote",
-        "citation"
-      ],
-      "propTables": [
-        "Blockquote"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Blockquote/README.mdx",
-      "route": "typography/blockquote",
-      "toc": []
-    },
-    "mdx": "\n# \\<Blockquote/\\>\n\nThis is the PropTable for the `Blockquote` component. Just use it in the MDX file as if it was a regular HTML Tag.\n\n<PropTable id=\"Blockquote\" />\n"
-  },
-  "InputGroup": {
-    "meta": {
-      "id": "InputGroup",
-      "title": "InputGroup",
-      "description": "displays an InputGroup",
-      "documents": "InputGroup",
+      "id": "Breadcrumb",
+      "title": "Breadcrumbs",
+      "description": "renders a breadcrumb navigation",
+      "documents": "Breadcrumb",
       "status": "stable",
       "menu": [
-        "Forms",
-        "InputGroup"
+        "Components",
+        "Breadcrumb"
       ],
       "tags": [
-        "input",
-        "grouping"
+        "navigation",
+        "breadcrumb"
       ],
-      "filePath": "../../packages/bleh-ui/src/components/InputGroup/README.mdx",
-      "route": "forms/inputgroup",
+      "filePath": "../../packages/bleh-ui/src/components/Breadcrumb/README.mdx",
+      "route": "components/breadcrumb",
       "toc": []
     },
-    "mdx": "\n# InputGroup\n\nadd description here.\n\n<PropTable id=\"InputGroup\" />\n"
+    "mdx": "\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
+  },
+  "Dialog": {
+    "meta": {
+      "id": "Dialog",
+      "title": "Dialog",
+      "description": "displays a dialog",
+      "documents": "Dialog",
+      "status": "stable",
+      "menu": [
+        "Components",
+        "Dialog"
+      ],
+      "tags": [
+        "dialog",
+        "modal"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Dialog/README.mdx",
+      "route": "components/dialog",
+      "toc": [
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Dialog\n\n## Props\n\n<PropTables ids=\"DialogRoot, DialogFooter, DialogHeader, DialogBody, DialogBackdrop, DialogTitle, DialogDescription, DialogTrigger, DialogActionTrigger\" />\n"
+  },
+  "Box": {
+    "meta": {
+      "id": "Box",
+      "title": "Box",
+      "description": "the Box component is the lowest level component that can be used as fallback element for other components",
+      "documents": "Box",
+      "status": "experimental",
+      "menu": [
+        "Layout",
+        "Box"
+      ],
+      "tags": [
+        "box",
+        "layout",
+        "container",
+        "div",
+        "low level"
+      ],
+      "propTables": [
+        "Box"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Box/README.mdx",
+      "route": "layout/box",
+      "toc": []
+    },
+    "mdx": "\n# Box\n\nAdd description.\n"
+  },
+  "Code": {
+    "meta": {
+      "id": "Code",
+      "title": "Code",
+      "description": "renders code blocks",
+      "documents": "Code",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "Code"
+      ],
+      "tags": [
+        "code"
+      ],
+      "propTables": [
+        "Code"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Code/README.mdx",
+      "route": "typography/code",
+      "toc": []
+    },
+    "mdx": "\n# Code\n\nAdd description later.\n"
   },
   "Flex": {
     "meta": {
@@ -1159,6 +1132,27 @@
     },
     "mdx": "\n# Flex\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n\n## Usage\n\n```jsx\nimport { Flex } from \"@bleh-ui/react\";\n\nconst Component = () => (\n  <Flex>\n    <p>Content</p>\n  </Flex>\n);\n```\n\n## Second Subheading\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n"
   },
+  "InputGroup": {
+    "meta": {
+      "id": "InputGroup",
+      "title": "InputGroup",
+      "description": "displays an InputGroup",
+      "documents": "InputGroup",
+      "status": "stable",
+      "menu": [
+        "Forms",
+        "InputGroup"
+      ],
+      "tags": [
+        "input",
+        "grouping"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/InputGroup/README.mdx",
+      "route": "forms/inputgroup",
+      "toc": []
+    },
+    "mdx": "\n# InputGroup\n\nadd description here.\n\n<PropTable id=\"InputGroup\" />\n"
+  },
   "UiKitProvider": {
     "meta": {
       "id": "UiKitProvider",
@@ -1181,6 +1175,32 @@
       "toc": []
     },
     "mdx": "\n# UiKitProvider\n\nProvides the necesseary context for the rest of the components to work in.\n\n<PropTable id=\"UiKitProvider\" />\n"
+  },
+  "Blockquote": {
+    "meta": {
+      "id": "Blockquote",
+      "title": "Blockquote",
+      "description": "displays a blockquote",
+      "documents": "Blockquote",
+      "status": "experimental",
+      "menu": [
+        "Typography",
+        "Blockquote"
+      ],
+      "tags": [
+        "typography",
+        "blockquote",
+        "quote",
+        "citation"
+      ],
+      "propTables": [
+        "Blockquote"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Blockquote/README.mdx",
+      "route": "typography/blockquote",
+      "toc": []
+    },
+    "mdx": "\n# \\<Blockquote/\\>\n\nThis is the PropTable for the `Blockquote` component. Just use it in the MDX file as if it was a regular HTML Tag.\n\n<PropTable id=\"Blockquote\" />\n"
   },
   "Text": {
     "meta": {
