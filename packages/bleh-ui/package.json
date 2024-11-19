@@ -27,10 +27,11 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.456.0",
     "next-themes": "^0.4.3",
-    "react-hotkeys-hook": "^4.6.1"
+    "react-hotkeys-hook": "^4.6.1",
+    "react-use": "^17.5.1"
   },
   "scripts": {
-    "build": "bun run build-theme-typings && bun run build",
+    "build": "bun run build-lib",
     "build-lib": "bun run ./scripts/build.ts",
     "dev": "bun run ./scripts/dev.ts",
     "build-theme-typings": "bunx chakra typegen ./src/theme/index.ts"

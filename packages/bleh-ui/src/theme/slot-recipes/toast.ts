@@ -1,7 +1,14 @@
-import { defineSlotRecipe } from "@chakra-ui/react"
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const toastSlotRecipe = defineSlotRecipe({
-  slots: ["root", "title", "description", "indicator", "closeTrigger", "actionTrigger"],
+  slots: [
+    "root",
+    "title",
+    "description",
+    "indicator",
+    "closeTrigger",
+    "actionTrigger",
+  ],
   className: "chakra-toast",
   base: {
     root: {
@@ -20,7 +27,8 @@ export const toastSlotRecipe = defineSlotRecipe({
       height: "var(--height)",
       opacity: "var(--opacity)",
       willChange: "translate, opacity, scale",
-      transition: "translate 400ms, scale 400ms, opacity 400ms, height 400ms, box-shadow 200ms",
+      transition:
+        "translate 400ms, scale 400ms, opacity 400ms, height 400ms, box-shadow 200ms",
       transitionTimingFunction: "cubic-bezier(0.21, 1.02, 0.73, 1)",
       _closed: {
         transition: "translate 400ms, scale 400ms, opacity 200ms",
@@ -31,20 +39,20 @@ export const toastSlotRecipe = defineSlotRecipe({
       boxShadow: "xl",
       "--toast-trigger-bg": "colors.bg.muted",
       "&[data-type=warning]": {
-        bg: "orange.solid",
-        color: "orange.contrast",
+        bg: "danger.9",
+        color: "danger.contrast",
         "--toast-trigger-bg": "{white/10}",
         "--toast-border-color": "{white/40}",
       },
       "&[data-type=success]": {
-        bg: "green.solid",
-        color: "green.contrast",
+        bg: "success.9",
+        color: "success.contrast",
         "--toast-trigger-bg": "{white/10}",
         "--toast-border-color": "{white/40}",
       },
       "&[data-type=error]": {
-        bg: "red.solid",
-        color: "red.contrast",
+        bg: "error.9",
+        color: "error.contrast",
         "--toast-trigger-bg": "{white/10}",
         "--toast-border-color": "{white/40}",
       },
@@ -91,4 +99,4 @@ export const toastSlotRecipe = defineSlotRecipe({
       transition: "background 200ms",
     },
   },
-})
+});

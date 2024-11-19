@@ -503,7 +503,7 @@ const lightColorSystem = {
   ...makeScale("ctTeal", ctTeal, ctTealAlpha, "white"),
   // semantic references
   ...makeSemanticScale("neutral", "gray"),
-  ...makeSemanticScale("primary", "violet"),
+  ...makeSemanticScale("primary", "ctViolet"),
   ...makeSemanticScale("info", "blue"),
   ...makeSemanticScale("error", "red"),
   ...makeSemanticScale("danger", "orange"),
@@ -553,7 +553,7 @@ const darkColorSystem = {
   ...makeScale("ctTeal", ctTealDark, ctTealDarkAlpha, "white"),
   // semantic references
   ...makeSemanticScale("neutral", "gray"),
-  ...makeSemanticScale("primary", "violet"),
+  ...makeSemanticScale("primary", "ctViolet"),
   ...makeSemanticScale("info", "blue"),
   ...makeSemanticScale("error", "red"),
   ...makeSemanticScale("danger", "orange"),

@@ -8730,6 +8730,325 @@
   },
   {
     "tags": {
+      "see": "Docs https://chakra-ui.com/simplegrid"
+    },
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "SimpleGrid\n\nReact component that uses the `Grid` component and provides\na simpler interface to create responsive grid layouts.\n\nProvides props that easily define columns and spacing.",
+    "displayName": "SimpleGrid",
+    "methods": [],
+    "props": {
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "as": {
+        "defaultValue": null,
+        "description": "",
+        "name": "as",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ElementType"
+        }
+      },
+      "asChild": {
+        "defaultValue": null,
+        "description": "",
+        "name": "asChild",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
+        }
+      },
+      "row": {
+        "defaultValue": null,
+        "description": "",
+        "name": "row",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridRow | readonly NonNullable<GridRow>[]>"
+        }
+      },
+      "inline": {
+        "defaultValue": null,
+        "description": "",
+        "name": "inline",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "column": {
+        "defaultValue": null,
+        "description": "",
+        "name": "column",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridColumn | readonly NonNullable<GridColumn>[]>"
+        }
+      },
+      "templateColumns": {
+        "defaultValue": null,
+        "description": "",
+        "name": "templateColumns",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridTemplateColumns<String | Number> | readonly NonNullable<GridTemplateColumns<String | Number>>[]>"
+        }
+      },
+      "autoFlow": {
+        "defaultValue": null,
+        "description": "",
+        "name": "autoFlow",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<readonly string[] | AnyString | GridAutoFlow>"
+        }
+      },
+      "autoRows": {
+        "defaultValue": null,
+        "description": "",
+        "name": "autoRows",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridAutoRows<String | Number> | readonly NonNullable<GridAutoRows<String | Number>>[]>"
+        }
+      },
+      "autoColumns": {
+        "defaultValue": null,
+        "description": "",
+        "name": "autoColumns",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridAutoColumns<String | Number> | readonly NonNullable<GridAutoColumns<String | Number>>[]>"
+        }
+      },
+      "templateRows": {
+        "defaultValue": null,
+        "description": "",
+        "name": "templateRows",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridTemplateRows<String | Number> | readonly NonNullable<GridTemplateRows<String | Number>>[]>"
+        }
+      },
+      "templateAreas": {
+        "defaultValue": null,
+        "description": "",
+        "name": "templateAreas",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<readonly string[] | AnyString | GridTemplateAreas>"
+        }
+      },
+      "minChildWidth": {
+        "defaultValue": null,
+        "description": "The width at which child elements will break into columns. Pass a number for pixel values or a string for any other valid CSS length.",
+        "name": "minChildWidth",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/simple-grid.d.ts",
+          "name": "SimpleGridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/simple-grid.d.ts",
+            "name": "SimpleGridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<`var(--${string})` | AnyString | SizesToken | MinWidth<String | Number> | readonly NonNullable<MinWidth<String | Number>>[]>"
+        }
+      },
+      "columns": {
+        "defaultValue": null,
+        "description": "The number of columns",
+        "name": "columns",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/simple-grid.d.ts",
+          "name": "SimpleGridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/components/grid/simple-grid.d.ts",
+            "name": "SimpleGridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<number>"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLDivElement>"
+        }
+      }
+    }
+  },
+  {
+    "tags": {
       "see": "Docs https://chakra-ui.com/stack"
     },
     "filePath": "../../packages/bleh-ui/src/index.ts",
@@ -10701,6 +11020,53 @@
         "required": false,
         "type": {
           "name": "LegacyRef<HTMLParagraphElement>"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "Tooltip",
+    "methods": [],
+    "props": {
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLDivElement>"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
         }
       }
     }

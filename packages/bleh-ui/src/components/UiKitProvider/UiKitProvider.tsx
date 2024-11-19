@@ -12,6 +12,7 @@ import {
 import { system } from "./../../theme";
 import { system as darkSystem } from "./../../theme/indexDark";
 import { useEffect, useState } from "react";
+import { Toaster } from "../Toaster";
 
 function useColorScheme() {
   const [colorScheme, setColorScheme] = useState(getCurrentColorScheme());
@@ -45,12 +46,17 @@ function useColorScheme() {
   return colorScheme;
 }
 
-export function UiKitProvider(props: ColorModeProviderProps) {
+export function UiKitProvider({ children, ...props }: ColorModeProviderProps) {
   // TODO: Use chakras internal mechanisms, this hook just short-circuited the mode-selection
   const colorScheme = useColorScheme();
   return (
     <ChakraProvider value={colorScheme === "dark" ? darkSystem : system}>
-      <ColorModeProvider {...props} />
+      <ColorModeProvider {...props}>
+        <>
+          <Toaster />
+          {children}
+        </>
+      </ColorModeProvider>
     </ChakraProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react"
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const tooltipSlotRecipe = defineSlotRecipe({
   slots: ["trigger", "arrow", "arrowTip", "positioner", "content"],
@@ -36,4 +36,4 @@ export const tooltipSlotRecipe = defineSlotRecipe({
       borderColor: "var(--tooltip-bg)",
     },
   },
-})
+});
