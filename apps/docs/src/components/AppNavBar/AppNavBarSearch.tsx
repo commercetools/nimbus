@@ -82,7 +82,6 @@ export const AppNavBarSearch = () => {
         placement="top"
         motionPreset="slide-in-bottom"
         onOpenChange={() => setOpen(!open)}
-        closeOnInteractOutside={false}
       >
         <DialogBackdrop />
         <DialogTrigger asChild>
