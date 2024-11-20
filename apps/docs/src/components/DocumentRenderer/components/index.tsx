@@ -10,6 +10,7 @@ import { Image } from "./Image";
 import { sluggify } from "../../../utils/sluggify";
 import { ColorScales } from "../../ColorScales";
 import { IconSearch } from "../../IconSearch";
+import { SpacingTokenDemo } from "../../token-demos/SpacingTokenDemo";
 
 export const components = {
   h1: (props) => (
@@ -90,4 +91,5 @@ export const components = {
   PropTables: PropTables,
   ColorScales: ColorScales,
   IconSearch,
+  SpacingTokenDemo,
 };
