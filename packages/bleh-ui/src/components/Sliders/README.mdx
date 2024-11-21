@@ -1,0 +1,58 @@
+---
+id: slider-comparison
+title: Headless UI comparison
+description: compare the same ux-concept across several headless ui libraries
+documents: Stack
+status: stable
+menu: ["Playground", "Headless UI comparison"]
+tags: # Tags for filtering and categorization
+  - stack
+propTables:
+  - Stack
+---
+
+# Headless UI comparison
+
+This page is about comparing the same ux-concept across several headless ui libraries.
+
+## Ideal flow
+
+1. A slot-recipe for the individual parts of a component is created (`slider.recipe.tsx`)
+2. For every slot, a proxy react-component is created (`slider.parts.tsx`)
+3. The headless ui libraries will use the individual parts to assemble the final component
+
+## Slider
+
+### Radix
+
+- the offset-position of the slider thumb is already accurately calculated by radix (taking the thumb-width into account)
+- easy to style, no hacks necessary
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState(50);
+  return (
+    <div>
+      <RadixSlider min={0} max={100} value={value} onValueChange={v=>setValue(v)} />
+    </div>
+  )
+}
+```
+
+### React ARIA
+
+- less "slots" to style (e.g. no range element)
+- not as easy to syle as radix, but practice will make perfect
+- throws console warnings when there are a11y issues:
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState(50);
+  return (
+    <div>
+      <label id="demo-label">React ARIA Slider label</label>
+      <ReactAriaSlider size="sm" min={0} max={100} value={value} onValueChange={v=>setValue(v)} aria-labelledby="demo-label"  />
+    </div>
+  )
+}
+```

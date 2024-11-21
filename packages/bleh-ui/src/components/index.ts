@@ -13,6 +13,7 @@ export * from "./InputGroup";
 export * from "./Kbd";
 export * from "./Link";
 export * from "./List";
+export * from "./Sliders";
 export * from "./SimpleGrid";
 export * from "./Stack";
 export * from "./Table";

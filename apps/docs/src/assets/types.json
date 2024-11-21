@@ -8729,6 +8729,174 @@
     }
   },
   {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "ReactAriaSlider",
+    "methods": [],
+    "props": {
+      "min": {
+        "defaultValue": null,
+        "description": "",
+        "name": "min",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "max": {
+        "defaultValue": null,
+        "description": "",
+        "name": "max",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "value": {
+        "defaultValue": null,
+        "description": "",
+        "name": "value",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "step": {
+        "defaultValue": null,
+        "description": "",
+        "name": "step",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "onValueChange": {
+        "defaultValue": null,
+        "description": "",
+        "name": "onValueChange",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "(value: number) => void"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "RadixSlider",
+    "methods": [],
+    "props": {
+      "min": {
+        "defaultValue": null,
+        "description": "",
+        "name": "min",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "max": {
+        "defaultValue": null,
+        "description": "",
+        "name": "max",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "value": {
+        "defaultValue": null,
+        "description": "",
+        "name": "value",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "step": {
+        "defaultValue": null,
+        "description": "",
+        "name": "step",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "number"
+        }
+      },
+      "onValueChange": {
+        "defaultValue": null,
+        "description": "",
+        "name": "onValueChange",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "(value: number) => void"
+        }
+      }
+    }
+  },
+  {
     "tags": {
       "see": "Docs https://chakra-ui.com/simplegrid"
     },
