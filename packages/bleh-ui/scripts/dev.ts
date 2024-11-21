@@ -9,7 +9,7 @@ async function build() {
     outdir: "./dist",
     plugins: [
       // todo: disabled, as it eats soooooooooooo much time, needs to be faster
-      dts(),
+      //dts(),
     ],
     external: ["react", "react-dom"],
   });
