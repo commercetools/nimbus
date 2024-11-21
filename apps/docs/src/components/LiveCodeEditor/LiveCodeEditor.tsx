@@ -1,7 +1,17 @@
 import * as BlehUi from "@bleh-ui/react";
 import { Flex, Box } from "@bleh-ui/react";
-import { useEffect, useState } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
+
+const baseHooks = {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+};
+
+// funcitons & components available to the live code editor
+const scope = { ...BlehUi, ...baseHooks };
 
 const removeImportStatements = (code) => {
   // Regular expression to match import statements
@@ -40,7 +50,7 @@ export const LiveCodeEditor = (props) => {
         <LiveProvider
           transformCode={removeImportStatements}
           code={code}
-          scope={{ ...BlehUi }}
+          scope={scope}
           noInline
         >
           <Box display={activeTab === "editor" ? "block" : "none"}>
