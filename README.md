@@ -52,3 +52,9 @@ To build packages & the documentation app:
 ```bash
 $ bun run build
 ```
+
+To only build packages:
+
+```bash
+$ bun run build-packages
+```
