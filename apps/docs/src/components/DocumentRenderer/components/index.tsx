@@ -11,6 +11,7 @@ import { sluggify } from "../../../utils/sluggify";
 import { ColorScales } from "../../ColorScales";
 import { IconSearch } from "../../IconSearch";
 import { SpacingTokenDemo } from "../../token-demos/SpacingTokenDemo";
+import { GenericTokenTableDemo } from "../../token-demos/GenericTokenTableDemo";
 
 export const components = {
   h1: (props) => (
@@ -92,4 +93,5 @@ export const components = {
   ColorScales: ColorScales,
   IconSearch,
   SpacingTokenDemo,
+  GenericTokenTableDemo,
 };

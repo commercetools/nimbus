@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { documentationAtom } from "./documentation";
 import orderBy from "lodash/orderBy";
 import { MdxFileFrontmatter } from "../types";
+import { sluggify } from "../utils/sluggify";
 
 type MenuItem = {
   id: string;
@@ -11,26 +12,23 @@ type MenuItem = {
   children?: MenuItem[];
 };
 
-// Utility-Funktion, um Slugs zu generieren
-const toSlug = (str: string): string => str.toLowerCase().replace(/\s+/g, "-");
-
-// Funktion zur Erstellung des Menüs
+// Function to create the menu
 function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
   const root: MenuItem[] = [];
 
-  // Durchlaufe jede Pfad-Liste im Input
+  // Iterate through each path list in the input
   itemMetas.forEach((itemMeta) => {
     const path = itemMeta.menu;
     let currentLevel = root;
 
-    // Pfad- und Slug-Building für die aktuelle Ebene
+    // Path and slug building for the current level
     path.forEach((segment, index) => {
       const slugPath = path
         .slice(0, index + 1)
-        .map(toSlug)
+        .map(sluggify)
         .join("/");
 
-      // Überprüfen, ob der Knoten bereits existiert
+      // Check if the node already exists
       let existingNode = currentLevel.find((item) => item.label === segment);
 
       if (!existingNode) {
@@ -44,10 +42,21 @@ function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
         currentLevel.push(existingNode);
       }
 
-      // Navigiere tiefer in die Baumstruktur
+      // Navigate deeper into the tree structure
       currentLevel = existingNode.children!;
     });
   });
+
+  // Recursive function to order children by 'order' and then by 'label' property
+  function orderChildren(items: MenuItem[]): MenuItem[] {
+    return orderBy(
+      items.map((item) => ({
+        ...item,
+        children: item.children ? orderChildren(item.children) : [],
+      })),
+      ["order", "label"]
+    );
+  }
 
   const fixedRoot = root.map((item) => {
     return {
@@ -57,10 +66,11 @@ function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
         itemMetas.find((meta) => meta.menu[meta.menu.length - 1] === item.label)
           ?.order ||
         999,
+      children: item.children ? orderChildren(item.children) : [],
     };
   });
 
-  return orderBy(fixedRoot, ["order"]);
+  return orderBy(fixedRoot, ["order", "label"]);
 }
 
 export const menuAtom = atom((get) => {
