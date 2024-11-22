@@ -832,7 +832,7 @@
         }
       ]
     },
-    "mdx": "\n# Sizes\n\nThe list of available size tokens\n\n## Tokens\n\n<GenericTokenTableDemo debug category=\"sizes\" />\n"
+    "mdx": "\n# Sizes\n\nThe list of available size tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"sizes\" />\n"
   },
   "TokensAnimations": {
     "meta": {
@@ -902,7 +902,7 @@
       "route": "tokens/cursors",
       "toc": []
     },
-    "mdx": "\n# Cursors\n\nThe list of available cursor tokens:\n\n<GenericTokenTableDemo category=\"cursor\" />\n"
+    "mdx": "\n# Cursors\n\nThe list of available cursor tokens:\n\n<GenericTokenTableDemo category=\"cursor\" demoProperty=\"cursor\" />\n"
   },
   "TokensShadows": {
     "meta": {
@@ -932,7 +932,7 @@
         }
       ]
     },
-    "mdx": "\n# Shadows\n\nThe list of available shadow tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"shadows\" />\n"
+    "mdx": "\n# Shadows\n\nThe list of available shadow tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"shadows\" demoProperty=\"boxShadow\" />\n"
   },
   "TokensTypography": {
     "meta": {
@@ -1039,7 +1039,7 @@
         }
       ]
     },
-    "mdx": "\n# Raddi\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" />\n"
+    "mdx": "\n# Raddi\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n"
   },
   "TokensBlurs": {
     "meta": {
@@ -1077,7 +1077,7 @@
       "route": "tokens/borders",
       "toc": []
     },
-    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" />\n"
+    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n"
   },
   "Breakpoints": {
     "meta": {
@@ -1151,7 +1151,7 @@
       "route": "tokens/aspect-ratios",
       "toc": []
     },
-    "mdx": "\n# Aspect Ratios\n\nThe list of available aspect ratio tokens:\n\n<GenericTokenTableDemo category=\"aspectRatios\" />\n"
+    "mdx": "\n# Aspect Ratios\n\nThe list of available aspect ratio tokens:\n\n<GenericTokenTableDemo category=\"aspectRatios\" demoProperty=\"aspectRatio\" />\n"
   },
   "Tooltip": {
     "meta": {

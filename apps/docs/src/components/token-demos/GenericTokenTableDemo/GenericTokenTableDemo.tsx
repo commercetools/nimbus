@@ -1,4 +1,5 @@
 import {
+  Box,
   system,
   TableBody,
   TableCell,
@@ -14,12 +15,29 @@ import { useMemo } from "react";
 type GenericTableDemoProps = {
   /** the name of the token-category */
   category: string;
+  /** demoProperty */
+  demoProperty?: string;
   /** displays a JSON-tree to debug */
-  debug: boolean;
+  debug?: boolean;
 };
+
+const PrettyBox = (props) => (
+  <Box
+    bg="neutral.1"
+    border="xs"
+    borderColor="neutral.7"
+    color="neutral.11"
+    fontWeight="semibold"
+    aspectRatio="golden"
+    maxWidth="40"
+    p="4"
+    {...props}
+  />
+);
 
 export const GenericTokenTableDemo = ({
   debug,
+  demoProperty,
   ...props
 }: GenericTableDemoProps) => {
   const data = useMemo(() => {
@@ -40,16 +58,24 @@ export const GenericTokenTableDemo = ({
           <TableRow>
             <TableColumnHeader>Name</TableColumnHeader>
             <TableColumnHeader>Value</TableColumnHeader>
+            {demoProperty && <TableColumnHeader>Demo</TableColumnHeader>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((row) => {
             return (
               <TableRow key={row.name}>
-                <TableCell>
+                <TableCell verticalAlign="top">
                   <Text fontWeight="600">{row.name}</Text>
                 </TableCell>
-                <TableCell>{row.value.value}</TableCell>
+                <TableCell verticalAlign="top">{row.value.value}</TableCell>
+                {demoProperty && (
+                  <TableCell verticalAlign="top">
+                    <PrettyBox {...{ [demoProperty]: row.name }}>
+                      {row.name}
+                    </PrettyBox>
+                  </TableCell>
+                )}
               </TableRow>
             );
           })}
