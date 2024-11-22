@@ -7,6 +7,9 @@
     "apps/docs"
   ],
   "scripts": {
-    "dev": "bun --filter '*' dev"
+    "dev": "bun --filter '*' dev",
+    "build": "bun run build-packages && bun run build-docs",
+    "build-packages": "bun --filter './packages/*' build",
+    "build-docs": "bun --filter './apps/docs' build"
   }
 }

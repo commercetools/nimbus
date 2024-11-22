@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { system } from "@bleh-ui/react";
-import { orderBy } from "lodash";
+import orderBy from "lodash/orderBy";
 
 export const themeSpacingTokensAtom = atom((get) => {
   const obj = Object.fromEntries(system.tokens.categoryMap.get("spacing"));

@@ -3,7 +3,7 @@
   "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
-  "sideeffects": false,
+  "sideEffects": false,
   "devDependencies": {
     "@chakra-ui/cli": "^3.1.0",
     "@types/bun": "latest",
@@ -33,7 +33,7 @@
     "react-use": "^17.5.1"
   },
   "scripts": {
-    "build": "bun run build-lib",
+    "build": "bun run build-theme-typings && bun run build-lib",
     "build-lib": "bun run ./scripts/build.ts",
     "dev": "bun run ./scripts/dev.ts",
     "build-theme-typings": "bunx chakra typegen ./src/theme/index.ts"

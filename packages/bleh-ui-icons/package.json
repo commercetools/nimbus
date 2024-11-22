@@ -3,7 +3,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
-  "sideeffects": false,
+  "sideEffects": false,
   "devDependencies": {
     "@types/bun": "latest"
   },
