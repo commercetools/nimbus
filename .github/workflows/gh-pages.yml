@@ -17,6 +17,8 @@ jobs:
         run: bun install
       - name: Build the project
         run: bun run build
+        env:
+          NODE_ENV: production
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
