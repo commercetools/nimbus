@@ -1,7 +1,10 @@
-import chokidar from "chokidar";
 import fs from "fs";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import docgen from "react-docgen-typescript";
+
+export const flog = (str) => {
+  console.log("\x1b[32m%s\x1b[0m", `\n  ➜ ${str}\n`);
+};
 
 // Thats where compiled docs will be saved
 const compiledTypesFile = "./src/assets/types.json";
@@ -36,7 +39,7 @@ const writeDocs = debounce(() => {
   const res = docgen.parse(fileToGrabTypesFrom, options);
 
   fs.writeFileSync(compiledTypesFile, JSON.stringify(res, null, 2));
-  console.log("Prop Tables compiled.");
+  flog("[TSX] Prop tables updated");
 }, 500);
 
 const observable = (target, callback, _base = []) => {
@@ -56,10 +59,7 @@ const observable = (target, callback, _base = []) => {
 
 const typesObj = observable({}, writeDocs);
 
-// Directory to watch
-const directoryToWatch: string = "./../../packages/bleh-ui/src";
-
-const parseTypes = async (filePath: string) => {
+export const parseTypes = async (filePath: string) => {
   fs.readFile(filePath, "utf8", async (err, content) => {
     if (err) {
       console.error(`Error reading file ${filePath}:`, err);
@@ -68,34 +68,3 @@ const parseTypes = async (filePath: string) => {
     typesObj[filePath] = true;
   });
 };
-
-// Action to trigger when .mdx file is created
-async function handleFileAdd(filePath: string) {
-  await parseTypes(filePath);
-}
-
-// Action to trigger when .mdx file is modified
-async function handleFileChange(filePath: string) {
-  await parseTypes(filePath);
-}
-
-// Initialize chokidar watcher
-const watcher = chokidar.watch(directoryToWatch, {
-  persistent: true,
-  ignoreInitial: false, // Watch also for newly created files
-  usePolling: true, // Can be set for environments that don't support native file watching
-  // only watch .mdx files
-  ignored: (path, stats) =>
-    (stats?.isFile() && !(path.endsWith(".ts") || path.endsWith(".tsx"))) ||
-    false, // only watch js files
-});
-
-// Watch for add and change events on .mdx files
-watcher
-  .on("add", (filePath: string) => handleFileAdd(filePath))
-  .on("change", (filePath: string) => handleFileChange(filePath))
-  .on("error", (error: Error) => console.log("Error watching files:", error));
-
-// Creating a watcher for the object
-
-console.log(`Watching for documentation updates in ${directoryToWatch}...`);
