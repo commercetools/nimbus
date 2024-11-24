@@ -1,6 +1,11 @@
 import { useCalendar, useLocale } from "react-aria";
-import { useCalendarState } from "react-stately";
-import { createCalendar } from "@internationalized/date";
+import { type RangeValue } from "@react-types/shared";
+import { useCalendarState, type CalendarState } from "react-stately";
+import {
+  CalendarDate,
+  createCalendar,
+  type DateValue,
+} from "@internationalized/date";
 import { Button, Flex, Heading, Stack, Text } from "@/components";
 import { Button as AriaButton } from "react-aria-components";
 
@@ -17,7 +22,13 @@ import {
 
 import { ArrowLeft, ArrowRight } from "@bleh-ui/icons";
 
-const CalendarCell = ({ state, date }) => {
+const CalendarCell = ({
+  state,
+  date,
+}: {
+  state: CalendarState;
+  date: CalendarDate;
+}) => {
   let ref = useRef(null);
   let {
     cellProps,
@@ -29,14 +40,18 @@ const CalendarCell = ({ state, date }) => {
     formattedDate,
   } = useCalendarCell({ date }, state, ref);
 
-  const styledButtonProps = {
-    variant: cellProps["aria-selected"] ? "solid" : "ghost",
-    colorPalette: cellProps["aria-selected"] ? "primary" : "neutral",
-  };
-
   return (
     <StyledCalendarCell textAlign="center" as="td" {...cellProps}>
-      <Button width="8" height="8" size="2xs" asChild {...styledButtonProps}>
+      <Button
+        width="8"
+        height="8"
+        size="2xs"
+        asChild
+        {...{
+          variant: cellProps["aria-selected"] ? "solid" : "ghost",
+          colorPalette: cellProps["aria-selected"] ? "primary" : "neutral",
+        }}
+      >
         <button
           {...buttonProps}
           ref={ref}
@@ -52,7 +67,7 @@ const CalendarCell = ({ state, date }) => {
   );
 };
 
-const CalendarGrid = ({ state, ...props }) => {
+const CalendarGrid = ({ state, ...props }: { state: CalendarState }) => {
   let { locale } = useLocale();
   let { gridProps, headerProps, weekDays } = useCalendarGrid(props, state);
 
@@ -89,7 +104,30 @@ const CalendarGrid = ({ state, ...props }) => {
   );
 };
 
-export const Calendar = (props) => {
+type CalendarProps = {
+  /** The currently selected date. */
+  value?: CalendarDate | null;
+  /**Whether the calendar is disabled. */
+  isDisabled?: boolean;
+  /** Whether the calendar is in a read only state. */
+  isReadOnly?: boolean;
+  /** The date range that is currently visible in the calendar. */
+  visibleRange?: RangeValue<CalendarDate>;
+  /** The time zone of the dates currently being displayed. */
+  timeZone?: string;
+  /**Whether the calendar is invalid. */
+  isValueInvalid?: boolean;
+  /**The currently focused date. */
+  focusedDate?: CalendarDate;
+  /** Whether focus is currently within the calendar. */
+  isFocused?: boolean;
+  /** The minimum allowed date that a user may select. */
+  minValue?: DateValue | null;
+  /** The maximum allowed date that a user may select. */
+  maxValue?: DateValue | null;
+};
+
+export const Calendar = (props: CalendarProps) => {
   let { locale } = useLocale();
   let state = useCalendarState({
     ...props,
@@ -104,7 +142,7 @@ export const Calendar = (props) => {
 
   return (
     <StyledCalendar {...calendarProps} className="calendar">
-      <Stack gap="4">
+      <Stack gap="8">
         <Flex alignItems="center">
           <Button size="2xs" colorPalette="primary" variant="ghost" asChild>
             <AriaButton {...prevButtonProps}>
