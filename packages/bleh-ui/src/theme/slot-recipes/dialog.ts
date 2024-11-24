@@ -18,8 +18,8 @@ export const dialogSlotRecipe = defineSlotRecipe({
   base: {
     backdrop: {
       bg: {
-        _dark: "black.alpha.9",
-        _light: "black.alpha.9",
+        _dark: "bg/50",
+        _light: "fg/50",
       },
       pos: "fixed",
       left: 0,
