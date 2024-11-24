@@ -1,4 +1,4 @@
-import { defineRecipe } from "@chakra-ui/react"
+import { defineRecipe } from "@chakra-ui/react";
 
 export const buttonRecipe = defineRecipe({
   className: "chakra-button",
@@ -112,13 +112,13 @@ export const buttonRecipe = defineRecipe({
     },
     variant: {
       solid: {
-        bg: "colorPalette.solid",
+        bg: "colorPalette.9",
         color: "colorPalette.contrast",
         _hover: {
-          bg: "colorPalette.solid/90",
+          bg: "colorPalette.10/90",
         },
         _expanded: {
-          bg: "colorPalette.solid/90",
+          bg: "colorPalette.10/90",
         },
       },
       subtle: {
@@ -155,16 +155,16 @@ export const buttonRecipe = defineRecipe({
         },
       },
       ghost: {
-        color: "colorPalette.fg",
+        color: "colorPalette.11",
         _hover: {
-          bg: "colorPalette.subtle",
+          bg: "colorPalette.4",
         },
         _expanded: {
-          bg: "colorPalette.subtle",
+          bg: "colorPalette.4",
         },
       },
       plain: {
-        color: "colorPalette.fg",
+        color: "colorPalette.11",
       },
     },
   },
@@ -172,4 +172,4 @@ export const buttonRecipe = defineRecipe({
     size: "md",
     variant: "solid",
   },
-})
+});

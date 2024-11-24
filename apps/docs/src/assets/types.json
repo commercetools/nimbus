@@ -5161,6 +5161,380 @@
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
     "description": "",
+    "displayName": "Button",
+    "methods": [],
+    "props": {
+      "form": {
+        "defaultValue": null,
+        "description": "",
+        "name": "form",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
+        }
+      },
+      "disabled": {
+        "defaultValue": null,
+        "description": "",
+        "name": "disabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "name": {
+        "defaultValue": null,
+        "description": "",
+        "name": "name",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "type": {
+        "defaultValue": null,
+        "description": "",
+        "name": "type",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"button\" | \"reset\" | \"submit\""
+        }
+      },
+      "formAction": {
+        "defaultValue": null,
+        "description": "",
+        "name": "formAction",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "formEncType": {
+        "defaultValue": null,
+        "description": "",
+        "name": "formEncType",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "formMethod": {
+        "defaultValue": null,
+        "description": "",
+        "name": "formMethod",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "formNoValidate": {
+        "defaultValue": null,
+        "description": "",
+        "name": "formNoValidate",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "formTarget": {
+        "defaultValue": null,
+        "description": "",
+        "name": "formTarget",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "value": {
+        "defaultValue": null,
+        "description": "",
+        "name": "value",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ButtonHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ButtonHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string | number | readonly string[]"
+        }
+      },
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "size": {
+        "defaultValue": {
+          "value": "\"md\""
+        },
+        "description": "",
+        "name": "size",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "ButtonVariant"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "ButtonVariant"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
+        }
+      },
+      "variant": {
+        "defaultValue": {
+          "value": "\"solid\""
+        },
+        "description": "",
+        "name": "variant",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "ButtonVariant"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "ButtonVariant"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\" | \"ghost\">"
+        }
+      },
+      "recipe": {
+        "defaultValue": null,
+        "description": "",
+        "name": "recipe",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "RecipeDefinition<RecipeVariantRecord>"
+        }
+      },
+      "unstyled": {
+        "defaultValue": null,
+        "description": "If `true`, the element will opt out of the theme styles.",
+        "name": "unstyled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "UnstyledProp"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "as": {
+        "defaultValue": null,
+        "description": "",
+        "name": "as",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ElementType"
+        }
+      },
+      "asChild": {
+        "defaultValue": null,
+        "description": "",
+        "name": "asChild",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLButtonElement>"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
     "displayName": "Code",
     "methods": [],
     "props": {
@@ -8741,7 +9115,7 @@
         "name": "min",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8756,7 +9130,7 @@
         "name": "max",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8771,7 +9145,7 @@
         "name": "value",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8786,7 +9160,7 @@
         "name": "step",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8801,7 +9175,7 @@
         "name": "onValueChange",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8825,7 +9199,7 @@
         "name": "min",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8840,7 +9214,7 @@
         "name": "max",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8855,7 +9229,7 @@
         "name": "value",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8870,7 +9244,7 @@
         "name": "step",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -8885,7 +9259,7 @@
         "name": "onValueChange",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Sliders/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
