@@ -380,24 +380,6 @@
     },
     "mdx": "\n# Components\n\ncomponents index\n"
   },
-  "Media": {
-    "meta": {
-      "id": "Media",
-      "title": "Media",
-      "description": "a page with many mdx & markdown features",
-      "order": 4,
-      "menu": [
-        "Media"
-      ],
-      "tags": [
-        "media"
-      ],
-      "filePath": "../../packages/bleh-ui/src/docs/Media.mdx",
-      "route": "media",
-      "toc": []
-    },
-    "mdx": "\n# Media\n\nComponents to display Media. Text, Images, Videos, Icons etc.\n"
-  },
   "Home": {
     "meta": {
       "id": "Home",
@@ -436,6 +418,43 @@
     },
     "mdx": "\n# Forms\n\nform components index\n"
   },
+  "Media": {
+    "meta": {
+      "id": "Media",
+      "title": "Media",
+      "description": "a page with many mdx & markdown features",
+      "order": 4,
+      "menu": [
+        "Media"
+      ],
+      "tags": [
+        "media"
+      ],
+      "filePath": "../../packages/bleh-ui/src/docs/Media.mdx",
+      "route": "media",
+      "toc": []
+    },
+    "mdx": "\n# Media\n\nComponents to display Media. Text, Images, Videos, Icons etc.\n"
+  },
+  "Hooke": {
+    "meta": {
+      "id": "Hooke",
+      "title": "Hooke",
+      "description": "react hooks",
+      "status": "experimental",
+      "menu": [
+        "Hooks"
+      ],
+      "tags": [
+        "hooks",
+        "react"
+      ],
+      "filePath": "../../packages/bleh-ui/src/docs/Hooks.mdx",
+      "route": "hooks",
+      "toc": []
+    },
+    "mdx": "\n# Hooks\n\nA colleciton of useful react hooks.\n"
+  },
   "Playground": {
     "meta": {
       "id": "Playground",
@@ -455,59 +474,6 @@
       "toc": []
     },
     "mdx": "\n# Playground\n\nThis is the place to try out things.\n"
-  },
-  "useHotkeys": {
-    "meta": {
-      "id": "useHotkeys",
-      "title": "useHotkeys",
-      "description": "use keyboard shortcuts to do stuff",
-      "documents": "useHotkeys",
-      "status": "experimental",
-      "menu": [
-        "Hooks",
-        "useHotkeys"
-      ],
-      "tags": [
-        "keys",
-        "shortcut",
-        "keyboard"
-      ],
-      "filePath": "../../packages/bleh-ui/src/hooks/useHotkeys.mdx",
-      "route": "hooks/usehotkeys",
-      "toc": [
-        {
-          "value": "Basic Usage",
-          "href": "#basic-usage",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Simple Hotkey",
-          "href": "#simple-hotkey",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "More stuff",
-          "href": "#more-stuff",
-          "depth": 2,
-          "numbering": [
-            1,
-            3
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# useHotkeys\n\nThis hook allows you to listen to hotkeys in a declarative way and execute a callback function once the user pressed down the given hotkey.\n\n## Basic Usage\n\nImport the `useHotkeys` hook from the package:\n\n```js\nimport { useHotkeys } from \"@bleh-ui/react\";\n```\n\n## Simple Hotkey\n\nThe most basic usage for the hook is to assign a hotkey you want to listen to and a callback to get executed once the user\nhits that key.\n\n```jsx-live\nimport { useHotkeys } from \"@bleh-ui/react\";\n\nconst App = () => {\n  useHotkeys(\"a\", () => alert(\"Key a was pressed\"));\n\n  return <span>Press the a key to see it work.</span>;\n};\n```\n\n## More stuff\n\nUse the documentation of the underlying library for now:\n\nhttps://react-hotkeys-hook.vercel.app/docs/intro\n"
   },
   "Layout": {
     "meta": {
@@ -658,24 +624,58 @@
     },
     "mdx": "\n# Toc\n\nThis is the place to try out things.\n\n## Level 2.1\n\nFirst Level 2 Heading\n\n### Level 3.1\n\nFirst Level 3 Heading\n\n#### Level 4.1\n\nFirst Level 4 Heading\n\n#### Level 4.2\n\nSecond Level 4 Heading\n\n### Level 3.2\n\nSecond Level 3 Heading\n\n## Level 2.2\n"
   },
-  "Hooke": {
+  "useHotkeys": {
     "meta": {
-      "id": "Hooke",
-      "title": "Hooke",
-      "description": "react hooks",
+      "id": "useHotkeys",
+      "title": "useHotkeys",
+      "description": "use keyboard shortcuts to do stuff",
+      "documents": "useHotkeys",
       "status": "experimental",
       "menu": [
-        "Hooks"
+        "Hooks",
+        "useHotkeys"
       ],
       "tags": [
-        "hooks",
-        "react"
+        "keys",
+        "shortcut",
+        "keyboard"
       ],
-      "filePath": "../../packages/bleh-ui/src/docs/Hooks.mdx",
-      "route": "hooks",
-      "toc": []
+      "filePath": "../../packages/bleh-ui/src/hooks/useHotkeys.mdx",
+      "route": "hooks/usehotkeys",
+      "toc": [
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Simple Hotkey",
+          "href": "#simple-hotkey",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "More stuff",
+          "href": "#more-stuff",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
     },
-    "mdx": "\n# Hooks\n\nA colleciton of useful react hooks.\n"
+    "mdx": "\n# useHotkeys\n\nThis hook allows you to listen to hotkeys in a declarative way and execute a callback function once the user pressed down the given hotkey.\n\n## Basic Usage\n\nImport the `useHotkeys` hook from the package:\n\n```js\nimport { useHotkeys } from \"@bleh-ui/react\";\n```\n\n## Simple Hotkey\n\nThe most basic usage for the hook is to assign a hotkey you want to listen to and a callback to get executed once the user\nhits that key.\n\n```jsx-live\nimport { useHotkeys } from \"@bleh-ui/react\";\n\nconst App = () => {\n  useHotkeys(\"a\", () => alert(\"Key a was pressed\"));\n\n  return <span>Press the a key to see it work.</span>;\n};\n```\n\n## More stuff\n\nUse the documentation of the underlying library for now:\n\nhttps://react-hotkeys-hook.vercel.app/docs/intro\n"
   },
   "Colors": {
     "meta": {
@@ -767,6 +767,25 @@
     },
     "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" />\n"
   },
+  "TokensBorders": {
+    "meta": {
+      "id": "TokensBorders",
+      "title": "Borders",
+      "description": "The list of available border tokens",
+      "status": "stable",
+      "menu": [
+        "Tokens",
+        "Borders"
+      ],
+      "tags": [
+        "border"
+      ],
+      "filePath": "../../packages/bleh-ui/src/docs/tokens/Borders.mdx",
+      "route": "tokens/borders",
+      "toc": []
+    },
+    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n"
+  },
   "TokensSizes": {
     "meta": {
       "id": "TokensSizes",
@@ -796,25 +815,6 @@
       ]
     },
     "mdx": "\n# Sizes\n\nThe list of available size tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"sizes\" />\n"
-  },
-  "TokensBorders": {
-    "meta": {
-      "id": "TokensBorders",
-      "title": "Borders",
-      "description": "The list of available border tokens",
-      "status": "stable",
-      "menu": [
-        "Tokens",
-        "Borders"
-      ],
-      "tags": [
-        "border"
-      ],
-      "filePath": "../../packages/bleh-ui/src/docs/tokens/Borders.mdx",
-      "route": "tokens/borders",
-      "toc": []
-    },
-    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n"
   },
   "ZIndex": {
     "meta": {
@@ -848,6 +848,57 @@
       ]
     },
     "mdx": "\n# Z-Index\n\nThe list of available z-index tokens.\n\n## Tokens\n\nThe following z-index tokens are supported out of the box.\n\n<GenericTokenTableDemo category=\"zIndex\" />\n"
+  },
+  "TokensAnimations": {
+    "meta": {
+      "id": "TokensAnimations",
+      "title": "Animations",
+      "description": "The list of available animation tokens",
+      "status": "stable",
+      "menu": [
+        "Tokens",
+        "Animations"
+      ],
+      "tags": [
+        "animation",
+        "transition"
+      ],
+      "filePath": "../../packages/bleh-ui/src/docs/tokens/Animations.mdx",
+      "route": "tokens/animations",
+      "toc": [
+        {
+          "value": "Animations",
+          "href": "#animations-1",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Durations",
+          "href": "#durations",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Easings",
+          "href": "#easings",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Animations\n\n## Animations\n\n<GenericTokenTableDemo category=\"animations\" />\n\n## Durations\n\n<GenericTokenTableDemo category=\"durations\" />\n\n## Easings\n\n<GenericTokenTableDemo category=\"easings\" />\n"
   },
   "TokensShadows": {
     "meta": {
@@ -954,57 +1005,6 @@
     },
     "mdx": "\n# Typography\n\neverything typography related\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" />\n"
   },
-  "TokensAnimations": {
-    "meta": {
-      "id": "TokensAnimations",
-      "title": "Animations",
-      "description": "The list of available animation tokens",
-      "status": "stable",
-      "menu": [
-        "Tokens",
-        "Animations"
-      ],
-      "tags": [
-        "animation",
-        "transition"
-      ],
-      "filePath": "../../packages/bleh-ui/src/docs/tokens/Animations.mdx",
-      "route": "tokens/animations",
-      "toc": [
-        {
-          "value": "Animations",
-          "href": "#animations-1",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Durations",
-          "href": "#durations",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Easings",
-          "href": "#easings",
-          "depth": 2,
-          "numbering": [
-            1,
-            3
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Animations\n\n## Animations\n\n<GenericTokenTableDemo category=\"animations\" />\n\n## Durations\n\n<GenericTokenTableDemo category=\"durations\" />\n\n## Easings\n\n<GenericTokenTableDemo category=\"easings\" />\n"
-  },
   "TokensCursors": {
     "meta": {
       "id": "TokensCursors",
@@ -1023,59 +1023,6 @@
       "toc": []
     },
     "mdx": "\n# Cursors\n\nThe list of available cursor tokens:\n\n<GenericTokenTableDemo category=\"cursor\" demoProperty=\"cursor\" />\n"
-  },
-  "TokensRadii": {
-    "meta": {
-      "id": "TokensRadii",
-      "title": "Radii",
-      "description": "The list of available radius tokens",
-      "status": "experimental",
-      "menu": [
-        "Tokens",
-        "Radii"
-      ],
-      "tags": [
-        "radius",
-        "radii",
-        "border-radius"
-      ],
-      "filePath": "../../packages/bleh-ui/src/docs/tokens/Radii.mdx",
-      "route": "tokens/radii",
-      "toc": [
-        {
-          "value": "Tokens",
-          "href": "#tokens",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Raddi\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n"
-  },
-  "Spacing": {
-    "meta": {
-      "id": "Spacing",
-      "title": "Spacing",
-      "description": "available colors",
-      "documents": "Colors",
-      "status": "experimental",
-      "menu": [
-        "Tokens",
-        "Spacing"
-      ],
-      "tags": [
-        "space",
-        "spacing"
-      ],
-      "filePath": "../../packages/bleh-ui/src/docs/tokens/Spacing.mdx",
-      "route": "tokens/spacing",
-      "toc": []
-    },
-    "mdx": "\n# Spacing\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.\n>\n> e.g. `4` = `16px`, `10` = `40px` etc.\n"
   },
   "TokensAspectRatios": {
     "meta": {
@@ -1130,77 +1077,37 @@
     },
     "mdx": "\n# Breakpoints\n\nBreakpoints define specific screen widths at which your design should adapt to provide an optimal viewing experience for users. They are thresholds that represent a starting point for changes in styling, such as font sizes, layouts, and visibility of elements.\n\nEach breakpoint is a minimum width, meaning that styles associated with that breakpoint apply to screen sizes equal to or larger than the specified width. The styles remain active until the next breakpoint threshold is reached.\n\n## Tokens\n\nThe breakpoints **start** at the specified value and **end** at the next breakpoint value.\nThe following breakpoint-tokens are supported:\n\n<GenericTokenTableDemo category=\"breakpoints\" />\n"
   },
-  "Stack": {
+  "TokensRadii": {
     "meta": {
-      "id": "Stack",
-      "title": "Stack",
-      "description": "displays a Stack",
-      "documents": "Stack",
-      "status": "stable",
+      "id": "TokensRadii",
+      "title": "Radii",
+      "description": "The list of available radius tokens",
+      "status": "experimental",
       "menu": [
-        "Layout",
-        "Stack"
+        "Tokens",
+        "Radii"
       ],
       "tags": [
-        "stack"
+        "radius",
+        "radii",
+        "border-radius"
       ],
-      "propTables": [
-        "Stack"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Stack/README.mdx",
-      "route": "layout/stack",
-      "toc": []
+      "filePath": "../../packages/bleh-ui/src/docs/tokens/Radii.mdx",
+      "route": "tokens/radii",
+      "toc": [
+        {
+          "value": "Tokens",
+          "href": "#tokens",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
     },
-    "mdx": "\n# Stack\n\nAdd description later.\n"
-  },
-  "Kbd": {
-    "meta": {
-      "id": "Kbd",
-      "title": "Kbd",
-      "description": "marks a string as keyboard input",
-      "documents": "Kbd",
-      "status": "stable",
-      "propTables": [
-        "Kbd"
-      ],
-      "menu": [
-        "Typography",
-        "Kbd"
-      ],
-      "tags": [
-        "keyboard",
-        "key"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Kbd/README.mdx",
-      "route": "typography/kbd",
-      "toc": []
-    },
-    "mdx": "\n# Kbd\n\nAdd description later.\n"
-  },
-  "List": {
-    "meta": {
-      "id": "List",
-      "title": "List",
-      "description": "displays a list",
-      "propTables": [
-        "ListRoot",
-        "ListItem"
-      ],
-      "documents": "List",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "List"
-      ],
-      "tags": [
-        "list",
-        "collections"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/List/README.mdx",
-      "route": "typography/list",
-      "toc": []
-    },
-    "mdx": "\n# List\n\nAdd description later.\n"
+    "mdx": "\n# Raddi\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n"
   },
   "Tooltip": {
     "meta": {
@@ -1233,6 +1140,124 @@
     },
     "mdx": "\n# Tooltip\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTable id=\"Tooltip\" />\n"
   },
+  "SimpleGrid": {
+    "meta": {
+      "id": "SimpleGrid",
+      "title": "SimpleGrid",
+      "description": "displays a simple grid / matrix",
+      "documents": "SimpleGrid",
+      "status": "stable",
+      "menu": [
+        "Layout",
+        "SimpleGrid"
+      ],
+      "tags": [
+        "grid",
+        "simple"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/SimpleGrid/README.mdx",
+      "route": "layout/simplegrid",
+      "toc": []
+    },
+    "mdx": "\n# SimpleGrid\n\nAdd description later.\n\n<PropTable id=\"SimpleGrid\" />\n"
+  },
+  "Spacing": {
+    "meta": {
+      "id": "Spacing",
+      "title": "Spacing",
+      "description": "available colors",
+      "documents": "Colors",
+      "status": "experimental",
+      "menu": [
+        "Tokens",
+        "Spacing"
+      ],
+      "tags": [
+        "space",
+        "spacing"
+      ],
+      "filePath": "../../packages/bleh-ui/src/docs/tokens/Spacing.mdx",
+      "route": "tokens/spacing",
+      "toc": []
+    },
+    "mdx": "\n# Spacing\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.\n>\n> e.g. `4` = `16px`, `10` = `40px` etc.\n"
+  },
+  "Code": {
+    "meta": {
+      "id": "Code",
+      "title": "Code",
+      "description": "renders code blocks",
+      "documents": "Code",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "Code"
+      ],
+      "tags": [
+        "code"
+      ],
+      "propTables": [
+        "Code"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Code/README.mdx",
+      "route": "typography/code",
+      "toc": []
+    },
+    "mdx": "\n# Code\n\nAdd description later.\n"
+  },
+  "Tabs": {
+    "meta": {
+      "id": "Tabs",
+      "title": "Tabs",
+      "description": "Used to display content in a tabbed interface",
+      "status": "stable",
+      "menu": [
+        "Components",
+        "Tabs"
+      ],
+      "tags": [
+        "tabs",
+        "accordion",
+        "show hide"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Tabs/README.mdx",
+      "route": "components/tabs",
+      "toc": [
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Tabs\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTables ids=\"TabsRoot, TabsList, TabsTrigger, TabsContent\" />\n"
+  },
+  "Input": {
+    "meta": {
+      "id": "Input",
+      "title": "Input",
+      "description": "displays a Input field",
+      "documents": "Input",
+      "status": "stable",
+      "menu": [
+        "Forms",
+        "Input"
+      ],
+      "tags": [
+        "text",
+        "input"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Input/README.mdx",
+      "route": "forms/input",
+      "toc": []
+    },
+    "mdx": "\n# Input\n\nadd description here.\n\n<PropTable id=\"Input\" />\n"
+  },
   "Dialog": {
     "meta": {
       "id": "Dialog",
@@ -1264,6 +1289,126 @@
       ]
     },
     "mdx": "\n# Dialog\n\n## Props\n\n<PropTables ids=\"DialogRoot, DialogFooter, DialogHeader, DialogBody, DialogBackdrop, DialogTitle, DialogDescription, DialogTrigger, DialogActionTrigger\" />\n"
+  },
+  "Kbd": {
+    "meta": {
+      "id": "Kbd",
+      "title": "Kbd",
+      "description": "marks a string as keyboard input",
+      "documents": "Kbd",
+      "status": "stable",
+      "propTables": [
+        "Kbd"
+      ],
+      "menu": [
+        "Typography",
+        "Kbd"
+      ],
+      "tags": [
+        "keyboard",
+        "key"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Kbd/README.mdx",
+      "route": "typography/kbd",
+      "toc": []
+    },
+    "mdx": "\n# Kbd\n\nAdd description later.\n"
+  },
+  "Stack": {
+    "meta": {
+      "id": "Stack",
+      "title": "Stack",
+      "description": "displays a Stack",
+      "documents": "Stack",
+      "status": "stable",
+      "menu": [
+        "Layout",
+        "Stack"
+      ],
+      "tags": [
+        "stack"
+      ],
+      "propTables": [
+        "Stack"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Stack/README.mdx",
+      "route": "layout/stack",
+      "toc": []
+    },
+    "mdx": "\n# Stack\n\nAdd description later.\n"
+  },
+  "Box": {
+    "meta": {
+      "id": "Box",
+      "title": "Box",
+      "description": "the Box component is the lowest level component that can be used as fallback element for other components",
+      "documents": "Box",
+      "status": "experimental",
+      "menu": [
+        "Layout",
+        "Box"
+      ],
+      "tags": [
+        "box",
+        "layout",
+        "container",
+        "div",
+        "low level"
+      ],
+      "propTables": [
+        "Box"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Box/README.mdx",
+      "route": "layout/box",
+      "toc": []
+    },
+    "mdx": "\n# Box\n\nAdd description.\n"
+  },
+  "Em": {
+    "meta": {
+      "id": "Em",
+      "title": "Em",
+      "description": "renders em tags",
+      "documents": "Em",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "Em"
+      ],
+      "propTables": [
+        "Em"
+      ],
+      "tags": [
+        "em"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Em/README.mdx",
+      "route": "typography/em",
+      "toc": []
+    },
+    "mdx": "\n# Em\n\nAdd description later.\n"
+  },
+  "Heading": {
+    "meta": {
+      "id": "Heading",
+      "title": "Heading",
+      "description": "renders a heading",
+      "documents": "Heading",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "Heading"
+      ],
+      "tags": [
+        "heading"
+      ],
+      "propTables": [
+        "Heading"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Heading/README.mdx",
+      "route": "typography/heading",
+      "toc": []
+    },
+    "mdx": "\n# Heading\n\nAdd description later.\n"
   },
   "slider-comparison": {
     "meta": {
@@ -1341,348 +1486,6 @@
       ]
     },
     "mdx": "\n# Headless UI comparison\n\nThis page is about comparing the same ux-concept across several headless ui libraries.\n\n## Ideal flow\n\n1. A slot-recipe for the individual parts of a component is created (`slider.recipe.tsx`)\n2. For every slot, a proxy react-component is created (`slider.parts.tsx`)\n3. The headless ui libraries will use the individual parts to assemble the final component\n\n## Slider\n\n### Radix\n\n- the offset-position of the slider thumb is already accurately calculated by radix (taking the thumb-width into account)\n- easy to style, no hacks necessary\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <RadixSlider min={0} max={100} value={value} onValueChange={v=>setValue(v)} />\n    </div>\n  )\n}\n```\n\n### React ARIA\n\n- less \"slots\" to style (e.g. no range element)\n- not as easy to syle as radix, but practice will make perfect\n- throws console warnings when there are a11y issues:\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <label id=\"demo-label\">React ARIA Slider label</label>\n      <ReactAriaSlider size=\"sm\" min={0} max={100} value={value} onValueChange={v=>setValue(v)} aria-labelledby=\"demo-label\"  />\n    </div>\n  )\n}\n```\n\n### DatePicker (React ARIA)\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <DatePicker/>\n    </div>\n  )\n}\n```\n"
-  },
-  "Box": {
-    "meta": {
-      "id": "Box",
-      "title": "Box",
-      "description": "the Box component is the lowest level component that can be used as fallback element for other components",
-      "documents": "Box",
-      "status": "experimental",
-      "menu": [
-        "Layout",
-        "Box"
-      ],
-      "tags": [
-        "box",
-        "layout",
-        "container",
-        "div",
-        "low level"
-      ],
-      "propTables": [
-        "Box"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Box/README.mdx",
-      "route": "layout/box",
-      "toc": []
-    },
-    "mdx": "\n# Box\n\nAdd description.\n"
-  },
-  "Tabs": {
-    "meta": {
-      "id": "Tabs",
-      "title": "Tabs",
-      "description": "Used to display content in a tabbed interface",
-      "status": "stable",
-      "menu": [
-        "Components",
-        "Tabs"
-      ],
-      "tags": [
-        "tabs",
-        "accordion",
-        "show hide"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Tabs/README.mdx",
-      "route": "components/tabs",
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Tabs\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTables ids=\"TabsRoot, TabsList, TabsTrigger, TabsContent\" />\n"
-  },
-  "Code": {
-    "meta": {
-      "id": "Code",
-      "title": "Code",
-      "description": "renders code blocks",
-      "documents": "Code",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "Code"
-      ],
-      "tags": [
-        "code"
-      ],
-      "propTables": [
-        "Code"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Code/README.mdx",
-      "route": "typography/code",
-      "toc": []
-    },
-    "mdx": "\n# Code\n\nAdd description later.\n"
-  },
-  "Em": {
-    "meta": {
-      "id": "Em",
-      "title": "Em",
-      "description": "renders em tags",
-      "documents": "Em",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "Em"
-      ],
-      "propTables": [
-        "Em"
-      ],
-      "tags": [
-        "em"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Em/README.mdx",
-      "route": "typography/em",
-      "toc": []
-    },
-    "mdx": "\n# Em\n\nAdd description later.\n"
-  },
-  "SimpleGrid": {
-    "meta": {
-      "id": "SimpleGrid",
-      "title": "SimpleGrid",
-      "description": "displays a simple grid / matrix",
-      "documents": "SimpleGrid",
-      "status": "stable",
-      "menu": [
-        "Layout",
-        "SimpleGrid"
-      ],
-      "tags": [
-        "grid",
-        "simple"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/SimpleGrid/README.mdx",
-      "route": "layout/simplegrid",
-      "toc": []
-    },
-    "mdx": "\n# SimpleGrid\n\nAdd description later.\n\n<PropTable id=\"SimpleGrid\" />\n"
-  },
-  "Input": {
-    "meta": {
-      "id": "Input",
-      "title": "Input",
-      "description": "displays a Input field",
-      "documents": "Input",
-      "status": "stable",
-      "menu": [
-        "Forms",
-        "Input"
-      ],
-      "tags": [
-        "text",
-        "input"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Input/README.mdx",
-      "route": "forms/input",
-      "toc": []
-    },
-    "mdx": "\n# Input\n\nadd description here.\n\n<PropTable id=\"Input\" />\n"
-  },
-  "Heading": {
-    "meta": {
-      "id": "Heading",
-      "title": "Heading",
-      "description": "renders a heading",
-      "documents": "Heading",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "Heading"
-      ],
-      "tags": [
-        "heading"
-      ],
-      "propTables": [
-        "Heading"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Heading/README.mdx",
-      "route": "typography/heading",
-      "toc": []
-    },
-    "mdx": "\n# Heading\n\nAdd description later.\n"
-  },
-  "Flex": {
-    "meta": {
-      "id": "Flex",
-      "title": "Flex",
-      "description": "the Flex component is used to create layouts based on css display flex",
-      "documents": "Flex",
-      "status": "experimental",
-      "menu": [
-        "Layout",
-        "Flex"
-      ],
-      "tags": [
-        "flex",
-        "flexbox",
-        "layout",
-        "container",
-        "div",
-        "low level"
-      ],
-      "propTables": [
-        "Flex"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Flex/README.mdx",
-      "route": "layout/flex",
-      "toc": [
-        {
-          "value": "Usage",
-          "href": "#usage",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Second Subheading",
-          "href": "#second-subheading",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Flex\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n\n## Usage\n\n```jsx\nimport { Flex } from \"@bleh-ui/react\";\n\nconst Component = () => (\n  <Flex>\n    <p>Content</p>\n  </Flex>\n);\n```\n\n## Second Subheading\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n"
-  },
-  "Link": {
-    "meta": {
-      "id": "Link",
-      "title": "Link",
-      "description": "displays a link",
-      "documents": "Link",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "Link"
-      ],
-      "tags": [
-        "link"
-      ],
-      "propTables": [
-        "Link"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Link/README.mdx",
-      "route": "typography/link",
-      "toc": []
-    },
-    "mdx": "\n# Link\n\nAdd description later.\n"
-  },
-  "Highlight": {
-    "meta": {
-      "id": "Highlight",
-      "title": "Highlight",
-      "description": "highlights a substring in a string",
-      "documents": "Highlight",
-      "status": "stable",
-      "menu": [
-        "Typography",
-        "Highlight"
-      ],
-      "tags": [
-        "highlight",
-        "mark"
-      ],
-      "propTables": [
-        "Highlight"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Highlight/README.mdx",
-      "route": "typography/highlight",
-      "toc": []
-    },
-    "mdx": "\n# Highlight\n\nAdd description later.rr\n"
-  },
-  "Breadcrumb": {
-    "meta": {
-      "id": "Breadcrumb",
-      "title": "Breadcrumbs",
-      "description": "renders a breadcrumb navigation",
-      "documents": "Breadcrumb",
-      "status": "stable",
-      "menu": [
-        "Components",
-        "Breadcrumb"
-      ],
-      "tags": [
-        "navigation",
-        "breadcrumb"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Breadcrumb/README.mdx",
-      "route": "components/breadcrumb",
-      "toc": []
-    },
-    "mdx": "\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
-  },
-  "Table": {
-    "meta": {
-      "id": "Table",
-      "title": "Table",
-      "description": "displays a table",
-      "documents": "Table",
-      "status": "stable",
-      "menu": [
-        "Components",
-        "Table"
-      ],
-      "tags": [
-        "table",
-        "tabular data"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/Table/README.mdx",
-      "route": "components/table",
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Table\n\n## Props\n\nRender the PropsTable with a `<PropsTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
-  },
-  "UiKitProvider": {
-    "meta": {
-      "id": "UiKitProvider",
-      "title": "UiKitProvider",
-      "description": "provides an environment for the rest of the components to work in",
-      "is": "component",
-      "documents": "UiKitProvider",
-      "status": "stable",
-      "menu": [
-        "System",
-        "UiKitProvider"
-      ],
-      "tags": [
-        "system",
-        "required",
-        "setup"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/UiKitProvider/README.mdx",
-      "route": "system/uikitprovider",
-      "toc": []
-    },
-    "mdx": "\n# UiKitProvider\n\nProvides the necesseary context for the rest of the components to work in.\n\n<PropTable id=\"UiKitProvider\" />\n"
   },
   "Text": {
     "meta": {
@@ -1769,27 +1572,6 @@
     },
     "mdx": "\n# Text\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n\n## Usage\n\n```jsx-live\nimport { Text } from '@bleh-ui/react';\n\nconst App = () => (\n    <Text>Display Text</Text>\n);\n```\n\n## Sizes\n\nYou can size text with two properties: `fontSize` and `textStyle`. Use `fontSize` to only set the size of the text.\nUse `textStyle` to set the size and an appropriate `line-height` for that size.\n\n```jsx-live\nconst App = () => (\n  <Flex flexDirection=\"column\">\n    {[\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\", \"3xl\", \"4xl\",\"5xl\",\"6xl\",\"7xl\"].map((size) => (\n      <Text key={size} asChild textStyle={size}>\n        <span>Displays text in `{size}` size</span>\n      </Text>\n    ))}\n  </Flex>\n)\n```\n\n## Weights\n\nUse the `fontWeight` prop to change the weight of the text:\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => {\n  return (\n    <Stack>\n      <Text fontWeight=\"100\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"200\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"300\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"400\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"500\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"600\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"700\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"800\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"900\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n}\n```\n\n## Truncation\n\nUse the `truncate` prop to truncate the text after a single line.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text truncate>\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n      </Text>\n    </Flex>\n  )\n```\n\n## Line Clamp\n\nUse the `lineClamp` prop to truncate the text after a certain number of lines.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text lineClamp=\"2\">\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim\n        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n        commodo consequat.\n      </Text>\n    </Flex>\n  )\n```\n\n## Colors\n\nUse the `color` prop to change the color of the text.\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Stack>\n      <Text color=\"primary.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"info.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"success.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"danger.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"error.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n```\n"
   },
-  "InputGroup": {
-    "meta": {
-      "id": "InputGroup",
-      "title": "InputGroup",
-      "description": "displays an InputGroup",
-      "documents": "InputGroup",
-      "status": "stable",
-      "menu": [
-        "Forms",
-        "InputGroup"
-      ],
-      "tags": [
-        "input",
-        "grouping"
-      ],
-      "filePath": "../../packages/bleh-ui/src/components/InputGroup/README.mdx",
-      "route": "forms/inputgroup",
-      "toc": []
-    },
-    "mdx": "\n# InputGroup\n\nadd description here.\n\n<PropTable id=\"InputGroup\" />\n"
-  },
   "Blockquote": {
     "meta": {
       "id": "Blockquote",
@@ -1815,5 +1597,223 @@
       "toc": []
     },
     "mdx": "\n# \\<Blockquote/\\>\n\nThis is the PropTable for the `Blockquote` component. Just use it in the MDX file as if it was a regular HTML Tag.\n\n<PropTable id=\"Blockquote\" />\n"
+  },
+  "List": {
+    "meta": {
+      "id": "List",
+      "title": "List",
+      "description": "displays a list",
+      "propTables": [
+        "ListRoot",
+        "ListItem"
+      ],
+      "documents": "List",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "List"
+      ],
+      "tags": [
+        "list",
+        "collections"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/List/README.mdx",
+      "route": "typography/list",
+      "toc": []
+    },
+    "mdx": "\n# List\n\nAdd description later.\n"
+  },
+  "Breadcrumb": {
+    "meta": {
+      "id": "Breadcrumb",
+      "title": "Breadcrumbs",
+      "description": "renders a breadcrumb navigation",
+      "documents": "Breadcrumb",
+      "status": "stable",
+      "menu": [
+        "Components",
+        "Breadcrumb"
+      ],
+      "tags": [
+        "navigation",
+        "breadcrumb"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Breadcrumb/README.mdx",
+      "route": "components/breadcrumb",
+      "toc": []
+    },
+    "mdx": "\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
+  },
+  "UiKitProvider": {
+    "meta": {
+      "id": "UiKitProvider",
+      "title": "UiKitProvider",
+      "description": "provides an environment for the rest of the components to work in",
+      "is": "component",
+      "documents": "UiKitProvider",
+      "status": "stable",
+      "menu": [
+        "System",
+        "UiKitProvider"
+      ],
+      "tags": [
+        "system",
+        "required",
+        "setup"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/UiKitProvider/README.mdx",
+      "route": "system/uikitprovider",
+      "toc": []
+    },
+    "mdx": "\n# UiKitProvider\n\nProvides the necesseary context for the rest of the components to work in.\n\n<PropTable id=\"UiKitProvider\" />\n"
+  },
+  "InputGroup": {
+    "meta": {
+      "id": "InputGroup",
+      "title": "InputGroup",
+      "description": "displays an InputGroup",
+      "documents": "InputGroup",
+      "status": "stable",
+      "menu": [
+        "Forms",
+        "InputGroup"
+      ],
+      "tags": [
+        "input",
+        "grouping"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/InputGroup/README.mdx",
+      "route": "forms/inputgroup",
+      "toc": []
+    },
+    "mdx": "\n# InputGroup\n\nadd description here.\n\n<PropTable id=\"InputGroup\" />\n"
+  },
+  "Highlight": {
+    "meta": {
+      "id": "Highlight",
+      "title": "Highlight",
+      "description": "highlights a substring in a string",
+      "documents": "Highlight",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "Highlight"
+      ],
+      "tags": [
+        "highlight",
+        "mark"
+      ],
+      "propTables": [
+        "Highlight"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Highlight/README.mdx",
+      "route": "typography/highlight",
+      "toc": []
+    },
+    "mdx": "\n# Highlight\n\nAdd description later.rr\n"
+  },
+  "Flex": {
+    "meta": {
+      "id": "Flex",
+      "title": "Flex",
+      "description": "the Flex component is used to create layouts based on css display flex",
+      "documents": "Flex",
+      "status": "experimental",
+      "menu": [
+        "Layout",
+        "Flex"
+      ],
+      "tags": [
+        "flex",
+        "flexbox",
+        "layout",
+        "container",
+        "div",
+        "low level"
+      ],
+      "propTables": [
+        "Flex"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Flex/README.mdx",
+      "route": "layout/flex",
+      "toc": [
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Second Subheading",
+          "href": "#second-subheading",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Flex\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n\n## Usage\n\n```jsx\nimport { Flex } from \"@bleh-ui/react\";\n\nconst Component = () => (\n  <Flex>\n    <p>Content</p>\n  </Flex>\n);\n```\n\n## Second Subheading\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n"
+  },
+  "Link": {
+    "meta": {
+      "id": "Link",
+      "title": "Link",
+      "description": "displays a link",
+      "documents": "Link",
+      "status": "stable",
+      "menu": [
+        "Typography",
+        "Link"
+      ],
+      "tags": [
+        "link"
+      ],
+      "propTables": [
+        "Link"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Link/README.mdx",
+      "route": "typography/link",
+      "toc": []
+    },
+    "mdx": "\n# Link\n\nAdd description later.\n"
+  },
+  "Table": {
+    "meta": {
+      "id": "Table",
+      "title": "Table",
+      "description": "displays a table",
+      "documents": "Table",
+      "status": "stable",
+      "menu": [
+        "Components",
+        "Table"
+      ],
+      "tags": [
+        "table",
+        "tabular data"
+      ],
+      "filePath": "../../packages/bleh-ui/src/components/Table/README.mdx",
+      "route": "components/table",
+      "toc": [
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Table\n\n## Props\n\nRender the PropsTable with a `<PropsTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
   }
 }

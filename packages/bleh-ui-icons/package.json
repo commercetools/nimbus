@@ -1,21 +1,14 @@
 {
   "name": "@bleh-ui/icons",
+  "version": "1.0.0",
+  "main": "dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "type": "module",
-  "sideEffects": false,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
   "dependencies": {
-    "bun-plugin-dts": "^0.3.0",
     "lucide-react": "^0.456.0"
   },
   "scripts": {
-    "build": "bun build ./index.ts --outdir ./dist",
-    "dev": "bun build ./index.ts --outdir ./dist"
+    "build": "bun run tsc",
+    "dev": "bun run tsc"
   }
 }
