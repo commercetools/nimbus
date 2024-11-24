@@ -10,8 +10,10 @@ export type MdxFileFrontmatter = {
     order?: number;
     /** the template to use to render this document */
     template?: "Component" | "hook";
-    /** the path to the file */
+    /** the path to the file on the fileSystem */
     filePath: string;
+    /** the path to the file within the repo, from the repo-root */
+    repoPath: string;
     /**
      * Array of menu labels
      * e.g. [" Getting Started", "API Reference"]

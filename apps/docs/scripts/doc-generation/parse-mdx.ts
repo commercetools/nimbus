@@ -2,12 +2,14 @@ import fs from "fs";
 import matter from "gray-matter";
 import { menuToPath } from "../../src/utils/sluggify";
 import { MdxFileFrontmatter, TocItem } from "../../src/types";
+import * as path from "path";
 
 import { read } from "to-vfile";
 import { remark } from "remark";
 import remarkFlexibleToc from "remark-flexible-toc";
 import debounce from "lodash/debounce";
 import { flog } from "./parse-types";
+import { getPathFromMonorepoRoot } from "../../utils/find-monorepo-root";
 
 // Thats where compiled docs will be saved
 const compiledDocsFile = "./src/assets/docs.json";
@@ -65,7 +67,9 @@ export const parseMdx = async (filePath: string) => {
     documentation[meta.id] = {
       meta: {
         ...meta,
-        filePath,
+        // TODO: hide filePath in production build
+        filePath: path.resolve(filePath),
+        repoPath: await getPathFromMonorepoRoot(filePath),
         route: menuToPath(meta.menu),
         toc,
       },

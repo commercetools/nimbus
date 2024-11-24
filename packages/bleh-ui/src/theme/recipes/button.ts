@@ -19,7 +19,7 @@ export const buttonRecipe = defineRecipe({
     outline: "0",
     lineHeight: "1.2",
     isolation: "isolate",
-    fontWeight: "medium",
+    fontWeight: "semibold",
     transitionProperty: "common",
     transitionDuration: "moderate",
     focusVisibleRing: "outside",
@@ -115,20 +115,20 @@ export const buttonRecipe = defineRecipe({
         bg: "colorPalette.9",
         color: "colorPalette.contrast",
         _hover: {
-          bg: "colorPalette.10/90",
+          bg: "colorPalette.10",
         },
         _expanded: {
-          bg: "colorPalette.10/90",
+          bg: "colorPalette.10",
         },
       },
       subtle: {
-        bg: "colorPalette.subtle",
-        color: "colorPalette.fg",
+        bg: "colorPalette.3",
+        color: "colorPalette.11",
         _hover: {
-          bg: "colorPalette.muted",
+          bg: "colorPalette.4",
         },
         _expanded: {
-          bg: "colorPalette.muted",
+          bg: "colorPalette.4",
         },
       },
       surface: {

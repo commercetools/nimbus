@@ -1,8 +1,10 @@
-import { Flex, Box, Text } from "@bleh-ui/react";
+import { Flex, Box, Text, Stack } from "@bleh-ui/react";
 
 import { ModeToggleButton } from "../ModeToggleButton";
 
 import { AppNavBarSearch } from "./AppNavBarSearch";
+import { AppNavBarCreateButton } from "./AppNavBarCreateButton";
+import { DevOnly } from "../DevOnly";
 
 export const AppNavBar = () => {
   return (
@@ -21,7 +23,12 @@ export const AppNavBar = () => {
       </Flex>
       <Box flexGrow="1" />
       <Box>
-        <ModeToggleButton />
+        <Stack direction="row" gap="4" alignItems="center">
+          <DevOnly>
+            <AppNavBarCreateButton />
+          </DevOnly>
+          <ModeToggleButton />
+        </Stack>
       </Box>
     </Flex>
   );
