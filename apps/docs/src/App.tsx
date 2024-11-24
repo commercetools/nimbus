@@ -11,6 +11,35 @@ function App() {
   const [activeRoute, setActiveroute] = useAtom(activeRouteAtom);
 
   useEffect(() => {
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+
+    const handleRouteChange = () => {
+      const route = location.pathname.slice(1);
+      setActiveroute(route);
+    };
+
+    history.pushState = function (...args) {
+      originalPushState.apply(this, args);
+      handleRouteChange();
+    };
+
+    history.replaceState = function (...args) {
+      originalReplaceState.apply(this, args);
+      handleRouteChange();
+    };
+
+    window.addEventListener("popstate", handleRouteChange);
+
+    // Cleanup (if needed):
+    return () => {
+      window.removeEventListener("popstate", handleRouteChange);
+      history.pushState = originalPushState;
+      history.replaceState = originalReplaceState;
+    };
+  }, [activeRoute]);
+
+  useEffect(() => {
     if (!activeRoute) {
       setActiveroute("home");
     }
