@@ -22,6 +22,9 @@ async function watchAndBuild() {
 
   // Watch for changes in the "src" directory
   watch("./src", { recursive: true }, (eventType, filename) => {
+    if (filename?.endsWith(".mdx") || filename?.endsWith(".md")) {
+      return;
+    }
     console.log(`File changed: ${filename}`);
     build(); // Rebuild on file change
   });
