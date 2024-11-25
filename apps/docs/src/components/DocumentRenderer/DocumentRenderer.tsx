@@ -59,7 +59,7 @@ export const DocumentRenderer = () => {
             <MdxEditor
               meta={meta}
               markdown={content}
-              onCancelRequest={() => setEditMode(false)}
+              onCloseRequest={() => setEditMode(false)}
             />
           )}
         </Box>

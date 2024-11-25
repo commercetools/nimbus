@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from "@bleh-ui/react";
+import { Box, Button, Flex, Text, toaster } from "@bleh-ui/react";
 import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
@@ -42,7 +42,7 @@ import { CustomEditorStyles } from "./configs/html-styles";
 
 type MdxEditorProps = MDXEditorProps & {
   meta: MdxFileFrontmatter["meta"];
-  onCancelRequest: () => void;
+  onCloseRequest: () => void;
 };
 
 function getFrontmatter(fileContent: string) {
@@ -78,10 +78,11 @@ const getCustomComponentPlaceholders: () => JsxComponentDescriptor[] = () =>
 
 export const MdxEditor = ({
   markdown,
-  onCancelRequest,
+  onCloseRequest,
   ...props
 }: MdxEditorProps) => {
   const [markdownStr, setMarkdownStr] = useState(markdown);
+  const [isSaving, setIsSaving] = useState(false);
   const ref = useRef<MDXEditorMethods>(null);
 
   useEffect(() => {
@@ -155,6 +156,8 @@ export const MdxEditor = ({
   const onSaveRequest = async () => {
     const { filePath } = props.meta;
 
+    setIsSaving(true);
+
     const { data } = await axios({
       method: "GET",
       url: "/api/fs/read",
@@ -172,11 +175,21 @@ export const MdxEditor = ({
         content: updatedContent,
       },
     });
+
+    toaster.create({
+      title: "Document saved",
+      type: "success",
+      duration: 3000,
+    });
+    setTimeout(() => {
+      setIsSaving(false);
+      onCloseRequest();
+    }, 1000);
   };
 
   return (
-    <>
-      <Box mb="4" borderRadius="sm" marginLeft="-4" marginRight="-4">
+    <Box position="relative" marginLeft="-4" marginRight="-4">
+      <Box mb="4" borderRadius="sm">
         <CustomEditorStyles>
           <MDXEditor
             ref={ref}
@@ -200,11 +213,23 @@ export const MdxEditor = ({
           colorPalette="neutral"
           variant="subtle"
           minWidth="32"
-          onClick={() => onCancelRequest()}
+          onClick={() => onCloseRequest()}
         >
           Cancel
         </Button>
       </Flex>
-    </>
+      {isSaving && (
+        <Box
+          position="absolute"
+          bg="bg/90"
+          inset="0"
+          p="8"
+          zIndex="2"
+          fontWeight="semibold"
+        >
+          Saving...
+        </Box>
+      )}
+    </Box>
   );
 };
