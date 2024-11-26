@@ -11,6 +11,7 @@ import { DevOnly } from "../DevOnly";
 import { useEffect, useState } from "react";
 import { Pencil, PencilOff } from "@bleh-ui/icons";
 import { Helmet } from "react-helmet-async";
+import { TrashDocumentLink } from "../TrashDocumentLink";
 
 export const DocumentRenderer = () => {
   const activeDoc = useAtomValue(activeDocAtom);
@@ -23,7 +24,12 @@ export const DocumentRenderer = () => {
   const content = activeDoc?.mdx;
   const meta = activeDoc?.meta;
 
-  if (!content || !meta) return "Loading...";
+  if (!content || !meta)
+    return (
+      <Box>
+        <Text fontWeight="bold">404 - This page does not exist.</Text>
+      </Box>
+    );
 
   return (
     <>
@@ -38,7 +44,7 @@ export const DocumentRenderer = () => {
             </Box>
             <Box flexGrow="1" />
             <Box>
-              <Stack direction="row" gap="4">
+              <Stack direction="row" gap="4" alignItems="center">
                 <DevOnly>
                   <Button
                     size="xs"
@@ -49,6 +55,7 @@ export const DocumentRenderer = () => {
                     {!editMode && <Pencil size="1em" />}
                     {editMode && <PencilOff size="1em" />}
                   </Button>
+                  <TrashDocumentLink filePath={meta.filePath} />
                   <VsCodeEditLink filePath={meta.filePath} />
                 </DevOnly>
                 <GithubRepoLink repoPath={meta.repoPath} />
