@@ -15,7 +15,18 @@ import { getPathFromMonorepoRoot } from "../../utils/find-monorepo-root";
 const compiledDocsFile = "./src/assets/docs.json";
 
 const writeDocs = debounce(() => {
-  fs.writeFileSync(compiledDocsFile, JSON.stringify(documentation, null, 2));
+  // Sort documentation by keys, to make sure the order does not change every time it recompiles
+  const cleanDocumentation = Object.keys(documentation)
+    .sort()
+    .reduce((acc, key) => {
+      acc[key] = documentation[key];
+      return acc;
+    }, {});
+
+  fs.writeFileSync(
+    compiledDocsFile,
+    JSON.stringify(cleanDocumentation, null, 2)
+  );
   flog("[MDX] Documentation updated");
 }, 500);
 
