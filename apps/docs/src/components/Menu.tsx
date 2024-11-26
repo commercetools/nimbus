@@ -66,6 +66,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem; level: number }> = ({
         transitionDuration="slow"
       >
         <a href={`/${item.slug}`} onClick={(e) => onLinkClick(e, item.slug)}>
+          {level > 3 && "└ "}
           {item.label}
         </a>
       </Text>
