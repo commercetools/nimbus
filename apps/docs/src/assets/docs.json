@@ -1312,6 +1312,86 @@
     },
     "mdx": "# Tokens\n\nA collection of design tokens"
   },
+  "packages/bleh-ui/src/docs/changelog.mdx": {
+    "meta": {
+      "id": "Home-Changelog",
+      "title": "Changelog",
+      "description": "List of updates, improvements, and bug fixes.",
+      "menu": [
+        "Home",
+        "Changelog"
+      ],
+      "order": 3,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/changelog.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/changelog.mdx",
+      "route": "home/changelog",
+      "toc": []
+    },
+    "mdx": "\n# Changelog\n\nList of updates, improvements, and bug fixes.\n"
+  },
+  "packages/bleh-ui/src/docs/getting-started.mdx": {
+    "meta": {
+      "id": "Home-Getting Started",
+      "title": "Getting Started",
+      "description": "Quick start guide to set up and use the package.",
+      "menu": [
+        "Home",
+        "Getting started"
+      ],
+      "order": 2,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/getting-started.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/getting-started.mdx",
+      "route": "home/getting-started",
+      "toc": []
+    },
+    "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
+  },
+  "packages/bleh-ui/src/docs/installation.mdx": {
+    "meta": {
+      "id": "Home-Installation",
+      "title": "Installation",
+      "description": "Learn how to install @bleh-ui/react and its dependencies.",
+      "menu": [
+        "Home",
+        "Installation"
+      ],
+      "order": 1,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/installation.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/installation.mdx",
+      "route": "home/installation",
+      "toc": []
+    },
+    "mdx": "\n# Installation\n\nLearn how to install @bleh-ui/react and its dependencies.\n"
+  },
+  "packages/bleh-ui/src/docs/known-issues.mdx": {
+    "meta": {
+      "id": "Home-Known issues",
+      "title": "Known issues",
+      "description": "Current bugs, limitations, and compatibility issues with possible workarounds.",
+      "menu": [
+        "Home",
+        "Issues"
+      ],
+      "order": 4,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/known-issues.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/known-issues.mdx",
+      "route": "home/issues",
+      "toc": []
+    },
+    "mdx": "\n# Known issues\n\nCurrent bugs, limitations, and compatibility issues with possible workarounds.\n"
+  },
   "packages/bleh-ui/src/docs/tokens/Animations.mdx": {
     "meta": {
       "id": "TokensAnimations",
