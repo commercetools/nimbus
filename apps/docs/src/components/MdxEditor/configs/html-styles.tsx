@@ -4,6 +4,9 @@ import { ComponentProps } from "react";
 type Foo = ComponentProps<typeof Box>["css"];
 
 const styles: Foo = {
+  "& *": {
+    color: "fg",
+  },
   "& h1": {
     fontSize: "3xl",
     fontWeight: "semibold",
@@ -50,10 +53,14 @@ const styles: Foo = {
   "& .toolbar": {
     bg: "bg",
     borderRadius: "sm",
-    boxShadow: "sm",
+    border: "1px solid",
+    borderColor: "neutral.6",
+  },
+  "& [role='combobox']": {
+    bg: "transparent",
   },
 };
 
 export const CustomEditorStyles = (props: any) => {
-  return <Box css={styles} {...props} />;
+  return <Box color="inherit" css={styles} {...props} />;
 };

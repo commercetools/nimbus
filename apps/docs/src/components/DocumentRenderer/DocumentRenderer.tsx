@@ -38,7 +38,7 @@ export const DocumentRenderer = () => {
       </Helmet>
       <Box width="100%" maxWidth="960px" mx="">
         <Stack gap="4">
-          <Flex>
+          <Flex alignItems="center">
             <Box>
               <BreadcrumbNav />
             </Box>
