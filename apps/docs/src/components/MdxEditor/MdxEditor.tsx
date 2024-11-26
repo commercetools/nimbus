@@ -160,7 +160,7 @@ export const MdxEditor = ({
 
     const { data } = await axios({
       method: "GET",
-      url: "/api/fs/read",
+      url: "/api/fs",
       params: { filePath },
     });
 
@@ -169,7 +169,7 @@ export const MdxEditor = ({
 
     await axios({
       method: "PUT",
-      url: "/api/fs/update",
+      url: "/api/fs",
       data: {
         filePath,
         content: updatedContent,

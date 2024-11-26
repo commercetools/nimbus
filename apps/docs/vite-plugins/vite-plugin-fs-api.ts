@@ -25,7 +25,7 @@ function fileSystemApiPlugin(): Plugin {
 
       // CRUD API Endpoints
       app.post(
-        "/api/fs/create",
+        "/api/fs",
         async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
           try {
             const { filePath, content } = req.body;
@@ -41,7 +41,7 @@ function fileSystemApiPlugin(): Plugin {
         }
       );
 
-      app.get("/api/fs/read", async (req: Request, res: Response) => {
+      app.get("/api/fs", async (req: Request, res: Response) => {
         try {
           const filePath = req.query.filePath as string;
           if (!filePath) throw new Error("filePath is required");
@@ -54,7 +54,7 @@ function fileSystemApiPlugin(): Plugin {
       });
 
       app.put(
-        "/api/fs/update",
+        "/api/fs",
         async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
           try {
             const { filePath, content } = req.body;
@@ -71,7 +71,7 @@ function fileSystemApiPlugin(): Plugin {
       );
 
       app.delete(
-        "/api/fs/delete",
+        "/api/fs",
         async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
           try {
             const { filePath } = req.body;
