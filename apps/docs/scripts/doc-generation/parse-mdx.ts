@@ -21,15 +21,19 @@ const writeDocs = debounce(() => {
 
 const observable = (target, callback, _base = []) => {
   for (const key in target) {
-    if (typeof target[key] === "object")
+    if (typeof target[key] === "object" && target[key] !== null)
       target[key] = observable(target[key], callback, [..._base, key]);
   }
   return new Proxy(target, {
     set(target, key, value) {
-      if (typeof value === "object")
+      if (typeof value === "object" && value !== null)
         value = observable(value, callback, [..._base, key]);
       callback([..._base, key], (target[key] = value));
-      return value;
+      return true;
+    },
+    deleteProperty(target, key) {
+      callback([..._base, key], undefined);
+      return Reflect.deleteProperty(target, key);
     },
   });
 };
@@ -53,7 +57,9 @@ const documentation: Record<string, MdxFileFrontmatter> = observable(
 export const parseMdx = async (filePath: string) => {
   fs.readFile(filePath, "utf8", async (err, content) => {
     if (err) {
-      throw new Error(`Error reading file ${filePath}:`);
+      const repoPath = await getPathFromMonorepoRoot(filePath);
+      delete documentation[repoPath];
+      flog(`[MDX] File ${filePath} not found. Removed from documentation.`);
       return;
     }
 

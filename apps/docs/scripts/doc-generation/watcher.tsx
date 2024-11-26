@@ -39,6 +39,7 @@ const watcher = chokidar.watch(directoryToWatch, {
 watcher
   .on("add", (filePath: string) => handleFileChange(filePath))
   .on("change", (filePath: string) => handleFileChange(filePath))
+  .on("unlink", (filePath: string) => handleFileChange(filePath))
   .on("error", (error: Error) => console.log("Error watching files:", error));
 
 // Creating a watcher for the object
