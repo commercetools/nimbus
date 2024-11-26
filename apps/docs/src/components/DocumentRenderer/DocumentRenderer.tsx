@@ -10,7 +10,7 @@ import { VsCodeEditLink } from "../VsCodeEditLink";
 import { DevOnly } from "../DevOnly";
 import { useEffect, useState } from "react";
 import { Pencil, PencilOff } from "@bleh-ui/icons";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export const DocumentRenderer = () => {
   const activeDoc = useAtomValue(activeDocAtom);
