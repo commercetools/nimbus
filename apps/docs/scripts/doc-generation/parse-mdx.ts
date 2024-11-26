@@ -64,12 +64,14 @@ export const parseMdx = async (filePath: string) => {
 
     const toc = await generateToc(filePath);
 
-    documentation[meta.id] = {
+    const repoPath = await getPathFromMonorepoRoot(filePath);
+
+    documentation[repoPath] = {
       meta: {
         ...meta,
         // TODO: hide filePath in production build
         filePath: path.resolve(filePath),
-        repoPath: await getPathFromMonorepoRoot(filePath),
+        repoPath,
         route: menuToPath(meta.menu),
         toc,
       },
