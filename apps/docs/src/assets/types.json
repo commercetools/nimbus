@@ -10212,6 +10212,260 @@
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
     "description": "",
+    "displayName": "TableColumnGroup",
+    "methods": [],
+    "props": {
+      "span": {
+        "defaultValue": null,
+        "description": "",
+        "name": "span",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ColgroupHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ColgroupHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
+        }
+      },
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "as": {
+        "defaultValue": null,
+        "description": "",
+        "name": "as",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ElementType"
+        }
+      },
+      "asChild": {
+        "defaultValue": null,
+        "description": "",
+        "name": "asChild",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLTableColElement>"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "TableColumn",
+    "methods": [],
+    "props": {
+      "span": {
+        "defaultValue": null,
+        "description": "",
+        "name": "span",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "ColHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "ColHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
+        }
+      },
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "as": {
+        "defaultValue": null,
+        "description": "",
+        "name": "as",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ElementType"
+        }
+      },
+      "asChild": {
+        "defaultValue": null,
+        "description": "",
+        "name": "asChild",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLTableColElement>"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
     "displayName": "TableHeader",
     "methods": [],
     "props": {

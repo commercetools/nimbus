@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { activeRouteAtom } from "../../atoms/route";
+
 import {
   BreadcrumbRoot,
   BreadcrumbLink,

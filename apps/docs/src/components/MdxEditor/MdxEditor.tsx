@@ -55,6 +55,8 @@ const unrenderables = [
   "GenericTokenTableDemo",
   "SpacingTokenDemo",
   "ColorScales",
+  "SizesTokenDemo",
+  "SpacingTokenDemo",
 ];
 
 const getCustomComponentPlaceholders: () => JsxComponentDescriptor[] = () =>

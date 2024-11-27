@@ -10,8 +10,36 @@ tags: # Tags for filtering and categorization
 
 # Sizes
 
-The list of available size tokens
+Different size type tokens are available to suit various design needs, including numerical, proportional, named, breakpoint, and others.
 
-## Tokens
+The list of available size tokens:
 
-<GenericTokenTableDemo category="sizes" />
+## Numerical sizes
+
+Precise, incrementally scaled units for defining fixed dimensions
+
+<SizesTokenDemo group="regular" />
+
+## Proportional sizes
+
+Proportional dimensional values expressed as fractions, suitable for dividing elements in layouts.
+
+<SizesTokenDemo group="fraction" />
+
+## Named sizes
+
+Semantic size labels providing consistent values for specific dimensions, ensuring clarity and reusability.
+
+<SizesTokenDemo group="large" />
+
+## Breakpoint
+
+Predefined screen width thresholds to adjust dimensional values for responsive layouts.
+
+<SizesTokenDemo group="breakpoint" />
+
+## Others
+
+Viewport-based or content-driven dimensional values for flexible and adaptive element sizing.
+
+<SizesTokenDemo group="other" />

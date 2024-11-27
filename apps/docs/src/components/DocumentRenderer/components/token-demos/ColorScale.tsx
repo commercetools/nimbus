@@ -1,16 +1,16 @@
 import { Box, Flex, Stack, Text, useColorModeValue } from "@bleh-ui/react";
 import { useAtomValue } from "jotai";
 import { JSONTree } from "react-json-tree";
-import { themeColorScalesAtom } from "../../atoms/themeColorScales";
+import { themeColorScalesAtom } from "@/atoms/themeColorScales";
 import { useMemo } from "react";
 import last from "lodash/last";
 
 export const ColorScale = (props: { id: string }) => {
   const { id } = props;
-  const colorMode = useColorModeValue("light", "dark");
   const themeColorScales = useAtomValue(themeColorScalesAtom);
 
   const colors = useMemo(() => {
+    if (!themeColorScales) return [];
     return [
       themeColorScales.get(`${id}.1`),
       themeColorScales.get(`${id}.2`),

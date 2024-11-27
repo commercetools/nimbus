@@ -10,7 +10,7 @@ import {
   Flex,
 } from "@bleh-ui/react";
 import { useAtomValue } from "jotai";
-import { themeSpacingTokensAtom } from "../../../atoms/spacingTokens";
+import { themeSpacingTokensAtom } from "@/atoms/spacingTokens";
 import { useState } from "react";
 
 export const SpacingTokenDemo = () => {

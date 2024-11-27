@@ -7,11 +7,12 @@ import { Paragraph } from "./Parapraph";
 import { PropsTable } from "../../PropsTable/PropsTable";
 import { PropTables } from "../../PropsTable/PropTables";
 import { Image } from "./Image";
-import { sluggify } from "../../../utils/sluggify";
-import { ColorScales } from "../../ColorScales";
-import { IconSearch } from "../../IconSearch";
-import { SpacingTokenDemo } from "../../token-demos/SpacingTokenDemo";
-import { GenericTokenTableDemo } from "../../token-demos/GenericTokenTableDemo";
+import { sluggify } from "@/utils/sluggify";
+import { ColorScales } from "@/components/DocumentRenderer/components/token-demos/ColorScales";
+import { IconSearch } from "./token-demos/IconSearch";
+import { SpacingTokenDemo } from "./token-demos/SpacingTokenDemo";
+import { SizesTokenDemo } from "./token-demos/SizesTokenDemo";
+import { GenericTokenTableDemo } from "./token-demos/GenericTokenTableDemo";
 
 export const components = {
   h1: (props) => (
@@ -93,5 +94,6 @@ export const components = {
   ColorScales: ColorScales,
   IconSearch,
   SpacingTokenDemo,
+  SizesTokenDemo,
   GenericTokenTableDemo,
 };
