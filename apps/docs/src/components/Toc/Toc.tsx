@@ -1,16 +1,17 @@
 import { Box, Link } from "@bleh-ui/react";
 import { activeTocAtom } from "../../atoms/toc";
 import { useAtomValue } from "jotai";
-
 import { useEffect, useState } from "react";
 
-const useClosestHeading = () => {
-  const [closestHeadingId, setClosestHeadingId] = useState(null);
+// Custom hook to find the closest heading element
+const useClosestHeading = (): string | null => {
+  const [closestHeadingId, setClosestHeadingId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      const headings = document.querySelectorAll("h2, h3, h4, h5, h6");
-      let closestHeading = null;
+      const headings =
+        document.querySelectorAll<HTMLElement>("h2, h3, h4, h5, h6");
+      let closestHeading: HTMLElement | null = null;
       let closestOffset = Infinity;
 
       headings.forEach((heading) => {
@@ -26,21 +27,29 @@ const useClosestHeading = () => {
 
     // Run on scroll and on initial render
     const scrollEl = document.getElementById("main");
-    scrollEl.addEventListener("scroll", handleScroll);
+    scrollEl?.addEventListener("scroll", handleScroll);
     handleScroll(); // Initial check
 
     // Cleanup the event listener
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => scrollEl?.removeEventListener("scroll", handleScroll);
   }, []);
 
   return closestHeadingId;
 };
 
+// Interface for Table of Contents item
+interface TocItem {
+  href: string;
+  depth: number;
+  value: string;
+}
+
+// Table of Contents component
 export const Toc = () => {
-  const activeToc = useAtomValue(activeTocAtom);
+  const activeToc = useAtomValue<TocItem[]>(activeTocAtom);
   const closestHeadingId = useClosestHeading();
 
-  const indent = {
+  const indent: { [key: number]: string } = {
     1: "0",
     2: "0",
     3: "0",
@@ -55,7 +64,7 @@ export const Toc = () => {
       el?.scrollIntoView({
         behavior: "smooth",
       });
-    });
+    }, 0);
   }, [closestHeadingId]);
 
   return (
