@@ -2,6 +2,10 @@ import { Table } from "@chakra-ui/react";
 
 // Extracting props types from subcomponents
 export type TableRootProps = React.ComponentProps<typeof Table.Root>;
+export type TableColumnGroupProps = React.ComponentProps<
+  typeof Table.ColumnGroup
+>;
+export type TableColumnProps = React.ComponentProps<typeof Table.Column>;
 export type TableHeaderProps = React.ComponentProps<typeof Table.Header>;
 export type TableFooterProps = React.ComponentProps<typeof Table.Footer>;
 export type TableRowProps = React.ComponentProps<typeof Table.Row>;
@@ -12,6 +16,10 @@ export type TableColumnHeaderProps = React.ComponentProps<
 >;
 
 const TableRoot = (props: TableRootProps) => <Table.Root {...props} />;
+const TableColumnGroup = (props: TableColumnGroupProps) => (
+  <Table.ColumnGroup {...props} />
+);
+const TableColumn = (props: TableColumnProps) => <Table.Column {...props} />;
 const TableHeader = (props: TableHeaderProps) => <Table.Header {...props} />;
 const TableFooter = (props: TableFooterProps) => <Table.Footer {...props} />;
 const TableRow = (props: TableRowProps) => <Table.Row {...props} />;
@@ -24,6 +32,8 @@ const TableColumnHeader = (props: TableColumnHeaderProps) => (
 export {
   Table,
   TableRoot,
+  TableColumnGroup,
+  TableColumn,
   TableHeader,
   TableFooter,
   TableRow,
