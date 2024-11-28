@@ -46,6 +46,8 @@ const MenuItemComponent: React.FC<{ item: MenuItem; level: number }> = ({
     setActiveRoute(path);
   };
 
+  const ml = level > 5 ? `4` : undefined;
+
   return (
     <Box display="block" mb={level === 1 ? "6" : undefined}>
       <Text
@@ -64,6 +66,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem; level: number }> = ({
         transition="backgrounds"
         transitionTimingFunction="ease-out-in"
         transitionDuration="slow"
+        ml={ml}
       >
         <a href={`/${item.slug}`} onClick={(e) => onLinkClick(e, item.slug)}>
           {level > 3 && "└ "}
