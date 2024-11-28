@@ -89,6 +89,7 @@ export const parseMdx = async (filePath: string) => {
         // TODO: hide filePath in production build
         filePath: path.resolve(filePath),
         repoPath,
+        order: meta.order || 999,
         route: menuToPath(meta.menu),
         toc,
       },

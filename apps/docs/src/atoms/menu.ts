@@ -16,25 +16,62 @@ type MenuItem = {
 function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
   const root: MenuItem[] = [];
 
-  // Iterate through each path list in the input
+  // Identify and add first-level menu items
+  addFirstLevelItems(itemMetas, root);
+
+  // Add nested menu items
+  addNestedItems(itemMetas, root);
+
+  // Order the menu items
+  return orderMenuItems(root, itemMetas);
+}
+
+// Function to identify and add first-level menu items
+function addFirstLevelItems(
+  itemMetas: MdxFileFrontmatter["meta"][],
+  root: MenuItem[]
+) {
+  const firstLevelItems = itemMetas.filter(
+    (itemMeta) => itemMeta.menu.length === 1
+  );
+
+  firstLevelItems.forEach((itemMeta) => {
+    const segment = itemMeta.menu[0];
+    const slugPath = sluggify(segment);
+
+    root.push({
+      id: slugPath,
+      order: itemMeta.order || 999,
+      label: segment,
+      slug: slugPath,
+      children: [],
+    });
+  });
+}
+
+// Function to add nested menu items
+function addNestedItems(
+  itemMetas: MdxFileFrontmatter["meta"][],
+  root: MenuItem[]
+) {
   itemMetas.forEach((itemMeta) => {
+    if (itemMeta.menu.length === 1) return; // Skip first-level items
+
     const path = itemMeta.menu;
     let currentLevel = root;
 
-    // Path and slug building for the current level
     path.forEach((segment, index) => {
       const slugPath = path
         .slice(0, index + 1)
         .map(sluggify)
         .join("/");
 
-      // Check if the node already exists
       let existingNode = currentLevel.find((item) => item.label === segment);
 
       if (!existingNode) {
         existingNode = {
           id: slugPath,
-          order: itemMeta.order,
+          order: itemMeta.order || 999,
           label: segment,
           slug: slugPath,
           children: [],
@@ -42,12 +79,16 @@ function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
         currentLevel.push(existingNode);
       }
 
-      // Navigate deeper into the tree structure
       currentLevel = existingNode.children!;
     });
   });
+}
 
-  // Recursive function to order children by 'order' and then by 'label' property
+// Function to order menu items
+function orderMenuItems(
+  root: MenuItem[],
+  itemMetas: MdxFileFrontmatter["meta"][]
+): MenuItem[] {
   function orderChildren(items: MenuItem[]): MenuItem[] {
     return orderBy(
       items.map((item) => ({
@@ -58,17 +99,15 @@ function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
     );
   }
 
-  const fixedRoot = root.map((item) => {
-    return {
-      ...item,
-      order:
-        item.order ||
-        itemMetas.find((meta) => meta.menu[meta.menu.length - 1] === item.label)
-          ?.order ||
-        999,
-      children: item.children ? orderChildren(item.children) : [],
-    };
-  });
+  const fixedRoot = root.map((item) => ({
+    ...item,
+    order:
+      item.order ||
+      itemMetas.find((meta) => meta.menu[meta.menu.length - 1] === item.label)
+        ?.order ||
+      999,
+    children: item.children ? orderChildren(item.children) : [],
+  }));
 
   return orderBy(fixedRoot, ["order", "label"]);
 }
@@ -79,6 +118,5 @@ export const menuAtom = atom((get) => {
     (key) => docsObj[key].meta
   );
 
-  const menu = buildMenu(items);
-  return menu;
+  return buildMenu(items);
 });
