@@ -47,7 +47,7 @@ id: ${activeDoc?.meta.title}-${title}
 title: ${title}
 description: ${description}
 menu: ${JSON.stringify([...activeDoc?.meta.menu, menuLabel])}
-order: 1
+order: 999
 tags:
   - document
 ---
