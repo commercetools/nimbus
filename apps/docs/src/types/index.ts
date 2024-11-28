@@ -1,3 +1,19 @@
+/** this document is aimed at product developers */
+export type AudienceDeveloper = "developer";
+/** this dodument is aimed at design system maintainers */
+export type AudienceMaintainer = "maintainer";
+/** this dodument is aimed at designers */
+export type AudienceDesigner = "designer";
+/** this dodument is aimed at product managers */
+export type AudienceProductManager = "pm";
+
+/** the audience a document was made for */
+export type AudienceType =
+  | AudienceDeveloper
+  | AudienceMaintainer
+  | AudienceDesigner
+  | AudienceProductManager;
+
 export type MdxFileFrontmatter = {
   meta: {
     /** a unique identifier for this document */
@@ -16,15 +32,17 @@ export type MdxFileFrontmatter = {
     repoPath: string;
     /**
      * Array of menu labels
-     * e.g. [" Getting Started", "API Reference"]
+     * e.g. ["Getting Started", "API Reference"]
      */
     menu: string[];
-    /** unique, broser-route, generated from the menu array */
+    /** unique, browser-route, generated from the menu array */
     route: string;
     /** tags one might use to search for this page */
     tags: string[];
     /** table of contents of the document */
     toc: TocItem[];
+    /** the audience the document is made for */
+    audience?: AudienceType[];
   };
 
   mdx: string;
