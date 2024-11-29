@@ -39,6 +39,7 @@ import { useEffect, useRef, useState } from "react";
 import { MdxFileFrontmatter } from "../../types";
 import axios from "axios";
 import { CustomEditorStyles } from "./configs/html-styles";
+import { uploadImage } from "@/utils/file-upload";
 
 type MdxEditorProps = MDXEditorProps & {
   meta: MdxFileFrontmatter["meta"];
@@ -105,7 +106,13 @@ export const MdxEditor = ({
     listsPlugin(),
     diffSourcePlugin(),
     linkDialogPlugin(),
-    imagePlugin(),
+    imagePlugin({
+      imageUploadHandler: async (file) => {
+        const { url } = await uploadImage(file);
+        console.log("url is", url);
+        return url;
+      },
+    }),
     thematicBreakPlugin(),
     markdownShortcutPlugin(),
     codeBlockPlugin({ defaultCodeBlockLanguage: "jsx" }),
