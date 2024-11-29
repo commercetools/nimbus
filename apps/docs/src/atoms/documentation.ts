@@ -3,5 +3,5 @@ import json from "./../assets/docs.json";
 import { MdxFileFrontmatter } from "../types";
 
 export const documentationAtom = atom(
-  json as Record<MdxFileFrontmatter["meta"]["id"], MdxFileFrontmatter>
+  json as Record<string, MdxFileFrontmatter>
 );

@@ -1,6 +1,6 @@
 import { activeDocAtom } from "@/atoms/activeDoc";
 import { useAtomValue } from "jotai";
-import { MdxStringRenderer } from "../MdxStringRenderer";
+import { MdxStringRenderer } from "./MdxStringRenderer";
 import { Box, Button, Flex, Stack, Text } from "@bleh-ui/react";
 import { components } from "./components";
 import { BreadcrumbNav } from "../Breadcrumb";

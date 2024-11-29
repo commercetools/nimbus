@@ -16,6 +16,7 @@ import {
   Bleed,
 } from "@bleh-ui/react";
 
+// TODO: Replace with react-aria solution
 import {
   Combobox,
   ComboboxItem,
@@ -23,41 +24,90 @@ import {
   ComboboxProvider,
 } from "@ariakit/react";
 
-import { forwardRef, useMemo, useRef, useState } from "react";
+import { forwardRef, MouseEvent, useMemo, useRef, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
-import { searchableDocItems } from "../../atoms/searchableDocs";
+import {
+  SearchableDocItem,
+  searchableDocItemsAtom,
+  searchQueryAtom,
+} from "../../atoms/searchableDocs";
 import { activeRouteAtom } from "../../atoms/route";
-import take from "lodash/take";
+import Fuse from "fuse.js";
 
-const SearchResultItem = forwardRef(({ item, ...props }, ref) => {
-  const isSelected = !!props["data-active-item"];
+type SearchResultItemProps = {
+  item: SearchableDocItem;
+  score: number | undefined;
+  ["data-active-item"]?: boolean;
+};
 
-  const styles = isSelected
-    ? { bg: "primary.9", color: "primary.contrast" }
-    : {};
+const SearchResultItem = forwardRef(
+  ({ item, score, ...props }: SearchResultItemProps, ref) => {
+    const isSelected = !!props["data-active-item"];
 
-  return (
-    <Box px="6" py="2" ref={ref} {...styles} {...props}>
-      <Heading size="lg">{item.title}</Heading>
-      <Text truncate>{item.description}</Text>
-    </Box>
-  );
-});
+    const styles = isSelected
+      ? { bg: "primary.9", color: "primary.contrast" }
+      : {};
+
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        gap="0"
+        px="6"
+        py="3"
+        ref={ref}
+        {...styles}
+        {...props}
+      >
+        <Heading size="lg" truncate>
+          {item.title}{" "}
+        </Heading>
+        <Text mb="1" truncate>
+          {item.description}
+        </Text>
+        <Text my="1" textStyle="xs" truncate opacity={3 / 4}>
+          {item.menu.join(" -> ")}
+        </Text>
+      </Box>
+    );
+  }
+);
 
 export const AppNavBarSearch = () => {
-  const [q, setQ] = useState("");
   const [, setActiveRoute] = useAtom(activeRouteAtom);
+  const [q, setQ] = useAtom(searchQueryAtom);
+  const searchableDocs = useAtomValue(searchableDocItemsAtom);
+
   const comboboxRef = useRef<HTMLInputElement>(null);
   const listboxRef = useRef<HTMLDivElement>(null);
-  const searchableItems2 = useAtomValue(searchableDocItems);
-  const results = useMemo(() => {
-    const lowerCaseQuery = q.toLowerCase();
-    const keys = ["title", "description"];
 
-    return searchableItems2.filter((item) =>
-      keys.some((key) => item[key]?.toLowerCase().includes(lowerCaseQuery))
-    );
-  }, [q, searchableItems2]);
+  const fuse = useMemo(() => {
+    const fuseOptions = {
+      // nobody cares about the case
+      isCaseSensitive: false,
+      // nobody cares where the string is found
+      ignoreLocation: true,
+      // we want the score (0 = perfect - 1 = garbage)
+      includeScore: true,
+      // we want stuff sorted by score
+      shouldSort: true,
+      // fields with shorter content usually score higher, we don't want that
+      ignoreFieldNorm: true,
+      // highlight the matches
+      includeMatches: true,
+      // search all specified fields, not jus the first 60 characters
+      findAllMatches: true,
+      // unix like search operators? hell yeah:
+      useExtendedSearch: false,
+      // only the matches whose length exceeds this value will be returned
+      minMatchCharLength: 2,
+      keys: ["title", "description", "content"],
+    };
+
+    return new Fuse(searchableDocs || [], fuseOptions);
+  }, [searchableDocs]);
+
+  const results = fuse.search(q);
 
   const [open, setOpen] = useState(false);
   useHotkeys(
@@ -69,7 +119,10 @@ export const AppNavBarSearch = () => {
     [open]
   );
 
-  const onItemConfirm = (e, item) => {
+  const onItemConfirm = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
+    item: SearchableDocItem
+  ) => {
     e.preventDefault();
     setOpen(false);
     setActiveRoute(item.route);
@@ -82,6 +135,7 @@ export const AppNavBarSearch = () => {
         placement="top"
         motionPreset="slide-in-bottom"
         onOpenChange={() => setOpen(!open)}
+        scrollBehavior="outside"
       >
         <DialogBackdrop />
         <DialogTrigger asChild>
@@ -125,33 +179,41 @@ export const AppNavBarSearch = () => {
                     ref={comboboxRef}
                     asChild
                   >
-                    <Combobox placeholder="e.g., Apple, Banana" />
+                    <Combobox placeholder="e.g., Tokens, Component, Installation" />
                   </Input>
                 </InputGroup>
               </Box>
-              <ComboboxList ref={listboxRef} role="listbox">
-                {take(results, 5).map((item) => (
-                  <Bleed key={item.id} inline="6">
-                    <Box
-                      asChild
-                      css={{
-                        ["&[data-active-item]"]: {
-                          background: "primary.9",
-                          color: "primary.contrast",
-                        },
-                      }}
-                    >
-                      <ComboboxItem
-                        focusOnHover
-                        value={item.title}
-                        onClick={(e) => onItemConfirm(e, item)}
+              <Box divideY="1px" asChild>
+                <ComboboxList ref={listboxRef} role="listbox">
+                  {results?.map((item) => (
+                    <Bleed key={item.item.id} inline="6">
+                      {/* <div>
+                      <pre>{JSON.stringify(item, null, 2)}</pre>
+                    </div> */}
+                      <Box
+                        asChild
+                        css={{
+                          ["&[data-active-item]"]: {
+                            background: "primary.9",
+                            color: "primary.contrast",
+                          },
+                        }}
                       >
-                        <SearchResultItem item={item} />
-                      </ComboboxItem>
-                    </Box>
-                  </Bleed>
-                ))}
-              </ComboboxList>
+                        <ComboboxItem
+                          focusOnHover
+                          value={item.item.title}
+                          onClick={(e) => onItemConfirm(e, item.item)}
+                        >
+                          <SearchResultItem
+                            item={item.item}
+                            score={item.score}
+                          />
+                        </ComboboxItem>
+                      </Box>
+                    </Bleed>
+                  ))}
+                </ComboboxList>
+              </Box>
             </ComboboxProvider>
           </DialogBody>
         </DialogContent>

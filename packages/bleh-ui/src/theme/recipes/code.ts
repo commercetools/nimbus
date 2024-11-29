@@ -1,4 +1,4 @@
-import { defineRecipe } from "@chakra-ui/react"
+import { defineRecipe } from "@chakra-ui/react";
 
 export const codeRecipe = defineRecipe({
   className: "chakra-code",
@@ -11,12 +11,8 @@ export const codeRecipe = defineRecipe({
   variants: {
     variant: {
       solid: {
-        bg: "colorPalette.solid",
-        color: "colorPalette.contrast",
-      },
-      subtle: {
-        bg: "colorPalette.subtle",
-        color: "colorPalette.fg",
+        bg: "colorPalette.3",
+        color: "colorPalette.11",
       },
       outline: {
         color: "colorPalette.fg",
@@ -57,7 +53,7 @@ export const codeRecipe = defineRecipe({
     },
   },
   defaultVariants: {
-    variant: "subtle",
-    size: "sm",
+    variant: "solid",
+    size: "md",
   },
-})
+});
