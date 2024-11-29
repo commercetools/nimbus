@@ -825,20 +825,9 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Home.mdx",
       "repoPath": "packages/bleh-ui/src/docs/Home.mdx",
       "route": "home",
-      "toc": [
-        {
-          "value": "News",
-          "href": "#news",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
+      "toc": []
     },
-    "mdx": "# Home\n\n## News\n\n**Pages are now editable in the browser** during development. When the dev-server is running, there is a **Pen** icon visible on every page. Click it, and you can change the pages content."
+    "mdx": "\n# Home\n\n![Images can be inserted with the MDX-Editor from the documentation app-frontend.](/s3/1732872474131.gif)\n\n![The images are stored in the 'public/s3' folder of the vite documentation app.](/s3/1732872491815.gif)\n"
   },
   "packages/bleh-ui/src/docs/Hooks.mdx": {
     "meta": {
