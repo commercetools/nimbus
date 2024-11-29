@@ -8,7 +8,7 @@ interface FileSystemRequestBody {
   content?: string;
 }
 
-function fileSystemApiPlugin(): Plugin {
+export function fileSystemApiPlugin(): Plugin {
   let server: express.Express | undefined;
 
   return {
@@ -99,5 +99,3 @@ function fileSystemApiPlugin(): Plugin {
     },
   };
 }
-
-export default fileSystemApiPlugin;
