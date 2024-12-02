@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
  * @param dir The starting directory to search from.
  * @returns The absolute path to the monorepo root or null if not found.
  */
-async function findMonorepoRoot(dir: string): Promise<string | null> {
+export async function findMonorepoRoot(dir: string): Promise<string | null> {
   const packageJsonPath = path.join(dir, "package.json");
 
   try {

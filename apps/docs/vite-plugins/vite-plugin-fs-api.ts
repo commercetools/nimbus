@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import express, { Request, Response } from "express";
 import { Plugin } from "vite";
+import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Import the function
 
 interface FileSystemRequestBody {
   filePath: string;
@@ -18,9 +19,15 @@ export function fileSystemApiPlugin(): Plugin {
       const app = express();
       app.use(express.json());
 
-      // Helper to resolve file paths
-      const resolvePath = (filePath: string): string => {
-        return path.resolve(process.cwd(), filePath);
+      // Helper to resolve file paths within the monorepo
+      const resolvePath = async (filePath: string): Promise<string> => {
+        const monorepoRoot = await findMonorepoRoot(process.cwd());
+        if (!monorepoRoot) throw new Error("Monorepo root not found");
+        const resolvedPath = path.resolve(monorepoRoot, filePath);
+        if (!resolvedPath.startsWith(monorepoRoot)) {
+          throw new Error("Access to the file path is restricted");
+        }
+        return resolvedPath;
       };
 
       // CRUD API Endpoints
@@ -30,7 +37,7 @@ export function fileSystemApiPlugin(): Plugin {
           try {
             const { filePath, content } = req.body;
             if (!filePath) throw new Error("filePath is required");
-            const resolvedPath = resolvePath(filePath);
+            const resolvedPath = await resolvePath(filePath);
             await fs.writeFile(resolvedPath, content || "");
             res
               .status(200)
@@ -45,7 +52,7 @@ export function fileSystemApiPlugin(): Plugin {
         try {
           const filePath = req.query.filePath as string;
           if (!filePath) throw new Error("filePath is required");
-          const resolvedPath = resolvePath(filePath);
+          const resolvedPath = await resolvePath(filePath);
           const content = await fs.readFile(resolvedPath, "utf-8");
           res.status(200).json({ content });
         } catch (error) {
@@ -59,7 +66,7 @@ export function fileSystemApiPlugin(): Plugin {
           try {
             const { filePath, content } = req.body;
             if (!filePath) throw new Error("filePath is required");
-            const resolvedPath = resolvePath(filePath);
+            const resolvedPath = await resolvePath(filePath);
             await fs.writeFile(resolvedPath, content || "");
             res
               .status(200)
@@ -76,7 +83,7 @@ export function fileSystemApiPlugin(): Plugin {
           try {
             const { filePath } = req.body;
             if (!filePath) throw new Error("filePath is required");
-            const resolvedPath = resolvePath(filePath);
+            const resolvedPath = await resolvePath(filePath);
             await fs.unlink(resolvedPath);
             res
               .status(200)
