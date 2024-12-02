@@ -2,12 +2,51 @@
 id: Home-Installation
 title: Installation
 description: Learn how to install @bleh-ui/react and its dependencies.
-menu: ["Home","Installation"]
+menu: ["Home", "Installation"]
 order: 1
 tags:
   - document
 ---
 
-# Installation
+## Development Setup
 
-Learn how to install @bleh-ui/react and its dependencies.
+### Installation
+
+Make sure you fulfill the requirements below and install dependencies with the provided command.
+
+#### Requirements
+
+The following software needs to be installed on your system before you can proceed:
+
+- Node v20+
+- [bun](https://bun.sh/)
+
+#### Install dependencies
+
+```bash
+$ bun install
+```
+
+### Development
+
+1. Start the development environment with the following command
+
+```bash
+$ bun run dev
+```
+
+2. Open the documentation app in the browser: [http://localhost:5173/](http://localhost:5173/)
+
+### Build
+
+To build packages & the documentation app:
+
+```bash
+$ bun run build
+```
+
+To only build packages:
+
+```bash
+$ bun run build-packages
+```

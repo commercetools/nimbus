@@ -825,9 +825,63 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Home.mdx",
       "repoPath": "packages/bleh-ui/src/docs/Home.mdx",
       "route": "home",
-      "toc": []
+      "toc": [
+        {
+          "value": "Apps",
+          "href": "#apps",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "docs",
+          "href": "#docs",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Packages",
+          "href": "#packages",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "@bleh-ui/react",
+          "href": "#bleh-uireact",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "@bleh-ui/icons",
+          "href": "#bleh-uiicons",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
     },
-    "mdx": "\n# Home\n\n![Images can be inserted with the MDX-Editor from the documentation app-frontend.](/s3/1732872474131.gif)\n\n![The images are stored in the 'public/s3' folder of the vite documentation app.](/s3/1732872491815.gif)\n"
+    "mdx": "# Hello!\n\nThis repository aims to solve 2 problems:\n\n1. Provide everything necessary to create beautiful, accessible and resilient user-interfaces.\n2. Document all the bits and pieces that make that happen.\n\nThe repository is currently structured into 3 workspaces, 1 app-workspace and 2 package-workspaces.\n\n## Apps\n\n### docs\n\nThe doc-app is a developer tool for creating and managing content-driven web applications by leveraging MDX files, structured metadata, and reusable UI components.\n\n* **Web Frontend**: The app generates a web-based frontend for browsing and interacting with the content.\n* **Development Environment**: A development server allows users to edit documents and add images directly through their browser.\n* **Content Indexing**: The app scans designated folders for MDX documents, automatically generating and linking pages.\n* **Content Organization**: Frontmatter in MDX files provides metadata for structuring menus and annotating content, enabling flexible organization.\n* **UI Component Integration**: The app utilizes components from `@bleh-ui/react`, demonstrating how to create polished frontends with this UI library.\n\n## Packages\n\nCurrently this two packages contain the mentioned bits and pieces, reusable across several frontends:\n\n### @bleh-ui/react\n\nThis package contains react components & hooks, as well as a ct-tailored default-theme.\n\n### @bleh-ui/icons\n\nThis package contains icons for many different scenarios."
   },
   "packages/bleh-ui/src/docs/Hooks.mdx": {
     "meta": {
@@ -1404,9 +1458,77 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/installation.mdx",
       "repoPath": "packages/bleh-ui/src/docs/installation.mdx",
       "route": "home/installation",
-      "toc": []
+      "toc": [
+        {
+          "value": "Development Setup",
+          "href": "#development-setup",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Installation",
+          "href": "#installation",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Requirements",
+          "href": "#requirements",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Install dependencies",
+          "href": "#install-dependencies",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Development",
+          "href": "#development",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Build",
+          "href": "#build",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
     },
-    "mdx": "\n# Installation\n\nLearn how to install @bleh-ui/react and its dependencies.\n"
+    "mdx": "\n## Development Setup\n\n### Installation\n\nMake sure you fulfill the requirements below and install dependencies with the provided command.\n\n#### Requirements\n\nThe following software needs to be installed on your system before you can proceed:\n\n- Node v20+\n- [bun](https://bun.sh/)\n\n#### Install dependencies\n\n```bash\n$ bun install\n```\n\n### Development\n\n1. Start the development environment with the following command\n\n```bash\n$ bun run dev\n```\n\n2. Open the documentation app in the browser: [http://localhost:5173/](http://localhost:5173/)\n\n### Build\n\nTo build packages & the documentation app:\n\n```bash\n$ bun run build\n```\n\nTo only build packages:\n\n```bash\n$ bun run build-packages\n```\n"
   },
   "packages/bleh-ui/src/docs/known-issues.mdx": {
     "meta": {

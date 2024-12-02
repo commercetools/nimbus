@@ -20,7 +20,7 @@ UlList.displayName = "UlList";
 export const ListItem = (props) => {
   const { children, ...rest } = props;
   return (
-    <List.Item asChild listStylePosition="outside" marginLeft="5">
+    <List.Item asChild listStylePosition="outside" marginLeft="5" my="1">
       <li {...rest}>
         {Children.map(children, (child) => {
           // Check if the child is a React element and if its type is 'kbd'
