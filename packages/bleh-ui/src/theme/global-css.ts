@@ -2,7 +2,8 @@ import { defineGlobalStyles } from "@chakra-ui/react";
 
 export const globalCss = defineGlobalStyles({
   "*": {
-    fontFeatureSettings: '"cv11"',
+    fontFeatureSettings:
+      '"liga", "calt", "case", "ss01", "ss07", "ss08", "tnum"',
     "--ring-inset": "var(--chakra-empty,/*!*/ /*!*/)",
     "--ring-offset-width": "0px",
     "--ring-offset-color": "#fff",
