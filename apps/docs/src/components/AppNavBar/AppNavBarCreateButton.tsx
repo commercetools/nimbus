@@ -80,8 +80,8 @@ ${description}
     <DialogRoot open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
       <DialogBackdrop />
       <DialogTrigger asChild>
-        <Button variant="ghost" onClick={() => setIsOpen(true)}>
-          <PlusIcon />
+        <Button size="sm" variant="ghost" onClick={() => setIsOpen(true)}>
+          <PlusIcon size="1em" />
           Create
         </Button>
       </DialogTrigger>
