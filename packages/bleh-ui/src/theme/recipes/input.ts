@@ -1,4 +1,4 @@
-import { defineRecipe } from "@chakra-ui/react"
+import { defineRecipe } from "@chakra-ui/react";
 
 export const inputRecipe = defineRecipe({
   className: "chakra-input",
@@ -17,6 +17,10 @@ export const inputRecipe = defineRecipe({
     minW: "var(--input-height)",
     "--focus-color": "colors.colorPalette.focusRing",
     "--error-color": "colors.border.error",
+    "&::placeholder": {
+      color: "colorPalette.11",
+      opacity: 3 / 4,
+    },
     _invalid: {
       focusRingColor: "var(--error-color)",
       borderColor: "var(--error-color)",
@@ -90,4 +94,4 @@ export const inputRecipe = defineRecipe({
     size: "md",
     variant: "outline",
   },
-})
+});

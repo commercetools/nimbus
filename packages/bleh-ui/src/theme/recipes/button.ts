@@ -145,10 +145,13 @@ export const buttonRecipe = defineRecipe({
       },
       outline: {
         borderWidth: "1px",
-        borderColor: "colorPalette.muted",
-        color: "colorPalette.fg",
+        borderColor: "colorPalette.7",
+        color: "colorPalette.11",
+        transitionProperty: "background-color, border-color, color",
+        transitionDuration: "moderate",
         _hover: {
-          bg: "colorPalette.subtle",
+          bg: "colorPalette.3",
+          borderColor: "colorPalette.8",
         },
         _expanded: {
           bg: "colorPalette.subtle",

@@ -1633,7 +1633,7 @@
       "icon": "Bug",
       "menu": [
         "Home",
-        "Issues"
+        "Bugs & Issues"
       ],
       "order": 4,
       "tags": [
@@ -1641,7 +1641,7 @@
       ],
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/known-issues.mdx",
       "repoPath": "packages/bleh-ui/src/docs/known-issues.mdx",
-      "route": "home/issues",
+      "route": "home/bugs-issues",
       "toc": []
     },
     "mdx": "\n# Known issues\n\nCurrent bugs, limitations, and compatibility issues with possible workarounds.\n"

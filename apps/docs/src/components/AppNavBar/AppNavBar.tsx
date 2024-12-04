@@ -14,21 +14,23 @@ export const AppNavBar = () => {
       borderColor="neutral.3"
       alignItems="center"
     >
-      <Text textStyle="2xl" asChild fontWeight="bold">
-        <a href="/">@bleh-ui</a>
-      </Text>
+      <Stack direction="row" gap="8" alignItems="center">
+        <Text textStyle="2xl" asChild fontWeight="bold">
+          <a href="/">@bleh-ui</a>
+        </Text>
+        <DevOnly>
+          <AppNavBarCreateButton />
+        </DevOnly>
+      </Stack>
+
+      <Box></Box>
       <Box flexGrow="1" />
       <Flex flexGrow="1">
         <AppNavBarSearch />
       </Flex>
       <Box flexGrow="1" />
       <Box>
-        <Stack direction="row" gap="4" alignItems="center">
-          <DevOnly>
-            <AppNavBarCreateButton />
-          </DevOnly>
-          <ModeToggleButton />
-        </Stack>
+        <ModeToggleButton />
       </Box>
     </Flex>
   );

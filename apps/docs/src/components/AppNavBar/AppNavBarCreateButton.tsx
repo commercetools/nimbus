@@ -1,4 +1,4 @@
-import { PlusIcon } from "@bleh-ui/icons";
+import { InfoIcon, PlusIcon } from "@bleh-ui/icons";
 import {
   Button,
   DialogBackdrop,
@@ -80,9 +80,14 @@ ${description}
     <DialogRoot open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
       <DialogBackdrop />
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost" onClick={() => setIsOpen(true)}>
-          <PlusIcon size="1em" />
-          Create
+        <Button
+          colorPalette="primary"
+          size="xs"
+          variant="ghost"
+          onClick={() => setIsOpen(true)}
+        >
+          <PlusIcon />
+          New document
         </Button>
       </DialogTrigger>
       <DialogContent divideY="1px">
@@ -94,31 +99,58 @@ ${description}
         </DialogHeader>
         <DialogBody>
           {!isLoading && (
-            <Stack gap="4">
-              <Box>
-                <label htmlFor="title">Title</label>
+            <Stack gap="4" mt="4">
+              <Stack>
+                <Text asChild fontWeight="semibold">
+                  <label htmlFor="title">Title</label>
+                </Text>
                 <Input
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Keep it short, you're busy."
                 />
-              </Box>
-              <Box>
-                <label htmlFor="description">Description</label>
+              </Stack>
+              <Stack>
+                <Text asChild fontWeight="semibold">
+                  <label htmlFor="description">Description</label>
+                </Text>
                 <Input
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Just enough to make it intriguing"
                 />
-              </Box>
-              <Box>
-                <label htmlFor="menuLabel">Menu Label</label>
+              </Stack>
+              <Stack>
+                <Text asChild fontWeight="semibold">
+                  <label htmlFor="menuLabel">Menu Label</label>
+                </Text>
                 <Input
                   id="menuLabel"
                   value={menuLabel}
                   onChange={(e) => setMenuLabel(e.target.value)}
+                  placeholder="What people will click, no pressure."
                 />
-              </Box>
+
+                <Stack
+                  colorPalette="info"
+                  direction="row"
+                  alignItems="center"
+                  bg="colorPalette.3"
+                  p="4"
+                  gap="4"
+                  mt="2"
+                >
+                  <Text color="colorPalette.11">
+                    <InfoIcon size="2em" />
+                  </Text>
+                  <Text color="colorPalette.11">
+                    The new document item will become a child of the current
+                    document.
+                  </Text>
+                </Stack>
+              </Stack>
             </Stack>
           )}
           {isLoading && (
