@@ -5,7 +5,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "lucide-react": "^0.456.0"
+    "lucide-react": "^0.464.0"
   },
   "scripts": {
     "build": "bun run tsc",

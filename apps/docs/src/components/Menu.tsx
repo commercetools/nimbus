@@ -3,6 +3,30 @@ import { useAtom, useAtomValue } from "jotai";
 
 import { menuAtom } from "../atoms/menu";
 import { activeRouteAtom } from "../atoms/route";
+import * as iconModule from "@bleh-ui/icons";
+
+const MenuIcon = ({ id }: { id: string }) => {
+  const IconComponent = iconModule.icons[id];
+
+  if (IconComponent) {
+    return (
+      <Text
+        as="span"
+        display="inline-block"
+        position="relative"
+        top="0.5"
+        mr="2"
+      >
+        <IconComponent size="1em" />
+      </Text>
+    );
+  }
+  return (
+    <Text as="span" display="inline-block" mr="2" fontSize="sm">
+      {id}
+    </Text>
+  );
+};
 
 type MenuItem = {
   id: string;
@@ -70,6 +94,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem; level: number }> = ({
       >
         <a href={`/${item.slug}`} onClick={(e) => onLinkClick(e, item.slug)}>
           {level > 3 && "└ "}
+          {item.icon && <MenuIcon id={item.icon} />}
           {item.label}
         </a>
       </Text>
@@ -82,6 +107,6 @@ const MenuItemComponent: React.FC<{ item: MenuItem; level: number }> = ({
 
 export const Menu = () => {
   const menuJson = useAtomValue(menuAtom);
-
+  console.log(menuJson);
   return <MenuList items={menuJson} level={0} />;
 };

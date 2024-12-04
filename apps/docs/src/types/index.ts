@@ -43,6 +43,8 @@ export type MdxFileFrontmatter = {
     toc: TocItem[];
     /** the audience the document is made for */
     audience?: AudienceType[];
+    /** icon associated with this document */
+    icon?: string;
   };
 
   mdx: string;

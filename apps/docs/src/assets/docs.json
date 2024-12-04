@@ -1406,6 +1406,7 @@
     "meta": {
       "id": "Home-Changelog",
       "title": "Changelog",
+      "icon": "CalendarSync",
       "description": "List of updates, improvements, and bug fixes.",
       "menu": [
         "Home",
@@ -1426,6 +1427,7 @@
     "meta": {
       "id": "Home-Getting Started",
       "title": "Getting Started",
+      "icon": "Rocket",
       "description": "Quick start guide to set up and use the package.",
       "menu": [
         "Home",
@@ -1446,6 +1448,7 @@
     "meta": {
       "id": "Home-Installation",
       "title": "Installation",
+      "icon": "Download",
       "description": "Learn how to install @bleh-ui/react and its dependencies.",
       "menu": [
         "Home",
@@ -1535,6 +1538,7 @@
       "id": "Home-Known issues",
       "title": "Known issues",
       "description": "Current bugs, limitations, and compatibility issues with possible workarounds.",
+      "icon": "Bug",
       "menu": [
         "Home",
         "Issues"
@@ -1554,6 +1558,7 @@
     "meta": {
       "id": "TokensAnimations",
       "title": "Animations",
+      "icon": "Move3d",
       "description": "The list of available animation tokens",
       "status": "stable",
       "menu": [
@@ -1608,6 +1613,7 @@
       "id": "TokensAspectRatios",
       "title": "Aspect Ratios",
       "description": "The list of available aspect ratio tokens",
+      "icon": "Ratio",
       "status": "stable",
       "menu": [
         "Tokens",
@@ -1631,6 +1637,7 @@
       "title": "Blurs",
       "description": "The list of available blur tokens",
       "status": "stable",
+      "icon": "Blend",
       "menu": [
         "Tokens",
         "Blurs"
@@ -1644,13 +1651,14 @@
       "route": "tokens/blurs",
       "toc": []
     },
-    "mdx": "# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" />"
+    "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/Borders.mdx": {
     "meta": {
       "id": "TokensBorders",
       "title": "Borders",
       "description": "The list of available border tokens",
+      "icon": "Logs",
       "status": "stable",
       "menu": [
         "Tokens",
@@ -1672,6 +1680,7 @@
       "id": "Breakpoints",
       "title": "Breakpoints",
       "description": "The list of available breakpoints",
+      "icon": "TabletSmartphone",
       "status": "stable",
       "menu": [
         "Tokens",
@@ -1707,6 +1716,7 @@
       "id": "Colors",
       "title": "Colors",
       "description": "available colors",
+      "icon": "Palette",
       "documents": "Colors",
       "status": "experimental",
       "menu": [
@@ -1780,6 +1790,7 @@
       "id": "TokensCursors",
       "title": "Cursors",
       "description": "The list of available cursor tokens",
+      "icon": "MousePointer",
       "status": "stable",
       "menu": [
         "Tokens",
@@ -1801,6 +1812,7 @@
       "id": "TokensRadii",
       "title": "Radii",
       "description": "The list of available radius tokens",
+      "icon": "Radius",
       "status": "experimental",
       "menu": [
         "Tokens",
@@ -1828,13 +1840,14 @@
         }
       ]
     },
-    "mdx": "# Radii\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />"
+    "mdx": "\n# Radii\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/Shadows.mdx": {
     "meta": {
       "id": "TokensShadows",
       "title": "Shadows",
       "description": "The list of available shadow tokens",
+      "icon": "SquareDashed",
       "status": "experimental",
       "menu": [
         "Tokens",
@@ -1867,6 +1880,7 @@
       "id": "TokensSizes",
       "title": "Sizes",
       "description": "The list of available size tokens",
+      "icon": "Ruler",
       "status": "experimental",
       "menu": [
         "Tokens",
@@ -1939,6 +1953,7 @@
       "id": "Spacing",
       "title": "Spacing",
       "description": "available colors",
+      "icon": "BetweenHorizontalEnd",
       "documents": "Colors",
       "status": "experimental",
       "menu": [
@@ -1962,6 +1977,7 @@
       "id": "TokensTypography",
       "title": "Typography",
       "description": "everything typography related",
+      "icon": "BookType",
       "status": "experimental",
       "menu": [
         "Tokens",
@@ -2039,6 +2055,7 @@
       "id": "ZIndex",
       "title": "Z-Index",
       "description": "The list of available z-index tokens",
+      "icon": "Layers",
       "status": "experimental",
       "menu": [
         "Tokens",

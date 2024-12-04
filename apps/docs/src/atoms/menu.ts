@@ -8,6 +8,7 @@ type MenuItem = {
   id: string;
   label: string;
   order?: number;
+  icon?: string;
   slug: string;
   children?: MenuItem[];
 };
@@ -41,6 +42,7 @@ function addFirstLevelItems(
 
     root.push({
       id: slugPath,
+      icon: itemMeta.icon,
       order: itemMeta.order || 999,
       label: segment,
       slug: slugPath,
@@ -71,6 +73,7 @@ function addNestedItems(
       if (!existingNode) {
         existingNode = {
           id: slugPath,
+          icon: itemMeta.icon,
           order: itemMeta.order || 999,
           label: segment,
           slug: slugPath,
