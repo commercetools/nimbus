@@ -89,6 +89,7 @@
       "status": "stable",
       "menu": [
         "Components",
+        "Navigation",
         "Breadcrumb"
       ],
       "tags": [
@@ -98,7 +99,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Breadcrumb/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/Breadcrumb/README.mdx",
       "order": 999,
-      "route": "components/breadcrumb",
+      "route": "components/navigation/breadcrumb",
       "toc": []
     },
     "mdx": "\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
@@ -138,6 +139,7 @@
       "status": "stable",
       "menu": [
         "Components",
+        "Feedback",
         "Dialog"
       ],
       "tags": [
@@ -147,7 +149,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/Dialog/README.mdx",
       "order": 999,
-      "route": "components/dialog",
+      "route": "components/feedback/dialog",
       "toc": [
         {
           "value": "Props",
@@ -382,7 +384,7 @@
       "status": "stable",
       "menu": [
         "Components",
-        "Forms",
+        "Inputs",
         "Input"
       ],
       "tags": [
@@ -392,7 +394,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Input/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/Input/README.mdx",
       "order": 999,
-      "route": "components/forms/input",
+      "route": "components/inputs/input",
       "toc": []
     },
     "mdx": "\n# Input\n\nadd description here.\n\n<PropTable id=\"Input\" />\n"
@@ -406,7 +408,7 @@
       "status": "stable",
       "menu": [
         "Components",
-        "Forms",
+        "Inputs",
         "InputGroup"
       ],
       "tags": [
@@ -416,7 +418,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/InputGroup/README.mdx",
       "order": 999,
-      "route": "components/forms/inputgroup",
+      "route": "components/inputs/inputgroup",
       "toc": []
     },
     "mdx": "\n# InputGroup\n\nadd description here.\n\n<PropTable id=\"InputGroup\" />\n"
@@ -561,6 +563,7 @@
       "status": "stable",
       "menu": [
         "Components",
+        "Data Display",
         "Table"
       ],
       "tags": [
@@ -570,7 +573,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Table/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/Table/README.mdx",
       "order": 999,
-      "route": "components/table",
+      "route": "components/data-display/table",
       "toc": [
         {
           "value": "Props",
@@ -594,6 +597,7 @@
       "status": "stable",
       "menu": [
         "Components",
+        "Navigation",
         "Tabs"
       ],
       "tags": [
@@ -604,7 +608,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Tabs/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/Tabs/README.mdx",
       "order": 999,
-      "route": "components/tabs",
+      "route": "components/navigation/tabs",
       "toc": [
         {
           "value": "Props",
@@ -716,6 +720,7 @@
       "status": "stable",
       "menu": [
         "Components",
+        "Feedback",
         "Tooltip"
       ],
       "tags": [
@@ -725,7 +730,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Tooltip/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/Tooltip/README.mdx",
       "order": 999,
-      "route": "components/tooltip",
+      "route": "components/feedback/tooltip",
       "toc": [
         {
           "value": "Props",
@@ -751,7 +756,7 @@
       "status": "stable",
       "menu": [
         "Components",
-        "System",
+        "Utilities",
         "UiKitProvider"
       ],
       "tags": [
@@ -762,7 +767,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/UiKitProvider/README.mdx",
       "repoPath": "packages/bleh-ui/src/components/UiKitProvider/README.mdx",
       "order": 999,
-      "route": "components/system/uikitprovider",
+      "route": "components/utilities/uikitprovider",
       "toc": []
     },
     "mdx": "\n# UiKitProvider\n\nProvides the necesseary context for the rest of the components to work in.\n\n<PropTable id=\"UiKitProvider\" />\n"
@@ -771,7 +776,7 @@
     "meta": {
       "id": "Components",
       "title": "Components",
-      "description": "resuable react components",
+      "description": "React components for building robust and visually appealing applications.",
       "order": 6,
       "status": "experimental",
       "menu": [
@@ -786,28 +791,29 @@
       "route": "components",
       "toc": []
     },
-    "mdx": "\n# Components\n\ncomponents index\n"
+    "mdx": "\n# Components\n\n[Add a cool category overview component]\n"
   },
   "packages/bleh-ui/src/docs/Forms.mdx": {
     "meta": {
       "id": "Forms",
       "title": "Forms",
       "description": "components useful for assembling forms",
-      "order": 7,
+      "icon": "TextCursorInput",
+      "order": 4,
       "status": "experimental",
       "menu": [
         "Components",
-        "Forms"
+        "Inputs"
       ],
       "tags": [
         "forms"
       ],
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Forms.mdx",
       "repoPath": "packages/bleh-ui/src/docs/Forms.mdx",
-      "route": "components/forms",
+      "route": "components/inputs",
       "toc": []
     },
-    "mdx": "\n# Forms\n\nform components index\n"
+    "mdx": "\n# Inputs\n\nComponents for user input and interaction.\n\n- **Text Inputs**: e.g., InputField, TextArea.\n- **Selection Controls**: e.g., Dropdown, Checkbox, RadioButton.\n- **Buttons**: e.g., Button, IconButton, ToggleButton.\n- **Sliders & Pickers**: e.g., RangeSlider, DatePicker, TimePicker.\n"
   },
   "packages/bleh-ui/src/docs/Home.mdx": {
     "meta": {
@@ -908,8 +914,9 @@
     "meta": {
       "id": "Layout",
       "title": "Layout",
-      "description": "layouting components",
-      "order": 3,
+      "description": "Components that structure the content on the page.",
+      "icon": "LayoutTemplate",
+      "order": 1,
       "status": "experimental",
       "menu": [
         "Components",
@@ -923,7 +930,7 @@
       "route": "components/layout",
       "toc": []
     },
-    "mdx": "\n# Layout\n\nlayout components index\n"
+    "mdx": "\n# Layout\n\nComponents that structure the content on the page.\n\n- **Grid Systems**: e.g., Row, Column, Container.\n- **Flexbox Utilities**: e.g., Box, Spacer, Stack.\n- **Positioning**: e.g., Absolute, RelativeWrapper.\n- **Responsive Design**: e.g., Breakpoints, ResponsiveContainer.\n"
   },
   "packages/bleh-ui/src/docs/Markdown.mdx": {
     "meta": {
@@ -1253,8 +1260,9 @@
     "meta": {
       "id": "Media",
       "title": "Media",
-      "description": "a page with many mdx & markdown features",
-      "order": 4,
+      "description": "Components for displaying media content.",
+      "icon": "Images",
+      "order": 3,
       "menu": [
         "Components",
         "Media"
@@ -1267,7 +1275,7 @@
       "route": "components/media",
       "toc": []
     },
-    "mdx": "# Media\n\nComponents to display Media. Icons, Images, Videos, etc."
+    "mdx": "\n# Media\n\nComponents for displaying media content.\n\n- **Images**: e.g., Avatar, Image, Carousel.\n- **Videos**: e.g., VideoPlayer, VideoThumbnail.\n- **Icons**: e.g., Icon, IconButton.\n- **Audio**: e.g., AudioPlayer.\n"
   },
   "packages/bleh-ui/src/docs/Playground.mdx": {
     "meta": {
@@ -1402,6 +1410,27 @@
     },
     "mdx": "# Tokens\n\nA collection of design tokens"
   },
+  "packages/bleh-ui/src/docs/accessibility.mdx": {
+    "meta": {
+      "id": "Components-Accessibility",
+      "title": "Accessibility",
+      "description": "Components designed to enhance accessibility and ARIA compliance.",
+      "icon": "Accessibility",
+      "menu": [
+        "Components",
+        "Accessibility"
+      ],
+      "order": 11,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/accessibility.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/accessibility.mdx",
+      "route": "components/accessibility",
+      "toc": []
+    },
+    "mdx": "\n# Accessibility\n\nComponents designed to enhance accessibility and ARIA compliance.\n\n- **Screen Reader Aids**: e.g., VisuallyHidden, AccessibleLabel.\n- **Keyboard Navigation**: e.g., FocusTrap, SkipLink.\n- **ARIA Enhancers**: e.g., AriaLiveRegion.\n"
+  },
   "packages/bleh-ui/src/docs/changelog.mdx": {
     "meta": {
       "id": "Home-Changelog",
@@ -1423,6 +1452,48 @@
     },
     "mdx": "\n# Changelog\n\nList of updates, improvements, and bug fixes.\n"
   },
+  "packages/bleh-ui/src/docs/data-display.mdx": {
+    "meta": {
+      "id": "Components-Data Display",
+      "title": "Data Display",
+      "description": "Components for presenting data or visual content.",
+      "icon": "TableProperties",
+      "menu": [
+        "Components",
+        "Data Display"
+      ],
+      "order": 7,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/data-display.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/data-display.mdx",
+      "route": "components/data-display",
+      "toc": []
+    },
+    "mdx": "\n# Data Display\n\nComponents for presenting data or visual content.\n\n- **Tables**: e.g., DataTable, TableRow, TableHeader.\n- **Cards**: e.g., Card, CardHeader, CardBody.\n- **Lists**: e.g., List, ListItem.\n- **Charts & Graphs**: e.g., LineChart, BarChart.\n- **Badges & Tags**: e.g., Badge, Tag.\n"
+  },
+  "packages/bleh-ui/src/docs/feedback.mdx": {
+    "meta": {
+      "id": "Components-Feedback",
+      "title": "Feedback",
+      "description": "Components for providing user feedback.",
+      "icon": "MessageCircle",
+      "menu": [
+        "Components",
+        "Feedback"
+      ],
+      "order": 5,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/feedback.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/feedback.mdx",
+      "route": "components/feedback",
+      "toc": []
+    },
+    "mdx": "\n# Feedback\n\nComponents for providing user feedback.\n\n- **Notifications**: e.g., Toast, Alert.\n- **Status Indicators**: e.g., Spinner, ProgressBar.\n- **Modals & Overlays**: e.g., Modal, Tooltip, Popover.\n- **Validation**: e.g., ErrorMessage, SuccessMessage.\n"
+  },
   "packages/bleh-ui/src/docs/getting-started.mdx": {
     "meta": {
       "id": "Home-Getting Started",
@@ -1443,6 +1514,27 @@
       "toc": []
     },
     "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
+  },
+  "packages/bleh-ui/src/docs/inputs.mdx": {
+    "meta": {
+      "id": "Components-Forms",
+      "title": "Forms",
+      "description": "Components specifically tailored for form creation and management.",
+      "icon": "ClipboardPen",
+      "menu": [
+        "Components",
+        "Forms"
+      ],
+      "order": 9,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/inputs.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/inputs.mdx",
+      "route": "components/forms",
+      "toc": []
+    },
+    "mdx": "\n# Forms\n\nComponents specifically tailored for form creation and management.\n\n- **Fieldsets**: e.g., FormGroup, FieldSet.\n- **Validation Components**: e.g., ValidationMessage, FormError.\n- **Action Controls**: e.g., SubmitButton, ResetButton.\n"
   },
   "packages/bleh-ui/src/docs/installation.mdx": {
     "meta": {
@@ -1553,6 +1645,27 @@
       "toc": []
     },
     "mdx": "\n# Known issues\n\nCurrent bugs, limitations, and compatibility issues with possible workarounds.\n"
+  },
+  "packages/bleh-ui/src/docs/naivgation.mdx": {
+    "meta": {
+      "id": "Components-Naivgation",
+      "title": "Naivgation",
+      "description": "Components for moving through an application.",
+      "icon": "TableOfContents",
+      "menu": [
+        "Components",
+        "Navigation"
+      ],
+      "order": 2,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/naivgation.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/naivgation.mdx",
+      "route": "components/navigation",
+      "toc": []
+    },
+    "mdx": "\n# Navigation\n\nComponents for moving through an application.\n\n- **Menus**: e.g., Dropdown, ContextMenu.\n- **Navigation Bars**: e.g., Navbar, Sidebar, Breadcrumbs.\n- **Tabs & Accordions**: e.g., TabPanel, Accordion.\n- **Pagination**: e.g., Paginator, InfiniteScroller.\n"
   },
   "packages/bleh-ui/src/docs/tokens/Animations.mdx": {
     "meta": {
@@ -2085,6 +2198,48 @@
       ]
     },
     "mdx": "\n# Z-Index\n\nThe list of available z-index tokens.\n\n## Tokens\n\nThe following z-index tokens are supported out of the box.\n\n<GenericTokenTableDemo category=\"zIndex\" />\n"
+  },
+  "packages/bleh-ui/src/docs/typography.mdx": {
+    "meta": {
+      "id": "Components-Typography",
+      "title": "Typography",
+      "description": "Components for text styling and formatting.",
+      "icon": "TypeOutline",
+      "menu": [
+        "Components",
+        "Typography"
+      ],
+      "order": 6,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/typography.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/typography.mdx",
+      "route": "components/typography",
+      "toc": []
+    },
+    "mdx": "\n# Typography\n\nComponents for text styling and formatting.\n"
+  },
+  "packages/bleh-ui/src/docs/utilities.mdx": {
+    "meta": {
+      "id": "Components-Utilities",
+      "title": "Utilities",
+      "description": "Low-level or functional components for utility purposes.",
+      "icon": "Wrench",
+      "menu": [
+        "Components",
+        "Utilities"
+      ],
+      "order": 8,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/utilities.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/utilities.mdx",
+      "route": "components/utilities",
+      "toc": []
+    },
+    "mdx": "\n# Utilities\n\nLow-level or functional components for utility purposes.\n"
   },
   "packages/bleh-ui/src/hooks/useCopyToClipboard.mdx": {
     "meta": {

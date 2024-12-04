@@ -73,13 +73,18 @@ function addNestedItems(
       if (!existingNode) {
         existingNode = {
           id: slugPath,
-          icon: itemMeta.icon,
-          order: itemMeta.order || 999,
+          icon: index === path.length - 1 ? itemMeta.icon : undefined, // Assign icon only to the last segment
+          order: index === path.length - 1 ? itemMeta.order || 999 : undefined, // Assign order only to the last segment
           label: segment,
           slug: slugPath,
           children: [],
         };
         currentLevel.push(existingNode);
+      } else {
+        if (index === path.length - 1) {
+          if (itemMeta.icon) existingNode.icon = itemMeta.icon; // Update icon if it exists
+          if (itemMeta.order) existingNode.order = itemMeta.order; // Update order if it exists
+        }
       }
 
       currentLevel = existingNode.children!;
@@ -105,10 +110,11 @@ function orderMenuItems(
   const fixedRoot = root.map((item) => ({
     ...item,
     order:
-      item.order ||
-      itemMetas.find((meta) => meta.menu[meta.menu.length - 1] === item.label)
-        ?.order ||
-      999,
+      item.order !== undefined
+        ? item.order
+        : itemMetas.find(
+            (meta) => meta.menu[meta.menu.length - 1] === item.label
+          )?.order || 999,
     children: item.children ? orderChildren(item.children) : [],
   }));
 
@@ -120,6 +126,6 @@ export const menuAtom = atom((get) => {
   const items: MdxFileFrontmatter["meta"][] = Object.keys(docsObj).map(
     (key) => docsObj[key].meta
   );
-
-  return buildMenu(items);
+  const menu = buildMenu(items);
+  return menu;
 });
