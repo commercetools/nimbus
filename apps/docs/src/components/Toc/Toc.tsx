@@ -52,10 +52,9 @@ export const Toc = () => {
   const indent: { [key: number]: string } = {
     1: "0",
     2: "0",
-    3: "0",
-    4: "4",
-    5: "8",
-    6: "10",
+    3: "2",
+    4: "7",
+    5: "0",
   };
 
   useEffect(() => {
@@ -79,12 +78,7 @@ export const Toc = () => {
             const isActive = closestHeadingId === item.href.split("#").join("");
 
             return (
-              <Box
-                key={item.href}
-                width="100%"
-                pl={indent[item.depth]}
-                _first={{ mt: "0" }}
-              >
+              <Box key={item.href} width="100%" pl={indent[item.depth]}>
                 <Link
                   {...(isActive ? { id: "active-toc-item" } : {})}
                   colorPalette={isActive ? "primary" : "neutral"}
@@ -93,7 +87,7 @@ export const Toc = () => {
                   fontWeight={isActive ? "bold" : "normal"}
                   display="block"
                   width="100%"
-                  py="0.5"
+                  py="1"
                 >
                   {item.value}
                 </Link>

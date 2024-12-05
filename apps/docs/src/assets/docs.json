@@ -777,7 +777,7 @@
       "id": "Components",
       "title": "Components",
       "description": "React components for building robust and visually appealing applications.",
-      "order": 6,
+      "order": 3,
       "status": "experimental",
       "menu": [
         "Components"
@@ -3499,7 +3499,7 @@
       "menu": [
         "Style Props"
       ],
-      "order": 1.5,
+      "order": 4,
       "tags": [
         "document"
       ],
@@ -4038,7 +4038,7 @@
       "route": "tokens/spacing",
       "toc": []
     },
-    "mdx": "\n# Spacing\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.\n>\n> e.g. `4` = `16px`, `10` = `40px` etc.\n"
+    "mdx": "\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.e.g. `4` = `16px`, `10` = `40px` etc.\n"
   },
   "packages/bleh-ui/src/docs/tokens/Typography.mdx": {
     "meta": {
