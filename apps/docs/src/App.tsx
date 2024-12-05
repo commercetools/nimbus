@@ -47,7 +47,6 @@ function App() {
         width="100%"
         maxWidth="1600px"
         mx="auto"
-        overflow="hidden"
       >
         <Box flexShrink="0">
           <AppNavBar />
