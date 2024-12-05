@@ -54,6 +54,13 @@ export const AppNavBarBrand = () => {
     setActiveroute("home");
   };
 
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.blur();
+    }
+  };
+
   useEffect(() => {
     setHover(false);
     const element = contentRef.current;
@@ -77,22 +84,18 @@ export const AppNavBarBrand = () => {
       onMouseLeave={() => setHover(false)}
     >
       <Text textStyle="2xl" asChild fontWeight="bold">
-        <a
-          href="/"
-          contentEditable={editable}
-          ref={contentRef}
-          onInput={onInput}
-          suppressContentEditableWarning
-          onClick={onHomeRequest}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              e.target.blur();
-            }
-          }}
-          onBlur={onBlur}
-        >
-          {brand}
+        <a href="/">
+          <span
+            contentEditable={editable}
+            ref={contentRef}
+            onInput={onInput}
+            suppressContentEditableWarning
+            onClick={onHomeRequest}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
+          >
+            {brand}
+          </span>
         </a>
       </Text>
       {hover && (
