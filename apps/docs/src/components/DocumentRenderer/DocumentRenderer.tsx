@@ -12,8 +12,10 @@ import { useEffect, useState } from "react";
 import { Pencil, PencilOff } from "@bleh-ui/icons";
 import { Helmet } from "react-helmet-async";
 import { TrashDocumentLink } from "../TrashDocumentLink";
+import { brandNameAtom } from "@/atoms/brand";
 
 export const DocumentRenderer = () => {
+  const brandName = useAtomValue(brandNameAtom);
   const activeDoc = useAtomValue(activeDocAtom);
   const [editMode, setEditMode] = useState(false);
 
@@ -34,7 +36,9 @@ export const DocumentRenderer = () => {
   return (
     <>
       <Helmet>
-        <title>{[...meta.menu].join(" > ")} | @bleh-ui/react</title>
+        <title>
+          {[...meta.menu].join(" > ")} | {brandName}
+        </title>
       </Helmet>
       <Box width="100%" maxWidth="960px" mx="">
         <Stack gap="4">
