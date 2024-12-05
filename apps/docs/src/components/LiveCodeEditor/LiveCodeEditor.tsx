@@ -2,6 +2,7 @@ import * as BlehUi from "@bleh-ui/react";
 import { Flex, Box } from "@bleh-ui/react";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
+import { themes } from "prism-react-renderer";
 
 const baseHooks = {
   useState,
@@ -53,8 +54,14 @@ export const LiveCodeEditor = (props) => {
           scope={scope}
           noInline
         >
-          <Box display={activeTab === "editor" ? "block" : "none"}>
-            <LiveEditor onChange={(value) => setCode(value)} />
+          <Box
+            display={activeTab === "editor" ? "block" : "none"}
+            fontSize="sm"
+          >
+            <LiveEditor
+              theme={themes.oneDark}
+              onChange={(value) => setCode(value)}
+            />
           </Box>
 
           <Box display={activeTab === "preview" ? "block" : "none"}>
