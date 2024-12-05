@@ -109,6 +109,8 @@ ${description}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Keep it short, you're busy."
+                  autoComplete="off"
+                  data-form-type="other"
                 />
               </Stack>
               <Stack>
@@ -120,6 +122,7 @@ ${description}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Just enough to make it intriguing"
+                  autoComplete="off"
                 />
               </Stack>
               <Stack>
@@ -131,6 +134,7 @@ ${description}
                   value={menuLabel}
                   onChange={(e) => setMenuLabel(e.target.value)}
                   placeholder="What people will click, no pressure."
+                  autoComplete="off"
                 />
 
                 <Stack
