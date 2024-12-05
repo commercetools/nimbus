@@ -125,6 +125,5 @@ const MenuItemComponent: React.FC<{ item: MenuItem; level: number }> = ({
 
 export const Menu = () => {
   const menuJson = useAtomValue(menuAtom);
-  console.log("menuJson", menuJson);
   return <MenuList items={menuJson} level={0} />;
 };
