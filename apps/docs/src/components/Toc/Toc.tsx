@@ -1,4 +1,4 @@
-import { Box, Link } from "@bleh-ui/react";
+import { Box, Link, Text } from "@bleh-ui/react";
 import { activeTocAtom } from "../../atoms/toc";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
@@ -68,43 +68,40 @@ export const Toc = () => {
   }, [closestHeadingId]);
 
   return (
-    <Box asChild>
-      <nav aria-label="table of contents">
-        {activeToc?.map((item) => {
-          const isActive = closestHeadingId === item.href.split("#").join("");
-          const isFirstLevel = item.depth === 2;
+    <Box>
+      <Text fontWeight="semibold" mb="4">
+        On this page
+      </Text>
 
-          return (
-            <Box
-              key={item.href}
-              width="100%"
-              ml={indent[item.depth]}
-              mt={isFirstLevel ? "6" : "0"}
-              mb={isFirstLevel ? "2" : "0"}
-              _first={{ mt: "0" }}
-            >
-              <Link
-                {...(isActive ? { id: "active-toc-item" } : {})}
-                colorPalette={isActive ? "primary" : "neutral"}
-                color={
-                  isFirstLevel && !isActive
-                    ? "colorPalette.12"
-                    : "colorPalette.11"
-                }
-                href={item.href}
-                fontWeight={
-                  item.depth === 2 ? "bold" : isActive ? "bold" : "normal"
-                }
-                display="block"
+      <Box asChild>
+        <nav aria-label="table of contents">
+          {activeToc?.map((item) => {
+            const isActive = closestHeadingId === item.href.split("#").join("");
+
+            return (
+              <Box
+                key={item.href}
                 width="100%"
-                py="0.5"
+                pl={indent[item.depth]}
+                _first={{ mt: "0" }}
               >
-                {item.value}
-              </Link>
-            </Box>
-          );
-        })}
-      </nav>
+                <Link
+                  {...(isActive ? { id: "active-toc-item" } : {})}
+                  colorPalette={isActive ? "primary" : "neutral"}
+                  color="colorPalette.11"
+                  href={item.href}
+                  fontWeight={isActive ? "bold" : "normal"}
+                  display="block"
+                  width="100%"
+                  py="0.5"
+                >
+                  {item.value}
+                </Link>
+              </Box>
+            );
+          })}
+        </nav>
+      </Box>
     </Box>
   );
 };

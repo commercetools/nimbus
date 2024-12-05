@@ -35,14 +35,17 @@ export const AppNavBarCreateButton = () => {
 
   const onSubmitRequest = async () => {
     if (!activeDoc) return;
-    if (isFormValid) {
-      const fileName = sluggify(title) + ".mdx";
-      const filePath = [
-        activeDoc.meta.filePath.replace(/\/[^\/]+$/, ""),
-        fileName,
-      ].join("/");
+    if (!isFormValid) return;
 
-      const content = `---
+    const fileNameSeed = [...activeDoc?.meta.menu, menuLabel].join("-");
+
+    const fileName = sluggify(fileNameSeed) + ".mdx";
+    const filePath = [
+      activeDoc.meta.filePath.replace(/\/[^\/]+$/, ""),
+      fileName,
+    ].join("/");
+
+    const content = `---
 id: ${activeDoc?.meta.title}-${title}
 title: ${title}
 description: ${description}
@@ -57,20 +60,19 @@ tags:
 ${description}
 `;
 
-      try {
-        setIsLoading(true);
-        await axios.post("/api/fs", { filePath, content });
-        setTimeout(() => {
-          setIsLoading(false);
-          setIsOpen(false);
-          setTitle("");
-          setDescription("");
-          setMenuLabel("");
-        }, 2000);
-      } catch (error) {
-        console.error("Error creating file:", error);
+    try {
+      setIsLoading(true);
+      await axios.post("/api/fs", { filePath, content });
+      setTimeout(() => {
         setIsLoading(false);
-      }
+        setIsOpen(false);
+        setTitle("");
+        setDescription("");
+        setMenuLabel("");
+      }, 2000);
+    } catch (error) {
+      console.error("Error creating file:", error);
+      setIsLoading(false);
     }
   };
 
