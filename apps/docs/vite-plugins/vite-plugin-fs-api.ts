@@ -38,10 +38,16 @@ export function fileSystemApiPlugin(): Plugin {
             const { filePath, content } = req.body;
             if (!filePath) throw new Error("filePath is required");
             const resolvedPath = await resolvePath(filePath);
-            await fs.writeFile(resolvedPath, content || "");
-            res
-              .status(200)
-              .json({ message: "File created", path: resolvedPath });
+            try {
+              await fs.access(resolvedPath);
+              throw new Error("File already exists");
+            } catch {
+              // file does not exist, proceed with creation
+              await fs.writeFile(resolvedPath, content || "");
+              res
+                .status(200)
+                .json({ message: "File created", path: resolvedPath });
+            }
           } catch (error) {
             res.status(500).json({ error: (error as Error).message });
           }
