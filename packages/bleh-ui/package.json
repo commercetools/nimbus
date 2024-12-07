@@ -5,7 +5,7 @@
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "devDependencies": {
-    "@chakra-ui/cli": "^3.1.0",
+    "@chakra-ui/cli": "^3.2.3",
     "@types/bun": "latest",
     "@types/lodash": "^4.17.13",
     "@types/react": "^18.3.12",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@bleh-ui/icons": "workspace:*",
-    "@chakra-ui/react": "^3.1.0",
+    "@chakra-ui/react": "^3.2.3",
     "@emotion/react": "^11.13.3",
     "@pandacss/types": "^0.47.1",
     "@radix-ui/colors": "^3.0.0",

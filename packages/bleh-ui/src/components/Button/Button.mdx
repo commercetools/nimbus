@@ -1,0 +1,123 @@
+---
+id: Forms-Button
+title: Button
+description: Display a Button.
+menu: ["Components", "Inputs", "Button"]
+order: 999
+tags:
+  - document
+---
+
+# Button
+
+Displays a Button.
+
+> [!NOTE]  
+> The `<Button/>` component wraps the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button).
+>
+> You can freely use native props and customize its styling with the provided props.
+
+## Basic Usage
+
+No props are required to use the Button component. If unconfigured it will pick up defaults
+for `variant`, `size`, and `colorPalette`. Defaults can be set in the `recipe`-file.
+
+```jsx-live
+const App = () => <Button>Click me</Button>
+```
+
+## Sizes
+
+Buttons come in different sizes, sizing a button is done by setting the `size` prop. Setting the size
+has no effect on the variant or color of the Button.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'].reverse();
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Button key={size} size={size}>'{size}' Button</Button>
+      ))}
+    </Stack>
+  )
+}
+```
+
+## Variants
+
+Look how the buttons change their appearance but not their size. It is important
+that the variant has no effect on the size. Only then it can be guaranteed that
+buttons with different variants can be used and displayed next to each other.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain']
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <Button key={variant} variant={variant}>'{variant}' Button</Button>
+      ))}
+    </Stack>
+  )
+}
+```
+
+## Colors
+
+Since the different `variants` operate purely on contrast level differences (think: dark & light elements),
+the `colorPalette` prop can be used to colorize the Button.
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <Button colorPalette={color} key={variant} variant={variant}>
+              '{variant}' Button
+            </Button>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Icons
+
+Right now icons can be just dropped into the button, they are sized like regular text and thus
+adjust their own-size according to the `size` prop.
+
+```jsx-live
+const App = () => {
+  const sizes = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"].reverse();
+
+  return (
+    <Stack>
+      {sizes.map((size) => (
+        <Stack key={size} direction="horizontal">
+          <Button size={size} colorPalette="success" variant="solid">
+            <Icons.Check /> Yes
+          </Button>
+          <Button size={size} colorPalette="error" variant="solid">
+            <Icons.X /> No
+          </Button>
+          <Button size={size} colorPalette="neutral" variant="ghost">
+            <Box animation="spin" asChild><Icons.Loader/></Box> Maybe
+          </Button>
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```

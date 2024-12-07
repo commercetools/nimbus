@@ -173,12 +173,6 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.white}",
       },
     },
-    focusRing: {
-      value: {
-        _light: "{colors.gray.800}",
-        _dark: "{colors.gray.200}",
-      },
-    },
   },
   red: {
     contrast: {
@@ -212,12 +206,6 @@ export const colors = defineSemanticTokens.colors({
       },
     },
     solid: {
-      value: {
-        _light: "{colors.red.600}",
-        _dark: "{colors.red.600}",
-      },
-    },
-    focusRing: {
       value: {
         _light: "{colors.red.600}",
         _dark: "{colors.red.600}",
@@ -261,12 +249,6 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.orange.500}",
       },
     },
-    focusRing: {
-      value: {
-        _light: "{colors.orange.600}",
-        _dark: "{colors.orange.500}",
-      },
-    },
   },
   green: {
     contrast: {
@@ -300,12 +282,6 @@ export const colors = defineSemanticTokens.colors({
       },
     },
     solid: {
-      value: {
-        _light: "{colors.green.600}",
-        _dark: "{colors.green.600}",
-      },
-    },
-    focusRing: {
       value: {
         _light: "{colors.green.600}",
         _dark: "{colors.green.600}",
@@ -349,12 +325,6 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.blue.600}",
       },
     },
-    focusRing: {
-      value: {
-        _light: "{colors.blue.600}",
-        _dark: "{colors.blue.600}",
-      },
-    },
   },
   yellow: {
     contrast: {
@@ -388,12 +358,6 @@ export const colors = defineSemanticTokens.colors({
       },
     },
     solid: {
-      value: {
-        _light: "{colors.yellow.300}",
-        _dark: "{colors.yellow.300}",
-      },
-    },
-    focusRing: {
       value: {
         _light: "{colors.yellow.300}",
         _dark: "{colors.yellow.300}",
@@ -437,12 +401,6 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.teal.600}",
       },
     },
-    focusRing: {
-      value: {
-        _light: "{colors.teal.600}",
-        _dark: "{colors.teal.600}",
-      },
-    },
   },
   purple: {
     contrast: {
@@ -476,12 +434,6 @@ export const colors = defineSemanticTokens.colors({
       },
     },
     solid: {
-      value: {
-        _light: "{colors.purple.600}",
-        _dark: "{colors.purple.600}",
-      },
-    },
-    focusRing: {
       value: {
         _light: "{colors.purple.600}",
         _dark: "{colors.purple.600}",
@@ -525,12 +477,6 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.pink.600}",
       },
     },
-    focusRing: {
-      value: {
-        _light: "{colors.pink.600}",
-        _dark: "{colors.pink.600}",
-      },
-    },
   },
   cyan: {
     contrast: {
@@ -564,12 +510,6 @@ export const colors = defineSemanticTokens.colors({
       },
     },
     solid: {
-      value: {
-        _light: "{colors.cyan.600}",
-        _dark: "{colors.cyan.600}",
-      },
-    },
-    focusRing: {
       value: {
         _light: "{colors.cyan.600}",
         _dark: "{colors.cyan.600}",

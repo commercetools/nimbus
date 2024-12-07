@@ -1,5 +1,12 @@
 import { Children, ReactElement, cloneElement, isValidElement } from "react";
-import { Text, Blockquote } from "@bleh-ui/react";
+import { Blockquote, Box } from "@bleh-ui/react";
+import {
+  FileText,
+  Lightbulb,
+  Star,
+  AlertOctagon,
+  ShieldAlert,
+} from "@bleh-ui/icons";
 
 const findLastIndex = (children: ReactElement[], displayName: string) => {
   // Convert React children to an array
@@ -19,9 +26,17 @@ const findLastIndex = (children: ReactElement[], displayName: string) => {
   return -1;
 };
 
+const iconMapping = {
+  NOTE: FileText,
+  TIP: Lightbulb,
+  IMPORTANT: Star,
+  WARNING: AlertOctagon,
+  CAUTION: ShieldAlert,
+};
 function cleanQuoteFlavor(input: string) {
   // Remove the brackets and exclamation mark
-  return input.replace(/[!\[\]]/g, "");
+  const Component = iconMapping[input.replace(/[\[\]!]/g, "")];
+  return <Component size="1em" />;
 }
 
 const countChildrenByDisplayName = (children, displayName) => {
@@ -88,35 +103,35 @@ export const BlockquoteRenderer = (props) => {
           flavorProps = {
             borderColor: "info.9",
             bg: "info.2",
-            color: "info.12",
+            color: "info.11",
           };
           break;
         case firstChild.trim() === "[!TIP]":
           flavorProps = {
             borderColor: "success.9",
             bg: "success.2",
-            color: "success.12",
+            color: "success.11",
           };
           break;
         case firstChild.trim() === "[!IMPORTANT]":
           flavorProps = {
             borderColor: "primary.9",
             bg: "primary.2",
-            color: "primary.12",
+            color: "primary.11",
           };
           break;
         case firstChild.trim() === "[!WARNING]":
           flavorProps = {
             borderColor: "danger.9",
             bg: "danger.2",
-            color: "danger.12",
+            color: "danger.11",
           };
           break;
         case firstChild.trim() === "[!CAUTION]":
           flavorProps = {
             borderColor: "error.9",
             bg: "error.2",
-            color: "error.12",
+            color: "error.11",
           };
           break;
         default:
@@ -131,7 +146,6 @@ export const BlockquoteRenderer = (props) => {
     <Blockquote
       showDash={cite?.length > 0}
       cite={cite}
-      maxWidth="prose"
       my="3"
       {...quoteFlavorProps}
       {...rest}
@@ -156,9 +170,16 @@ export const BlockquoteRenderer = (props) => {
 
             return cloneElement(child, {
               children: [
-                <Text display="block" asChild fontWeight="bold">
-                  <span>{cleanQuoteFlavor(firstChild.trim())}</span>
-                </Text>,
+                <Box
+                  position="relative"
+                  top="-0.5"
+                  mr="1"
+                  display="inline-block"
+                  fontSize="xl"
+                  asChild
+                >
+                  {cleanQuoteFlavor(firstChild.trim())}
+                </Box>,
                 ...child.props.children.slice(2),
               ],
               mt: "4",

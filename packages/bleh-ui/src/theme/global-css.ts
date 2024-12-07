@@ -10,6 +10,7 @@ export const globalCss = defineGlobalStyles({
     "--ring-color": "rgba(66, 153, 225, 0.6)",
     "--ring-offset-shadow": "0 0 #0000",
     "--ring-shadow": "0 0 #0000",
+    "--focus-ring-color": "colors.colorPalette.11",
     "--brightness": "var(--chakra-empty,/*!*/ /*!*/)",
     "--contrast": "var(--chakra-empty,/*!*/ /*!*/)",
     "--grayscale": "var(--chakra-empty,/*!*/ /*!*/)",
@@ -35,7 +36,7 @@ export const globalCss = defineGlobalStyles({
     color: "fg",
     bg: "bg",
     lineHeight: "1.5",
-    colorPalette: "gray",
+    colorPalette: "neutral",
   },
   "*::placeholder": {
     color: "fg.muted/80",

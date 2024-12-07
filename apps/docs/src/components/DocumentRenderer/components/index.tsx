@@ -13,6 +13,7 @@ import { IconSearch } from "./token-demos/IconSearch";
 import { SpacingTokenDemo } from "./token-demos/SpacingTokenDemo";
 import { SizesTokenDemo } from "./token-demos/SizesTokenDemo";
 import { GenericTokenTableDemo } from "./token-demos/GenericTokenTableDemo";
+import * as icons from "@bleh-ui/icons";
 
 export const components = {
   h1: (props) => (
@@ -67,7 +68,22 @@ export const components = {
   ),
   blockquote: BlockquoteRenderer,
   code: CodeRenderer,
-  a: (props) => <Link variant="underline" {...props} />,
+  a: ({ children, ...rest }) => {
+    const isExternal = rest.href?.startsWith("http");
+
+    const props = isExternal
+      ? {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        }
+      : {};
+    return (
+      <Link variant="underline" {...rest} {...props}>
+        {isExternal && <icons.ExternalLink size="1em" ml="1" />}
+        {children}
+      </Link>
+    );
+  },
   strong: (props) => (
     <Text fontWeight="bold" asChild>
       <strong {...props} />
@@ -96,4 +112,5 @@ export const components = {
   SpacingTokenDemo,
   SizesTokenDemo,
   GenericTokenTableDemo,
+  ...icons.icons,
 };
