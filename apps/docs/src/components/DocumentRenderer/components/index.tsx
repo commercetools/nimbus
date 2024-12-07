@@ -1,4 +1,4 @@
-import { Text, Heading, Em, Link, Table } from "@bleh-ui/react";
+import { Text, Heading, Em, Link, Table, Box } from "@bleh-ui/react";
 
 import { BlockquoteRenderer } from "./Blockquotes";
 import { ListItem, OlList, UlList } from "./Lists";
@@ -78,8 +78,8 @@ export const components = {
         }
       : {};
     return (
-      <Link variant="underline" {...rest} {...props}>
-        {isExternal && <icons.ExternalLink size="1em" ml="1" />}
+      <Link alignItems="baseline" variant="underline" {...rest} {...props}>
+        {isExternal && <icons.ExternalLink size="1em" />}
         {children}
       </Link>
     );

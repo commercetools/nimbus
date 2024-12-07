@@ -5164,6 +5164,25 @@
     "displayName": "Button",
     "methods": [],
     "props": {
+      "busy": {
+        "defaultValue": null,
+        "description": "if true, button is busy with something (loading, processing, etc...)",
+        "name": "busy",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Button/Button.types.ts",
+          "name": "ButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Button/Button.types.ts",
+            "name": "ButtonProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "boolean"
+        }
+      },
       "form": {
         "defaultValue": null,
         "description": "",

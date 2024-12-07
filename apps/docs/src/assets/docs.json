@@ -123,12 +123,22 @@
       "route": "components/inputs/button",
       "toc": [
         {
+          "value": "Issues",
+          "href": "#issues",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
           "value": "Basic Usage",
           "href": "#basic-usage",
           "depth": 2,
           "numbering": [
             1,
-            1
+            2
           ],
           "parent": "root"
         },
@@ -138,7 +148,7 @@
           "depth": 2,
           "numbering": [
             1,
-            2
+            3
           ],
           "parent": "root"
         },
@@ -148,7 +158,7 @@
           "depth": 2,
           "numbering": [
             1,
-            3
+            4
           ],
           "parent": "root"
         },
@@ -158,7 +168,17 @@
           "depth": 2,
           "numbering": [
             1,
-            4
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive widths",
+          "href": "#responsive-widths",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
           ],
           "parent": "root"
         },
@@ -168,13 +188,23 @@
           "depth": 2,
           "numbering": [
             1,
-            5
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
           ],
           "parent": "root"
         }
       ]
     },
-    "mdx": "\n# Button\n\nDisplays a Button.\n\n> [!NOTE]  \n> The Button component wraps the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button).\n>\n> You can freely use native props and customize its styling with the provided props.\n\n## Basic Usage\n\nNo props are required to use the Button component. If unconfigured it will use the `neutral`\ncolorPalette and the `subtle` variant in the default size, currently `md`:\n\n```jsx-live\nconst App = () => <Button>Click me</Button>\n```\n\n## Sizes\n\nButtons come in different sizes, sizing a button is done by setting the `size` prop. Setting the size\nhas no effect on the variant or color of the Button.\n\n```jsx-live\nconst App = () => {\n\n  const sizes = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'].reverse();\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <Button key={size} size={size}>'{size}' Button</Button>\n      ))}\n    </Stack>\n  )\n}\n```\n\n## Variants\n\nLook how the buttons change their appearance but not their size. It is important\nthat the variant has no effect on the size. Only then it can be guaranteed that\nbuttons with different variants can be used and displayed next to each other.\n\n```jsx-live\nconst App = () => {\n\n  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain']\n\n  return (\n    <Stack direction=\"horizontal\">\n      {variants.map(variant => (\n        <Button key={variant} variant={variant}>'{variant}' Button</Button>\n      ))}\n    </Stack>\n  )\n}\n```\n\n## Colors\n\nSince the different `variants` operate purely on contrast level differences (think black & white),\nthe `colorPalette` prop can be used to colorize the Button.\n\n```jsx-live\nconst App = () => {\n  const variants = [\"solid\", \"subtle\", \"outline\", \"ghost\", \"link\", \"plain\"];\n  const colors = [\"neutral\", \"primary\", \"info\", \"success\", \"danger\", \"error\"];\n\n  return (\n    <Stack>\n      {colors.map((color) => (\n        <Stack key={color} direction=\"horizontal\">\n          {variants.map((variant) => (\n            <Button colorPalette={color} key={variant} variant={variant}>\n              '{variant}' Button\n            </Button>\n          ))}\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Icons\n\nRight now icons can be just dropped into the button, they are sized like regular text and thus\nadjust their own-size according to the `size` prop.\n\n```jsx-live\nconst App = () => {\n  const sizes = [\"2xs\", \"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\"].reverse();\n\n  return (\n    <Stack>\n      {sizes.map((size) => (\n        <Stack key={size} direction=\"horizontal\">\n          <Button size={size} colorPalette=\"success\" variant=\"solid\">\n            <Icons.Check /> Yes\n          </Button>\n          <Button size={size} colorPalette=\"error\" variant=\"solid\">\n            <Icons.X /> No\n          </Button>\n          <Button size={size} colorPalette=\"neutral\" variant=\"ghost\">\n            <Box animation=\"spin\" asChild><Icons.Loader/></Box> Maybe\n          </Button>\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n"
+    "mdx": "\n# Button\n\nDisplays a Button.\n\n> [!NOTE]  \n> The `<Button/>` component uses the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button) as native DOM element.\n>\n> You can freely use native button attributes and customize its styling with the props below.\n\n## Issues\n\n> [!WARNING]  \n> I tried integrating the [`useButton`](https://react-spectrum.adobe.com/react-aria/useButton.html) hook from `react-aria` into the Button component,\n> but I just couldn't get the typescript types right\n\n## Basic Usage\n\nNo props are required to use the Button component. If unconfigured it will pick up defaults\nfor `variant`, `size`, and `colorPalette`. Defaults can be set in the `recipe`-file.\n\n```jsx-live\nconst App = () => <Button>I am a Button</Button>\n```\n\n## Sizes\n\nButtons come in different sizes, sizing a button is done by setting the `size` prop. Setting the size\nhas no effect on the variant or color of the Button.\n\n```jsx-live\nconst App = () => {\n\n  const sizes = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'].reverse();\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <Button key={size} size={size}>'{size}' Button</Button>\n      ))}\n    </Stack>\n  )\n}\n```\n\n## Variants\n\nLook how the buttons change their appearance but not their size. It is important\nthat the variant has no effect on the size. Only then it can be guaranteed that\nbuttons with different variants can be used and displayed next to each other.\n\n```jsx-live\nconst App = () => {\n\n  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain']\n\n  return (\n    <Stack direction=\"horizontal\">\n      {variants.map(variant => (\n        <Button key={variant} variant={variant}>'{variant}' Button</Button>\n      ))}\n    </Stack>\n  )\n}\n```\n\n## Colors\n\nSince the different `variants` operate purely on contrast level differences (think: dark & light elements),\nthe `colorPalette` prop can be used to colorize the Button.\n\n```jsx-live\nconst App = () => {\n  const variants = [\"solid\", \"subtle\", \"outline\", \"ghost\", \"link\", \"plain\"];\n  const colors = [\"neutral\", \"primary\", \"info\", \"success\", \"danger\", \"error\"];\n\n  return (\n    <Stack>\n      {colors.map((color) => (\n        <Stack key={color} direction=\"horizontal\">\n          {variants.map((variant) => (\n            <Button colorPalette={color} key={variant} variant={variant}>\n              '{variant}' Button\n            </Button>\n          ))}\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Responsive widths\n\nThe [`width` style-prop](/style-props/sizing#width) can be used to set the width of the `Button`.\nIn combination with a `Stack` you could display the `Button`s side-by-side or on top of each other\ndepending on the available screen-estate.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction={{\n      base: \"column\",\n      md: \"row\"\n    }}>\n      <Button width={{\n        base: 'full',\n        md: '1/2'\n      }} colorPalette=\"success\" variant=\"solid\">\n        <Icons.Check /> Yes\n      </Button>\n      <Button width={{\n        base: 'full',\n        md: '1/2'\n      }} colorPalette=\"error\" variant=\"solid\">\n        <Icons.X /> No\n      </Button>\n    </Stack>\n  );\n};\n```\n\n## Icons\n\nRight now icons can be just dropped into the button, they are sized like regular text and thus\nadjust their own-size according to the `size` prop.\n\n```jsx-live\nconst App = () => {\n  const sizes = [\"2xs\", \"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\"].reverse();\n\n  return (\n    <Stack>\n      {sizes.map((size) => (\n        <Stack key={size} direction=\"horizontal\">\n          <Button size={size} colorPalette=\"success\" variant=\"solid\">\n            <Icons.Check /> Yes\n          </Button>\n          <Button size={size} colorPalette=\"error\" variant=\"solid\">\n            <Icons.X /> No\n          </Button>\n          <Button size={size} colorPalette=\"neutral\" variant=\"ghost\">\n            <Box animation=\"spin\" asChild><Icons.Loader/></Box> Maybe\n          </Button>\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Props\n\nHere is still chaos. I am not sure if parsing the types is the right way to do it. This is already a filtered selection, but there is still a lot\nof \"bycatch\" (native HTML element props, style-props, chakra-specifics ...) in the types that is not needed.\nMaybe cherry-picking the props to display is the way to go.\n\n<PropTable id=\"Button\" />\n"
   },
   "packages/bleh-ui/src/components/Code/README.mdx": {
     "meta": {
@@ -1503,6 +1533,47 @@
     },
     "mdx": "\n# Accessibility\n\nComponents designed to enhance accessibility and ARIA compliance.\n\n- **Screen Reader Aids**: e.g., VisuallyHidden, AccessibleLabel.\n- **Keyboard Navigation**: e.g., FocusTrap, SkipLink.\n- **ARIA Enhancers**: e.g., AriaLiveRegion.\n"
   },
+  "packages/bleh-ui/src/docs/architecture-overview-dependencies.mdx": {
+    "meta": {
+      "id": "Architecture Overview-Dependencies",
+      "title": "Dependencies",
+      "description": "npm packages @bleh-ui is relying on",
+      "menu": [
+        "Architecture Overview",
+        "Dependencies"
+      ],
+      "order": 999,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/architecture-overview-dependencies.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/architecture-overview-dependencies.mdx",
+      "route": "architecture-overview/dependencies",
+      "toc": [
+        {
+          "value": "Main Dependencies",
+          "href": "#main-dependencies",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Other Dependencies",
+          "href": "#other-dependencies",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Dependencies\n\nnpm packages @bleh-ui is relying on:\n\n## Main Dependencies\n\n- [TypeScript](https://www.typescriptlang.org/)\n- [React](https://reactjs.org/)\n- [@emotion/react](https://emotion.sh/docs/introduction)\n- [@chakra-ui](https://chakra-ui.com/)\n- [react-aria](https://react-spectrum.adobe.com/react-aria/index.html)\n\n## Other Dependencies\n"
+  },
   "packages/bleh-ui/src/docs/backgorund.mdx": {
     "meta": {
       "id": "Style Props-Background",
@@ -2441,6 +2512,25 @@
       "toc": []
     },
     "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
+  },
+  "packages/bleh-ui/src/docs/home-architecture-overview.mdx": {
+    "meta": {
+      "id": "Home-Architecture Overview",
+      "title": "Architecture Overview",
+      "description": "Outlining the dependencies, structure, and implementation approach of @bleh-ui..",
+      "menu": [
+        "Architecture Overview"
+      ],
+      "order": 999,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/home-architecture-overview.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/home-architecture-overview.mdx",
+      "route": "architecture-overview",
+      "toc": []
+    },
+    "mdx": "# Architecture Overview\n\nOutlining the dependencies, structure, and implementation approach of @bleh-ui."
   },
   "packages/bleh-ui/src/docs/inputs.mdx": {
     "meta": {

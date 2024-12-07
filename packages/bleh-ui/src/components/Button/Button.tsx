@@ -1,17 +1,13 @@
 import { forwardRef } from "react";
 import { ButtonRoot } from "./Button.slots";
 import type { ButtonProps } from "./Button.types";
-import { useButton } from "react-aria";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
     const { children, busy, ...rest } = props;
-    const { buttonProps } = useButton(props, ref);
-
-    const { size, ...cleanButtonProps } = buttonProps;
 
     return (
-      <ButtonRoot ref={ref} {...rest} {...cleanButtonProps}>
+      <ButtonRoot ref={ref} {...rest}>
         {children}
       </ButtonRoot>
     );

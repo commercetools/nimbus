@@ -13,9 +13,15 @@ tags:
 Displays a Button.
 
 > [!NOTE]  
-> The `<Button/>` component wraps the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button).
+> The `<Button/>` component uses the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button) as native DOM element.
 >
-> You can freely use native props and customize its styling with the provided props.
+> You can freely use native button attributes and customize its styling with the props below.
+
+## Issues
+
+> [!WARNING]  
+> I tried integrating the [`useButton`](https://react-spectrum.adobe.com/react-aria/useButton.html) hook from `react-aria` into the Button component,
+> but I just couldn't get the typescript types right
 
 ## Basic Usage
 
@@ -23,7 +29,7 @@ No props are required to use the Button component. If unconfigured it will pick 
 for `variant`, `size`, and `colorPalette`. Defaults can be set in the `recipe`-file.
 
 ```jsx-live
-const App = () => <Button>Click me</Button>
+const App = () => <Button>I am a Button</Button>
 ```
 
 ## Sizes
@@ -93,6 +99,36 @@ const App = () => {
 };
 ```
 
+## Responsive widths
+
+The [`width` style-prop](/style-props/sizing#width) can be used to set the width of the `Button`.
+In combination with a `Stack` you could display the `Button`s side-by-side or on top of each other
+depending on the available screen-estate.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction={{
+      base: "column",
+      md: "row"
+    }}>
+      <Button width={{
+        base: 'full',
+        md: '1/2'
+      }} colorPalette="success" variant="solid">
+        <Icons.Check /> Yes
+      </Button>
+      <Button width={{
+        base: 'full',
+        md: '1/2'
+      }} colorPalette="error" variant="solid">
+        <Icons.X /> No
+      </Button>
+    </Stack>
+  );
+};
+```
+
 ## Icons
 
 Right now icons can be just dropped into the button, they are sized like regular text and thus
@@ -121,3 +157,11 @@ const App = () => {
   );
 };
 ```
+
+## Props
+
+Here is still chaos. I am not sure if parsing the types is the right way to do it. This is already a filtered selection, but there is still a lot
+of "bycatch" (native HTML element props, style-props, chakra-specifics ...) in the types that is not needed.
+Maybe cherry-picking the props to display is the way to go.
+
+<PropTable id="Button" />
