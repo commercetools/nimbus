@@ -101,37 +101,27 @@ export const BlockquoteRenderer = (props) => {
       switch (true) {
         case firstChild.trim() === "[!NOTE]":
           flavorProps = {
-            borderColor: "info.9",
-            bg: "info.2",
-            color: "info.11",
+            colorPalette: "info",
           };
           break;
         case firstChild.trim() === "[!TIP]":
           flavorProps = {
-            borderColor: "success.9",
-            bg: "success.2",
-            color: "success.11",
+            colorPalette: "success",
           };
           break;
         case firstChild.trim() === "[!IMPORTANT]":
           flavorProps = {
-            borderColor: "primary.9",
-            bg: "primary.2",
-            color: "primary.11",
+            colorPalette: "primary",
           };
           break;
         case firstChild.trim() === "[!WARNING]":
           flavorProps = {
-            borderColor: "danger.9",
-            bg: "danger.2",
-            color: "danger.11",
+            colorPalette: "danger",
           };
           break;
         case firstChild.trim() === "[!CAUTION]":
           flavorProps = {
-            borderColor: "error.9",
-            bg: "error.2",
-            color: "error.11",
+            colorPalette: "error",
           };
           break;
         default:
@@ -147,6 +137,9 @@ export const BlockquoteRenderer = (props) => {
       showDash={cite?.length > 0}
       cite={cite}
       my="3"
+      borderColor="colorPalette.9"
+      bg="colorPalette.2"
+      color="colorPalette.11"
       {...quoteFlavorProps}
       {...rest}
     >

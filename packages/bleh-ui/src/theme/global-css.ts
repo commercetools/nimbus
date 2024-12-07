@@ -42,7 +42,7 @@ export const globalCss = defineGlobalStyles({
     color: "fg.muted/80",
   },
   "*::selection": {
-    bg: "primary.9",
-    color: "primary.contrast",
+    bg: "colorPalette.9",
+    color: "colorPalette.contrast",
   },
 });
