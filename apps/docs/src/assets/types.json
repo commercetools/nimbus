@@ -5178,7 +5178,7 @@
             "name": "ButtonProps"
           }
         ],
-        "required": true,
+        "required": false,
         "type": {
           "name": "boolean"
         }
