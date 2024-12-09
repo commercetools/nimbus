@@ -14,7 +14,10 @@ import {
   Heading,
   Text,
   Bleed,
+  DialogHeader,
+  DialogTitle,
 } from "@bleh-ui/react";
+import * as Icons from "@bleh-ui/icons";
 
 // TODO: Replace with react-aria solution
 import {
@@ -44,31 +47,38 @@ const SearchResultItem = forwardRef(
   ({ item, score, ...props }: SearchResultItemProps, ref) => {
     const isSelected = !!props["data-active-item"];
 
+    const IconComponent =
+      (Icons[item.icon as keyof typeof Icons] as React.ElementType) ||
+      Icons.FileText;
+
     const styles = isSelected
       ? { bg: "primary.9", color: "primary.contrast" }
       : {};
 
     return (
-      <Box
-        display="flex"
-        flexDir="column"
-        gap="0"
-        px="6"
-        py="3"
-        ref={ref}
-        {...styles}
-        {...props}
-      >
-        <Heading size="lg" truncate>
-          {item.title}{" "}
-        </Heading>
-        <Text mb="1" truncate>
-          {item.description}
-        </Text>
-        <Text my="1" textStyle="xs" truncate opacity={3 / 4}>
-          {item.menu.join(" -> ")}
-        </Text>
-      </Box>
+      <Flex px="6" py="3">
+        <Box pr="4" pt="1">
+          <IconComponent size="1.5em" />
+        </Box>
+        <Box
+          display="flex"
+          flexDir="column"
+          gap="0"
+          ref={ref}
+          {...styles}
+          {...props}
+        >
+          <Heading size="lg" truncate>
+            {item.title}{" "}
+          </Heading>
+          <Text mb="1" truncate>
+            {item.description}
+          </Text>
+          <Text my="1" textStyle="xs" truncate opacity={3 / 4}>
+            {item.menu.join(" -> ")}
+          </Text>
+        </Box>
+      </Flex>
     );
   }
 );
@@ -136,6 +146,7 @@ export const AppNavBarSearch = () => {
         motionPreset="slide-in-bottom"
         onOpenChange={() => setOpen(!open)}
         scrollBehavior="outside"
+        size="xl"
       >
         <DialogBackdrop />
         <DialogTrigger asChild>
@@ -156,64 +167,78 @@ export const AppNavBarSearch = () => {
             />
           </InputGroup>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent divideY="1px">
+          <DialogHeader>
+            <DialogTitle position="relative" display="flex">
+              <span>Site Search</span>
+              <Box flexGrow="1" />
+              <Text color="colorPalette.11" alignSelf="flex-end">
+                {searchableDocs.length} Documents
+              </Text>
+            </DialogTitle>
+          </DialogHeader>
           <DialogBody>
             <ComboboxProvider open={open} setOpen={setOpen}>
-              <Box>
-                <InputGroup
-                  startElement={<Search size="1em" />}
-                  startElementProps={{ color: "neutral.8" }}
-                  endElement={<Kbd>⌘K</Kbd>}
-                  endElementProps={{ color: "neutral.9" }}
-                  width="100%"
-                  mx="auto"
-                  mt="4"
-                  mb="6"
-                >
-                  <Input
-                    type="search"
-                    placeholder="Search for a component..."
-                    size="sm"
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    ref={comboboxRef}
-                    asChild
+              <Flex direction="column">
+                <Box>
+                  <InputGroup
+                    startElement={<Search size="1em" />}
+                    startElementProps={{ color: "neutral.8" }}
+                    endElement={<Kbd>⌘K</Kbd>}
+                    endElementProps={{ color: "neutral.9" }}
+                    width="100%"
+                    mx="auto"
+                    mt="4"
+                    mb="6"
                   >
-                    <Combobox placeholder="e.g., Tokens, Component, Installation" />
-                  </Input>
-                </InputGroup>
-              </Box>
-              <Box divideY="1px" asChild>
-                <ComboboxList ref={listboxRef} role="listbox">
-                  {results?.map((item) => (
-                    <Bleed key={item.item.id} inline="6">
-                      {/* <div>
+                    <Input
+                      type="search"
+                      placeholder="Search for a component..."
+                      size="sm"
+                      value={q}
+                      onChange={(e) => setQ(e.target.value)}
+                      ref={comboboxRef}
+                      asChild
+                    >
+                      <Combobox placeholder="e.g., Tokens, Component, Installation" />
+                    </Input>
+                  </InputGroup>
+                </Box>
+
+                <Bleed inline="6">
+                  <Box maxHeight="lg" divideY="1px" overflow="auto" asChild>
+                    <ComboboxList ref={listboxRef} role="listbox">
+                      {results?.map((item) => (
+                        <Box>
+                          {/* <div>
                       <pre>{JSON.stringify(item, null, 2)}</pre>
                     </div> */}
-                      <Box
-                        asChild
-                        css={{
-                          ["&[data-active-item]"]: {
-                            background: "primary.9",
-                            color: "primary.contrast",
-                          },
-                        }}
-                      >
-                        <ComboboxItem
-                          focusOnHover
-                          value={item.item.title}
-                          onClick={(e) => onItemConfirm(e, item.item)}
-                        >
-                          <SearchResultItem
-                            item={item.item}
-                            score={item.score}
-                          />
-                        </ComboboxItem>
-                      </Box>
-                    </Bleed>
-                  ))}
-                </ComboboxList>
-              </Box>
+                          <Box
+                            asChild
+                            css={{
+                              ["&[data-active-item]"]: {
+                                background: "primary.9",
+                                color: "primary.contrast",
+                              },
+                            }}
+                          >
+                            <ComboboxItem
+                              focusOnHover
+                              value={item.item.title}
+                              onClick={(e) => onItemConfirm(e, item.item)}
+                            >
+                              <SearchResultItem
+                                item={item.item}
+                                score={item.score}
+                              />
+                            </ComboboxItem>
+                          </Box>
+                        </Box>
+                      ))}
+                    </ComboboxList>
+                  </Box>
+                </Bleed>
+              </Flex>
             </ComboboxProvider>
           </DialogBody>
         </DialogContent>

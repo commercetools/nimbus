@@ -1533,47 +1533,6 @@
     },
     "mdx": "\n# Accessibility\n\nComponents designed to enhance accessibility and ARIA compliance.\n\n- **Screen Reader Aids**: e.g., VisuallyHidden, AccessibleLabel.\n- **Keyboard Navigation**: e.g., FocusTrap, SkipLink.\n- **ARIA Enhancers**: e.g., AriaLiveRegion.\n"
   },
-  "packages/bleh-ui/src/docs/architecture-overview-dependencies.mdx": {
-    "meta": {
-      "id": "Architecture Overview-Dependencies",
-      "title": "Dependencies",
-      "description": "npm packages @bleh-ui is relying on",
-      "menu": [
-        "Architecture Overview",
-        "Dependencies"
-      ],
-      "order": 999,
-      "tags": [
-        "document"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/architecture-overview-dependencies.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/architecture-overview-dependencies.mdx",
-      "route": "architecture-overview/dependencies",
-      "toc": [
-        {
-          "value": "Main Dependencies",
-          "href": "#main-dependencies",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Other Dependencies",
-          "href": "#other-dependencies",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Dependencies\n\nnpm packages @bleh-ui is relying on:\n\n## Main Dependencies\n\n- [TypeScript](https://www.typescriptlang.org/)\n- [React](https://reactjs.org/)\n- [@emotion/react](https://emotion.sh/docs/introduction)\n- [@chakra-ui](https://chakra-ui.com/)\n- [react-aria](https://react-spectrum.adobe.com/react-aria/index.html)\n\n## Other Dependencies\n"
-  },
   "packages/bleh-ui/src/docs/backgorund.mdx": {
     "meta": {
       "id": "Style Props-Background",
@@ -2513,25 +2472,6 @@
     },
     "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
   },
-  "packages/bleh-ui/src/docs/home-architecture-overview.mdx": {
-    "meta": {
-      "id": "Home-Architecture Overview",
-      "title": "Architecture Overview",
-      "description": "Outlining the dependencies, structure, and implementation approach of @bleh-ui..",
-      "menu": [
-        "Architecture Overview"
-      ],
-      "order": 999,
-      "tags": [
-        "document"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/home-architecture-overview.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/home-architecture-overview.mdx",
-      "route": "architecture-overview",
-      "toc": []
-    },
-    "mdx": "# Architecture Overview\n\nOutlining the dependencies, structure, and implementation approach of @bleh-ui."
-  },
   "packages/bleh-ui/src/docs/inputs.mdx": {
     "meta": {
       "id": "Components-Forms",
@@ -3122,7 +3062,7 @@
   "packages/bleh-ui/src/docs/naivgation.mdx": {
     "meta": {
       "id": "Components-Naivgation",
-      "title": "Naivgation",
+      "title": "Navigation",
       "description": "Components for moving through an application.",
       "icon": "TableOfContents",
       "menu": [
