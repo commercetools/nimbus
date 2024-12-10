@@ -36,13 +36,14 @@ $ bun install
 
 ### Development
 
-1. Start the development environment with the following command
+1. If you just set up the repository, do an initial [build](#build).
+2. Start the development environment with the following command
 
    ```bash
    $ bun run dev
    ```
 
-2. Open the documentation app in the browser:
+3. Open the documentation app in the browser:
    http://localhost:5173/
 
 ### Build
