@@ -14,31 +14,54 @@ import { SpacingTokenDemo } from "./token-demos/SpacingTokenDemo";
 import { SizesTokenDemo } from "./token-demos/SizesTokenDemo";
 import { GenericTokenTableDemo } from "./token-demos/GenericTokenTableDemo";
 import * as icons from "@bleh-ui/icons";
+import { ReactNode } from "react";
+
+const sluggifyChildren = (children: ReactNode) => {
+  return sluggify(children ? children.toString() : "");
+};
 
 export const components = {
   h1: (props) => (
-    <Heading id={sluggify(props.children)} mb="6" size="3xl" asChild>
+    <Heading id={sluggifyChildren(props.children)} mb="6" size="3xl" asChild>
       <h1 {...props} />
     </Heading>
   ),
   h2: (props) => (
-    <Heading id={sluggify(props.children)} mb="3" mt="6" size="2xl" asChild>
+    <Heading
+      id={sluggifyChildren(props.children)}
+      mb="3"
+      mt="6"
+      size="2xl"
+      asChild
+    >
       <h2 {...props} />
     </Heading>
   ),
   h3: (props) => (
-    <Heading id={sluggify(props.children)} mb="3" mt="6" size="xl" asChild>
+    <Heading
+      id={sluggifyChildren(props.children)}
+      mb="3"
+      mt="6"
+      size="xl"
+      asChild
+    >
       <h3 {...props} />
     </Heading>
   ),
   h4: (props) => (
-    <Heading id={sluggify(props.children)} mb="3" mt="6" size="lg" asChild>
+    <Heading
+      id={sluggifyChildren(props.children)}
+      mb="3"
+      mt="6"
+      size="lg"
+      asChild
+    >
       <h4 {...props} />
     </Heading>
   ),
   h5: (props) => (
     <Heading
-      id={sluggify(props.children)}
+      id={sluggifyChildren(props.children)}
       mb="3"
       mt="6"
       size="lg"
@@ -50,7 +73,7 @@ export const components = {
   ),
   h6: (props) => (
     <Heading
-      id={sluggify(props.children)}
+      id={sluggifyChildren(props.children)}
       mb="3"
       mt="6"
       size="lg"
