@@ -130,12 +130,29 @@ export const Chatbot = () => {
 
           <Stack p="4" direction="row" asChild>
             <form onSubmit={handleSubmit}>
-              <Input
-                placeholder="Type a message"
-                value={input}
-                onChange={handleInputChange}
-              />
-              <Button colorPalette="primary" variant="solid">
+              <Box
+                asChild
+                rounded="sm"
+                border="1px solid"
+                borderColor="neutral.6"
+                p="2"
+                fontSize="sm"
+                color="neutral.11"
+                w="full"
+                h={input.length === 0 ? "10" : undefined}
+              >
+                <textarea
+                  placeholder="Type your instructions here..."
+                  onChange={handleInputChange}
+                  value={input}
+                />
+              </Box>
+
+              <Button
+                colorPalette="primary"
+                variant="solid"
+                onClick={() => handleSubmit()}
+              >
                 <SendHorizontal />
               </Button>
             </form>
