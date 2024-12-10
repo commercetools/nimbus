@@ -11,7 +11,7 @@ export const codeRecipe = defineRecipe({
   variants: {
     variant: {
       solid: {
-        bg: "colorPalette.3",
+        bg: "colorPalette.4",
         color: "colorPalette.11",
       },
       outline: {

@@ -13,6 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.0.7",
     "@ariakit/react": "^0.4.13",
     "@bleh-ui/icons": "workspace:*",
     "@bleh-ui/react": "workspace:*",
@@ -25,6 +26,7 @@
     "@types/express-fileupload": "^1.5.1",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/slug": "^5.0.9",
+    "ai": "^4.0.13",
     "axios": "^1.7.7",
     "chokidar": "^4.0.1",
     "express": "^4.21.1",
