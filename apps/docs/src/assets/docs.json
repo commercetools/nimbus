@@ -1533,7 +1533,7 @@
     },
     "mdx": "\n# Accessibility\n\nComponents designed to enhance accessibility and ARIA compliance.\n\n- **Screen Reader Aids**: e.g., VisuallyHidden, AccessibleLabel.\n- **Keyboard Navigation**: e.g., FocusTrap, SkipLink.\n- **ARIA Enhancers**: e.g., AriaLiveRegion.\n"
   },
-  "packages/bleh-ui/src/docs/backgorund.mdx": {
+  "packages/bleh-ui/src/docs/background.mdx": {
     "meta": {
       "id": "Style Props-Background",
       "title": "Background",
@@ -1546,8 +1546,8 @@
       "tags": [
         "document"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/backgorund.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/backgorund.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/background.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/background.mdx",
       "route": "style-props/background",
       "toc": [
         {
@@ -3080,6 +3080,272 @@
     },
     "mdx": "\n# Navigation\n\nComponents for moving through an application.\n\n- **Menus**: e.g., Dropdown, ContextMenu.\n- **Navigation Bars**: e.g., Navbar, Sidebar, Breadcrumbs.\n- **Tabs & Accordions**: e.g., TabPanel, Accordion.\n- **Pagination**: e.g., Paginator, InfiniteScroller.\n"
   },
+  "packages/bleh-ui/src/docs/organisation-glossary.mdx": {
+    "meta": {
+      "id": "Organisation-Glossary",
+      "title": "Glossary",
+      "description": "Often repeated non-obvious terms",
+      "menu": [
+        "Organisation",
+        "Glossary"
+      ],
+      "order": 999,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/organisation-glossary.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/organisation-glossary.mdx",
+      "route": "organisation/glossary",
+      "toc": []
+    },
+    "mdx": "# Glossary\n\nOften repeated non-obvious terms:\n\n* Story\n* Styling\n  * Recipe\n  * Slot"
+  },
+  "packages/bleh-ui/src/docs/rfcs-component-structure-rfcs.mdx": {
+    "meta": {
+      "id": "Component Structure-RFCs",
+      "title": "RFCs",
+      "description": "Requests for feedback",
+      "menu": [
+        "RFCs"
+      ],
+      "order": 1.5,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/rfcs-component-structure-rfcs.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/rfcs-component-structure-rfcs.mdx",
+      "route": "rfcs",
+      "toc": []
+    },
+    "mdx": "# RFCs\n\nRequests for comments. Just create a document and work on it."
+  },
+  "packages/bleh-ui/src/docs/rfcs-component-structure.mdx": {
+    "meta": {
+      "id": "WIP-Component Structure",
+      "title": "Component Structure",
+      "description": "Working out the process from idea to published component",
+      "menu": [
+        "RFCs",
+        "Component Structure"
+      ],
+      "order": 999,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/rfcs-component-structure.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/rfcs-component-structure.mdx",
+      "route": "rfcs/component-structure",
+      "toc": [
+        {
+          "value": "Basic Structure",
+          "href": "#basic-structure",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ComponentName.types.ts",
+          "href": "#componentnametypests",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ComponentName.recipe.ts",
+          "href": "#componentnamerecipets",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ComponentName.slots.ts",
+          "href": "#componentnameslotsts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ComponentName.tsx",
+          "href": "#componentnametsx",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ComponentName.mdx",
+          "href": "#componentnamemdx",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "index.ts",
+          "href": "#indexts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "components",
+          "href": "#components",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "tests",
+          "href": "#tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "stories",
+          "href": "#stories",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            9
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# React Component Anatomy\n\n> [!WARNING]  \n> This proposal requires to set up a **case sensitive volume**, since MacOS is case insensitive by default (It can be done easily with disk utily though).\n\n## Basic Structure\n\n```bash\n/components\n  /ComponentName\n    │ # Files\n    ├── ComponentName.types.ts      # typescript type exports\n    ├── ComponentName.recipe.ts     # a recipe file covering basic styles, sizes & variants\n    ├── ComponentName.slots.tsx     # optional, for multi-part components\n    ├── ComponentName.tsx           # component implementation\n    ├── ComponentName.mdx           # component documentation\n    ├── index.ts                    # barrel file for exports\n    │ # Folders\n    ├── hooks                       # optional, folder for react hooks\n    ├── components                  # optional, folder for sub-components\n    ├── tests                       # unit tests\n    ├── stories                     # storybook stories (screenshot tests)\n```\n\n### ComponentName.types.ts\n\nExports and/or contains the type definitions for the component.\n\n### ComponentName.recipe.ts\n\nContains a single or multi-slot recipe. Covering default styles, sizes, variants and\ncompound variants for a single or multiple _slots_.\n\n### ComponentName.slots.ts\n\nA component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.\nThis file will create components with styles attached to them, and will be used in the main component file.\n\n### ComponentName.tsx\n\nFree of any styling concerns, this file imports the slot-components and connects those\nwith the headless ui-components.\n\n### ComponentName.mdx\n\nContains the documentation for the component. Will provide examples, usage, props, etc.\n\n### index.ts\n\nExports the component and any other files that need to be exported.\n\n### components\n\nOptional, can contain components that are only used by the parent component.\nStructure is the same basic folder structure.\n\n### tests\n\n### stories\n"
+  },
+  "packages/bleh-ui/src/docs/rfcs-hook-structure.mdx": {
+    "meta": {
+      "id": "Organisation-Hook Structure",
+      "title": "Hook Structure",
+      "description": "Basic structure of a react hook",
+      "menu": [
+        "RFCs",
+        "Hook Structure"
+      ],
+      "order": 999,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/rfcs-hook-structure.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/rfcs-hook-structure.mdx",
+      "route": "rfcs/hook-structure",
+      "toc": [
+        {
+          "value": "Basic Structure",
+          "href": "#basic-structure",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "useHookName.types.ts",
+          "href": "#usehooknametypests",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "useHookName.ts",
+          "href": "#usehooknamets",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "useHookName.utils.ts",
+          "href": "#usehooknameutilsts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "useHookName.test.ts",
+          "href": "#usehooknametestts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "useHookName.mdx",
+          "href": "#usehooknamemdx",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "index.ts",
+          "href": "#indexts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# React Hook Anatomy\n\n> [!WARNING]  \n> This proposal requires to set up a **case sensitive volume**, since MacOS is case insensitive by default (It can be done easily with disk utility though).\n\n## Basic Structure\n\n```bash\n/hooks\n  /useHookName\n    │ # Files\n    ├── useHookName.types.ts        # typescript type exports\n    ├── useHookName.ts              # hook implementation\n    ├── useHookName.utils.ts        # optional, utility functions for the hook\n    ├── useHookName.test.ts         # unit tests for the hook\n    ├── useHookName.mdx             # documentation for the hook\n    ├── index.ts                    # barrel file for exports\n```\n\n### useHookName.types.ts\n\nContains type definitions relevant to the hook, such as inputs, outputs, and custom types it uses.\n\n### useHookName.ts\n\nThe core implementation of the hook. It defines and exports the hook's logic and any dependencies it might require.\n\n### useHookName.utils.ts\n\nOptional file containing reusable utility functions that support the hook's implementation.\n\n### useHookName.test.ts\n\nContains unit tests for the hook to ensure its functionality and edge cases are covered.\n\n### useHookName.mdx\n\nDocumentation file for the hook, detailing its purpose, usage, and examples.\n\n### index.ts\n\nExports the hook and any other files (e.g., utilities or types) that should be publicly accessible.\n"
+  },
   "packages/bleh-ui/src/docs/sizing.mdx": {
     "meta": {
       "id": "Style Props-Sizing",
@@ -4520,7 +4786,7 @@
     },
     "mdx": "\n# Utilities\n\nLow-level or functional components for utility purposes.\n"
   },
-  "packages/bleh-ui/src/hooks/useCopyToClipboard.mdx": {
+  "packages/bleh-ui/src/hooks/useCopyToClipboard/useCopyToClipboard.mdx": {
     "meta": {
       "id": "useCopyToClipboard",
       "title": "useCopyToClipboard",
@@ -4535,8 +4801,8 @@
         "clipboard",
         "copy"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/useCopyToClipboard.mdx",
-      "repoPath": "packages/bleh-ui/src/hooks/useCopyToClipboard.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/useCopyToClipboard/useCopyToClipboard.mdx",
+      "repoPath": "packages/bleh-ui/src/hooks/useCopyToClipboard/useCopyToClipboard.mdx",
       "order": 999,
       "route": "hooks/usecopytoclipboard",
       "toc": [
@@ -4564,7 +4830,7 @@
     },
     "mdx": "\n# useCopyToClipboard\n\nCopy text to a user's clipboard.\n\n## Usage\n\n```jsx\nconst Demo = () => {\n  const [text, setText] = React.useState(\"\");\n  const [state, copyToClipboard] = useCopyToClipboard();\n\n  return (\n    <div>\n      <input value={text} onChange={(e) => setText(e.target.value)} />\n      <button type=\"button\" onClick={() => copyToClipboard(text)}>\n        copy text\n      </button>\n      {state.error ? (\n        <p>Unable to copy value: {state.error.message}</p>\n      ) : (\n        state.value && <p>Copied {state.value}</p>\n      )}\n    </div>\n  );\n};\n```\n\n## Reference\n\n```js\nconst [{ value, error, noUserInteraction }, copyToClipboard] =\n  useCopyToClipboard();\n```\n\n- `value` &mdash; value that was copied to clipboard, undefined when nothing was copied.\n- `error` &mdash; caught error when trying to copy to clipboard.\n- `noUserInteraction` &mdash; boolean indicating if user interaction was required to copy the value to clipboard to expose full API from underlying [`copy-to-clipboard`](https://github.com/sudodoki/copy-to-clipboard) library.\n"
   },
-  "packages/bleh-ui/src/hooks/useHotkeys.mdx": {
+  "packages/bleh-ui/src/hooks/useHotkeys/useHotkeys.mdx": {
     "meta": {
       "id": "useHotkeys",
       "title": "useHotkeys",
@@ -4580,8 +4846,8 @@
         "shortcut",
         "keyboard"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/useHotkeys.mdx",
-      "repoPath": "packages/bleh-ui/src/hooks/useHotkeys.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/useHotkeys/useHotkeys.mdx",
+      "repoPath": "packages/bleh-ui/src/hooks/useHotkeys/useHotkeys.mdx",
       "order": 999,
       "route": "hooks/usehotkeys",
       "toc": [

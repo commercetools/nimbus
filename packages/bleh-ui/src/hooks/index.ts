@@ -1,2 +1,2 @@
-export { useHotkeys } from "./useHotkeys";
-export { useCopyToClipboard } from "./useCopyToClipboard";
+export { useHotkeys } from "./useHotkeys/useHotkeys";
+export { useCopyToClipboard } from "./useCopyToClipboard/useCopyToClipboard";

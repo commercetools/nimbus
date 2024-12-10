@@ -118,6 +118,8 @@ export const MdxEditor = ({
     codeBlockPlugin({ defaultCodeBlockLanguage: "jsx" }),
     codeMirrorPlugin({
       codeBlockLanguages: {
+        bash: "Bash",
+        css: "CSS",
         js: "JavaScript",
         jsx: "Jsx",
         "jsx-live": "Jsx (Live)",
