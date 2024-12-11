@@ -1,6 +1,11 @@
 import type { ButtonRootProps } from "./Button.slots";
+import { type AriaButtonProps } from "@react-types/button";
 
-export interface ButtonProps extends ButtonRootProps {
+/** combine chakra-button props with aria-button props */
+type FunctionalButtonProps = ButtonRootProps & AriaButtonProps;
+
+/** add our own custom props */
+export interface ButtonProps extends FunctionalButtonProps {
   /** if true, button is busy with something (loading, processing, etc...) */
   busy?: boolean;
 }
