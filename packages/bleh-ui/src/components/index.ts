@@ -1,5 +1,5 @@
 export * from "./Box";
-export * from "./Bleed";
+export * from "./bleed";
 export * from "./Blockquote";
 export * from "./Breadcrumb";
 export * from "./Button";
