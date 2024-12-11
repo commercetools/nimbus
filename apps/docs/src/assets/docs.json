@@ -1924,6 +1924,25 @@
     },
     "mdx": "\n# Inputs\n\nComponents for user input and interaction.\n\n- **Text Inputs**: e.g., InputField, TextArea.\n- **Selection Controls**: e.g., Dropdown, Checkbox, RadioButton.\n- **Buttons**: e.g., Button, IconButton, ToggleButton.\n- **Sliders & Pickers**: e.g., RangeSlider, DatePicker, TimePicker.\n"
   },
+  "packages/bleh-ui/src/docs/generated/index.mdx": {
+    "meta": {
+      "id": "AI1733919690376",
+      "title": "Unsorted Generated Content",
+      "description": "Index page for generated content.",
+      "menu": [
+        "Unsorted"
+      ],
+      "order": 999,
+      "tags": [
+        "unsorted"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/generated/index.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/generated/index.mdx",
+      "route": "unsorted",
+      "toc": []
+    },
+    "mdx": "\n# Unsorted\n\nDocuments here are generated and not sorted yet. Please sort them into the correct category.\n"
+  },
   "packages/bleh-ui/src/docs/getting-started.mdx": {
     "meta": {
       "id": "Home-Getting Started",

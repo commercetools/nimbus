@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Code,
-  Flex,
-  Link,
-  Stack,
-  Text,
-} from "@bleh-ui/react";
+import { Box, Button, Code, Flex, Link, Stack, Text } from "@bleh-ui/react";
 import { MessageCircleCode, SendHorizontal, X } from "@bleh-ui/icons";
 import { type Message, useChat } from "ai/react";
 import { useState } from "react";
@@ -150,7 +142,7 @@ export const Chatbot = () => {
               <Button
                 colorPalette="primary"
                 variant="solid"
-                onClick={() => handleSubmit()}
+                onPress={() => handleSubmit()}
               >
                 <SendHorizontal />
               </Button>
