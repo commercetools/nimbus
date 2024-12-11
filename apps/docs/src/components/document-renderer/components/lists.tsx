@@ -1,7 +1,7 @@
 import { List } from "@bleh-ui/react";
-import { Children, isValidElement, cloneElement } from "react";
+import {Children, isValidElement, cloneElement, ComponentProps, ReactElement} from "react";
 
-export const OlList = ({ children, ...props }) => (
+export const OlList = ({ children, ...props }: ComponentProps<typeof List.Root>) => (
   <List.Root my="3" asChild {...props}>
     <ol>{children}</ol>
   </List.Root>
@@ -9,7 +9,7 @@ export const OlList = ({ children, ...props }) => (
 
 OlList.displayName = "OlList";
 
-export const UlList = ({ children, ...props }) => (
+export const UlList = ({ children, ...props }: ComponentProps<typeof List.Root>) => (
   <List.Root my="3" asChild {...props}>
     <ul>{children}</ul>
   </List.Root>
@@ -17,25 +17,25 @@ export const UlList = ({ children, ...props }) => (
 
 UlList.displayName = "UlList";
 
-export const ListItem = (props) => {
+type ListComponentProps =
+    | ComponentProps<typeof OlList>  // Props for OlList
+    | ComponentProps<typeof UlList>; // Props for UlList
+
+export const ListItem = (props: ComponentProps<typeof List.Item>) => {
   const { children, ...rest } = props;
   return (
-    <List.Item asChild listStylePosition="outside" marginLeft="5" my="1">
-      <li {...rest}>
+    <List.Item as={"li"} listStylePosition="outside" marginLeft="5" my="1" {...rest}>
         {Children.map(children, (child) => {
-          // Check if the child is a React element and if its type is 'kbd'
+          const isAnotherList = isValidElement(child) &&
+              (child.type === OlList || child.type === UlList);
 
-          if (
-            isValidElement(child) &&
-            ["OlList", "UlList"].includes(child.type.displayName)
-          ) {
-            return cloneElement(child, { ml: "4", my: "0" });
+          if (isAnotherList) {
+            return cloneElement(child as ReactElement<ListComponentProps>, { ml: "4", my: "0" });
           }
 
           // Otherwise, return the child unchanged
           return child;
         })}
-      </li>
     </List.Item>
   );
 };

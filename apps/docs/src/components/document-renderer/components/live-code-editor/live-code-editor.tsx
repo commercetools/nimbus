@@ -1,7 +1,7 @@
 import * as BlehUi from "@bleh-ui/react";
 import * as IconLib from "@bleh-ui/icons";
 import { Flex, Box } from "@bleh-ui/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import {useState, useEffect, useCallback, useMemo, ReactNode} from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
 
@@ -15,14 +15,19 @@ const baseHooks = {
 // funcitons & components available to the live code editor
 const scope = { ...BlehUi, ...baseHooks, Icons: { ...IconLib.icons } };
 
-const removeImportStatements = (code) => {
+const removeImportStatements = (code: string) => {
   // Regular expression to match import statements
   const importRegex = /^\s*import\s.+?;?\s*$/gm;
   // Replace matched import statements with an empty string
   return code.replace(importRegex, "") + "\n" + "render(<App />);";
 };
 
-export const LiveCodeEditor = (props) => {
+type LiveCodeEditorProps = {
+  children?: ReactNode;
+  className?: string;
+}
+
+export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   const [code, setCode] = useState(props.children);
   const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview");
 
@@ -51,7 +56,7 @@ export const LiveCodeEditor = (props) => {
       <Box border="1px solid" borderColor="neutral.3">
         <LiveProvider
           transformCode={removeImportStatements}
-          code={code}
+          code={typeof code === 'string' ? code : ''}
           scope={scope}
           noInline
         >

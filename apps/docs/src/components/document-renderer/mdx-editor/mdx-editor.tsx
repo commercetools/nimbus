@@ -36,10 +36,10 @@ import {
 
 import "@mdxeditor/editor/style.css";
 import { useEffect, useRef, useState } from "react";
-import { MdxFileFrontmatter } from "../../types";
+import { MdxFileFrontmatter } from "../../../types";
 import axios from "axios";
-import { CustomEditorStyles } from "./configs/html-styles";
-import { uploadImage } from "@/utils/file-upload";
+import { CustomEditorStyles } from "./configs/html-styles.tsx";
+import { uploadImage } from "@/utils/file-upload.ts";
 
 type MdxEditorProps = MDXEditorProps & {
   meta: MdxFileFrontmatter["meta"];

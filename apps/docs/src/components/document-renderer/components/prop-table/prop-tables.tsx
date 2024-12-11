@@ -2,7 +2,7 @@ import { Box, TabsRoot, TabsList, TabsTrigger } from "@bleh-ui/react";
 import { PropTable } from "./prop-table.tsx";
 import { useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
-import { typesAtom } from "../../atoms/types";
+import { typesAtom } from "../../../../atoms/types.ts";
 
 type PropTableProps = {
   ids: string | string[];

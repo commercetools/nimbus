@@ -6,8 +6,8 @@ import {
   BreadcrumbCurrentLink,
 } from "@bleh-ui/react";
 import { useMemo } from "react";
-import { activeDocAtom } from "../../atoms/active-doc.ts";
-import { menuToPath } from "../../utils/sluggify";
+import { activeDocAtom } from "../../../atoms/active-doc.ts";
+import { menuToPath } from "../../../utils/sluggify.ts";
 
 export const BreadcrumbNav = () => {
   const activeDoc = useAtomValue(activeDocAtom);

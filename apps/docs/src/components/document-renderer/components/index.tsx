@@ -1,11 +1,11 @@
-import { Text, Heading, Em, Link, Table, Box } from "@bleh-ui/react";
+import { Text, Heading, Em, Link, Table } from "@bleh-ui/react";
 
 import { BlockquoteRenderer } from "./blockquotes.tsx";
 import { ListItem, OlList, UlList } from "./lists.tsx";
 import { CodeRenderer } from "./code.tsx";
 import { Paragraph } from "./paragraph.tsx";
-import { PropTable } from "@/components/prop-table/prop-table.tsx";
-import { PropTables } from "@/components/prop-table/prop-tables.tsx";
+import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
+import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
 import { Image } from "./image.tsx";
 import { sluggify } from "@/utils/sluggify";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
@@ -15,12 +15,13 @@ import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import * as icons from "@bleh-ui/icons";
 import { ReactNode } from "react";
+import {MDXComponents} from "mdx/types";
 
 const sluggifyChildren = (children: ReactNode) => {
   return sluggify(children ? children.toString() : "");
 };
 
-export const components = {
+export const components: MDXComponents = {
   h1: (props) => (
     <Heading id={sluggifyChildren(props.children)} mb="6" size="3xl" asChild>
       <h1 {...props} />

@@ -20,7 +20,7 @@ import {
   DialogDescription,
 } from "@bleh-ui/react";
 import { useState } from "react";
-import { sluggify } from "@/utils/sluggify";
+import { sluggify } from "@/utils/sluggify.ts";
 import axios from "axios";
 
 export const AppNavBarCreateButton = () => {

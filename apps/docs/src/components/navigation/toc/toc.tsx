@@ -1,5 +1,5 @@
 import { Box, Link, Text } from "@bleh-ui/react";
-import { activeTocAtom } from "../../atoms/toc";
+import { activeTocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 

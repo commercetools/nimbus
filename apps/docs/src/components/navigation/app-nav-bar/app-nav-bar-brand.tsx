@@ -1,9 +1,9 @@
-import { brandNameAtom } from "@/atoms/brand";
-import { activeRouteAtom } from "@/atoms/route";
+import { brandNameAtom } from "@/atoms/brand.ts";
+import { activeRouteAtom } from "@/atoms/route.ts";
 import { Pencil } from "@bleh-ui/icons";
 import { Box, Button, Text } from "@bleh-ui/react";
 import { useAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import {FormEvent,MouseEvent, KeyboardEvent, useEffect, useRef, useState} from "react";
 
 export const AppNavBarBrand = () => {
   const [, setActiveroute] = useAtom(activeRouteAtom);
@@ -13,21 +13,22 @@ export const AppNavBarBrand = () => {
 
   const contentRef = useRef<HTMLLinkElement>(null);
 
-  const onInput = (e) => {
-    if (e.inputType === "insertParagraph") {
+  const onInput = (e: FormEvent<HTMLSpanElement>) => {
+    const inputEvent = e as unknown as InputEvent;
+    if (inputEvent.inputType === "insertParagraph") {
       e.preventDefault();
-      e.target.blur();
+      (e.target as HTMLSpanElement).blur();
       return;
     }
 
     const selection = window.getSelection();
     const range = selection?.getRangeAt(0);
 
-    const newBrand = e.target.innerText;
+    const newBrand = (e.target as HTMLSpanElement).innerText;
     setBrand(newBrand.length === 0 ? "@bleh-ui" : newBrand);
 
     // Save the caret position
-    const startOffset = range?.startOffset;
+    const startOffset = range?.startOffset ?? 0;
 
     // Update the content
     setTimeout(() => {
@@ -49,15 +50,15 @@ export const AppNavBarBrand = () => {
     setHover(false);
   };
 
-  const onHomeRequest = (e) => {
+  const onHomeRequest = (e: MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
     setActiveroute("home");
   };
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      e.target.blur();
+      (e.target as HTMLSpanElement).blur();
     }
   };
 
@@ -76,39 +77,39 @@ export const AppNavBarBrand = () => {
   }, [editable]);
 
   return (
-    <Box
-      position="relative"
-      zIndex="max"
-      role="group"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      <Text textStyle="2xl" asChild fontWeight="bold">
-        <a href="/">
+      <Box
+          position="relative"
+          zIndex="max"
+          role="group"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+      >
+        <Text textStyle="2xl" asChild fontWeight="bold">
+          <a href="/apps/docs/public">
           <span
-            contentEditable={editable}
-            ref={contentRef}
-            onInput={onInput}
-            suppressContentEditableWarning
-            onClick={onHomeRequest}
-            onKeyDown={onKeyDown}
-            onBlur={onBlur}
+              contentEditable={editable}
+              ref={contentRef}
+              onInput={onInput}
+              suppressContentEditableWarning
+              onClick={onHomeRequest}
+              onKeyDown={onKeyDown}
+              onBlur={onBlur}
           >
             {brand}
           </span>
-        </a>
-      </Text>
-      {hover && (
-        <Box position="absolute" left="-10" top="0" pr="2">
-          <Button
-            size="xs"
-            variant="ghost"
-            onClick={() => setEditable(!editable)}
-          >
-            <Pencil />
-          </Button>
-        </Box>
-      )}
-    </Box>
+          </a>
+        </Text>
+        {hover && (
+            <Box position="absolute" left="-10" top="0" pr="2">
+              <Button
+                  size="xs"
+                  variant="ghost"
+                  onClick={() => setEditable(!editable)}
+              >
+                <Pencil />
+              </Button>
+            </Box>
+        )}
+      </Box>
   );
 };

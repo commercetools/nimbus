@@ -1,13 +1,13 @@
-import { UiKitProvider, Flex, Box, Text } from "@bleh-ui/react";
-import { Menu } from "./components/menu.tsx";
+import { UiKitProvider, Flex, Box } from "@bleh-ui/react";
+import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
-import { Toc } from "./components/toc";
-import { AppNavBar } from "./components/app-nav-bar";
+import { Toc } from "./components/navigation/toc";
+import { AppNavBar } from "./components/navigation/app-nav-bar";
 import { useAtom } from "jotai";
 import { activeRouteAtom } from "./atoms/route";
 import { useEffect } from "react";
 import { Chatbot } from "./components/chatbot";
-import { DevOnly } from "./components/dev-only.tsx";
+import { DevOnly } from "./components/utils/dev-only.tsx";
 
 function App() {
   const [activeRoute, setActiveroute] = useAtom(activeRouteAtom);

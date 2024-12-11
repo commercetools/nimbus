@@ -3,15 +3,15 @@ import { useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Button, Flex, Stack, Text } from "@bleh-ui/react";
 import { components } from "./components";
-import { BreadcrumbNav } from "../breadcrumb";
-import { GithubRepoLink } from "../github-repo-link.tsx";
-import { MdxEditor } from "../mdx-editor";
-import { VsCodeEditLink } from "../vs-code-edit-link.tsx";
-import { DevOnly } from "../dev-only.tsx";
+import { BreadcrumbNav } from "../navigation/breadcrumb";
+import { GithubRepoLink } from "../utils/github-repo-link.tsx";
+import { MdxEditor } from "./mdx-editor";
+import { VsCodeEditLink } from "../utils/vs-code-edit-link.tsx";
+import { DevOnly } from "../utils/dev-only.tsx";
 import { useEffect, useState } from "react";
 import { Pencil, PencilOff } from "@bleh-ui/icons";
 import { Helmet } from "react-helmet-async";
-import { TrashDocumentLink } from "../trash-document-link.tsx";
+import { TrashDocumentLink } from "../utils/trash-document-link.tsx";
 import { brandNameAtom } from "@/atoms/brand";
 
 export const DocumentRenderer = () => {

@@ -1,10 +1,10 @@
 import { Flex, Box, Stack } from "@bleh-ui/react";
 
-import { ModeToggleButton } from "../mode-toggle-button";
+import { ModeToggleButton } from "./mode-toggle-button";
 
 import { AppNavBarSearch } from "./app-nav-bar-search.tsx";
 import { AppNavBarCreateButton } from "./app-nav-bar-create-button.tsx";
-import { DevOnly } from "../dev-only.tsx";
+import { DevOnly } from "../../utils/dev-only.tsx";
 import { AppNavBarBrand } from "./app-nav-bar-brand.tsx";
 
 export const AppNavBar = () => {

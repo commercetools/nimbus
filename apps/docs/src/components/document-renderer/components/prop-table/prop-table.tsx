@@ -1,6 +1,6 @@
 import { Box, Code, Table, Text } from "@bleh-ui/react";
 import { useAtomValue } from "jotai";
-import { typesAtom } from "../../atoms/types";
+import { typesAtom } from "../../../../atoms/types.ts";
 import { useMemo } from "react";
 import { JSONTree } from "react-json-tree";
 

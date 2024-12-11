@@ -33,8 +33,8 @@ import {
   SearchableDocItem,
   searchableDocItemsAtom,
   searchQueryAtom,
-} from "../../atoms/searchable-docs.ts";
-import { activeRouteAtom } from "../../atoms/route";
+} from "../../../atoms/searchable-docs.ts";
+import { activeRouteAtom } from "../../../atoms/route.ts";
 import Fuse from "fuse.js";
 
 type SearchResultItemProps = {
