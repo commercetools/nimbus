@@ -335,12 +335,12 @@
         "description": "",
         "name": "cite",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
           "name": "BlockquoteProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
             "name": "BlockquoteProps"
           }
         ],
@@ -354,12 +354,12 @@
         "description": "",
         "name": "citeUrl",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
           "name": "BlockquoteProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
             "name": "BlockquoteProps"
           }
         ],
@@ -373,12 +373,12 @@
         "description": "",
         "name": "icon",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
           "name": "BlockquoteProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
             "name": "BlockquoteProps"
           }
         ],
@@ -392,12 +392,12 @@
         "description": "",
         "name": "showDash",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
           "name": "BlockquoteProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/Blockquote.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.tsx",
             "name": "BlockquoteProps"
           }
         ],
@@ -4427,12 +4427,12 @@
         "description": "",
         "name": "separator",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Breadcrumb/Breadcrumb.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/breadcrumb/breadcrumb.tsx",
           "name": "BreadcrumbRootProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Breadcrumb/Breadcrumb.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/breadcrumb/breadcrumb.tsx",
             "name": "BreadcrumbRootProps"
           }
         ],
@@ -4446,12 +4446,12 @@
         "description": "",
         "name": "separatorGap",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Breadcrumb/Breadcrumb.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/breadcrumb/breadcrumb.tsx",
           "name": "BreadcrumbRootProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Breadcrumb/Breadcrumb.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/breadcrumb/breadcrumb.tsx",
             "name": "BreadcrumbRootProps"
           }
         ],
@@ -5169,12 +5169,12 @@
         "description": "if true, button is busy with something (loading, processing, etc...)",
         "name": "busy",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Button/Button.types.ts",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
           "name": "ButtonProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Button/Button.types.ts",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
             "name": "ButtonProps"
           }
         ],
@@ -5982,12 +5982,12 @@
         "description": "",
         "name": "portalled",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/Dialog.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.tsx",
           "name": "DialogContentProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/Dialog.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.tsx",
             "name": "DialogContentProps"
           }
         ],
@@ -6001,12 +6001,12 @@
         "description": "",
         "name": "portalRef",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/Dialog.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.tsx",
           "name": "DialogContentProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/Dialog.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.tsx",
             "name": "DialogContentProps"
           }
         ],
@@ -6020,12 +6020,12 @@
         "description": "",
         "name": "backdrop",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/Dialog.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.tsx",
           "name": "DialogContentProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/Dialog.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.tsx",
             "name": "DialogContentProps"
           }
         ],
@@ -8377,12 +8377,12 @@
         "description": "",
         "name": "startElementProps",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
           "name": "InputGroupProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
             "name": "InputGroupProps"
           }
         ],
@@ -8396,12 +8396,12 @@
         "description": "",
         "name": "endElementProps",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
           "name": "InputGroupProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
             "name": "InputGroupProps"
           }
         ],
@@ -8415,12 +8415,12 @@
         "description": "",
         "name": "startElement",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
           "name": "InputGroupProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
             "name": "InputGroupProps"
           }
         ],
@@ -8434,12 +8434,12 @@
         "description": "",
         "name": "endElement",
         "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
           "name": "InputGroupProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/InputGroup.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.tsx",
             "name": "InputGroupProps"
           }
         ],
@@ -9370,7 +9370,7 @@
         "name": "min",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9385,7 +9385,7 @@
         "name": "max",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9400,7 +9400,7 @@
         "name": "value",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9415,7 +9415,7 @@
         "name": "step",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9430,7 +9430,7 @@
         "name": "onValueChange",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9454,7 +9454,7 @@
         "name": "min",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9469,7 +9469,7 @@
         "name": "max",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9484,7 +9484,7 @@
         "name": "value",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9499,7 +9499,7 @@
         "name": "step",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],
@@ -9514,7 +9514,7 @@
         "name": "onValueChange",
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/Slider/index.tsx",
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/slider/index.tsx",
             "name": "TypeLiteral"
           }
         ],

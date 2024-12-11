@@ -10,21 +10,18 @@ tags:
 
 # React Hook Anatomy
 
-> [!WARNING]  
-> This proposal requires to set up a **case sensitive volume**, since MacOS is case insensitive by default (It can be done easily with disk utility though).
-
 ## Basic Structure
 
 ```bash
 /hooks
-  /useHookName
+  /use-hook-name
     │ # Files
-    ├── useHookName.types.ts        # typescript type exports
-    ├── useHookName.ts              # hook implementation
-    ├── useHookName.utils.ts        # optional, utility functions for the hook
-    ├── useHookName.test.ts         # unit tests for the hook
-    ├── useHookName.mdx             # documentation for the hook
-    ├── index.ts                    # barrel file for exports
+    ├── use-hook-name.types.ts        # typescript type exports
+    ├── use-hook-name.ts              # hook implementation
+    ├── use-hook-name.utils.ts        # optional, utility functions for the hook
+    ├── use-hook-name.test.ts         # unit tests for the hook
+    ├── use-hook-name.mdx             # documentation for the hook
+    ├── index.ts                      # barrel file for exports
 ```
 
 ### useHookName.types.ts

@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { activeDocAtom } from "./activeDoc";
+import { activeDocAtom } from "./active-doc.ts";
 
 /** The currently active browser route*/
 export const activeTocAtom = atom((get) => {

@@ -10,48 +10,45 @@ tags:
 
 # React Component Anatomy
 
-> [!WARNING]  
-> This proposal requires to set up a **case sensitive volume**, since MacOS is case insensitive by default (It can be done easily with disk utily though).
-
 ## Basic Structure
 
 ```bash
 /components
-  /ComponentName
+  /component-name
     │ # Files
-    ├── ComponentName.types.ts      # typescript type exports
-    ├── ComponentName.recipe.ts     # a recipe file covering basic styles, sizes & variants
-    ├── ComponentName.slots.tsx     # optional, for multi-part components
-    ├── ComponentName.tsx           # component implementation
-    ├── ComponentName.mdx           # component documentation
-    ├── index.ts                    # barrel file for exports
+    ├── component-name.types.ts      # typescript type exports
+    ├── component-name.recipe.ts     # a recipe file covering basic styles, sizes & variants
+    ├── component-name.slots.tsx     # optional, for multi-part components
+    ├── component-name.tsx           # component implementation
+    ├── component-name.mdx           # component documentation
+    ├── index.ts                     # barrel file for exports
     │ # Folders
-    ├── hooks                       # optional, folder for react hooks
-    ├── components                  # optional, folder for sub-components
-    ├── tests                       # unit tests
-    ├── stories                     # storybook stories (screenshot tests)
+    ├── hooks                        # optional, folder for react hooks
+    ├── components                   # optional, folder for sub-components
+    ├── tests                        # unit tests
+    ├── stories                      # storybook stories (screenshot tests)
 ```
 
-### ComponentName.types.ts
+### component-name.types.ts
 
 Exports and/or contains the type definitions for the component.
 
-### ComponentName.recipe.ts
+### component-name.recipe.ts
 
 Contains a single or multi-slot recipe. Covering default styles, sizes, variants and
 compound variants for a single or multiple _slots_.
 
-### ComponentName.slots.ts
+### component-name.slots.ts
 
 A component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.
 This file will create components with styles attached to them, and will be used in the main component file.
 
-### ComponentName.tsx
+### component-name.tsx
 
 Free of any styling concerns, this file imports the slot-components and connects those
 with the headless ui-components.
 
-### ComponentName.mdx
+### component-name.mdx
 
 Contains the documentation for the component. Will provide examples, usage, props, etc.
 

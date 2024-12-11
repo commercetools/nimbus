@@ -1,1 +1,1 @@
-export { buttonRecipe } from "./../../components/Button/Button.recipe";
+export { buttonRecipe } from "@/components/button/button.recipe.ts";

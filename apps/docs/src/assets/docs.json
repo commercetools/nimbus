@@ -21,7 +21,7 @@
     },
     "mdx": "\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be used in any other component.\n\nThis is the list of available icons:\n\n<IconSearch />\n"
   },
-  "packages/bleh-ui/src/components/Blockquote/README.mdx": {
+  "packages/bleh-ui/src/components/blockquote/blockquote.mdx": {
     "meta": {
       "id": "Blockquote",
       "title": "Blockquote",
@@ -42,15 +42,15 @@
       "propTables": [
         "Blockquote"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Blockquote/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Blockquote/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/blockquote/blockquote.mdx",
+      "repoPath": "packages/bleh-ui/src/components/blockquote/blockquote.mdx",
       "order": 999,
       "route": "components/typography/blockquote",
       "toc": []
     },
     "mdx": "\n# \\<Blockquote/\\>\n\nThis is the PropTable for the `Blockquote` component. Just use it in the MDX file as if it was a regular HTML Tag.\n\n<PropTable id=\"Blockquote\" />\n"
   },
-  "packages/bleh-ui/src/components/Box/README.mdx": {
+  "packages/bleh-ui/src/components/box/box.mdx": {
     "meta": {
       "id": "Box",
       "title": "Box",
@@ -72,15 +72,15 @@
       "propTables": [
         "Box"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Box/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Box/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/box/box.mdx",
+      "repoPath": "packages/bleh-ui/src/components/box/box.mdx",
       "order": 999,
       "route": "components/layout/box",
       "toc": []
     },
     "mdx": "\n# Box\n\nAdd description.\n"
   },
-  "packages/bleh-ui/src/components/Breadcrumb/README.mdx": {
+  "packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx": {
     "meta": {
       "id": "Breadcrumb",
       "title": "Breadcrumbs",
@@ -96,15 +96,15 @@
         "navigation",
         "breadcrumb"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Breadcrumb/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Breadcrumb/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx",
+      "repoPath": "packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx",
       "order": 999,
       "route": "components/navigation/breadcrumb",
       "toc": []
     },
     "mdx": "\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
   },
-  "packages/bleh-ui/src/components/Button/Button.mdx": {
+  "packages/bleh-ui/src/components/button/button.mdx": {
     "meta": {
       "id": "Forms-Button",
       "title": "Button",
@@ -118,8 +118,8 @@
       "tags": [
         "document"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Button/Button.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Button/Button.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.mdx",
+      "repoPath": "packages/bleh-ui/src/components/button/button.mdx",
       "route": "components/inputs/button",
       "toc": [
         {
@@ -252,7 +252,7 @@
     },
     "mdx": "\n# Button\n\nDisplays a Button.\n\n> [!NOTE]  \n> The `<Button/>` component uses the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button) as native DOM element.\n>\n> You can freely use native button attributes and customize its styling with the props below.\n\n## Basic Usage\n\nNo props are required to use the Button component. If unconfigured it will pick up defaults\nfor `variant`, `size`, and `colorPalette`. Defaults can be set in the `recipe`-file.\n\n```jsx-live\nconst App = () => <Button>I am a Button</Button>\n```\n\n## Features\n\n### Accessibility\n\nTo abstract away the differences between mouse, touch and keyboard interactions, the Button component\nsupports `onPress*` props. The misc `onPress*` props (`onPress`, `onPressStart`, `onPressEnd`, etc.) provide a more seamless and inclusive user experience\nacross different devices and input methods:\n\n```jsx-live\nconst App = () => <Button aria-label=\"ne need to click this\" onPress={()=>alert()} onPressEnd={()=>{}}>I am still a button</Button>\n```\n\n### Change the underlying DOM-element\n\nThe Button component uses the native [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)\nby default, but supports rendering as a different tag to the dom. Use the `asChild` and the tag you want to render as only child.\n\n```jsx-live\nconst App = () => (\n  <Button asChild>\n    <a href=\"http://www.commercetools.com\" target=\"_blank\">I am a button in disguise</a>\n  </Button>\n)\n```\n\n### Data-Attributes\n\nThe Button component supports forwarding arbitrary `data-*` attributes. This can be useful for tracking tools.\n\n```jsx-live\nconst App = () => <Button data-foo=\"bar\">I can have data-attributes</Button>\n```\n\n## Customizing the look\n\n### Sizes\n\nButtons come in different sizes, sizing a button is done by setting the `size` prop. Setting the size\nhas no effect on the variant or color of the Button.\n\n```jsx-live\nconst App = () => {\n\n  const sizes = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'].reverse();\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <Button key={size} size={size}>'{size}' Button</Button>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Variants\n\nLook how the buttons change their appearance but not their size. It is important\nthat the variant has no effect on the size. Only then it can be guaranteed that\nbuttons with different variants can be used and displayed next to each other.\n\n```jsx-live\nconst App = () => {\n\n  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain']\n\n  return (\n    <Stack direction=\"horizontal\">\n      {variants.map(variant => (\n        <Button key={variant} variant={variant}>'{variant}' Button</Button>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Colors\n\nSince the different `variants` operate purely on contrast level differences (think: dark & light elements),\nthe `colorPalette` prop can be used to colorize the Button.\n\n```jsx-live\nconst App = () => {\n  const variants = [\"solid\", \"subtle\", \"outline\", \"ghost\", \"link\", \"plain\"];\n  const colors = [\"neutral\", \"primary\", \"info\", \"success\", \"danger\", \"error\"];\n\n  return (\n    <Stack>\n      {colors.map((color) => (\n        <Stack key={color} direction=\"horizontal\">\n          {variants.map((variant) => (\n            <Button colorPalette={color} key={variant} variant={variant}>\n              '{variant}' Button\n            </Button>\n          ))}\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Responsive widths\n\nThe [`width` style-prop](/style-props/sizing#width) can be used to set the width of the `Button`.\nIn combination with a `Stack` you could display the `Button`s side-by-side or on top of each other\ndepending on the available screen-estate.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction={{\n      base: \"column\",\n      md: \"row\"\n    }}>\n      <Button width={{\n        base: 'full',\n        md: '1/2'\n      }} colorPalette=\"success\" variant=\"solid\">\n        <Icons.Check /> Yes\n      </Button>\n      <Button width={{\n        base: 'full',\n        md: '1/2'\n      }} colorPalette=\"error\" variant=\"solid\">\n        <Icons.X /> No\n      </Button>\n    </Stack>\n  );\n};\n```\n\n## Icons\n\nRight now icons can be just dropped into the button, they are sized like regular text and thus\nadjust their own-size according to the `size` prop.\n\n```jsx-live\nconst App = () => {\n  const sizes = [\"2xs\", \"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\"].reverse();\n\n  return (\n    <Stack>\n      {sizes.map((size) => (\n        <Stack key={size} direction=\"horizontal\">\n          <Button size={size} colorPalette=\"success\" variant=\"solid\">\n            <Icons.Check /> Yes\n          </Button>\n          <Button size={size} colorPalette=\"error\" variant=\"solid\">\n            <Icons.X /> No\n          </Button>\n          <Button size={size} colorPalette=\"neutral\" variant=\"ghost\">\n            <Box animation=\"spin\" asChild><Icons.Loader/></Box> Maybe\n          </Button>\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Props\n\nHere is still chaos. I am not sure if parsing the types is the right way to do it. This is already a filtered selection, but there is still a lot\nof \"bycatch\" (native HTML element props, style-props, chakra-specifics ...) in the types that is not needed.\nMaybe cherry-picking the props to display is the way to go.\n\n<PropTable id=\"Button\" />\n"
   },
-  "packages/bleh-ui/src/components/Code/README.mdx": {
+  "packages/bleh-ui/src/components/code/code.mdx": {
     "meta": {
       "id": "Code",
       "title": "Code",
@@ -270,15 +270,15 @@
       "propTables": [
         "Code"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Code/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Code/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/code/code.mdx",
+      "repoPath": "packages/bleh-ui/src/components/code/code.mdx",
       "order": 999,
       "route": "components/typography/code",
       "toc": []
     },
     "mdx": "\n# Code\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/Dialog/README.mdx": {
+  "packages/bleh-ui/src/components/dialog/dialog.mdx": {
     "meta": {
       "id": "Dialog",
       "title": "Dialog",
@@ -294,8 +294,8 @@
         "dialog",
         "modal"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Dialog/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Dialog/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/dialog/dialog.mdx",
+      "repoPath": "packages/bleh-ui/src/components/dialog/dialog.mdx",
       "order": 999,
       "route": "components/feedback/dialog",
       "toc": [
@@ -313,7 +313,7 @@
     },
     "mdx": "\n# Dialog\n\n## Props\n\n<PropTables ids=\"DialogRoot, DialogFooter, DialogHeader, DialogBody, DialogBackdrop, DialogTitle, DialogDescription, DialogTrigger, DialogActionTrigger\" />\n"
   },
-  "packages/bleh-ui/src/components/Em/README.mdx": {
+  "packages/bleh-ui/src/components/em/em.mdx": {
     "meta": {
       "id": "Em",
       "title": "Em",
@@ -331,15 +331,15 @@
       "tags": [
         "em"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Em/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Em/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/em/em.mdx",
+      "repoPath": "packages/bleh-ui/src/components/em/em.mdx",
       "order": 999,
       "route": "components/typography/em",
       "toc": []
     },
     "mdx": "\n# Em\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/Experiments/README.mdx": {
+  "packages/bleh-ui/src/components/experiments/experiments.mdx": {
     "meta": {
       "id": "slider-comparison",
       "title": "Headless UI comparison",
@@ -356,8 +356,8 @@
       "propTables": [
         "Stack"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Experiments/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Experiments/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/experiments/experiments.mdx",
+      "repoPath": "packages/bleh-ui/src/components/experiments/experiments.mdx",
       "order": 999,
       "route": "playground/headless-ui-comparison",
       "toc": [
@@ -418,7 +418,7 @@
     },
     "mdx": "\n# Headless UI comparison\n\nThis page is about comparing the same ux-concept across several headless ui libraries.\n\n## Ideal flow\n\n1. A slot-recipe for the individual parts of a component is created (`slider.recipe.tsx`)\n2. For every slot, a proxy react-component is created (`slider.parts.tsx`)\n3. The headless ui libraries will use the individual parts to assemble the final component\n\n## Slider\n\n### Radix\n\n- the offset-position of the slider thumb is already accurately calculated by radix (taking the thumb-width into account)\n- easy to style, no hacks necessary\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <RadixSlider min={0} max={100} value={value} onValueChange={v=>setValue(v)} />\n    </div>\n  )\n}\n```\n\n### React ARIA\n\n- less \"slots\" to style (e.g. no range element)\n- not as easy to syle as radix, but practice will make perfect\n- throws console warnings when there are a11y issues:\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <label id=\"demo-label\">React ARIA Slider label</label>\n      <ReactAriaSlider size=\"sm\" min={0} max={100} value={value} onValueChange={v=>setValue(v)} aria-labelledby=\"demo-label\"  />\n    </div>\n  )\n}\n```\n\n### DatePicker (React ARIA)\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <DatePicker/>\n    </div>\n  )\n}\n```\n"
   },
-  "packages/bleh-ui/src/components/Flex/README.mdx": {
+  "packages/bleh-ui/src/components/flex/flex.mdx": {
     "meta": {
       "id": "Flex",
       "title": "Flex",
@@ -441,8 +441,8 @@
       "propTables": [
         "Flex"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Flex/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Flex/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/flex/flex.mdx",
+      "repoPath": "packages/bleh-ui/src/components/flex/flex.mdx",
       "order": 999,
       "route": "components/layout/flex",
       "toc": [
@@ -470,7 +470,7 @@
     },
     "mdx": "\n# Flex\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n\n## Usage\n\n```jsx\nimport { Flex } from \"@bleh-ui/react\";\n\nconst Component = () => (\n  <Flex>\n    <p>Content</p>\n  </Flex>\n);\n```\n\n## Second Subheading\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur\n"
   },
-  "packages/bleh-ui/src/components/Heading/README.mdx": {
+  "packages/bleh-ui/src/components/heading/heading.mdx": {
     "meta": {
       "id": "Heading",
       "title": "Heading",
@@ -488,15 +488,15 @@
       "propTables": [
         "Heading"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Heading/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Heading/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/heading/heading.mdx",
+      "repoPath": "packages/bleh-ui/src/components/heading/heading.mdx",
       "order": 999,
       "route": "components/typography/heading",
       "toc": []
     },
     "mdx": "\n# Heading\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/Highlight/README.mdx": {
+  "packages/bleh-ui/src/components/highlight/highlight.mdx": {
     "meta": {
       "id": "Highlight",
       "title": "Highlight",
@@ -515,39 +515,15 @@
       "propTables": [
         "Highlight"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Highlight/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Highlight/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/highlight/highlight.mdx",
+      "repoPath": "packages/bleh-ui/src/components/highlight/highlight.mdx",
       "order": 999,
       "route": "components/typography/highlight",
       "toc": []
     },
     "mdx": "\n# Highlight\n\nAdd description later.rr\n"
   },
-  "packages/bleh-ui/src/components/Input/README.mdx": {
-    "meta": {
-      "id": "Input",
-      "title": "Input",
-      "description": "displays a Input field",
-      "documents": "Input",
-      "status": "stable",
-      "menu": [
-        "Components",
-        "Inputs",
-        "Input"
-      ],
-      "tags": [
-        "text",
-        "input"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Input/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Input/README.mdx",
-      "order": 999,
-      "route": "components/inputs/input",
-      "toc": []
-    },
-    "mdx": "\n# Input\n\nadd description here.\n\n<PropTable id=\"Input\" />\n"
-  },
-  "packages/bleh-ui/src/components/InputGroup/README.mdx": {
+  "packages/bleh-ui/src/components/input-group/input-group.mdx": {
     "meta": {
       "id": "InputGroup",
       "title": "InputGroup",
@@ -563,15 +539,39 @@
         "input",
         "grouping"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/InputGroup/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/InputGroup/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/input-group/input-group.mdx",
+      "repoPath": "packages/bleh-ui/src/components/input-group/input-group.mdx",
       "order": 999,
       "route": "components/inputs/inputgroup",
       "toc": []
     },
     "mdx": "\n# InputGroup\n\nadd description here.\n\n<PropTable id=\"InputGroup\" />\n"
   },
-  "packages/bleh-ui/src/components/Kbd/README.mdx": {
+  "packages/bleh-ui/src/components/input/input.mdx": {
+    "meta": {
+      "id": "Input",
+      "title": "Input",
+      "description": "displays a Input field",
+      "documents": "Input",
+      "status": "stable",
+      "menu": [
+        "Components",
+        "Inputs",
+        "Input"
+      ],
+      "tags": [
+        "text",
+        "input"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/input/input.mdx",
+      "repoPath": "packages/bleh-ui/src/components/input/input.mdx",
+      "order": 999,
+      "route": "components/inputs/input",
+      "toc": []
+    },
+    "mdx": "\n# Input\n\nadd description here.\n\n<PropTable id=\"Input\" />\n"
+  },
+  "packages/bleh-ui/src/components/kbd/kbd.mdx": {
     "meta": {
       "id": "Kbd",
       "title": "Kbd",
@@ -590,15 +590,15 @@
         "keyboard",
         "key"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Kbd/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Kbd/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/kbd/kbd.mdx",
+      "repoPath": "packages/bleh-ui/src/components/kbd/kbd.mdx",
       "order": 999,
       "route": "components/typography/kbd",
       "toc": []
     },
     "mdx": "\n# Kbd\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/Link/README.mdx": {
+  "packages/bleh-ui/src/components/link/link.mdx": {
     "meta": {
       "id": "Link",
       "title": "Link",
@@ -616,15 +616,15 @@
       "propTables": [
         "Link"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Link/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Link/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/link/link.mdx",
+      "repoPath": "packages/bleh-ui/src/components/link/link.mdx",
       "order": 999,
       "route": "components/typography/link",
       "toc": []
     },
     "mdx": "\n# Link\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/List/README.mdx": {
+  "packages/bleh-ui/src/components/list/list.mdx": {
     "meta": {
       "id": "List",
       "title": "List",
@@ -644,15 +644,15 @@
         "list",
         "collections"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/List/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/List/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/list/list.mdx",
+      "repoPath": "packages/bleh-ui/src/components/list/list.mdx",
       "order": 999,
       "route": "components/typography/list",
       "toc": []
     },
     "mdx": "\n# List\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/SimpleGrid/README.mdx": {
+  "packages/bleh-ui/src/components/simple-grid/simple-grid.mdx": {
     "meta": {
       "id": "SimpleGrid",
       "title": "SimpleGrid",
@@ -668,15 +668,15 @@
         "grid",
         "simple"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/SimpleGrid/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/SimpleGrid/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/simple-grid/simple-grid.mdx",
+      "repoPath": "packages/bleh-ui/src/components/simple-grid/simple-grid.mdx",
       "order": 999,
       "route": "components/layout/simplegrid",
       "toc": []
     },
     "mdx": "\n# SimpleGrid\n\nAdd description later.\n\n<PropTable id=\"SimpleGrid\" />\n"
   },
-  "packages/bleh-ui/src/components/Stack/README.mdx": {
+  "packages/bleh-ui/src/components/stack/stack.mdx": {
     "meta": {
       "id": "Stack",
       "title": "Stack",
@@ -694,15 +694,15 @@
       "propTables": [
         "Stack"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Stack/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Stack/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/stack/stack.mdx",
+      "repoPath": "packages/bleh-ui/src/components/stack/stack.mdx",
       "order": 999,
       "route": "components/layout/stack",
       "toc": []
     },
     "mdx": "\n# Stack\n\nAdd description later.\n"
   },
-  "packages/bleh-ui/src/components/Table/README.mdx": {
+  "packages/bleh-ui/src/components/table/table.mdx": {
     "meta": {
       "id": "Table",
       "title": "Table",
@@ -718,8 +718,8 @@
         "table",
         "tabular data"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Table/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Table/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/table/table.mdx",
+      "repoPath": "packages/bleh-ui/src/components/table/table.mdx",
       "order": 999,
       "route": "components/data-display/table",
       "toc": [
@@ -735,9 +735,9 @@
         }
       ]
     },
-    "mdx": "\n# Table\n\n## Props\n\nRender the PropsTable with a `<PropsTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
+    "mdx": "\n# Table\n\n## Props\n\nRender the PropTable with a `<PropTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
   },
-  "packages/bleh-ui/src/components/Tabs/README.mdx": {
+  "packages/bleh-ui/src/components/tabs/tabs.mdx": {
     "meta": {
       "id": "Tabs",
       "title": "Tabs",
@@ -753,8 +753,8 @@
         "accordion",
         "show hide"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Tabs/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Tabs/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/tabs/tabs.mdx",
+      "repoPath": "packages/bleh-ui/src/components/tabs/tabs.mdx",
       "order": 999,
       "route": "components/navigation/tabs",
       "toc": [
@@ -772,7 +772,7 @@
     },
     "mdx": "\n# Tabs\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTables ids=\"TabsRoot, TabsList, TabsTrigger, TabsContent\" />\n"
   },
-  "packages/bleh-ui/src/components/Text/README.mdx": {
+  "packages/bleh-ui/src/components/text/text.mdx": {
     "meta": {
       "id": "Text",
       "title": "Text",
@@ -791,8 +791,8 @@
       "propTables": [
         "Text"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Text/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Text/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/text/text.mdx",
+      "repoPath": "packages/bleh-ui/src/components/text/text.mdx",
       "order": 999,
       "route": "components/typography/text",
       "toc": [
@@ -860,7 +860,7 @@
     },
     "mdx": "\n# Text\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur.\n\n## Usage\n\n```jsx-live\nimport { Text } from \"@bleh-ui/react\";\n\nconst App = () => <Text>Display Text</Text>;\n```\n\n## Sizes\n\nYou can size text with two properties: `fontSize` and `textStyle`. Use `fontSize` to only set the size of the text.\nUse `textStyle` to set the size and an appropriate `line-height` for that size.\n\n```jsx-live\nconst App = () => (\n  <Flex flexDirection=\"column\">\n    {[\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\", \"3xl\", \"4xl\",\"5xl\",\"6xl\",\"7xl\"].map((size) => (\n      <Text key={size} asChild textStyle={size}>\n        <span>Displays text in `{size}` size</span>\n      </Text>\n    ))}\n  </Flex>\n)\n```\n\n## Weights\n\nUse the `fontWeight` prop to change the weight of the text:\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => {\n  return (\n    <Stack>\n      <Text fontWeight=\"100\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"200\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"300\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"400\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"500\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"600\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"700\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"800\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"900\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n}\n```\n\n## Truncation\n\nUse the `truncate` prop to truncate the text after a single line.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text truncate>\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n      </Text>\n    </Flex>\n  )\n```\n\n## Line Clamp\n\nUse the `lineClamp` prop to truncate the text after a certain number of lines.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text lineClamp=\"2\">\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim\n        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n        commodo consequat.\n      </Text>\n    </Flex>\n  )\n```\n\n## Colors\n\nUse the `color` prop to change the color of the text.\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Stack>\n      <Text color=\"primary.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"info.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"success.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"danger.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"error.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n```\n"
   },
-  "packages/bleh-ui/src/components/Tooltip/README.mdx": {
+  "packages/bleh-ui/src/components/tooltip/tooltip.mdx": {
     "meta": {
       "id": "Tooltip",
       "title": "Tooltip",
@@ -875,8 +875,8 @@
         "tooltip",
         "show hide"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/Tooltip/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/Tooltip/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/tooltip/tooltip.mdx",
+      "repoPath": "packages/bleh-ui/src/components/tooltip/tooltip.mdx",
       "order": 999,
       "route": "components/feedback/tooltip",
       "toc": [
@@ -894,7 +894,7 @@
     },
     "mdx": "\n# Tooltip\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTable id=\"Tooltip\" />\n"
   },
-  "packages/bleh-ui/src/components/UiKitProvider/README.mdx": {
+  "packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx": {
     "meta": {
       "id": "UiKitProvider",
       "title": "UiKitProvider",
@@ -912,651 +912,13 @@
         "required",
         "setup"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/UiKitProvider/README.mdx",
-      "repoPath": "packages/bleh-ui/src/components/UiKitProvider/README.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx",
+      "repoPath": "packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx",
       "order": 999,
       "route": "components/utilities/uikitprovider",
       "toc": []
     },
     "mdx": "\n# UiKitProvider\n\nProvides the necesseary context for the rest of the components to work in.\n\n<PropTable id=\"UiKitProvider\" />\n"
-  },
-  "packages/bleh-ui/src/docs/Components.mdx": {
-    "meta": {
-      "id": "Components",
-      "title": "Components",
-      "description": "React components for building robust and visually appealing applications.",
-      "order": 3,
-      "status": "experimental",
-      "menu": [
-        "Components"
-      ],
-      "tags": [
-        "components",
-        "react"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Components.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Components.mdx",
-      "route": "components",
-      "toc": []
-    },
-    "mdx": "\n# Components\n\n[Add a cool category overview component]\n"
-  },
-  "packages/bleh-ui/src/docs/Forms.mdx": {
-    "meta": {
-      "id": "Forms",
-      "title": "Forms",
-      "description": "components useful for assembling forms",
-      "icon": "TextCursorInput",
-      "order": 4,
-      "status": "experimental",
-      "menu": [
-        "Components",
-        "Inputs"
-      ],
-      "tags": [
-        "forms"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Forms.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Forms.mdx",
-      "route": "components/inputs",
-      "toc": []
-    },
-    "mdx": "\n# Inputs\n\nComponents for user input and interaction.\n\n- **Text Inputs**: e.g., InputField, TextArea.\n- **Selection Controls**: e.g., Dropdown, Checkbox, RadioButton.\n- **Buttons**: e.g., Button, IconButton, ToggleButton.\n- **Sliders & Pickers**: e.g., RangeSlider, DatePicker, TimePicker.\n"
-  },
-  "packages/bleh-ui/src/docs/Home.mdx": {
-    "meta": {
-      "id": "Home",
-      "title": "Home",
-      "description": "Start here if you're new.",
-      "order": 1,
-      "status": "experimental",
-      "menu": [
-        "Home"
-      ],
-      "tags": [
-        "forms"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Home.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Home.mdx",
-      "route": "home",
-      "toc": [
-        {
-          "value": "Apps",
-          "href": "#apps",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "docs",
-          "href": "#docs",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Packages",
-          "href": "#packages",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "@bleh-ui/react",
-          "href": "#bleh-uireact",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "@bleh-ui/icons",
-          "href": "#bleh-uiicons",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            2
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "# Hello!\n\nThis repository aims to solve 2 problems:\n\n1. Provide everything necessary to create beautiful, accessible and resilient user-interfaces.\n2. Document all the bits and pieces that make that happen.\n\nThe repository is currently structured into 3 workspaces, 1 app-workspace and 2 package-workspaces.\n\n## Apps\n\n### docs\n\nThe doc-app is a developer tool for creating and managing content-driven web applications by leveraging MDX files, structured metadata, and reusable UI components.\n\n* **Web Frontend**: The app generates a web-based frontend for browsing and interacting with the content.\n* **Development Environment**: A development server allows users to edit documents and add images directly through their browser.\n* **Content Indexing**: The app scans designated folders for MDX documents, automatically generating and linking pages.\n* **Content Organization**: Frontmatter in MDX files provides metadata for structuring menus and annotating content, enabling flexible organization.\n* **UI Component Integration**: The app utilizes components from `@bleh-ui/react`, demonstrating how to create polished frontends with this UI library.\n\n## Packages\n\nCurrently this two packages contain the mentioned bits and pieces, reusable across several frontends:\n\n### @bleh-ui/react\n\nThis package contains react components & hooks, as well as a ct-tailored default-theme.\n\n### @bleh-ui/icons\n\nThis package contains icons for many different scenarios."
-  },
-  "packages/bleh-ui/src/docs/Hooks.mdx": {
-    "meta": {
-      "id": "Hooke",
-      "title": "Hooke",
-      "description": "react hooks",
-      "status": "experimental",
-      "menu": [
-        "Hooks"
-      ],
-      "tags": [
-        "hooks",
-        "react"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Hooks.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Hooks.mdx",
-      "order": 999,
-      "route": "hooks",
-      "toc": []
-    },
-    "mdx": "\n# Hooks\n\nA colleciton of useful react hooks.\n"
-  },
-  "packages/bleh-ui/src/docs/Layout.mdx": {
-    "meta": {
-      "id": "Layout",
-      "title": "Layout",
-      "description": "Components that structure the content on the page.",
-      "icon": "LayoutTemplate",
-      "order": 1,
-      "status": "experimental",
-      "menu": [
-        "Components",
-        "Layout"
-      ],
-      "tags": [
-        "layout"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Layout.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Layout.mdx",
-      "route": "components/layout",
-      "toc": []
-    },
-    "mdx": "\n# Layout\n\nComponents that structure the content on the page.\n\n- **Grid Systems**: e.g., Row, Column, Container.\n- **Flexbox Utilities**: e.g., Box, Spacer, Stack.\n- **Positioning**: e.g., Absolute, RelativeWrapper.\n- **Responsive Design**: e.g., Breakpoints, ResponsiveContainer.\n"
-  },
-  "packages/bleh-ui/src/docs/Markdown.mdx": {
-    "meta": {
-      "id": "Markdown",
-      "title": "Markdown",
-      "description": "a page with many mdx & markdown features",
-      "status": "experimental",
-      "menu": [
-        "Playground",
-        "Markdown"
-      ],
-      "tags": [
-        "playground",
-        "markdown",
-        "mdx"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Markdown.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Markdown.mdx",
-      "order": 999,
-      "route": "playground/markdown",
-      "toc": [
-        {
-          "value": "Basic Markdown",
-          "href": "#basic-markdown",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Headings",
-          "href": "#headings",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Emphasizing Text",
-          "href": "#emphasizing-text",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Italic Text",
-          "href": "#italic-text",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            2,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Bold Text",
-          "href": "#bold-text",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            2,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Bold + Italic Text",
-          "href": "#bold--italic-text",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            2,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Code",
-          "href": "#code",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Blockquote",
-          "href": "#blockquote",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            4
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Links",
-          "href": "#links",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            5
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Images",
-          "href": "#images",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            6
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Lists",
-          "href": "#lists",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            7
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Ordered List",
-          "href": "#ordered-list",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            7,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Unordered Lists",
-          "href": "#unordered-lists",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            7,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Github flavored Markdown",
-          "href": "#github-flavored-markdown",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Tables",
-          "href": "#tables",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Footnotes",
-          "href": "#footnotes",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Strikethrough",
-          "href": "#strikethrough",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Tasklist",
-          "href": "#tasklist",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            4
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Highlighted blockquotes",
-          "href": "#highlighted-blockquotes",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            5
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Blockquotes",
-          "href": "#blockquotes",
-          "depth": 2,
-          "numbering": [
-            1,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Simple case",
-          "href": "#simple-case",
-          "depth": 3,
-          "numbering": [
-            1,
-            3,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "With cite",
-          "href": "#with-cite",
-          "depth": 3,
-          "numbering": [
-            1,
-            3,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Two paragraphs in a blockquote",
-          "href": "#two-paragraphs-in-a-blockquote",
-          "depth": 3,
-          "numbering": [
-            1,
-            3,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Nested blockquote",
-          "href": "#nested-blockquote",
-          "depth": 3,
-          "numbering": [
-            1,
-            3,
-            4
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Blockquotes with Other Elements",
-          "href": "#blockquotes-with-other-elements",
-          "depth": 3,
-          "numbering": [
-            1,
-            3,
-            5
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "The quarterly results look great!",
-          "href": "#the-quarterly-results-look-great",
-          "depth": 4,
-          "numbering": [
-            1,
-            3,
-            5,
-            1
-          ],
-          "parent": "blockquote"
-        },
-        {
-          "value": "Keyboard Combinations",
-          "href": "#keyboard-combinations",
-          "depth": 3,
-          "numbering": [
-            1,
-            3,
-            6
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Markdown / MDX Stress Test\n\nThis is a page to stress test markdown & mdx syntax usages to see if everything renders without issues.\n\n## Basic Markdown\n\nBAsic markdown is supported.\n\n### Headings\n\nSee the bold Text above? This is a heading. Not gonna demonstrate them, they are used everwhere on a page, but this is what you'd use in markdown or mdx files to write one:\n\n```markdown\n# H1 Most important\n\n## H2 Heading\n\n### H3 Heading\n\n#### H4 Heading\n\n##### H5 Heading\n\n###### H6 Least important\n```\n\n### Emphasizing Text\n\n#### Italic Text\n\n_Italic text_ is done with underscores `_String to highlight_`\n\n#### Bold Text\n\n**Bold text** is done with double asterisks `**String to highlight**`\n\n#### Bold + Italic Text\n\n**_Bold + Italic text_** is done with tripple asterisks `***String to highlight***`\n\n### Code\n\nCode can be displayed inline or in a code-block, use single backticks for inline-code or tripple backticks for code blocks.\n\nLook at this: `export const App = () => <div>App</div>` this was inline code.\n\nAnd here is a code-block:\n\n```jsx\nexport const App = () => {\n  return (\n    <div>\n      <p>App</p>\n    </div>\n  );\n};\n```\n\n### Blockquote\n\nThis is how a regular blockquote looks. There are more variants of blockquotes but they are belonging to the Github flavored Markdown though.\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n\n### Links\n\nLink look pretty basic [tiramisu croissant gummies](http://www.asdasdsd.com)\n\n### Images\n\nImages work as well.\n\n```markdown\n![alt text](https://picsum.photos/seed/2/640/480 \"Image title\")\n```\n\n![alt text](https://picsum.photos/seed/2/640/480 \"Random office pic\")\n\n### Lists\n\n#### Ordered List\n\nSimple list:\n\n1. First item\n2. Second item\n3. Third item\n4. Fourth item\n\n---\n\n1. First item\n2. Second item\n3. Third item\n   1. Indented item\n   2. Indented item\n4. Fourth item\n\n---\n\n#### Unordered Lists\n\nSimple list:\n\n- First item\n- Second item\n- Third item\n- Fourth item\n\nList with a sublist:\n\n- First item\n- Second item\n- Third item\n  - Indented item\n  - Indented item\n- Fourth item\n\n## Github flavored Markdown\n\n### Tables\n\n| **Product Name**                  | **Category**     | **Price** | **Discount** | **Stock** | **Ratings**     | **Brand**  | **Color**   | **Shipping**      | **In Stock** |\n| --------------------------------- | ---------------- | --------- | ------------ | --------- | --------------- | ---------- | ----------- | ----------------- | ------------ |\n| **Wireless Bluetooth Headphones** | Electronics      | $79.99    | 10% off      | 124       | ⭐⭐⭐⭐☆ (4.5) | SoundWave  | Black       | Free Shipping     | Yes          |\n| **Leather Sofa Set**              | Furniture        | $999.00   | 15% off      | 15        | ⭐⭐⭐⭐⭐ (5)  | HomeLux    | Brown       | Free Shipping     | No           |\n| **Smartphone 6 Pro**              | Electronics      | $699.00   | 5% off       | 57        | ⭐⭐⭐⭐⭐ (5)  | TechSmart  | Blue        | Free Shipping     | Yes          |\n| **Gaming Laptop 15\"**             | Electronics      | $1,499.00 | 20% off      | 32        | ⭐⭐⭐⭐☆ (4.2) | GamerX     | Gray        | Free Shipping     | Yes          |\n| **Organic Green Tea**             | Food & Beverages | $15.99    | No Discount  | 302       | ⭐⭐⭐⭐☆ (4.4) | PureLeaf   | Green       | Standard Shipping | Yes          |\n| **Men’s Running Shoes**           | Apparel          | $79.99    | 30% off      | 85        | ⭐⭐⭐⭐☆ (4.6) | FitStep    | Red         | Free Shipping     | Yes          |\n| **Stainless Steel Watch**         | Accessories      | $249.00   | 10% off      | 67        | ⭐⭐⭐⭐⭐ (5)  | TimeMaster | Silver      | Free Shipping     | No           |\n| **Coffee Maker 12 Cup**           | Kitchen          | $89.99    | No Discount  | 121       | ⭐⭐⭐⭐⭐ (5)  | BrewMaster | Black       | Standard Shipping | Yes          |\n| **Children’s Toy Set**            | Toys & Games     | $24.99    | 15% off      | 205       | ⭐⭐⭐⭐☆ (4.3) | FunTime    | Multi-color | Free Shipping     | Yes          |\n\n### Footnotes\n\n- Super cheap, buy now [^1]\n\n[^1]: It's actually expensive.\n\n### Strikethrough\n\n~one~ or ~~two~~ tildes.\n\n### Tasklist\n\n- [ ] to do\n- [x] done\n\n### Highlighted blockquotes\n\n> [!NOTE]  \n> Highlights information that users should take into account, even when skimming.\n\n> [!IMPORTANT]  \n> Crucial information necessary for users to succeed.\n\n> [!WARNING]  \n> Critical content demanding immediate user attention due to potential risks.\n\n> [!CAUTION]  \n> Negative potential consequences of an action.\n\n> [!TIP]  \n> Optional information to help a user be more successful. Maybe with more text\n\n## Blockquotes\n\n### Simple case\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.\n\n### With cite\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.\n>\n> - Dorothy from wizard of oz\n\n### Two paragraphs in a blockquote\n\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\n### Nested blockquote\n\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> > The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\n### Blockquotes with Other Elements\n\n> #### The quarterly results look great!\n>\n> - Revenue was off the chart.\n> - Profits were higher than ever.\n>\n> ---\n>\n> Kinda fancy looking, right?\n\n### Keyboard Combinations\n\nTo enable fruitcake mode, press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Space</kbd>.\n"
-  },
-  "packages/bleh-ui/src/docs/Media.mdx": {
-    "meta": {
-      "id": "Media",
-      "title": "Media",
-      "description": "Components for displaying media content.",
-      "icon": "Images",
-      "order": 3,
-      "menu": [
-        "Components",
-        "Media"
-      ],
-      "tags": [
-        "media"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Media.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Media.mdx",
-      "route": "components/media",
-      "toc": []
-    },
-    "mdx": "\n# Media\n\nComponents for displaying media content.\n\n- **Images**: e.g., Avatar, Image, Carousel.\n- **Videos**: e.g., VideoPlayer, VideoThumbnail.\n- **Icons**: e.g., Icon, IconButton.\n- **Audio**: e.g., AudioPlayer.\n"
-  },
-  "packages/bleh-ui/src/docs/Playground.mdx": {
-    "meta": {
-      "id": "Playground",
-      "title": "Playground",
-      "description": "collection of pages with an explorative character",
-      "documents": "Playground",
-      "status": "experimental",
-      "menu": [
-        "Playground"
-      ],
-      "tags": [
-        "playground",
-        "exploring"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Playground.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Playground.mdx",
-      "order": 999,
-      "route": "playground",
-      "toc": []
-    },
-    "mdx": "\n# Playground\n\nThis is the place to try out things.\n"
-  },
-  "packages/bleh-ui/src/docs/Toc.mdx": {
-    "meta": {
-      "id": "Toc",
-      "title": "Toc",
-      "description": "Let's get the table of contents automatically generated",
-      "documents": "Toc",
-      "status": "experimental",
-      "menu": [
-        "Playground",
-        "Toc"
-      ],
-      "tags": [
-        "playground",
-        "exploring"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Toc.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Toc.mdx",
-      "order": 999,
-      "route": "playground/toc",
-      "toc": [
-        {
-          "value": "Level 2.1",
-          "href": "#level-21",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Level 3.1",
-          "href": "#level-31",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Level 4.1",
-          "href": "#level-41",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Level 4.2",
-          "href": "#level-42",
-          "depth": 4,
-          "numbering": [
-            1,
-            1,
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Level 3.2",
-          "href": "#level-32",
-          "depth": 3,
-          "numbering": [
-            1,
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Level 2.2",
-          "href": "#level-22",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n# Toc\n\nThis is the place to try out things.\n\n## Level 2.1\n\nFirst Level 2 Heading\n\n### Level 3.1\n\nFirst Level 3 Heading\n\n#### Level 4.1\n\nFirst Level 4 Heading\n\n#### Level 4.2\n\nSecond Level 4 Heading\n\n### Level 3.2\n\nSecond Level 3 Heading\n\n## Level 2.2\n"
-  },
-  "packages/bleh-ui/src/docs/Tokens.mdx": {
-    "meta": {
-      "id": "Tokens",
-      "title": "Tokens",
-      "description": "design tokens to be used in conjunction with the ui components",
-      "order": 2,
-      "status": "experimental",
-      "menu": [
-        "Tokens"
-      ],
-      "tags": [
-        "tokens",
-        "design"
-      ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/Tokens.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/Tokens.mdx",
-      "route": "tokens",
-      "toc": []
-    },
-    "mdx": "# Tokens\n\nA collection of design tokens"
   },
   "packages/bleh-ui/src/docs/accessibility.mdx": {
     "meta": {
@@ -1878,6 +1240,49 @@
       "toc": []
     },
     "mdx": "\n# Changelog\n\nList of updates, improvements, and bug fixes.\n"
+  },
+  "packages/bleh-ui/src/docs/components-layout.mdx": {
+    "meta": {
+      "id": "Layout",
+      "title": "Layout",
+      "description": "Components that structure the content on the page.",
+      "icon": "LayoutTemplate",
+      "order": 1,
+      "status": "experimental",
+      "menu": [
+        "Components",
+        "Layout"
+      ],
+      "tags": [
+        "layout"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/components-layout.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/components-layout.mdx",
+      "route": "components/layout",
+      "toc": []
+    },
+    "mdx": "\n# Layout\n\nComponents that structure the content on the page.\n\n- **Grid Systems**: e.g., Row, Column, Container.\n- **Flexbox Utilities**: e.g., Box, Spacer, Stack.\n- **Positioning**: e.g., Absolute, RelativeWrapper.\n- **Responsive Design**: e.g., Breakpoints, ResponsiveContainer.\n"
+  },
+  "packages/bleh-ui/src/docs/components.mdx": {
+    "meta": {
+      "id": "Components",
+      "title": "Components",
+      "description": "React components for building robust and visually appealing applications.",
+      "order": 3,
+      "status": "experimental",
+      "menu": [
+        "Components"
+      ],
+      "tags": [
+        "components",
+        "react"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/components.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/components.mdx",
+      "route": "components",
+      "toc": []
+    },
+    "mdx": "\n# Components\n\n[Add a cool category overview component]\n"
   },
   "packages/bleh-ui/src/docs/data-display.mdx": {
     "meta": {
@@ -2497,6 +1902,28 @@
     },
     "mdx": "\n# Flex and Grid\n\nJSX style props to control flex and grid layouts\n\n## Flex Basis\n\nUse the `flexBasis` prop to set the initial main size of a flex item.\n\n```jsx\n<Flex>\n  <Box flexBasis=\"25%\" />\n  <Box flexBasis=\"25%\" />\n  <Box flexBasis=\"50%\" />\n</Flex>\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `flexBasis` | `flex-basis` | -              |\n\n## Flex Direction\n\nUse the `flexDir` or `flexDirection` prop to set the direction of the main axis\nin a flex container.\n\n```jsx\n<Box display=\"flex\" flexDirection=\"column\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\nWhen using `Flex` component, the `direction` prop is aliased to `flexDirection`.\n\n```jsx\n<Flex direction=\"column\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Flex>\n```\n\n| Prop                       | CSS Property     | Token Category |\n| -------------------------- | ---------------- | -------------- |\n| `flexDir`, `flexDirection` | `flex-direction` | -              |\n\n## Flex Wrap\n\nUse the `flexWrap` prop to set whether flex items are forced onto one line or\ncan wrap onto multiple lines.\n\n```jsx\n<Box display=\"flex\" flexWrap=\"wrap\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\nWhen using `Flex` component, the `wrap` prop is aliased to `flexWrap`.\n\n```jsx\n<Flex wrap=\"wrap\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Flex>\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `flexWrap` | `flex-wrap`  | -              |\n\n## Flex\n\nUse the `flex` prop to define the flexibility of a flex container or item.\n\n```jsx\n<Flex>\n  <Box flex=\"1\" />\n  <Box />\n</Flex>\n```\n\n| Prop   | CSS Property | Token Category |\n| ------ | ------------ | -------------- |\n| `flex` | `flex`       | -              |\n\n## Flex Grow\n\nUse the `flexGrow` prop to set the flex grow factor of a flex item.\n\n```jsx\n<Flex>\n  <Box flexGrow=\"0\" />\n  <Box flexGrow=\"1\" />\n</Flex>\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `flexGrow` | `flex-grow`  | -              |\n\n## Flex Shrink\n\nUse the `flexShrink` prop to set the flex shrink factor of a flex item.\n\n```jsx\n<Flex>\n  <Box flexShrink=\"0\" />\n  <Box flexShrink=\"1\" />\n</Flex>\n```\n\n| Prop         | CSS Property  | Token Category |\n| ------------ | ------------- | -------------- |\n| `flexShrink` | `flex-shrink` | -              |\n\n## Order\n\nUse the `order` prop to set the order of a flex item.\n\n```jsx\n<Flex>\n  <Box order=\"0\" />\n  <Box order=\"1\" />\n</Flex>\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `order` | `order`      | -              |\n\n## Gap\n\nUse the `gap` prop to set the gap between items in a flex or grid container.\n\n```jsx\n<Flex gap=\"4\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Flex>\n```\n\n| Prop  | CSS Property | Token Category |\n| ----- | ------------ | -------------- |\n| `gap` | `gap`        | `spacing`      |\n\n## Grid Template Columns\n\nUse the `gridTemplateColumns` prop to define the columns of a grid container.\n\n```jsx\n<Box display=\"grid\" gridTemplateColumns=\"repeat(3, minmax(0, 1fr))\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\nWhen using `Grid` component, the `templateColumns` prop is aliased to\n`gridTemplateColumns`.\n\n```jsx\n<Grid templateColumns=\"repeat(3, minmax(0, 1fr))\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Grid>\n```\n\n## Grid Template Start/End\n\nUse the `gridTemplateStart` and `gridTemplateEnd` props to define the start and\nend of a grid container.\n\n```jsx\n<Box display=\"grid\" gridTemplateColumns=\"repeat(3, minmax(0, 1fr))\">\n  <Box>Item 1</Box>\n  <Box gridColumn=\"span 2 / span 2\">Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop                | CSS Property          | Token Category |\n| ------------------- | --------------------- | -------------- |\n| `gridTemplateStart` | `grid-template-start` | -              |\n| `gridTemplateEnd`   | `grid-template-end`   | -              |\n\n## Grid Template Rows\n\nUse the `gridTemplateRows` prop to define the rows of a grid container.\n\n```jsx\n<Box display=\"grid\" gap=\"4\" gridTemplateRows=\"repeat(3, minmax(0, 1fr))\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop               | CSS Property         | Token Category |\n| ------------------ | -------------------- | -------------- |\n| `gridTemplateRows` | `grid-template-rows` | -              |\n\n## Grid Row Start/End\n\nUse the `gridRowStart` and `gridRowEnd` props to define the start and end of a\ngrid item.\n\n```jsx\n<Box display=\"grid\" gap=\"4\" gridTemplateRows=\"repeat(3, minmax(0, 1fr))\">\n  <Box gridRowStart=\"1\" gridRowEnd=\"3\">\n    Item 1\n  </Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop           | CSS Property     | Token Category |\n| -------------- | ---------------- | -------------- |\n| `gridRowStart` | `grid-row-start` | -              |\n| `gridRowEnd`   | `grid-row-end`   | -              |\n\n## Grid Autoflow\n\nUse the `gridAutoFlow` prop to define how auto-placed items get flowed into the\ngrid.\n\n```jsx\n<Box display=\"grid\" gridAutoFlow=\"row\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop           | CSS Property     | Token Category |\n| -------------- | ---------------- | -------------- |\n| `gridAutoFlow` | `grid-auto-flow` | -              |\n\n## Grid Auto Columns\n\nUse the `gridAutoColumns` prop to specify the size of the grid columns that were\ncreated without an explicit size.\n\n```jsx\n<Box display=\"grid\" gridAutoColumns=\"120px\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop              | CSS Property        | Token Category |\n| ----------------- | ------------------- | -------------- |\n| `gridAutoColumns` | `grid-auto-columns` | -              |\n\n## Grid Auto Rows\n\nUse the `gridAutoRows` prop to specify the size of the grid rows that were\ncreated without an explicit size.\n\n```jsx\n<Box display=\"grid\" gridTemplateRows=\"200px\" gridAutoRows=\"120px\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop           | CSS Property     | Token Category |\n| -------------- | ---------------- | -------------- |\n| `gridAutoRows` | `grid-auto-rows` | -              |\n\n## Justify Content\n\nUse the `justifyContent` prop to align items along the main axis of a flex\ncontainer.\n\n```jsx\n<Box display=\"flex\" justifyContent=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\nWhen using the `Flex` component, the `justify` prop is aliased to\n`justifyContent`.\n\n```jsx\n<Flex justify=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Flex>\n```\n\n| Prop             | CSS Property      | Token Category |\n| ---------------- | ----------------- | -------------- |\n| `justifyContent` | `justify-content` | -              |\n\n## Justify Items\n\nUse the `justifyItems` prop to control the alignment of grid items within their\nscope.\n\n```jsx\n<Box display=\"grid\" justifyItems=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop           | CSS Property    | Token Category |\n| -------------- | --------------- | -------------- |\n| `justifyItems` | `justify-items` | -              |\n\n## Align Content\n\nUse the `alignContent` prop to align rows of content along the cross axis of a\nflex container when there's extra space.\n\n```jsx\n<Box display=\"flex\" alignContent=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\nWhen using the `Flex` component, the `align` prop is aliased to `alignContent`.\n\n```jsx\n<Flex align=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Flex>\n```\n\n| Prop           | CSS Property    | Token Category |\n| -------------- | --------------- | -------------- |\n| `alignContent` | `align-content` | -              |\n\n## Align Items\n\nUse the `alignItems` prop to control the alignment of grid items within their\nscope.\n\n```jsx\n<Box display=\"grid\" alignItems=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n## Align Self\n\nUse the `alignSelf` prop to control the alignment of a grid item within its\nscope.\n\n```jsx\n<Box display=\"grid\">\n  <Box alignSelf=\"center\">Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `alignSelf` | `align-self` | -              |\n\n## Place Content\n\nUse the `placeContent` prop to align content along both the block and inline\ndirections at once. It works like `justifyContent` and `alignContent` combined,\nand can be used in flex and grid containers.\n\n```jsx\n<Flex placeContent=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Flex>\n```\n\n| Prop           | CSS Property    | Token Category |\n| -------------- | --------------- | -------------- |\n| `placeContent` | `place-content` | -              |\n\n## Place Items\n\nUse the `placeItems` prop to align items along both the block and inline\ndirections at once. It works like `justifyItems` and `alignItems` combined, and\ncan be used in flex and grid containers.\n\n```jsx\n<Box display=\"grid\" placeItems=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop         | CSS Property  | Token Category |\n| ------------ | ------------- | -------------- |\n| `placeItems` | `place-items` | -              |\n\n## Place Self\n\nUse the `placeSelf` prop to align a grid item along both the block and inline\ndirections at once.\n\n```jsx\n<Box display=\"grid\">\n  <Box placeSelf=\"center\">Item 1</Box>\n  <Box>Item 2</Box>\n  <Box>Item 3</Box>\n</Box>\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `placeSelf` | `place-self` | -              |\n"
   },
+  "packages/bleh-ui/src/docs/forms.mdx": {
+    "meta": {
+      "id": "Forms",
+      "title": "Forms",
+      "description": "components useful for assembling forms",
+      "icon": "TextCursorInput",
+      "order": 4,
+      "status": "experimental",
+      "menu": [
+        "Components",
+        "Inputs"
+      ],
+      "tags": [
+        "forms"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/forms.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/forms.mdx",
+      "route": "components/inputs",
+      "toc": []
+    },
+    "mdx": "\n# Inputs\n\nComponents for user input and interaction.\n\n- **Text Inputs**: e.g., InputField, TextArea.\n- **Selection Controls**: e.g., Dropdown, Checkbox, RadioButton.\n- **Buttons**: e.g., Button, IconButton, ToggleButton.\n- **Sliders & Pickers**: e.g., RangeSlider, DatePicker, TimePicker.\n"
+  },
   "packages/bleh-ui/src/docs/getting-started.mdx": {
     "meta": {
       "id": "Home-Getting Started",
@@ -2517,6 +1944,101 @@
       "toc": []
     },
     "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
+  },
+  "packages/bleh-ui/src/docs/home.mdx": {
+    "meta": {
+      "id": "Home",
+      "title": "Home",
+      "description": "Start here if you're new.",
+      "order": 1,
+      "status": "experimental",
+      "menu": [
+        "Home"
+      ],
+      "tags": [
+        "forms"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/home.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/home.mdx",
+      "route": "home",
+      "toc": [
+        {
+          "value": "Apps",
+          "href": "#apps",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "docs",
+          "href": "#docs",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Packages",
+          "href": "#packages",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "@bleh-ui/react",
+          "href": "#bleh-uireact",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "@bleh-ui/icons",
+          "href": "#bleh-uiicons",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "# Hello!\n\nThis repository aims to solve 2 problems:\n\n1. Provide everything necessary to create beautiful, accessible and resilient user-interfaces.\n2. Document all the bits and pieces that make that happen.\n\nThe repository is currently structured into 3 workspaces, 1 app-workspace and 2 package-workspaces.\n\n## Apps\n\n### docs\n\nThe doc-app is a developer tool for creating and managing content-driven web applications by leveraging MDX files, structured metadata, and reusable UI components.\n\n* **Web Frontend**: The app generates a web-based frontend for browsing and interacting with the content.\n* **Development Environment**: A development server allows users to edit documents and add images directly through their browser.\n* **Content Indexing**: The app scans designated folders for MDX documents, automatically generating and linking pages.\n* **Content Organization**: Frontmatter in MDX files provides metadata for structuring menus and annotating content, enabling flexible organization.\n* **UI Component Integration**: The app utilizes components from `@bleh-ui/react`, demonstrating how to create polished frontends with this UI library.\n\n## Packages\n\nCurrently this two packages contain the mentioned bits and pieces, reusable across several frontends:\n\n### @bleh-ui/react\n\nThis package contains react components & hooks, as well as a ct-tailored default-theme.\n\n### @bleh-ui/icons\n\nThis package contains icons for many different scenarios."
+  },
+  "packages/bleh-ui/src/docs/hooks.mdx": {
+    "meta": {
+      "id": "Hooke",
+      "title": "Hooke",
+      "description": "react hooks",
+      "status": "experimental",
+      "menu": [
+        "Hooks"
+      ],
+      "tags": [
+        "hooks",
+        "react"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/hooks.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/hooks.mdx",
+      "order": 999,
+      "route": "hooks",
+      "toc": []
+    },
+    "mdx": "\n# Hooks\n\nA colleciton of useful react hooks.\n"
   },
   "packages/bleh-ui/src/docs/inputs.mdx": {
     "meta": {
@@ -3105,6 +2627,351 @@
     },
     "mdx": "\n# List\n\nJSX style props for customizing list styles.\n\n## List Style Type\n\nUse the `listStyleType` property to set the type of the list marker.\n\n```jsx\n<Box as=\"ul\" listStyleType=\"circle\">\n  <li>Item 1</li>\n  <li>Item 2</li>\n  <li>Item 3</li>\n</Box>\n```\n\n| Prop            | CSS Property      | Token Category |\n| --------------- | ----------------- | -------------- |\n| `listStyleType` | `list-style-type` | -              |\n\n## List Style Position\n\nUse the `listStylePosition` property to set the position of the list marker.\n\n```jsx\n<Box as=\"ul\" listStylePosition=\"inside\">\n  <li>Item 1</li>\n  <li>Item 2</li>\n  <li>Item 3</li>\n</Box>\n```\n\n| Prop                | CSS Property          | Token Category |\n| ------------------- | --------------------- | -------------- |\n| `listStylePosition` | `list-style-position` | -              |\n\n## List Style Image\n\nUse the `listStyleImage` property to set the image of the list marker.\n\n```jsx\n<Box as=\"ul\" listStyleImage=\"url(...)\">\n  <li>Item 1</li>\n  <li>Item 2</li>\n  <li>Item 3</li>\n</Box>\n```\n\n| Prop             | CSS Property       | Token Category |\n| ---------------- | ------------------ | -------------- |\n| `listStyleImage` | `list-style-image` | `assets`       |\n\n## Markers\n\nUse the `_marker` property to set the marker of a list item.\n\n```jsx /_marker/\n<ul>\n  <Box as=\"li\" _marker={{ color: \"red\" }}>\n    Item 1\n  </Box>\n  <Box as=\"li\" _marker={{ color: \"blue\" }}>\n    Item 2\n  </Box>\n  <Box as=\"li\" _marker={{ color: \"green\" }}>\n    Item 3\n  </Box>\n</ul>\n```\n"
   },
+  "packages/bleh-ui/src/docs/markdown.mdx": {
+    "meta": {
+      "id": "Markdown",
+      "title": "Markdown",
+      "description": "a page with many mdx & markdown features",
+      "status": "experimental",
+      "menu": [
+        "Playground",
+        "Markdown"
+      ],
+      "tags": [
+        "playground",
+        "markdown",
+        "mdx"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/markdown.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/markdown.mdx",
+      "order": 999,
+      "route": "playground/markdown",
+      "toc": [
+        {
+          "value": "Basic Markdown",
+          "href": "#basic-markdown",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Headings",
+          "href": "#headings",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Emphasizing Text",
+          "href": "#emphasizing-text",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Italic Text",
+          "href": "#italic-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Bold Text",
+          "href": "#bold-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Bold + Italic Text",
+          "href": "#bold--italic-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Code",
+          "href": "#code",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Blockquote",
+          "href": "#blockquote",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Links",
+          "href": "#links",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Images",
+          "href": "#images",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Lists",
+          "href": "#lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ordered List",
+          "href": "#ordered-list",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Unordered Lists",
+          "href": "#unordered-lists",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Github flavored Markdown",
+          "href": "#github-flavored-markdown",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tables",
+          "href": "#tables",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Footnotes",
+          "href": "#footnotes",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Strikethrough",
+          "href": "#strikethrough",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tasklist",
+          "href": "#tasklist",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Highlighted blockquotes",
+          "href": "#highlighted-blockquotes",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Blockquotes",
+          "href": "#blockquotes",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Simple case",
+          "href": "#simple-case",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With cite",
+          "href": "#with-cite",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Two paragraphs in a blockquote",
+          "href": "#two-paragraphs-in-a-blockquote",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Nested blockquote",
+          "href": "#nested-blockquote",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Blockquotes with Other Elements",
+          "href": "#blockquotes-with-other-elements",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "The quarterly results look great!",
+          "href": "#the-quarterly-results-look-great",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            5,
+            1
+          ],
+          "parent": "blockquote"
+        },
+        {
+          "value": "Keyboard Combinations",
+          "href": "#keyboard-combinations",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Markdown / MDX Stress Test\n\nThis is a page to stress test markdown & mdx syntax usages to see if everything renders without issues.\n\n## Basic Markdown\n\nBAsic markdown is supported.\n\n### Headings\n\nSee the bold Text above? This is a heading. Not gonna demonstrate them, they are used everwhere on a page, but this is what you'd use in markdown or mdx files to write one:\n\n```markdown\n# H1 Most important\n\n## H2 Heading\n\n### H3 Heading\n\n#### H4 Heading\n\n##### H5 Heading\n\n###### H6 Least important\n```\n\n### Emphasizing Text\n\n#### Italic Text\n\n_Italic text_ is done with underscores `_String to highlight_`\n\n#### Bold Text\n\n**Bold text** is done with double asterisks `**String to highlight**`\n\n#### Bold + Italic Text\n\n**_Bold + Italic text_** is done with tripple asterisks `***String to highlight***`\n\n### Code\n\nCode can be displayed inline or in a code-block, use single backticks for inline-code or tripple backticks for code blocks.\n\nLook at this: `export const App = () => <div>App</div>` this was inline code.\n\nAnd here is a code-block:\n\n```jsx\nexport const App = () => {\n  return (\n    <div>\n      <p>App</p>\n    </div>\n  );\n};\n```\n\n### Blockquote\n\nThis is how a regular blockquote looks. There are more variants of blockquotes but they are belonging to the Github flavored Markdown though.\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n\n### Links\n\nLink look pretty basic [tiramisu croissant gummies](http://www.asdasdsd.com)\n\n### Images\n\nImages work as well.\n\n```markdown\n![alt text](https://picsum.photos/seed/2/640/480 \"Image title\")\n```\n\n![alt text](https://picsum.photos/seed/2/640/480 \"Random office pic\")\n\n### Lists\n\n#### Ordered List\n\nSimple list:\n\n1. First item\n2. Second item\n3. Third item\n4. Fourth item\n\n---\n\n1. First item\n2. Second item\n3. Third item\n   1. Indented item\n   2. Indented item\n4. Fourth item\n\n---\n\n#### Unordered Lists\n\nSimple list:\n\n- First item\n- Second item\n- Third item\n- Fourth item\n\nList with a sublist:\n\n- First item\n- Second item\n- Third item\n  - Indented item\n  - Indented item\n- Fourth item\n\n## Github flavored Markdown\n\n### Tables\n\n| **Product Name**                  | **Category**     | **Price** | **Discount** | **Stock** | **Ratings**     | **Brand**  | **Color**   | **Shipping**      | **In Stock** |\n| --------------------------------- | ---------------- | --------- | ------------ | --------- | --------------- | ---------- | ----------- | ----------------- | ------------ |\n| **Wireless Bluetooth Headphones** | Electronics      | $79.99    | 10% off      | 124       | ⭐⭐⭐⭐☆ (4.5) | SoundWave  | Black       | Free Shipping     | Yes          |\n| **Leather Sofa Set**              | Furniture        | $999.00   | 15% off      | 15        | ⭐⭐⭐⭐⭐ (5)  | HomeLux    | Brown       | Free Shipping     | No           |\n| **Smartphone 6 Pro**              | Electronics      | $699.00   | 5% off       | 57        | ⭐⭐⭐⭐⭐ (5)  | TechSmart  | Blue        | Free Shipping     | Yes          |\n| **Gaming Laptop 15\"**             | Electronics      | $1,499.00 | 20% off      | 32        | ⭐⭐⭐⭐☆ (4.2) | GamerX     | Gray        | Free Shipping     | Yes          |\n| **Organic Green Tea**             | Food & Beverages | $15.99    | No Discount  | 302       | ⭐⭐⭐⭐☆ (4.4) | PureLeaf   | Green       | Standard Shipping | Yes          |\n| **Men’s Running Shoes**           | Apparel          | $79.99    | 30% off      | 85        | ⭐⭐⭐⭐☆ (4.6) | FitStep    | Red         | Free Shipping     | Yes          |\n| **Stainless Steel Watch**         | Accessories      | $249.00   | 10% off      | 67        | ⭐⭐⭐⭐⭐ (5)  | TimeMaster | Silver      | Free Shipping     | No           |\n| **Coffee Maker 12 Cup**           | Kitchen          | $89.99    | No Discount  | 121       | ⭐⭐⭐⭐⭐ (5)  | BrewMaster | Black       | Standard Shipping | Yes          |\n| **Children’s Toy Set**            | Toys & Games     | $24.99    | 15% off      | 205       | ⭐⭐⭐⭐☆ (4.3) | FunTime    | Multi-color | Free Shipping     | Yes          |\n\n### Footnotes\n\n- Super cheap, buy now [^1]\n\n[^1]: It's actually expensive.\n\n### Strikethrough\n\n~one~ or ~~two~~ tildes.\n\n### Tasklist\n\n- [ ] to do\n- [x] done\n\n### Highlighted blockquotes\n\n> [!NOTE]  \n> Highlights information that users should take into account, even when skimming.\n\n> [!IMPORTANT]  \n> Crucial information necessary for users to succeed.\n\n> [!WARNING]  \n> Critical content demanding immediate user attention due to potential risks.\n\n> [!CAUTION]  \n> Negative potential consequences of an action.\n\n> [!TIP]  \n> Optional information to help a user be more successful. Maybe with more text\n\n## Blockquotes\n\n### Simple case\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.\n\n### With cite\n\n> Sugar plum shortbread dragée chocolate bar lollipop. Bonbon soufflé cupcake cotton candy bear claw muffin tiramisu\n> chocolate cake icing. Cake marshmallow tart pastry caramels tootsie roll. Gummi bears liquorice tiramisu toffee tart.\n>\n> - Dorothy from wizard of oz\n\n### Two paragraphs in a blockquote\n\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\n### Nested blockquote\n\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> > The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\n### Blockquotes with Other Elements\n\n> #### The quarterly results look great!\n>\n> - Revenue was off the chart.\n> - Profits were higher than ever.\n>\n> ---\n>\n> Kinda fancy looking, right?\n\n### Keyboard Combinations\n\nTo enable fruitcake mode, press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Space</kbd>.\n"
+  },
+  "packages/bleh-ui/src/docs/media.mdx": {
+    "meta": {
+      "id": "Media",
+      "title": "Media",
+      "description": "Components for displaying media content.",
+      "icon": "Images",
+      "order": 3,
+      "menu": [
+        "Components",
+        "Media"
+      ],
+      "tags": [
+        "media"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/media.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/media.mdx",
+      "route": "components/media",
+      "toc": []
+    },
+    "mdx": "\n# Media\n\nComponents for displaying media content.\n\n- **Images**: e.g., Avatar, Image, Carousel.\n- **Videos**: e.g., VideoPlayer, VideoThumbnail.\n- **Icons**: e.g., Icon, IconButton.\n- **Audio**: e.g., AudioPlayer.\n"
+  },
   "packages/bleh-ui/src/docs/naivgation.mdx": {
     "meta": {
       "id": "Components-Naivgation",
@@ -3125,6 +2992,28 @@
       "toc": []
     },
     "mdx": "\n# Navigation\n\nComponents for moving through an application.\n\n- **Menus**: e.g., Dropdown, ContextMenu.\n- **Navigation Bars**: e.g., Navbar, Sidebar, Breadcrumbs.\n- **Tabs & Accordions**: e.g., TabPanel, Accordion.\n- **Pagination**: e.g., Paginator, InfiniteScroller.\n"
+  },
+  "packages/bleh-ui/src/docs/playground.mdx": {
+    "meta": {
+      "id": "Playground",
+      "title": "Playground",
+      "description": "collection of pages with an explorative character",
+      "documents": "Playground",
+      "status": "experimental",
+      "menu": [
+        "Playground"
+      ],
+      "tags": [
+        "playground",
+        "exploring"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/playground.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/playground.mdx",
+      "order": 999,
+      "route": "playground",
+      "toc": []
+    },
+    "mdx": "\n# Playground\n\nThis is the place to try out things.\n"
   },
   "packages/bleh-ui/src/docs/rfcs-component-structure-rfcs.mdx": {
     "meta": {
@@ -3173,8 +3062,8 @@
           "parent": "root"
         },
         {
-          "value": "ComponentName.types.ts",
-          "href": "#componentnametypests",
+          "value": "component-name.types.ts",
+          "href": "#component-nametypests",
           "depth": 3,
           "numbering": [
             1,
@@ -3184,8 +3073,8 @@
           "parent": "root"
         },
         {
-          "value": "ComponentName.recipe.ts",
-          "href": "#componentnamerecipets",
+          "value": "component-name.recipe.ts",
+          "href": "#component-namerecipets",
           "depth": 3,
           "numbering": [
             1,
@@ -3195,8 +3084,8 @@
           "parent": "root"
         },
         {
-          "value": "ComponentName.slots.ts",
-          "href": "#componentnameslotsts",
+          "value": "component-name.slots.ts",
+          "href": "#component-nameslotsts",
           "depth": 3,
           "numbering": [
             1,
@@ -3206,8 +3095,8 @@
           "parent": "root"
         },
         {
-          "value": "ComponentName.tsx",
-          "href": "#componentnametsx",
+          "value": "component-name.tsx",
+          "href": "#component-nametsx",
           "depth": 3,
           "numbering": [
             1,
@@ -3217,8 +3106,8 @@
           "parent": "root"
         },
         {
-          "value": "ComponentName.mdx",
-          "href": "#componentnamemdx",
+          "value": "component-name.mdx",
+          "href": "#component-namemdx",
           "depth": 3,
           "numbering": [
             1,
@@ -3273,7 +3162,7 @@
         }
       ]
     },
-    "mdx": "\n# React Component Anatomy\n\n> [!WARNING]  \n> This proposal requires to set up a **case sensitive volume**, since MacOS is case insensitive by default (It can be done easily with disk utily though).\n\n## Basic Structure\n\n```bash\n/components\n  /ComponentName\n    │ # Files\n    ├── ComponentName.types.ts      # typescript type exports\n    ├── ComponentName.recipe.ts     # a recipe file covering basic styles, sizes & variants\n    ├── ComponentName.slots.tsx     # optional, for multi-part components\n    ├── ComponentName.tsx           # component implementation\n    ├── ComponentName.mdx           # component documentation\n    ├── index.ts                    # barrel file for exports\n    │ # Folders\n    ├── hooks                       # optional, folder for react hooks\n    ├── components                  # optional, folder for sub-components\n    ├── tests                       # unit tests\n    ├── stories                     # storybook stories (screenshot tests)\n```\n\n### ComponentName.types.ts\n\nExports and/or contains the type definitions for the component.\n\n### ComponentName.recipe.ts\n\nContains a single or multi-slot recipe. Covering default styles, sizes, variants and\ncompound variants for a single or multiple _slots_.\n\n### ComponentName.slots.ts\n\nA component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.\nThis file will create components with styles attached to them, and will be used in the main component file.\n\n### ComponentName.tsx\n\nFree of any styling concerns, this file imports the slot-components and connects those\nwith the headless ui-components.\n\n### ComponentName.mdx\n\nContains the documentation for the component. Will provide examples, usage, props, etc.\n\n### index.ts\n\nExports the component and any other files that need to be exported.\n\n### components\n\nOptional, can contain components that are only used by the parent component.\nStructure is the same basic folder structure.\n\n### tests\n\n### stories\n"
+    "mdx": "\n# React Component Anatomy\n\n## Basic Structure\n\n```bash\n/components\n  /component-name\n    │ # Files\n    ├── component-name.types.ts      # typescript type exports\n    ├── component-name.recipe.ts     # a recipe file covering basic styles, sizes & variants\n    ├── component-name.slots.tsx     # optional, for multi-part components\n    ├── component-name.tsx           # component implementation\n    ├── component-name.mdx           # component documentation\n    ├── index.ts                     # barrel file for exports\n    │ # Folders\n    ├── hooks                        # optional, folder for react hooks\n    ├── components                   # optional, folder for sub-components\n    ├── tests                        # unit tests\n    ├── stories                      # storybook stories (screenshot tests)\n```\n\n### component-name.types.ts\n\nExports and/or contains the type definitions for the component.\n\n### component-name.recipe.ts\n\nContains a single or multi-slot recipe. Covering default styles, sizes, variants and\ncompound variants for a single or multiple _slots_.\n\n### component-name.slots.ts\n\nA component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.\nThis file will create components with styles attached to them, and will be used in the main component file.\n\n### component-name.tsx\n\nFree of any styling concerns, this file imports the slot-components and connects those\nwith the headless ui-components.\n\n### component-name.mdx\n\nContains the documentation for the component. Will provide examples, usage, props, etc.\n\n### index.ts\n\nExports the component and any other files that need to be exported.\n\n### components\n\nOptional, can contain components that are only used by the parent component.\nStructure is the same basic folder structure.\n\n### tests\n\n### stories\n"
   },
   "packages/bleh-ui/src/docs/rfcs-hook-structure.mdx": {
     "meta": {
@@ -3370,7 +3259,7 @@
         }
       ]
     },
-    "mdx": "\n# React Hook Anatomy\n\n> [!WARNING]  \n> This proposal requires to set up a **case sensitive volume**, since MacOS is case insensitive by default (It can be done easily with disk utility though).\n\n## Basic Structure\n\n```bash\n/hooks\n  /useHookName\n    │ # Files\n    ├── useHookName.types.ts        # typescript type exports\n    ├── useHookName.ts              # hook implementation\n    ├── useHookName.utils.ts        # optional, utility functions for the hook\n    ├── useHookName.test.ts         # unit tests for the hook\n    ├── useHookName.mdx             # documentation for the hook\n    ├── index.ts                    # barrel file for exports\n```\n\n### useHookName.types.ts\n\nContains type definitions relevant to the hook, such as inputs, outputs, and custom types it uses.\n\n### useHookName.ts\n\nThe core implementation of the hook. It defines and exports the hook's logic and any dependencies it might require.\n\n### useHookName.utils.ts\n\nOptional file containing reusable utility functions that support the hook's implementation.\n\n### useHookName.test.ts\n\nContains unit tests for the hook to ensure its functionality and edge cases are covered.\n\n### useHookName.mdx\n\nDocumentation file for the hook, detailing its purpose, usage, and examples.\n\n### index.ts\n\nExports the hook and any other files (e.g., utilities or types) that should be publicly accessible.\n"
+    "mdx": "\n# React Hook Anatomy\n\n## Basic Structure\n\n```bash\n/hooks\n  /use-hook-name\n    │ # Files\n    ├── use-hook-name.types.ts        # typescript type exports\n    ├── use-hook-name.ts              # hook implementation\n    ├── use-hook-name.utils.ts        # optional, utility functions for the hook\n    ├── use-hook-name.test.ts         # unit tests for the hook\n    ├── use-hook-name.mdx             # documentation for the hook\n    ├── index.ts                      # barrel file for exports\n```\n\n### useHookName.types.ts\n\nContains type definitions relevant to the hook, such as inputs, outputs, and custom types it uses.\n\n### useHookName.ts\n\nThe core implementation of the hook. It defines and exports the hook's logic and any dependencies it might require.\n\n### useHookName.utils.ts\n\nOptional file containing reusable utility functions that support the hook's implementation.\n\n### useHookName.test.ts\n\nContains unit tests for the hook to ensure its functionality and edge cases are covered.\n\n### useHookName.mdx\n\nDocumentation file for the hook, detailing its purpose, usage, and examples.\n\n### index.ts\n\nExports the hook and any other files (e.g., utilities or types) that should be publicly accessible.\n"
   },
   "packages/bleh-ui/src/docs/sizing.mdx": {
     "meta": {
@@ -4016,7 +3905,118 @@
     },
     "mdx": "\n# Tables\n\nJSX style props for styling table elements.\n\n## Border Spacing\n\nControl the border-spacing property of a table.\n\n```jsx\n<chakra.table borderSpacing=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop            | CSS Property     | Token Category |\n| --------------- | ---------------- | -------------- |\n| `borderSpacing` | `border-spacing` | `spacing`      |\n\n## Border Spacing X\n\nUse the `borderSpacingX` prop to set the horizontal border-spacing property of a\ntable.\n\n```jsx\n<chakra.table borderSpacingX=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop             | CSS Property     | Token Category |\n| ---------------- | ---------------- | -------------- |\n| `borderSpacingX` | `border-spacing` | `spacing`      |\n\n## Border Spacing Y\n\nUse the `borderSpacingY` prop to set the vertical border-spacing property of a\ntable.\n\n```jsx\n<chakra.table borderSpacingY=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop             | CSS Property     | Token Category |\n| ---------------- | ---------------- | -------------- |\n| `borderSpacingY` | `border-spacing` | `spacing`      |\n\n## Caption Side\n\nUse the `captionSide` prop to set the side of the caption of a table.\n\n```jsx\n<table>\n  <chakra.caption captionSide=\"bottom\">This is a caption</chakra.caption>\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</table>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `captionSide` | `caption-side` | -              |\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Animations.mdx": {
+  "packages/bleh-ui/src/docs/toc.mdx": {
+    "meta": {
+      "id": "Toc",
+      "title": "Toc",
+      "description": "Let's get the table of contents automatically generated",
+      "documents": "Toc",
+      "status": "experimental",
+      "menu": [
+        "Playground",
+        "Toc"
+      ],
+      "tags": [
+        "playground",
+        "exploring"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/toc.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/toc.mdx",
+      "order": 999,
+      "route": "playground/toc",
+      "toc": [
+        {
+          "value": "Level 2.1",
+          "href": "#level-21",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Level 3.1",
+          "href": "#level-31",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Level 4.1",
+          "href": "#level-41",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Level 4.2",
+          "href": "#level-42",
+          "depth": 4,
+          "numbering": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Level 3.2",
+          "href": "#level-32",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Level 2.2",
+          "href": "#level-22",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Toc\n\nThis is the place to try out things.\n\n## Level 2.1\n\nFirst Level 2 Heading\n\n### Level 3.1\n\nFirst Level 3 Heading\n\n#### Level 4.1\n\nFirst Level 4 Heading\n\n#### Level 4.2\n\nSecond Level 4 Heading\n\n### Level 3.2\n\nSecond Level 3 Heading\n\n## Level 2.2\n"
+  },
+  "packages/bleh-ui/src/docs/tokens.mdx": {
+    "meta": {
+      "id": "Tokens",
+      "title": "Tokens",
+      "description": "design tokens to be used in conjunction with the ui components",
+      "order": 2,
+      "status": "experimental",
+      "menu": [
+        "Tokens"
+      ],
+      "tags": [
+        "tokens",
+        "design"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens.mdx",
+      "route": "tokens",
+      "toc": []
+    },
+    "mdx": "# Tokens\n\nA collection of design tokens"
+  },
+  "packages/bleh-ui/src/docs/tokens/animations.mdx": {
     "meta": {
       "id": "TokensAnimations",
       "title": "Animations",
@@ -4031,8 +4031,8 @@
         "animation",
         "transition"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Animations.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Animations.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/animations.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/animations.mdx",
       "order": 999,
       "route": "tokens/animations",
       "toc": [
@@ -4070,7 +4070,7 @@
     },
     "mdx": "\n# Animations\n\n## Animations\n\n<GenericTokenTableDemo category=\"animations\" />\n\n## Durations\n\n<GenericTokenTableDemo category=\"durations\" />\n\n## Easings\n\n<GenericTokenTableDemo category=\"easings\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/AspectRatios.mdx": {
+  "packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx": {
     "meta": {
       "id": "TokensAspectRatios",
       "title": "Aspect Ratios",
@@ -4085,15 +4085,15 @@
         "aspect ratio",
         "ratios"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/AspectRatios.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/AspectRatios.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx",
       "order": 999,
       "route": "tokens/aspect-ratios",
       "toc": []
     },
     "mdx": "\n# Aspect Ratios\n\nThe list of available aspect ratio tokens:\n\n<GenericTokenTableDemo category=\"aspectRatios\" demoProperty=\"aspectRatio\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Blurs.mdx": {
+  "packages/bleh-ui/src/docs/tokens/blurs.mdx": {
     "meta": {
       "id": "TokensBlurs",
       "title": "Blurs",
@@ -4107,15 +4107,15 @@
       "tags": [
         "blur"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Blurs.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Blurs.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/blurs.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/blurs.mdx",
       "order": 999,
       "route": "tokens/blurs",
       "toc": []
     },
     "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Borders.mdx": {
+  "packages/bleh-ui/src/docs/tokens/borders.mdx": {
     "meta": {
       "id": "TokensBorders",
       "title": "Borders",
@@ -4129,15 +4129,15 @@
       "tags": [
         "border"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Borders.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Borders.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/borders.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/borders.mdx",
       "order": 999,
       "route": "tokens/borders",
       "toc": []
     },
     "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Breakpoints.mdx": {
+  "packages/bleh-ui/src/docs/tokens/breakpoints.mdx": {
     "meta": {
       "id": "Breakpoints",
       "title": "Breakpoints",
@@ -4154,8 +4154,8 @@
         "stacking",
         "context"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Breakpoints.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Breakpoints.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/breakpoints.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/breakpoints.mdx",
       "order": 999,
       "route": "tokens/breakpoints",
       "toc": [
@@ -4173,7 +4173,7 @@
     },
     "mdx": "\n# Breakpoints\n\nBreakpoints define specific screen widths at which your design should adapt to provide an optimal viewing experience for users. They are thresholds that represent a starting point for changes in styling, such as font sizes, layouts, and visibility of elements.\n\nEach breakpoint is a minimum width, meaning that styles associated with that breakpoint apply to screen sizes equal to or larger than the specified width. The styles remain active until the next breakpoint threshold is reached.\n\n## Tokens\n\nThe breakpoints **start** at the specified value and **end** at the next breakpoint value.\nThe following breakpoint-tokens are supported:\n\n<GenericTokenTableDemo category=\"breakpoints\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Colors.mdx": {
+  "packages/bleh-ui/src/docs/tokens/colors.mdx": {
     "meta": {
       "id": "Colors",
       "title": "Colors",
@@ -4188,8 +4188,8 @@
       "tags": [
         "colors"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Colors.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Colors.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/colors.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/colors.mdx",
       "order": 999,
       "route": "tokens/colors",
       "toc": [
@@ -4247,7 +4247,7 @@
     },
     "mdx": "\n# Colors\n\nIn our design system, colors are organized into **scales** based on **contrast** levels to ensure clarity and **usability** across various contexts. Each scale provides a range of tones, from subtle backgrounds to high-contrast elements like text and interactive borders, enabling a consistent and accessible user experience.\n\nThe scales are _interchangeable_, meaning a color like red can be swapped with green without losing the intended contrast levels. This flexibility ensures that our designs remain adaptable while maintaining visual hierarchy. Additionally, _the contrast-based approach eliminates the need for a separate \"dark mode\" design_, as the scales naturally support both light and dark environments seamlessly.\n\n## Scale steps\n\nBelow is a list of steps with corresponding use cases for various background, border, and text styles in the design system:\n\n| **Step** | **Use Case**                                           |\n| -------- | ------------------------------------------------------ |\n| 1        | App background                                         |\n| 2        | Subtle background                                      |\n| 3        | UI element background                                  |\n| 4        | Hovered UI element background                          |\n| 5        | Active / Selected UI element background                |\n| 6        | Subtle borders and separators                          |\n| 7        | UI element border and focus rings                      |\n| 8        | Hovered UI element border                              |\n| 9        | Solid backgrounds                                      |\n| 10       | Hovered solid backgrounds                              |\n| 11       | Low-contrast text                                      |\n| 12       | High-contrast text                                     |\n| contrast | a contrast color (black/white) that works on step 9+10 |\n\n## System Colors\n\nColors available for decoration or reference.\n\n<br />\n\n<ColorScales ids=\"tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky\" />\n\n## Blacks & Whites\n\nBlack and white color scales do not adapt to the selected color-mode. Means a white will always be white, a black will always be black.\n\n> [!TIP]  \n> Use the `neutral` color scales if you want to refer to a gray-tone that works on the current background color (light-/dark-mode dependent).\n\n<br />\n\n<ColorScales ids=\"black, white\" />\n\n## Brand Colors\n\nCustom colors, tailored to the brand.\n\n<br />\n\n<ColorScales ids=\"ctViolet, ctTeal, ctYellow\" />\n\n## Semantic Colors\n\nColors with meaning, used to communicate status or state.\n\n<br />\n\n<ColorScales ids=\"primary, neutral, info, success, danger, error\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Cursors.mdx": {
+  "packages/bleh-ui/src/docs/tokens/cursors.mdx": {
     "meta": {
       "id": "TokensCursors",
       "title": "Cursors",
@@ -4261,15 +4261,15 @@
       "tags": [
         "cursor"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Cursors.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Cursors.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/cursors.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/cursors.mdx",
       "order": 999,
       "route": "tokens/cursors",
       "toc": []
     },
     "mdx": "\n# Cursors\n\nThe list of available cursor tokens:\n\n<GenericTokenTableDemo category=\"cursor\" demoProperty=\"cursor\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Radii.mdx": {
+  "packages/bleh-ui/src/docs/tokens/radii.mdx": {
     "meta": {
       "id": "TokensRadii",
       "title": "Radii",
@@ -4285,8 +4285,8 @@
         "radii",
         "border-radius"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Radii.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Radii.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/radii.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/radii.mdx",
       "order": 999,
       "route": "tokens/radii",
       "toc": [
@@ -4304,7 +4304,7 @@
     },
     "mdx": "\n# Radii\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Shadows.mdx": {
+  "packages/bleh-ui/src/docs/tokens/shadows.mdx": {
     "meta": {
       "id": "TokensShadows",
       "title": "Shadows",
@@ -4318,8 +4318,8 @@
       "tags": [
         "shadows"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Shadows.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Shadows.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/shadows.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/shadows.mdx",
       "order": 999,
       "route": "tokens/shadows",
       "toc": [
@@ -4337,7 +4337,7 @@
     },
     "mdx": "\n# Shadows\n\nThe list of available shadow tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"shadows\" demoProperty=\"boxShadow\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Sizes.mdx": {
+  "packages/bleh-ui/src/docs/tokens/sizes.mdx": {
     "meta": {
       "id": "TokensSizes",
       "title": "Sizes",
@@ -4351,8 +4351,8 @@
       "tags": [
         "sizes"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Sizes.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Sizes.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/sizes.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/sizes.mdx",
       "order": 999,
       "route": "tokens/sizes",
       "toc": [
@@ -4410,7 +4410,7 @@
     },
     "mdx": "\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including numerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing elements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Named sizes\n\nSemantic size labels providing consistent values for specific dimensions, ensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive layouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive element sizing.\n\n<SizesTokenDemo group=\"other\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Spacing.mdx": {
+  "packages/bleh-ui/src/docs/tokens/spacing.mdx": {
     "meta": {
       "id": "Spacing",
       "title": "Spacing",
@@ -4426,15 +4426,15 @@
         "space",
         "spacing"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Spacing.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Spacing.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/spacing.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/spacing.mdx",
       "order": 999,
       "route": "tokens/spacing",
       "toc": []
     },
     "mdx": "\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.e.g. `4` = `16px`, `10` = `40px` etc.\n"
   },
-  "packages/bleh-ui/src/docs/tokens/Typography.mdx": {
+  "packages/bleh-ui/src/docs/tokens/typography.mdx": {
     "meta": {
       "id": "TokensTypography",
       "title": "Typography",
@@ -4453,8 +4453,8 @@
         "italic",
         "emphasize"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/Typography.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/Typography.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/typography.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/typography.mdx",
       "order": 999,
       "route": "tokens/typography",
       "toc": [
@@ -4512,7 +4512,7 @@
     },
     "mdx": "\n# Typography\n\neverything typography related\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" />\n"
   },
-  "packages/bleh-ui/src/docs/tokens/ZIndices.mdx": {
+  "packages/bleh-ui/src/docs/tokens/z-indices.mdx": {
     "meta": {
       "id": "ZIndex",
       "title": "Z-Index",
@@ -4529,8 +4529,8 @@
         "stacking",
         "context"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/ZIndices.mdx",
-      "repoPath": "packages/bleh-ui/src/docs/tokens/ZIndices.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/z-indices.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens/z-indices.mdx",
       "order": 999,
       "route": "tokens/z-indexes",
       "toc": [
@@ -4812,7 +4812,7 @@
     },
     "mdx": "\n# Utilities\n\nLow-level or functional components for utility purposes.\n"
   },
-  "packages/bleh-ui/src/hooks/useCopyToClipboard/useCopyToClipboard.mdx": {
+  "packages/bleh-ui/src/hooks/use-copy-to-clipboard/use-copy-to-clipboard.mdx": {
     "meta": {
       "id": "useCopyToClipboard",
       "title": "useCopyToClipboard",
@@ -4827,8 +4827,8 @@
         "clipboard",
         "copy"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/useCopyToClipboard/useCopyToClipboard.mdx",
-      "repoPath": "packages/bleh-ui/src/hooks/useCopyToClipboard/useCopyToClipboard.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/use-copy-to-clipboard/use-copy-to-clipboard.mdx",
+      "repoPath": "packages/bleh-ui/src/hooks/use-copy-to-clipboard/use-copy-to-clipboard.mdx",
       "order": 999,
       "route": "hooks/usecopytoclipboard",
       "toc": [
@@ -4856,7 +4856,7 @@
     },
     "mdx": "\n# useCopyToClipboard\n\nCopy text to a user's clipboard.\n\n## Usage\n\n```jsx\nconst Demo = () => {\n  const [text, setText] = React.useState(\"\");\n  const [state, copyToClipboard] = useCopyToClipboard();\n\n  return (\n    <div>\n      <input value={text} onChange={(e) => setText(e.target.value)} />\n      <button type=\"button\" onClick={() => copyToClipboard(text)}>\n        copy text\n      </button>\n      {state.error ? (\n        <p>Unable to copy value: {state.error.message}</p>\n      ) : (\n        state.value && <p>Copied {state.value}</p>\n      )}\n    </div>\n  );\n};\n```\n\n## Reference\n\n```js\nconst [{ value, error, noUserInteraction }, copyToClipboard] =\n  useCopyToClipboard();\n```\n\n- `value` &mdash; value that was copied to clipboard, undefined when nothing was copied.\n- `error` &mdash; caught error when trying to copy to clipboard.\n- `noUserInteraction` &mdash; boolean indicating if user interaction was required to copy the value to clipboard to expose full API from underlying [`copy-to-clipboard`](https://github.com/sudodoki/copy-to-clipboard) library.\n"
   },
-  "packages/bleh-ui/src/hooks/useHotkeys/useHotkeys.mdx": {
+  "packages/bleh-ui/src/hooks/use-hotkeys/use-hotkeys.mdx": {
     "meta": {
       "id": "useHotkeys",
       "title": "useHotkeys",
@@ -4872,8 +4872,8 @@
         "shortcut",
         "keyboard"
       ],
-      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/useHotkeys/useHotkeys.mdx",
-      "repoPath": "packages/bleh-ui/src/hooks/useHotkeys/useHotkeys.mdx",
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/hooks/use-hotkeys/use-hotkeys.mdx",
+      "repoPath": "packages/bleh-ui/src/hooks/use-hotkeys/use-hotkeys.mdx",
       "order": 999,
       "route": "hooks/usehotkeys",
       "toc": [
