@@ -86,7 +86,7 @@ ${description}
           colorPalette="primary"
           size="xs"
           variant="ghost"
-          onClick={() => setIsOpen(true)}
+          onPress={() => setIsOpen(true)}
         >
           <PlusIcon />
           New document
@@ -167,14 +167,14 @@ ${description}
         </DialogBody>
         {!isLoading && (
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsOpen(false)}>
+            <Button variant="ghost" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
             <Button
               variant="solid"
               colorPalette="primary"
               disabled={!isFormValid}
-              onClick={onSubmitRequest}
+              onPress={onSubmitRequest}
             >
               Create
             </Button>

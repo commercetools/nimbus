@@ -1,4 +1,4 @@
-import { defineTokens } from "@chakra-ui/react"
+import { defineTokens } from "@chakra-ui/react";
 
 export const radii = defineTokens.radii({
   none: {
@@ -34,4 +34,4 @@ export const radii = defineTokens.radii({
   full: {
     value: "9999px",
   },
-})
+});

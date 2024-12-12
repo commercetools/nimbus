@@ -14,6 +14,10 @@ export const codeRecipe = defineRecipe({
         bg: "colorPalette.4",
         color: "colorPalette.11",
       },
+      subtle: {
+        bg: "colorPalette.3",
+        color: "colorPalette.11",
+      },
       outline: {
         color: "colorPalette.fg",
         shadow: "inset 0 0 0px 1px var(--shadow-color)",

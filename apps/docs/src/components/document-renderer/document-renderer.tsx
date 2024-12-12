@@ -67,7 +67,7 @@ export const DocumentRenderer = () => {
             </Box>
           </Flex>
 
-          <Box>
+          <Box pb="24">
             {!editMode && (
               <MdxStringRenderer content={content} components={components} />
             )}

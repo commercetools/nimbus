@@ -1,6 +1,9 @@
-import { defineTokens } from "@chakra-ui/react"
+import { defineTokens } from "@chakra-ui/react";
 
 export const easings = defineTokens.easings({
+  linear: {
+    value: "cubic-bezier(0, 0, 1, 1)",
+  },
   "ease-in": {
     value: "cubic-bezier(0.42, 0, 1, 1)",
   },
@@ -13,4 +16,4 @@ export const easings = defineTokens.easings({
   "ease-in-smooth": {
     value: "cubic-bezier(0.32, 0.72, 0, 1)",
   },
-})
+});

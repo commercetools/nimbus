@@ -1,6 +1,5 @@
 import {
   Box,
-  Text,
   TableRoot,
   TableBody,
   TableColumnHeader,
@@ -8,18 +7,27 @@ import {
   TableHeader,
   TableRow,
   Flex,
+  Code,
 } from "@bleh-ui/react";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
 import { useState } from "react";
+import { preferPxAtom } from "@/atoms/prefer-px-atom";
 
 export const SpacingTokenDemo = () => {
-  const [showPx, setShowPx] = useState(true);
+  const [showPx, setShowPx] = useAtom(preferPxAtom);
   const [demoAltLook, setDemoAltLook] = useState(false);
   const spacingTokens = useAtomValue(themeSpacingTokensAtom);
 
-  const formatterFn = (remVal) => {
-    return showPx ? `${parseFloat(remVal) * 16}px` : `${remVal}`;
+  const formatterFn = (val: string) => {
+    switch (true) {
+      case val.includes("rem"):
+        return showPx ? `${parseFloat(val) * 16}px` : `${val}`;
+      case val.includes("px"):
+        return !showPx ? `${parseFloat(val) / 16}rem` : `${val}`;
+      default:
+        return val;
+    }
   };
 
   return (
@@ -27,21 +35,22 @@ export const SpacingTokenDemo = () => {
       <TableRoot>
         <TableHeader>
           <TableRow>
-            <TableColumnHeader textAlign="right">Token</TableColumnHeader>
-            <TableColumnHeader textAlign="right">Value</TableColumnHeader>
+            <TableColumnHeader width="8ch" textAlign="right">
+              Token
+            </TableColumnHeader>
+            <TableColumnHeader width="12ch" textAlign="right">
+              Value
+            </TableColumnHeader>
             <TableColumnHeader>Demo</TableColumnHeader>
           </TableRow>
         </TableHeader>
         <TableBody>
           {spacingTokens.map((item) => (
             <TableRow key={item.id} id={item.id}>
-              <TableCell width="8ch">
-                <Text textAlign="right" fontFamily="mono">
-                  {item.label}
-                </Text>
+              <TableCell>
+                <Code variant="subtle">{item.label}</Code>
               </TableCell>
               <TableCell
-                width="10ch"
                 onClick={() => setShowPx(!showPx)}
                 cursor="pointer"
                 textAlign="right"

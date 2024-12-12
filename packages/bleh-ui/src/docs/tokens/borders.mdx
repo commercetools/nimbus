@@ -14,3 +14,8 @@ tags: # Tags for filtering and categorization
 The list of available border tokens:
 
 <GenericTokenTableDemo category="borders" demoProperty="border" />
+
+> [!IMPORTANT]  
+> The design system uses `box-sizing: border-box` as a default. If you assign an element a
+> `width` of `100px`, the computed `border-width` value will be included in the `100px`, effectively reducing the amount of space
+> available for content.

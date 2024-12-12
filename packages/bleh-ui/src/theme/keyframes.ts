@@ -28,6 +28,7 @@ export const keyframes = {
       animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
     },
   },
+  /*
   "bg-position": {
     from: {
       backgroundPosition: "var(--animate-from, 1rem) 0",
@@ -36,6 +37,8 @@ export const keyframes = {
       backgroundPosition: "var(--animate-to, 0) 0",
     },
   },
+  */
+  /*
   position: {
     from: {
       insetInlineStart: "var(--animate-from-x)",
@@ -46,6 +49,8 @@ export const keyframes = {
       insetBlockStart: "var(--animate-to-y)",
     },
   },
+  */
+  /*
   "circular-progress": {
     "0%": {
       strokeDasharray: "1, 400",
@@ -60,38 +65,41 @@ export const keyframes = {
       strokeDashoffset: "-260%",
     },
   },
-  "expand-height": {
+  */
+  /* "expand-height": {
     from: {
       height: "0",
     },
     to: {
       height: "var(--height)",
     },
-  },
+  }, */
+  /*
   "collapse-height": {
     from: {
-      height: "var(--height)",
+      maxHeight: "var(--height)",
     },
     to: {
       height: "0",
     },
   },
-  "expand-width": {
+  */
+  /* "expand-width": {
     from: {
       width: "0",
     },
     to: {
       width: "var(--width)",
     },
-  },
-  "collapse-width": {
+  }, */
+  /* "collapse-width": {
     from: {
       height: "var(--width)",
     },
     to: {
       height: "0",
     },
-  },
+  }, */
   "fade-in": {
     from: {
       opacity: 0,
@@ -252,4 +260,4 @@ export const keyframes = {
       scale: "0.95",
     },
   },
-}
+};

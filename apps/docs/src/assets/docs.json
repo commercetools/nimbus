@@ -2036,7 +2036,7 @@
         }
       ]
     },
-    "mdx": "# Hello!\n\nThis repository aims to solve 2 problems:\n\n1. Provide everything necessary to create beautiful, accessible and resilient user-interfaces.\n2. Document all the bits and pieces that make that happen.\n\nThe repository is currently structured into 3 workspaces, 1 app-workspace and 2 package-workspaces.\n\n## Apps\n\n### docs\n\nThe doc-app is a developer tool for creating and managing content-driven web applications by leveraging MDX files, structured metadata, and reusable UI components.\n\n* **Web Frontend**: The app generates a web-based frontend for browsing and interacting with the content.\n* **Development Environment**: A development server allows users to edit documents and add images directly through their browser.\n* **Content Indexing**: The app scans designated folders for MDX documents, automatically generating and linking pages.\n* **Content Organization**: Frontmatter in MDX files provides metadata for structuring menus and annotating content, enabling flexible organization.\n* **UI Component Integration**: The app utilizes components from `@bleh-ui/react`, demonstrating how to create polished frontends with this UI library.\n\n## Packages\n\nCurrently this two packages contain the mentioned bits and pieces, reusable across several frontends:\n\n### @bleh-ui/react\n\nThis package contains react components & hooks, as well as a ct-tailored default-theme.\n\n### @bleh-ui/icons\n\nThis package contains icons for many different scenarios."
+    "mdx": "\n# Hello!\n\nThis repository aims to solve 2 problems:\n\n1. Provide everything necessary to create beautiful, accessible and resilient user-interfaces.\n2. Document all the bits and pieces that make that happen.\n\nThe repository is currently structured into 3 workspaces, 1 app-workspace and 2 package-workspaces.\n\n## Apps\n\n### docs\n\nThe doc-app is a developer tool for creating and managing content-driven web applications by leveraging MDX files, structured metadata, and reusable UI components.\n\n- **Web Frontend**: The app generates a web-based frontend for browsing and interacting with the content.\n- **Development Environment**: A development server allows users to edit documents and add images directly through their browser.\n- **Content Indexing**: The app scans designated folders for MDX documents, automatically generating and linking pages.\n- **Content Organization**: Frontmatter in MDX files provides metadata for structuring menus and annotating content, enabling flexible organization.\n- **UI Component Integration**: The app utilizes components from `@bleh-ui/react`, demonstrating how to create polished frontends with this UI library.\n\n## Packages\n\nCurrently this two packages contain the mentioned bits and pieces, reusable across several frontends:\n\n### @bleh-ui/react\n\nThis package contains react components & hooks, as well as a ct-tailored default-theme.\n\n### @bleh-ui/icons\n\nThis package contains icons for many different scenarios.\n"
   },
   "packages/bleh-ui/src/docs/hooks.mdx": {
     "meta": {
@@ -4014,6 +4014,27 @@
     },
     "mdx": "\n# Toc\n\nThis is the place to try out things.\n\n## Level 2.1\n\nFirst Level 2 Heading\n\n### Level 3.1\n\nFirst Level 3 Heading\n\n#### Level 4.1\n\nFirst Level 4 Heading\n\n#### Level 4.2\n\nSecond Level 4 Heading\n\n### Level 3.2\n\nSecond Level 3 Heading\n\n## Level 2.2\n"
   },
+  "packages/bleh-ui/src/docs/tokens-other.mdx": {
+    "meta": {
+      "id": "Tokens-Other",
+      "title": "Other",
+      "description": "Less frequently used design-tokens",
+      "icon": "Ellipsis",
+      "menu": [
+        "Tokens",
+        "Other"
+      ],
+      "order": 9999,
+      "tags": [
+        "document"
+      ],
+      "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens-other.mdx",
+      "repoPath": "packages/bleh-ui/src/docs/tokens-other.mdx",
+      "route": "tokens/other",
+      "toc": []
+    },
+    "mdx": "\n# Other\n\nLess frequently used design-tokens\n"
+  },
   "packages/bleh-ui/src/docs/tokens.mdx": {
     "meta": {
       "id": "Tokens",
@@ -4044,6 +4065,7 @@
       "status": "stable",
       "menu": [
         "Tokens",
+        "Other",
         "Animations"
       ],
       "tags": [
@@ -4053,15 +4075,25 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/animations.mdx",
       "repoPath": "packages/bleh-ui/src/docs/tokens/animations.mdx",
       "order": 999,
-      "route": "tokens/animations",
+      "route": "tokens/other/animations",
       "toc": [
         {
-          "value": "Animations",
-          "href": "#animations-1",
+          "value": "Shorthands",
+          "href": "#shorthands",
           "depth": 2,
           "numbering": [
             1,
             1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyframe Animations",
+          "href": "#keyframe-animations",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
           ],
           "parent": "root"
         },
@@ -4071,7 +4103,7 @@
           "depth": 2,
           "numbering": [
             1,
-            2
+            3
           ],
           "parent": "root"
         },
@@ -4081,13 +4113,13 @@
           "depth": 2,
           "numbering": [
             1,
-            3
+            4
           ],
           "parent": "root"
         }
       ]
     },
-    "mdx": "\n# Animations\n\n## Animations\n\n<GenericTokenTableDemo category=\"animations\" />\n\n## Durations\n\n<GenericTokenTableDemo category=\"durations\" />\n\n## Easings\n\n<GenericTokenTableDemo category=\"easings\" />\n"
+    "mdx": "\n# Animations\n\nThis page provides a list of tokens for applying ready made animations (shorthands)\nor creating custom animations or transitions by combining keyframe animations with durations\nand easings.\n\n## Shorthands\n\nThe following list of shorthand tokens can be used as `animation` property value, they combine\na keyframe animation with duration and easing for a reusable animation definition.\n\n<GenericTokenTableDemo category=\"animations\" demoProperty=\"animation\" />\n\n## Keyframe Animations\n\nCSS keyframe animations define animations as a sequence of steps, each with its own set of properties. They allow for more complex, multi-step animations that can be controlled with keyframes and timing functions.\n\n<KeyframeTokenDemo />\n\n## Durations\n\nDurations define **how long** an animation takes to complete one cycle, directly impacting the perception of speed and fluidity.\n\nShort durations create snappy, quick interactions that feel responsive but can risk appearing abrupt. Longer durations allow for smoother, more deliberate motion but can feel sluggish if overused.\n\nFinding the right balance is key—durations should match the context and intent of the interaction. They’re measured in seconds or milliseconds and are often paired with easings to create harmonious, intentional animations.\n\n<DurationTokenDemo />\n\n## Easings\n\n_Easings_ determine **the rate of change** of an animation over time, essentially\ndefining how an animation transitions between its start and end states.\n\nInstead of moving linearly, animations can accelerate, decelerate, or follow complex\ncurves, making the motion feel more dynamic and natural.\n\nThis is achieved through mathematical easing functions, like linear interpolation or bezier curves, which map progress over time to the visible change in animation properties. It controls the \"rhythm\" of the animation, ensuring it feels fluid or deliberate depending on the desired effect.\n\n<EasingTokenDemo />\n"
   },
   "packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx": {
     "meta": {
@@ -4121,6 +4153,7 @@
       "icon": "Blend",
       "menu": [
         "Tokens",
+        "Other",
         "Blurs"
       ],
       "tags": [
@@ -4129,10 +4162,10 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/blurs.mdx",
       "repoPath": "packages/bleh-ui/src/docs/tokens/blurs.mdx",
       "order": 999,
-      "route": "tokens/blurs",
+      "route": "tokens/other/blurs",
       "toc": []
     },
-    "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" />\n"
+    "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" demoProperty=\"blur\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/borders.mdx": {
     "meta": {
@@ -4154,7 +4187,7 @@
       "route": "tokens/borders",
       "toc": []
     },
-    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n"
+    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n\n> [!IMPORTANT]  \n> The design system uses `box-sizing: border-box` as a default. If you assign an element a\n> `width` of `100px`, the computed `border-width` value will be included in the `100px`, effectively reducing the amount of space\n> available for content.\n"
   },
   "packages/bleh-ui/src/docs/tokens/breakpoints.mdx": {
     "meta": {
@@ -4165,6 +4198,7 @@
       "status": "stable",
       "menu": [
         "Tokens",
+        "Other",
         "Breakpoints"
       ],
       "tags": [
@@ -4176,7 +4210,7 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/breakpoints.mdx",
       "repoPath": "packages/bleh-ui/src/docs/tokens/breakpoints.mdx",
       "order": 999,
-      "route": "tokens/breakpoints",
+      "route": "tokens/other/breakpoints",
       "toc": [
         {
           "value": "Tokens",
@@ -4275,6 +4309,7 @@
       "status": "stable",
       "menu": [
         "Tokens",
+        "Other",
         "Cursors"
       ],
       "tags": [
@@ -4283,10 +4318,10 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/cursors.mdx",
       "repoPath": "packages/bleh-ui/src/docs/tokens/cursors.mdx",
       "order": 999,
-      "route": "tokens/cursors",
+      "route": "tokens/other/cursors",
       "toc": []
     },
-    "mdx": "\n# Cursors\n\nThe list of available cursor tokens:\n\n<GenericTokenTableDemo category=\"cursor\" demoProperty=\"cursor\" />\n"
+    "mdx": "\n# Cursors\n\nThe list of available cursors. **Hover over the gray box** to see the cursor in action.\n\n<GenericTokenTableDemo category=\"cursor\" demoProperty=\"cursor\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/radii.mdx": {
     "meta": {
@@ -4529,18 +4564,19 @@
         }
       ]
     },
-    "mdx": "\n# Typography\n\neverything typography related\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" />\n"
+    "mdx": "\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n> [!NOTE]  \n> **TODO:** create & name [textStyles](https://www.chakra-ui.com/docs/styling/text-styles)\n> for easy access of common typography-token combinations.\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/z-indices.mdx": {
     "meta": {
       "id": "ZIndex",
-      "title": "Z-Index",
+      "title": "Z-Indices",
       "description": "The list of available z-index tokens",
       "icon": "Layers",
       "status": "experimental",
       "menu": [
         "Tokens",
-        "Z-Indexes"
+        "Other",
+        "Z-Indices"
       ],
       "tags": [
         "z-index",
@@ -4551,21 +4587,10 @@
       "filePath": "/Volumes/Code/ui-kit-docs-poc/packages/bleh-ui/src/docs/tokens/z-indices.mdx",
       "repoPath": "packages/bleh-ui/src/docs/tokens/z-indices.mdx",
       "order": 999,
-      "route": "tokens/z-indexes",
-      "toc": [
-        {
-          "value": "Tokens",
-          "href": "#tokens",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
+      "route": "tokens/other/z-indices",
+      "toc": []
     },
-    "mdx": "\n# Z-Index\n\nThe list of available z-index tokens.\n\n## Tokens\n\nThe following z-index tokens are supported out of the box.\n\n<GenericTokenTableDemo category=\"zIndex\" />\n"
+    "mdx": "\n# Z-Indices\n\nThe list of available z-index tokens.\n\n<GenericTokenTableDemo category=\"zIndex\" />\n"
   },
   "packages/bleh-ui/src/docs/transforms.mdx": {
     "meta": {

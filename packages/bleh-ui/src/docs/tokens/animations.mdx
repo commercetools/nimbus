@@ -4,7 +4,7 @@ title: Animations
 icon: Move3d
 description: The list of available animation tokens
 status: stable
-menu: ["Tokens", "Animations"]
+menu: ["Tokens", "Other", "Animations"]
 tags: # Tags for filtering and categorization
   - animation
   - transition
@@ -12,14 +12,41 @@ tags: # Tags for filtering and categorization
 
 # Animations
 
-## Animations
+This page provides a list of tokens for applying ready made animations (shorthands)
+or creating custom animations or transitions by combining keyframe animations with durations
+and easings.
 
-<GenericTokenTableDemo category="animations" />
+## Shorthands
+
+The following list of shorthand tokens can be used as `animation` property value, they combine
+a keyframe animation with duration and easing for a reusable animation definition.
+
+<GenericTokenTableDemo category="animations" demoProperty="animation" />
+
+## Keyframe Animations
+
+CSS keyframe animations define animations as a sequence of steps, each with its own set of properties. They allow for more complex, multi-step animations that can be controlled with keyframes and timing functions.
+
+<KeyframeTokenDemo />
 
 ## Durations
 
-<GenericTokenTableDemo category="durations" />
+Durations define **how long** an animation takes to complete one cycle, directly impacting the perception of speed and fluidity.
+
+Short durations create snappy, quick interactions that feel responsive but can risk appearing abrupt. Longer durations allow for smoother, more deliberate motion but can feel sluggish if overused.
+
+Finding the right balance is key—durations should match the context and intent of the interaction. They’re measured in seconds or milliseconds and are often paired with easings to create harmonious, intentional animations.
+
+<DurationTokenDemo />
 
 ## Easings
 
-<GenericTokenTableDemo category="easings" />
+_Easings_ determine **the rate of change** of an animation over time, essentially
+defining how an animation transitions between its start and end states.
+
+Instead of moving linearly, animations can accelerate, decelerate, or follow complex
+curves, making the motion feel more dynamic and natural.
+
+This is achieved through mathematical easing functions, like linear interpolation or bezier curves, which map progress over time to the visible change in animation properties. It controls the "rhythm" of the animation, ensuring it feels fluid or deliberate depending on the desired effect.
+
+<EasingTokenDemo />

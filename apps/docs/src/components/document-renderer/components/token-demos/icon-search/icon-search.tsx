@@ -22,7 +22,6 @@ export const IconSearch = () => {
   useEffect(() => {
     const fetchIcons = async () => {
       const data = await import("@bleh-ui/icons");
-      console.log("data", data);
       setIcons(data.icons);
       setFilteredIcons(Object.keys(data.icons));
       setBusy(false);

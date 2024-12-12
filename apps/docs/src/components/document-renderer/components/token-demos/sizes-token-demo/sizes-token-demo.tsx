@@ -1,3 +1,4 @@
+import { preferPxAtom } from "@/atoms/prefer-px-atom";
 import { themeSizeTokensAtom } from "@/atoms/theme-size-tokens.ts";
 import {
   Box,
@@ -11,8 +12,9 @@ import {
   Flex,
   TableColumnGroup,
   TableColumn,
+  Code,
 } from "@bleh-ui/react";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
 
 const sorter = {
@@ -25,6 +27,7 @@ const sorter = {
 };
 
 export const SizesTokenDemo = ({ group }: { group: string }) => {
+  const [showPx, setShowPx] = useAtom(preferPxAtom);
   const sizeTokens = useAtomValue(themeSizeTokensAtom);
 
   if (!sizeTokens) return null;
@@ -32,6 +35,18 @@ export const SizesTokenDemo = ({ group }: { group: string }) => {
     sizeTokens.filter((item) => item.group === group),
     sorter[group || "other"]
   );
+
+  const formatterFn = (val: string) => {
+    switch (true) {
+      case val.includes("rem"):
+        return showPx ? `${parseFloat(val) * 16}px` : `${val}`;
+      case val.includes("px"):
+        return !showPx ? `${parseFloat(val) / 16}rem` : `${val}`;
+      default:
+        return val;
+    }
+  };
+
   return (
     <Box mb="12" mt="6">
       <TableRoot width="full" maxWidth="full">
@@ -51,9 +66,11 @@ export const SizesTokenDemo = ({ group }: { group: string }) => {
           {subset.map((item) => (
             <TableRow key={item.id} id={item.id}>
               <TableCell>
-                <Text fontFamily="mono">{item.label}</Text>
+                <Code variant="subtle">{item.label}</Code>
               </TableCell>
-              <TableCell>{item.value.originalValue}</TableCell>
+              <TableCell onClick={() => setShowPx(!showPx)} cursor="button">
+                {formatterFn(item.value.originalValue)}
+              </TableCell>
               <TableCell>
                 <Box position="relative">
                   <Flex minHeight="1em" overflow="hidden">

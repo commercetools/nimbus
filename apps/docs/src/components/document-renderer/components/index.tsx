@@ -15,7 +15,12 @@ import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import * as icons from "@bleh-ui/icons";
 import { ReactNode } from "react";
-import {MDXComponents} from "mdx/types";
+import { MDXComponents } from "mdx/types";
+import {
+  EasingTokenDemo,
+  DurationTokenDemo,
+  KeyframeTokenDemo,
+} from "./token-demos/animation";
 
 const sluggifyChildren = (children: ReactNode) => {
   return sluggify(children ? children.toString() : "");
@@ -136,5 +141,8 @@ export const components: MDXComponents = {
   SpacingTokenDemo,
   SizesTokenDemo,
   GenericTokenTableDemo,
+  EasingTokenDemo,
+  DurationTokenDemo,
+  KeyframeTokenDemo,
   ...icons.icons,
 };

@@ -1,3 +1,5 @@
+import { DocumentState } from "./document-states";
+
 /** this document is aimed at product developers */
 export type AudienceDeveloper = "developer";
 /** this dodument is aimed at design system maintainers */
@@ -22,6 +24,8 @@ export type MdxFileFrontmatter = {
     title: string;
     /** a description */
     description: string;
+    /** the current state of progress of the document */
+    documentState: DocumentState;
     /** menu display order */
     order?: number;
     /** the template to use to render this document */
