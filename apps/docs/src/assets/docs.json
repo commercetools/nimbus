@@ -1114,6 +1114,7 @@
       "id": "Home-Changelog",
       "title": "Changelog",
       "description": "List of updates, improvements, and bug fixes.",
+      "documentState": "InitialDraft",
       "order": 3,
       "repoPath": "packages/bleh-ui/src/docs/changelog.mdx",
       "menu": [
@@ -1127,7 +1128,7 @@
       "toc": [],
       "icon": "CalendarSync"
     },
-    "mdx": "\n# Changelog\n\nList of updates, improvements, and bug fixes.\n"
+    "mdx": "\n\n\n\n# Changelog\n\nList of updates, improvements, and bug fixes.\n"
   },
   "packages/bleh-ui/src/docs/components-layout.mdx": {
     "meta": {
@@ -1823,6 +1824,7 @@
       "id": "Home-Getting Started",
       "title": "Getting Started",
       "description": "Quick start guide to set up and use the package.",
+      "documentState": "InitialDraft",
       "order": 2,
       "repoPath": "packages/bleh-ui/src/docs/getting-started.mdx",
       "menu": [
@@ -1836,7 +1838,7 @@
       "toc": [],
       "icon": "Rocket"
     },
-    "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
+    "mdx": "\n\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
   },
   "packages/bleh-ui/src/docs/home.mdx": {
     "meta": {
@@ -1954,6 +1956,7 @@
       "id": "Home-Installation",
       "title": "Installation",
       "description": "Learn how to install @bleh-ui/react and its dependencies.",
+      "documentState": "InitialDraft",
       "order": 1,
       "repoPath": "packages/bleh-ui/src/docs/installation.mdx",
       "menu": [
@@ -2035,7 +2038,7 @@
       ],
       "icon": "Download"
     },
-    "mdx": "\n## Development Setup\n\n### Installation\n\nMake sure you fulfill the requirements below and install dependencies with the provided command.\n\n#### Requirements\n\nThe following software needs to be installed on your system before you can proceed:\n\n- Node v20+\n- [bun](https://bun.sh/)\n\n#### Install dependencies\n\n```bash\n$ bun install\n```\n\n### Development\n\n1. If you just set up the repository, do an initial [build](#build).\n2. Start the development environment with the following command\n\n```bash\n$ bun run dev\n```\n\n3. Open the documentation app in the browser: [http://localhost:5173/](http://localhost:5173/)\n\n### Build\n\nTo build packages & the documentation app:\n\n```bash\n$ bun run build\n```\n\nTo only build packages:\n\n```bash\n$ bun run build-packages\n```\n"
+    "mdx": "\n\n\n\n\n\n\n\n\n## Development Setup\n\n### Installation\n\nMake sure you fulfill the requirements below and install dependencies with the provided command.\n\n#### Requirements\n\nThe following software needs to be installed on your system before you can proceed:\n\n- Node v20+\n- [bun](https://bun.sh/)\n\n#### Install dependencies\n\n```bash\n$ bun install\n```\n\n### Development\n\n1. If you just set up the repository, do an initial [build](#build).\n2. Start the development environment with the following command\n\n```bash\n$ bun run dev\n```\n\n3. Open the documentation app in the browser: [http://localhost:5173/](http://localhost:5173/)\n\n### Build\n\nTo build packages & the documentation app:\n\n```bash\n$ bun run build\n```\n\nTo only build packages:\n\n```bash\n$ bun run build-packages\n```\n"
   },
   "packages/bleh-ui/src/docs/interactivity.mdx": {
     "meta": {
@@ -2222,6 +2225,7 @@
       "id": "Home-Known issues",
       "title": "Known issues",
       "description": "Current bugs, limitations, and compatibility issues with possible workarounds.",
+      "documentState": "InitialDraft",
       "order": 4,
       "repoPath": "packages/bleh-ui/src/docs/known-issues.mdx",
       "menu": [
@@ -2235,7 +2239,7 @@
       "toc": [],
       "icon": "Bug"
     },
-    "mdx": "\n# Known issues\n\nCurrent bugs, limitations, and compatibility issues with possible workarounds.\n"
+    "mdx": "\n\n# Known issues\n\nCurrent bugs, limitations, and compatibility issues with possible workarounds.\n"
   },
   "packages/bleh-ui/src/docs/layout.mdx": {
     "meta": {
@@ -2896,6 +2900,7 @@
       "id": "Component Structure-RFCs",
       "title": "RFCs",
       "description": "Requests for feedback",
+      "documentState": "InitialDraft",
       "order": 1.5,
       "repoPath": "packages/bleh-ui/src/docs/rfcs-component-structure-rfcs.mdx",
       "menu": [
@@ -2907,13 +2912,14 @@
       ],
       "toc": []
     },
-    "mdx": "# RFCs\n\nRequests for comments. Just create a document and work on it."
+    "mdx": "\n# RFCs\n\nRequests for comments. Just create a document and work on it."
   },
   "packages/bleh-ui/src/docs/rfcs-component-structure.mdx": {
     "meta": {
       "id": "WIP-Component Structure",
       "title": "Component Structure",
       "description": "Working out the process from idea to published component",
+      "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/docs/rfcs-component-structure.mdx",
       "menu": [
@@ -3036,13 +3042,14 @@
         }
       ]
     },
-    "mdx": "\n# React Component Anatomy\n\n## Basic Structure\n\n```bash\n/components\n  /component-name\n    │ # Files\n    ├── component-name.types.ts      # typescript type exports\n    ├── component-name.recipe.ts     # a recipe file covering basic styles, sizes & variants\n    ├── component-name.slots.tsx     # optional, for multi-part components\n    ├── component-name.figma.tsx     # code to figma export instructions/definition\n    ├── component-name.tsx           # component implementation\n    ├── component-name.mdx           # component documentation\n    ├── index.ts                     # barrel file for exports\n    │ # Folders\n    ├── hooks                        # optional, folder for react hooks\n    ├── components                   # optional, folder for sub-components\n    ├── tests                        # unit tests\n    ├── stories                      # storybook stories (screenshot tests)\n```\n\n### component-name.types.ts\n\nExports and/or contains the type definitions for the component.\n\n### component-name.recipe.ts\n\nContains a single or multi-slot recipe. Covering default styles, sizes, variants and\ncompound variants for a single or multiple _slots_.\n\n### component-name.slots.ts\n\nA component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.\nThis file will create components with styles attached to them, and will be used in the main component file.\n\n### component-name.tsx\n\nFree of any styling concerns, this file imports the slot-components and connects those\nwith the headless ui-components.\n\n### component-name.mdx\n\nContains the documentation for the component. Will provide examples, usage, props, etc.\n\n### index.ts\n\nExports the component and any other files that need to be exported.\n\n### components\n\nOptional, can contain components that are only used by the parent component.\nStructure is the same basic folder structure.\n\n### tests\n\n### stories\n"
+    "mdx": "\n\n# React Component Anatomy\n\n## Basic Structure\n\n```bash\n/components\n  /component-name\n    │ # Files\n    ├── component-name.types.ts      # typescript type exports\n    ├── component-name.recipe.ts     # a recipe file covering basic styles, sizes & variants\n    ├── component-name.slots.tsx     # optional, for multi-part components\n    ├── component-name.figma.tsx     # code to figma export instructions/definition\n    ├── component-name.tsx           # component implementation\n    ├── component-name.mdx           # component documentation\n    ├── index.ts                     # barrel file for exports\n    │ # Folders\n    ├── hooks                        # optional, folder for react hooks\n    ├── components                   # optional, folder for sub-components\n    ├── tests                        # unit tests\n    ├── stories                      # storybook stories (screenshot tests)\n```\n\n### component-name.types.ts\n\nExports and/or contains the type definitions for the component.\n\n### component-name.recipe.ts\n\nContains a single or multi-slot recipe. Covering default styles, sizes, variants and\ncompound variants for a single or multiple _slots_.\n\n### component-name.slots.ts\n\nA component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.\nThis file will create components with styles attached to them, and will be used in the main component file.\n\n### component-name.tsx\n\nFree of any styling concerns, this file imports the slot-components and connects those\nwith the headless ui-components.\n\n### component-name.mdx\n\nContains the documentation for the component. Will provide examples, usage, props, etc.\n\n### index.ts\n\nExports the component and any other files that need to be exported.\n\n### components\n\nOptional, can contain components that are only used by the parent component.\nStructure is the same basic folder structure.\n\n### tests\n\n### stories\n"
   },
   "packages/bleh-ui/src/docs/rfcs-hook-structure.mdx": {
     "meta": {
       "id": "Organisation-Hook Structure",
       "title": "Hook Structure",
       "description": "Basic structure of a react hook",
+      "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/docs/rfcs-hook-structure.mdx",
       "menu": [
@@ -3132,7 +3139,7 @@
         }
       ]
     },
-    "mdx": "\n# React Hook Anatomy\n\n## Basic Structure\n\n```bash\n/hooks\n  /use-hook-name\n    │ # Files\n    ├── use-hook-name.types.ts        # typescript type exports\n    ├── use-hook-name.ts              # hook implementation\n    ├── use-hook-name.utils.ts        # optional, utility functions for the hook\n    ├── use-hook-name.test.ts         # unit tests for the hook\n    ├── use-hook-name.mdx             # documentation for the hook\n    ├── index.ts                      # barrel file for exports\n```\n\n### useHookName.types.ts\n\nContains type definitions relevant to the hook, such as inputs, outputs, and custom types it uses.\n\n### useHookName.ts\n\nThe core implementation of the hook. It defines and exports the hook's logic and any dependencies it might require.\n\n### useHookName.utils.ts\n\nOptional file containing reusable utility functions that support the hook's implementation.\n\n### useHookName.test.ts\n\nContains unit tests for the hook to ensure its functionality and edge cases are covered.\n\n### useHookName.mdx\n\nDocumentation file for the hook, detailing its purpose, usage, and examples.\n\n### index.ts\n\nExports the hook and any other files (e.g., utilities or types) that should be publicly accessible.\n"
+    "mdx": "\n\n# React Hook Anatomy\n\n## Basic Structure\n\n```bash\n/hooks\n  /use-hook-name\n    │ # Files\n    ├── use-hook-name.types.ts        # typescript type exports\n    ├── use-hook-name.ts              # hook implementation\n    ├── use-hook-name.utils.ts        # optional, utility functions for the hook\n    ├── use-hook-name.test.ts         # unit tests for the hook\n    ├── use-hook-name.mdx             # documentation for the hook\n    ├── index.ts                      # barrel file for exports\n```\n\n### useHookName.types.ts\n\nContains type definitions relevant to the hook, such as inputs, outputs, and custom types it uses.\n\n### useHookName.ts\n\nThe core implementation of the hook. It defines and exports the hook's logic and any dependencies it might require.\n\n### useHookName.utils.ts\n\nOptional file containing reusable utility functions that support the hook's implementation.\n\n### useHookName.test.ts\n\nContains unit tests for the hook to ensure its functionality and edge cases are covered.\n\n### useHookName.mdx\n\nDocumentation file for the hook, detailing its purpose, usage, and examples.\n\n### index.ts\n\nExports the hook and any other files (e.g., utilities or types) that should be publicly accessible.\n"
   },
   "packages/bleh-ui/src/docs/sizing.mdx": {
     "meta": {
@@ -3966,6 +3973,7 @@
       "id": "TokensAspectRatios",
       "title": "Aspect Ratios",
       "description": "The list of available aspect ratio tokens",
+      "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx",
       "menu": [
@@ -3980,7 +3988,7 @@
       "toc": [],
       "icon": "Ratio"
     },
-    "mdx": "\n# Aspect Ratios\n\nThe list of available aspect ratio tokens:\n\n<GenericTokenTableDemo category=\"aspectRatios\" demoProperty=\"aspectRatio\" />\n"
+    "mdx": "\n\n# Aspect Ratios\n\nThe list of available aspect ratio tokens:\n\n<GenericTokenTableDemo category=\"aspectRatios\" demoProperty=\"aspectRatio\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/blurs.mdx": {
     "meta": {

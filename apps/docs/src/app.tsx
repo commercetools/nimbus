@@ -8,6 +8,7 @@ import { activeRouteAtom } from "./atoms/route";
 import { useEffect } from "react";
 import { Chatbot } from "./components/chatbot";
 import { DevOnly } from "./components/utils/dev-only.tsx";
+import { DocumentMetaSettings } from "./components/document-meta-settings/document-meta-settings.tsx";
 
 function App() {
   const [activeRoute, setActiveroute] = useAtom(activeRouteAtom);
@@ -89,6 +90,9 @@ function App() {
               overflow="auto"
               height="100%"
             >
+              <DevOnly>
+                <DocumentMetaSettings />
+              </DevOnly>
               <Toc />
             </Box>
           </Flex>
