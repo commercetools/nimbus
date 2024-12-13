@@ -32,6 +32,11 @@ export const globalCss = defineGlobalStyles({
     "--global-font-body": "fonts.body",
     "--global-color-border": "colors.border",
   },
+  /** 'liga' may replace 2 characters with a single one,
+   * which causes differences in formatting when a monospace font is used.*/
+  "code *": {
+    fontFeatureSettings: '"calt", "case", "ss01", "ss07", "ss08", "tnum"',
+  },
   html: {
     color: "fg",
     bg: "bg",
