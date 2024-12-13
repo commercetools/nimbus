@@ -1861,7 +1861,7 @@
       "id": "Home-Getting Started",
       "title": "Getting Started",
       "description": "Quick start guide to set up and use the package.",
-      "documentState": "ReviewedInternal",
+      "documentState": "InitialDraft",
       "order": 2,
       "repoPath": "packages/bleh-ui/src/docs/getting-started.mdx",
       "menu": [
@@ -1875,7 +1875,7 @@
       "toc": [],
       "icon": "Rocket"
     },
-    "mdx": "\n# Getting Started\n\nQuick start guide to set up and use the package."
+    "mdx": "\n\n\n\n# Getting Started\n\nQuick start guide to set up and use the package.\n"
   },
   "packages/bleh-ui/src/docs/home.mdx": {
     "meta": {
@@ -1997,7 +1997,6 @@
       "title": "Installation",
       "description": "Learn how to install @bleh-ui/react and its dependencies.",
       "documentState": "InitialDraft",
-      "documentAudiences": [],
       "order": 1,
       "repoPath": "packages/bleh-ui/src/docs/installation.mdx",
       "menu": [
@@ -4085,7 +4084,6 @@
       "title": "Borders",
       "description": "The list of available border tokens",
       "documentState": "InitialDraft",
-      "documentAudiences": [],
       "order": 999,
       "repoPath": "packages/bleh-ui/src/docs/tokens/borders.mdx",
       "menu": [
@@ -4099,7 +4097,7 @@
       "toc": [],
       "icon": "Logs"
     },
-    "mdx": "\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n\n> [!IMPORTANT]  \n> The design system uses `box-sizing: border-box` as a default. If you assign an element a\n> `width` of `100px`, the computed `border-width` value will be included in the `100px`, effectively reducing the amount of space\n> available for content."
+    "mdx": "\n\n# Borders\n\nThe list of available border tokens:\n\n<GenericTokenTableDemo category=\"borders\" demoProperty=\"border\" />\n\n> [!IMPORTANT]  \n> The design system uses `box-sizing: border-box` as a default. If you assign an element a\n> `width` of `100px`, the computed `border-width` value will be included in the `100px`, effectively reducing the amount of space\n> available for content.\n"
   },
   "packages/bleh-ui/src/docs/tokens/breakpoints.mdx": {
     "meta": {
