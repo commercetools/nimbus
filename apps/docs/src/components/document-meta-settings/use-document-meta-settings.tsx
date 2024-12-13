@@ -20,7 +20,7 @@ export const useDocumentMetaSettings = () => {
         "---",
         yaml.dump(validData.meta),
         "---\n",
-        validData.mdx,
+        validData.mdx.trim(),
       ].join("\n");
 
       await axios.put("/api/fs", { repoPath, content });
