@@ -1,4 +1,4 @@
-import { UiKitProvider, Flex, Box } from "@bleh-ui/react";
+import { UiKitProvider, Flex, Box, Stack } from "@bleh-ui/react";
 import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
 import { Toc } from "./components/navigation/toc";
@@ -90,10 +90,12 @@ function App() {
               overflow="auto"
               height="100%"
             >
-              <DevOnly>
-                <DocumentMetaSettings />
-              </DevOnly>
-              <Toc />
+              <Stack gap="8">
+                <DevOnly>
+                  <DocumentMetaSettings />
+                </DevOnly>
+                <Toc />
+              </Stack>
             </Box>
           </Flex>
         </Flex>

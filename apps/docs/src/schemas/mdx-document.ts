@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { mdxDocumentStates } from "./mdx-document-states";
+import { mdxDocumentAudiences } from "./mdx-document-audiences";
 
 export const TocItemSchema = z.object({
   value: z.string(),
@@ -22,6 +23,8 @@ export const mdxDocumentSchema = z.object({
     description: z.string(),
     /** the current state of progress of the document */
     documentState: z.enum(mdxDocumentStates).optional(),
+    /** the audience the document is targeted at */
+    documentAudiences: z.array(z.enum(mdxDocumentAudiences)).optional(),
     /** menu display order */
     order: z.number(),
     /** the path to the file within the repo, from the repo-root */
