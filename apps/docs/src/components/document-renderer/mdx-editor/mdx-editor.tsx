@@ -109,7 +109,6 @@ export const MdxEditor = ({
     imagePlugin({
       imageUploadHandler: async (file) => {
         const { url } = await uploadImage(file);
-        console.log("url is", url);
         return url;
       },
     }),

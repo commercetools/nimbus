@@ -6,7 +6,6 @@ import {
   DialogFooter,
   DialogHeader,
   Input,
-  Box,
   Stack,
   Text,
 } from "@bleh-ui/react";
@@ -22,6 +21,8 @@ import {
 import { useState } from "react";
 import { sluggify } from "@/utils/sluggify.ts";
 import axios from "axios";
+import { mdxDocumentPayloadSchema } from "@/schemas/mdx-document";
+import yaml from "js-yaml";
 
 export const AppNavBarCreateButton = () => {
   const activeDoc = useAtomValue(activeDocAtom);
@@ -37,32 +38,37 @@ export const AppNavBarCreateButton = () => {
     if (!activeDoc) return;
     if (!isFormValid) return;
 
-    const fileNameSeed = [...activeDoc?.meta.menu, menuLabel].join("-");
+    const fileNameSeed = [...activeDoc.meta.menu, menuLabel, Date.now()].join(
+      "-"
+    );
 
     const fileName = sluggify(fileNameSeed) + ".mdx";
-    const currentDocumentsPath = [
+    const repoPath = [
       activeDoc.meta.repoPath.replace(/\/[^\/]+$/, ""),
       fileName,
     ].join("/");
 
-    const content = `---
-id: ${activeDoc?.meta.title}-${title}
-title: ${title}
-description: ${description}
-menu: ${JSON.stringify([...activeDoc?.meta.menu, menuLabel])}
-order: 999
-tags:
-  - document
----
-
+    const meta = {
+      id: fileNameSeed,
+      title,
+      description,
+      documentState: "InitialDraft",
+      order: 999,
+      repoPath,
+      menu: [...activeDoc.meta.menu, menuLabel],
+      tags: [],
+    };
+    const mdx = `
 # ${title}
 
 ${description}
 `;
+    const valid = mdxDocumentPayloadSchema.parse({ meta, mdx });
+    const content = ["---", yaml.dump(valid.meta), "---", valid.mdx].join("\n");
 
     try {
       setIsLoading(true);
-      await axios.post("/api/fs", { repoPath: currentDocumentsPath, content });
+      await axios.post("/api/fs", { repoPath, content });
       setTimeout(() => {
         setIsLoading(false);
         setIsOpen(false);

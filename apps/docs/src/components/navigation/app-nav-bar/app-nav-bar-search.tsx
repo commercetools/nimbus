@@ -123,7 +123,6 @@ export const AppNavBarSearch = () => {
   useHotkeys(
     "mod+k",
     () => {
-      console.log("Focus search input");
       setOpen(true);
     },
     [open]

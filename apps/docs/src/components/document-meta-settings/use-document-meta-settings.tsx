@@ -7,7 +7,7 @@ import yaml from "js-yaml";
 
 export const useDocumentMetaSettings = () => {
   const doc = useAtomValue(activeDocAtom);
-  console.log("new doc");
+
   const noDoc = !doc;
   const meta = doc?.meta;
   const mdx = doc?.mdx;
@@ -15,7 +15,6 @@ export const useDocumentMetaSettings = () => {
 
   const save = async (payload: MdxFileFrontmatterPayload["meta"]) => {
     try {
-      // Validate data before converting to a string
       const validData = mdxDocumentPayloadSchema.parse({ meta: payload, mdx });
       const content = [
         "---",
@@ -23,9 +22,6 @@ export const useDocumentMetaSettings = () => {
         "---\n",
         validData.mdx,
       ].join("\n");
-
-      // Convert the object to a YAML string
-      console.log(content);
 
       await axios.put("/api/fs", { repoPath, content });
       return;
