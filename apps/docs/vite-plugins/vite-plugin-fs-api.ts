@@ -5,7 +5,7 @@ import { Plugin } from "vite";
 import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Import the function
 
 interface FileSystemRequestBody {
-  filePath: string;
+  repoPath: string;
   content?: string;
 }
 
@@ -20,10 +20,10 @@ export function fileSystemApiPlugin(): Plugin {
       app.use(express.json());
 
       // Helper to resolve file paths within the monorepo
-      const resolvePath = async (filePath: string): Promise<string> => {
+      const resolvePath = async (repoPath: string): Promise<string> => {
         const monorepoRoot = await findMonorepoRoot(process.cwd());
         if (!monorepoRoot) throw new Error("Monorepo root not found");
-        const resolvedPath = path.resolve(monorepoRoot, filePath);
+        const resolvedPath = path.resolve(monorepoRoot, repoPath);
         if (!resolvedPath.startsWith(monorepoRoot)) {
           throw new Error("Access to the file path is restricted");
         }
@@ -35,9 +35,9 @@ export function fileSystemApiPlugin(): Plugin {
         "/api/fs",
         async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
           try {
-            const { filePath, content } = req.body;
-            if (!filePath) throw new Error("filePath is required");
-            const resolvedPath = await resolvePath(filePath);
+            const { repoPath, content } = req.body;
+            if (!repoPath) throw new Error("repoPath is required");
+            const resolvedPath = await resolvePath(repoPath);
             try {
               await fs.access(resolvedPath);
               throw new Error("File already exists");
@@ -56,9 +56,9 @@ export function fileSystemApiPlugin(): Plugin {
 
       app.get("/api/fs", async (req: Request, res: Response) => {
         try {
-          const filePath = req.query.filePath as string;
-          if (!filePath) throw new Error("filePath is required");
-          const resolvedPath = await resolvePath(filePath);
+          const repoPath = req.query.repoPath as string;
+          if (!repoPath) throw new Error("repoPath is required");
+          const resolvedPath = await resolvePath(repoPath);
           const content = await fs.readFile(resolvedPath, "utf-8");
           res.status(200).json({ content });
         } catch (error) {
@@ -70,9 +70,9 @@ export function fileSystemApiPlugin(): Plugin {
         "/api/fs",
         async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
           try {
-            const { filePath, content } = req.body;
-            if (!filePath) throw new Error("filePath is required");
-            const resolvedPath = await resolvePath(filePath);
+            const { repoPath, content } = req.body;
+            if (!repoPath) throw new Error("repoPath is required");
+            const resolvedPath = await resolvePath(repoPath);
             await fs.writeFile(resolvedPath, content || "");
             res
               .status(200)
@@ -87,9 +87,9 @@ export function fileSystemApiPlugin(): Plugin {
         "/api/fs",
         async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
           try {
-            const { filePath } = req.body;
-            if (!filePath) throw new Error("filePath is required");
-            const resolvedPath = await resolvePath(filePath);
+            const { repoPath } = req.body;
+            if (!repoPath) throw new Error("repoPath is required");
+            const resolvedPath = await resolvePath(repoPath);
             await fs.unlink(resolvedPath);
             res
               .status(200)

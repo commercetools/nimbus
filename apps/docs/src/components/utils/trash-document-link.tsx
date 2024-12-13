@@ -3,17 +3,17 @@ import { Button } from "@bleh-ui/react";
 import { TrashIcon } from "@bleh-ui/icons";
 
 interface TrashDocumentLinkProps {
-  filePath: string;
+  repoPath: string;
 }
 
-export const TrashDocumentLink = ({ filePath }: TrashDocumentLinkProps) => {
+export const TrashDocumentLink = ({ repoPath }: TrashDocumentLinkProps) => {
   const handleDelete = async () => {
     const yes = confirm("Are you sure you want to delete this document?");
 
     if (!yes) return;
 
     try {
-      await axios.delete("/api/fs", { data: { filePath } });
+      await axios.delete("/api/fs", { data: { repoPath } });
       // Handle successful delete (e.g., show a message, update UI)
     } catch (error) {
       // Handle error (e.g., show an error message)

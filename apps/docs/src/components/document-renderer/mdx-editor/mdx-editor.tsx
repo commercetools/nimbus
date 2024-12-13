@@ -168,14 +168,14 @@ export const MdxEditor = ({
   };
 
   const onSaveRequest = async () => {
-    const { filePath } = props.meta;
+    const { repoPath } = props.meta;
 
     setIsSaving(true);
 
     const { data } = await axios({
       method: "GET",
       url: "/api/fs",
-      params: { filePath },
+      params: { repoPath },
     });
 
     const frontMatterString = getFrontmatter(data.content);
@@ -185,7 +185,7 @@ export const MdxEditor = ({
       method: "PUT",
       url: "/api/fs",
       data: {
-        filePath,
+        repoPath,
         content: updatedContent,
       },
     });

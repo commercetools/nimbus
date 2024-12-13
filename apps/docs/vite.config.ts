@@ -4,6 +4,7 @@ import { fileSystemApiPlugin } from "./vite-plugins/vite-plugin-fs-api";
 import { imageUploadMiddleware } from "./vite-plugins/vite-plugin-file-uploader";
 import { viteAiMiddleware } from "./vite-plugins/vite-plugin-ai-api";
 import tsconfigPaths from "vite-tsconfig-paths";
+import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -44,5 +45,8 @@ export default defineConfig({
   },
   server: {
     open: true,
+  },
+  define: {
+    ["process.env.REPO_ROOT"]: JSON.stringify(path.resolve(__dirname, "../..")),
   },
 });

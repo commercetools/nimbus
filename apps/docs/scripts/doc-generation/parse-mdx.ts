@@ -2,7 +2,6 @@ import fs from "fs";
 import matter from "gray-matter";
 import { menuToPath } from "../../src/utils/sluggify";
 import { MdxFileFrontmatter, TocItem } from "../../src/types";
-import * as path from "path";
 
 import { read } from "to-vfile";
 import { remark } from "remark";
@@ -10,6 +9,7 @@ import remarkFlexibleToc from "remark-flexible-toc";
 import debounce from "lodash/debounce";
 import { flog } from "./parse-types";
 import { getPathFromMonorepoRoot } from "../../utils/find-monorepo-root";
+import { mdxDocumentSchema } from "../../src/schemas/mdx-document";
 
 // Thats where compiled docs will be saved
 const compiledDocsFile = "./src/assets/docs.json";
@@ -83,11 +83,9 @@ export const parseMdx = async (filePath: string) => {
 
     const repoPath = await getPathFromMonorepoRoot(filePath);
 
-    documentation[repoPath] = {
+    const item = {
       meta: {
         ...meta,
-        // TODO: hide filePath in production build
-        filePath: path.resolve(filePath),
         repoPath,
         order: meta.order || 999,
         route: menuToPath(meta.menu),
@@ -95,5 +93,16 @@ export const parseMdx = async (filePath: string) => {
       },
       mdx,
     };
+    try {
+      // Validate data before converting to a string
+      const validData = mdxDocumentSchema.parse(item);
+
+      // Convert the object to a YAML string
+      documentation[repoPath] = validData;
+      return;
+    } catch (error) {
+      console.error("Error serializing frontmatter:", error);
+      throw error;
+    }
   });
 };

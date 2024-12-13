@@ -59,8 +59,8 @@ export const DocumentRenderer = () => {
                     {!editMode && <Pencil size="1em" />}
                     {editMode && <PencilOff size="1em" />}
                   </Button>
-                  <TrashDocumentLink filePath={meta.filePath} />
-                  <VsCodeEditLink filePath={meta.filePath} />
+                  <TrashDocumentLink repoPath={meta.repoPath} />
+                  <VsCodeEditLink repoPath={meta.repoPath} />
                 </DevOnly>
                 <GithubRepoLink repoPath={meta.repoPath} />
               </Stack>

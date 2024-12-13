@@ -40,8 +40,8 @@ export const AppNavBarCreateButton = () => {
     const fileNameSeed = [...activeDoc?.meta.menu, menuLabel].join("-");
 
     const fileName = sluggify(fileNameSeed) + ".mdx";
-    const filePath = [
-      activeDoc.meta.filePath.replace(/\/[^\/]+$/, ""),
+    const currentDocumentsPath = [
+      activeDoc.meta.repoPath.replace(/\/[^\/]+$/, ""),
       fileName,
     ].join("/");
 
@@ -62,7 +62,7 @@ ${description}
 
     try {
       setIsLoading(true);
-      await axios.post("/api/fs", { filePath, content });
+      await axios.post("/api/fs", { repoPath: currentDocumentsPath, content });
       setTimeout(() => {
         setIsLoading(false);
         setIsOpen(false);
