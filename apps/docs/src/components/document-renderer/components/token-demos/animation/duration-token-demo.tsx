@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRoot,
   TableRow,
-  Text,
 } from "@bleh-ui/react";
 
 import { atom, useAtomValue } from "jotai";
@@ -20,7 +19,8 @@ import { useState } from "react";
 import { Play } from "@bleh-ui/icons";
 
 export const durationTokensAtom = atom(() => {
-  const obj = Object.fromEntries(system.tokens.categoryMap.get("durations"));
+  const tokenMap = system.tokens.categoryMap.get("durations");
+  const obj = tokenMap ? Object.fromEntries(tokenMap) : {};
 
   const arr = Object.keys(obj).map((key) => {
     return {

@@ -1,5 +1,8 @@
-import { documentStateDescriptions } from "@/schemas/mdx-document-states";
-import { useEffect, useMemo } from "react";
+import {
+  DocumentState,
+  documentStateDescriptions,
+} from "@/schemas/mdx-document-states";
+import { useCallback, useEffect, useMemo } from "react";
 import { useDocumentMetaSettings } from "../use-document-meta-settings";
 import { Box, Stack, Text } from "@bleh-ui/react";
 import { ChevronDown } from "@bleh-ui/icons";
@@ -8,9 +11,9 @@ export const DocumentStateSelector = () => {
   const { meta, noDoc, save } = useDocumentMetaSettings();
   const options = useMemo(() => {
     const arr = Object.keys(documentStateDescriptions).map((key) => {
-      const item = documentStateDescriptions[key];
+      const item = documentStateDescriptions[key as DocumentState];
       return {
-        id: key,
+        id: key as DocumentState,
         value: key,
         ...item,
       };
@@ -18,17 +21,22 @@ export const DocumentStateSelector = () => {
     return arr;
   }, []);
 
-  const onSaveRequest = (value) => {
-    const payload = { ...meta, documentState: value };
-    save(payload);
-  };
+  const onSaveRequest = useCallback(
+    (value: DocumentState) => {
+      if (!meta) return;
+      const payload = { ...meta, documentState: value };
+      save(payload);
+    },
+    [meta, save]
+  );
 
   useEffect(() => {
+    // Assign a state if the document does not have one yet
     if (!meta) return;
     if (meta.documentState === undefined) {
       onSaveRequest(options[0].id);
     }
-  }, [meta, options]);
+  }, [meta, options, onSaveRequest]);
 
   if (noDoc) return null;
   return (
@@ -50,7 +58,7 @@ export const DocumentStateSelector = () => {
         >
           <select
             value={meta?.documentState}
-            onChange={(e) => onSaveRequest(e.target.value)}
+            onChange={(e) => onSaveRequest(e.target.value as DocumentState)}
           >
             {options.map(({ id, label, order }) => {
               return (

@@ -1,9 +1,9 @@
-import { Box, Flex, Stack, Text, useColorModeValue } from "@bleh-ui/react";
+import { Box, Flex, Stack, Text } from "@bleh-ui/react";
 import { useAtomValue } from "jotai";
-import { JSONTree } from "react-json-tree";
 import { themeColorScalesAtom } from "@/atoms/theme-color-scales.ts";
 import { useMemo } from "react";
 import last from "lodash/last";
+import compact from "lodash/compact";
 
 export const ColorScale = (props: { id: string }) => {
   const { id } = props;
@@ -11,7 +11,7 @@ export const ColorScale = (props: { id: string }) => {
 
   const colors = useMemo(() => {
     if (!themeColorScales) return [];
-    return [
+    return compact([
       themeColorScales.get(`${id}.1`),
       themeColorScales.get(`${id}.2`),
       themeColorScales.get(`${id}.3`),
@@ -24,8 +24,8 @@ export const ColorScale = (props: { id: string }) => {
       themeColorScales.get(`${id}.10`),
       themeColorScales.get(`${id}.11`),
       themeColorScales.get(`${id}.12`),
-    ];
-  }, [themeColorScales]);
+    ]);
+  }, [themeColorScales, id]);
 
   if (!colors) return null;
 
@@ -59,12 +59,6 @@ export const ColorScale = (props: { id: string }) => {
           </Box>
         ))}
       </Flex>
-      {false && (
-        <Box>
-          {/* <pre>{JSON.stringify({ id: props.id, colors }, null, 2)}</pre> */}
-          <JSONTree data={colors} />
-        </Box>
-      )}
     </Stack>
   );
 };

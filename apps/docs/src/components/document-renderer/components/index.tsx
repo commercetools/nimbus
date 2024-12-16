@@ -1,20 +1,13 @@
-import { Text, Heading, Em, Link, Table } from "@bleh-ui/react";
-
-import { BlockquoteRenderer } from "./blockquotes.tsx";
-import { ListItem, OlList, UlList } from "./lists.tsx";
-import { CodeRenderer } from "./code.tsx";
-import { Paragraph } from "./paragraph.tsx";
+import { Table } from "@bleh-ui/react";
 import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
 import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
-import { Image } from "./image.tsx";
-import { sluggify } from "@/utils/sluggify";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
 import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import * as icons from "@bleh-ui/icons";
-import { ReactNode } from "react";
+
 import { MDXComponents } from "mdx/types";
 import {
   EasingTokenDemo,
@@ -22,102 +15,38 @@ import {
   KeyframeTokenDemo,
 } from "./token-demos/animation";
 
-const sluggifyChildren = (children: ReactNode) => {
-  return sluggify(children ? children.toString() : "");
-};
+import {
+  ListItem,
+  OlList,
+  UlList,
+  Paragraph,
+  Code,
+  Blockquote,
+  Image,
+  H1,
+  H2,
+  H3,
+  H4,
+  H5,
+  H6,
+  Em,
+  Link,
+  Strong,
+} from "./base-tags";
 
 export const components: MDXComponents = {
-  h1: (props) => (
-    <Heading id={sluggifyChildren(props.children)} mb="6" size="3xl" asChild>
-      <h1 {...props} />
-    </Heading>
-  ),
-  h2: (props) => (
-    <Heading
-      id={sluggifyChildren(props.children)}
-      mb="3"
-      mt="6"
-      size="2xl"
-      asChild
-    >
-      <h2 {...props} />
-    </Heading>
-  ),
-  h3: (props) => (
-    <Heading
-      id={sluggifyChildren(props.children)}
-      mb="3"
-      mt="6"
-      size="xl"
-      asChild
-    >
-      <h3 {...props} />
-    </Heading>
-  ),
-  h4: (props) => (
-    <Heading
-      id={sluggifyChildren(props.children)}
-      mb="3"
-      mt="6"
-      size="lg"
-      asChild
-    >
-      <h4 {...props} />
-    </Heading>
-  ),
-  h5: (props) => (
-    <Heading
-      id={sluggifyChildren(props.children)}
-      mb="3"
-      mt="6"
-      size="lg"
-      fontWeight="500"
-      asChild
-    >
-      <h5 {...props} />
-    </Heading>
-  ),
-  h6: (props) => (
-    <Heading
-      id={sluggifyChildren(props.children)}
-      mb="3"
-      mt="6"
-      size="lg"
-      fontWeight="400"
-      asChild
-    >
-      <h6 {...props} />
-    </Heading>
-  ),
+  h1: H1,
+  h2: H2,
+  h3: H3,
+  h4: H4,
+  h5: H5,
+  h6: H6,
   p: Paragraph,
-  em: (props) => (
-    <Em asChild>
-      <em {...props} />
-    </Em>
-  ),
-  blockquote: BlockquoteRenderer,
-  code: CodeRenderer,
-  a: ({ children, ...rest }) => {
-    const isExternal = rest.href?.startsWith("http");
-
-    const props = isExternal
-      ? {
-          target: "_blank",
-          rel: "noopener noreferrer",
-        }
-      : {};
-    return (
-      <Link alignItems="baseline" variant="underline" {...rest} {...props}>
-        {isExternal && <icons.ExternalLink size="1em" />}
-        {children}
-      </Link>
-    );
-  },
-  strong: (props) => (
-    <Text fontWeight="bold" asChild>
-      <strong {...props} />
-    </Text>
-  ),
+  em: Em,
+  blockquote: (props) => <Blockquote {...props} />,
+  code: Code,
+  a: Link,
+  strong: Strong,
   ul: UlList,
   ol: OlList,
   li: ListItem,
@@ -134,6 +63,7 @@ export const components: MDXComponents = {
   tbody: Table.Body,
   td: Table.Cell,
   tr: Table.Row,
+  /** custom elements */
   PropTable: PropTable,
   PropTables: PropTables,
   ColorScales: ColorScales,
@@ -144,5 +74,6 @@ export const components: MDXComponents = {
   EasingTokenDemo,
   DurationTokenDemo,
   KeyframeTokenDemo,
+  /** all icons from @bleh-ui/icons, TODO: evaluate if this is a good idea */
   ...icons.icons,
 };

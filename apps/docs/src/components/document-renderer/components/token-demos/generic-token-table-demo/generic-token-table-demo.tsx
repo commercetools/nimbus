@@ -19,7 +19,7 @@ type GenericTableDemoProps = {
   /** the name of the token-category */
   category: string;
   /** demoProperty */
-  demoProperty?: string;
+  demoProperty?: DemoComponentId;
   /** displays a JSON-tree to debug */
   debug?: boolean;
 };
@@ -30,7 +30,7 @@ const defaultDemoText =
 const defaultDemoParagraph =
   "Chupa chups cheesecake soufflé donut bear claw. Toffee sesame snaps candy canes marzipan cotton candy cheesecake cake cake. Fruitcake liquorice candy bear claw sesame snaps marzipan jelly beans.";
 const demoComponents = {
-  aspectRatio: (props) => (
+  aspectRatio: ({ ...props }) => (
     <Box
       bg="neutral.4"
       border="0px solid"
@@ -42,7 +42,7 @@ const demoComponents = {
       {...props}
     />
   ),
-  border: (props) => (
+  border: ({ ...props }) => (
     <Box
       border="0 solid"
       borderColor="neutral.6"
@@ -54,7 +54,7 @@ const demoComponents = {
     />
   ),
 
-  borderRadius: (props) => (
+  borderRadius: ({ ...props }) => (
     <Box
       bg="neutral.4"
       border="0px solid"
@@ -65,7 +65,7 @@ const demoComponents = {
       {...props}
     />
   ),
-  boxShadow: (props) => (
+  boxShadow: ({ ...props }) => (
     <Box
       bg="white"
       border="0px solid"
@@ -76,7 +76,7 @@ const demoComponents = {
       {...props}
     />
   ),
-  cursor: (props) => (
+  cursor: ({ ...props }) => (
     <Box
       display="flex"
       aspectRatio="golden"
@@ -89,7 +89,7 @@ const demoComponents = {
       <Text m="auto">Hover me</Text>
     </Box>
   ),
-  blur: (props) => (
+  blur: ({ ...props }) => (
     <Box
       bg="neutral.4"
       border="0px solid"
@@ -102,23 +102,23 @@ const demoComponents = {
       {...props}
     />
   ),
-  fontFamily: (props) => (
+  fontFamily: ({ ...props }) => (
     <Text fontSize="8xl" lineHeight="normal" {...props}>
       Ag
     </Text>
   ),
 
-  fontSize: (props) => (
+  fontSize: ({ ...props }) => (
     <Text {...props} lineHeight="shorter">
       Ag
     </Text>
   ),
-  fontWeight: (props) => (
+  fontWeight: ({ ...props }) => (
     <Text {...props} lineHeight="normal">
       {defaultDemoText}
     </Text>
   ),
-  lineHeight: (props) => (
+  lineHeight: ({ ...props }) => (
     <Text color="colorPalette.11" lineClamp="4" {...props}>
       {new Array(2)
         .fill("")
@@ -126,17 +126,19 @@ const demoComponents = {
         .join(". ")}
     </Text>
   ),
-  letterSpacing: (props) => (
+  letterSpacing: ({ ...props }) => (
     <Text {...props} truncate>
       {defaultDemoText}
     </Text>
   ),
-  animation: (props) => (
+  animation: ({ ...props }) => (
     <Box width="12" height="12" bg="primary.4" {...props} />
   ),
 };
 
-const PrettyBox = (props) => (
+type DemoComponentId = keyof typeof demoComponents;
+
+const PrettyBox = ({ ...props }) => (
   <Box
     bg="tomato.4"
     border="0px solid"
@@ -157,6 +159,8 @@ export const GenericTokenTableDemo = ({
   const data = useMemo(() => {
     const data = system.tokens.categoryMap.get(props.category);
 
+    if (!data) return [];
+
     return Array.from(data, ([name, value]) => ({
       name,
       value,
@@ -165,7 +169,8 @@ export const GenericTokenTableDemo = ({
 
   if (!data) return null;
 
-  const DemoComponent = demoComponents[demoProperty] || PrettyBox;
+  const DemoComponent =
+    (demoProperty && demoComponents[demoProperty]) || PrettyBox;
 
   const formatterFn = (val: string) => {
     switch (true) {

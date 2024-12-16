@@ -1,28 +1,54 @@
-import { documentAudienceDescriptions } from "@/schemas/mdx-document-audiences";
+import {
+  DocumentAudience,
+  documentAudienceDescriptions,
+} from "@/schemas/mdx-document-audiences";
 import { useMemo } from "react";
 import { useDocumentMetaSettings } from "../use-document-meta-settings";
 import { Box, Flex, Stack, Text } from "@bleh-ui/react";
 
-export const DocumentAudienceSelector = () => {
+// Define the type for the audience options
+interface AudienceOption {
+  id: DocumentAudience;
+  value: string;
+  label: string;
+  description?: string;
+}
+
+/**
+ * DocumentAudienceSelector component allows users to select document audiences.
+ * @returns {JSX.Element | null} The rendered component or null if no document is available.
+ */
+export const DocumentAudienceSelector = (): JSX.Element | null => {
   const { meta, noDoc, save } = useDocumentMetaSettings();
-  const options = useMemo(() => {
+
+  // Memoize the options to avoid recalculating on every render
+  const options: AudienceOption[] = useMemo(() => {
     return Object.keys(documentAudienceDescriptions).map((key) => {
-      const item = documentAudienceDescriptions[key];
+      const item = documentAudienceDescriptions[key as DocumentAudience];
       return {
-        id: key,
+        id: key as DocumentAudience,
         value: key,
         ...item,
       };
     });
   }, []);
 
-  const onSaveRequest = (audiences) => {
+  /**
+   * Handles the save request for document audiences.
+   * @param {DocumentAudience[]} audiences - The selected audiences.
+   */
+  const onSaveRequest = (audiences: DocumentAudience[]) => {
+    if (!meta) return;
     const payload = { ...meta, documentAudiences: audiences };
     save(payload);
   };
 
-  const handleCheckboxChange = (id) => {
-    let audiences = meta?.documentAudiences || [];
+  /**
+   * Handles the change event for the checkboxes.
+   * @param {string} id - The id of the audience.
+   */
+  const handleCheckboxChange = (id: DocumentAudience) => {
+    let audiences: DocumentAudience[] = meta?.documentAudiences || [];
     if (audiences.includes(id)) {
       audiences = audiences.filter((audience) => audience !== id);
     } else {

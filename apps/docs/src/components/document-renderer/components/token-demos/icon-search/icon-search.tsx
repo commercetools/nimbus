@@ -1,5 +1,4 @@
 import {
-  Box,
   Flex,
   Text,
   Input,
@@ -12,27 +11,26 @@ import {
 import { useEffect, useState } from "react";
 import take from "lodash/take";
 
+import { icons } from "@bleh-ui/icons";
+
+/**
+ * IconSearch component allows users to search and copy icon import statements.
+ */
 export const IconSearch = () => {
-  const [state, copyToClipboard] = useCopyToClipboard();
-  const [q, setQ] = useState("");
-  const [icons, setIcons] = useState(null);
-  const [filteredIcons, setFilteredIcons] = useState(null);
-  const [busy, setBusy] = useState(true);
+  const [, copyToClipboard] = useCopyToClipboard();
+  const [q, setQ] = useState<string>("");
+
+  // State to hold filtered icons
+  const [filteredIcons, setFilteredIcons] = useState<string[] | null>(null);
 
   useEffect(() => {
-    const fetchIcons = async () => {
-      const data = await import("@bleh-ui/icons");
-      setIcons(data.icons);
-      setFilteredIcons(Object.keys(data.icons));
-      setBusy(false);
-    };
-
-    fetchIcons();
+    // Initial effect, can be used for setup if needed
   }, []);
 
   useEffect(() => {
     if (!icons) return;
 
+    // Filter icons based on the search query
     const filtered = Object.keys(icons).filter((v) => {
       return v.toLowerCase().includes(q.toLowerCase());
     });
@@ -40,6 +38,10 @@ export const IconSearch = () => {
     setFilteredIcons(filtered);
   }, [q, icons]);
 
+  /**
+   * Handles the copy request for an icon import statement.
+   * @param {string} iconId - The ID of the icon to copy.
+   */
   const onCopyRequest = (iconId: string) => {
     copyToClipboard(`import { ${iconId} } from '@bleh-ui/icons';`);
     toaster.create({
@@ -50,10 +52,6 @@ export const IconSearch = () => {
     });
   };
 
-  if (busy) {
-    return <Text>Loading</Text>;
-  }
-
   return (
     <Stack mt="8" mb="16" gap="8">
       <Input
@@ -62,8 +60,8 @@ export const IconSearch = () => {
         onChange={(e) => setQ(e.target.value)}
       />
       <SimpleGrid columns={[5, 6, 6, 6, 10]}>
-        {take(filteredIcons, q.length ? 128 : 256).map((iconId) => {
-          const Component = icons[iconId];
+        {take(filteredIcons ?? [], q.length ? 128 : 256).map((iconId) => {
+          const Component = icons[iconId as keyof typeof icons];
           return (
             <Flex
               p="4"

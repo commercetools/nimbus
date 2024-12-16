@@ -1,7 +1,17 @@
 import { Kbd, Text } from "@bleh-ui/react";
-import { Children, isValidElement } from "react";
+import {
+  Children,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  isValidElement,
+} from "react";
 
-export const Paragraph = (props) => {
+type ParagraphProps = DetailedHTMLProps<
+  HTMLAttributes<HTMLParagraphElement>,
+  HTMLParagraphElement
+>;
+
+export const Paragraph = (props: ParagraphProps) => {
   const { children, ...rest } = props;
   return (
     <Text my="3" asChild {...rest}>

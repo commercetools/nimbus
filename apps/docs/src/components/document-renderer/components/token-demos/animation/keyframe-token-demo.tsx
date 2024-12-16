@@ -1,9 +1,6 @@
 import { Box, Code, Flex, SimpleGrid } from "@bleh-ui/react";
-
 import { atom, useAtomValue } from "jotai";
 import { system } from "@bleh-ui/react";
-
-import { useState } from "react";
 
 export const keyframeTokensAtom = atom(() => {
   const obj = system._config.theme?.keyframes || {};
@@ -18,7 +15,15 @@ export const keyframeTokensAtom = atom(() => {
   return arr;
 });
 
-const AnimationItem = ({ item }) => {
+const AnimationItem = ({
+  item,
+}: {
+  item: {
+    id: string;
+    label: string;
+    value: string;
+  };
+}) => {
   return (
     <Flex
       direction="column"
@@ -55,7 +60,6 @@ const AnimationItem = ({ item }) => {
 };
 
 export const KeyframeTokenDemo = () => {
-  const [seed, setSeed] = useState(0);
   const items = useAtomValue(keyframeTokensAtom);
 
   return (

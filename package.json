@@ -8,8 +8,8 @@
   ],
   "scripts": {
     "dev": "NO_COLOR=1 bun --filter '*' dev",
-    "build": "bun run build-packages && bun run build-docs",
-    "build-packages": "bun --filter './packages/*' build",
-    "build-docs": "bun --filter './apps/docs' build"
+    "build": "NO_COLOR=1 bun run build-packages && bun run build-docs",
+    "build-packages": "NO_COLOR=1 bun --filter './packages/*' build",
+    "build-docs": "NO_COLOR=1 bun --filter './apps/docs' build"
   }
 }

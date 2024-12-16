@@ -1,5 +1,14 @@
-import { Children, ReactElement, cloneElement, isValidElement } from "react";
-import { Blockquote, Box } from "@bleh-ui/react";
+import {
+  BlockquoteHTMLAttributes,
+  Children,
+  DetailedHTMLProps,
+  ElementType,
+  ReactElement,
+  ReactNode,
+  cloneElement,
+  isValidElement,
+} from "react";
+import { Blockquote as StyledBlockquote, Box } from "@bleh-ui/react";
 import {
   FileText,
   Lightbulb,
@@ -7,8 +16,10 @@ import {
   AlertOctagon,
   ShieldAlert,
 } from "@bleh-ui/icons";
+import { ListItem, UlList } from "./index";
+import { Paragraph } from "./index";
 
-const findLastIndex = (children: ReactElement[], displayName: string) => {
+const findLastIndex = (children: ReactNode, component: ElementType) => {
   // Convert React children to an array
   const childrenArray = Children.toArray(children);
 
@@ -17,7 +28,7 @@ const findLastIndex = (children: ReactElement[], displayName: string) => {
     const child = childrenArray[i];
 
     // Check if the child is a React element and has the displayName "UlList"
-    if (isValidElement(child) && child.type?.displayName === displayName) {
+    if (isValidElement(child) && child.type === component) {
       return i;
     }
   }
@@ -35,34 +46,37 @@ const iconMapping = {
 };
 function cleanQuoteFlavor(input: string) {
   // Remove the brackets and exclamation mark
-  const Component = iconMapping[input.replace(/[\[\]!]/g, "")];
+  const cleanKey = input.replace(/[[\]!]/g, "") as keyof typeof iconMapping;
+  const Component = iconMapping[cleanKey];
   return <Component size="1em" />;
 }
 
-const countChildrenByDisplayName = (children, displayName) => {
+const countChildrenByDisplayName = (
+  children: ReactNode,
+  component: ElementType
+) => {
   // Convert React children to an array
   const childrenArray = Children.toArray(children);
 
   // Filter the array to count only elements with the given displayName
   return childrenArray.filter(
-    (child) => isValidElement(child) && child.type?.displayName === displayName
+    (child) => isValidElement(child) && child.type === component
   ).length;
 };
 
-const findCiteInBlockquote = (children, lastListElementIndex) => {
+const findCiteInBlockquote = (
+  children: ReactNode,
+  lastListElementIndex: number
+) => {
   // Iterate over the children using React.Children.map
   return Children.map(children, (child, idx) => {
     const isLastList = lastListElementIndex === idx;
 
     // Check if the child is a valid React element and has the displayName 'UlList'
-    if (
-      isValidElement(child) &&
-      child.type?.displayName === "UlList" &&
-      isLastList
-    ) {
+    if (isValidElement(child) && child.type === UlList && isLastList) {
       const listItemCount = countChildrenByDisplayName(
         child.props.children,
-        "ListItem"
+        ListItem
       );
 
       // Return the child if it has more than one 'ListItem' child
@@ -70,7 +84,7 @@ const findCiteInBlockquote = (children, lastListElementIndex) => {
         const listItemChild = Children.map(
           child.props.children,
           (child) => child
-        ).find((c) => c.type?.displayName === "ListItem");
+        ).find((c: ReactElement) => c.type === ListItem);
 
         return listItemChild.props.children;
       } else {
@@ -83,17 +97,22 @@ const findCiteInBlockquote = (children, lastListElementIndex) => {
   });
 };
 
-export const BlockquoteRenderer = (props) => {
-  const { children, ...rest } = props;
+type BlockquoteProps = DetailedHTMLProps<
+  BlockquoteHTMLAttributes<HTMLQuoteElement>,
+  HTMLQuoteElement
+>;
 
-  const lastListElementIndex = findLastIndex(children, "UlList");
+export const Blockquote = (props: BlockquoteProps) => {
+  const { children } = props;
+
+  const lastListElementIndex = findLastIndex(children, UlList);
   const cite = findCiteInBlockquote(children, lastListElementIndex);
 
   const quoteFlavorProps = (() => {
     let flavorProps = {};
 
     Children.map(children, (child) => {
-      const isParagraph = child.type?.displayName === "Paragraph";
+      const isParagraph = isValidElement(child) && child.type === Paragraph;
       if (!isParagraph) return;
 
       const firstChild = child.props.children[0];
@@ -133,19 +152,18 @@ export const BlockquoteRenderer = (props) => {
   })();
 
   return (
-    <Blockquote
-      showDash={cite?.length > 0}
+    <StyledBlockquote
+      showDash={!!(cite && cite?.length > 0)}
       cite={cite}
       my="3"
       borderColor="colorPalette.9"
       bg="colorPalette.2"
       color="colorPalette.11"
       {...quoteFlavorProps}
-      {...rest}
     >
       {Children.map(children, (child, idx) => {
         const isLastList = lastListElementIndex === idx;
-        const isParagraph = child.type?.displayName === "Paragraph";
+        const isParagraph = isValidElement(child) && child.type === Paragraph;
 
         if (isParagraph) {
           const firstChild = child.props.children[0];
@@ -161,7 +179,7 @@ export const BlockquoteRenderer = (props) => {
           ) {
             // Get rid of first child
 
-            return cloneElement(child, {
+            return cloneElement(child as ReactElement, {
               children: [
                 <Box
                   position="relative"
@@ -184,14 +202,10 @@ export const BlockquoteRenderer = (props) => {
         }
 
         // Check if the child is a React element and if its type is 'kbd'
-        if (
-          isValidElement(child) &&
-          child.type?.displayName === "UlList" &&
-          isLastList
-        ) {
+        if (isValidElement(child) && child.type === UlList && isLastList) {
           const listItemCount = countChildrenByDisplayName(
             child.props.children,
-            "ListItem"
+            ListItem
           );
 
           if (listItemCount > 1) {
@@ -204,6 +218,6 @@ export const BlockquoteRenderer = (props) => {
         // Otherwise, return the child unchanged
         return child;
       })}
-    </Blockquote>
+    </StyledBlockquote>
   );
 };

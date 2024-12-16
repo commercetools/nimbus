@@ -3,7 +3,7 @@ import { system } from "@bleh-ui/react";
 
 const shirtSizes = ["xs", "sm", "md", "lg", "xl"];
 
-const assignGroup = ({ label, value }) => {
+const assignGroup = ({ label }: { label: string }) => {
   switch (true) {
     case label.includes("breakpoint"):
       return "breakpoint";
@@ -19,7 +19,8 @@ const assignGroup = ({ label, value }) => {
 };
 
 export const themeSizeTokensAtom = atom(() => {
-  const obj = Object.fromEntries(system.tokens.categoryMap.get("sizes"));
+  const tokenMap = system.tokens.categoryMap.get("sizes");
+  const obj = tokenMap ? Object.fromEntries(tokenMap) : {};
   const shaped = Object.keys(obj).map((tokenId) => {
     const token = {
       id: tokenId,

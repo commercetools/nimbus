@@ -1,17 +1,12 @@
 import { activeDocAtom } from "@/atoms/active-doc.ts";
 import { useAtom, useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
-import { Box, Button, Flex, Stack, Text } from "@bleh-ui/react";
+import { Box, Flex, Stack, Text } from "@bleh-ui/react";
 import { components } from "./components";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
-import { GithubRepoLink } from "../utils/github-repo-link.tsx";
 import { MdxEditor } from "./mdx-editor";
-import { VsCodeEditLink } from "../utils/vs-code-edit-link.tsx";
-import { DevOnly } from "../utils/dev-only.tsx";
-import { useEffect, useState } from "react";
-import { Pencil, PencilOff } from "@bleh-ui/icons";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { TrashDocumentLink } from "../utils/trash-document-link.tsx";
 import { brandNameAtom } from "@/atoms/brand";
 import { documentEditModeAtom } from "@/atoms/document-edit-mode.ts";
 

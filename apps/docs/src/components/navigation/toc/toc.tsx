@@ -9,8 +9,9 @@ const useClosestHeading = (): string | null => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const headings =
-        document.querySelectorAll<HTMLElement>("h2, h3, h4, h5, h6");
+      const headings = document.querySelectorAll<HTMLElement>(
+        "h1, h2, h3, h4, h5, h6"
+      );
       let closestHeading: HTMLElement | null = null;
       let closestOffset = Infinity;
 
@@ -22,7 +23,9 @@ const useClosestHeading = (): string | null => {
         }
       });
 
-      setClosestHeadingId(closestHeading ? closestHeading.id : null);
+      setClosestHeadingId(
+        closestHeading ? (closestHeading as HTMLElement).id : null
+      );
     };
 
     // Run on scroll and on initial render
