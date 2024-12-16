@@ -41,15 +41,13 @@ export const DocumentRenderer = () => {
           {[...meta.menu].join(" > ")} | {brandName}
         </title>
       </Helmet>
-      <Box width="100%" maxWidth="960px" mx="">
+      <Box width="100%" maxWidth="960px">
         <Stack gap="4">
-          <Flex alignItems="center">
-            <Box>
+          {!editMode && (
+            <Flex height="46px" alignItems="center">
               <BreadcrumbNav />
-            </Box>
-            <Box flexGrow="1" />
-            <Box></Box>
-          </Flex>
+            </Flex>
+          )}
 
           <Box pb="24">
             {!editMode && (

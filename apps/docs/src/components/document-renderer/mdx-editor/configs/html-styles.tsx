@@ -59,6 +59,29 @@ const styles: Foo = {
   "& [role='combobox']": {
     bg: "transparent",
   },
+  "& [class*='codeMirrorToolbar']": {
+    bg: "bg/85",
+  },
+  "& [class*='codeMirrorWrapper']": {
+    border: "1px solid",
+    borderColor: "neutral.6",
+    padding: 0,
+  },
+  "& [class*='addColumnButton'], & [class*='addRowButton']": {
+    bg: "colorPalette.4",
+    color: "fg",
+  },
+  "& .cm-editor": {
+    py: "2",
+    textStyle: "sm",
+  },
+
+  "& .cm-gutterElement": {
+    textStyle: "sm",
+    fontSize: "xs",
+    opacity: 0.5,
+    ml: "2",
+  },
 };
 
 export const CustomEditorStyles = (props: any) => {

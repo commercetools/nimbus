@@ -34,6 +34,8 @@ import {
   imagePlugin,
 } from "@mdxeditor/editor";
 
+import { oneDarkTheme } from "@codemirror/theme-one-dark";
+
 import "@mdxeditor/editor/style.css";
 import { useEffect, useRef, useState } from "react";
 import { MdxFileFrontmatter } from "../../../types";
@@ -124,6 +126,7 @@ export const MdxEditor = ({
         "jsx-live": "Jsx (Live)",
         markdown: "Markdown",
       },
+      codeMirrorExtensions: [oneDarkTheme],
     }),
     toolbarPlugin({
       toolbarClassName: "toolbar",
@@ -201,7 +204,7 @@ export const MdxEditor = ({
   };
 
   return (
-    <Box position="relative" marginLeft="-4" marginRight="-4">
+    <Box position="relative" marginLeft="-12px" marginRight="-3.5">
       <Box mb="4" borderRadius="sm">
         <CustomEditorStyles>
           <MDXEditor
