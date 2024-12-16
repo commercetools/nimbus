@@ -1,5 +1,5 @@
 import { activeDocAtom } from "@/atoms/active-doc.ts";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Button, Flex, Stack, Text } from "@bleh-ui/react";
 import { components } from "./components";
@@ -13,11 +13,12 @@ import { Pencil, PencilOff } from "@bleh-ui/icons";
 import { Helmet } from "react-helmet-async";
 import { TrashDocumentLink } from "../utils/trash-document-link.tsx";
 import { brandNameAtom } from "@/atoms/brand";
+import { documentEditModeAtom } from "@/atoms/document-edit-mode.ts";
 
 export const DocumentRenderer = () => {
   const brandName = useAtomValue(brandNameAtom);
   const activeDoc = useAtomValue(activeDocAtom);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useAtom(documentEditModeAtom);
 
   useEffect(() => {
     setEditMode(false);
@@ -47,24 +48,7 @@ export const DocumentRenderer = () => {
               <BreadcrumbNav />
             </Box>
             <Box flexGrow="1" />
-            <Box>
-              <Stack direction="row" gap="4" alignItems="center">
-                <DevOnly>
-                  <Button
-                    size="xs"
-                    variant="plain"
-                    mr="-2.5"
-                    onClick={() => setEditMode(!editMode)}
-                  >
-                    {!editMode && <Pencil size="1em" />}
-                    {editMode && <PencilOff size="1em" />}
-                  </Button>
-                  <TrashDocumentLink repoPath={meta.repoPath} />
-                  <VsCodeEditLink repoPath={meta.repoPath} />
-                </DevOnly>
-                <GithubRepoLink repoPath={meta.repoPath} />
-              </Stack>
-            </Box>
+            <Box></Box>
           </Flex>
 
           <Box pb="24">

@@ -1,4 +1,4 @@
-import { Link } from "@bleh-ui/react";
+import { Button, Link } from "@bleh-ui/react";
 import { FileCode } from "@bleh-ui/icons";
 
 const prefix = "vscode://file" + process.env.REPO_ROOT;
@@ -33,10 +33,12 @@ export const VsCodeEditLink = ({
   const link = [prefix, repoPath].join("/");
 
   return (
-    <Link href={link} target="_blank" title="Open in VSCode">
-      <FileCode size="1em" />
-      {text.length > 0 && " "}
-      {text}
-    </Link>
+    <Button size="xs" variant="ghost" asChild>
+      <a href={link} target="_blank" title="Open in VSCode">
+        <FileCode size="1em" />
+        {text.length > 0 && " "}
+        {text}
+      </a>
+    </Button>
   );
 };

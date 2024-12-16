@@ -21,7 +21,7 @@ export const TrashDocumentLink = ({ repoPath }: TrashDocumentLinkProps) => {
   };
 
   return (
-    <Button variant="plain" onClick={handleDelete} size="xs">
+    <Button variant="ghost" onClick={handleDelete} size="xs">
       <TrashIcon size="1em" />
     </Button>
   );
