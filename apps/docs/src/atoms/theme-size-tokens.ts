@@ -1,31 +1,44 @@
 import { atom } from "jotai";
 import { system } from "@bleh-ui/react";
 
-const shirtSizes = ["xs", "sm", "md", "lg", "xl"];
+// Define shirt sizes
+const SHIRT_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
 
-const assignGroup = ({ label }: { label: string }) => {
-  switch (true) {
-    case label.includes("breakpoint"):
-      return "breakpoint";
-    case shirtSizes.some((size) => label.includes(size)):
-      return "large";
-    case label.includes("/"):
-      return "fraction";
-    case /^\d+(\.\d+)?$/.test(label):
-      return "regular";
-    default:
-      return "other";
+/**
+ * Assigns a group to a token based on its label.
+ * @param {Object} param - The token object.
+ * @param {string} param.label - The label of the token.
+ * @returns {string} - The group name.
+ */
+const assignGroup = ({ label }: { label: string }): string => {
+  if (label.includes("breakpoint")) {
+    return "breakpoint";
   }
+  if (SHIRT_SIZES.some((size) => label.includes(size))) {
+    return "large";
+  }
+  if (label.includes("/")) {
+    return "fraction";
+  }
+  if (/^\d+(\.\d+)?$/.test(label)) {
+    return "regular";
+  }
+  return "other";
 };
 
+/**
+ * Atom to manage theme size tokens.
+ * @returns {Array} - The shaped tokens array.
+ */
 export const themeSizeTokensAtom = atom(() => {
   const tokenMap = system.tokens.categoryMap.get("sizes");
-  const obj = tokenMap ? Object.fromEntries(tokenMap) : {};
-  const shaped = Object.keys(obj).map((tokenId) => {
+  const tokens = tokenMap ? Object.fromEntries(tokenMap) : {};
+
+  return Object.keys(tokens).map((tokenId) => {
     const token = {
       id: tokenId,
       label: tokenId,
-      value: obj[tokenId],
+      value: tokens[tokenId],
     };
 
     const group = assignGroup(token);
@@ -35,6 +48,4 @@ export const themeSizeTokensAtom = atom(() => {
       group,
     };
   });
-
-  return shaped;
 });

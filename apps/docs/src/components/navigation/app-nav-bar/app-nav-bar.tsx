@@ -1,11 +1,10 @@
 import { Flex, Box, Stack } from "@bleh-ui/react";
+import { DevOnly } from "@/components/utils/dev-only";
 
-import { ModeToggleButton } from "./mode-toggle-button";
-
-import { AppNavBarSearch } from "./app-nav-bar-search.tsx";
-import { AppNavBarCreateButton } from "./app-nav-bar-create-button.tsx";
-import { DevOnly } from "../../utils/dev-only.tsx";
-import { AppNavBarBrand } from "./app-nav-bar-brand.tsx";
+import { ModeToggleButton } from "./components/mode-toggle-button/index.ts";
+import { AppNavBarSearch } from "./components/app-nav-bar-search/app-nav-bar-search.tsx";
+import { AppNavBarCreateButton } from "./components/app-nav-bar-create-button.tsx";
+import { AppNavBarBrand } from "./components/app-nav-bar-brand.tsx";
 
 export const AppNavBar = () => {
   return (
@@ -21,8 +20,6 @@ export const AppNavBar = () => {
           <AppNavBarCreateButton />
         </DevOnly>
       </Stack>
-
-      <Box></Box>
       <Box flexGrow="1" />
       <Flex flexGrow="1">
         <AppNavBarSearch />

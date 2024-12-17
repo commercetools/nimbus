@@ -1,27 +1,30 @@
 import { useAtomValue } from "jotai";
-
+import { useMemo } from "react";
 import {
   BreadcrumbRoot,
   BreadcrumbLink,
   BreadcrumbCurrentLink,
 } from "@bleh-ui/react";
-import { useMemo } from "react";
-import { activeDocAtom } from "../../../atoms/active-doc.ts";
-import { menuToPath } from "../../../utils/sluggify.ts";
+import { activeDocAtom } from "../../../atoms/active-doc";
+import { menuToPath } from "../../../utils/sluggify";
+import { BreadcrumbItem } from "./breadcrumb.types";
 
+/**
+ * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
+ */
 export const BreadcrumbNav = () => {
   const activeDoc = useAtomValue(activeDocAtom);
-  const parts = useMemo(() => {
+
+  // Memoize the breadcrumb parts to avoid unnecessary recalculations
+  const parts: BreadcrumbItem[] = useMemo(() => {
     if (!activeDoc) return [];
 
-    const menu = activeDoc.meta.menu;
+    const { menu } = activeDoc.meta;
 
-    return menu.map((item, idx) => {
-      return {
-        label: item,
-        href: "/" + menuToPath(activeDoc.meta.menu.slice(0, idx + 1)),
-      };
-    });
+    return menu.map((item, idx) => ({
+      label: item,
+      href: "/" + menuToPath(menu.slice(0, idx + 1)),
+    }));
   }, [activeDoc]);
 
   const isHomePage = parts.length === 1 && parts[0].label === "Home";
@@ -31,7 +34,7 @@ export const BreadcrumbNav = () => {
       {!isHomePage && <BreadcrumbLink href="/">Home</BreadcrumbLink>}
       {parts.map((item, idx) => {
         const LinkComponent =
-          parts.length === idx - 1 ? BreadcrumbCurrentLink : BreadcrumbLink;
+          idx === parts.length - 1 ? BreadcrumbCurrentLink : BreadcrumbLink;
         return (
           <LinkComponent key={item.href} href={item.href}>
             {item.label}

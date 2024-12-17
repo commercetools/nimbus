@@ -1,4 +1,8 @@
 import { atom } from "jotai";
-import json from "./../assets/types.json";
+import typeData from "./../assets/types.json";
 
-export const typesAtom = atom(json);
+/**
+ * Atom to manage the state of type data.
+ * Initialized with data from a JSON file.
+ */
+export const typesAtom = atom(typeData);

@@ -3,8 +3,8 @@ import {
   documentAudienceDescriptions,
 } from "@/schemas/mdx-document-audiences";
 import { useMemo } from "react";
-import { useDocumentMetaSettings } from "../use-document-meta-settings";
 import { Box, Flex, Stack, Text } from "@bleh-ui/react";
+import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 // Define the type for the audience options
 interface AudienceOption {
@@ -19,7 +19,7 @@ interface AudienceOption {
  * @returns {JSX.Element | null} The rendered component or null if no document is available.
  */
 export const DocumentAudienceSelector = (): JSX.Element | null => {
-  const { meta, noDoc, save } = useDocumentMetaSettings();
+  const { meta, updateMeta } = useUpdateDocument();
 
   // Memoize the options to avoid recalculating on every render
   const options: AudienceOption[] = useMemo(() => {
@@ -40,7 +40,7 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
   const onSaveRequest = (audiences: DocumentAudience[]) => {
     if (!meta) return;
     const payload = { ...meta, documentAudiences: audiences };
-    save(payload);
+    updateMeta(payload);
   };
 
   /**
@@ -56,8 +56,6 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
     }
     onSaveRequest(audiences);
   };
-
-  if (noDoc) return null;
 
   return (
     <Stack>

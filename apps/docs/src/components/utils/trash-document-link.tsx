@@ -1,22 +1,38 @@
-import axios from "axios";
 import { Button } from "@bleh-ui/react";
 import { TrashIcon } from "@bleh-ui/icons";
+import { useRemoveDocument } from "@/hooks/useRemoveDocument";
 
-interface TrashDocumentLinkProps {
+/**
+ * Props for the TrashDocumentLink component
+ */
+export interface TrashDocumentLinkProps {
   repoPath: string;
 }
 
+/**
+ * TrashDocumentLink component
+ *
+ * A button that allows the user to delete a document.
+ *
+ * @param {TrashDocumentLinkProps} props - The props for the component.
+ * @returns The rendered component.
+ */
 export const TrashDocumentLink = ({ repoPath }: TrashDocumentLinkProps) => {
-  const handleDelete = async () => {
-    const yes = confirm("Are you sure you want to delete this document?");
+  const { remove } = useRemoveDocument();
+  /**
+   * Handles the delete action
+   */
+  const handleDelete = async (): Promise<void> => {
+    const userConfirmed = confirm(
+      "Are you sure you want to delete this document?"
+    );
 
-    if (!yes) return;
+    if (!userConfirmed) return;
 
     try {
-      await axios.delete("/api/fs", { data: { repoPath } });
-      // Handle successful delete (e.g., show a message, update UI)
-    } catch (error) {
-      // Handle error (e.g., show an error message)
+      await remove(repoPath);
+    } catch (err) {
+      console.error("Error deleting document:", err);
     }
   };
 

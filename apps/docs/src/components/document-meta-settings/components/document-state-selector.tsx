@@ -3,12 +3,13 @@ import {
   documentStateDescriptions,
 } from "@/schemas/mdx-document-states";
 import { useCallback, useEffect, useMemo } from "react";
-import { useDocumentMetaSettings } from "../use-document-meta-settings";
 import { Box, Stack, Text } from "@bleh-ui/react";
 import { ChevronDown } from "@bleh-ui/icons";
+import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const DocumentStateSelector = () => {
-  const { meta, noDoc, save } = useDocumentMetaSettings();
+  const { meta, updateMeta } = useUpdateDocument();
+
   const options = useMemo(() => {
     const arr = Object.keys(documentStateDescriptions).map((key) => {
       const item = documentStateDescriptions[key as DocumentState];
@@ -25,9 +26,9 @@ export const DocumentStateSelector = () => {
     (value: DocumentState) => {
       if (!meta) return;
       const payload = { ...meta, documentState: value };
-      save(payload);
+      updateMeta(payload);
     },
-    [meta, save]
+    [meta, updateMeta]
   );
 
   useEffect(() => {
@@ -38,7 +39,6 @@ export const DocumentStateSelector = () => {
     }
   }, [meta, options, onSaveRequest]);
 
-  if (noDoc) return null;
   return (
     <Stack>
       <Text fontWeight="semibold" asChild>

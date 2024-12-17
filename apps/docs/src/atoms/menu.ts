@@ -13,7 +13,11 @@ type MenuItem = {
   children?: MenuItem[];
 };
 
-// Function to create the menu
+/**
+ * Builds the menu structure from the given metadata.
+ * @param itemMetas - Array of metadata objects.
+ * @returns Array of MenuItem objects representing the menu structure.
+ */
 function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
   const root: MenuItem[] = [];
 
@@ -27,11 +31,15 @@ function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
   return orderMenuItems(root, itemMetas);
 }
 
-// Function to identify and add first-level menu items
+/**
+ * Identifies and adds first-level menu items to the root.
+ * @param itemMetas - Array of metadata objects.
+ * @param root - Root array to which first-level items are added.
+ */
 function addFirstLevelItems(
   itemMetas: MdxFileFrontmatter["meta"][],
   root: MenuItem[]
-) {
+): void {
   const firstLevelItems = itemMetas.filter(
     (itemMeta) => itemMeta.menu.length === 1
   );
@@ -51,11 +59,15 @@ function addFirstLevelItems(
   });
 }
 
-// Function to add nested menu items
+/**
+ * Adds nested menu items to the root.
+ * @param itemMetas - Array of metadata objects.
+ * @param root - Root array to which nested items are added.
+ */
 function addNestedItems(
   itemMetas: MdxFileFrontmatter["meta"][],
   root: MenuItem[]
-) {
+): void {
   itemMetas.forEach((itemMeta) => {
     if (itemMeta.menu.length === 1) return; // Skip first-level items
 
@@ -92,11 +104,21 @@ function addNestedItems(
   });
 }
 
-// Function to order menu items
+/**
+ * Orders the menu items based on their order and label.
+ * @param root - Root array of menu items.
+ * @param itemMetas - Array of metadata objects.
+ * @returns Ordered array of MenuItem objects.
+ */
 function orderMenuItems(
   root: MenuItem[],
   itemMetas: MdxFileFrontmatter["meta"][]
 ): MenuItem[] {
+  /**
+   * Recursively orders the children of menu items.
+   * @param items - Array of menu items.
+   * @returns Ordered array of menu items.
+   */
   function orderChildren(items: MenuItem[]): MenuItem[] {
     return orderBy(
       items.map((item) => ({
@@ -121,6 +143,9 @@ function orderMenuItems(
   return orderBy(fixedRoot, ["order", "label"]);
 }
 
+/**
+ * Atom to manage the menu state.
+ */
 export const menuAtom = atom((get) => {
   const docsObj = get(documentationAtom);
   const items: MdxFileFrontmatter["meta"][] = Object.keys(docsObj).map(

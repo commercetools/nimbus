@@ -1,4 +1,11 @@
-import { Box, Button, Flex, Text, toaster } from "@bleh-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  toaster,
+  useColorModeValue,
+} from "@bleh-ui/react";
 import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
@@ -39,19 +46,14 @@ import { oneDarkTheme } from "@codemirror/theme-one-dark";
 import "@mdxeditor/editor/style.css";
 import { useEffect, useRef, useState } from "react";
 import { MdxFileFrontmatter } from "../../../types";
-import axios from "axios";
 import { CustomEditorStyles } from "./configs/html-styles.tsx";
 import { uploadImage } from "@/utils/file-upload.ts";
+import { useUpdateDocument } from "@/hooks/useUpdateDocument.ts";
 
 type MdxEditorProps = MDXEditorProps & {
   meta: MdxFileFrontmatter["meta"];
   onCloseRequest: () => void;
 };
-
-function getFrontmatter(fileContent: string) {
-  const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/);
-  return frontmatterMatch ? frontmatterMatch[0] : null;
-}
 
 // Components that are not renderable in the editor
 const unrenderables = [
@@ -89,8 +91,10 @@ export const MdxEditor = ({
   onCloseRequest,
   ...props
 }: MdxEditorProps) => {
+  const { updateMdx, isLoading } = useUpdateDocument();
   const [markdownStr, setMarkdownStr] = useState(markdown);
-  const [isSaving, setIsSaving] = useState(false);
+  const codeBlockTheme = useColorModeValue([], [oneDarkTheme]);
+
   const ref = useRef<MDXEditorMethods>(null);
 
   useEffect(() => {
@@ -126,7 +130,7 @@ export const MdxEditor = ({
         "jsx-live": "Jsx (Live)",
         markdown: "Markdown",
       },
-      codeMirrorExtensions: [oneDarkTheme],
+      codeMirrorExtensions: [...codeBlockTheme],
     }),
     toolbarPlugin({
       toolbarClassName: "toolbar",
@@ -170,37 +174,13 @@ export const MdxEditor = ({
   };
 
   const onSaveRequest = async () => {
-    const { repoPath } = props.meta;
-
-    setIsSaving(true);
-
-    const { data } = await axios({
-      method: "GET",
-      url: "/api/fs",
-      params: { repoPath },
-    });
-
-    const frontMatterString = getFrontmatter(data.content);
-    const updatedContent = `${frontMatterString}\n${markdownStr}`;
-
-    await axios({
-      method: "PUT",
-      url: "/api/fs",
-      data: {
-        repoPath,
-        content: updatedContent,
-      },
-    });
+    await updateMdx(markdownStr);
 
     toaster.create({
       title: "Document saved",
       type: "success",
       duration: 3000,
     });
-    setTimeout(() => {
-      setIsSaving(false);
-      onCloseRequest();
-    }, 1000);
   };
 
   return (
@@ -234,7 +214,7 @@ export const MdxEditor = ({
           Cancel
         </Button>
       </Flex>
-      {isSaving && (
+      {isLoading && (
         <Box
           position="absolute"
           bg="bg/90"

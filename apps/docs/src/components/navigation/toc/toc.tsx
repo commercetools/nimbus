@@ -1,57 +1,18 @@
 import { Box, Link, Text } from "@bleh-ui/react";
-import { activeTocAtom } from "../../../atoms/toc.ts";
+import { tocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useClosestHeading } from "./hooks/use-closest-heading.ts";
 
-// Custom hook to find the closest heading element
-const useClosestHeading = (): string | null => {
-  const [closestHeadingId, setClosestHeadingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const headings = document.querySelectorAll<HTMLElement>(
-        "h1, h2, h3, h4, h5, h6"
-      );
-      let closestHeading: HTMLElement | null = null;
-      let closestOffset = Infinity;
-
-      headings.forEach((heading) => {
-        const { top } = heading.getBoundingClientRect();
-        if (top >= 0 && top < closestOffset) {
-          closestOffset = top;
-          closestHeading = heading;
-        }
-      });
-
-      setClosestHeadingId(
-        closestHeading ? (closestHeading as HTMLElement).id : null
-      );
-    };
-
-    // Run on scroll and on initial render
-    const scrollEl = document.getElementById("main");
-    scrollEl?.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
-
-    // Cleanup the event listener
-    return () => scrollEl?.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return closestHeadingId;
-};
-
-// Interface for Table of Contents item
-interface TocItem {
-  href: string;
-  depth: number;
-  value: string;
-}
-
-// Table of Contents component
+/**
+ * Table of Contents (TOC) component
+ * Displays a list of links to headings on the page
+ */
 export const Toc = () => {
-  const activeToc = useAtomValue<TocItem[]>(activeTocAtom);
+  const activeToc = useAtomValue(tocAtom);
   const closestHeadingId = useClosestHeading();
 
+  // Define indentation levels for different heading depths
   const indent: { [key: number]: string } = {
     1: "0",
     2: "0",
@@ -61,6 +22,7 @@ export const Toc = () => {
   };
 
   useEffect(() => {
+    // Scroll to the active TOC item smoothly
     setTimeout(() => {
       const el = document.getElementById("active-toc-item");
       el?.scrollIntoView({

@@ -2,20 +2,32 @@ import { atom } from "jotai";
 import { system } from "@bleh-ui/react";
 import orderBy from "lodash/orderBy";
 
-export const themeSpacingTokensAtom = atom(() => {
+// Define the shape of a spacing token
+interface SpacingToken {
+  id: string;
+  label: string;
+  value: { value: string; originalValue: string };
+}
+
+/**
+ * Atom to fetch and sort theme spacing tokens.
+ * @returns {SpacingToken[]} Sorted array of spacing tokens.
+ */
+export const themeSpacingTokensAtom = atom<SpacingToken[]>(() => {
+  // Retrieve the spacing tokens from the system
   const tokenMap = system.tokens.categoryMap.get("spacing");
   const obj = tokenMap ? Object.fromEntries(tokenMap) : {};
-  const shaped = Object.keys(obj).map((tokenId) => {
-    return {
-      id: tokenId,
-      label: tokenId,
-      value: obj[tokenId],
-    };
-  });
 
-  // Every token that starts with a "-" is a duplicate of a regular token
-  // allowing usage in negative margins. Not needed for display purposes.
+  // Shape the tokens into an array of objects
+  const shaped: SpacingToken[] = Object.keys(obj).map((tokenId) => ({
+    id: tokenId,
+    label: tokenId,
+    value: obj[tokenId],
+  }));
+
+  // Filter out tokens that start with a "-" (negative margins)
   const onlyPositiveValues = shaped.filter((v) => v.id[0] !== "-");
 
+  // Sort the tokens by their numeric value in ascending order
   return orderBy(onlyPositiveValues, (v) => parseFloat(v.value.value), "asc");
 });

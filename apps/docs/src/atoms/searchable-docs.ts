@@ -1,25 +1,7 @@
 import { atom } from "jotai";
 import { documentationAtom } from "./documentation";
 import { MdxFileFrontmatter } from "@/types";
-
-function stripMarkdown(input: string) {
-  // Remove HTML tags
-  let cleanText = input.replace(/<\/?[^>]+(>|$)/g, "");
-
-  // Remove markdown syntax
-  cleanText = cleanText
-    .replace(/!\[.*?\]\(.*?\)/g, "") // Remove images
-    .replace(/\[.*?\]\(.*?\)/g, "") // Remove links
-    .replace(/[`*~_>#-]/g, "") // Remove common markdown characters
-    .replace(/!\[.*?\]/g, "") // Remove image placeholder
-    .replace(/\[.*?\]/g, "") // Remove link placeholder
-    .replace(/^\s*\d+\.\s+/g, ""); // Remove ordered list numbers
-
-  // Remove line breaks
-  cleanText = cleanText.replace(/\n/g, " ").trim();
-
-  return cleanText;
-}
+import { stripMarkdown } from "@/utils/stip-markdown";
 
 export type SearchableDocItem = MdxFileFrontmatter["meta"] & {
   content: string;

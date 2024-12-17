@@ -5,6 +5,10 @@ import type { IncomingMessage, ServerResponse } from "http";
 import type { NextHandleFunction } from "connect";
 import fileUpload, { FileArray } from "express-fileupload";
 
+export type FileUploadResponse = {
+  url: string;
+};
+
 /**
  * Creates a Vite plugin that adds image upload functionality to the development server.
  *
@@ -73,7 +77,12 @@ export function imageUploadMiddleware(): Plugin {
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
               await new Promise((resolve) => setTimeout(resolve, 1000));
-              res.end(JSON.stringify({ url: `/s3/${filename}` }));
+
+              const response: FileUploadResponse = {
+                url: `/s3/${filename}`,
+              };
+
+              res.end(JSON.stringify(response));
             });
           } else {
             // Pass the request to the next middleware
