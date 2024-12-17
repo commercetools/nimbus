@@ -5,8 +5,11 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createRecipeContext,
+  defaultSystem,
 } from "@chakra-ui/react";
 import shouldForwardProp from "@emotion/is-prop-valid";
+
+const { isValidProperty } = defaultSystem;
 
 interface ButtonRecipeProps extends RecipeProps<"button">, UnstyledProp {}
 
@@ -24,8 +27,9 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
       type: "button",
     },
     /** make sure the `onPress` properties won't end up as attribute on the rendered DOM element */
-    shouldForwardProp(prop /* variantKeys */) {
-      return shouldForwardProp(prop) && !prop.includes("onPress");
+    shouldForwardProp(prop, variantKeys) {
+      const chakraSfp = !variantKeys?.includes(prop) && !isValidProperty(prop);
+      return shouldForwardProp(prop) && chakraSfp && !prop.includes("onPress");
     },
   }
 );
