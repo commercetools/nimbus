@@ -42,6 +42,8 @@ export const mdxDocumentSchema = z.object({
     toc: z.array(TocItemSchema),
     /** icon associated with this document */
     icon: z.string().optional(),
+    /** a link to a figma-design or -node */
+    figmaLink: z.string().url().optional(),
   }),
   /** the mdx content as a single string */
   mdx: z.string(),

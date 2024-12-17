@@ -42,7 +42,7 @@ export const DocumentStateSelector = () => {
   return (
     <Stack>
       <Text fontWeight="semibold" asChild>
-        <label htmlFor="documentState">Document Status</label>
+        <label htmlFor="documentState">Status</label>
       </Text>
       <Box position="relative">
         <Box

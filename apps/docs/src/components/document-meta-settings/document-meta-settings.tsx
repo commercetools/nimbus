@@ -5,6 +5,8 @@ import { DocumentActionButtons } from "./components/document-action-buttons";
 import { useAtomValue } from "jotai";
 import { activeDocAtom } from "@/atoms/active-doc";
 
+import { DocumentStringFieldEdit } from "./components/document-string-field";
+
 export const DocumentMetaSettings = () => {
   const activeDocument = useAtomValue(activeDocAtom);
   if (!activeDocument) return null;
@@ -12,8 +14,23 @@ export const DocumentMetaSettings = () => {
     <Stack>
       <DocumentActionButtons />
       <hr />
+      <DocumentStringFieldEdit
+        label="Title"
+        placeholder="http://www.figma.com/..."
+        metaProperty="title"
+      />
+      <DocumentStringFieldEdit
+        label="Description"
+        placeholder="http://www.figma.com/..."
+        metaProperty="description"
+      />
       <DocumentStateSelector />
       <DocumentAudienceSelector />
+      <DocumentStringFieldEdit
+        label="Figma Link"
+        placeholder="http://www.figma.com/..."
+        metaProperty="figmaLink"
+      />
     </Stack>
   );
 };

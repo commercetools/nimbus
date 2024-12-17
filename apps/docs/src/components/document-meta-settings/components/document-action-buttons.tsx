@@ -1,4 +1,5 @@
 import { documentEditModeAtom } from "@/atoms/document-edit-mode";
+import { FigmaLink } from "@/components/utils/figma-link";
 import { GithubRepoLink } from "@/components/utils/github-repo-link";
 import { TrashDocumentLink } from "@/components/utils/trash-document-link";
 import { VsCodeEditLink } from "@/components/utils/vs-code-edit-link";
@@ -25,6 +26,7 @@ export const DocumentActionButtons = () => {
           <VsCodeEditLink repoPath={meta.repoPath} />
 
           <GithubRepoLink repoPath={meta.repoPath} />
+          <FigmaLink />
         </>
       )}
     </Stack>
