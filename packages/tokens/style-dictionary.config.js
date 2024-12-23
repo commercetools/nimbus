@@ -49,23 +49,15 @@ export default {
     },
     ts: {
       transformGroup: "custom/ts",
-      buildPath: "generated/js/",
+      buildPath: "generated/ts/",
       files: [
         {
-          destination: "design-tokens.js",
-          /** generate js file
+          destination: "design-tokens.ts",
+          /** generate ts file
            * https://v4.styledictionary.com/reference/hooks/formats/predefined/#javascriptesm
            */
           format: "javascript/esm",
           options: { stripMeta: true, minify: true },
-        },
-        {
-          destination: "design-tokens.d.ts",
-          /** generate d.ts file
-           * https://v4.styledictionary.com/reference/hooks/formats/predefined/#typescriptes6-declarations
-           */
-          format: "typescript/es6-declarations",
-          options: { outputStringLiterals: true },
         },
       ],
     },

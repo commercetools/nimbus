@@ -1,10 +1,6 @@
 {
   "name": "my-monorepo",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/docs"
-  ],
   "scripts": {
     "dev": "NO_COLOR=1 bun --filter '*' dev",
     "build": "NO_COLOR=1 bun run build-packages && bun run build-docs",

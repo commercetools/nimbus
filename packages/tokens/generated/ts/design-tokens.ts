@@ -368,4 +368,4 @@ export default {
     5: "0 8px 20px hsla(0, 0%, 0%, 0.1)",
     6: "0 10px 24px hsla(0, 0%, 0%, 0.11)",
   },
-};
+} as const;
