@@ -3,7 +3,7 @@ import path from "path";
 import type { Plugin } from "vite";
 import type { IncomingMessage, ServerResponse } from "http";
 import type { NextHandleFunction } from "connect";
-import fileUpload, { FileArray } from "express-fileupload";
+import fileUpload, { type FileArray } from "express-fileupload";
 
 export type FileUploadResponse = {
   url: string;

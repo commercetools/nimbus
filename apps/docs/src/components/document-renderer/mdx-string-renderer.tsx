@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import { remarkMark } from "remark-mark-highlight";
 
 import type { FC, ReactNode } from "react";
-import type { MDXComponents, MDXProps } from "mdx/types";
+import { MDXComponents, MDXProps } from "mdx/types";
 import type { EvaluateOptions } from "@mdx-js/mdx";
 
 type ReactMDXContent = (props: MDXProps) => ReactNode;

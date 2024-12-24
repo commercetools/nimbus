@@ -61,5 +61,22 @@ export default {
         },
       ],
     },
+    chakra: {
+      transformGroup: "custom/ts",
+      buildPath: "generated/chakra/",
+      expand: {
+        typesMap: {
+          $value: "value",
+        },
+      },
+      files: [
+        {
+          destination: "theme-tokens.ts",
+          /** generate tokens in chakra-accepted format https://www.chakra-ui.com/docs/theming/tokens#defining-tokens*/
+          format: "javascript/esm",
+          options: { stripMeta: true },
+        },
+      ],
+    },
   },
 };

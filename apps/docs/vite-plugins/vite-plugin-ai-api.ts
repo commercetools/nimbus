@@ -1,6 +1,6 @@
-import express, { Request, Response } from "express";
+import express, { type Request, type Response } from "express";
 import bodyParser from "body-parser";
-import { Plugin } from "vite";
+import { type Plugin } from "vite";
 import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
@@ -89,7 +89,7 @@ ${content}
                 await fs.writeFile(resolvedPath, fileContent);
                 return `File saved successfully to ${filePath}`;
               } catch (error) {
-                return `Error saving file.`;
+                return `Error saving file: ${error}`;
               }
             },
           },
@@ -98,6 +98,7 @@ ${content}
 
       result.pipeDataStreamToResponse(res);
     } catch (error) {
+      console.warn(`error: ${error}`);
       res.status(500).json({ error: "Internal server error" });
     }
   });
