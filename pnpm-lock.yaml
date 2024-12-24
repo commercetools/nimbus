@@ -309,10 +309,16 @@ importers:
         version: 18.3.1
 
   packages/tokens:
-    dependencies:
+    devDependencies:
       '@tokens-studio/sd-transforms':
         specifier: ^1.2.9
         version: 1.2.9(style-dictionary@4.3.0)
+      is-plain-obj:
+        specifier: ^4.1.0
+        version: 4.1.0
+      prettier:
+        specifier: 3.4.2
+        version: 3.4.2
       style-dictionary:
         specifier: ^4.3.0
         version: 4.3.0
@@ -4672,10 +4678,6 @@ packages:
 
   qs@6.13.0:
     resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
-    engines: {node: '>=0.6'}
-
-  qs@6.13.1:
-    resolution: {integrity: sha512-EJPeIn0CYrGu+hli1xilKAPXODtJ12T0sP63Ijx2/khC2JtuaN3JyNIpvmnkmaEtha9ocbG4A4cMcr+TvqvwQg==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -11384,10 +11386,6 @@ snapshots:
     dependencies:
       side-channel: 1.1.0
 
-  qs@6.13.1:
-    dependencies:
-      side-channel: 1.1.0
-
   queue-microtask@1.2.3: {}
 
   range-parser@1.2.1: {}
@@ -12266,7 +12264,7 @@ snapshots:
   url@0.11.4:
     dependencies:
       punycode: 1.4.1
-      qs: 6.13.1
+      qs: 6.13.0
 
   use-callback-ref@1.3.3(@types/react@18.3.18)(react@18.3.1):
     dependencies:
