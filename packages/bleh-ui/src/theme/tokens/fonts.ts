@@ -1,4 +1,4 @@
 import { defineTokens } from "@chakra-ui/react";
-import designTokens from "../../../../tokens/generated/chakra/theme-tokens";
+import designTokens from "../../../../tokens/src/generated/chakra/theme-tokens";
 
 export const fonts = defineTokens.fonts(designTokens.fontFamily);

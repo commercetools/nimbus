@@ -1,38 +1,18 @@
 import StyleDictionary from "style-dictionary";
-
 import { register } from "@tokens-studio/sd-transforms";
-
-import isPlainObject from "is-plain-obj";
 import * as prettier from "prettier/standalone";
 import * as prettierPluginEstree from "prettier/plugins/estree";
 import * as prettierPluginTypescript from "prettier/plugins/typescript";
-
-function formatDTCGforChakra(tokens) {
-  const clone = structuredClone(tokens);
-  const format = (slice) => {
-    if (slice.hasOwnProperty("$value")) {
-      slice.value = slice.$value;
-      Object.keys(slice).forEach((key) => {
-        if (key && key !== "value") delete slice[key];
-      });
-      delete slice.$value;
-    } else {
-      Object.values(slice).forEach((val) => {
-        if (isPlainObject(val)) {
-          format(val);
-        }
-      });
-    }
-  };
-  format(clone);
-
-  return clone;
-}
+import { formatDTCGforChakra } from "./utils/dtcg-to-chakra.js";
 
 /** Register token-studio transforms with style-dictionary
  * https://github.com/tokens-studio/sd-transforms?tab=readme-ov-file#usage */
 register(StyleDictionary);
 
+/**Register custom format
+ * https://styledictionary.com/reference/hooks/formats/#custom-formats
+ * for tokens to be formatted for use in the chakra theme.
+ * https://www.chakra-ui.com/docs/theming/tokens#defining-tokens */
 StyleDictionary.registerFormat({
   name: "ts/chakra",
   format: function ({ dictionary, platform, options, file }) {
@@ -78,7 +58,7 @@ StyleDictionary.registerTransformGroup({
 /** configure style dictionary
  * https://v4.styledictionary.com/reference/config/ */
 export default {
-  source: ["base/tokens.json"],
+  source: ["src/base/tokens.json"],
   /** run tokens studio preprocessor
    * https://github.com/tokens-studio/sd-transforms?tab=readme-ov-file#using-the-preprocessor*/
   preprocessors: ["tokens-studio"],
@@ -86,7 +66,7 @@ export default {
   platforms: {
     css: {
       transformGroup: "custom/css",
-      buildPath: "generated/css/",
+      buildPath: "src/generated/css/",
       files: [
         {
           destination: "design-tokens.css",
@@ -99,7 +79,7 @@ export default {
     },
     ts: {
       transformGroup: "custom/ts",
-      buildPath: "generated/ts/",
+      buildPath: "src/generated/ts/",
       files: [
         {
           destination: "design-tokens.ts",
@@ -113,7 +93,7 @@ export default {
     },
     chakra: {
       transformGroup: "custom/ts",
-      buildPath: "generated/chakra/",
+      buildPath: "src/generated/chakra/",
 
       files: [
         {
