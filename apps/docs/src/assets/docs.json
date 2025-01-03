@@ -20,6 +20,27 @@
     },
     "mdx": "\n\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be used in any other component.\n\nThis is the list of available icons:\n\n<IconSearch />\n"
   },
+  "packages/bleh-ui/node_modules/@bleh-ui/icons/README.mdx": {
+    "meta": {
+      "id": "Icons",
+      "title": "Icons",
+      "description": "display Icons",
+      "documentState": "InitialDraft",
+      "order": 999,
+      "repoPath": "packages/bleh-ui/node_modules/@bleh-ui/icons/README.mdx",
+      "menu": [
+        "Components",
+        "Media",
+        "Icons"
+      ],
+      "route": "components/media/icons",
+      "tags": [
+        "icons"
+      ],
+      "toc": []
+    },
+    "mdx": "\n\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be used in any other component.\n\nThis is the list of available icons:\n\n<IconSearch />\n"
+  },
   "packages/bleh-ui/src/components/blockquote/blockquote.mdx": {
     "meta": {
       "id": "Blockquote",
@@ -2269,6 +2290,7 @@
       "title": "Known issues",
       "description": "Current bugs, limitations, and compatibility issues with possible workarounds.",
       "documentState": "InitialDraft",
+      "documentAudiences": [],
       "order": 4,
       "repoPath": "packages/bleh-ui/src/docs/known-issues.mdx",
       "menu": [
