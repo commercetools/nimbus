@@ -1,12 +1,31 @@
 {
   "name": "@bleh-ui/tokens",
   "version": "0.0.1",
+  "main": "dist/bleh-ui-tokens.cjs.js",
+  "module": "dist/bleh-ui-tokens.esm.js",
   "type": "module",
   "scripts": {
     "build": "style-dictionary build --config ./src/style-dictionary.config.js"
   },
+  "sideEffects": [
+    "*.css"
+  ],
+  "preconstruct": {
+    "entrypoints": [
+      "./index.ts",
+      "./generated/ts/index.ts",
+      "./generated/chakra/index.ts"
+    ]
+  },
+  "files": [
+    "dist",
+    "css",
+    "generated/ts",
+    "generated/chakra"
+  ],
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.26.0",
     "@tokens-studio/sd-transforms": "^1.2.9",
     "is-plain-obj": "^4.1.0",
     "prettier": "3.4.2",

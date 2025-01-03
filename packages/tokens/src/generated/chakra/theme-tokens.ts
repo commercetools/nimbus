@@ -1,3 +1,9 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ * Generated on Fri, 03 Jan 2025 18:31:25 GMT
+ * This file is for only meant for use in building the chakra theme
+ */
+
 export default {
   borderRadius: {
     "50": {

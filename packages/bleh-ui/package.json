@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@bleh-ui/icons": "workspace:*",
+    "@bleh-ui/tokens": "workspace:^",
     "@chakra-ui/react": "^3.2.3",
     "@emotion/is-prop-valid": "^1.3.1",
     "@emotion/react": "^11.13.3",

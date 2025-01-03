@@ -1,0 +1,4 @@
+{
+  "main": "dist/bleh-ui-tokens-generated-chakra.cjs.js",
+  "module": "dist/bleh-ui-tokens-generated-chakra.esm.js"
+}
