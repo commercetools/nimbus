@@ -1,4 +1,4 @@
 import { defineTokens } from "@chakra-ui/react";
-import designTokens from "../../../../tokens/src/generated/chakra/theme-tokens";
+import { themeTokens } from "@bleh-ui/tokens";
 
-export const durations = defineTokens.durations(designTokens.duration);
+export const durations = defineTokens.durations(themeTokens.duration);

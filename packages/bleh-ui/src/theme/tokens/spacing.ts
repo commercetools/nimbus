@@ -1,4 +1,4 @@
 import { defineTokens } from "@chakra-ui/react";
-import designTokens from "../../../../tokens/src/generated/chakra/theme-tokens";
+import { themeTokens } from "@bleh-ui/tokens";
 
-export const spacing = defineTokens.spacing(designTokens.spacing);
+export const spacing = defineTokens.spacing(themeTokens.spacing);

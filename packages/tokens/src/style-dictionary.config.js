@@ -1,4 +1,5 @@
 import StyleDictionary from "style-dictionary";
+import { fileHeader, minifyDictionary } from "style-dictionary/utils";
 import { register } from "@tokens-studio/sd-transforms";
 import * as prettier from "prettier/standalone";
 import * as prettierPluginEstree from "prettier/plugins/estree";
@@ -11,20 +12,39 @@ register(StyleDictionary);
 
 /**Register custom format
  * https://styledictionary.com/reference/hooks/formats/#custom-formats
- * for tokens to be formatted for use in the chakra theme.
+ * for tokens to be defined as typescript object literals, which results
+ * in each value being displayed directly in typescript completions.
+ *
+ * Passing the `chakraSyntax` option generates a chakra-specific version
+ * of the tokens.
  * https://www.chakra-ui.com/docs/theming/tokens#defining-tokens */
 StyleDictionary.registerFormat({
-  name: "ts/chakra",
-  format: function ({ dictionary, platform, options, file }) {
-    const formattedTokens = formatDTCGforChakra(dictionary.tokens);
+  name: "ts/objectLiteral",
+  format: async function ({ dictionary, platform, options, file }) {
+    const { chakraSyntax } = options;
 
-    return prettier.format(
-      `export default ${JSON.stringify(formattedTokens, null, 2)} as const; \n`,
-      {
-        parser: "typescript",
-        plugins: [prettierPluginEstree, prettierPluginTypescript],
-      }
+    /** create header comment with timestamp
+     * https://styledictionary.com/reference/utils/format-helpers/#fileheader */
+    const header = await fileHeader({
+      file,
+      formatting: { fileHeaderTimestamp: true },
+    });
+
+    /** format tokens based on whether they are chakra syntax */
+    const formattedTokens = JSON.stringify(
+      chakraSyntax
+        ? formatDTCGforChakra(dictionary.tokens)
+        : minifyDictionary(dictionary.tokens, options.usesDtcg),
+      null,
+      2
     );
+
+    const content = `${header} export default ${formattedTokens} as const;\n`;
+
+    return prettier.format(content, {
+      parser: "typescript",
+      plugins: [prettierPluginEstree, prettierPluginTypescript],
+    });
   },
 });
 
@@ -66,7 +86,7 @@ export default {
   platforms: {
     css: {
       transformGroup: "custom/css",
-      buildPath: "src/generated/css/",
+      buildPath: "css/",
       files: [
         {
           destination: "design-tokens.css",
@@ -86,8 +106,7 @@ export default {
           /** generate ts file
            * https://v4.styledictionary.com/reference/hooks/formats/predefined/#javascriptesm
            */
-          format: "javascript/esm",
-          options: { stripMeta: true, minify: true },
+          format: "ts/objectLiteral",
         },
       ],
     },
@@ -99,7 +118,16 @@ export default {
         {
           destination: "theme-tokens.ts",
           /** generate tokens in chakra-accepted format https://www.chakra-ui.com/docs/theming/tokens#defining-tokens*/
-          format: "ts/chakra",
+          format: "ts/objectLiteral",
+          options: {
+            chakraSyntax: true,
+            /** create custom header with timestamp of most recent build
+             * https://styledictionary.com/reference/hooks/file-headers/#applying-it-in-config */
+            fileHeader: (defaultMessage) => [
+              ...defaultMessage,
+              "This file is for only meant for use in building the chakra theme",
+            ],
+          },
         },
       ],
     },
