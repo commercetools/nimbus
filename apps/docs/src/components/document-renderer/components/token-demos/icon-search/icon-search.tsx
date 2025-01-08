@@ -4,9 +4,7 @@ import {
   Input,
   Stack,
   SimpleGrid,
-  Tooltip,
   useCopyToClipboard,
-  toaster,
 } from "@bleh-ui/react";
 import { useEffect, useState } from "react";
 import take from "lodash/take";
@@ -44,12 +42,8 @@ export const IconSearch = () => {
    */
   const onCopyRequest = (iconId: string) => {
     copyToClipboard(`import { ${iconId} } from '@bleh-ui/icons';`);
-    toaster.create({
-      title: "Copied import statement",
-      type: "success",
-      description: `The import statement for the ${iconId} icon has been copied to your clipboard.`,
-      duration: 4000,
-    });
+
+    alert("Copied the import statement to the clipboard");
   };
 
   return (
@@ -75,15 +69,9 @@ export const IconSearch = () => {
               onClick={() => onCopyRequest(iconId)}
               key={iconId}
             >
-              <Tooltip
-                content={iconId as string}
-                openDelay={0}
-                closeDelay={250}
-              >
-                <Text m="auto" textStyle="3xl" color="neutral.12">
-                  <Component size="1em" />
-                </Text>
-              </Tooltip>
+              <Text m="auto" textStyle="3xl" color="neutral.12">
+                <Component size="1em" />
+              </Text>
             </Flex>
           );
         })}

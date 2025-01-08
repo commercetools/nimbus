@@ -1,12 +1,12 @@
-import { defineRecipe } from "@chakra-ui/react"
+import { defineRecipe } from "@chakra-ui/react";
 
 export const linkRecipe = defineRecipe({
-  className: "chakra-link",
+  className: "bleh-ui-link",
   base: {
     display: "inline-flex",
     alignItems: "center",
     outline: "none",
-    gap: "1.5",
+    gap: "150",
     cursor: "pointer",
     borderRadius: "l1",
     focusRing: "outside",
@@ -32,4 +32,4 @@ export const linkRecipe = defineRecipe({
   defaultVariants: {
     variant: "plain",
   },
-})
+});

@@ -34,7 +34,6 @@ const demoComponents = {
     <Box
       bg="neutral.4"
       aspectRatio="1"
-      borderRadius="sm"
       height={defaultBoxSize}
       p="400"
       {...props}
@@ -47,7 +46,6 @@ const demoComponents = {
       aspectRatio="1"
       height={defaultBoxSize}
       p="400"
-      borderRadius="sm"
       {...props}
     />
   ),
@@ -87,7 +85,6 @@ const demoComponents = {
     <Box
       bg="neutral.4"
       aspectRatio="1"
-      borderRadius="sm"
       height={defaultBoxSize}
       p="400"
       filter="auto"

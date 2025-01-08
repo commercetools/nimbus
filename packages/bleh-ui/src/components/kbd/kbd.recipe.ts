@@ -1,7 +1,7 @@
-import { defineRecipe } from "@chakra-ui/react"
+import { defineRecipe } from "@chakra-ui/react";
 
 export const kbdRecipe = defineRecipe({
-  className: "chakra-kbd",
+  className: "bleh-ui-kbd",
   base: {
     display: "inline-flex",
     alignItems: "center",
@@ -11,7 +11,7 @@ export const kbdRecipe = defineRecipe({
     whiteSpace: "nowrap",
     wordSpacing: "-0.5em",
     userSelect: "none",
-    px: "1",
+    px: "100",
     borderRadius: "l2",
   },
   variants: {
@@ -54,4 +54,4 @@ export const kbdRecipe = defineRecipe({
     size: "md",
     variant: "raised",
   },
-})
+});

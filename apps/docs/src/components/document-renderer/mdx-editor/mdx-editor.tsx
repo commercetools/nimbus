@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  toaster,
-  useColorModeValue,
-} from "@bleh-ui/react";
+import { Box, Button, Flex, Text, useColorModeValue } from "@bleh-ui/react";
 import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
@@ -175,17 +168,12 @@ export const MdxEditor = ({
 
   const onSaveRequest = async () => {
     await updateMdx(markdownStr);
-
-    toaster.create({
-      title: "Document saved",
-      type: "success",
-      duration: 3000,
-    });
+    alert("Document saved.");
   };
 
   return (
     <Box position="relative" marginLeft="-12px" marginRight="-3.5">
-      <Box mb="4" borderRadius="sm">
+      <Box mb="4">
         <CustomEditorStyles>
           <MDXEditor
             ref={ref}

@@ -1,10 +1,10 @@
-import { defineRecipe } from "@chakra-ui/react"
+import { defineRecipe } from "@chakra-ui/react";
 
 export const headingRecipe = defineRecipe({
-  className: "chakra-heading",
+  className: "bleh-ui-heading",
   base: {
     fontFamily: "heading",
-    fontWeight: "semibold",
+    fontWeight: "600",
   },
   variants: {
     size: {
@@ -46,4 +46,4 @@ export const headingRecipe = defineRecipe({
   defaultVariants: {
     size: "xl",
   },
-})
+});

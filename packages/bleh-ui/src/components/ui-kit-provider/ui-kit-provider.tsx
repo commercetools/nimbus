@@ -4,15 +4,10 @@ import {
   ChakraProvider,
   // defaultSystem as defaultSystemChakra,
 } from "@chakra-ui/react";
-import {
-  ColorModeProvider,
-  useColorModeValue,
-  type ColorModeProviderProps,
-} from "./color-mode";
+import { ColorModeProvider, type ColorModeProviderProps } from "./color-mode";
 import { system } from "./../../theme";
 import { system as darkSystem } from "../../theme/index-dark.ts";
 import { useEffect, useState } from "react";
-import { Toaster } from "../toaster";
 
 function useColorScheme() {
   const [colorScheme, setColorScheme] = useState(getCurrentColorScheme());
@@ -52,10 +47,7 @@ export function UiKitProvider({ children, ...props }: ColorModeProviderProps) {
   return (
     <ChakraProvider value={colorScheme === "dark" ? darkSystem : system}>
       <ColorModeProvider enableSystem={false} {...props}>
-        <>
-          <Toaster />
-          {children}
-        </>
+        <>{children}</>
       </ColorModeProvider>
     </ChakraProvider>
   );

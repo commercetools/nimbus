@@ -1,4 +1,4 @@
-import { Box, TabsRoot, TabsList, TabsTrigger } from "@bleh-ui/react";
+import { Box, Button, Stack } from "@bleh-ui/react";
 import { PropTable } from "./prop-table.tsx";
 import { useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
@@ -39,28 +39,22 @@ export const PropTables = ({ ids }: PropTableProps) => {
   }, [tabs]);
 
   return (
-    <Box>
-      {tabs.length > 1 && (
-        <TabsRoot
-          value={activeComponentId}
-          variant="subtle"
-          maxWidth="full"
-          mb="400"
-        >
-          <TabsList>
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                onClick={() => setActiveComponentId(tab.id)}
-              >
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </TabsRoot>
-      )}
-      <Box>{activeComponentId && <PropTable id={activeComponentId} />}</Box>
-    </Box>
+    <Stack gap="400">
+      <Box>
+        {tabs.map((tab) => (
+          <Button
+            key={tab.id}
+            value={tab.id}
+            onClick={() => setActiveComponentId(tab.id)}
+            colorScheme="primary"
+            size="xs"
+            variant={activeComponentId === tab.id ? "subtle" : "ghost"}
+          >
+            {tab.label}
+          </Button>
+        ))}
+      </Box>
+      {activeComponentId && <PropTable id={activeComponentId} />}
+    </Stack>
   );
 };

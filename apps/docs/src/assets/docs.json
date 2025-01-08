@@ -41,35 +41,11 @@
     },
     "mdx": "\n\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be used in any other component.\n\nThis is the list of available icons:\n\n<IconSearch />\n"
   },
-  "packages/bleh-ui/src/components/blockquote/blockquote.mdx": {
-    "meta": {
-      "id": "Blockquote",
-      "title": "Blockquote",
-      "description": "displays a blockquote",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/blockquote/blockquote.mdx",
-      "menu": [
-        "Components",
-        "Typography",
-        "Blockquote"
-      ],
-      "route": "components/typography/blockquote",
-      "tags": [
-        "typography",
-        "blockquote",
-        "quote",
-        "citation"
-      ],
-      "toc": []
-    },
-    "mdx": "\n\n# \\<Blockquote/\\>\n\nThis is the PropTable for the `Blockquote` component. Just use it in the MDX file as if it was a regular HTML Tag.\n\n<PropTable id=\"Blockquote\" />\n"
-  },
   "packages/bleh-ui/src/components/box/box.mdx": {
     "meta": {
       "id": "Box",
       "title": "Box",
-      "description": "the Box component is the lowest level component that can be used as fallback element for other components",
+      "description": "the Box component is the lowest level component",
       "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/components/box/box.mdx",
@@ -89,28 +65,6 @@
       "toc": []
     },
     "mdx": "\n\n# Box\n\nAdd description.\n"
-  },
-  "packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx": {
-    "meta": {
-      "id": "Breadcrumb",
-      "title": "Breadcrumbs",
-      "description": "renders a breadcrumb navigation",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx",
-      "menu": [
-        "Components",
-        "Navigation",
-        "Breadcrumb"
-      ],
-      "route": "components/navigation/breadcrumb",
-      "tags": [
-        "navigation",
-        "breadcrumb"
-      ],
-      "toc": []
-    },
-    "mdx": "\n\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
   },
   "packages/bleh-ui/src/components/button/button.mdx": {
     "meta": {
@@ -336,80 +290,6 @@
       "toc": []
     },
     "mdx": "\n\n# Em\n\nAdd description later.\n"
-  },
-  "packages/bleh-ui/src/components/experiments/experiments.mdx": {
-    "meta": {
-      "id": "slider-comparison",
-      "title": "Headless UI comparison",
-      "description": "compare the same ux-concept across several headless ui libraries",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/experiments/experiments.mdx",
-      "menu": [
-        "Playground",
-        "Headless UI comparison"
-      ],
-      "route": "playground/headless-ui-comparison",
-      "tags": [
-        "stack"
-      ],
-      "toc": [
-        {
-          "value": "Ideal flow",
-          "href": "#ideal-flow",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Slider",
-          "href": "#slider",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Radix",
-          "href": "#radix",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "React ARIA",
-          "href": "#react-aria",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "DatePicker (React ARIA)",
-          "href": "#datepicker-react-aria",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            3
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n\n# Headless UI comparison\n\nThis page is about comparing the same ux-concept across several headless ui libraries.\n\n## Ideal flow\n\n1. A slot-recipe for the individual parts of a component is created (`slider.recipe.tsx`)\n2. For every slot, a proxy react-component is created (`slider.parts.tsx`)\n3. The headless ui libraries will use the individual parts to assemble the final component\n\n## Slider\n\n### Radix\n\n- the offset-position of the slider thumb is already accurately calculated by radix (taking the thumb-width into account)\n- easy to style, no hacks necessary\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <RadixSlider min={0} max={100} value={value} onValueChange={v=>setValue(v)} />\n    </div>\n  )\n}\n```\n\n### React ARIA\n\n- less \"slots\" to style (e.g. no range element)\n- not as easy to syle as radix, but practice will make perfect\n- throws console warnings when there are a11y issues:\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <label id=\"demo-label\">React ARIA Slider label</label>\n      <ReactAriaSlider size=\"sm\" min={0} max={100} value={value} onValueChange={v=>setValue(v)} aria-labelledby=\"demo-label\"  />\n    </div>\n  )\n}\n```\n\n### DatePicker (React ARIA)\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <DatePicker/>\n    </div>\n  )\n}\n```\n"
   },
   "packages/bleh-ui/src/components/flex/flex.mdx": {
     "meta": {
@@ -686,40 +566,6 @@
     },
     "mdx": "\n\n# Table\n\n## Props\n\nRender the PropTable with a `<PropTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
   },
-  "packages/bleh-ui/src/components/tabs/tabs.mdx": {
-    "meta": {
-      "id": "Tabs",
-      "title": "Tabs",
-      "description": "Used to display content in a tabbed interface",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/tabs/tabs.mdx",
-      "menu": [
-        "Components",
-        "Navigation",
-        "Tabs"
-      ],
-      "route": "components/navigation/tabs",
-      "tags": [
-        "tabs",
-        "accordion",
-        "show hide"
-      ],
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n\n# Tabs\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTables ids=\"TabsRoot, TabsList, TabsTrigger, TabsContent\" />\n"
-  },
   "packages/bleh-ui/src/components/text/text.mdx": {
     "meta": {
       "id": "Text",
@@ -802,39 +648,6 @@
       ]
     },
     "mdx": "\n\n# Text\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur.\n\n## Usage\n\n```jsx-live\nimport { Text } from \"@bleh-ui/react\";\n\nconst App = () => <Text>Display Text</Text>;\n```\n\n## Sizes\n\nYou can size text with two properties: `fontSize` and `textStyle`. Use `fontSize` to only set the size of the text.\nUse `textStyle` to set the size and an appropriate `line-height` for that size.\n\n```jsx-live\nconst App = () => (\n  <Flex flexDirection=\"column\">\n    {[\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\", \"3xl\", \"4xl\",\"5xl\",\"6xl\",\"7xl\"].map((size) => (\n      <Text key={size} asChild textStyle={size}>\n        <span>Displays text in `{size}` size</span>\n      </Text>\n    ))}\n  </Flex>\n)\n```\n\n## Weights\n\nUse the `fontWeight` prop to change the weight of the text:\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => {\n  return (\n    <Stack>\n      <Text fontWeight=\"100\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"200\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"300\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"400\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"500\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"600\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"700\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"800\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"900\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n}\n```\n\n## Truncation\n\nUse the `truncate` prop to truncate the text after a single line.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text truncate>\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n      </Text>\n    </Flex>\n  )\n```\n\n## Line Clamp\n\nUse the `lineClamp` prop to truncate the text after a certain number of lines.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text lineClamp=\"2\">\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim\n        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n        commodo consequat.\n      </Text>\n    </Flex>\n  )\n```\n\n## Colors\n\nUse the `color` prop to change the color of the text.\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Stack>\n      <Text color=\"primary.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"info.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"success.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"danger.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"error.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n```\n"
-  },
-  "packages/bleh-ui/src/components/tooltip/tooltip.mdx": {
-    "meta": {
-      "id": "Tooltip",
-      "title": "Tooltip",
-      "description": "Used to display a tooltip when hovering something",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/tooltip/tooltip.mdx",
-      "menu": [
-        "Components",
-        "Feedback",
-        "Tooltip"
-      ],
-      "route": "components/feedback/tooltip",
-      "tags": [
-        "tooltip",
-        "show hide"
-      ],
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n\n# Tooltip\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTable id=\"Tooltip\" />\n"
   },
   "packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx": {
     "meta": {
@@ -4064,6 +3877,7 @@
       "title": "Aspect Ratios",
       "description": "The list of available aspect ratio tokens",
       "documentState": "InitialDraft",
+      "documentAudiences": [],
       "order": 999,
       "repoPath": "packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx",
       "menu": [

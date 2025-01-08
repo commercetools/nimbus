@@ -62,7 +62,7 @@ function App() {
               borderRight="1px solid"
               borderColor="neutral.3"
               flexShrink="0"
-              pt="6"
+              pt="600"
               overflow="auto"
               height="100%"
             >
@@ -72,8 +72,8 @@ function App() {
               flexGrow="1"
               flexShrink="1"
               minWidth="512px"
-              pt="8"
-              px="16"
+              pt="800"
+              px="1600"
               overflow="auto"
               height="100%"
               id="main"
@@ -85,12 +85,12 @@ function App() {
               borderLeft="1px solid"
               borderColor="neutral.3"
               flexShrink="0"
-              px="4"
-              pt="6"
+              px="400"
+              pt="600"
               overflow="auto"
               height="100%"
             >
-              <Stack gap="8">
+              <Stack gap="800">
                 <DevOnly>
                   <DocumentMetaSettings />
                 </DevOnly>

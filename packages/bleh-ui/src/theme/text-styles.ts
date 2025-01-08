@@ -5,78 +5,48 @@ type TextStylesType = ReturnType<typeof defineTextStyles>;
 export const textStyles: TextStylesType = defineTextStyles({
   "2xs": {
     value: {
-      fontSize: "2xs",
+      fontSize: "300",
       lineHeight: "0.75rem",
     },
   },
   xs: {
     value: {
-      fontSize: "xs",
-      lineHeight: "1rem",
+      fontSize: "350",
     },
   },
   sm: {
     value: {
-      fontSize: "sm",
-      lineHeight: "1.25rem",
+      fontSize: "400",
     },
   },
   md: {
     value: {
-      fontSize: "md",
-      lineHeight: "1.5rem",
+      fontSize: "450",
     },
   },
   lg: {
     value: {
-      fontSize: "lg",
-      lineHeight: "1.75rem",
+      fontSize: "500",
     },
   },
   xl: {
     value: {
-      fontSize: "xl",
-      lineHeight: "1.875rem",
+      fontSize: "600",
     },
   },
   "2xl": {
     value: {
-      fontSize: "2xl",
-      lineHeight: "2rem",
+      fontSize: "600",
     },
   },
   "3xl": {
     value: {
-      fontSize: "3xl",
-      lineHeight: "2.375rem",
+      fontSize: "600",
     },
   },
   "4xl": {
     value: {
-      fontSize: "4xl",
-      lineHeight: "2.75rem",
-      letterSpacing: "-0.025em",
-    },
-  },
-  "5xl": {
-    value: {
-      fontSize: "5xl",
-      lineHeight: "3.75rem",
-      letterSpacing: "-0.025em",
-    },
-  },
-  "6xl": {
-    value: {
-      fontSize: "6xl",
-      lineHeight: "4.5rem",
-      letterSpacing: "-0.025em",
-    },
-  },
-  "7xl": {
-    value: {
-      fontSize: "7xl",
-      lineHeight: "5.75rem",
-      letterSpacing: "-0.025em",
+      fontSize: "600",
     },
   },
   none: {

@@ -1,7 +1,7 @@
 import { defineRecipe } from "@chakra-ui/react";
 
 export const inputRecipe = defineRecipe({
-  className: "chakra-input",
+  className: "bleh-ui-input",
   base: {
     width: "100%",
     minWidth: "0",
@@ -9,7 +9,6 @@ export const inputRecipe = defineRecipe({
     position: "relative",
     appearance: "none",
     textAlign: "start",
-    borderRadius: "l2",
     _disabled: {
       layerStyle: "disabled",
     },
@@ -30,37 +29,37 @@ export const inputRecipe = defineRecipe({
     size: {
       "2xs": {
         textStyle: "xs",
-        px: "2",
+        px: "200",
         "--input-height": "sizes.7",
       },
       xs: {
         textStyle: "xs",
-        px: "2",
+        px: "200",
         "--input-height": "sizes.8",
       },
       sm: {
         textStyle: "sm",
-        px: "2.5",
+        px: "250",
         "--input-height": "sizes.9",
       },
       md: {
         textStyle: "sm",
-        px: "3",
+        px: "300",
         "--input-height": "sizes.10",
       },
       lg: {
         textStyle: "md",
-        px: "4",
+        px: "400",
         "--input-height": "sizes.11",
       },
       xl: {
         textStyle: "md",
-        px: "4.5",
+        px: "450",
         "--input-height": "sizes.12",
       },
       "2xl": {
         textStyle: "lg",
-        px: "5",
+        px: "500",
         "--input-height": "sizes.16",
       },
     },
@@ -81,7 +80,6 @@ export const inputRecipe = defineRecipe({
         bg: "transparent",
         borderBottomWidth: "1px",
         borderBottomColor: "border",
-        borderRadius: "0",
         px: "0",
         _focusVisible: {
           borderColor: "var(--focus-color)",

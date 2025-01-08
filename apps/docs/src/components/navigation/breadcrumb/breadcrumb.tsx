@@ -1,10 +1,6 @@
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-import {
-  BreadcrumbRoot,
-  BreadcrumbLink,
-  BreadcrumbCurrentLink,
-} from "@bleh-ui/react";
+import { Box, Link } from "@bleh-ui/react";
 import { activeDocAtom } from "../../../atoms/active-doc";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
@@ -27,20 +23,31 @@ export const BreadcrumbNav = () => {
     }));
   }, [activeDoc]);
 
-  const isHomePage = parts.length === 1 && parts[0].label === "Home";
+  const firstIsHome = parts[0]?.label === "Home";
 
   return (
-    <BreadcrumbRoot variant="plain">
-      {!isHomePage && <BreadcrumbLink href="/">Home</BreadcrumbLink>}
-      {parts.map((item, idx) => {
-        const LinkComponent =
-          idx === parts.length - 1 ? BreadcrumbCurrentLink : BreadcrumbLink;
-        return (
-          <LinkComponent key={item.href} href={item.href}>
-            {item.label}
-          </LinkComponent>
-        );
-      })}
-    </BreadcrumbRoot>
+    <Box as="nav" aria-label="Breadcrumb">
+      <Box as="ul" display="inline-flex">
+        {!firstIsHome && (
+          <Box as="li" _after={{ content: "'»'", mx: "200" }}>
+            <Link href={"/home"}>Home</Link>
+          </Box>
+        )}
+        {parts.map((item, idx) => {
+          const isLastItem = idx + 1 == parts.length;
+          console.log("parts.length", parts.length);
+          console.log(isLastItem);
+          return (
+            <Box
+              as="li"
+              key={item.href}
+              _after={!isLastItem ? { content: "'»'", mx: "200" } : {}}
+            >
+              <Link href={item.href}>{item.label}</Link>
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
   );
 };

@@ -1,7 +1,7 @@
 import { defineRecipe } from "@chakra-ui/react";
 
 export const codeRecipe = defineRecipe({
-  className: "chakra-code",
+  className: "bleh-ui-code",
   base: {
     fontFamily: "mono",
     alignItems: "center",
@@ -36,22 +36,22 @@ export const codeRecipe = defineRecipe({
     size: {
       xs: {
         textStyle: "2xs",
-        px: "1",
+        px: "100",
         minH: "4",
       },
       sm: {
         textStyle: "xs",
-        px: "1.5",
+        px: "150",
         minH: "5",
       },
       md: {
         textStyle: "sm",
-        px: "2",
+        px: "200",
         minH: "6",
       },
       lg: {
         textStyle: "sm",
-        px: "2.5",
+        px: "250",
         minH: "7",
       },
     },

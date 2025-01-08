@@ -52,7 +52,6 @@ const styles: Foo = {
   },
   "& .toolbar": {
     bg: "bg",
-    borderRadius: "sm",
     border: "1px solid",
     borderColor: "neutral.6",
   },

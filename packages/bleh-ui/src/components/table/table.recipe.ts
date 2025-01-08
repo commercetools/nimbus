@@ -1,8 +1,17 @@
-import { defineSlotRecipe } from "@chakra-ui/react"
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const tableSlotRecipe = defineSlotRecipe({
   className: "chakra-table",
-  slots: ["root", "header", "body", "row", "columnHeader", "cell", "footer", "caption"],
+  slots: [
+    "root",
+    "header",
+    "body",
+    "row",
+    "columnHeader",
+    "cell",
+    "footer",
+    "caption",
+  ],
   base: {
     root: {
       fontVariantNumeric: "lining-nums tabular-nums",
@@ -118,12 +127,12 @@ export const tableSlotRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         columnHeader: {
-          px: "2",
-          py: "2",
+          px: "200",
+          py: "200",
         },
         cell: {
-          px: "2",
-          py: "2",
+          px: "200",
+          py: "200",
         },
       },
       md: {
@@ -131,12 +140,12 @@ export const tableSlotRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         columnHeader: {
-          px: "3",
-          py: "3",
+          px: "300",
+          py: "300",
         },
         cell: {
-          px: "3",
-          py: "3",
+          px: "300",
+          py: "300",
         },
       },
       lg: {
@@ -144,12 +153,12 @@ export const tableSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         columnHeader: {
-          px: "4",
-          py: "3",
+          px: "400",
+          py: "300",
         },
         cell: {
-          px: "4",
-          py: "3",
+          px: "400",
+          py: "300",
         },
       },
     },
@@ -158,4 +167,4 @@ export const tableSlotRecipe = defineSlotRecipe({
     variant: "line",
     size: "md",
   },
-})
+});

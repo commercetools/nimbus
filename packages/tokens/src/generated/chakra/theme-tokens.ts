@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:52:23 GMT
+ * Generated on Fri, 10 Jan 2025 10:53:24 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
