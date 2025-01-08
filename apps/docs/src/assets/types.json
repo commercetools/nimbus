@@ -5444,7 +5444,7 @@
       },
       "variant": {
         "defaultValue": {
-          "value": "\"solid\""
+          "value": "\"subtle\""
         },
         "description": "",
         "name": "variant",
@@ -5460,7 +5460,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\" | \"ghost\">"
+          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"plain\" | \"ghost\">"
         }
       },
       "recipe": {
@@ -5837,7 +5837,7 @@
       },
       "variant": {
         "defaultValue": {
-          "value": "\"subtle\""
+          "value": "\"solid\""
         },
         "description": "",
         "name": "variant",
@@ -5858,7 +5858,7 @@
       },
       "size": {
         "defaultValue": {
-          "value": "\"sm\""
+          "value": "\"md\""
         },
         "description": "",
         "name": "size",

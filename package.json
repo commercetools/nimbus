@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "NO_COLOR=1 bun --filter '*' dev",
-    "build": "NO_COLOR=1 bun run build-packages && bun run build-docs",
+    "build": "pnpm build:tokens && NO_COLOR=1 bun run build-packages && bun run build-docs",
     "build-packages": "NO_COLOR=1 bun --filter './packages/*' build",
     "build-docs": "NO_COLOR=1 bun --filter './apps/docs' build",
     "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
