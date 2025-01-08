@@ -218,17 +218,27 @@
   --line-height-900: 2.25rem; /* headline, h1 - pairs with font-size-600 */
   --spacing-50: 2px;
   --spacing-100: 4px;
+  --spacing-150: 6px;
   --spacing-200: 8px;
+  --spacing-250: 10px;
   --spacing-300: 12px;
+  --spacing-350: 14px;
   --spacing-400: 16px;
+  --spacing-450: 18px;
   --spacing-500: 20px;
   --spacing-600: 24px;
   --spacing-700: 28px;
   --spacing-800: 32px;
+  --spacing-900: 36px;
   --spacing-1000: 40px;
+  --spacing-1100: 44px;
   --spacing-1200: 48px;
   --spacing-1400: 56px;
   --spacing-1600: 64px;
+  --spacing-2000: 80px;
+  --spacing-2400: 96px;
+  --spacing-2800: 112px;
+  --spacing-3200: 128px;
   --z-index-hide: -1;
   --z-index-base: 0;
   --z-index-docked: 10;

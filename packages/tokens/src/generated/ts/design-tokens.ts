@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Wed, 08 Jan 2025 13:36:51 GMT
+ * Generated on Fri, 10 Jan 2025 10:52:23 GMT
  */
 
 export default {
@@ -305,17 +305,27 @@ export default {
   spacing: {
     "50": "2px",
     "100": "4px",
+    "150": "6px",
     "200": "8px",
+    "250": "10px",
     "300": "12px",
+    "350": "14px",
     "400": "16px",
+    "450": "18px",
     "500": "20px",
     "600": "24px",
     "700": "28px",
     "800": "32px",
+    "900": "36px",
     "1000": "40px",
+    "1100": "44px",
     "1200": "48px",
     "1400": "56px",
     "1600": "64px",
+    "2000": "80px",
+    "2400": "96px",
+    "2800": "112px",
+    "3200": "128px",
   },
   zIndex: {
     hide: -1,
