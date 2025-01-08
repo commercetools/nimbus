@@ -15,10 +15,9 @@ const Message = ({ item }: { item: Message }) => {
         as="div"
         bg="colorPalette.3"
         maxWidth="10/12"
-        px="4"
+        px="400"
         color="colorPalette.12"
         textStyle="md"
-        rounded="md"
       >
         <MdxStringRenderer content={item.content} components={components} />
       </Text>
@@ -34,13 +33,12 @@ export const Chatbot = () => {
     return (
       <Box
         position="fixed"
-        rounded="sm"
-        bottom="4"
-        right="4"
+        bottom="400"
+        right="400"
         boxShadow="2xl"
         bg="neutral.1"
-        mb="4"
-        mr="4"
+        mb="400"
+        mr="400"
       >
         <Button
           colorPalette="primary"
@@ -56,34 +54,33 @@ export const Chatbot = () => {
   return (
     <Box
       position="fixed"
-      rounded="sm"
-      bottom="4"
-      right="4"
+      bottom="400"
+      right="400"
       boxShadow="2xl"
       bg="neutral.1"
     >
-      <Box width="480px">
-        <Flex direction="column" divideY="1px" rounded="md" overflow="hidden">
+      <Box width="breakpoint-sm">
+        <Flex direction="column" divideY="1px" overflow="hidden">
           <Flex colorPalette="primary" bg="colorPalette.9" alignItems="center">
-            <Text fontWeight="semibold" color="colorPalette.contrast" p="4">
+            <Text fontWeight="600" color="colorPalette.contrast" p="400">
               Ask AI
             </Text>
             <Box flexGrow="1" />
             <Button
               variant="solid"
               size="md"
-              mr="2"
+              mr="200"
               onClick={() => setChatOpen(false)}
             >
               <X />
             </Button>
           </Flex>
           <Box colorPalette="neutral" minHeight="xs" bg="colorPalette.2">
-            <Stack minHeight="xs" maxHeight="xl" overflow="auto" p="4">
+            <Stack minHeight="xs" maxHeight="xl" overflow="auto" p="400">
               {messages.length === 0 && (
                 <>
                   <Text
-                    p="4"
+                    p="400"
                     color="colorPalette.12"
                     colorPalette="primary"
                     bg="colorPalette.2"
@@ -94,7 +91,7 @@ export const Chatbot = () => {
                     OpenAI API key!
                   </Text>
                   <Text
-                    p="4"
+                    p="400"
                     textStyle="sm"
                     color="colorPalette.11"
                     colorPalette="neutral"
@@ -123,11 +120,10 @@ export const Chatbot = () => {
             <form onSubmit={handleSubmit}>
               <Box
                 asChild
-                rounded="sm"
-                border="1px solid"
+                border="xs"
                 borderColor="neutral.6"
-                p="2"
-                fontSize="sm"
+                p="200"
+                fontSize="350"
                 color="neutral.11"
                 w="full"
                 h={input.length === 0 ? "10" : undefined}

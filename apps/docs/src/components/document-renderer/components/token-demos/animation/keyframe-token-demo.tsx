@@ -27,9 +27,9 @@ const AnimationItem = ({
   return (
     <Flex
       direction="column"
-      border="1px solid"
+      border="xs"
       borderColor="neutral.6"
-      p="4"
+      p="400"
       className="group"
       alignItems="center"
       ml="-1px"

@@ -24,10 +24,10 @@ const AnimationDemo = ({
 
   return (
     <Box
-      border="1px solid"
+      border="xs"
       borderColor="neutral.6"
       overflow="hidden"
-      width="100%"
+      width="full"
       height={size}
       position="relative"
     >

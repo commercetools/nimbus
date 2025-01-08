@@ -20,7 +20,7 @@ export const ColorScales = (props: ColorScalesProps) => {
   return (
     <Box>
       {ids.map((id) => (
-        <Box key={id} mb="8">
+        <Box key={id} mb="800">
           <ColorScale id={id} />
         </Box>
       ))}

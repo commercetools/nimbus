@@ -1,7 +1,7 @@
 import { Box } from "@bleh-ui/react";
 import { ComponentProps } from "react";
 
-type Foo = ComponentProps<typeof Box>["css"];
+type Foo = Record<string, ComponentProps<typeof Box>["css"]>;
 
 const styles: Foo = {
   "& *": {
@@ -10,45 +10,45 @@ const styles: Foo = {
   "& h1": {
     fontSize: "3xl",
     fontWeight: "semibold",
-    mb: "4",
+    mb: "400",
   },
   "& h2": {
     fontSize: "2xl",
     fontWeight: "semibold",
-    my: "4",
+    my: "400",
   },
   "& h3": {
     fontSize: "xl",
     fontWeight: "semibold",
-    my: "4",
+    my: "400",
   },
   "& h4": {
     fontSize: "lg",
     fontWeight: "semibold",
-    my: "4",
+    my: "400",
   },
   "& p": {
     display: "block",
-    my: "4",
+    my: "400",
   },
   "& a": {
     textDecoration: "underline",
   },
   "& ul": {
     listStyleType: "disc",
-    pl: "8",
-    my: "4",
+    pl: "800",
+    my: "400",
   },
   "& ol": {
     listStyleType: "number",
-    pl: "8",
-    my: "4",
+    pl: "800",
+    my: "400",
   },
   "& blockquote": {
     borderLeft: "2px solid black",
     listStyleType: "number",
-    pl: "8",
-    my: "4",
+    pl: "800",
+    my: "400",
   },
   "& .toolbar": {
     bg: "bg",
@@ -72,7 +72,7 @@ const styles: Foo = {
     color: "fg",
   },
   "& .cm-editor": {
-    py: "2",
+    py: "200",
     textStyle: "sm",
   },
 
@@ -80,7 +80,7 @@ const styles: Foo = {
     textStyle: "sm",
     fontSize: "xs",
     opacity: 0.5,
-    ml: "2",
+    ml: "200",
   },
 };
 

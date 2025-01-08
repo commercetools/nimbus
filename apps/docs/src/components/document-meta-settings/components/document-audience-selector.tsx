@@ -59,8 +59,8 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
 
   return (
     <Stack>
-      <Text fontWeight="semibold">Document Audience</Text>
-      <Stack border="1px solid" borderColor="neutral.6" p="4" rounded="sm">
+      <Text fontWeight="600">Document Audience</Text>
+      <Stack border="xs" borderColor="neutral.6" p="400">
         {options.map(({ id, label }) => (
           <Flex key={id}>
             <Box>
@@ -72,7 +72,7 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
               />
             </Box>
             <Box>
-              <Text ml="2" fontWeight="medium" color="neutral.11" asChild>
+              <Text ml="200" fontWeight="500" color="neutral.11" asChild>
                 <label htmlFor={"chkb" + id}>{label}</label>
               </Text>
             </Box>

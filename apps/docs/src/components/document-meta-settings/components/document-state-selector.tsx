@@ -41,7 +41,7 @@ export const DocumentStateSelector = () => {
 
   return (
     <Stack>
-      <Text fontWeight="semibold" asChild>
+      <Text fontWeight="600" asChild>
         <label htmlFor="documentState">Status</label>
       </Text>
       <Box position="relative">
@@ -49,12 +49,11 @@ export const DocumentStateSelector = () => {
           appearance="none"
           display="block"
           width="full"
-          py="2"
-          px="2"
+          py="200"
+          px="200"
           asChild
-          border="1px solid"
+          border="xs"
           borderColor="colorPalette.6"
-          rounded="sm"
         >
           <select
             value={meta?.documentState}
@@ -69,7 +68,13 @@ export const DocumentStateSelector = () => {
             })}
           </select>
         </Box>
-        <Box position="absolute" right="2" top="2" pointerEvents="none" asChild>
+        <Box
+          position="absolute"
+          right="200"
+          top="200"
+          pointerEvents="none"
+          asChild
+        >
           <ChevronDown />
         </Box>
       </Box>

@@ -9,7 +9,9 @@ type PropTableProps = {
 };
 
 export const PropTables = ({ ids }: PropTableProps) => {
-  const [activeComponentId, setActiveComponentId] = useState<string | null>(null);
+  const [activeComponentId, setActiveComponentId] = useState<string | null>(
+    null
+  );
   const typeArr = useAtomValue(typesAtom);
 
   const items = useMemo(() => {
@@ -42,8 +44,8 @@ export const PropTables = ({ ids }: PropTableProps) => {
         <TabsRoot
           value={activeComponentId}
           variant="subtle"
-          maxWidth="100%"
-          mb="4"
+          maxWidth="full"
+          mb="400"
         >
           <TabsList>
             {tabs.map((tab) => (

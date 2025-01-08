@@ -124,7 +124,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | MarginInline<String | Number> | readonly NonNullable<MarginInline<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "block": {
@@ -143,7 +143,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | MarginBlock<String | Number> | readonly NonNullable<MarginBlock<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "inlineStart": {
@@ -162,7 +162,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | MarginInlineStart<String | Number> | readonly NonNullable<MarginInlineStart<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "inlineEnd": {
@@ -181,7 +181,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | MarginInlineEnd<String | Number> | readonly NonNullable<MarginInlineEnd<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "blockStart": {
@@ -200,7 +200,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | MarginBlockStart<String | Number> | readonly NonNullable<MarginBlockStart<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "blockEnd": {
@@ -219,7 +219,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | MarginBlockEnd<String | Number> | readonly NonNullable<MarginBlockEnd<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "key": {
@@ -4457,7 +4457,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SpacingToken | Gap<String | Number> | readonly NonNullable<Gap<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SpacingToken>>"
         }
       },
       "key": {
@@ -7223,7 +7223,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | AlignItems>"
+          "name": "ConditionalValue<WithEscapeHatch<readonly string[] | AlignItems>>"
         }
       },
       "justify": {
@@ -7242,7 +7242,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | JustifyContent>"
+          "name": "ConditionalValue<WithEscapeHatch<readonly string[] | JustifyContent>>"
         }
       },
       "wrap": {
@@ -7261,7 +7261,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | FlexWrap | readonly NonNullable<FlexWrap>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<FlexWrap | readonly NonNullable<FlexWrap>[]>>"
         }
       },
       "direction": {
@@ -7280,7 +7280,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | FlexDirection | readonly NonNullable<FlexDirection>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<FlexDirection | readonly NonNullable<FlexDirection>[]>>"
         }
       },
       "basis": {
@@ -7299,7 +7299,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SizesToken | FlexBasis<String | Number> | readonly NonNullable<FlexBasis<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SizesToken>>"
         }
       },
       "grow": {
@@ -7318,7 +7318,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | FlexGrow | readonly NonNullable<FlexGrow>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<FlexGrow | readonly NonNullable<FlexGrow>[]>>"
         }
       },
       "shrink": {
@@ -7337,7 +7337,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | FlexShrink | readonly NonNullable<FlexShrink>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<FlexShrink | readonly NonNullable<FlexShrink>[]>>"
         }
       },
       "inline": {
@@ -9630,7 +9630,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | GridRow | readonly NonNullable<GridRow>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<GridRow | readonly NonNullable<GridRow>[]>>"
         }
       },
       "inline": {
@@ -9668,7 +9668,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | GridColumn | readonly NonNullable<GridColumn>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<GridColumn | readonly NonNullable<GridColumn>[]>>"
         }
       },
       "templateColumns": {
@@ -9687,7 +9687,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | GridTemplateColumns<String | Number> | readonly NonNullable<GridTemplateColumns<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<GridTemplateColumns<String | Number> | readonly NonNullable<GridTemplateColumns<String | Number>>[]>>"
         }
       },
       "autoFlow": {
@@ -9706,7 +9706,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | GridAutoFlow>"
+          "name": "ConditionalValue<WithEscapeHatch<readonly string[] | GridAutoFlow>>"
         }
       },
       "autoRows": {
@@ -9725,7 +9725,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | GridAutoRows<String | Number> | readonly NonNullable<GridAutoRows<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<GridAutoRows<String | Number> | readonly NonNullable<GridAutoRows<String | Number>>[]>>"
         }
       },
       "autoColumns": {
@@ -9744,7 +9744,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | GridAutoColumns<String | Number> | readonly NonNullable<GridAutoColumns<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<GridAutoColumns<String | Number> | readonly NonNullable<GridAutoColumns<String | Number>>[]>>"
         }
       },
       "templateRows": {
@@ -9763,7 +9763,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | GridTemplateRows<String | Number> | readonly NonNullable<GridTemplateRows<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<GridTemplateRows<String | Number> | readonly NonNullable<GridTemplateRows<String | Number>>[]>>"
         }
       },
       "templateAreas": {
@@ -9782,7 +9782,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | GridTemplateAreas>"
+          "name": "ConditionalValue<WithEscapeHatch<readonly string[] | GridTemplateAreas>>"
         }
       },
       "minChildWidth": {
@@ -9801,7 +9801,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<`var(--${string})` | AnyString | SizesToken | MinWidth<String | Number> | readonly NonNullable<MinWidth<String | Number>>[]>"
+          "name": "ConditionalValue<WithEscapeHatch<`var(--${string})` | SizesToken>>"
         }
       },
       "columns": {

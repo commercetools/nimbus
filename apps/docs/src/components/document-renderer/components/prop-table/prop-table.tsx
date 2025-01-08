@@ -4,7 +4,7 @@ import { typesAtom } from "../../../../atoms/types.ts";
 import { useMemo } from "react";
 import { JSONTree } from "react-json-tree";
 
-export const PropTable = ({ id }: { id: string}) => {
+export const PropTable = ({ id }: { id: string }) => {
   const typesArr = useAtomValue(typesAtom);
   const propsTableData = useMemo(() => {
     const item = typesArr.find((v) => v.displayName === id);
@@ -12,7 +12,6 @@ export const PropTable = ({ id }: { id: string}) => {
   }, [typesArr, id]);
   const propsArr = useMemo(() => {
     return Object.keys(propsTableData?.props || {}).map((key) => {
-
       return {
         // @ts-expect-error meh
         ...propsTableData.props[key],
@@ -24,8 +23,8 @@ export const PropTable = ({ id }: { id: string}) => {
     <Box>
       <Table.Root variant="outline">
         <Table.ColumnGroup>
-          <Table.Column width="33%" />
-          <Table.Column width="33%" />
+          <Table.Column width="1/3" />
+          <Table.Column width="1/3" />
           <Table.Column />
         </Table.ColumnGroup>
         <Table.Header>
@@ -45,7 +44,7 @@ export const PropTable = ({ id }: { id: string}) => {
                 </Table.Cell>
                 <Table.Cell>
                   <Code>{item.type.name}</Code>
-                  <Text mt="2">{item.description}</Text>
+                  <Text mt="200">{item.description}</Text>
                 </Table.Cell>
                 <Table.Cell display="flex" justifyContent="flex-start">
                   {item.required ? "Yes" : "-"}

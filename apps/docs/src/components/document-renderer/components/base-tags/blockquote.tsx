@@ -155,7 +155,7 @@ export const Blockquote = (props: BlockquoteProps) => {
     <StyledBlockquote
       showDash={!!(cite && cite?.length > 0)}
       cite={cite}
-      my="3"
+      my="300"
       borderColor="colorPalette.9"
       bg="colorPalette.2"
       color="colorPalette.11"
@@ -183,10 +183,10 @@ export const Blockquote = (props: BlockquoteProps) => {
               children: [
                 <Box
                   position="relative"
-                  top="-0.5"
-                  mr="1"
+                  top="-50"
+                  mr="100"
                   display="inline-block"
-                  fontSize="xl"
+                  fontSize="500"
                   asChild
                 >
                   {cleanQuoteFlavor(firstChild.trim())}

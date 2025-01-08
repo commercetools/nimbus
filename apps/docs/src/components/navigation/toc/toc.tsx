@@ -13,12 +13,12 @@ export const Toc = () => {
   const closestHeadingId = useClosestHeading();
 
   // Define indentation levels for different heading depths
-  const indent: { [key: number]: string } = {
-    1: "0",
-    2: "0",
-    3: "2",
-    4: "4",
-    5: "6",
+  const indent: { [key: number]: string | undefined } = {
+    1: undefined,
+    2: undefined,
+    3: "200",
+    4: "400",
+    5: "600",
   };
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export const Toc = () => {
 
   return (
     <Box>
-      <Text fontWeight="semibold" mb="4">
+      <Text fontWeight="600" mb="400">
         On this page
       </Text>
 
@@ -43,16 +43,16 @@ export const Toc = () => {
             const isActive = closestHeadingId === item.href.split("#").join("");
 
             return (
-              <Box key={item.href} width="100%" pl={indent[item.depth]}>
+              <Box key={item.href} width="full" pl={indent[item.depth]}>
                 <Link
                   {...(isActive ? { id: "active-toc-item" } : {})}
                   colorPalette={isActive ? "primary" : "neutral"}
                   color="colorPalette.11"
                   href={item.href}
-                  fontWeight={isActive ? "bold" : "normal"}
+                  fontWeight={isActive ? "700" : undefined}
                   display="block"
-                  width="100%"
-                  py="1"
+                  width="full"
+                  py="100"
                 >
                   {item.value}
                 </Link>

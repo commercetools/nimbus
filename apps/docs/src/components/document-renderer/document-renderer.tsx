@@ -25,7 +25,7 @@ export const DocumentRenderer = () => {
   if (!content || !meta)
     return (
       <Box>
-        <Text fontWeight="bold">404 - This page does not exist.</Text>
+        <Text fontWeight="700">404 - This page does not exist.</Text>
       </Box>
     );
 
@@ -36,15 +36,15 @@ export const DocumentRenderer = () => {
           {[...meta.menu].join(" > ")} | {brandName}
         </title>
       </Helmet>
-      <Box width="100%" maxWidth="960px">
-        <Stack gap="4">
+      <Box width="full" maxWidth="960px">
+        <Stack gap="400">
           {!editMode && (
             <Flex height="46px" alignItems="center">
               <BreadcrumbNav />
             </Flex>
           )}
 
-          <Box pb="24">
+          <Box pb="2400">
             {!editMode && (
               <MdxStringRenderer content={content} components={components} />
             )}

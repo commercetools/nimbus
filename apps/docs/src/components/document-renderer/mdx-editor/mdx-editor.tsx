@@ -77,8 +77,8 @@ const getCustomComponentPlaceholders: () => JsxComponentDescriptor[] = () =>
       hasChildren: true,
       Editor: () => {
         return (
-          <Box bg="neutral.3" p="4" my="4">
-            <Text fontWeight="semibold">{`<${ComponentName}/>`}</Text>
+          <Box bg="neutral.3" p="400" my="400">
+            <Text fontWeight="600">{`<${ComponentName}/>`}</Text>
             <Text>This block can only be edited in source code</Text>
           </Box>
         );

@@ -57,9 +57,9 @@ export const AppNavBarCreateButton = () => {
         </DialogHeader>
         <DialogBody>
           {!isLoading ? (
-            <Stack gap="4" mt="4">
+            <Stack gap="400" mt="400">
               <Stack>
-                <Text asChild fontWeight="semibold">
+                <Text asChild fontWeight="600">
                   <label htmlFor="title">Title</label>
                 </Text>
                 <Input
@@ -72,7 +72,7 @@ export const AppNavBarCreateButton = () => {
                 />
               </Stack>
               <Stack>
-                <Text asChild fontWeight="semibold">
+                <Text asChild fontWeight="600">
                   <label htmlFor="description">Description</label>
                 </Text>
                 <Input
@@ -84,7 +84,7 @@ export const AppNavBarCreateButton = () => {
                 />
               </Stack>
               <Stack>
-                <Text asChild fontWeight="semibold">
+                <Text asChild fontWeight="600">
                   <label htmlFor="menuLabel">Menu Label</label>
                 </Text>
                 <Input
@@ -99,9 +99,9 @@ export const AppNavBarCreateButton = () => {
                   direction="row"
                   alignItems="center"
                   bg="colorPalette.3"
-                  p="4"
-                  gap="4"
-                  mt="2"
+                  p="400"
+                  gap="400"
+                  mt="200"
                 >
                   <Text color="colorPalette.11">
                     <InfoIcon size="2em" />
@@ -114,7 +114,7 @@ export const AppNavBarCreateButton = () => {
               </Stack>
             </Stack>
           ) : (
-            <Text fontWeight="semibold" mt="5" mb="2">
+            <Text fontWeight="600" mt="500" mb="200">
               Saving in progress...
             </Text>
           )}

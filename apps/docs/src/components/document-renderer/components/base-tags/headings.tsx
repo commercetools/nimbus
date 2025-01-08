@@ -12,7 +12,7 @@ type HeadingProps = DetailedHTMLProps<
 >;
 
 export const H1 = (props: HeadingProps) => (
-  <Heading id={sluggifyChildren(props.children)} mb="6" size="3xl" asChild>
+  <Heading id={sluggifyChildren(props.children)} mb="600" size="3xl" asChild>
     <h1 {...props} />
   </Heading>
 );
@@ -20,8 +20,8 @@ export const H1 = (props: HeadingProps) => (
 export const H2 = (props: HeadingProps) => (
   <Heading
     id={sluggifyChildren(props.children)}
-    mb="3"
-    mt="6"
+    mb="300"
+    mt="600"
     size="2xl"
     asChild
   >
@@ -32,8 +32,8 @@ export const H2 = (props: HeadingProps) => (
 export const H3 = (props: HeadingProps) => (
   <Heading
     id={sluggifyChildren(props.children)}
-    mb="3"
-    mt="6"
+    mb="300"
+    mt="600"
     size="xl"
     asChild
   >
@@ -43,8 +43,8 @@ export const H3 = (props: HeadingProps) => (
 export const H4 = (props: HeadingProps) => (
   <Heading
     id={sluggifyChildren(props.children)}
-    mb="3"
-    mt="6"
+    mb="300"
+    mt="600"
     size="lg"
     asChild
   >
@@ -54,8 +54,8 @@ export const H4 = (props: HeadingProps) => (
 export const H5 = (props: HeadingProps) => (
   <Heading
     id={sluggifyChildren(props.children)}
-    mb="3"
-    mt="6"
+    mb="300"
+    mt="600"
     size="lg"
     fontWeight="500"
     asChild
@@ -66,8 +66,8 @@ export const H5 = (props: HeadingProps) => (
 export const H6 = (props: HeadingProps) => (
   <Heading
     id={sluggifyChildren(props.children)}
-    mb="3"
-    mt="6"
+    mb="300"
+    mt="600"
     size="lg"
     fontWeight="400"
     asChild

@@ -33,12 +33,10 @@ const demoComponents = {
   aspectRatio: ({ ...props }) => (
     <Box
       bg="neutral.4"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
       borderRadius="sm"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     />
   ),
@@ -48,7 +46,7 @@ const demoComponents = {
       borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       borderRadius="sm"
       {...props}
     />
@@ -57,22 +55,18 @@ const demoComponents = {
   borderRadius: ({ ...props }) => (
     <Box
       bg="neutral.4"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     />
   ),
   boxShadow: ({ ...props }) => (
     <Box
       bg="white"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     />
   ),
@@ -83,7 +77,7 @@ const demoComponents = {
       bg="neutral.4"
       borderColor="neutral.6"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     >
       <Text m="auto">Hover me</Text>
@@ -92,18 +86,16 @@ const demoComponents = {
   blur: ({ ...props }) => (
     <Box
       bg="neutral.4"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
       borderRadius="sm"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       filter="auto"
       {...props}
     />
   ),
   fontFamily: ({ ...props }) => (
-    <Text fontSize="8xl" lineHeight="normal" {...props}>
+    <Text fontSize="[96px]" lineHeight="normal" {...props}>
       Ag
     </Text>
   ),
@@ -141,11 +133,9 @@ type DemoComponentId = keyof typeof demoComponents;
 const PrettyBox = ({ ...props }) => (
   <Box
     bg="tomato.4"
-    border="0px solid"
-    borderColor="neutral.6"
     aspectRatio="1"
     height={defaultBoxSize}
-    p="4"
+    p="400"
     {...props}
   />
 );

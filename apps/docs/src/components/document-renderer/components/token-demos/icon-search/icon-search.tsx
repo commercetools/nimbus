@@ -53,7 +53,7 @@ export const IconSearch = () => {
   };
 
   return (
-    <Stack mt="8" mb="16" gap="8">
+    <Stack mt="800" mb="1600" gap="800">
       <Input
         placeholder={`Search through ${Object.keys(icons).length} icons ...`}
         value={q}
@@ -64,8 +64,8 @@ export const IconSearch = () => {
           const Component = icons[iconId as keyof typeof icons];
           return (
             <Flex
-              p="4"
-              border="1px solid"
+              p="400"
+              border="xs"
               borderColor="neutral.5"
               ml="-1px"
               mb="-1px"

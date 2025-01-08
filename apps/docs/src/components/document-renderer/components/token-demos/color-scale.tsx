@@ -31,7 +31,7 @@ export const ColorScale = (props: { id: string }) => {
 
   return (
     <Stack className="group">
-      <Flex width="100%" grow="1" gap="1">
+      <Flex width="full" grow="1" gap="100">
         <Text fontWeight="600" fontFamily="mono" width="8ch">
           {id}
         </Text>
@@ -46,7 +46,7 @@ export const ColorScale = (props: { id: string }) => {
             <Box aspectRatio={1} bg={color?.name.split("colors.").join("")}>
               <Text
                 bg="black"
-                color="#fff"
+                color="white"
                 width="2ch"
                 textAlign="center"
                 fontWeight="600"

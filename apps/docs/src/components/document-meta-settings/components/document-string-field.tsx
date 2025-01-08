@@ -52,7 +52,7 @@ export const DocumentStringFieldEdit = ({
 
   return (
     <Stack>
-      <Text fontWeight="semibold" asChild>
+      <Text fontWeight="600" asChild>
         <label htmlFor="documentState">{label}</label>
       </Text>
       <Stack direction="row">
