@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:57:16 GMT
+ * Generated on Fri, 10 Jan 2025 10:58:43 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
@@ -792,6 +792,23 @@ export default {
     },
     "900": {
       value: "2.25rem",
+    },
+  },
+  letterSpacings: {
+    tighter: {
+      value: "-5%",
+    },
+    tight: {
+      value: "-2.5%",
+    },
+    wide: {
+      value: "2.5%",
+    },
+    wider: {
+      value: "5%",
+    },
+    widest: {
+      value: "10%",
     },
   },
   spacing: {
