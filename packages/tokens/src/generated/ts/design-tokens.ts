@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:56:16 GMT
+ * Generated on Fri, 10 Jan 2025 10:57:16 GMT
  */
 
 export default {
@@ -23,6 +23,15 @@ export default {
     golden: {
       value: 1.618,
     },
+  },
+  blurs: {
+    "100": "4px",
+    "200": "8px",
+    "300": "12px",
+    "400": "16px",
+    "600": "24px",
+    "1000": "40px",
+    "1600": "64px",
   },
   borderRadius: {
     "50": "2px",

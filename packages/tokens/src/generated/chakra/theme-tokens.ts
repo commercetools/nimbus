@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:56:16 GMT
+ * Generated on Fri, 10 Jan 2025 10:57:16 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
@@ -23,6 +23,29 @@ export default {
     },
     golden: {
       value: 1.618,
+    },
+  },
+  blurs: {
+    "100": {
+      value: "4px",
+    },
+    "200": {
+      value: "8px",
+    },
+    "300": {
+      value: "12px",
+    },
+    "400": {
+      value: "16px",
+    },
+    "600": {
+      value: "24px",
+    },
+    "1000": {
+      value: "40px",
+    },
+    "1600": {
+      value: "64px",
     },
   },
   borderRadius: {

@@ -3,6 +3,13 @@
  */
 
 :root {
+  --blurs-100: 4px;
+  --blurs-200: 8px;
+  --blurs-300: 12px;
+  --blurs-400: 16px;
+  --blurs-600: 24px;
+  --blurs-1000: 40px;
+  --blurs-1600: 64px;
   --border-radius-50: 2px;
   --border-radius-100: 4px;
   --border-radius-150: 6px;
