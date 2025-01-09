@@ -59,7 +59,7 @@ function App() {
           <Flex flexGrow="1" flexShrink="1" height={availableHeight}>
             <Box
               width="72"
-              borderRight="1px solid"
+              borderRight="solid-25"
               borderColor="neutral.3"
               flexShrink="0"
               pt="600"
@@ -82,7 +82,7 @@ function App() {
             </Flex>
             <Box
               width="72"
-              borderLeft="1px solid"
+              borderLeft="solid-25"
               borderColor="neutral.3"
               flexShrink="0"
               px="400"

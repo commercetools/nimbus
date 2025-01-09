@@ -60,7 +60,7 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
   return (
     <Stack>
       <Text fontWeight="600">Document Audience</Text>
-      <Stack border="xs" borderColor="neutral.6" p="400">
+      <Stack border="solid-25" borderColor="neutral.6" p="400">
         {options.map(({ id, label }) => (
           <Flex key={id}>
             <Box>

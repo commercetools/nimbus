@@ -24,7 +24,7 @@ const AnimationDemo = ({
 
   return (
     <Box
-      border="xs"
+      border="solid-25"
       borderColor="neutral.6"
       overflow="hidden"
       width="full"

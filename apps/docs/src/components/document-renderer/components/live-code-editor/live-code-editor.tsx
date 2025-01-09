@@ -39,21 +39,21 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
     <Box fontFamily="body" mb="1600">
       <Flex>
         <Box
-          borderBottom="sm"
+          borderBottom="solid-25"
           borderColor={activeTab === "preview" ? "primary.9" : "transparent"}
           p="200"
         >
           <button onClick={() => setActiveTab("preview")}>Preview</button>
         </Box>
         <Box
-          borderBottom="sm"
+          borderBottom="solid-25"
           borderColor={activeTab === "editor" ? "primary.9" : "transparent"}
           p="200"
         >
           <button onClick={() => setActiveTab("editor")}>Code</button>
         </Box>
       </Flex>
-      <Box border="xs" borderColor="neutral.3">
+      <Box border="solid-25" borderColor="neutral.3">
         <LiveProvider
           transformCode={removeImportStatements}
           code={typeof code === "string" ? code : ""}

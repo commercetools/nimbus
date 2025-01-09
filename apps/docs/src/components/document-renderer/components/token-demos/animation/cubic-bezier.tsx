@@ -21,7 +21,7 @@ const CubicBezier: React.FC<CubicBezierProps> = ({ bezier, size = "24" }) => {
     <Box
       height={size}
       width={size}
-      border="xs"
+      border="solid-25"
       borderColor="neutral.6"
       colorPalette="primary"
       color="colorPalette.9"

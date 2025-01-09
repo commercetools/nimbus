@@ -59,7 +59,7 @@ export const IconSearch = () => {
           return (
             <Flex
               p="400"
-              border="xs"
+              border="solid-25"
               borderColor="neutral.5"
               ml="-1px"
               mb="-1px"

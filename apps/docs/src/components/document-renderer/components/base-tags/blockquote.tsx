@@ -120,7 +120,7 @@ export const Blockquote = (props: BlockquoteProps) => {
   return (
     <Box
       my="300"
-      borderLeft="3px solid"
+      borderLeft="solid-75"
       py="50"
       px="200"
       borderColor="colorPalette.9"

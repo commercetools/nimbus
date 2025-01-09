@@ -52,7 +52,7 @@ export const DocumentStateSelector = () => {
           py="200"
           px="200"
           asChild
-          border="xs"
+          border="solid-25"
           borderColor="colorPalette.6"
         >
           <select

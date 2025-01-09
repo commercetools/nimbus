@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:53:24 GMT
+ * Generated on Fri, 10 Jan 2025 10:55:24 GMT
  */
 
 export default {
@@ -16,8 +16,16 @@ export default {
     full: "900px",
   },
   borderWidth: {
-    "25": "2px",
-    "50": "4px",
+    "25": "1px",
+    "50": "2px",
+    "75": "3px",
+    "100": "4px",
+  },
+  border: {
+    "solid-25": "1px solid",
+    "solid-50": "2px solid",
+    "solid-75": "3px solid",
+    "solid-100": "4px solid",
   },
   color: {
     primary: {
@@ -303,6 +311,7 @@ export default {
     "900": "2.25rem",
   },
   spacing: {
+    "25": "1px",
     "50": "2px",
     "100": "4px",
     "150": "6px",

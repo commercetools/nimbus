@@ -54,7 +54,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
       position: "relative",
       width: "100%",
       outline: 0,
-      borderRadius: "l3",
+      borderRadius: "200",
       textStyle: "sm",
       my: "var(--dialog-margin, var(--dialog-base-margin))",
       "--dialog-z-index": "zIndex.modal",

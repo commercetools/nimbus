@@ -12,8 +12,14 @@
   --border-radius-500: 20px;
   --border-radius-600: 24px;
   --border-radius-full: 900px;
-  --border-width-25: 2px;
-  --border-width-50: 4px;
+  --border-width-25: 1px;
+  --border-width-50: 2px;
+  --border-width-75: 3px;
+  --border-width-100: 4px;
+  --border-solid-25: 1px solid;
+  --border-solid-50: 2px solid;
+  --border-solid-75: 3px solid;
+  --border-solid-100: 4px solid;
   --color-primary-light-solid-1: hsl(240, 100%, 100%);
   --color-primary-light-solid-2: hsl(233, 100%, 98%);
   --color-primary-light-solid-3: hsl(229, 100%, 97%);
@@ -216,6 +222,7 @@
   --line-height-700: 1.75rem; /* subheadline, h3 - pairs with font-size-450 */
   --line-height-800: 2rem; /* headline, h2 - pairs with font-size-500 */
   --line-height-900: 2.25rem; /* headline, h1 - pairs with font-size-600 */
+  --spacing-25: 1px;
   --spacing-50: 2px;
   --spacing-100: 4px;
   --spacing-150: 6px;

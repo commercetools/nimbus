@@ -45,14 +45,15 @@ const styles: Foo = {
     my: "400",
   },
   "& blockquote": {
-    borderLeft: "2px solid black",
+    border: "solid-50",
+    borderColor: "black",
     listStyleType: "number",
     pl: "800",
     my: "400",
   },
   "& .toolbar": {
     bg: "bg",
-    border: "1px solid",
+    border: "solid-25",
     borderColor: "neutral.6",
   },
   "& [role='combobox']": {
@@ -62,7 +63,7 @@ const styles: Foo = {
     bg: "bg/85",
   },
   "& [class*='codeMirrorWrapper']": {
-    border: "1px solid",
+    border: "solid-25",
     borderColor: "neutral.6",
     padding: 0,
   },

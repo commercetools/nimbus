@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:53:24 GMT
+ * Generated on Fri, 10 Jan 2025 10:55:24 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
@@ -36,10 +36,30 @@ export default {
   },
   borderWidth: {
     "25": {
-      value: "2px",
+      value: "1px",
     },
     "50": {
+      value: "2px",
+    },
+    "75": {
+      value: "3px",
+    },
+    "100": {
       value: "4px",
+    },
+  },
+  border: {
+    "solid-25": {
+      value: "1px solid",
+    },
+    "solid-50": {
+      value: "2px solid",
+    },
+    "solid-75": {
+      value: "3px solid",
+    },
+    "solid-100": {
+      value: "4px solid",
     },
   },
   color: {
@@ -732,6 +752,9 @@ export default {
     },
   },
   spacing: {
+    "25": {
+      value: "1px",
+    },
     "50": {
       value: "2px",
     },

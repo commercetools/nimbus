@@ -53,7 +53,7 @@ export const components: MDXComponents = {
   img: Image,
   table: (props) => {
     return (
-      <Table.ScrollArea borderWidth="1px" maxW="100%">
+      <Table.ScrollArea border="solid-25" borderColor="neutral.6" maxW="100%">
         <Table.Root variant="outline" {...props} />
       </Table.ScrollArea>
     );

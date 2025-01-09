@@ -120,7 +120,7 @@ export const Chatbot = () => {
             <form onSubmit={handleSubmit}>
               <Box
                 asChild
-                border="xs"
+                border="solid-25"
                 borderColor="neutral.6"
                 p="200"
                 fontSize="350"

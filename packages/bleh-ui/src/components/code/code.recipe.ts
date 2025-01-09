@@ -6,7 +6,7 @@ export const codeRecipe = defineRecipe({
     fontFamily: "mono",
     alignItems: "center",
     display: "inline-flex",
-    borderRadius: "l2",
+    borderRadius: "100",
   },
   variants: {
     variant: {

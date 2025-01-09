@@ -41,7 +41,7 @@ const demoComponents = {
   ),
   border: ({ ...props }) => (
     <Box
-      border="0 solid"
+      border="solid-25"
       borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
