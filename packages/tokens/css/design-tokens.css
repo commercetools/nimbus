@@ -192,12 +192,20 @@
   --font-family-heading: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   --font-family-body: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --font-size-300: 0.75rem; /* caption - pairs with line-height-400 */
-  --font-size-350: 0.875rem; /* detail - pairs with line-height-500 */
-  --font-size-400: 1rem; /* body, subheadline, h4 - pairs with line-height-600 */
-  --font-size-450: 1.125rem; /* subheadline, h3 - pairs with line-height-700 */
-  --font-size-500: 1.25rem; /* headline, h2 - pairs with line-height-800 */
-  --font-size-600: 1.5rem; /* headline, h1 - pairs with line-height-900 */
+  --font-size-250: 10px;
+  --font-size-300: 12px;
+  --font-size-350: 14px;
+  --font-size-400: 16px;
+  --font-size-450: 18px;
+  --font-size-500: 20px;
+  --font-size-600: 24px;
+  --font-size-750: 30px;
+  --font-size-900: 36px;
+  --font-size-1200: 48px;
+  --font-size-1500: 60px;
+  --font-size-1800: 72px;
+  --font-size-2400: 96px;
+  --font-size-3200: 128px;
   --font-weight-100: 100;
   --font-weight-200: 200;
   --font-weight-300: 300;

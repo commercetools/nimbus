@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:58:43 GMT
+ * Generated on Fri, 10 Jan 2025 10:59:28 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
@@ -672,23 +672,47 @@ export default {
     },
   },
   fontSize: {
+    "250": {
+      value: "10px",
+    },
     "300": {
-      value: "0.75rem",
+      value: "12px",
     },
     "350": {
-      value: "0.875rem",
+      value: "14px",
     },
     "400": {
-      value: "1rem",
+      value: "16px",
     },
     "450": {
-      value: "1.125rem",
+      value: "18px",
     },
     "500": {
-      value: "1.25rem",
+      value: "20px",
     },
     "600": {
-      value: "1.5rem",
+      value: "24px",
+    },
+    "750": {
+      value: "30px",
+    },
+    "900": {
+      value: "36px",
+    },
+    "1200": {
+      value: "48px",
+    },
+    "1500": {
+      value: "60px",
+    },
+    "1800": {
+      value: "72px",
+    },
+    "2400": {
+      value: "96px",
+    },
+    "3200": {
+      value: "128px",
     },
   },
   fontWeight: {

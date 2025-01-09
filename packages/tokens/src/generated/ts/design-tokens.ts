@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:58:43 GMT
+ * Generated on Fri, 10 Jan 2025 10:59:28 GMT
  */
 
 export default {
@@ -291,12 +291,20 @@ export default {
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
   fontSize: {
-    "300": "0.75rem",
-    "350": "0.875rem",
-    "400": "1rem",
-    "450": "1.125rem",
-    "500": "1.25rem",
-    "600": "1.5rem",
+    "250": "10px",
+    "300": "12px",
+    "350": "14px",
+    "400": "16px",
+    "450": "18px",
+    "500": "20px",
+    "600": "24px",
+    "750": "30px",
+    "900": "36px",
+    "1200": "48px",
+    "1500": "60px",
+    "1800": "72px",
+    "2400": "96px",
+    "3200": "128px",
   },
   fontWeight: {
     "100": 100,
