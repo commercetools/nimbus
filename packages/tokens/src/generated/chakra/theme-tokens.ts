@@ -1,10 +1,30 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:55:24 GMT
+ * Generated on Fri, 10 Jan 2025 10:56:16 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
 export default {
+  aspectRatios: {
+    square: {
+      value: 1,
+    },
+    landscape: {
+      value: 1.3333,
+    },
+    portrait: {
+      value: 0.75,
+    },
+    wide: {
+      value: 1.7777,
+    },
+    ultrawide: {
+      value: 3.6,
+    },
+    golden: {
+      value: 1.618,
+    },
+  },
   borderRadius: {
     "50": {
       value: "2px",
