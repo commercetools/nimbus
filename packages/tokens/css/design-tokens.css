@@ -231,12 +231,47 @@
   --height-600: 1.5rem;
   --height-800: 2rem;
   --height-1000: 2.5rem;
-  --line-height-400: 1rem; /* caption - pairs with font-size-300 */
-  --line-height-500: 1.25rem; /* detail - pairs with font-size-350 */
-  --line-height-600: 1.5rem; /* body, subheadline, h4 - pairs with font-size-400 */
-  --line-height-700: 1.75rem; /* subheadline, h3 - pairs with font-size-450 */
-  --line-height-800: 2rem; /* headline, h2 - pairs with font-size-500 */
-  --line-height-900: 2.25rem; /* headline, h1 - pairs with font-size-600 */
+  --line-heights-250: 10px;
+  --line-heights-300: 12px;
+  --line-heights-350: 14px;
+  --line-heights-400: 16px;
+  --line-heights-450: 18px;
+  --line-heights-500: 20px;
+  --line-heights-550: 22px;
+  --line-heights-600: 24px;
+  --line-heights-650: 26px;
+  --line-heights-700: 28px;
+  --line-heights-750: 30px;
+  --line-heights-800: 32px;
+  --line-heights-900: 36px;
+  --line-heights-1100: 44px;
+  --line-heights-1200: 48px;
+  --line-heights-1400: 56px;
+  --line-heights-1500: 60px;
+  --line-heights-1800: 72px;
+  --line-heights-2000: 80px;
+  --line-heights-2100: 84px;
+  --line-heights-2300: 92px;
+  --line-heights-2400: 96px;
+  --line-heights-2800: 112px;
+  --line-heights-3200: 128px;
+  --line-heights-3500: 140px;
+  --line-heights-3800: 152px;
+  --text-styles-2xs: [object Object];
+  --text-styles-xs: [object Object];
+  --text-styles-sm: [object Object];
+  --text-styles-md: [object Object];
+  --text-styles-lg: [object Object];
+  --text-styles-xl: [object Object];
+  --text-styles-2xl: [object Object];
+  --text-styles-3xl: [object Object];
+  --text-styles-4xl: [object Object];
+  --text-styles-5xl: [object Object];
+  --text-styles-6xl: [object Object];
+  --text-styles-7xl: [object Object];
+  --text-styles-caption: [object Object];
+  --text-styles-detail: [object Object];
+  --text-styles-body: [object Object];
   --spacing-25: 1px;
   --spacing-50: 2px;
   --spacing-100: 4px;

@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:59:28 GMT
+ * Generated on Fri, 10 Jan 2025 11:00:08 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
@@ -798,24 +798,176 @@ export default {
       value: "2.5rem",
     },
   },
-  lineHeight: {
+  lineHeights: {
+    "250": {
+      value: "10px",
+    },
+    "300": {
+      value: "12px",
+    },
+    "350": {
+      value: "14px",
+    },
     "400": {
-      value: "1rem",
+      value: "16px",
+    },
+    "450": {
+      value: "18px",
     },
     "500": {
-      value: "1.25rem",
+      value: "20px",
+    },
+    "550": {
+      value: "22px",
     },
     "600": {
-      value: "1.5rem",
+      value: "24px",
+    },
+    "650": {
+      value: "26px",
     },
     "700": {
-      value: "1.75rem",
+      value: "28px",
+    },
+    "750": {
+      value: "30px",
     },
     "800": {
-      value: "2rem",
+      value: "32px",
     },
     "900": {
-      value: "2.25rem",
+      value: "36px",
+    },
+    "1100": {
+      value: "44px",
+    },
+    "1200": {
+      value: "48px",
+    },
+    "1400": {
+      value: "56px",
+    },
+    "1500": {
+      value: "60px",
+    },
+    "1800": {
+      value: "72px",
+    },
+    "2000": {
+      value: "80px",
+    },
+    "2100": {
+      value: "84px",
+    },
+    "2300": {
+      value: "92px",
+    },
+    "2400": {
+      value: "96px",
+    },
+    "2800": {
+      value: "112px",
+    },
+    "3200": {
+      value: "128px",
+    },
+    "3500": {
+      value: "140px",
+    },
+    "3800": {
+      value: "152px",
+    },
+  },
+  textStyles: {
+    "2xs": {
+      value: {
+        fontSize: "10px",
+        lineHeight: "14px",
+      },
+    },
+    xs: {
+      value: {
+        fontSize: "12px",
+        lineHeight: "18px",
+      },
+    },
+    sm: {
+      value: {
+        fontSize: "14px",
+        lineHeight: "22px",
+      },
+    },
+    md: {
+      value: {
+        fontSize: "16px",
+        lineHeight: "22px",
+      },
+    },
+    lg: {
+      value: {
+        fontSize: "18px",
+        lineHeight: "24px",
+      },
+    },
+    xl: {
+      value: {
+        fontSize: "20px",
+        lineHeight: "28px",
+      },
+    },
+    "2xl": {
+      value: {
+        fontSize: "24px",
+        lineHeight: "28px",
+      },
+    },
+    "3xl": {
+      value: {
+        fontSize: "30px",
+        lineHeight: "36px",
+      },
+    },
+    "4xl": {
+      value: {
+        fontSize: "36px",
+        lineHeight: "44px",
+      },
+    },
+    "5xl": {
+      value: {
+        fontSize: "48px",
+        lineHeight: "60px",
+      },
+    },
+    "6xl": {
+      value: {
+        fontSize: "60px",
+        lineHeight: "72px",
+      },
+    },
+    "7xl": {
+      value: {
+        fontSize: "72px",
+        lineHeight: "92px",
+      },
+    },
+    caption: {
+      value: {
+        fontSize: "12px",
+        lineHeight: "18px",
+      },
+    },
+    detail: {
+      value: {
+        fontSize: "14px",
+        lineHeight: "22px",
+      },
+    },
+    body: {
+      value: {
+        fontSize: "16px",
+        lineHeight: "26px",
+      },
     },
   },
   letterSpacings: {

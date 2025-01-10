@@ -98,7 +98,7 @@ const demoComponents = {
   ),
 
   fontSize: ({ ...props }) => (
-    <Text {...props} lineHeight="shorter">
+    <Text {...props} lineHeight="1">
       Ag
     </Text>
   ),

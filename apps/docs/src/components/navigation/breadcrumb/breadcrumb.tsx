@@ -35,8 +35,7 @@ export const BreadcrumbNav = () => {
         )}
         {parts.map((item, idx) => {
           const isLastItem = idx + 1 == parts.length;
-          console.log("parts.length", parts.length);
-          console.log(isLastItem);
+
           return (
             <Box
               as="li"

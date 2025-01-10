@@ -4250,12 +4250,33 @@
       ],
       "toc": [
         {
+          "value": "Text Styles",
+          "href": "#text-styles",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Available Text Styles",
+          "href": "#available-text-styles",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
           "value": "Fonts",
           "href": "#fonts",
           "depth": 2,
           "numbering": [
             1,
-            1
+            2
           ],
           "parent": "root"
         },
@@ -4265,23 +4286,13 @@
           "depth": 2,
           "numbering": [
             1,
-            2
+            3
           ],
           "parent": "root"
         },
         {
           "value": "Font Weights",
           "href": "#font-weights",
-          "depth": 2,
-          "numbering": [
-            1,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Line Heights",
-          "href": "#line-heights",
           "depth": 2,
           "numbering": [
             1,
@@ -4298,11 +4309,21 @@
             5
           ],
           "parent": "root"
+        },
+        {
+          "value": "Line Heights",
+          "href": "#line-heights",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
         }
       ],
       "icon": "BookType"
     },
-    "mdx": "\n\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n> [!NOTE]  \n> **TODO:** create & name [textStyles](https://www.chakra-ui.com/docs/styling/text-styles)\n> for easy access of common typography-token combinations.\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n"
+    "mdx": "\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n## Text Styles\n\nText styles are collections of multiple typography rules (such as `font-size`, `line-height`, `letter-spacing` etc.) that create a specific, reusable style.\n\n> [!NOTE]  \n> I added `caption`, `detail` & `body` from our existing styles, but they are essentially just combinations\n> of font-size & line-height and can be mapped to `xs`, `sm` & `md`. The `headline` looks can be achieved by using the\n> textStyles on the `<Heading/>` component.\n\n```jsx\n<Text textStyle=\"nameOfDesiredTextStyle\">Heading 1</Text>\n```\n\n### Available Text Styles\n\n<TextStylesDemo />\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/z-indices.mdx": {
     "meta": {

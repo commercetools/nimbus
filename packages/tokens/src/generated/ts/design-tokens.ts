@@ -1,6 +1,6 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 10:59:28 GMT
+ * Generated on Fri, 10 Jan 2025 11:00:08 GMT
  */
 
 export default {
@@ -339,13 +339,95 @@ export default {
     "800": "2rem",
     "1000": "2.5rem",
   },
-  lineHeight: {
-    "400": "1rem",
-    "500": "1.25rem",
-    "600": "1.5rem",
-    "700": "1.75rem",
-    "800": "2rem",
-    "900": "2.25rem",
+  lineHeights: {
+    "250": "10px",
+    "300": "12px",
+    "350": "14px",
+    "400": "16px",
+    "450": "18px",
+    "500": "20px",
+    "550": "22px",
+    "600": "24px",
+    "650": "26px",
+    "700": "28px",
+    "750": "30px",
+    "800": "32px",
+    "900": "36px",
+    "1100": "44px",
+    "1200": "48px",
+    "1400": "56px",
+    "1500": "60px",
+    "1800": "72px",
+    "2000": "80px",
+    "2100": "84px",
+    "2300": "92px",
+    "2400": "96px",
+    "2800": "112px",
+    "3200": "128px",
+    "3500": "140px",
+    "3800": "152px",
+  },
+  textStyles: {
+    "2xs": {
+      fontSize: "10px",
+      lineHeight: "14px",
+    },
+    xs: {
+      fontSize: "12px",
+      lineHeight: "18px",
+    },
+    sm: {
+      fontSize: "14px",
+      lineHeight: "22px",
+    },
+    md: {
+      fontSize: "16px",
+      lineHeight: "22px",
+    },
+    lg: {
+      fontSize: "18px",
+      lineHeight: "24px",
+    },
+    xl: {
+      fontSize: "20px",
+      lineHeight: "28px",
+    },
+    "2xl": {
+      fontSize: "24px",
+      lineHeight: "28px",
+    },
+    "3xl": {
+      fontSize: "30px",
+      lineHeight: "36px",
+    },
+    "4xl": {
+      fontSize: "36px",
+      lineHeight: "44px",
+    },
+    "5xl": {
+      fontSize: "48px",
+      lineHeight: "60px",
+    },
+    "6xl": {
+      fontSize: "60px",
+      lineHeight: "72px",
+    },
+    "7xl": {
+      fontSize: "72px",
+      lineHeight: "92px",
+    },
+    caption: {
+      fontSize: "12px",
+      lineHeight: "18px",
+    },
+    detail: {
+      fontSize: "14px",
+      lineHeight: "22px",
+    },
+    body: {
+      fontSize: "16px",
+      lineHeight: "26px",
+    },
   },
   letterSpacings: {
     tighter: {
