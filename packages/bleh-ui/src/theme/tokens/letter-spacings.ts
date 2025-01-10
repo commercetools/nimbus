@@ -20,5 +20,5 @@ const convertPercentToEm = (
 };
 
 export const letterSpacings = defineTokens.letterSpacings(
-  convertPercentToEm(themeTokens.letterSpacings)
+  convertPercentToEm(themeTokens.letterSpacing)
 );

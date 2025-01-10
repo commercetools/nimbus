@@ -1,10 +1,10 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 11:00:38 GMT
+ * Generated on Fri, 10 Jan 2025 11:01:16 GMT
  */
 
 export default {
-  aspectRatios: {
+  aspectRatio: {
     square: {
       value: 1,
     },
@@ -24,7 +24,7 @@ export default {
       value: 1.618,
     },
   },
-  blurs: {
+  blur: {
     "100": "4px",
     "200": "8px",
     "300": "12px",
@@ -326,20 +326,14 @@ export default {
     slower: "400ms",
     slowest: "500ms",
   },
-  easings: {
+  easing: {
     linear: "cubic-bezier(0, 0, 1, 1)",
     "ease-in": "cubic-bezier(0.42, 0, 1, 1)",
     "ease-out": "cubic-bezier(0, 0, 0.58, 1)",
     "ease-in-out": "cubic-bezier(0.42, 0, 0.58, 1)",
     "ease-in-smooth": "cubic-bezier(0.32, 0.72, 0, 1)",
   },
-  height: {
-    "400": "1rem",
-    "600": "1.5rem",
-    "800": "2rem",
-    "1000": "2.5rem",
-  },
-  lineHeights: {
+  lineHeight: {
     "250": "10px",
     "300": "12px",
     "350": "14px",
@@ -367,7 +361,7 @@ export default {
     "3500": "140px",
     "3800": "152px",
   },
-  textStyles: {
+  textStyle: {
     "2xs": {
       fontSize: "10px",
       lineHeight: "14px",
@@ -429,7 +423,7 @@ export default {
       lineHeight: "26px",
     },
   },
-  letterSpacings: {
+  letterSpacing: {
     tighter: {
       value: "-5%",
     },
@@ -446,7 +440,7 @@ export default {
       value: "10%",
     },
   },
-  sizes: {
+  size: {
     "25": "1px",
     "50": "2px",
     "100": "4px",

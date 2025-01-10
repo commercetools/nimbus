@@ -1,11 +1,11 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * Generated on Fri, 10 Jan 2025 11:00:38 GMT
+ * Generated on Fri, 10 Jan 2025 11:01:16 GMT
  * This file is for only meant for use in building the chakra theme
  */
 
 export default {
-  aspectRatios: {
+  aspectRatio: {
     square: {
       value: 1,
     },
@@ -25,7 +25,7 @@ export default {
       value: 1.618,
     },
   },
-  blurs: {
+  blur: {
     "100": {
       value: "4px",
     },
@@ -767,7 +767,7 @@ export default {
       value: "500ms",
     },
   },
-  easings: {
+  easing: {
     linear: {
       value: "cubic-bezier(0, 0, 1, 1)",
     },
@@ -784,21 +784,7 @@ export default {
       value: "cubic-bezier(0.32, 0.72, 0, 1)",
     },
   },
-  height: {
-    "400": {
-      value: "1rem",
-    },
-    "600": {
-      value: "1.5rem",
-    },
-    "800": {
-      value: "2rem",
-    },
-    "1000": {
-      value: "2.5rem",
-    },
-  },
-  lineHeights: {
+  lineHeight: {
     "250": {
       value: "10px",
     },
@@ -878,7 +864,7 @@ export default {
       value: "152px",
     },
   },
-  textStyles: {
+  textStyle: {
     "2xs": {
       value: {
         fontSize: "10px",
@@ -970,7 +956,7 @@ export default {
       },
     },
   },
-  letterSpacings: {
+  letterSpacing: {
     tighter: {
       value: "-5%",
     },
@@ -987,7 +973,7 @@ export default {
       value: "10%",
     },
   },
-  sizes: {
+  size: {
     "25": {
       value: "1px",
     },

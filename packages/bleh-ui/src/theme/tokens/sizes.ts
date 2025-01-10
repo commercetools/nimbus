@@ -2,8 +2,7 @@ import { defineTokens } from "@chakra-ui/react";
 import { themeTokens } from "@bleh-ui/tokens";
 
 export const sizes = defineTokens.sizes({
-  ...themeTokens.sizes,
-
+  ...themeTokens.size,
   "1/2": {
     value: "50%",
   },
