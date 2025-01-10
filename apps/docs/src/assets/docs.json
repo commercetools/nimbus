@@ -4171,8 +4171,8 @@
           "parent": "root"
         },
         {
-          "value": "Named sizes",
-          "href": "#named-sizes",
+          "value": "Large sizes",
+          "href": "#large-sizes",
           "depth": 2,
           "numbering": [
             1,
@@ -4203,7 +4203,7 @@
       ],
       "icon": "Ruler"
     },
-    "mdx": "\n\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including numerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing elements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Named sizes\n\nSemantic size labels providing consistent values for specific dimensions, ensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive layouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive element sizing.\n\n<SizesTokenDemo group=\"other\" />\n"
+    "mdx": "\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including numerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing elements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Large sizes\n\nSemantic size labels providing consistent values for specific dimensions, ensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive layouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive element sizing.\n\n<SizesTokenDemo group=\"other\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/spacing.mdx": {
     "meta": {
@@ -4225,7 +4225,7 @@
       "toc": [],
       "icon": "BetweenHorizontalEnd"
     },
-    "mdx": "\n\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.e.g. `4` = `16px`, `10` = `40px` etc.\n"
+    "mdx": "\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-100`, `-400`, `-1000`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and divide it by 25. e.g. `100 / 25 = 4px`, `400 / 25 = 16px`, `1000 / 25 = 40px`, etc.\n"
   },
   "packages/bleh-ui/src/docs/tokens/typography.mdx": {
     "meta": {

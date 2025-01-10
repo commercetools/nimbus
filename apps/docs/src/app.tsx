@@ -48,7 +48,7 @@ function App() {
         <Flex
           direction="column"
           height="100vh"
-          width="100%"
+          width="full"
           maxWidth="1600px"
           mx="auto"
         >
@@ -58,7 +58,7 @@ function App() {
 
           <Flex flexGrow="1" flexShrink="1" height={availableHeight}>
             <Box
-              width="72"
+              width="7200"
               borderRight="solid-25"
               borderColor="neutral.3"
               flexShrink="0"
@@ -71,7 +71,7 @@ function App() {
             <Flex
               flexGrow="1"
               flexShrink="1"
-              minWidth="512px"
+              minWidth="lg"
               pt="800"
               px="1600"
               overflow="auto"
@@ -81,7 +81,7 @@ function App() {
               <DocumentRenderer />
             </Flex>
             <Box
-              width="72"
+              width="7200"
               borderLeft="solid-25"
               borderColor="neutral.3"
               flexShrink="0"

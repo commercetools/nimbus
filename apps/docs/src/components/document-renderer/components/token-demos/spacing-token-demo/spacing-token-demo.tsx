@@ -63,16 +63,16 @@ export const SpacingTokenDemo = () => {
               >
                 <Flex>
                   {demoAltLook && (
-                    <Box flexGrow="1" height="4" bg="primary.3" />
+                    <Box flexGrow="1" height="400" bg="primary.3" />
                   )}
 
                   <Box
                     width={item.value.originalValue}
-                    height="4"
+                    height="400"
                     bg="primary.9"
                   />
 
-                  <Box flexGrow="1" height="4" bg="primary.3" />
+                  <Box flexGrow="1" height="400" bg="primary.3" />
                 </Flex>
               </TableCell>
             </TableRow>

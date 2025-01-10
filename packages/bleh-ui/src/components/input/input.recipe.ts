@@ -3,7 +3,7 @@ import { defineRecipe } from "@chakra-ui/react";
 export const inputRecipe = defineRecipe({
   className: "bleh-ui-input",
   base: {
-    width: "100%",
+    width: "full",
     minWidth: "0",
     outline: "0",
     position: "relative",
@@ -30,37 +30,37 @@ export const inputRecipe = defineRecipe({
       "2xs": {
         textStyle: "xs",
         px: "200",
-        "--input-height": "sizes.7",
+        "--input-height": "sizes.700",
       },
       xs: {
         textStyle: "xs",
         px: "200",
-        "--input-height": "sizes.8",
+        "--input-height": "sizes.800",
       },
       sm: {
         textStyle: "sm",
         px: "250",
-        "--input-height": "sizes.9",
+        "--input-height": "sizes.900",
       },
       md: {
         textStyle: "sm",
         px: "300",
-        "--input-height": "sizes.10",
+        "--input-height": "sizes.1000",
       },
       lg: {
         textStyle: "md",
         px: "400",
-        "--input-height": "sizes.11",
+        "--input-height": "sizes.1100",
       },
       xl: {
         textStyle: "md",
         px: "450",
-        "--input-height": "sizes.12",
+        "--input-height": "sizes.1200",
       },
       "2xl": {
         textStyle: "lg",
         px: "500",
-        "--input-height": "sizes.16",
+        "--input-height": "sizes.1600",
       },
     },
     variant: {

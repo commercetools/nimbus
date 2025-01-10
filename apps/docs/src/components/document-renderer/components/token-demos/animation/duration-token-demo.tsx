@@ -41,7 +41,7 @@ export const DurationTokenDemo = () => {
       <TableRoot width="full" maxWidth="full">
         <TableColumnGroup>
           <TableColumn width="18ch" />
-          <TableColumn width="36" />
+          <TableColumn width="3600" />
           <TableColumn />
         </TableColumnGroup>
         <TableHeader>

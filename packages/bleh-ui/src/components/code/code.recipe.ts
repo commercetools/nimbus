@@ -37,22 +37,22 @@ export const codeRecipe = defineRecipe({
       xs: {
         textStyle: "2xs",
         px: "100",
-        minH: "4",
+        minH: "400",
       },
       sm: {
         textStyle: "xs",
         px: "150",
-        minH: "5",
+        minH: "500",
       },
       md: {
         textStyle: "sm",
         px: "200",
-        minH: "6",
+        minH: "600",
       },
       lg: {
         textStyle: "sm",
         px: "250",
-        minH: "7",
+        minH: "700",
       },
     },
   },

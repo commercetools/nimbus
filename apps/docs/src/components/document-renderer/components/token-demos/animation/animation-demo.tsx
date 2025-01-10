@@ -33,7 +33,7 @@ const AnimationDemo = ({
     >
       <Box
         colorPalette="primary"
-        width="4"
+        width="400"
         height={size}
         animation={animation}
         position="absolute"

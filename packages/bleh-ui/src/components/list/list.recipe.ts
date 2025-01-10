@@ -1,4 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react"
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const listSlotRecipe = defineSlotRecipe({
   className: "chakra-list",
@@ -17,7 +17,7 @@ export const listSlotRecipe = defineSlotRecipe({
       display: "list-item",
     },
     indicator: {
-      marginEnd: "2",
+      marginEnd: "200",
       minHeight: "1lh",
       flexShrink: 0,
       display: "inline-block",
@@ -65,4 +65,4 @@ export const listSlotRecipe = defineSlotRecipe({
   defaultVariants: {
     variant: "marker",
   },
-})
+});

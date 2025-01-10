@@ -38,15 +38,15 @@ export const kbdRecipe = defineRecipe({
     size: {
       sm: {
         textStyle: "xs",
-        height: "4.5",
+        height: "450",
       },
       md: {
         textStyle: "sm",
-        height: "5",
+        height: "500",
       },
       lg: {
         textStyle: "md",
-        height: "6",
+        height: "600",
       },
     },
   },

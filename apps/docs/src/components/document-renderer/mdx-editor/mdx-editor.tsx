@@ -187,7 +187,7 @@ export const MdxEditor = ({
       <Flex gap="4" borderTop="1px solid" borderTopColor="neutral.6" py="4">
         <Button
           colorPalette="primary"
-          minWidth="32"
+          minWidth="3200"
           variant="solid"
           onClick={() => onSaveRequest()}
         >
@@ -196,7 +196,7 @@ export const MdxEditor = ({
         <Button
           colorPalette="neutral"
           variant="subtle"
-          minWidth="32"
+          minWidth="3200"
           onClick={() => onCloseRequest()}
         >
           Cancel

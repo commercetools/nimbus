@@ -24,7 +24,7 @@ type GenericTableDemoProps = {
   debug?: boolean;
 };
 
-const defaultBoxSize = "16";
+const defaultBoxSize = "1600";
 const defaultDemoText =
   "Franz jagt im komplett verwahrlosten Taxi quer durch Bayern";
 const defaultDemoParagraph =
@@ -92,7 +92,7 @@ const demoComponents = {
     />
   ),
   fontFamily: ({ ...props }) => (
-    <Text fontSize="[96px]" lineHeight="normal" {...props}>
+    <Text fontSize="4rem" lineHeight="1" {...props}>
       Ag
     </Text>
   ),
@@ -103,7 +103,7 @@ const demoComponents = {
     </Text>
   ),
   fontWeight: ({ ...props }) => (
-    <Text {...props} lineHeight="normal">
+    <Text {...props} lineHeight="1">
       {defaultDemoText}
     </Text>
   ),
@@ -121,7 +121,7 @@ const demoComponents = {
     </Text>
   ),
   animation: ({ ...props }) => (
-    <Box width="12" height="12" bg="primary.4" {...props} />
+    <Box width="1200" height="1200" bg="primary.4" {...props} />
   ),
 };
 
@@ -130,7 +130,7 @@ type DemoComponentId = keyof typeof demoComponents;
 const PrettyBox = ({ ...props }) => (
   <Box
     bg="tomato.4"
-    aspectRatio="1"
+    aspectRatio="square"
     height={defaultBoxSize}
     p="400"
     {...props}

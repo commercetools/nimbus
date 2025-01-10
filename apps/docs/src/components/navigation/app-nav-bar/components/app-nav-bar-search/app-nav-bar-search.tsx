@@ -73,7 +73,7 @@ export const AppNavBarSearch = () => {
             endElement={<Kbd>⌘K</Kbd>}
             endElementProps={{ color: "neutral.9" }}
             width="full"
-            maxWidth="96"
+            maxWidth="9600"
             mx="auto"
           >
             <Input

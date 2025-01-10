@@ -35,10 +35,10 @@ const AnimationItem = ({
       ml="-1px"
       mt="-1px"
     >
-      <Box mb="4" width="12" height="12">
+      <Box mb="400" width="1200" height="1200">
         <Box
-          width="12"
-          height="12"
+          width="1200"
+          height="1200"
           bg="primary.4"
           animationDuration="1s"
           animationName={item.value}

@@ -36,7 +36,7 @@ export const DocumentRenderer = () => {
           {[...meta.menu].join(" > ")} | {brandName}
         </title>
       </Helmet>
-      <Box width="full" maxWidth="960px">
+      <Box width="full" maxWidth="4xl">
         <Stack gap="400">
           {!editMode && (
             <Flex height="46px" alignItems="center">
