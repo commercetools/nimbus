@@ -27,7 +27,7 @@ StyleDictionary.registerFormat({
      * https://styledictionary.com/reference/utils/format-helpers/#fileheader */
     const header = await fileHeader({
       file,
-      formatting: { fileHeaderTimestamp: true },
+      formatting: { fileHeaderTimestamp: false },
     });
 
     /** format tokens based on whether they are chakra syntax */
