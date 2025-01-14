@@ -13,4 +13,11 @@ module.exports = [
     name: "purpose",
     message: "What's the purpose of this component?",
   },
+  {
+    type: "select",
+    name: "hasSlots",
+    message: "Does this component need slots?",
+    choices: ["yes", "no"],
+    initial: "yes", // Default to 'yes'
+  },
 ];
