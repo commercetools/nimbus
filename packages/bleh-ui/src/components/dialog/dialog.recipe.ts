@@ -14,7 +14,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
     "footer",
     "backdrop",
   ],
-  className: "chakra-dialog",
+  className: "bleh-ui-dialog",
   base: {
     backdrop: {
       bg: {
@@ -59,7 +59,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
       my: "var(--dialog-margin, var(--dialog-base-margin))",
       "--dialog-z-index": "zIndex.modal",
       zIndex: "calc(var(--dialog-z-index) + var(--layer-index, 0))",
-      bg: "bg.panel",
+      bg: "bg",
       boxShadow: "lg",
       _open: {
         animationDuration: "moderate",

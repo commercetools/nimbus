@@ -28,78 +28,7 @@ export const keyframes = {
       animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
     },
   },
-  /*
-  "bg-position": {
-    from: {
-      backgroundPosition: "var(--animate-from, 1rem) 0",
-    },
-    to: {
-      backgroundPosition: "var(--animate-to, 0) 0",
-    },
-  },
-  */
-  /*
-  position: {
-    from: {
-      insetInlineStart: "var(--animate-from-x)",
-      insetBlockStart: "var(--animate-from-y)",
-    },
-    to: {
-      insetInlineStart: "var(--animate-to-x)",
-      insetBlockStart: "var(--animate-to-y)",
-    },
-  },
-  */
-  /*
-  "circular-progress": {
-    "0%": {
-      strokeDasharray: "1, 400",
-      strokeDashoffset: "0",
-    },
-    "50%": {
-      strokeDasharray: "400, 400",
-      strokeDashoffset: "-100%",
-    },
-    "100%": {
-      strokeDasharray: "400, 400",
-      strokeDashoffset: "-260%",
-    },
-  },
-  */
-  /* "expand-height": {
-    from: {
-      height: "0",
-    },
-    to: {
-      height: "var(--height)",
-    },
-  }, */
-  /*
-  "collapse-height": {
-    from: {
-      maxHeight: "var(--height)",
-    },
-    to: {
-      height: "0",
-    },
-  },
-  */
-  /* "expand-width": {
-    from: {
-      width: "0",
-    },
-    to: {
-      width: "var(--width)",
-    },
-  }, */
-  /* "collapse-width": {
-    from: {
-      height: "var(--width)",
-    },
-    to: {
-      height: "0",
-    },
-  }, */
+
   "fade-in": {
     from: {
       opacity: 0,
