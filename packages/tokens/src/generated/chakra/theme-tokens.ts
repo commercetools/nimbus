@@ -6140,6 +6140,12 @@ export default {
     slowest: {
       value: "500ms",
     },
+    "1s": {
+      value: "1s",
+    },
+    "2s": {
+      value: "2s",
+    },
   },
   easing: {
     linear: {
@@ -6728,6 +6734,63 @@ export default {
     },
     caps: {
       value: "capitalize",
+    },
+  },
+  cursor: {
+    button: {
+      value: "pointer",
+    },
+    checkbox: {
+      value: "default",
+    },
+    disabled: {
+      value: "not-allowed",
+    },
+    menuitem: {
+      value: "default",
+    },
+    option: {
+      value: "default",
+    },
+    radio: {
+      value: "default",
+    },
+    slider: {
+      value: "default",
+    },
+    switch: {
+      value: "pointer",
+    },
+  },
+  animation: {
+    spin: {
+      value: "spin 1s cubic-bezier(0, 0, 1, 1) infinite",
+    },
+    ping: {
+      value: "ping 1s cubic-bezier(0, 0, 0.58, 1) infinite",
+    },
+    pulse: {
+      value: "pulse 2s cubic-bezier(0.42, 0, 0.58, 1) infinite",
+    },
+    bounce: {
+      value: "bounce 2s infinite",
+    },
+  },
+  breakpoints: {
+    sm: {
+      value: "480px",
+    },
+    md: {
+      value: "768px",
+    },
+    lg: {
+      value: "1024px",
+    },
+    xl: {
+      value: "1280px",
+    },
+    "2xl": {
+      value: "1536px",
     },
   },
 } as const;

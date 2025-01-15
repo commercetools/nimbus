@@ -2369,6 +2369,8 @@ export default {
     slow: "300ms",
     slower: "400ms",
     slowest: "500ms",
+    "1s": "1s",
+    "2s": "2s",
   },
   easing: {
     linear: "cubic-bezier(0, 0, 1, 1)",
@@ -2620,5 +2622,36 @@ export default {
     lower: "lowercase",
     upper: "uppercase",
     caps: "capitalize",
+  },
+  cursor: {
+    button: "pointer",
+    checkbox: "default",
+    disabled: "not-allowed",
+    menuitem: "default",
+    option: "default",
+    radio: "default",
+    slider: "default",
+    switch: "pointer",
+  },
+  animation: {
+    spin: {
+      value: "spin 1s cubic-bezier(0, 0, 1, 1) infinite",
+    },
+    ping: {
+      value: "ping 1s cubic-bezier(0, 0, 0.58, 1) infinite",
+    },
+    pulse: {
+      value: "pulse 2s cubic-bezier(0.42, 0, 0.58, 1) infinite",
+    },
+    bounce: {
+      value: "bounce 2s infinite",
+    },
+  },
+  breakpoints: {
+    sm: "480px",
+    md: "768px",
+    lg: "1024px",
+    xl: "1280px",
+    "2xl": "1536px",
   },
 } as const;

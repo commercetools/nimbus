@@ -1959,6 +1959,8 @@
   --duration-slow: 300ms;
   --duration-slower: 400ms;
   --duration-slowest: 500ms;
+  --duration-1s: 1s;
+  --duration-2s: 2s;
   --easing-linear: cubic-bezier(0, 0, 1, 1);
   --easing-ease-in: cubic-bezier(0.42, 0, 1, 1);
   --easing-ease-out: cubic-bezier(0, 0, 0.58, 1);
@@ -2128,4 +2130,17 @@
   --text-case-lower: lowercase;
   --text-case-upper: uppercase;
   --text-case-caps: capitalize;
+  --cursor-button: pointer;
+  --cursor-checkbox: default;
+  --cursor-disabled: not-allowed;
+  --cursor-menuitem: default;
+  --cursor-option: default;
+  --cursor-radio: default;
+  --cursor-slider: default;
+  --cursor-switch: pointer;
+  --breakpoints-sm: 480px;
+  --breakpoints-md: 768px;
+  --breakpoints-lg: 1024px;
+  --breakpoints-xl: 1280px;
+  --breakpoints-2xl: 1536px;
 }
