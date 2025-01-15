@@ -31,10 +31,20 @@ export const ColorScale = (props: { id: string }) => {
 
   return (
     <Stack className="group">
-      <Flex width="full" grow="1" gap="100">
-        <Text fontWeight="600" fontFamily="mono" width="8ch">
+      <div>
+        <Text
+          fontWeight="600"
+          fontFamily="mono"
+          bg={id}
+          px="200"
+          py="100"
+          display="inline-block"
+          color={`${id}.contrast`}
+        >
           {id}
         </Text>
+      </div>
+      <Flex width="full" grow="1" gap="100">
         {colors.map((color) => (
           <Box
             as="a"
@@ -42,6 +52,8 @@ export const ColorScale = (props: { id: string }) => {
             flexGrow="1"
             flexShrink="1"
             key={color.name}
+            border="1px solid"
+            borderColor={`neutral.6`}
           >
             <Box aspectRatio={1} bg={color?.name.split("colors.").join("")}>
               <Text

@@ -17,6 +17,16 @@ import isPlainObject from "is-plain-obj";
 export function formatDTCGforChakra(tokens) {
   /**clone all tokens */
   const clone = structuredClone(tokens);
+
+  const isDarkLightPair = (obj) => {
+    return (
+      isPlainObject(obj) &&
+      obj.hasOwnProperty("dark") &&
+      obj.hasOwnProperty("light") &&
+      Object.keys(obj).length === 2
+    );
+  };
+
   const format = (slice) => {
     /** if object has a $value key, it is a leaf node and should be transformed */
     if (slice.hasOwnProperty("$value")) {
@@ -27,6 +37,43 @@ export function formatDTCGforChakra(tokens) {
         if (key && key !== "value") delete slice[key];
       });
       /** if object does not have a $value key, it is not a leaf node. */
+    } else if (isDarkLightPair(slice)) {
+      const processToken = (token) => {
+        if (token.hasOwnProperty("$value")) {
+          return token.$value;
+        }
+        const result = {};
+        for (const [key, value] of Object.entries(token)) {
+          if (isPlainObject(value)) {
+            result[key] = { value: processToken(value) };
+          }
+        }
+        return result;
+      };
+
+      const lightValues = processToken(slice.light);
+      const darkValues = processToken(slice.dark);
+
+      const combineValues = (light, dark) => {
+        if (typeof light !== "object" || light === null) {
+          return { _light: light, _dark: dark };
+        }
+        const result = {};
+        for (const key in light) {
+          result[key] = {
+            value: combineValues(
+              light[key]?.value || light[key],
+              dark[key]?.value || dark[key]
+            ),
+          };
+        }
+        return result;
+      };
+
+      const combined = combineValues(lightValues, darkValues);
+      Object.assign(slice, combined);
+      delete slice.light;
+      delete slice.dark;
     } else {
       Object.values(slice).forEach((val) => {
         /** if child is an object, run format fn on it to see if it has $value key */
