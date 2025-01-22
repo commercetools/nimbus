@@ -9,7 +9,10 @@
     "@types/bun": "latest",
     "@types/lodash": "^4.17.13",
     "@types/react": "^18.3.12",
-    "bun-plugin-dts": "^0.3.0"
+    "bun-plugin-dts": "^0.3.0",
+    "vite": "^5.4.10",
+    "vite-tsconfig-paths": "^5.1.3",
+    "@vitejs/plugin-react": "^4.3.4"
   },
   "peerDependencies": {
     "react": "^18.3.1",
@@ -40,9 +43,9 @@
     "react-use": "^17.5.1"
   },
   "scripts": {
-    "build": "bun run build-theme-typings && bun run build-lib",
-    "build-lib": "bun run ./scripts/build.ts",
-    "dev": "bun run ./scripts/dev.ts",
+    "build": "pnpm run build-theme-typings && pnpm run build-lib",
+    "build-lib": "vite build",
+    "dev": "vite",
     "build-theme-typings": "bunx chakra typegen ./src/theme/index.ts"
   }
 }
