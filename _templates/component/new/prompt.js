@@ -39,19 +39,17 @@ module.exports = [
     name: "element",
     message:
       "What is the DOM element for the component (e.g., 'button', 'div')?",
-    validate(value) {
-      if (!mapping[value]) {
-        return `Invalid element. Allowed values are: ${Object.keys(mapping).join(", ")}`;
-      }
-      return true;
-    },
   },
   {
     type: "input",
     name: "elementType",
-    initial: async (answers) => {
-      return mapping[answers.element];
+    message: (answers) => {
+      const elementType = mapping[answers.answers.element] || "UnknownElement";
+      return "What is the element type? Press Enter for default value: " + elementType + "";
     },
-    skip: true, // Don't prompt the user; calculate automatically
+    initial: (answers) => {
+      const elementType = mapping[answers.enquirer.answers.element];
+      return elementType || "UnknownElement";
+    },
   },
 ];
