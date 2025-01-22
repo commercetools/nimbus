@@ -2,7 +2,6 @@ import {
   createSystem,
   defaultBaseConfig,
   defineConfig,
-  mergeConfigs,
 } from "@chakra-ui/react";
 import { animationStyles } from "./animation-styles";
 import { breakpoints } from "./breakpoints";

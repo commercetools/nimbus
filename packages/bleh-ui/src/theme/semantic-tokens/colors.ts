@@ -1,8 +1,7 @@
 import { defineSemanticTokens } from "@chakra-ui/react";
 import { themeTokens } from "@bleh-ui/tokens";
-import { defineTokens } from "@chakra-ui/react";
 
-const result = {
+export const colors = defineSemanticTokens.colors({
   bg: {
     DEFAULT: {
       value: {
@@ -51,12 +50,6 @@ const result = {
   ...themeTokens.color["system-palettes"],
   ...themeTokens.color["brand-palettes"],
   ...themeTokens.color["semantic-palettes"],
-};
-
-export const colors = defineSemanticTokens.colors(result);
-
-const themeColors = themeTokens.color;
-
-const final = {};
+});
 
 export const darkColors = colors;
