@@ -1,3 +1,6 @@
+// see types of prompts:
+// https://github.com/enquirer/enquirer/tree/master?tab=readme-ov-file#-prompts
+
 const mapping = {
   div: "HTMLDivElement",
   a: "HTMLAnchorElement",
