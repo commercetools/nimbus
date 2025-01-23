@@ -4,6 +4,9 @@ import { UiKitProvider } from "../src";
 
 const preview: Preview = {
   parameters: {
+    backgrounds: {
+      disable: true,
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
