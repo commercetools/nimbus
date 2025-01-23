@@ -14,7 +14,6 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <UiKitProvider>
-        {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
         <Story />
       </UiKitProvider>
     ),
