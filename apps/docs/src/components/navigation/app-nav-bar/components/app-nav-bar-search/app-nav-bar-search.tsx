@@ -72,8 +72,8 @@ export const AppNavBarSearch = () => {
             startElementProps={{ color: "neutral.8" }}
             endElement={<Kbd>⌘K</Kbd>}
             endElementProps={{ color: "neutral.9" }}
-            width="100%"
-            maxWidth="96"
+            width="full"
+            maxWidth="9600"
             mx="auto"
           >
             <Input
@@ -100,10 +100,10 @@ export const AppNavBarSearch = () => {
                     startElementProps={{ color: "neutral.8" }}
                     endElement={<Kbd>⌘K</Kbd>}
                     endElementProps={{ color: "neutral.9" }}
-                    width="100%"
+                    width="full"
                     mx="auto"
-                    mt="4"
-                    mb="6"
+                    mt="400"
+                    mb="600"
                   >
                     <Input
                       type="search"
@@ -119,7 +119,7 @@ export const AppNavBarSearch = () => {
                   </InputGroup>
                 </Box>
 
-                <Bleed inline="6">
+                <Bleed inline="600">
                   <Box maxHeight="lg" divideY="1px" overflow="auto" asChild>
                     <ComboboxList ref={listboxRef} role="listbox">
                       {results?.map((item) => (

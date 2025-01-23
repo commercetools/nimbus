@@ -1,0 +1,17 @@
+{
+  "name": "color-tokens",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/chroma-js": "^3.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/colors": "^3.0.0",
+    "chroma-js": "^3.1.2",
+    "lodash": "^4.17.21"
+  }
+}

@@ -41,35 +41,11 @@
     },
     "mdx": "\n\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be used in any other component.\n\nThis is the list of available icons:\n\n<IconSearch />\n"
   },
-  "packages/bleh-ui/src/components/blockquote/blockquote.mdx": {
-    "meta": {
-      "id": "Blockquote",
-      "title": "Blockquote",
-      "description": "displays a blockquote",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/blockquote/blockquote.mdx",
-      "menu": [
-        "Components",
-        "Typography",
-        "Blockquote"
-      ],
-      "route": "components/typography/blockquote",
-      "tags": [
-        "typography",
-        "blockquote",
-        "quote",
-        "citation"
-      ],
-      "toc": []
-    },
-    "mdx": "\n\n# \\<Blockquote/\\>\n\nThis is the PropTable for the `Blockquote` component. Just use it in the MDX file as if it was a regular HTML Tag.\n\n<PropTable id=\"Blockquote\" />\n"
-  },
   "packages/bleh-ui/src/components/box/box.mdx": {
     "meta": {
       "id": "Box",
       "title": "Box",
-      "description": "the Box component is the lowest level component that can be used as fallback element for other components",
+      "description": "the Box component is the lowest level component",
       "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/components/box/box.mdx",
@@ -89,28 +65,6 @@
       "toc": []
     },
     "mdx": "\n\n# Box\n\nAdd description.\n"
-  },
-  "packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx": {
-    "meta": {
-      "id": "Breadcrumb",
-      "title": "Breadcrumbs",
-      "description": "renders a breadcrumb navigation",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/breadcrumb/breadcrumb.mdx",
-      "menu": [
-        "Components",
-        "Navigation",
-        "Breadcrumb"
-      ],
-      "route": "components/navigation/breadcrumb",
-      "tags": [
-        "navigation",
-        "breadcrumb"
-      ],
-      "toc": []
-    },
-    "mdx": "\n\n# Breadcrumb\n\nAdd description later.\n\n<PropTables ids=\"BreadcrumbRoot, BreadcrumbLink, BreadcrumbCurrentLink\" />\n"
   },
   "packages/bleh-ui/src/components/button/button.mdx": {
     "meta": {
@@ -336,80 +290,6 @@
       "toc": []
     },
     "mdx": "\n\n# Em\n\nAdd description later.\n"
-  },
-  "packages/bleh-ui/src/components/experiments/experiments.mdx": {
-    "meta": {
-      "id": "slider-comparison",
-      "title": "Headless UI comparison",
-      "description": "compare the same ux-concept across several headless ui libraries",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/experiments/experiments.mdx",
-      "menu": [
-        "Playground",
-        "Headless UI comparison"
-      ],
-      "route": "playground/headless-ui-comparison",
-      "tags": [
-        "stack"
-      ],
-      "toc": [
-        {
-          "value": "Ideal flow",
-          "href": "#ideal-flow",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Slider",
-          "href": "#slider",
-          "depth": 2,
-          "numbering": [
-            1,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Radix",
-          "href": "#radix",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            1
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "React ARIA",
-          "href": "#react-aria",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            2
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "DatePicker (React ARIA)",
-          "href": "#datepicker-react-aria",
-          "depth": 3,
-          "numbering": [
-            1,
-            2,
-            3
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n\n# Headless UI comparison\n\nThis page is about comparing the same ux-concept across several headless ui libraries.\n\n## Ideal flow\n\n1. A slot-recipe for the individual parts of a component is created (`slider.recipe.tsx`)\n2. For every slot, a proxy react-component is created (`slider.parts.tsx`)\n3. The headless ui libraries will use the individual parts to assemble the final component\n\n## Slider\n\n### Radix\n\n- the offset-position of the slider thumb is already accurately calculated by radix (taking the thumb-width into account)\n- easy to style, no hacks necessary\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <RadixSlider min={0} max={100} value={value} onValueChange={v=>setValue(v)} />\n    </div>\n  )\n}\n```\n\n### React ARIA\n\n- less \"slots\" to style (e.g. no range element)\n- not as easy to syle as radix, but practice will make perfect\n- throws console warnings when there are a11y issues:\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <label id=\"demo-label\">React ARIA Slider label</label>\n      <ReactAriaSlider size=\"sm\" min={0} max={100} value={value} onValueChange={v=>setValue(v)} aria-labelledby=\"demo-label\"  />\n    </div>\n  )\n}\n```\n\n### DatePicker (React ARIA)\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(50);\n  return (\n    <div>\n      <DatePicker/>\n    </div>\n  )\n}\n```\n"
   },
   "packages/bleh-ui/src/components/flex/flex.mdx": {
     "meta": {
@@ -686,40 +566,6 @@
     },
     "mdx": "\n\n# Table\n\n## Props\n\nRender the PropTable with a `<PropTable id=\"TableRoot\"/>` tag or - if multiple components - `<PropTables id=\"TableRoot, TableHeader\"/>`.\n\n<PropTables ids=\"TableRoot, TableHeader, TableColumnHeader, TableRow, TableBody, TableCell, TableFooter\" />\n"
   },
-  "packages/bleh-ui/src/components/tabs/tabs.mdx": {
-    "meta": {
-      "id": "Tabs",
-      "title": "Tabs",
-      "description": "Used to display content in a tabbed interface",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/tabs/tabs.mdx",
-      "menu": [
-        "Components",
-        "Navigation",
-        "Tabs"
-      ],
-      "route": "components/navigation/tabs",
-      "tags": [
-        "tabs",
-        "accordion",
-        "show hide"
-      ],
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n\n# Tabs\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTables ids=\"TabsRoot, TabsList, TabsTrigger, TabsContent\" />\n"
-  },
   "packages/bleh-ui/src/components/text/text.mdx": {
     "meta": {
       "id": "Text",
@@ -802,39 +648,6 @@
       ]
     },
     "mdx": "\n\n# Text\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt tincidunt. Nullam nec pur.\n\n## Usage\n\n```jsx-live\nimport { Text } from \"@bleh-ui/react\";\n\nconst App = () => <Text>Display Text</Text>;\n```\n\n## Sizes\n\nYou can size text with two properties: `fontSize` and `textStyle`. Use `fontSize` to only set the size of the text.\nUse `textStyle` to set the size and an appropriate `line-height` for that size.\n\n```jsx-live\nconst App = () => (\n  <Flex flexDirection=\"column\">\n    {[\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\", \"3xl\", \"4xl\",\"5xl\",\"6xl\",\"7xl\"].map((size) => (\n      <Text key={size} asChild textStyle={size}>\n        <span>Displays text in `{size}` size</span>\n      </Text>\n    ))}\n  </Flex>\n)\n```\n\n## Weights\n\nUse the `fontWeight` prop to change the weight of the text:\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => {\n  return (\n    <Stack>\n      <Text fontWeight=\"100\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"200\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"300\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"400\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"500\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"600\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"700\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"800\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"900\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n}\n```\n\n## Truncation\n\nUse the `truncate` prop to truncate the text after a single line.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text truncate>\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n      </Text>\n    </Flex>\n  )\n```\n\n## Line Clamp\n\nUse the `lineClamp` prop to truncate the text after a certain number of lines.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text lineClamp=\"2\">\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim\n        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n        commodo consequat.\n      </Text>\n    </Flex>\n  )\n```\n\n## Colors\n\nUse the `color` prop to change the color of the text.\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Stack>\n      <Text color=\"primary.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"info.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"success.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"danger.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"error.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n```\n"
-  },
-  "packages/bleh-ui/src/components/tooltip/tooltip.mdx": {
-    "meta": {
-      "id": "Tooltip",
-      "title": "Tooltip",
-      "description": "Used to display a tooltip when hovering something",
-      "documentState": "InitialDraft",
-      "order": 999,
-      "repoPath": "packages/bleh-ui/src/components/tooltip/tooltip.mdx",
-      "menu": [
-        "Components",
-        "Feedback",
-        "Tooltip"
-      ],
-      "route": "components/feedback/tooltip",
-      "tags": [
-        "tooltip",
-        "show hide"
-      ],
-      "toc": [
-        {
-          "value": "Props",
-          "href": "#props",
-          "depth": 2,
-          "numbering": [
-            1,
-            1
-          ],
-          "parent": "root"
-        }
-      ]
-    },
-    "mdx": "\n\n# Tooltip\n\nDocumentation is coming soon.\n\n## Props\n\n<PropTable id=\"Tooltip\" />\n"
   },
   "packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx": {
     "meta": {
@@ -1157,7 +970,7 @@
         }
       ]
     },
-    "mdx": "\n\n# Border\n\nJSX style props for styling border and border radius.\n\n## Border Radius\n\n### All sides\n\nUse the `rounded` or `borderRadius` props to apply border radius on all sides of\nan element.\n\n```jsx\n<Box borderRadius=\"md\" />\n<Box rounded=\"md\" /> // shorthand\n```\n\n| Prop                      | CSS Property    | Token Category |\n| ------------------------- | --------------- | -------------- |\n| `rounded`, `borderRadius` | `border-radius` | `radii`        |\n\n### Specific sides\n\nUse the `rounded{Left,Right,Top,Bottom}` or\n`border{Left,Right,Top,Bottom}Radius` prop, to apply border radius on a specific\nside of an element.\n\n```jsx\n<Box borderTopRadius=\"md\" />\n<Box roundedTop=\"md\" /> // shorthand\n\n<Box borderLeftRadius=\"md\" />\n<Box roundedLeft=\"md\" /> // shorthand\n```\n\nUse the logical equivalent to make the border radius adapt based on the text\ndirection.\n\n```jsx\n<Box roundedStart=\"md\" />\n<Box roundedEnd=\"md\" />\n```\n\n| Prop                                  | CSS Property                                           | Token Category |\n| ------------------------------------- | ------------------------------------------------------ | -------------- |\n| `roundedLeft`, `borderLeftRadius`     | `border-left-radius`                                   | `radii`        |\n| `roundedRight`, `borderRightRadius`   | `border-right-radius`                                  | `radii`        |\n| `roundedTop`, `borderTopRadius`       | `border-top-radius`                                    | `radii`        |\n| `roundedBottom`, `borderBottomRadius` | `border-bottom-radius`                                 | `radii`        |\n| `roundedStart`, `borderStartRadius`   | `border-start-start-radius`, `border-end-start-radius` | `radii`        |\n| `roundedEnd`, `borderEndRadius`       | `border-start-end-radius`, `border-end-end-radius`     | `radii`        |\n\n### Specific corners\n\nUse the `border{Top,Bottom}{Left,Right}Radius` properties, or the shorthand\nequivalent to round a specific corner.\n\n```jsx\n<Box borderTopLeftRadius=\"md\" />\n<Box roundedTopLeft=\"md\" /> // shorthand\n```\n\nUse the logical properties to adapt based on the text direction.\n\n```jsx\n<Box borderStartStartRadius=\"md\" />\n<Box roundedStartStart=\"md\" /> // shorthand\n```\n\n| Prop                                     | CSS Property                 | Token Category |\n| ---------------------------------------- | ---------------------------- | -------------- |\n| `roundedTopLeft`,`borderTopLeftRadius`   | `border-top-left-radius`     | `radii`        |\n| `roundedTopRight`,`borderTopRight`       | `border-top-right-radius`    | `radii`        |\n| `roundedBottomRight`,`borderBottomRight` | `border-bottom-right-radius` | `radii`        |\n| `roundedBottomLeft`,`borderBottomLeft`   | `border-bottom-left-radius`  | `radii`        |\n\n## Border Width\n\n### All sides\n\nUse the `borderWidth` prop to apply border width on all sides of an element.\n\n> Chakra applies `borderStyle: solid` and a global border color by default.\n> Specifying a border width is sufficient to apply the border.\n\n```jsx\n<Box borderWidth=\"1px\" />\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `borderWidth` | `border-width` | `borderWidths` |\n\n### Specific sides\n\nUse the `border{Left|Right|Top|Bottom}Width` prop to apply border width on a\nspecific side of an element.\n\n```jsx\n<Box borderTopWidth=\"1px\" />\n<Box borderLeftWidth=\"1px\" />\n```\n\nUse the logical equivalent to make the border width adapt based on the text\ndirection.\n\n```jsx\n<Box borderInlineStartWidth=\"1px\" />\n<Box borderInlineWidth=\"1px\" /> // shorthand\n```\n\n| Prop                                          | CSS Property                | Token Category |\n| --------------------------------------------- | --------------------------- | -------------- |\n| `borderTopWidth`                              | `border-top-width`          | `borderWidths` |\n| `borderLeftWidth`                             | `border-left-width`         | `borderWidths` |\n| `borderRightWidth`                            | `border-right-width`        | `borderWidths` |\n| `borderBottomWidth`                           | `border-bottom-width`       | `borderWidths` |\n| `borderStartWidth` , `borderInlineStartWidth` | `border-{start+end}-width`  |\n| `borderEndWidth` , `borderInlineEndWidth`     | `border-{start+end}-width`  |\n| `borderXWidth` , `borderInlineWidth`          | `border-{left,right}-width` | `borderWidths` |\n| `borderYWidth` , `borderBlockWidth`           | `border-{top,bottom}-width` | `borderWidths` |\n\n## Border Color\n\n### All sides\n\nUse the `borderColor` prop to apply border color on all sides of an element.\n\n```jsx\n<Box borderColor=\"red.400\" />\n\n// with opacity modifier\n<Box borderColor=\"red.400/20\" />\n```\n\n### Specific sides\n\nUse the `border{Left,Right,Top,Bottom}Color` prop to apply border color on a\nspecific side of an element.\n\n```jsx\n<Box borderTopColor=\"red.400\" />\n<Box borderLeftColor=\"red.400\" />\n```\n\nUse the logical properties to adapt based on the text direction.\n\n```jsx\n<Box borderStartColor=\"red.400\" />\n<Box borderEndColor=\"red.400\" />\n```\n\n| Prop                                          | CSS Property               | Token Category |\n| --------------------------------------------- | -------------------------- | -------------- |\n| `borderColor`                                 | `border-color`             | `colors`       |\n| `borderTopColor`                              | `border-top-color`         | `colors`       |\n| `borderLeftColor`                             | `border-left-color`        | `colors`       |\n| `borderRightColor`                            | `border-right-color`       | `colors`       |\n| `borderBottomColor`                           | `border-bottom-color`      | `colors`       |\n| `borderStartColor` , `borderInlineStartColor` | `border-{start,end}-color` | `colors`       |\n| `borderEndColor` , `borderInlineEndColor`     | `border-{start,end}-color` | `colors`       |\n| `borderXColor`, `borderInlineColor`           | `border-inline-color`      | `colors`       |\n| `borderYColor`, `borderBlockColor`            | `border-block-color`       | `colors`       |\n\n## Divide Width\n\nUse the `divide{X,Y}Width` prop to apply border width between elements. It uses\nthe CSS selector `> * + *` to apply the `border*` properties.\n\n```jsx\n<Box divideXWidth=\"1px\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n\n<Box divideYWidth=\"1px\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n```\n\n| Prop          | CSS Property                        | Token Category |\n| ------------- | ----------------------------------- | -------------- |\n| `divideWidth` | `border-{inline,block}-start-width` | `borderWidths` |\n\n## Divide Color\n\nUse the `divideColor` prop to apply border color between elements.\n\n```jsx\n<Box divideColor=\"red.400\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n```\n\n| Prop          | CSS Property     | Token Category |\n| ------------- | ---------------- | -------------- |\n| `divideColor` | `--divide-color` | `colors`       |\n\n## Divide Style\n\nUse the `divideStyle` prop to apply border style between elements.\n\n```jsx\n<Box divideX=\"2px\" divideStyle=\"dashed\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n```\n\n| Prop          | CSS Property     | Token Category |\n| ------------- | ---------------- | -------------- |\n| `divideStyle` | `--divide-style` | `borderStyle`  |\n"
+    "mdx": "\n# Border\n\nJSX style props for styling border and border radius.\n\n## Border Radius\n\n### All sides\n\nUse the `rounded` or `borderRadius` props to apply border radius on all sides of\nan element.\n\n```jsx\n<Box borderRadius=\"400\" />\n<Box rounded=\"400\" /> // shorthand\n```\n\n| Prop                      | CSS Property    | Token Category |\n| ------------------------- | --------------- | -------------- |\n| `rounded`, `borderRadius` | `border-radius` | `radii`        |\n\n### Specific sides\n\nUse the `rounded{Left,Right,Top,Bottom}` or\n`border{Left,Right,Top,Bottom}Radius` prop, to apply border radius on a specific\nside of an element.\n\n```jsx\n<Box borderTopRadius=\"md\" />\n<Box roundedTop=\"md\" /> // shorthand\n\n<Box borderLeftRadius=\"md\" />\n<Box roundedLeft=\"md\" /> // shorthand\n```\n\nUse the logical equivalent to make the border radius adapt based on the text\ndirection.\n\n```jsx\n<Box roundedStart=\"md\" />\n<Box roundedEnd=\"md\" />\n```\n\n| Prop                                  | CSS Property                                           | Token Category |\n| ------------------------------------- | ------------------------------------------------------ | -------------- |\n| `roundedLeft`, `borderLeftRadius`     | `border-left-radius`                                   | `radii`        |\n| `roundedRight`, `borderRightRadius`   | `border-right-radius`                                  | `radii`        |\n| `roundedTop`, `borderTopRadius`       | `border-top-radius`                                    | `radii`        |\n| `roundedBottom`, `borderBottomRadius` | `border-bottom-radius`                                 | `radii`        |\n| `roundedStart`, `borderStartRadius`   | `border-start-start-radius`, `border-end-start-radius` | `radii`        |\n| `roundedEnd`, `borderEndRadius`       | `border-start-end-radius`, `border-end-end-radius`     | `radii`        |\n\n### Specific corners\n\nUse the `border{Top,Bottom}{Left,Right}Radius` properties, or the shorthand\nequivalent to round a specific corner.\n\n```jsx\n<Box borderTopLeftRadius=\"md\" />\n<Box roundedTopLeft=\"md\" /> // shorthand\n```\n\nUse the logical properties to adapt based on the text direction.\n\n```jsx\n<Box borderStartStartRadius=\"md\" />\n<Box roundedStartStart=\"md\" /> // shorthand\n```\n\n| Prop                                     | CSS Property                 | Token Category |\n| ---------------------------------------- | ---------------------------- | -------------- |\n| `roundedTopLeft`,`borderTopLeftRadius`   | `border-top-left-radius`     | `radii`        |\n| `roundedTopRight`,`borderTopRight`       | `border-top-right-radius`    | `radii`        |\n| `roundedBottomRight`,`borderBottomRight` | `border-bottom-right-radius` | `radii`        |\n| `roundedBottomLeft`,`borderBottomLeft`   | `border-bottom-left-radius`  | `radii`        |\n\n## Border Width\n\n### All sides\n\nUse the `borderWidth` prop to apply border width on all sides of an element.\n\n> Chakra applies `borderStyle: solid` and a global border color by default.\n> Specifying a border width is sufficient to apply the border.\n\n```jsx\n<Box borderWidth=\"1px\" />\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `borderWidth` | `border-width` | `borderWidths` |\n\n### Specific sides\n\nUse the `border{Left|Right|Top|Bottom}Width` prop to apply border width on a\nspecific side of an element.\n\n```jsx\n<Box borderTopWidth=\"1px\" />\n<Box borderLeftWidth=\"1px\" />\n```\n\nUse the logical equivalent to make the border width adapt based on the text\ndirection.\n\n```jsx\n<Box borderInlineStartWidth=\"1px\" />\n<Box borderInlineWidth=\"1px\" /> // shorthand\n```\n\n| Prop                                          | CSS Property                | Token Category |\n| --------------------------------------------- | --------------------------- | -------------- |\n| `borderTopWidth`                              | `border-top-width`          | `borderWidths` |\n| `borderLeftWidth`                             | `border-left-width`         | `borderWidths` |\n| `borderRightWidth`                            | `border-right-width`        | `borderWidths` |\n| `borderBottomWidth`                           | `border-bottom-width`       | `borderWidths` |\n| `borderStartWidth` , `borderInlineStartWidth` | `border-{start+end}-width`  |\n| `borderEndWidth` , `borderInlineEndWidth`     | `border-{start+end}-width`  |\n| `borderXWidth` , `borderInlineWidth`          | `border-{left,right}-width` | `borderWidths` |\n| `borderYWidth` , `borderBlockWidth`           | `border-{top,bottom}-width` | `borderWidths` |\n\n## Border Color\n\n### All sides\n\nUse the `borderColor` prop to apply border color on all sides of an element.\n\n```jsx\n<Box borderColor=\"red.400\" />\n\n// with opacity modifier\n<Box borderColor=\"red.400/20\" />\n```\n\n### Specific sides\n\nUse the `border{Left,Right,Top,Bottom}Color` prop to apply border color on a\nspecific side of an element.\n\n```jsx\n<Box borderTopColor=\"red.400\" />\n<Box borderLeftColor=\"red.400\" />\n```\n\nUse the logical properties to adapt based on the text direction.\n\n```jsx\n<Box borderStartColor=\"red.400\" />\n<Box borderEndColor=\"red.400\" />\n```\n\n| Prop                                          | CSS Property               | Token Category |\n| --------------------------------------------- | -------------------------- | -------------- |\n| `borderColor`                                 | `border-color`             | `colors`       |\n| `borderTopColor`                              | `border-top-color`         | `colors`       |\n| `borderLeftColor`                             | `border-left-color`        | `colors`       |\n| `borderRightColor`                            | `border-right-color`       | `colors`       |\n| `borderBottomColor`                           | `border-bottom-color`      | `colors`       |\n| `borderStartColor` , `borderInlineStartColor` | `border-{start,end}-color` | `colors`       |\n| `borderEndColor` , `borderInlineEndColor`     | `border-{start,end}-color` | `colors`       |\n| `borderXColor`, `borderInlineColor`           | `border-inline-color`      | `colors`       |\n| `borderYColor`, `borderBlockColor`            | `border-block-color`       | `colors`       |\n\n## Divide Width\n\nUse the `divide{X,Y}Width` prop to apply border width between elements. It uses\nthe CSS selector `> * + *` to apply the `border*` properties.\n\n```jsx\n<Box divideXWidth=\"1px\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n\n<Box divideYWidth=\"1px\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n```\n\n| Prop          | CSS Property                        | Token Category |\n| ------------- | ----------------------------------- | -------------- |\n| `divideWidth` | `border-{inline,block}-start-width` | `borderWidths` |\n\n## Divide Color\n\nUse the `divideColor` prop to apply border color between elements.\n\n```jsx\n<Box divideColor=\"red.400\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n```\n\n| Prop          | CSS Property     | Token Category |\n| ------------- | ---------------- | -------------- |\n| `divideColor` | `--divide-color` | `colors`       |\n\n## Divide Style\n\nUse the `divideStyle` prop to apply border style between elements.\n\n```jsx\n<Box divideX=\"2px\" divideStyle=\"dashed\">\n  <Box>1</Box>\n  <Box>2</Box>\n</Box>\n```\n\n| Prop          | CSS Property     | Token Category |\n| ------------- | ---------------- | -------------- |\n| `divideStyle` | `--divide-style` | `borderStyle`  |\n"
   },
   "packages/bleh-ui/src/docs/changelog.mdx": {
     "meta": {
@@ -4064,6 +3877,7 @@
       "title": "Aspect Ratios",
       "description": "The list of available aspect ratio tokens",
       "documentState": "InitialDraft",
+      "documentAudiences": [],
       "order": 999,
       "repoPath": "packages/bleh-ui/src/docs/tokens/aspect-ratios.mdx",
       "menu": [
@@ -4229,7 +4043,7 @@
       ],
       "icon": "Palette"
     },
-    "mdx": "\n\n# Colors\n\nIn our design system, colors are organized into **scales** based on **contrast** levels to ensure clarity and **usability** across various contexts. Each scale provides a range of tones, from subtle backgrounds to high-contrast elements like text and interactive borders, enabling a consistent and accessible user experience.\n\nThe scales are _interchangeable_, meaning a color like red can be swapped with green without losing the intended contrast levels. This flexibility ensures that our designs remain adaptable while maintaining visual hierarchy. Additionally, _the contrast-based approach eliminates the need for a separate \"dark mode\" design_, as the scales naturally support both light and dark environments seamlessly.\n\n## Scale steps\n\nBelow is a list of steps with corresponding use cases for various background, border, and text styles in the design system:\n\n| **Step** | **Use Case**                                           |\n| -------- | ------------------------------------------------------ |\n| 1        | App background                                         |\n| 2        | Subtle background                                      |\n| 3        | UI element background                                  |\n| 4        | Hovered UI element background                          |\n| 5        | Active / Selected UI element background                |\n| 6        | Subtle borders and separators                          |\n| 7        | UI element border and focus rings                      |\n| 8        | Hovered UI element border                              |\n| 9        | Solid backgrounds                                      |\n| 10       | Hovered solid backgrounds                              |\n| 11       | Low-contrast text                                      |\n| 12       | High-contrast text                                     |\n| contrast | a contrast color (black/white) that works on step 9+10 |\n\n## System Colors\n\nColors available for decoration or reference.\n\n<br />\n\n<ColorScales ids=\"tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky\" />\n\n## Blacks & Whites\n\nBlack and white color scales do not adapt to the selected color-mode. Means a white will always be white, a black will always be black.\n\n> [!TIP]  \n> Use the `neutral` color scales if you want to refer to a gray-tone that works on the current background color (light-/dark-mode dependent).\n\n<br />\n\n<ColorScales ids=\"black, white\" />\n\n## Brand Colors\n\nCustom colors, tailored to the brand.\n\n<br />\n\n<ColorScales ids=\"ctViolet, ctTeal, ctYellow\" />\n\n## Semantic Colors\n\nColors with meaning, used to communicate status or state.\n\n<br />\n\n<ColorScales ids=\"primary, neutral, info, success, danger, error\" />\n"
+    "mdx": "\n# Colors\n\nIn our design system, colors are organized into **scales** based on **contrast** levels to ensure clarity and **usability** across various contexts. Each scale provides a range of tones, from subtle backgrounds to high-contrast elements like text and interactive borders, enabling a consistent and accessible user experience.\n\nThe scales are _interchangeable_, meaning a color like red can be swapped with green without losing the intended contrast levels. This flexibility ensures that our designs remain adaptable while maintaining visual hierarchy. Additionally, _the contrast-based approach eliminates the need for a separate \"dark mode\" design_, as the scales naturally support both light and dark environments seamlessly.\n\n## Scale steps\n\nBelow is a list of steps with corresponding use cases for various background, border, and text styles in the design system:\n\n| **Step** | **Use Case**                                           |\n| -------- | ------------------------------------------------------ |\n| 1        | App background                                         |\n| 2        | Subtle background                                      |\n| 3        | UI element background                                  |\n| 4        | Hovered UI element background                          |\n| 5        | Active / Selected UI element background                |\n| 6        | Subtle borders and separators                          |\n| 7        | UI element border and focus rings                      |\n| 8        | Hovered UI element border                              |\n| 9        | Solid backgrounds                                      |\n| 10       | Hovered solid backgrounds                              |\n| 11       | Low-contrast text                                      |\n| 12       | High-contrast text                                     |\n| contrast | a contrast color (black/white) that works on step 9+10 |\n\n## System Colors\n\nColors available for decoration or reference.\n\n<br />\n\n<ColorScales ids=\"tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky\" />\n\n## Blacks & Whites\n\nBlack and white color scales do not adapt to the selected color-mode. Means a white will always be white, a black will always be black.\n\n> [!TIP]  \n> Use the `neutral` color scales if you want to refer to a gray-tone that works on the current background color (light-/dark-mode dependent).\n\n<br />\n\n<ColorScales ids=\"blackAlpha, whiteAlpha\" />\n\n## Brand Colors\n\nCustom colors, tailored to the brand.\n\n<br />\n\n<ColorScales ids=\"ctviolet, ctteal, ctyellow\" />\n\n## Semantic Colors\n\nColors with meaning, used to communicate status or state.\n\n<br />\n\n<ColorScales ids=\"primary, neutral, info, success, danger, error\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/cursors.mdx": {
     "meta": {
@@ -4357,8 +4171,8 @@
           "parent": "root"
         },
         {
-          "value": "Named sizes",
-          "href": "#named-sizes",
+          "value": "Large sizes",
+          "href": "#large-sizes",
           "depth": 2,
           "numbering": [
             1,
@@ -4389,7 +4203,7 @@
       ],
       "icon": "Ruler"
     },
-    "mdx": "\n\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including numerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing elements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Named sizes\n\nSemantic size labels providing consistent values for specific dimensions, ensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive layouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive element sizing.\n\n<SizesTokenDemo group=\"other\" />\n"
+    "mdx": "\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including numerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing elements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Large sizes\n\nSemantic size labels providing consistent values for specific dimensions, ensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive layouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive element sizing.\n\n<SizesTokenDemo group=\"other\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/spacing.mdx": {
     "meta": {
@@ -4411,7 +4225,7 @@
       "toc": [],
       "icon": "BetweenHorizontalEnd"
     },
-    "mdx": "\n\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-2.5`, `-4`, `-10`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and multiply it by 4.e.g. `4` = `16px`, `10` = `40px` etc.\n"
+    "mdx": "\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to create consistent spacing between elements and to ensure that the layout is visually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative margin etc.\n> Access the negative version by prependind the token name with a dash. e.g. `-100`, `-400`, `-1000`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and divide it by 25. e.g. `100 / 25 = 4px`, `400 / 25 = 16px`, `1000 / 25 = 40px`, etc.\n"
   },
   "packages/bleh-ui/src/docs/tokens/typography.mdx": {
     "meta": {
@@ -4436,12 +4250,33 @@
       ],
       "toc": [
         {
+          "value": "Text Styles",
+          "href": "#text-styles",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Available Text Styles",
+          "href": "#available-text-styles",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
           "value": "Fonts",
           "href": "#fonts",
           "depth": 2,
           "numbering": [
             1,
-            1
+            2
           ],
           "parent": "root"
         },
@@ -4451,23 +4286,13 @@
           "depth": 2,
           "numbering": [
             1,
-            2
+            3
           ],
           "parent": "root"
         },
         {
           "value": "Font Weights",
           "href": "#font-weights",
-          "depth": 2,
-          "numbering": [
-            1,
-            3
-          ],
-          "parent": "root"
-        },
-        {
-          "value": "Line Heights",
-          "href": "#line-heights",
           "depth": 2,
           "numbering": [
             1,
@@ -4484,11 +4309,21 @@
             5
           ],
           "parent": "root"
+        },
+        {
+          "value": "Line Heights",
+          "href": "#line-heights",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
         }
       ],
       "icon": "BookType"
     },
-    "mdx": "\n\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n> [!NOTE]  \n> **TODO:** create & name [textStyles](https://www.chakra-ui.com/docs/styling/text-styles)\n> for easy access of common typography-token combinations.\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n"
+    "mdx": "\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n## Text Styles\n\nText styles are collections of multiple typography rules (such as `font-size`, `line-height`, `letter-spacing` etc.) that create a specific, reusable style.\n\n> [!NOTE]  \n> I added `caption`, `detail` & `body` from our existing styles, but they are essentially just combinations\n> of font-size & line-height and can be mapped to `xs`, `sm` & `md`. The `headline` looks can be achieved by using the\n> textStyles on the `<Heading/>` component.\n\n```jsx\n<Text textStyle=\"nameOfDesiredTextStyle\">Heading 1</Text>\n```\n\n### Available Text Styles\n\n<TextStylesDemo />\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n"
   },
   "packages/bleh-ui/src/docs/tokens/z-indices.mdx": {
     "meta": {

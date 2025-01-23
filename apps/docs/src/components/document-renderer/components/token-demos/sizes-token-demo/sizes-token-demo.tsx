@@ -69,12 +69,12 @@ export const SizesTokenDemo = ({
   };
 
   return (
-    <Box mb="12" mt="6">
+    <Box mb="1200" mt="600">
       <TableRoot width="full" maxWidth="full">
         <TableColumnGroup>
           <TableColumn width="18ch" />
           <TableColumn width="18ch" />
-          <TableColumn maxWidth="16" />
+          <TableColumn maxWidth="1600" />
         </TableColumnGroup>
         <TableHeader>
           <TableRow>
@@ -99,18 +99,18 @@ export const SizesTokenDemo = ({
                       <Box
                         width="100%"
                         maxWidth={item.value.originalValue}
-                        height="4"
+                        height="400"
                         bg="primary.9"
                       />
-                      <Box flexGrow="1" height="4" bg="primary.3" />
+                      <Box flexGrow="1" height="400" bg="primary.3" />
                     </Flex>
                     <Flex
                       position="absolute"
                       right="0"
                       top="0"
-                      height="4"
+                      height="400"
                       bgImage="linear-gradient(to right, transparent, {colors.primary.3})"
-                      width="6"
+                      width="600"
                     />
                   </Box>
                 </TableCell>

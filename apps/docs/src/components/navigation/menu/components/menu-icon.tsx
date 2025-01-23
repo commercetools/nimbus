@@ -18,8 +18,8 @@ export const MenuIcon = ({ id }: MenuIconProps): JSX.Element => {
         as="span"
         display="inline-block"
         position="relative"
-        top="0.5"
-        mr="2"
+        top="50"
+        mr="200"
       >
         <IconComponent size="1em" />
       </Text>
@@ -29,7 +29,7 @@ export const MenuIcon = ({ id }: MenuIconProps): JSX.Element => {
   // If the icon component does not exist, render the id as text
   // sideeffect: this allows displaying emojis instead of icons
   return (
-    <Text as="span" display="inline-block" mr="2" fontSize="sm">
+    <Text as="span" display="inline-block" mr="200" fontSize="350">
       {id}
     </Text>
   );

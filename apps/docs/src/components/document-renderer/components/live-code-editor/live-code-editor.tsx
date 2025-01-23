@@ -1,7 +1,7 @@
 import * as BlehUi from "@bleh-ui/react";
 import * as IconLib from "@bleh-ui/icons";
 import { Flex, Box } from "@bleh-ui/react";
-import {useState, useEffect, useCallback, useMemo, ReactNode} from "react";
+import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
 
@@ -25,7 +25,7 @@ const removeImportStatements = (code: string) => {
 type LiveCodeEditorProps = {
   children?: ReactNode;
   className?: string;
-}
+};
 
 export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   const [code, setCode] = useState(props.children);
@@ -36,33 +36,33 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   }, [props.children]);
 
   return (
-    <Box fontFamily="body" mb="16">
+    <Box fontFamily="body" mb="1600">
       <Flex>
         <Box
-          borderBottom="2px solid"
+          borderBottom="solid-25"
           borderColor={activeTab === "preview" ? "primary.9" : "transparent"}
-          p="2"
+          p="200"
         >
           <button onClick={() => setActiveTab("preview")}>Preview</button>
         </Box>
         <Box
-          borderBottom="2px solid"
+          borderBottom="solid-25"
           borderColor={activeTab === "editor" ? "primary.9" : "transparent"}
-          p="2"
+          p="200"
         >
           <button onClick={() => setActiveTab("editor")}>Code</button>
         </Box>
       </Flex>
-      <Box border="1px solid" borderColor="neutral.3">
+      <Box border="solid-25" borderColor="neutral.3">
         <LiveProvider
           transformCode={removeImportStatements}
-          code={typeof code === 'string' ? code : ''}
+          code={typeof code === "string" ? code : ""}
           scope={scope}
           noInline
         >
           <Box
             display={activeTab === "editor" ? "block" : "none"}
-            fontSize="sm"
+            fontSize="350"
           >
             <LiveEditor
               theme={themes.oneDark}
@@ -71,7 +71,7 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
           </Box>
 
           <Box display={activeTab === "preview" ? "block" : "none"}>
-            <Box p="4">
+            <Box p="400">
               <LivePreview />
             </Box>
           </Box>

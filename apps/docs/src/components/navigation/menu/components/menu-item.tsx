@@ -40,18 +40,18 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
     setActiveRoute(path);
   };
 
-  const marginLeft = level > 2 ? `4` : undefined;
+  const marginLeft = level > 2 ? `400` : undefined;
 
   return (
-    <Box display="block" mb={level === 0 ? "6" : undefined}>
+    <Box display="block" mb={level === 0 ? "600" : undefined}>
       <Text
         colorPalette={isActiveRoute ? "primary" : "neutral"}
         display="block"
         color={level === 0 ? "colorPalette.12" : "colorPalette.11"}
         fontWeight={isActiveRoute || level === 0 ? "700" : "400"}
-        height="10"
-        px="4"
-        py="2"
+        height="1000"
+        px="400"
+        py="200"
         bg={isActiveRoute ? "colorPalette.3" : "transparent"}
         _hover={{
           bg: isActiveRoute ? "colorPalette.3" : "colorPalette.2",
@@ -67,7 +67,7 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
           onClick={(e) => handleLinkClick(e, item.slug)}
         >
           {level > 1 && (
-            <Text display="inline" mr="2" position="relative">
+            <Text display="inline" mr="200" position="relative">
               └
             </Text>
           )}

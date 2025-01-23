@@ -26,12 +26,13 @@ Straight forward. Make sure you fulfill the requirements below and install depen
 The following software needs to be installed on your system before you can proceed:
 
 - Node v20+
+- PNPM // todo: version?
 - [bun](https://bun.sh/)
 
 #### Install dependencies
 
 ```bash
-$ bun install
+$ pnpm install
 ```
 
 ### Development
@@ -40,7 +41,7 @@ $ bun install
 2. Start the development environment with the following command
 
    ```bash
-   $ bun run dev
+   $ pnpm run dev
    ```
 
 3. Open the documentation app in the browser:
@@ -51,13 +52,13 @@ $ bun install
 To build packages & the documentation app:
 
 ```bash
-$ bun run build
+$ pnpm run build
 ```
 
 To only build packages:
 
 ```bash
-$ bun run build-packages
+$ pnpm run build-packages
 ```
 
 ### Creating a new component

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  toaster,
-  useColorModeValue,
-} from "@bleh-ui/react";
+import { Box, Button, Flex, Text, useColorModeValue } from "@bleh-ui/react";
 import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
@@ -77,8 +70,8 @@ const getCustomComponentPlaceholders: () => JsxComponentDescriptor[] = () =>
       hasChildren: true,
       Editor: () => {
         return (
-          <Box bg="neutral.3" p="4" my="4">
-            <Text fontWeight="semibold">{`<${ComponentName}/>`}</Text>
+          <Box bg="neutral.3" p="400" my="400">
+            <Text fontWeight="600">{`<${ComponentName}/>`}</Text>
             <Text>This block can only be edited in source code</Text>
           </Box>
         );
@@ -175,17 +168,12 @@ export const MdxEditor = ({
 
   const onSaveRequest = async () => {
     await updateMdx(markdownStr);
-
-    toaster.create({
-      title: "Document saved",
-      type: "success",
-      duration: 3000,
-    });
+    alert("Document saved.");
   };
 
   return (
     <Box position="relative" marginLeft="-12px" marginRight="-3.5">
-      <Box mb="4" borderRadius="sm">
+      <Box mb="4">
         <CustomEditorStyles>
           <MDXEditor
             ref={ref}
@@ -199,7 +187,7 @@ export const MdxEditor = ({
       <Flex gap="4" borderTop="1px solid" borderTopColor="neutral.6" py="4">
         <Button
           colorPalette="primary"
-          minWidth="32"
+          minWidth="3200"
           variant="solid"
           onClick={() => onSaveRequest()}
         >
@@ -208,7 +196,7 @@ export const MdxEditor = ({
         <Button
           colorPalette="neutral"
           variant="subtle"
-          minWidth="32"
+          minWidth="3200"
           onClick={() => onCloseRequest()}
         >
           Cancel

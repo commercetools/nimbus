@@ -1,19 +1,24 @@
-import { defineTokens } from "@chakra-ui/react"
+import { defineTokens } from "@chakra-ui/react";
+import { themeTokens } from "@bleh-ui/tokens";
 
-export const letterSpacings = defineTokens.letterSpacings({
-  tighter: {
-    value: "-0.05em",
-  },
-  tight: {
-    value: "-0.025em",
-  },
-  wide: {
-    value: "0.025em",
-  },
-  wider: {
-    value: "0.05em",
-  },
-  widest: {
-    value: "0.1em",
-  },
-})
+// convert token percentage values (needed by figma) to em values (needded by code)
+// todo: fix this in the token build process
+const convertPercentToEm = (
+  obj: Record<string, { value: string }>
+): Record<string, { value: string }> => {
+  return Object.keys(obj).reduce(
+    (acc, key) => {
+      // Remove '%' and divide by 100 to convert to em
+      const percentage = parseFloat(obj[key].value);
+      const emValue = percentage / 100; // 1% = 0.01em, 100% = 1em
+      // Update the object with the new em value
+      acc[key] = { value: `${emValue}em` };
+      return acc;
+    },
+    {} as Record<string, { value: string }>
+  );
+};
+
+export const letterSpacings = defineTokens.letterSpacings(
+  convertPercentToEm(themeTokens.letterSpacing)
+);

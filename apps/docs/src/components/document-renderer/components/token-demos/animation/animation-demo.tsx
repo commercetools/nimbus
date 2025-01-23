@@ -24,16 +24,16 @@ const AnimationDemo = ({
 
   return (
     <Box
-      border="1px solid"
+      border="solid-25"
       borderColor="neutral.6"
       overflow="hidden"
-      width="100%"
+      width="full"
       height={size}
       position="relative"
     >
       <Box
         colorPalette="primary"
-        width="4"
+        width="400"
         height={size}
         animation={animation}
         position="absolute"

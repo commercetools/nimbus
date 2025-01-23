@@ -8,7 +8,7 @@ import {
   cloneElement,
   isValidElement,
 } from "react";
-import { Blockquote as StyledBlockquote, Box } from "@bleh-ui/react";
+import { Box } from "@bleh-ui/react";
 import {
   FileText,
   Lightbulb,
@@ -64,39 +64,6 @@ const countChildrenByDisplayName = (
   ).length;
 };
 
-const findCiteInBlockquote = (
-  children: ReactNode,
-  lastListElementIndex: number
-) => {
-  // Iterate over the children using React.Children.map
-  return Children.map(children, (child, idx) => {
-    const isLastList = lastListElementIndex === idx;
-
-    // Check if the child is a valid React element and has the displayName 'UlList'
-    if (isValidElement(child) && child.type === UlList && isLastList) {
-      const listItemCount = countChildrenByDisplayName(
-        child.props.children,
-        ListItem
-      );
-
-      // Return the child if it has more than one 'ListItem' child
-      if (listItemCount === 1) {
-        const listItemChild = Children.map(
-          child.props.children,
-          (child) => child
-        ).find((c: ReactElement) => c.type === ListItem);
-
-        return listItemChild.props.children;
-      } else {
-        return null;
-      }
-    }
-
-    // Return null in all other cases
-    return null;
-  });
-};
-
 type BlockquoteProps = DetailedHTMLProps<
   BlockquoteHTMLAttributes<HTMLQuoteElement>,
   HTMLQuoteElement
@@ -106,7 +73,6 @@ export const Blockquote = (props: BlockquoteProps) => {
   const { children } = props;
 
   const lastListElementIndex = findLastIndex(children, UlList);
-  const cite = findCiteInBlockquote(children, lastListElementIndex);
 
   const quoteFlavorProps = (() => {
     let flavorProps = {};
@@ -152,10 +118,11 @@ export const Blockquote = (props: BlockquoteProps) => {
   })();
 
   return (
-    <StyledBlockquote
-      showDash={!!(cite && cite?.length > 0)}
-      cite={cite}
-      my="3"
+    <Box
+      my="300"
+      borderLeft="solid-75"
+      py="50"
+      px="200"
       borderColor="colorPalette.9"
       bg="colorPalette.2"
       color="colorPalette.11"
@@ -183,18 +150,18 @@ export const Blockquote = (props: BlockquoteProps) => {
               children: [
                 <Box
                   position="relative"
-                  top="-0.5"
-                  mr="1"
+                  top="-50"
+                  mr="100"
                   display="inline-block"
-                  fontSize="xl"
+                  fontSize="500"
                   asChild
                 >
                   {cleanQuoteFlavor(firstChild.trim())}
                 </Box>,
                 ...child.props.children.slice(2),
               ],
-              mt: "4",
-              mb: "2",
+              mt: "400",
+              mb: "200",
             });
           }
 
@@ -218,6 +185,6 @@ export const Blockquote = (props: BlockquoteProps) => {
         // Otherwise, return the child unchanged
         return child;
       })}
-    </StyledBlockquote>
+    </Box>
   );
 };

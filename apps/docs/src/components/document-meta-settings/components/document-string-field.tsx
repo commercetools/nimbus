@@ -43,16 +43,9 @@ export const DocumentStringFieldEdit = ({
 
   const unsaved = value !== meta?.[metaProperty] && value.length > 0;
 
-  console.log(
-    "metaProperty",
-    metaProperty,
-    `value: ${value}`,
-    `meta?.[metaProperty]: ${meta?.[metaProperty]}`
-  );
-
   return (
     <Stack>
-      <Text fontWeight="semibold" asChild>
+      <Text fontWeight="600" asChild>
         <label htmlFor="documentState">{label}</label>
       </Text>
       <Stack direction="row">

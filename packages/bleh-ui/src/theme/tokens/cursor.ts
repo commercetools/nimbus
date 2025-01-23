@@ -1,28 +1,4 @@
-import { defineTokens } from "@chakra-ui/react"
+import { defineTokens } from "@chakra-ui/react";
+import { themeTokens } from "@bleh-ui/tokens";
 
-export const cursor = defineTokens.cursor({
-  button: {
-    value: "pointer",
-  },
-  checkbox: {
-    value: "default",
-  },
-  disabled: {
-    value: "not-allowed",
-  },
-  menuitem: {
-    value: "default",
-  },
-  option: {
-    value: "default",
-  },
-  radio: {
-    value: "default",
-  },
-  slider: {
-    value: "default",
-  },
-  switch: {
-    value: "pointer",
-  },
-})
+export const cursor = defineTokens.cursor(themeTokens.cursor);

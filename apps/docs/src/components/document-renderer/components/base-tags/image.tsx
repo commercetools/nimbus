@@ -3,7 +3,7 @@ import { type ImgHTMLAttributes } from "react";
 
 export const Image = (props: ImgHTMLAttributes<HTMLImageElement>) => {
   return (
-    <Box asChild maxWidth="100%">
+    <Box asChild maxWidth="full">
       <img {...props} />
     </Box>
   );

@@ -15,17 +15,28 @@ tags:
   - italic
   - emphasize
 icon: BookType
-
 ---
-
 
 # Typography
 
 Below you'll find the raw tokens to change typography styles on a text-element.
 
+## Text Styles
+
+Text styles are collections of multiple typography rules (such as `font-size`, `line-height`, `letter-spacing` etc.) that create a specific, reusable style.
+
 > [!NOTE]  
-> **TODO:** create & name [textStyles](https://www.chakra-ui.com/docs/styling/text-styles)
-> for easy access of common typography-token combinations.
+> I added `caption`, `detail` & `body` from our existing styles, but they are essentially just combinations
+> of font-size & line-height and can be mapped to `xs`, `sm` & `md`. The `headline` looks can be achieved by using the
+> textStyles on the `<Heading/>` component.
+
+```jsx
+<Text textStyle="nameOfDesiredTextStyle">Heading 1</Text>
+```
+
+### Available Text Styles
+
+<TextStylesDemo />
 
 ## Fonts
 
@@ -39,10 +50,10 @@ Below you'll find the raw tokens to change typography styles on a text-element.
 
 <GenericTokenTableDemo category="fontWeights" demoProperty="fontWeight" />
 
-## Line Heights
-
-<GenericTokenTableDemo category="lineHeights" demoProperty="lineHeight" />
-
 ## Letter Spacings
 
 <GenericTokenTableDemo category="letterSpacings" demoProperty="letterSpacing" />
+
+## Line Heights
+
+<GenericTokenTableDemo category="lineHeights" demoProperty="lineHeight" />

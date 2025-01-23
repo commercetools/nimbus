@@ -39,11 +39,11 @@ export const EasingTokenDemo = () => {
   const items = useAtomValue(easingTokensAtom);
 
   return (
-    <Box mb="12" mt="6">
+    <Box mb="1200" mt="600">
       <TableRoot width="full" maxWidth="full">
         <TableColumnGroup>
           <TableColumn width="18ch" />
-          <TableColumn width="36" />
+          <TableColumn width="3600" />
           <TableColumn />
         </TableColumnGroup>
         <TableHeader>

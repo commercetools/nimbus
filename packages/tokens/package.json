@@ -5,7 +5,7 @@
   "module": "dist/bleh-ui-tokens.esm.js",
   "type": "module",
   "scripts": {
-    "build": "style-dictionary build --config ./src/style-dictionary.config.js"
+    "build": "style-dictionary build --verbose --config ./src/style-dictionary.config.js"
   },
   "sideEffects": [
     "*.css"

@@ -106,7 +106,7 @@ export const AppNavBarBrand = () => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <Text textStyle="2xl" asChild fontWeight="bold">
+      <Text textStyle="2xl" asChild fontWeight="700">
         <a href="/apps/docs/public">
           <span
             contentEditable={editable}
@@ -122,7 +122,7 @@ export const AppNavBarBrand = () => {
         </a>
       </Text>
       {hover && (
-        <Box position="absolute" left="-10" top="0" pr="2">
+        <Box position="absolute" left="-1000" top="0" pr="200">
           <Button
             size="xs"
             variant="ghost"

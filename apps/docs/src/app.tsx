@@ -48,7 +48,7 @@ function App() {
         <Flex
           direction="column"
           height="100vh"
-          width="100%"
+          width="full"
           maxWidth="1600px"
           mx="auto"
         >
@@ -58,11 +58,11 @@ function App() {
 
           <Flex flexGrow="1" flexShrink="1" height={availableHeight}>
             <Box
-              width="72"
-              borderRight="1px solid"
+              width="7200"
+              borderRight="solid-25"
               borderColor="neutral.3"
               flexShrink="0"
-              pt="6"
+              pt="600"
               overflow="auto"
               height="100%"
             >
@@ -71,9 +71,9 @@ function App() {
             <Flex
               flexGrow="1"
               flexShrink="1"
-              minWidth="512px"
-              pt="8"
-              px="16"
+              minWidth="lg"
+              pt="800"
+              px="1600"
               overflow="auto"
               height="100%"
               id="main"
@@ -81,16 +81,16 @@ function App() {
               <DocumentRenderer />
             </Flex>
             <Box
-              width="72"
-              borderLeft="1px solid"
+              width="7200"
+              borderLeft="solid-25"
               borderColor="neutral.3"
               flexShrink="0"
-              px="4"
-              pt="6"
+              px="400"
+              pt="600"
               overflow="auto"
               height="100%"
             >
-              <Stack gap="8">
+              <Stack gap="800">
                 <DevOnly>
                   <DocumentMetaSettings />
                 </DevOnly>

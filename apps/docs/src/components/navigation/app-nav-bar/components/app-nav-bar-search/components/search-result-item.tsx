@@ -16,8 +16,8 @@ export const SearchResultItem = forwardRef(
       : {};
 
     return (
-      <Flex px="6" py="3">
-        <Box pr="4" pt="1">
+      <Flex px="600" py="300">
+        <Box pr="400" pt="100">
           <IconComponent size="1.5em" />
         </Box>
         <Box
@@ -31,10 +31,10 @@ export const SearchResultItem = forwardRef(
           <Heading size="lg" truncate>
             {item.title}{" "}
           </Heading>
-          <Text mb="1" truncate>
+          <Text mb="100" truncate>
             {item.description}
           </Text>
-          <Text my="1" textStyle="xs" truncate opacity={3 / 4}>
+          <Text my="100" textStyle="xs" truncate opacity={3 / 4}>
             {item.menu.join(" -> ")}
           </Text>
         </Box>

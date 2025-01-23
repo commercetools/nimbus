@@ -6,6 +6,7 @@ import { IconSearch } from "./token-demos/icon-search";
 import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
 import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
+import { TextStylesDemo } from "./token-demos/text-styles-demo";
 import * as icons from "@bleh-ui/icons";
 
 import { MDXComponents } from "mdx/types";
@@ -53,7 +54,7 @@ export const components: MDXComponents = {
   img: Image,
   table: (props) => {
     return (
-      <Table.ScrollArea borderWidth="1px" maxW="100%">
+      <Table.ScrollArea border="solid-25" borderColor="neutral.6" maxW="100%">
         <Table.Root variant="outline" {...props} />
       </Table.ScrollArea>
     );
@@ -74,6 +75,7 @@ export const components: MDXComponents = {
   EasingTokenDemo,
   DurationTokenDemo,
   KeyframeTokenDemo,
+  TextStylesDemo,
   /** all icons from @bleh-ui/icons, TODO: evaluate if this is a good idea */
   ...icons.icons,
 };

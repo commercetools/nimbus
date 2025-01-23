@@ -24,7 +24,7 @@ type GenericTableDemoProps = {
   debug?: boolean;
 };
 
-const defaultBoxSize = "16";
+const defaultBoxSize = "1600";
 const defaultDemoText =
   "Franz jagt im komplett verwahrlosten Taxi quer durch Bayern";
 const defaultDemoParagraph =
@@ -33,23 +33,19 @@ const demoComponents = {
   aspectRatio: ({ ...props }) => (
     <Box
       bg="neutral.4"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
-      borderRadius="sm"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     />
   ),
   border: ({ ...props }) => (
     <Box
-      border="0 solid"
+      border="solid-25"
       borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
-      p="4"
-      borderRadius="sm"
+      p="400"
       {...props}
     />
   ),
@@ -57,22 +53,18 @@ const demoComponents = {
   borderRadius: ({ ...props }) => (
     <Box
       bg="neutral.4"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     />
   ),
   boxShadow: ({ ...props }) => (
     <Box
       bg="white"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     />
   ),
@@ -83,7 +75,7 @@ const demoComponents = {
       bg="neutral.4"
       borderColor="neutral.6"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       {...props}
     >
       <Text m="auto">Hover me</Text>
@@ -92,29 +84,26 @@ const demoComponents = {
   blur: ({ ...props }) => (
     <Box
       bg="neutral.4"
-      border="0px solid"
-      borderColor="neutral.6"
       aspectRatio="1"
-      borderRadius="sm"
       height={defaultBoxSize}
-      p="4"
+      p="400"
       filter="auto"
       {...props}
     />
   ),
   fontFamily: ({ ...props }) => (
-    <Text fontSize="8xl" lineHeight="normal" {...props}>
+    <Text fontSize="4rem" lineHeight="1" {...props}>
       Ag
     </Text>
   ),
 
   fontSize: ({ ...props }) => (
-    <Text {...props} lineHeight="shorter">
+    <Text {...props} lineHeight="1">
       Ag
     </Text>
   ),
   fontWeight: ({ ...props }) => (
-    <Text {...props} lineHeight="normal">
+    <Text {...props} lineHeight="1">
       {defaultDemoText}
     </Text>
   ),
@@ -132,7 +121,7 @@ const demoComponents = {
     </Text>
   ),
   animation: ({ ...props }) => (
-    <Box width="12" height="12" bg="primary.4" {...props} />
+    <Box width="1200" height="1200" bg="primary.4" {...props} />
   ),
 };
 
@@ -141,11 +130,9 @@ type DemoComponentId = keyof typeof demoComponents;
 const PrettyBox = ({ ...props }) => (
   <Box
     bg="tomato.4"
-    border="0px solid"
-    borderColor="neutral.6"
-    aspectRatio="1"
+    aspectRatio="square"
     height={defaultBoxSize}
-    p="4"
+    p="400"
     {...props}
   />
 );

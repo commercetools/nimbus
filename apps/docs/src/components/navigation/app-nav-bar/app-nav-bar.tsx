@@ -9,12 +9,12 @@ import { AppNavBarBrand } from "./components/app-nav-bar-brand.tsx";
 export const AppNavBar = () => {
   return (
     <Flex
-      p="4"
-      borderBottom="1px solid"
+      p="400"
+      borderBottom="solid-25"
       borderColor="neutral.3"
       alignItems="center"
     >
-      <Stack direction="row" gap="8" alignItems="center">
+      <Stack direction="row" gap="800" alignItems="center">
         <AppNavBarBrand />
         <DevOnly>
           <AppNavBarCreateButton />
