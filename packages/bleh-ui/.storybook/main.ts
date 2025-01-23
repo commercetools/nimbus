@@ -15,6 +15,7 @@ const config: StorybookConfig = {
   addons: [
     getAbsolutePackagePath("@storybook/addon-essentials"),
     getAbsolutePackagePath("@storybook/addon-interactions"),
+    getAbsolutePackagePath("storybook-dark-mode"),
   ],
   framework: {
     name: getAbsolutePackagePath("@storybook/react-vite"),

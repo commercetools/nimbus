@@ -7,11 +7,9 @@ const preview: Preview = {
     backgrounds: {
       disable: true,
     },
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
+    darkMode: {
+      classTarget: "html",
+      stylePreview: true,
     },
   },
   decorators: [
