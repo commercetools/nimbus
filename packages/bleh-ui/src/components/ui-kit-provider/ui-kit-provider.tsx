@@ -8,7 +8,7 @@ import { ColorModeProvider, type ColorModeProviderProps } from "./color-mode";
 import { system } from "./../../theme";
 import { useEffect, useState } from "react";
 
-function useColorScheme() {
+export function useColorScheme() {
   const [colorScheme, setColorScheme] = useState(getCurrentColorScheme());
 
   // Helper function to get the current color-scheme from the <html> tag
