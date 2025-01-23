@@ -1914,7 +1914,7 @@
       ],
       "icon": "Download"
     },
-    "mdx": "\n## Development Setup\n\n### Installation\n\nMake sure you fulfill the requirements below and install dependencies with the provided command.\n\n#### Requirements\n\nThe following software needs to be installed on your system before you can proceed:\n\n- Node v20+\n- [bun](https://bun.sh/)\n\n#### Install dependencies\n\n```bash\n$ bun install\n```\n\n### Development\n\n1. If you just set up the repository, do an initial [build](#build).\n2. Start the development environment with the following command\n\n```bash\n$ bun run dev\n```\n\n3. Open the documentation app in the browser: [http://localhost:5173/](http://localhost:5173/)\n\n### Build\n\nTo build packages & the documentation app:\n\n```bash\n$ bun run build\n```\n\nTo only build packages:\n\n```bash\n$ bun run build-packages\n```"
+    "mdx": "## Development Setup\n\n### Installation\n\nMake sure you fulfill the requirements below and install dependencies with the provided command.\n\n#### Requirements\n\nThe following software needs to be installed on your system before you can proceed:\n\n* Node v20+\n* [bun](https://bun.sh/)\n\n#### Install dependencies\n\n```bash\n$ pnpm install\n```\n\n### Development\n\n1. If you just set up the repository, do an initial [build](#build).\n2. Start the development environment with the following command\n\n```bash\n$ pnpm run dev\n```\n\n1. Open the documentation app in the browser: [http://localhost:5173/](http://localhost:5173/)\n\n### Build\n\nTo build packages & the documentation app:\n\n```bash\n$ pnpm run build\n```\n\nTo only build packages:\n\n```bash\n$ pnpm run build-packages\n```"
   },
   "packages/bleh-ui/src/docs/interactivity.mdx": {
     "meta": {
