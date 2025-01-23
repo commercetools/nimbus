@@ -17,7 +17,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "bun-plugin-dts": "^0.3.0",
     "storybook": "^8.5.0",
-    "@react-types/button": "^3.10.1",
     "vite": "^5.4.10",
     "vite-plugin-dts": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.3"
