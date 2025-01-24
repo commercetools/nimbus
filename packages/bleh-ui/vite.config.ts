@@ -21,9 +21,8 @@ export default defineConfig((config) => {
     build: {
       lib: {
         entry: resolve(__dirname, "./src/index.ts"),
-        name: "BlehUI",
-        // the proper extensions will be added
-        fileName: "bleh-ui",
+        name: "bleh-ui",
+        fileName: "index",
       },
       rollupOptions: {
         // make sure to externalize deps that shouldn't be bundled

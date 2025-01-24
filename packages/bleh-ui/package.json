@@ -1,6 +1,6 @@
 {
   "name": "@bleh-ui/react",
-  "module": "./dist/bleh-ui.js",
+  "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
