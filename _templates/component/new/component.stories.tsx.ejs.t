@@ -6,6 +6,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { <%= h.changeCase.pascalCase(name) %> } from "./<%= h.changeCase.paramCase(name) %>";
 import { Stack } from "./../stack";
 
+/**
+ * Storybook metadata configuration
+ * - title: determines the location in the sidebar
+ * - component: references the component being documented
+ */
 const meta: Meta<typeof <%= h.changeCase.pascalCase(name) %>> = {
   title: "components/<%= h.changeCase.pascalCase(name) %>",
   component: <%= h.changeCase.pascalCase(name) %>,
@@ -13,14 +18,26 @@ const meta: Meta<typeof <%= h.changeCase.pascalCase(name) %>> = {
 
 export default meta;
 
+/**
+ * Story type for TypeScript support
+ * StoryObj provides type checking for our story configurations
+ */
 type Story = StoryObj<typeof <%= h.changeCase.pascalCase(name) %>>;
 
+/**
+ * Base story
+ * Demonstrates the most basic implementation
+ * Uses the args pattern for dynamic control panel inputs
+ */
 export const Base: Story = {
   args: {
     children: "Demo <%= h.changeCase.pascalCase(name) %>",
   },
 };
 
+/**
+ * Showcase Sizes
+ */
 export const Sizes: Story = {
   render: (args) => {
     return (
@@ -37,6 +54,9 @@ export const Sizes: Story = {
   },
 };
 
+/**
+ * Showcase Variants
+ */
 export const Variants: Story = {
   render: (args) => {
     return (
@@ -53,6 +73,9 @@ export const Variants: Story = {
   },
 };
 
+/**
+ * Showcase Colors
+ */
 export const Colors: Story = {
   render: (args) => {
     return (
