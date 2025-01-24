@@ -13,8 +13,8 @@ import type { <%= h.changeCase.pascalCase(name) %>Props } from "./<%= h.changeCa
  * Features:
  *
  * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLUListElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configure in the recipe
+ * - accepts all native html '<%= elementType %>' attributes (including aria- & data-attributes)
+ * - supports 'variants', 'sizes', etc. configured in the recipe
  * - allows overriding styles by using style-props
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
