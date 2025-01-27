@@ -28,6 +28,6 @@
     "globals": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
-    "hygen": "^6.2.11"
+    "hygen": "catalog:tooling"
   }
 }
