@@ -3,7 +3,8 @@ packages:
   - "apps/docs"
 
 catalogs:
-  # Can be referenced through "catalog:react17"
+  # a depedency that exists in multiple packages can be managed
+  # here in a single place via a catalog @see https://pnpm.io/catalogs
   tooling:
     "@babel/core": ^7.26.0
     "@eslint/js": ^9.13.0
