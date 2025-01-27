@@ -63,8 +63,8 @@ $ pnpm run build-packages
 
 ### Creating a new component
 
-To create a new component, we run a script, using hygen, to initialize some component templates from which we further build our components on. 
+To create a new component, we run a script, using hygen, to initialize some component templates from which we further build our components on.
 
 ```bash
-pnpx hygen component new
+pnpm run component:new
 ```

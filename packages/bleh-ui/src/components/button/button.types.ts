@@ -1,5 +1,5 @@
 import type { ButtonRootProps } from "./button.slots.tsx";
-import { type AriaButtonProps } from "@react-types/button";
+import type { AriaButtonProps } from "react-aria";
 
 /** combine chakra-button props with aria-button props */
 type FunctionalButtonProps = ButtonRootProps & AriaButtonProps;

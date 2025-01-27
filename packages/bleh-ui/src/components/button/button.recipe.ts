@@ -18,7 +18,7 @@ export const buttonRecipe = defineRecipe({
     outline: "0",
     lineHeight: "1.2",
     isolation: "isolate",
-    fontWeight: "semibold",
+    fontWeight: "600",
     transitionProperty: "common",
     transitionDuration: "moderate",
     focusVisibleRing: "outside",
