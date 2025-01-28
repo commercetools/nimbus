@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom';
-
 // Polyfill for structuredClone
 if (typeof structuredClone === 'undefined') {
   global.structuredClone = obj => {

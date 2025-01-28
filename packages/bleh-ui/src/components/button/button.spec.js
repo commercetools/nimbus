@@ -1,10 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "../../../../../test/test-utils";
+import "@testing-library/jest-dom";
 import { Button } from "./button";
-import '@testing-library/jest-dom';
 
 describe("Button Component", () => {
-  it('renders Button Component', () => {
+  it("renders Button Component", () => {
     render(<Button>Click Me</Button>);
-    expect(screen.getByText('Click Me')).toBeInTheDocument();
+    expect(screen.getByText("Click Me")).toBeInTheDocument();
   });
 });
