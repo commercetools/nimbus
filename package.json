@@ -12,18 +12,22 @@
   },
   "scripts": {
     "dev": "NO_COLOR=1 bun --filter '*' dev",
+    "lint": "eslint .",
     "build": "pnpm build:tokens && NO_COLOR=1 bun run build-packages && bun run build-docs",
     "build-packages": "NO_COLOR=1 bun --filter './packages/*' build",
     "build-docs": "NO_COLOR=1 bun --filter './apps/docs' build",
     "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
-    "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build",
-    "component:new": "pnpm hygen component new"
+    "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@preconstruct/cli": "^2.8.10",
-    "hygen": "^6.2.11",
-    "typescript": "~5.6.3"
+    "@babel/core": "catalog:tooling",
+    "@eslint/js": "catalog:tooling",
+    "@preconstruct/cli": "catalog:tooling",
+    "eslint": "catalog:tooling",
+    "globals": "catalog:tooling",
+    "typescript": "catalog:tooling",
+    "typescript-eslint": "catalog:tooling",
+    "hygen": "catalog:tooling"
   }
 }

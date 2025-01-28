@@ -9,7 +9,6 @@
     "copy-index": "cp ./dist/index.html ./dist/404.html",
     "build-casual": "bun run ./scripts/build.ts",
     "build-serious": "tsc -b && bun run ./scripts/build.ts",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
