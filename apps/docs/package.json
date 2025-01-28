@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run ./scripts/dev.ts",
-    "build": "bun run build-serious && bun run copy-index",
+    "build": "pnpm run build:docs && pnpm run build:app && pnpm run copy-index",
+    "build:docs": "npx tsx ./scripts/build.ts",
+    "build:app": "vite build",
     "copy-index": "cp ./dist/index.html ./dist/404.html",
-    "build-casual": "bun run ./scripts/build.ts",
-    "build-serious": "tsc -b && bun run ./scripts/build.ts",
+    "dev": "pnpm tsx ./scripts/dev.ts",
     "preview": "vite preview"
   },
   "dependencies": {

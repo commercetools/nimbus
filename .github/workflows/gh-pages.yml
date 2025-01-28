@@ -21,11 +21,6 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-
       - name: Install dependencies
         run: pnpm install
 

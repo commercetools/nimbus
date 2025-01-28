@@ -11,11 +11,11 @@
     ]
   },
   "scripts": {
-    "dev": "NO_COLOR=1 bun --filter '*' dev",
+    "dev": "pnpm -r --parallel run dev",
     "lint": "eslint .",
-    "build": "pnpm build:tokens && NO_COLOR=1 bun run build-packages && bun run build-docs",
-    "build-packages": "NO_COLOR=1 bun --filter './packages/*' build",
-    "build-docs": "NO_COLOR=1 bun --filter './apps/docs' build",
+    "build": "pnpm build:tokens && pnpm run build-packages && pnpm run build-docs",
+    "build-packages": "pnpm -r --filter './packages/*' build",
+    "build-docs": "pnpm --filter './apps/docs' build",
     "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
     "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build"
   },
@@ -26,8 +26,9 @@
     "@preconstruct/cli": "catalog:tooling",
     "eslint": "catalog:tooling",
     "globals": "catalog:tooling",
+    "hygen": "catalog:tooling",
+    "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
-    "typescript-eslint": "catalog:tooling",
-    "hygen": "catalog:tooling"
+    "typescript-eslint": "catalog:tooling"
   }
 }

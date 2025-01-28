@@ -27,7 +27,6 @@ The following software needs to be installed on your system before you can proce
 
 - Node v20+
 - PNPM // todo: version?
-- [bun](https://bun.sh/)
 
 #### Install dependencies
 
