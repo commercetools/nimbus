@@ -10,8 +10,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
 
@@ -27,7 +27,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install && bun install
+        run: pnpm install
 
       - name: Lint
         run: pnpm lint
