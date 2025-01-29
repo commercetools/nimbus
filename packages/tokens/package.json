@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "main": "dist/bleh-ui-tokens.cjs.js",
   "module": "dist/bleh-ui-tokens.esm.js",
-  "type": "module",
   "scripts": {
     "build": "style-dictionary build --verbose --config ./src/style-dictionary.config.js"
   },

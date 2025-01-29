@@ -30,6 +30,6 @@
     // Custom
     "esModuleInterop": true,
 
-    "types": ["@chakra-ui/react"]
+    "types": ["@chakra-ui/react", "vitest/globals"]
   }
 }

@@ -18,6 +18,14 @@ export default defineConfig((config) => {
 
   return {
     plugins,
+    test: {
+      environment: "jsdom",
+      browser: {
+        enabled: true,
+        provider: "playwright",
+        instances: [{ browser: "chromium" }],
+      },
+    },
     build: {
       lib: {
         entry: resolve(__dirname, "./src/index.ts"),
@@ -27,12 +35,7 @@ export default defineConfig((config) => {
       rollupOptions: {
         // make sure to externalize deps that shouldn't be bundled
         // into your library
-        external: [
-          "react",
-          "react-dom",
-          "@emotion/react",
-          "@react-types/button",
-        ],
+        external: ["react", "react-dom", "@emotion/react"],
         output: {
           // Provide global variables to use in the UMD build
           // for externalized deps
@@ -40,7 +43,6 @@ export default defineConfig((config) => {
             react: "React",
             "react-dom": "ReactDOM",
             "@emotion/react": "emotionReact",
-            "@react-types/button": "ReactTypesButton",
           },
         },
       },
