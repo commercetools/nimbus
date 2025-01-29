@@ -13,6 +13,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel run dev",
     "lint": "eslint .",
+    "test": "vitest",
     "build": "pnpm build:tokens && pnpm run build-packages && pnpm run build-docs",
     "build-packages": "pnpm -r --filter './packages/*' build",
     "build-docs": "pnpm --filter './apps/docs' build",
@@ -29,6 +30,7 @@
     "hygen": "catalog:tooling",
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
-    "typescript-eslint": "catalog:tooling"
+    "typescript-eslint": "catalog:tooling",
+    "vitest": "^3.0.4"
   }
 }
