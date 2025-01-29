@@ -30,6 +30,10 @@
     // Custom
     "esModuleInterop": true,
 
-    "types": ["@chakra-ui/react", "vitest/globals"]
+    "types": [
+      "@chakra-ui/react",
+      "vitest/globals",
+      "@vitest/browser/providers/playwright"
+    ]
   }
 }

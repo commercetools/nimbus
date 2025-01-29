@@ -7,7 +7,7 @@ import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig((config) => {
+export default defineConfig((/* config */) => {
   const isWatchMode = process.argv.includes("--watch");
 
   const plugins = [react(), viteTsconfigPaths()];
@@ -19,11 +19,12 @@ export default defineConfig((config) => {
   return {
     plugins,
     test: {
-      environment: "jsdom",
+      globals: true,
       browser: {
         enabled: true,
         provider: "playwright",
         instances: [{ browser: "chromium" }],
+        headless: true,
       },
     },
     build: {
