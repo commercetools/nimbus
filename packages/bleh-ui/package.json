@@ -26,8 +26,7 @@
     "storybook-dark-mode": "^4.0.2",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
-    "vite-tsconfig-paths": "catalog:tooling",
-    "vitest": "catalog:tooling"
+    "vite-tsconfig-paths": "catalog:tooling"
   },
   "peerDependencies": {
     "react": "^18.3.1",

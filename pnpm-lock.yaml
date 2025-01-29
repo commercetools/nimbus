@@ -403,9 +403,6 @@ importers:
       vite-tsconfig-paths:
         specifier: catalog:tooling
         version: 5.1.4(typescript@5.7.2)(vite@5.4.11(@types/node@22.10.5)(terser@5.37.0))
-      vitest:
-        specifier: catalog:tooling
-        version: 3.0.4(@types/debug@4.1.12)(@types/node@22.10.5)(@vitest/browser@3.0.4)(msw@2.7.0(@types/node@22.10.5)(typescript@5.7.2))(terser@5.37.0)
 
   packages/bleh-ui-icons:
     dependencies:
