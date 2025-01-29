@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, userEvent } from "@/test/utils";
+import { render, screen, userEvent, act } from "@/test/utils";
 
 import { Button } from "./button";
 
@@ -20,13 +20,21 @@ describe("Button", () => {
     render(<Button onPress={onPress}>Click me</Button>);
     const button = screen.getByRole("button");
 
-    await userEvent.tab();
+    await act(async () => {
+      await userEvent.tab();
+    });
+
     expect(button).toHaveFocus();
 
-    await userEvent.keyboard("{enter}");
+    await act(async () => {
+      await userEvent.keyboard("{enter}");
+    });
+
     expect(onPress).toHaveBeenCalledTimes(1);
 
-    await userEvent.keyboard(" ");
+    await act(async () => {
+      await userEvent.keyboard(" ");
+    });
     expect(onPress).toHaveBeenCalledTimes(2);
   });
 
@@ -47,5 +55,28 @@ describe("Button", () => {
       "aria-label",
       "Custom label"
     );
+  });
+
+  it("forwards data-attributes correctly", () => {
+    render(<Button data-foo="Bar">Text</Button>);
+    expect(screen.getByRole("button")).toHaveAttribute("data-foo", "Bar");
+  });
+
+  it("renders as a custom element using 'as' prop", () => {
+    render(<Button as="a" href="https://example.com" data-testid="hook" />);
+    const link = screen.getByTestId("hook");
+    expect(link.tagName).toBe("A");
+    expect(link).toHaveAttribute("href", "https://example.com");
+  });
+
+  it("renders child component when asChild is true", () => {
+    render(
+      <Button asChild data-testid="hook">
+        <a href="https://example.com">Link Button</a>
+      </Button>
+    );
+    const link = screen.getByTestId("hook");
+    expect(link.tagName).toBe("A");
+    expect(link).toHaveAttribute("href", "https://example.com");
   });
 });

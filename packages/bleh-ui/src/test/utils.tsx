@@ -9,4 +9,5 @@ const renderWithProvider = (ui: ReactNode, options?: RenderOptions) => {
 
 export * from "@testing-library/react";
 export const userEvent = baseUserEvent.setup();
+export { act } from "react";
 export { renderWithProvider as render };

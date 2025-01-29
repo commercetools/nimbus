@@ -45,5 +45,21 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+  },
+
+  // Add specific rules for test files
+  {
+    files: [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/test/**/*.ts",
+      "**/test/**/*.tsx",
+    ],
+    rules: {
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+    },
   }
 );

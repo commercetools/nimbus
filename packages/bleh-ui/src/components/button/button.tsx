@@ -8,10 +8,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
     const objRef = useObjectRef(ref);
     const { buttonProps } = useButton(props, objRef);
-    const { children } = props;
+    const { children, ...rest } = props;
 
     return (
-      <ButtonRoot ref={objRef} {...buttonProps}>
+      <ButtonRoot ref={objRef} {...rest} {...buttonProps}>
         {children}
       </ButtonRoot>
     );

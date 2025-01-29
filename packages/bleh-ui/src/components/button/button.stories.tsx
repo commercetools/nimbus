@@ -54,6 +54,15 @@ export const Disabled: Story = {
   },
 };
 
+export const AsLink: Story = {
+  args: {
+    children: "Disabled Button",
+    disabled: true,
+    as: "a",
+    href: "/",
+  },
+};
+
 export const Sizes: Story = {
   render: (args) => {
     return (

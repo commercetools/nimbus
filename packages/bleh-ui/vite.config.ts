@@ -19,12 +19,19 @@ export default defineConfig((/* config */) => {
   return {
     plugins,
     test: {
+      // make vitest fn's available globally (no need to import them)
       globals: true,
+      // config for running tests in one or multiple *real* browsers
       browser: {
         enabled: true,
+        // ... use playwright to run tests
         provider: "playwright",
+        // ... only in chromium
         instances: [{ browser: "chromium" }],
+        // ... do not open the browser-ui
         headless: true,
+        // ... do not capture screenshots on failure
+        screenshotFailures: false,
       },
     },
     build: {
