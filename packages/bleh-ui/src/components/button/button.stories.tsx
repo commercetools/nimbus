@@ -46,6 +46,14 @@ export const Base: Story = {
   },
 };
 
+export const Disabled: Story = {
+  args: {
+    //👇 The args you need here will depend on your component
+    children: "Disabled Button",
+    disabled: true,
+  },
+};
+
 export const Sizes: Story = {
   render: (args) => {
     return (

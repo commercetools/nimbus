@@ -33,7 +33,9 @@
     "types": [
       "@chakra-ui/react",
       "vitest/globals",
-      "@vitest/browser/providers/playwright"
+      "@vitest/browser/providers/playwright",
+      "@testing-library/user-event",
+      "@testing-library/dom"
     ]
   }
 }
