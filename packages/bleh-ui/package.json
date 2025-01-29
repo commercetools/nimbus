@@ -25,7 +25,8 @@
     "storybook-dark-mode": "^4.0.2",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
-    "vite-tsconfig-paths": "catalog:tooling"
+    "vite-tsconfig-paths": "catalog:tooling",
+    "vitest": "catalog:tooling"
   },
   "peerDependencies": {
     "react": "^18.3.1",
@@ -49,9 +50,9 @@
     "build": "pnpm run build-theme-typings && pnpm run build-lib",
     "build-lib": "vite build",
     "dev": "vite build --watch",
+    "test": "vitest",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "test:browser": "vitest --workspace=vitest.workspace.ts"
+    "build-storybook": "storybook build"
   }
 }
