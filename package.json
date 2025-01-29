@@ -31,6 +31,6 @@
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
-    "vitest": "^3.0.4"
+    "vitest": "catalog:tooling"
   }
 }
