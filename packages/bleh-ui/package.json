@@ -14,6 +14,7 @@
     "@storybook/react": "^8.5.1",
     "@storybook/react-vite": "^8.5.1",
     "@storybook/test": "^8.5.1",
+    "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "catalog:tooling",
     "@types/lodash": "^4.17.13",
     "@types/react": "^18.3.12",
@@ -50,7 +51,6 @@
     "build": "pnpm run build-theme-typings && pnpm run build-lib",
     "build-lib": "vite build",
     "dev": "vite build --watch",
-    "test": "vitest",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
