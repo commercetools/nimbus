@@ -43,6 +43,7 @@ const customRender = (
 
 // re-export everything
 export {
+  act,
   screen,
   waitFor,
   waitForElementToBeRemoved,

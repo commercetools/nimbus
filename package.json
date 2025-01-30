@@ -30,7 +30,7 @@
     "@commercetools-uikit/i18n": "^19.22.1",
     "@preconstruct/cli": "^2.8.10",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "12.1.5",
+    "@testing-library/react": "15.0.6",
     "babel-jest": "^29.7.0",
     "history": "^5.3.0",
     "hygen": "^6.2.11",
