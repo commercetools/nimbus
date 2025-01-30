@@ -25,6 +25,8 @@
     "@eslint/js": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",
     "eslint": "catalog:tooling",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
     "globals": "catalog:tooling",
     "hygen": "catalog:tooling",
     "prettier": "catalog:tooling",

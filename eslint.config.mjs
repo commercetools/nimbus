@@ -6,6 +6,7 @@
 
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 /**
  * @type {import("typescript-eslint").Config}
@@ -21,6 +22,7 @@ export default tseslint.config(
    */
   {
     ignores: ["**/node_modules/**", "**/dist/**"],
+    extends: [eslintPluginPrettierRecommended],
   },
 
   /**
@@ -45,5 +47,5 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  }
+  },
 );
