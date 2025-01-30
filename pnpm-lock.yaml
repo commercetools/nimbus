@@ -18,6 +18,12 @@ catalogs:
     eslint:
       specifier: ^9.13.0
       version: 9.17.0
+    eslint-config-prettier:
+      specifier: ^10.0.1
+      version: 10.0.1
+    eslint-plugin-prettier:
+      specifier: ^5.2.3
+      version: 5.2.3
     globals:
       specifier: ^15.11.0
       version: 15.14.0
@@ -54,10 +60,10 @@ importers:
         specifier: catalog:tooling
         version: 9.17.0
       eslint-config-prettier:
-        specifier: ^10.0.1
+        specifier: catalog:tooling
         version: 10.0.1(eslint@9.17.0)
       eslint-plugin-prettier:
-        specifier: ^5.2.3
+        specifier: catalog:tooling
         version: 5.2.3(eslint-config-prettier@10.0.1(eslint@9.17.0))(eslint@9.17.0)(prettier@3.4.2)
       globals:
         specifier: catalog:tooling
