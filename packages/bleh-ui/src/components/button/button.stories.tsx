@@ -48,14 +48,13 @@ export const Base: Story = {
 export const Disabled: Story = {
   args: {
     children: "Disabled Button",
-    disabled: true,
+    isDisabled: true,
   },
 };
 
 export const AsLink: Story = {
   args: {
-    children: "Disabled Button",
-    disabled: true,
+    children: "Link disguised as Button",
     as: "a",
     href: "/",
   },
