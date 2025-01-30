@@ -22,7 +22,6 @@ export default tseslint.config(
    */
   {
     ignores: ["**/node_modules/**", "**/dist/**"],
-    extends: [eslintPluginPrettierRecommended],
   },
 
   /**
@@ -48,4 +47,9 @@ export default tseslint.config(
       },
     },
   },
+  /**
+   * Make sure eslint is aware of prettier rules
+   * to prevent any responsibility overlap or conflicts
+   */
+  eslintPluginPrettierRecommended,
 );
