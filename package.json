@@ -24,17 +24,22 @@
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "devDependencies": {
-    "@babel/core": "^7.26.0",
+    "@babel/core": "catalog:tooling",
+    "@eslint/js": "catalog:tooling",
+    "eslint": "catalog:tooling",
+    "globals": "catalog:tooling",
+    "tsx": "catalog:tooling",
+    "typescript-eslint": "catalog:tooling",
     "@babel/preset-env": "^7.26.7",
     "@babel/preset-react": "^7.26.3",
-    "@chakra-ui/react": "^3.2.3",
     "@commercetools-uikit/i18n": "^19.22.1",
-    "@preconstruct/cli": "^2.8.10",
+    "@chakra-ui/react": "^3.2.3",
+    "@preconstruct/cli": "catalog:tooling",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "15.0.6",
     "babel-jest": "^29.7.0",
     "history": "^5.3.0",
-    "hygen": "^6.2.11",
+    "hygen": "catalog:tooling",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "jest-localstorage-mock": "2.4.26",
@@ -47,6 +52,6 @@
     "react-intl": "^7.1.5",
     "react-router-dom": "^7.1.3",
     "ts-jest": "^29.2.5",
-    "typescript": "~5.6.3"
+    "typescript": "catalog:tooling"
   }
 }
