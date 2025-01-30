@@ -56,6 +56,9 @@ importers:
       hygen:
         specifier: catalog:tooling
         version: 6.2.11
+      prettier:
+        specifier: 3.4.2
+        version: 3.4.2
       tsx:
         specifier: catalog:tooling
         version: 4.19.2

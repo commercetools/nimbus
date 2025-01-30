@@ -27,6 +27,7 @@
     "eslint": "catalog:tooling",
     "globals": "catalog:tooling",
     "hygen": "catalog:tooling",
+    "prettier": "catalog:tooling",
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling"
