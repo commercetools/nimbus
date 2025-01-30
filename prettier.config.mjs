@@ -14,7 +14,10 @@ const config = {
   jsxSingleQuote: false,
   /** only add quotes around object properties where required. */
   quoteProps: "as-needed",
-  /** trailing commas where valid in ES5 (objects, arrays, etc.). Trailing commas in type parameters in TypeScript and Flow. */
+  /**
+   * trailing commas where valid in ES5 (objects, arrays, etc.). Trailing
+   * commas in type parameters in TypeScript and Flow.
+   */
   trailingComma: "es5",
   /** print spaces between brackets in object literals. */
   bracketSpacing: true,
