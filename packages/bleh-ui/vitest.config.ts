@@ -36,7 +36,6 @@ export default mergeConfig(
         screenshotFailures: false,
       },
       coverage: {
-        // 👇 Add this
         exclude: [
           ...coverageConfigDefaults.exclude,
           "**/.storybook/**",
