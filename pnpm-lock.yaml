@@ -391,6 +391,12 @@ importers:
       apca-check:
         specifier: ^0.1.1
         version: 0.1.1(axe-core@4.10.2)
+      apca-w3:
+        specifier: ^0.1.9
+        version: 0.1.9
+      axe-core:
+        specifier: ^4.10.2
+        version: 4.10.2
       playwright:
         specifier: catalog:tooling
         version: 1.50.0
