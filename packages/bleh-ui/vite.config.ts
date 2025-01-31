@@ -7,53 +7,39 @@ import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig((/* config */) => {
-  const isWatchMode = process.argv.includes("--watch");
-
-  const plugins = [react(), viteTsconfigPaths()];
-
-  if (!isWatchMode) {
-    plugins.push(dts({ rollupTypes: true }));
-  }
-
-  return {
-    plugins,
-    test: {
-      // make vitest fn's available globally (no need to import them)
-      globals: true,
-      // config for running tests in one or multiple *real* browsers
-      browser: {
-        enabled: true,
-        // ... use playwright to run tests
-        provider: "playwright",
-        // ... only in chromium
-        instances: [{ browser: "chromium" }],
-        // ... do not open the browser-ui
-        headless: true,
-        // ... do not capture screenshots on failure
-        screenshotFailures: false,
-      },
+export const baseConfig = {
+  plugins: [react(), viteTsconfigPaths()],
+  build: {
+    lib: {
+      entry: resolve(__dirname, "./src/index.ts"),
+      name: "bleh-ui",
+      fileName: "index",
     },
-    build: {
-      lib: {
-        entry: resolve(__dirname, "./src/index.ts"),
-        name: "bleh-ui",
-        fileName: "index",
-      },
-      rollupOptions: {
-        // make sure to externalize deps that shouldn't be bundled
-        // into your library
-        external: ["react", "react-dom", "@emotion/react"],
-        output: {
-          // Provide global variables to use in the UMD build
-          // for externalized deps
-          globals: {
-            react: "React",
-            "react-dom": "ReactDOM",
-            "@emotion/react": "emotionReact",
-          },
+    rollupOptions: {
+      // make sure to externalize deps that shouldn't be bundled
+      // into your library
+      external: ["react", "react-dom", "@emotion/react"],
+      output: {
+        // Provide global variables to use in the UMD build
+        // for externalized deps
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+          "@emotion/react": "emotionReact",
         },
       },
     },
-  };
+  },
+};
+
+export default defineConfig((/* config */) => {
+  const isWatchMode = process.argv.includes("--watch");
+
+  const config = baseConfig;
+
+  if (!isWatchMode) {
+    config.plugins.push(dts({ rollupTypes: true }));
+  }
+
+  return config;
 });

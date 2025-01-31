@@ -29,6 +29,27 @@ const preview: Preview = {
     backgrounds: {
       disable: true,
     },
+    a11y: {
+      // Optional selector to inspect
+      element: "body",
+      config: {
+        rules: [
+          {
+            // disabled, as radix is using APCA algorithm while Storybook uses WCAG
+            // @see https://web.dev/articles/color-and-contrast-accessibility#apca)
+
+            id: "color-contrast",
+            enabled: false,
+          },
+        ],
+      },
+      /*
+       * Axe's options parameter
+       * See https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter
+       * to learn more about the available options.
+       */
+      options: {},
+    },
   },
   decorators: [
     (Story) => {

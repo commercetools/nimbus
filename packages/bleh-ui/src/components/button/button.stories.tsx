@@ -99,7 +99,12 @@ export const Colors: Story = {
     return (
       <Stack>
         {colors.map((color) => (
-          <Stack direction="row" gap="400" alignItems="center">
+          <Stack
+            key={color as string}
+            direction="row"
+            gap="400"
+            alignItems="center"
+          >
             {variants.map((size) => (
               <Button
                 key={size as string}
