@@ -6,7 +6,7 @@ import { addons } from "@storybook/preview-api";
 
 import APCACheck from "./apca-check";
 
-const apca = APCACheck((fontSize: string) => {
+const apca = APCACheck("custom", (fontSize: string) => {
   const size = parseFloat(fontSize);
   switch (true) {
     case size >= 32:

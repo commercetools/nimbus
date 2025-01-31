@@ -1,17 +1,7 @@
 import axe, { type Check, Rule } from "axe-core";
 import { calcAPCA } from "apca-w3";
 
-const APCABronzeConformanceThresholdFn: ConformanceThresholdFn = (fontSize) => {
-  const size = parseFloat(fontSize);
-  switch (true) {
-    case size >= 32:
-      return 45;
-    default:
-      return 75;
-  }
-};
-
-type ConformanceLevel = "bronze" | "silver" | "custom";
+type ConformanceLevel = "custom";
 
 type ConformanceThresholdFn = (
   fontSize: string,
@@ -124,15 +114,10 @@ const generateColorContrastAPCARule = (conformanceLevel: string): Rule => ({
 
 const registerAPCACheck = (
   conformanceLevel: ConformanceLevel,
-  customConformanceThresholdFn?: ConformanceThresholdFn
+  conformanceThresholdFn: ConformanceThresholdFn
 ) => {
-  if (
-    conformanceLevel === "custom" &&
-    typeof customConformanceThresholdFn !== "function"
-  ) {
-    throw new Error(
-      "A custom conformance level requires a custom conformance threshold function"
-    );
+  if (typeof conformanceThresholdFn !== "function") {
+    throw new Error("Conformance threshold function is required");
   }
 
   return {
@@ -140,7 +125,7 @@ const registerAPCACheck = (
     checks: [
       generateColorContrastAPCAConformanceCheck(
         conformanceLevel,
-        APCABronzeConformanceThresholdFn
+        conformanceThresholdFn
       ),
     ],
   };
