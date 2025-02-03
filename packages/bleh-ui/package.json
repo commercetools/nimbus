@@ -29,7 +29,7 @@
     "typescript": "catalog:tooling"
   },
   "dependencies": {
-    "@bleh-ui/icons": "workspace:*",
+    "@bleh-ui/icons": "workspace:^",
     "@bleh-ui/tokens": "workspace:^",
     "@chakra-ui/react": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
