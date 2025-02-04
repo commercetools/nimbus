@@ -6,6 +6,7 @@
 
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 /**
  * @type {import("typescript-eslint").Config}
@@ -46,7 +47,6 @@ export default tseslint.config(
       },
     },
   },
-
   // Add specific rules for test files
   {
     files: [
@@ -61,5 +61,10 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-return": "off",
     },
-  }
+  },
+  /**
+   * Make sure eslint is aware of prettier rules
+   * to prevent any responsibility overlap or conflicts
+   */
+  eslintPluginPrettierRecommended
 );
