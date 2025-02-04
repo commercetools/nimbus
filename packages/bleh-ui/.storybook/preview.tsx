@@ -63,6 +63,7 @@ const preview: Preview = {
       options: {},
     },
   },
+  tags: ["autodocs"],
   decorators: [
     (Story) => {
       return (
