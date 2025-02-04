@@ -26,7 +26,6 @@
     "@testing-library/user-event": "catalog:tooling",
     "@vitest/browser": "catalog:tooling",
     "@vitest/coverage-v8": "catalog:tooling",
-    "apca-check": "^0.1.1",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.10.2",
     "playwright": "catalog:tooling",
