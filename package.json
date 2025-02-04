@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel run dev",
     "lint": "eslint .",
-    "test": "vitest",
+    "test": "vitest run",
     "build": "pnpm build:tokens && pnpm run build-packages && pnpm run build-docs",
     "build-packages": "pnpm -r --filter './packages/*' build",
     "build-docs": "pnpm --filter './apps/docs' build",
