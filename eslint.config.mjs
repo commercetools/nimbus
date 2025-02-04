@@ -47,21 +47,6 @@ export default tseslint.config(
       },
     },
   },
-  // Add specific rules for test files
-  {
-    files: [
-      "**/*.test.ts",
-      "**/*.test.tsx",
-      "**/test/**/*.ts",
-      "**/test/**/*.tsx",
-    ],
-    rules: {
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-return": "off",
-    },
-  },
   /**
    * Make sure eslint is aware of prettier rules
    * to prevent any responsibility overlap or conflicts
