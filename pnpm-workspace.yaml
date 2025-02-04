@@ -29,7 +29,6 @@ catalogs:
     # Storybook
     "@storybook/addon-a11y": ^8.5.3
     "@storybook/addon-essentials": ^8.5.3
-    "@storybook/addon-interactions": ^8.5.3
     "@storybook/experimental-addon-test": ^8.5.3
     "@storybook/preview-api": ^8.5.3
     "@storybook/react": ^8.5.3

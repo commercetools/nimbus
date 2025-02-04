@@ -9,7 +9,6 @@
     "@pandacss/types": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-essentials": "catalog:tooling",
-    "@storybook/addon-interactions": "catalog:tooling",
     "@storybook/experimental-addon-test": "catalog:tooling",
     "@storybook/preview-api": "catalog:tooling",
     "@storybook/react": "catalog:tooling",
