@@ -18,9 +18,7 @@
     "build-docs": "pnpm --filter './apps/docs' build",
     "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
     "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build",
-    "component:new": "pnpm hygen component new",
-    "test": "jest --projects jest.{ts-test,test}.config.js",
-    "test:watch": "pnpm run test --watch"
+    "component:new": "pnpm hygen component new"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "devDependencies": {
@@ -42,7 +40,6 @@
     "hygen": "catalog:tooling",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
-    "jest-localstorage-mock": "2.4.26",
     "jest-puppeteer": "8.0.6",
     "jest-runner-eslint": "1.2.0",
     "jest-runner-stylelint": "2.3.7",

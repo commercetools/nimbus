@@ -1,6 +1,6 @@
-import { render, screen } from "../../../../../test/test-utils";
 import "@testing-library/jest-dom";
-import { Button } from "./button";
+const { render, screen } = require("../../../test/test-utils");
+const { Button } = require("./button");
 
 describe("Button Component", () => {
   it("renders Button Component", () => {

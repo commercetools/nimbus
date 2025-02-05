@@ -1,17 +1,22 @@
+const { TextEncoder, TextDecoder } = require('util');
+// require('@testing-library/jest-dom');
 
-import '@testing-library/jest-dom';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
-// React 18 setup
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+// Set up window if it doesn't exist
+if (typeof window === 'undefined') {
+  global.window = {}
+}
 
-// Polyfill for structuredClone
-if (typeof structuredClone === 'undefined') {
-  global.structuredClone = obj => {
+// Add any other required test setup here
+
+if (typeof structuredClone !== 'function') {
+  global.structuredClone = (obj) => {
     return JSON.parse(JSON.stringify(obj));
   };
 }
 
-// Add any other required polyfills here
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({
