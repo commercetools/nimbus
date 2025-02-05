@@ -175,6 +175,9 @@ importers:
       hygen:
         specifier: catalog:tooling
         version: 6.2.11
+      playwright:
+        specifier: catalog:tooling
+        version: 1.50.1
       prettier:
         specifier: catalog:tooling
         version: 3.4.2
