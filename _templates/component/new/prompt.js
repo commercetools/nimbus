@@ -48,7 +48,11 @@ module.exports = [
     name: "elementType",
     message: (answers) => {
       const elementType = mapping[answers.answers.element] || "UnknownElement";
-      return "What is the element type? Press Enter for default value: " + elementType + "";
+      return (
+        "What is the element type? Press Enter for default value: " +
+        elementType +
+        ""
+      );
     },
     initial: (answers) => {
       const elementType = mapping[answers.enquirer.answers.element];
