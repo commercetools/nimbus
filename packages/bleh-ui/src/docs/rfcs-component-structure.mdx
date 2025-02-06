@@ -11,7 +11,6 @@ menu:
   - Component Structure
 tags:
   - document
-
 ---
 
 # React Component Anatomy
@@ -42,22 +41,24 @@ Exports and/or contains the type definitions for the component.
 
 ### component-name.recipe.ts
 
-Contains a single or multi-slot recipe. Covering default styles, sizes, variants and
-compound variants for a single or multiple _slots_.
+Contains a single or multi-slot recipe. Covering default styles, sizes, variants
+and compound variants for a single or multiple _slots_.
 
 ### component-name.slots.ts
 
-A component that has multiple parts, like a Modal (header, body, footer, etc.), will have a .slot.tsx file.
-This file will create components with styles attached to them, and will be used in the main component file.
+A component that has multiple parts, like a Modal (header, body, footer, etc.),
+will have a .slot.tsx file. This file will create components with styles
+attached to them, and will be used in the main component file.
 
 ### component-name.tsx
 
-Free of any styling concerns, this file imports the slot-components and connects those
-with the headless ui-components.
+Free of any styling concerns, this file imports the slot-components and connects
+those with the headless ui-components.
 
 ### component-name.mdx
 
-Contains the documentation for the component. Will provide examples, usage, props, etc.
+Contains the documentation for the component. Will provide examples, usage,
+props, etc.
 
 ### index.ts
 

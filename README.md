@@ -11,19 +11,23 @@ This is a mono-repo. It contains multiple packages & apps.
 
 ### Apps
 
-- **docs** a documentation site/app, scripts parse mdx-files inside the _packages_ folder, the mdx-file content is brought into shape and a documentation app is being build from it.
+- **docs** a documentation site/app, scripts parse mdx-files inside the
+  _packages_ folder, the mdx-file content is brought into shape and a
+  documentation app is being build from it.
 
 ## Development Setup
 
 ### Installation
 
-Straight forward. Make sure you fulfill the requirements below and install dependencies with the provided command.
+Straight forward. Make sure you fulfill the requirements below and install
+dependencies with the provided command.
 
 > All commands are run in the repository root.
 
 #### Requirements
 
-The following software needs to be installed on your system before you can proceed:
+The following software needs to be installed on your system before you can
+proceed:
 
 - Node v20+
 - PNPM // todo: version?
@@ -43,8 +47,7 @@ $ pnpm install
    $ pnpm run dev
    ```
 
-3. Open the documentation app in the browser:
-   http://localhost:5173/
+3. Open the documentation app in the browser: http://localhost:5173/
 
 ### Build
 
@@ -62,7 +65,8 @@ $ pnpm run build-packages
 
 ### Creating a new component
 
-To create a new component, we run a script, using hygen, to initialize some component templates from which we further build our components on.
+To create a new component, we run a script, using hygen, to initialize some
+component templates from which we further build our components on.
 
 ```bash
 pnpm run component:new

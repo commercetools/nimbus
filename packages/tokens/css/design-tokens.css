@@ -1926,9 +1926,14 @@
   --color-semantic-palettes-success-dark-alpha-10: hsla(131, 100%, 72%, 0.68);
   --color-semantic-palettes-success-dark-alpha-11: hsla(131, 100%, 77%, 0.8);
   --color-semantic-palettes-success-dark-alpha-12: hsla(120, 100%, 90%, 0.94);
-  --font-family-heading: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  --font-family-body: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-family-heading: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --font-family-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --font-size-250: 10px;
   --font-size-300: 12px;
   --font-size-350: 14px;
