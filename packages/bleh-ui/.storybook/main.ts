@@ -30,5 +30,27 @@ const config: StorybookConfig = {
   core: {
     disableTelemetry: true,
   },
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+    // Provide your own options if necessary.
+    // See https://storybook.js.org/docs/configure/typescript for more information.
+    reactDocgenTypescriptOptions: {
+      compilerOptions: {
+        allowSyntheticDefaultImports: false,
+        esModuleInterop: false,
+      },
+
+      // Extend if needed...
+      propFilter: (prop) => {
+        // common props that every component may have
+        const whitelistedProps = ["ref", "colorScheme", "asChild"];
+        // ... props coming from the react-aria package
+        const isReactAriaProp =
+          !!prop.parent?.fileName.includes("@react-types");
+
+        return isReactAriaProp || whitelistedProps.includes(prop.name);
+      },
+    },
+  },
 };
 export default config;
