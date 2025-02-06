@@ -19,7 +19,8 @@
     "build-docs": "pnpm --filter './apps/docs' build",
     "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
     "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build",
-    "reset": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' +"
+    "reset": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
+    "component:new": "pnpm hygen component new"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "devDependencies": {
