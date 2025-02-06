@@ -1,9 +1,16 @@
 import { type ReactNode } from "react";
-import { render, type RenderOptions } from "@testing-library/react";
+import {
+  render,
+  type RenderOptions,
+  type RenderResult,
+} from "@testing-library/react";
 import { UiKitProvider } from "@/components";
 import { userEvent as baseUserEvent } from "@testing-library/user-event";
 
-const renderWithProvider = (ui: ReactNode, options?: RenderOptions) => {
+const renderWithProvider = (
+  ui: ReactNode,
+  options?: RenderOptions
+): RenderResult => {
   return render(<UiKitProvider>{ui}</UiKitProvider>, options);
 };
 
