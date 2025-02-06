@@ -8,7 +8,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
     const objRef = useObjectRef(ref);
     const { buttonProps } = useButton(props, objRef);
-    const { children, busy, ...rest } = props;
+    const { children, ...rest } = props;
 
     return (
       <ButtonRoot ref={objRef} {...rest} {...buttonProps}>

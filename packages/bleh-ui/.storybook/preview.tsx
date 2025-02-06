@@ -4,6 +4,18 @@ import { UiKitProvider } from "../src";
 import { DARK_MODE_EVENT_NAME } from "storybook-dark-mode";
 import { addons } from "@storybook/preview-api";
 
+import APCACheck from "./apca-check";
+
+const apca = APCACheck("custom", (fontSize: string) => {
+  const size = parseFloat(fontSize);
+  switch (true) {
+    case size >= 32:
+      return 45;
+    default:
+      return 60;
+  }
+});
+
 // get channel to listen to event emitter
 const channel = addons.getChannel();
 
@@ -29,7 +41,29 @@ const preview: Preview = {
     backgrounds: {
       disable: true,
     },
+    a11y: {
+      config: {
+        checks: [...apca.checks],
+        rules: [
+          {
+            // disabled, as radix is using APCA algorithm while Storybook uses WCAG
+            // @see https://web.dev/articles/color-and-contrast-accessibility#apca)
+
+            id: "color-contrast",
+            enabled: false,
+          },
+          ...apca.rules,
+        ],
+      },
+      /*
+       * Axe's options parameter
+       * See https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter
+       * to learn more about the available options.
+       */
+      options: {},
+    },
   },
+  tags: ["autodocs"],
   decorators: [
     (Story) => {
       return (

@@ -14,9 +14,9 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.stories.tsx"],
   addons: [
     getAbsolutePackagePath("@storybook/addon-essentials"),
-    getAbsolutePackagePath("@storybook/addon-interactions"),
     getAbsolutePackagePath("@storybook/addon-a11y"),
     getAbsolutePackagePath("storybook-dark-mode"),
+    getAbsolutePackagePath("@storybook/experimental-addon-test"),
   ],
   framework: {
     name: getAbsolutePackagePath("@storybook/react-vite"),
