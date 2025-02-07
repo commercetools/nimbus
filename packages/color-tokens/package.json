@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/chroma-js": "^3.1.0"
+    "@types/chroma-js": "^3.1.0",
+    "@types/node": "catalog:utils"
   },
   "peerDependencies": {
     "typescript": "catalog:tooling"

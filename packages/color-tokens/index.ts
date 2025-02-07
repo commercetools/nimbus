@@ -1,17 +1,33 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as radixColors from "@radix-ui/colors";
 import { brandColors } from "./brand-colors";
 import chroma from "chroma-js";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
 
-const paletteKeys = Object.keys(radixColors);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const paletteKeys = Object.keys(radixColors).filter(
+  (key) => key !== "__esModule"
+);
 
 const ignoredColors = ["mauve", "sage", "olive", "sand", "P3", "default"];
 const pickedPalettes = paletteKeys.filter(
   (key) => !ignoredColors.some((ignoredColor) => key.includes(ignoredColor))
 );
 
-const sortedPalettes = {
+const sortedPalettes: {
+  light: string[];
+  lightAlpha: string[];
+  dark: string[];
+  darkAlpha: string[];
+  blacksAndWhites: string[];
+} = {
   light: [],
   lightAlpha: [],
   dark: [],
@@ -84,7 +100,10 @@ function createValue<T>(value: T): ValueObject<T> {
   return { $value: value };
 }
 
-function createSimplePalette(palette: any): SimplePalette {
+// Add this type alias to represent a palette with string keys and values.
+type Palette = Record<string, string>;
+
+function createSimplePalette(palette: Palette): SimplePalette {
   const baseKey = Object.keys(palette)[0].replace(/\d+$/, "");
   const paletteSteps = {
     1: `${baseKey}1`,
@@ -107,7 +126,7 @@ function createSimplePalette(palette: any): SimplePalette {
   }, {} as SimplePalette);
 }
 
-function createSimpleAlphaPalette(palette: any): SimplePalette {
+function createSimpleAlphaPalette(palette: Palette): SimplePalette {
   const baseKey = Object.keys(palette)[0].replace(/\d+$/, "");
   return Object.entries(palette).reduce((result, [key, value]) => {
     const step = key.replace(baseKey, "");
@@ -122,12 +141,13 @@ function calculateContrastColor(baseKey: string, color: string): string {
 
   const whiteContrast = chroma.contrast(white, color);
 
-  console.log(baseKey, whiteContrast);
-
   return whiteContrast > 2.9 ? white : black;
 }
 
-function createColorPalette(basePalette: any, alphaPalette: any): ColorPalette {
+function createColorPalette(
+  basePalette: Palette,
+  alphaPalette: Palette
+): ColorPalette {
   const baseKey = Object.keys(basePalette)[0].replace(/\d+$/, "");
   const defaultColor = basePalette[`${baseKey}9`];
   return {
@@ -142,9 +162,13 @@ const colorPaletteCollection: ColorPaletteCollection = {};
 
 sortedPalettes.light.forEach((key, index) => {
   const baseName = key.replace(/Dark$/, "");
+  // @ts-expect-error - TS doesn't like the dynamic key, but it's fine
   const lightPalette = radixColors[key];
+  // @ts-expect-error - TS doesn't like the dynamic key, but it's fine
   const lightAlphaPalette = radixColors[sortedPalettes.lightAlpha[index]];
+  // @ts-expect-error - TS doesn't like the dynamic key, but it's fine
   const darkPalette = radixColors[sortedPalettes.dark[index]];
+  // @ts-expect-error - TS doesn't like the dynamic key, but it's fine
   const darkAlphaPalette = radixColors[sortedPalettes.darkAlpha[index]];
 
   colorPaletteCollection[baseName] = {
