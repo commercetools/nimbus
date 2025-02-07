@@ -24,21 +24,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint
-        run: pnpm lint
-        continue-on-error: true # continue even if linting fails (for now)
-
       - name: Build the project
         run: pnpm build
         env:
           NODE_ENV: production
+
+      - name: Lint
+        run: pnpm lint
+        continue-on-error: true # continue even if linting fails (for now)
+
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Run tests
         run: pnpm test
         continue-on-error: true
         env:
           NODE_ENV: production
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
