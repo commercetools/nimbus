@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { ButtonRootProps } from "./button.slots.tsx";
 import type { AriaButtonProps } from "react-aria";
 
@@ -5,4 +6,9 @@ import type { AriaButtonProps } from "react-aria";
 type FunctionalButtonProps = ButtonRootProps & AriaButtonProps;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ButtonProps extends FunctionalButtonProps {}
+export interface ButtonProps extends FunctionalButtonProps {
+  /** Icon displayed at the start of the button */
+  startIcon?: ReactNode;
+  /** Icon displayed at the start of the button */
+  endIcon?: ReactNode;
+}

@@ -330,10 +330,10 @@
     "displayName": "Button",
     "methods": [],
     "props": {
-      "busy": {
+      "startIcon": {
         "defaultValue": null,
-        "description": "if true, button is busy with something (loading, processing, etc...)",
-        "name": "busy",
+        "description": "Icon displayed at the start of the button",
+        "name": "startIcon",
         "parent": {
           "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
           "name": "ButtonProps"
@@ -346,7 +346,26 @@
         ],
         "required": false,
         "type": {
-          "name": "boolean"
+          "name": "ReactNode"
+        }
+      },
+      "endIcon": {
+        "defaultValue": null,
+        "description": "Icon displayed at the start of the button",
+        "name": "endIcon",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
+          "name": "ButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
+            "name": "ButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ReactNode"
         }
       },
       "form": {
@@ -626,7 +645,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
+          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
         }
       },
       "recipe": {
@@ -1019,7 +1038,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\">"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"surface\" | \"plain\">"
         }
       },
       "size": {
