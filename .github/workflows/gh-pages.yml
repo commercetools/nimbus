@@ -32,6 +32,8 @@ jobs:
         run: pnpm build
         env:
           NODE_ENV: production
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install
       - name: Run tests
         run: pnpm test
         continue-on-error: true
