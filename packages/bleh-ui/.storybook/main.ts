@@ -42,13 +42,21 @@ const config: StorybookConfig = {
 
       // Extend if needed...
       propFilter: (prop) => {
-        // common props that every component may have
+        // ... common props that every component may have
         const whitelistedProps = ["ref", "colorScheme", "asChild"];
+
+        // ... props coming from the bleh-ui package
+        const isOneOfOurTypes = !!prop.parent?.fileName.includes("bleh-ui/src");
+
         // ... props coming from the react-aria package
         const isReactAriaProp =
           !!prop.parent?.fileName.includes("@react-types");
 
-        return isReactAriaProp || whitelistedProps.includes(prop.name);
+        return (
+          isOneOfOurTypes ||
+          isReactAriaProp ||
+          whitelistedProps.includes(prop.name)
+        );
       },
     },
   },
