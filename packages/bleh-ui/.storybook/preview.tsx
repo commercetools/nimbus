@@ -63,7 +63,7 @@ const preview: Preview = {
       options: {},
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "a11y-test"],
   decorators: [
     (Story) => {
       return (
