@@ -132,9 +132,9 @@ export const Variants: Story = {
 };
 
 /**
- * Showcase Colors
+ * Showcase Tones
  */
-export const Colors: Story = {
+export const Tones: Story = {
   args: {
     children: <DemoIcon />,
     ["aria-label"]: "test-button",
