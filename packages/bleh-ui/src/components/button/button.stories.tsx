@@ -4,6 +4,7 @@ import { Box, Stack } from "@/components";
 import type { ButtonProps } from "./button.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
 import { ArrowRightCircle as DemoIcon } from "@bleh-ui/icons";
+import { createRef } from "react";
 
 const meta: Meta<typeof Button> = {
   title: "components/Button",
@@ -80,70 +81,6 @@ export const Base: Story = {
       await userEvent.keyboard(" ");
       await expect(onPress).toHaveBeenCalledTimes(3);
     });
-  },
-};
-
-export const SmokeTest: Story = {
-  args: {
-    children: "Button",
-    startIcon: <DemoIcon />,
-    endIcon: <DemoIcon />,
-    onPress: fn(),
-    // @ts-expect-error: works, but causes squiggly lines, investigate
-    ["data-testid"]: "test",
-    ["aria-label"]: "test-button",
-  },
-  render: (args) => {
-    return (
-      <Stack gap="1200">
-        {tones.map((tone) => (
-          <Stack key={tone as string} direction="column" gap="400">
-            {sizes.map((size) => (
-              <Stack direction="row" key={size as string}>
-                {variants.map((variant) => (
-                  <Box key={variant as string}>
-                    <Stack direction="column" css={{ "> *": { flex: "none" } }}>
-                      <Box>
-                        <Button
-                          {...args}
-                          variant={variant}
-                          size={size}
-                          tone={tone}
-                        >
-                          {JSON.stringify(variant)} {args.children}
-                        </Button>
-                      </Box>
-                      <Box>
-                        <Button
-                          {...args}
-                          variant={variant}
-                          size={size}
-                          endIcon={undefined}
-                          tone={tone}
-                        >
-                          {JSON.stringify(variant)} {args.children}
-                        </Button>
-                      </Box>
-                      <Box>
-                        <Button
-                          {...args}
-                          variant={variant}
-                          size={size}
-                          startIcon={undefined}
-                          tone={tone}
-                        >
-                          {JSON.stringify(variant)} {args.children}
-                        </Button>
-                      </Box>
-                    </Stack>
-                  </Box>
-                ))}
-              </Stack>
-            ))}
-          </Stack>
-        ))}
-      </Stack>
-    );
   },
 };
 
@@ -238,7 +175,7 @@ export const Variants: Story = {
   },
 };
 
-export const Colors: Story = {
+export const Tones: Story = {
   args: {
     children: "Demo Button",
   },
@@ -252,13 +189,111 @@ export const Colors: Story = {
             gap="400"
             alignItems="center"
           >
-            {variants.map((size) => (
+            {variants.map((variant) => (
               <Button
-                key={size as string}
+                key={variant as string}
                 {...args}
-                variant={size}
+                variant={variant}
                 tone={tone}
               />
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+const buttonRef = createRef<HTMLButtonElement>();
+
+export const WithRef: Story = {
+  args: {
+    children: "Demo Button",
+  },
+  render: (args) => {
+    return (
+      <Button ref={buttonRef} {...args}>
+        {args.children}
+      </Button>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button");
+
+    await step("Does accept ref's", async () => {
+      await expect(buttonRef.current).toBe(button);
+    });
+  },
+};
+
+export const SmokeTest: Story = {
+  args: {
+    children: "Button",
+    startIcon: <DemoIcon />,
+    endIcon: <DemoIcon />,
+    onPress: fn(),
+    // @ts-expect-error: works, but causes squiggly lines, investigate
+    ["data-testid"]: "test",
+    ["aria-label"]: "test-button",
+  },
+  render: (args) => {
+    return (
+      <Stack gap="1200">
+        {tones.map((tone) => (
+          <Stack key={tone as string} direction="column" gap="400">
+            {sizes.map((size) => (
+              <Stack direction="row" key={size as string}>
+                {variants.map((variant) => (
+                  <Box key={variant as string}>
+                    <Stack direction="column" css={{ "> *": { flex: "none" } }}>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          tone={tone}
+                        >
+                          {JSON.stringify(variant)} {args.children}
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          tone={tone}
+                          isDisabled
+                        >
+                          {JSON.stringify(variant)} {args.children}
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          endIcon={undefined}
+                          tone={tone}
+                        >
+                          {JSON.stringify(variant)} {args.children}
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          startIcon={undefined}
+                          tone={tone}
+                        >
+                          {JSON.stringify(variant)} {args.children}
+                        </Button>
+                      </Box>
+                    </Stack>
+                  </Box>
+                ))}
+              </Stack>
             ))}
           </Stack>
         ))}
