@@ -8,6 +8,6 @@ type FunctionalButtonProps = ButtonRootProps & AriaButtonProps;
 export interface ButtonProps extends FunctionalButtonProps {
   /** Icon displayed at the start of the button */
   startIcon?: ReactNode;
-  /** Icon displayed at the start of the button */
+  /** Icon displayed at the end of the button */
   endIcon?: ReactNode;
 }

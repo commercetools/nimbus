@@ -351,7 +351,7 @@
       },
       "endIcon": {
         "defaultValue": null,
-        "description": "Icon displayed at the start of the button",
+        "description": "Icon displayed at the end of the button",
         "name": "endIcon",
         "parent": {
           "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",

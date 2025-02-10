@@ -260,6 +260,7 @@ export const SmokeTest: Story = {
                       <Box>
                         <Button
                           {...args}
+                          as="a"
                           variant={variant}
                           size={size}
                           tone={tone}
