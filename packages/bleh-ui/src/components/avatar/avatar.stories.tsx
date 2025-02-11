@@ -59,13 +59,13 @@ export const Base: Story = {
 
     await step("Can be triggered with enter", async () => {
       await userEvent.keyboard("{enter}");
-      await expect(onClick).toHaveBeenCalledTimes(1);
+      await expect(onClick).toHaveBeenCalledTimes(2);
     });
 
     await step("Can be triggered with space-bar", async () => {
       await expect(avatar).toHaveFocus();
       await userEvent.keyboard(" ");
-      await expect(onClick).toHaveBeenCalledTimes(1);
+      await expect(onClick).toHaveBeenCalledTimes(3);
     });
   },
 };
@@ -113,7 +113,6 @@ export const BaseWithInitials: Story = {
     ["aria-label"]: "test-avatar",
     onClick: fn(),
     alt: "avatar",
-    tabIndex: 0,
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

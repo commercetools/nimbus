@@ -21,36 +21,33 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
 
   const objRef = useObjectRef(ref);
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    objRef.current?.focus();
-    onClick?.(event);
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if ((event.key === "Enter" || event.key === " ") && onClick) {
+      if (event.key === " ") {
+        event.preventDefault();
+      }
+      onClick(event as unknown as React.MouseEvent<HTMLDivElement>);
+    }
+  };
+
+  const sharedProps = {
+    role: "img",
+    ref: objRef,
+    onClick,
+    tabIndex,
+    onKeyDown: handleKeyDown,
+    ...rest,
   };
 
   if (src) {
     return (
-      <AvatarRoot
-        role="img"
-        ref={objRef}
-        onClick={handleClick}
-        tabIndex={tabIndex}
-        {...rest}
-      >
+      <AvatarRoot {...sharedProps}>
         <Image src={src} alt={alt || name} />
       </AvatarRoot>
     );
   }
   if (name) {
-    return (
-      <AvatarRoot
-        role="img"
-        ref={objRef}
-        onClick={handleClick}
-        tabIndex={tabIndex}
-        {...rest}
-      >
-        {getInitials(name)}
-      </AvatarRoot>
-    );
+    return <AvatarRoot {...sharedProps}>{getInitials(name)}</AvatarRoot>;
   }
 });
 

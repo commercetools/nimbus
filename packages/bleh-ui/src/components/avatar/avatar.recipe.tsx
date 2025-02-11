@@ -14,8 +14,10 @@ export const avatarRecipe = defineRecipe({
     fontWeight: "600",
     cursor: "pointer",
     transition: "all 0.2s",
+    outline: "2px solid transparent",
     _focus: {
-      boxShadow: "0 0 0 2px ",
+      borderWidth: "2px",
+      borderColor: "primary.7",
     },
   },
   variants: {
@@ -52,6 +54,7 @@ export const avatarRecipe = defineRecipe({
       disabled: {
         backgroundColor: "primary.3",
         color: "primary.11",
+        cursor: "not-allowed",
         opacity: 0.5,
       },
     },
