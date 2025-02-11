@@ -6950,5 +6950,479 @@
         }
       }
     }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip\n\nFeatures:\n\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'sizes', etc. configured in the recipe\n- allows overriding styles by using style-props\n- supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)",
+    "displayName": "Tooltip",
+    "methods": [],
+    "props": {
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "recipe": {
+        "defaultValue": null,
+        "description": "",
+        "name": "recipe",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "RecipeDefinition<RecipeVariantRecord>"
+        }
+      },
+      "unstyled": {
+        "defaultValue": null,
+        "description": "If `true`, the element will opt out of the theme styles.",
+        "name": "unstyled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "UnstyledProp"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "as": {
+        "defaultValue": null,
+        "description": "",
+        "name": "as",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ElementType"
+        }
+      },
+      "asChild": {
+        "defaultValue": null,
+        "description": "",
+        "name": "asChild",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "size": {
+        "defaultValue": null,
+        "description": "",
+        "name": "size",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
+        }
+      },
+      "variant": {
+        "defaultValue": null,
+        "description": "",
+        "name": "variant",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
+        }
+      },
+      "style": {
+        "defaultValue": null,
+        "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+        "name": "style",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "StyleRenderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "CSSProperties | ((values: TooltipRenderProps & { defaultStyle: CSSProperties; }) => CSSProperties)"
+        }
+      },
+      "className": {
+        "defaultValue": null,
+        "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+        "name": "className",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "StyleRenderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string | ((values: TooltipRenderProps & { defaultClassName: string; }) => string)"
+        }
+      },
+      "aria-describedby": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) that describes the object.",
+        "name": "aria-describedby",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-details": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+        "name": "aria-details",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-label": {
+        "defaultValue": null,
+        "description": "Defines a string value that labels the current element.",
+        "name": "aria-label",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-labelledby": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) that labels the current element.",
+        "name": "aria-labelledby",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "placement": {
+        "defaultValue": {
+          "value": "'top'"
+        },
+        "description": "The placement of the tooltip with respect to the trigger.",
+        "name": "placement",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "TooltipProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "TooltipProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Placement"
+        }
+      },
+      "arrowBoundaryOffset": {
+        "defaultValue": {
+          "value": "0"
+        },
+        "description": "The minimum distance the arrow's edge should be from the edge of the overlay element.",
+        "name": "arrowBoundaryOffset",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+overlays@3.25.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPositionProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+overlays@3.25.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/overlays/dist/types.d.ts",
+            "name": "AriaPositionProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "triggerRef": {
+        "defaultValue": null,
+        "description": "The ref for the element which the tooltip positions itself with respect to.\n\nWhen used within a TooltipTrigger this is set automatically. It is only required when used standalone.",
+        "name": "triggerRef",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "TooltipProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "TooltipProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "RefObject<Element>"
+        }
+      },
+      "isEntering": {
+        "defaultValue": null,
+        "description": "Whether the tooltip is currently performing an entry animation.",
+        "name": "isEntering",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "TooltipProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "TooltipProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isExiting": {
+        "defaultValue": null,
+        "description": "Whether the tooltip is currently performing an exit animation.",
+        "name": "isExiting",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "TooltipProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "TooltipProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "UNSTABLE_portalContainer": {
+        "defaultValue": {
+          "value": "document.body"
+        },
+        "description": "The container element in which the overlay portal will be placed. This may have unknown behavior depending on where it is portalled to.",
+        "name": "UNSTABLE_portalContainer",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "TooltipProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "name": "TooltipProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Element"
+        }
+      },
+      "containerPadding": {
+        "defaultValue": {
+          "value": "12"
+        },
+        "description": "The placement padding that should be applied between the element and its\nsurrounding container.",
+        "name": "containerPadding",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "PositionProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "crossOffset": {
+        "defaultValue": {
+          "value": "0"
+        },
+        "description": "The additional offset applied along the cross axis between the element and its\nanchor element.",
+        "name": "crossOffset",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "PositionProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "shouldFlip": {
+        "defaultValue": {
+          "value": "true"
+        },
+        "description": "Whether the element should flip its orientation (e.g. top to bottom or left to right) when\nthere is insufficient room for it to render completely.",
+        "name": "shouldFlip",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "PositionProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isOpen": {
+        "defaultValue": null,
+        "description": "Whether the element is rendered.",
+        "name": "isOpen",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "PositionProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "defaultOpen": {
+        "defaultValue": null,
+        "description": "Whether the overlay is open by default (uncontrolled).",
+        "name": "defaultOpen",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "onOpenChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the overlay's open state changes.",
+        "name": "onOpenChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isOpen: boolean) => void"
+        }
+      }
+    }
   }
 ]

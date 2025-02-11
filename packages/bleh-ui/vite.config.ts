@@ -1,5 +1,6 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
@@ -8,7 +9,14 @@ import dts from "vite-plugin-dts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const baseConfig = {
-  plugins: [react(), viteTsconfigPaths()],
+  plugins: [
+    react(),
+    viteTsconfigPaths(),
+    // https://react-spectrum.adobe.com/react-aria/internationalization.html#vite
+    optimizeLocales.vite({
+      locales: ["en-US", "fr-FR"],
+    }),
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, "./src/index.ts"),

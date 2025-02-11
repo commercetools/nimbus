@@ -1,0 +1,92 @@
+---
+id: Components-tooltip
+title: tooltip
+description: A contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - tooltip
+tags:
+  - component
+---
+
+# tooltip
+
+A contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <Tooltip>I am Tooltip!</Tooltip>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Tooltip key={size} size={size}>'{size}' Tooltip</Tooltip>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <Tooltip key={variant} variant={variant}>'{variant}' Tooltip</Tooltip>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <Tooltip colorPalette={color} key={variant} variant={variant}>
+              '{variant}' Tooltip
+            </Tooltip>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="Tooltip" />
