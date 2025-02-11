@@ -17,3 +17,4 @@ export * from "./stack";
 export * from "./table";
 export * from "./text";
 export * from "./ui-kit-provider";
+export * from "./avatar";

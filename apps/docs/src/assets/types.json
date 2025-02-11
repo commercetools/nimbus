@@ -6950,5 +6950,223 @@
         }
       }
     }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "Avatar",
+    "methods": [],
+    "props": {
+      "name": {
+        "defaultValue": null,
+        "description": "The name used to show initials",
+        "name": "name",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "string"
+        }
+      },
+      "src": {
+        "defaultValue": null,
+        "description": "The image URL",
+        "name": "src",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "alt": {
+        "defaultValue": null,
+        "description": "Alt text for the avatar image",
+        "name": "alt",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "onError": {
+        "defaultValue": null,
+        "description": "Callback when image fails to load",
+        "name": "onError",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "() => void"
+        }
+      },
+      "showBorder": {
+        "defaultValue": null,
+        "description": "Show border around avatar",
+        "name": "showBorder",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "size": {
+        "defaultValue": null,
+        "description": "The size of the avatar",
+        "name": "size",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"md\" | \"2xs\" | \"xs\""
+        }
+      },
+      "variant": {
+        "defaultValue": null,
+        "description": "The variant style of the avatar",
+        "name": "variant",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"default\" | \"disabled\" | \"focused\""
+        }
+      },
+      "tone": {
+        "defaultValue": null,
+        "description": "The color palette to use for the avatar",
+        "name": "tone",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"neutral\" | \"primary\" | \"critical\""
+        }
+      },
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "If the avatar is disabled",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLDivElement>"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
+        }
+      }
+    }
   }
 ]

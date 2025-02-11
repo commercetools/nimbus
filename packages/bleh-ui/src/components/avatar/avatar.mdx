@@ -1,0 +1,163 @@
+---
+id: Components-Avatar
+title: Avatar
+description: >-
+  A reusable Avatar component to display user profile pictures or initials that
+  is flexible and customizable for various use cases.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Avatar
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=180-1106&t=MVbo0ZHDE08wKshT-0
+
+---
+
+# Avatar
+
+A reusable Avatar component that displays user profile pictures or initials. It's accessible, keyboard-navigable, and follows WCAG guidelines.
+
+## Basic Usage
+
+Use the Avatar component to represent a user with either their profile picture or initials.
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="4">
+    <Avatar name="John Doe" src="https://bit.ly/dan-abramov" />
+    <Avatar name="Jane Smith" /> {/* Shows initials when no image */}
+  </Stack>
+)
+```
+
+## Features
+
+### Accessibility
+
+The Avatar component is WCAG compliant and includes:
+- Proper ARIA labels for screen readers
+- Keyboard navigation support
+- Color contrast compliance
+
+```jsx-live
+const App = () => (
+  <Avatar 
+    name="John Doe"
+    src="https://bit.ly/dan-abramov"
+    aria-label="Profile picture of John Doe"
+  />
+)
+```
+
+### Sizes
+
+Available in multiple sizes to suit different contexts:
+
+```jsx-live
+const App = () => {
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center" gap="4">
+      {sizes.map(size => (
+        <Avatar 
+          key={size} 
+          size={size} 
+          name="John Doe" 
+          src="https://bit.ly/dan-abramov" 
+        />
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Support for different visual styles:
+
+```jsx-live
+const App = () => {
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal" gap="4">
+      {variants.map(variant => (
+        <Avatar 
+          key={variant} 
+          variant={variant} 
+          name="John Doe" 
+          src="https://bit.ly/dan-abramov" 
+        />
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Default Icon
+
+When no image or name is provided, a default icon is shown:
+
+```jsx-live
+const App = () => (
+  <Avatar />
+)
+```
+
+### Fallback Behavior
+
+The component handles various scenarios gracefully:
+- Shows initials when no image is provided
+- Shows default icon when no name or image is provided
+- Handles image loading errors
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="4">
+    <Avatar name="John Doe" /> {/* Shows JD */}
+    <Avatar /> {/* Shows default icon */}
+    <Avatar name="John Doe" src="invalid-url.jpg" /> {/* Falls back to initials */}
+  </Stack>
+)
+```
+
+## Props
+
+<PropTable id="Avatar" />
+
+## Design Tokens
+
+The Avatar component uses these design tokens:
+
+- `sizes`: Controls avatar dimensions
+- `colors`: Determines background and text colors
+- `radii`: Defines border radius
+- `borders`: Specifies border styles
+- `shadows`: Applies box shadows (when applicable)
+
+## Customization
+
+The Avatar can be customized using style props:
+
+```jsx-live
+const App = () => (
+  <Avatar
+    name="John Doe"
+    src="https://bit.ly/dan-abramov"
+    borderWidth="2px"
+    borderColor="primary.9"
+    boxShadow="md"
+  />
+)
+```
+
+## Best Practices
+
+- Use appropriate sizes based on context (e.g., smaller for comments, larger for profiles)
+- Provide descriptive `aria-label` for better accessibility
+- Include fallback text using the `name` prop
+- Optimize images for better performance
