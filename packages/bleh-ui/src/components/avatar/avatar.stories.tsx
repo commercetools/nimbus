@@ -133,6 +133,30 @@ export const BaseWithInitials: Story = {
   },
 };
 
+export const DisabledWithInitials: Story = {
+  args: {
+    name: "Bond",
+    // @ts-expect-error: todo: investigate why this causes squiggly lines
+    ["data-testid"]: "test-with-single-name",
+    ["aria-label"]: "test-avatar",
+    onClick: fn(),
+    alt: "avatar",
+    isDisabled: true,
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByTestId("test-with-single-name");
+
+    await step(
+      "Take first two letters when only one name is provided",
+      async () => {
+        await expect(avatar).toHaveTextContent("BO");
+      }
+    );
+  },
+};
+
 export const SizesWithInitials: Story = {
   args: {
     name: "Avatar",

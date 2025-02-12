@@ -45,6 +45,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
     style: {
       pointerEvents: isDisabled ? ("none" as const) : ("auto" as const),
       cursor: isDisabled ? ("not-allowed" as const) : ("pointer" as const),
+      opacity: isDisabled ? 0.5 : undefined,
     },
     ...rest,
   };
