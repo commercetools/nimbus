@@ -22,7 +22,6 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
   const objRef = useObjectRef(ref);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    console.log("isDisabled", isDisabled);
     if (
       (event.key === "Enter" || event.key === " ") &&
       onClick &&
