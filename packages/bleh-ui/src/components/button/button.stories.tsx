@@ -127,10 +127,6 @@ export const AsLink: Story = {
   },
 };
 
-const Hans = (props) => {
-  return <div {...props} />;
-};
-
 export const WithAsChild: Story = {
   args: {
     children: (
