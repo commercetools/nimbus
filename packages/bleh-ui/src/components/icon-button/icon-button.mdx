@@ -1,28 +1,32 @@
 ---
 id: Components-IconButton
 title: IconButton
-description: displays a button with only an icon as child
+description: displays a button with an icon only as child
 documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Inputs
   - IconButton
 tags:
   - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev
+
 ---
 
 # IconButton
 
-displays a button with only an icon as child
+displays a button with an icon only as child.
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
+If unconfigured `IconButton` will default to a neutral state. It is important to
+configure `IconButton` properly to ensure it displays as intended.
 
 ```jsx-live
-const App = () => <IconButton>I am IconButton!</IconButton>
+const App = () => <IconButton><Icons.Gift/></IconButton>
 ```
-
 
 ### Sizes
 
@@ -30,13 +34,14 @@ Available sizes.
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const sizes = ['md', 'xs', '2xs'];
 
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <IconButton key={size} size={size}>'{size}' IconButton</IconButton>
+        <IconButton tone="primary" variant="solid" key={size} size={size}>
+          <Icons.Gift/>
+        </IconButton>
       ))}
     </Stack>
   )
@@ -50,26 +55,28 @@ Available variants.
 ```jsx-live
 const App = () => {
 
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const variants = ['solid', 'outline', 'ghost', 'link'];
 
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <IconButton key={variant} variant={variant}>'{variant}' IconButton</IconButton>
+        <IconButton tone="primary" key={variant} variant={variant}>
+          <Icons.Gift/>
+        </IconButton>
       ))}
     </Stack>
   )
 }
 ```
 
-### Colors
+### Tones
 
-[Explain usage with different colors/semantics.]
+Available tones.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+  const variants = ["solid", "outline", "ghost", "link"];
+  const colors = ["primary", "neutral",  "error"];
 
   return (
     <Stack>
@@ -77,7 +84,7 @@ const App = () => {
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
             <IconButton colorPalette={color} key={variant} variant={variant}>
-              '{variant}' IconButton
+              <Icons.Gift/>
             </IconButton>
           ))}
         </Stack>
