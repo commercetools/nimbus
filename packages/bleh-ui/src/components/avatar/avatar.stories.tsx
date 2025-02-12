@@ -107,7 +107,7 @@ export const Sizes: Story = {
     return (
       <Stack direction="row" gap="400" alignItems="center">
         {sizes.map((size) => (
-          <Avatar key={size} {...args} size={size} alt="avatar" />
+          <Avatar key={size as string} {...args} size={size} alt="avatar" />
         ))}
       </Stack>
     );
@@ -167,7 +167,7 @@ export const SizesWithInitials: Story = {
     return (
       <Stack direction="row" gap="400" alignItems="center">
         {sizes.map((size) => (
-          <Avatar key={size} {...args} size={size} alt="avatar" />
+          <Avatar key={size as string} {...args} size={size} alt="avatar" />
         ))}
       </Stack>
     );
@@ -184,7 +184,7 @@ export const Colors: Story = {
         {
           <Stack direction="row" gap="400" alignItems="center">
             {tones.map((tone) => (
-              <Avatar key={tone} {...args} tone={tone} alt="avatar" />
+              <Avatar key={tone as string} {...args} tone={tone} alt="avatar" />
             ))}
           </Stack>
         }

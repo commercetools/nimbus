@@ -1,8 +1,8 @@
 import type { HTMLAttributes } from "react";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import { avatarRecipe } from "./avatar.recipe.tsx";
-
-export interface AvatarProps
+import type { AvatarRootProps } from "./avatar.slots";
+export interface AvatarComponentProps
   extends HTMLAttributes<HTMLDivElement>,
     RecipeVariantProps<typeof avatarRecipe> {
   /**
@@ -26,19 +26,12 @@ export interface AvatarProps
    */
   showBorder?: boolean;
   /**
-   * The size of the avatar
-   */
-  size?: "md" | "2xs" | "xs";
-  /**
-   * The variant style of the avatar
-   */
-  variant?: "default" | "focused" | "disabled";
-  /**
-   * The color palette to use for the avatar
-   */
-  tone?: "primary" | "critical" | "neutral";
-  /**
    * If the avatar is disabled
    */
   isDisabled?: boolean;
+}
+
+type FunctionalAvatarProps = AvatarRootProps & AvatarComponentProps;
+export interface AvatarProps extends FunctionalAvatarProps {
+  children?: React.ReactNode;
 }
