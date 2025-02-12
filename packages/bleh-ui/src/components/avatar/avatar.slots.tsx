@@ -16,6 +16,5 @@ const { withContext } = createRecipeContext({ recipe: avatarRecipe });
 export const AvatarRoot = withContext<HTMLDivElement, AvatarRootProps>("div", {
   defaultProps: {
     role: "img",
-    "aria-label": "avatar",
   },
 });

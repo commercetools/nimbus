@@ -21,9 +21,11 @@ const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
 
 const tones: AvatarProps["tone"][] = ["primary", "neutral", "critical"];
 
+const avatarImg = "https://thispersondoesnotexist.com/ ";
+
 export const Base: Story = {
   args: {
-    src: "https://bit.ly/dan-abramov",
+    src: avatarImg,
     // @ts-expect-error: todo: investigate why this causes squiggly lines
     ["data-testid"]: "test",
     ["aria-label"]: "test-avatar",
@@ -70,7 +72,7 @@ export const Base: Story = {
 
 export const Disabled: Story = {
   args: {
-    src: "https://bit.ly/dan-abramov",
+    src: avatarImg,
     // @ts-expect-error: todo: investigate why this causes squiggly lines
     ["data-testid"]: "test",
     ["aria-label"]: "test-avatar",
@@ -99,7 +101,7 @@ export const Disabled: Story = {
 
 export const Sizes: Story = {
   args: {
-    src: "https://bit.ly/dan-abramov",
+    src: avatarImg,
   },
   render: (args) => {
     return (

@@ -26,8 +26,8 @@ Use the Avatar component to represent a user with either their profile picture o
 
 ```jsx-live
 const App = () => (
-  <Stack direction="horizontal" gap="4">
-    <Avatar name="John Doe" src="https://bit.ly/dan-abramov" />
+  <Stack direction="horizontal">
+    <Avatar name="John Doe" src="https://thispersondoesnotexist.com/ " />
     <Avatar name="Jane Smith" /> {/* Shows initials when no image */}
   </Stack>
 )
@@ -46,7 +46,7 @@ The Avatar component is WCAG compliant and includes:
 const App = () => (
   <Avatar 
     name="John Doe"
-    src="https://bit.ly/dan-abramov"
+    src="https://thispersondoesnotexist.com/ "
     aria-label="Profile picture of John Doe"
   />
 )
@@ -58,39 +58,16 @@ Available in multiple sizes to suit different contexts:
 
 ```jsx-live
 const App = () => {
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const sizes = ["md", "xs", "2xs"];
 
   return (
-    <Stack direction="horizontal" alignItems="center" gap="4">
+    <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
         <Avatar 
           key={size} 
           size={size} 
           name="John Doe" 
-          src="https://bit.ly/dan-abramov" 
-        />
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Variants
-
-Support for different visual styles:
-
-```jsx-live
-const App = () => {
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal" gap="4">
-      {variants.map(variant => (
-        <Avatar 
-          key={variant} 
-          variant={variant} 
-          name="John Doe" 
-          src="https://bit.ly/dan-abramov" 
+          src="https://thispersondoesnotexist.com/ " 
         />
       ))}
     </Stack>
@@ -117,7 +94,7 @@ The component handles various scenarios gracefully:
 
 ```jsx-live
 const App = () => (
-  <Stack direction="horizontal" gap="4">
+  <Stack direction="horizontal">
     <Avatar name="John Doe" /> {/* Shows JD */}
     <Avatar /> {/* Shows default icon */}
     <Avatar name="John Doe" src="invalid-url.jpg" /> {/* Falls back to initials */}
@@ -128,36 +105,3 @@ const App = () => (
 ## Props
 
 <PropTable id="Avatar" />
-
-## Design Tokens
-
-The Avatar component uses these design tokens:
-
-- `sizes`: Controls avatar dimensions
-- `colors`: Determines background and text colors
-- `radii`: Defines border radius
-- `borders`: Specifies border styles
-- `shadows`: Applies box shadows (when applicable)
-
-## Customization
-
-The Avatar can be customized using style props:
-
-```jsx-live
-const App = () => (
-  <Avatar
-    name="John Doe"
-    src="https://bit.ly/dan-abramov"
-    borderWidth="2px"
-    borderColor="primary.9"
-    boxShadow="md"
-  />
-)
-```
-
-## Best Practices
-
-- Use appropriate sizes based on context (e.g., smaller for comments, larger for profiles)
-- Provide descriptive `aria-label` for better accessibility
-- Include fallback text using the `name` prop
-- Optimize images for better performance
