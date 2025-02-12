@@ -19,8 +19,6 @@ type Story = StoryObj<typeof Avatar>;
 
 const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
 
-const variants: AvatarProps["variant"][] = ["default", "focused", "disabled"];
-
 const tones: AvatarProps["tone"][] = ["primary", "neutral", "critical"];
 
 export const Base: Story = {
@@ -70,9 +68,35 @@ export const Base: Story = {
   },
 };
 
-/**
- * Showcase Sizes
- */
+export const Disabled: Story = {
+  args: {
+    src: "https://bit.ly/dan-abramov",
+    // @ts-expect-error: todo: investigate why this causes squiggly lines
+    ["data-testid"]: "test",
+    ["aria-label"]: "test-avatar",
+    onClick: fn(),
+    alt: "avatar",
+    isDisabled: true,
+  },
+
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByTestId("test");
+    const onClick = args.onClick;
+
+    await step("Is not clickable", async () => {
+      avatar.click();
+      await expect(onClick).not.toBeCalled();
+      avatar.blur();
+    });
+
+    await step("Is not focusable with <tab> key", async () => {
+      await userEvent.tab();
+      await expect(avatar).not.toHaveFocus();
+    });
+  },
+};
+
 export const Sizes: Story = {
   args: {
     src: "https://bit.ly/dan-abramov",
@@ -88,23 +112,6 @@ export const Sizes: Story = {
   },
 };
 
-/**
- * Showcase Variants
- */
-export const Variants: Story = {
-  args: {
-    src: "https://bit.ly/dan-abramov",
-  },
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {variants.map((variant) => (
-          <Avatar key={variant} {...args} variant={variant} alt="avatar" />
-        ))}
-      </Stack>
-    );
-  },
-};
 export const BaseWithInitials: Story = {
   args: {
     name: "John Doe",
@@ -126,9 +133,6 @@ export const BaseWithInitials: Story = {
   },
 };
 
-/**
- * Showcase Sizes with initials
- */
 export const SizesWithInitials: Story = {
   args: {
     name: "Avatar",
@@ -144,27 +148,6 @@ export const SizesWithInitials: Story = {
   },
 };
 
-/**
- * Showcase Variants with initials
- */
-export const VariantsWithInitials: Story = {
-  args: {
-    name: "Avatar",
-  },
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {variants.map((variant) => (
-          <Avatar key={variant} {...args} variant={variant} alt="avatar" />
-        ))}
-      </Stack>
-    );
-  },
-};
-
-/**
- * Showcase Colors with initials
- */
 export const Colors: Story = {
   args: {
     name: "Avatar",
@@ -172,24 +155,13 @@ export const Colors: Story = {
   render: (args) => {
     return (
       <Stack>
-        {tones.map((color) => (
-          <Stack
-            key={color as string}
-            direction="row"
-            gap="400"
-            alignItems="center"
-          >
-            {variants.map((variant) => (
-              <Avatar
-                key={variant}
-                {...args}
-                variant={variant}
-                tone={color}
-                alt="avatar"
-              />
+        {
+          <Stack direction="row" gap="400" alignItems="center">
+            {tones.map((tone) => (
+              <Avatar key={tone} {...args} tone={tone} alt="avatar" />
             ))}
           </Stack>
-        ))}
+        }
       </Stack>
     );
   },

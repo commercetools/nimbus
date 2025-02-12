@@ -19,6 +19,9 @@ export const avatarRecipe = defineRecipe({
       borderWidth: "2px",
       borderColor: "primary.7",
     },
+    _disabled: {
+      layerStyle: "disabled",
+    },
   },
   variants: {
     size: {
@@ -40,28 +43,9 @@ export const avatarRecipe = defineRecipe({
         color: "critical",
       },
     },
-    variant: {
-      default: {
-        backgroundColor: "primary.3",
-        color: "primary",
-      },
-      focused: {
-        backgroundColor: "transparent",
-        borderWidth: "2px",
-        borderColor: "primary.7",
-        color: "primary.11",
-      },
-      disabled: {
-        backgroundColor: "primary.3",
-        color: "primary.11",
-        cursor: "not-allowed",
-        opacity: 0.5,
-      },
-    },
   },
   defaultVariants: {
     size: "md",
-    variant: "default",
     tone: "primary",
   },
 });

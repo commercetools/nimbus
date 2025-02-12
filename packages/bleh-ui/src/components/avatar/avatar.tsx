@@ -17,12 +17,17 @@ function getInitials(name: string) {
 }
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
-  const { name, src, alt, onClick, tabIndex = 0, ...rest } = props;
+  const { name, src, alt, onClick, tabIndex = 0, isDisabled, ...rest } = props;
 
   const objRef = useObjectRef(ref);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if ((event.key === "Enter" || event.key === " ") && onClick) {
+    console.log("isDisabled", isDisabled);
+    if (
+      (event.key === "Enter" || event.key === " ") &&
+      onClick &&
+      !isDisabled
+    ) {
       if (event.key === " ") {
         event.preventDefault();
       }
@@ -31,11 +36,16 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
   };
 
   const sharedProps = {
-    role: "img",
+    role: "button",
     ref: objRef,
-    onClick,
-    tabIndex,
+    onClick: isDisabled ? undefined : onClick,
+    tabIndex: isDisabled ? -1 : tabIndex,
     onKeyDown: handleKeyDown,
+    "aria-disabled": isDisabled,
+    style: {
+      pointerEvents: isDisabled ? ("none" as const) : ("auto" as const),
+      cursor: isDisabled ? ("not-allowed" as const) : ("pointer" as const),
+    },
     ...rest,
   };
 
