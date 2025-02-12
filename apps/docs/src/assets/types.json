@@ -6960,6 +6960,25 @@
     "displayName": "IconButton",
     "methods": [],
     "props": {
+      "aria-label": {
+        "defaultValue": null,
+        "description": "explains the intended action, required for accessibility",
+        "name": "aria-label",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/icon-button/icon-button.types.tsx",
+          "name": "IconButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/icon-button/icon-button.types.tsx",
+            "name": "IconButtonProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "string"
+        }
+      },
       "ref": {
         "defaultValue": null,
         "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",

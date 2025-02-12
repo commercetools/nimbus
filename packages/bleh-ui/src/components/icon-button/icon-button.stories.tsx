@@ -31,7 +31,7 @@ const variants: IconButtonProps["variant"][] = [
   "link",
 ];
 
-const tones: IconButtonProps["tone"][] = ["primary", "critical", "neutral"];
+const tones: IconButtonProps["tone"][] = ["primary", "neutral", "critical"];
 
 /**
  * Story type for TypeScript support
