@@ -33,7 +33,7 @@ const variants: ButtonProps["variant"][] = [
   "link",
 ];
 
-const tones: ButtonProps["tone"][] = ["primary", "critical", "neutral"];
+const tones: ButtonProps["tone"][] = ["primary", "neutral", "critical"];
 
 export const Base: Story = {
   args: {

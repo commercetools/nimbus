@@ -21,8 +21,8 @@ Displays a Button.
 
 ## Basic Usage
 
-No props are required to use the Button component. If unconfigured it will pick
-up defaults for `variant`, `size`, and `tone`.
+If unconfigured it will default to a neutral state. It is important to configure
+the Button properly to ensure it displays as intended.
 
 ```jsx-live
 const App = () => <Button>I am a Button</Button>
@@ -36,7 +36,7 @@ To handle the differences between mouse-, touch- and keyboard-interactions, the
 experience across different devices and input methods:
 
 ```jsx-live
-const App = () => <Button onPress={()=>alert()}>I am accessible</Button>
+const App = () => <Button tone="primary" variant="solid" onPress={()=>alert()}>I am accessible</Button>
 ```
 
 ## Custom DOM-element
@@ -48,7 +48,7 @@ by default, but supports rendering as a different tag to the DOM. Use the
 
 ```jsx-live
 const App = () => (
-  <Button asChild>
+  <Button tone="primary" variant="solid" asChild>
     <a href="http://www.commercetools.com" target="_blank">I am a button in disguise</a>
   </Button>
 )
@@ -60,7 +60,7 @@ The Button component supports forwarding `data-*` and `aria-*` attributes. This
 can be useful for tracking tools & a11y.
 
 ```jsx-live
-const App = () => <Button data-foo="bar">I can have data-attributes</Button>
+const App = () => <Button tone="primary" variant="solid" data-foo="bar">I can have data-attributes</Button>
 ```
 
 ## Customizing the look
@@ -78,7 +78,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <Button key={size} size={size}>'{size}' Button</Button>
+        <Button tone="primary" variant="solid" key={size} size={size}>'{size}' Button</Button>
       ))}
     </Stack>
   )
@@ -94,12 +94,12 @@ buttons with different variants can be used and displayed next to each other.
 ```jsx-live
 const App = () => {
 
-  const variants = ['solid', 'subtle', 'outline', 'ghost']
+  const variants = ['solid', 'outline', 'ghost', "link"]
 
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <Button key={variant} variant={variant}>'{variant}' Button</Button>
+        <Button tone="primary" key={variant} variant={variant}>'{variant}' Button</Button>
       ))}
     </Stack>
   )
@@ -114,8 +114,8 @@ the Button.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link"];
-  const colors = ["primary", "critical", "neutral"];
+  const variants = ["solid", "outline", "ghost", "link"];
+  const colors = ["primary", "critical"];
 
   return (
     <Stack>
