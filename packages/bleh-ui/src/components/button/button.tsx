@@ -1,17 +1,19 @@
-import { forwardRef } from "react";
-import { useButton, useObjectRef } from "react-aria";
+import { forwardRef, useRef } from "react";
+import { useButton, useObjectRef, mergeProps } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 
 import { ButtonRoot } from "./button.slots.tsx";
 import type { ButtonProps } from "./button.types.ts";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (props, ref) => {
-    const objRef = useObjectRef(ref);
-    const { buttonProps } = useButton(props, objRef);
+  (props, forwardedRef) => {
+    const localRef = useRef<HTMLButtonElement>(null);
+    const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+    const { buttonProps } = useButton(props, ref);
     const { children, ...rest } = props;
 
     return (
-      <ButtonRoot ref={objRef} {...rest} {...buttonProps}>
+      <ButtonRoot {...mergeProps(buttonProps, rest, { ref })}>
         {children}
       </ButtonRoot>
     );

@@ -6954,374 +6954,39 @@
   {
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "TooltipTrigger\n============================================================\nTooltipTrigger wraps around a trigger element and a Tooltip.\nIt handles opening and closing the Tooltip when the user hovers over or focuses the trigger,\nand positioning the Tooltip relative to the trigger.\n\nDirectly exported from `react-aria-components`\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)",
-    "displayName": "TooltipTrigger",
-    "methods": [],
-    "props": {
-      "isDisabled": {
-        "defaultValue": null,
-        "description": "Whether the tooltip should be disabled, independent from the trigger.",
-        "name": "isDisabled",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "delay": {
-        "defaultValue": {
-          "value": "1500"
-        },
-        "description": "The delay time for the tooltip to show up. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Immediate-or-delayed-appearance).",
-        "name": "delay",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "number"
-        }
-      },
-      "closeDelay": {
-        "defaultValue": {
-          "value": "500"
-        },
-        "description": "The delay time for the tooltip to close. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Warmup-and-cooldown).",
-        "name": "closeDelay",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "number"
-        }
-      },
-      "trigger": {
-        "defaultValue": null,
-        "description": "By default, opens for both focus and hover. Can be made to open only for focus.",
-        "name": "trigger",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "\"focus\""
-        }
-      },
-      "isOpen": {
-        "defaultValue": null,
-        "description": "Whether the overlay is open by default (controlled).",
-        "name": "isOpen",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-          "name": "OverlayTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-            "name": "OverlayTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "defaultOpen": {
-        "defaultValue": null,
-        "description": "Whether the overlay is open by default (uncontrolled).",
-        "name": "defaultOpen",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-          "name": "OverlayTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-            "name": "OverlayTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "onOpenChange": {
-        "defaultValue": null,
-        "description": "Handler that is called when the overlay's open state changes.",
-        "name": "onOpenChange",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-          "name": "OverlayTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-            "name": "OverlayTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(isOpen: boolean) => void"
-        }
-      }
-    }
-  },
-  {
-    "tags": {},
-    "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "FocusableTooltipTrigger\n============================================================\nA helper component that adds props from `react-aria`s `useFocusable` hook\nto its child so that it can be used as a trigger element for a `Tooltip`\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [React Aria Components Issue re:Tooltip with custom trigger](https://github.com/adobe/react-spectrum/issues/5733#issuecomment-1918691983)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)\n\nCaveats:\n\n- Using non-interactive elements as tooltip triggers is against ARIA best-practices,\n  it is your responsibility to ensure that the underlying trigger element handles\n  focus and hover interactions correctly for keyboard-only users\n\nFeatures:\n\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLElement' attributes (including aria- & data-attributes)",
-    "displayName": "FocusableTooltipTrigger",
-    "methods": [],
-    "props": {
-      "isDisabled": {
-        "defaultValue": null,
-        "description": "Whether focus should be disabled.",
-        "name": "isDisabled",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+focus@3.19.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/focus/dist/types.d.ts",
-          "name": "FocusableOptions"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+focus@3.19.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/focus/dist/types.d.ts",
-            "name": "FocusableOptions"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "autoFocus": {
-        "defaultValue": null,
-        "description": "Whether the element should receive focus on render.",
-        "name": "autoFocus",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-          "name": "FocusableProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-            "name": "FocusableProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "onFocus": {
-        "defaultValue": null,
-        "description": "Handler that is called when the element receives focus.",
-        "name": "onFocus",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-          "name": "FocusEvents"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-            "name": "FocusEvents"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(e: FocusEvent<HTMLElement, Element>) => void"
-        }
-      },
-      "onBlur": {
-        "defaultValue": null,
-        "description": "Handler that is called when the element loses focus.",
-        "name": "onBlur",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-          "name": "FocusEvents"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-            "name": "FocusEvents"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(e: FocusEvent<HTMLElement, Element>) => void"
-        }
-      },
-      "onFocusChange": {
-        "defaultValue": null,
-        "description": "Handler that is called when the element's focus status changes.",
-        "name": "onFocusChange",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-          "name": "FocusEvents"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-            "name": "FocusEvents"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(isFocused: boolean) => void"
-        }
-      },
-      "onKeyDown": {
-        "defaultValue": null,
-        "description": "Handler that is called when a key is pressed.",
-        "name": "onKeyDown",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-          "name": "KeyboardEvents"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-            "name": "KeyboardEvents"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(e: KeyboardEvent) => void"
-        }
-      },
-      "onKeyUp": {
-        "defaultValue": null,
-        "description": "Handler that is called when a key is released.",
-        "name": "onKeyUp",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-          "name": "KeyboardEvents"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
-            "name": "KeyboardEvents"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(e: KeyboardEvent) => void"
-        }
-      },
-      "excludeFromTabOrder": {
-        "defaultValue": null,
-        "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
-        "name": "excludeFromTabOrder",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
-          "name": "FocusableDOMProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
-            "name": "FocusableDOMProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "id": {
-        "defaultValue": null,
-        "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
-        "name": "id",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
-          "name": "DOMProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
-            "name": "DOMProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
-        }
-      },
-      "ref": {
-        "defaultValue": null,
-        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
-        "name": "ref",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "RefAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "RefAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "LegacyRef<HTMLElement>"
-        }
-      },
-      "key": {
-        "defaultValue": null,
-        "description": "",
-        "name": "key",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "Attributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "Attributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "Key"
-        }
-      }
-    }
-  },
-  {
-    "tags": {},
-    "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element, uses `Tooltip` component from `react-aria-components`.\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'sizes', etc. configured in the recipe\n- allows overriding styles by using style-props",
+    "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element, uses `Tooltip` component from `react-aria-components`.\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'sizes', etc. configured in the recipe\n- allows overriding styles by using style-props\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
     "displayName": "Tooltip",
     "methods": [],
     "props": {
+      "size": {
+        "defaultValue": null,
+        "description": "",
+        "name": "size",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
+        }
+      },
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
       "key": {
         "defaultValue": null,
         "description": "",
@@ -7345,23 +7010,14 @@
           "name": "Key"
         }
       },
-      "css": {
+      "variant": {
         "defaultValue": null,
         "description": "",
-        "name": "css",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-          "name": "JsxStyleProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-            "name": "JsxStyleProps"
-          }
-        ],
+        "name": "variant",
+        "declarations": [],
         "required": false,
         "type": {
-          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
         }
       },
       "recipe": {
@@ -7398,67 +7054,9 @@
           "name": "boolean"
         }
       },
-      "as": {
-        "defaultValue": null,
-        "description": "",
-        "name": "as",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-          "name": "PolymorphicProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-            "name": "PolymorphicProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ElementType"
-        }
-      },
-      "asChild": {
-        "defaultValue": null,
-        "description": "",
-        "name": "asChild",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-          "name": "PolymorphicProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-            "name": "PolymorphicProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "size": {
-        "defaultValue": null,
-        "description": "",
-        "name": "size",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
-        }
-      },
-      "variant": {
-        "defaultValue": null,
-        "description": "",
-        "name": "variant",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
-        }
-      },
       "placement": {
         "defaultValue": {
-          "value": "'bottom'"
+          "value": "bottom"
         },
         "description": "The placement of the element with respect to its anchor element.",
         "name": "placement",
@@ -7692,6 +7290,370 @@
         "required": false,
         "type": {
           "name": "LegacyRef<HTMLDivElement>"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "TooltipTrigger\n============================================================\nTooltipTrigger wraps around a trigger element and a Tooltip.\nIt handles opening and closing the Tooltip when the user hovers over or focuses the trigger,\nand positioning the Tooltip relative to the trigger.\n\nDirectly exported from `react-aria-components`\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)",
+    "displayName": "TooltipTrigger",
+    "methods": [],
+    "props": {
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "Whether the tooltip should be disabled, independent from the trigger.",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "delay": {
+        "defaultValue": {
+          "value": "1500"
+        },
+        "description": "The delay time for the tooltip to show up. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Immediate-or-delayed-appearance).",
+        "name": "delay",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "closeDelay": {
+        "defaultValue": {
+          "value": "500"
+        },
+        "description": "The delay time for the tooltip to close. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Warmup-and-cooldown).",
+        "name": "closeDelay",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "trigger": {
+        "defaultValue": null,
+        "description": "By default, opens for both focus and hover. Can be made to open only for focus.",
+        "name": "trigger",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"focus\""
+        }
+      },
+      "isOpen": {
+        "defaultValue": null,
+        "description": "Whether the overlay is open by default (controlled).",
+        "name": "isOpen",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "defaultOpen": {
+        "defaultValue": null,
+        "description": "Whether the overlay is open by default (uncontrolled).",
+        "name": "defaultOpen",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "onOpenChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the overlay's open state changes.",
+        "name": "onOpenChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isOpen: boolean) => void"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "FocusableTooltipTrigger\n============================================================\nA helper component that adds props from `react-aria`s `useFocusable` hook\nto its child so that it can be used as a trigger element for a `Tooltip`\n\nCaveats:\n- Using non-interactive elements as tooltip triggers is against ARIA best-practices,\n  it is your responsibility to ensure that the underlying trigger element handles\n  focus and hover interactions correctly for keyboard-only users\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLElement' attributes (including aria- & data-attributes)\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [React Aria Components Issue re:Tooltip with custom trigger](https://github.com/adobe/react-spectrum/issues/5733#issuecomment-1918691983)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
+    "displayName": "FocusableTooltipTrigger",
+    "methods": [],
+    "props": {
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "Whether focus should be disabled.",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+focus@3.19.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/focus/dist/types.d.ts",
+          "name": "FocusableOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+focus@3.19.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/focus/dist/types.d.ts",
+            "name": "FocusableOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "autoFocus": {
+        "defaultValue": null,
+        "description": "Whether the element should receive focus on render.",
+        "name": "autoFocus",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusableProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusableProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "onFocus": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element receives focus.",
+        "name": "onFocus",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: FocusEvent<HTMLElement, Element>) => void"
+        }
+      },
+      "onBlur": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element loses focus.",
+        "name": "onBlur",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: FocusEvent<HTMLElement, Element>) => void"
+        }
+      },
+      "onFocusChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element's focus status changes.",
+        "name": "onFocusChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isFocused: boolean) => void"
+        }
+      },
+      "onKeyDown": {
+        "defaultValue": null,
+        "description": "Handler that is called when a key is pressed.",
+        "name": "onKeyDown",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "KeyboardEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: KeyboardEvent) => void"
+        }
+      },
+      "onKeyUp": {
+        "defaultValue": null,
+        "description": "Handler that is called when a key is released.",
+        "name": "onKeyUp",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "KeyboardEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: KeyboardEvent) => void"
+        }
+      },
+      "excludeFromTabOrder": {
+        "defaultValue": null,
+        "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+        "name": "excludeFromTabOrder",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "FocusableDOMProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "id": {
+        "defaultValue": null,
+        "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+        "name": "id",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "DOMProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLElement>"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
         }
       }
     }

@@ -10,12 +10,16 @@ export const tooltipRecipe = defineRecipe({
 
   // Base styles applied to all instances of the component
   base: {
-    boxShadow: "0 8px 20px rgba(0 0 0 / 0.1)",
-    borderRadius: "4px",
-    background: "black",
+    display: "inline-flex",
+    alignItems: "center",
+    boxShadow: "1",
+    borderRadius: "100",
+    background: "slate.12",
     color: "white",
-    padding: "10px 8px",
-
+    paddingX: "300",
+    paddingY: "100",
+    margin: "100",
+    maxW: "6400",
     /* fixes FF gap */
   },
 

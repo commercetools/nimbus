@@ -652,16 +652,17 @@
   "packages/bleh-ui/src/components/tooltip/tooltip.mdx": {
     "meta": {
       "id": "Components-tooltip",
-      "title": "tooltip",
+      "title": "Tooltip",
       "description": "A contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip",
       "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/components/tooltip/tooltip.mdx",
       "menu": [
         "Components",
-        "tooltip"
+        "Media",
+        "Tooltip"
       ],
-      "route": "components/tooltip",
+      "route": "components/media/tooltip",
       "tags": [
         "component"
       ],
@@ -721,7 +722,7 @@
         }
       ]
     },
-    "mdx": "\n# tooltip\n\nA contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip\n\n## Basic Usage\n\n[Explain the basic usage / usecase of the component].\n\n```jsx-live\nconst App = () => <Tooltip>I am Tooltip!</Tooltip>\n```\n\n\n### Sizes\n\nAvailable sizes.\n\n```jsx-live\nconst App = () => {\n\n  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <Tooltip key={size} size={size}>'{size}' Tooltip</Tooltip>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Variants\n\nAvailable variants.\n\n```jsx-live\nconst App = () => {\n\n  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];\n\n  return (\n    <Stack direction=\"horizontal\">\n      {variants.map(variant => (\n        <Tooltip key={variant} variant={variant}>'{variant}' Tooltip</Tooltip>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Colors\n\n[Explain usage with different colors/semantics.]\n\n```jsx-live\nconst App = () => {\n  const variants = [\"solid\", \"subtle\", \"outline\", \"ghost\", \"link\", \"plain\"];\n  const colors = [\"neutral\", \"primary\", \"info\", \"success\", \"danger\", \"error\"];\n\n  return (\n    <Stack>\n      {colors.map((color) => (\n        <Stack key={color} direction=\"horizontal\">\n          {variants.map((variant) => (\n            <Tooltip colorPalette={color} key={variant} variant={variant}>\n              '{variant}' Tooltip\n            </Tooltip>\n          ))}\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Props\n\n<PropTable id=\"Tooltip\" />"
+    "mdx": "\n# Tooltip\n\nA contextual popup that displays a description for an element. See\nhttps://www.w3.org/TR/wai-aria-1.2/#tooltip\n\n## Basic Usage\n\n[TODO Explain the basic usage / usecase of the component].\n\n```jsx-live\nconst App = () => <Tooltip>I am Tooltip!</Tooltip>\n```\n\n### Sizes\n\nAvailable sizes.\n\n```jsx-live\nconst App = () => {\n\n  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <Tooltip key={size} size={size}>'{size}' Tooltip</Tooltip>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Variants\n\nAvailable variants.\n\n```jsx-live\nconst App = () => {\n\n  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];\n\n  return (\n    <Stack direction=\"horizontal\">\n      {variants.map(variant => (\n        <Tooltip key={variant} variant={variant}>'{variant}' Tooltip</Tooltip>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Colors\n\n[Explain usage with different colors/semantics.]\n\n```jsx-live\nconst App = () => {\n  const variants = [\"solid\", \"subtle\", \"outline\", \"ghost\", \"link\", \"plain\"];\n  const colors = [\"neutral\", \"primary\", \"info\", \"success\", \"danger\", \"error\"];\n\n  return (\n    <Stack>\n      {colors.map((color) => (\n        <Stack key={color} direction=\"horizontal\">\n          {variants.map((variant) => (\n            <Tooltip colorPalette={color} key={variant} variant={variant}>\n              '{variant}' Tooltip\n            </Tooltip>\n          ))}\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Props\n\n<PropTable id=\"Tooltip\" />\n"
   },
   "packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx": {
     "meta": {

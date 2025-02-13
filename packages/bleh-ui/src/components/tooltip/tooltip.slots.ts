@@ -11,7 +11,6 @@ import { tooltipRecipe } from "./tooltip.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the span element.
  */
 interface TooltipRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 
