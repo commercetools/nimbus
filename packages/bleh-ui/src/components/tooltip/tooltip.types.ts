@@ -17,8 +17,9 @@ type TooltipVariantProps = TooltipRootProps &
   Omit<RATooltipProps, "children">;
 
 /**
- * Main props interface for the Tooltip component.
+ * Main props interface for the Tooltip components
  * Extends TooltipVariantProps to include root props, variant props,
  * and react-aria props, while adding support for React children.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TooltipProps extends PropsWithChildren<TooltipVariantProps> {}

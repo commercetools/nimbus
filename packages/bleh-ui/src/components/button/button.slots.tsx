@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import shouldForwardProp from "@emotion/is-prop-valid";
 
-const { isValidProperty } = defaultSystem;
+const isValidProperty = (prop: string) => defaultSystem.isValidProperty(prop);
 
 interface ButtonRecipeProps extends RecipeProps<"button">, UnstyledProp {}
 
