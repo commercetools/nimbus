@@ -4,42 +4,44 @@ import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
 import { useObjectRef } from "react-aria";
 
-function getInitials(name: string) {
-  const parts = name.split(" ");
-  if (parts.length === 1) {
-    return name.slice(0, 2).toUpperCase();
+function getInitials(firstName: string, lastName: string) {
+  if (!lastName) {
+    return firstName.slice(0, 2).toUpperCase();
   }
-  return parts
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  return (
+    firstName.split("")[0].toUpperCase() + lastName.split("")[0].toUpperCase()
+  );
 }
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
-  const { name, src, alt, onClick, tabIndex = 0, isDisabled, ...rest } = props;
+  const {
+    firstName,
+    lastName,
+    src,
+    alt,
+    tabIndex = 0,
+    isDisabled,
+    ...rest
+  } = props;
 
   const objRef = useObjectRef(ref);
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (
-      (event.key === "Enter" || event.key === " ") &&
-      onClick &&
-      !isDisabled
-    ) {
-      if (event.key === " ") {
-        event.preventDefault();
-      }
-      onClick(event as unknown as React.MouseEvent<HTMLDivElement>);
+  const fullName = `${firstName} ${lastName}`;
+
+  function isValidUrl(url: string) {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
     }
-  };
+  }
 
   const sharedProps = {
-    role: "button",
+    role: "figure",
+    "aria-label": `${fullName} avatar`,
     ref: objRef,
-    onClick: isDisabled ? undefined : onClick,
     tabIndex: isDisabled ? -1 : tabIndex,
-    onKeyDown: handleKeyDown,
     "aria-disabled": isDisabled,
     style: {
       pointerEvents: isDisabled ? ("none" as const) : ("auto" as const),
@@ -48,17 +50,16 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
     },
     ...rest,
   };
-
-  if (src) {
+  if (src && isValidUrl(src)) {
     return (
       <AvatarRoot {...sharedProps}>
-        <Image src={src} alt={alt || name} />
+        <Image src={src} alt={alt || fullName} />
       </AvatarRoot>
     );
   }
-  if (name) {
-    return <AvatarRoot {...sharedProps}>{getInitials(name)}</AvatarRoot>;
-  }
+  return (
+    <AvatarRoot {...sharedProps}>{getInitials(firstName, lastName)}</AvatarRoot>
+  );
 });
 
 Avatar.displayName = "Avatar";

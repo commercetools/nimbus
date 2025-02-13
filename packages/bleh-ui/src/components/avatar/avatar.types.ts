@@ -6,9 +6,13 @@ export interface AvatarComponentProps
   extends HTMLAttributes<HTMLDivElement>,
     RecipeVariantProps<typeof avatarRecipe> {
   /**
-   * The name used to show initials
+   * The first name used to show initials
    */
-  name: string;
+  firstName: string;
+  /**
+   * The last name used to show initials
+   */
+  lastName: string;
   /**
    * The image URL
    */
@@ -17,14 +21,6 @@ export interface AvatarComponentProps
    * Alt text for the avatar image
    */
   alt?: string;
-  /**
-   * Callback when image fails to load
-   */
-  onError?: () => void;
-  /**
-   * Show border around avatar
-   */
-  showBorder?: boolean;
   /**
    * If the avatar is disabled
    */

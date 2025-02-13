@@ -7072,10 +7072,29 @@
           "name": "boolean"
         }
       },
-      "name": {
+      "firstName": {
         "defaultValue": null,
-        "description": "The name used to show initials",
-        "name": "name",
+        "description": "The first name used to show initials",
+        "name": "firstName",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarComponentProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarComponentProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "string"
+        }
+      },
+      "lastName": {
+        "defaultValue": null,
+        "description": "The last name used to show initials",
+        "name": "lastName",
         "parent": {
           "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
           "name": "AvatarComponentProps"
@@ -7127,25 +7146,6 @@
         "required": false,
         "type": {
           "name": "string"
-        }
-      },
-      "showBorder": {
-        "defaultValue": null,
-        "description": "Show border around avatar",
-        "name": "showBorder",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
-          "name": "AvatarComponentProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
-            "name": "AvatarComponentProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
         }
       },
       "isDisabled": {

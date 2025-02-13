@@ -8,6 +8,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Media
   - Avatar
 tags:
   - component
@@ -27,8 +28,8 @@ Use the Avatar component to represent a user with either their profile picture o
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Avatar name="John Doe" src="https://thispersondoesnotexist.com/ " />
-    <Avatar name="Jane Smith" /> {/* Shows initials when no image */}
+    <Avatar firstName="John" lastName="Doe" src="https://thispersondoesnotexist.com/ " />
+    <Avatar firstName="Jane" lastName="Smith" /> {/* Shows initials when no image */}
   </Stack>
 )
 ```
@@ -45,7 +46,8 @@ The Avatar component is WCAG compliant and includes:
 ```jsx-live
 const App = () => (
   <Avatar 
-    name="John Doe"
+    firstName="John"
+    lastName="Doe"
     src="https://thispersondoesnotexist.com/ "
     aria-label="Profile picture of John Doe"
   />
@@ -66,7 +68,8 @@ const App = () => {
         <Avatar 
           key={size} 
           size={size} 
-          name="John Doe" 
+          firstName="John"
+          lastName="Doe" 
           src="https://thispersondoesnotexist.com/ " 
         />
       ))}
@@ -89,15 +92,13 @@ const App = () => (
 
 The component handles various scenarios gracefully:
 - Shows initials when no image is provided
-- Shows default icon when no name or image is provided
 - Handles image loading errors
 
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Avatar name="John Doe" /> {/* Shows JD */}
-    <Avatar /> {/* Shows default icon */}
-    <Avatar name="John Doe" src="invalid-url.jpg" /> {/* Falls back to initials */}
+    <Avatar firstName="John" lastName="Doe" /> {/* Shows JD */}
+    <Avatar firstName="John" lastName="Doe" src="invalid-url.jpg" /> {/* Falls back to initials */}
   </Stack>
 )
 ```

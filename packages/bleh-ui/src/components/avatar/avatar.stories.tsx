@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar } from "./avatar";
 import { Stack } from "./../stack";
 import type { AvatarProps } from "./avatar.types";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -29,13 +29,11 @@ export const Base: Story = {
     // @ts-expect-error: todo: investigate why this causes squiggly lines
     ["data-testid"]: "test",
     ["aria-label"]: "test-avatar",
-    onClick: fn(),
     alt: "avatar",
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const avatar = canvas.getByTestId("test");
-    const onClick = args.onClick;
 
     await step("Uses a <div> element by default", async () => {
       await expect(avatar.tagName).toBe("DIV");
@@ -46,26 +44,9 @@ export const Base: Story = {
       await expect(avatar).toHaveAttribute("aria-label", "test-avatar");
     });
 
-    await step("Is clickable", async () => {
-      avatar.click();
-      await expect(onClick).toHaveBeenCalledTimes(1);
-      avatar.blur();
-    });
-
     await step("Is focusable with <tab> key", async () => {
       await userEvent.tab();
       await expect(avatar).toHaveFocus();
-    });
-
-    await step("Can be triggered with enter", async () => {
-      await userEvent.keyboard("{enter}");
-      await expect(onClick).toHaveBeenCalledTimes(2);
-    });
-
-    await step("Can be triggered with space-bar", async () => {
-      await expect(avatar).toHaveFocus();
-      await userEvent.keyboard(" ");
-      await expect(onClick).toHaveBeenCalledTimes(3);
     });
   },
 };
@@ -76,21 +57,13 @@ export const Disabled: Story = {
     // @ts-expect-error: todo: investigate why this causes squiggly lines
     ["data-testid"]: "test",
     ["aria-label"]: "test-avatar",
-    onClick: fn(),
     alt: "avatar",
     isDisabled: true,
   },
 
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const avatar = canvas.getByTestId("test");
-    const onClick = args.onClick;
-
-    await step("Is not clickable", async () => {
-      avatar.click();
-      await expect(onClick).not.toBeCalled();
-      avatar.blur();
-    });
 
     await step("Is not focusable with <tab> key", async () => {
       await userEvent.tab();
@@ -116,11 +89,11 @@ export const Sizes: Story = {
 
 export const BaseWithInitials: Story = {
   args: {
-    name: "John Doe",
+    firstName: "John",
+    lastName: "Doe",
     // @ts-expect-error: todo: investigate why this causes squiggly lines
     ["data-testid"]: "test-with-initials",
     ["aria-label"]: "test-avatar",
-    onClick: fn(),
     alt: "avatar",
   },
   play: async ({ canvasElement, step }) => {
@@ -137,11 +110,10 @@ export const BaseWithInitials: Story = {
 
 export const DisabledWithInitials: Story = {
   args: {
-    name: "Bond",
+    firstName: "Bond",
     // @ts-expect-error: todo: investigate why this causes squiggly lines
     ["data-testid"]: "test-with-single-name",
     ["aria-label"]: "test-avatar",
-    onClick: fn(),
     alt: "avatar",
     isDisabled: true,
   },
@@ -151,7 +123,7 @@ export const DisabledWithInitials: Story = {
     const avatar = canvas.getByTestId("test-with-single-name");
 
     await step(
-      "Take first two letters when only one name is provided",
+      "Take first two letters when only firstName name is provided",
       async () => {
         await expect(avatar).toHaveTextContent("BO");
       }
@@ -161,7 +133,7 @@ export const DisabledWithInitials: Story = {
 
 export const SizesWithInitials: Story = {
   args: {
-    name: "Avatar",
+    firstName: "Avatar",
   },
   render: (args) => {
     return (
@@ -176,7 +148,7 @@ export const SizesWithInitials: Story = {
 
 export const Colors: Story = {
   args: {
-    name: "Avatar",
+    firstName: "Avatar",
   },
   render: (args) => {
     return (
