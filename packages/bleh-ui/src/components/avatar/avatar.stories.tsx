@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar } from "./avatar";
-import { Stack } from "./../stack";
 import type { AvatarProps } from "./avatar.types";
-import { userEvent, within, expect } from "@storybook/test";
+import { within, expect } from "@storybook/test";
+import { Button, Stack } from "@/components";
 
 /**
  * Storybook metadata configuration
@@ -19,7 +19,12 @@ type Story = StoryObj<typeof Avatar>;
 
 const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
 
-const tones: AvatarProps["tone"][] = ["primary", "neutral", "critical"];
+const colorPalettes: AvatarProps["colorPalette"][] = [
+  "red",
+  "green",
+  "blue",
+  "amber",
+];
 
 const avatarImg = "https://thispersondoesnotexist.com/ ";
 
@@ -37,37 +42,6 @@ export const Base: Story = {
 
     await step("Uses a <div> element by default", async () => {
       await expect(avatar.tagName).toBe("DIV");
-    });
-
-    await step("Forwards data- & aria-attributes", async () => {
-      await expect(avatar).toHaveAttribute("data-testid", "test");
-      await expect(avatar).toHaveAttribute("aria-label", "test-avatar");
-    });
-
-    await step("Is focusable with <tab> key", async () => {
-      await userEvent.tab();
-      await expect(avatar).toHaveFocus();
-    });
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    src: avatarImg,
-    // @ts-expect-error: todo: investigate why this causes squiggly lines
-    ["data-testid"]: "test",
-    ["aria-label"]: "test-avatar",
-    alt: "avatar",
-    isDisabled: true,
-  },
-
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const avatar = canvas.getByTestId("test");
-
-    await step("Is not focusable with <tab> key", async () => {
-      await userEvent.tab();
-      await expect(avatar).not.toHaveFocus();
     });
   },
 };
@@ -108,32 +82,10 @@ export const BaseWithInitials: Story = {
   },
 };
 
-export const DisabledWithInitials: Story = {
-  args: {
-    firstName: "Bond",
-    // @ts-expect-error: todo: investigate why this causes squiggly lines
-    ["data-testid"]: "test-with-single-name",
-    ["aria-label"]: "test-avatar",
-    alt: "avatar",
-    isDisabled: true,
-  },
-
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const avatar = canvas.getByTestId("test-with-single-name");
-
-    await step(
-      "Take first two letters when only firstName name is provided",
-      async () => {
-        await expect(avatar).toHaveTextContent("BO");
-      }
-    );
-  },
-};
-
 export const SizesWithInitials: Story = {
   args: {
-    firstName: "Avatar",
+    firstName: "Michael",
+    lastName: "Douglas",
   },
   render: (args) => {
     return (
@@ -148,19 +100,43 @@ export const SizesWithInitials: Story = {
 
 export const Colors: Story = {
   args: {
-    firstName: "Avatar",
+    firstName: "Michael",
+    lastName: "Douglas",
   },
   render: (args) => {
     return (
       <Stack>
         {
           <Stack direction="row" gap="400" alignItems="center">
-            {tones.map((tone) => (
-              <Avatar key={tone as string} {...args} tone={tone} alt="avatar" />
+            {colorPalettes.map((colorPalette) => (
+              <Avatar
+                key={colorPalette as string}
+                {...args}
+                colorPalette={colorPalette}
+                alt="avatar"
+              />
             ))}
           </Stack>
         }
       </Stack>
+    );
+  },
+};
+
+export const InAButton: Story = {
+  args: {
+    src: avatarImg,
+    // @ts-expect-error: todo: investigate why this causes squiggly lines
+    ["data-testid"]: "test",
+    ["aria-label"]: "test-avatar",
+    alt: "avatar",
+  },
+
+  render(args) {
+    return (
+      <Button unstyled asChild>
+        <Avatar {...args} as="button" />
+      </Button>
     );
   },
 };

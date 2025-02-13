@@ -12,12 +12,12 @@ export const avatarRecipe = defineRecipe({
     borderRadius: "full",
     flexShrink: 0,
     fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.2s",
-    outline: "2px solid transparent",
-    _focus: {
-      borderWidth: "2px",
-      borderColor: "primary.7",
+    backgroundColor: "colorPalette.3",
+    colorPalette: "primary",
+    color: "colorPalette.11",
+    focusVisibleRing: "outside",
+    "button&": {
+      cursor: "button",
     },
     _disabled: {
       layerStyle: "disabled",
@@ -25,27 +25,12 @@ export const avatarRecipe = defineRecipe({
   },
   variants: {
     size: {
-      md: { width: "40px", height: "40px", textStyle: "sm" },
-      xs: { width: "32px", height: "32px", textStyle: "xs" },
-      "2xs": { width: "24px", height: "24px", textStyle: "xs" },
-    },
-    tone: {
-      primary: {
-        backgroundColor: "primary.3",
-        color: "primary",
-      },
-      neutral: {
-        backgroundColor: "neutral.3",
-        color: "neutral",
-      },
-      critical: {
-        backgroundColor: "critical.3",
-        color: "critical",
-      },
+      md: { width: 1000, height: 1000, textStyle: "sm" },
+      xs: { width: 800, height: 800, textStyle: "xs" },
+      "2xs": { width: 600, height: 600, textStyle: "xs" },
     },
   },
   defaultVariants: {
     size: "md",
-    tone: "primary",
   },
 });
