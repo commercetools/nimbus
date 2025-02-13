@@ -105,19 +105,15 @@ export const Colors: Story = {
   },
   render: (args) => {
     return (
-      <Stack>
-        {
-          <Stack direction="row" gap="400" alignItems="center">
-            {colorPalettes.map((colorPalette) => (
-              <Avatar
-                key={colorPalette as string}
-                {...args}
-                colorPalette={colorPalette}
-                alt="avatar"
-              />
-            ))}
-          </Stack>
-        }
+      <Stack direction="row" gap="400" alignItems="center">
+        {colorPalettes.map((colorPalette) => (
+          <Avatar
+            key={colorPalette as string}
+            {...args}
+            colorPalette={colorPalette}
+            alt="avatar"
+          />
+        ))}
       </Stack>
     );
   },
