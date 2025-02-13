@@ -380,10 +380,6 @@
           {
             "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
             "name": "Attributes"
-          },
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "Attributes"
           }
         ],
         "required": false,
@@ -540,7 +536,7 @@
             "name": "ButtonHTMLAttributes"
           },
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
             "name": "AriaBaseButtonProps"
           }
         ],
@@ -706,12 +702,12 @@
         "description": "Whether the button is disabled.",
         "name": "isDisabled",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
           "name": "ButtonProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
             "name": "ButtonProps"
           }
         ],
@@ -725,12 +721,12 @@
         "description": "Handler that is called when the press is released over the target.",
         "name": "onPress",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
           "name": "PressEvents"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
             "name": "PressEvents"
           }
         ],
@@ -744,12 +740,12 @@
         "description": "Handler that is called when a press interaction starts.",
         "name": "onPressStart",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
           "name": "PressEvents"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
             "name": "PressEvents"
           }
         ],
@@ -763,12 +759,12 @@
         "description": "Handler that is called when a press interaction ends, either\nover the target or when the pointer leaves the target.",
         "name": "onPressEnd",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
           "name": "PressEvents"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
             "name": "PressEvents"
           }
         ],
@@ -782,12 +778,12 @@
         "description": "Handler that is called when the press state changes.",
         "name": "onPressChange",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
           "name": "PressEvents"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
             "name": "PressEvents"
           }
         ],
@@ -801,12 +797,12 @@
         "description": "Handler that is called when a press is released over the target, regardless of\nwhether it started on the target or not.",
         "name": "onPressUp",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
           "name": "PressEvents"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
             "name": "PressEvents"
           }
         ],
@@ -820,12 +816,12 @@
         "description": "Handler that is called when the element's focus status changes.",
         "name": "onFocusChange",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
           "name": "FocusEvents"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
             "name": "FocusEvents"
           }
         ],
@@ -839,12 +835,12 @@
         "description": "A URL to link to if elementType=\"a\".",
         "name": "href",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
           "name": "LinkButtonProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
             "name": "LinkButtonProps"
           }
         ],
@@ -858,12 +854,12 @@
         "description": "The target window for the link.",
         "name": "target",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
           "name": "LinkButtonProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
             "name": "LinkButtonProps"
           }
         ],
@@ -879,12 +875,12 @@
         "description": "The HTML element or React element used to render the button, e.g. 'div', 'a', or `RouterLink`.",
         "name": "elementType",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
           "name": "AriaButtonElementTypeProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
             "name": "AriaButtonElementTypeProps"
           }
         ],
@@ -898,12 +894,12 @@
         "description": "Whether to prevent focus from moving to the button when pressing it.\n\nCaution, this can make the button inaccessible and should only be used when alternative keyboard interaction is provided,\nsuch as ComboBox's MenuTrigger or a NumberField's increment/decrement control.",
         "name": "preventFocusOnPress",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
           "name": "AriaBaseButtonProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.1_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
             "name": "AriaBaseButtonProps"
           }
         ],
@@ -917,37 +913,18 @@
         "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
         "name": "excludeFromTabOrder",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
           "name": "FocusableDOMProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
             "name": "FocusableDOMProps"
           }
         ],
         "required": false,
         "type": {
           "name": "boolean"
-        }
-      },
-      "ref": {
-        "defaultValue": null,
-        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
-        "name": "ref",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "RefAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "RefAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "LegacyRef<HTMLButtonElement>"
         }
       }
     }
@@ -3986,10 +3963,48 @@
           "name": "string"
         }
       },
+      "download": {
+        "defaultValue": null,
+        "description": "",
+        "name": "download",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "AnchorHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "AnchorHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "any"
+        }
+      },
       "href": {
         "defaultValue": null,
         "description": "",
         "name": "href",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "AnchorHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "AnchorHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "hrefLang": {
+        "defaultValue": null,
+        "description": "",
+        "name": "hrefLang",
         "parent": {
           "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
           "name": "AnchorHTMLAttributes"
@@ -4022,44 +4037,6 @@
         "required": false,
         "type": {
           "name": "HTMLAttributeAnchorTarget"
-        }
-      },
-      "download": {
-        "defaultValue": null,
-        "description": "",
-        "name": "download",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "AnchorHTMLAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "AnchorHTMLAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "any"
-        }
-      },
-      "hrefLang": {
-        "defaultValue": null,
-        "description": "",
-        "name": "hrefLang",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "AnchorHTMLAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "AnchorHTMLAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
         }
       },
       "referrerPolicy": {
@@ -6954,7 +6931,552 @@
   {
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip\n\nFeatures:\n\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'sizes', etc. configured in the recipe\n- allows overriding styles by using style-props\n- supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)",
+    "description": "",
+    "displayName": "TooltipTriggerWrap",
+    "methods": [],
+    "props": {
+      "autoFocus": {
+        "defaultValue": null,
+        "description": "Whether the element should receive focus on render.",
+        "name": "autoFocus",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusableProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusableProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "id": {
+        "defaultValue": null,
+        "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+        "name": "id",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "DOMProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "rel": {
+        "defaultValue": null,
+        "description": "The relationship between the linked resource and the current page. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel).",
+        "name": "rel",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "LinkButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "LinkButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-controls": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) whose contents or presence are controlled by the current element.",
+        "name": "aria-controls",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaBaseButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-describedby": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) that describes the object.",
+        "name": "aria-describedby",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-details": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+        "name": "aria-details",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-expanded": {
+        "defaultValue": null,
+        "description": "Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.",
+        "name": "aria-expanded",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaBaseButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean | \"true\" | \"false\""
+        }
+      },
+      "aria-haspopup": {
+        "defaultValue": null,
+        "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.",
+        "name": "aria-haspopup",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaBaseButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean | \"grid\" | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"listbox\" | \"tree\""
+        }
+      },
+      "aria-label": {
+        "defaultValue": null,
+        "description": "Defines a string value that labels the current element.",
+        "name": "aria-label",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-labelledby": {
+        "defaultValue": null,
+        "description": "Identifies the element (or elements) that labels the current element.",
+        "name": "aria-labelledby",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "AriaLabelingProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "aria-pressed": {
+        "defaultValue": null,
+        "description": "Indicates the current \"pressed\" state of toggle buttons.",
+        "name": "aria-pressed",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaBaseButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean | \"true\" | \"false\" | \"mixed\""
+        }
+      },
+      "onFocus": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element receives focus.",
+        "name": "onFocus",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: FocusEvent<Element, Element>) => void"
+        }
+      },
+      "onBlur": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element loses focus.",
+        "name": "onBlur",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: FocusEvent<Element, Element>) => void"
+        }
+      },
+      "onKeyDown": {
+        "defaultValue": null,
+        "description": "Handler that is called when a key is pressed.",
+        "name": "onKeyDown",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "KeyboardEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: KeyboardEvent) => void"
+        }
+      },
+      "onKeyUp": {
+        "defaultValue": null,
+        "description": "Handler that is called when a key is released.",
+        "name": "onKeyUp",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "KeyboardEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: KeyboardEvent) => void"
+        }
+      },
+      "type": {
+        "defaultValue": {
+          "value": "'button'"
+        },
+        "description": "The behavior of the button when used in an HTML form.",
+        "name": "type",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaBaseButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"button\" | \"reset\" | \"submit\""
+        }
+      },
+      "href": {
+        "defaultValue": null,
+        "description": "A URL to link to if elementType=\"a\".",
+        "name": "href",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "LinkButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "LinkButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "target": {
+        "defaultValue": null,
+        "description": "The target window for the link.",
+        "name": "target",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "LinkButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "LinkButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "Whether the button is disabled.",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "ButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "ButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "onPress": {
+        "defaultValue": null,
+        "description": "Handler that is called when the press is released over the target.",
+        "name": "onPress",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "PressEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: PressEvent) => void"
+        }
+      },
+      "onPressStart": {
+        "defaultValue": null,
+        "description": "Handler that is called when a press interaction starts.",
+        "name": "onPressStart",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "PressEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: PressEvent) => void"
+        }
+      },
+      "onPressEnd": {
+        "defaultValue": null,
+        "description": "Handler that is called when a press interaction ends, either\nover the target or when the pointer leaves the target.",
+        "name": "onPressEnd",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "PressEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: PressEvent) => void"
+        }
+      },
+      "onPressChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the press state changes.",
+        "name": "onPressChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "PressEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isPressed: boolean) => void"
+        }
+      },
+      "onPressUp": {
+        "defaultValue": null,
+        "description": "Handler that is called when a press is released over the target, regardless of\nwhether it started on the target or not.",
+        "name": "onPressUp",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "PressEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(e: PressEvent) => void"
+        }
+      },
+      "onFocusChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element's focus status changes.",
+        "name": "onFocusChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isFocused: boolean) => void"
+        }
+      },
+      "elementType": {
+        "defaultValue": {
+          "value": "'button'"
+        },
+        "description": "The HTML element or React element used to render the button, e.g. 'div', 'a', or `RouterLink`.",
+        "name": "elementType",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaButtonElementTypeProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaButtonElementTypeProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"button\" | JSXElementConstructor<any>"
+        }
+      },
+      "preventFocusOnPress": {
+        "defaultValue": null,
+        "description": "Whether to prevent focus from moving to the button when pressing it.\n\nCaution, this can make the button inaccessible and should only be used when alternative keyboard interaction is provided,\nsuch as ComboBox's MenuTrigger or a NumberField's increment/decrement control.",
+        "name": "preventFocusOnPress",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+button@3.10.2_react@18.3.1/node_modules/@react-types/button/src/index.d.ts",
+            "name": "AriaBaseButtonProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "excludeFromTabOrder": {
+        "defaultValue": null,
+        "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+        "name": "excludeFromTabOrder",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.27.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "FocusableDOMProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
     "displayName": "Tooltip",
     "methods": [],
     "props": {
@@ -7074,18 +7596,18 @@
         "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
         "name": "style",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
           "name": "StyleRenderProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
             "name": "StyleRenderProps"
           }
         ],
         "required": false,
         "type": {
-          "name": "CSSProperties | ((values: TooltipRenderProps & { defaultStyle: CSSProperties; }) => CSSProperties)"
+          "name": "CSSProperties | ((values: TooltipRenderProps) => CSSProperties)"
         }
       },
       "className": {
@@ -7093,18 +7615,18 @@
         "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
         "name": "className",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
           "name": "StyleRenderProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
             "name": "StyleRenderProps"
           }
         ],
         "required": false,
         "type": {
-          "name": "string | ((values: TooltipRenderProps & { defaultClassName: string; }) => string)"
+          "name": "string | ((values: TooltipRenderProps) => string)"
         }
       },
       "aria-describedby": {
@@ -7185,18 +7707,18 @@
       },
       "placement": {
         "defaultValue": {
-          "value": "'top'"
+          "value": "'bottom'"
         },
-        "description": "The placement of the tooltip with respect to the trigger.",
+        "description": "The placement of the element with respect to its anchor element.",
         "name": "placement",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
-          "name": "TooltipProps"
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
-            "name": "TooltipProps"
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "PositionProps"
           }
         ],
         "required": false,
@@ -7204,38 +7726,17 @@
           "name": "Placement"
         }
       },
-      "arrowBoundaryOffset": {
-        "defaultValue": {
-          "value": "0"
-        },
-        "description": "The minimum distance the arrow's edge should be from the edge of the overlay element.",
-        "name": "arrowBoundaryOffset",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+overlays@3.25.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/overlays/dist/types.d.ts",
-          "name": "AriaPositionProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-aria+overlays@3.25.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/overlays/dist/types.d.ts",
-            "name": "AriaPositionProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "number"
-        }
-      },
       "triggerRef": {
         "defaultValue": null,
         "description": "The ref for the element which the tooltip positions itself with respect to.\n\nWhen used within a TooltipTrigger this is set automatically. It is only required when used standalone.",
         "name": "triggerRef",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
           "name": "TooltipProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
             "name": "TooltipProps"
           }
         ],
@@ -7249,12 +7750,12 @@
         "description": "Whether the tooltip is currently performing an entry animation.",
         "name": "isEntering",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
           "name": "TooltipProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
             "name": "TooltipProps"
           }
         ],
@@ -7268,12 +7769,12 @@
         "description": "Whether the tooltip is currently performing an exit animation.",
         "name": "isExiting",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
           "name": "TooltipProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
             "name": "TooltipProps"
           }
         ],
@@ -7289,12 +7790,12 @@
         "description": "The container element in which the overlay portal will be placed. This may have unknown behavior depending on where it is portalled to.",
         "name": "UNSTABLE_portalContainer",
         "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
           "name": "TooltipProps"
         },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/react-aria-components@1.0.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-aria-components/dist/types.d.ts",
             "name": "TooltipProps"
           }
         ],

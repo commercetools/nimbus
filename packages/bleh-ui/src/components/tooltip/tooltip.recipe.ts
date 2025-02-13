@@ -14,7 +14,7 @@ export const tooltipRecipe = defineRecipe({
     borderRadius: "4px",
     background: "black",
     color: "white",
-    padding: "2px 8px",
+    padding: "10px 8px",
 
     /* fixes FF gap */
   },

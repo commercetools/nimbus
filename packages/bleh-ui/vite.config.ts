@@ -10,8 +10,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const baseConfig = {
   plugins: [
-    react(),
     viteTsconfigPaths(),
+    react(),
+
     // https://react-spectrum.adobe.com/react-aria/internationalization.html#vite
     optimizeLocales.vite({
       locales: ["en-US", "fr-FR"],
