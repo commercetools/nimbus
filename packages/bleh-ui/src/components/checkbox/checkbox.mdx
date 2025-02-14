@@ -1,0 +1,47 @@
+---
+id: Components-Checkbox
+title: Checkbox
+description: displays a checkbox and an associated label
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Checkbox
+tags:
+  - component
+---
+
+# Checkbox
+
+displays a checkbox and an associated label
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <Checkbox>I am Checkbox!</Checkbox>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Checkbox key={size} size={size}>'{size}' Checkbox</Checkbox>
+      ))}
+    </Stack>
+  )
+}
+```
+
+## Props
+
+<PropTable id="Checkbox" />
