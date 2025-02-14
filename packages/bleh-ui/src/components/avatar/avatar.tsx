@@ -2,7 +2,6 @@ import { forwardRef } from "react";
 import { Image } from "@chakra-ui/react";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
-import { useObjectRef } from "react-aria";
 
 function getInitials(firstName: string, lastName: string) {
   return (
@@ -13,18 +12,18 @@ function getInitials(firstName: string, lastName: string) {
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
   const { firstName, lastName, src, alt, ...rest } = props;
 
-  const objRef = useObjectRef(ref);
-
   const fullName = `${firstName} ${lastName}`;
 
   const sharedProps = {
     "aria-label": `${fullName} avatar`,
-    ref: objRef,
+    ref,
     ...rest,
+    role: "figure",
   };
   return (
     <AvatarRoot {...sharedProps}>
       {src ? (
+        // TODO: implement more robust error handling for image
         <Image src={src} alt={alt || fullName} />
       ) : (
         getInitials(firstName, lastName)

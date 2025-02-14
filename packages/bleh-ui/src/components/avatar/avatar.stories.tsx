@@ -31,14 +31,13 @@ const avatarImg = "https://thispersondoesnotexist.com/ ";
 export const Base: Story = {
   args: {
     src: avatarImg,
-    // @ts-expect-error: todo: investigate why this causes squiggly lines
-    ["data-testid"]: "test",
-    ["aria-label"]: "test-avatar",
+    role: "figure",
+    ["aria-label"]: "base-avatar",
     alt: "avatar",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const avatar = canvas.getByTestId("test");
+    const avatar = canvas.getByRole("figure");
 
     await step("Uses a <div> element by default", async () => {
       await expect(avatar.tagName).toBe("DIV");
@@ -65,14 +64,13 @@ export const BaseWithInitials: Story = {
   args: {
     firstName: "John",
     lastName: "Doe",
-    // @ts-expect-error: todo: investigate why this causes squiggly lines
-    ["data-testid"]: "test-with-initials",
+    role: "figure",
     ["aria-label"]: "test-avatar",
     alt: "avatar",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const avatar = canvas.getByTestId("test-with-initials");
+    const avatar = canvas.getByRole("figure");
     await step(
       "Take first letters of first and last name to make initials",
       async () => {
@@ -122,8 +120,6 @@ export const Colors: Story = {
 export const InAButton: Story = {
   args: {
     src: avatarImg,
-    // @ts-expect-error: todo: investigate why this causes squiggly lines
-    ["data-testid"]: "test",
     ["aria-label"]: "test-avatar",
     alt: "avatar",
   },
