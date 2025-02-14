@@ -19,14 +19,14 @@ export const CheckboxRoot = withProvider<HTMLLabelElement, CheckboxRootProps>(
   "root"
 );
 
-interface CheckboxControlProps extends HTMLChakraProps<"input"> {}
-export const CheckboxControl = withContext<
-  HTMLInputElement,
-  CheckboxControlProps
->("input", "control");
-
 interface CheckboxLabelProps extends HTMLChakraProps<"span"> {}
 export const CheckboxLabel = withContext<HTMLSpanElement, CheckboxLabelProps>(
   "span",
   "label"
 );
+
+interface ChekcboxIndicatorProps extends HTMLChakraProps<"span"> {}
+export const CheckboxIndicator = withContext<
+  HTMLSpanElement,
+  ChekcboxIndicatorProps
+>("span", "indicator");

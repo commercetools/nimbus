@@ -7966,6 +7966,25 @@
     "displayName": "Checkbox",
     "methods": [],
     "props": {
+      "isIndeterminate": {
+        "defaultValue": null,
+        "description": "neither checked, nor unchecked",
+        "name": "isIndeterminate",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/checkbox/checkbox.types.tsx",
+          "name": "CheckboxProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/checkbox/checkbox.types.tsx",
+            "name": "CheckboxProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
       "form": {
         "defaultValue": null,
         "description": "",
@@ -8053,7 +8072,7 @@
         "declarations": [],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\">"
+          "name": "ConditionalValue<\"md\">"
         }
       },
       "as": {

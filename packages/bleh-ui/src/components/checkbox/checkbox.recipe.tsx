@@ -5,25 +5,71 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const checkboxSlotRecipe = defineSlotRecipe({
-  slots: ["root", "control", "label"],
+  slots: ["root", "label", "indicator"],
   // Unique class name prefix for the component
   className: "bleh-ui-checkbox",
 
   base: {
-    root: { display: "flex", alignItems: "center", gap: "2" },
-    control: { borderWidth: "1px", borderRadius: "sm" },
-    label: { marginStart: "2" },
+    root: {
+      display: "inline-flex",
+      gap: "200",
+      alignItems: "center",
+      verticalAlign: "top",
+      outline: "1px solid seagreen",
+      //outlineOffset: "5px",
+    },
+    label: {
+      flexShrink: 0,
+      fontWeight: "500",
+      userSelect: "none",
+      //outline: "1px solid blue",
+      _disabled: {
+        layerStyle: "disabled",
+      },
+    },
+    indicator: {
+      display: "flex",
+      flexShrink: 0,
+      border: "solid-50",
+      borderRadius: "50",
+      borderColor: "colorPalette.9",
+      color: "colorPalette.9",
+      alignItems: "center",
+      justifyContent: "center",
+      focusRing: "outside",
+      ["&[data-state-selected], &[data-state-indeterminate]"]: {
+        colorPalette: "primary",
+        backgroundColor: "colorPalette.9",
+        color: "colorPalette.contrast",
+      },
+      _icon: {
+        w: "350",
+        h: "350",
+      },
+    },
   },
   variants: {
     size: {
-      sm: {
-        control: { width: "8", height: "8" },
-        label: { fontSize: "sm" },
-      },
       md: {
-        control: { width: "10", height: "10" },
-        label: { fontSize: "md" },
+        root: {},
+        label: { textStyle: "md" },
+        indicator: {
+          w: "400",
+          h: "400",
+          zIndex: 1,
+          _after: {
+            position: "absolute",
+            content: "''",
+            outline: "1px solid tomato",
+            width: "600",
+            height: "600",
+            zIndex: 0,
+          },
+        },
       },
     },
+  },
+  defaultVariants: {
+    size: "md",
   },
 });
