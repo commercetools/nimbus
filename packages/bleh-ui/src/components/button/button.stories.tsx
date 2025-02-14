@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./button";
-import { Stack } from "./../stack";
+import { Box, Stack } from "@/components";
 import type { ButtonProps } from "./button.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
+import { ArrowRightCircle as DemoIcon } from "@bleh-ui/icons";
+import { createRef, useState } from "react";
 
 const meta: Meta<typeof Button> = {
   title: "components/Button",
@@ -14,11 +16,11 @@ export default meta;
 type Story = StoryObj<typeof Button>;
 
 const sizes: ButtonProps["size"][] = [
-  "2xl",
-  "xl",
-  "lg",
+  //"2xl",
+  //"xl",
+  //"lg",
   "md",
-  "sm",
+  //"sm",
   "xs",
   "2xs",
 ];
@@ -29,16 +31,9 @@ const variants: ButtonProps["variant"][] = [
   "outline",
   "ghost",
   "link",
-  "plain",
 ];
 
-const colors: ButtonProps["colorPalette"][] = [
-  "neutral",
-  "info",
-  "success",
-  "danger",
-  "error",
-];
+const tones: ButtonProps["tone"][] = ["primary", "neutral", "critical"];
 
 export const Base: Story = {
   args: {
@@ -134,7 +129,11 @@ export const AsLink: Story = {
 
 export const WithAsChild: Story = {
   args: {
-    children: <span>I look like a button but am a simple span-tag</span>,
+    children: (
+      <a>
+        <DemoIcon /> I look like a button but am using an a-tag
+      </a>
+    ),
     asChild: true,
     // @ts-expect-error: works, but causes squiggly lines, investigate
     ["data-testid"]: "test",
@@ -144,7 +143,7 @@ export const WithAsChild: Story = {
     const link = canvas.getByTestId("test");
 
     await step("Uses an <a> element", async () => {
-      await expect(link.tagName).toBe("SPAN");
+      await expect(link.tagName).toBe("A");
     });
   },
 };
@@ -179,27 +178,181 @@ export const Variants: Story = {
   },
 };
 
-export const Colors: Story = {
+export const Tones: Story = {
   args: {
     children: "Demo Button",
   },
   render: (args) => {
     return (
       <Stack>
-        {colors.map((color) => (
+        {tones.map((tone) => (
           <Stack
-            key={color as string}
+            key={tone as string}
             direction="row"
             gap="400"
             alignItems="center"
           >
-            {variants.map((size) => (
+            {variants.map((variant) => (
               <Button
-                key={size as string}
+                key={variant as string}
                 {...args}
-                variant={size}
-                colorPalette={color}
+                variant={variant}
+                tone={tone}
               />
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+const buttonRef = createRef<HTMLButtonElement>();
+
+export const WithRef: Story = {
+  args: {
+    children: "Demo Button",
+  },
+  render: (args) => {
+    return (
+      <Button ref={buttonRef} {...args}>
+        {args.children}
+      </Button>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button");
+
+    await step("Does accept ref's", async () => {
+      await expect(buttonRef.current).toBe(button);
+    });
+  },
+};
+
+const Spacer = () => <Box flexGrow="1" />;
+export const ComplexIconLayouts: Story = {
+  args: {
+    children: "Demo Button",
+  },
+  render: (args) => {
+    const [dir, setDir] = useState<"ltr" | "rtl">("ltr");
+    return (
+      <>
+        <Button mb="800" onClick={() => setDir(dir === "ltr" ? "rtl" : "ltr")}>
+          Change direction
+        </Button>
+        <Stack
+          direction="column"
+          gap="400"
+          width="1/3"
+          style={{ direction: dir }}
+        >
+          <Button {...args}>
+            <DemoIcon />
+            {args.children}
+          </Button>
+          <Button {...args}>
+            Demo
+            <DemoIcon />
+            Button
+          </Button>
+          <Button {...args}>
+            <Spacer />
+            <DemoIcon />
+            {args.children}
+          </Button>
+          <Button {...args}>
+            <DemoIcon />
+            {args.children}
+            <Spacer />
+          </Button>
+          <Button {...args}>
+            <DemoIcon />
+            <Spacer />
+            {args.children}
+          </Button>
+          <Button {...args}>
+            {args.children}
+            <Spacer />
+            <DemoIcon />
+          </Button>
+        </Stack>
+      </>
+    );
+  },
+};
+
+export const SmokeTest: Story = {
+  args: {
+    children: "Button",
+    onPress: fn(),
+    // @ts-expect-error: works, but causes squiggly lines, investigate
+    ["data-testid"]: "test",
+    ["aria-label"]: "test-button",
+  },
+  render: (args) => {
+    return (
+      <Stack gap="1200">
+        {tones.map((tone) => (
+          <Stack key={tone as string} direction="column" gap="400">
+            {sizes.map((size) => (
+              <Stack direction="row" key={size as string}>
+                {variants.map((variant) => (
+                  <Box key={variant as string}>
+                    <Stack direction="column" css={{ "> *": { flex: "none" } }}>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          tone={tone}
+                        >
+                          <DemoIcon />
+                          {JSON.stringify(variant)} {args.children}
+                          <DemoIcon />
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          {...args}
+                          as="a"
+                          variant={variant}
+                          size={size}
+                          tone={tone}
+                          isDisabled
+                        >
+                          <DemoIcon />
+                          {JSON.stringify(variant)} {args.children}
+                          <DemoIcon />
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          tone={tone}
+                        >
+                          <DemoIcon />
+                          {JSON.stringify(variant)} {args.children}
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          {...args}
+                          variant={variant}
+                          size={size}
+                          tone={tone}
+                        >
+                          {JSON.stringify(variant)} {args.children}
+                          <DemoIcon />
+                        </Button>
+                      </Box>
+                    </Stack>
+                  </Box>
+                ))}
+              </Stack>
             ))}
           </Stack>
         ))}

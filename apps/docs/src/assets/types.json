@@ -330,25 +330,6 @@
     "displayName": "Button",
     "methods": [],
     "props": {
-      "busy": {
-        "defaultValue": null,
-        "description": "if true, button is busy with something (loading, processing, etc...)",
-        "name": "busy",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-          "name": "ButtonProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-            "name": "ButtonProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
       "form": {
         "defaultValue": null,
         "description": "",
@@ -605,7 +586,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
+          "name": "ConditionalValue<\"md\" | \"2xs\" | \"xs\">"
         }
       },
       "variant": {
@@ -626,7 +607,28 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
+          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
+        }
+      },
+      "tone": {
+        "defaultValue": {
+          "value": "\"neutral\""
+        },
+        "description": "",
+        "name": "tone",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "ButtonVariant"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "ButtonVariant"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"neutral\" | \"primary\" | \"critical\">"
         }
       },
       "recipe": {
@@ -1019,7 +1021,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\">"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"surface\" | \"plain\">"
         }
       },
       "size": {

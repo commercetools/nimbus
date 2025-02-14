@@ -3,6 +3,7 @@ import { defineRecipe } from "@chakra-ui/react";
 export const buttonRecipe = defineRecipe({
   className: "bleh-ui-button",
   base: {
+    borderRadius: "200",
     display: "inline-flex",
     appearance: "none",
     alignItems: "center",
@@ -18,7 +19,7 @@ export const buttonRecipe = defineRecipe({
     outline: "0",
     lineHeight: "1.2",
     isolation: "isolate",
-    fontWeight: "600",
+    fontWeight: "500",
     transitionProperty: "common",
     transitionDuration: "moderate",
     focusVisibleRing: "outside",
@@ -34,26 +35,30 @@ export const buttonRecipe = defineRecipe({
       "2xs": {
         h: "600",
         minW: "600",
-        textStyle: "xs",
+        fontSize: "300",
+        fontWeight: "500",
+        lineHeight: "400",
         px: "200",
-        gap: "100",
-        _icon: {
-          width: "350",
-          height: "350",
-        },
-      },
-      xs: {
-        h: "800",
-        minW: "800",
-        textStyle: "xs",
-        px: "250",
         gap: "100",
         _icon: {
           width: "400",
           height: "400",
         },
       },
-      sm: {
+      xs: {
+        h: "800",
+        minW: "800",
+        fontSize: "350",
+        fontWeight: "500",
+        lineHeight: "400",
+        px: "300",
+        gap: "100",
+        _icon: {
+          width: "500",
+          height: "500",
+        },
+      },
+      /* sm: {
         h: "900",
         minW: "900",
         px: "350",
@@ -63,19 +68,20 @@ export const buttonRecipe = defineRecipe({
           width: "400",
           height: "400",
         },
-      },
+      }, */
       md: {
         h: "1000",
         minW: "1000",
-        textStyle: "sm",
+        fontSize: "400",
+        lineHeight: "500",
         px: "400",
         gap: "200",
         _icon: {
-          width: "500",
-          height: "500",
+          width: "600",
+          height: "600",
         },
       },
-      lg: {
+      /*  lg: {
         h: "1100",
         minW: "1100",
         textStyle: "md",
@@ -85,8 +91,8 @@ export const buttonRecipe = defineRecipe({
           width: "500",
           height: "500",
         },
-      },
-      xl: {
+      }, */
+      /*  xl: {
         h: "1200",
         minW: "1200",
         textStyle: "md",
@@ -96,8 +102,8 @@ export const buttonRecipe = defineRecipe({
           width: "500",
           height: "500",
         },
-      },
-      "2xl": {
+      }, */
+      /* "2xl": {
         h: "1600",
         minW: "1600",
         textStyle: "lg",
@@ -107,7 +113,7 @@ export const buttonRecipe = defineRecipe({
           width: "600",
           height: "600",
         },
-      },
+      }, */
     },
     variant: {
       solid: {
@@ -159,13 +165,22 @@ export const buttonRecipe = defineRecipe({
           textDecoration: "underline",
         },
       },
-      plain: {
-        color: "colorPalette.11",
+    },
+    tone: {
+      primary: {
+        colorPalette: "primary",
+      },
+      critical: {
+        colorPalette: "error",
+      },
+      neutral: {
+        colorPalette: "neutral",
       },
     },
   },
   defaultVariants: {
     size: "md",
     variant: "subtle",
+    tone: "neutral",
   },
 });
