@@ -1,3 +1,4 @@
+export * from "./avatar";
 export * from "./box";
 export * from "./bleed";
 export * from "./button";
@@ -16,5 +17,5 @@ export * from "./simple-grid";
 export * from "./stack";
 export * from "./table";
 export * from "./text";
-export * from "./ui-kit-provider";
 export * from "./tooltip";
+export * from "./ui-kit-provider";

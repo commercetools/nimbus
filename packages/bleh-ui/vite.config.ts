@@ -38,6 +38,7 @@ export const baseConfig = {
       },
     },
   },
+  assetsInclude: ["/sb-preview/runtime.js"],
 };
 
 export default defineConfig((/* config */) => {

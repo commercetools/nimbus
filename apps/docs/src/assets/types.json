@@ -1,5 +1,252 @@
 [
   {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "Avatar",
+    "methods": [],
+    "props": {
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
+        }
+      },
+      "css": {
+        "defaultValue": null,
+        "description": "",
+        "name": "css",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "JsxStyleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "recipe": {
+        "defaultValue": null,
+        "description": "",
+        "name": "recipe",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "RecipeDefinition<RecipeVariantRecord>"
+        }
+      },
+      "unstyled": {
+        "defaultValue": null,
+        "description": "If `true`, the element will opt out of the theme styles.",
+        "name": "unstyled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "UnstyledProp"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "as": {
+        "defaultValue": null,
+        "description": "",
+        "name": "as",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ElementType"
+        }
+      },
+      "asChild": {
+        "defaultValue": null,
+        "description": "",
+        "name": "asChild",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "PolymorphicProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "firstName": {
+        "defaultValue": null,
+        "description": "The first name used to show initials",
+        "name": "firstName",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarComponentProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarComponentProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "string"
+        }
+      },
+      "lastName": {
+        "defaultValue": null,
+        "description": "The last name used to show initials",
+        "name": "lastName",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarComponentProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarComponentProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "string"
+        }
+      },
+      "src": {
+        "defaultValue": null,
+        "description": "The image URL",
+        "name": "src",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarComponentProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarComponentProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "alt": {
+        "defaultValue": null,
+        "description": "Alt text for the avatar image",
+        "name": "alt",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarComponentProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarComponentProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "If the avatar is disabled",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+          "name": "AvatarComponentProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/avatar/avatar.types.ts",
+            "name": "AvatarComponentProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "size": {
+        "defaultValue": null,
+        "description": "",
+        "name": "size",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"md\" | \"2xs\" | \"xs\">"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLDivElement>"
+        }
+      }
+    }
+  },
+  {
     "tags": {
       "see": "Docs https://chakra-ui.com/box"
     },
@@ -330,25 +577,6 @@
     "displayName": "Button",
     "methods": [],
     "props": {
-      "busy": {
-        "defaultValue": null,
-        "description": "if true, button is busy with something (loading, processing, etc...)",
-        "name": "busy",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-          "name": "ButtonProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-            "name": "ButtonProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
       "form": {
         "defaultValue": null,
         "description": "",
@@ -605,7 +833,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
+          "name": "ConditionalValue<\"md\" | \"2xs\" | \"xs\">"
         }
       },
       "variant": {
@@ -626,7 +854,28 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
+          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
+        }
+      },
+      "tone": {
+        "defaultValue": {
+          "value": "\"neutral\""
+        },
+        "description": "",
+        "name": "tone",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "ButtonVariant"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "ButtonVariant"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"neutral\" | \"primary\" | \"critical\">"
         }
       },
       "recipe": {
@@ -1019,7 +1268,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\">"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"surface\" | \"plain\">"
         }
       },
       "size": {
@@ -1333,7 +1582,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"inside\" | \"outside\">"
+          "name": "ConditionalValue<\"outside\" | \"inside\">"
         }
       },
       "size": {
@@ -1354,7 +1603,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"xs\" | \"full\" | \"cover\">"
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\" | \"xs\" | \"cover\">"
         }
       },
       "motionPreset": {
@@ -2389,7 +2638,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | AlignItems>"
+          "name": "ConditionalValue<AnyString | readonly string[] | AlignItems>"
         }
       },
       "justify": {
@@ -2408,7 +2657,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | JustifyContent>"
+          "name": "ConditionalValue<AnyString | readonly string[] | JustifyContent>"
         }
       },
       "wrap": {
@@ -2921,10 +3170,10 @@
           "name": "ChangeEventHandler<HTMLInputElement>"
         }
       },
-      "list": {
+      "disabled": {
         "defaultValue": null,
         "description": "",
-        "name": "list",
+        "name": "disabled",
         "parent": {
           "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
           "name": "InputHTMLAttributes"
@@ -2937,7 +3186,7 @@
         ],
         "required": false,
         "type": {
-          "name": "string"
+          "name": "boolean"
         }
       },
       "max": {
@@ -2978,10 +3227,10 @@
           "name": "string | number"
         }
       },
-      "multiple": {
+      "list": {
         "defaultValue": null,
         "description": "",
-        "name": "multiple",
+        "name": "list",
         "parent": {
           "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
           "name": "InputHTMLAttributes"
@@ -2994,13 +3243,51 @@
         ],
         "required": false,
         "type": {
-          "name": "boolean"
+          "name": "string"
         }
       },
-      "disabled": {
+      "src": {
         "defaultValue": null,
         "description": "",
-        "name": "disabled",
+        "name": "src",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "InputHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "alt": {
+        "defaultValue": null,
+        "description": "",
+        "name": "alt",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "InputHTMLAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "multiple": {
+        "defaultValue": null,
+        "description": "",
+        "name": "multiple",
         "parent": {
           "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
           "name": "InputHTMLAttributes"
@@ -3187,25 +3474,6 @@
           "name": "string"
         }
       },
-      "alt": {
-        "defaultValue": null,
-        "description": "",
-        "name": "alt",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "InputHTMLAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "InputHTMLAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
-        }
-      },
       "autoComplete": {
         "defaultValue": null,
         "description": "",
@@ -3356,25 +3624,6 @@
         "required": false,
         "type": {
           "name": "boolean"
-        }
-      },
-      "src": {
-        "defaultValue": null,
-        "description": "",
-        "name": "src",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "InputHTMLAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "InputHTMLAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
         }
       },
       "css": {
@@ -4612,25 +4861,6 @@
           "name": "Key"
         }
       },
-      "row": {
-        "defaultValue": null,
-        "description": "",
-        "name": "row",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
-          "name": "GridOptions"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
-            "name": "GridOptions"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<AnyString | GridRow | readonly NonNullable<GridRow>[]>"
-        }
-      },
       "inline": {
         "defaultValue": null,
         "description": "",
@@ -4648,6 +4878,25 @@
         "required": false,
         "type": {
           "name": "boolean"
+        }
+      },
+      "row": {
+        "defaultValue": null,
+        "description": "",
+        "name": "row",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<AnyString | GridRow | readonly NonNullable<GridRow>[]>"
         }
       },
       "column": {
@@ -4704,7 +4953,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | GridAutoFlow>"
+          "name": "ConditionalValue<AnyString | readonly string[] | GridAutoFlow>"
         }
       },
       "autoRows": {
@@ -4780,7 +5029,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | GridTemplateAreas>"
+          "name": "ConditionalValue<AnyString | readonly string[] | GridTemplateAreas>"
         }
       },
       "minChildWidth": {
@@ -6736,224 +6985,6 @@
   {
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "",
-    "displayName": "UiKitProvider",
-    "methods": [],
-    "props": {
-      "themes": {
-        "defaultValue": null,
-        "description": "List of all available theme names",
-        "name": "themes",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string[]"
-        }
-      },
-      "forcedTheme": {
-        "defaultValue": null,
-        "description": "Forced theme name for the current page",
-        "name": "forcedTheme",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
-        }
-      },
-      "enableSystem": {
-        "defaultValue": null,
-        "description": "Whether to switch between dark and light themes based on prefers-color-scheme",
-        "name": "enableSystem",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "disableTransitionOnChange": {
-        "defaultValue": null,
-        "description": "Disable all CSS transitions when switching themes",
-        "name": "disableTransitionOnChange",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "enableColorScheme": {
-        "defaultValue": null,
-        "description": "Whether to indicate to browsers which color scheme is used (dark or light) for built-in UI like inputs and buttons",
-        "name": "enableColorScheme",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "storageKey": {
-        "defaultValue": null,
-        "description": "Key used to store theme setting in localStorage",
-        "name": "storageKey",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
-        }
-      },
-      "defaultTheme": {
-        "defaultValue": null,
-        "description": "Default theme name (for v0.0.12 and lower the default was light). If `enableSystem` is false, the default theme is light",
-        "name": "defaultTheme",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
-        }
-      },
-      "attribute": {
-        "defaultValue": null,
-        "description": "HTML attribute modified based on the active theme. Accepts `class`, `data-*` (meaning any data attribute, `data-mode`, `data-color`, etc.), or an array which could include both",
-        "name": "attribute",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "Attribute | Attribute[]"
-        }
-      },
-      "value": {
-        "defaultValue": null,
-        "description": "Mapping of theme name to HTML attribute value. Object where key is the theme name and value is the attribute value",
-        "name": "value",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ValueObject"
-        }
-      },
-      "nonce": {
-        "defaultValue": null,
-        "description": "Nonce string to pass to the inline script and style elements for CSP headers",
-        "name": "nonce",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "string"
-        }
-      },
-      "scriptProps": {
-        "defaultValue": null,
-        "description": "Props to pass the inline script",
-        "name": "scriptProps",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-          "name": "ThemeProviderProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
-            "name": "ThemeProviderProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ScriptProps"
-        }
-      }
-    }
-  },
-  {
-    "tags": {},
-    "filePath": "../../packages/bleh-ui/src/index.ts",
     "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element, uses `Tooltip` component from `react-aria-components`.\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'sizes', etc. configured in the recipe\n- allows overriding styles by using style-props\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
     "displayName": "Tooltip",
     "methods": [],
@@ -7010,16 +7041,6 @@
           "name": "Key"
         }
       },
-      "variant": {
-        "defaultValue": null,
-        "description": "",
-        "name": "variant",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
-        }
-      },
       "recipe": {
         "defaultValue": null,
         "description": "",
@@ -7052,6 +7073,16 @@
         "required": false,
         "type": {
           "name": "boolean"
+        }
+      },
+      "variant": {
+        "defaultValue": null,
+        "description": "",
+        "name": "variant",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
         }
       },
       "placement": {
@@ -7654,6 +7685,224 @@
         "required": false,
         "type": {
           "name": "Key"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "",
+    "displayName": "UiKitProvider",
+    "methods": [],
+    "props": {
+      "themes": {
+        "defaultValue": null,
+        "description": "List of all available theme names",
+        "name": "themes",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string[]"
+        }
+      },
+      "forcedTheme": {
+        "defaultValue": null,
+        "description": "Forced theme name for the current page",
+        "name": "forcedTheme",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "enableSystem": {
+        "defaultValue": null,
+        "description": "Whether to switch between dark and light themes based on prefers-color-scheme",
+        "name": "enableSystem",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "disableTransitionOnChange": {
+        "defaultValue": null,
+        "description": "Disable all CSS transitions when switching themes",
+        "name": "disableTransitionOnChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "enableColorScheme": {
+        "defaultValue": null,
+        "description": "Whether to indicate to browsers which color scheme is used (dark or light) for built-in UI like inputs and buttons",
+        "name": "enableColorScheme",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "storageKey": {
+        "defaultValue": null,
+        "description": "Key used to store theme setting in localStorage",
+        "name": "storageKey",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "defaultTheme": {
+        "defaultValue": null,
+        "description": "Default theme name (for v0.0.12 and lower the default was light). If `enableSystem` is false, the default theme is light",
+        "name": "defaultTheme",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "attribute": {
+        "defaultValue": null,
+        "description": "HTML attribute modified based on the active theme. Accepts `class`, `data-*` (meaning any data attribute, `data-mode`, `data-color`, etc.), or an array which could include both",
+        "name": "attribute",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Attribute | Attribute[]"
+        }
+      },
+      "value": {
+        "defaultValue": null,
+        "description": "Mapping of theme name to HTML attribute value. Object where key is the theme name and value is the attribute value",
+        "name": "value",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ValueObject"
+        }
+      },
+      "nonce": {
+        "defaultValue": null,
+        "description": "Nonce string to pass to the inline script and style elements for CSP headers",
+        "name": "nonce",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "scriptProps": {
+        "defaultValue": null,
+        "description": "Props to pass the inline script",
+        "name": "scriptProps",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+          "name": "ThemeProviderProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/next-themes@0.4.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next-themes/dist/index.d.ts",
+            "name": "ThemeProviderProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ScriptProps"
         }
       }
     }

@@ -4,8 +4,5 @@ import type { AriaButtonProps } from "react-aria";
 /** combine chakra-button props with aria-button props */
 type FunctionalButtonProps = ButtonRootProps & AriaButtonProps;
 
-/** add our own custom props */
-export interface ButtonProps extends FunctionalButtonProps {
-  /** if true, button is busy with something (loading, processing, etc...) */
-  busy?: boolean;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ButtonProps extends FunctionalButtonProps {}

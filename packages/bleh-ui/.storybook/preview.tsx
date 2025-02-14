@@ -24,20 +24,34 @@ const ThemeDecorator = ({ children }) => {
   const theme = isDark ? "dark" : "light";
 
   useEffect(() => {
-    // listen to DARK_MODE event
-    channel.on(DARK_MODE_EVENT_NAME, setDark);
-    return () => channel.off(DARK_MODE_EVENT_NAME, setDark);
-  }, [channel, setDark]);
+    const { current } = JSON.parse(
+      // TODO: find out if there is a more elegant solution
+      localStorage.getItem("sb-addon-themes-3") || "{}"
+    );
 
-  return (
-    <UiKitProvider key={theme} defaultTheme={theme}>
-      {children}
-    </UiKitProvider>
-  );
+    setDark(current === "dark");
+
+    channel.on(DARK_MODE_EVENT_NAME, (darkMode) => {
+      setDark(darkMode);
+    });
+
+    return () => channel.off(DARK_MODE_EVENT_NAME, setDark);
+  }, [channel]);
+
+  useEffect(() => {
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(theme);
+  }, [theme]);
+
+  return <UiKitProvider defaultTheme={theme}>{children}</UiKitProvider>;
 };
 
 const preview: Preview = {
   parameters: {
+    darkMode: {
+      stylePreview: true,
+      classTarget: "html",
+    },
     backgrounds: {
       disable: true,
     },

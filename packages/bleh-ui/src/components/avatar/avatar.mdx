@@ -1,0 +1,80 @@
+---
+id: Components-Avatar
+title: Avatar
+description: >-
+  A reusable Avatar component to display user profile pictures or initials that
+  is flexible and customizable for various use cases.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Media
+  - Avatar
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=180-1106&t=MVbo0ZHDE08wKshT-0
+---
+
+# Avatar
+
+A reusable Avatar component that displays user profile pictures or initials.
+It's accessible, keyboard-navigable, and follows WCAG guidelines.
+
+## Basic Usage
+
+Use the Avatar component to represent a user with either their profile picture
+or initials.
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal">
+    <Avatar firstName="John" lastName="Doe" src="https://thispersondoesnotexist.com/ " />
+    <Avatar firstName="Jane" lastName="Smith" /> {/* Shows initials when no image */}
+  </Stack>
+)
+```
+
+## Features
+
+### Sizes
+
+Available in multiple sizes to suit different contexts:
+
+```jsx-live
+const App = () => {
+  const sizes = ["md", "xs", "2xs"];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Avatar
+          key={size}
+          size={size}
+          firstName="John"
+          lastName="Doe"
+          src="https://thispersondoesnotexist.com/ "
+        />
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Fallback Behavior
+
+The component handles various scenarios gracefully:
+
+- Shows initials when no image is provided
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal">
+    <Avatar firstName="John" lastName="Doe"/> {/* Shows JD */}
+  </Stack>
+)
+```
+
+## Props
+
+<PropTable id="Avatar" />

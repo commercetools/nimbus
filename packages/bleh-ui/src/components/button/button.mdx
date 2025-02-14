@@ -12,66 +12,55 @@ menu:
 tags:
   - document
 figmaLink: >-
-  https://www.figma.com/design/UoqmtHSHwxvEZRcbsM4A3Z/CT-product-design-system?m=auto&node-id=4882-48107&t=zTmiIn5PK6vL7J0H-1
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev
 ---
 
 # Button
 
 Displays a Button.
 
-> [!NOTE]  
-> The `<Button/>` component uses the native
-> [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)
-> as DOM element.
->
-> You can freely use native button attributes and customize its styling with the
-> props below.
-
 ## Basic Usage
 
-No props are required to use the Button component. If unconfigured it will pick
-up defaults for `variant`, `size`, and `colorPalette`. Defaults can be set in
-the `recipe`-file.
+If unconfigured it will default to a neutral state. It is important to configure
+the Button properly to ensure it displays as intended.
 
 ```jsx-live
 const App = () => <Button>I am a Button</Button>
 ```
 
-## Features
+## Events
 
-### Accessibility
-
-To abstract away the differences between mouse, touch and keyboard interactions,
-the Button component supports `onPress*` props. The misc `onPress*` props
-(`onPress`, `onPressStart`, `onPressEnd`, etc.) provide a more seamless and
-inclusive user experience across different devices and input methods:
+To handle the differences between mouse-, touch- and keyboard-interactions, the
+`Button` supports `onPress*` events. The misc `onPress*` events (`onPress`,
+`onPressStart`, `onPressEnd`, etc.) provide a more seamless and inclusive user
+experience across different devices and input methods:
 
 ```jsx-live
-const App = () => <Button aria-label="ne need to click this" onPress={()=>alert()} onPressEnd={()=>{}}>I am still a button</Button>
+const App = () => <Button tone="primary" variant="solid" onPress={()=>alert()}>I am accessible</Button>
 ```
 
-### Change the underlying DOM-element
+## Custom DOM-element
 
 The Button component uses the native
 [HTML button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)
-by default, but supports rendering as a different tag to the dom. Use the
-`asChild` and the tag you want to render as only child.
+by default, but supports rendering as a different tag to the DOM. Use the
+`asChild` property and the tag you want to render as _only_ child.
 
 ```jsx-live
 const App = () => (
-  <Button asChild>
+  <Button tone="primary" variant="solid" asChild>
     <a href="http://www.commercetools.com" target="_blank">I am a button in disguise</a>
   </Button>
 )
 ```
 
-### Data-Attributes
+## Aria- & Data-Attributes
 
-The Button component supports forwarding arbitrary `data-*` attributes. This can
-be useful for tracking tools.
+The Button component supports forwarding `data-*` and `aria-*` attributes. This
+can be useful for tracking tools & a11y.
 
 ```jsx-live
-const App = () => <Button data-foo="bar">I can have data-attributes</Button>
+const App = () => <Button tone="primary" variant="solid" data-foo="bar">I can have data-attributes</Button>
 ```
 
 ## Customizing the look
@@ -84,12 +73,12 @@ prop. Setting the size has no effect on the variant or color of the Button.
 ```jsx-live
 const App = () => {
 
-  const sizes = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'].reverse();
+  const sizes = ['2xs', 'xs', 'md'].reverse();
 
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <Button key={size} size={size}>'{size}' Button</Button>
+        <Button tone="primary" variant="solid" key={size} size={size}>'{size}' Button</Button>
       ))}
     </Stack>
   )
@@ -105,19 +94,19 @@ buttons with different variants can be used and displayed next to each other.
 ```jsx-live
 const App = () => {
 
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain']
+  const variants = ['solid', 'outline', 'ghost', "link"]
 
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <Button key={variant} variant={variant}>'{variant}' Button</Button>
+        <Button tone="primary" key={variant} variant={variant}>'{variant}' Button</Button>
       ))}
     </Stack>
   )
 }
 ```
 
-### Colors
+### Tones / Colors
 
 Since the different `variants` operate purely on contrast level differences
 (think: dark & light elements), the `colorPalette` prop can be used to colorize
@@ -125,15 +114,15 @@ the Button.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+  const variants = ["solid", "outline", "ghost", "link"];
+  const colors = ["primary", "critical"];
 
   return (
     <Stack>
       {colors.map((color) => (
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
-            <Button colorPalette={color} key={variant} variant={variant}>
+            <Button tone={color} key={variant} variant={variant}>
               '{variant}' Button
             </Button>
           ))}
@@ -144,57 +133,29 @@ const App = () => {
 };
 ```
 
-## Responsive widths
+### Icons
 
-The [`width` style-prop](/style-props/sizing#width) can be used to set the width
-of the `Button`. In combination with a `Stack` you could display the `Button`s
-side-by-side or on top of each other depending on the available screen-estate.
+Simply drop the desired icon into the `Button`:
 
 ```jsx-live
 const App = () => {
-  return (
-    <Stack direction={{
-      base: "column",
-      md: "row"
-    }}>
-      <Button width={{
-        base: 'full',
-        md: '1/2'
-      }} colorPalette="success" variant="solid">
-        <Icons.Check /> Yes
-      </Button>
-      <Button width={{
-        base: 'full',
-        md: '1/2'
-      }} colorPalette="error" variant="solid">
-        <Icons.X /> No
-      </Button>
-    </Stack>
-  );
-};
-```
-
-## Icons
-
-Right now icons can be just dropped into the button, they are sized like regular
-text and thus adjust their own-size according to the `size` prop.
-
-```jsx-live
-const App = () => {
-  const sizes = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"].reverse();
+  const sizes = ["2xs", "xs", "md"].reverse();
 
   return (
     <Stack>
       {sizes.map((size) => (
         <Stack key={size} direction="horizontal">
-          <Button size={size} colorPalette="success" variant="solid">
-            <Icons.Check /> Yes
+          <Button size={size} colorPalette="success" variant="solid" startIcon={<Icons.Check />}>
+            <Icons.Check />
+            Yes
           </Button>
-          <Button size={size} colorPalette="error" variant="solid">
-            <Icons.X /> No
+          <Button size={size} colorPalette="error" variant="solid" startIcon={<Icons.X />}>
+            <Icons.X />
+            No
           </Button>
-          <Button size={size} colorPalette="neutral" variant="ghost">
-            <Box animation="spin" asChild><Icons.Loader/></Box> Maybe
+          <Button size={size} colorPalette="neutral" variant="ghost" endIcon={<Box animation="spin" asChild><Icons.Loader/></Box>}>
+             Maybe
+             <Icons.CircleHelp />
           </Button>
         </Stack>
       ))}
@@ -203,11 +164,6 @@ const App = () => {
 };
 ```
 
-## Props
-
-Here is still chaos. I am not sure if parsing the types is the right way to do
-it. This is already a filtered selection, but there is still a lot of "bycatch"
-(native HTML element props, style-props, chakra-specifics ...) in the types that
-is not needed. Maybe cherry-picking the props to display is the way to go.
+## Properties / API
 
 <PropTable id="Button" />
