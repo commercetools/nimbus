@@ -150,7 +150,7 @@ Use the `order` prop to set the order of a flex item.
 Use the `gap` prop to set the gap between items in a flex or grid container.
 
 ```jsx
-<Flex gap="4">
+<Flex>
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -207,7 +207,7 @@ end of a grid container.
 Use the `gridTemplateRows` prop to define the rows of a grid container.
 
 ```jsx
-<Box display="grid" gap="4" gridTemplateRows="repeat(3, minmax(0, 1fr))">
+<Box display="grid" gridTemplateRows="repeat(3, minmax(0, 1fr))">
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -224,7 +224,7 @@ Use the `gridRowStart` and `gridRowEnd` props to define the start and end of a
 grid item.
 
 ```jsx
-<Box display="grid" gap="4" gridTemplateRows="repeat(3, minmax(0, 1fr))">
+<Box display="grid" gridTemplateRows="repeat(3, minmax(0, 1fr))">
   <Box gridRowStart="1" gridRowEnd="3">
     Item 1
   </Box>

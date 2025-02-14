@@ -184,7 +184,7 @@ export const MdxEditor = ({
           />
         </CustomEditorStyles>
       </Box>
-      <Flex gap="4" borderTop="1px solid" borderTopColor="neutral.6" py="4">
+      <Flex borderTop="1px solid" borderTopColor="neutral.6" py="4">
         <Button
           colorPalette="primary"
           minWidth="3200"

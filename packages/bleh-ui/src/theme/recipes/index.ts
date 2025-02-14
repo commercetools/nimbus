@@ -4,6 +4,7 @@ import { headingRecipe } from "@/components/heading/heading.recipe.ts";
 import { inputRecipe } from "@/components/input/input.recipe";
 import { kbdRecipe } from "@/components/kbd/kbd.recipe";
 import { linkRecipe } from "@/components/link/link.recipe";
+import { avatarRecipe } from "@/components/avatar/avatar.recipe";
 
 export const recipes = {
   button: buttonRecipe,
@@ -12,4 +13,5 @@ export const recipes = {
   input: inputRecipe,
   kbd: kbdRecipe,
   link: linkRecipe,
+  avatar: avatarRecipe,
 };
