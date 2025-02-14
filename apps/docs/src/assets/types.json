@@ -330,44 +330,6 @@
     "displayName": "Button",
     "methods": [],
     "props": {
-      "startIcon": {
-        "defaultValue": null,
-        "description": "Icon displayed at the start of the button",
-        "name": "startIcon",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-          "name": "ButtonProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-            "name": "ButtonProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ReactNode"
-        }
-      },
-      "endIcon": {
-        "defaultValue": null,
-        "description": "Icon displayed at the end of the button",
-        "name": "endIcon",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-          "name": "ButtonProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/button/button.types.ts",
-            "name": "ButtonProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ReactNode"
-        }
-      },
       "form": {
         "defaultValue": null,
         "description": "",
@@ -604,25 +566,6 @@
         "required": false,
         "type": {
           "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
-        }
-      },
-      "block": {
-        "defaultValue": null,
-        "description": "",
-        "name": "block",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
-          "name": "ButtonVariant"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
-            "name": "ButtonVariant"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<boolean>"
         }
       },
       "size": {
