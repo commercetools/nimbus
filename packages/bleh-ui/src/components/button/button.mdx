@@ -135,7 +135,7 @@ const App = () => {
 
 ### Icons
 
-The `Button` has a `startIcon` and `endIcon` prop to add icons:
+Simply drop the desired icon into the `Button`:
 
 ```jsx-live
 const App = () => {
@@ -146,13 +146,16 @@ const App = () => {
       {sizes.map((size) => (
         <Stack key={size} direction="horizontal">
           <Button size={size} colorPalette="success" variant="solid" startIcon={<Icons.Check />}>
-             Yes
+            <Icons.Check />
+            Yes
           </Button>
           <Button size={size} colorPalette="error" variant="solid" startIcon={<Icons.X />}>
-             No
+            <Icons.X />
+            No
           </Button>
           <Button size={size} colorPalette="neutral" variant="ghost" endIcon={<Box animation="spin" asChild><Icons.Loader/></Box>}>
              Maybe
+             <Icons.CircleHelp />
           </Button>
         </Stack>
       ))}
