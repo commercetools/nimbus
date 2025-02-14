@@ -18,7 +18,6 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
     "aria-label": `${fullName} avatar`,
     ref,
     ...rest,
-    role: "figure",
   };
   return (
     <AvatarRoot {...sharedProps}>

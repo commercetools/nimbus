@@ -31,13 +31,12 @@ const avatarImg = "https://thispersondoesnotexist.com/ ";
 export const Base: Story = {
   args: {
     src: avatarImg,
-    role: "figure",
-    ["aria-label"]: "base-avatar",
+    ["aria-label"]: "avatar",
     alt: "avatar",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const avatar = canvas.getByRole("figure");
+    const avatar = canvas.getByLabelText("avatar");
 
     await step("Uses a <div> element by default", async () => {
       await expect(avatar.tagName).toBe("DIV");
@@ -48,6 +47,8 @@ export const Base: Story = {
 export const Sizes: Story = {
   args: {
     src: avatarImg,
+    ["aria-label"]: "avatar",
+    alt: "avatar",
   },
   render: (args) => {
     return (
@@ -64,13 +65,12 @@ export const BaseWithInitials: Story = {
   args: {
     firstName: "John",
     lastName: "Doe",
-    role: "figure",
-    ["aria-label"]: "test-avatar",
+    ["aria-label"]: "avatar",
     alt: "avatar",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const avatar = canvas.getByRole("figure");
+    const avatar = canvas.getByLabelText("avatar");
     await step(
       "Take first letters of first and last name to make initials",
       async () => {
@@ -84,6 +84,8 @@ export const SizesWithInitials: Story = {
   args: {
     firstName: "Michael",
     lastName: "Douglas",
+    ["aria-label"]: "avatar",
+    alt: "avatar",
   },
   render: (args) => {
     return (
@@ -100,6 +102,8 @@ export const Colors: Story = {
   args: {
     firstName: "Michael",
     lastName: "Douglas",
+    ["aria-label"]: "avatar",
+    alt: "avatar",
   },
   render: (args) => {
     return (
@@ -120,8 +124,6 @@ export const Colors: Story = {
 export const InAButton: Story = {
   args: {
     src: avatarImg,
-    ["aria-label"]: "test-avatar",
-    alt: "avatar",
   },
 
   render(args) {

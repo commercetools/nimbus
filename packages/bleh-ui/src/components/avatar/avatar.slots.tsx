@@ -13,4 +13,4 @@ export interface AvatarRootProps
   extends HTMLChakraProps<"div", AvatarRecipeProps> {}
 const { withContext } = createRecipeContext({ recipe: avatarRecipe });
 
-export const AvatarRoot = withContext<HTMLDivElement, AvatarRootProps>("div");
+export const AvatarRoot = withContext<HTMLElement, AvatarRootProps>("figure");
