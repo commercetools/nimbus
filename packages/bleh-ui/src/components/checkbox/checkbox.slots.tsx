@@ -6,7 +6,7 @@ import {
 import { checkboxSlotRecipe } from "./checkbox.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: checkboxSlotRecipe,
+  key: "checkbox",
 });
 
 export interface CheckboxRootProps

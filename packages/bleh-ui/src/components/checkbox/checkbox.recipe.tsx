@@ -15,36 +15,50 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       gap: "200",
       alignItems: "center",
       verticalAlign: "top",
-      outline: "1px solid seagreen",
-      //outlineOffset: "5px",
+      ["&[data-disabled='true']"]: {
+        layerStyle: "disabled",
+      },
     },
     label: {
       flexShrink: 0,
       fontWeight: "500",
       userSelect: "none",
-      //outline: "1px solid blue",
       _disabled: {
         layerStyle: "disabled",
       },
     },
     indicator: {
+      "--bd-color": "colors.neutral.9",
+      "--bg-color": "colors.transparent",
+      "--fg-color": "colors.neutral.11",
       display: "flex",
       flexShrink: 0,
       border: "solid-50",
       borderRadius: "50",
-      borderColor: "colorPalette.9",
-      color: "colorPalette.9",
       alignItems: "center",
       justifyContent: "center",
       focusRing: "outside",
-      ["&[data-state-selected], &[data-state-indeterminate]"]: {
-        colorPalette: "primary",
-        backgroundColor: "colorPalette.9",
-        color: "colorPalette.contrast",
-      },
+      borderColor: "var(--bd-color)",
+      bg: "var(--bg-color)",
+      color: "var(--fg-color)",
       _icon: {
         w: "350",
         h: "350",
+      },
+
+      ["&[data-selected='true'], &[data-indeterminate='true']"]: {
+        "--bd-color": "colors.primary.9",
+        "--bg-color": "colors.primary.9",
+        "--fg-color": "colors.primary.contrast",
+
+        "&[data-invalid='true']": {
+          "--bg-color": "colors.error.9",
+        },
+      },
+      ["&[data-invalid='true']"]: {
+        "--bd-color": "colors.error.9",
+        "--bg-color": "transparent",
+        "--fg-color": "colors.error.contrast",
       },
     },
   },
@@ -60,7 +74,6 @@ export const checkboxSlotRecipe = defineSlotRecipe({
           _after: {
             position: "absolute",
             content: "''",
-            outline: "1px solid tomato",
             width: "600",
             height: "600",
             zIndex: 0,

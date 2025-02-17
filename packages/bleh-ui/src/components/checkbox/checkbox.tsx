@@ -1,6 +1,8 @@
 import { forwardRef, useRef } from "react";
 import { useToggleState } from "react-stately";
 import { Check, Minus } from "@bleh-ui/icons";
+import { chakra, useSlotRecipe } from "@chakra-ui/react";
+
 import {
   useFocusRing,
   useCheckbox,
@@ -8,11 +10,7 @@ import {
   VisuallyHidden,
   mergeProps,
 } from "react-aria";
-import {
-  CheckboxRoot,
-  CheckboxLabel,
-  CheckboxIndicator,
-} from "./checkbox.slots";
+
 import { mergeRefs } from "@chakra-ui/react";
 import type { CheckboxProps } from "./checkbox.types";
 
@@ -31,32 +29,48 @@ import type { CheckboxProps } from "./checkbox.types";
  */
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (props, forwardedRef) => {
-    const state = useToggleState(props);
     const localRef = useRef<HTMLInputElement>(null);
-
     const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
+    const state = useToggleState(props);
     const { inputProps } = useCheckbox(props, state, ref);
+
     const { isFocused, focusProps } = useFocusRing();
-    const isIndeterminate = props.isIndeterminate && !state.isSelected;
+
     const isSelected = state.isSelected && !props.isIndeterminate;
+    const isIndeterminate = props.isIndeterminate;
+
+    const recipe = useSlotRecipe({ key: "checkbox" });
+    const [recipeProps] = recipe.splitVariantProps(props);
+    const styles = recipe(recipeProps);
+
+    const stateProps = {
+      "data-selected": isSelected,
+      "data-indeterminate": isIndeterminate,
+      "data-invalid": props.isInvalid,
+      "data-disabled": props.isDisabled,
+    };
 
     return (
-      <CheckboxRoot>
-        <CheckboxIndicator
-          data-state-selected={isSelected || undefined}
-          data-state-indeterminate={isIndeterminate || undefined}
+      <chakra.label css={styles.root} {...recipeProps} {...stateProps}>
+        <chakra.span
+          css={styles.indicator}
           data-focus={isFocused || undefined}
+          {...stateProps}
         >
           {isSelected && <Check />}
           {isIndeterminate && <Minus />}
           <VisuallyHidden>
-            <input {...mergeProps(inputProps, focusProps)} ref={ref} />
+            <chakra.input {...mergeProps(inputProps, focusProps)} ref={ref} />
           </VisuallyHidden>
-        </CheckboxIndicator>
+        </chakra.span>
 
-        {props.children && <CheckboxLabel>{props.children}</CheckboxLabel>}
-      </CheckboxRoot>
+        {props.children && (
+          <chakra.span css={styles.label} {...stateProps}>
+            {props.children}
+          </chakra.span>
+        )}
+      </chakra.label>
     );
   }
 );

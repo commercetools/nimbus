@@ -21,22 +21,39 @@ type Story = StoryObj<typeof Checkbox>;
  *
  */
 export const Base: Story = {
-  args: {
-    children: "Demo Checkbox",
-  },
-
-  render: ({ args }) => {
+  render: () => {
     return (
-      <Stack direction="column" alignItems="flex-start">
-        <Checkbox {...args}>With Label, uncontrolled</Checkbox>
+      <Stack>
+        {[true, undefined].map((isInvalid) => (
+          <Stack>
+            {[true, undefined].map((isDisabled, i) => (
+              <Stack key={i} direction="column" alignItems="flex-start">
+                <Checkbox isDisabled={isDisabled} isInvalid={isInvalid}>
+                  Uncontrolled, {isDisabled ? "disabled" : "not disabled"},{" "}
+                  {isInvalid ? "invalid" : ""}
+                </Checkbox>
 
-        <Checkbox isSelected {...args}>
-          With Label, controlled, checked
-        </Checkbox>
+                <Checkbox
+                  isDisabled={isDisabled}
+                  isInvalid={isInvalid}
+                  isSelected
+                >
+                  Checked, {isDisabled ? "disabled" : "not disabled"},{" "}
+                  {isInvalid ? "invalid" : ""}
+                </Checkbox>
 
-        <Checkbox isIndeterminate {...args}>
-          With label, controlled, indeterminate
-        </Checkbox>
+                <Checkbox
+                  isDisabled={isDisabled}
+                  isInvalid={isInvalid}
+                  isIndeterminate
+                >
+                  Indeterminate, {isDisabled ? "disabled" : "not disabled"},{" "}
+                  {isInvalid ? "invalid" : ""}
+                </Checkbox>
+              </Stack>
+            ))}
+          </Stack>
+        ))}
       </Stack>
     );
   },

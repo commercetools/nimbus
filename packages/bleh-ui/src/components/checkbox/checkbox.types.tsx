@@ -1,6 +1,7 @@
 import type { CheckboxRootProps } from "./checkbox.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import { checkboxSlotRecipe } from "./checkbox.recipe";
+import type { AriaCheckboxProps } from "react-aria";
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.
@@ -8,7 +9,8 @@ import { checkboxSlotRecipe } from "./checkbox.recipe";
  * and styling variants from the recipe.
  */
 type CheckboxVariantProps = CheckboxRootProps &
-  RecipeVariantProps<typeof checkboxSlotRecipe>;
+  RecipeVariantProps<typeof checkboxSlotRecipe> &
+  AriaCheckboxProps;
 
 /**
  * Main props interface for the Checkbox component.
