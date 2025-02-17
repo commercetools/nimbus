@@ -23,8 +23,9 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       flexShrink: 0,
       fontWeight: "500",
       userSelect: "none",
-      _disabled: {
-        layerStyle: "disabled",
+      color: "neutral.11",
+      ["&[data-invalid='true']"]: {
+        color: "error.11",
       },
     },
     indicator: {
@@ -46,19 +47,21 @@ export const checkboxSlotRecipe = defineSlotRecipe({
         h: "350",
       },
 
+      ["&[data-invalid='true']"]: {
+        "--bd-color": "colors.error.9",
+        "--bg-color": "transparent",
+      },
+
       ["&[data-selected='true'], &[data-indeterminate='true']"]: {
         "--bd-color": "colors.primary.9",
         "--bg-color": "colors.primary.9",
         "--fg-color": "colors.primary.contrast",
 
         "&[data-invalid='true']": {
+          "--bd-color": "colors.error.9",
           "--bg-color": "colors.error.9",
+          "--fg-color": "colors.error.contrast",
         },
-      },
-      ["&[data-invalid='true']"]: {
-        "--bd-color": "colors.error.9",
-        "--bg-color": "transparent",
-        "--fg-color": "colors.error.contrast",
       },
     },
   },

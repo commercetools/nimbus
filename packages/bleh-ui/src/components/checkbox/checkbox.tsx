@@ -1,7 +1,7 @@
 import { forwardRef, useRef } from "react";
 import { useToggleState } from "react-stately";
 import { Check, Minus } from "@bleh-ui/icons";
-import { chakra, useSlotRecipe } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react";
 
 import {
   useFocusRing,
@@ -13,6 +13,11 @@ import {
 
 import { mergeRefs } from "@chakra-ui/react";
 import type { CheckboxProps } from "./checkbox.types";
+import {
+  CheckboxIndicator,
+  CheckboxRoot,
+  CheckboxLabel,
+} from "./checkbox.slots";
 
 /**
  * Checkbox
@@ -36,41 +41,33 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const { inputProps } = useCheckbox(props, state, ref);
 
     const { isFocused, focusProps } = useFocusRing();
-
     const isSelected = state.isSelected && !props.isIndeterminate;
     const isIndeterminate = props.isIndeterminate;
-
-    const recipe = useSlotRecipe({ key: "checkbox" });
-    const [recipeProps] = recipe.splitVariantProps(props);
-    const styles = recipe(recipeProps);
 
     const stateProps = {
       "data-selected": isSelected,
       "data-indeterminate": isIndeterminate,
       "data-invalid": props.isInvalid,
       "data-disabled": props.isDisabled,
+      "data-focus": isFocused || undefined,
     };
 
     return (
-      <chakra.label css={styles.root} {...recipeProps} {...stateProps}>
-        <chakra.span
-          css={styles.indicator}
-          data-focus={isFocused || undefined}
-          {...stateProps}
-        >
+      <CheckboxRoot data-slot="root" {...stateProps}>
+        <CheckboxIndicator data-slot="indicator" {...stateProps}>
           {isSelected && <Check />}
           {isIndeterminate && <Minus />}
-          <VisuallyHidden>
-            <chakra.input {...mergeProps(inputProps, focusProps)} ref={ref} />
+          <VisuallyHidden elementType="span">
+            <input {...mergeProps(inputProps, focusProps)} ref={ref} />
           </VisuallyHidden>
-        </chakra.span>
+        </CheckboxIndicator>
 
         {props.children && (
-          <chakra.span css={styles.label} {...stateProps}>
+          <CheckboxLabel data-slot="label" {...stateProps}>
             {props.children}
-          </chakra.span>
+          </CheckboxLabel>
         )}
-      </chakra.label>
+      </CheckboxRoot>
     );
   }
 );
