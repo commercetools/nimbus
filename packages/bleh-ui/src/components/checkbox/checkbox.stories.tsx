@@ -2,8 +2,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Checkbox } from "./checkbox";
 import { Stack } from "@/components";
-import { userEvent, within, expect, fn, waitFor } from "@storybook/test";
-import { useState } from "react";
+import { userEvent, within, expect, fn } from "@storybook/test";
 
 const meta: Meta<typeof Checkbox> = {
   title: "components/Checkbox",
@@ -121,11 +120,25 @@ export const Invalid: Story = {
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-
     const htmlInput = canvas.getByTestId("test-checkbox");
-
     await step("html input state is invalid", async () => {
       await expect(htmlInput).toBeInvalid();
+    });
+  },
+};
+
+export const InvisibleLabel: Story = {
+  args: {
+    ["data-testid"]: "test-checkbox",
+    "aria-label": "Checkbox without label",
+  },
+
+  play: async ({ canvasElement, step, args }) => {
+    const canvas = within(canvasElement);
+    const htmlInput = canvas.getByTestId("test-checkbox");
+
+    await step("Has alternative label", async () => {
+      await expect(htmlInput).toHaveAttribute("aria-label", args["aria-label"]);
     });
   },
 };
