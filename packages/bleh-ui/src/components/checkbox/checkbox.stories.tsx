@@ -24,8 +24,9 @@ export const Base: Story = {
   args: {
     children: "Checkbox Label",
     onChange: fn(),
-    ["data-testid"]: "test-checkbox",
-    ["aria-label"]: "test-label",
+    // @ts-expect-error: data-testid is not a valid prop
+    "data-testid": "test-checkbox",
+    "aria-label": "test-label",
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
@@ -75,7 +76,8 @@ export const Base: Story = {
 export const Disabled: Story = {
   args: {
     children: "Disabled Checkbox",
-    ["data-testid"]: "test-checkbox",
+    // @ts-expect-error: data-testid is not a valid prop
+    "data-testid": "test-checkbox",
     isDisabled: true,
     isSelected: false,
     onChange: fn(),
@@ -113,7 +115,8 @@ export const Disabled: Story = {
 export const Invalid: Story = {
   args: {
     children: "Invalid Checkbox",
-    ["data-testid"]: "test-checkbox",
+    // @ts-expect-error: data-testid is not a valid prop
+    "data-testid": "test-checkbox",
     isInvalid: true,
     onChange: fn(),
   },
@@ -129,6 +132,7 @@ export const Invalid: Story = {
 
 export const InvisibleLabel: Story = {
   args: {
+    // @ts-expect-error: data-testid is not a valid prop
     ["data-testid"]: "test-checkbox",
     "aria-label": "Checkbox without label",
   },
