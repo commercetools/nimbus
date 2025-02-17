@@ -37,6 +37,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const localRef = useRef<HTMLInputElement>(null);
     const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
+    const recipe = useSlotRecipe({ key: "checkbox" });
+    const [recipeProps] = recipe.splitVariantProps(props);
+
     const state = useToggleState(props);
     const { inputProps } = useCheckbox(props, state, ref);
 
@@ -53,7 +56,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     };
 
     return (
-      <CheckboxRoot data-slot="root" {...stateProps}>
+      <CheckboxRoot data-slot="root" {...recipeProps} {...stateProps}>
         <CheckboxIndicator data-slot="indicator" {...stateProps}>
           {isSelected && <Check />}
           {isIndeterminate && <Minus />}

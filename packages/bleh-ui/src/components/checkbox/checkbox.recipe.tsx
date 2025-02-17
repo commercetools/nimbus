@@ -11,10 +11,13 @@ export const checkboxSlotRecipe = defineSlotRecipe({
 
   base: {
     root: {
+      colorPalette: "primary",
       display: "inline-flex",
       gap: "200",
       alignItems: "center",
       verticalAlign: "top",
+      minWidth: "600",
+      minHeight: "600",
       ["&[data-disabled='true']"]: {
         layerStyle: "disabled",
       },
@@ -29,9 +32,6 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       },
     },
     indicator: {
-      "--bd-color": "colors.neutral.9",
-      "--bg-color": "colors.transparent",
-      "--fg-color": "colors.neutral.11",
       display: "flex",
       flexShrink: 0,
       border: "solid-50",
@@ -39,9 +39,9 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyContent: "center",
       focusRing: "outside",
-      borderColor: "var(--bd-color)",
-      bg: "var(--bg-color)",
-      color: "var(--fg-color)",
+      borderColor: "neutral.9",
+      bg: "transparent",
+      color: "neutral.11",
 
       position: "relative",
       _icon: {
@@ -50,19 +50,20 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       },
 
       ["&[data-invalid='true']"]: {
-        "--bd-color": "colors.error.9",
-        "--bg-color": "transparent",
+        borderColor: "error.9",
+        bg: "transparent",
+        color: "error.11",
       },
 
       ["&[data-selected='true'], &[data-indeterminate='true']"]: {
-        "--bd-color": "colors.primary.9",
-        "--bg-color": "colors.primary.9",
-        "--fg-color": "colors.primary.contrast",
+        borderColor: "colorPalette.9",
+        bg: "colorPalette.9",
+        color: "colorPalette.contrast",
 
         "&[data-invalid='true']": {
-          "--bd-color": "colors.error.9",
-          "--bg-color": "colors.error.9",
-          "--fg-color": "colors.error.contrast",
+          borderColor: "error.9",
+          bg: "error.9",
+          color: "error.contrast",
         },
       },
     },
@@ -70,7 +71,6 @@ export const checkboxSlotRecipe = defineSlotRecipe({
   variants: {
     size: {
       md: {
-        root: {},
         label: { textStyle: "md" },
         indicator: {
           w: "400",
