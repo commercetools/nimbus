@@ -7966,10 +7966,10 @@
     "displayName": "Checkbox",
     "methods": [],
     "props": {
-      "isIndeterminate": {
+      "children": {
         "defaultValue": null,
-        "description": "neither checked, nor unchecked",
-        "name": "isIndeterminate",
+        "description": "The label for the element.",
+        "name": "children",
         "parent": {
           "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/checkbox/checkbox.types.tsx",
           "name": "CheckboxProps"
@@ -7982,7 +7982,7 @@
         ],
         "required": false,
         "type": {
-          "name": "boolean"
+          "name": "ReactNode"
         }
       },
       "form": {
@@ -8111,6 +8111,274 @@
         "required": false,
         "type": {
           "name": "boolean"
+        }
+      },
+      "isIndeterminate": {
+        "defaultValue": null,
+        "description": "Indeterminism is presentational only.\nThe indeterminate visual representation remains regardless of user interaction.",
+        "name": "isIndeterminate",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+          "name": "CheckboxProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+            "name": "CheckboxProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "value": {
+        "defaultValue": null,
+        "description": "The value of the input element, used when submitting an HTML form. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefvalue).",
+        "name": "value",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+          "name": "ToggleProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+            "name": "ToggleProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
+        }
+      },
+      "defaultSelected": {
+        "defaultValue": null,
+        "description": "Whether the element should be selected (uncontrolled).",
+        "name": "defaultSelected",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+          "name": "ToggleStateOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+            "name": "ToggleStateOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isSelected": {
+        "defaultValue": null,
+        "description": "Whether the element should be selected (controlled).",
+        "name": "isSelected",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+          "name": "ToggleStateOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+checkbox@3.9.0_react@18.3.1/node_modules/@react-types/checkbox/src/index.d.ts",
+            "name": "ToggleStateOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "Whether the input is disabled.",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "InputBase"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "InputBase"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isReadOnly": {
+        "defaultValue": null,
+        "description": "Whether the input can be selected but not changed by the user.",
+        "name": "isReadOnly",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "InputBase"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "InputBase"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isRequired": {
+        "defaultValue": null,
+        "description": "Whether user input is required on the input before form submission.",
+        "name": "isRequired",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "Validation"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "isInvalid": {
+        "defaultValue": null,
+        "description": "Whether the input value is invalid.",
+        "name": "isInvalid",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "Validation"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "validationState": {
+        "defaultValue": null,
+        "description": "@deprecated Use `isInvalid` instead.",
+        "name": "validationState",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "Validation"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "ValidationState"
+        }
+      },
+      "validationBehavior": {
+        "defaultValue": {
+          "value": "'aria'"
+        },
+        "description": "Whether to use native HTML form validation to prevent form submission\nwhen the value is missing or invalid, or mark the field as required\nor invalid via ARIA.",
+        "name": "validationBehavior",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "Validation"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"native\" | \"aria\""
+        }
+      },
+      "validate": {
+        "defaultValue": null,
+        "description": "A function that returns an error message if a given value is invalid.\nValidation errors are displayed to the user when the form is submitted\nif `validationBehavior=\"native\"`. For realtime validation, use the `isInvalid`\nprop instead.",
+        "name": "validate",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/inputs.d.ts",
+            "name": "Validation"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(value: boolean) => true | ValidationError"
+        }
+      },
+      "onFocusChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the element's focus status changes.",
+        "name": "onFocusChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/events.d.ts",
+            "name": "FocusEvents"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isFocused: boolean) => void"
+        }
+      },
+      "excludeFromTabOrder": {
+        "defaultValue": null,
+        "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+        "name": "excludeFromTabOrder",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "FocusableDOMProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "name": {
+        "defaultValue": null,
+        "description": "The name of the input element, used when submitting an HTML form. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefname).",
+        "name": "name",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "InputDOMProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+shared@3.26.0_react@18.3.1/node_modules/@react-types/shared/src/dom.d.ts",
+            "name": "InputDOMProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "string"
         }
       },
       "ref": {

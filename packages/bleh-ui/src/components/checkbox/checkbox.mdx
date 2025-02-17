@@ -6,6 +6,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Inputs
   - Checkbox
 tags:
   - component
@@ -15,31 +16,61 @@ tags:
 
 displays a checkbox and an associated label
 
-## Basic Usage
+## With label
 
-[Explain the basic usage / usecase of the component].
+A checkbox with a visible label.
 
 ```jsx-live
-const App = () => <Checkbox>I am Checkbox!</Checkbox>
+const App = () => <Checkbox>I am a Checkbox</Checkbox>
 ```
 
-### Sizes
+## Without visible label
 
-Available sizes.
+A checkbox without a visible label.
+
+```jsx-live
+const App = () => <Checkbox aria-label="I am a Checkbox"/>
+```
+
+## Controlled Checkbox
+
+A checkbox that is controlled by a state.
 
 ```jsx-live
 const App = () => {
 
-  const sizes = ['xs'];
+  const [isSelected, setIsSelected]  = useState(true)
 
   return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <Checkbox key={size} size={size}>'{size}' Checkbox</Checkbox>
-      ))}
-    </Stack>
+   <Checkbox isSelected={isSelected} onChange={(v)=>{console.log(v); setIsSelected(v)}}>
+     Controlled Checkbox
+   </Checkbox>
   )
 }
+```
+
+## Disabled Checkbox
+
+A checkbox that is disabled.
+
+```jsx-live
+const App = () => <Checkbox isDisabled>Disabled Checkbox</Checkbox>
+```
+
+## Invalid Checkbox
+
+A checkbox that is marked as invalid.
+
+```jsx-live
+const App = () => <Checkbox isInvalid>Invalid Checkbox</Checkbox>
+```
+
+## Indeterminate Checkbox
+
+A checkbox that is in an indeterminate state.
+
+```jsx-live
+const App = () => <Checkbox isIndeterminate>Indeterminate Checkbox</Checkbox>
 ```
 
 ## Props

@@ -371,16 +371,17 @@
       "repoPath": "packages/bleh-ui/src/components/checkbox/checkbox.mdx",
       "menu": [
         "Components",
+        "Inputs",
         "Checkbox"
       ],
-      "route": "components/checkbox",
+      "route": "components/inputs/checkbox",
       "tags": [
         "component"
       ],
       "toc": [
         {
-          "value": "Basic Usage",
-          "href": "#basic-usage",
+          "value": "With label",
+          "href": "#with-label",
           "depth": 2,
           "numbering": [
             1,
@@ -389,13 +390,52 @@
           "parent": "root"
         },
         {
-          "value": "Sizes",
-          "href": "#sizes",
-          "depth": 3,
+          "value": "Without visible label",
+          "href": "#without-visible-label",
+          "depth": 2,
           "numbering": [
             1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled Checkbox",
+          "href": "#controlled-checkbox",
+          "depth": 2,
+          "numbering": [
             1,
-            1
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled Checkbox",
+          "href": "#disabled-checkbox",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Invalid Checkbox",
+          "href": "#invalid-checkbox",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Indeterminate Checkbox",
+          "href": "#indeterminate-checkbox",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
           ],
           "parent": "root"
         },
@@ -405,13 +445,13 @@
           "depth": 2,
           "numbering": [
             1,
-            2
+            7
           ],
           "parent": "root"
         }
       ]
     },
-    "mdx": "\n# Checkbox\n\ndisplays a checkbox and an associated label\n\n## Basic Usage\n\n[Explain the basic usage / usecase of the component].\n\n```jsx-live\nconst App = () => <Checkbox>I am Checkbox!</Checkbox>\n```\n\n### Sizes\n\nAvailable sizes.\n\n```jsx-live\nconst App = () => {\n\n  const sizes = ['xs'];\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <Checkbox key={size} size={size}>'{size}' Checkbox</Checkbox>\n      ))}\n    </Stack>\n  )\n}\n```\n\n## Props\n\n<PropTable id=\"Checkbox\" />\n"
+    "mdx": "\n# Checkbox\n\ndisplays a checkbox and an associated label\n\n## With label\n\nA checkbox with a visible label.\n\n```jsx-live\nconst App = () => <Checkbox>I am a Checkbox</Checkbox>\n```\n\n## Without visible label\n\nA checkbox without a visible label.\n\n```jsx-live\nconst App = () => <Checkbox aria-label=\"I am a Checkbox\"/>\n```\n\n## Controlled Checkbox\n\nA checkbox that is controlled by a state.\n\n```jsx-live\nconst App = () => {\n\n  const [isSelected, setIsSelected]  = useState(true)\n\n  return (\n   <Checkbox isSelected={isSelected} onChange={(v)=>{console.log(v); setIsSelected(v)}}>\n     Controlled Checkbox\n   </Checkbox>\n  )\n}\n```\n\n## Disabled Checkbox\n\nA checkbox that is disabled.\n\n```jsx-live\nconst App = () => <Checkbox isDisabled>Disabled Checkbox</Checkbox>\n```\n\n## Invalid Checkbox\n\nA checkbox that is marked as invalid.\n\n```jsx-live\nconst App = () => <Checkbox isInvalid>Invalid Checkbox</Checkbox>\n```\n\n## Indeterminate Checkbox\n\nA checkbox that is in an indeterminate state.\n\n```jsx-live\nconst App = () => <Checkbox isIndeterminate>Indeterminate Checkbox</Checkbox>\n```\n\n## Props\n\n<PropTable id=\"Checkbox\" />\n"
   },
   "packages/bleh-ui/src/components/code/code.mdx": {
     "meta": {

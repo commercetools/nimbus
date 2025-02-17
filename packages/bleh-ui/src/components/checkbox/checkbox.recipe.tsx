@@ -42,6 +42,8 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       borderColor: "var(--bd-color)",
       bg: "var(--bg-color)",
       color: "var(--fg-color)",
+
+      position: "relative",
       _icon: {
         w: "350",
         h: "350",
