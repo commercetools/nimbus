@@ -29,8 +29,6 @@ export const WithBorder: Story = {
 export const AsFlexContainer: Story = {
   args: {
     display: "grid",
-    gap: "4",
-    p: "4",
     children: (
       <>
         <Box p="2" bg="primary.3">
@@ -63,7 +61,7 @@ export const AsChild: Story = {
     asChild: true,
     children: (
       <button onClick={() => alert("Clicked!")}>
-        I am a button with Box styles
+        Click me! I am a button with Box styles
       </button>
     ),
   },
