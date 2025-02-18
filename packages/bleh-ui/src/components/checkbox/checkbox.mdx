@@ -42,7 +42,7 @@ const App = () => {
   const [isSelected, setIsSelected]  = useState(true)
 
   return (
-   <Checkbox isSelected={isSelected} onChange={(v)=>{console.log(v); setIsSelected(v)}}>
+   <Checkbox isSelected={isSelected} onChange={(v)=>setIsSelected(v)}>
      Controlled Checkbox
    </Checkbox>
   )

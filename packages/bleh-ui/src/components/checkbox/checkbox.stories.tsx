@@ -133,7 +133,7 @@ export const Invalid: Story = {
 export const InvisibleLabel: Story = {
   args: {
     // @ts-expect-error: data-testid is not a valid prop
-    ["data-testid"]: "test-checkbox",
+    "data-testid": "test-checkbox",
     "aria-label": "Checkbox without label",
   },
 
