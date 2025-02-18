@@ -51,21 +51,37 @@ export const checkboxSlotRecipe = defineSlotRecipe({
         h: "350",
       },
 
+      "&:hover": {
+        borderColor: "neutral.10",
+      },
+
       ["&[data-invalid='true']"]: {
-        borderColor: "error.9",
         bg: "transparent",
+        borderColor: "error.9",
         color: "error.11",
+        "&:hover": {
+          borderColor: "error.10",
+        },
       },
 
       ["&[data-selected='true'], &[data-indeterminate='true']"]: {
-        borderColor: "colorPalette.9",
         bg: "colorPalette.9",
+        borderColor: "colorPalette.9",
         color: "colorPalette.contrast",
 
+        "&:hover": {
+          bg: "colorPalette.10",
+          borderColor: "colorPalette.10",
+        },
+
         "&[data-invalid='true']": {
-          borderColor: "error.9",
           bg: "error.9",
+          borderColor: "error.9",
           color: "error.contrast",
+          "&:hover": {
+            borderColor: "error.10",
+            bg: "error.10",
+          },
         },
       },
     },
