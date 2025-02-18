@@ -6985,20 +6985,10 @@
   {
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element, uses `Tooltip` component from `react-aria-components`.\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'sizes', etc. configured in the recipe\n- allows overriding styles by using style-props\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
+    "description": "Tooltip\n============================================================\nA contextual popup that displays a description for an element, uses `Tooltip` component from `react-aria-components`.\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)\n- allows overriding styles by using style-props\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
     "displayName": "Tooltip",
     "methods": [],
     "props": {
-      "size": {
-        "defaultValue": null,
-        "description": "",
-        "name": "size",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
-        }
-      },
       "css": {
         "defaultValue": null,
         "description": "",
@@ -7073,16 +7063,6 @@
         "required": false,
         "type": {
           "name": "boolean"
-        }
-      },
-      "variant": {
-        "defaultValue": null,
-        "description": "",
-        "name": "variant",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
         }
       },
       "placement": {
@@ -7328,152 +7308,6 @@
   {
     "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "TooltipTrigger\n============================================================\nTooltipTrigger wraps around a trigger element and a Tooltip.\nIt handles opening and closing the Tooltip when the user hovers over or focuses the trigger,\nand positioning the Tooltip relative to the trigger.\n\nDirectly exported from `react-aria-components`\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)",
-    "displayName": "TooltipTrigger",
-    "methods": [],
-    "props": {
-      "isDisabled": {
-        "defaultValue": null,
-        "description": "Whether the tooltip should be disabled, independent from the trigger.",
-        "name": "isDisabled",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "delay": {
-        "defaultValue": {
-          "value": "1500"
-        },
-        "description": "The delay time for the tooltip to show up. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Immediate-or-delayed-appearance).",
-        "name": "delay",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "number"
-        }
-      },
-      "closeDelay": {
-        "defaultValue": {
-          "value": "500"
-        },
-        "description": "The delay time for the tooltip to close. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Warmup-and-cooldown).",
-        "name": "closeDelay",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "number"
-        }
-      },
-      "trigger": {
-        "defaultValue": null,
-        "description": "By default, opens for both focus and hover. Can be made to open only for focus.",
-        "name": "trigger",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-          "name": "TooltipTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
-            "name": "TooltipTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "\"focus\""
-        }
-      },
-      "isOpen": {
-        "defaultValue": null,
-        "description": "Whether the overlay is open by default (controlled).",
-        "name": "isOpen",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-          "name": "OverlayTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-            "name": "OverlayTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "defaultOpen": {
-        "defaultValue": null,
-        "description": "Whether the overlay is open by default (uncontrolled).",
-        "name": "defaultOpen",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-          "name": "OverlayTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-            "name": "OverlayTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
-      "onOpenChange": {
-        "defaultValue": null,
-        "description": "Handler that is called when the overlay's open state changes.",
-        "name": "onOpenChange",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-          "name": "OverlayTriggerProps"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
-            "name": "OverlayTriggerProps"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "(isOpen: boolean) => void"
-        }
-      }
-    }
-  },
-  {
-    "tags": {},
-    "filePath": "../../packages/bleh-ui/src/index.ts",
     "description": "FocusableTooltipTrigger\n============================================================\nA helper component that adds props from `react-aria`s `useFocusable` hook\nto its child so that it can be used as a trigger element for a `Tooltip`\n\nCaveats:\n- Using non-interactive elements as tooltip triggers is against ARIA best-practices,\n  it is your responsibility to ensure that the underlying trigger element handles\n  focus and hover interactions correctly for keyboard-only users\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLElement' attributes (including aria- & data-attributes)\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [React Aria Components Issue re:Tooltip with custom trigger](https://github.com/adobe/react-spectrum/issues/5733#issuecomment-1918691983)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
     "displayName": "FocusableTooltipTrigger",
     "methods": [],
@@ -7685,6 +7519,152 @@
         "required": false,
         "type": {
           "name": "Key"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "TooltipTrigger\n============================================================\nTooltipTrigger wraps around a trigger element and a Tooltip.\nIt handles opening and closing the Tooltip when the user hovers over or focuses the trigger,\nand positioning the Tooltip relative to the trigger.\n\nDirectly exported from `react-aria-components`\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)",
+    "displayName": "TooltipTrigger",
+    "methods": [],
+    "props": {
+      "isDisabled": {
+        "defaultValue": null,
+        "description": "Whether the tooltip should be disabled, independent from the trigger.",
+        "name": "isDisabled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "delay": {
+        "defaultValue": {
+          "value": "1500"
+        },
+        "description": "The delay time for the tooltip to show up. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Immediate-or-delayed-appearance).",
+        "name": "delay",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "closeDelay": {
+        "defaultValue": {
+          "value": "500"
+        },
+        "description": "The delay time for the tooltip to close. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Warmup-and-cooldown).",
+        "name": "closeDelay",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "number"
+        }
+      },
+      "trigger": {
+        "defaultValue": null,
+        "description": "By default, opens for both focus and hover. Can be made to open only for focus.",
+        "name": "trigger",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+tooltip@3.4.14_react@18.3.1/node_modules/@react-types/tooltip/src/index.d.ts",
+            "name": "TooltipTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "\"focus\""
+        }
+      },
+      "isOpen": {
+        "defaultValue": null,
+        "description": "Whether the overlay is open by default (controlled).",
+        "name": "isOpen",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "defaultOpen": {
+        "defaultValue": null,
+        "description": "Whether the overlay is open by default (uncontrolled).",
+        "name": "defaultOpen",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
+      "onOpenChange": {
+        "defaultValue": null,
+        "description": "Handler that is called when the overlay's open state changes.",
+        "name": "onOpenChange",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@react-types+overlays@3.8.12_react@18.3.1/node_modules/@react-types/overlays/src/index.d.ts",
+            "name": "OverlayTriggerProps"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "(isOpen: boolean) => void"
         }
       }
     }

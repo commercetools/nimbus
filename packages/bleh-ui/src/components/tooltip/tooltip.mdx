@@ -12,84 +12,58 @@ menu:
   - Tooltip
 tags:
   - component
+  - media
 ---
 
 # Tooltip
 
-A contextual popup that displays a description for an element. See
-https://www.w3.org/TR/wai-aria-1.2/#tooltip
+A contextual popup that displays a description for an element.
+
+[React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)
+[Tooltip Aria Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)
 
 ## Basic Usage
 
-[TODO Explain the basic usage / usecase of the component].
+All instances of `Tooltip` consist of two components, the `TooltipTrigger` and
+the `Tooltip`.
+
+The `TooltipTrigger` is required to wrap both the trigger element and the
+`Tooltip`.
 
 ```jsx-live
-const App = () => <Tooltip>I am Tooltip!</Tooltip>
-```
-
-### Sizes
-
-Available sizes.
-
-```jsx-live
-const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
-
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <Tooltip key={size} size={size}>'{size}' Tooltip</Tooltip>
-      ))}
-    </Stack>
+const App = () => (
+  <TooltipTrigger>
+    <Button>Trigger Element</Button>
+    <Tooltip>Tooltip</Tooltip>
+  </TooltipTrigger>
   )
-}
 ```
 
-### Variants
+## Use With Custom Trigger Element
 
-Available variants.
+All trigger elements must use the `useButton` or `useFocusable` hook from
+`react-aria`, if you would like to use the `Tooltip` with a custom component,
+you can wrap the custom element in the `FocusableTooltipTrigger` element.
 
 ```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <Tooltip key={variant} variant={variant}>'{variant}' Tooltip</Tooltip>
-      ))}
-    </Stack>
+const App = () => (
+  <TooltipTrigger>
+    <FocusableTooltipTrigger>
+        <button>Custom Trigger Element</button>
+    </FocusableTooltipTrigger>
+    <Tooltip>Tooltip</Tooltip>
+  </TooltipTrigger>
   )
-}
 ```
 
-### Colors
+## Tooltip Trigger Props
 
-[Explain usage with different colors/semantics.]
+<PropTable id="TooltipTrigger" />
 
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Tooltip colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Tooltip
-            </Tooltip>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-```
-
-## Props
+## Tooltip Props
 
 <PropTable id="Tooltip" />
+
+## FocusableTooltipTrigger Props
+
+<PropTable id="FocusableTooltipTrigger" />

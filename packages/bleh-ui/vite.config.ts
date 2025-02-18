@@ -15,7 +15,7 @@ export const baseConfig = {
 
     // https://react-spectrum.adobe.com/react-aria/internationalization.html#vite
     optimizeLocales.vite({
-      locales: ["en-US", "fr-FR"],
+      locales: ["en-US", "fr-FR", "pt-BR", "es-ES", "de-DE"],
     }),
   ],
   build: {

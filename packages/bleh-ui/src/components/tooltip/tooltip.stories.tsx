@@ -1,48 +1,42 @@
-import type { ReactNode } from "react";
+import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { TooltipProps as RATooltipProps } from "react-aria-components";
+import { within, expect } from "@storybook/test";
 import {
   Tooltip,
   TooltipTrigger,
-  // FocusableTooltipTrigger,
-  type TooltipProps,
   Button,
   Stack,
+  type TooltipProps,
 } from "@/components";
 
-const ComposedTooltip = ({
-  buttonChild = "hover/focus me",
-  ...props
-}: TooltipProps & { buttonChild?: ReactNode }) => (
-  <TooltipTrigger
-    isOpen={props.isOpen}
-    defaultOpen={props.defaultOpen}
-    delay={0}
-  >
-    <Button>{buttonChild}</Button>
-    <Tooltip {...props}>{props.children}</Tooltip>
-  </TooltipTrigger>
-);
+const placements = {
+  top: ["top", "top left", "top right", "top start", "top end"],
+  bottom: [
+    "bottom",
+    "bottom left",
+    "bottom right",
+    "bottom start",
+    "bottom end",
+  ],
+  left: ["left", "left top", "left bottom"],
+  right: ["right", "right top", "right bottom"],
+  start: ["start", "start top", "start bottom"],
+  end: ["end", "end top", "end bottom"],
+};
 
-// const ComposedTooltipCustomTrigger = (props: TooltipProps) => (
-//   <TooltipTrigger>
-//     <FocusableTooltipTrigger>
-//       <button>hover/focus custom button</button>
-//     </FocusableTooltipTrigger>
+const allPlacements = Object.values(placements).flatMap((x) => x);
 
-//     <Tooltip {...props}>I'm the tooltip</Tooltip>
-//   </TooltipTrigger>
-// );
-/**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
- */
 const meta: Meta<typeof Tooltip> = {
-  title: "components/Tooltip",
+  title: "components/tooltip/Tooltip",
   component: Tooltip,
+  argTypes: {
+    placement: {
+      options: allPlacements,
+      control: { type: "select" },
+    },
+  },
   render: (args) => (
-    <TooltipTrigger>
+    <TooltipTrigger delay={0} closeDelay={0}>
       <Button>hover/focus me</Button>
       <Tooltip {...args} />
     </TooltipTrigger>
@@ -58,33 +52,42 @@ export default meta;
 type Story = StoryObj<typeof Tooltip>;
 
 /**
- * Base story
  * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
  */
+const tooltipRef = createRef<HTMLDivElement>();
 export const Base: Story = {
   args: {
     children: "Demo Tooltip",
+    ref: tooltipRef,
+  },
+  play: async ({ canvasElement, step }) => {
+    // need to get the parent node in order to have the tooltip portal in scope
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("it renders a tooltip with the proper text", async () => {
+      const button = canvas.getByRole("button", { name: "hover/focus me" });
+      button.click();
+      button.focus();
+      await canvas.findByRole("tooltip", {
+        name: "Demo Tooltip",
+      });
+    });
+    await step("it forwards a ref to the tooltip", async () => {
+      const button = canvas.getByRole("button", { name: "hover/focus me" });
+
+      button.focus();
+      const tooltip = await canvas.findByRole("tooltip", {
+        name: "Demo Tooltip",
+      });
+      await expect(tooltipRef.current).toBe(tooltip);
+    });
   },
 };
 
-const placements = {
-  top: ["top", "top left", "top right", "top start", "top end"],
-  right: ["right", "right top", "right bottom"],
-  bottom: [
-    "bottom",
-    "bottom left",
-    "bottom right",
-    "bottom start",
-    "bottom end",
-  ],
-  end: ["end", "end top", "end bottom"],
-  left: ["left", "left top", "left bottom"],
-  start: ["start", "start top", "start bottom"],
-};
-
 /**
- * Showcase placements
+ * Shows all possible placements
  */
 export const Placement: Story = {
   args: {},
@@ -92,32 +95,52 @@ export const Placement: Story = {
     return (
       <Stack
         direction="column"
-        gap="400"
         alignItems="start"
         marginY="1000"
         marginX="2000"
       >
         {Object.entries(placements).map(([type, values]) => (
-          <Stack
-            direction="row"
-            gap="3200"
-            alignItems="center"
-            marginY="400"
-            key={type}
-          >
-            {values.map((placement: RATooltipProps["placement"]) => (
-              <ComposedTooltip
+          <Stack direction="row" alignItems="center" key={type} wrap="wrap">
+            {values.map((placement) => (
+              <TooltipTrigger
                 key={placement}
-                {...args}
-                placement={placement}
-                buttonChild={placement}
+                isOpen={args.isOpen}
+                defaultOpen={args.defaultOpen}
+                delay={0}
               >
-                {placement}
-              </ComposedTooltip>
+                <Button w="200px" h="60px">
+                  {placement}
+                </Button>
+                <Tooltip
+                  {...args}
+                  placement={placement as TooltipProps["placement"]}
+                >
+                  {placement}
+                </Tooltip>
+              </TooltipTrigger>
             ))}
           </Stack>
         ))}
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    for (const placement of allPlacements) {
+      await step(`Implements ${placement} placement on focus`, async () => {
+        const button = await canvas.findByRole("button", {
+          name: placement,
+        });
+        button.click();
+        await expect(
+          canvas.queryByRole("tooltip", { name: placement })
+        ).toBeNull();
+        button.focus();
+        await canvas.findByRole("tooltip", { name: placement });
+        button.blur();
+      });
+    }
   },
 };
