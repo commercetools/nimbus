@@ -1,10 +1,8 @@
 [
   {
-    "tags": {
-      "see": "Docs https://chakra-ui.com/box"
-    },
+    "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "Box is the most abstract component on top of which other chakra\ncomponents are built. It renders a `div` element by default.",
+    "description": "",
     "displayName": "Box",
     "methods": [],
     "props": {
@@ -17,6 +15,10 @@
           "name": "Attributes"
         },
         "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
           {
             "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
             "name": "Attributes"
@@ -44,6 +46,40 @@
         "required": false,
         "type": {
           "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+        }
+      },
+      "recipe": {
+        "defaultValue": null,
+        "description": "",
+        "name": "recipe",
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+            "name": "TypeLiteral"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "RecipeDefinition<RecipeVariantRecord>"
+        }
+      },
+      "unstyled": {
+        "defaultValue": null,
+        "description": "If `true`, the element will opt out of the theme styles.",
+        "name": "unstyled",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+            "name": "UnstyledProp"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
         }
       },
       "as": {
@@ -84,22 +120,54 @@
           "name": "boolean"
         }
       },
-      "ref": {
+      "size": {
         "defaultValue": null,
         "description": "",
+        "name": "size",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
+        }
+      },
+      "variant": {
+        "defaultValue": null,
+        "description": "",
+        "name": "variant",
+        "declarations": [],
+        "required": false,
+        "type": {
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
         "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-            "name": "TypeLiteral"
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
           }
         ],
         "required": false,
         "type": {
-          "name": "any"
+          "name": "LegacyRef<HTMLDivElement>"
         }
       }
     }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "Main props interface for the Box component.\nExtends BoxVariantProps to include both root props and variant props,\nwhile adding support for React children.",
+    "displayName": "BoxProps",
+    "methods": [],
+    "props": {}
   },
   {
     "tags": {},
@@ -586,7 +654,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"md\" | \"2xs\" | \"xs\">"
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
         }
       },
       "variant": {
@@ -607,28 +675,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
-        }
-      },
-      "tone": {
-        "defaultValue": {
-          "value": "\"neutral\""
-        },
-        "description": "",
-        "name": "tone",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
-          "name": "ButtonVariant"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
-            "name": "ButtonVariant"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"neutral\" | \"primary\" | \"critical\">"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\" | \"link\">"
         }
       },
       "recipe": {
@@ -1021,7 +1068,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"surface\" | \"plain\">"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\">"
         }
       },
       "size": {
@@ -1356,7 +1403,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"xs\" | \"full\" | \"cover\">"
+          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"xs\" | \"cover\" | \"full\">"
         }
       },
       "motionPreset": {
@@ -2391,7 +2438,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | AlignItems>"
+          "name": "ConditionalValue<AnyString | readonly string[] | AlignItems>"
         }
       },
       "justify": {
@@ -2410,7 +2457,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | JustifyContent>"
+          "name": "ConditionalValue<AnyString | readonly string[] | JustifyContent>"
         }
       },
       "wrap": {
@@ -2980,10 +3027,10 @@
           "name": "string | number"
         }
       },
-      "multiple": {
+      "disabled": {
         "defaultValue": null,
         "description": "",
-        "name": "multiple",
+        "name": "disabled",
         "parent": {
           "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
           "name": "InputHTMLAttributes"
@@ -2999,10 +3046,10 @@
           "name": "boolean"
         }
       },
-      "disabled": {
+      "multiple": {
         "defaultValue": null,
         "description": "",
-        "name": "disabled",
+        "name": "multiple",
         "parent": {
           "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
           "name": "InputHTMLAttributes"
@@ -4120,7 +4167,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"underline\" | \"plain\">"
+          "name": "ConditionalValue<\"plain\" | \"underline\">"
         }
       },
       "recipe": {
@@ -4534,6 +4581,25 @@
     "displayName": "SimpleGrid",
     "methods": [],
     "props": {
+      "inline": {
+        "defaultValue": null,
+        "description": "",
+        "name": "inline",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
+        }
+      },
       "css": {
         "defaultValue": null,
         "description": "",
@@ -4633,25 +4699,6 @@
           "name": "ConditionalValue<AnyString | GridRow | readonly NonNullable<GridRow>[]>"
         }
       },
-      "inline": {
-        "defaultValue": null,
-        "description": "",
-        "name": "inline",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
-          "name": "GridOptions"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
-            "name": "GridOptions"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
       "column": {
         "defaultValue": null,
         "description": "",
@@ -4706,7 +4753,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | GridAutoFlow>"
+          "name": "ConditionalValue<AnyString | readonly string[] | GridAutoFlow>"
         }
       },
       "autoRows": {
@@ -4782,7 +4829,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<readonly string[] | AnyString | GridTemplateAreas>"
+          "name": "ConditionalValue<AnyString | readonly string[] | GridTemplateAreas>"
         }
       },
       "minChildWidth": {
