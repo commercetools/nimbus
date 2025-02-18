@@ -126,9 +126,10 @@
       "repoPath": "packages/bleh-ui/src/components/box/box.mdx",
       "menu": [
         "Components",
+        "Layout",
         "Box"
       ],
-      "route": "components/box",
+      "route": "components/layout/box",
       "tags": [
         "component"
       ],

@@ -60,7 +60,11 @@ export const AsChild: Story = {
     p: "10px",
     bg: "primary.3",
     color: "primary.11",
-    as: "section",
-    children: <div>I am a section with Box styles</div>,
+    asChild: true,
+    children: (
+      <button onClick={() => alert("Clicked!")}>
+        I am a button with Box styles
+      </button>
+    ),
   },
 };
