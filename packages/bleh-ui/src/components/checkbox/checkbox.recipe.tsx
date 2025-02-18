@@ -18,34 +18,33 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       verticalAlign: "top",
       minWidth: "600",
       minHeight: "600",
+
       ["&[data-disabled='true']"]: {
         layerStyle: "disabled",
       },
     },
     label: {
       flexShrink: 0,
-      fontSize: "350",
-      lineHeight: "400",
-      fontWeight: "400",
       userSelect: "none",
       color: "neutral.11",
+
       ["&[data-invalid='true']"]: {
         color: "error.11",
       },
     },
     indicator: {
+      position: "relative",
       display: "flex",
       flexShrink: 0,
-      border: "solid-50",
-      borderRadius: "50",
       alignItems: "center",
       justifyContent: "center",
+      border: "solid-50",
+      borderRadius: "50",
       focusRing: "outside",
       borderColor: "neutral.9",
       bg: "transparent",
       color: "neutral.11",
 
-      position: "relative",
       _icon: {
         w: "350",
         h: "350",
@@ -59,6 +58,7 @@ export const checkboxSlotRecipe = defineSlotRecipe({
         bg: "transparent",
         borderColor: "error.9",
         color: "error.11",
+
         "&:hover": {
           borderColor: "error.10",
         },
@@ -78,9 +78,10 @@ export const checkboxSlotRecipe = defineSlotRecipe({
           bg: "error.9",
           borderColor: "error.9",
           color: "error.contrast",
+
           "&:hover": {
-            borderColor: "error.10",
             bg: "error.10",
+            borderColor: "error.10",
           },
         },
       },
@@ -89,7 +90,11 @@ export const checkboxSlotRecipe = defineSlotRecipe({
   variants: {
     size: {
       md: {
-        label: { textStyle: "md" },
+        label: {
+          fontSize: "350",
+          fontWeight: "400",
+          lineHeight: "400",
+        },
         indicator: {
           w: "400",
           h: "400",
