@@ -1,11 +1,10 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import type {
   TooltipProps as RATooltipProps,
   TooltipTriggerComponentProps,
 } from "react-aria-components";
-import type { TooltipRootProps } from "./tooltip.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
-import { tooltipRecipe } from "./tooltip.recipe";
+import { tooltipSlotRecipe } from "./tooltip.recipe";
 
 /**
  * For use in components that use the polymorphic `as` and `asChild` props
@@ -30,7 +29,9 @@ type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
  * - a11y/state related props from react-aria-components Tooltip
  */
 type TooltipVariantProps = ExcludePolymorphicFromProps<
-  TooltipRootProps & RecipeVariantProps<typeof tooltipRecipe> & RATooltipProps
+  TooltipRootProps &
+    RecipeVariantProps<typeof tooltipSlotRecipe> &
+    RATooltipProps
 >;
 
 /**
@@ -41,4 +42,7 @@ type TooltipVariantProps = ExcludePolymorphicFromProps<
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TooltipProps extends PropsWithChildren<TooltipVariantProps> {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TooltipTriggerProps extends TooltipTriggerComponentProps {}
+export interface TooltipTriggerProps extends TooltipTriggerComponentProps {
+  /** the content of the tooltip */
+  content: ReactNode;
+}
