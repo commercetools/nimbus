@@ -18,10 +18,6 @@
           {
             "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
             "name": "Attributes"
-          },
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "Attributes"
           }
         ],
         "required": false,
@@ -46,40 +42,6 @@
         "required": false,
         "type": {
           "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
-        }
-      },
-      "recipe": {
-        "defaultValue": null,
-        "description": "",
-        "name": "recipe",
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
-            "name": "TypeLiteral"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "RecipeDefinition<RecipeVariantRecord>"
-        }
-      },
-      "unstyled": {
-        "defaultValue": null,
-        "description": "If `true`, the element will opt out of the theme styles.",
-        "name": "unstyled",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-          "name": "UnstyledProp"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-            "name": "UnstyledProp"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
         }
       },
       "as": {
@@ -118,45 +80,6 @@
         "required": false,
         "type": {
           "name": "boolean"
-        }
-      },
-      "size": {
-        "defaultValue": null,
-        "description": "",
-        "name": "size",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"2xs\" | \"xs\">"
-        }
-      },
-      "variant": {
-        "defaultValue": null,
-        "description": "",
-        "name": "variant",
-        "declarations": [],
-        "required": false,
-        "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"ghost\" | \"plain\">"
-        }
-      },
-      "ref": {
-        "defaultValue": null,
-        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
-        "name": "ref",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-          "name": "RefAttributes"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
-            "name": "RefAttributes"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "LegacyRef<HTMLDivElement>"
         }
       }
     }
@@ -952,7 +875,7 @@
         ],
         "required": false,
         "type": {
-          "name": "\"button\" | JSXElementConstructor<any>"
+          "name": "JSXElementConstructor<any> | \"button\""
         }
       },
       "preventFocusOnPress": {
@@ -1081,7 +1004,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"plain\" | \"surface\">"
+          "name": "ConditionalValue<\"outline\" | \"solid\" | \"subtle\" | \"surface\" | \"plain\">"
         }
       },
       "size": {
@@ -2451,7 +2374,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | readonly string[] | AlignItems>"
+          "name": "ConditionalValue<readonly string[] | AnyString | AlignItems>"
         }
       },
       "justify": {
@@ -2470,7 +2393,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | readonly string[] | JustifyContent>"
+          "name": "ConditionalValue<readonly string[] | AnyString | JustifyContent>"
         }
       },
       "wrap": {
@@ -4180,7 +4103,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<\"plain\" | \"underline\">"
+          "name": "ConditionalValue<\"underline\" | \"plain\">"
         }
       },
       "recipe": {
@@ -4674,25 +4597,6 @@
           "name": "Key"
         }
       },
-      "inline": {
-        "defaultValue": null,
-        "description": "",
-        "name": "inline",
-        "parent": {
-          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
-          "name": "GridOptions"
-        },
-        "declarations": [
-          {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
-            "name": "GridOptions"
-          }
-        ],
-        "required": false,
-        "type": {
-          "name": "boolean"
-        }
-      },
       "row": {
         "defaultValue": null,
         "description": "",
@@ -4710,6 +4614,25 @@
         "required": false,
         "type": {
           "name": "ConditionalValue<AnyString | GridRow | readonly NonNullable<GridRow>[]>"
+        }
+      },
+      "inline": {
+        "defaultValue": null,
+        "description": "",
+        "name": "inline",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+          "name": "GridOptions"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.2.3_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_g2mmbjfojdvresw2qhhppadcwy/node_modules/@chakra-ui/react/dist/types/components/grid/grid.d.ts",
+            "name": "GridOptions"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "boolean"
         }
       },
       "column": {
@@ -4766,7 +4689,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | readonly string[] | GridAutoFlow>"
+          "name": "ConditionalValue<readonly string[] | AnyString | GridAutoFlow>"
         }
       },
       "autoRows": {
@@ -4842,7 +4765,7 @@
         ],
         "required": false,
         "type": {
-          "name": "ConditionalValue<AnyString | readonly string[] | GridTemplateAreas>"
+          "name": "ConditionalValue<readonly string[] | AnyString | GridTemplateAreas>"
         }
       },
       "minChildWidth": {

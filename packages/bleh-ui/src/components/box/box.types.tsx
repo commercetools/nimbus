@@ -1,9 +1,5 @@
-import type { BoxRootProps } from "./box.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
-import { boxRecipe } from "./box.recipe";
+import type { HTMLChakraProps } from "@chakra-ui/react";
 
-type BoxVariantProps = BoxRootProps & RecipeVariantProps<typeof boxRecipe>;
-
-export interface BoxProps extends BoxVariantProps {
+export interface BoxProps extends HTMLChakraProps<"div"> {
   children?: React.ReactNode;
 }

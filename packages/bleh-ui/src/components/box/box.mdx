@@ -16,6 +16,22 @@ tags:
 
 Box is a basic layout component that serves as a wrapper or container. It's based on the Chakra UI Box component and supports all style props for rapid UI development.
 
+## Prerequisites
+
+Box components must be wrapped in a `ChakraProvider` to work correctly. If you haven't set up the provider yet, add it to your app's root:
+
+```jsx
+import { ChakraProvider } from '@chakra-ui/react';
+
+function App() {
+  return (
+    <ChakraProvider>
+      {/* Your app content */}
+    </ChakraProvider>
+  );
+}
+```
+
 ## Import
 
 ```jsx
@@ -23,6 +39,7 @@ import { Box } from '@bleh-ui/react';
 ```
 
 ## Usage
+All styling from the chakra box component can still be used: https://chakra-ui.com/docs/components/box
 
 ### Basic Usage
 
