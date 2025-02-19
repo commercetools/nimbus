@@ -15,7 +15,7 @@ import {
 import { mergeRefs } from "@chakra-ui/react";
 
 /**
- * FocusableTooltipTrigger
+ * MakeElementFocusable
  * ============================================================
  * A helper component that adds props from `react-aria`s `useFocusable` hook
  * to its child so that it can be used as a trigger element for a `Tooltip`
@@ -34,10 +34,10 @@ import { mergeRefs } from "@chakra-ui/react";
  * - [React Aria Components Issue re:Tooltip with custom trigger](https://github.com/adobe/react-spectrum/issues/5733#issuecomment-1918691983)
  * - [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)
  */
-export const FocusableTooltipTrigger = forwardRef<
+export const MakeElementFocusable = forwardRef<
   HTMLElement,
   PropsWithChildren<FocusableOptions<HTMLElement>>
->(function FocusableTooltipTrigger(props, forwardedRef) {
+>(function MakeElementFocusable(props, forwardedRef) {
   const localRef = useRef<HTMLElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const { focusableProps } = useFocusable(props, ref);
@@ -54,4 +54,4 @@ export const FocusableTooltipTrigger = forwardRef<
     );
   }
 });
-FocusableTooltipTrigger.displayName = "FocusableTooltipTrigger";
+MakeElementFocusable.displayName = "MakeElementFocusable";

@@ -1,14 +1,14 @@
 import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect } from "@storybook/test";
-import { Tooltip, TooltipTrigger, FocusableTooltipTrigger } from "@/components";
+import { Tooltip, TooltipTrigger, MakeElementFocusable } from "@/components";
 
-const meta: Meta<typeof FocusableTooltipTrigger> = {
-  title: "components/Tooltip/FocusableTooltipTrigger",
-  component: FocusableTooltipTrigger,
+const meta: Meta<typeof MakeElementFocusable> = {
+  title: "components/Tooltip/MakeElementFocusable",
+  component: MakeElementFocusable,
   render: (args) => (
     <TooltipTrigger delay={0} closeDelay={0}>
-      <FocusableTooltipTrigger {...args} />
+      <MakeElementFocusable {...args} />
       <Tooltip>Demo Tooltip</Tooltip>
     </TooltipTrigger>
   ),
@@ -21,7 +21,7 @@ export default meta;
  * StoryObj provides type checking for our story configurations
  */
 //TODO: figure out props table for this component
-type Story = StoryObj<typeof FocusableTooltipTrigger>;
+type Story = StoryObj<typeof MakeElementFocusable>;
 
 // TODO: how much do we want to test react-aria-components?
 const elementRef = createRef<HTMLElement>();

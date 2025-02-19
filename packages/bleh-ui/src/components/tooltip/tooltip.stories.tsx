@@ -108,7 +108,7 @@ export const Placement: Story = {
                 defaultOpen={args.defaultOpen}
                 delay={0}
               >
-                <Button w="200px" h="60px">
+                <Button w="200px" h="60px" isDisabled>
                   {placement}
                 </Button>
                 <Tooltip

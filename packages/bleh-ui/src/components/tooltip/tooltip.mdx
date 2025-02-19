@@ -39,23 +39,6 @@ const App = () => (
   )
 ```
 
-## Use With Custom Trigger Element
-
-All trigger elements must use the `useButton` or `useFocusable` hook from
-`react-aria`, if you would like to use the `Tooltip` with a custom component,
-you can wrap the custom element in the `FocusableTooltipTrigger` element.
-
-```jsx-live
-const App = () => (
-  <TooltipTrigger>
-    <FocusableTooltipTrigger>
-        <button>Custom Trigger Element</button>
-    </FocusableTooltipTrigger>
-    <Tooltip>Tooltip</Tooltip>
-  </TooltipTrigger>
-  )
-```
-
 ## Tooltip Trigger Props
 
 <PropTable id="TooltipTrigger" />
@@ -63,7 +46,3 @@ const App = () => (
 ## Tooltip Props
 
 <PropTable id="Tooltip" />
-
-## FocusableTooltipTrigger Props
-
-<PropTable id="FocusableTooltipTrigger" />
