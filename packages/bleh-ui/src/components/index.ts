@@ -18,4 +18,3 @@ export * from "./table";
 export * from "./text";
 export * from "./ui-kit-provider";
 export * from "./avatar";
-export * from "./box";
