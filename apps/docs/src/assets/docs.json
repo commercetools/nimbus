@@ -870,6 +870,59 @@
     },
     "mdx": "\n# Text\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec\nnunc tincidunt tincidunt. Nullam nec pur.\n\n## Usage\n\n```jsx-live\nimport { Text } from \"@bleh-ui/react\";\n\nconst App = () => <Text>Display Text</Text>;\n```\n\n## Sizes\n\nYou can size text with two properties: `fontSize` and `textStyle`. Use\n`fontSize` to only set the size of the text. Use `textStyle` to set the size and\nan appropriate `line-height` for that size.\n\n```jsx-live\nconst App = () => (\n  <Flex flexDirection=\"column\">\n    {[\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\", \"3xl\", \"4xl\",\"5xl\",\"6xl\",\"7xl\"].map((size) => (\n      <Text key={size} asChild textStyle={size}>\n        <span>Displays text in `{size}` size</span>\n      </Text>\n    ))}\n  </Flex>\n)\n```\n\n## Weights\n\nUse the `fontWeight` prop to change the weight of the text:\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => {\n  return (\n    <Stack>\n      <Text fontWeight=\"100\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"200\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"300\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"400\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"500\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"600\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"700\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"800\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text fontWeight=\"900\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n}\n```\n\n## Truncation\n\nUse the `truncate` prop to truncate the text after a single line.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text truncate>\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n      </Text>\n    </Flex>\n  )\n```\n\n## Line Clamp\n\nUse the `lineClamp` prop to truncate the text after a certain number of lines.\n\n```jsx-live\nimport { Flex, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Flex maxW=\"300px\">\n      <Text lineClamp=\"2\">\n        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim\n        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n        commodo consequat.\n      </Text>\n    </Flex>\n  )\n```\n\n## Colors\n\nUse the `color` prop to change the color of the text.\n\n```jsx-live\nimport { Stack, Text } from \"@bleh-ui/react\"\n\nconst App = () => (\n    <Stack>\n      <Text color=\"primary.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"info.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"success.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"danger.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n      <Text color=\"error.11\">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>\n    </Stack>\n  )\n```\n"
   },
+  "packages/bleh-ui/src/components/tooltip/tooltip.mdx": {
+    "meta": {
+      "id": "Components-tooltip",
+      "title": "Tooltip",
+      "description": "A contextual popup that displays a description for an element.  See https://www.w3.org/TR/wai-aria-1.2/#tooltip",
+      "documentState": "InitialDraft",
+      "order": 999,
+      "repoPath": "packages/bleh-ui/src/components/tooltip/tooltip.mdx",
+      "menu": [
+        "Components",
+        "Media",
+        "Tooltip"
+      ],
+      "route": "components/media/tooltip",
+      "tags": [
+        "component",
+        "media"
+      ],
+      "toc": [
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tooltip Trigger Props",
+          "href": "#tooltip-trigger-props",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tooltip Props",
+          "href": "#tooltip-props",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "mdx": "\n# Tooltip\n\nA contextual popup that displays a description for an element.\n\n[React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n[Tooltip Aria Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)\n\n## Basic Usage\n\nAll instances of `Tooltip` consist of two components, the `TooltipTrigger` and\nthe `Tooltip`.\n\nThe `TooltipTrigger` is required to wrap both the trigger element and the\n`Tooltip`.\n\n```jsx-live\nconst App = () => (\n  <TooltipTrigger>\n    <Button>Trigger Element</Button>\n    <Tooltip>Tooltip</Tooltip>\n  </TooltipTrigger>\n  )\n```\n\n## Tooltip Trigger Props\n\n<PropTable id=\"TooltipTrigger\" />\n\n## Tooltip Props\n\n<PropTable id=\"Tooltip\" />\n"
+  },
   "packages/bleh-ui/src/components/ui-kit-provider/ui-kit-provider.mdx": {
     "meta": {
       "id": "UiKitProvider",

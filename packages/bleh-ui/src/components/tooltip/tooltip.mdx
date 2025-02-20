@@ -1,0 +1,48 @@
+---
+id: Components-tooltip
+title: Tooltip
+description:
+  A contextual popup that displays a description for an element.  See
+  https://www.w3.org/TR/wai-aria-1.2/#tooltip
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Media
+  - Tooltip
+tags:
+  - component
+  - media
+---
+
+# Tooltip
+
+A contextual popup that displays a description for an element.
+
+[React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)
+[Tooltip Aria Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)
+
+## Basic Usage
+
+All instances of `Tooltip` consist of two components, the `TooltipTrigger` and
+the `Tooltip`.
+
+The `TooltipTrigger` is required to wrap both the trigger element and the
+`Tooltip`.
+
+```jsx-live
+const App = () => (
+  <TooltipTrigger>
+    <Button>Trigger Element</Button>
+    <Tooltip>Tooltip</Tooltip>
+  </TooltipTrigger>
+  )
+```
+
+## Tooltip Trigger Props
+
+<PropTable id="TooltipTrigger" />
+
+## Tooltip Props
+
+<PropTable id="Tooltip" />

@@ -33,13 +33,17 @@ const variants: ButtonProps["variant"][] = [
   "link",
 ];
 
-const tones: ButtonProps["tone"][] = ["primary", "neutral", "critical"];
+const tones: ButtonProps["tone"][] = [
+  "primary",
+  "neutral",
+  "critical",
+] as const;
 
 export const Base: Story = {
   args: {
     children: "Button",
     onPress: fn(),
-    // @ts-expect-error: works, but causes squiggly lines, investigate
+
     ["data-testid"]: "test",
     ["aria-label"]: "test-button",
   },
@@ -89,7 +93,7 @@ export const Disabled: Story = {
     children: "Disabled Button",
     isDisabled: true,
     onPress: fn(),
-    // @ts-expect-error: works, but causes squiggly lines, investigate
+
     ["data-testid"]: "test",
   },
   play: async ({ canvasElement, step, args }) => {
@@ -114,7 +118,6 @@ export const AsLink: Story = {
     children: "Link disguised as Button",
     as: "a",
     href: "/",
-    // @ts-expect-error: works, but causes squiggly lines, investigate
     ["data-testid"]: "test",
   },
   play: async ({ canvasElement, step }) => {
@@ -135,7 +138,7 @@ export const WithAsChild: Story = {
       </a>
     ),
     asChild: true,
-    // @ts-expect-error: works, but causes squiggly lines, investigate
+
     ["data-testid"]: "test",
   },
   play: async ({ canvasElement, step }) => {
@@ -197,6 +200,7 @@ export const Tones: Story = {
                 key={variant as string}
                 {...args}
                 variant={variant}
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 tone={tone}
               />
             ))}
@@ -287,7 +291,6 @@ export const SmokeTest: Story = {
   args: {
     children: "Button",
     onPress: fn(),
-    // @ts-expect-error: works, but causes squiggly lines, investigate
     ["data-testid"]: "test",
     ["aria-label"]: "test-button",
   },
@@ -306,6 +309,7 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           <DemoIcon />
@@ -319,6 +323,7 @@ export const SmokeTest: Story = {
                           as="a"
                           variant={variant}
                           size={size}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                           isDisabled
                         >
@@ -332,6 +337,7 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           <DemoIcon />
@@ -343,6 +349,7 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           {JSON.stringify(variant)} {args.children}

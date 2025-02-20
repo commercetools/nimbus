@@ -1,17 +1,19 @@
-import { buttonRecipe } from "@/components/button/button.recipe.ts";
-import { codeRecipe } from "@/components/code/code.recipe.ts";
-import { headingRecipe } from "@/components/heading/heading.recipe.ts";
+import { avatarRecipe } from "@/components/avatar/avatar.recipe";
+import { buttonRecipe } from "@/components/button/button.recipe";
+import { codeRecipe } from "@/components/code/code.recipe";
+import { headingRecipe } from "@/components/heading/heading.recipe";
 import { inputRecipe } from "@/components/input/input.recipe";
 import { kbdRecipe } from "@/components/kbd/kbd.recipe";
 import { linkRecipe } from "@/components/link/link.recipe";
-import { avatarRecipe } from "@/components/avatar/avatar.recipe";
+import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
 
 export const recipes = {
+  avatar: avatarRecipe,
   button: buttonRecipe,
   code: codeRecipe,
   heading: headingRecipe,
   input: inputRecipe,
   kbd: kbdRecipe,
   link: linkRecipe,
-  avatar: avatarRecipe,
+  tooltip: tooltipRecipe,
 };

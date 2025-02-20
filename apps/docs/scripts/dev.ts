@@ -5,9 +5,13 @@ console.log(clr, `###################################################`);
 console.log(clr, `############    @BLEH-UI DEV-SERVER    ############`);
 console.log(clr, `###################################################`);
 
-const viteProcess = spawn("pnpm", ["vite", "--clearScreen", "false"], {
-  stdio: "inherit",
-});
+const viteProcess = spawn(
+  "pnpm",
+  ["vite", "--clearScreen", "false", "--logLevel", "warning"],
+  {
+    stdio: "inherit",
+  }
+);
 
 const mdxWatcher = spawn(
   "pnpm",
