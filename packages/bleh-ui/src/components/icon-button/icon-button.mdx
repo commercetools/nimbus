@@ -1,0 +1,98 @@
+---
+id: Components-IconButton
+title: IconButton
+description: displays a button with an icon only as child
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - IconButton
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev
+---
+
+# IconButton
+
+displays a button with an icon only as child.
+
+## Basic Usage
+
+If unconfigured `IconButton` will default to a neutral state. It is important to
+configure `IconButton` properly to ensure it displays as intended.
+
+```jsx-live
+const App = () => <IconButton><Icons.Gift/></IconButton>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+  const sizes = ['md', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <IconButton tone="primary" variant="solid" key={size} size={size}>
+          <Icons.Gift/>
+        </IconButton>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'outline', 'ghost', 'link'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <IconButton tone="primary" key={variant} variant={variant}>
+          <Icons.Gift/>
+        </IconButton>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Tones
+
+Available tones.
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "outline", "ghost", "link"];
+  const colors = ["primary", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <IconButton colorPalette={color} key={variant} variant={variant}>
+              <Icons.Gift/>
+            </IconButton>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="IconButton" />

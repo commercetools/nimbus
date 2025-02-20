@@ -8,6 +8,7 @@ export * from "./em";
 export * from "./flex";
 export * from "./heading";
 export * from "./highlight";
+export * from "./icon-button";
 export * from "./input";
 export * from "./input-group";
 export * from "./kbd";

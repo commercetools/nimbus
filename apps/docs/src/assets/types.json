@@ -247,11 +247,9 @@
     }
   },
   {
-    "tags": {
-      "see": "Docs https://chakra-ui.com/box"
-    },
+    "tags": {},
     "filePath": "../../packages/bleh-ui/src/index.ts",
-    "description": "Box is the most abstract component on top of which other chakra\ncomponents are built. It renders a `div` element by default.",
+    "description": "",
     "displayName": "Box",
     "methods": [],
     "props": {
@@ -264,6 +262,10 @@
           "name": "Attributes"
         },
         "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          },
           {
             "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
             "name": "Attributes"
@@ -333,17 +335,21 @@
       },
       "ref": {
         "defaultValue": null,
-        "description": "",
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
         "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
         "declarations": [
           {
-            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@chakra-ui+react@3.8.0_@emotion+react@11.14.0_@types+react@18.3.18_react@18.3.1__react-dom@18_ums5amamy7lygpzyucatlydqcy/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
-            "name": "TypeLiteral"
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
           }
         ],
         "required": false,
         "type": {
-          "name": "any"
+          "name": "LegacyRef<HTMLDivElement>"
         }
       }
     }
@@ -3060,6 +3066,72 @@
         "required": false,
         "type": {
           "name": "boolean"
+        }
+      }
+    }
+  },
+  {
+    "tags": {},
+    "filePath": "../../packages/bleh-ui/src/index.ts",
+    "description": "IconButton\n============================================================\ndisplays a button with only an icon as child. It is based\non the regular `Button` component, but with a few adjustments.",
+    "displayName": "IconButton",
+    "methods": [],
+    "props": {
+      "aria-label": {
+        "defaultValue": null,
+        "description": "explains the intended action, required for accessibility",
+        "name": "aria-label",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/icon-button/icon-button.types.tsx",
+          "name": "IconButtonProps"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/packages/bleh-ui/src/components/icon-button/icon-button.types.tsx",
+            "name": "IconButtonProps"
+          }
+        ],
+        "required": true,
+        "type": {
+          "name": "string"
+        }
+      },
+      "ref": {
+        "defaultValue": null,
+        "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+        "name": "ref",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "RefAttributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "LegacyRef<HTMLButtonElement>"
+        }
+      },
+      "key": {
+        "defaultValue": null,
+        "description": "",
+        "name": "key",
+        "parent": {
+          "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+          "name": "Attributes"
+        },
+        "declarations": [
+          {
+            "fileName": "ui-kit-docs-poc/node_modules/.pnpm/@types+react@18.3.18/node_modules/@types/react/index.d.ts",
+            "name": "Attributes"
+          }
+        ],
+        "required": false,
+        "type": {
+          "name": "Key"
         }
       }
     }

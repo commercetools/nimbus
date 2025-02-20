@@ -118,9 +118,9 @@
   },
   "packages/bleh-ui/src/components/box/box.mdx": {
     "meta": {
-      "id": "Box",
+      "id": "Components-Box",
       "title": "Box",
-      "description": "the Box component is the lowest level component",
+      "description": "A basic layout component that serves as a wrapper or container.",
       "documentState": "InitialDraft",
       "order": 999,
       "repoPath": "packages/bleh-ui/src/components/box/box.mdx",
@@ -131,15 +131,107 @@
       ],
       "route": "components/layout/box",
       "tags": [
-        "box",
-        "layout",
-        "container",
-        "div",
-        "low level"
+        "component"
       ],
-      "toc": []
+      "toc": [
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "As Flex Container",
+          "href": "#as-flex-container",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With Border",
+          "href": "#with-border",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With Shadow",
+          "href": "#with-shadow",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With asChild",
+          "href": "#with-aschild",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
     },
-    "mdx": "\n# Box\n\nAdd description.\n"
+    "mdx": "\n# Box\n\nBox is a basic layout component that serves as a wrapper or container. It's based on the [Chakra UI Box component](https://chakra-ui.com/docs/components/box) and supports all style props for rapid UI development.\n\n## Import\n\n```jsx\nimport { Box } from '@bleh-ui/react';\n```\n\n## Usage\n\n### Basic Usage\n\n```jsx\n<Box p=\"100\" bg=\"primary.3\">\n  Basic Box\n</Box>\n```\n\n### As Flex Container\n\n```jsx\n<Box display=\"flex\" gap=\"100\">\n  <Box p=\"100\" bg=\"primary.3\">Item 1</Box>\n  <Box p=\"100\" bg=\"primary.3\">Item 2</Box>\n</Box>\n```\n\n### With Border\n\n```jsx\n<Box p=\"100\" border=\"1px\" borderColor=\"primary.7\">\n  Box with border\n</Box>\n```\n\n### With Shadow\n\n```jsx\n<Box p=\"100\" boxShadow=\"md\" bg=\"primary.3\">\n  Box with shadow\n</Box>\n```\n\n### With asChild\n\nUse the `asChild` prop to apply Box styles to any child element while maintaining the child's functionality:\n\n```jsx\n<Box p=\"100\" bg=\"primary.3\" asChild>\n  <button onClick={() => alert(\"Clicked!\")}>\n    I am a button with Box styles\n  </button>\n</Box>\n```\n\n## Props\n\nThe Box component accepts all system props from Chakra UI, including:\n\n- Space props (margin, padding)\n- Color props (background, color)\n- Typography props (fontSize, fontWeight)\n- Layout props (width, height, display)\n- Flexbox props\n- Grid props\n- Border props\n- Position props\n- Shadow props\n\n## Accessibility\n\nBox renders a `div` by default but can be changed to any other HTML element using the `as` prop.\n\n```jsx\n<Box as=\"section\" p=\"100\">\n  Section content\n</Box>\n```"
   },
   "packages/bleh-ui/src/components/button/button.mdx": {
     "meta": {
@@ -433,6 +525,82 @@
       "toc": []
     },
     "mdx": "\n# Highlight\n\nAdd description later.rr\n"
+  },
+  "packages/bleh-ui/src/components/icon-button/icon-button.mdx": {
+    "meta": {
+      "id": "Components-IconButton",
+      "title": "IconButton",
+      "description": "displays a button with an icon only as child",
+      "documentState": "InitialDraft",
+      "order": 999,
+      "repoPath": "packages/bleh-ui/src/components/icon-button/icon-button.mdx",
+      "menu": [
+        "Components",
+        "Inputs",
+        "IconButton"
+      ],
+      "route": "components/inputs/iconbutton",
+      "tags": [
+        "component"
+      ],
+      "toc": [
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Sizes",
+          "href": "#sizes",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variants",
+          "href": "#variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tones",
+          "href": "#tones",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ],
+      "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev"
+    },
+    "mdx": "\n# IconButton\n\ndisplays a button with an icon only as child.\n\n## Basic Usage\n\nIf unconfigured `IconButton` will default to a neutral state. It is important to\nconfigure `IconButton` properly to ensure it displays as intended.\n\n```jsx-live\nconst App = () => <IconButton><Icons.Gift/></IconButton>\n```\n\n### Sizes\n\nAvailable sizes.\n\n```jsx-live\nconst App = () => {\n  const sizes = ['md', 'xs', '2xs'];\n\n  return (\n    <Stack direction=\"horizontal\" alignItems=\"center\">\n      {sizes.map(size => (\n        <IconButton tone=\"primary\" variant=\"solid\" key={size} size={size}>\n          <Icons.Gift/>\n        </IconButton>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Variants\n\nAvailable variants.\n\n```jsx-live\nconst App = () => {\n\n  const variants = ['solid', 'outline', 'ghost', 'link'];\n\n  return (\n    <Stack direction=\"horizontal\">\n      {variants.map(variant => (\n        <IconButton tone=\"primary\" key={variant} variant={variant}>\n          <Icons.Gift/>\n        </IconButton>\n      ))}\n    </Stack>\n  )\n}\n```\n\n### Tones\n\nAvailable tones.\n\n```jsx-live\nconst App = () => {\n  const variants = [\"solid\", \"outline\", \"ghost\", \"link\"];\n  const colors = [\"primary\", \"error\"];\n\n  return (\n    <Stack>\n      {colors.map((color) => (\n        <Stack key={color} direction=\"horizontal\">\n          {variants.map((variant) => (\n            <IconButton colorPalette={color} key={variant} variant={variant}>\n              <Icons.Gift/>\n            </IconButton>\n          ))}\n        </Stack>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Props\n\n<PropTable id=\"IconButton\" />\n"
   },
   "packages/bleh-ui/src/components/input-group/input-group.mdx": {
     "meta": {

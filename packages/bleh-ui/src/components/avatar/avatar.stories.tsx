@@ -38,8 +38,8 @@ export const Base: Story = {
     const canvas = within(canvasElement);
     const avatar = canvas.getByLabelText("avatar");
 
-    await step("Uses a <div> element by default", async () => {
-      await expect(avatar.tagName).toBe("DIV");
+    await step("Uses a <figure> element by default", async () => {
+      await expect(avatar.tagName).toBe("FIGURE");
     });
   },
 };

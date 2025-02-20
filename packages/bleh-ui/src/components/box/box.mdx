@@ -1,7 +1,7 @@
 ---
-id: Box
+id: Components-Box
 title: Box
-description: the Box component is the lowest level component
+description: A basic layout component that serves as a wrapper or container.
 documentState: InitialDraft
 order: 999
 menu:
@@ -9,13 +9,86 @@ menu:
   - Layout
   - Box
 tags:
-  - box
-  - layout
-  - container
-  - div
-  - low level
+  - component
 ---
 
 # Box
 
-Add description.
+Box is a basic layout component that serves as a wrapper or container. It's based on the [Chakra UI Box component](https://chakra-ui.com/docs/components/box) and supports all style props for rapid UI development.
+
+## Import
+
+```jsx
+import { Box } from '@bleh-ui/react';
+```
+
+## Usage
+
+### Basic Usage
+
+```jsx
+<Box p="100" bg="primary.3">
+  Basic Box
+</Box>
+```
+
+### As Flex Container
+
+```jsx
+<Box display="flex" gap="100">
+  <Box p="100" bg="primary.3">Item 1</Box>
+  <Box p="100" bg="primary.3">Item 2</Box>
+</Box>
+```
+
+### With Border
+
+```jsx
+<Box p="100" border="1px" borderColor="primary.7">
+  Box with border
+</Box>
+```
+
+### With Shadow
+
+```jsx
+<Box p="100" boxShadow="md" bg="primary.3">
+  Box with shadow
+</Box>
+```
+
+### With asChild
+
+Use the `asChild` prop to apply Box styles to any child element while maintaining the child's functionality:
+
+```jsx
+<Box p="100" bg="primary.3" asChild>
+  <button onClick={() => alert("Clicked!")}>
+    I am a button with Box styles
+  </button>
+</Box>
+```
+
+## Props
+
+The Box component accepts all system props from Chakra UI, including:
+
+- Space props (margin, padding)
+- Color props (background, color)
+- Typography props (fontSize, fontWeight)
+- Layout props (width, height, display)
+- Flexbox props
+- Grid props
+- Border props
+- Position props
+- Shadow props
+
+## Accessibility
+
+Box renders a `div` by default but can be changed to any other HTML element using the `as` prop.
+
+```jsx
+<Box as="section" p="100">
+  Section content
+</Box>
+```

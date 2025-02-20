@@ -8,4 +8,7 @@ type FunctionalButtonProps = ButtonRootProps &
   };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ButtonProps extends FunctionalButtonProps {}
+export interface ButtonProps extends FunctionalButtonProps {
+  // TODO: evaluate if we should require setting a tone
+  // tone: FunctionalButtonProps["tone"];
+}
