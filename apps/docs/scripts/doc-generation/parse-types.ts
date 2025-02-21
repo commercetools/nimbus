@@ -7,7 +7,7 @@ export const flog = (str) => {
 };
 
 // Thats where compiled docs will be saved
-const compiledTypesFile = "./src/assets/types.json";
+const compiledTypesFile = "./src/data/types.json";
 
 const fileToGrabTypesFrom: string = "./../../packages/bleh-ui/src/index.ts";
 

@@ -12,7 +12,7 @@ import { getPathFromMonorepoRoot } from "../../utils/find-monorepo-root";
 import { mdxDocumentSchema } from "../../src/schemas/mdx-document";
 
 // Thats where compiled docs will be saved
-const compiledDocsFile = "./src/assets/docs.json";
+const compiledDocsFile = "./src/data/docs.json";
 
 const writeDocs = debounce(() => {
   // Sort documentation by keys, to make sure the order does not change every time it recompiles
