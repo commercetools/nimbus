@@ -1,7 +1,9 @@
 ---
-id: Stack
+id: Components-Stack
 title: Stack
-description: displays a Stack
+description:
+  An easily customizable Stack component, re-exported from Chakra UI, that
+  provides a consistent layout structure across different products.
 documentState: InitialDraft
 order: 999
 menu:
@@ -9,9 +11,59 @@ menu:
   - Layout
   - Stack
 tags:
-  - stack
+  - component
 ---
 
 # Stack
 
-Add description later.
+An easily customizable Stack component, re-exported from
+[Chakra UI stack component](https://www.chakra-ui.com/docs/components/stack) ,
+that provides a consistent layout structure across different products.
+
+Stacks allow you to effortlessly build flexible layouts with automatic
+distribution. You can arrange elements horizontally or vertically, adding
+spacing and/or separators between each item.
+
+## Basic Usage
+
+import { Stack } from "@bleh-ui/react";
+
+```jsx-live
+const App = () => <Stack>Basic Stack!</Stack>
+```
+
+### With Direction
+
+```jsx-live
+const App = () => (
+  <Stack direction="row">
+    <div>Item 1</div>
+    <div>Item 2</div>
+    <div>Item 3</div>
+  </Stack>
+)
+```
+
+### With Spacing
+
+```jsx-live
+const App = () => (
+  <>
+    <Stack h="1200">Spaced Item 1</Stack>
+    <Stack h="1200">Spaced Item 2</Stack>
+    <Stack h="1200">Spaced Item 3</Stack>
+  </>
+)
+```
+
+### With Separator
+
+```jsx-live
+const App = () => (
+ <Stack separator={<hr />}>
+    <Stack h="1200">Spaced Item with separator 1</Stack>
+    <Stack h="1200">Spaced Item with separator 2</Stack>
+    <Stack h="1200">Spaced Item with separator 3</Stack>
+ </Stack>
+)
+```
