@@ -81,7 +81,7 @@ function App() {
               <DocumentRenderer />
             </Flex>
             <Box
-              width="7200"
+              width="8000"
               borderLeft="solid-25"
               borderColor="neutral.3"
               flexShrink="0"

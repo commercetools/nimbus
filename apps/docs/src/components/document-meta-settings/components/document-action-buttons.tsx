@@ -14,7 +14,11 @@ export const DocumentActionButtons = () => {
 
   return (
     <Stack direction="row" alignItems="center">
-      <IconButton variant="ghost" onClick={() => setEditMode(!editMode)}>
+      <IconButton
+        size="xs"
+        variant="ghost"
+        onClick={() => setEditMode(!editMode)}
+      >
         {!editMode && <Edit />}
         {editMode && <EditOff />}
       </IconButton>

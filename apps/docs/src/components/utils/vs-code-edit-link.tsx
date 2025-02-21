@@ -1,5 +1,5 @@
 import { IconButton } from "@bleh-ui/react";
-import { DeveloperMode } from "@bleh-ui/icons";
+import { Code as EditorIcon } from "@bleh-ui/icons";
 
 const prefix = "vscode://file" + process.env.REPO_ROOT;
 
@@ -33,9 +33,9 @@ export const VsCodeEditLink = ({
   const link = [prefix, repoPath].join("/");
 
   return (
-    <IconButton variant="ghost" asChild>
+    <IconButton size="xs" variant="ghost" asChild>
       <a href={link} target="_blank" title="Open in VSCode">
-        <DeveloperMode />
+        <EditorIcon />
         {text.length > 0 && " "}
         {text}
       </a>

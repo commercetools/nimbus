@@ -15,7 +15,7 @@ export const GithubRepoLink = ({ repoPath, text = "" }: Props) => {
   const link = [prefix, repoPath].join("");
 
   return (
-    <IconButton variant="ghost" asChild>
+    <IconButton size="xs" variant="ghost" asChild>
       <a href={link} target="_blank">
         <Github />
         {text.length > 0 && " "}

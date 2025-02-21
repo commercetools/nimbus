@@ -56,10 +56,10 @@ export const DocumentStringFieldEdit = ({
           placeholder={placeholder}
         />
         <IconButton
+          variant="solid"
+          tone="primary"
           size="md"
           onPress={() => onSaveRequest(value)}
-          variant={unsaved ? "solid" : "subtle"}
-          colorPalette={unsaved ? "primary" : "neutral"}
         >
           <Save />
         </IconButton>
