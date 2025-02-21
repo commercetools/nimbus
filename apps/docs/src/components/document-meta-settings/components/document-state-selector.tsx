@@ -4,7 +4,7 @@ import {
 } from "@/schemas/mdx-document-states";
 import { useCallback, useEffect, useMemo } from "react";
 import { Box, Stack, Text } from "@bleh-ui/react";
-import { ChevronDown } from "@bleh-ui/icons";
+import { KeyboardArrowDown } from "@bleh-ui/icons";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const DocumentStateSelector = () => {
@@ -75,7 +75,7 @@ export const DocumentStateSelector = () => {
           pointerEvents="none"
           asChild
         >
-          <ChevronDown />
+          <KeyboardArrowDown />
         </Box>
       </Box>
 

@@ -17,7 +17,7 @@ import { system } from "@bleh-ui/react";
 import CubicBezier from "./cubic-bezier";
 import AnimationDemo from "./animation-demo";
 import { useState } from "react";
-import { Play } from "@bleh-ui/icons";
+import { PlayArrow } from "@bleh-ui/icons";
 
 export const easingTokensAtom = atom(() => {
   const tokenMap = system.tokens.categoryMap.get("easings");
@@ -59,7 +59,7 @@ export const EasingTokenDemo = () => {
                 colorPalette="primary"
                 variant="solid"
               >
-                <Play /> Trigger animations
+                <PlayArrow /> Trigger animations
               </Button>
             </TableColumnHeader>
           </TableRow>

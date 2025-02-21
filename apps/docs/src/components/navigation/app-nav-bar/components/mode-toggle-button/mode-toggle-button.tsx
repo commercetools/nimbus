@@ -1,4 +1,4 @@
-import { MoonIcon, SunIcon } from "@bleh-ui/icons";
+import { DarkMode, LightMode } from "@bleh-ui/icons";
 import { useColorMode, Button } from "@bleh-ui/react";
 
 export const ModeToggleButton = () => {
@@ -11,7 +11,7 @@ export const ModeToggleButton = () => {
       aria-label="Toggle Mode"
       onClick={() => setColorMode(colorMode === "light" ? "dark" : "light")}
     >
-      {colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+      {colorMode === "dark" ? <LightMode /> : <DarkMode />}
     </Button>
   );
 };

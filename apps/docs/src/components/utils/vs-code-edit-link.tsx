@@ -1,5 +1,5 @@
 import { Button } from "@bleh-ui/react";
-import { FileCode } from "@bleh-ui/icons";
+import { DeveloperMode } from "@bleh-ui/icons";
 
 const prefix = "vscode://file" + process.env.REPO_ROOT;
 
@@ -35,7 +35,7 @@ export const VsCodeEditLink = ({
   return (
     <Button size="xs" variant="ghost" asChild>
       <a href={link} target="_blank" title="Open in VSCode">
-        <FileCode size="1em" />
+        <DeveloperMode />
         {text.length > 0 && " "}
         {text}
       </a>

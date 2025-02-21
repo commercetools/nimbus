@@ -60,7 +60,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         <CheckboxIndicator data-slot="indicator" {...stateProps}>
           {isSelected && <Check />}
           {isIndeterminate && <Minus />}
-          <VisuallyHidden as="span">
+          <VisuallyHidden elementType="span">
             <input {...mergeProps(inputProps, focusProps)} ref={ref} />
           </VisuallyHidden>
         </CheckboxIndicator>

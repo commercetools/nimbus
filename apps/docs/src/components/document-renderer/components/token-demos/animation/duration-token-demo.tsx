@@ -16,7 +16,7 @@ import { atom, useAtomValue } from "jotai";
 import { system } from "@bleh-ui/react";
 import AnimationDemo from "./animation-demo";
 import { useState } from "react";
-import { Play } from "@bleh-ui/icons";
+import { PlayArrow } from "@bleh-ui/icons";
 
 export const durationTokensAtom = atom(() => {
   const tokenMap = system.tokens.categoryMap.get("durations");
@@ -57,7 +57,7 @@ export const DurationTokenDemo = () => {
                 colorPalette="primary"
                 variant="solid"
               >
-                <Play /> Trigger animations
+                <PlayArrow /> Trigger animations
               </Button>
             </TableColumnHeader>
           </TableRow>

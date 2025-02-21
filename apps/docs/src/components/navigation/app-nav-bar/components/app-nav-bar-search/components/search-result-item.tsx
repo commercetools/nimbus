@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { SearchResultItemProps } from "../app-nav-bar-search.types";
-import { icons } from "@bleh-ui/icons";
+import * as icons from "@bleh-ui/icons";
 import { Box, Flex, Heading, Text } from "@bleh-ui/react";
 
 export const SearchResultItem = forwardRef(
@@ -9,7 +9,7 @@ export const SearchResultItem = forwardRef(
 
     const IconComponent =
       (icons[item.icon as keyof typeof icons] as React.ElementType) ||
-      icons.FileText;
+      icons.Description;
 
     const styles = isSelected
       ? { bg: "primary.9", color: "primary.contrast" }

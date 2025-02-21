@@ -77,5 +77,5 @@ export const components: MDXComponents = {
   KeyframeTokenDemo,
   TextStylesDemo,
   /** all icons from @bleh-ui/icons, TODO: evaluate if this is a good idea */
-  ...icons.icons,
+  Icons: icons,
 };

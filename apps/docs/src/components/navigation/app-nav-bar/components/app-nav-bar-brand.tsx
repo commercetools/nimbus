@@ -1,6 +1,6 @@
 import { brandNameAtom } from "@/atoms/brand.ts";
 import { activeRouteAtom } from "@/atoms/route.ts";
-import { Pencil } from "@bleh-ui/icons";
+import { Edit } from "@bleh-ui/icons";
 import { Box, Button, Text } from "@bleh-ui/react";
 import { useAtom } from "jotai";
 import {
@@ -128,7 +128,7 @@ export const AppNavBarBrand = () => {
             variant="ghost"
             onClick={() => setEditable(!editable)}
           >
-            <Pencil />
+            <Edit />
           </Button>
         </Box>
       )}

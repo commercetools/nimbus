@@ -1,6 +1,6 @@
 import { Link as StyledLink } from "@bleh-ui/react";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
-import { ExternalLink } from "@bleh-ui/icons";
+import { Link as LinkIcon } from "@bleh-ui/icons";
 
 type LinkProps = DetailedHTMLProps<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -18,7 +18,7 @@ export const Link = ({ children, ...rest }: LinkProps) => {
     : {};
   return (
     <StyledLink alignItems="baseline" variant="underline" {...rest} {...props}>
-      {isExternal && <ExternalLink size="1em" />}
+      {isExternal && <LinkIcon />}
       {children}
     </StyledLink>
   );

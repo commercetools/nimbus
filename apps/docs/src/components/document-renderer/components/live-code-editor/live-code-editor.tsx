@@ -1,5 +1,5 @@
 import * as BlehUi from "@bleh-ui/react";
-import * as IconLib from "@bleh-ui/icons";
+import * as icons from "@bleh-ui/icons";
 import { Flex, Box } from "@bleh-ui/react";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
@@ -13,7 +13,7 @@ const baseHooks = {
 };
 
 // funcitons & components available to the live code editor
-const scope = { ...BlehUi, ...baseHooks, Icons: { ...IconLib.icons } };
+const scope = { ...BlehUi, ...baseHooks, Icons: { ...icons } };
 
 const removeImportStatements = (code: string) => {
   // Regular expression to match import statements

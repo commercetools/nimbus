@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import take from "lodash/take";
 
-import { icons } from "@bleh-ui/icons";
+import * as icons from "@bleh-ui/icons";
 
 /**
  * IconSearch component allows users to search and copy icon import statements.
@@ -70,7 +70,7 @@ export const IconSearch = () => {
               key={iconId}
             >
               <Text m="auto" textStyle="3xl" color="neutral.12">
-                <Component size="1em" />
+                <Component />
               </Text>
             </Flex>
           );

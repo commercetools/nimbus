@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { IconButton } from "./icon-button";
 import { Stack } from "./../stack";
-import { GiftIcon as DemoIcon } from "@bleh-ui/icons";
+import { Apps as DemoIcon } from "@bleh-ui/icons";
 import type { IconButtonProps } from "./icon-button.types";
 import { createRef } from "react";
 import { expect, fn, within, userEvent } from "@storybook/test";
