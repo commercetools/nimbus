@@ -529,6 +529,9 @@ importers:
         specifier: catalog:utils
         version: 22.13.4
     devDependencies:
+      '@svgr/plugin-jsx':
+        specifier: ^8.1.0
+        version: 8.1.0(@svgr/core@8.1.0(typescript@5.6.3))
       '@types/react':
         specifier: ^19.0.10
         version: 19.0.10
