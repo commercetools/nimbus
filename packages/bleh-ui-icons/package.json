@@ -5,14 +5,18 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "lucide-react": "^0.464.0",
-    "react": "catalog:react"
+    "@material-design-icons/svg": "^0.14.15",
+    "@svgr/cli": "^8.1.0",
+    "@types/node": "catalog:utils"
   },
   "devDependencies": {
+    "@types/react": "^19.0.10",
+    "react": "catalog:react",
     "typescript": "catalog:tooling"
   },
   "scripts": {
-    "build": "tsc",
+    "build-icons": "pnpm svgr --filename-case kebab --typescript --jsx-runtime automatic --out-dir src/material-icons node_modules/@material-design-icons/svg/filled",
+    "build": "pnpm run build-icons && tsc",
     "dev": "tsc"
   }
 }
