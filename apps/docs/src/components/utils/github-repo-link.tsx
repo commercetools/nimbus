@@ -1,4 +1,4 @@
-import { Button } from "@bleh-ui/react";
+import { IconButton } from "@bleh-ui/react";
 import { Github } from "@bleh-ui/icons";
 
 // TODO: put this in some config file
@@ -15,12 +15,12 @@ export const GithubRepoLink = ({ repoPath, text = "" }: Props) => {
   const link = [prefix, repoPath].join("");
 
   return (
-    <Button size="xs" variant="ghost" asChild>
+    <IconButton variant="ghost" asChild>
       <a href={link} target="_blank">
-        <Github size="1em" />
+        <Github />
         {text.length > 0 && " "}
         {text}
       </a>
-    </Button>
+    </IconButton>
   );
 };

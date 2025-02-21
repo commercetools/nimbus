@@ -3,7 +3,7 @@ import {
   documentAudienceDescriptions,
 } from "@/schemas/mdx-document-audiences";
 import { useMemo } from "react";
-import { Box, Flex, Stack, Text } from "@bleh-ui/react";
+import { Box, Flex, Stack, Text, Checkbox } from "@bleh-ui/react";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 // Define the type for the audience options
@@ -60,23 +60,20 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
   return (
     <Stack>
       <Text fontWeight="600">Document Audience</Text>
-      <Stack border="solid-25" borderColor="neutral.6" p="400">
+      <Stack
+        direction="column"
+        border="solid-25"
+        borderColor="neutral.6"
+        p="400"
+        borderRadius="200"
+      >
         {options.map(({ id, label }) => (
-          <Flex key={id}>
-            <Box>
-              <input
-                id={"chkb" + id}
-                type="checkbox"
-                checked={meta?.documentAudiences?.includes(id) || false}
-                onChange={() => handleCheckboxChange(id)}
-              />
-            </Box>
-            <Box>
-              <Text ml="200" fontWeight="500" color="neutral.11" asChild>
-                <label htmlFor={"chkb" + id}>{label}</label>
-              </Text>
-            </Box>
-          </Flex>
+          <Checkbox
+            isSelected={meta?.documentAudiences?.includes(id) || false}
+            onChange={() => handleCheckboxChange(id)}
+          >
+            {label}
+          </Checkbox>
         ))}
       </Stack>
     </Stack>

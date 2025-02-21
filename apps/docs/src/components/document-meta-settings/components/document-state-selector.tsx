@@ -46,14 +46,18 @@ export const DocumentStateSelector = () => {
       </Text>
       <Box position="relative">
         <Box
+          bg="transparent"
           appearance="none"
           display="block"
           width="full"
+          h="1000"
           py="200"
+          textStyle="sm"
           px="200"
           asChild
           border="solid-25"
           borderColor="colorPalette.6"
+          focusRing="outside"
         >
           <select
             value={meta?.documentState}
@@ -70,8 +74,8 @@ export const DocumentStateSelector = () => {
         </Box>
         <Box
           position="absolute"
-          right="200"
-          top="200"
+          right="300"
+          top="300"
           pointerEvents="none"
           asChild
         >

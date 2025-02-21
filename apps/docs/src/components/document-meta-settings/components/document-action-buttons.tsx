@@ -5,7 +5,7 @@ import { TrashDocumentLink } from "@/components/utils/trash-document-link";
 import { VsCodeEditLink } from "@/components/utils/vs-code-edit-link";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 import { Edit, EditOff } from "@bleh-ui/icons";
-import { Box, Button, Stack } from "@bleh-ui/react";
+import { Box, IconButton, Stack } from "@bleh-ui/react";
 import { useAtom } from "jotai";
 
 export const DocumentActionButtons = () => {
@@ -14,10 +14,10 @@ export const DocumentActionButtons = () => {
 
   return (
     <Stack direction="row" alignItems="center">
-      <Button size="xs" variant="ghost" onClick={() => setEditMode(!editMode)}>
+      <IconButton variant="ghost" onClick={() => setEditMode(!editMode)}>
         {!editMode && <Edit />}
         {editMode && <EditOff />}
-      </Button>
+      </IconButton>
 
       {meta && (
         <>

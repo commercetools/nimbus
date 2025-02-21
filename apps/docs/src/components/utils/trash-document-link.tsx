@@ -1,4 +1,4 @@
-import { Button } from "@bleh-ui/react";
+import { IconButton } from "@bleh-ui/react";
 import { Delete } from "@bleh-ui/icons";
 import { useRemoveDocument } from "@/hooks/useRemoveDocument";
 
@@ -37,8 +37,8 @@ export const TrashDocumentLink = ({ repoPath }: TrashDocumentLinkProps) => {
   };
 
   return (
-    <Button variant="ghost" onClick={handleDelete} size="xs">
+    <IconButton variant="ghost" onClick={handleDelete}>
       <Delete />
-    </Button>
+    </IconButton>
   );
 };

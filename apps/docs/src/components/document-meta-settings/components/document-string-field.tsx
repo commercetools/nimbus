@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Input, Stack, Text } from "@bleh-ui/react";
+import { IconButton, Input, Stack, Text } from "@bleh-ui/react";
 
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 import { Save } from "@bleh-ui/icons";
@@ -50,19 +50,19 @@ export const DocumentStringFieldEdit = ({
       </Text>
       <Stack direction="row">
         <Input
-          size="sm"
+          size="md"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
         />
-        <Button
-          size="sm"
+        <IconButton
+          size="md"
           onPress={() => onSaveRequest(value)}
           variant={unsaved ? "solid" : "subtle"}
           colorPalette={unsaved ? "primary" : "neutral"}
         >
           <Save />
-        </Button>
+        </IconButton>
       </Stack>
     </Stack>
   );
