@@ -26,7 +26,7 @@ export const Basic: Story = {
 
 export const WithDirection: Story = {
   args: {
-    direction: "row",
+    direction: "column",
     children: [
       <Box key="1" p="400" bg="primary.7">
         Item 1
@@ -34,9 +34,9 @@ export const WithDirection: Story = {
       <Box key="2" p="400" bg="primary.7">
         Item 2
       </Box>,
-      <Box key="3" p="400" bg="primary.7">
-        Item 3
-      </Box>,
+      // <Box key="3" p="400" bg="primary.7">
+      //   Item 3
+      // </Box>,
     ],
   },
   argTypes: {
