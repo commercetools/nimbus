@@ -1,0 +1,57 @@
+---
+id: Components-VisuallyHidden
+title: VisuallyHidden
+description: makes content accessible to screen readers but hides it visually
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Accessibility
+  - VisuallyHidden
+tags:
+  - component
+---
+
+# VisuallyHidden
+
+Makes content accessible to screen readers but hides it visually.
+
+## Basic Usage
+
+Just wrap the content you want to hide visually, but keep accessible to screen
+readers, with the `VisuallyHidden` component.
+
+```jsx
+const App = () => <VisuallyHidden>I am VisuallyHidden!</VisuallyHidden>;
+```
+
+## Focusable Content
+
+If the content you want to hide visually contains focusable elements, add the
+`isFocusable` property to the `VisuallyHidden` component. The content then
+becomes visible if the first focusable element inside is focused with the
+_keyboard_.
+
+```jsx
+const App = () => (
+  <VisuallyHidden isFocusable>
+    <Button>I can have focus</Button>
+  </VisuallyHidden>
+);
+```
+
+## Inline Content
+
+`VisuallyHidden` uses a `<div>` element by default to render into the DOM. If
+you need to hide inline content, you can use the `as` prop to render a `<span>`
+element instead, keeping the `html` semantics intact.
+
+```jsx
+const App = () => (
+  <p>
+    Text that will be visible.
+    <VisuallyHidden as="span">I will blend just in.</VisuallyHidden>
+    Text that will be visible.
+  </p>
+);
+```

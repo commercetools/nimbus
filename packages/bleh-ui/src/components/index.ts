@@ -21,3 +21,4 @@ export * from "./text";
 export * from "./tooltip";
 export * from "./ui-kit-provider";
 export * from "./checkbox";
+export * from "./visually-hidden";

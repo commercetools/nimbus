@@ -1,13 +1,13 @@
 import { forwardRef, useRef } from "react";
 import { useToggleState } from "react-stately";
-import { Check, Minus } from "@bleh-ui/icons";
 import { useSlotRecipe } from "@chakra-ui/react";
+import { VisuallyHidden } from "@/components";
+import { Check, Minus } from "@bleh-ui/icons";
 
 import {
   useFocusRing,
   useCheckbox,
   useObjectRef,
-  VisuallyHidden,
   mergeProps,
 } from "react-aria";
 
