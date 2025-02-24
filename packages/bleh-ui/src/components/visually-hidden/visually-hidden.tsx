@@ -4,8 +4,8 @@ import {
   type VisuallyHiddenProps as ReactAriaVisuallyHiddenProps,
 } from "react-aria";
 import { Box, type BoxProps } from "@/components";
-
-export interface VisuallyHiddenProps extends ReactAriaVisuallyHiddenProps {
+export interface VisuallyHiddenProps
+  extends Omit<ReactAriaVisuallyHiddenProps, "elementType"> {
   /** specifies the element type to render, use `span` for inline content
    * and `div` for block content */
   as?: "span" | "div";
