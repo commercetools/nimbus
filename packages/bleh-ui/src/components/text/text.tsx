@@ -14,8 +14,10 @@ export interface TextProps extends ChakraTextProps {}
  *
  * @see https://DOMAIN/components/typography/text
  */
-export const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
-  return <ChakraText ref={ref} {...props} />;
-});
+export const Text = forwardRef<HTMLParagraphElement, TextProps>(
+  (props, ref) => {
+    return <ChakraText ref={ref} {...props} />;
+  }
+);
 
 Text.displayName = "Text";
