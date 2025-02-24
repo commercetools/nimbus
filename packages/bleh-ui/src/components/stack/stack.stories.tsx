@@ -34,9 +34,9 @@ export const WithDirection: Story = {
       <Box key="2" p="400" bg="primary.7">
         Item 2
       </Box>,
-      // <Box key="3" p="400" bg="primary.7">
-      //   Item 3
-      // </Box>,
+      <Box key="3" p="400" bg="primary.7">
+        Item 3
+      </Box>,
     ],
   },
   argTypes: {
