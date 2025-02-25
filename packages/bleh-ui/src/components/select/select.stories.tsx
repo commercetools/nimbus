@@ -23,7 +23,6 @@ type Story = StoryObj<typeof Select.Root>;
 /**
  * Base story
  * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
   render: () => {
@@ -41,19 +40,19 @@ export const Base: Story = {
 
 /**
  * Label + additional descriptions
- * demonstrates the use of additional descriptions
+ * demonstrates the use of additional option descriptions
  */
 export const WithDescriptions: Story = {
   render: () => {
     return (
       <Select.Root>
         <Select.Options>
-          {/** Variant A */}
+          {/** Variant A - plain html-tags with slot property */}
           <Select.Option>
             <p slot="label">Apple</p>
             <p slot="description">A classic and versatile fruit.</p>
           </Select.Option>
-          {/** Variant B */}
+          {/** Variant B - text component with slot property */}
           <Select.Option>
             <Text slot="label">Banana</Text>
             <Text slot="description">A good source of potassium.</Text>
@@ -80,7 +79,7 @@ export const WithDescriptions: Story = {
 
 /**
  * OptionGroups
- * Demonstrates groups of options
+ * Demonstrates grouping of options
  */
 export const OptionGroups: Story = {
   render: () => {
@@ -114,8 +113,8 @@ export const OptionGroups: Story = {
 };
 
 /**
- * OptionGroups
- * Demonstrates groups of options
+ * Custom Widths
+ * custom widths for select-trigger button and popover
  */
 export const CustomWidths: Story = {
   render: () => {
@@ -142,7 +141,7 @@ export const CustomWidths: Story = {
 
 /**
  * Super long and complex example
- * Demonstrates a complex and long list of options in the middle
+ * Demonstrates a complex, long list of options in the middle
  * of the screen. Where will the flyout go? We don't know.
  */
 export const SuperLongAndComplex: Story = {
