@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import typeData from "./../assets/types.json";
+import typeData from "./../data/types.json";
 
 /**
  * Atom to manage the state of type data.
