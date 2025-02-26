@@ -1,1 +1,1 @@
-export * from "./stack.tsx";
+export { Stack, type StackProps } from "./stack";
