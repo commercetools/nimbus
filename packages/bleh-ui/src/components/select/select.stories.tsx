@@ -239,3 +239,123 @@ export const SuperLongAndComplex: Story = {
     );
   },
 };
+
+/**
+ * Small size
+ */
+export const SmallSize: Story = {
+  render: () => {
+    return (
+      <Stack bg="neutral.3" p="3200">
+        {["solid", "ghost"].map((variant) => (
+          <Stack alignItems="start" key={variant}>
+            {["sm", "md"].map((size) => (
+              <Select.Root size={size} variant={variant} key={size}>
+                <Select.Options>
+                  <Select.Option>
+                    Extraordinary long Menu Label that noone can read
+                    Extraordinary long Menu Label that noone can read
+                  </Select.Option>
+                  <Select.Option>Groupless Option No 1.</Select.Option>
+                  <Select.Option>Groupless Option No 2.</Select.Option>
+                  <Select.Option>
+                    <Text slot="label">Groupless Option No 3.</Text>
+                    <Text slot="description">
+                      At least this one has a description.
+                    </Text>
+                  </Select.Option>
+                  <Select.Option>
+                    <Text slot="label">Super freaking long</Text>
+                    <Text slot="description">
+                      At least this one has a description.
+                    </Text>
+                  </Select.Option>
+                  <Select.OptionGroup label="Fruits">
+                    <Select.Option>
+                      <Text slot="label">Apples</Text>
+                      <Text slot="description">
+                        A crisp and juicy classic fruit.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Oranges</Text>
+                      <Text slot="description">
+                        A sweet and tangy citrus fruit.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Bananas</Text>
+                      <Text slot="description">
+                        A soft and creamy tropical fruit.
+                      </Text>
+                    </Select.Option>
+                  </Select.OptionGroup>
+                  <Select.OptionGroup label="Vegetables">
+                    <Select.Option>
+                      <Text slot="label">Carrots</Text>
+                      <Text slot="description">
+                        A crunchy and nutritious root vegetable.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Broccoli</Text>
+                      <Text slot="description">
+                        A green vegetable rich in vitamins.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Spinach</Text>
+                      <Text slot="description">
+                        A leafy vegetable packed with iron.
+                      </Text>
+                    </Select.Option>
+                  </Select.OptionGroup>
+                  <Select.OptionGroup label="Grains">
+                    <Select.Option>
+                      <Text slot="label">Rice</Text>
+                      <Text slot="description">
+                        A staple grain consumed worldwide.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Wheat</Text>
+                      <Text slot="description">
+                        A common grain used in bread and pasta.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Oats</Text>
+                      <Text slot="description">
+                        A healthy grain often eaten for breakfast.
+                      </Text>
+                    </Select.Option>
+                  </Select.OptionGroup>
+                  <Select.OptionGroup label="Proteins">
+                    <Select.Option>
+                      <Text slot="label">Chicken</Text>
+                      <Text slot="description">
+                        A versatile and lean poultry protein.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Beef</Text>
+                      <Text slot="description">
+                        A rich and flavorful red meat protein.
+                      </Text>
+                    </Select.Option>
+                    <Select.Option>
+                      <Text slot="label">Pork</Text>
+                      <Text slot="description">
+                        Another popular and versatile meat protein.
+                      </Text>
+                    </Select.Option>
+                  </Select.OptionGroup>
+                </Select.Options>
+              </Select.Root>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};

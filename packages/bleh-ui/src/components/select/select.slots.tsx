@@ -27,12 +27,19 @@ export const SelectRoot = withProvider<HTMLDivElement, SelectRootProps>(
   "root"
 );
 
-// ListBox
+// Trigger
 export interface SelectTriggerProps extends HTMLChakraProps<"button"> {}
 export const SelectTrigger = withContext<HTMLButtonElement, SelectTriggerProps>(
   "button",
   "trigger"
 );
+
+// Trigger
+export interface SelectTriggerLabelProps extends HTMLChakraProps<"span"> {}
+export const SelectTriggerLabel = withContext<
+  HTMLButtonElement,
+  SelectTriggerLabelProps
+>("span", "triggerLabel");
 
 // ListBox
 export interface SelectOptionsProps extends HTMLChakraProps<"div"> {}

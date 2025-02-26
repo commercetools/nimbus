@@ -5,28 +5,35 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const selectSlotRecipe = defineSlotRecipe({
-  slots: ["root", "trigger", "options", "optionGroup", "option"],
+  slots: [
+    "root",
+    "trigger",
+    "triggerLabel",
+    "options",
+    "optionGroup",
+    "option",
+  ],
   // Unique class name prefix for the component
   className: "bleh-ui-select",
 
   // Base styles applied to all instances of the component
   base: {
     root: {
+      colorPalette: "primary",
       display: "inline-block",
-      width: "auto",
       position: "relative",
       height: "1000",
-      minWidth: "4800",
+      minWidth: "7200",
+      maxWidth: "100%",
     },
     trigger: {
       cursor: "button",
       display: "inline-flex",
       focusRing: "outside",
       alignItems: "flex-start",
-      border: "solid-25",
       borderRadius: "200",
-      borderColor: "neutral.7",
       color: "neutral.12",
+      width: "100%",
 
       "& span": {
         display: "inline-block",
@@ -35,6 +42,14 @@ export const selectSlotRecipe = defineSlotRecipe({
       '& [slot="description"]': {
         display: "none",
       },
+    },
+    triggerLabel: {
+      width: "calc(100% - 48px)",
+      textAlign: "left",
+
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
     },
     // Popover
     options: {
@@ -72,6 +87,9 @@ export const selectSlotRecipe = defineSlotRecipe({
       textStyle: "sm",
       p: "200",
       borderRadius: "200",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
 
       '&[aria-selected="true"], &[data-focused="true"]': {
         bg: "primary.4",
@@ -96,22 +114,47 @@ export const selectSlotRecipe = defineSlotRecipe({
       md: {
         trigger: {
           h: "1000",
-          width: "100%",
           px: "400",
+          textStyle: "md",
+        },
+      }, // Medium
+      sm: {
+        trigger: {
+          h: "800",
+          px: "400",
+          textStyle: "sm",
         },
       }, // Medium
     },
 
     // Visual style variants
     variant: {
-      outline: {},
-      ghost: {},
+      solid: {
+        trigger: {
+          bg: "bg",
+          border: "solid-25",
+          borderColor: "neutral.7",
+          "&:hover": {
+            bg: "primary.2",
+          },
+        },
+      },
+      ghost: {
+        trigger: {
+          bg: "transparent",
+          border: "solid-25",
+          borderColor: "transparent",
+          "&:hover": {
+            bg: "primary.alpha",
+          },
+        },
+      },
     },
   },
 
   // Default variant values when not explicitly specified
   defaultVariants: {
     size: "md",
-    variant: "outline",
+    variant: "solid",
   },
 });

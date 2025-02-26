@@ -25,6 +25,7 @@ import {
   type SelectOptionGroupProps,
   SelectTrigger,
   type SelectTriggerProps,
+  SelectTriggerLabel,
 } from "./select.slots";
 
 import { SelectStateContext } from "react-aria-components";
@@ -52,14 +53,16 @@ const SelectClearButton = () => {
   );
 };
 
-export const StyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
+export const UnstyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
   ({ children, ...props }, ref) => {
     return (
       <SelectRoot as={RaSelect} ref={ref} {...props}>
         <chakra.div position="relative">
-          <SelectTrigger zIndex={0} paddingRight="1600" asChild>
+          <SelectTrigger zIndex={0} asChild>
             <RaButton>
-              <RaSelectValue />
+              <SelectTriggerLabel asChild>
+                <RaSelectValue />
+              </SelectTriggerLabel>
             </RaButton>
           </SelectTrigger>
           <Flex
@@ -70,11 +73,11 @@ export const StyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
             right="400"
             pointerEvents="none"
           >
-            <Box mt="150" width="600" height="600">
+            <Flex width="600" my="auto">
               <SelectClearButton />
-            </Box>
+            </Flex>
 
-            <Flex mt="200" w="600" h="600" pointerEvents="none">
+            <Flex my="auto" w="600" h="600" pointerEvents="none">
               <Box color="neutral.9" asChild m="auto" w="400" h="400">
                 <ChevronDown />
               </Box>
@@ -88,9 +91,9 @@ export const StyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
   }
 );
 
-StyledSelectRoot.displayName = "Select.Root";
+UnstyledSelectRoot.displayName = "Select.Root";
 
-export const StyledSelectOptions = forwardRef<
+export const UnstyledSelectOptions = forwardRef<
   HTMLDivElement,
   SelectOptionsProps
 >(({ children, ...props }, ref) => {
@@ -101,21 +104,22 @@ export const StyledSelectOptions = forwardRef<
   );
 });
 
-StyledSelectOptions.displayName = "Select.Options";
+UnstyledSelectOptions.displayName = "Select.Options";
 
-export const StyledSelectOption = forwardRef<HTMLDivElement, SelectOptionProps>(
-  ({ children, ...props }, ref) => {
-    return (
-      <SelectOption asChild ref={ref} {...props}>
-        <RaListBoxItem>{children}</RaListBoxItem>
-      </SelectOption>
-    );
-  }
-);
+export const UnstyledSelectOption = forwardRef<
+  HTMLDivElement,
+  SelectOptionProps
+>(({ children, ...props }, ref) => {
+  return (
+    <SelectOption asChild ref={ref} {...props}>
+      <RaListBoxItem>{children}</RaListBoxItem>
+    </SelectOption>
+  );
+});
 
-StyledSelectOptions.displayName = "Select.Option";
+UnstyledSelectOptions.displayName = "Select.Option";
 
-export const StyledSelectOptionGroup = forwardRef<
+export const UnstyledSelectOptionGroup = forwardRef<
   HTMLDivElement,
   SelectOptionGroupProps & {
     label: string;
@@ -133,13 +137,13 @@ export const StyledSelectOptionGroup = forwardRef<
   );
 });
 
-StyledSelectOptions.displayName = "Select.OptionGroup";
+UnstyledSelectOptions.displayName = "Select.OptionGroup";
 
 //const SelectOptionsGroup = Box;
 
 export const Select = {
-  Root: StyledSelectRoot,
-  Options: StyledSelectOptions,
-  Option: StyledSelectOption,
-  OptionGroup: StyledSelectOptionGroup,
+  Root: UnstyledSelectRoot,
+  Options: UnstyledSelectOptions,
+  Option: UnstyledSelectOption,
+  OptionGroup: UnstyledSelectOptionGroup,
 };
