@@ -23,12 +23,10 @@ export const selectSlotRecipe = defineSlotRecipe({
       colorPalette: "primary",
       display: "inline-block",
       position: "relative",
-
       maxWidth: "100%",
       borderRadius: "200",
       // [data-focused]
       // [data-focus-visible]
-
       // [data-open]
       // [data-invalid]
       // [data-required]
@@ -46,6 +44,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       color: "neutral.12",
       width: "100%",
       userSelect: "none",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
 
       "& span": {
         display: "inline-block",
@@ -53,6 +52,11 @@ export const selectSlotRecipe = defineSlotRecipe({
       },
       '& [slot="description"]': {
         display: "none",
+      },
+
+      "[data-invalid] &": {
+        "--border-width": "sizes.50",
+        "--border-color": "colors.error.7",
       },
 
       // [data-hovered]
@@ -74,6 +78,9 @@ export const selectSlotRecipe = defineSlotRecipe({
     },
     // Popover
     options: {
+      "--scrollbar-color": "colors.neutral.8",
+      "--scrollbar-bg": "colors.neutral.3",
+
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
@@ -82,8 +89,6 @@ export const selectSlotRecipe = defineSlotRecipe({
       focusRing: "outside",
       maxHeight: "40svh",
       overflowY: "auto",
-      "--scrollbar-color": "colors.neutral.8",
-      "--scrollbar-bg": "colors.neutral.3",
       scrollbarWidth: "thin",
       scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
       // [data-trigger="..."]
@@ -174,8 +179,8 @@ export const selectSlotRecipe = defineSlotRecipe({
           },
         },
         trigger: {
-          border: "solid-25",
-          borderColor: "neutral.7",
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
         },
       },
       ghost: {
@@ -186,8 +191,8 @@ export const selectSlotRecipe = defineSlotRecipe({
           },
         },
         trigger: {
-          border: "solid-25",
-          borderColor: "transparent",
+          "--border-width": "sizes.25",
+          "--border-color": "transparent",
         },
       },
     },

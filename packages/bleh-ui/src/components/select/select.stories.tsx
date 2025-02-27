@@ -172,7 +172,19 @@ export const DisabledOptions: Story = {
  * Invalid State
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#validation
  */
-export const Invalid: Story = {};
+export const Invalid: Story = {
+  render: () => {
+    return (
+      <Select.Root isInvalid>
+        <Select.Options>
+          <Select.Option id="1">Apples</Select.Option>
+          <Select.Option id="2">Bananas</Select.Option>
+          <Select.Option id="3">Oranges</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  },
+};
 
 /**
  * Sections
@@ -408,15 +420,21 @@ export const SuperLongAndComplex: Story = {
  */
 export const VariantsAndSizes: Story = {
   render: () => {
+    const [isInvalid, setInvalid] = useState(false);
     return (
-      <Stack bg="neutral.2" p="3200">
+      <Stack bg="neutral.2" p="3200" onClick={() => setInvalid(!isInvalid)}>
         {["solid", "ghost"].map((variant) => (
           <Stack alignItems="start" key={variant}>
             <Text my="400" fontWeight="600">
               {variant}
             </Text>
             {["sm", "md"].map((size) => (
-              <Select.Root size={size} variant={variant} key={size}>
+              <Select.Root
+                size={size}
+                variant={variant}
+                key={size}
+                isInvalid={isInvalid}
+              >
                 <Select.Options>
                   <Select.Option>
                     Extraordinary long Menu Label that noone can read
