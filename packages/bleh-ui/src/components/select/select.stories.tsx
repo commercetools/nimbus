@@ -154,7 +154,19 @@ export const Disabled: Story = {
     );
   },
 };
-export const DisabledOptions: Story = {};
+export const DisabledOptions: Story = {
+  render: () => {
+    return (
+      <Select.Root disabledKeys={["2"]}>
+        <Select.Options>
+          <Select.Option id="1">Apples</Select.Option>
+          <Select.Option id="2">Bananas</Select.Option>
+          <Select.Option id="3">Oranges</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  },
+};
 
 /**
  * Invalid State
