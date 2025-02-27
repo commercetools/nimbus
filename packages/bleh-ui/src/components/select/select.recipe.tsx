@@ -45,6 +45,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       borderRadius: "200",
       color: "neutral.12",
       width: "100%",
+      userSelect: "none",
 
       "& span": {
         display: "inline-block",
