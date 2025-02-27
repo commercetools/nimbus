@@ -154,6 +154,7 @@ export const Disabled: Story = {
     );
   },
 };
+
 export const DisabledOptions: Story = {
   render: () => {
     return (
@@ -187,9 +188,56 @@ export const Invalid: Story = {
 };
 
 /**
- * Sections
+ * Option Groups (Sections)
  */
-export const Sections: Story = {};
+export const OptionGroups: Story = {
+  render: () => {
+    let options = [
+      {
+        name: "Fruit",
+        children: [
+          { name: "Apple" },
+          { name: "Banana" },
+          { name: "Orange" },
+          { name: "Honeydew" },
+          { name: "Grapes" },
+          { name: "Watermelon" },
+          { name: "Cantaloupe" },
+          { name: "Pear" },
+        ],
+      },
+      {
+        name: "Vegetable",
+        children: [
+          { name: "Cabbage" },
+          { name: "Broccoli" },
+          { name: "Carrots" },
+          { name: "Lettuce" },
+          { name: "Spinach" },
+          { name: "Bok Choy" },
+          { name: "Cauliflower" },
+          { name: "Potatoes" },
+        ],
+      },
+    ];
+
+    return (
+      <Box>
+        <Select.Root>
+          <Select.Options items={options}>
+            {(group) => (
+              <Select.OptionGroup label={group.name} items={group.children}>
+                {(item) => (
+                  <Select.Option key={item.name}>{item.name}</Select.Option>
+                )}
+              </Select.OptionGroup>
+            )}
+          </Select.Options>
+        </Select.Root>
+      </Box>
+    );
+  },
+};
 
 /**
  * TypeAhead
@@ -238,42 +286,6 @@ export const WithDescriptions: Story = {
               Available in various colors and flavors.
             </Text>
           </Select.Option>
-        </Select.Options>
-      </Select.Root>
-    );
-  },
-};
-
-/**
- * OptionGroups
- * Demonstrates grouping of options
- * @see https://react-spectrum.adobe.com/react-aria/Select.html#sections
- */
-export const OptionGroups: Story = {
-  render: () => {
-    return (
-      <Select.Root>
-        <Select.Options>
-          <Select.OptionGroup label="Fruits">
-            <Select.Option>Apples</Select.Option>
-            <Select.Option>Oranges</Select.Option>
-            <Select.Option>Bananas</Select.Option>
-          </Select.OptionGroup>
-          <Select.OptionGroup label="Vegetables">
-            <Select.Option>Carrots</Select.Option>
-            <Select.Option>Broccoli</Select.Option>
-            <Select.Option>Spinach</Select.Option>
-          </Select.OptionGroup>
-          <Select.OptionGroup label="Grains">
-            <Select.Option>Rice</Select.Option>
-            <Select.Option>Wheat</Select.Option>
-            <Select.Option>Oats</Select.Option>
-          </Select.OptionGroup>
-          <Select.OptionGroup label="Proteins">
-            <Select.Option>Chicken</Select.Option>
-            <Select.Option>Beef</Select.Option>
-            <Select.Option>Pork</Select.Option>
-          </Select.OptionGroup>
         </Select.Options>
       </Select.Root>
     );

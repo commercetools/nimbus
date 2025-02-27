@@ -127,13 +127,13 @@ UnstyledSelectOptions.displayName = "Select.Options";
 export const UnstyledSelectOption = forwardRef<
   HTMLDivElement,
   SelectOptionProps
->((props, ref) => {
-  return <SelectOption as={RaListBoxItem} ref={ref} {...props} />;
-  /*  return (
-    <SelectOption asChild ref={ref} {...props}>
-      <RaListBoxItem />
+>(({ children, ...props }, ref) => {
+  //return <SelectOption as={RaListBoxItem} ref={ref} {...props} />;
+  return (
+    <SelectOption asChild ref={ref}>
+      <RaListBoxItem {...props}>{children}</RaListBoxItem>
     </SelectOption>
-  ); */
+  );
 });
 
 UnstyledSelectOptions.displayName = "Select.Option";
@@ -143,14 +143,16 @@ export const UnstyledSelectOptionGroup = forwardRef<
   SelectOptionGroupProps & {
     label: string;
   }
->(({ label, children, ...props }, ref) => {
+>(({ label, items, children, ...props }, ref) => {
   return (
     <chakra.div asChild ref={ref} {...props}>
       <RaListBoxSection>
         <SelectOptionGroup asChild>
           <RaHeader>{label}</RaHeader>
         </SelectOptionGroup>
-        {children}
+        {items
+          ? items.map((item) => (children as (item: any) => ReactNode)(item))
+          : children}
       </RaListBoxSection>
     </chakra.div>
   );
