@@ -108,6 +108,7 @@ export const selectSlotRecipe = defineSlotRecipe({
     // ListBoxItem
     option: {
       focusRing: "outside",
+      cursor: "menuitem",
       color: "neutral.12",
       textStyle: "sm",
       p: "200",
@@ -128,6 +129,10 @@ export const selectSlotRecipe = defineSlotRecipe({
         display: "block",
         color: "neutral.11",
         textStyle: "xs",
+      },
+
+      '&[data-disabled="true"]': {
+        layerStyle: "disabled",
       },
     },
   },
