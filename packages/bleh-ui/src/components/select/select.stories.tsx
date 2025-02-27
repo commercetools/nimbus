@@ -22,7 +22,8 @@ type Story = StoryObj<typeof Select.Root>;
 
 /**
  * Base story
- * Demonstrates the most basic implementation
+ * Demonstrates the most basic implementation, an uncontrolled
+ * select with a few options.
  */
 export const Base: Story = {
   render: () => {
@@ -39,8 +40,65 @@ export const Base: Story = {
 };
 
 /**
+ * Controlled State
+ * The state of the select is controlled from the oustide.
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#selection
+ */
+export const ControlledState: Story = {
+  /* render: () => {
+    return (
+      <Select.Root>
+        <Select.Options>
+          <Select.Option>Apples</Select.Option>
+          <Select.Option>Bananas</Select.Option>
+          <Select.Option>Oranges</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  }, */
+};
+
+/**
+ * Async Loading
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#asynchronous-loading
+ */
+export const AsyncLoading: Story = {};
+
+/**
+ * Disabled
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
+ */
+export const Disabled: Story = {};
+export const DisabledOptions: Story = {};
+
+/**
+ * Invalid State
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#validation
+ */
+export const Invalid: Story = {};
+
+/**
+ * Sections
+ */
+export const Sections: Story = {};
+
+/**
+ * TypeAhead
+ */
+export const TypeAhead: Story = {};
+
+/**
+ * CollectionComponentAPI
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#content
+ */
+export const CollectionComponentAPI: Story = {};
+
+//react-spectrum.adobe.com/react-aria/Select.html#content
+
+/**
  * Label + additional descriptions
  * demonstrates the use of additional option descriptions
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#text-slotss
  */
 export const WithDescriptions: Story = {
   render: () => {
@@ -80,6 +138,7 @@ export const WithDescriptions: Story = {
 /**
  * OptionGroups
  * Demonstrates grouping of options
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#sections
  */
 export const OptionGroups: Story = {
   render: () => {
@@ -111,6 +170,13 @@ export const OptionGroups: Story = {
     );
   },
 };
+
+/**
+ * Dynamic OptionGroups
+ * Demonstrates grouping of options
+ * @see https://react-spectrum.adobe.com/react-aria/Select.html#dynamic-items
+ */
+export const DynamicOptionGroups: Story = {};
 
 /**
  * Custom Widths
@@ -241,14 +307,17 @@ export const SuperLongAndComplex: Story = {
 };
 
 /**
- * Small size
+ * Variants and Sizes combined
  */
-export const SmallSize: Story = {
+export const VariantsAndSizes: Story = {
   render: () => {
     return (
-      <Stack bg="neutral.3" p="3200">
+      <Stack bg="neutral.2" p="3200">
         {["solid", "ghost"].map((variant) => (
           <Stack alignItems="start" key={variant}>
+            <Text my="400" fontWeight="600">
+              {variant}
+            </Text>
             {["sm", "md"].map((size) => (
               <Select.Root size={size} variant={variant} key={size}>
                 <Select.Options>

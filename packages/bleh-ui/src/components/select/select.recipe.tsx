@@ -18,13 +18,20 @@ export const selectSlotRecipe = defineSlotRecipe({
 
   // Base styles applied to all instances of the component
   base: {
+    // RA <Select>
     root: {
       colorPalette: "primary",
       display: "inline-block",
       position: "relative",
-      height: "1000",
-      minWidth: "7200",
+
       maxWidth: "100%",
+      borderRadius: "200",
+      // [data-focused]
+      // [data-focus-visible]
+      // [data-disabled]
+      // [data-open]
+      // [data-invalid]
+      // [data-required]
     },
     trigger: {
       cursor: "button",
@@ -42,6 +49,13 @@ export const selectSlotRecipe = defineSlotRecipe({
       '& [slot="description"]': {
         display: "none",
       },
+
+      // [data-hovered]
+      // [data-pressed]
+      // [data-focused]
+      // [data-focus-visible]
+      // [data-disabled]
+      // [data-pending]
     },
     triggerLabel: {
       width: "calc(100% - 48px)",
@@ -50,6 +64,8 @@ export const selectSlotRecipe = defineSlotRecipe({
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
+
+      // [data-placeholder]
     },
     // Popover
     options: {
@@ -65,6 +81,10 @@ export const selectSlotRecipe = defineSlotRecipe({
       "--scrollbar-bg": "colors.neutral.3",
       scrollbarWidth: "thin",
       scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
+      // [data-trigger="..."]
+      // [data-placement="left | right | top | bottom"]
+      // [data-entering]
+      // [data-exiting]
     },
     // Option group header
     optionGroup: {
@@ -81,6 +101,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       mt: "200",
       mb: "300",
     },
+    // ListBoxItem
     option: {
       focusRing: "outside",
       color: "neutral.12",
@@ -111,18 +132,24 @@ export const selectSlotRecipe = defineSlotRecipe({
   variants: {
     // Size variants from smallest to largest
     size: {
-      md: {
-        trigger: {
-          h: "1000",
-          px: "400",
-          textStyle: "md",
-        },
-      }, // Medium
       sm: {
+        root: {
+          minWidth: "6400",
+        },
         trigger: {
           h: "800",
           px: "400",
           textStyle: "sm",
+        },
+      },
+      md: {
+        root: {
+          minWidth: "7200",
+        },
+        trigger: {
+          h: "1000",
+          px: "400",
+          textStyle: "md",
         },
       }, // Medium
     },
@@ -130,23 +157,27 @@ export const selectSlotRecipe = defineSlotRecipe({
     // Visual style variants
     variant: {
       solid: {
-        trigger: {
+        root: {
           bg: "bg",
-          border: "solid-25",
-          borderColor: "neutral.7",
           "&:hover": {
             bg: "primary.2",
           },
         },
+        trigger: {
+          border: "solid-25",
+          borderColor: "neutral.7",
+        },
       },
       ghost: {
-        trigger: {
+        root: {
           bg: "transparent",
+          "&:hover": {
+            bg: "primaryAlpha.2",
+          },
+        },
+        trigger: {
           border: "solid-25",
           borderColor: "transparent",
-          "&:hover": {
-            bg: "primary.alpha",
-          },
         },
       },
     },

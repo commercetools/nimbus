@@ -32,7 +32,6 @@ import { SelectStateContext } from "react-aria-components";
 
 const SelectClearButton = () => {
   let state = useContext(SelectStateContext);
-  console.log("state", state);
 
   if (!state?.selectedKey) {
     return null;
