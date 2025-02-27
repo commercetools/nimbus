@@ -1,6 +1,10 @@
 import { forwardRef, useContext, type ReactNode } from "react";
 import { chakra, useSlotRecipe } from "@chakra-ui/react";
-import { ChevronDown, X } from "@bleh-ui/icons";
+import {
+  ChevronDown as DropdownIndicatorIcon,
+  X as CloseIcon,
+  LoaderCircle as SpinnerIcon,
+} from "@bleh-ui/icons";
 
 import { Flex, Box, Button, IconButton } from "@/components";
 import {
@@ -47,16 +51,16 @@ const SelectClearButton = () => {
       slot={undefined}
       onPress={() => state?.setSelectedKey(null)}
     >
-      <X />
+      <CloseIcon />
     </IconButton>
   );
 };
 
 export const UnstyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
-  ({ children, variant, size, ...props }, ref) => {
+  ({ children, variant, size, isLoading, isDisabled, ...props }, ref) => {
     return (
       <SelectRoot asChild ref={ref} variant={variant} size={size}>
-        <RaSelect {...props}>
+        <RaSelect {...props} isDisabled={isLoading || isDisabled}>
           <chakra.div position="relative">
             <SelectTrigger zIndex={0} asChild>
               <RaButton>
@@ -79,7 +83,13 @@ export const UnstyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
 
               <Flex my="auto" w="600" h="600" pointerEvents="none">
                 <Box color="neutral.9" asChild m="auto" w="400" h="400">
-                  <ChevronDown />
+                  {isLoading ? (
+                    <Box asChild animation="spin" animationDuration="slowest">
+                      <SpinnerIcon />
+                    </Box>
+                  ) : (
+                    <DropdownIndicatorIcon />
+                  )}
                 </Box>
               </Flex>
             </Flex>

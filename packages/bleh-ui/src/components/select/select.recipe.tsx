@@ -28,10 +28,14 @@ export const selectSlotRecipe = defineSlotRecipe({
       borderRadius: "200",
       // [data-focused]
       // [data-focus-visible]
-      // [data-disabled]
+
       // [data-open]
       // [data-invalid]
       // [data-required]
+      "&[data-disabled]": {
+        layerStyle: "disabled",
+        pointerEvents: "none",
+      },
     },
     trigger: {
       cursor: "button",

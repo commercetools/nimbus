@@ -4,6 +4,8 @@ import { Text, Stack, Box } from "@/components";
 import type { Key } from "react-aria";
 import { useRef, useState } from "react";
 
+import { useAsyncList } from "react-stately";
+
 /**
  * Storybook metadata configuration
  * - title: determines the location in the sidebar
@@ -86,13 +88,72 @@ export const ControlledState: Story = {
  * Async Loading
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#asynchronous-loading
  */
-export const AsyncLoading: Story = {};
+export const AsyncLoading: Story = {
+  render: () => {
+    let list = useAsyncList<{ id: number; name: string }>({
+      load: async ({ signal, filterText }) => {
+        // Simulate a network request with a 2 second delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        return {
+          items: [
+            { id: 1, name: "Koala" },
+            { id: 2, name: "Kangaroo" },
+            { id: 3, name: "Platypus" },
+            { id: 4, name: "Bald Eagle" },
+            { id: 5, name: "Bison" },
+            { id: 6, name: "Skunk" },
+          ],
+        };
+      },
+    });
+
+    let [animal, setAnimal] = useState<Key>();
+
+    const isLoading = list.loadingState === "loading";
+
+    return (
+      <Box>
+        <Box bg="blueAlpha.2" p="400" my="400">
+          Here, an async list is being loaded. And while it is loading, Select
+          should go into an <mark>isLoading</mark> state (disabled and with a
+          spinner).
+        </Box>
+        <Select.Root
+          isLoading={isLoading}
+          selectedKey={animal}
+          onSelectionChange={setAnimal}
+        >
+          <Select.Options items={list.items}>
+            {(item) => (
+              <Select.Option key={item.id} id={item.name}>
+                {item.name}
+              </Select.Option>
+            )}
+          </Select.Options>
+        </Select.Root>
+      </Box>
+    );
+  },
+};
 
 /**
  * Disabled
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
  */
-export const Disabled: Story = {};
+export const Disabled: Story = {
+  render: () => {
+    return (
+      <Select.Root isDisabled>
+        <Select.Options>
+          <Select.Option>Apples</Select.Option>
+          <Select.Option>Bananas</Select.Option>
+          <Select.Option>Oranges</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  },
+};
 export const DisabledOptions: Story = {};
 
 /**
