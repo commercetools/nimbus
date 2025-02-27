@@ -13,5 +13,5 @@ you need to do:
 1. Do the change needed.
 2. run `pnpm tsx ./index.ts`
 3. The colors end up in `dist/color-tokens.json`
-4. Replace the existing colors object in the token-package's `tokens.json` file,
-   with the object from `dist/color-tokens.json`
+4. Replace the existing colors object in the token-package's
+   `src/base/tokens.json` file, with the object from `dist/color-tokens.json`
