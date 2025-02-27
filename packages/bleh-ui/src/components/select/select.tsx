@@ -1,4 +1,4 @@
-import { forwardRef, useContext } from "react";
+import { forwardRef, useContext, type ReactNode } from "react";
 import { chakra, useSlotRecipe } from "@chakra-ui/react";
 import { ChevronDown, X } from "@bleh-ui/icons";
 
@@ -53,38 +53,40 @@ const SelectClearButton = () => {
 };
 
 export const UnstyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
-  ({ children, ...props }, ref) => {
+  ({ children, variant, size, ...props }, ref) => {
     return (
-      <SelectRoot as={RaSelect} ref={ref} {...props}>
-        <chakra.div position="relative">
-          <SelectTrigger zIndex={0} asChild>
-            <RaButton>
-              <SelectTriggerLabel asChild>
-                <RaSelectValue />
-              </SelectTriggerLabel>
-            </RaButton>
-          </SelectTrigger>
-          <Flex
-            position="absolute"
-            top="0"
-            bottom="0"
-            zIndex={1}
-            right="400"
-            pointerEvents="none"
-          >
-            <Flex width="600" my="auto">
-              <SelectClearButton />
-            </Flex>
+      <SelectRoot asChild ref={ref} variant={variant} size={size}>
+        <RaSelect {...props}>
+          <chakra.div position="relative">
+            <SelectTrigger zIndex={0} asChild>
+              <RaButton>
+                <SelectTriggerLabel asChild>
+                  <RaSelectValue />
+                </SelectTriggerLabel>
+              </RaButton>
+            </SelectTrigger>
+            <Flex
+              position="absolute"
+              top="0"
+              bottom="0"
+              zIndex={1}
+              right="400"
+              pointerEvents="none"
+            >
+              <Flex width="600" my="auto">
+                <SelectClearButton />
+              </Flex>
 
-            <Flex my="auto" w="600" h="600" pointerEvents="none">
-              <Box color="neutral.9" asChild m="auto" w="400" h="400">
-                <ChevronDown />
-              </Box>
+              <Flex my="auto" w="600" h="600" pointerEvents="none">
+                <Box color="neutral.9" asChild m="auto" w="400" h="400">
+                  <ChevronDown />
+                </Box>
+              </Flex>
             </Flex>
-          </Flex>
-        </chakra.div>
+          </chakra.div>
 
-        <RaPopover>{children}</RaPopover>
+          <RaPopover>{children}</RaPopover>
+        </RaSelect>
       </SelectRoot>
     );
   }
@@ -95,10 +97,17 @@ UnstyledSelectRoot.displayName = "Select.Root";
 export const UnstyledSelectOptions = forwardRef<
   HTMLDivElement,
   SelectOptionsProps
->(({ children, ...props }, ref) => {
+>(({ items, children, ...props }, forwardedRef) => {
+  console.log("children", children);
+  console.log("items", items);
+
   return (
-    <SelectOptions asChild ref={ref} {...props}>
-      <RaListBox>{children}</RaListBox>
+    <SelectOptions asChild ref={forwardedRef} {...props}>
+      <RaListBox>
+        {items
+          ? items.map((item) => (children as (item: any) => ReactNode)(item))
+          : children}
+      </RaListBox>
     </SelectOptions>
   );
 });
@@ -108,12 +117,13 @@ UnstyledSelectOptions.displayName = "Select.Options";
 export const UnstyledSelectOption = forwardRef<
   HTMLDivElement,
   SelectOptionProps
->(({ children, ...props }, ref) => {
-  return (
+>((props, ref) => {
+  return <SelectOption as={RaListBoxItem} ref={ref} {...props} />;
+  /*  return (
     <SelectOption asChild ref={ref} {...props}>
-      <RaListBoxItem>{children}</RaListBoxItem>
+      <RaListBoxItem />
     </SelectOption>
-  );
+  ); */
 });
 
 UnstyledSelectOptions.displayName = "Select.Option";

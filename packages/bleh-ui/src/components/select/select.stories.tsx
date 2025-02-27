@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Select } from "./select";
 import { Text, Stack, Box } from "@/components";
+import type { Key } from "react-aria";
+import { useRef, useState } from "react";
 
 /**
  * Storybook metadata configuration
@@ -45,17 +47,39 @@ export const Base: Story = {
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#selection
  */
 export const ControlledState: Story = {
-  /* render: () => {
+  render: () => {
+    let options = [
+      { id: 1, name: "Koala" },
+      { id: 2, name: "Kangaroo" },
+      { id: 3, name: "Platypus" },
+      { id: 4, name: "Bald Eagle" },
+      { id: 5, name: "Bison" },
+      { id: 6, name: "Skunk" },
+    ];
+    let [animal, setAnimal] = useState<Key>("Bison");
+
     return (
-      <Select.Root>
-        <Select.Options>
-          <Select.Option>Apples</Select.Option>
-          <Select.Option>Bananas</Select.Option>
-          <Select.Option>Oranges</Select.Option>
-        </Select.Options>
-      </Select.Root>
+      <Box>
+        <Box bg="blueAlpha.2" p="400" my="400">
+          I'm a Box and not related to Select, but I know it's current value,
+          it's <mark>{animal ?? "not set"}</mark>.
+        </Box>
+        <Select.Root
+          defaultSelectedKey={animal}
+          selectedKey={animal}
+          onSelectionChange={setAnimal}
+        >
+          <Select.Options items={options}>
+            {(item) => (
+              <Select.Option key={item.id} id={item.name}>
+                {item.name}
+              </Select.Option>
+            )}
+          </Select.Options>
+        </Select.Root>
+      </Box>
     );
-  }, */
+  },
 };
 
 /**
