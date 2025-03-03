@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import json from "./../assets/docs.json";
+import json from "./../data/docs.json";
 import { MdxFileFrontmatter } from "../types";
 
 /**
