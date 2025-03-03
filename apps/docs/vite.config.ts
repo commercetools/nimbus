@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+
 import { fileSystemApiPlugin } from "./vite-plugins/vite-plugin-fs-api";
 import { imageUploadMiddleware } from "./vite-plugins/vite-plugin-file-uploader";
 import { viteAiMiddleware } from "./vite-plugins/vite-plugin-ai-api";

@@ -15,6 +15,59 @@ figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev
 ---
 
+export function examples(){
+  const variants = ["solid", "outline", "ghost", "link"];
+  /** for whatever reason, acorn (the js parser used in mdx files) does
+   * not like returning strings direcly from switch statements, so they are declared here
+  */
+  const solidDesc = "A solid button should be used as a primary action on a page used to highlight the most important or most common action a user is likely to take in that context. It serves to guide the user towards the desired path and make the key interaction clear and prominent."
+  const outlineDesc = "An outline button has an outline";
+  const ghostDesc = "A ghost button is spoooookkkkkyyyyy";
+  const linkDesc = "A link button links to stuff";
+  const code = (variant) => `
+    const App = () => 
+    <Flex gap="200">
+        <Button 
+        variant={'${variant}'}
+        tone='primary'
+        >
+            <Icons.Smile/>
+            <Box flex='1'/>
+            Two icons
+            <Box flex='1'/>
+            <Icons.Smile/>
+        </Button>
+        <Button 
+        variant={'${variant}'}
+        tone='primary'
+        >
+            Without icons
+        </Button>
+        <Button 
+        variant={'${variant}'}
+        tone='primary'
+        >
+            <Icons.Smile/>
+            <Box flex='1'/>
+            Left icon only
+        </Button>
+        <Button 
+        variant={'${variant}'}
+        tone='primary'
+        >
+          Right icon only
+          <Box flex='1'/>
+          <Icons.Smile/>
+        </Button>
+    </Flex>`;
+
+function description(variant){ switch(variant){ case "solid": return solidDesc;
+case "outline": return outlineDesc; case "ghost": return ghostDesc; case "link":
+return linkDesc;} };
+
+const examples = variants.map((variant) => ({ title: variant, code:
+code(variant), description: description(variant), })); return examples}
+
 # Button
 
 Displays a Button.
@@ -23,6 +76,8 @@ Displays a Button.
 
 If unconfigured it will default to a neutral state. It is important to configure
 the Button properly to ensure it displays as intended.
+
+<SelectableCodeExamples examples={examples()} />
 
 ```jsx-live
 const App = () => <Button>I am a Button</Button>

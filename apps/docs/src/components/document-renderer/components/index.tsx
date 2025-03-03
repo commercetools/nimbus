@@ -2,6 +2,7 @@ import { Table } from "@bleh-ui/react";
 import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
 import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
+import { SelectableCodeExamples } from "@/components/document-renderer/components/selectable-code-examples";
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
 import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
@@ -69,6 +70,7 @@ export const components: MDXComponents = {
   PropTables: PropTables,
   ColorScales: ColorScales,
   IconSearch,
+  SelectableCodeExamples,
   SpacingTokenDemo,
   SizesTokenDemo,
   GenericTokenTableDemo,

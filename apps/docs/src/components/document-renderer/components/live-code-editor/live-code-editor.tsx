@@ -1,6 +1,6 @@
 import * as BlehUi from "@bleh-ui/react";
 import * as IconLib from "@bleh-ui/icons";
-import { Flex, Box } from "@bleh-ui/react";
+import { Flex, Box, Button } from "@bleh-ui/react";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
@@ -14,7 +14,6 @@ const baseHooks = {
 
 // funcitons & components available to the live code editor
 const scope = { ...BlehUi, ...baseHooks, Icons: { ...IconLib.icons } };
-
 const removeImportStatements = (code: string) => {
   // Regular expression to match import statements
   const importRegex = /^\s*import\s.+?;?\s*$/gm;
@@ -25,6 +24,7 @@ const removeImportStatements = (code: string) => {
 type LiveCodeEditorProps = {
   children?: ReactNode;
   className?: string;
+  variant?: "inline";
 };
 
 export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
@@ -36,24 +36,8 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   }, [props.children]);
 
   return (
-    <Box fontFamily="body" mb="1600">
-      <Flex>
-        <Box
-          borderBottom="solid-25"
-          borderColor={activeTab === "preview" ? "primary.9" : "transparent"}
-          p="200"
-        >
-          <button onClick={() => setActiveTab("preview")}>Preview</button>
-        </Box>
-        <Box
-          borderBottom="solid-25"
-          borderColor={activeTab === "editor" ? "primary.9" : "transparent"}
-          p="200"
-        >
-          <button onClick={() => setActiveTab("editor")}>Code</button>
-        </Box>
-      </Flex>
-      <Box border="solid-25" borderColor="neutral.3">
+    <Box fontFamily="body" mb={props.variant !== "inline" && "1600"}>
+      <Box border="solid-25" borderColor="neutral.3" borderRadius="100">
         <LiveProvider
           transformCode={removeImportStatements}
           code={typeof code === "string" ? code : ""}
@@ -69,15 +53,31 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
               onChange={(value) => setCode(value)}
             />
           </Box>
-
           <Box display={activeTab === "preview" ? "block" : "none"}>
             <Box p="400">
               <LivePreview />
             </Box>
           </Box>
-
           <LiveError />
         </LiveProvider>
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          bg="neutral.3"
+          px="400"
+          py="100"
+        >
+          <Button
+            variant="link"
+            tone="primary"
+            size="2xs"
+            onPress={() =>
+              setActiveTab(activeTab === "preview" ? "editor" : "preview")
+            }
+          >
+            {activeTab === "preview" ? "Show code" : "Show preview"}
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
