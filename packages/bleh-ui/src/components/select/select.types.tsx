@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type {
   SelectOptionsSlotProps,
   SelectOptionSlotProps,
@@ -15,6 +16,8 @@ import {
 export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
   /** set to true if Select is currently busy with something */
   isLoading?: boolean;
+  /** Children must be ReactNode, no render props/functions allowed */
+  children: ReactNode;
 }
 
 export type SelectOptionsProps<T = object> = Omit<
