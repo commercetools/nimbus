@@ -168,7 +168,7 @@ export const AsyncLoading: Story = {
           <Select.Options items={list.items}>
             {(item) => (
               <Select.Option key={item.id} id={item.name}>
-                <pre>{JSON.stringify(item, null, 2)}</pre>
+                {item.name}
               </Select.Option>
             )}
           </Select.Options>
