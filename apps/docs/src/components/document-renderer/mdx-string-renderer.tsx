@@ -27,9 +27,13 @@ export const MdxStringRenderer: FC<{
     evaluate(content, {
       ...runtime,
       remarkPlugins: [remarkGfm, remarkMark],
-    }).then((r) => {
-      setMdxContent(() => r.default);
-    });
+    })
+      .then((r) => {
+        setMdxContent(() => r.default);
+      })
+      .catch((error) => {
+        console.error("Error evaluating MDX content:", error);
+      });
   }, [content]);
 
   return <MdxContent components={components} />;
