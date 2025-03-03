@@ -7,8 +7,8 @@ import type { SelectOptionsProps } from "../select.types";
 export const SelectOptions = forwardRef<HTMLDivElement, SelectOptionsProps>(
   (props, forwardedRef) => {
     return (
-      <SelectOptionsSlot asChild ref={forwardedRef}>
-        <RaListBox {...props} />
+      <SelectOptionsSlot asChild>
+        <RaListBox ref={forwardedRef} {...props} />
       </SelectOptionsSlot>
     );
   }
