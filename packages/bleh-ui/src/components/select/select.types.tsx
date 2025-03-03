@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, FocusEvent } from "react";
 import type {
   SelectOptionsSlotProps,
   SelectOptionSlotProps,
@@ -20,11 +20,16 @@ export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
   children: ReactNode;
 }
 
+// Fix the incompatible event handler types by using a more specific type
 export type SelectOptionsProps<T = object> = Omit<
   RaListBoxProps<T>,
-  keyof SelectOptionsSlotProps
+  keyof SelectOptionsSlotProps | "onFocus" | "onBlur"
 > &
-  SelectOptionsSlotProps;
+  SelectOptionsSlotProps & {
+    // Specifically define onFocus and onBlur to ensure compatibility with both React and React Aria
+    onFocus?: (e: FocusEvent<Element, Element>) => void;
+    onBlur?: (e: FocusEvent<Element, Element>) => void;
+  };
 
 export type SelectOptionProps<T = object> = Omit<
   RaListBoxItemProps<T>,
