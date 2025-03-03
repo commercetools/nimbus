@@ -34,29 +34,31 @@ const selectVariants: SelectRootProps["variant"][] = ["outline", "ghost"];
 
 const optionGroupOptions = [
   {
+    id: "a",
     name: "Fruit",
     children: [
-      { name: "Apple" },
-      { name: "Banana" },
-      { name: "Orange" },
-      { name: "Honeydew" },
-      { name: "Grapes" },
-      { name: "Watermelon" },
-      { name: "Cantaloupe" },
-      { name: "Pear" },
+      { id: 1, name: "Apple" },
+      { id: 2, name: "Banana" },
+      { id: 3, name: "Orange" },
+      { id: 4, name: "Honeydew" },
+      { id: 5, name: "Grapes" },
+      { id: 6, name: "Watermelon" },
+      { id: 7, name: "Cantaloupe" },
+      { id: 8, name: "Pear" },
     ],
   },
   {
+    id: "b",
     name: "Vegetable",
     children: [
-      { name: "Cabbage" },
-      { name: "Broccoli" },
-      { name: "Carrots" },
-      { name: "Lettuce" },
-      { name: "Spinach" },
-      { name: "Bok Choy" },
-      { name: "Cauliflower" },
-      { name: "Potatoes" },
+      { id: 9, name: "Cabbage" },
+      { id: 10, name: "Broccoli" },
+      { id: 11, name: "Carrots" },
+      { id: 12, name: "Lettuce" },
+      { id: 13, name: "Spinach" },
+      { id: 14, name: "Bok Choy" },
+      { id: 15, name: "Cauliflower" },
+      { id: 16, name: "Potatoes" },
     ],
   },
 ];
@@ -70,7 +72,7 @@ const optionGroupOptions = [
 export const Base: Story = {
   render: () => {
     return (
-      <Select.Root>
+      <Select.Root aria-label="Select a fruit">
         <Select.Options>
           <Select.Option>Apples</Select.Option>
           <Select.Option>Bananas</Select.Option>
@@ -109,12 +111,11 @@ export const ControlledState: Story = {
           defaultSelectedKey={animal}
           selectedKey={animal}
           onSelectionChange={setAnimal}
+          aria-label="Select your new pet"
         >
           <Select.Options items={options}>
             {(item) => (
-              <Select.Option key={item.id} id={item.name}>
-                {item.name}
-              </Select.Option>
+              <Select.Option id={item.name}>{item.name}</Select.Option>
             )}
           </Select.Options>
         </Select.Root>
@@ -162,11 +163,12 @@ export const AsyncLoading: Story = {
           isLoading={isLoading}
           selectedKey={animal}
           onSelectionChange={setAnimal}
+          aria-label="Select your new pet"
         >
           <Select.Options items={list.items}>
             {(item) => (
               <Select.Option key={item.id} id={item.name}>
-                {item.name}
+                <pre>{JSON.stringify(item, null, 2)}</pre>
               </Select.Option>
             )}
           </Select.Options>
@@ -183,7 +185,7 @@ export const AsyncLoading: Story = {
 export const Disabled: Story = {
   render: () => {
     return (
-      <Select.Root isDisabled>
+      <Select.Root isDisabled aria-label="Select some fruit(s)">
         <Select.Options>
           <Select.Option>Apples</Select.Option>
           <Select.Option>Bananas</Select.Option>
@@ -197,7 +199,7 @@ export const Disabled: Story = {
 export const DisabledOptions: Story = {
   render: () => {
     return (
-      <Select.Root disabledKeys={["2"]}>
+      <Select.Root disabledKeys={["2"]} aria-label="Select some fruit(s)">
         <Select.Options>
           <Select.Option id="1">Apples</Select.Option>
           <Select.Option id="2">Bananas</Select.Option>
@@ -215,7 +217,7 @@ export const DisabledOptions: Story = {
 export const Invalid: Story = {
   render: () => {
     return (
-      <Select.Root isInvalid>
+      <Select.Root isInvalid aria-label="Select some fruit(s)">
         <Select.Options>
           <Select.Option id="1">Apples</Select.Option>
           <Select.Option id="2">Bananas</Select.Option>
@@ -227,22 +229,50 @@ export const Invalid: Story = {
 };
 
 /**
- * Option Groups (Sections)
+ * Option Groups (Simple)
  */
 export const OptionGroups: Story = {
   render: () => {
     return (
       <Box>
-        <Select.Root>
+        <Select.Root aria-label="Select some fruit(s)">
+          <Select.Options>
+            <Select.OptionGroup label="Fruits">
+              <Select.Option>Apples</Select.Option>
+              <Select.Option>Oranges</Select.Option>
+              <Select.Option>Bananas</Select.Option>
+            </Select.OptionGroup>
+            <Select.OptionGroup label="Vegetables">
+              <Select.Option>Carrots</Select.Option>
+              <Select.Option>Broccoli</Select.Option>
+              <Select.Option>Spinach</Select.Option>
+            </Select.OptionGroup>
+          </Select.Options>
+        </Select.Root>
+      </Box>
+    );
+  },
+};
+
+/**
+ * Option Groups (Dynamic)
+ */
+export const OptionGroupsDynamic: Story = {
+  render: () => {
+    return (
+      <Box>
+        <Select.Root aria-label="Select something to eat">
           <Select.Options items={optionGroupOptions}>
-            {(group) => (
+            {(groupItem) => (
               <Select.OptionGroup
-                key={group.name}
-                label={group.name}
-                items={group.children}
+                key={groupItem.id}
+                label={groupItem.name}
+                items={groupItem.children}
               >
-                {(item) => (
-                  <Select.Option key={item.name}>{item.name}</Select.Option>
+                {(optionItem) => (
+                  <Select.Option key={optionItem.id}>
+                    {optionItem.name}
+                  </Select.Option>
                 )}
               </Select.OptionGroup>
             )}
@@ -263,7 +293,7 @@ export const OptionGroups: Story = {
 export const WithDescriptions: Story = {
   render: () => {
     return (
-      <Select.Root>
+      <Select.Root aria-label="Select some fruit(s)">
         <Select.Options>
           {/** Variant A - plain html-tags with slot property */}
           <Select.Option textValue="Apple">
@@ -304,7 +334,7 @@ export const CustomWidths: Story = {
     return (
       // width for the trigger can be specified on <Select.Root/>,
       // width for popover can be specified on <Select.Options/>
-      <Select.Root width="256px">
+      <Select.Root width="256px" aria-label="Select something to eat">
         <Select.Options width="512px">
           <Select.OptionGroup label="Fruits">
             <Select.Option>Apples</Select.Option>
@@ -338,7 +368,7 @@ export const SuperLongAndComplex: Story = {
         justifyContent="center"
         overflow="auto"
       >
-        <Select.Root>
+        <Select.Root aria-label="Select something">
           <Select.Options>
             <Select.OptionGroup label="Fruits">
               <Select.Option>
@@ -432,7 +462,11 @@ export const VariantsAndSizes: Story = {
     return (
       <Stack>
         {[{}, { isDisabled: true }, { isInvalid: true }].map((props) => (
-          <Stack bg="neutral.2" onClick={() => setInvalid(!isInvalid)}>
+          <Stack
+            key={JSON.stringify({ props })}
+            bg="neutral.2"
+            onClick={() => setInvalid(!isInvalid)}
+          >
             {selectVariants.map((variant) => (
               <Stack alignItems="start" key={JSON.stringify({ variant })}>
                 <Text my="400" fontWeight="600">
@@ -444,6 +478,7 @@ export const VariantsAndSizes: Story = {
                     variant={variant}
                     key={JSON.stringify({ size })}
                     {...props}
+                    aria-label="Select something"
                   >
                     <Select.Options>
                       <Select.Option>
