@@ -79,8 +79,6 @@ type ColorPalette = SimplePalette & {
   DEFAULT: ValueObject<string>;
   /** contrast color that works on step 9 + 10 */
   contrast: ValueObject<string>;
-  /** alpha variants of that color */
-  alpha: SimplePalette;
 };
 
 type ColorPaletteCollectionStructure = {
@@ -144,17 +142,13 @@ function calculateContrastColor(baseKey: string, color: string): string {
   return whiteContrast > 2.9 ? white : black;
 }
 
-function createColorPalette(
-  basePalette: Palette,
-  alphaPalette: Palette
-): ColorPalette {
+function createColorPalette(basePalette: Palette): ColorPalette {
   const baseKey = Object.keys(basePalette)[0].replace(/\d+$/, "");
   const defaultColor = basePalette[`${baseKey}9`];
   return {
     ...createSimplePalette(basePalette),
     DEFAULT: createValue(defaultColor),
     contrast: createValue(calculateContrastColor(baseKey, defaultColor)),
-    alpha: createSimplePalette(alphaPalette),
   };
 }
 
@@ -172,8 +166,13 @@ sortedPalettes.light.forEach((key, index) => {
   const darkAlphaPalette = radixColors[sortedPalettes.darkAlpha[index]];
 
   colorPaletteCollection[baseName] = {
-    light: createColorPalette(lightPalette, lightAlphaPalette),
-    dark: createColorPalette(darkPalette, darkAlphaPalette),
+    light: createColorPalette(lightPalette),
+    dark: createColorPalette(darkPalette),
+  };
+
+  colorPaletteCollection[baseName + "Alpha"] = {
+    light: createColorPalette(lightAlphaPalette),
+    dark: createColorPalette(darkAlphaPalette),
   };
 });
 
@@ -207,20 +206,6 @@ function createPaletteReference(
       "12": { $value: `{color.${basePath}.${systemName}.light.12}` },
       DEFAULT: { $value: `{color.${basePath}.${systemName}.light.DEFAULT}` },
       contrast: { $value: `{color.${basePath}.${systemName}.light.contrast}` },
-      alpha: {
-        "1": { $value: `{color.${basePath}.${systemName}.light.alpha.1}` },
-        "2": { $value: `{color.${basePath}.${systemName}.light.alpha.2}` },
-        "3": { $value: `{color.${basePath}.${systemName}.light.alpha.3}` },
-        "4": { $value: `{color.${basePath}.${systemName}.light.alpha.4}` },
-        "5": { $value: `{color.${basePath}.${systemName}.light.alpha.5}` },
-        "6": { $value: `{color.${basePath}.${systemName}.light.alpha.6}` },
-        "7": { $value: `{color.${basePath}.${systemName}.light.alpha.7}` },
-        "8": { $value: `{color.${basePath}.${systemName}.light.alpha.8}` },
-        "9": { $value: `{color.${basePath}.${systemName}.light.alpha.9}` },
-        "10": { $value: `{color.${basePath}.${systemName}.light.alpha.10}` },
-        "11": { $value: `{color.${basePath}.${systemName}.light.alpha.11}` },
-        "12": { $value: `{color.${basePath}.${systemName}.light.alpha.12}` },
-      },
     },
     dark: {
       "1": { $value: `{color.${basePath}.${systemName}.dark.1}` },
@@ -237,20 +222,6 @@ function createPaletteReference(
       "12": { $value: `{color.${basePath}.${systemName}.dark.12}` },
       DEFAULT: { $value: `{color.${basePath}.${systemName}.dark.DEFAULT}` },
       contrast: { $value: `{color.${basePath}.${systemName}.dark.contrast}` },
-      alpha: {
-        "1": { $value: `{color.${basePath}.${systemName}.dark.alpha.1}` },
-        "2": { $value: `{color.${basePath}.${systemName}.dark.alpha.2}` },
-        "3": { $value: `{color.${basePath}.${systemName}.dark.alpha.3}` },
-        "4": { $value: `{color.${basePath}.${systemName}.dark.alpha.4}` },
-        "5": { $value: `{color.${basePath}.${systemName}.dark.alpha.5}` },
-        "6": { $value: `{color.${basePath}.${systemName}.dark.alpha.6}` },
-        "7": { $value: `{color.${basePath}.${systemName}.dark.alpha.7}` },
-        "8": { $value: `{color.${basePath}.${systemName}.dark.alpha.8}` },
-        "9": { $value: `{color.${basePath}.${systemName}.dark.alpha.9}` },
-        "10": { $value: `{color.${basePath}.${systemName}.dark.alpha.10}` },
-        "11": { $value: `{color.${basePath}.${systemName}.dark.alpha.11}` },
-        "12": { $value: `{color.${basePath}.${systemName}.dark.alpha.12}` },
-      },
     },
   };
 }
@@ -269,25 +240,28 @@ const palettes = {
     },
     ["brand-palettes"]: {
       ctyellow: {
-        light: createColorPalette(brandColors.ctyellow, brandColors.ctyellowA),
-        dark: createColorPalette(
-          brandColors.ctyellowDark,
-          brandColors.ctyellowDarkA
-        ),
+        light: createColorPalette(brandColors.ctyellow),
+        dark: createColorPalette(brandColors.ctyellowDark),
+      },
+      ctyellowAlpha: {
+        light: createColorPalette(brandColors.ctyellowA),
+        dark: createColorPalette(brandColors.ctyellowDarkA),
       },
       ctviolet: {
-        light: createColorPalette(brandColors.ctviolet, brandColors.ctvioletA),
-        dark: createColorPalette(
-          brandColors.ctvioletDark,
-          brandColors.ctvioletDarkA
-        ),
+        light: createColorPalette(brandColors.ctviolet),
+        dark: createColorPalette(brandColors.ctvioletDark),
+      },
+      ctvioletAlpha: {
+        light: createColorPalette(brandColors.ctvioletA),
+        dark: createColorPalette(brandColors.ctvioletDarkA),
       },
       ctteal: {
-        light: createColorPalette(brandColors.ctteal, brandColors.cttealA),
-        dark: createColorPalette(
-          brandColors.cttealDark,
-          brandColors.cttealDarkA
-        ),
+        light: createColorPalette(brandColors.ctteal),
+        dark: createColorPalette(brandColors.cttealDark),
+      },
+      cttealAlpha: {
+        light: createColorPalette(brandColors.cttealA),
+        dark: createColorPalette(brandColors.cttealDarkA),
       },
     },
     ["semantic-palettes"]: {
@@ -296,7 +270,13 @@ const palettes = {
         (result, [semanticName, systemName]) => {
           // TODO: Make pretty. Will do for now, probably will break at some point
           const isBrandPalette = systemName.startsWith("ct");
+
           result[semanticName] = createPaletteReference(
+            systemName,
+            isBrandPalette
+          );
+
+          result[semanticName + "Alpha"] = createPaletteReference(
             systemName,
             isBrandPalette
           );
