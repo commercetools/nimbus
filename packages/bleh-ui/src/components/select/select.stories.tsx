@@ -3,6 +3,7 @@ import { Select } from "./select";
 import { Text, Stack, Box } from "@/components";
 import type { Key } from "react-aria";
 import { useState } from "react";
+import { type SelectRootProps } from "./select.types";
 
 import { useAsyncList } from "react-stately";
 
@@ -23,6 +24,42 @@ export default meta;
  * StoryObj provides type checking for our story configurations
  */
 type Story = StoryObj<typeof Select.Root>;
+
+/**
+ * Test data
+ */
+
+const selectSizes: SelectRootProps["size"][] = ["sm", "md"];
+const selectVariants: SelectRootProps["variant"][] = ["outline", "ghost"];
+
+const optionGroupOptions = [
+  {
+    name: "Fruit",
+    children: [
+      { name: "Apple" },
+      { name: "Banana" },
+      { name: "Orange" },
+      { name: "Honeydew" },
+      { name: "Grapes" },
+      { name: "Watermelon" },
+      { name: "Cantaloupe" },
+      { name: "Pear" },
+    ],
+  },
+  {
+    name: "Vegetable",
+    children: [
+      { name: "Cabbage" },
+      { name: "Broccoli" },
+      { name: "Carrots" },
+      { name: "Lettuce" },
+      { name: "Spinach" },
+      { name: "Bok Choy" },
+      { name: "Cauliflower" },
+      { name: "Potatoes" },
+    ],
+  },
+];
 
 /**
  * Base story
@@ -52,7 +89,7 @@ export const Base: Story = {
  */
 export const ControlledState: Story = {
   render: () => {
-    let options = [
+    const options = [
       { id: 1, name: "Koala" },
       { id: 2, name: "Kangaroo" },
       { id: 3, name: "Platypus" },
@@ -60,7 +97,7 @@ export const ControlledState: Story = {
       { id: 5, name: "Bison" },
       { id: 6, name: "Skunk" },
     ];
-    let [animal, setAnimal] = useState<Key>("Bison");
+    const [animal, setAnimal] = useState<Key>("Bison");
 
     return (
       <Box>
@@ -92,8 +129,8 @@ export const ControlledState: Story = {
  */
 export const AsyncLoading: Story = {
   render: () => {
-    let list = useAsyncList<{ id: number; name: string }>({
-      load: async ({ signal, filterText }) => {
+    const list = useAsyncList<{ id: number; name: string }>({
+      load: async () => {
         // Simulate a network request with a 2 second delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -110,7 +147,7 @@ export const AsyncLoading: Story = {
       },
     });
 
-    let [animal, setAnimal] = useState<Key>();
+    const [animal, setAnimal] = useState<Key>();
 
     const isLoading = list.loadingState === "loading";
 
@@ -194,39 +231,10 @@ export const Invalid: Story = {
  */
 export const OptionGroups: Story = {
   render: () => {
-    let options = [
-      {
-        name: "Fruit",
-        children: [
-          { name: "Apple" },
-          { name: "Banana" },
-          { name: "Orange" },
-          { name: "Honeydew" },
-          { name: "Grapes" },
-          { name: "Watermelon" },
-          { name: "Cantaloupe" },
-          { name: "Pear" },
-        ],
-      },
-      {
-        name: "Vegetable",
-        children: [
-          { name: "Cabbage" },
-          { name: "Broccoli" },
-          { name: "Carrots" },
-          { name: "Lettuce" },
-          { name: "Spinach" },
-          { name: "Bok Choy" },
-          { name: "Cauliflower" },
-          { name: "Potatoes" },
-        ],
-      },
-    ];
-
     return (
       <Box>
         <Select.Root>
-          <Select.Options items={options}>
+          <Select.Options items={optionGroupOptions}>
             {(group) => (
               <Select.OptionGroup
                 key={group.name}
@@ -425,16 +433,16 @@ export const VariantsAndSizes: Story = {
       <Stack>
         {[{}, { isDisabled: true }, { isInvalid: true }].map((props) => (
           <Stack bg="neutral.2" onClick={() => setInvalid(!isInvalid)}>
-            {["solid", "ghost"].map((variant) => (
-              <Stack alignItems="start" key={variant}>
+            {selectVariants.map((variant) => (
+              <Stack alignItems="start" key={JSON.stringify({ variant })}>
                 <Text my="400" fontWeight="600">
-                  {variant}, {JSON.stringify(props)}
+                  {JSON.stringify({ variant, ...props })}
                 </Text>
-                {["sm", "md"].map((size) => (
+                {selectSizes.map((size) => (
                   <Select.Root
                     size={size}
                     variant={variant}
-                    key={size}
+                    key={JSON.stringify({ size })}
                     {...props}
                   >
                     <Select.Options>
