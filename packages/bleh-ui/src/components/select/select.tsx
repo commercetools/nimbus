@@ -19,17 +19,17 @@ import {
   Header as RaHeader,
 } from "react-aria-components";
 import {
-  SelectRoot,
-  type SelectRootProps,
-  SelectOptions,
-  type SelectOptionsProps,
-  SelectOption,
-  type SelectOptionProps,
-  SelectOptionGroup,
-  type SelectOptionGroupProps,
-  SelectTrigger,
-  type SelectTriggerProps,
-  SelectTriggerLabel,
+  SelectRootSlot,
+  type SelectRootSlotProps,
+  SelectOptionsSlot,
+  type SelectOptionsSlotProps,
+  SelectOptionSlot,
+  type SelectOptionSlotProps,
+  SelectOptionGroupSlot,
+  type SelectOptionGroupSlotProps,
+  SelectTriggerSlot,
+  type SelectTriggerSlotProps,
+  SelectTriggerLabelSlot,
 } from "./select.slots";
 
 import { SelectStateContext } from "react-aria-components";
@@ -56,69 +56,70 @@ const SelectClearButton = () => {
   );
 };
 
-export const UnstyledSelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
-  ({ children, variant, size, isLoading, isDisabled, ...props }, ref) => {
-    return (
-      <SelectRoot asChild ref={ref} variant={variant} size={size}>
-        <RaSelect {...props} isDisabled={isLoading || isDisabled}>
-          <chakra.div position="relative">
-            <SelectTrigger zIndex={0} asChild>
-              <RaButton>
-                <SelectTriggerLabel asChild>
-                  <RaSelectValue />
-                </SelectTriggerLabel>
-              </RaButton>
-            </SelectTrigger>
-            <Flex
-              position="absolute"
-              top="0"
-              bottom="0"
-              zIndex={1}
-              right="400"
-              pointerEvents="none"
-            >
-              <Flex width="600" my="auto">
-                <SelectClearButton />
-              </Flex>
-
-              <Flex my="auto" w="600" h="600" pointerEvents="none">
-                <Box color="neutral.9" asChild m="auto" w="400" h="400">
-                  {isLoading ? (
-                    <Box asChild animation="spin" animationDuration="slowest">
-                      <SpinnerIcon />
-                    </Box>
-                  ) : (
-                    <DropdownIndicatorIcon />
-                  )}
-                </Box>
-              </Flex>
+export const UnstyledSelectRoot = forwardRef<
+  HTMLDivElement,
+  SelectRootSlotProps
+>(({ children, variant, size, isLoading, isDisabled, ...props }, ref) => {
+  return (
+    <SelectRootSlot asChild ref={ref} variant={variant} size={size}>
+      <RaSelect {...props} isDisabled={isLoading || isDisabled}>
+        <chakra.div position="relative">
+          <SelectTriggerSlot zIndex={0} asChild>
+            <RaButton>
+              <SelectTriggerLabelSlot asChild>
+                <RaSelectValue />
+              </SelectTriggerLabelSlot>
+            </RaButton>
+          </SelectTriggerSlot>
+          <Flex
+            position="absolute"
+            top="0"
+            bottom="0"
+            zIndex={1}
+            right="400"
+            pointerEvents="none"
+          >
+            <Flex width="600" my="auto">
+              <SelectClearButton />
             </Flex>
-          </chakra.div>
 
-          <RaPopover>{children}</RaPopover>
-        </RaSelect>
-      </SelectRoot>
-    );
-  }
-);
+            <Flex my="auto" w="600" h="600" pointerEvents="none">
+              <Box color="neutral.9" asChild m="auto" w="400" h="400">
+                {isLoading ? (
+                  <Box asChild animation="spin" animationDuration="slowest">
+                    <SpinnerIcon />
+                  </Box>
+                ) : (
+                  <DropdownIndicatorIcon />
+                )}
+              </Box>
+            </Flex>
+          </Flex>
+        </chakra.div>
+
+        <RaPopover>{children}</RaPopover>
+      </RaSelect>
+    </SelectRootSlot>
+  );
+});
 
 UnstyledSelectRoot.displayName = "Select.Root";
 
 export const UnstyledSelectOptions = forwardRef<
   HTMLDivElement,
-  SelectOptionsProps
+  SelectOptionsSlotProps
 >(({ items, children, ...props }, forwardedRef) => {
   console.log("children", children);
   console.log("items", items);
 
   return (
-    <SelectOptions asChild ref={forwardedRef} {...props}>
+    <SelectOptionsSlot asChild ref={forwardedRef} {...props}>
       <RaListBox>
         {items
           ? items.map((item) => (children as (item: any) => ReactNode)(item))
           : children}
       </RaListBox>
-    </SelectOptions>
+    </SelectOptionsSlot>
   );
 });
 
@@ -126,13 +127,13 @@ UnstyledSelectOptions.displayName = "Select.Options";
 
 export const UnstyledSelectOption = forwardRef<
   HTMLDivElement,
-  SelectOptionProps
+  SelectOptionSlotProps
 >(({ ...props }, ref) => {
   //return <SelectOption as={RaListBoxItem} ref={ref} {...props} />;
   return (
-    <SelectOption asChild ref={ref}>
+    <SelectOptionSlot asChild ref={ref}>
       <RaListBoxItem {...props} />
-    </SelectOption>
+    </SelectOptionSlot>
   );
 });
 
@@ -140,16 +141,16 @@ UnstyledSelectOptions.displayName = "Select.Option";
 
 export const UnstyledSelectOptionGroup = forwardRef<
   HTMLDivElement,
-  SelectOptionGroupProps & {
+  SelectOptionGroupSlotProps & {
     label: string;
   }
 >(({ label, items, children, ...props }, ref) => {
   return (
     <chakra.div asChild ref={ref} {...props}>
       <RaListBoxSection>
-        <SelectOptionGroup asChild>
+        <SelectOptionGroupSlot asChild>
           <RaHeader>{label}</RaHeader>
-        </SelectOptionGroup>
+        </SelectOptionGroupSlot>
         {items
           ? items.map((item) => (children as (item: any) => ReactNode)(item))
           : children}

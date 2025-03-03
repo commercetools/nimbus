@@ -17,55 +17,47 @@ const { withProvider, withContext } = createSlotRecipeContext({
 });
 
 // Select
-export interface SelectRootProps
+export interface SelectRootSlotProps
   extends HTMLChakraProps<
     "div",
     RecipeVariantProps<typeof selectSlotRecipe> & RaSelectProps<object>
   > {}
-export const SelectRoot = withProvider<HTMLDivElement, SelectRootProps>(
+export const SelectRootSlot = withProvider<HTMLDivElement, SelectRootSlotProps>(
   "div",
   "root"
 );
 
 // Trigger
-export interface SelectTriggerProps extends HTMLChakraProps<"button"> {}
-export const SelectTrigger = withContext<HTMLButtonElement, SelectTriggerProps>(
-  "button",
-  "trigger"
-);
+export interface SelectTriggerSlotProps extends HTMLChakraProps<"button"> {}
+export const SelectTriggerSlot = withContext<
+  HTMLButtonElement,
+  SelectTriggerSlotProps
+>("button", "trigger");
 
 // Trigger
-export interface SelectTriggerLabelProps extends HTMLChakraProps<"span"> {}
-export const SelectTriggerLabel = withContext<
+export interface SelectTriggerLabelSlotProps extends HTMLChakraProps<"span"> {}
+export const SelectTriggerLabelSlot = withContext<
   HTMLButtonElement,
-  SelectTriggerLabelProps
+  SelectTriggerLabelSlotProps
 >("span", "triggerLabel");
 
 // ListBox
-export interface SelectOptionsProps extends HTMLChakraProps<"div"> {}
-export const SelectOptions = withContext<HTMLDivElement, SelectOptionsProps>(
-  "div",
-  "options"
-);
+export interface SelectOptionsSlotProps extends HTMLChakraProps<"div"> {}
+export const SelectOptionsSlot = withContext<
+  HTMLDivElement,
+  SelectOptionsSlotProps
+>("div", "options");
 
 // ListBoxItem
-export interface SelectOptionProps extends HTMLChakraProps<"div"> {}
-export const SelectOption = withContext<HTMLDivElement, SelectOptionProps>(
-  "div",
-  "option"
-);
+export interface SelectOptionSlotProps extends HTMLChakraProps<"div"> {}
+export const SelectOptionSlot = withContext<
+  HTMLDivElement,
+  SelectOptionSlotProps
+>("div", "option");
 
 // OptionGroup
-export interface SelectOptionGroupProps extends HTMLChakraProps<"div"> {}
-export const SelectOptionGroup = withContext<
+export interface SelectOptionGroupSlotProps extends HTMLChakraProps<"div"> {}
+export const SelectOptionGroupSlot = withContext<
   HTMLDivElement,
-  SelectOptionGroupProps
+  SelectOptionGroupSlotProps
 >("div", "optionGroup");
-
-/* 
-interface ChekcboxIndicatorProps extends HTMLChakraProps<"span"> {}
-export const CheckboxIndicator = withContext<
-  HTMLSpanElement,
-  ChekcboxIndicatorProps
->("span", "indicator");
- */
