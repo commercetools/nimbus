@@ -1,12 +1,12 @@
 import { forwardRef, useContext, type ReactNode } from "react";
-import { chakra, useSlotRecipe } from "@chakra-ui/react";
+import { chakra } from "@chakra-ui/react";
 import {
   ChevronDown as DropdownIndicatorIcon,
   X as CloseIcon,
   LoaderCircle as SpinnerIcon,
 } from "@bleh-ui/icons";
 
-import { Flex, Box, Button, IconButton } from "@/components";
+import { Flex, Box, IconButton } from "@/components";
 import {
   Button as RaButton,
   Label as RaLabel,
@@ -127,11 +127,11 @@ UnstyledSelectOptions.displayName = "Select.Options";
 export const UnstyledSelectOption = forwardRef<
   HTMLDivElement,
   SelectOptionProps
->(({ children, ...props }, ref) => {
+>(({ ...props }, ref) => {
   //return <SelectOption as={RaListBoxItem} ref={ref} {...props} />;
   return (
     <SelectOption asChild ref={ref}>
-      <RaListBoxItem {...props}>{children}</RaListBoxItem>
+      <RaListBoxItem {...props} />
     </SelectOption>
   );
 });

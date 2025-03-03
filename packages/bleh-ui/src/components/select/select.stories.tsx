@@ -28,6 +28,7 @@ type Story = StoryObj<typeof Select.Root>;
  * Base story
  * Demonstrates the most basic implementation, an uncontrolled
  * select with a few options.
+ * - test typeahead here
  */
 export const Base: Story = {
   render: () => {
@@ -37,6 +38,7 @@ export const Base: Story = {
           <Select.Option>Apples</Select.Option>
           <Select.Option>Bananas</Select.Option>
           <Select.Option>Oranges</Select.Option>
+          <Select.Option>Cherries</Select.Option>
         </Select.Options>
       </Select.Root>
     );
@@ -226,7 +228,11 @@ export const OptionGroups: Story = {
         <Select.Root>
           <Select.Options items={options}>
             {(group) => (
-              <Select.OptionGroup label={group.name} items={group.children}>
+              <Select.OptionGroup
+                key={group.name}
+                label={group.name}
+                items={group.children}
+              >
                 {(item) => (
                   <Select.Option key={item.name}>{item.name}</Select.Option>
                 )}
@@ -240,22 +246,11 @@ export const OptionGroups: Story = {
 };
 
 /**
- * TypeAhead
- */
-export const TypeAhead: Story = {};
-
-/**
- * CollectionComponentAPI
- * @see https://react-spectrum.adobe.com/react-aria/Select.html#content
- */
-export const CollectionComponentAPI: Story = {};
-
-//react-spectrum.adobe.com/react-aria/Select.html#content
-
-/**
  * Label + additional descriptions
  * demonstrates the use of additional option descriptions
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#text-slotss
+ *
+ * - test for textValue existance, otherwise typeahead won't work
  */
 export const WithDescriptions: Story = {
   render: () => {
@@ -263,24 +258,24 @@ export const WithDescriptions: Story = {
       <Select.Root>
         <Select.Options>
           {/** Variant A - plain html-tags with slot property */}
-          <Select.Option>
+          <Select.Option textValue="Apple">
             <p slot="label">Apple</p>
             <p slot="description">A classic and versatile fruit.</p>
           </Select.Option>
           {/** Variant B - text component with slot property */}
-          <Select.Option>
+          <Select.Option textValue="Banana">
             <Text slot="label">Banana</Text>
             <Text slot="description">A good source of potassium.</Text>
           </Select.Option>
-          <Select.Option>
+          <Select.Option textValue="Oranges">
             <Text slot="label">Oranges</Text>
             <Text slot="description">Rich in vitamin C.</Text>
           </Select.Option>
-          <Select.Option>
+          <Select.Option textValue="Strawberries">
             <Text slot="label">Strawberries</Text>
             <Text slot="description">Sweet and full of antioxidants.</Text>
           </Select.Option>
-          <Select.Option>
+          <Select.Option textValue="Grapes">
             <Text slot="label">Grapes</Text>
             <Text slot="description">
               Available in various colors and flavors.
@@ -291,13 +286,6 @@ export const WithDescriptions: Story = {
     );
   },
 };
-
-/**
- * Dynamic OptionGroups
- * Demonstrates grouping of options
- * @see https://react-spectrum.adobe.com/react-aria/Select.html#dynamic-items
- */
-export const DynamicOptionGroups: Story = {};
 
 /**
  * Custom Widths
@@ -434,120 +422,124 @@ export const VariantsAndSizes: Story = {
   render: () => {
     const [isInvalid, setInvalid] = useState(false);
     return (
-      <Stack bg="neutral.2" p="3200" onClick={() => setInvalid(!isInvalid)}>
-        {["solid", "ghost"].map((variant) => (
-          <Stack alignItems="start" key={variant}>
-            <Text my="400" fontWeight="600">
-              {variant}
-            </Text>
-            {["sm", "md"].map((size) => (
-              <Select.Root
-                size={size}
-                variant={variant}
-                key={size}
-                isInvalid={isInvalid}
-              >
-                <Select.Options>
-                  <Select.Option>
-                    Extraordinary long Menu Label that noone can read
-                    Extraordinary long Menu Label that noone can read
-                  </Select.Option>
-                  <Select.Option>Groupless Option No 1.</Select.Option>
-                  <Select.Option>Groupless Option No 2.</Select.Option>
-                  <Select.Option>
-                    <Text slot="label">Groupless Option No 3.</Text>
-                    <Text slot="description">
-                      At least this one has a description.
-                    </Text>
-                  </Select.Option>
-                  <Select.Option>
-                    <Text slot="label">Super freaking long</Text>
-                    <Text slot="description">
-                      At least this one has a description.
-                    </Text>
-                  </Select.Option>
-                  <Select.OptionGroup label="Fruits">
-                    <Select.Option>
-                      <Text slot="label">Apples</Text>
-                      <Text slot="description">
-                        A crisp and juicy classic fruit.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Oranges</Text>
-                      <Text slot="description">
-                        A sweet and tangy citrus fruit.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Bananas</Text>
-                      <Text slot="description">
-                        A soft and creamy tropical fruit.
-                      </Text>
-                    </Select.Option>
-                  </Select.OptionGroup>
-                  <Select.OptionGroup label="Vegetables">
-                    <Select.Option>
-                      <Text slot="label">Carrots</Text>
-                      <Text slot="description">
-                        A crunchy and nutritious root vegetable.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Broccoli</Text>
-                      <Text slot="description">
-                        A green vegetable rich in vitamins.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Spinach</Text>
-                      <Text slot="description">
-                        A leafy vegetable packed with iron.
-                      </Text>
-                    </Select.Option>
-                  </Select.OptionGroup>
-                  <Select.OptionGroup label="Grains">
-                    <Select.Option>
-                      <Text slot="label">Rice</Text>
-                      <Text slot="description">
-                        A staple grain consumed worldwide.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Wheat</Text>
-                      <Text slot="description">
-                        A common grain used in bread and pasta.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Oats</Text>
-                      <Text slot="description">
-                        A healthy grain often eaten for breakfast.
-                      </Text>
-                    </Select.Option>
-                  </Select.OptionGroup>
-                  <Select.OptionGroup label="Proteins">
-                    <Select.Option>
-                      <Text slot="label">Chicken</Text>
-                      <Text slot="description">
-                        A versatile and lean poultry protein.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Beef</Text>
-                      <Text slot="description">
-                        A rich and flavorful red meat protein.
-                      </Text>
-                    </Select.Option>
-                    <Select.Option>
-                      <Text slot="label">Pork</Text>
-                      <Text slot="description">
-                        Another popular and versatile meat protein.
-                      </Text>
-                    </Select.Option>
-                  </Select.OptionGroup>
-                </Select.Options>
-              </Select.Root>
+      <Stack>
+        {[{}, { isDisabled: true }, { isInvalid: true }].map((props) => (
+          <Stack bg="neutral.2" onClick={() => setInvalid(!isInvalid)}>
+            {["solid", "ghost"].map((variant) => (
+              <Stack alignItems="start" key={variant}>
+                <Text my="400" fontWeight="600">
+                  {variant}, {JSON.stringify(props)}
+                </Text>
+                {["sm", "md"].map((size) => (
+                  <Select.Root
+                    size={size}
+                    variant={variant}
+                    key={size}
+                    {...props}
+                  >
+                    <Select.Options>
+                      <Select.Option>
+                        Extraordinary long Menu Label that noone can read
+                        Extraordinary long Menu Label that noone can read
+                      </Select.Option>
+                      <Select.Option>Groupless Option No 1.</Select.Option>
+                      <Select.Option>Groupless Option No 2.</Select.Option>
+                      <Select.Option>
+                        <Text slot="label">Groupless Option No 3.</Text>
+                        <Text slot="description">
+                          At least this one has a description.
+                        </Text>
+                      </Select.Option>
+                      <Select.Option>
+                        <Text slot="label">Super freaking long</Text>
+                        <Text slot="description">
+                          At least this one has a description.
+                        </Text>
+                      </Select.Option>
+                      <Select.OptionGroup label="Fruits">
+                        <Select.Option>
+                          <Text slot="label">Apples</Text>
+                          <Text slot="description">
+                            A crisp and juicy classic fruit.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Oranges</Text>
+                          <Text slot="description">
+                            A sweet and tangy citrus fruit.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Bananas</Text>
+                          <Text slot="description">
+                            A soft and creamy tropical fruit.
+                          </Text>
+                        </Select.Option>
+                      </Select.OptionGroup>
+                      <Select.OptionGroup label="Vegetables">
+                        <Select.Option>
+                          <Text slot="label">Carrots</Text>
+                          <Text slot="description">
+                            A crunchy and nutritious root vegetable.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Broccoli</Text>
+                          <Text slot="description">
+                            A green vegetable rich in vitamins.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Spinach</Text>
+                          <Text slot="description">
+                            A leafy vegetable packed with iron.
+                          </Text>
+                        </Select.Option>
+                      </Select.OptionGroup>
+                      <Select.OptionGroup label="Grains">
+                        <Select.Option>
+                          <Text slot="label">Rice</Text>
+                          <Text slot="description">
+                            A staple grain consumed worldwide.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Wheat</Text>
+                          <Text slot="description">
+                            A common grain used in bread and pasta.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Oats</Text>
+                          <Text slot="description">
+                            A healthy grain often eaten for breakfast.
+                          </Text>
+                        </Select.Option>
+                      </Select.OptionGroup>
+                      <Select.OptionGroup label="Proteins">
+                        <Select.Option>
+                          <Text slot="label">Chicken</Text>
+                          <Text slot="description">
+                            A versatile and lean poultry protein.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Beef</Text>
+                          <Text slot="description">
+                            A rich and flavorful red meat protein.
+                          </Text>
+                        </Select.Option>
+                        <Select.Option>
+                          <Text slot="label">Pork</Text>
+                          <Text slot="description">
+                            Another popular and versatile meat protein.
+                          </Text>
+                        </Select.Option>
+                      </Select.OptionGroup>
+                    </Select.Options>
+                  </Select.Root>
+                ))}
+              </Stack>
             ))}
           </Stack>
         ))}
