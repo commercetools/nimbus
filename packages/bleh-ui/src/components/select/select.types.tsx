@@ -41,4 +41,7 @@ export type SelectOptionGroupProps<T = object> = Omit<
   RaListBoxSectionProps<T>,
   keyof SelectOptionGroupSlotProps
 > &
-  SelectOptionGroupSlotProps;
+  SelectOptionGroupSlotProps & {
+    /** the label for the section */
+    label: string;
+  };
