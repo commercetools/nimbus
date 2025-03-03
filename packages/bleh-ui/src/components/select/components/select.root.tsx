@@ -26,9 +26,14 @@ export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
     const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
     const [recipeProps, restProps] = recipe.splitVariantProps(props);
 
+    const raSelectProps = {
+      ...restProps,
+      isDisabled: isLoading || isDisabled,
+    };
+
     return (
       <SelectRootSlot asChild ref={ref} {...recipeProps}>
-        <RaSelect {...restProps} isDisabled={isLoading || isDisabled}>
+        <RaSelect {...raSelectProps}>
           <chakra.div position="relative">
             <SelectTriggerSlot zIndex={0} asChild>
               <RaButton>
