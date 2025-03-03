@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Select } from "./select";
 import { Text, Stack, Box } from "@/components";
 import type { Key } from "react-aria";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { useAsyncList } from "react-stately";
 

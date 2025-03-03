@@ -1,0 +1,35 @@
+import { useContext } from "react";
+import { X as CloseIcon } from "@bleh-ui/icons";
+import { IconButton } from "@/components";
+import { SelectStateContext } from "react-aria-components";
+
+export const SelectClearButton = () => {
+  const state = useContext(SelectStateContext);
+
+  if (!state?.selectedKey) {
+    return null;
+  }
+
+  const onPressRequest = () => {
+    state?.setSelectedKey(null);
+    setTimeout(() => {
+      state?.setFocused(true);
+    }, 0);
+  };
+
+  return (
+    <IconButton
+      pointerEvents="all"
+      size="2xs"
+      variant="ghost"
+      tone="primary"
+      aria-label="Clear Selection"
+      slot={undefined}
+      onPress={onPressRequest}
+    >
+      <CloseIcon />
+    </IconButton>
+  );
+};
+
+SelectClearButton.displayName = "Select.ClearButton";

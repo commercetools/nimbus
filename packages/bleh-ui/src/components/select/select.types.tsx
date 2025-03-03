@@ -1,16 +1,36 @@
-import type { RecipeVariantProps } from "@chakra-ui/react";
-import { selectSlotRecipe } from "./select.recipe";
+import type {
+  SelectOptionsSlotProps,
+  SelectOptionSlotProps,
+  SelectRootSlotProps,
+  SelectOptionGroupSlotProps,
+} from "./select.slots";
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-//type SelectVariantProps = RecipeVariantProps<typeof selectSlotRecipe>;
+import {
+  type SelectProps as RaSelectProps,
+  type ListBoxProps as RaListBoxProps,
+  type ListBoxItemProps as RaListBoxItemProps,
+  type ListBoxSectionProps as RaListBoxSectionProps,
+} from "react-aria-components";
 
-/**
- * Main props interface for the Select component.
- * Extends SelectVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-//export interface SelectProps extends SelectVariantProps {}
+export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
+  /** set to true if Select is currently busy with something */
+  isLoading?: boolean;
+}
+
+export type SelectOptionsProps<T = object> = Omit<
+  RaListBoxProps<T>,
+  keyof SelectOptionsSlotProps
+> &
+  SelectOptionsSlotProps;
+
+export type SelectOptionProps<T = object> = Omit<
+  RaListBoxItemProps<T>,
+  keyof SelectOptionSlotProps
+> &
+  SelectOptionSlotProps;
+
+export type SelectOptionGroupProps<T = object> = Omit<
+  RaListBoxSectionProps<T>,
+  keyof SelectOptionGroupSlotProps
+> &
+  SelectOptionGroupSlotProps;
