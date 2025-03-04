@@ -51,7 +51,6 @@ export const textInputRecipe = defineRecipe({
     },
   },
 
-  // Default variant values when not explicitly specified
   defaultVariants: {
     size: "md",
     variant: "solid",
