@@ -67,6 +67,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       // [data-pending]
     },
     triggerLabel: {
+      color: "neutral.12",
       width: "calc(100% - 48px)",
       textAlign: "left",
 
@@ -74,7 +75,9 @@ export const selectSlotRecipe = defineSlotRecipe({
       overflow: "hidden",
       textOverflow: "ellipsis",
 
-      // [data-placeholder]
+      "&[data-placeholder]": {
+        color: "neutral.11",
+      },
     },
     // Popover
     options: {
