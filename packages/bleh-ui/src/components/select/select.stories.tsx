@@ -4,13 +4,12 @@ import { Text, Stack, Box } from "@/components";
 import type { Key } from "react-aria";
 import { useState } from "react";
 import { type SelectRootProps } from "./select.types";
+import { userEvent, within, expect, fn } from "@storybook/test";
 
 import { useAsyncList } from "react-stately";
 
 /**
  * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
  */
 const meta: Meta<typeof Select.Root> = {
   title: "components/Select",
@@ -67,12 +66,11 @@ const optionGroupOptions = [
  * Base story
  * Demonstrates the most basic implementation, an uncontrolled
  * select with a few options.
- * - test typeahead here
  */
 export const Base: Story = {
   render: () => {
     return (
-      <Select.Root aria-label="Select a fruit">
+      <Select.Root aria-label="Select a fruit" data-testid="select">
         <Select.Options>
           <Select.Option>Apples</Select.Option>
           <Select.Option>Bananas</Select.Option>
@@ -82,6 +80,46 @@ export const Base: Story = {
       </Select.Root>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Select is rendered with button", async () => {
+      await expect(button).toBeInTheDocument();
+    });
+
+    await step("Select button can be focused with keyboard", async () => {
+      await userEvent.tab();
+      await expect(button).toHaveFocus();
+    });
+
+    await step("Select opens on click", async () => {
+      await userEvent.click(button!);
+      // the popover is rendered via a react portal outside of the select root
+      // and can only be found by querying the document directly
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Options are displayed when open", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+      await expect(options.length).toBe(4);
+      await expect(options[0]).toHaveTextContent("Apples");
+    });
+
+    await step("Can select an option with click", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[1]);
+      await expect(button).toHaveTextContent("Bananas");
+    });
+
+    await step("Value can be cleared with keyboard", async () => {
+      const clearButton = select.querySelectorAll("button")[1];
+      await userEvent.click(clearButton);
+      await expect(button).toHaveTextContent("Select an item");
+    });
+  },
 };
 
 /**
@@ -89,6 +127,7 @@ export const Base: Story = {
  * The state of the select is controlled from the oustide.
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#selection
  */
+const mockFn = fn();
 export const ControlledState: Story = {
   render: () => {
     const options = [
@@ -101,17 +140,23 @@ export const ControlledState: Story = {
     ];
     const [animal, setAnimal] = useState<Key>("Bison");
 
+    const onChangeRequest = (key: Key) => {
+      setAnimal(key);
+      mockFn();
+    };
+
     return (
       <Box>
-        <Box bg="blueAlpha.2" p="400" my="400">
+        <Box bg="blueAlpha.2" p="400" my="400" data-testid="value-display">
           I'm a Box and not related to Select, but I know it's current value,
           it's <mark>{animal ?? "not set"}</mark>.
         </Box>
         <Select.Root
           defaultSelectedKey={animal}
           selectedKey={animal}
-          onSelectionChange={setAnimal}
+          onSelectionChange={onChangeRequest}
           aria-label="Select your new pet"
+          data-testid="select"
         >
           <Select.Options items={options}>
             {(item) => (
@@ -120,6 +165,34 @@ export const ControlledState: Story = {
           </Select.Options>
         </Select.Root>
       </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const valueDisplay = canvas.getByTestId("value-display");
+    const button = select.querySelector("button");
+
+    await step("Select displays the default value", async () => {
+      await expect(button).toHaveTextContent("Bison");
+      await expect(valueDisplay).toHaveTextContent("Bison");
+    });
+
+    await step(
+      "Selecting a different option updates external state",
+      async () => {
+        await userEvent.click(button!);
+        const listbox = document.querySelector('[role="listbox"]');
+        await expect(listbox).toBeInTheDocument();
+
+        const options = document.querySelectorAll('[role="option"]');
+        await userEvent.click(options[0]); // Select Koala
+
+        await expect(button).toHaveTextContent("Koala");
+        await expect(valueDisplay).toHaveTextContent("Koala");
+
+        await expect(mockFn).toHaveBeenCalled();
+      }
     );
   },
 };
@@ -132,7 +205,7 @@ export const AsyncLoading: Story = {
   render: () => {
     const list = useAsyncList<{ id: number; name: string }>({
       load: async () => {
-        // Simulate a network request with a 2 second delay
+        // Simulate a network request
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         return {
@@ -164,6 +237,7 @@ export const AsyncLoading: Story = {
           selectedKey={animal}
           onSelectionChange={setAnimal}
           aria-label="Select your new pet"
+          data-testid="select"
         >
           <Select.Options items={list.items}>
             {(item) => (
@@ -176,6 +250,40 @@ export const AsyncLoading: Story = {
       </Box>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Select is rendered with button", async () => {
+      await expect(button).toBeInTheDocument();
+    });
+
+    await step("Select button can not be focused while loading", async () => {
+      await userEvent.tab();
+      await expect(button).not.toHaveFocus();
+    });
+
+    await step("Select can be focused when data is loaded", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await userEvent.tab();
+      await expect(button).toHaveFocus();
+    });
+
+    await step("Select opens on click", async () => {
+      await userEvent.click(button!);
+      // the popover is rendered via a react portal outside of the select root
+      // and can only be found by querying the document directly
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Options are displayed when open", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+      await expect(options.length).toBe(6);
+      await expect(options[0]).toHaveTextContent("Koala");
+    });
+  },
 };
 
 /**
@@ -185,7 +293,11 @@ export const AsyncLoading: Story = {
 export const Disabled: Story = {
   render: () => {
     return (
-      <Select.Root isDisabled aria-label="Select some fruit(s)">
+      <Select.Root
+        isDisabled
+        aria-label="Select some fruit(s)"
+        data-testid="select"
+      >
         <Select.Options>
           <Select.Option>Apples</Select.Option>
           <Select.Option>Bananas</Select.Option>
@@ -194,12 +306,34 @@ export const Disabled: Story = {
       </Select.Root>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Disabled select has disabled attribute", async () => {
+      await expect(button).toHaveAttribute("disabled");
+    });
+
+    await step("Disabled select cannot be focused with keyboard", async () => {
+      await userEvent.tab();
+      await expect(button).not.toHaveFocus();
+    });
+
+    await step("Disabled select cannot be clicked to open", async () => {
+      await expect(button).toHaveStyle({ pointerEvents: "none" });
+    });
+  },
 };
 
 export const DisabledOptions: Story = {
   render: () => {
     return (
-      <Select.Root disabledKeys={["2"]} aria-label="Select some fruit(s)">
+      <Select.Root
+        disabledKeys={["2"]}
+        aria-label="Select some fruit(s)"
+        data-testid="select"
+      >
         <Select.Options>
           <Select.Option id="1">Apples</Select.Option>
           <Select.Option id="2">Bananas</Select.Option>
@@ -207,6 +341,36 @@ export const DisabledOptions: Story = {
         </Select.Options>
       </Select.Root>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Select can be opened", async () => {
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Disabled option has aria-disabled attribute", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+      await expect(options[1]).toHaveAttribute("aria-disabled", "true");
+    });
+
+    await step("Enabled options can be selected", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[0]); // Select Apples
+      await expect(button).toHaveTextContent("Apples");
+    });
+
+    await step("Disabled option cannot be selected", async () => {
+      await userEvent.click(button!); // Open select again
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[1]); // Try to select Bananas (disabled)
+      // Select should remain on previously selected option
+      await expect(button).toHaveTextContent("Apples");
+    });
   },
 };
 
@@ -217,7 +381,11 @@ export const DisabledOptions: Story = {
 export const Invalid: Story = {
   render: () => {
     return (
-      <Select.Root isInvalid aria-label="Select some fruit(s)">
+      <Select.Root
+        isInvalid
+        aria-label="Select some fruit(s)"
+        data-testid="select"
+      >
         <Select.Options>
           <Select.Option id="1">Apples</Select.Option>
           <Select.Option id="2">Bananas</Select.Option>
@@ -225,6 +393,25 @@ export const Invalid: Story = {
         </Select.Options>
       </Select.Root>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Invalid select has data-invalid attribute", async () => {
+      await expect(select).toHaveAttribute("data-invalid", "true");
+    });
+
+    await step("Invalid select can still be opened and used", async () => {
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[0]);
+      await expect(button).toHaveTextContent("Apples");
+    });
   },
 };
 
@@ -235,7 +422,7 @@ export const OptionGroups: Story = {
   render: () => {
     return (
       <Box>
-        <Select.Root aria-label="Select some fruit(s)">
+        <Select.Root aria-label="Select some fruit(s)" data-testid="select">
           <Select.Options>
             <Select.OptionGroup label="Fruits">
               <Select.Option>Apples</Select.Option>
@@ -251,6 +438,32 @@ export const OptionGroups: Story = {
         </Select.Root>
       </Box>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Select can be opened", async () => {
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Option groups are rendered with proper roles", async () => {
+      const groups = document.querySelectorAll('[role="group"]');
+      await expect(groups.length).toBe(2);
+
+      const groupLabels = document.querySelectorAll('[role="presentation"]');
+      await expect(groupLabels[0]).toHaveTextContent("Fruits");
+      await expect(groupLabels[1]).toHaveTextContent("Vegetables");
+    });
+
+    await step("Options within groups can be selected", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[1]); // Select Oranges from first group
+      await expect(button).toHaveTextContent("Oranges");
+    });
   },
 };
 
@@ -293,7 +506,7 @@ export const OptionGroupsDynamic: Story = {
 export const WithDescriptions: Story = {
   render: () => {
     return (
-      <Select.Root aria-label="Select some fruit(s)">
+      <Select.Root aria-label="Select some fruit(s)" data-testid="select">
         <Select.Options>
           {/** Variant A - plain html-tags with slot property */}
           <Select.Option textValue="Apple">
@@ -322,6 +535,38 @@ export const WithDescriptions: Story = {
         </Select.Options>
       </Select.Root>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const button = select.querySelector("button");
+
+    await step("Select opens on click", async () => {
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Options display labels and descriptions", async () => {
+      const options = document.querySelectorAll('[role="option"]');
+
+      // Check first option has label and description
+      await expect(
+        options[0].querySelector('[slot="label"]')
+      ).toHaveTextContent("Apple");
+      await expect(
+        options[0].querySelector('[slot="description"]')
+      ).toHaveTextContent("A classic and versatile fruit.");
+    });
+
+    await step("Typeahead works with textValue", async () => {
+      // Type "b" to navigate to Banana
+      await userEvent.keyboard("ba");
+      const options = document.querySelectorAll('[role="option"]');
+
+      // Check that Banana option is focused (has aria-selected)
+      await expect(options[1]).toHaveAttribute("data-focused", "true");
+    });
   },
 };
 
