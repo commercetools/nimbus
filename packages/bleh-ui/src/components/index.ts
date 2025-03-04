@@ -22,3 +22,4 @@ export * from "./ui-kit-provider";
 export * from "./checkbox";
 export * from "./stack";
 export * from "./visually-hidden";
+export * from "./text-input";

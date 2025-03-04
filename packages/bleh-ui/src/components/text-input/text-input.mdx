@@ -1,0 +1,92 @@
+---
+id: Components-TextInput
+title: TextInput
+description: An input component that takes in a text as input
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - TextInput
+tags:
+  - component
+---
+
+# TextInput
+
+An input component that takes in a text as input
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <TextInput>I am TextInput!</TextInput>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <TextInput key={size} size={size}>'{size}' TextInput</TextInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TextInput key={variant} variant={variant}>'{variant}' TextInput</TextInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <TextInput colorPalette={color} key={variant} variant={variant}>
+              '{variant}' TextInput
+            </TextInput>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="TextInput" />
