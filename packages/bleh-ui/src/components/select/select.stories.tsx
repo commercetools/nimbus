@@ -334,8 +334,12 @@ export const CustomWidths: Story = {
     return (
       // width for the trigger can be specified on <Select.Root/>,
       // width for popover can be specified on <Select.Options/>
-      <Select.Root width="256px" aria-label="Select something to eat">
+      <Select.Root width="196px" aria-label="Select something to eat">
         <Select.Options width="512px">
+          <Select.Option>
+            Extraordinary long Menu Label that noone can read Extraordinary long
+            Menu Label that noone can read
+          </Select.Option>
           <Select.OptionGroup label="Fruits">
             <Select.Option>Apples</Select.Option>
             <Select.Option>Oranges</Select.Option>

@@ -67,10 +67,18 @@ export const selectSlotRecipe = defineSlotRecipe({
       // [data-pending]
     },
     triggerLabel: {
+      // *Magic*
+      // the trigger-label defines the overall width of the select,
+      // but since we position 2 buttons/icons next to it, we need to account for
+      // their width as well and reserve some space for them
+      // = label-button-gap + button-size + icon-size
+      // = 8px + 24px + 24px
+      // = 56px * 25 = 1400 token
+      "--button-safespace": "sizes.1400",
       color: "neutral.12",
-      width: "calc(100% - 48px)",
       textAlign: "left",
-
+      marginRight: "var(--button-safespace)",
+      maxWidth: "100%",
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -151,9 +159,7 @@ export const selectSlotRecipe = defineSlotRecipe({
     // Size variants from smallest to largest
     size: {
       sm: {
-        root: {
-          minWidth: "6400",
-        },
+        root: {},
         trigger: {
           h: "800",
           px: "400",
@@ -161,9 +167,7 @@ export const selectSlotRecipe = defineSlotRecipe({
         },
       },
       md: {
-        root: {
-          minWidth: "7200",
-        },
+        root: {},
         trigger: {
           h: "1000",
           px: "400",
