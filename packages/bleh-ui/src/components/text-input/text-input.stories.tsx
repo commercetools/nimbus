@@ -39,8 +39,8 @@ export const Base: Story = {
     });
 
     await step("Can type text", async () => {
-      await userEvent.type(input, "Hello World");
-      await expect(input).toHaveValue("Hello World");
+      await userEvent.type(input, "Base text input");
+      await expect(input).toHaveValue("Base text input");
     });
   },
 };

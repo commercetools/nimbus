@@ -13,6 +13,8 @@ export const textInputRecipe = defineRecipe({
     display: "block",
     borderRadius: "200",
     colorPalette: "neutral",
+    focusVisibleRing: "outside",
+    outline: "none",
     _disabled: {
       layerStyle: "disabled",
     },
