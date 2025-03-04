@@ -14,14 +14,22 @@ tags:
 
 # TextInput
 
-An input component that takes in a text as input
+The TextInput component is a form control that allows users to enter text into
+an input field. It provides a clean, accessible interface for text input with
+support for different states and variants.
+
+## Features
+
+- **Accessible:** Built with ARIA attributes for screen reader support
+- **Customizable:** Supports different sizes and visual variants
+- **State Management:** Handles disabled, invalid, and focus states
 
 ## Basic Usage
 
 [Explain the basic usage / usecase of the component].
 
 ```jsx-live
-const App = () => <TextInput>I am TextInput!</TextInput>
+const App = () => <TextInput placeholder="basic text input"/>
 ```
 
 ### Sizes
@@ -31,12 +39,12 @@ Available sizes.
 ```jsx-live
 const App = () => {
 
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const sizes = ['md', 'sm',];
 
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <TextInput key={size} size={size}>'{size}' TextInput</TextInput>
+        <TextInput key={size} size={size} placeholder={size}/>
       ))}
     </Stack>
   )
@@ -45,46 +53,64 @@ const App = () => {
 
 ### Variants
 
-Available variants.
+There are two variants currently:
+- **Solid:** The default variant with a solid background.
+- **Ghost:** A minimal variant without background.
+
 
 ```jsx-live
 const App = () => {
 
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const variants = ['solid','ghost',];
 
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <TextInput key={variant} variant={variant}>'{variant}' TextInput</TextInput>
+        <TextInput key={variant} variant={variant} placeholder={variant} />
       ))}
     </Stack>
   )
 }
 ```
 
-### Colors
+## States
 
-[Explain usage with different colors/semantics.]
+### Disabled
+
+When interaction is not allowed.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  const variants = ['solid','ghost',];
 
   return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <TextInput colorPalette={color} key={variant} variant={variant}>
-              '{variant}' TextInput
-            </TextInput>
-          ))}
-        </Stack>
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TextInput key={variant} variant={variant} placeholder={variant} disabled/>
       ))}
     </Stack>
-  );
-};
+  )
+}
+```
+
+### Invalid
+
+For showing error states in forms.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid','ghost',];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TextInput key={variant} variant={variant} placeholder={variant} isInvalid/>
+      ))}
+    </Stack>
+  )
+}
 ```
 
 ## Props

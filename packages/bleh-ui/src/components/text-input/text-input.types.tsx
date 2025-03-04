@@ -7,14 +7,7 @@ import { textInputRecipe } from "./text-input.recipe";
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type TextInputVariantProps = TextInputRootProps &
-  RecipeVariantProps<typeof textInputRecipe>;
-
-/**
- * Main props interface for the TextInput component.
- * Extends TextInputVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface TextInputProps extends TextInputVariantProps {
-  children?: React.ReactNode;
-}
+export type TextInputProps = (TextInputRootProps &
+  RecipeVariantProps<typeof textInputRecipe>) & {
+  isInvalid?: boolean;
+};

@@ -16,8 +16,15 @@ export const textInputRecipe = defineRecipe({
     _disabled: {
       layerStyle: "disabled",
     },
-    _focus: {
-      layerStyle: "focus",
+    "&:hover": {
+      backgroundColor: "primary.2",
+    },
+    "&[data-invalid='true']": {
+      color: "error.7",
+      border: "solid-50",
+      "&::placeholder ": {
+        color: "error.11",
+      },
     },
   },
 

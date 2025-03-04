@@ -31,7 +31,7 @@ const inputSize: TextInputProps["size"][] = ["md", "sm"];
 
 export const Base: Story = {
   args: {
-    placeholder: "text input",
+    placeholder: "base text input",
   },
 };
 
@@ -43,13 +43,15 @@ export const Sizes: Story = {
     return (
       <Stack direction="row" gap="400" alignItems="center">
         {inputSize.map((size) => (
-          <TextInput key={size as string} {...args} size={size} />
+          <TextInput
+            key={size as string}
+            {...args}
+            size={size}
+            placeholder={size as string}
+          />
         ))}
       </Stack>
     );
-  },
-  args: {
-    placeholder: "text input",
   },
 };
 
@@ -117,5 +119,8 @@ export const Invalid: Story = {
       </Stack>
     );
   },
-  args: {},
+  args: {
+    isInvalid: true,
+    placeholder: "Invalid input",
+  },
 };

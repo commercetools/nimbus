@@ -1,6 +1,8 @@
-import { forwardRef } from "react";
+import { forwardRef, useRef } from "react";
 import { TextInputRoot } from "./text-input.slots";
 import type { TextInputProps } from "./text-input.types";
+import { useFocusRing, useObjectRef, mergeProps } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 
 /**
  * TextInput
@@ -16,8 +18,24 @@ import type { TextInputProps } from "./text-input.types";
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  ({ ...props }, ref) => {
-    return <TextInputRoot ref={ref} {...props} />;
+  (props, forwardedRef) => {
+    const localRef = useRef<HTMLInputElement>(null);
+    const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+    const { isFocused, focusProps } = useFocusRing();
+
+    const stateProps = {
+      "data-invalid": props.isInvalid,
+      "data-focus": isFocused,
+    };
+
+    return (
+      <TextInputRoot
+        ref={ref}
+        {...mergeProps(focusProps, props)}
+        {...stateProps}
+      />
+    );
   }
 );
 TextInput.displayName = "TextInput";
