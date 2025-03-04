@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { chakra, useSlotRecipe } from "@chakra-ui/react";
+
 import {
   ChevronDown as DropdownIndicatorIcon,
   LoaderCircle as SpinnerIcon,
@@ -20,11 +21,13 @@ import {
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectRootProps } from "./../select.types";
 import { selectSlotRecipe } from "../select.recipe";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
   ({ children, isLoading, isDisabled, ...props }, ref) => {
     const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
-    const [recipeProps, restProps] = recipe.splitVariantProps(props);
+    const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+    const [styleProps, restProps] = extractStyleProps(restRecipeProps);
 
     const raSelectProps = {
       ...restProps,
@@ -32,7 +35,7 @@ export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
     };
 
     return (
-      <SelectRootSlot asChild ref={ref} {...recipeProps}>
+      <SelectRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
         <RaSelect {...raSelectProps}>
           <chakra.div position="relative">
             <SelectTriggerSlot zIndex={0} asChild>
