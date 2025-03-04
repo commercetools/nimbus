@@ -15,7 +15,6 @@ import { mergeRefs } from "@chakra-ui/react";
  * - accepts all native html 'HTMLInputElement' attributes (including aria- & data-attributes)
  * - supports 'variants', 'sizes', etc. configured in the recipe
  * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (props, forwardedRef) => {

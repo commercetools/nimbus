@@ -179,7 +179,7 @@ export const SmokeTest: Story = {
     ];
 
     return (
-      <Stack gap="1200">
+      <Stack gap="600">
         {states.map((state) => (
           <Stack key={state.label} direction="column" gap="400">
             {inputSize.map((size) => (
