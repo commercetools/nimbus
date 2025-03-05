@@ -1,14 +1,17 @@
-import { Box, Button, Stack } from "@bleh-ui/react";
+import { Button, Stack } from "@bleh-ui/react";
 import { PropTable } from "./prop-table.tsx";
 import { useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
 import { typesAtom } from "../../../../atoms/types.ts";
 
 type PropTableProps = {
+  /** ids of the components (usually the exported name) */
   ids: string | string[];
+  /** if compound component is documented, set the root e.g `Select` for all Select related subcomponents */
+  root: string | undefined;
 };
 
-export const PropTables = ({ ids }: PropTableProps) => {
+export const PropTables = ({ ids, root }: PropTableProps) => {
   const [activeComponentId, setActiveComponentId] = useState<string | null>(
     null
   );
@@ -40,20 +43,20 @@ export const PropTables = ({ ids }: PropTableProps) => {
 
   return (
     <Stack gap="400">
-      <Box>
+      <Stack direction="row">
         {tabs.map((tab) => (
           <Button
             key={tab.id}
             value={tab.id}
-            onClick={() => setActiveComponentId(tab.id)}
+            onPress={() => setActiveComponentId(tab.id)}
             colorScheme="primary"
             size="xs"
             variant={activeComponentId === tab.id ? "subtle" : "ghost"}
           >
-            {tab.label}
+            {root ? tab.label.split(root).join(root + ".") : tab.label}
           </Button>
         ))}
-      </Box>
+      </Stack>
       {activeComponentId && <PropTable id={activeComponentId} />}
     </Stack>
   );
