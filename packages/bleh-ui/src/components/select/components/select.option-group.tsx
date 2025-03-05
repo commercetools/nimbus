@@ -25,11 +25,7 @@ export const SelectOptionGroup = forwardRef<
         <RaHeader>{label}</RaHeader>
       </SelectOptionGroupSlot>
 
-      {items ? (
-        <Collection items={items as Iterable<object>}>{children}</Collection>
-      ) : (
-        children
-      )}
+      {items ? <Collection items={items}>{children}</Collection> : children}
     </RaListBoxSection>
   );
 });

@@ -5,12 +5,7 @@ import {
   type RecipeVariantProps,
 } from "@chakra-ui/react";
 import { selectSlotRecipe } from "./select.recipe";
-import {
-  Select,
-  //type ListBoxProps as RaListBoxProps,
-  //type ListBoxItemProps as RaListBoxItemProps,
-  type SelectProps as RaSelectProps,
-} from "react-aria-components";
+import { type SelectProps as RaSelectProps } from "react-aria-components";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "select",
@@ -27,14 +22,14 @@ export const SelectRootSlot = withProvider<HTMLDivElement, SelectRootSlotProps>(
   "root"
 );
 
-// Trigger
+// Trigger Button
 export interface SelectTriggerSlotProps extends HTMLChakraProps<"button"> {}
 export const SelectTriggerSlot = withContext<
   HTMLButtonElement,
   SelectTriggerSlotProps
 >("button", "trigger");
 
-// Trigger
+// Trigger Button Label
 export interface SelectTriggerLabelSlotProps extends HTMLChakraProps<"span"> {}
 export const SelectTriggerLabelSlot = withContext<
   HTMLButtonElement,

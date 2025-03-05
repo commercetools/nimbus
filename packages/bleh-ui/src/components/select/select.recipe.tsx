@@ -84,7 +84,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       textOverflow: "ellipsis",
 
       "&[data-placeholder]": {
-        color: "neutral.11",
+        opacity: 0.5,
       },
     },
     // Popover
