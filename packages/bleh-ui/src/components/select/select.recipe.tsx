@@ -86,6 +86,9 @@ export const selectSlotRecipe = defineSlotRecipe({
       "&[data-placeholder]": {
         opacity: 0.5,
       },
+      "[data-invalid] &": {
+        color: "error.11",
+      },
     },
     // Popover
     options: {
