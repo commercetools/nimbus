@@ -20,10 +20,17 @@ of them.
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
-
 ```jsx-live
-const App = () => <Select>I am Select!</Select>
+const App = () => (
+  <Select.Root aria-label="Select a fruit" data-testid="select">
+    <Select.Options>
+      <Select.Option>Apples</Select.Option>
+      <Select.Option>Bananas</Select.Option>
+      <Select.Option>Oranges</Select.Option>
+      <Select.Option>Cherries</Select.Option>
+    </Select.Options>
+  </Select.Root>
+)
 ```
 
 ### Sizes
@@ -33,12 +40,19 @@ Available sizes.
 ```jsx-live
 const App = () => {
 
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const sizes = ['md', 'sm'];
 
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <Select key={size} size={size}>'{size}' Select</Select>
+        <Select.Root size={size} key={size} aria-label="Select a fruit" data-testid="select">
+          <Select.Options>
+            <Select.Option>Apples</Select.Option>
+            <Select.Option>Bananas</Select.Option>
+            <Select.Option>Oranges</Select.Option>
+            <Select.Option>Cherries</Select.Option>
+          </Select.Options>
+        </Select.Root>
       ))}
     </Stack>
   )
@@ -52,43 +66,28 @@ Available variants.
 ```jsx-live
 const App = () => {
 
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const variants = ['outline', 'ghost'];
 
   return (
-    <Stack direction="horizontal">
+    <Stack direction="horizontal" alignItems="center">
       {variants.map(variant => (
-        <Select key={variant} variant={variant}>'{variant}' Select</Select>
+        <Select.Root variant={variant} key={variant} aria-label="Select a fruit" data-testid="select">
+          <Select.Options>
+            <Select.Option>Apples</Select.Option>
+            <Select.Option>Bananas</Select.Option>
+            <Select.Option>Oranges</Select.Option>
+            <Select.Option>Cherries</Select.Option>
+          </Select.Options>
+        </Select.Root>
       ))}
     </Stack>
   )
 }
 ```
 
-### Colors
-
-[Explain usage with different colors/semantics.]
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Select colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Select
-            </Select>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-```
-
 ## Props
 
-<PropTable id="Select" />
+<PropTables
+  root="Select"
+  ids="SelectRoot, SelectOptions, SelectOptionGroup, SelectOption"
+/>
