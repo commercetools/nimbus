@@ -48,7 +48,6 @@ export const Base: Story = {
   args: {
     children: <DemoIcon />,
     onPress: fn(),
-    // @ts-expect-error: works, but causes squiggly lines, investigate
     ["data-testid"]: "test",
     ["aria-label"]: "test-button",
   },
