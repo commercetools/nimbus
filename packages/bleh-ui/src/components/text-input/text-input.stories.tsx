@@ -85,6 +85,9 @@ export const Variants: Story = {
 };
 
 export const Disabled: Story = {
+  args: {
+    isDisabled: true,
+  },
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
@@ -99,9 +102,6 @@ export const Disabled: Story = {
         ))}
       </Stack>
     );
-  },
-  args: {
-    disabled: true,
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -215,12 +215,15 @@ export const SmokeTest: Story = {
 export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState("");
+    const onChangeRequest = (e) => {
+      setValue(e);
+    };
 
     return (
       <Stack gap="400">
         <TextInput
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={onChangeRequest}
           placeholder="Type something..."
           aria-label="controlled-input"
         />

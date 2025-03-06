@@ -1,8 +1,11 @@
 import { forwardRef, useRef } from "react";
 import { TextInputRoot } from "./text-input.slots";
 import type { TextInputProps } from "./text-input.types";
-import { useFocusRing, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { useObjectRef } from "react-aria";
+import { mergeRefs, useRecipe } from "@chakra-ui/react";
+import { textInputRecipe } from "./text-input.recipe";
+import { TextField, Input } from "react-aria-components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * TextInput
@@ -20,22 +23,16 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (props, forwardedRef) => {
     const localRef = useRef<HTMLInputElement>(null);
     const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-    const { isFocused, focusProps } = useFocusRing();
-
-    const stateProps = {
-      "data-invalid": props.isInvalid,
-      "data-focus": isFocused,
-      required: props.required,
-      readOnly: props.readOnly,
-    };
+    const recipe = useRecipe({ recipe: textInputRecipe });
+    const [recipeProps, leftOverProps] = recipe.splitVariantProps(props);
+    const [styleProps, textfieldProps] = extractStyleProps(leftOverProps);
 
     return (
-      <TextInputRoot
-        ref={ref}
-        {...mergeProps(focusProps, props)}
-        {...stateProps}
-      />
+      <TextField {...textfieldProps}>
+        <TextInputRoot ref={ref} {...recipeProps} {...styleProps} asChild>
+          <Input />
+        </TextInputRoot>
+      </TextField>
     );
   }
 );
