@@ -269,12 +269,7 @@ export const InputTypes: Story = {
     return (
       <Stack direction="column" gap="400">
         {inputTypes.map((type) => (
-          <TextInput
-            key={type as string}
-            {...args}
-            placeholder={type as string}
-            type={type}
-          />
+          <TextInput key={type} {...args} placeholder={type} type={type} />
         ))}
       </Stack>
     );
