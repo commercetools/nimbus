@@ -1,8 +1,9 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { TextInput } from "./text-input";
 import type { TextInputProps } from "./text-input.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
-import { Box, Stack } from "@/components";
+import { Box, Stack, Text } from "@/components";
 
 const meta: Meta<typeof TextInput> = {
   title: "components/TextInput",
@@ -41,6 +42,7 @@ export const Base: Story = {
     await step("Can type text", async () => {
       await userEvent.type(input, "Base text input");
       await expect(input).toHaveValue("Base text input");
+      await userEvent.clear(input);
     });
   },
 };
@@ -157,6 +159,7 @@ export const Invalid: Story = {
     await step("Can still type when invalid", async () => {
       await userEvent.type(input, "Test Input");
       await expect(input).toHaveValue("Test Input");
+      await userEvent.clear(input);
     });
   },
 };
@@ -206,5 +209,40 @@ export const SmokeTest: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+
+    return (
+      <Stack gap="400">
+        <TextInput
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="Type something..."
+          aria-label="controlled-input"
+        />
+        <Text data-testid="value-display">Current value: {value}</Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("controlled-input");
+    const valueDisplay = canvas.getByTestId("value-display");
+
+    await step("Updates controlled value", async () => {
+      await userEvent.type(input, "Hello");
+      await expect(input).toHaveValue("Hello");
+      await expect(valueDisplay).toHaveTextContent("Current value: Hello");
+    });
+
+    await step("Clears controlled value", async () => {
+      await userEvent.clear(input);
+      await expect(input).toHaveValue("");
+      await expect(valueDisplay).toHaveTextContent("Current value:");
+    });
   },
 };

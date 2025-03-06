@@ -14,19 +14,21 @@ export const textInputRecipe = defineRecipe({
     borderRadius: "200",
     colorPalette: "neutral",
     focusVisibleRing: "outside",
+    bg: "transparent",
     outline: "none",
+    boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+    _placeholder: {
+      opacity: 0.5,
+      color: "currentColor",
+    },
     _disabled: {
       layerStyle: "disabled",
-    },
-    "&:hover": {
-      backgroundColor: "primary.2",
+      bg: "transparent",
     },
     "&[data-invalid='true']": {
       color: "error.7",
-      border: "solid-50",
-      "&::placeholder ": {
-        color: "error.11",
-      },
+      "--border-width": "sizes.50",
+      "--border-color": "colors.error.7",
     },
   },
 
@@ -46,10 +48,17 @@ export const textInputRecipe = defineRecipe({
 
     variant: {
       solid: {
-        border: "solid-25",
-        borderColor: "colorPalette.7",
+        _hover: {
+          backgroundColor: "primary.2",
+        },
+        "--border-width": "sizes.50",
+        "--border-color": "colors.neutral.7",
       },
-      ghost: {},
+      ghost: {
+        _hover: {
+          backgroundColor: "primary.2",
+        },
+      },
     },
   },
 

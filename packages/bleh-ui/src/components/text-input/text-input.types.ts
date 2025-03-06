@@ -17,4 +17,12 @@ export interface TextInputProps extends FunctionalTextInputProps {
    * @see [MDN `input` docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)
    */
   isInvalid?: boolean;
+  /**
+   * The value of the input
+   */
+  value?: string;
+  /**
+   * Callback when the input value changes
+   */
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }

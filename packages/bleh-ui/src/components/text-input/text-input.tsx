@@ -26,6 +26,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     const stateProps = {
       "data-invalid": props.isInvalid,
       "data-focus": isFocused,
+      required: props.required,
+      readOnly: props.readOnly,
     };
 
     return (
