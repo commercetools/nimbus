@@ -1,13 +1,15 @@
 import {
   type HTMLChakraProps,
-  type RecipeProps,
+  type RecipeVariantProps,
   type UnstyledProp,
   createRecipeContext,
 } from "@chakra-ui/react";
 
 import { textInputRecipe } from "./text-input.recipe";
 
-interface TextInputRecipeProps extends RecipeProps<"input">, UnstyledProp {}
+export interface TextInputRecipeProps
+  extends RecipeVariantProps<typeof textInputRecipe>,
+    UnstyledProp {}
 
 export type TextInputRootProps = HTMLChakraProps<"input", TextInputRecipeProps>;
 
