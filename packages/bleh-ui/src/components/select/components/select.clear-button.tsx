@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { X as CloseIcon } from "@bleh-ui/icons";
+import { Close as CloseIcon } from "@bleh-ui/icons";
 import { IconButton } from "@/components";
 import { SelectStateContext } from "react-aria-components";
 

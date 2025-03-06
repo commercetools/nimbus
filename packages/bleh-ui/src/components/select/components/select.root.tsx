@@ -2,8 +2,8 @@ import { forwardRef } from "react";
 import { chakra, useSlotRecipe } from "@chakra-ui/react";
 
 import {
-  ChevronDown as DropdownIndicatorIcon,
-  LoaderCircle as SpinnerIcon,
+  KeyboardArrowDown as DropdownIndicatorIcon,
+  Loop as SpinnerIcon,
 } from "@bleh-ui/icons";
 
 import { Flex, Box } from "@/components";
