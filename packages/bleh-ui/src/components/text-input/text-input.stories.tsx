@@ -173,11 +173,11 @@ export const SmokeTest: Story = {
   render: (args) => {
     const states = [
       { label: "Default", props: {} },
-      { label: "Disabled", props: { disabled: true } },
+      { label: "Disabled", props: { isDisabled: true } },
       { label: "Invalid", props: { isInvalid: true } },
       {
         label: "Invalid & Disabled",
-        props: { isInvalid: true, disabled: true },
+        props: { isInvalid: true, isDisabled: true },
       },
     ];
 
@@ -215,7 +215,7 @@ export const SmokeTest: Story = {
 export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState("");
-    const onChangeRequest = (e) => {
+    const onChangeRequest = (e: string) => {
       setValue(e);
     };
 
@@ -247,5 +247,36 @@ export const Controlled: Story = {
       await expect(input).toHaveValue("");
       await expect(valueDisplay).toHaveTextContent("Current value:");
     });
+  },
+};
+
+export const InputTypes: Story = {
+  render: (args) => {
+    const inputTypes = [
+      "date",
+      "datetime-local",
+      "email",
+      "month",
+      "number",
+      "password",
+      "search",
+      "tel",
+      "text",
+      "time",
+      "url",
+      "week",
+    ] as const;
+    return (
+      <Stack direction="column" gap="400">
+        {inputTypes.map((type) => (
+          <TextInput
+            key={type as string}
+            {...args}
+            placeholder={type as string}
+            type={type}
+          />
+        ))}
+      </Stack>
+    );
   },
 };
