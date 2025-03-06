@@ -3,7 +3,7 @@ import { Button } from "./button";
 import { Box, Stack } from "@/components";
 import type { ButtonProps } from "./button.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
-import { ArrowRightCircle as DemoIcon } from "@bleh-ui/icons";
+import { ArrowRight as DemoIcon } from "@bleh-ui/icons";
 import { createRef, useState } from "react";
 
 const meta: Meta<typeof Button> = {

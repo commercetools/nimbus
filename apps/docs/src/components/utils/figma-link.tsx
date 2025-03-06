@@ -10,7 +10,7 @@ export const FigmaLink = () => {
   return (
     <Button size="xs" variant="ghost" asChild>
       <a href={meta.figmaLink} target="_blank">
-        <Figma size="1em" />
+        <Figma />
       </a>
     </Button>
   );

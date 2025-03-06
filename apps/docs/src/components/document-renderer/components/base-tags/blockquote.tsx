@@ -9,13 +9,7 @@ import {
   isValidElement,
 } from "react";
 import { Box } from "@bleh-ui/react";
-import {
-  FileText,
-  Lightbulb,
-  Star,
-  AlertOctagon,
-  ShieldAlert,
-} from "@bleh-ui/icons";
+import { Description, Lightbulb, Star, Warning, Error } from "@bleh-ui/icons";
 import { ListItem, UlList } from "./index";
 import { Paragraph } from "./index";
 
@@ -38,11 +32,11 @@ const findLastIndex = (children: ReactNode, component: ElementType) => {
 };
 
 const iconMapping = {
-  NOTE: FileText,
+  NOTE: Description,
   TIP: Lightbulb,
   IMPORTANT: Star,
-  WARNING: AlertOctagon,
-  CAUTION: ShieldAlert,
+  WARNING: Warning,
+  CAUTION: Error,
 };
 function cleanQuoteFlavor(input: string) {
   // Remove the brackets and exclamation mark

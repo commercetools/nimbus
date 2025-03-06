@@ -1,4 +1,4 @@
-import { icons } from "@bleh-ui/icons";
+import * as icons from "@bleh-ui/icons";
 import { Text } from "@bleh-ui/react";
 import { MenuIconProps } from "../menu.types";
 
@@ -21,7 +21,7 @@ export const MenuIcon = ({ id }: MenuIconProps): JSX.Element => {
         top="50"
         mr="200"
       >
-        <IconComponent size="1em" />
+        <IconComponent />
       </Text>
     );
   }

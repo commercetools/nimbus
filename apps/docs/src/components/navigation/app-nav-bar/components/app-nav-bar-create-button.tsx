@@ -1,4 +1,4 @@
-import { InfoIcon, PlusIcon } from "@bleh-ui/icons";
+import { Info, Add } from "@bleh-ui/icons";
 import {
   Button,
   DialogBackdrop,
@@ -44,7 +44,7 @@ export const AppNavBarCreateButton = () => {
           variant="ghost"
           onPress={() => setIsOpen(true)}
         >
-          <PlusIcon />
+          <Add />
           New document
         </Button>
       </DialogTrigger>
@@ -104,7 +104,7 @@ export const AppNavBarCreateButton = () => {
                   mt="200"
                 >
                   <Text color="colorPalette.11">
-                    <InfoIcon size="2em" />
+                    <Info size="2em" />
                   </Text>
                   <Text color="colorPalette.11">
                     The new document item will become a child of the current

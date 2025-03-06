@@ -4,8 +4,8 @@ import { GithubRepoLink } from "@/components/utils/github-repo-link";
 import { TrashDocumentLink } from "@/components/utils/trash-document-link";
 import { VsCodeEditLink } from "@/components/utils/vs-code-edit-link";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
-import { Pencil, PencilOff } from "@bleh-ui/icons";
-import { Box, Button, Stack } from "@bleh-ui/react";
+import { Edit, EditOff } from "@bleh-ui/icons";
+import { Box, IconButton, Stack } from "@bleh-ui/react";
 import { useAtom } from "jotai";
 
 export const DocumentActionButtons = () => {
@@ -14,10 +14,14 @@ export const DocumentActionButtons = () => {
 
   return (
     <Stack direction="row" alignItems="center">
-      <Button size="xs" variant="ghost" onClick={() => setEditMode(!editMode)}>
-        {!editMode && <Pencil size="1em" />}
-        {editMode && <PencilOff size="1em" />}
-      </Button>
+      <IconButton
+        size="xs"
+        variant="ghost"
+        onClick={() => setEditMode(!editMode)}
+      >
+        {!editMode && <Edit />}
+        {editMode && <EditOff />}
+      </IconButton>
 
       {meta && (
         <>

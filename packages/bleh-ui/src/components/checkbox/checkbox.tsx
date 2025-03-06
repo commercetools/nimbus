@@ -2,7 +2,7 @@ import { forwardRef, useRef } from "react";
 import { useToggleState } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { VisuallyHidden } from "@/components";
-import { Check, Minus } from "@bleh-ui/icons";
+import { Check, Remove as Minus } from "@bleh-ui/icons";
 
 import {
   useFocusRing,
@@ -60,7 +60,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         <CheckboxIndicator data-slot="indicator" {...stateProps}>
           {isSelected && <Check />}
           {isIndeterminate && <Minus />}
-          <VisuallyHidden as="span">
+          <VisuallyHidden elementType="span">
             <input {...mergeProps(inputProps, focusProps)} ref={ref} />
           </VisuallyHidden>
         </CheckboxIndicator>

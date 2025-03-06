@@ -1,5 +1,5 @@
 import { Box, Button, Code, Flex, Link, Stack, Text } from "@bleh-ui/react";
-import { MessageCircleCode, SendHorizontal, X } from "@bleh-ui/icons";
+import { ChatBubble, Send, Close } from "@bleh-ui/icons";
 import { type Message, useChat } from "ai/react";
 import { useState } from "react";
 import { MdxStringRenderer } from "@/components/document-renderer/mdx-string-renderer.tsx";
@@ -45,7 +45,7 @@ export const Chatbot = () => {
           variant="solid"
           onClick={() => setChatOpen(true)}
         >
-          <MessageCircleCode />
+          <ChatBubble />
         </Button>
       </Box>
     );
@@ -72,7 +72,7 @@ export const Chatbot = () => {
               mr="200"
               onClick={() => setChatOpen(false)}
             >
-              <X />
+              <Close />
             </Button>
           </Flex>
           <Box colorPalette="neutral" minHeight="xs" bg="colorPalette.2">
@@ -140,7 +140,7 @@ export const Chatbot = () => {
                 variant="solid"
                 onPress={() => handleSubmit()}
               >
-                <SendHorizontal />
+                <Send />
               </Button>
             </form>
           </Stack>

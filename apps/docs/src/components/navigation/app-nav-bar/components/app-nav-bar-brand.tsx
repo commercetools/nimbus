@@ -1,7 +1,7 @@
 import { brandNameAtom } from "@/atoms/brand.ts";
 import { activeRouteAtom } from "@/atoms/route.ts";
-import { Pencil } from "@bleh-ui/icons";
-import { Box, Button, Text } from "@bleh-ui/react";
+import { Edit } from "@bleh-ui/icons";
+import { Box, IconButton, Text } from "@bleh-ui/react";
 import { useAtom } from "jotai";
 import {
   FormEvent,
@@ -122,14 +122,14 @@ export const AppNavBarBrand = () => {
         </a>
       </Text>
       {hover && (
-        <Box position="absolute" left="-1000" top="0" pr="200">
-          <Button
+        <Box position="absolute" left="-1000" top="-100" pr="200">
+          <IconButton
             size="xs"
             variant="ghost"
             onClick={() => setEditable(!editable)}
           >
-            <Pencil />
-          </Button>
+            <Edit />
+          </IconButton>
         </Box>
       )}
     </Box>
