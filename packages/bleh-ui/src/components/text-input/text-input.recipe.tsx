@@ -23,12 +23,10 @@ export const textInputRecipe = defineRecipe({
     },
     _disabled: {
       layerStyle: "disabled",
-      bg: "transparent",
     },
     "&[data-invalid='true']": {
-      color: "error.7",
-      "--border-width": "sizes.50",
       "--border-color": "colors.error.7",
+      color: "error.11",
     },
   },
 
@@ -41,18 +39,19 @@ export const textInputRecipe = defineRecipe({
       },
       md: {
         h: 1000,
-        textStyle: "sm",
+        textStyle: "md",
         px: 400,
       },
     },
 
     variant: {
       solid: {
+        "--border-width": "sizes.25",
+        "--border-color": "colors.neutral.7",
+        backgroundColor: "neutral.1",
         _hover: {
           backgroundColor: "primary.2",
         },
-        "--border-width": "sizes.50",
-        "--border-color": "colors.neutral.7",
       },
       ghost: {
         _hover: {
