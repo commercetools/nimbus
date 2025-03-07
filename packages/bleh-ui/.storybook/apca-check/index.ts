@@ -51,6 +51,10 @@ const generateColorContrastAPCAConformanceCheck = (
           "Element has insufficient APCA " +
           conformanceLevel +
           " level contrast of ${data.apcaContrast}Lc (foreground color: ${data.fgColor}, background color: ${data.bgColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Increase font size and/or font weight to meet APCA conformance minimums",
+        placeholder:
+          "Element has insufficient APCA " +
+          conformanceLevel +
+          " level contrast of ${data.apcaContrast}Lc (foreground color: ${data.fgColor}, background color: ${data.bgColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Using reduced threshold of 30Lc for placeholder",
       },
       incomplete: "Unable to determine APCA lightness contrast (Lc)",
     },
@@ -80,7 +84,13 @@ const generateColorContrastAPCAConformanceCheck = (
     const apcaContrast = Math.abs(
       calcAPCA(toRGBA(fgColor), toRGBA(bgColor)) as number
     );
-    const apcaThreshold = conformanceThresholdFn(fontSize, fontWeight);
+
+    // Check if element has data-placeholder attribute
+    const hasPlaceholderAttr = node.hasAttribute("data-placeholder");
+    const originalThreshold = conformanceThresholdFn(fontSize, fontWeight);
+
+    // Use reduced threshold of 30 for placeholders, otherwise use original threshold
+    const apcaThreshold = hasPlaceholderAttr ? 30 : originalThreshold;
 
     this.data({
       fgColor: fgColor.toHexString(),
@@ -91,7 +101,12 @@ const generateColorContrastAPCAConformanceCheck = (
       fontWeight: fontWeight,
       apcaContrast: Math.round(apcaContrast * 100) / 100,
       apcaThreshold: apcaThreshold,
-      messageKey: apcaThreshold === null ? "increaseFont" : "default",
+      messageKey:
+        apcaThreshold === null
+          ? "increaseFont"
+          : hasPlaceholderAttr
+            ? "placeholder"
+            : "default",
     });
 
     return apcaThreshold ? apcaContrast >= apcaThreshold : false;
