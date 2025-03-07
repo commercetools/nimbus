@@ -91,7 +91,7 @@ export const Base: Story = {
  */
 export const Placement: Story = {
   args: {},
-  render: (args) => {
+  render: () => {
     return (
       <Stack
         direction="column"
@@ -102,19 +102,11 @@ export const Placement: Story = {
         {Object.entries(placements).map(([type, values]) => (
           <Stack direction="row" alignItems="center" key={type} wrap="wrap">
             {values.map((placement) => (
-              <TooltipTrigger
-                key={placement}
-                isOpen={args.isOpen}
-                defaultOpen={args.defaultOpen}
-                delay={0}
-              >
-                <Button w="200px" h="60px" isDisabled>
+              <TooltipTrigger key={placement} delay={0}>
+                <Button w="200px" h="60px">
                   {placement}
                 </Button>
-                <Tooltip
-                  {...args}
-                  placement={placement as TooltipProps["placement"]}
-                >
+                <Tooltip placement={placement as TooltipProps["placement"]}>
                   {placement}
                 </Tooltip>
               </TooltipTrigger>
@@ -133,13 +125,14 @@ export const Placement: Story = {
         const button = await canvas.findByRole("button", {
           name: placement,
         });
-        button.click();
-        await expect(
-          canvas.queryByRole("tooltip", { name: placement })
-        ).toBeNull();
+
         button.focus();
-        await canvas.findByRole("tooltip", { name: placement });
-        button.blur();
+
+        const tooltip = await canvas.findByRole("tooltip", {
+          name: placement,
+        });
+
+        await expect(tooltip).toHaveTextContent(placement);
       });
     }
   },

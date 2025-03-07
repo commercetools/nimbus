@@ -18,10 +18,10 @@ import type { TooltipProps } from "./tooltip.types";
  * - [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)
  */
 export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
-  function Tooltip({ children, placement = "bottom", ...props }, ref) {
+  function Tooltip({ children, placement = "bottom", ...props }, forwardedRef) {
     return (
-      <TooltipRoot asChild {...props}>
-        <RATooltip ref={ref} placement={placement} {...props}>
+      <TooltipRoot ref={forwardedRef} asChild {...props}>
+        <RATooltip placement={placement} {...props}>
           {children}
         </RATooltip>
       </TooltipRoot>
