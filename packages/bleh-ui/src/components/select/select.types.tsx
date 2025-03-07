@@ -21,24 +21,17 @@ export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
 }
 
 // Fix the incompatible event handler types by using a more specific type
-export interface SelectOptionsProps<T extends object = object>
-  extends Omit<
-      RaListBoxProps<T>,
-      keyof SelectOptionsSlotProps | "onFocus" | "onBlur"
-    >,
-    SelectOptionsSlotProps {
-  // Specifically define onFocus and onBlur to ensure compatibility with both React and React Aria
-  onFocus?: (e: FocusEvent<Element, Element>) => void;
-  onBlur?: (e: FocusEvent<Element, Element>) => void;
-}
+export interface SelectOptionsProps<T>
+  extends RaListBoxProps<T>,
+    Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}
 
-export interface SelectOptionProps<T extends object = object>
+export interface SelectOptionProps<T>
   extends Omit<RaListBoxItemProps<T>, keyof SelectOptionSlotProps>,
     SelectOptionSlotProps {}
 
-export interface SelectOptionGroupProps<T extends object = object>
-  extends Omit<RaListBoxSectionProps<T>, keyof SelectOptionGroupSlotProps>,
-    SelectOptionGroupSlotProps {
+export interface SelectOptionGroupProps<T>
+  extends RaListBoxSectionProps<T>,
+    Omit<SelectOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> {
   /** the label for the section */
   label: string;
 }

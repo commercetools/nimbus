@@ -159,7 +159,7 @@ export const ControlledState: Story = {
           data-testid="select"
         >
           <Select.Options items={options}>
-            {(item) => (
+            {(item: { name: string }) => (
               <Select.Option id={item.name}>{item.name}</Select.Option>
             )}
           </Select.Options>
