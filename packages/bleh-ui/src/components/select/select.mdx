@@ -86,6 +86,82 @@ const App = () => {
 }
 ```
 
+### Label + Descriptions
+
+You can add descriptions to the labels.
+
+```jsx-live
+const App = () => {
+  return (
+    <Select.Root aria-label="Select some fruit(s)" data-testid="select">
+        <Select.Options>
+          {/** Variant A - plain html-tags with slot property */}
+          <Select.Option textValue="Apple">
+            <p slot="label">Apple</p>
+            <p slot="description">A classic and versatile fruit.</p>
+          </Select.Option>
+          {/** Variant B - text component with slot property */}
+          <Select.Option textValue="Banana">
+            <Text slot="label">Banana</Text>
+            <Text slot="description">A good source of potassium.</Text>
+          </Select.Option>
+          <Select.Option textValue="Oranges">
+            <Text slot="label">Oranges</Text>
+            <Text slot="description">Rich in vitamin C.</Text>
+          </Select.Option>
+          <Select.Option textValue="Strawberries">
+            <Text slot="label">Strawberries</Text>
+            <Text slot="description">Sweet and full of antioxidants.</Text>
+          </Select.Option>
+          <Select.Option textValue="Grapes">
+            <Text slot="label">Grapes</Text>
+            <Text slot="description">
+              Available in various colors and flavors.
+            </Text>
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+  )
+}
+```
+
+### Controlled usage
+
+```jsx-live
+const App = () => {
+  const [animal, setAnimal] = useState<Key>("Bison");
+
+  const options = [
+    { id: 1, name: "Koala" },
+    { id: 2, name: "Kangaroo" },
+    { id: 3, name: "Platypus" },
+    { id: 4, name: "Bald Eagle" },
+    { id: 5, name: "Bison" },
+    { id: 6, name: "Skunk" },
+  ];
+
+
+  return (
+    <Box>
+      <Box mb="400">Selection: {animal}</Box>
+      <Select.Root
+        defaultSelectedKey={animal}
+        selectedKey={animal}
+        onSelectionChange={setAnimal}
+        aria-label="Select your new pet"
+        data-testid="select"
+      >
+        <Select.Options items={options}>
+          {(item) => (
+            <Select.Option id={item.name}>{item.name}</Select.Option>
+          )}
+        </Select.Options>
+      </Select.Root>
+    </Box>
+  );
+}
+```
+
 ## Props
 
 <PropTables
