@@ -17,7 +17,7 @@ export const Basic: Story = {
       <Box key="1" p="400" bg="primary.7">
         Item 1
       </Box>,
-      <Box key="1" p="400" bg="primary.7">
+      <Box key="2" p="400" bg="primary.7">
         Item 2
       </Box>,
     ],
@@ -54,10 +54,10 @@ export const WithSpacing: Story = {
       <Box key="1" p="400" bg="primary.7">
         Spaced Item 1
       </Box>,
-      <Box key="1" p="400" bg="primary.7">
+      <Box key="2" p="400" bg="primary.7">
         Spaced Item 2
       </Box>,
-      <Box key="1" p="400" bg="primary.7">
+      <Box key="3" p="400" bg="primary.7">
         Spaced Item 3
       </Box>,
     ],
@@ -71,10 +71,10 @@ export const WithSeparator: Story = {
       <Box key="1" p="400" bg="primary.7">
         Spaced Item with separator 1
       </Box>,
-      <Box key="1" p="400" bg="primary.7">
+      <Box key="2" p="400" bg="primary.7">
         Spaced Item with separator 2
       </Box>,
-      <Box key="1" p="400" bg="primary.7">
+      <Box key="3" p="400" bg="primary.7">
         Spaced Item with separator 3
       </Box>,
     ],
