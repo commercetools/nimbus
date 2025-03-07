@@ -12,9 +12,6 @@ export const SelectClearButton = () => {
 
   const onPressRequest = () => {
     state?.setSelectedKey(null);
-    setTimeout(() => {
-      state?.setFocused(true);
-    }, 0);
   };
 
   return (
