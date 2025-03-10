@@ -26,30 +26,42 @@ export const Base: Story = {
   args: {},
   render: () => {
     return (
-      <Stack>
-        <Heading>Row Direction</Heading>
-        <Box>
-          <FormField.Root direction="row">
-            <FormField.Label>Label</FormField.Label>
-            <FormField.Input>
-              <Input />
-            </FormField.Input>
-            <FormField.Description>Description</FormField.Description>
-            <FormField.Error>Error</FormField.Error>
-          </FormField.Root>
-        </Box>
-        <Heading>Column Direction</Heading>
-        <Box>
-          <FormField.Root direction="column">
-            <FormField.Description>Description</FormField.Description>
-            <FormField.Error>Error</FormField.Error>
-            <FormField.Label>Label</FormField.Label>
-            <FormField.Input>
-              <Input />
-            </FormField.Input>
-          </FormField.Root>
-        </Box>
-      </Stack>
+      <FormField.Root>
+        <FormField.Label>Input Label (column)</FormField.Label>
+        <FormField.Input>
+          <Input type="text" />
+        </FormField.Input>
+        <FormField.Description>
+          Above you see a regular text input, fill it with text and hope that it
+          validates.
+        </FormField.Description>
+        <FormField.Error>
+          An error text which should only appear if the field gets an isInvalid
+          prop
+        </FormField.Error>
+      </FormField.Root>
+    );
+  },
+};
+
+export const RowDirection: Story = {
+  args: {},
+  render: () => {
+    return (
+      <FormField.Root>
+        <FormField.Label>Input Label (row)</FormField.Label>
+        <FormField.Input>
+          <Input type="text" />
+        </FormField.Input>
+        <FormField.Description>
+          Above you see a regular text input, fill it with text and hope that it
+          validates.
+        </FormField.Description>
+        <FormField.Error>
+          An error text which should only appear if the field gets an isInvalid
+          prop
+        </FormField.Error>
+      </FormField.Root>
     );
   },
 };

@@ -15,11 +15,11 @@ type FormFieldVariantProps = FormFieldRootSlotProps;
 export interface FormFieldProps extends FormFieldVariantProps {
   children?: React.ReactNode;
   /** the value of the form field */
-  value: unknown;
+  value?: unknown;
   /** true if the field is a required field */
   isRequired?: boolean;
   /** callback, called when the field value was changed */
-  onChange: (value: unknown) => void;
+  onChange?: (value: unknown) => void;
   /** callback, called when the input is blurred */
   onBlur?: () => void;
   /** true if the field is invalid */

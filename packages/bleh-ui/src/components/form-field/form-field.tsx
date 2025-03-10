@@ -1,4 +1,10 @@
-import { forwardRef } from "react";
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   FormFieldDescriptionSlot,
   FormFieldErrorSlot,
@@ -8,32 +14,62 @@ import {
 } from "./form-field.slots";
 import type { FormFieldProps } from "./form-field.types";
 
+const FormFieldContext = createContext({});
+
 /**
  * FormField
  * ============================================================
  * displays inputs in a FormField context
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
 export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
-  ({ children, isRequired, ...props }, ref) => {
+  ({ children, ...props }, ref) => {
+    const [internalContext] = useState(() => createContext({}));
+    const contextValue = useContext(internalContext);
+
+    console.log("contextValue: ", contextValue);
+
+    const { label } = contextValue;
+
+    console.log("label", label);
+
     return (
-      <FormFieldRootSlot isRequired ref={ref} {...props}>
-        {children}
-      </FormFieldRootSlot>
+      <FormFieldContext.Provider value={contextValue}>
+        <FormFieldRootSlot ref={ref} {...props}>
+          {label && <FormFieldLabelSlot>{label}</FormFieldLabelSlot>}
+          {children}
+        </FormFieldRootSlot>
+      </FormFieldContext.Provider>
     );
   }
 );
 
+function FormFieldLabel({ children }) {
+  const context = useContext(FormFieldContext);
+  context.label = children;
+  return null;
+}
+
+function FormFieldDescription({ children }) {
+  const context = useContext(FormFieldContext);
+  return (
+    <FormFieldContext.Provider value={{ ...context, description: children }}>
+      {null}
+    </FormFieldContext.Provider>
+  );
+}
+
+function FormFieldError({ children }) {
+  const context = useContext(FormFieldContext);
+  return (
+    <FormFieldContext.Provider value={{ ...context, errorMessage: children }}>
+      {null}
+    </FormFieldContext.Provider>
+  );
+}
+
 export const FormField = {
   Root: FormFieldRoot,
-  Label: FormFieldLabelSlot,
+  Label: FormFieldLabel,
   Input: FormFieldInputSlot,
   Description: FormFieldDescriptionSlot,
   Error: FormFieldErrorSlot,
