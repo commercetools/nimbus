@@ -1,32 +1,53 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
-  type RecipeProps,
+  type RecipeVariantProps,
   type UnstyledProp,
-  createRecipeContext,
+  createSlotRecipeContext,
 } from "@chakra-ui/react";
 
 import { formFieldRecipe } from "./form-field.recipe";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
-interface FormFieldRecipeProps extends RecipeProps<"div">, UnstyledProp {}
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: formFieldRecipe,
+});
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export interface FormFieldRootProps
-  extends HTMLChakraProps<"div", FormFieldRecipeProps> {}
+// Root slot
+export interface FormFieldRootSlotProps
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof formFieldRecipe> & UnstyledProp
+  > {}
 
-const { withContext } = createRecipeContext({ recipe: formFieldRecipe });
+export const FormFieldRootSlot = withProvider<
+  HTMLDivElement,
+  FormFieldRootSlotProps
+>("div", "root");
 
-/**
- * Root component that provides the styling context for the FormField component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const FormFieldRoot = withContext<HTMLDivElement, FormFieldRootProps>(
-  "div"
-);
+// Label Slot
+export interface FormFieldLabelSlotProps extends HTMLChakraProps<"label"> {}
+export const FormFieldLabelSlot = withContext<
+  HTMLLabelElement,
+  FormFieldLabelSlotProps
+>("label", "label");
+
+// Input Slot
+export interface FormFieldInputSlotProps extends HTMLChakraProps<"div"> {}
+export const FormFieldInputSlot = withContext<
+  HTMLDivElement,
+  FormFieldInputSlotProps
+>("div", "input");
+
+// Description Slot
+export interface FormFieldDescriptionSlotProps extends HTMLChakraProps<"p"> {}
+export const FormFieldDescriptionSlot = withContext<
+  HTMLParagraphElement,
+  FormFieldDescriptionSlotProps
+>("p", "description");
+
+// Error Slot
+export interface FormFieldErrorSlotProps extends HTMLChakraProps<"p"> {}
+export const FormFieldErrorSlot = withContext<
+  HTMLParagraphElement,
+  FormFieldErrorSlotProps
+>("p", "error");

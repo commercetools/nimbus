@@ -1,15 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FormField } from "./form-field";
 import { Stack } from "./../stack";
+import { Input } from "react-aria-components";
+import { Box, Heading } from "@/components";
 
-/**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
- */
-const meta: Meta<typeof FormField> = {
+const meta: Meta<typeof FormField.Root> = {
   title: "components/FormField",
-  component: FormField,
+  component: FormField.Root,
 };
 
 export default meta;
@@ -18,7 +15,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof FormField>;
+type Story = StoryObj<typeof FormField.Root>;
 
 /**
  * Base story
@@ -26,73 +23,33 @@ type Story = StoryObj<typeof FormField>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  args: {
-    children: "Demo FormField",
-  },
-};
-
-/**
- * Showcase Sizes
- */
-export const Sizes: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((size) => (
-          <FormField key={size} {...args} size={size} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo FormField",
-  },
-};
-
-/**
- * Showcase Variants
- */
-export const Variants: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <FormField key={variant} {...args} variant={variant} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo FormField",
-  },
-};
-
-/**
- * Showcase Colors
- */
-export const Colors: Story = {
-  render: (args) => {
+  args: {},
+  render: () => {
     return (
       <Stack>
-        {[].map((colorPalette) => (
-          <Stack key={colorPalette} direction="row" gap="400" alignItems="center">
-            {[].map((variant) => (
-              <FormField
-                key={variant}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
-          </Stack>
-        ))}
+        <Heading>Row Direction</Heading>
+        <Box>
+          <FormField.Root direction="row">
+            <FormField.Label>Label</FormField.Label>
+            <FormField.Input>
+              <Input />
+            </FormField.Input>
+            <FormField.Description>Description</FormField.Description>
+            <FormField.Error>Error</FormField.Error>
+          </FormField.Root>
+        </Box>
+        <Heading>Column Direction</Heading>
+        <Box>
+          <FormField.Root direction="column">
+            <FormField.Description>Description</FormField.Description>
+            <FormField.Error>Error</FormField.Error>
+            <FormField.Label>Label</FormField.Label>
+            <FormField.Input>
+              <Input />
+            </FormField.Input>
+          </FormField.Root>
+        </Box>
       </Stack>
     );
-  },
-
-  args: {
-    children: "Demo FormField",
   },
 };
