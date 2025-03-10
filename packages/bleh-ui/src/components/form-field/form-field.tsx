@@ -1,12 +1,18 @@
 import { forwardRef } from "react";
-import { FormFieldRoot } from "./form-field.slots";
-import type { FormFieldProps } from "./form-field.types"
+import {
+  FormFieldDescriptionSlot,
+  FormFieldErrorSlot,
+  FormFieldInputSlot,
+  FormFieldLabelSlot,
+  FormFieldRootSlot,
+} from "./form-field.slots";
+import type { FormFieldProps } from "./form-field.types";
 
 /**
  * FormField
  * ============================================================
  * displays inputs in a FormField context
- * 
+ *
  * Features:
  *
  * - allows forwarding refs to the underlying DOM element
@@ -15,11 +21,20 @@ import type { FormFieldProps } from "./form-field.types"
  * - allows overriding styles by using style-props
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
-export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
-({children, ...props}, ref) => {
+export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
+  ({ children, isRequired, ...props }, ref) => {
     return (
-     <FormFieldRoot ref={ref} {...props}>{children}</FormFieldRoot>
-    )
- }
+      <FormFieldRootSlot isRequired ref={ref} {...props}>
+        {children}
+      </FormFieldRootSlot>
+    );
+  }
 );
-FormField.displayName = "FormField";
+
+export const FormField = {
+  Root: FormFieldRoot,
+  Label: FormFieldLabelSlot,
+  Input: FormFieldInputSlot,
+  Description: FormFieldDescriptionSlot,
+  Error: FormFieldErrorSlot,
+};

@@ -1,44 +1,90 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react";
+
+const columnLayout = `
+"label"
+"input"
+"description"
+"error"
+`;
+const rowLayout = `
+"label input"
+". description"
+". error"
+`;
 
 /**
  * Recipe configuration for the FormField component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const formFieldRecipe = defineRecipe({
+export const formFieldRecipe = defineSlotRecipe({
+  slots: ["root", "label", "input", "description", "error"],
   // Unique class name prefix for the component
   className: "bleh-ui-form-field",
-  
-  // Base styles applied to all instances of the component
+
   base: {
-    display: "block",
+    root: {
+      display: "inline-grid",
+      width: "auto",
+      gridTemplateColumns: "auto 1fr",
+      gridTemplateRows: "auto auto auto auto",
+      gridRowGap: "100",
+      //outline: "1px solid black",
+    },
+    label: {
+      gridArea: "label",
+      fontWeight: "500",
+      color: "neutral.11",
+      fontSize: "350",
+      lineHeight: "400",
+      //outline: "1px solid orange",
+    },
+    input: {
+      gridArea: "input",
+      //outline: "1px solid green",
+
+      "& input": {
+        border: "solid-25",
+        borderColor: "neutral.8",
+        borderRadius: "200",
+        height: "1000",
+      },
+    },
+    description: {
+      gridArea: "description",
+      color: "neutral.11",
+      fontSize: "350",
+      lineHeight: "500",
+      //outline: "1px solid blue",
+    },
+    error: {
+      gridArea: "error",
+      color: "error.11",
+      fontSize: "350",
+      lineHeight: "500",
+      //outline: "1px solid red",
+    },
   },
 
-  // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
-    size: {
-      "2xs": {},  // Extra extra small
-      xs: {},     // Extra small
-      sm: {},     // Small
-      md: {},     // Medium
-      lg: {},     // Large
-      xl: {},     // Extra large
-      "2xl": {},  // Extra extra large
-    },
-
-    // Visual style variants
-    variant: {
-      solid: {},   // Filled background
-      subtle: {},  // Lighter background
-      outline: {}, // Bordered style
-      ghost: {},   // Background only on interaction
-      plain: {},   // No background or border
+    direction: {
+      column: {
+        root: {
+          gridTemplateColumns: "auto 1fr",
+          gridTemplateRows: "auto auto auto",
+          gridTemplateAreas: columnLayout,
+        },
+      },
+      row: {
+        root: {
+          gridTemplateAreas: rowLayout,
+          gridColumnGap: "200",
+        },
+      },
     },
   },
 
   // Default variant values when not explicitly specified
   defaultVariants: {
-    size: "md",
-    variant: "subtle",
+    direction: "column",
   },
 });
