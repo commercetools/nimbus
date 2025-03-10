@@ -23,3 +23,4 @@ export * from "./checkbox";
 export * from "./stack";
 export * from "./visually-hidden";
 export * from "./text-input";
+export * from "./grid";

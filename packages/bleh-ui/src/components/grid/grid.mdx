@@ -1,0 +1,97 @@
+---
+id: Components-Grid
+title: Grid
+description:
+  An easily customizable Grid component, re-exported from Chakra UI, that
+  provides a consistent layout structure across different products.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Layout
+  - Grid
+tags:
+  - component
+---
+
+# Grid
+
+The Grid Layout Component provides a flexible and responsive way to structure
+content using a two-dimensional grid system. It allows elements to be arranged
+in rows and columns, enabling dynamic and efficient layouts for different screen
+sizes.
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <Grid>I am Grid!</Grid>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Grid key={size} size={size}>'{size}' Grid</Grid>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <Grid key={variant} variant={variant}>'{variant}' Grid</Grid>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <Grid colorPalette={color} key={variant} variant={variant}>
+              '{variant}' Grid
+            </Grid>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="Grid" />
