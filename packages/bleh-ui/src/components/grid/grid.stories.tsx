@@ -91,8 +91,46 @@ export const WithVarryingLayout: Story = {
       </Grid>
     );
   },
+};
 
-  args: {
-    children: "Demo Grid",
+/**
+ * Demonstrate layout with template areas
+ * Shows how to create a common page layout pattern
+ */
+export const WithTemplateAreas: Story = {
+  render: () => {
+    return (
+      <Grid
+        h="400px"
+        templateAreas={`
+          "header header"
+          "nav main"
+          "footer footer"
+        `}
+        templateColumns="200px 1fr"
+        gap="400"
+      >
+        <Grid.Item gridArea="header">
+          <Box p="400" bg="neutral.7" h="full">
+            Header
+          </Box>
+        </Grid.Item>
+        <Grid.Item gridArea="nav">
+          <Box p="400" bg="neutral.7" h="full">
+            Navigation
+          </Box>
+        </Grid.Item>
+        <Grid.Item gridArea="main">
+          <Box p="400" bg="neutral.7" h="full">
+            Main Content
+          </Box>
+        </Grid.Item>
+        <Grid.Item gridArea="footer">
+          <Box p="400" bg="neutral.7" h="full">
+            Footer
+          </Box>
+        </Grid.Item>
+      </Grid>
+    );
   },
 };
