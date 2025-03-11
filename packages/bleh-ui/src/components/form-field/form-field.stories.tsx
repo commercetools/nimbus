@@ -156,7 +156,7 @@ export const LongLabel: Story = {
   args: {},
   render: () => {
     return (
-      <Box width="320px">
+      <Box width="384px">
         <FormField.Root isRequired direction="row">
           <FormField.Label>Super long Input Label (row)</FormField.Label>
           <FormField.Input>

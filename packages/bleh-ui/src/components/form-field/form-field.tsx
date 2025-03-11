@@ -1,11 +1,12 @@
 import {
   createContext,
   forwardRef,
-  useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
+  isValidElement,
+  cloneElement,
+  Children,
 } from "react";
 import {
   FormFieldDescriptionSlot,
@@ -20,6 +21,7 @@ import { ErrorOutline, HelpOutline } from "@bleh-ui/icons";
 import { Box, IconButton } from "@/components";
 
 import { Dialog, DialogTrigger, Popover } from "react-aria-components";
+import { useLabel } from "react-aria";
 
 const FormFieldContext = createContext({});
 
@@ -35,9 +37,15 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       description: null,
       error: null,
       info: null,
+      input: null,
       isInvalid,
       isRequired,
       isDisabled,
+    });
+
+    const { labelProps, fieldProps } = useLabel({
+      label: context.label,
+      ...props,
     });
 
     useEffect(() => {
@@ -49,14 +57,21 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       }));
     }, [isInvalid, isRequired, isDisabled]);
 
+    const inputProps = {
+      ...fieldProps,
+      isInvalid,
+      isRequired,
+      isDisabled,
+    };
+
     return (
       <FormFieldContext.Provider value={[context, setContext]}>
         <FormFieldRootSlot ref={ref} {...props}>
           {context.label && (
             <FormFieldLabelSlot>
-              <label>
+              <label {...labelProps}>
                 {context.label}
-                {isRequired && <sup>*</sup>}
+                {isRequired && <sup aria-hidden="true">*</sup>}
               </label>
               {context.info && (
                 <DialogTrigger>
@@ -115,6 +130,19 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
             </FormFieldErrorSlot>
           )}
           {children}
+
+          {context.input && (
+            <FormFieldInputSlot>
+              {Children.map(context.input, (child) => {
+                // Important: Check if the child is a valid React element before cloning.
+                if (isValidElement(child)) {
+                  return cloneElement(child, inputProps);
+                }
+                // If it's not a valid element (e.g., text node, null, undefined), return it as is.
+                return child;
+              })}
+            </FormFieldInputSlot>
+          )}
         </FormFieldRootSlot>
       </FormFieldContext.Provider>
     );
@@ -132,7 +160,7 @@ function FormFieldLabel({ children }) {
 }
 
 function FormFieldDescription({ children }) {
-  const [context, setContext] = useContext(FormFieldContext);
+  const [, setContext] = useContext(FormFieldContext);
 
   useEffect(() => {
     setContext((prevContext) => ({ ...prevContext, description: children }));
@@ -161,10 +189,20 @@ function FormFieldInfoBox({ children }) {
   return null;
 }
 
+function FormFieldInput({ children }) {
+  const [, setContext] = useContext(FormFieldContext);
+
+  useEffect(() => {
+    setContext((prevContext) => ({ ...prevContext, input: children }));
+  }, [children, setContext]);
+
+  return null;
+}
+
 export const FormField = {
   Root: FormFieldRoot,
   Label: FormFieldLabel,
-  Input: FormFieldInputSlot,
+  Input: FormFieldInput,
   Description: FormFieldDescription,
   Error: FormFieldError,
   InfoBox: FormFieldInfoBox,
