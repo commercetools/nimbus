@@ -8,8 +8,8 @@ const columnLayout = `
 `;
 const rowLayout = `
 "label input"
-". description"
-". error"
+"label description"
+"label error"
 `;
 
 /**
@@ -17,17 +17,16 @@ const rowLayout = `
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const formFieldRecipe = defineSlotRecipe({
-  slots: ["root", "label", "input", "description", "error"],
+  slots: ["root", "label", "input", "description", "error", "popover"],
   // Unique class name prefix for the component
   className: "bleh-ui-form-field",
 
   base: {
     root: {
+      "--grid-gap": "spacing.100",
+
       display: "inline-grid",
       width: "auto",
-      gridTemplateColumns: "auto 1fr",
-      gridTemplateRows: "auto auto auto auto",
-      gridRowGap: "100",
       //outline: "1px solid black",
     },
     label: {
@@ -35,18 +34,20 @@ export const formFieldRecipe = defineSlotRecipe({
       fontWeight: "500",
       color: "neutral.11",
       fontSize: "350",
-      lineHeight: "400",
-      //outline: "1px solid orange",
+      lineHeight: "500",
+      //outline: "1px solid black",
     },
     input: {
       gridArea: "input",
-      //outline: "1px solid green",
+      //outline: "1px solid black",
 
       "& input": {
         border: "solid-25",
+        px: "200",
         borderColor: "neutral.8",
         borderRadius: "200",
         height: "1000",
+        focusRing: "outside",
       },
     },
     description: {
@@ -54,14 +55,29 @@ export const formFieldRecipe = defineSlotRecipe({
       color: "neutral.11",
       fontSize: "350",
       lineHeight: "500",
-      //outline: "1px solid blue",
+      //outline: "1px solid black",
     },
     error: {
       gridArea: "error",
       color: "error.11",
       fontSize: "350",
       lineHeight: "500",
-      //outline: "1px solid red",
+      //outline: "1px solid black",
+    },
+    popover: {
+      "--scrollbar-color": "colors.neutral.8",
+      "--scrollbar-bg": "colors.neutral.3",
+      bg: "neutral.1",
+      maxWidth: "xl",
+      borderRadius: "200",
+      boxShadow: "6",
+      border: "solid-25",
+      borderColor: "neutral.8",
+      maxHeight: "40svh",
+      overflow: "auto",
+      scrollbarWidth: "thin",
+      scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
+      focusRing: "outside",
     },
   },
 
@@ -70,14 +86,28 @@ export const formFieldRecipe = defineSlotRecipe({
       column: {
         root: {
           gridTemplateColumns: "auto 1fr",
-          gridTemplateRows: "auto auto auto",
           gridTemplateAreas: columnLayout,
+        },
+        input: {
+          mt: "var(--grid-gap)",
+        },
+        description: {
+          mt: "var(--grid-gap)",
+        },
+        error: {
+          mt: "var(--grid-gap)",
         },
       },
       row: {
         root: {
           gridTemplateAreas: rowLayout,
           gridColumnGap: "200",
+        },
+        description: {
+          mt: "var(--grid-gap)",
+        },
+        error: {
+          mt: "var(--grid-gap)",
         },
       },
     },
