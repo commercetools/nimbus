@@ -24,7 +24,7 @@ If unconfigured `IconButton` will default to a neutral state. It is important to
 configure `IconButton` properly to ensure it displays as intended.
 
 ```jsx-live
-const App = () => <IconButton><Icons.Gift/></IconButton>
+const App = () => <IconButton><Icons.ArrowForward/></IconButton>
 ```
 
 ### Sizes
@@ -39,7 +39,7 @@ const App = () => {
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
         <IconButton tone="primary" variant="solid" key={size} size={size}>
-          <Icons.Gift/>
+          <Icons.AutoFixHigh/>
         </IconButton>
       ))}
     </Stack>
@@ -60,7 +60,7 @@ const App = () => {
     <Stack direction="horizontal">
       {variants.map(variant => (
         <IconButton tone="primary" key={variant} variant={variant}>
-          <Icons.Gift/>
+          <Icons.AutoFixHigh/>
         </IconButton>
       ))}
     </Stack>
@@ -83,7 +83,7 @@ const App = () => {
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
             <IconButton colorPalette={color} key={variant} variant={variant}>
-              <Icons.Gift/>
+              <Icons.AutoFixHigh/>
             </IconButton>
           ))}
         </Stack>
