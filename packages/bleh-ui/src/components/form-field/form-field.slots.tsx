@@ -25,11 +25,11 @@ export const FormFieldRootSlot = withProvider<
 >("div", "root");
 
 // Label Slot
-export interface FormFieldLabelSlotProps extends HTMLChakraProps<"label"> {}
+export interface FormFieldLabelSlotProps extends HTMLChakraProps<"div"> {}
 export const FormFieldLabelSlot = withContext<
-  HTMLLabelElement,
+  HTMLDivElement,
   FormFieldLabelSlotProps
->("label", "label");
+>("div", "label");
 
 // Input Slot
 export interface FormFieldInputSlotProps extends HTMLChakraProps<"div"> {}
@@ -51,3 +51,10 @@ export const FormFieldErrorSlot = withContext<
   HTMLParagraphElement,
   FormFieldErrorSlotProps
 >("p", "error");
+
+// Error Slot
+export interface FormFieldPopoverSlotProps extends HTMLChakraProps<"div"> {}
+export const FormFieldPopoverSlot = withContext<
+  HTMLDivElement,
+  FormFieldPopoverSlotProps
+>("div", "popover");

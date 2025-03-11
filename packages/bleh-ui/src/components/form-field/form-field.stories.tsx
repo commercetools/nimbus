@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FormField } from "./form-field";
-import { Stack } from "./../stack";
 import { Input } from "react-aria-components";
-import { Box, Heading } from "@/components";
+import { Box } from "@/components";
 
 const meta: Meta<typeof FormField.Root> = {
   title: "components/FormField",
@@ -31,6 +30,24 @@ export const Base: Story = {
         <FormField.Input>
           <Input type="text" />
         </FormField.Input>
+        <FormField.Error>
+          An error text which should only appear if the field gets an isInvalid
+          prop
+        </FormField.Error>
+      </FormField.Root>
+    );
+  },
+};
+
+export const WithDescription: Story = {
+  args: {},
+  render: () => {
+    return (
+      <FormField.Root>
+        <FormField.Label>Input Label (column)</FormField.Label>
+        <FormField.Input>
+          <Input type="text" />
+        </FormField.Input>
         <FormField.Description>
           Above you see a regular text input, fill it with text and hope that it
           validates.
@@ -48,7 +65,7 @@ export const RowDirection: Story = {
   args: {},
   render: () => {
     return (
-      <FormField.Root>
+      <FormField.Root direction="row">
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
           <Input type="text" />
@@ -62,6 +79,104 @@ export const RowDirection: Story = {
           prop
         </FormField.Error>
       </FormField.Root>
+    );
+  },
+};
+
+export const Invalid: Story = {
+  args: {},
+  render: () => {
+    return (
+      <FormField.Root isInvalid>
+        <FormField.Label>Input Label (row)</FormField.Label>
+        <FormField.Input>
+          <Input type="text" />
+        </FormField.Input>
+        <FormField.Description>
+          Above you see a regular text input, fill it with text and hope that it
+          validates.
+        </FormField.Description>
+        <FormField.Error>
+          An error text which should only appear if the field gets an isInvalid
+          prop
+        </FormField.Error>
+      </FormField.Root>
+    );
+  },
+};
+
+export const Required: Story = {
+  args: {},
+  render: () => {
+    return (
+      <FormField.Root isRequired>
+        <FormField.Label>Input Label (row)</FormField.Label>
+        <FormField.Input>
+          <Input type="text" />
+        </FormField.Input>
+        <FormField.Description>
+          Above you see a regular text input, fill it with text and hope that it
+          validates.
+        </FormField.Description>
+        <FormField.Error>
+          An error text which should only appear if the field gets an isInvalid
+          prop
+        </FormField.Error>
+      </FormField.Root>
+    );
+  },
+};
+
+export const MoreInfo: Story = {
+  args: {},
+  render: () => {
+    return (
+      <FormField.Root isRequired>
+        <FormField.Label>Input Label (row)</FormField.Label>
+        <FormField.Input>
+          <Input type="text" />
+        </FormField.Input>
+        <FormField.Description>
+          Above you see a regular text input, fill it with text and hope that it
+          validates.
+        </FormField.Description>
+        <FormField.Error>
+          An error text which should only appear if the field gets an isInvalid
+          prop
+        </FormField.Error>
+        <FormField.InfoBox>
+          Show me in a tooltip box or something
+        </FormField.InfoBox>
+      </FormField.Root>
+    );
+  },
+};
+
+export const LongLabel: Story = {
+  args: {},
+  render: () => {
+    return (
+      <Box width="320px">
+        <FormField.Root isRequired direction="row">
+          <FormField.Label>Super long Input Label (row)</FormField.Label>
+          <FormField.Input>
+            <Input type="text" />
+          </FormField.Input>
+          <FormField.Description>
+            Above you see a regular text input, fill it with text and hope that
+            it validates.
+          </FormField.Description>
+          <FormField.Error>
+            An error text which should only appear if the field gets an
+            isInvalid prop
+          </FormField.Error>
+          <FormField.InfoBox>
+            {new Array(48)
+              .fill("Show me in a tooltip box or something")
+              .join(" ")}
+          </FormField.InfoBox>
+        </FormField.Root>
+      </Box>
     );
   },
 };
