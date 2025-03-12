@@ -1,4 +1,4 @@
-import type { ReactNode, FocusEvent } from "react";
+import type { ReactNode } from "react";
 import type {
   SelectOptionsSlotProps,
   SelectOptionSlotProps,

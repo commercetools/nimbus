@@ -21,7 +21,6 @@ export const SelectClearButton = () => {
       variant="ghost"
       tone="primary"
       aria-label="Clear Selection"
-      slot={undefined}
       onPress={onPressRequest}
     >
       <CloseIcon />
