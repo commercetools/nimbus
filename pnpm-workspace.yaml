@@ -27,14 +27,14 @@ catalogs:
     # Hygen
     "hygen": ^6.2.11
     # Storybook
-    "@storybook/addon-a11y": ^8.5.3
-    "@storybook/addon-essentials": ^8.5.3
-    "@storybook/experimental-addon-test": ^8.5.3
-    "@storybook/preview-api": ^8.5.3
-    "@storybook/react": ^8.5.3
-    "@storybook/react-vite": ^8.5.3
-    "@storybook/test": ^8.5.3
-    "storybook": ^8.5.3
+    "@storybook/addon-a11y": ^8.6.4
+    "@storybook/addon-essentials": ^8.6.4
+    "@storybook/experimental-addon-test": ^8.6.4
+    "@storybook/preview-api": ^8.6.4
+    "@storybook/react": ^8.6.4
+    "@storybook/react-vite": ^8.6.4
+    "@storybook/test": ^8.6.4
+    "storybook": ^8.6.4
     "storybook-dark-mode": ^4.0.2
     # Vite
     "@vitejs/plugin-react": ^4.3.4
