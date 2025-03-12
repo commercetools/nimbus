@@ -31,7 +31,10 @@ const FormFieldContext = createContext({});
  * displays inputs in a FormField context
  */
 export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
-  ({ isInvalid, isRequired, isDisabled, children, ...props }, ref) => {
+  (
+    { isInvalid, isRequired, isDisabled, isReadOnly, children, ...props },
+    ref
+  ) => {
     const [context, setContext] = useState({
       label: null,
       description: null,
@@ -41,6 +44,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       isInvalid,
       isRequired,
       isDisabled,
+      isReadOnly,
     });
 
     const { labelProps, fieldProps } = useLabel({
@@ -54,14 +58,16 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
         isInvalid,
         isRequired,
         isDisabled,
+        isReadOnly,
       }));
-    }, [isInvalid, isRequired, isDisabled]);
+    }, [isInvalid, isRequired, isDisabled, isReadOnly]);
 
     const inputProps = {
       ...fieldProps,
       isInvalid,
       isRequired,
       isDisabled,
+      isReadOnly,
     };
 
     return (
