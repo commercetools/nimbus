@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Box } from "../box";
 import { Grid } from "./grid";
+import { within, expect } from "@storybook/test";
+
 /**
  * Storybook metadata configuration
  * - title: determines the location in the sidebar
@@ -27,6 +29,10 @@ type Story = StoryObj<typeof Grid>;
 export const Basic: Story = {
   args: {
     gap: "100",
+    ["aria-label"]: "test-layout",
+    // @ts-expect-error - data-testid is not a valid prop
+    ["data-testid"]: "test",
+
     children: [
       <Box key="1" p="400" bg="neutral.7">
         Item 1
@@ -35,6 +41,15 @@ export const Basic: Story = {
         Item 2
       </Box>,
     ],
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const layout = canvas.getByTestId("test");
+
+    await step("Forwards data- & aria-attributes", async () => {
+      await expect(layout).toHaveAttribute("data-testid", "test");
+      await expect(layout).toHaveAttribute("aria-label", "test-layout");
+    });
   },
 };
 
