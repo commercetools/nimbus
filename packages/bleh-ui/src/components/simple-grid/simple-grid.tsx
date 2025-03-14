@@ -14,11 +14,11 @@ import {
  *
  * - allows forwarding refs to the underlying DOM element
  */
-export interface GridProps extends ChakraSimpleGridProps {
+export interface SimpleGridProps extends ChakraSimpleGridProps {
   children?: React.ReactNode;
 }
 
-const GridComponent = forwardRef<HTMLDivElement, GridProps>((props, ref) => {
+const GridComponent = forwardRef<HTMLDivElement, SimpleGridProps>((props, ref) => {
   return <ChakraSimpleGrid ref={ref} {...props} />;
 });
 
