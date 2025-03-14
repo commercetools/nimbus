@@ -18,9 +18,11 @@ export interface SimpleGridProps extends ChakraSimpleGridProps {
   children?: React.ReactNode;
 }
 
-const GridComponent = forwardRef<HTMLDivElement, SimpleGridProps>((props, ref) => {
-  return <ChakraSimpleGrid ref={ref} {...props} />;
-});
+const GridComponent = forwardRef<HTMLDivElement, SimpleGridProps>(
+  (props, ref) => {
+    return <ChakraSimpleGrid ref={ref} {...props} />;
+  }
+);
 
 GridComponent.displayName = "SimpleGrid";
 
