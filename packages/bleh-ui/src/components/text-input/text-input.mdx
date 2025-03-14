@@ -1,0 +1,118 @@
+---
+id: Components-TextInput
+title: TextInput
+description: An input component that takes in a text as input
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - TextInput
+tags:
+  - component
+---
+
+# TextInput
+
+The TextInput component is a form control that allows users to enter text into
+an input field. It provides a clean, accessible interface for text input with
+support for different states and variants.
+
+## Features
+
+- **Accessible:** Built with ARIA attributes for screen reader support
+- **Customizable:** Supports different sizes and visual variants
+- **State Management:** Handles disabled, invalid, and focus states
+
+## Basic Usage
+
+The TextInput component is used to create form input fields where users can enter text. It supports various states and can be customized using props.
+
+```jsx-live
+const App = () => <TextInput placeholder="basic text input"/>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['md', 'sm',];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <TextInput key={size} size={size} placeholder={size}/>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+There are two variants currently:
+- **Solid:** The default variant with a solid background.
+- **Ghost:** A minimal variant without background.
+
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid','ghost',];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TextInput key={variant} variant={variant} placeholder={variant} />
+      ))}
+    </Stack>
+  )
+}
+```
+
+## States
+
+### Disabled
+
+When interaction is not allowed.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid','ghost',];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TextInput key={variant} variant={variant} placeholder={variant} disabled/>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Invalid
+
+For showing error states in forms.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid','ghost',];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TextInput key={variant} variant={variant} placeholder={variant} isInvalid/>
+      ))}
+    </Stack>
+  )
+}
+```
+
+## Props
+
+<PropTable id="TextInput" />
