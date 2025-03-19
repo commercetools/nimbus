@@ -1,1 +1,1 @@
-export * from "./simple-grid.tsx";
+export * from "./simple-grid";
