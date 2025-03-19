@@ -45,10 +45,10 @@
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/optimize-locales-plugin": "^1.1.4",
     "next-themes": "catalog:react",
-    "react-aria": "^3.36.0",
-    "react-aria-components": "1.0.1",
+    "react-aria": "^3.37.0",
+    "react-aria-components": "1.6.0",
     "react-hotkeys-hook": "^4.6.1",
-    "react-stately": "^3.34.0",
+    "react-stately": "^3.35.0",
     "react-use": "^17.5.1"
   },
   "scripts": {
