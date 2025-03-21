@@ -2,11 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { LoadingSpinner } from "./loading-spinner";
 import { Stack } from "./../stack";
 
-/**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
- */
 const meta: Meta<typeof LoadingSpinner> = {
   title: "components/LoadingSpinner",
   component: LoadingSpinner,
@@ -26,9 +21,7 @@ type Story = StoryObj<typeof LoadingSpinner>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  args: {
-    children: "Demo LoadingSpinner",
-  },
+  args: {},
 };
 
 /**
@@ -38,61 +31,29 @@ export const Sizes: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
-        {[].map((size) => (
+        {["2xs", "xs", "sm", "md", "lg"].map((size) => (
           <LoadingSpinner key={size} {...args} size={size} />
         ))}
       </Stack>
     );
   },
 
-  args: {
-    children: "Demo LoadingSpinner",
-  },
+  args: {},
 };
 
 /**
- * Showcase Variants
+ * Showcase Tones
  */
-export const Variants: Story = {
+export const Tones: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <LoadingSpinner key={variant} {...args} variant={variant} />
+        {["primary", "white"].map((tone) => (
+          <LoadingSpinner key={tone} {...args} tone={tone} />
         ))}
       </Stack>
     );
   },
 
-  args: {
-    children: "Demo LoadingSpinner",
-  },
-};
-
-/**
- * Showcase Colors
- */
-export const Colors: Story = {
-  render: (args) => {
-    return (
-      <Stack>
-        {[].map((colorPalette) => (
-          <Stack key={colorPalette} direction="row" gap="400" alignItems="center">
-            {[].map((variant) => (
-              <LoadingSpinner
-                key={variant}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo LoadingSpinner",
-  },
+  args: {},
 };

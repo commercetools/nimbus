@@ -5,40 +5,70 @@ import { defineRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const loadingSpinnerRecipe = defineRecipe({
-  // Unique class name prefix for the component
   className: "bleh-ui-loading-spinner",
-  
-  // Base styles applied to all instances of the component
+
   base: {
-    display: "block",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "& svg": {
+      animation: "spin 0.5s linear infinite",
+    },
   },
 
-  // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
     size: {
-      "2xs": {},  // Extra extra small
-      xs: {},     // Extra small
-      sm: {},     // Small
-      md: {},     // Medium
-      lg: {},     // Large
-      xl: {},     // Extra large
-      "2xl": {},  // Extra extra large
+      "2xs": {
+        width: "{spacing.350}",
+        height: "{spacing.350}",
+        padding: "calc({spacing.350} / 12)",
+      },
+      xs: {
+        width: "{spacing.500}",
+        height: "{spacing.500}",
+        padding: "calc({spacing.500} / 12)",
+      },
+      sm: {
+        width: "{spacing.600}",
+        height: "{spacing.600}",
+        padding: "calc({spacing.600} / 12)",
+      },
+      md: {
+        width: "{spacing.800}",
+        height: "{spacing.800}",
+        padding: "calc({spacing.800} / 12)",
+      },
+      lg: {
+        width: "{spacing.1000}",
+        height: "{spacing.1000}",
+        padding: "calc({spacing.1000} / 12)",
+      },
     },
 
-    // Visual style variants
-    variant: {
-      solid: {},   // Filled background
-      subtle: {},  // Lighter background
-      outline: {}, // Bordered style
-      ghost: {},   // Background only on interaction
-      plain: {},   // No background or border
+    tone: {
+      primary: {
+        colorPalette: "ctvioletAlpha",
+        "& svg path:first-of-type": {
+          stroke: "colorPalette.5",
+        },
+        "& svg path:last-of-type": {
+          stroke: "colorPalette.9",
+        },
+      },
+      white: {
+        colorPalette: "whiteAlpha",
+        "& svg path:first-of-type": {
+          stroke: "colorPalette.5",
+        },
+        "& svg path:last-of-type": {
+          stroke: "white",
+        },
+      },
     },
   },
 
-  // Default variant values when not explicitly specified
   defaultVariants: {
-    size: "md",
-    variant: "subtle",
+    size: "sm",
+    tone: "primary",
   },
 });

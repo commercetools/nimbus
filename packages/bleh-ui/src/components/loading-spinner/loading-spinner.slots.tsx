@@ -18,8 +18,10 @@ interface LoadingSpinnerRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-export interface LoadingSpinnerRootProps
-  extends HTMLChakraProps<"div", LoadingSpinnerRecipeProps> {}
+export type LoadingSpinnerRootProps = HTMLChakraProps<
+  "div",
+  LoadingSpinnerRecipeProps
+>;
 
 const { withContext } = createRecipeContext({ recipe: loadingSpinnerRecipe });
 
@@ -27,6 +29,7 @@ const { withContext } = createRecipeContext({ recipe: loadingSpinnerRecipe });
  * Root component that provides the styling context for the LoadingSpinner component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const LoadingSpinnerRoot = withContext<HTMLDivElement, LoadingSpinnerRootProps>(
-  "div"
-);
+export const LoadingSpinnerRoot = withContext<
+  HTMLDivElement,
+  LoadingSpinnerRootProps
+>("div");
