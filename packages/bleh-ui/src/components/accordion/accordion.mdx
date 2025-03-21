@@ -1,0 +1,92 @@
+---
+id: Components-Accordion
+title: Accordion
+description: A component used for organizing contents. This allows users to toggle visibility of the content sections in their individual panels when the panel&#39;s header is clicked. 
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Accordion
+tags:
+  - component
+---
+
+# Accordion
+
+A component used for organizing contents. This allows users to toggle visibility of the content sections in their individual panels when the panel&#39;s header is clicked. 
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <Accordion>I am Accordion!</Accordion>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Accordion key={size} size={size}>'{size}' Accordion</Accordion>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <Accordion key={variant} variant={variant}>'{variant}' Accordion</Accordion>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <Accordion colorPalette={color} key={variant} variant={variant}>
+              '{variant}' Accordion
+            </Accordion>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="Accordion" />
