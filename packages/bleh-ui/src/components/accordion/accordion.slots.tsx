@@ -1,34 +1,38 @@
 import {
+  createSlotRecipeContext,
   type HTMLChakraProps,
-  type RecipeProps,
-  type UnstyledProp,
-  createRecipeContext,
+  type RecipeVariantProps,
 } from "@chakra-ui/react";
+import { accordionSlotRecipe } from "./accordion.recipe";
 
-import { type DisclosureProps as RADisclosurePropsProps } from "react-aria-components";
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "accordion",
+});
 
-import { accordionRecipe } from "./accordion.recipe";
+export type AccordionRootProps = HTMLChakraProps<
+  "div",
+  RecipeVariantProps<typeof accordionSlotRecipe>
+>;
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
-interface AccordionRecipeProps extends RecipeProps<"div">, UnstyledProp {}
+export const AccordionRoot = withProvider<HTMLDivElement, AccordionRootProps>(
+  "div",
+  "root"
+);
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type AccordionRootProps = HTMLChakraProps<"div", AccordionRecipeProps>;
-
-const { withContext } = createRecipeContext({ recipe: accordionRecipe });
-
-/**
- * Root component that provides the styling context for the Accordion component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const AccordionRoot = withContext<
+type AccordionDisclosureProps = HTMLChakraProps<"div">;
+export const AccordionDisclosure = withContext<
   HTMLDivElement,
-  AccordionRootProps & RADisclosurePropsProps
->("div");
+  AccordionDisclosureProps
+>("div", "disclosure");
+
+type AccordionTriggerProps = HTMLChakraProps<"button">;
+export const AccordionTrigger = withContext<
+  HTMLButtonElement,
+  AccordionTriggerProps
+>("button", "trigger");
+
+type AccordionPanelProps = HTMLChakraProps<"div">;
+export const AccordionPanel = withContext<HTMLDivElement, AccordionPanelProps>(
+  "div",
+  "panel"
+);

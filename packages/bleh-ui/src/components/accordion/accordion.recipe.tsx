@@ -1,82 +1,74 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
  * Recipe configuration for the Accordion component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const accordionRecipe = defineRecipe({
+export const accordionSlotRecipe = defineSlotRecipe({
+  slots: ["root", "disclosure", "trigger", "panel"],
   // Unique class name prefix for the component
   className: "bleh-ui-accordion",
 
-  // Base styles applied to all instances of the component
   base: {
-    display: "block",
+    root: {
+      width: "100%",
+    },
+    disclosure: {
+      width: "100%",
+    },
+    trigger: {
+      background: "none",
+      border: "none",
+      boxShadow: "none",
+      fontWeight: "bold",
+      fontSize: "16px",
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      color: "var(--text-color)",
+      width: "100%",
 
-    // Disclosure styles
-    ".disclosure": {
-      // Trigger button styles
-      ".trigger": {
-        background: "none",
-        border: "none",
-        boxShadow: "none",
-        fontWeight: "600",
-        fontSize: "16px",
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-
-        // SVG icon styles
-        "& svg": {
-          rotate: "0deg",
-          transition: "rotate 200ms",
-          width: "12px",
-          height: "12px",
-          fill: "none",
-          stroke: "currentColor",
-          strokeWidth: "3px",
-        },
-        "&[aria-expanded='true'] svg": {
-          rotate: "90deg",
-        },
+      "& svg": {
+        rotate: "0deg",
+        transition: "rotate 200ms",
+        width: "12px",
+        height: "12px",
+        fill: "none",
+        stroke: "currentColor",
+        strokeWidth: "3px",
       },
-
-      // Expanded state styles
-      ["&[data-expanded]='true', &[slot='trigger'] svg]"]: {
+      '&[aria-expanded="true"] svg': {
         rotate: "90deg",
       },
-      // Panel styles
-      ".panel": {
-        marginLeft: "12px",
+      "&:disabled": {
+        color: "var(--gray-300)",
       },
+    },
+    panel: {
+      marginLeft: "20px",
     },
   },
 
-  // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
     size: {
-      "2xs": {}, // Extra extra small
-      xs: {}, // Extra small
-      sm: {}, // Small
-      md: {}, // Medium
-      lg: {}, // Large
-      xl: {}, // Extra large
-      "2xl": {}, // Extra extra large
+      "2xs": {},
+      xs: {},
+      sm: {},
+      md: {},
+      lg: {},
+      xl: {},
+      "2xl": {},
     },
 
-    // Visual style variants
     variant: {
-      solid: {}, // Filled background
-      subtle: {}, // Lighter background
-      outline: {}, // Bordered style
-      ghost: {}, // Background only on interaction
-      plain: {}, // No background or border
+      solid: {},
+      subtle: {},
+      outline: {},
+      ghost: {},
+      plain: {},
     },
   },
 
   // Default variant values when not explicitly specified
-  defaultVariants: {
-    size: "md",
-    variant: "subtle",
-  },
+  defaultVariants: {},
 });

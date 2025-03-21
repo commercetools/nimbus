@@ -1,16 +1,14 @@
 import React, { forwardRef } from "react";
-import { AccordionRoot } from "./accordion.slots";
+import {
+  AccordionRoot,
+  AccordionDisclosure,
+  AccordionTrigger,
+  AccordionPanel,
+} from "./accordion.slots";
 import { useDisclosureState } from "react-stately";
 import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
-
-import {
-  Disclosure,
-  DisclosurePanel,
-  Heading,
-  Button,
-  type DisclosureProps,
-  type DisclosurePanelProps,
-} from "react-aria-components";
+import { type DisclosureProps } from "react-aria-components";
+import { useSlotRecipe } from "@chakra-ui/react";
 
 /**
  * Accordion
@@ -27,13 +25,13 @@ import {
  */
 
 interface AccordionProps extends Omit<DisclosureProps, "children"> {
-  title?: string;
   children?: React.ReactNode;
+  title?: string;
+  recipe?: string;
 }
 
 export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
   ({ title, children, ...props }, forwardedRef) => {
-    // const ref = useObjectRef(forwardedRef);
     const state = useDisclosureState(props);
     const panelRef = React.useRef<HTMLDivElement | null>(null);
     const triggerRef = React.useRef<HTMLButtonElement | null>(null);
@@ -44,29 +42,29 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
     );
     const { buttonProps } = useButton(triggerProps, triggerRef);
     const { isFocusVisible, focusProps } = useFocusRing();
+    const recipe = useSlotRecipe({ key: "accordion" });
+    const [recipeProps] = recipe.splitVariantProps(props);
 
     return (
-      <AccordionRoot ref={forwardedRef} {...props}>
-        <div className="disclosure">
-          <h3>
-            <button
-              className="trigger"
-              ref={triggerRef}
-              {...mergeProps(buttonProps, focusProps)}
-              style={{
-                outline: isFocusVisible ? "2px solid dodgerblue" : "none",
-              }}
-            >
-              <svg viewBox="0 0 24 24">
-                <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-              </svg>
-              {title}
-            </button>
-          </h3>
-          <div className="panel" ref={panelRef} {...panelProps}>
-            <>{children}</>
-          </div>
-        </div>
+      <AccordionRoot data-slot="root" ref={forwardedRef} {...recipeProps}>
+        <AccordionDisclosure>
+          <AccordionTrigger
+            ref={triggerRef}
+            {...mergeProps(buttonProps, focusProps)}
+            data-slot="trigger"
+            style={{
+              outline: isFocusVisible ? "2px solid dodgerblue" : "none",
+            }}
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+            {title}
+          </AccordionTrigger>
+          <AccordionPanel ref={panelRef} {...panelProps} data-slot="panel">
+            {children}
+          </AccordionPanel>
+        </AccordionDisclosure>
       </AccordionRoot>
     );
   }

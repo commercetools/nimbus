@@ -3,6 +3,7 @@ import { listSlotRecipe } from "@/components/list/list.recipe";
 import { tableSlotRecipe } from "@/components/table/table.recipe";
 import { checkboxSlotRecipe } from "@/components/checkbox/checkbox.recipe";
 import { selectSlotRecipe } from "@/components/select/select.recipe";
+import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -10,4 +11,5 @@ export const slotRecipes = {
   table: tableSlotRecipe,
   checkbox: checkboxSlotRecipe,
   select: selectSlotRecipe,
+  accordion: accordionSlotRecipe,
 };

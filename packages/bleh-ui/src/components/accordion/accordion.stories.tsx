@@ -35,7 +35,7 @@ export const Basic: Story = {
       <Stack>
         {items.map((item, index) => (
           <Accordion title={item.title} key={index} {...args}>
-            <div>{item.text}</div>
+            {item.text}
           </Accordion>
         ))}
       </Stack>
