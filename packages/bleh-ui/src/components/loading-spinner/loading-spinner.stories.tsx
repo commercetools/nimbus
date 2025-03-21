@@ -57,3 +57,20 @@ export const Tones: Story = {
 
   args: {},
 };
+
+/**
+ * Smoke Test
+ */
+export const SmokeTest: Story = {
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {["primary", "white"].map((tone) => (
+          <LoadingSpinner key={tone} {...args} tone={tone} />
+        ))}
+      </Stack>
+    );
+  },
+
+  args: {},
+};
