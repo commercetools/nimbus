@@ -13,17 +13,21 @@ const pointerPath =
  * ============================================================
  * Indicates ongoing processes or loading states
  */
-// TODO: add docs with props
+// TODO: add docs with props to the storybook site
 export const LoadingSpinner = forwardRef<HTMLDivElement, LoadingSpinnerProps>(
   ({ ...props }, ref) => {
     const { progressBarProps } = useProgressBar({
-      label: "loading", // TODO: get this a11y violation to pass somehow
       isIndeterminate: true,
       ...props,
     });
 
     return (
-      <LoadingSpinnerRoot ref={ref} {...mergeProps(props, progressBarProps)}>
+      <LoadingSpinnerRoot
+        ref={ref}
+        {...mergeProps(props, progressBarProps)}
+        // FIXME: For some reason, specifying `label` in `useProgressBar` doesn't pass a11y tests so we have to manually add it here.
+        aria-label="Loading data"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
           <path
             d={circlePath}

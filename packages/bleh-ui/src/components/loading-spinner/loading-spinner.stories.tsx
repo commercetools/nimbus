@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { LoadingSpinner } from "./loading-spinner";
 import { Stack } from "./../stack";
+import type { LoadingSpinnerProps } from "./loading-spinner.types";
+
+const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
+
+const tones: LoadingSpinnerProps["tone"][] = ["primary", "white"];
 
 const meta: Meta<typeof LoadingSpinner> = {
   title: "components/LoadingSpinner",
@@ -15,24 +20,16 @@ export default meta;
  */
 type Story = StoryObj<typeof LoadingSpinner>;
 
-/**
- * Base story
- * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
- */
 export const Base: Story = {
   args: {},
 };
 
-/**
- * Showcase Sizes
- */
 export const Sizes: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
-        {["2xs", "xs", "sm", "md", "lg"].map((size) => (
-          <LoadingSpinner key={size} {...args} size={size} />
+        {sizes.map((size) => (
+          <LoadingSpinner key={size as string} {...args} size={size} />
         ))}
       </Stack>
     );
@@ -42,31 +39,14 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Tones
+ * One tone for a light background and one for a dark background
  */
 export const Tones: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
-        {["primary", "white"].map((tone) => (
-          <LoadingSpinner key={tone} {...args} tone={tone} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {},
-};
-
-/**
- * Smoke Test
- */
-export const SmokeTest: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {["primary", "white"].map((tone) => (
-          <LoadingSpinner key={tone} {...args} tone={tone} />
+        {tones.map((tone) => (
+          <LoadingSpinner key={tone as string} {...args} tone={tone} />
         ))}
       </Stack>
     );
