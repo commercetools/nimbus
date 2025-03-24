@@ -9,6 +9,7 @@ import { useDisclosureState } from "react-stately";
 import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
 import { type DisclosureProps } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react";
+import type { AccordionRootProps } from "./accordion.types";
 
 /**
  * Accordion
@@ -26,8 +27,9 @@ import { useSlotRecipe } from "@chakra-ui/react";
 
 interface AccordionProps extends Omit<DisclosureProps, "children"> {
   children?: React.ReactNode;
-  title?: string;
+  title?: React.ReactNode;
   recipe?: string;
+  size?: AccordionRootProps["size"];
 }
 
 export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
@@ -54,6 +56,7 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             data-slot="trigger"
             style={{
               outline: isFocusVisible ? "2px solid dodgerblue" : "none",
+              fontSize: props.size as string,
             }}
           >
             <svg viewBox="0 0 24 24">

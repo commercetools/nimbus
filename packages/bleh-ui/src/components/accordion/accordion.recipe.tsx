@@ -17,22 +17,21 @@ export const accordionSlotRecipe = defineSlotRecipe({
       width: "100%",
     },
     trigger: {
+      fontSize: "var(--font-size)",
+      borderBottom: "solid-25",
+      borderColor: "neutral.4",
       background: "none",
-      border: "none",
-      boxShadow: "none",
       fontWeight: "bold",
-      fontSize: "16px",
       display: "flex",
       alignItems: "center",
       gap: "8px",
-      color: "var(--text-color)",
       width: "100%",
 
       "& svg": {
+        width: "var(--width)",
+        height: "var(--height)",
         rotate: "0deg",
         transition: "rotate 200ms",
-        width: "12px",
-        height: "12px",
         fill: "none",
         stroke: "currentColor",
         strokeWidth: "3px",
@@ -40,35 +39,42 @@ export const accordionSlotRecipe = defineSlotRecipe({
       '&[aria-expanded="true"] svg': {
         rotate: "90deg",
       },
-      "&:disabled": {
-        color: "var(--gray-300)",
-      },
     },
     panel: {
-      marginLeft: "20px",
+      marginLeft: "var(--panel-spacing)",
     },
   },
 
   variants: {
     size: {
-      "2xs": {},
-      xs: {},
-      sm: {},
-      md: {},
-      lg: {},
-      xl: {},
-      "2xl": {},
-    },
-
-    variant: {
-      solid: {},
-      subtle: {},
-      outline: {},
-      ghost: {},
-      plain: {},
+      md: {
+        trigger: {
+          "--font-size": "fontSizes.500",
+          "& svg": {
+            "--width": "sizes.500",
+            "--height": "sizes.500",
+          },
+        },
+        panel: {
+          "--panel-spacing": "spacing.700",
+        },
+      },
+      sm: {
+        trigger: {
+          "--font-size": "fontSizes.400",
+          "& svg": {
+            "--width": "sizes.400",
+            "--height": "sizes.400",
+          },
+        },
+        panel: {
+          "--panel-spacing": "spacing.600",
+        },
+      },
     },
   },
 
-  // Default variant values when not explicitly specified
-  defaultVariants: {},
+  defaultVariants: {
+    size: "md",
+  },
 });
