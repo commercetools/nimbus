@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { LoadingSpinner } from "./loading-spinner";
 import { Stack } from "./../stack";
 import type { LoadingSpinnerProps } from "./loading-spinner.types";
+import { within, expect } from "@storybook/test";
 
 const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
 
@@ -21,7 +22,25 @@ export default meta;
 type Story = StoryObj<typeof LoadingSpinner>;
 
 export const Base: Story = {
-  args: {},
+  args: {
+    "data-testid": "spinner-test",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const spinner = canvas.getByTestId("spinner-test");
+
+    await step("Uses a <div> wrapper by default", async () => {
+      await expect(spinner.tagName).toBe("DIV");
+    });
+
+    await step("Has ARIA role='progressbar'", async () => {
+      await expect(spinner).toHaveAttribute("role", "progressbar");
+    });
+
+    await step("Has an accessible label", async () => {
+      await expect(spinner).toHaveAttribute("aria-label", "Loading data");
+    });
+  },
 };
 
 export const Sizes: Story = {

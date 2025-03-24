@@ -9,7 +9,9 @@ import { loadingSpinnerRecipe } from "./loading-spinner.recipe";
  * and styling variants from the recipe.
  */
 type LoadingSpinnerVariantProps = LoadingSpinnerRootProps &
-  RecipeVariantProps<typeof loadingSpinnerRecipe>;
+  RecipeVariantProps<typeof loadingSpinnerRecipe> & {
+    [key: `data-${string}`]: string;
+  };
 
 /**
  * Main props interface for the LoadingSpinner component.
