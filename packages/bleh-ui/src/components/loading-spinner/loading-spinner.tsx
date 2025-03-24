@@ -13,7 +13,6 @@ const pointerPath =
  * ============================================================
  * Indicates ongoing processes or loading states
  */
-// TODO: add docs with props to the storybook site
 export const LoadingSpinner = forwardRef<HTMLDivElement, LoadingSpinnerProps>(
   ({ ...props }, ref) => {
     const { progressBarProps } = useProgressBar({

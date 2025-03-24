@@ -53,4 +53,9 @@ export const Tones: Story = {
   },
 
   args: {},
+  parameters: {
+    backgrounds: {
+      default: "dark",
+    },
+  },
 };
