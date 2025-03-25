@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Accordion } from "./accordion";
-import { Stack } from "./../stack";
 import type { AccordionRootProps } from "./accordion.types";
 
 /**
@@ -26,7 +25,11 @@ const accordionSizes: AccordionRootProps["size"][] = ["sm", "md"];
 const items = [
   { value: "a", title: "First Item", text: "Some value 1..." },
   { value: "b", title: "Second Item", text: "Some value 2..." },
-  { value: "c", title: "Third Item", text: "Some value 3..." },
+  {
+    value: "c",
+    title: "Third Item",
+    text: "Very long Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  },
 ];
 
 /**
@@ -35,13 +38,13 @@ const items = [
 export const Basic: Story = {
   render: (args) => {
     return (
-      <Stack>
+      <>
         {items.map((item, index) => (
           <Accordion title={item.title} key={index} {...args} size={"md"}>
             {item.text}
           </Accordion>
         ))}
-      </Stack>
+      </>
     );
   },
 };
@@ -51,18 +54,50 @@ export const Basic: Story = {
 export const Sizes: Story = {
   render: (args) => {
     return (
-      <Stack>
+      <>
         {accordionSizes.map((size, index) => (
-          <Accordion
-            title={<>{size} size text</>}
-            key={index}
-            {...args}
-            size={size}
-          >
+          <Accordion title={<>{size} size</>} key={index} {...args} size={size}>
             <>{size} size text</>
           </Accordion>
         ))}
-      </Stack>
+      </>
+    );
+  },
+};
+/**
+ * With buttons on the trigger
+ */
+export const WithButtonsOnTrigger: Story = {
+  render: (args) => {
+    return (
+      <>
+        {items.map((item, index) => (
+          <Accordion
+            title={item.title}
+            key={index}
+            {...args}
+            size={"md"}
+            additionalTriggerComponent={
+              <div style={{ padding: "10px" }}>
+                <button onClick={() => console.log(item.title)}>
+                  Click me
+                </button>
+                <button onClick={() => console.log(item.title)}>
+                  Click me
+                </button>
+                {/* <button onClick={() => console.log(item.title)}>
+                  Click me
+                </button>
+                <button onClick={() => console.log(item.title)}>
+                  Click me
+                </button> */}
+              </div>
+            }
+          >
+            {item.text}
+          </Accordion>
+        ))}
+      </>
     );
   },
 };

@@ -4,12 +4,14 @@ import {
   AccordionDisclosure,
   AccordionTrigger,
   AccordionPanel,
+  AccordionTitle,
 } from "./accordion.slots";
 import { useDisclosureState } from "react-stately";
 import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
 import { type DisclosureProps } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react";
 import type { AccordionRootProps } from "./accordion.types";
+import { Flex } from "@/components";
 
 /**
  * Accordion
@@ -28,12 +30,13 @@ import type { AccordionRootProps } from "./accordion.types";
 interface AccordionProps extends Omit<DisclosureProps, "children"> {
   children?: React.ReactNode;
   title?: React.ReactNode;
+  additionalTriggerComponent?: React.ReactNode;
   recipe?: string;
   size?: AccordionRootProps["size"];
 }
 
 export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
-  ({ title, children, ...props }, forwardedRef) => {
+  ({ title, children, additionalTriggerComponent, ...props }, forwardedRef) => {
     const state = useDisclosureState(props);
     const panelRef = React.useRef<HTMLDivElement | null>(null);
     const triggerRef = React.useRef<HTMLButtonElement | null>(null);
@@ -43,27 +46,39 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       panelRef
     );
     const { buttonProps } = useButton(triggerProps, triggerRef);
-    const { isFocusVisible, focusProps } = useFocusRing();
+    const { focusProps, isFocusVisible } = useFocusRing();
     const recipe = useSlotRecipe({ key: "accordion" });
     const [recipeProps] = recipe.splitVariantProps(props);
 
     return (
       <AccordionRoot data-slot="root" ref={forwardedRef} {...recipeProps}>
         <AccordionDisclosure>
-          <AccordionTrigger
-            ref={triggerRef}
-            {...mergeProps(buttonProps, focusProps)}
-            data-slot="trigger"
-            style={{
-              outline: isFocusVisible ? "2px solid dodgerblue" : "none",
-              fontSize: props.size as string,
-            }}
+          <Flex
+            justifyContent="space-between"
+            alignItems={"center"}
+            borderBottom="solid-25"
+            borderColor="neutral.4"
           >
-            <svg viewBox="0 0 24 24">
-              <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-            </svg>
-            {title}
-          </AccordionTrigger>
+            <AccordionTrigger
+              ref={triggerRef}
+              {...mergeProps(buttonProps, focusProps)}
+              data-slot="trigger"
+              outline={isFocusVisible ? undefined : "none"}
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+              <AccordionTitle
+                data-slot="acccordionTitle"
+                style={{
+                  fontSize: props.size as string,
+                }}
+              >
+                {title}
+              </AccordionTitle>
+            </AccordionTrigger>
+            <div>{additionalTriggerComponent}</div>
+          </Flex>
           <AccordionPanel ref={panelRef} {...panelProps} data-slot="panel">
             {children}
           </AccordionPanel>

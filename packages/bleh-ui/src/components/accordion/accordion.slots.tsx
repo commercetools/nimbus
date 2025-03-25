@@ -30,3 +30,9 @@ export const AccordionPanel = withContext<HTMLDivElement, AccordionPanelProps>(
   "div",
   "panel"
 );
+
+type AccordionTitleProps = HTMLChakraProps<"div">;
+export const AccordionTitle = withContext<
+  HTMLButtonElement,
+  AccordionTitleProps
+>("div", "acccordionTitle");
