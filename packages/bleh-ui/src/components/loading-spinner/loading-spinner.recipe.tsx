@@ -17,7 +17,10 @@ export const loadingSpinnerRecipe = defineRecipe({
       transform: "scale(calc(1 - 2/12))",
     },
     "& svg [data-testid='spinner-pointer']": {
-      animation: "spin 0.5s linear infinite",
+      animationName: "spin",
+      animationDuration: "0.5s",
+      animationTimingFunction: "linear",
+      animationIterationCount: "infinite",
       transformOrigin: "center center 0",
     },
   },
