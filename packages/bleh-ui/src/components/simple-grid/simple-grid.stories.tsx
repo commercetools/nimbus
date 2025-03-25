@@ -26,7 +26,7 @@ type Story = StoryObj<typeof SimpleGrid>;
  * Demonstrates the most basic implementation
  * Uses the args pattern for dynamic control panel inputs
  */
-export const Basic: Story = {
+export const Base: Story = {
   args: {
     gap: "100",
     ["aria-label"]: "test-layout",
