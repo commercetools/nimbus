@@ -17,11 +17,15 @@ export const loadingSpinnerRecipe = defineRecipe({
       transform: "scale(calc(1 - 2/12))",
     },
     "& svg [data-testid='spinner-pointer']": {
+      stroke: "colorPalette.10",
       animationName: "spin",
       animationDuration: "0.5s",
       animationTimingFunction: "linear",
       animationIterationCount: "infinite",
       transformOrigin: "center center 0",
+    },
+    "& svg [data-testid='spinner-circle']": {
+      stroke: "colorPalette.5",
     },
   },
 
@@ -52,21 +56,9 @@ export const loadingSpinnerRecipe = defineRecipe({
     tone: {
       primary: {
         colorPalette: "ctvioletAlpha",
-        "& svg [data-testid='spinner-circle']": {
-          stroke: "colorPalette.5",
-        },
-        "& svg [data-testid='spinner-pointer']": {
-          stroke: "colorPalette.9",
-        },
       },
       white: {
         colorPalette: "whiteAlpha",
-        "& svg [data-testid='spinner-circle']": {
-          stroke: "colorPalette.5",
-        },
-        "& svg [data-testid='spinner-pointer']": {
-          stroke: "white",
-        },
       },
     },
   },
