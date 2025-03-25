@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Accordion } from "./accordion";
 import type { AccordionRootProps } from "./accordion.types";
 import { Button, Checkbox, Flex, Avatar } from "@/components";
+import { userEvent, within, expect, waitFor } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -37,16 +38,45 @@ const items = [
  * Basic Case
  */
 export const Base: Story = {
-  render: (args) => {
-    return (
-      <>
-        {items.map((item, index) => (
-          <Accordion title={item.title} key={index} {...args}>
-            {item.text}
-          </Accordion>
-        ))}
-      </>
-    );
+  args: {
+    title: "Test Accordion",
+    children: "Accordion Content",
+    // @ts-expect-error: data-testid is not a valid prop
+    "data-testid": "test-accordion",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const accordion = canvas.getByTestId("test-accordion");
+
+    const trigger = accordion.querySelector(
+      '[data-slot="trigger"]'
+    ) as HTMLButtonElement;
+    console.log(trigger);
+
+    const panel = accordion.querySelector(
+      '[data-slot="panel"]'
+    ) as HTMLDivElement;
+
+    console.log(trigger);
+
+    await step("Can be focused with keyboard", async () => {
+      await userEvent.tab();
+      await waitFor(() => expect(trigger).toHaveFocus());
+    });
+
+    await step("Panel is initially hidden", async () => {
+      await expect(panel).not.toBeVisible();
+    });
+
+    await step("Can be triggered with Enter key", async () => {
+      await userEvent.keyboard("{Enter}");
+      await expect(panel).toBeVisible();
+    });
+
+    await step("Can be triggered with Space key", async () => {
+      await userEvent.keyboard(" ");
+      await expect(panel).not.toBeVisible();
+    });
   },
 };
 /**
@@ -117,5 +147,37 @@ export const WithButtonsOnTrigger: Story = {
         ))}
       </>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const accordion = canvasElement.querySelector(
+      '[data-slot="root"]'
+    ) as HTMLElement;
+    const additionalButtons = accordion.querySelectorAll("button");
+    const trigger = accordion.querySelector(
+      '[data-slot="trigger"]'
+    ) as HTMLButtonElement;
+
+    await step("Additional buttons don't trigger accordion", async () => {
+      const panel = accordion.querySelector(
+        '[data-slot="panel"]'
+      ) as HTMLDivElement;
+      await expect(panel).not.toBeVisible();
+
+      // Click additional buttons
+      for (const button of Array.from(additionalButtons)) {
+        if (button !== trigger) {
+          await userEvent.click(button);
+          await expect(panel).not.toBeVisible();
+        }
+      }
+    });
+
+    await step("Main trigger still works", async () => {
+      const panel = accordion.querySelector(
+        '[data-slot="panel"]'
+      ) as HTMLDivElement;
+      await userEvent.click(trigger);
+      await expect(panel).toBeVisible();
+    });
   },
 };

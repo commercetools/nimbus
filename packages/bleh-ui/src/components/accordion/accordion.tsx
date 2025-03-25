@@ -27,7 +27,7 @@ import { Flex } from "@/components";
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
 
-interface AccordionProps extends Omit<DisclosureProps, "children"> {
+interface AccordionProps extends Omit<DisclosureProps, "children" | "id"> {
   children?: React.ReactNode;
   title?: React.ReactNode;
   additionalTriggerComponent?: React.ReactNode;
@@ -51,7 +51,12 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
     const [recipeProps] = recipe.splitVariantProps(props);
 
     return (
-      <AccordionRoot data-slot="root" ref={forwardedRef} {...recipeProps}>
+      <AccordionRoot
+        data-slot="root"
+        ref={forwardedRef}
+        {...recipeProps}
+        {...(props as AccordionRootProps)}
+      >
         <AccordionDisclosure>
           <Flex
             justifyContent="space-between"
