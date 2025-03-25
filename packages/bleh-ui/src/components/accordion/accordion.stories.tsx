@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Accordion } from "./accordion";
 import type { AccordionRootProps } from "./accordion.types";
+import { Button, Checkbox, Flex, Avatar } from "@/components";
 
 /**
  * Storybook metadata configuration
@@ -28,19 +29,19 @@ const items = [
   {
     value: "c",
     title: "Third Item",
-    text: "Very long Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    text: "Some value 3",
   },
 ];
 
 /**
  * Basic Case
  */
-export const Basic: Story = {
+export const Base: Story = {
   render: (args) => {
     return (
       <>
         {items.map((item, index) => (
-          <Accordion title={item.title} key={index} {...args} size={"md"}>
+          <Accordion title={item.title} key={index} {...args}>
             {item.text}
           </Accordion>
         ))}
@@ -67,6 +68,18 @@ export const Sizes: Story = {
 /**
  * With buttons on the trigger
  */
+
+const AccordionContent = () => {
+  const avatarImg = "https://thispersondoesnotexist.com/ ";
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+      <Avatar src={avatarImg} firstName="Michael" lastName="Douglas" />
+      <Checkbox>Yes?</Checkbox>
+      <Checkbox>No?</Checkbox>
+    </div>
+  );
+};
 export const WithButtonsOnTrigger: Story = {
   render: (args) => {
     return (
@@ -79,22 +92,27 @@ export const WithButtonsOnTrigger: Story = {
             size={"md"}
             additionalTriggerComponent={
               <div style={{ padding: "10px" }}>
-                <button onClick={() => console.log(item.title)}>
+                <Button marginRight="100" tone="primary">
                   Click me
-                </button>
-                <button onClick={() => console.log(item.title)}>
+                </Button>
+                <Button marginRight="100" tone="neutral">
                   Click me
-                </button>
-                {/* <button onClick={() => console.log(item.title)}>
+                </Button>
+                <Button marginRight="100" tone="critical">
                   Click me
-                </button>
-                <button onClick={() => console.log(item.title)}>
-                  Click me
-                </button> */}
+                </Button>
               </div>
             }
           >
-            {item.text}
+            <Flex
+              justifyContent="space-between"
+              alignItems={"center"}
+              borderBottom="solid-25"
+              borderColor="neutral.4"
+            >
+              <div style={{ marginRight: "100" }}>{item.text}</div>
+              <AccordionContent />
+            </Flex>
           </Accordion>
         ))}
       </>
