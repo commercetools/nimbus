@@ -25,24 +25,24 @@ export const loadingSpinnerRecipe = defineRecipe({
   variants: {
     size: {
       "2xs": {
-        width: "{sizes.350}",
-        height: "{sizes.350}",
+        width: "350",
+        height: "350",
       },
       xs: {
-        width: "{sizes.500}",
-        height: "{sizes.500}",
+        width: "500",
+        height: "500",
       },
       sm: {
-        width: "{sizes.600}",
-        height: "{sizes.600}",
+        width: "600",
+        height: "600",
       },
       md: {
-        width: "{sizes.800}",
-        height: "{sizes.800}",
+        width: "800",
+        height: "800",
       },
       lg: {
-        width: "{sizes.1000}",
-        height: "{sizes.1000}",
+        width: "1000",
+        height: "1000",
       },
     },
 
