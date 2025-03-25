@@ -53,7 +53,7 @@ const preview: Preview = {
       classTarget: "html",
     },
     backgrounds: {
-      disable: false,
+      disable: true,
     },
     a11y: {
       config: {

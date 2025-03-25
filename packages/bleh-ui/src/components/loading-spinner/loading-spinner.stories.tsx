@@ -3,6 +3,7 @@ import { LoadingSpinner } from "./loading-spinner";
 import { Stack } from "./../stack";
 import type { LoadingSpinnerProps } from "./loading-spinner.types";
 import { within, expect } from "@storybook/test";
+import { Box } from "@chakra-ui/react";
 
 const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
 
@@ -63,18 +64,15 @@ export const Sizes: Story = {
 export const Tones: Story = {
   render: (args) => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {tones.map((tone) => (
-          <LoadingSpinner key={tone as string} {...args} tone={tone} />
-        ))}
-      </Stack>
+      <Box backgroundColor="fg">
+        <Stack direction="row" gap="400" alignItems="center">
+          {tones.map((tone) => (
+            <LoadingSpinner key={tone as string} {...args} tone={tone} />
+          ))}
+        </Stack>
+      </Box>
     );
   },
 
   args: {},
-  parameters: {
-    backgrounds: {
-      default: "dark",
-    },
-  },
 };
