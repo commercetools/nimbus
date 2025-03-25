@@ -18,7 +18,7 @@ export const loadingSpinnerRecipe = defineRecipe({
     },
     "& svg [data-testid='spinner-pointer']": {
       animation: "spin 0.5s linear infinite",
-      transformOrigin: "{spacing.300} {spacing.300} 0",
+      transformOrigin: "center center 0",
     },
   },
 
