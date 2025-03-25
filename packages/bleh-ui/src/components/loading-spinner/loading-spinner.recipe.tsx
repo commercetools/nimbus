@@ -13,6 +13,8 @@ export const loadingSpinnerRecipe = defineRecipe({
     justifyContent: "center",
     "& svg": {
       overflow: "visible",
+      // This proportionally scales the spinner to fit the container while also scaling padding
+      transform: "scale(calc(1 - 2/12))",
     },
     "& svg path:last-of-type": {
       animation: "spin 0.5s linear infinite",
@@ -25,47 +27,22 @@ export const loadingSpinnerRecipe = defineRecipe({
       "2xs": {
         width: "{spacing.350}",
         height: "{spacing.350}",
-        padding: "calc({spacing.350} / 12)",
-        "& svg": {
-          width: "100%",
-          height: "100%",
-        },
       },
       xs: {
         width: "{spacing.500}",
         height: "{spacing.500}",
-        padding: "calc({spacing.500} / 12)",
-        "& svg": {
-          width: "100%",
-          height: "100%",
-        },
       },
       sm: {
         width: "{spacing.600}",
         height: "{spacing.600}",
-        padding: "calc({spacing.600} / 12)",
-        "& svg": {
-          width: "100%",
-          height: "100%",
-        },
       },
       md: {
         width: "{spacing.800}",
         height: "{spacing.800}",
-        padding: "calc({spacing.800} / 12)",
-        "& svg": {
-          width: "100%",
-          height: "100%",
-        },
       },
       lg: {
         width: "{spacing.1000}",
         height: "{spacing.1000}",
-        padding: "calc({spacing.1000} / 12)",
-        "& svg": {
-          width: "100%",
-          height: "100%",
-        },
       },
     },
 
