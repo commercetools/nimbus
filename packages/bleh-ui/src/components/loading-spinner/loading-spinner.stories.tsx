@@ -41,6 +41,10 @@ export const Base: Story = {
     await step("Has an accessible label", async () => {
       await expect(spinner).toHaveAttribute("aria-label", "Loading data");
     });
+
+    await step("Has default aria-label", async () => {
+      await expect(spinner.ariaLabel).toBe("Loading data");
+    });
   },
 };
 
@@ -67,12 +71,27 @@ export const Tones: Story = {
       <Box backgroundColor="fg">
         <Stack direction="row" gap="400" alignItems="center">
           {tones.map((tone) => (
-            <LoadingSpinner key={tone as string} {...args} tone={tone} />
+            <LoadingSpinner
+              aria-label="Loading even more data"
+              key={tone as string}
+              {...args}
+              tone={tone}
+            />
           ))}
         </Stack>
       </Box>
     );
   },
 
-  args: {},
+  args: {
+    "data-testid": "spinner-test",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const spinner = canvas.getAllByTestId("spinner-test");
+
+    await step("Forwards aria-label", async () => {
+      await expect(spinner[0].ariaLabel).toBe("Loading even more data");
+    });
+  },
 };

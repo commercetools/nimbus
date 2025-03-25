@@ -14,7 +14,7 @@ const pointerPath =
  * Indicates ongoing processes or loading states
  */
 export const LoadingSpinner = forwardRef<HTMLDivElement, LoadingSpinnerProps>(
-  ({ ...props }, ref) => {
+  ({ "aria-label": ariaLabel = "Loading data", ...props }, ref) => {
     const { progressBarProps } = useProgressBar({
       isIndeterminate: true,
       ...props,
@@ -24,8 +24,7 @@ export const LoadingSpinner = forwardRef<HTMLDivElement, LoadingSpinnerProps>(
       <LoadingSpinnerRoot
         ref={ref}
         {...mergeProps(props, progressBarProps)}
-        // FIXME: For some reason, specifying `label` in `useProgressBar` doesn't pass a11y tests so we have to manually add it here.
-        aria-label="Loading data"
+        aria-label={ariaLabel}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
           <path
