@@ -1,17 +1,76 @@
 ---
-id: Link
-title: Link
-description: displays a link
+id: Components-link
+title: link
+description: To allow a user to navigate to a different page or resource
 documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - Typography
-  - Link
-tags:
+  - Navigation
   - link
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726&m=dev
 ---
 
 # Link
 
-Add description later.
+Allows a user to navigate to a different page or resource.
+
+## Basic Usage
+
+If unconfigured it will default to a neutral state. It is important to configure
+the Link properly to ensure it displays as intended.
+
+```jsx-live
+const App = () => <Link>I am Link!</Link>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['md', 'sm', 'xs'].reverse();
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Link key={size} size={size}>'{size}' Link</Link>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const sizes = ['md', 'sm', 'xs'].reverse();
+  const colors = ["primary", "inherit"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {sizes.map((size) => (
+            <Link fontColor={color} key={size} size={size}>
+              '{size}' Link w/ color '{color}'
+            </Link>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="Link" />

@@ -1,35 +1,67 @@
 import { defineRecipe } from "@chakra-ui/react";
 
+/**
+ * Recipe configuration for the Link component.
+ * Defines the styling variants and base styles using Chakra UI's recipe system.
+ */
 export const linkRecipe = defineRecipe({
   className: "bleh-ui-link",
+  // Base styles applied to all instances of the component
   base: {
     display: "inline-flex",
     alignItems: "center",
+    borderRadius: "200",
+    borderWidth: "1px",
+    borderColor: "transparent",
+    focusVisibleRing: "outside",
+    bg: "transparent",
     outline: "none",
-    gap: "150",
     cursor: "pointer",
-    borderRadius: "50",
-    focusRing: "outside",
+    textDecoration: "underline",
+    textUnderlineOffset: "3px",
+    _hover: {
+      textDecorationThickness: "12%",
+    },
   },
+  // Available variants for customizing the component's appearance
   variants: {
-    variant: {
-      underline: {
-        color: "colorPalette.fg",
-        textDecoration: "underline",
-        textUnderlineOffset: "3px",
-        textDecorationColor: "currentColor/20",
-      },
-      plain: {
-        color: "colorPalette.fg",
+    // Size variants from smallest to largest
+    size: {
+      xs: {
+        fontSize: "300",
+        lineHeight: "400",
+        px: "200",
         _hover: {
-          textDecoration: "underline",
-          textUnderlineOffset: "3px",
-          textDecorationColor: "currentColor/20",
+          // Increased thickness on hover for smallest size
+          textDecorationThickness: "13%",
         },
+      },
+      sm: {
+        fontSize: "350",
+        lineHeight: "400",
+        px: "300",
+      },
+      md: {
+        fontSize: "400",
+        lineHeight: "400",
+        px: "400",
+      },
+    },
+    // style variants
+    fontColor: {
+      primary: {
+        color: "colorPalette.11",
+        colorPalette: "primary",
+      },
+      inherit: {
+        color: "inherit",
+        colorPalette: "neutral",
       },
     },
   },
+  // Default variant values when not explicitly specified
   defaultVariants: {
-    variant: "plain",
+    size: "md",
+    fontColor: "primary",
   },
 });

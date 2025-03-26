@@ -3,13 +3,13 @@ to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.ch
 ---
 import { forwardRef } from "react";
 import { <%= h.changeCase.pascal(name) %>Root } from "./<%= h.changeCase.paramCase(name) %>.slots";
-import type { <%= h.changeCase.pascalCase(name) %>Props } from "./<%= h.changeCase.paramCase(name) %>.types"
+import type { <%= h.changeCase.pascalCase(name) %>Props } from "./<%= h.changeCase.paramCase(name) %>.types";
 
 /**
  * <%= h.changeCase.pascal(name) %>
  * ============================================================
  * <%= purpose %>
- * 
+ *
  * Features:
  *
  * - allows forwarding refs to the underlying DOM element

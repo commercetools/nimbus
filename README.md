@@ -7,7 +7,7 @@ This is a mono-repo. It contains multiple packages & apps.
 ### Packages
 
 - **@bleh-ui/react** ui-library, react components to build user interfaces
-- **@bleh-ui/icons** icon libary, svg files as react-components
+- **@bleh-ui/icons** icon library, svg files as react-components
 
 ### Apps
 
@@ -40,7 +40,8 @@ $ pnpm install
 
 ### Development
 
-1. If you just set up the repository, do an initial [build](#build).
+1. If you are setting up for the first time, do an initial
+   [build](#build).
 2. Start the development environment with the following command
 
    ```bash
@@ -66,7 +67,7 @@ $ pnpm run build-packages
 ### Creating a new component
 
 To create a new component, we run a script, using hygen, to initialize some
-component templates from which we further build our components on.
+component templates to guide development.
 
 ```bash
 pnpm run component:new
