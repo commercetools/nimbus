@@ -10,7 +10,7 @@ export const linkRecipe = defineRecipe({
   base: {
     display: "inline-flex",
     alignItems: "center",
-    borderRadius: "200",
+    borderRadius: "100",
     borderWidth: "1px",
     borderColor: "transparent",
     focusVisibleRing: "outside",
