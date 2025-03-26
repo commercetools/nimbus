@@ -50,12 +50,10 @@ export const linkRecipe = defineRecipe({
     // style variants
     fontColor: {
       primary: {
-        color: "colorPalette.11",
-        colorPalette: "primary",
+        color: "primary",
       },
       inherit: {
         color: "inherit",
-        colorPalette: "neutral",
       },
     },
   },

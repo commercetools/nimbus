@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Link } from "./link";
-import { Stack } from "./../stack";
+import { Box, Stack } from "@/components";
 import type { LinkProps } from "./link.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
 import { createRef } from "react";
@@ -9,9 +9,7 @@ const sizes: LinkProps["size"][] = ["xs", "sm", "md"];
 const fontColors: LinkProps["fontColor"][] = ["primary", "inherit"];
 
 /**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
+ * The Link component allows a user to navigate to a different page or resource.
  */
 const meta: Meta<typeof Link> = {
   title: "components/Link",
@@ -95,16 +93,22 @@ export const Sizes: Story = {
 export const FontColors: Story = {
   render: (args) => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {fontColors.map((variant) => (
-          <Link key={variant as string} {...args} fontColor={variant} />
-        ))}
-      </Stack>
+      <Box p="400" bg="primary.3">
+        <Stack direction="row" gap="500" alignItems="center">
+          {fontColors.map((color) => (
+            <p key={color as string} style={{ color: "white" }}>
+              This is a {JSON.stringify(color)}
+              <Link key={color as string} {...args} fontColor={color} />
+              in action.
+            </p>
+          ))}
+        </Stack>
+      </Box>
     );
   },
 
   args: {
-    children: "Demo Link",
+    children: "Link",
   },
 };
 
