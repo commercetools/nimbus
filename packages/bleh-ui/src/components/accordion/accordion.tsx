@@ -73,12 +73,7 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
               <svg viewBox="0 0 24 24">
                 <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
               </svg>
-              <AccordionTitle
-                data-slot="acccordionTitle"
-                style={{
-                  fontSize: props.size as string,
-                }}
-              >
+              <AccordionTitle data-slot="acccordionTitle">
                 {title}
               </AccordionTitle>
             </AccordionTrigger>

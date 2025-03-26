@@ -1,7 +1,10 @@
 ---
 id: Components-Accordion
 title: Accordion
-description: A component used for organizing contents. This allows users to toggle visibility of the content sections in their individual panels when the panel&#39;s header is clicked. 
+description:
+  A component used for organizing contents. This allows users to toggle
+  visibility of the content sections in their individual panels when the
+  panel&#39;s header is clicked.
 documentState: InitialDraft
 order: 999
 menu:
@@ -13,78 +16,122 @@ tags:
 
 # Accordion
 
-A component used for organizing contents. This allows users to toggle visibility of the content sections in their individual panels when the panel&#39;s header is clicked. 
+A component used for organizing contents. This allows users to toggle visibility
+of the content sections in their individual panels when the panel's header
+is clicked.
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
-
 ```jsx-live
-const App = () => <Accordion>I am Accordion!</Accordion>
+const App = () => <Accordion title="Headline">I am Accordion!</Accordion>
 ```
-
 
 ### Sizes
 
-Available sizes.
+Accordion come in different sizes, sizing an accordion is done by setting the `size`
+prop.
 
 ```jsx-live
 const App = () => {
 
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const accordionSizes = ["sm", "md"];;
 
   return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <Accordion key={size} size={size}>'{size}' Accordion</Accordion>
+   <>
+      {accordionSizes.map((size, index) => (
+        <Accordion title={<>{size} size</>} key={index} size={size}>
+          <>{size} size text</>
+        </Accordion>
       ))}
-    </Stack>
+    </>
   )
 }
 ```
 
-### Variants
+### With Additional Contents On The Accordion Trigger
 
-Available variants.
+The accordion can take in more properties at the trigger button level to allow you add more features or actions on the trigger interface.
+You can add any component or additional text of choice; Texts, buttons, toggle botton etc.
+Do this by setting the `additionalTriggerComponent` prop.
 
 ```jsx-live
 const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const items = [
+    { value: "a", title: "First Item", text: "Some value 1..." },
+    { value: "b", title: "Second Item", text: "Some value 2..." },
+    {
+      value: "c",
+      title: "Third Item",
+      text: "Some value 3",
+    },
+  ]
 
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <Accordion key={variant} variant={variant}>'{variant}' Accordion</Accordion>
+    <>
+      {items.map((item, index) => (
+        <Accordion
+          title={item.title}
+          key={index}
+          size={"md"}
+          additionalTriggerComponent={
+            <div style={{ padding: "10px" }}>
+              <Button marginRight="100" tone="primary">
+                Click me
+              </Button>
+              <Button marginRight="100" tone="neutral">
+                Click me
+              </Button>
+              <Button marginRight="100" tone="critical">
+                Click me
+              </Button>
+            </div>
+          }
+        >
+          <div style={{ marginRight: "100" }}>{item.text}</div>
+        </Accordion>
       ))}
-    </Stack>
-  )
+    </>
+  );
 }
 ```
 
-### Colors
+### With A Custom Component In The Accordion Content
 
-[Explain usage with different colors/semantics.]
+To render any component of choice, pass in the custom component as the child of the accordion.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+  const AccordionContent = () => {
+    const avatarImg = "https://thispersondoesnotexist.com/ ";
+
+    return (
+      <Flex
+        justifyContent="space-between"
+        alignItems={"center"}
+        borderBottom="solid-25"
+        borderColor="neutral.4"
+      >
+        <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+          <Avatar src={avatarImg} firstName="Michael" lastName="Douglas" />
+          <Checkbox>Yes?</Checkbox>
+          <Checkbox>No?</Checkbox>
+        </div>
+        <div>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur.
+          </p>
+        </div>
+      </Flex>
+    );
+  };
 
   return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Accordion colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Accordion
-            </Accordion>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
+    <Accordion title={"Headline"} size={"md"}>
+      <AccordionContent />
+    </Accordion>
   );
 };
+
 ```
 
 ## Props

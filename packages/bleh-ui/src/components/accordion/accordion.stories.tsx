@@ -51,13 +51,10 @@ export const Base: Story = {
     const trigger = accordion.querySelector(
       '[data-slot="trigger"]'
     ) as HTMLButtonElement;
-    console.log(trigger);
 
     const panel = accordion.querySelector(
       '[data-slot="panel"]'
     ) as HTMLDivElement;
-
-    console.log(trigger);
 
     await step("Can be focused with keyboard", async () => {
       await userEvent.tab();
@@ -110,7 +107,7 @@ const AccordionContent = () => {
     </div>
   );
 };
-export const WithButtonsOnTrigger: Story = {
+export const WithAdditionalContentsOnTrigger: Story = {
   render: (args) => {
     return (
       <>
