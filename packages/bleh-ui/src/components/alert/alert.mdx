@@ -1,0 +1,92 @@
+---
+id: Components-Alert
+title: Alert
+description: Provides feedback to the user about the status of an action or system event
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Alert
+tags:
+  - component
+---
+
+# Alert
+
+Provides feedback to the user about the status of an action or system event
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <Alert>I am Alert!</Alert>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Alert key={size} size={size}>'{size}' Alert</Alert>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <Alert key={variant} variant={variant}>'{variant}' Alert</Alert>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <Alert colorPalette={color} key={variant} variant={variant}>
+              '{variant}' Alert
+            </Alert>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="Alert" />
