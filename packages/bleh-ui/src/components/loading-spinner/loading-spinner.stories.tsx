@@ -68,7 +68,7 @@ export const Sizes: Story = {
 export const Tones: Story = {
   render: (args) => {
     return (
-      <Box backgroundColor="fg">
+      <Box backgroundColor="blackAlpha.5">
         <Stack direction="row" gap="400" alignItems="center">
           {tones.map((tone) => (
             <LoadingSpinner
