@@ -35,12 +35,10 @@ export const Base: Story = {
     const card = canvas.getByTestId("test-card");
 
     await step("Renders a <div> by default", async () => {
-      // Because Card is forwardRef<HTMLDivElement>, by default it's a <div>.
       await expect(card.tagName).toBe("DIV");
     });
 
     await step("Displays correct content", async () => {
-      // Check that the text content is passed properly
       await expect(card).toHaveTextContent(args.children as string);
     });
   },
