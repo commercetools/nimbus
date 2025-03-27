@@ -5,40 +5,43 @@ import { defineRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const cardRecipe = defineRecipe({
-  // Unique class name prefix for the component
   className: "bleh-ui-card",
 
-  // Base styles applied to all instances of the component
   base: {
-    display: "block",
+    colorPalette: "slate",
+    display: "inline-flex",
+    alignItems: "flex-start",
+    padding: "400",
+    borderRadius: "300",
   },
 
-  // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
-    size: {
-      "2xs": {}, // Extra extra small
-      xs: {}, // Extra small
-      sm: {}, // Small
-      md: {}, // Medium
-      lg: {}, // Large
-      xl: {}, // Extra large
-      "2xl": {}, // Extra extra large
+    borderStyle: {
+      none: {},
+      outlined: {
+        border: "solid-25",
+        borderColor: "colorPalette.3",
+      },
     },
-
-    // Visual style variants
-    variant: {
-      solid: {}, // Filled background
-      subtle: {}, // Lighter background
-      outline: {}, // Bordered style
-      ghost: {}, // Background only on interaction
-      plain: {}, // No background or border
+    elevation: {
+      none: {},
+      elevated: {
+        shadow: "1",
+      },
+    },
+    backgroundStyle: {
+      default: {
+        backgroundColor: "colorPalette.contrast",
+      },
+      muted: {
+        backgroundColor: "colorPalette.2",
+      },
     },
   },
 
-  // Default variant values when not explicitly specified
   defaultVariants: {
-    size: "md",
-    variant: "subtle",
+    backgroundStyle: "default",
+    borderStyle: "none",
+    elevation: "none",
   },
 });

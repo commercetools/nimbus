@@ -7,7 +7,10 @@ import { cardRecipe } from "./card.recipe";
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type CardVariantProps = CardRootProps & RecipeVariantProps<typeof cardRecipe>;
+type CardVariantProps = CardRootProps &
+  RecipeVariantProps<typeof cardRecipe> & {
+    [key: `data-${string}`]: unknown;
+  };
 
 /**
  * Main props interface for the Card component.

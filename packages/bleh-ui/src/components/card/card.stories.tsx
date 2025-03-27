@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Card } from "./card";
 import { Stack } from "./../stack";
+import type { CardProps } from "./card.types";
+import { within, expect } from "@storybook/test";
 
-/**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
- */
+const elevations: CardProps["elevation"][] = ["none", "elevated"];
+const borderStyles: CardProps["borderStyle"][] = ["none", "outlined"];
+const backgroundStyles: CardProps["backgroundStyle"][] = ["default", "muted"];
+
 const meta: Meta<typeof Card> = {
   title: "components/Card",
   component: Card,
@@ -23,81 +24,64 @@ type Story = StoryObj<typeof Card>;
 /**
  * Base story
  * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
   args: {
     children: "Demo Card",
+    "data-testid": "test-card",
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const card = canvas.getByTestId("test-card");
+
+    await step("Renders a <div> by default", async () => {
+      // Because Card is forwardRef<HTMLDivElement>, by default it's a <div>.
+      await expect(card.tagName).toBe("DIV");
+    });
+
+    await step("Displays correct content", async () => {
+      // Check that the text content is passed properly
+      await expect(card).toHaveTextContent(args.children as string);
+    });
   },
 };
 
 /**
- * Showcase Sizes
+ * Showcase Configurations
  */
-export const Sizes: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((size) => (
-          <Card key={size} {...args} size={size} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo Card",
-  },
-};
-
-/**
- * Showcase Variants
- */
-export const Variants: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <Card key={variant} {...args} variant={variant} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo Card",
-  },
-};
-
-/**
- * Showcase Colors
- */
-export const Colors: Story = {
+export const Configurations: Story = {
   render: (args) => {
     return (
       <Stack>
-        {[].map((colorPalette) => (
-          <Stack
-            key={colorPalette}
-            direction="row"
-            gap="400"
-            alignItems="center"
-          >
-            {[].map((variant) => (
-              <Card
-                key={variant}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
-          </Stack>
-        ))}
+        {borderStyles.map((border) => {
+          return (
+            <Stack direction="row">
+              {elevations.map((shadow) => {
+                return backgroundStyles.map((background) => {
+                  return (
+                    <Card
+                      key={`${border as string}-${shadow as string}-${background as string}`}
+                      {...args}
+                      borderStyle={border}
+                      elevation={shadow}
+                      backgroundStyle={background}
+                    />
+                  );
+                });
+              })}
+            </Stack>
+          );
+        })}
       </Stack>
     );
   },
 
   args: {
-    children: "Demo Card",
+    children: (
+      <Stack direction="column" gap="200">
+        <b>Card title</b>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </Stack>
+    ),
   },
 };
