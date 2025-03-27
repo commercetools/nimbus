@@ -1,5 +1,5 @@
 ---
-to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.types.tsx
+to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.types.ts
 ---
 import type { <%= h.changeCase.pascalCase(name) %>RootProps } from "./<%= h.changeCase.paramCase(name) %>.slots"
 import type { RecipeVariantProps } from "@chakra-ui/react"
