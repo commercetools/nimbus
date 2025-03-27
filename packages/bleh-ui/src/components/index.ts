@@ -25,3 +25,4 @@ export * from "./visually-hidden";
 export * from "./text-input";
 export * from "./grid";
 export * from "./select";
+export * from "./loading-spinner";
