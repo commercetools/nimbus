@@ -16,7 +16,7 @@ export const loadingSpinnerRecipe = defineRecipe({
       // This proportionally scales the spinner to fit the container while also scaling padding
       transform: "scale(calc(1 - 2/12))",
     },
-    "& svg [data-testid='spinner-pointer']": {
+    "& svg [data-svg-path='spinner-pointer']": {
       stroke: "colorPalette.10",
       animationName: "spin",
       animationDuration: "0.5s",
@@ -24,7 +24,7 @@ export const loadingSpinnerRecipe = defineRecipe({
       animationIterationCount: "infinite",
       transformOrigin: "center center 0",
     },
-    "& svg [data-testid='spinner-circle']": {
+    "& svg [data-svg-path='spinner-circle']": {
       stroke: "colorPalette.5",
     },
   },

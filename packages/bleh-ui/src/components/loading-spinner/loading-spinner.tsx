@@ -29,14 +29,14 @@ export const LoadingSpinner = forwardRef<HTMLDivElement, LoadingSpinnerProps>(
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
           <path
             d={circlePath}
-            data-testid="spinner-circle"
+            data-svg-path="spinner-circle"
             strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d={pointerPath}
-            data-testid="spinner-pointer"
+            data-svg-path="spinner-pointer"
             strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
