@@ -6,8 +6,8 @@ This is a mono-repo. It contains multiple packages & apps.
 
 ### Packages
 
-- **@bleh-ui/react** ui-library, react components to build user interfaces
-- **@bleh-ui/icons** icon library, svg files as react-components
+- **@nimbus/react** ui-library, react components to build user interfaces
+- **@nimbus/icons** icon library, svg files as react-components
 
 ### Apps
 

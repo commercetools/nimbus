@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { system } from "@bleh-ui/react";
+import { system } from "@nimbus/react";
 import orderBy from "lodash/orderBy";
 
 // Define the shape of a spacing token

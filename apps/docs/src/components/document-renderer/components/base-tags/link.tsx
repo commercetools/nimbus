@@ -1,6 +1,6 @@
-import { Box, Link as StyledLink } from "@bleh-ui/react";
+import { Box, Link as StyledLink } from "@nimbus/react";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
-import { OpenInNew } from "@bleh-ui/icons";
+import { OpenInNew } from "@nimbus/icons";
 
 type LinkProps = DetailedHTMLProps<
   AnchorHTMLAttributes<HTMLAnchorElement>,

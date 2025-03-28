@@ -8,7 +8,7 @@ import {
   TableRoot,
   TableRow,
   Text,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 export const TextStylesDemo = () => {
   const obj = system._config.theme?.textStyles || [];
   const items = Object.entries(obj).map(([name, value]) => ({ name, value }));

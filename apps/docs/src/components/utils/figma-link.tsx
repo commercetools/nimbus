@@ -1,5 +1,5 @@
-import { Figma } from "@bleh-ui/icons";
-import { Button } from "@bleh-ui/react";
+import { Figma } from "@nimbus/icons";
+import { Button } from "@nimbus/react";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const FigmaLink = () => {

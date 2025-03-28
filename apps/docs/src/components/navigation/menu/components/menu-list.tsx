@@ -1,4 +1,4 @@
-import { List } from "@bleh-ui/react";
+import { List } from "@nimbus/react";
 import { MenuProps } from "../menu.types";
 import { MenuItem } from "./menu-item";
 

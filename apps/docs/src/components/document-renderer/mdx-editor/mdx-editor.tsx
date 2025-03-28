@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text, useColorModeValue } from "@bleh-ui/react";
+import { Box, Button, Flex, Text, useColorModeValue } from "@nimbus/react";
 import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,

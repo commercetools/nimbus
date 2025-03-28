@@ -1,0 +1,245 @@
+---
+id: Text
+title: Text
+description: the Text component is used to display text
+documentState: InitialDraft
+order: 1
+menu:
+  - Components
+  - Typography
+  - Text
+tags:
+  - text
+  - typography
+---
+
+# Text
+
+The `<Text>` component is a foundational element for displaying text content. It
+provides a simple and flexible way to style text with consistent design tokens
+and responsive behavior.
+
+> [!NOTE]
+> If you need to render **large, bold text with a semantic meaning** you may
+> want to use the [`Heading`](/components/typography/heading) component instead.
+
+`<Text>` is designed to:
+
+- Display inline or block-level text content.
+- apply consistent typography styles via `textStyles`
+- customize text appearance with style-props
+- support responsive styling
+
+## Basic Example
+
+Without any configuration, Text will simply render a paragraph element `<p>`
+without adding styling, solely relying on the cascade (**C**SS), inheriting
+existing styles:
+
+```jsx-live
+import { Text } from "@nimbus/react";
+
+const App = () => <Text>I am a plain old paragraph.</Text>;
+```
+
+## Changing the HTML tag (semantics)
+
+If you need to render a different HTML element than a `<p>` tag, you can use the
+`as` prop to change the html-tag that used to render the text to the DOM:
+
+```jsx-live
+import { Text } from "@nimbus/react";
+
+const App = () => (
+  <>
+    <Text as="div">We look the same, but</Text>
+    <Text as="span">we use different semantics.</Text>
+  </>
+);
+```
+
+_Alternatively_, if you need Text to render as another element which may even
+need it's own configuration, you can use the `asChild` prop to keep the props
+separated:
+
+```jsx-live
+import { Text } from "@nimbus/react";
+
+const App = () => (
+  <Text textStyle="2xl" asChild>
+    <button onClick={()=>alert('Click!')}>
+      Amazing. A native html-button.
+    </button>
+  </Text>
+);
+```
+
+## Predefined Text-Styles
+
+Apply predefined text styles via the `textStyle` prop. No further configuration
+apart from the `textStyle` prop is needed.
+
+Text-styles can and usually do set a bunch of typographic css-rules in order to
+achieve the desired look.
+
+A `textStyle` can be a simple as a combination of font-size & line-height or
+more complex, containing capitalisation rules etc.
+
+> [!NOTE]
+> A list of available text-styles [can be found here](/tokens/typography)
+
+```jsx-live
+import { Text } from "@nimbus/react";
+
+const App = () => (
+  <Text textStyle="xl">Extra Large Text</Text>
+);
+```
+
+## Custom CSS / styling
+
+Technically, you can set any css-property on the text-component via the
+available [style props](/style-props), here are the most common ones for
+changing text appearance:
+
+### Text Alignment
+
+```jsx-live
+const App = () => (
+  <>
+    <Text textAlign="left">left aligned text</Text>
+    <Text textAlign="right">right aligned text</Text>
+    <Text textAlign="center">centered text</Text>
+  </>
+)
+```
+
+### Font Size
+
+#### The recommended way
+
+Basic `textStyle` 's are available and set the size of the text and an
+appropriate line-height for this size at the same time.
+
+```jsx-live
+const App = () => (
+  <Flex flexDirection="column">
+    {["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl","5xl","6xl","7xl"].map((size) => (
+      <Text key={size} asChild textStyle={size}>
+        <span>Displays text in `{size}` size</span>
+      </Text>
+    ))}
+  </Flex>
+)
+```
+
+#### The escape hatch
+
+If you need to set the font-size manually and independent from the line-height,
+use `fontSize` and a font-size token. Be cautious as this may affect layout and
+readability.
+
+> [!NOTE]
+> The list of available font-sizes
+> [can be found here](/tokens/typography#font-sizes)
+
+```jsx-live
+const App = () => (
+  <Flex flexDirection="column">
+    {["250", "300", "350", "400", "450", "500", "600"].map((size) => (
+      <Text key={size} fontSize={size}>
+        Displays text in `{size}` size
+      </Text>
+    ))}
+  </Flex>
+)
+```
+
+### Text Color
+
+Use the `color` prop to change the color of the text.
+
+```jsx-live
+import { Stack, Text } from "@nimbus/react"
+
+const App = () => (
+    <Stack>
+      <Text color="primary.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="info.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="success.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="danger.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text color="error.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+    </Stack>
+  )
+```
+
+### Font Weight
+
+Make text bolder or lighter by setting the `fontWeight` prop.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack>
+      <Text fontWeight="100">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="200">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="300">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="400">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="500">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="600">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="700">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="800">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+      <Text fontWeight="900">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
+    </Stack>
+  )
+}
+```
+
+## Truncate Text
+
+Use the `truncate` prop to truncate the text after a single line.
+
+```jsx-live
+import { Flex, Text } from "@nimbus/react"
+
+const App = () => (
+    <Flex maxW="300px">
+      <Text truncate>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    </Flex>
+  )
+```
+
+## Clamp Lines
+
+Use the `lineClamp` prop to truncate the text after a certain number of lines.
+
+```jsx-live
+import { Flex, Text } from "@nimbus/react"
+
+const App = () => (
+    <Flex maxW="300px">
+      <Text lineClamp="2">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat.
+      </Text>
+    </Flex>
+  )
+```
+
+## Additional Style Props
+
+The `Text` component supports all style-props that are available as
+[style-Props](/style-props). Here are some more common text-related ones:
+
+| Prop Name        | Description                          |
+| ---------------- | ------------------------------------ |
+| `textDecoration` | Set the text-decoration of the text. |
+| `textTransform`  | Set the text-transform of the text.  |
+| `letterSpacing`  | Set the letter-spacing of the text.  |
+| `lineHeight`     | Set the line-height of the text.     |
+| `whiteSpace`     | Set the white-space of the text.     |
+| ...              | ...                                  |

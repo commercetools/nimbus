@@ -1,4 +1,4 @@
-import { Stack } from "@bleh-ui/react";
+import { Stack } from "@nimbus/react";
 import { DocumentStateSelector } from "./components/document-state-selector";
 import { DocumentAudienceSelector } from "./components/document-audience-selector";
 import { DocumentActionButtons } from "./components/document-action-buttons";

@@ -1,4 +1,4 @@
-import { Kbd, Text } from "@bleh-ui/react";
+import { Kbd, Text } from "@nimbus/react";
 import {
   Children,
   DetailedHTMLProps,

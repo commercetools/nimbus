@@ -1,0 +1,115 @@
+---
+id: Components-Box
+title: Box
+description: A basic layout component that serves as a wrapper or container.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Layout
+  - Box
+tags:
+  - component
+---
+
+# Box
+
+Box is a basic layout component that serves as a wrapper or container. It's
+based on the
+[Chakra UI Box component](https://chakra-ui.com/docs/components/box) and
+supports all style props for rapid UI development.
+
+## Import
+
+```jsx
+import { Box } from "@nimbus/react";
+```
+
+## Usage
+
+### Basic Usage
+
+```jsx-live
+const App = () => (
+  <Box p="100" bg="primary.3">
+    Basic Box
+  </Box>
+);
+```
+
+### As Flex Container
+
+```jsx-live
+const App = () => (
+  <Box display="flex" gap="100">
+    <Box p="100" bg="primary.3">
+      Item 1
+    </Box>
+    <Box p="100" bg="primary.3">
+      Item 2
+    </Box>
+  </Box>
+);
+```
+
+### With Border
+
+```jsx-live
+const App = () => (
+  <Box p="100" border="solid-50" borderColor="primary.3">
+    Box with border
+  </Box>
+);
+```
+
+### With Shadow
+
+```jsx-live
+const App = () => (
+  <Box p="100" boxShadow="6">
+    Box with shadow
+  </Box>
+);
+```
+
+### With asChild
+
+Use the `asChild` prop to apply Box styles to any child element while
+maintaining the child's functionality:
+
+```jsx-live
+const App = () => (
+  <Box p="100" bg="primary.3" asChild>
+    <button onClick={() => alert("Clicked!")}>
+      I am a button with Box styles
+    </button>
+  </Box>
+);
+```
+
+## Props
+
+The Box component accepts all system props from Chakra UI, including:
+
+- Space props (margin, padding)
+- Color props (background, color)
+- Typography props (fontSize, fontWeight)
+- Layout props (width, height, display)
+- Flexbox props
+- Grid props
+- Border props
+- Position props
+- Shadow props
+
+## Accessibility
+
+Box renders a `div` by default but can be changed to any other HTML element
+using the `as` prop.
+
+```jsx-live
+const App = () => (
+  <Box as="section" p="100">
+    Section content
+  </Box>
+);
+```

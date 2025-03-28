@@ -1,4 +1,4 @@
-import { List } from "@bleh-ui/react";
+import { List } from "@nimbus/react";
 import {
   Children,
   isValidElement,

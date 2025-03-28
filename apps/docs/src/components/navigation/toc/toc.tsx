@@ -1,4 +1,4 @@
-import { Box, Link, Text } from "@bleh-ui/react";
+import { Box, Link, Text } from "@nimbus/react";
 import { tocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
 import { useEffect } from "react";

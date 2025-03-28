@@ -1,4 +1,4 @@
 {
-  "main": "dist/bleh-ui-tokens-generated-chakra.cjs.js",
-  "module": "dist/bleh-ui-tokens-generated-chakra.esm.js"
+  "main": "dist/nimbus-tokens-generated-chakra.cjs.js",
+  "module": "dist/nimbus-tokens-generated-chakra.esm.js"
 }

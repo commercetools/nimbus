@@ -1,5 +1,5 @@
-import { IconButton } from "@bleh-ui/react";
-import { Code as EditorIcon } from "@bleh-ui/icons";
+import { IconButton } from "@nimbus/react";
+import { Code as EditorIcon } from "@nimbus/icons";
 
 const prefix = "vscode://file" + process.env.REPO_ROOT;
 

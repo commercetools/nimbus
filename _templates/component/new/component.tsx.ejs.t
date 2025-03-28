@@ -1,5 +1,5 @@
 ---
-to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.tsx
+to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.tsx
 ---
 import { forwardRef } from "react";
 import { <%= h.changeCase.pascal(name) %>Root } from "./<%= h.changeCase.paramCase(name) %>.slots";

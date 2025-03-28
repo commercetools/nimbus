@@ -9,7 +9,7 @@ import {
   TableRoot,
   TableRow,
   Text,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 import { JSONTree } from "react-json-tree";
 import { useMemo } from "react";
 import { useAtom } from "jotai";

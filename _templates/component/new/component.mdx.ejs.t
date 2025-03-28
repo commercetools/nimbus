@@ -1,5 +1,5 @@
 ---
-to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.mdx
+to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.mdx
 ---
 ---
 id: Components-<%= name %>

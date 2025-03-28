@@ -12,7 +12,7 @@ import {
   TableColumnGroup,
   TableColumn,
   Code,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 import { useAtom, useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
 

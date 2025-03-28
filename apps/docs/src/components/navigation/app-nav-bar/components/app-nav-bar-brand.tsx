@@ -1,7 +1,7 @@
 import { brandNameAtom } from "@/atoms/brand.ts";
 import { activeRouteAtom } from "@/atoms/route.ts";
-import { Edit } from "@bleh-ui/icons";
-import { Box, IconButton, Text } from "@bleh-ui/react";
+import { Edit } from "@nimbus/icons";
+import { Box, IconButton, Text } from "@nimbus/react";
 import { useAtom } from "jotai";
 import {
   FormEvent,
@@ -37,7 +37,7 @@ export const AppNavBarBrand = () => {
     }
 
     const newBrand = (e.target as HTMLSpanElement).innerText;
-    setBrand(newBrand.length === 0 ? "@bleh-ui" : newBrand);
+    setBrand(newBrand.length === 0 ? "@nimbus" : newBrand);
 
     // Save and restore the caret position
     const selection = window.getSelection();

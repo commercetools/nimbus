@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { system } from "@bleh-ui/react";
+import { system } from "@nimbus/react";
 
 /**
  * Retrieves the color scales from the system tokens.
