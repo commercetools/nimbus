@@ -90,9 +90,9 @@ export const FontColors: Story = {
         <Stack direction="row" gap="500" alignItems="center">
           {fontColors.map((color) => (
             <p key={color as string} style={{ color: "white" }}>
-              This is a {JSON.stringify(color)}
-              <Link key={color as string} {...args} fontColor={color} />
-              in action.
+              This is a {JSON.stringify(color)}{" "}
+              <Link key={color as string} {...args} fontColor={color} /> in
+              action.
             </p>
           ))}
         </Stack>
