@@ -2,7 +2,7 @@ import {
   type HTMLChakraProps,
   type RecipeProps,
   type UnstyledProp,
-  createRecipeContext,
+  createSlotRecipeContext,
 } from "@chakra-ui/react";
 
 import { alertRecipe } from "./alert.recipe";
@@ -18,13 +18,42 @@ interface AlertRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-export interface AlertRootProps
-  extends HTMLChakraProps<"div", AlertRecipeProps> {}
+export type AlertRootProps = HTMLChakraProps<"div", AlertRecipeProps>;
 
-const { withContext } = createRecipeContext({ recipe: alertRecipe });
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: alertRecipe,
+});
 
 /**
  * Root component that provides the styling context for the Alert component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const AlertRoot = withContext<HTMLDivElement, AlertRootProps>("div");
+export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
+  "div",
+  "root"
+);
+
+export const AlertTitle = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+  "div",
+  "title"
+);
+
+export const AlertDescription = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "description");
+
+export const AlertIcon = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+  "div",
+  "icon"
+);
+
+export const AlertActions = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+  "div",
+  "actions"
+);
+
+export const AlertDismiss = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+  "div",
+  "dismiss"
+);

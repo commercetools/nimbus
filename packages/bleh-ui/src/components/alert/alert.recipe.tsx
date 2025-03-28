@@ -1,31 +1,47 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
  * Recipe configuration for the Alert component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const alertRecipe = defineRecipe({
+export const alertRecipe = defineSlotRecipe({
+  slots: ["root", "title", "description", "icon", "actions", "dismiss"],
   // Unique class name prefix for the component
   className: "bleh-ui-alert",
 
   // Base styles applied to all instances of the component
   base: {
-    display: "block",
+    root: {
+      display: "inline-flex",
+      flexDirection: "row",
+      gap: "8px",
+      border: "1px solid pink",
+      width: "100%",
+    },
+    // TODO: do we need an "icon" component?
+    icon: {
+      "& svg": {
+        width: "20px",
+        height: "20px",
+      },
+    },
   },
 
   // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
-    size: {
-      "2xs": {}, // Extra extra small
-      xs: {}, // Extra small
-      sm: {}, // Small
-      md: {}, // Medium
-      lg: {}, // Large
-      xl: {}, // Extra large
-      "2xl": {}, // Extra extra large
+    borderStyle: {
+      none: {},
+      outlined: {
+        root: {
+          border: "solid-25",
+          borderColor: "colorPalette.5",
+          backgroundColor: "colorPalette.2",
+          paddingY: "8px",
+          paddingX: "16px",
+          borderRadius: "8px",
+        },
+      },
     },
-
     // Visual style variants
     variant: {
       solid: {}, // Filled background
@@ -38,7 +54,7 @@ export const alertRecipe = defineRecipe({
 
   // Default variant values when not explicitly specified
   defaultVariants: {
-    size: "md",
     variant: "subtle",
+    borderStyle: "outlined",
   },
 });
