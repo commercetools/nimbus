@@ -1,4 +1,4 @@
-import { defineRecipe, defineSlotRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
  * Recipe configuration for the Card component.
@@ -6,7 +6,7 @@ import { defineRecipe, defineSlotRecipe } from "@chakra-ui/react";
  */
 // TODO: make slots and do the compound component thing
 export const cardRecipe = defineSlotRecipe({
-  slots: ["root", "header", "body"],
+  slots: ["root", "header", "content"],
 
   className: "bleh-ui-card",
 

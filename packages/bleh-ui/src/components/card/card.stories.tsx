@@ -53,7 +53,7 @@ export const Configurations: Story = {
       <Stack>
         {borderStyles.map((border) => {
           return (
-            <Stack direction="row">
+            <Stack direction="row" key={`stack-${border as string}`}>
               {elevations.map((shadow) => {
                 return backgroundStyles.map((background) => {
                   return (
@@ -76,10 +76,51 @@ export const Configurations: Story = {
 
   args: {
     children: (
-      <Stack direction="column" gap="200">
-        <b>Card title</b>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <>
+        <Card.Header>
+          <b>Card title</b>
+        </Card.Header>
+        <Card.Content>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </Card.Content>
+      </>
+    ),
+  },
+};
+
+/**
+ * Without compound components used by the consumer
+ */
+export const WithoutCompound: Story = {
+  render: (args) => {
+    return (
+      <Stack>
+        {borderStyles.map((border) => {
+          return (
+            <Stack direction="row" key={`stack-${border as string}`}>
+              {elevations.map((shadow) => {
+                return (
+                  <Card
+                    key={`${border as string}-${shadow as string}`}
+                    {...args}
+                    borderStyle={border}
+                    elevation={shadow}
+                    backgroundStyle="muted"
+                  />
+                );
+              })}
+            </Stack>
+          );
+        })}
       </Stack>
+    );
+  },
+
+  args: {
+    children: (
+      <div>
+        I'm some other flexible content, outside of the compound component
+      </div>
     ),
   },
 };
