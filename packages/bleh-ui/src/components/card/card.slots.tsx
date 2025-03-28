@@ -2,7 +2,7 @@ import {
   type HTMLChakraProps,
   type RecipeProps,
   type UnstyledProp,
-  createRecipeContext,
+  createSlotRecipeContext,
 } from "@chakra-ui/react";
 
 import { cardRecipe } from "./card.recipe";
@@ -21,10 +21,30 @@ interface CardRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 export interface CardRootProps
   extends HTMLChakraProps<"div", CardRecipeProps> {}
 
-const { withContext } = createRecipeContext({ recipe: cardRecipe });
+export interface CardHeaderProps
+  extends HTMLChakraProps<"div", CardRecipeProps> {}
+
+export interface CardContentProps
+  extends HTMLChakraProps<"div", CardRecipeProps> {}
+
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: cardRecipe,
+});
 
 /**
  * Root component that provides the styling context for the Card component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const CardRoot = withContext<HTMLDivElement, CardRootProps>("div");
+export const CardRoot = withProvider<HTMLDivElement, CardRootProps>(
+  "div",
+  "root"
+);
+
+export const CardHeader = withContext<HTMLDivElement, CardHeaderProps>(
+  "div",
+  "header"
+);
+export const CardContent = withContext<HTMLDivElement, CardContentProps>(
+  "div",
+  "content"
+);
