@@ -11,8 +11,6 @@ export const linkRecipe = defineRecipe({
     display: "inline-flex",
     alignItems: "center",
     borderRadius: "100",
-    borderWidth: "1px",
-    borderColor: "transparent",
     focusVisibleRing: "outside",
     bg: "transparent",
     outline: "none",
@@ -30,7 +28,6 @@ export const linkRecipe = defineRecipe({
       xs: {
         fontSize: "300",
         lineHeight: "400",
-        px: "200",
         _hover: {
           // Increased thickness on hover for smallest size
           textDecorationThickness: "13%",
@@ -39,12 +36,10 @@ export const linkRecipe = defineRecipe({
       sm: {
         fontSize: "350",
         lineHeight: "400",
-        px: "300",
       },
       md: {
         fontSize: "400",
         lineHeight: "400",
-        px: "400",
       },
     },
     // style variants

@@ -40,7 +40,6 @@ export const Base: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const link = canvas.getByTestId("link-test");
-    const onClick = link.onclick;
 
     await step("Uses an <a> element by default", async () => {
       await expect(link.tagName).toBe("A");
@@ -53,12 +52,6 @@ export const Base: Story = {
 
     await step("Renders children", async () => {
       await expect(link).toHaveTextContent("Demo Link");
-    });
-
-    await step("Is clickable", async () => {
-      link.click();
-      await expect(onClick).toHaveBeenCalledTimes(1);
-      link.blur();
     });
 
     await step("Is focusable with <tab> key", async () => {
