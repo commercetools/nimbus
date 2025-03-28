@@ -26,3 +26,4 @@ export * from "./text-input";
 export * from "./grid";
 export * from "./select";
 export * from "./accordion";
+export * from "./loading-spinner";
