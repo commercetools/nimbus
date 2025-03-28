@@ -4,7 +4,6 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Recipe configuration for the Card component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-// TODO: make slots and do the compound component thing
 export const cardRecipe = defineSlotRecipe({
   slots: ["root", "header", "content"],
 
