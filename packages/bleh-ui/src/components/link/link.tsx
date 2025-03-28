@@ -27,9 +27,6 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
     const elementType = (as as string) || (asChild ? "span" : "a") || "a";
     const { linkProps } = useLink({ ...rest, elementType }, ref);
 
-    // TODO: Provide a fallback href for the anchor element
-    // if the 'href' prop is not provided, the element will not be focusable
-    // and may not be accessible to screen readers
     return (
       <LinkRoot {...mergeProps(rest, linkProps, { as, asChild, ref })}>
         {children}

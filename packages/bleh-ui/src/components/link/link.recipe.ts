@@ -10,6 +10,7 @@ export const linkRecipe = defineRecipe({
   base: {
     display: "inline-flex",
     alignItems: "center",
+    color: "colorPalette.11",
     borderRadius: "100",
     focusVisibleRing: "outside",
     bg: "transparent",
@@ -28,10 +29,6 @@ export const linkRecipe = defineRecipe({
       xs: {
         fontSize: "300",
         lineHeight: "400",
-        _hover: {
-          // Increased thickness on hover for smallest size
-          textDecorationThickness: "13%",
-        },
       },
       sm: {
         fontSize: "350",
@@ -51,10 +48,5 @@ export const linkRecipe = defineRecipe({
         color: "inherit",
       },
     },
-  },
-  // Default variant values when not explicitly specified
-  defaultVariants: {
-    size: "md",
-    fontColor: "primary",
   },
 });
