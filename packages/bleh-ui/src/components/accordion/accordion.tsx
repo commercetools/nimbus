@@ -8,9 +8,8 @@ import {
 } from "./accordion.slots";
 import { useDisclosureState } from "react-stately";
 import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
-import { type DisclosureProps } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react";
-import type { AccordionRootProps } from "./accordion.types";
+import type { AccordionRootProps, AccordionProps } from "./accordion.types";
 import { Flex } from "@/components";
 
 /**
@@ -26,14 +25,6 @@ import { Flex } from "@/components";
  * - allows overriding styles by using style-props
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
-
-interface AccordionProps extends Omit<DisclosureProps, "children" | "id"> {
-  children?: React.ReactNode;
-  title?: React.ReactNode;
-  additionalTriggerComponent?: React.ReactNode;
-  recipe?: string;
-  size?: AccordionRootProps["size"];
-}
 
 export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
   ({ title, children, additionalTriggerComponent, ...props }, forwardedRef) => {
