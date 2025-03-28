@@ -8,7 +8,6 @@ This is a mono-repo. It contains multiple packages & apps.
 
 - **@nimbus/react** ui-library, react components to build user interfaces
 - **@nimbus/icons** icon library, svg files as react-components
-
 ### Apps
 
 - **docs** a documentation site/app, scripts parse mdx-files inside the
