@@ -86,7 +86,7 @@ export const Sizes: Story = {
 export const FontColors: Story = {
   render: (args) => {
     return (
-      <Box p="400" bg="primary.3">
+      <Box p="400" bg="primary.7">
         <Stack direction="row" gap="500" alignItems="center">
           {fontColors.map((color) => (
             <p key={color as string} style={{ color: "white" }}>
