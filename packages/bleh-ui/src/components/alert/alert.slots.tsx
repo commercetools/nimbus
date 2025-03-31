@@ -8,6 +8,7 @@ import {
 
 import { alertRecipe } from "./alert.recipe";
 import type { IconButtonProps } from "../icon-button";
+import { Text, type TextProps } from "../text";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -35,19 +36,21 @@ export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
   "root"
 );
 
-export type AlertTitleProps = HTMLChakraProps<"div", AlertRecipeProps>;
+// Make the title slot a Text component
+export type AlertTitleProps = TextProps;
 
-export const AlertTitle = withContext<HTMLDivElement, AlertTitleProps>(
-  "div",
+export const AlertTitle = withContext<typeof Text, AlertTitleProps>(
+  Text,
   "title"
 );
 
-export type AlertDescriptionProps = HTMLChakraProps<"div", AlertRecipeProps>;
+// Make the description slot a Text component
+export type AlertDescriptionProps = TextProps;
 
-export const AlertDescription = withContext<
-  HTMLDivElement,
-  AlertDescriptionProps
->("div", "description");
+export const AlertDescription = withContext<typeof Text, AlertDescriptionProps>(
+  Text,
+  "description"
+);
 
 export type AlertIconProps = HTMLChakraProps<"div", AlertRecipeProps>;
 

@@ -26,7 +26,6 @@ import type { AlertProps } from "./alert.types";
 import { Box } from "../box";
 import { Stack } from "../stack";
 import { Clear } from "@bleh-ui/icons";
-import { Text } from "../text";
 
 type AlertComponent = ForwardRefExoticComponent<
   AlertProps & RefAttributes<HTMLDivElement>
@@ -103,8 +102,8 @@ export const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
   useEffect(() => {
     if (context) {
       const slotElement = (
-        <AlertTitleSlot {...props}>
-          <Text fontWeight="600">{children}</Text>
+        <AlertTitleSlot {...props} fontWeight="600">
+          {children}
         </AlertTitleSlot>
       );
       // Register it with the parent
@@ -173,9 +172,7 @@ export const AlertDescription = ({
   useEffect(() => {
     if (context) {
       const slotElement = (
-        <AlertDescriptionSlot {...props}>
-          <Text>{children}</Text>
-        </AlertDescriptionSlot>
+        <AlertDescriptionSlot {...props}>{children}</AlertDescriptionSlot>
       );
       // Register it with the parent
       context.setDescription(slotElement);
