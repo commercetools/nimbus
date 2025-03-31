@@ -11,28 +11,26 @@ import {
 } from "react";
 import {
   AlertRoot,
+  AlertIcon,
   AlertActions as AlertActionsSlot,
   AlertDescription as AlertDescriptionSlot,
   AlertDismiss as AlertDismissSlot,
-  AlertIcon as AlertIconSlot,
   AlertTitle as AlertTitleSlot,
   type AlertActionsProps,
   type AlertDescriptionProps,
   type AlertDismissProps,
-  type AlertIconProps,
   type AlertTitleProps,
 } from "./alert.slots";
 import type { AlertProps } from "./alert.types";
 import { Box } from "../box";
 import { Stack } from "../stack";
-import { Clear } from "@bleh-ui/icons";
+import { Clear, ErrorOutline } from "@bleh-ui/icons";
 
 type AlertComponent = ForwardRefExoticComponent<
   AlertProps & RefAttributes<HTMLDivElement>
 > & {
   Title: typeof AlertTitle;
   Description: typeof AlertDescription;
-  Icon: typeof AlertIcon;
   Actions: typeof AlertActions;
   Dismiss: typeof AlertDismiss;
 };
@@ -40,7 +38,6 @@ type AlertComponent = ForwardRefExoticComponent<
 type AlertContextValue = {
   setTitle: (title: ReactNode) => void;
   setDescription: (description: ReactNode) => void;
-  setIcon: (ico: ReactNode) => void;
   setActions: (actions: ReactNode) => void;
   setDismiss: (dismiss: ReactNode) => void;
 };
@@ -56,7 +53,6 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
   ({ children, ...props }, ref) => {
     const [titleNode, setTitle] = useState<ReactNode>(null);
     const [descriptionNode, setDescription] = useState<ReactNode>(null);
-    const [iconNode, setIcon] = useState<ReactNode>(null);
     const [actionsNode, setActions] = useState<ReactNode>(null);
     const [dismissNode, setDismiss] = useState<ReactNode>(null);
 
@@ -65,20 +61,18 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
       () => ({
         setTitle,
         setDescription,
-        setIcon,
         setActions,
         setDismiss,
       }),
-      [setTitle, setDescription, setIcon, setActions, setDismiss]
+      [setTitle, setDescription, setActions, setDismiss]
     );
 
     return (
       <AlertContext.Provider value={contextValue}>
         <AlertRoot ref={ref} {...props} role="alert">
-          {/* <AlertIcon alignItems="flex-start">
+          <AlertIcon alignItems="flex-start">
             <ErrorOutline />
-          </AlertIcon> */}
-          {iconNode}
+          </AlertIcon>
           <Stack flex="1" gap="200">
             <Box>
               {titleNode}
@@ -117,24 +111,6 @@ export const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
   return null;
 };
 AlertTitle.displayName = "AlertTitle";
-
-export const AlertIcon = ({ children, ...props }: AlertIconProps) => {
-  const context = useContext(AlertContext);
-
-  useEffect(() => {
-    if (context) {
-      const slotElement = <AlertIconSlot {...props}>{children}</AlertIconSlot>;
-      // Register it with the parent
-      context.setIcon(slotElement);
-
-      // On unmount, remove it
-      return () => context.setIcon(null);
-    }
-  }, [children, props]);
-
-  return null;
-};
-AlertIcon.displayName = "AlertIcon";
 
 export const AlertDismiss = ({ children, ...props }: AlertDismissProps) => {
   const context = useContext(AlertContext);
@@ -208,6 +184,5 @@ AlertActions.displayName = "AlertActions";
 
 Alert.Title = AlertTitle;
 Alert.Description = AlertDescription;
-Alert.Icon = AlertIcon;
 Alert.Actions = AlertActions;
 Alert.Dismiss = AlertDismiss;

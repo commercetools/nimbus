@@ -18,6 +18,7 @@ export const alertRecipe = defineSlotRecipe({
       width: "100%",
     },
     // TODO: figure out how to get this spacing to work
+    // TODO: also colors aren't working
     icon: {
       "& svg": {
         width: "20px",
@@ -28,9 +29,37 @@ export const alertRecipe = defineSlotRecipe({
 
   // Available variants for customizing the component's appearance
   variants: {
-    borderStyle: {
-      none: {},
-      outlined: {
+    tone: {
+      primary: {
+        root: { colorPalette: "primary" },
+        icon: { colorPalette: "primary" },
+        dismiss: { colorPalette: "primary" },
+        title: { colorPalette: "primary" },
+        description: { colorPalette: "primary" },
+        actions: { colorPalette: "primary" },
+      },
+      critical: {
+        root: { colorPalette: "error" },
+        icon: { colorPalette: "error" },
+        dismiss: { colorPalette: "error" },
+        title: { colorPalette: "error" },
+        description: { colorPalette: "error" },
+        actions: { colorPalette: "error" },
+      },
+      neutral: {
+        root: { colorPalette: "neutral" },
+        icon: { colorPalette: "neutral" },
+        dismiss: { colorPalette: "neutral" },
+        title: { colorPalette: "neutral" },
+        description: { colorPalette: "neutral" },
+        actions: { colorPalette: "neutral" },
+      },
+    },
+
+    // Visual style variants
+    variant: {
+      plain: {},
+      solid: {
         root: {
           border: "solid-25",
           borderColor: "colorPalette.5",
@@ -40,19 +69,5 @@ export const alertRecipe = defineSlotRecipe({
         },
       },
     },
-    // Visual style variants
-    variant: {
-      solid: {}, // Filled background
-      subtle: {}, // Lighter background
-      outline: {}, // Bordered style
-      ghost: {}, // Background only on interaction
-      plain: {}, // No background or border
-    },
-  },
-
-  // Default variant values when not explicitly specified
-  defaultVariants: {
-    variant: "subtle",
-    borderStyle: "outlined",
   },
 });

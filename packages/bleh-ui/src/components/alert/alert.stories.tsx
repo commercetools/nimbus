@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Alert } from "./alert";
 import { Stack } from "./../stack";
 import { Button } from "../button";
+import { Text } from "../text";
 
 /**
  * Storybook metadata configuration
@@ -28,9 +29,10 @@ type Story = StoryObj<typeof Alert>;
  */
 export const Base: Story = {
   args: {
+    tone: "critical",
+    variant: "solid",
     children: (
       <>
-        <Alert.Icon>X</Alert.Icon>
         <Alert.Title>Alert Title</Alert.Title>
         <Alert.Description>Alert Description</Alert.Description>
         <Alert.Actions>
