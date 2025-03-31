@@ -159,7 +159,9 @@ also React components). The final API looks like:
     We could not reach the server. Please try again.
   </Alert.Description>
   <Alert.Dismiss onClick={onClose} />
-  <Button onClick={onRetry}>Retry</Button>
+  <Alert.Controls>
+    <Button onClick={onRetry}>Retry</Button>
+  </Alert.Controls>
 </Alert>
 ```
 
