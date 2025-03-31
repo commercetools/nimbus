@@ -1,0 +1,176 @@
+# ADR: On Consumer Component API's
+
+## Context
+
+We needed an Alert component to show informational or warning messages. The
+component should allow:
+
+- A title and description.
+- An optional dismiss button.
+- Additional buttons or controls.
+- Spacing/styling overrides (e.g. px, py).
+
+In early explorations, we tried to expose everything via props on the main
+`Alert`—this seemed convenient but would quickly became unwieldy when
+requirements changed. This led to a discussion about how to structure the API
+for components in a way that is both flexible and maintainable.
+
+## Early Attempts
+
+### Attempt A: One Big Alert with Child Buttons
+
+```jsx
+<Alert
+  title="title"
+  description="description"
+  onDismiss={() => void}
+  px="4"
+  py="2"
+>
+  <button>Dismiss</button>
+  <button>Click me</button>
+</Alert>
+```
+
+1. title and description are top-level props.
+2. children are the alert's buttons.
+
+**Issue**: If we need new kinds of controls (e.g., a link, extra text, or
+re-positioned buttons), we must keep adding or repurposing props. The line
+between "belongs in children" vs. "belongs in dedicated props" can become
+blurry.
+
+### Attempt B: Specialized Props for Each Slot
+
+```jsx
+<Alert
+  alertTitleStyle="bold"
+  title="title"
+  description="description"
+  onDismiss={() => void}
+  px="4"
+  py="2"
+  alertControls={
+    <>
+      <button>Dismiss</button>
+      <button>Click me</button>
+    </>
+  }
+/>
+```
+
+1. We introduced an alertControls prop for the buttons.
+2. We also added alertTitleStyle to control how the title looks.
+
+**Issue**: As the design evolves (e.g., "Now we need the title right‐aligned, or
+a sub‐title below the main title"), we keep adding ad-hoc props like
+titlePosition, alertControlsAlignment, etc. The `<Alert>` props list grows large
+and messy.
+
+### Attempt C: Even More Props for Layout / Positioning
+
+```jsx
+<Alert
+  alertTitleStyle="bold"
+  title="title"
+  titlePosition="right"
+  description="description"
+  onDismiss={() => void}
+  px="4"
+  py="2"
+  alertControls={
+    <>
+      <button>Dismiss</button>
+      <button>Click me</button>
+    </>
+  }
+/>
+```
+
+**Issue**: The top-level `<Alert>` component now has numerous styling, layout,
+and content props all jumbled together. If a new design wants a second dismiss
+button or a multi-line description, we must add more props. This is non-scalable
+and not very semantic.
+
+## Final Decision: Compound Components
+
+We decided to adopt compound components (a pattern in which sub-elements are
+also React components). The final API looks like:
+
+```jsx
+<Alert px="4" py="2">
+  <Alert.Title fontStyle="bold">
+    Alert Title
+  </Alert.Title>
+  <Alert.Description>
+    A short alert description.
+  </Alert.Description>
+  <Alert.Dismiss onClick={() => void} />
+</Alert>
+```
+
+### Key Changes:
+
+1. Children become semantic slots: `<Alert.Title>`, `<Alert.Description>`, and
+   `<Alert.Dismiss>`.
+2. Each slot can handle its own styling or props. For instance, Alert.Title
+   might accept a fontStyle prop, Alert.Dismiss handles its own click event.
+3. The root `<Alert>` only handles general layout or high-level variant props
+   (e.g., px, py, severity).
+
+### Why this is better:
+
+- **Clear separation of concerns**: Layout/styling for each slot belongs to that
+  slot. The main `<Alert>` only handles spacing or theming.
+- **Easier to extend**: If we need a second sub-element (e.g., `<Alert.Icon>` or
+  `<Alert.Footer>`), we just introduce a new subcomponent. We don't clog
+  `<Alert>` with more props.
+- **Semantic**: `<Alert.Title>` and `<Alert.Description>` are more descriptive
+  than `title="..."` or `alertControls={...}`.
+
+## Consequences
+
+- We have a more verbose but much more flexible API.
+- Consumers build their alert in a semantic, composable way.
+- We can add or rearrange subcomponents without rewriting the main `<Alert>`
+  props or code.
+- If developers want quick usage (like a single short message), they might find
+  passing a couple props simpler – but we've prioritized long-term
+  maintainability and clarity.
+
+## Examples in Practice
+
+### 1. Basic Alert
+
+```jsx
+<Alert>
+  <Alert.Title>Warning!</Alert.Title>
+  <Alert.Description>Please fill out all required fields.</Alert.Description>
+  <Alert.Dismiss onClick={onClose} />
+</Alert>
+```
+
+### 2. Alert with Extra Controls
+
+```jsx
+<Alert px="4" py="3">
+  <Alert.Title fontStyle="bold">Network Error</Alert.Title>
+  <Alert.Description>
+    We could not reach the server. Please try again.
+  </Alert.Description>
+  <Alert.Dismiss onClick={onClose} />
+  <Alert.Controls>
+    <Button onClick={onRetry}>Retry</Button>
+  </Alert.Controls>
+</Alert>
+```
+
+## Summary
+
+- Inline props for major sections quickly lead to "prop creep."
+- Compound components keep `<Alert>` minimal and delegate content/markup details
+  to semantically named subcomponents.
+- Layout changes or extra features do not require new top-level props on
+  `<Alert>`.
+
+This approach scales better and is more maintainable as the design evolves.
