@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Alert } from "./alert";
 import { Stack } from "./../stack";
 import { Button } from "../button";
+import type { AlertProps } from "./alert.types";
+
+const tones: AlertProps["tone"][] = ["critical", "info", "warning", "positive"];
+const variants: AlertProps["variant"][] = ["plain", "solid"];
 
 /**
  * Storybook metadata configuration
@@ -40,7 +44,7 @@ export const Base: Story = {
             <Button variant="outline">Button</Button>
           </Stack>
         </Alert.Actions>
-        <Alert.Dismiss onClick={() => console.log("woooo")} />
+        <Alert.Dismiss onClick={() => alert("Dismissed")} />
       </>
     ),
   },
@@ -53,8 +57,8 @@ export const Sizes: Story = {
   render: () => {
     return (
       <Stack direction="column" gap="400" alignItems="center">
-        {["critical", "info", "warning", "positive"].map((tone) => (
-          <Alert key={`alert-${tone}`} tone={tone} variant="solid">
+        {tones.map((tone) => (
+          <Alert key={`alert-${tone as string}`} tone={tone} variant="solid">
             <Alert.Title>Alert Title</Alert.Title>
             <Alert.Description>Alert Description</Alert.Description>
             <Alert.Actions>
@@ -63,7 +67,7 @@ export const Sizes: Story = {
                 <Button variant="outline">Button</Button>
               </Stack>
             </Alert.Actions>
-            <Alert.Dismiss onClick={() => console.log("woooo")} />
+            <Alert.Dismiss onClick={() => alert("Dismissed")} />
           </Alert>
         ))}
       </Stack>
@@ -80,12 +84,17 @@ export const Variants: Story = {
   render: () => {
     return (
       <Stack direction="column" gap="400">
-        {["critical", "info", "warning", "positive"].map((tone) => (
-          <Stack direction="row" gap="400" alignItems="center">
-            {["plain", "solid"].map((variant) => {
+        {tones.map((tone) => (
+          <Stack
+            key={`stack-${tone as string}`}
+            direction="row"
+            gap="400"
+            alignItems="center"
+          >
+            {variants.map((variant) => {
               return (
                 <Alert
-                  key={`alert-${tone}-${variant}`}
+                  key={`alert-${tone as string}-${variant as string}`}
                   tone={tone}
                   variant={variant}
                 >
@@ -97,7 +106,7 @@ export const Variants: Story = {
                       <Button variant="outline">Button</Button>
                     </Stack>
                   </Alert.Actions>
-                  <Alert.Dismiss onClick={() => console.log("woooo")} />
+                  <Alert.Dismiss onClick={() => alert("Dismissed")} />
                 </Alert>
               );
             })}
@@ -137,7 +146,7 @@ export const PartialChildren: Story = {
 
         {/* Alert with only a Dismiss icon */}
         <Alert tone="critical" variant="solid">
-          <Alert.Dismiss onClick={() => console.log("Dismissed!")} />
+          <Alert.Dismiss onClick={() => alert("Dismissed")} />
         </Alert>
 
         {/* Alert with Title, Description, and Dismiss but no actions */}
@@ -146,7 +155,7 @@ export const PartialChildren: Story = {
           <Alert.Description>
             We have both title and description here!
           </Alert.Description>
-          <Alert.Dismiss onClick={() => console.log("Dismissed!")} />
+          <Alert.Dismiss onClick={() => alert("Dismissed")} />
         </Alert>
       </Stack>
     );
