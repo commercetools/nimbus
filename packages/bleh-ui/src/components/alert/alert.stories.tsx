@@ -138,8 +138,10 @@ export const PartialChildren: Story = {
           <Alert.Title>Title and Actions, no Description</Alert.Title>
           <Alert.Actions>
             <Stack direction="row" gap="8px" alignItems="center">
-              <Button variant="outline">Dismiss</Button>
-              <Button variant="outline">OK</Button>
+              <Button variant="outline">Whatever</Button>
+              <Button variant="solid">We</Button>
+              <Button variant="subtle">Want</Button>
+              <Button variant="ghost">Here</Button>
             </Stack>
           </Alert.Actions>
         </Alert>
