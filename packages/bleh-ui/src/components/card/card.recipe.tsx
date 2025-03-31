@@ -15,6 +15,7 @@ export const cardRecipe = defineSlotRecipe({
       display: "inline-flex",
       alignItems: "flex-start",
       borderRadius: "300",
+      focusVisibleRing: "outside",
     },
   },
 

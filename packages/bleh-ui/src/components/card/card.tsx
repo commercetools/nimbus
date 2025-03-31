@@ -17,6 +17,7 @@ import {
 } from "./card.slots";
 import type { CardProps } from "./card.types";
 import { Stack } from "../stack";
+import { mergeProps, useFocusRing } from "react-aria";
 
 // Extend the Card's ForwardRef type with the component's compound components
 type CardComponent = ForwardRefExoticComponent<
@@ -40,6 +41,7 @@ const CardContext = createContext<CardContextValue | undefined>(undefined);
  */
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ children, ...props }, ref) => {
+    const { isFocused, isFocusVisible, focusProps } = useFocusRing();
     const [headerNode, setHeader] = useState<ReactNode>(null);
     const [contentNode, setContent] = useState<ReactNode>(null);
 
@@ -54,7 +56,13 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
     return (
       <CardContext.Provider value={contextValue}>
-        <CardRoot ref={ref} {...props}>
+        <CardRoot
+          ref={ref}
+          {...mergeProps(props, focusProps)}
+          data-focus={isFocused || undefined}
+          data-focus-visible={isFocusVisible || undefined}
+          tabIndex={0}
+        >
           {/* Always render them in this order/layout to protect consumers */}
           <Stack direction="column" gap="200">
             {headerNode}
