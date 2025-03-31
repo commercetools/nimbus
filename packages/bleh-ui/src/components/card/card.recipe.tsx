@@ -20,6 +20,24 @@ export const cardRecipe = defineSlotRecipe({
   },
 
   variants: {
+    cardPadding: {
+      sm: {
+        root: {
+          padding: "200",
+        },
+      },
+      md: {
+        root: {
+          padding: "400",
+        },
+      },
+      lg: {
+        root: {
+          padding: "600",
+        },
+      },
+    },
+
     borderStyle: {
       none: {},
       outlined: {
@@ -52,6 +70,7 @@ export const cardRecipe = defineSlotRecipe({
   },
 
   defaultVariants: {
+    cardPadding: "md",
     backgroundStyle: "default",
     borderStyle: "none",
     elevation: "none",

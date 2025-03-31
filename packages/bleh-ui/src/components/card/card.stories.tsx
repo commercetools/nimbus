@@ -4,6 +4,7 @@ import { Stack } from "./../stack";
 import type { CardProps } from "./card.types";
 import { within, expect } from "@storybook/test";
 
+const cardPaddings: CardProps["cardPadding"][] = ["sm", "md", "lg"];
 const elevations: CardProps["elevation"][] = ["none", "elevated"];
 const borderStyles: CardProps["borderStyle"][] = ["none", "outlined"];
 const backgroundStyles: CardProps["backgroundStyle"][] = ["default", "muted"];
@@ -42,6 +43,41 @@ export const Base: Story = {
       await expect(card).toHaveTextContent(args.children as string);
     });
   },
+};
+
+/**
+ * Card padding
+ */
+export const CardPaddings: Story = {
+  render: (args) => {
+    return (
+      <Stack>
+        {cardPaddings.map((cardPadding) => {
+          return (
+            <Stack direction="row" key={`stack-${cardPadding as string}`}>
+              <Card
+                key={`${cardPadding as string}`}
+                {...args}
+                cardPadding={cardPadding}
+                borderStyle="outlined"
+              >
+                <Card.Header>
+                  <b>Padding size: {cardPadding as string}</b>
+                </Card.Header>
+                <Card.Content>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  </p>
+                </Card.Content>
+              </Card>
+            </Stack>
+          );
+        })}
+      </Stack>
+    );
+  },
+
+  args: {},
 };
 
 /**
