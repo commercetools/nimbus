@@ -47,14 +47,24 @@ export const Base: Story = {
 };
 
 /**
- * Showcase Sizes
+ * Showcase Tones
  */
 export const Sizes: Story = {
-  render: (args) => {
+  render: () => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((size) => (
-          <Alert key={size} {...args} size={size} />
+      <Stack direction="column" gap="400" alignItems="center">
+        {["critical", "info", "warning", "positive"].map((tone) => (
+          <Alert key={`alert-${tone}`} tone={tone} variant="solid">
+            <Alert.Title>Alert Title</Alert.Title>
+            <Alert.Description>Alert Description</Alert.Description>
+            <Alert.Actions>
+              <Stack direction="row" gap="8px" alignItems="center">
+                <Button variant="outline">Dismiss</Button>
+                <Button variant="outline">Button</Button>
+              </Stack>
+            </Alert.Actions>
+            <Alert.Dismiss onClick={() => console.log("woooo")} />
+          </Alert>
         ))}
       </Stack>
     );

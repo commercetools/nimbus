@@ -24,7 +24,28 @@ import {
 import type { AlertProps } from "./alert.types";
 import { Box } from "../box";
 import { Stack } from "../stack";
-import { Clear, ErrorOutline } from "@bleh-ui/icons";
+import {
+  CheckCircleOutline,
+  Clear,
+  ErrorOutline,
+  Info,
+  WarningAmber,
+} from "@bleh-ui/icons";
+
+const getIconFromTone = (tone: AlertProps["tone"]) => {
+  switch (tone) {
+    case "critical":
+      return <ErrorOutline />;
+    case "info":
+      return <Info />;
+    case "warning":
+      return <WarningAmber />;
+    case "positive":
+      return <CheckCircleOutline />;
+    default:
+      return null;
+  }
+};
 
 type AlertComponent = ForwardRefExoticComponent<
   AlertProps & RefAttributes<HTMLDivElement>
@@ -71,7 +92,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
       <AlertContext.Provider value={contextValue}>
         <AlertRoot ref={ref} {...props} role="alert">
           <AlertIcon alignItems="flex-start">
-            <ErrorOutline />
+            {getIconFromTone(props.tone)}
           </AlertIcon>
           <Stack flex="1" gap="200">
             <Box>
