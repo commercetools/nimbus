@@ -14,7 +14,6 @@ export const cardRecipe = defineSlotRecipe({
       colorPalette: "slate",
       display: "inline-flex",
       alignItems: "flex-start",
-      padding: "400",
       borderRadius: "300",
     },
   },
