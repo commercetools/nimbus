@@ -12,19 +12,13 @@ import { Box } from "../box";
 import { Stack } from "../stack";
 import { Clear, ErrorOutline } from "@bleh-ui/icons";
 import { IconButton } from "../icon-button";
+import { Text } from "../text";
+import { Button } from "../button";
 
 /**
  * Alert
  * ============================================================
  * Provides feedback to the user about the status of an action or system event
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(
   ({ children, ...props }, ref) => {
@@ -33,21 +27,23 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
         <AlertIcon alignItems="flex-start">
           <ErrorOutline />
         </AlertIcon>
-        <Box flex="1">
-          <AlertTitle>Alert title</AlertTitle>
-          <AlertDescription>
-            Description goes right here below the title Description goes right
-            here below the title Description goes right here below the title
-          </AlertDescription>
+        <Stack flex="1" gap="200">
+          <Box>
+            <AlertTitle>
+              <Text fontWeight="600">Alert title</Text>
+            </AlertTitle>
+            <AlertDescription>
+              <Text>Description goes right here below the title</Text>
+            </AlertDescription>
+          </Box>
           <AlertActions>
             <Stack direction="row" gap="8px" alignItems="center">
-              <button>Dismiss</button>
-              <button>Button</button>
+              <Button>Dismiss</Button>
+              <Button>Button</Button>
             </Stack>
           </AlertActions>
-        </Box>
+        </Stack>
         <AlertDismiss>
-          {/* TODO: get rid the the mandatory aria-label? */}
           <IconButton variant="ghost" size="2xs" aria-label="Dismiss">
             <Clear />
           </IconButton>

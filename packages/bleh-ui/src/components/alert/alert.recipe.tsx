@@ -15,10 +15,9 @@ export const alertRecipe = defineSlotRecipe({
       display: "inline-flex",
       flexDirection: "row",
       gap: "8px",
-      border: "1px solid pink",
       width: "100%",
     },
-    // TODO: do we need an "icon" component?
+    // TODO: figure out how to get this spacing to work
     icon: {
       "& svg": {
         width: "20px",
@@ -36,8 +35,7 @@ export const alertRecipe = defineSlotRecipe({
           border: "solid-25",
           borderColor: "colorPalette.5",
           backgroundColor: "colorPalette.2",
-          paddingY: "8px",
-          paddingX: "16px",
+          padding: "8px",
           borderRadius: "8px",
         },
       },
