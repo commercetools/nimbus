@@ -1,11 +1,13 @@
 import {
   type HTMLChakraProps,
+  IconButton,
   type RecipeProps,
   type UnstyledProp,
   createSlotRecipeContext,
 } from "@chakra-ui/react";
 
 import { alertRecipe } from "./alert.recipe";
+import type { IconButtonProps } from "../icon-button";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -33,27 +35,40 @@ export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
   "root"
 );
 
-export const AlertTitle = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+export type AlertTitleProps = HTMLChakraProps<"div", AlertRecipeProps>;
+
+export const AlertTitle = withContext<HTMLDivElement, AlertTitleProps>(
   "div",
   "title"
 );
 
+export type AlertDescriptionProps = HTMLChakraProps<"div", AlertRecipeProps>;
+
 export const AlertDescription = withContext<
   HTMLDivElement,
-  HTMLChakraProps<"div">
+  AlertDescriptionProps
 >("div", "description");
 
-export const AlertIcon = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+export type AlertIconProps = HTMLChakraProps<"div", AlertRecipeProps>;
+
+export const AlertIcon = withContext<HTMLDivElement, AlertIconProps>(
   "div",
   "icon"
 );
 
-export const AlertActions = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+export type AlertActionsProps = HTMLChakraProps<"div", AlertRecipeProps>;
+
+export const AlertActions = withContext<HTMLDivElement, AlertActionsProps>(
   "div",
   "actions"
 );
 
-export const AlertDismiss = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
-  "div",
+// aria-label is defined internally
+export type AlertDismissProps = Omit<IconButtonProps, "aria-label">;
+
+// Make the AlertDismiss slot itself an IconButton component
+// TODO: Is this okay? Seems fine...
+export const AlertDismiss = withContext<typeof IconButton, AlertDismissProps>(
+  IconButton,
   "dismiss"
 );
