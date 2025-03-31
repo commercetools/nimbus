@@ -14,14 +14,14 @@ export const alertRecipe = defineSlotRecipe({
     root: {
       display: "inline-flex",
       flexDirection: "row",
-      gap: "8px",
+      gap: "200",
       width: "100%",
     },
-    // TODO: figure out how to get this spacing to work
     icon: {
+      marginTop: "50",
       "& svg": {
-        width: "20px",
-        height: "20px",
+        width: "500",
+        height: "500",
         color: "colorPalette.11",
       },
     },
