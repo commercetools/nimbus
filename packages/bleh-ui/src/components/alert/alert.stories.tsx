@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Alert } from "./alert";
 import { Stack } from "./../stack";
 import { Button } from "../button";
-import { Text } from "../text";
 
 /**
  * Storybook metadata configuration
@@ -29,7 +28,7 @@ type Story = StoryObj<typeof Alert>;
  */
 export const Base: Story = {
   args: {
-    tone: "critical",
+    tone: "positive",
     variant: "solid",
     children: (
       <>
@@ -37,8 +36,8 @@ export const Base: Story = {
         <Alert.Description>Alert Description</Alert.Description>
         <Alert.Actions>
           <Stack direction="row" gap="8px" alignItems="center">
-            <Button>Dismiss</Button>
-            <Button>Button</Button>
+            <Button variant="outline">Dismiss</Button>
+            <Button variant="outline">Button</Button>
           </Stack>
         </Alert.Actions>
         <Alert.Dismiss onClick={() => console.log("woooo")} />

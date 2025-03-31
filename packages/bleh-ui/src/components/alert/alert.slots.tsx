@@ -70,7 +70,6 @@ export const AlertActions = withContext<HTMLDivElement, AlertActionsProps>(
 export type AlertDismissProps = Omit<IconButtonProps, "aria-label">;
 
 // Make the AlertDismiss slot itself an IconButton component
-// TODO: Is this okay? Seems fine...
 export const AlertDismiss = withContext<typeof IconButton, AlertDismissProps>(
   IconButton,
   "dismiss"
