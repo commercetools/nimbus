@@ -27,7 +27,7 @@ and potential pitfalls.
 There are several issues with specifying defaultVariants in component recipes:
 
 1. **Component Inheritance Complexity**: When components use other components
-   (e.g., Dropdown using Button), the inheritance chain can create unexpected
+   (e.g., Alert using Button), the inheritance chain can create unexpected
    styling conflicts. Default variants from parent components may clash with or
    override those of child components.
 
