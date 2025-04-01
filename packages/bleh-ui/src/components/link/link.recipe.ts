@@ -29,7 +29,4 @@ export const linkRecipe = defineRecipe({
       },
     },
   },
-  defaultVariants: {
-    variant: "plain",
-  },
 });

@@ -245,10 +245,4 @@ export const dialogSlotRecipe = defineSlotRecipe({
       none: {},
     },
   },
-  defaultVariants: {
-    size: "md",
-    scrollBehavior: "outside",
-    placement: "top",
-    motionPreset: "scale",
-  },
 });

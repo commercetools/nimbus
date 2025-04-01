@@ -62,7 +62,4 @@ export const listSlotRecipe = defineSlotRecipe({
       },
     },
   },
-  defaultVariants: {
-    variant: "marker",
-  },
 });

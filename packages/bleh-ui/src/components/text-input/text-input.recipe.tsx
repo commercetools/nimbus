@@ -60,9 +60,4 @@ export const textInputRecipe = defineRecipe({
       },
     },
   },
-
-  defaultVariants: {
-    size: "md",
-    variant: "solid",
-  },
 });

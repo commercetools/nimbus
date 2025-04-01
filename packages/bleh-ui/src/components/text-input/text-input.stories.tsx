@@ -21,6 +21,8 @@ export const Base: Story = {
   args: {
     placeholder: "base text input",
     ["aria-label"]: "test-input",
+    size: "md",
+    variant: "solid",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -57,6 +59,7 @@ export const Sizes: Story = {
             {...args}
             size={size}
             placeholder={size as string}
+            variant="solid"
           />
         ))}
       </Stack>
@@ -74,6 +77,7 @@ export const Variants: Story = {
             {...args}
             variant={variant}
             placeholder={variant as string}
+            size="md"
           />
         ))}
       </Stack>
@@ -98,6 +102,7 @@ export const Disabled: Story = {
             variant={variant}
             placeholder={variant as string}
             aria-label={`${variant as string}-disabled`}
+            size="md"
           />
         ))}
       </Stack>
@@ -134,6 +139,7 @@ export const Invalid: Story = {
             variant={variant}
             placeholder={variant as string}
             aria-label={`${variant as string}-invalid`}
+            size="md"
           />
         ))}
       </Stack>
@@ -226,6 +232,8 @@ export const Controlled: Story = {
           onChange={onChangeRequest}
           placeholder="Type something..."
           aria-label="controlled-input"
+          size="md"
+          variant="solid"
         />
         <Text data-testid="value-display">Current value: {value}</Text>
       </Stack>
@@ -269,7 +277,14 @@ export const InputTypes: Story = {
     return (
       <Stack direction="column" gap="400">
         {inputTypes.map((type) => (
-          <TextInput key={type} {...args} placeholder={type} type={type} />
+          <TextInput
+            key={type}
+            {...args}
+            placeholder={type}
+            type={type}
+            size="md"
+            variant="solid"
+          />
         ))}
       </Stack>
     );

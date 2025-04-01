@@ -43,7 +43,4 @@ export const headingRecipe = defineRecipe({
       },
     },
   },
-  defaultVariants: {
-    size: "xl",
-  },
 });

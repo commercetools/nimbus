@@ -56,8 +56,4 @@ export const codeRecipe = defineRecipe({
       },
     },
   },
-  defaultVariants: {
-    variant: "solid",
-    size: "md",
-  },
 });

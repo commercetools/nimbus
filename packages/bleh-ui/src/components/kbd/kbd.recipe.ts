@@ -50,8 +50,4 @@ export const kbdRecipe = defineRecipe({
       },
     },
   },
-  defaultVariants: {
-    size: "md",
-    variant: "raised",
-  },
 });

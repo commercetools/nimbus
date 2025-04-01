@@ -70,7 +70,12 @@ const optionGroupOptions = [
 export const Base: Story = {
   render: () => {
     return (
-      <Select.Root aria-label="Select a fruit" data-testid="select">
+      <Select.Root
+        aria-label="Select a fruit"
+        data-testid="select"
+        size="md"
+        variant="outline"
+      >
         <Select.Options>
           <Select.Option>Apples</Select.Option>
           <Select.Option>Bananas</Select.Option>
@@ -157,6 +162,8 @@ export const ControlledState: Story = {
           onSelectionChange={onChangeRequest}
           aria-label="Select your new pet"
           data-testid="select"
+          size="md"
+          variant="outline"
         >
           <Select.Options items={options}>
             {(item: { name: string }) => (
@@ -238,6 +245,8 @@ export const AsyncLoading: Story = {
           onSelectionChange={setAnimal}
           aria-label="Select your new pet"
           data-testid="select"
+          size="md"
+          variant="outline"
         >
           <Select.Options items={list.items}>
             {(item) => (
@@ -297,6 +306,8 @@ export const Disabled: Story = {
         isDisabled
         aria-label="Select some fruit(s)"
         data-testid="select"
+        size="md"
+        variant="outline"
       >
         <Select.Options>
           <Select.Option>Apples</Select.Option>
@@ -333,6 +344,8 @@ export const DisabledOptions: Story = {
         disabledKeys={["2"]}
         aria-label="Select some fruit(s)"
         data-testid="select"
+        size="md"
+        variant="outline"
       >
         <Select.Options>
           <Select.Option id="1">Apples</Select.Option>
@@ -385,6 +398,8 @@ export const Invalid: Story = {
         isInvalid
         aria-label="Select some fruit(s)"
         data-testid="select"
+        size="md"
+        variant="outline"
       >
         <Select.Options>
           <Select.Option id="1">Apples</Select.Option>
@@ -422,7 +437,12 @@ export const OptionGroups: Story = {
   render: () => {
     return (
       <Box>
-        <Select.Root aria-label="Select some fruit(s)" data-testid="select">
+        <Select.Root
+          aria-label="Select some fruit(s)"
+          data-testid="select"
+          size="md"
+          variant="outline"
+        >
           <Select.Options>
             <Select.OptionGroup label="Fruits">
               <Select.Option>Apples</Select.Option>
@@ -474,7 +494,11 @@ export const OptionGroupsDynamic: Story = {
   render: () => {
     return (
       <Box>
-        <Select.Root aria-label="Select something to eat">
+        <Select.Root
+          aria-label="Select something to eat"
+          size="md"
+          variant="outline"
+        >
           <Select.Options items={optionGroupOptions}>
             {(groupItem) => (
               <Select.OptionGroup
@@ -506,7 +530,12 @@ export const OptionGroupsDynamic: Story = {
 export const WithDescriptions: Story = {
   render: () => {
     return (
-      <Select.Root aria-label="Select some fruit(s)" data-testid="select">
+      <Select.Root
+        aria-label="Select some fruit(s)"
+        data-testid="select"
+        size="md"
+        variant="outline"
+      >
         <Select.Options>
           {/** Variant A - plain html-tags with slot property */}
           <Select.Option textValue="Apple">
@@ -579,7 +608,12 @@ export const CustomWidths: Story = {
     return (
       // width for the trigger can be specified on <Select.Root/>,
       // width for popover can be specified on <Select.Options/>
-      <Select.Root width="196px" aria-label="Select something to eat">
+      <Select.Root
+        width="400px"
+        aria-label="Select something to eat"
+        size="md"
+        variant="outline"
+      >
         <Select.Options width="512px">
           <Select.Option>
             Extraordinary long Menu Label that noone can read Extraordinary long
@@ -617,7 +651,7 @@ export const SuperLongAndComplex: Story = {
         justifyContent="center"
         overflow="auto"
       >
-        <Select.Root aria-label="Select something">
+        <Select.Root aria-label="Select something" size="md" variant="outline">
           <Select.Options>
             <Select.OptionGroup label="Fruits">
               <Select.Option>

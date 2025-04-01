@@ -25,6 +25,8 @@ type Story = StoryObj<typeof LoadingSpinner>;
 export const Base: Story = {
   args: {
     "data-testid": "spinner-test",
+    size: "sm",
+    tone: "primary",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -53,7 +55,12 @@ export const Sizes: Story = {
     return (
       <Stack direction="row" gap="400" alignItems="center">
         {sizes.map((size) => (
-          <LoadingSpinner key={size as string} {...args} size={size} />
+          <LoadingSpinner
+            key={size as string}
+            {...args}
+            size={size}
+            tone="primary"
+          />
         ))}
       </Stack>
     );
@@ -76,6 +83,7 @@ export const Tones: Story = {
               key={tone as string}
               {...args}
               tone={tone}
+              size="sm"
             />
           ))}
         </Stack>
