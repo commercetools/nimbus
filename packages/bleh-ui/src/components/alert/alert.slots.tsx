@@ -69,8 +69,9 @@ export const AlertActions = withContext<HTMLDivElement, AlertActionsProps>(
 // aria-label is defined internally
 export type AlertDismissProps = Omit<IconButtonProps, "aria-label">;
 
-// Make the AlertDismiss slot itself an IconButton component
+// This is a div wrapper for layout placement - note that we expect it to receive `IconButton` props, but we use a `div`.
+// We then forward the consumer props to the interior `IconButton` component.
 export const AlertDismiss = withContext<typeof IconButton, AlertDismissProps>(
-  IconButton,
+  "div",
   "dismiss"
 );

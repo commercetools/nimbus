@@ -31,6 +31,7 @@ import {
   Info,
   WarningAmber,
 } from "@bleh-ui/icons";
+import { IconButton } from "../icon-button";
 
 const getIconFromTone = (tone: AlertProps["tone"]) => {
   switch (tone) {
@@ -139,13 +140,15 @@ export const AlertDismiss = ({ children, ...props }: AlertDismissProps) => {
   useEffect(() => {
     if (context) {
       const slotElement = (
-        <AlertDismissSlot
-          {...props}
-          variant="ghost"
-          size="2xs"
-          aria-label="Dismiss"
-        >
-          <Clear />
+        <AlertDismissSlot>
+          <IconButton
+            {...props}
+            aria-label="Dismiss"
+            variant="ghost"
+            size="2xs"
+          >
+            <Clear />
+          </IconButton>
         </AlertDismissSlot>
       );
       // Register it with the parent
