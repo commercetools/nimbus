@@ -30,6 +30,10 @@ export const Base: Story = {
   args: {
     children: "Demo Card",
     "data-testid": "test-card",
+    cardPadding: "md",
+    backgroundStyle: "default",
+    borderStyle: "none",
+    elevation: "none",
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
@@ -65,6 +69,8 @@ export const CardPaddings: Story = {
                 {...args}
                 cardPadding={cardPadding}
                 borderStyle="outlined"
+                backgroundStyle="default"
+                elevation="none"
               >
                 <Card.Header>
                   <b>Padding size: {cardPadding as string}</b>
@@ -104,6 +110,7 @@ export const Configurations: Story = {
                       borderStyle={border}
                       elevation={shadow}
                       backgroundStyle={background}
+                      cardPadding="md"
                     />
                   );
                 });
@@ -147,6 +154,7 @@ export const WithoutCompound: Story = {
                     borderStyle={border}
                     elevation={shadow}
                     backgroundStyle="muted"
+                    cardPadding="md"
                   />
                 );
               })}
