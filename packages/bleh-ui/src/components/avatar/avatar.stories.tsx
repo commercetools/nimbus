@@ -33,6 +33,7 @@ export const Base: Story = {
     src: avatarImg,
     ["aria-label"]: "avatar",
     alt: "avatar",
+    size: "md",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -67,6 +68,7 @@ export const BaseWithInitials: Story = {
     lastName: "Doe",
     ["aria-label"]: "avatar",
     alt: "avatar",
+    size: "md",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -104,6 +106,7 @@ export const Colors: Story = {
     lastName: "Douglas",
     ["aria-label"]: "avatar",
     alt: "avatar",
+    size: "md",
   },
   render: (args) => {
     return (
@@ -124,6 +127,7 @@ export const Colors: Story = {
 export const InAButton: Story = {
   args: {
     src: avatarImg,
+    size: "md",
   },
 
   render(args) {

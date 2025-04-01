@@ -30,7 +30,4 @@ export const avatarRecipe = defineRecipe({
       "2xs": { width: 600, height: 600, textStyle: "xs" },
     },
   },
-  defaultVariants: {
-    size: "md",
-  },
 });
