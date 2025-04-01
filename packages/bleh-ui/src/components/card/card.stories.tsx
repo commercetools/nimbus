@@ -6,7 +6,7 @@ import { within, expect, userEvent } from "@storybook/test";
 
 const cardPaddings: CardProps["cardPadding"][] = ["sm", "md", "lg"];
 const elevations: CardProps["elevation"][] = ["none", "elevated"];
-const borderStyles: CardProps["borderStyle"][] = ["none", "outlined"];
+const frameStyles: CardProps["frameStyle"][] = ["none", "outlined"];
 const backgroundStyles: CardProps["backgroundStyle"][] = ["default", "muted"];
 
 const meta: Meta<typeof Card.Root> = {
@@ -32,7 +32,7 @@ export const Base: Story = {
     "data-testid": "test-card",
     cardPadding: "md",
     backgroundStyle: "default",
-    borderStyle: "none",
+    frameStyle: "none",
     elevation: "none",
   },
   play: async ({ canvasElement, args, step }) => {
@@ -68,7 +68,7 @@ export const CardPaddings: Story = {
                 key={`${cardPadding as string}`}
                 {...args}
                 cardPadding={cardPadding}
-                borderStyle="outlined"
+                frameStyle="outlined"
                 backgroundStyle="default"
                 elevation="none"
               >
@@ -98,7 +98,7 @@ export const Configurations: Story = {
   render: (args) => {
     return (
       <Stack>
-        {borderStyles.map((border) => {
+        {frameStyles.map((border) => {
           return (
             <Stack direction="row" key={`stack-${border as string}`}>
               {elevations.map((shadow) => {
@@ -107,7 +107,7 @@ export const Configurations: Story = {
                     <Card.Root
                       key={`${border as string}-${shadow as string}-${background as string}`}
                       {...args}
-                      borderStyle={border}
+                      frameStyle={border}
                       elevation={shadow}
                       backgroundStyle={background}
                       cardPadding="md"
@@ -143,7 +143,7 @@ export const WithoutCompound: Story = {
   render: (args) => {
     return (
       <Stack>
-        {borderStyles.map((border) => {
+        {frameStyles.map((border) => {
           return (
             <Stack direction="row" key={`stack-${border as string}`}>
               {elevations.map((shadow) => {
@@ -151,7 +151,7 @@ export const WithoutCompound: Story = {
                   <Card.Root
                     key={`${border as string}-${shadow as string}`}
                     {...args}
-                    borderStyle={border}
+                    frameStyle={border}
                     elevation={shadow}
                     backgroundStyle="muted"
                     cardPadding="md"

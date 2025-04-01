@@ -18,14 +18,11 @@ interface CardRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-export interface CardRootProps
-  extends HTMLChakraProps<"div", CardRecipeProps> {}
+export type CardRootProps = HTMLChakraProps<"div", CardRecipeProps>;
 
-export interface CardHeaderProps
-  extends HTMLChakraProps<"div", CardRecipeProps> {}
+export type CardHeaderProps = HTMLChakraProps<"div", CardRecipeProps>;
 
-export interface CardContentProps
-  extends HTMLChakraProps<"div", CardRecipeProps> {}
+export type CardContentProps = HTMLChakraProps<"div", CardRecipeProps>;
 
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: cardRecipe,
