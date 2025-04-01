@@ -14,6 +14,7 @@ import {
   CardHeader as CardHeaderSlot,
   CardContent as CardContentSlot,
   type CardHeaderProps,
+  type CardContentProps,
 } from "./card.slots";
 import type { CardProps } from "./card.types";
 import { Stack } from "../stack";
@@ -99,7 +100,7 @@ export const CardHeader = ({ children, ...props }: CardHeaderProps) => {
 };
 CardHeader.displayName = "CardHeader";
 
-export const CardContent = ({ children, ...props }: CardHeaderProps) => {
+export const CardContent = ({ children, ...props }: CardContentProps) => {
   const context = useContext(CardContext);
 
   useEffect(() => {
