@@ -7,7 +7,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 export const cardRecipe = defineSlotRecipe({
   slots: ["root", "header", "content"],
 
-  className: "bleh-ui-card",
+  className: "nimbus-card",
 
   base: {
     root: {
