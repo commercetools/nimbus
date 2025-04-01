@@ -46,6 +46,10 @@ export const Base: Story = {
 
     ["data-testid"]: "test",
     ["aria-label"]: "test-button",
+
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
@@ -95,6 +99,10 @@ export const Disabled: Story = {
     onPress: fn(),
 
     ["data-testid"]: "test",
+
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
   },
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
@@ -119,6 +127,9 @@ export const AsLink: Story = {
     as: "a",
     href: "/",
     ["data-testid"]: "test",
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -138,6 +149,9 @@ export const WithAsChild: Story = {
       </a>
     ),
     asChild: true,
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
 
     ["data-testid"]: "test",
   },
@@ -154,6 +168,8 @@ export const WithAsChild: Story = {
 export const Sizes: Story = {
   args: {
     children: "Demo Button",
+    variant: "subtle",
+    tone: "neutral",
   },
   render: (args) => {
     return (
@@ -169,6 +185,8 @@ export const Sizes: Story = {
 export const Variants: Story = {
   args: {
     children: "Demo Button",
+    size: "md",
+    tone: "neutral",
   },
   render: (args) => {
     return (
@@ -184,6 +202,8 @@ export const Variants: Story = {
 export const Tones: Story = {
   args: {
     children: "Demo Button",
+    size: "md",
+    variant: "subtle",
   },
   render: (args) => {
     return (
@@ -200,7 +220,6 @@ export const Tones: Story = {
                 key={variant as string}
                 {...args}
                 variant={variant}
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 tone={tone}
               />
             ))}
@@ -216,6 +235,9 @@ const buttonRef = createRef<HTMLButtonElement>();
 export const WithRef: Story = {
   args: {
     children: "Demo Button",
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
   },
   render: (args) => {
     return (
@@ -238,6 +260,9 @@ const Spacer = () => <Box flexGrow="1" />;
 export const ComplexIconLayouts: Story = {
   args: {
     children: "Demo Button",
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
   },
   render: (args) => {
     const [dir, setDir] = useState<"ltr" | "rtl">("ltr");
@@ -309,7 +334,6 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           <DemoIcon />
@@ -323,7 +347,6 @@ export const SmokeTest: Story = {
                           as="a"
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                           isDisabled
                         >
@@ -337,7 +360,6 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           <DemoIcon />
@@ -349,7 +371,6 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           {JSON.stringify(variant)} {args.children}
