@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import type { Meta, StoryObj } from "@storybook/react";
 import { Checkbox } from "./checkbox";
 import { Stack } from "@/components";
@@ -27,6 +26,7 @@ export const Base: Story = {
     // @ts-expect-error: data-testid is not a valid prop
     "data-testid": "test-checkbox",
     "aria-label": "test-label",
+    size: "md",
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
@@ -81,6 +81,7 @@ export const Disabled: Story = {
     isDisabled: true,
     isSelected: false,
     onChange: fn(),
+    size: "md",
   },
 
   play: async ({ canvasElement, step, args }) => {
@@ -119,6 +120,7 @@ export const Invalid: Story = {
     "data-testid": "test-checkbox",
     isInvalid: true,
     onChange: fn(),
+    size: "md",
   },
 
   play: async ({ canvasElement, step }) => {
@@ -135,6 +137,7 @@ export const InvisibleLabel: Story = {
     // @ts-expect-error: data-testid is not a valid prop
     "data-testid": "test-checkbox",
     "aria-label": "Checkbox without label",
+    size: "md",
   },
 
   play: async ({ canvasElement, step, args }) => {
@@ -168,6 +171,7 @@ export const SmokeTest: Story = {
                   isSelected={false}
                   isDisabled={isDisabled}
                   isInvalid={isInvalid}
+                  size="md"
                 >
                   Unchecked, {isDisabled ? "disabled" : "not disabled"},{" "}
                   {isInvalid ? "invalid" : ""}
@@ -177,6 +181,7 @@ export const SmokeTest: Story = {
                   isDisabled={isDisabled}
                   isInvalid={isInvalid}
                   isSelected
+                  size="md"
                 >
                   Checked, {isDisabled ? "disabled" : "not disabled"},{" "}
                   {isInvalid ? "invalid" : ""}
@@ -186,6 +191,7 @@ export const SmokeTest: Story = {
                   isDisabled={isDisabled}
                   isInvalid={isInvalid}
                   isIndeterminate
+                  size="md"
                 >
                   Indeterminate, {isDisabled ? "disabled" : "not disabled"},{" "}
                   {isInvalid ? "invalid" : ""}
