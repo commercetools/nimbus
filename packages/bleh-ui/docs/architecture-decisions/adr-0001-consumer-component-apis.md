@@ -105,16 +105,17 @@ also React components). The final API looks like:
   <Alert.Description>
     A short alert description.
   </Alert.Description>
-  <Alert.Dismiss onClick={() => void} />
+  <Alert.DismissButton onClick={() => void} />
 </Alert>
 ```
 
 ### Key Changes:
 
 1. Children become semantic slots: `<Alert.Title>`, `<Alert.Description>`, and
-   `<Alert.Dismiss>`.
+   `<Alert.DismissButton>`.
 2. Each slot can handle its own styling or props. For instance, Alert.Title
-   might accept a fontStyle prop, Alert.Dismiss handles its own click event.
+   might accept a fontStyle prop, Alert.DismissButton handles its own click
+   event.
 3. The root `<Alert>` only handles general layout or high-level variant props
    (e.g., px, py, severity).
 
@@ -146,7 +147,7 @@ also React components). The final API looks like:
 <Alert>
   <Alert.Title>Warning!</Alert.Title>
   <Alert.Description>Please fill out all required fields.</Alert.Description>
-  <Alert.Dismiss onClick={onClose} />
+  <Alert.DismissButton onClick={onClose} />
 </Alert>
 ```
 
@@ -158,7 +159,7 @@ also React components). The final API looks like:
   <Alert.Description>
     We could not reach the server. Please try again.
   </Alert.Description>
-  <Alert.Dismiss onClick={onClose} />
+  <Alert.DismissButton onClick={onClose} />
   <Alert.Controls>
     <Button onClick={onRetry}>Retry</Button>
   </Alert.Controls>

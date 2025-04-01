@@ -54,7 +54,7 @@ type AlertComponent = ForwardRefExoticComponent<
   Title: typeof AlertTitle;
   Description: typeof AlertDescription;
   Actions: typeof AlertActions;
-  Dismiss: typeof AlertDismissButton;
+  DismissButton: typeof AlertDismissButton;
 };
 
 type AlertContextValue = {
@@ -212,4 +212,4 @@ AlertActions.displayName = "AlertActions";
 Alert.Title = AlertTitle;
 Alert.Description = AlertDescription;
 Alert.Actions = AlertActions;
-Alert.Dismiss = AlertDismissButton;
+Alert.DismissButton = AlertDismissButton;

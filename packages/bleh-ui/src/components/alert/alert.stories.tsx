@@ -44,7 +44,7 @@ export const Base: Story = {
             <Button variant="outline">Button</Button>
           </Stack>
         </Alert.Actions>
-        <Alert.Dismiss onClick={() => alert("Dismissed")} />
+        <Alert.DismissButton onPress={() => alert("Dismissed")} />
       </>
     ),
   },
@@ -67,7 +67,7 @@ export const Sizes: Story = {
                 <Button variant="outline">Button</Button>
               </Stack>
             </Alert.Actions>
-            <Alert.Dismiss onClick={() => alert("Dismissed")} />
+            <Alert.DismissButton onPress={() => alert("Dismissed")} />
           </Alert>
         ))}
       </Stack>
@@ -106,7 +106,7 @@ export const Variants: Story = {
                       <Button variant="outline">Button</Button>
                     </Stack>
                   </Alert.Actions>
-                  <Alert.Dismiss onClick={() => alert("Dismissed")} />
+                  <Alert.DismissButton onPress={() => alert("Dismissed")} />
                 </Alert>
               );
             })}
@@ -148,7 +148,7 @@ export const PartialChildren: Story = {
 
         {/* Alert with only a Dismiss icon */}
         <Alert tone="critical" variant="solid">
-          <Alert.Dismiss onClick={() => alert("Dismissed")} />
+          <Alert.DismissButton onPress={() => alert("Dismissed")} />
         </Alert>
 
         {/* Alert with Title, Description, and Dismiss but no actions */}
@@ -157,7 +157,7 @@ export const PartialChildren: Story = {
           <Alert.Description>
             We have both title and description here!
           </Alert.Description>
-          <Alert.Dismiss onClick={() => alert("Dismissed")} />
+          <Alert.DismissButton onPress={() => alert("Dismissed")} />
         </Alert>
       </Stack>
     );
