@@ -99,6 +99,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
             borderStyle: "outlined",
             backgroundStyle: "muted",
             cardPadding: "sm",
+            frameStyle: "outlined",
             // Override the card's light border value
             borderColor: "colorPalette.5",
           }

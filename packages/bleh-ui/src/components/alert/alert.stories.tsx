@@ -117,43 +117,49 @@ export const Variants: Story = {
 export const PartialChildren: Story = {
   render: () => {
     return (
-      <Stack direction="column" gap="400">
-        {/* Alert with only a Title */}
-        <Alert tone="positive" variant="outlined">
-          <Alert.Title>Title Only</Alert.Title>
-        </Alert>
+      <Stack direction="row" gap="400">
+        {variants.map((variant) => {
+          return (
+            <Stack direction="column" gap="400" width="100%">
+              {/* Alert with only a Title */}
+              <Alert tone="positive" variant={variant}>
+                <Alert.Title>Title Only</Alert.Title>
+              </Alert>
 
-        {/* Alert with only a Description */}
-        <Alert tone="info" variant="outlined">
-          <Alert.Description>Description Only</Alert.Description>
-        </Alert>
+              {/* Alert with only a Description */}
+              <Alert tone="info" variant={variant}>
+                <Alert.Description>Description Only</Alert.Description>
+              </Alert>
 
-        {/* Alert with Title and Actions, but no Description */}
-        <Alert tone="warning" variant="outlined">
-          <Alert.Title>Title and Actions, no Description</Alert.Title>
-          <Alert.Actions>
-            <Stack direction="row" gap="8px" alignItems="center">
-              <Button variant="outline">Whatever</Button>
-              <Button variant="outline">We</Button>
-              <Button variant="subtle">Want</Button>
-              <Button variant="ghost">Here</Button>
+              {/* Alert with Title and Actions, but no Description */}
+              <Alert tone="warning" variant={variant}>
+                <Alert.Title>Title and Actions, no Description</Alert.Title>
+                <Alert.Actions>
+                  <Stack direction="row" gap="8px" alignItems="center">
+                    <Button variant="outline">Whatever</Button>
+                    <Button variant="outline">We</Button>
+                    <Button variant="subtle">Want</Button>
+                    <Button variant="ghost">Here</Button>
+                  </Stack>
+                </Alert.Actions>
+              </Alert>
+
+              {/* Alert with only a Dismiss icon */}
+              <Alert tone="critical" variant={variant}>
+                <Alert.DismissButton onPress={() => alert("Dismissed")} />
+              </Alert>
+
+              {/* Alert with Title, Description, and Dismiss but no actions */}
+              <Alert tone="positive" variant={variant}>
+                <Alert.Title>A More Complete Alert</Alert.Title>
+                <Alert.Description>
+                  We have both title and description here!
+                </Alert.Description>
+                <Alert.DismissButton onPress={() => alert("Dismissed")} />
+              </Alert>
             </Stack>
-          </Alert.Actions>
-        </Alert>
-
-        {/* Alert with only a Dismiss icon */}
-        <Alert tone="critical" variant="outlined">
-          <Alert.DismissButton onPress={() => alert("Dismissed")} />
-        </Alert>
-
-        {/* Alert with Title, Description, and Dismiss but no actions */}
-        <Alert tone="positive" variant="outlined">
-          <Alert.Title>A More Complete Alert</Alert.Title>
-          <Alert.Description>
-            We have both title and description here!
-          </Alert.Description>
-          <Alert.DismissButton onPress={() => alert("Dismissed")} />
-        </Alert>
+          );
+        })}
       </Stack>
     );
   },
