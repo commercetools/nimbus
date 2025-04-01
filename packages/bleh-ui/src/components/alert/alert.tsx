@@ -14,11 +14,11 @@ import {
   AlertIcon,
   AlertActions as AlertActionsSlot,
   AlertDescription as AlertDescriptionSlot,
-  AlertDismiss as AlertDismissSlot,
+  AlertDismissButton as AlertDismissButtonSlot,
   AlertTitle as AlertTitleSlot,
   type AlertActionsProps,
   type AlertDescriptionProps,
-  type AlertDismissProps,
+  type AlertDismissButtonProps,
   type AlertTitleProps,
 } from "./alert.slots";
 import type { AlertProps } from "./alert.types";
@@ -54,7 +54,7 @@ type AlertComponent = ForwardRefExoticComponent<
   Title: typeof AlertTitle;
   Description: typeof AlertDescription;
   Actions: typeof AlertActions;
-  Dismiss: typeof AlertDismiss;
+  Dismiss: typeof AlertDismissButton;
 };
 
 type AlertContextValue = {
@@ -134,13 +134,16 @@ export const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
 };
 AlertTitle.displayName = "AlertTitle";
 
-export const AlertDismiss = ({ children, ...props }: AlertDismissProps) => {
+export const AlertDismissButton = ({
+  children,
+  ...props
+}: AlertDismissButtonProps) => {
   const context = useContext(AlertContext);
 
   useEffect(() => {
     if (context) {
       const slotElement = (
-        <AlertDismissSlot>
+        <AlertDismissButtonSlot>
           <IconButton
             {...props}
             aria-label="Dismiss"
@@ -149,7 +152,7 @@ export const AlertDismiss = ({ children, ...props }: AlertDismissProps) => {
           >
             <Clear />
           </IconButton>
-        </AlertDismissSlot>
+        </AlertDismissButtonSlot>
       );
       // Register it with the parent
       context.setDismiss(slotElement);
@@ -161,7 +164,7 @@ export const AlertDismiss = ({ children, ...props }: AlertDismissProps) => {
 
   return null;
 };
-AlertDismiss.displayName = "AlertDismiss";
+AlertDismissButton.displayName = "AlertDismissButton";
 
 export const AlertDescription = ({
   children,
@@ -209,4 +212,4 @@ AlertActions.displayName = "AlertActions";
 Alert.Title = AlertTitle;
 Alert.Description = AlertDescription;
 Alert.Actions = AlertActions;
-Alert.Dismiss = AlertDismiss;
+Alert.Dismiss = AlertDismissButton;

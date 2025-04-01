@@ -67,11 +67,11 @@ export const AlertActions = withContext<HTMLDivElement, AlertActionsProps>(
 );
 
 // aria-label is defined internally
-export type AlertDismissProps = Omit<IconButtonProps, "aria-label">;
+export type AlertDismissButtonProps = Omit<IconButtonProps, "aria-label">;
 
 // This is a div wrapper for layout placement - note that we expect it to receive `IconButton` props, but we use a `div`.
 // We then forward the consumer props to the interior `IconButton` component.
-export const AlertDismiss = withContext<typeof IconButton, AlertDismissProps>(
-  "div",
-  "dismiss"
-);
+export const AlertDismissButton = withContext<
+  typeof IconButton,
+  AlertDismissButtonProps
+>("div", "dismissButton");

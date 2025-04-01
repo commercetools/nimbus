@@ -5,7 +5,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const alertRecipe = defineSlotRecipe({
-  slots: ["root", "title", "description", "icon", "actions", "dismiss"],
+  slots: ["root", "title", "description", "icon", "actions", "dismissButton"],
   // Unique class name prefix for the component
   className: "bleh-ui-alert",
 
@@ -38,7 +38,7 @@ export const alertRecipe = defineSlotRecipe({
       critical: {
         root: { colorPalette: "error" },
         icon: { colorPalette: "error" },
-        dismiss: { colorPalette: "error" },
+        dismissButton: { colorPalette: "error" },
         title: { colorPalette: "error" },
         description: { colorPalette: "error" },
         actions: { colorPalette: "error" },
@@ -46,7 +46,7 @@ export const alertRecipe = defineSlotRecipe({
       info: {
         root: { colorPalette: "blue" },
         icon: { colorPalette: "blue" },
-        dismiss: { colorPalette: "blue" },
+        dismissButton: { colorPalette: "blue" },
         title: { colorPalette: "blue" },
         description: { colorPalette: "blue" },
         actions: { colorPalette: "blue" },
@@ -54,7 +54,7 @@ export const alertRecipe = defineSlotRecipe({
       warning: {
         root: { colorPalette: "amber" },
         icon: { colorPalette: "amber" },
-        dismiss: { colorPalette: "amber" },
+        dismissButton: { colorPalette: "amber" },
         title: { colorPalette: "amber" },
         description: { colorPalette: "amber" },
         actions: { colorPalette: "amber" },
@@ -62,7 +62,7 @@ export const alertRecipe = defineSlotRecipe({
       positive: {
         root: { colorPalette: "grass" },
         icon: { colorPalette: "grass" },
-        dismiss: { colorPalette: "grass" },
+        dismissButton: { colorPalette: "grass" },
         title: { colorPalette: "grass" },
         description: { colorPalette: "grass" },
         actions: { colorPalette: "grass" },
