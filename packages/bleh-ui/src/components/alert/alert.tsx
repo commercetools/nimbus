@@ -10,7 +10,8 @@ import {
   type RefAttributes,
 } from "react";
 import {
-  AlertRoot,
+  AlertRootDiv,
+  AlertRootCard,
   AlertIcon,
   AlertActions as AlertActionsSlot,
   AlertDescription as AlertDescriptionSlot,
@@ -32,6 +33,7 @@ import {
   WarningAmber,
 } from "@bleh-ui/icons";
 import { IconButton } from "../icon-button";
+import type { CardProps } from "../card";
 
 const getIconFromTone = (tone: AlertProps["tone"]) => {
   switch (tone) {
@@ -89,9 +91,22 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
       [setTitle, setDescription, setActions, setDismiss]
     );
 
+    const Root = props.variant === "outlined" ? AlertRootCard : AlertRootDiv;
+
+    const cardProps: CardProps =
+      props.variant === "outlined"
+        ? {
+            borderStyle: "outlined",
+            backgroundStyle: "muted",
+            cardPadding: "sm",
+            // Override the card's light border value
+            borderColor: "colorPalette.5",
+          }
+        : {};
+
     return (
       <AlertContext.Provider value={contextValue}>
-        <AlertRoot ref={ref} {...props} role="alert">
+        <Root ref={ref} {...props} role="alert" {...cardProps}>
           <AlertIcon alignItems="flex-start">
             {getIconFromTone(props.tone)}
           </AlertIcon>
@@ -105,7 +120,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
           {dismissNode}
 
           {children}
-        </AlertRoot>
+        </Root>
       </AlertContext.Provider>
     );
   }

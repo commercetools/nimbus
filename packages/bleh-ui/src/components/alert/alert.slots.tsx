@@ -4,10 +4,10 @@ import {
   type UnstyledProp,
   createSlotRecipeContext,
 } from "@chakra-ui/react";
-
 import { alertRecipe } from "./alert.recipe";
 import { Text, type TextProps } from "../text";
 import type { ButtonProps } from "../button";
+import { Card, type CardProps } from "../card";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -15,23 +15,20 @@ import type { ButtonProps } from "../button";
  */
 interface AlertRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type AlertRootProps = HTMLChakraProps<"div", AlertRecipeProps>;
-
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: alertRecipe,
 });
 
-/**
- * Root component that provides the styling context for the Alert component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
+export type AlertRootDivProps = HTMLChakraProps<"div", AlertRecipeProps>;
+export type AlertRootCardProps = CardProps;
+
+export const AlertRootDiv = withProvider<HTMLDivElement, AlertRootDivProps>(
   "div",
+  "root"
+);
+
+export const AlertRootCard = withProvider<HTMLDivElement, AlertRootCardProps>(
+  Card,
   "root"
 );
 

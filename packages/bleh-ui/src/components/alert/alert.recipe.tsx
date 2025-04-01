@@ -69,19 +69,10 @@ export const alertRecipe = defineSlotRecipe({
       },
     },
 
-    // Visual style variants
+    // These are empty on purpose - we branch off of them in the component implementation
     variant: {
       flat: {},
-      outlined: {
-        // TODO: This should conditionally incorporate the `Card` component
-        root: {
-          border: "solid-25",
-          borderColor: "colorPalette.5",
-          backgroundColor: "colorPalette.2",
-          padding: "8px",
-          borderRadius: "8px",
-        },
-      },
+      outlined: {},
     },
   },
 });

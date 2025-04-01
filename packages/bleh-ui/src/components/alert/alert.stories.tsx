@@ -85,12 +85,7 @@ export const Variants: Story = {
     return (
       <Stack direction="column" gap="400">
         {tones.map((tone) => (
-          <Stack
-            key={`stack-${tone as string}`}
-            direction="row"
-            gap="400"
-            alignItems="center"
-          >
+          <Stack key={`stack-${tone as string}`} direction="row" gap="400">
             {variants.map((variant) => {
               return (
                 <Alert
