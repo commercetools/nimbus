@@ -5,7 +5,7 @@ import { Button } from "../button";
 import type { AlertProps } from "./alert.types";
 
 const tones: AlertProps["tone"][] = ["critical", "info", "warning", "positive"];
-const variants: AlertProps["variant"][] = ["plain", "solid"];
+const variants: AlertProps["variant"][] = ["flat", "outlined"];
 
 /**
  * Storybook metadata configuration
@@ -33,7 +33,7 @@ type Story = StoryObj<typeof Alert>;
 export const Base: Story = {
   args: {
     tone: "positive",
-    variant: "solid",
+    variant: "outlined",
     children: (
       <>
         <Alert.Title>Alert Title</Alert.Title>
@@ -58,7 +58,7 @@ export const Sizes: Story = {
     return (
       <Stack direction="column" gap="400" alignItems="center">
         {tones.map((tone) => (
-          <Alert key={`alert-${tone as string}`} tone={tone} variant="solid">
+          <Alert key={`alert-${tone as string}`} tone={tone} variant="outlined">
             <Alert.Title>Alert Title</Alert.Title>
             <Alert.Description>Alert Description</Alert.Description>
             <Alert.Actions>
@@ -124,22 +124,22 @@ export const PartialChildren: Story = {
     return (
       <Stack direction="column" gap="400">
         {/* Alert with only a Title */}
-        <Alert tone="positive" variant="solid">
+        <Alert tone="positive" variant="outlined">
           <Alert.Title>Title Only</Alert.Title>
         </Alert>
 
         {/* Alert with only a Description */}
-        <Alert tone="info" variant="solid">
+        <Alert tone="info" variant="outlined">
           <Alert.Description>Description Only</Alert.Description>
         </Alert>
 
         {/* Alert with Title and Actions, but no Description */}
-        <Alert tone="warning" variant="solid">
+        <Alert tone="warning" variant="outlined">
           <Alert.Title>Title and Actions, no Description</Alert.Title>
           <Alert.Actions>
             <Stack direction="row" gap="8px" alignItems="center">
               <Button variant="outline">Whatever</Button>
-              <Button variant="solid">We</Button>
+              <Button variant="outline">We</Button>
               <Button variant="subtle">Want</Button>
               <Button variant="ghost">Here</Button>
             </Stack>
@@ -147,12 +147,12 @@ export const PartialChildren: Story = {
         </Alert>
 
         {/* Alert with only a Dismiss icon */}
-        <Alert tone="critical" variant="solid">
+        <Alert tone="critical" variant="outlined">
           <Alert.DismissButton onPress={() => alert("Dismissed")} />
         </Alert>
 
         {/* Alert with Title, Description, and Dismiss but no actions */}
-        <Alert tone="positive" variant="solid">
+        <Alert tone="positive" variant="outlined">
           <Alert.Title>A More Complete Alert</Alert.Title>
           <Alert.Description>
             We have both title and description here!
