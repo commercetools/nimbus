@@ -32,60 +32,60 @@ export const checkboxSlotRecipe = defineSlotRecipe({
         color: "error.11",
       },
     },
-    // indicator: {
-    //   position: "relative",
-    //   display: "flex",
-    //   flexShrink: 0,
-    //   alignItems: "center",
-    //   justifyContent: "center",
-    //   border: "solid-50",
-    //   borderRadius: "50",
-    //   focusRing: "outside",
-    //   borderColor: "neutral.9",
-    //   bg: "transparent",
-    //   color: "neutral.11",
+    indicator: {
+      position: "relative",
+      display: "flex",
+      flexShrink: 0,
+      alignItems: "center",
+      justifyContent: "center",
+      border: "solid-50",
+      borderRadius: "50",
+      focusRing: "outside",
+      borderColor: "neutral.9",
+      bg: "transparent",
+      color: "neutral.11",
 
-    //   _icon: {
-    //     w: "350",
-    //     h: "350",
-    //   },
+      _icon: {
+        w: "350",
+        h: "350",
+      },
 
-    //   "&:hover": {
-    //     borderColor: "neutral.10",
-    //   },
+      "&:hover": {
+        borderColor: "neutral.10",
+      },
 
-    //   ["&[data-invalid='true']"]: {
-    //     bg: "transparent",
-    //     borderColor: "error.9",
-    //     color: "error.11",
+      ["&[data-invalid='true']"]: {
+        bg: "transparent",
+        borderColor: "error.9",
+        color: "error.11",
 
-    //     "&:hover": {
-    //       borderColor: "error.10",
-    //     },
-    //   },
+        "&:hover": {
+          borderColor: "error.10",
+        },
+      },
 
-    //   ["&[data-selected='true'], &[data-indeterminate='true']"]: {
-    //     bg: "colorPalette.9",
-    //     borderColor: "colorPalette.9",
-    //     color: "colorPalette.contrast",
+      ["&[data-selected='true'], &[data-indeterminate='true']"]: {
+        bg: "colorPalette.9",
+        borderColor: "colorPalette.9",
+        color: "colorPalette.contrast",
 
-    //     "&:hover": {
-    //       bg: "colorPalette.10",
-    //       borderColor: "colorPalette.10",
-    //     },
+        "&:hover": {
+          bg: "colorPalette.10",
+          borderColor: "colorPalette.10",
+        },
 
-    //     "&[data-invalid='true']": {
-    //       bg: "error.9",
-    //       borderColor: "error.9",
-    //       color: "error.contrast",
+        "&[data-invalid='true']": {
+          bg: "error.9",
+          borderColor: "error.9",
+          color: "error.contrast",
 
-    //       "&:hover": {
-    //         bg: "error.10",
-    //         borderColor: "error.10",
-    //       },
-    //     },
-    //   },
-    // },
+          "&:hover": {
+            bg: "error.10",
+            borderColor: "error.10",
+          },
+        },
+      },
+    },
   },
   variants: {
     size: {
