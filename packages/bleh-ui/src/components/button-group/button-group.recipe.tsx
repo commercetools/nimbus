@@ -17,11 +17,18 @@ export const buttonGroupRecipe = defineSlotRecipe({
     button: {
       colorPalette: "primary",
       borderRadius: "0",
+      borderRightWidth: "0",
       "&:first-of-type": {
         borderLeftRadius: "200",
       },
       "&:last-of-type": {
+        borderRightWidth: "1px",
         borderRightRadius: "200",
+      },
+
+      "&[data-selected=true]": {
+        color: "colorPalette.contrast",
+        bg: "colorPalette.9",
       },
     },
   },

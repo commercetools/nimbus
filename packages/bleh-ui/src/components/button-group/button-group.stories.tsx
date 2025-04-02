@@ -23,12 +23,6 @@ type Story = StoryObj<typeof ButtonGroup>;
 
 const sizes: ButtonProps["size"][] = ["md", "xs"];
 const variants: ButtonProps["variant"][] = ["outline"];
-const tones: ButtonProps["tone"][] = [
-  "primary",
-  "neutral",
-  "critical",
-] as const;
-
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -38,9 +32,9 @@ export const Base: Story = {
   args: {
     children: (
       <>
-        <ButtonGroup.Button>Left</ButtonGroup.Button>
-        <ButtonGroup.Button>Center</ButtonGroup.Button>
-        <ButtonGroup.Button>Right</ButtonGroup.Button>
+        <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
+        <ButtonGroup.Button id="center">Center</ButtonGroup.Button>
+        <ButtonGroup.Button id="right">Right</ButtonGroup.Button>
       </>
     ),
   },
@@ -55,9 +49,9 @@ export const Sizes: Story = {
       <Stack direction="row" gap="400" alignItems="center">
         {sizes.map((size) => (
           <ButtonGroup key={size as string} {...args} size={size}>
-            <ButtonGroup.Button>Left</ButtonGroup.Button>
-            <ButtonGroup.Button>Center</ButtonGroup.Button>
-            <ButtonGroup.Button>Right</ButtonGroup.Button>
+            <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
+            <ButtonGroup.Button id="center">Center</ButtonGroup.Button>
+            <ButtonGroup.Button id="right">Right</ButtonGroup.Button>
           </ButtonGroup>
         ))}
       </Stack>
@@ -76,9 +70,9 @@ export const Variants: Story = {
       <Stack direction="row" gap="400" alignItems="center">
         {variants.map((variant) => (
           <ButtonGroup key={variant as string} {...args} variant={variant}>
-            <ButtonGroup.Button>Left</ButtonGroup.Button>
-            <ButtonGroup.Button>Center</ButtonGroup.Button>
-            <ButtonGroup.Button>Right</ButtonGroup.Button>
+            <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
+            <ButtonGroup.Button id="center">Center</ButtonGroup.Button>
+            <ButtonGroup.Button id="right">Right</ButtonGroup.Button>
           </ButtonGroup>
         ))}
       </Stack>
