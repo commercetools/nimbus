@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Accordion } from "./accordion";
 import type { AccordionRootProps } from "./accordion.types";
 import { Button, Checkbox, Flex, Avatar } from "@/components";
-import { userEvent, within, expect, waitFor } from "@storybook/test";
+import { userEvent, expect, waitFor } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -38,15 +38,17 @@ const items = [
  * Basic Case
  */
 export const Base: Story = {
-  args: {
-    title: "Test Accordion",
-    children: "Accordion Content",
-    // @ts-expect-error: data-testid is not a valid prop
-    "data-testid": "test-accordion",
-  },
+  render: (args) => (
+    <Accordion {...args}>
+      <Accordion.Header>Test Accordion</Accordion.Header>
+      <Accordion.Content>Test Accordion Content</Accordion.Content>
+    </Accordion>
+  ),
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const accordion = canvas.getByTestId("test-accordion");
+    // const canvas = within(canvasElement);
+    const accordion = canvasElement.querySelector(
+      '[data-slot="root"]'
+    ) as HTMLElement;
 
     const trigger = accordion.querySelector(
       '[data-slot="trigger"]'
@@ -76,6 +78,7 @@ export const Base: Story = {
     });
   },
 };
+
 /**
  * Showcase Sizes
  */
@@ -84,18 +87,21 @@ export const Sizes: Story = {
     return (
       <>
         {accordionSizes.map((size, index) => (
-          <Accordion title={<>{size} size</>} key={index} {...args} size={size}>
-            <>{size} size text</>
+          <Accordion key={index} {...args} size={size}>
+            <Accordion.Header>{<>{size} size</>}</Accordion.Header>
+            <Accordion.Content>
+              <>{size} size text</>
+            </Accordion.Content>
           </Accordion>
         ))}
       </>
     );
   },
 };
-/**
- * With buttons on the trigger
- */
 
+// /**
+//  * With buttons on the trigger
+//  */
 const AccordionContent = () => {
   const avatarImg = "https://thispersondoesnotexist.com/ ";
 
@@ -112,34 +118,34 @@ export const WithAdditionalContentsOnTrigger: Story = {
     return (
       <>
         {items.map((item, index) => (
-          <Accordion
-            title={item.title}
-            key={index}
-            {...args}
-            size={"md"}
-            additionalTriggerComponent={
-              <div style={{ padding: "10px" }}>
-                <Button marginRight="100" tone="primary">
-                  Click me
-                </Button>
-                <Button marginRight="100" tone="neutral">
-                  Click me
-                </Button>
-                <Button marginRight="100" tone="critical">
-                  Click me
-                </Button>
-              </div>
-            }
-          >
-            <Flex
-              justifyContent="space-between"
-              alignItems={"center"}
-              borderBottom="solid-25"
-              borderColor="neutral.4"
+          <Accordion key={index} {...args} size={"md"}>
+            <Accordion.Header
+              additionalTriggerComponent={
+                <div style={{ padding: "10px" }}>
+                  <Button marginRight="100" tone="primary">
+                    Click me
+                  </Button>
+                  <Button marginRight="100" tone="neutral">
+                    Click me
+                  </Button>
+                  <Button marginRight="100" tone="critical">
+                    Click me
+                  </Button>
+                </div>
+              }
             >
-              <div style={{ marginRight: "100" }}>{item.text}</div>
-              <AccordionContent />
-            </Flex>
+              {item.title}
+            </Accordion.Header>
+            <Accordion.Content>
+              <Flex
+                justifyContent="space-between"
+                alignItems={"center"}
+                borderColor="neutral.4"
+              >
+                <div style={{ marginRight: "100" }}>{item.text}</div>
+                <AccordionContent />
+              </Flex>
+            </Accordion.Content>
           </Accordion>
         ))}
       </>

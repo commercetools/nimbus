@@ -1,4 +1,13 @@
-import React, { forwardRef } from "react";
+import React, {
+  createContext,
+  forwardRef,
+  useContext,
+  useMemo,
+  useRef,
+  type ReactNode,
+  type RefAttributes,
+  type ForwardRefExoticComponent,
+} from "react";
 import {
   AccordionRoot,
   AccordionDisclosure,
@@ -9,7 +18,7 @@ import {
 import { useDisclosureState } from "react-stately";
 import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
 import { useSlotRecipe } from "@chakra-ui/react";
-import type { AccordionRootProps, AccordionProps } from "./accordion.types";
+import type { AccordionProps, AccordionComposition } from "./accordion.types";
 import { Flex } from "@/components";
 
 /**
@@ -26,56 +35,108 @@ import { Flex } from "@/components";
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
 
-export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
-  ({ title, children, additionalTriggerComponent, ...props }, forwardedRef) => {
-    const state = useDisclosureState(props);
-    const panelRef = React.useRef<HTMLDivElement | null>(null);
-    const triggerRef = React.useRef<HTMLButtonElement | null>(null);
-    const { buttonProps: triggerProps, panelProps } = useDisclosure(
-      props,
-      state,
-      panelRef
-    );
-    const { buttonProps } = useButton(triggerProps, triggerRef);
-    const { focusProps, isFocusVisible } = useFocusRing();
-    const recipe = useSlotRecipe({ key: "accordion" });
-    const [recipeProps] = recipe.splitVariantProps(props);
+type AccordionComponent = ForwardRefExoticComponent<
+  AccordionProps & RefAttributes<HTMLDivElement>
+> & {
+  Header: typeof AccordionHeader;
+  Content: typeof AccordionContent;
+};
 
-    return (
-      <AccordionRoot
-        data-slot="root"
-        ref={forwardedRef}
-        {...recipeProps}
-        {...(props as AccordionRootProps)}
-      >
-        <AccordionDisclosure>
-          <Flex
-            justifyContent="space-between"
-            alignItems={"center"}
-            borderBottom="solid-25"
-            borderColor="neutral.4"
-          >
-            <AccordionTrigger
-              ref={triggerRef}
-              {...mergeProps(buttonProps, focusProps)}
-              data-slot="trigger"
-              outline={isFocusVisible ? undefined : "none"}
-            >
-              <svg viewBox="0 0 24 24">
-                <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-              </svg>
-              <AccordionTitle data-slot="acccordionTitle">
-                {title}
-              </AccordionTitle>
-            </AccordionTrigger>
-            <div>{additionalTriggerComponent}</div>
-          </Flex>
-          <AccordionPanel ref={panelRef} {...panelProps} data-slot="panel">
-            {children}
-          </AccordionPanel>
-        </AccordionDisclosure>
-      </AccordionRoot>
-    );
-  }
+const AccordionContext = createContext<AccordionComposition | undefined>(
+  undefined
 );
+
+const AccordionHeader: React.FC<{
+  children: ReactNode;
+  additionalTriggerComponent?: ReactNode;
+}> = ({ children, additionalTriggerComponent }) => {
+  const context = useContext(AccordionContext);
+  if (!context)
+    throw new Error("AccordionHeader must be used within Accordion");
+
+  return (
+    <Flex
+      justifyContent="space-between"
+      alignItems="center"
+      borderBottom="solid-25"
+      borderColor="neutral.4"
+    >
+      <AccordionTrigger
+        ref={context.triggerRef}
+        {...context.buttonProps}
+        data-slot="trigger"
+        outline={context.isFocusVisible ? undefined : "none"}
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+        <AccordionTitle>{children}</AccordionTitle>
+      </AccordionTrigger>
+      {additionalTriggerComponent && <div>{additionalTriggerComponent}</div>}
+    </Flex>
+  );
+};
+
+const AccordionContent: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const context = useContext(AccordionContext);
+
+  if (!context) {
+    throw new Error("AccordionContent must be used within Accordion");
+  }
+
+  return (
+    <AccordionPanel
+      ref={context.panelRef}
+      {...context.panelProps}
+      data-slot="panel"
+    >
+      {children}
+    </AccordionPanel>
+  );
+};
+
+export const Accordion = forwardRef<
+  HTMLDivElement,
+  AccordionProps & {
+    children: ReactNode;
+  }
+>(({ children, ...props }, forwardedRef) => {
+  const state = useDisclosureState(props);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const { buttonProps, ...disclosureProps } = useDisclosure(
+    props,
+    state,
+    panelRef
+  );
+  const { buttonProps: finalButtonProps } = useButton(buttonProps, triggerRef);
+  const { focusProps, isFocusVisible } = useFocusRing();
+
+  const contextValue = useMemo(
+    () => ({
+      state,
+      buttonProps: mergeProps(finalButtonProps, focusProps),
+      ...disclosureProps,
+      triggerRef,
+      panelRef,
+      isFocusVisible,
+    }),
+    [state, finalButtonProps, focusProps, disclosureProps, isFocusVisible]
+  );
+
+  const recipe = useSlotRecipe({ key: "accordion" });
+  const [recipeProps] = recipe.splitVariantProps(props);
+
+  return (
+    <AccordionContext.Provider value={contextValue}>
+      <AccordionRoot data-slot="root" ref={forwardedRef} {...recipeProps}>
+        <AccordionDisclosure>{children}</AccordionDisclosure>
+      </AccordionRoot>
+    </AccordionContext.Provider>
+  );
+}) as AccordionComponent;
+
 Accordion.displayName = "Accordion";
+
+Accordion.Header = AccordionHeader;
+Accordion.Content = AccordionContent;
