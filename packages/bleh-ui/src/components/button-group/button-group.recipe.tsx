@@ -34,6 +34,8 @@ export const buttonGroupRecipe = defineSlotRecipe({
     },
 
     // Visual style variants
-    variant: {},
+    variant: {
+      outline: {},
+    },
   },
 });

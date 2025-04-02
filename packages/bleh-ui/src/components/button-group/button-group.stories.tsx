@@ -22,6 +22,7 @@ export default meta;
 type Story = StoryObj<typeof ButtonGroup>;
 
 const sizes: ButtonProps["size"][] = ["md", "xs"];
+const variants: ButtonProps["variant"][] = ["outline"];
 
 /**
  * Base story
@@ -68,8 +69,12 @@ export const Variants: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <ButtonGroup key={variant} {...args} variant={variant} />
+        {variants.map((variant) => (
+          <ButtonGroup key={variant as string} {...args} variant={variant}>
+            <ButtonGroup.Button>Left</ButtonGroup.Button>
+            <ButtonGroup.Button>Center</ButtonGroup.Button>
+            <ButtonGroup.Button>Right</ButtonGroup.Button>
+          </ButtonGroup>
         ))}
       </Stack>
     );

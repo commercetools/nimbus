@@ -80,17 +80,12 @@ const ToggleButton = forwardRef<HTMLButtonElement, ButtonGroupButtonProps>(
     return (
       <ButtonGroupButtonSlot
         ref={ref}
+        asChild
         {...buttonProps}
         data-pressed={isPressed}
         data-selected={isSelected}
       >
-        <Button
-          ref={ref}
-          size={size}
-          variant={variant}
-          data-pressed={isPressed}
-          data-selected={isSelected}
-        >
+        <Button ref={ref} size={size} variant={variant}>
           {children}
         </Button>
       </ButtonGroupButtonSlot>
