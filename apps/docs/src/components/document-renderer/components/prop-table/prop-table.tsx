@@ -43,7 +43,9 @@ export const PropTable = ({ id }: { id: string }) => {
                   <Text fontWeight="600">{item.name}</Text>
                 </Table.Cell>
                 <Table.Cell>
-                  <Code>{item.type.name}</Code>
+                  <Code variant="solid" size="md">
+                    {item.type.name}
+                  </Code>
                   <Text mt="200">{item.description}</Text>
                 </Table.Cell>
                 <Table.Cell display="flex" justifyContent="flex-start">

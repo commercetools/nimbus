@@ -8,7 +8,7 @@ export const FigmaLink = () => {
   if (!meta?.figmaLink) return null;
 
   return (
-    <Button size="xs" variant="ghost" asChild>
+    <Button size="xs" variant="ghost" tone="neutral" asChild>
       <a href={meta.figmaLink} target="_blank">
         <Figma />
       </a>

@@ -19,7 +19,11 @@ export const Paragraph = (props: ParagraphProps) => {
         {Children.map(children, (child) => {
           // Check if the child is a React element and if its type is 'kbd'
           if (isValidElement(child) && child.type === "kbd") {
-            return <Kbd>{child.props.children}</Kbd>;
+            return (
+              <Kbd size="md" variant="raised">
+                {child.props.children}
+              </Kbd>
+            );
           }
 
           // Otherwise, return the child unchanged

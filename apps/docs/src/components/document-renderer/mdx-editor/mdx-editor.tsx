@@ -197,6 +197,7 @@ export const MdxEditor = ({
           colorPalette="neutral"
           variant="subtle"
           minWidth="3200"
+          size="md"
           onClick={() => onCloseRequest()}
         >
           Cancel

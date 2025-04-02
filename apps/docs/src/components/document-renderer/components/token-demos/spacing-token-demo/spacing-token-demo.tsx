@@ -48,7 +48,9 @@ export const SpacingTokenDemo = () => {
           {spacingTokens.map((item) => (
             <TableRow key={item.id} id={item.id}>
               <TableCell>
-                <Code variant="subtle">{item.label}</Code>
+                <Code variant="subtle" size="md">
+                  {item.label}
+                </Code>
               </TableCell>
               <TableCell
                 onClick={() => setShowPx(!showPx)}

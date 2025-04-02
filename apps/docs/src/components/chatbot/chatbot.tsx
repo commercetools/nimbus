@@ -43,6 +43,7 @@ export const Chatbot = () => {
         <Button
           colorPalette="primary"
           variant="solid"
+          size="md"
           onClick={() => setChatOpen(true)}
         >
           <ChatBubble />
@@ -86,9 +87,12 @@ export const Chatbot = () => {
                     bg="colorPalette.2"
                   >
                     Hi! I'm a helpful assistant. You can ask me anything,
-                    provided the <Code>VITE_OPENAI_API_KEY</Code> environment
-                    variable in <strong>apps/docs/.env</strong> contains a valid
-                    OpenAI API key!
+                    provided the{" "}
+                    <Code variant="solid" size="md">
+                      VITE_OPENAI_API_KEY
+                    </Code>{" "}
+                    environment variable in <strong>apps/docs/.env</strong>{" "}
+                    contains a valid OpenAI API key!
                   </Text>
                   <Text
                     p="400"
@@ -102,6 +106,7 @@ export const Chatbot = () => {
                       target="_blank"
                       textDecoration="underline"
                       href="https://sdk.vercel.ai/docs/ai-sdk-ui/openai-assistants"
+                      variant="plain"
                     >
                       Open AI's Assistant
                     </Link>{" "}
@@ -138,6 +143,7 @@ export const Chatbot = () => {
               <Button
                 colorPalette="primary"
                 variant="solid"
+                size="md"
                 onPress={() => handleSubmit()}
               >
                 <Send />

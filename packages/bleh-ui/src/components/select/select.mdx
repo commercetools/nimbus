@@ -23,7 +23,7 @@ of them.
 
 ```jsx-live
 const App = () => (
-  <Select.Root aria-label="Select a fruit" data-testid="select">
+  <Select.Root aria-label="Select a fruit" data-testid="select" size="md" variant="outline">
     <Select.Options>
       <Select.Option>Apples</Select.Option>
       <Select.Option>Bananas</Select.Option>
@@ -46,7 +46,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <Select.Root size={size} key={size} aria-label="Select a fruit" data-testid="select">
+        <Select.Root size={size} key={size} aria-label="Select a fruit" data-testid="select" variant="outline">
           <Select.Options>
             <Select.Option>Apples</Select.Option>
             <Select.Option>Bananas</Select.Option>
@@ -72,7 +72,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {variants.map(variant => (
-        <Select.Root variant={variant} key={variant} aria-label="Select a fruit" data-testid="select">
+        <Select.Root variant={variant} key={variant} aria-label="Select a fruit" data-testid="select" size="md">
           <Select.Options>
             <Select.Option>Apples</Select.Option>
             <Select.Option>Bananas</Select.Option>
@@ -93,7 +93,7 @@ You can add descriptions to the labels.
 ```jsx-live
 const App = () => {
   return (
-    <Select.Root aria-label="Select some fruit(s)" data-testid="select">
+    <Select.Root aria-label="Select some fruit(s)" data-testid="select" size="md" variant="outline">
         <Select.Options>
           {/** Variant A - plain html-tags with slot property */}
           <Select.Option textValue="Apple">
@@ -150,6 +150,8 @@ const App = () => {
         onSelectionChange={setAnimal}
         aria-label="Select your new pet"
         data-testid="select"
+        size="md"
+        variant="outline"
       >
         <Select.Options items={options}>
           {(item) => (

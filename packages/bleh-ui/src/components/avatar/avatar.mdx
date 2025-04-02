@@ -29,8 +29,8 @@ or initials.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Avatar firstName="John" lastName="Doe" src="https://thispersondoesnotexist.com/ " />
-    <Avatar firstName="Jane" lastName="Smith" /> {/* Shows initials when no image */}
+    <Avatar firstName="John" lastName="Doe" size="md" src="https://thispersondoesnotexist.com/ " />
+    <Avatar firstName="Jane" lastName="Smith" size="md" /> {/* Shows initials when no image */}
   </Stack>
 )
 ```
@@ -70,7 +70,7 @@ The component handles various scenarios gracefully:
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Avatar firstName="John" lastName="Doe"/> {/* Shows JD */}
+    <Avatar firstName="John" lastName="Doe" size="md"/> {/* Shows JD */}
   </Stack>
 )
 ```

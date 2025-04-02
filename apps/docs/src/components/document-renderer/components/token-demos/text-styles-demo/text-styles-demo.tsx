@@ -30,7 +30,9 @@ export const TextStylesDemo = () => {
               return (
                 <TableRow key={name}>
                   <TableCell>
-                    <Code variant="subtle">{name}</Code>
+                    <Code variant="subtle" size="md">
+                      {name}
+                    </Code>
                   </TableCell>
                   <TableCell>
                     <Text textStyle={name}>Demo Text</Text>

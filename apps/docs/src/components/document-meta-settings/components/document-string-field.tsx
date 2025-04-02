@@ -54,6 +54,7 @@ export const DocumentStringFieldEdit = ({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
+          variant="outline"
         />
         <IconButton
           variant="solid"

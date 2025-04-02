@@ -52,6 +52,8 @@ export const IconSearch = () => {
         placeholder={`Search through ${Object.keys(icons).length} icons ...`}
         value={q}
         onChange={(e) => setQ(e.target.value)}
+        size="md"
+        variant="outline"
       />
       <SimpleGrid columns={[5, 6, 6, 6, 10]}>
         {take(filteredIcons ?? [], q.length ? 128 : 256).map((iconId) => {

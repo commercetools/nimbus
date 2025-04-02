@@ -187,7 +187,9 @@ export const GenericTokenTableDemo = ({
             return (
               <TableRow key={item.name}>
                 <TableCell>
-                  <Code variant="subtle">{item.name}</Code>
+                  <Code variant="subtle" size="md">
+                    {item.name}
+                  </Code>
                 </TableCell>
                 <TableCell>
                   <Box maxW="20ch">

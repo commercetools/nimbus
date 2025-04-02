@@ -23,7 +23,6 @@ Indicates ongoing processes or loading states
 const App = () => <LoadingSpinner>I am LoadingSpinner!</LoadingSpinner>
 ```
 
-
 ### Sizes
 
 Available sizes.
@@ -36,7 +35,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <LoadingSpinner key={size} size={size}>'{size}' LoadingSpinner</LoadingSpinner>
+        <LoadingSpinner key={size} size={size} tone="primary">'{size}' LoadingSpinner</LoadingSpinner>
       ))}
     </Stack>
   )
@@ -55,7 +54,7 @@ const App = () => {
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <LoadingSpinner key={variant} variant={variant}>'{variant}' LoadingSpinner</LoadingSpinner>
+        <LoadingSpinner key={variant} variant={variant} tone="primary" size="sm">'{variant}' LoadingSpinner</LoadingSpinner>
       ))}
     </Stack>
   )
@@ -76,7 +75,7 @@ const App = () => {
       {colors.map((color) => (
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
-            <LoadingSpinner colorPalette={color} key={variant} variant={variant}>
+            <LoadingSpinner colorPalette={color} key={variant} variant={variant} size="sm">
               '{variant}' LoadingSpinner
             </LoadingSpinner>
           ))}

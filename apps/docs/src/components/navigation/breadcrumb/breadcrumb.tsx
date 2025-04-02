@@ -30,7 +30,9 @@ export const BreadcrumbNav = () => {
       <Box as="ul" display="inline-flex">
         {!firstIsHome && (
           <Box as="li" _after={{ content: "'»'", mx: "200" }}>
-            <Link href={"/home"}>Home</Link>
+            <Link variant="plain" href={"/home"}>
+              Home
+            </Link>
           </Box>
         )}
         {parts.map((item, idx) => {
@@ -42,7 +44,9 @@ export const BreadcrumbNav = () => {
               key={item.href}
               _after={!isLastItem ? { content: "'»'", mx: "200" } : {}}
             >
-              <Link href={item.href}>{item.label}</Link>
+              <Link variant="plain" href={item.href}>
+                {item.label}
+              </Link>
             </Box>
           );
         })}

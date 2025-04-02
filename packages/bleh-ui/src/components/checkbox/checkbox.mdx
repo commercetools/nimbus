@@ -21,7 +21,7 @@ displays a checkbox and an associated label
 A checkbox with a visible label.
 
 ```jsx-live
-const App = () => <Checkbox>I am a Checkbox</Checkbox>
+const App = () => <Checkbox size="md">I am a Checkbox</Checkbox>
 ```
 
 ## Without visible label
@@ -29,7 +29,7 @@ const App = () => <Checkbox>I am a Checkbox</Checkbox>
 A checkbox without a visible label.
 
 ```jsx-live
-const App = () => <Checkbox aria-label="I am a Checkbox"/>
+const App = () => <Checkbox size="md" aria-label="I am a Checkbox"/>
 ```
 
 ## Controlled Checkbox
@@ -42,7 +42,7 @@ const App = () => {
   const [isSelected, setIsSelected]  = useState(true)
 
   return (
-   <Checkbox isSelected={isSelected} onChange={(v)=>setIsSelected(v)}>
+   <Checkbox size="md" isSelected={isSelected} onChange={(v)=>setIsSelected(v)}>
      Controlled Checkbox
    </Checkbox>
   )
@@ -54,7 +54,7 @@ const App = () => {
 A checkbox that is disabled.
 
 ```jsx-live
-const App = () => <Checkbox isDisabled>Disabled Checkbox</Checkbox>
+const App = () => <Checkbox size="md" isDisabled>Disabled Checkbox</Checkbox>
 ```
 
 ## Invalid Checkbox
@@ -62,7 +62,7 @@ const App = () => <Checkbox isDisabled>Disabled Checkbox</Checkbox>
 A checkbox that is marked as invalid.
 
 ```jsx-live
-const App = () => <Checkbox isInvalid>Invalid Checkbox</Checkbox>
+const App = () => <Checkbox size="md" isInvalid>Invalid Checkbox</Checkbox>
 ```
 
 ## Indeterminate Checkbox
@@ -70,7 +70,7 @@ const App = () => <Checkbox isInvalid>Invalid Checkbox</Checkbox>
 A checkbox that is in an indeterminate state.
 
 ```jsx-live
-const App = () => <Checkbox isIndeterminate>Indeterminate Checkbox</Checkbox>
+const App = () => <Checkbox size="md" isIndeterminate>Indeterminate Checkbox</Checkbox>
 ```
 
 ## Props

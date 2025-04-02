@@ -53,6 +53,7 @@ export const Toc = () => {
                   display="block"
                   width="full"
                   py="100"
+                  variant="plain"
                 >
                   {item.value}
                 </Link>

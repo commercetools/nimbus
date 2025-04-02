@@ -69,6 +69,8 @@ export const AppNavBarCreateButton = () => {
                   placeholder="Keep it short, you're busy."
                   autoComplete="off"
                   data-form-type="other"
+                  size="md"
+                  variant="outline"
                 />
               </Stack>
               <Stack>
@@ -81,6 +83,8 @@ export const AppNavBarCreateButton = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Just enough to make it intriguing"
                   autoComplete="off"
+                  size="md"
+                  variant="outline"
                 />
               </Stack>
               <Stack>
@@ -93,6 +97,8 @@ export const AppNavBarCreateButton = () => {
                   onChange={(e) => setMenuLabel(e.target.value)}
                   placeholder="What people will click, no pressure."
                   autoComplete="off"
+                  size="md"
+                  variant="outline"
                 />
                 <Stack
                   colorPalette="info"
@@ -128,6 +134,7 @@ export const AppNavBarCreateButton = () => {
               variant="solid"
               colorPalette="primary"
               disabled={!isFormValid}
+              size="md"
               onPress={handleSubmit}
             >
               Create

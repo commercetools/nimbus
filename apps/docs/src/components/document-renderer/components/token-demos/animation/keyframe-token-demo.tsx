@@ -51,7 +51,7 @@ const AnimationItem = ({
         />
       </Box>
       <Box>
-        <Code truncate variant="subtle">
+        <Code truncate variant="subtle" size="md">
           {item.label}
         </Code>
       </Box>

@@ -70,7 +70,11 @@ export const AppNavBarSearch = () => {
           <InputGroup
             startElement={<Search size="1em" />}
             startElementProps={{ color: "neutral.8" }}
-            endElement={<Kbd>⌘K</Kbd>}
+            endElement={
+              <Kbd size="md" variant="raised">
+                ⌘K
+              </Kbd>
+            }
             endElementProps={{ color: "neutral.9" }}
             width="full"
             maxWidth="9600"
@@ -81,6 +85,7 @@ export const AppNavBarSearch = () => {
               placeholder="Search for a component..."
               size="sm"
               onFocus={(e) => e.target.blur()}
+              variant="outline"
             />
           </InputGroup>
         </DialogTrigger>
@@ -98,7 +103,11 @@ export const AppNavBarSearch = () => {
                   <InputGroup
                     startElement={<Search size="1em" />}
                     startElementProps={{ color: "neutral.8" }}
-                    endElement={<Kbd>⌘K</Kbd>}
+                    endElement={
+                      <Kbd size="md" variant="raised">
+                        ⌘K
+                      </Kbd>
+                    }
                     endElementProps={{ color: "neutral.9" }}
                     width="full"
                     mx="auto"
@@ -112,6 +121,7 @@ export const AppNavBarSearch = () => {
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
                       ref={comboboxRef}
+                      variant="outline"
                       asChild
                     >
                       <Combobox placeholder="e.g., Tokens, Component, Installation" />
