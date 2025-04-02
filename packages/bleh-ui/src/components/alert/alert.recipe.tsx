@@ -69,10 +69,17 @@ export const alertRecipe = defineSlotRecipe({
       },
     },
 
-    // These are empty on purpose - we branch off of them in the component implementation
     variant: {
       flat: {},
-      outlined: {},
+      outlined: {
+        root: {
+          border: "solid-25",
+          borderColor: "colorPalette.5",
+          backgroundColor: "colorPalette.2",
+          padding: "200",
+          borderRadius: "200",
+        },
+      },
     },
   },
 });

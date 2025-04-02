@@ -1,4 +1,4 @@
-import type { AlertRootDivProps, AlertRootCardProps } from "./alert.slots";
+import type { AlertRootProps } from "./alert.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import { alertRecipe } from "./alert.recipe";
 
@@ -7,8 +7,7 @@ import { alertRecipe } from "./alert.recipe";
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type AlertVariantProps = AlertRootDivProps &
-  AlertRootCardProps &
+type AlertVariantProps = AlertRootProps &
   RecipeVariantProps<typeof alertRecipe>;
 
 /**

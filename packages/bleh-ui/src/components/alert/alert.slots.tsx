@@ -7,7 +7,6 @@ import {
 import { alertRecipe } from "./alert.recipe";
 import { Text, type TextProps } from "../text";
 import type { ButtonProps } from "../button";
-import { Card, type CardProps } from "../card";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -19,16 +18,10 @@ const { withProvider, withContext } = createSlotRecipeContext({
   recipe: alertRecipe,
 });
 
-export type AlertRootDivProps = HTMLChakraProps<"div", AlertRecipeProps>;
-export type AlertRootCardProps = CardProps;
+export type AlertRootProps = HTMLChakraProps<"div", AlertRecipeProps>;
 
-export const AlertRootDiv = withProvider<HTMLDivElement, AlertRootDivProps>(
+export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
   "div",
-  "root"
-);
-
-export const AlertRootCard = withProvider<HTMLDivElement, AlertRootCardProps>(
-  Card,
   "root"
 );
 
