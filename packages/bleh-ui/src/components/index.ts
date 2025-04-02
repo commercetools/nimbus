@@ -29,3 +29,4 @@ export * from "./loading-spinner";
 export * from "./card";
 export * from "./badge";
 export * from "./alert";
+export * from "./button-group";

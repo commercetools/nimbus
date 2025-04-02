@@ -1,0 +1,92 @@
+---
+id: Components-ButtonGroup
+title: ButtonGroup
+description: To group multiple `Button` or `IconButton` components together, visually and logically, representing a set of related actions.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - ButtonGroup
+tags:
+  - component
+---
+
+# ButtonGroup
+
+To group multiple `Button` or `IconButton` components together, visually and logically, representing a set of related actions.
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <ButtonGroup>I am ButtonGroup!</ButtonGroup>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <ButtonGroup key={size} size={size}>'{size}' ButtonGroup</ButtonGroup>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <ButtonGroup key={variant} variant={variant}>'{variant}' ButtonGroup</ButtonGroup>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <ButtonGroup colorPalette={color} key={variant} variant={variant}>
+              '{variant}' ButtonGroup
+            </ButtonGroup>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="ButtonGroup" />
