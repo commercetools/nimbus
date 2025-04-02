@@ -23,6 +23,11 @@ type Story = StoryObj<typeof ButtonGroup>;
 
 const sizes: ButtonProps["size"][] = ["md", "xs"];
 const variants: ButtonProps["variant"][] = ["outline"];
+const tones: ButtonProps["tone"][] = [
+  "primary",
+  "neutral",
+  "critical",
+] as const;
 
 /**
  * Base story
@@ -99,9 +104,9 @@ export const Colors: Story = {
             gap="400"
             alignItems="center"
           >
-            {[].map((variant) => (
+            {variants.map((variant) => (
               <ButtonGroup
-                key={variant}
+                key={variant as string}
                 {...args}
                 variant={variant}
                 colorPalette={colorPalette}

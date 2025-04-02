@@ -12,14 +12,15 @@ export const buttonGroupRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
-      display: "inline",
-      "& button": {
-        borderRadius: "0",
-      },
-      "& button:first-of-type": {
+      display: "inline-flex",
+    },
+    button: {
+      colorPalette: "primary",
+      borderRadius: "0",
+      "&:first-of-type": {
         borderLeftRadius: "200",
       },
-      "& button:last-of-type": {
+      "&:last-of-type": {
         borderRightRadius: "200",
       },
     },
