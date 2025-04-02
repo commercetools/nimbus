@@ -20,6 +20,7 @@ import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
 import { useSlotRecipe } from "@chakra-ui/react";
 import type { AccordionProps, AccordionComposition } from "./accordion.types";
 import { Flex } from "@/components";
+import { validateAccordionChildren } from "./accordion.validate";
 
 /**
  * Accordion
@@ -101,6 +102,9 @@ export const Accordion = forwardRef<
     children: ReactNode;
   }
 >(({ children, ...props }, forwardedRef) => {
+  // validate accordion children and how they are structured
+  validateAccordionChildren(children, AccordionHeader, AccordionContent);
+
   const state = useDisclosureState(props);
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
