@@ -55,7 +55,7 @@ export const components: MDXComponents = {
   table: (props) => {
     return (
       <Table.ScrollArea border="solid-25" borderColor="neutral.6" maxW="100%">
-        <Table.Root variant="outline" {...props} />
+        <Table.Root variant="outline" size="md" {...props} />
       </Table.ScrollArea>
     );
   },

@@ -21,7 +21,7 @@ export const PropTable = ({ id }: { id: string }) => {
 
   return (
     <Box>
-      <Table.Root variant="outline">
+      <Table.Root variant="outline" size="md">
         <Table.ColumnGroup>
           <Table.Column width="1/3" />
           <Table.Column width="1/3" />
