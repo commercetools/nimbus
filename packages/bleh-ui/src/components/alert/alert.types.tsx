@@ -30,13 +30,13 @@ export type AlertDismissButtonProps = ButtonProps;
  * and styling variants from the recipe.
  */
 type AlertVariantProps = AlertRootProps &
-  RecipeVariantProps<typeof alertRecipe> & {
-    [key: `data-${string}`]: unknown;
-  };
+  RecipeVariantProps<typeof alertRecipe>;
 
 /**
  * Main props interface for the Alert component.
  * Extends AlertVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export type AlertProps = PropsWithChildren<AlertVariantProps>;
+export type AlertProps = PropsWithChildren<AlertVariantProps> & {
+  [key: `data-${string}`]: unknown;
+};
