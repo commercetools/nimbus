@@ -87,258 +87,265 @@ export const Base: Story = {
   },
 };
 
-/**
- * Showcase Tones
- */
-export const Tones: Story = {
-  name: "Tones Showcase",
-  render: () => {
-    return (
-      <Stack direction="column" gap="400" alignItems="flex-start">
-        {tones.map((tone) => (
-          <Alert
-            key={`alert-${tone as string}`}
-            tone={tone}
-            variant="outlined"
-            data-testid={`alert-${tone as string}`}
-          >
-            <Alert.Title>Alert Title ({tone as string})</Alert.Title>
-            <Alert.Description>Alert Description</Alert.Description>
-            <Alert.Actions>
-              <Stack direction="row" gap="8px" alignItems="center">
-                <Button variant="outline">Dismiss</Button>
-                <Button variant="outline">Button</Button>
-              </Stack>
-            </Alert.Actions>
-            <Alert.DismissButton
-              onPress={() => alert(`Dismissed ${tone as string}`)}
-            />
-          </Alert>
-        ))}
-      </Stack>
-    );
-  },
-  args: {},
-};
+// --- Showcase Stories (Primarily Visual) ---
 
-/**
- * Showcase Variants
- */
-export const Variants: Story = {
-  name: "Variants Showcase",
-  render: () => {
-    return (
-      <Stack direction="column" gap="400" alignItems="flex-start">
-        {tones.map((tone) => (
-          <Stack key={`stack-${tone as string}`} direction="row" gap="400">
-            {variants.map((variant) => {
-              return (
-                <Alert
-                  key={`alert-${tone as string}-${variant as string}`}
-                  tone={tone}
-                  variant={variant}
-                  data-testid={`alert-${tone as string}-${variant as string}`}
-                >
-                  <Alert.Title>
-                    {tone as string} / {variant as string}
-                  </Alert.Title>
-                  <Alert.Description>Alert Description</Alert.Description>
-                  <Alert.Actions>
-                    <Stack direction="row" gap="8px" alignItems="center">
-                      <Button variant="outline">Action</Button>
-                    </Stack>
-                  </Alert.Actions>
-                  <Alert.DismissButton onPress={() => alert("Dismissed")} />
-                </Alert>
-              );
-            })}
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-  args: {},
-};
-
-// Mock functions for PartialChildren story
-const mockDismissDismissOnly = fn();
-const mockDismissCompleteNoActions = fn();
-
-/**
- * Showcase Partial Children
- * Tests how the Alert component renders when some parts are omitted.
- */
-export const PartialChildren: Story = {
-  render: () => {
-    // Note: We pass mock functions directly here as 'render' doesn't use 'args'
-    return (
-      <Stack direction="column" gap="400" alignItems="flex-start" width="100%">
-        {/* Alert with only a Title */}
-        <Alert
-          tone="positive"
-          variant="outlined"
-          data-testid="alert-title-only"
-        >
-          <Alert.Title>Title Only</Alert.Title>
-          {/* Intentionally omit Description, Actions, DismissButton */}
-        </Alert>
-
-        {/* Alert with only a Description */}
-        <Alert tone="info" variant="flat" data-testid="alert-desc-only">
-          <Alert.Description>Description Only</Alert.Description>
-          {/* Intentionally omit Title, Actions, DismissButton */}
-        </Alert>
-
-        {/* Alert with Title and Actions, but no Description */}
-        <Alert
-          tone="warning"
-          variant="outlined"
-          data-testid="alert-title-actions"
-        >
-          <Alert.Title>Title and Actions only</Alert.Title>
+export const TonesShowcase: Story = {
+  name: "Showcase: Tones",
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {tones.map((tone) => (
+        <Alert key={`alert-${tone as string}`} tone={tone} variant="outlined">
+          <Alert.Title>Alert Title ({tone as string})</Alert.Title>
+          <Alert.Description>Alert Description</Alert.Description>
           <Alert.Actions>
             <Stack direction="row" gap="8px" alignItems="center">
-              <Button variant="outline">Whatever</Button>
-              <Button variant="outline">We</Button>
-              <Button variant="subtle">Want</Button>
-              <Button variant="ghost">Here</Button>
+              <Button variant="outline">Button</Button>
             </Stack>
           </Alert.Actions>
-          {/* Intentionally omit Description, DismissButton */}
-        </Alert>
-
-        {/* Alert with only a Dismiss icon */}
-        <Alert tone="critical" variant="flat" data-testid="alert-dismiss-only">
-          {/* Intentionally omit Title, Description, Actions */}
           <Alert.DismissButton
-            onPress={mockDismissDismissOnly}
-            data-testid="dismiss-only-button"
+            onPress={() => alert(`Dismissed ${tone as string}`)}
           />
         </Alert>
+      ))}
+    </Stack>
+  ),
+};
 
-        {/* Alert with Title, Description, and Dismiss but no actions */}
-        <Alert
-          tone="positive"
-          variant="outlined"
-          data-testid="alert-no-actions"
-        >
-          <Alert.Title>A More Complete Alert (No Actions)</Alert.Title>
-          <Alert.Description>
-            We have both title and description here!
-          </Alert.Description>
-          {/* Intentionally omit Actions */}
-          <Alert.DismissButton
-            onPress={mockDismissCompleteNoActions}
-            data-testid="dismiss-no-actions-button"
-          />
-        </Alert>
-      </Stack>
-    );
+export const VariantsShowcase: Story = {
+  name: "Showcase: Variants",
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {tones.map((tone) => (
+        <Stack key={`stack-${tone as string}`} direction="row" gap="400">
+          {variants.map((variant) => (
+            <Alert
+              key={`alert-${tone as string}-${variant as string}`}
+              tone={tone}
+              variant={variant}
+            >
+              <Alert.Title>
+                {tone as string} / {variant as string}
+              </Alert.Title>
+              <Alert.Description>Desc.</Alert.Description>
+              <Alert.DismissButton onPress={() => alert("Dismissed")} />
+            </Alert>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+};
+
+// --- Individual Partial Composition Stories ---
+
+export const TitleOnly: Story = {
+  name: "Composition: Title Only",
+  args: {
+    tone: "positive",
+    variant: "outlined",
+    "data-testid": "alert-title-only",
+    children: (
+      <>
+        <Alert.Title>Title Only Alert</Alert.Title>
+        {/* Intentionally omit Description, Actions, DismissButton */}
+      </>
+    ),
   },
-  args: {},
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const alert = canvas.getByTestId("alert-title-only");
 
-    await step("Title Only: Renders title, omits others", async () => {
-      const alert = canvas.getByTestId("alert-title-only");
-      await expect(within(alert).getByText("Title Only")).toBeInTheDocument();
-      // Use queryBy for elements that shouldn't exist
+    await step("Renders only the title", async () => {
+      await expect(
+        within(alert).getByText("Title Only Alert")
+      ).toBeInTheDocument();
+    });
+
+    await step("Does not render other parts", async () => {
       await expect(
         within(alert).queryByText(/Description/i)
       ).not.toBeInTheDocument();
       await expect(
-        within(alert).queryByRole("button", { name: /Action/i }) // Check for action buttons
-      ).not.toBeInTheDocument();
-      await expect(
-        within(alert).queryByRole("button", { name: /Dismiss/i }) // Check for dismiss button
+        within(alert).queryByRole("button") // Check for any button
       ).not.toBeInTheDocument();
     });
+  },
+};
 
-    await step(
-      "Description Only: Renders description, omits others",
-      async () => {
-        const alert = canvas.getByTestId("alert-desc-only");
-        await expect(
-          within(alert).getByText("Description Only")
-        ).toBeInTheDocument();
-        await expect(
-          within(alert).queryByText(/Title/i)
-        ).not.toBeInTheDocument();
-        await expect(
-          within(alert).queryByRole("button", { name: /Action/i })
-        ).not.toBeInTheDocument();
-        await expect(
-          within(alert).queryByRole("button", { name: /Dismiss/i })
-        ).not.toBeInTheDocument();
-      }
+export const DescriptionOnly: Story = {
+  name: "Composition: Description Only",
+  args: {
+    tone: "info",
+    variant: "flat",
+    "data-testid": "alert-desc-only",
+    children: (
+      <>
+        <Alert.Description>Description Only Alert</Alert.Description>
+        {/* Intentionally omit Title, Actions, DismissButton */}
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const alert = canvas.getByTestId("alert-desc-only");
+
+    await step("Renders only the description", async () => {
+      await expect(
+        within(alert).getByText("Description Only Alert")
+      ).toBeInTheDocument();
+    });
+
+    await step("Does not render other parts", async () => {
+      await expect(within(alert).queryByText(/Title/i)).not.toBeInTheDocument();
+      await expect(
+        within(alert).queryByRole("button") // Check for any button
+      ).not.toBeInTheDocument();
+    });
+  },
+};
+
+export const TitleAndActions: Story = {
+  name: "Composition: Title and Actions",
+  args: {
+    tone: "warning",
+    variant: "outlined",
+    "data-testid": "alert-title-actions",
+    children: (
+      <>
+        <Alert.Title>Title and Actions only</Alert.Title>
+        <Alert.Actions>
+          <Stack direction="row" gap="8px" alignItems="center">
+            <Button variant="outline">Action A</Button>
+            <Button variant="ghost">Action B</Button>
+          </Stack>
+        </Alert.Actions>
+        {/* Intentionally omit Description, DismissButton */}
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const alert = canvas.getByTestId("alert-title-actions");
+
+    await step("Renders title and action buttons", async () => {
+      await expect(
+        within(alert).getByText("Title and Actions only")
+      ).toBeInTheDocument();
+      await expect(
+        within(alert).getByRole("button", { name: "Action A" })
+      ).toBeInTheDocument();
+      await expect(
+        within(alert).getByRole("button", { name: "Action B" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Does not render description or dismiss button", async () => {
+      await expect(
+        within(alert).queryByText(/Description/i)
+      ).not.toBeInTheDocument();
+      await expect(
+        within(alert).queryByRole("button", { name: /Dismiss/i })
+      ).not.toBeInTheDocument();
+    });
+  },
+};
+
+const mockDismissOnly = fn();
+export const DismissOnly: Story = {
+  name: "Composition: Dismiss Button Only",
+  args: {
+    tone: "critical",
+    variant: "flat",
+    "data-testid": "alert-dismiss-only",
+    children: (
+      <>
+        {/* Intentionally omit Title, Description, Actions */}
+        <Alert.DismissButton
+          onPress={mockDismissOnly}
+          data-testid="dismiss-only-button"
+        />
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const alert = canvas.getByTestId("alert-dismiss-only");
+    const dismissButton = within(alert).getByTestId("dismiss-only-button");
+
+    await step("Renders only the dismiss button", async () => {
+      await expect(dismissButton).toBeInTheDocument();
+      await expect(dismissButton).toHaveAttribute("aria-label", "Dismiss");
+    });
+
+    await step("Does not render other parts", async () => {
+      await expect(within(alert).queryByText(/Title/i)).not.toBeInTheDocument();
+      await expect(
+        within(alert).queryByText(/Description/i)
+      ).not.toBeInTheDocument();
+      // Check specifically for non-dismiss buttons
+      const actionButtons = within(alert)
+        .queryAllByRole("button")
+        .filter((btn) => btn !== dismissButton);
+      await expect(actionButtons.length).toBe(0);
+    });
+
+    await step("Dismiss button is clickable and calls onPress", async () => {
+      await userEvent.click(dismissButton);
+      await expect(mockDismissOnly).toHaveBeenCalledTimes(1);
+    });
+  },
+};
+
+const mockDismissNoActions = fn();
+export const NoActions: Story = {
+  name: "Composition: Title, Description, Dismiss (No Actions)",
+  args: {
+    tone: "positive",
+    variant: "outlined",
+    "data-testid": "alert-no-actions",
+    children: (
+      <>
+        <Alert.Title>Complete Alert (No Actions)</Alert.Title>
+        <Alert.Description>
+          Title and description are present.
+        </Alert.Description>
+        {/* Intentionally omit Actions */}
+        <Alert.DismissButton
+          onPress={mockDismissNoActions}
+          data-testid="dismiss-no-actions-button"
+        />
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const alert = canvas.getByTestId("alert-no-actions");
+    const dismissButton = within(alert).getByTestId(
+      "dismiss-no-actions-button"
     );
 
-    await step(
-      "Title and Actions: Renders title and actions, omits others",
-      async () => {
-        const alert = canvas.getByTestId("alert-title-actions");
-        await expect(
-          within(alert).getByText("Title and Actions only")
-        ).toBeInTheDocument();
-        await expect(within(alert).getByText("Whatever")).toBeInTheDocument(); // Check one action button
-        await expect(within(alert).getByText("Here")).toBeInTheDocument(); // Check another action button
-        await expect(
-          within(alert).queryByText(/Description/i)
-        ).not.toBeInTheDocument();
-        await expect(
-          within(alert).queryByRole("button", { name: /Dismiss/i })
-        ).not.toBeInTheDocument();
-      }
-    );
+    await step("Renders title, description, and dismiss button", async () => {
+      await expect(
+        within(alert).getByText("Complete Alert (No Actions)")
+      ).toBeInTheDocument();
+      await expect(
+        within(alert).getByText("Title and description are present.")
+      ).toBeInTheDocument();
+      await expect(dismissButton).toBeInTheDocument();
+      await expect(dismissButton).toHaveAttribute("aria-label", "Dismiss");
+    });
 
-    await step(
-      "Dismiss Only: Renders dismiss button, omits others, button works",
-      async () => {
-        const alert = canvas.getByTestId("alert-dismiss-only");
-        const dismissButton = within(alert).getByTestId("dismiss-only-button");
+    await step("Does not render action buttons", async () => {
+      // Check specifically for non-dismiss buttons
+      const actionButtons = within(alert)
+        .queryAllByRole("button")
+        .filter((btn) => btn !== dismissButton);
+      await expect(actionButtons.length).toBe(0);
+    });
 
-        await expect(dismissButton).toBeInTheDocument();
-        await expect(dismissButton).toHaveAttribute("aria-label", "Dismiss");
-        await expect(
-          within(alert).queryByText(/Title/i)
-        ).not.toBeInTheDocument();
-        await expect(
-          within(alert).queryByText(/Description/i)
-        ).not.toBeInTheDocument();
-        await expect(
-          within(alert).queryByRole("button", { name: /Action/i }) // Look for non-dismiss buttons
-        ).not.toBeInTheDocument();
-
-        // Test click
-        await userEvent.click(dismissButton);
-        await expect(mockDismissDismissOnly).toHaveBeenCalledTimes(1);
-      }
-    );
-
-    await step(
-      "Complete No Actions: Renders title, description, dismiss, omits actions, dismiss works",
-      async () => {
-        const alert = canvas.getByTestId("alert-no-actions");
-        const dismissButton = within(alert).getByTestId(
-          "dismiss-no-actions-button"
-        );
-
-        await expect(
-          within(alert).getByText("A More Complete Alert (No Actions)")
-        ).toBeInTheDocument();
-        await expect(
-          within(alert).getByText("We have both title and description here!")
-        ).toBeInTheDocument();
-        await expect(dismissButton).toBeInTheDocument();
-        await expect(dismissButton).toHaveAttribute("aria-label", "Dismiss");
-        await expect(
-          within(alert).queryByRole("button", { name: /Action/i }) // Look for non-dismiss buttons
-        ).not.toBeInTheDocument();
-
-        // Test click
-        await userEvent.click(dismissButton);
-        await expect(mockDismissCompleteNoActions).toHaveBeenCalledTimes(1);
-      }
-    );
+    await step("Dismiss button is clickable and calls onPress", async () => {
+      await userEvent.click(dismissButton);
+      await expect(mockDismissNoActions).toHaveBeenCalledTimes(1);
+    });
   },
 };
