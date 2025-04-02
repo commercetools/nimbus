@@ -35,4 +35,4 @@ type AccordionTitleProps = HTMLChakraProps<"div">;
 export const AccordionTitle = withContext<
   HTMLButtonElement,
   AccordionTitleProps
->("div", "acccordionTitle");
+>("div", "accordionTitle");
