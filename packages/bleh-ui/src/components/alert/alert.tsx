@@ -152,7 +152,7 @@ export const AlertDismissButton = ({
             variant="ghost"
             size="2xs"
           >
-            <Clear />
+            <Clear role="img" />
           </IconButton>
         </AlertDismissButtonSlot>
       );
