@@ -38,7 +38,7 @@ export const cardRecipe = defineSlotRecipe({
       },
     },
 
-    frameStyle: {
+    borderStyle: {
       none: {},
       outlined: {
         root: {
