@@ -1,6 +1,28 @@
-import type { AlertRootProps } from "./alert.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  RecipeVariantProps,
+} from "@chakra-ui/react";
 import { alertRecipe } from "./alert.recipe";
+import type { TextProps } from "../text";
+import type { ButtonProps } from "../button";
+import type { PropsWithChildren } from "react";
+
+/**
+ * Slot component types
+ */
+
+export type AlertRootProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+
+export type AlertTitleProps = TextProps;
+
+export type AlertDescriptionProps = TextProps;
+
+export type AlertIconProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+
+export type AlertActionsProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+
+export type AlertDismissButtonProps = ButtonProps;
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.
@@ -15,6 +37,4 @@ type AlertVariantProps = AlertRootProps &
  * Extends AlertVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface AlertProps extends AlertVariantProps {
-  children?: React.ReactNode;
-}
+export type AlertProps = PropsWithChildren<AlertVariantProps>;

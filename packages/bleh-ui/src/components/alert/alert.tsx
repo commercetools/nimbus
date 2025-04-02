@@ -16,12 +16,14 @@ import {
   AlertDescription as AlertDescriptionSlot,
   AlertDismissButton as AlertDismissButtonSlot,
   AlertTitle as AlertTitleSlot,
-  type AlertActionsProps,
-  type AlertDescriptionProps,
-  type AlertDismissButtonProps,
-  type AlertTitleProps,
 } from "./alert.slots";
-import type { AlertProps } from "./alert.types";
+import type {
+  AlertActionsProps,
+  AlertDescriptionProps,
+  AlertDismissButtonProps,
+  AlertProps,
+  AlertTitleProps,
+} from "./alert.types";
 import { Box } from "../box";
 import { Stack } from "../stack";
 import {
@@ -145,8 +147,8 @@ export const AlertDismissButton = ({
       const slotElement = (
         <AlertDismissButtonSlot>
           <IconButton
-            {...props}
             aria-label="Dismiss"
+            {...props}
             variant="ghost"
             size="2xs"
           >
