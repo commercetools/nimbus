@@ -28,15 +28,15 @@ export const linkRecipe = defineRecipe({
     size: {
       xs: {
         fontSize: "300",
-        lineHeight: "400",
+        lineHeight: "450",
       },
       sm: {
         fontSize: "350",
-        lineHeight: "400",
+        lineHeight: "500",
       },
       md: {
         fontSize: "400",
-        lineHeight: "400",
+        lineHeight: "600",
       },
     },
     // style variants

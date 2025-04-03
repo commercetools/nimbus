@@ -163,6 +163,24 @@ export const WithRef: Story = {
   },
 };
 
+export const withCustomHref: Story = {
+  args: {
+    children: "Demo Link",
+    href: "https://commercetools.com",
+  },
+  render: (args) => {
+    return <Link {...args}>{args.children}</Link>;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const link = canvas.getByText("Demo Link");
+
+    await step("Uses the provided href", async () => {
+      await expect(link).toHaveAttribute("href", "https://commercetools.com");
+    });
+  },
+};
+
 export const SmokeTest: Story = {
   args: {
     children: "Demo Link",
@@ -182,23 +200,5 @@ export const SmokeTest: Story = {
         ))}
       </Stack>
     );
-  },
-};
-
-export const withCustomHref: Story = {
-  args: {
-    children: "Demo Link",
-    href: "https://commercetools.com",
-  },
-  render: (args) => {
-    return <Link {...args}>{args.children}</Link>;
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const link = canvas.getByText("Demo Link");
-
-    await step("Uses the provided href", async () => {
-      await expect(link).toHaveAttribute("href", "https://commercetools.com");
-    });
   },
 };
