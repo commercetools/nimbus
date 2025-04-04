@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ButtonGroup } from "./button-group";
 import { Stack } from "./../stack";
-import type { ButtonProps } from "@/components";
+import type { ButtonGroupProps } from "./button-group.types";
 
 /**
  * Storybook metadata configuration
@@ -21,7 +21,8 @@ export default meta;
  */
 type Story = StoryObj<typeof ButtonGroup>;
 
-const sizes: ButtonProps["size"][] = ["md", "xs"];
+const sizes: ButtonGroupProps["size"][] = ["md", "xs"];
+const tones: ButtonGroupProps["tone"][] = ["primary", "critical", "neutral"];
 
 /**
  * Base story
@@ -64,20 +65,20 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Colors
+ * Showcase Tones
  */
-export const Colors: Story = {
+export const Tones: Story = {
   render: (args) => {
     return (
       <Stack>
-        {[].map((colorPalette) => (
+        {tones.map((tone) => (
           <Stack
-            key={colorPalette}
+            key={tone as string}
             direction="row"
             gap="400"
             alignItems="center"
           >
-            <ButtonGroup {...args} colorPalette={colorPalette} />
+            <ButtonGroup {...args} tone={tone} />
           </Stack>
         ))}
       </Stack>
@@ -85,6 +86,13 @@ export const Colors: Story = {
   },
 
   args: {
-    children: "Demo ButtonGroup",
+    size: "md",
+    children: (
+      <>
+        <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
+        <ButtonGroup.Button id="center">Center</ButtonGroup.Button>
+        <ButtonGroup.Button id="right">Right</ButtonGroup.Button>
+      </>
+    ),
   },
 };
