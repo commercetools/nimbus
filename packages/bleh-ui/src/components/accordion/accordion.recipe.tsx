@@ -5,7 +5,14 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const accordionSlotRecipe = defineSlotRecipe({
-  slots: ["root", "disclosure", "trigger", "panel", "accordionTitle"],
+  slots: [
+    "root",
+    "disclosure",
+    "trigger",
+    "panel",
+    "accordionTitle",
+    "headerRightContent",
+  ],
   // Unique class name prefix for the component
   className: "bleh-ui-accordion",
 

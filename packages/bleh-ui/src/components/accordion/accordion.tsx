@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
   AccordionPanel,
   AccordionTitle,
+  HeaderRightContent,
 } from "./accordion.slots";
 import { useDisclosureState } from "react-stately";
 import { useDisclosure, mergeProps, useButton, useFocusRing } from "react-aria";
@@ -41,19 +42,35 @@ type AccordionComponent = ForwardRefExoticComponent<
 > & {
   Header: typeof AccordionHeader;
   Content: typeof AccordionContent;
+  HeaderRightContent: typeof HeaderRightContent;
 };
 
 const AccordionContext = createContext<AccordionComposition | undefined>(
   undefined
 );
 
-const AccordionHeader: React.FC<{
-  children: ReactNode;
-  additionalTriggerComponent?: ReactNode;
-}> = ({ children, additionalTriggerComponent }) => {
+const AccordionHeader: React.FC<{ children: ReactNode }> = ({ children }) => {
   const context = useContext(AccordionContext);
   if (!context)
     throw new Error("AccordionHeader must be used within Accordion");
+
+  // Separate regular children from HeaderRightContent
+  const headerContent = React.Children.toArray(children).reduce<{
+    main: ReactNode[];
+    rightContent: ReactNode[];
+  }>(
+    (accordion, child) => {
+      if (React.isValidElement(child) && child.type === HeaderRightContent) {
+        accordion.rightContent.push(
+          (child as React.ReactElement<{ children: ReactNode }>).props.children
+        );
+      } else {
+        accordion.main.push(child);
+      }
+      return accordion;
+    },
+    { main: [], rightContent: [] }
+  );
 
   return (
     <Flex
@@ -71,9 +88,15 @@ const AccordionHeader: React.FC<{
         <svg viewBox="0 0 24 24">
           <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
-        <AccordionTitle>{children}</AccordionTitle>
+        <AccordionTitle data-slot="accordionTitle">
+          {headerContent.main}
+        </AccordionTitle>
       </AccordionTrigger>
-      {additionalTriggerComponent && <div>{additionalTriggerComponent}</div>}
+      {headerContent.rightContent.length > 0 && (
+        <HeaderRightContent data-slot="headerRightContent">
+          {headerContent.rightContent}
+        </HeaderRightContent>
+      )}
     </Flex>
   );
 };
@@ -144,3 +167,4 @@ Accordion.displayName = "Accordion";
 
 Accordion.Header = AccordionHeader;
 Accordion.Content = AccordionContent;
+Accordion.HeaderRightContent = HeaderRightContent;

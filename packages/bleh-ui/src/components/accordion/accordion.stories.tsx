@@ -119,23 +119,21 @@ export const WithAdditionalContentsOnTrigger: Story = {
       <>
         {items.map((item, index) => (
           <Accordion key={index} {...args} size={"md"}>
-            <Accordion.Header
-              additionalTriggerComponent={
-                <div style={{ padding: "10px" }}>
-                  <Button marginRight="100" tone="primary">
-                    Click me
-                  </Button>
-                  <Button marginRight="100" tone="neutral">
-                    Click me
-                  </Button>
-                  <Button marginRight="100" tone="critical">
-                    Click me
-                  </Button>
-                </div>
-              }
-            >
+            <Accordion.Header>
+              <Accordion.HeaderRightContent>
+                <Button margin="100" tone="primary">
+                  Click me
+                </Button>
+                <Button margin="100" tone="neutral">
+                  Click me
+                </Button>
+                <Button margin="100" tone="critical">
+                  Click me
+                </Button>
+              </Accordion.HeaderRightContent>
               {item.title}
             </Accordion.Header>
+
             <Accordion.Content>
               <Flex
                 justifyContent="space-between"
@@ -182,5 +180,28 @@ export const WithAdditionalContentsOnTrigger: Story = {
       await userEvent.click(trigger);
       await expect(panel).toBeVisible();
     });
+
+    await step("Main trigger still works", async () => {
+      await userEvent.click(trigger);
+    });
   },
+};
+
+export const WithHeaderRightContent: Story = {
+  render: (args) => (
+    <Accordion {...args}>
+      <Accordion.Header>
+        <>Title</>
+        <Accordion.HeaderRightContent>
+          <Button tone="primary" margin="100">
+            Action 1
+          </Button>
+          <Button tone="neutral" margin="100">
+            Action 2
+          </Button>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>Content</Accordion.Content>
+    </Accordion>
+  ),
 };
