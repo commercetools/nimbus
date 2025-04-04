@@ -34,6 +34,10 @@ export const badgeRecipe = defineRecipe({
         h: "600",
         lineHeight: "350",
         px: "200",
+        _icon: {
+          width: "400",
+          height: "400",
+        },
       },
       xs: {
         fontSize: "350",
@@ -41,6 +45,10 @@ export const badgeRecipe = defineRecipe({
         h: "800",
         lineHeight: "400",
         px: "300",
+        _icon: {
+          width: "500",
+          height: "500",
+        },
       },
       md: {
         fontSize: "400",
@@ -48,6 +56,10 @@ export const badgeRecipe = defineRecipe({
         h: "1000",
         lineHeight: "500",
         px: "400",
+        _icon: {
+          width: "600",
+          height: "600",
+        },
       },
     },
   },
