@@ -30,6 +30,11 @@ export type AlertProps = PropsWithChildren<AlertVariantProps> & {
   [key: `data-${string}`]: unknown;
 };
 
+/** Type signature for the main `Alert` component (using `forwardRef`). */
+type AlertRootComponent = ForwardRefExoticComponent<
+  AlertProps & RefAttributes<HTMLDivElement>
+>;
+
 // ============================================================
 // Icon Slot
 // ============================================================
@@ -74,9 +79,7 @@ export type AlertDismissButtonProps = ButtonProps;
  * - The main Alert component (ForwardRefExoticComponent accepting AlertProps).
  * - Static sub-components (Title, Description, Actions, DismissButton).
  */
-export type AlertComponent = ForwardRefExoticComponent<
-  AlertProps & RefAttributes<HTMLDivElement>
-> & {
+export type AlertComponent = AlertRootComponent & {
   Title: FC<AlertTitleProps>;
   Description: FC<AlertDescriptionProps>;
   Actions: FC<AlertActionsProps>;
