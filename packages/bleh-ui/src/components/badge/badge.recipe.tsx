@@ -65,7 +65,7 @@ export const badgeRecipe = defineRecipe({
   },
 
   // Default variant values when not explicitly specified
-  // defaultVariants: {
-  //   size: "md",
-  // },
+  defaultVariants: {
+    size: "md",
+  },
 });

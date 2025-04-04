@@ -26,7 +26,9 @@ export interface BadgeRootProps
  * and styling variants from the recipe.
  */
 type BadgeVariantProps = BadgeRootProps &
-  RecipeVariantProps<typeof badgeRecipe>;
+  RecipeVariantProps<typeof badgeRecipe> & {
+    [key: `data-${string}`]: string;
+  };
 
 /**
  * Main props interface for the Badge component.
