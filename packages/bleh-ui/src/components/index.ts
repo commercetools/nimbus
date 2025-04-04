@@ -27,3 +27,4 @@ export * from "./grid";
 export * from "./select";
 export * from "./loading-spinner";
 export * from "./card";
+export * from "./badge";
