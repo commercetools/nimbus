@@ -6,7 +6,12 @@ import type {
 import { alertRecipe } from "./alert.recipe";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
-import type { PropsWithChildren } from "react";
+import type {
+  FC,
+  ForwardRefExoticComponent,
+  PropsWithChildren,
+  RefAttributes,
+} from "react";
 
 /**
  * Slot component types
@@ -39,4 +44,16 @@ type AlertVariantProps = AlertRootProps &
  */
 export type AlertProps = PropsWithChildren<AlertVariantProps> & {
   [key: `data-${string}`]: unknown;
+};
+
+/**
+ * Type definition for the Alert component.
+ */
+export type AlertComponent = ForwardRefExoticComponent<
+  AlertProps & RefAttributes<HTMLDivElement>
+> & {
+  Title: FC<AlertTitleProps>;
+  Description: FC<AlertDescriptionProps>;
+  Actions: FC<AlertActionsProps>;
+  DismissButton: FC<AlertDismissButtonProps>;
 };

@@ -5,9 +5,7 @@ import {
   useEffect,
   useMemo,
   useState,
-  type ForwardRefExoticComponent,
   type ReactNode,
-  type RefAttributes,
 } from "react";
 import {
   AlertRoot,
@@ -19,6 +17,7 @@ import {
 } from "./alert.slots";
 import type {
   AlertActionsProps,
+  AlertComponent,
   AlertDescriptionProps,
   AlertDismissButtonProps,
   AlertProps,
@@ -50,15 +49,6 @@ const getIconFromTone = (tone: AlertProps["tone"]) => {
   }
 };
 
-type AlertComponent = ForwardRefExoticComponent<
-  AlertProps & RefAttributes<HTMLDivElement>
-> & {
-  Title: typeof AlertTitle;
-  Description: typeof AlertDescription;
-  Actions: typeof AlertActions;
-  DismissButton: typeof AlertDismissButton;
-};
-
 type AlertContextValue = {
   setTitle: (title: ReactNode) => void;
   setDescription: (description: ReactNode) => void;
@@ -73,7 +63,7 @@ const AlertContext = createContext<AlertContextValue | undefined>(undefined);
  * ============================================================
  * Provides feedback to the user about the status of an action or system event
  */
-export const Alert = forwardRef<HTMLDivElement, AlertProps>(
+export const Alert: AlertComponent = forwardRef<HTMLDivElement, AlertProps>(
   ({ children, ...props }, ref) => {
     const [titleNode, setTitle] = useState<ReactNode>(null);
     const [descriptionNode, setDescription] = useState<ReactNode>(null);
