@@ -181,7 +181,5 @@ export const buttonRecipe = defineRecipe({
   defaultVariants: {
     size: "md",
     variant: "subtle",
-    // TODO: restore this before merge
-    // tone: "neutral",
   },
 });
