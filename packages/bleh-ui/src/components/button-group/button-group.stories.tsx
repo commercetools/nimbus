@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof ButtonGroup>;
 
 const sizes: ButtonProps["size"][] = ["md", "xs"];
-const variants: ButtonProps["variant"][] = ["outline"];
+
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -30,6 +30,8 @@ const variants: ButtonProps["variant"][] = ["outline"];
  */
 export const Base: Story = {
   args: {
+    size: "md",
+    tone: "critical",
     children: (
       <>
         <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
@@ -62,29 +64,6 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Variants
- */
-export const Variants: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {variants.map((variant) => (
-          <ButtonGroup key={variant as string} {...args} variant={variant}>
-            <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
-            <ButtonGroup.Button id="center">Center</ButtonGroup.Button>
-            <ButtonGroup.Button id="right">Right</ButtonGroup.Button>
-          </ButtonGroup>
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo ButtonGroup",
-  },
-};
-
-/**
  * Showcase Colors
  */
 export const Colors: Story = {
@@ -98,14 +77,7 @@ export const Colors: Story = {
             gap="400"
             alignItems="center"
           >
-            {variants.map((variant) => (
-              <ButtonGroup
-                key={variant as string}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
+            <ButtonGroup {...args} colorPalette={colorPalette} />
           </Stack>
         ))}
       </Stack>

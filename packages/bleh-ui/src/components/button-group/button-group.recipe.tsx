@@ -1,4 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
+import { buttonRecipe } from "../button/button.recipe";
 
 /**
  * Recipe configuration for the ButtonGroup component.
@@ -15,7 +16,11 @@ export const buttonGroupRecipe = defineSlotRecipe({
       display: "inline-flex",
     },
     button: {
-      colorPalette: "primary",
+      // Base style is the same as our Button
+      ...buttonRecipe.base,
+      // Default style is outlined
+      ...buttonRecipe.variants?.variant.outline,
+      // Create overrides for custom ButtonGroup styles
       borderRadius: "0",
       borderRightWidth: "0",
       "&:first-of-type": {
@@ -25,25 +30,31 @@ export const buttonGroupRecipe = defineSlotRecipe({
         borderRightWidth: "1px",
         borderRightRadius: "200",
       },
-
-      "&[data-selected=true]": {
-        color: "colorPalette.contrast",
-        bg: "colorPalette.9",
-      },
+      // When selected, the button is styled like a solid button
+      "&[data-selected=true]": buttonRecipe.variants?.variant.solid,
     },
   },
 
-  // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
     size: {
-      xs: {},
-      md: {},
+      xs: {
+        button: buttonRecipe.variants?.size.xs,
+      },
+      md: {
+        button: buttonRecipe.variants?.size.md,
+      },
     },
 
-    // Visual style variants
-    variant: {
-      outline: {},
+    tone: {
+      primary: {
+        button: { colorPalette: "primary" },
+      },
+      critical: {
+        button: { colorPalette: "error" },
+      },
+      neutral: {
+        button: { colorPalette: "neutral" },
+      },
     },
   },
 });

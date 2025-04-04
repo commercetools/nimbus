@@ -1,24 +1,26 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import { buttonGroupRecipe } from "./button-group.recipe";
 import type {
-  ButtonGroupButtonSlotProps,
-  ButtonGroupRootSlotProps,
+  ButtonGroupButtonComponent,
+  ButtonGroupButtonProps,
+  ButtonGroupProps,
+  ButtonGroupRootComponent,
 } from "./button-group.types";
+import {
+  ToggleButton as RacToggleButton,
+  ToggleButtonGroup as RacToggleButtonGroup,
+} from "react-aria-components";
 
 const { withContext, withProvider } = createSlotRecipeContext({
   recipe: buttonGroupRecipe,
 });
 
-/**
- * Root component that provides the styling context for the ButtonGroup component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const ButtonGroupRoot = withProvider<
-  HTMLDivElement,
-  ButtonGroupRootSlotProps
->("div", "root");
+export const ButtonGroupRoot: ButtonGroupRootComponent = withProvider<
+  typeof RacToggleButtonGroup,
+  ButtonGroupProps
+>(RacToggleButtonGroup, "root");
 
-export const ButtonGroupButton = withContext<
-  HTMLButtonElement,
-  ButtonGroupButtonSlotProps
->("button", "button");
+export const ButtonGroupButton: ButtonGroupButtonComponent = withContext<
+  typeof RacToggleButton,
+  ButtonGroupButtonProps
+>(RacToggleButton, "button");

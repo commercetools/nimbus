@@ -2,52 +2,69 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   RecipeVariantProps,
-  UnstyledProp,
 } from "@chakra-ui/react";
 import { buttonGroupRecipe } from "./button-group.recipe";
 import type {
   AriaToggleButtonGroupProps,
   AriaToggleButtonProps,
 } from "react-aria";
-import type { PropsWithChildren } from "react";
+import {
+  ToggleButton as RacToggleButton,
+  ToggleButtonGroup as RacToggleButtonGroup,
+} from "react-aria-components";
+import type {
+  ForwardRefExoticComponent,
+  PropsWithChildren,
+  RefAttributes,
+} from "react";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the `div` element.
- */
-interface ButtonGroupRecipeProps extends RecipeProps<"button">, UnstyledProp {}
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
+// ============================================================
+// Root Component (`<ButtonGroup>`)
+// ============================================================
+
+/** Base Chakra styling props for the root `div` slot. */
 export type ButtonGroupRootSlotProps = HTMLChakraProps<
   "div",
-  ButtonGroupRecipeProps
+  RecipeProps<"div">
 >;
 
+/** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
+export type ButtonGroupRootProps = ButtonGroupRootSlotProps &
+  AriaToggleButtonGroupProps &
+  RecipeVariantProps<typeof buttonGroupRecipe>;
+
+/** Final external props for the `<ButtonGroup>` component, including `children`. */
+export type ButtonGroupProps = PropsWithChildren<ButtonGroupRootProps>;
+
+/** Type signature for the main `ButtonGroup` component (using `forwardRef`). */
+export type ButtonGroupRootComponent = ForwardRefExoticComponent<
+  ButtonGroupProps & RefAttributes<typeof RacToggleButtonGroup>
+>;
+
+// ============================================================
+// Button Sub-Component (`<ButtonGroup.Button>`)
+// ============================================================
+
+/** Base Chakra styling props for the `button` slot. */
 export type ButtonGroupButtonSlotProps = HTMLChakraProps<
   "button",
-  ButtonGroupRecipeProps
+  RecipeProps<"button">
 >;
 
-export type ButtonGroupRootProps = ButtonGroupRootSlotProps &
-  AriaToggleButtonGroupProps;
-
+/** Combined props for the button element (Chakra styles + Aria behavior). */
 export type ButtonGroupButtonProps = ButtonGroupButtonSlotProps &
   AriaToggleButtonProps;
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type ButtonGroupVariantProps = ButtonGroupRootProps &
-  RecipeVariantProps<typeof buttonGroupRecipe>;
+/** Type signature for the `ButtonGroup.Button` sub-component (using `forwardRef`). */
+export type ButtonGroupButtonComponent = ForwardRefExoticComponent<
+  ButtonGroupButtonProps & RefAttributes<typeof RacToggleButton>
+>;
 
-/**
- * Main props type for the ButtonGroup component.
- * Extends ButtonGroupVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export type ButtonGroupProps = PropsWithChildren<ButtonGroupVariantProps>;
+// ============================================================
+// Compound Component Definition
+// ============================================================
+
+/** Type signature for the ButtonGroup component including its static `.Button`. */
+export type ButtonGroupComponent = ButtonGroupRootComponent & {
+  Button: ButtonGroupButtonComponent;
+};
