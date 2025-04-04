@@ -13,41 +13,66 @@ import type {
   RefAttributes,
 } from "react";
 
-/**
- * Slot component types
- */
+// ============================================================
+// Root Component (`<Alert>`)
+// ============================================================
 
+/** Base Chakra styling props for the root `div` slot. */
 export type AlertRootProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
-export type AlertTitleProps = TextProps;
-
-export type AlertDescriptionProps = TextProps;
-
-export type AlertIconProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
-export type AlertActionsProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
-export type AlertDismissButtonProps = ButtonProps;
-
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
+/** Combined root props including Chakra styles and recipe variants. */
 type AlertVariantProps = AlertRootProps &
   RecipeVariantProps<typeof alertRecipe>;
 
-/**
- * Main props interface for the Alert component.
- * Extends AlertVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
+/** Final external props for the `<Alert>` component (variants + children + data-* attrs). */
 export type AlertProps = PropsWithChildren<AlertVariantProps> & {
+  // Allow passthrough of data-* attributes
   [key: `data-${string}`]: unknown;
 };
 
+// ============================================================
+// Icon Slot
+// ============================================================
+
+/** Base Chakra styling props for the `icon` slot (`div`). */
+export type AlertIconProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+
+// ============================================================
+// Title Sub-Component (`<Alert.Title>`)
+// ============================================================
+
+/** Props for the `Alert.Title` sub-component (inherits from Text). */
+export type AlertTitleProps = TextProps;
+
+// ============================================================
+// Description Sub-Component (`<Alert.Description>`)
+// ============================================================
+
+/** Props for the `Alert.Description` sub-component (inherits from Text). */
+export type AlertDescriptionProps = TextProps;
+
+// ============================================================
+// Actions Sub-Component (`<Alert.Actions>`)
+// ============================================================
+
+/** Base Chakra styling props for the `actions` slot (`div`). */
+export type AlertActionsProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+
+// ============================================================
+// DismissButton Sub-Component (`<Alert.DismissButton>`)
+// ============================================================
+
+/** Props for the `Alert.DismissButton` sub-component (inherits from Button). */
+export type AlertDismissButtonProps = ButtonProps;
+
+// ============================================================
+// Compound Component Definition
+// ============================================================
+
 /**
- * Type definition for the Alert component.
+ * Type signature for the complete Alert component, including:
+ * - The main Alert component (ForwardRefExoticComponent accepting AlertProps).
+ * - Static sub-components (Title, Description, Actions, DismissButton).
  */
 export type AlertComponent = ForwardRefExoticComponent<
   AlertProps & RefAttributes<HTMLDivElement>
