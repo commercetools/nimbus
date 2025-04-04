@@ -23,13 +23,10 @@ import type {
 // ============================================================
 
 /** Base Chakra styling props for the root `div` slot. */
-export type ButtonGroupRootSlotProps = HTMLChakraProps<
-  "div",
-  RecipeProps<"div">
->;
+type ButtonGroupRootSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
-export type ButtonGroupRootProps = ButtonGroupRootSlotProps &
+type ButtonGroupRootProps = ButtonGroupRootSlotProps &
   AriaToggleButtonGroupProps &
   RecipeVariantProps<typeof buttonGroupRecipe>;
 
@@ -37,7 +34,7 @@ export type ButtonGroupRootProps = ButtonGroupRootSlotProps &
 export type ButtonGroupProps = PropsWithChildren<ButtonGroupRootProps>;
 
 /** Type signature for the main `ButtonGroup` component (using `forwardRef`). */
-export type ButtonGroupRootComponent = ForwardRefExoticComponent<
+type ButtonGroupRootComponent = ForwardRefExoticComponent<
   ButtonGroupProps & RefAttributes<typeof RacToggleButtonGroup>
 >;
 
@@ -46,7 +43,7 @@ export type ButtonGroupRootComponent = ForwardRefExoticComponent<
 // ============================================================
 
 /** Base Chakra styling props for the `button` slot. */
-export type ButtonGroupButtonSlotProps = HTMLChakraProps<
+type ButtonGroupButtonSlotProps = HTMLChakraProps<
   "button",
   RecipeProps<"button">
 >;
