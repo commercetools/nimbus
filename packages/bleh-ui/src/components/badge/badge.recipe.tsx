@@ -33,7 +33,6 @@ export const badgeRecipe = defineRecipe({
         gap: "100",
         h: "600",
         lineHeight: "350",
-        minW: "93px",
         px: "200",
       },
       xs: {
@@ -41,7 +40,6 @@ export const badgeRecipe = defineRecipe({
         gap: "100",
         h: "800",
         lineHeight: "400",
-        minW: "115px",
         px: "300",
       },
       md: {
@@ -49,7 +47,6 @@ export const badgeRecipe = defineRecipe({
         gap: "200",
         h: "1000",
         lineHeight: "500",
-        minW: "140px",
         px: "400",
       },
     },

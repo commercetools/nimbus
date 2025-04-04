@@ -122,3 +122,51 @@ export const WithIcons: Story = {
     );
   },
 };
+
+export const WithIconsXS: Story = {
+  args: {
+    size: "xs",
+  },
+  render: (args) => {
+    const demoText = "Demo Badge";
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        <Badge {...args}>
+          {demoText} <DemoIcon />
+        </Badge>
+
+        <Badge {...args}>
+          <DemoIcon /> {demoText}
+        </Badge>
+
+        <Badge {...args}>
+          <DemoIcon /> {demoText} <DemoIcon />
+        </Badge>
+      </Stack>
+    );
+  },
+};
+
+export const WithIcons2XS: Story = {
+  args: {
+    size: "2xs",
+  },
+  render: (args) => {
+    const demoText = "Demo Badge";
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        <Badge {...args}>
+          {demoText} <DemoIcon />
+        </Badge>
+
+        <Badge {...args}>
+          <DemoIcon /> {demoText}
+        </Badge>
+
+        <Badge {...args}>
+          <DemoIcon /> {demoText} <DemoIcon />
+        </Badge>
+      </Stack>
+    );
+  },
+};
