@@ -8,7 +8,7 @@ import { buttonRecipe } from "../button/button.recipe";
 export const buttonGroupRecipe = defineSlotRecipe({
   slots: ["root", "button"],
   // Unique class name prefix for the component
-  className: "nimbus-button-group",
+  className: "nimbus-toggle-button-group",
 
   // Base styles applied to all instances of the component
   base: {
