@@ -7,7 +7,6 @@ import { alertRecipe } from "./alert.recipe";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
 import type {
-  FC,
   ForwardRefExoticComponent,
   PropsWithChildren,
   RefAttributes,
@@ -31,7 +30,7 @@ export type AlertProps = PropsWithChildren<AlertVariantProps> & {
 };
 
 /** Type signature for the main `Alert` component (using `forwardRef`). */
-type AlertRootComponent = ForwardRefExoticComponent<
+export type AlertRootComponent = ForwardRefExoticComponent<
   AlertProps & RefAttributes<HTMLDivElement>
 >;
 
@@ -69,19 +68,3 @@ export type AlertActionsProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Props for the `Alert.DismissButton` sub-component (inherits from Button). */
 export type AlertDismissButtonProps = ButtonProps;
-
-// ============================================================
-// Compound Component Definition
-// ============================================================
-
-/**
- * Type signature for the complete Alert component, including:
- * - The main Alert component (ForwardRefExoticComponent accepting AlertProps).
- * - Static sub-components (Title, Description, Actions, DismissButton).
- */
-export type AlertComponent = AlertRootComponent & {
-  Title: FC<AlertTitleProps>;
-  Description: FC<AlertDescriptionProps>;
-  Actions: FC<AlertActionsProps>;
-  DismissButton: FC<AlertDismissButtonProps>;
-};

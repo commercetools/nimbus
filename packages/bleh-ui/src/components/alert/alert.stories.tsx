@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within, expect, fn } from "@storybook/test";
-import { Alert } from "./alert";
+import Alert from "./alert";
 import { Stack } from "./../stack";
 import { Button } from "../button";
 import type { AlertProps } from "./alert.types";
@@ -13,9 +13,9 @@ const variants: AlertProps["variant"][] = ["flat", "outlined"];
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<typeof Alert> = {
+const meta: Meta<typeof Alert.Root> = {
   title: "components/Alert",
-  component: Alert,
+  component: Alert.Root,
 };
 
 export default meta;
@@ -24,7 +24,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof Alert>;
+type Story = StoryObj<typeof Alert.Root>;
 
 // Mock function for dismiss button onPress
 const mockOnDismiss = fn();
@@ -94,7 +94,11 @@ export const TonesShowcase: Story = {
   render: () => (
     <Stack direction="column" gap="400" alignItems="flex-start">
       {tones.map((tone) => (
-        <Alert key={`alert-${tone as string}`} tone={tone} variant="outlined">
+        <Alert.Root
+          key={`alert-${tone as string}`}
+          tone={tone}
+          variant="outlined"
+        >
           <Alert.Title>Alert Title ({tone as string})</Alert.Title>
           <Alert.Description>Alert Description</Alert.Description>
           <Alert.Actions>
@@ -105,7 +109,7 @@ export const TonesShowcase: Story = {
           <Alert.DismissButton
             onPress={() => alert(`Dismissed ${tone as string}`)}
           />
-        </Alert>
+        </Alert.Root>
       ))}
     </Stack>
   ),
@@ -118,7 +122,7 @@ export const VariantsShowcase: Story = {
       {tones.map((tone) => (
         <Stack key={`stack-${tone as string}`} direction="row" gap="400">
           {variants.map((variant) => (
-            <Alert
+            <Alert.Root
               key={`alert-${tone as string}-${variant as string}`}
               tone={tone}
               variant={variant}
@@ -128,7 +132,7 @@ export const VariantsShowcase: Story = {
               </Alert.Title>
               <Alert.Description>Desc.</Alert.Description>
               <Alert.DismissButton onPress={() => alert("Dismissed")} />
-            </Alert>
+            </Alert.Root>
           ))}
         </Stack>
       ))}
