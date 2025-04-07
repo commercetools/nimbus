@@ -22,6 +22,6 @@ const AlertDescription = ({ children, ...props }: AlertDescriptionProps) => {
   return null;
 };
 
-AlertDescription.displayName = "AlertDescription";
+AlertDescription.displayName = "Alert.Description";
 
 export default AlertDescription;

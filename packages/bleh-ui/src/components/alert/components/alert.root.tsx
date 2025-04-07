@@ -87,6 +87,6 @@ const AlertRoot: AlertRootComponent = forwardRef<HTMLDivElement, AlertProps>(
   }
 );
 
-AlertRoot.displayName = "Alert";
+AlertRoot.displayName = "Alert.Root";
 
 export default AlertRoot;

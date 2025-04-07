@@ -24,6 +24,6 @@ const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
   return null;
 };
 
-AlertTitle.displayName = "AlertTitle";
+AlertTitle.displayName = "Alert.Title";
 
 export default AlertTitle;

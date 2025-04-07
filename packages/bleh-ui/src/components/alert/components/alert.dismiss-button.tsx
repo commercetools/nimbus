@@ -36,6 +36,6 @@ const AlertDismissButton = ({
   return null;
 };
 
-AlertDismissButton.displayName = "AlertDismissButton";
+AlertDismissButton.displayName = "Alert.DismissButton";
 
 export default AlertDismissButton;

@@ -22,6 +22,6 @@ const AlertActions = ({ children, ...props }: AlertActionsProps) => {
   return null;
 };
 
-AlertActions.displayName = "AlertActions";
+AlertActions.displayName = "Alert.Actions";
 
 export default AlertActions;
