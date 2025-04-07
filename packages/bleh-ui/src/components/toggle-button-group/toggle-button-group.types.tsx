@@ -38,7 +38,7 @@ export type ToggleButtonGroupProps =
   PropsWithChildren<ToggleButtonGroupRootProps>;
 
 /** Type signature for the main `ToggleButtonGroup` component (using `forwardRef`). */
-type ToggleButtonGroupRootComponent = ForwardRefExoticComponent<
+export type ToggleButtonGroupRootComponent = ForwardRefExoticComponent<
   ToggleButtonGroupProps & RefAttributes<typeof RacToggleButtonGroup>
 >;
 
@@ -60,12 +60,3 @@ export type ToggleButtonGroupButtonProps = ToggleButtonGroupButtonSlotProps &
 export type ToggleButtonGroupButtonComponent = ForwardRefExoticComponent<
   ToggleButtonGroupButtonProps & RefAttributes<typeof RacToggleButton>
 >;
-
-// ============================================================
-// Compound Component Definition
-// ============================================================
-
-/** Type signature for the ToggleButtonGroup component including its static `.Button`. */
-export type ToggleButtonGroupComponent = ToggleButtonGroupRootComponent & {
-  Button: ToggleButtonGroupButtonComponent;
-};

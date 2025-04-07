@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ToggleButtonGroup } from "./toggle-button-group";
+import ToggleButtonGroup from "./toggle-button-group";
 import { Stack } from "../stack";
 import { userEvent, within, expect, fn } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
  */
-const meta: Meta<typeof ToggleButtonGroup> = {
+const meta: Meta<typeof ToggleButtonGroup.Root> = {
   title: "components/ToggleButtonGroup",
-  component: ToggleButtonGroup,
+  component: ToggleButtonGroup.Root,
 };
 
 export default meta;
@@ -16,7 +16,7 @@ export default meta;
 /**
  * Story type for TypeScript support
  */
-type Story = StoryObj<typeof ToggleButtonGroup>;
+type Story = StoryObj<typeof ToggleButtonGroup.Root>;
 
 const defaultChildren = (
   <>
@@ -228,14 +228,14 @@ export const Sizes: Story = {
   render: (args) => (
     <Stack direction="row" gap="400" alignItems="center">
       {sizes.map((size) => (
-        <ToggleButtonGroup
+        <ToggleButtonGroup.Root
           key={size}
           {...args}
           size={size}
           aria-label={`Size ${size} Group`}
         >
           {defaultChildren}
-        </ToggleButtonGroup>
+        </ToggleButtonGroup.Root>
       ))}
     </Stack>
   ),
@@ -266,14 +266,14 @@ export const Tones: Story = {
   render: (args) => (
     <Stack>
       {tones.map((tone) => (
-        <ToggleButtonGroup
+        <ToggleButtonGroup.Root
           key={tone}
           {...args}
           tone={tone}
           aria-label={`Tone ${tone} Group`}
         >
           {defaultChildren}
-        </ToggleButtonGroup>
+        </ToggleButtonGroup.Root>
       ))}
     </Stack>
   ),
