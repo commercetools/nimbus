@@ -118,7 +118,12 @@ export const VariantsShowcase: Story = {
   render: () => (
     <Stack direction="column" gap="400" alignItems="flex-start">
       {tones.map((tone) => (
-        <Stack key={`stack-${tone as string}`} direction="row" gap="400">
+        <Stack
+          key={`stack-${tone as string}`}
+          direction="row"
+          gap="400"
+          width="100%"
+        >
           {variants.map((variant) => (
             <Alert.Root
               key={`alert-${tone as string}-${variant as string}`}
