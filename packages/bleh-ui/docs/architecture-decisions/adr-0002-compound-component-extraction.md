@@ -23,8 +23,8 @@ component), we will adopt the following directory structure:
   simply `<ComponentName>` if no explicit `.Root` is used) and all its compound
   sub-components (`<ComponentName.Part>`, `<ComponentName.Control>`, etc.) will
   reside within this `components` subdirectory.
-- The main `index.tsx` file within the `<component-name>` directory will be
-  responsible for:
+- The main `<component-name>.tsx` file within the `<component-name>` directory
+  will be responsible for:
   - Importing the root component and all sub-components from the `components`
     subdirectory.
   - Re-exporting them as properties of the main `ComponentName` object.
@@ -66,6 +66,7 @@ structure, primarily by referencing the appropriate root component (e.g.,
 
 ```
 packages/bleh-ui/src/components/component-name/index.tsx
+packages/bleh-ui/src/components/component-name/component-name.tsx
 packages/bleh-ui/src/components/component-name/components/component-name.root.tsx
 packages/bleh-ui/src/components/component-name/components/component-name.part.tsx
 packages/bleh-ui/src/components/component-name/components/component-name.control.tsx
