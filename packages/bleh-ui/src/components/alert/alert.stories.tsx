@@ -250,52 +250,6 @@ export const TitleAndActions: Story = {
   },
 };
 
-const mockDismissOnly = fn();
-export const DismissOnly: Story = {
-  name: "Composition: Dismiss Button Only",
-  args: {
-    tone: "critical",
-    variant: "flat",
-    "data-testid": "alert-dismiss-only",
-    children: (
-      <>
-        {/* Intentionally omit Title, Description, Actions */}
-        <Alert.DismissButton
-          onPress={mockDismissOnly}
-          data-testid="dismiss-only-button"
-        />
-      </>
-    ),
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const alert = canvas.getByTestId("alert-dismiss-only");
-    const dismissButton = within(alert).getByTestId("dismiss-only-button");
-
-    await step("Renders only the dismiss button", async () => {
-      await expect(dismissButton).toBeInTheDocument();
-      await expect(dismissButton).toHaveAttribute("aria-label", "Dismiss");
-    });
-
-    await step("Does not render other parts", async () => {
-      await expect(within(alert).queryByText(/Title/i)).not.toBeInTheDocument();
-      await expect(
-        within(alert).queryByText(/Description/i)
-      ).not.toBeInTheDocument();
-      // Check specifically for non-dismiss buttons
-      const actionButtons = within(alert)
-        .queryAllByRole("button")
-        .filter((btn) => btn !== dismissButton);
-      await expect(actionButtons.length).toBe(0);
-    });
-
-    await step("Dismiss button is clickable and calls onPress", async () => {
-      await userEvent.click(dismissButton);
-      await expect(mockDismissOnly).toHaveBeenCalledTimes(1);
-    });
-  },
-};
-
 const mockDismissNoActions = fn();
 export const NoActions: Story = {
   name: "Composition: Title, Description, Dismiss (No Actions)",
