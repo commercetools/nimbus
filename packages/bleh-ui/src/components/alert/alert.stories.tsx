@@ -87,8 +87,6 @@ export const Base: Story = {
   },
 };
 
-// --- Showcase Stories (Primarily Visual) ---
-
 export const TonesShowcase: Story = {
   name: "Showcase: Tones",
   render: () => (
@@ -139,8 +137,6 @@ export const VariantsShowcase: Story = {
     </Stack>
   ),
 };
-
-// --- Individual Partial Composition Stories ---
 
 export const TitleOnly: Story = {
   name: "Composition: Title Only",
