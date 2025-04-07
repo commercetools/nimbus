@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ButtonGroup } from "./button-group";
-import { Stack } from "./../stack";
+import { ToggleButtonGroup } from "./toggle-button-group";
+import { Stack } from "../stack";
 import { userEvent, within, expect, fn } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
  */
-const meta: Meta<typeof ButtonGroup> = {
-  title: "components/ButtonGroup",
-  component: ButtonGroup,
+const meta: Meta<typeof ToggleButtonGroup> = {
+  title: "components/ToggleButtonGroup",
+  component: ToggleButtonGroup,
 };
 
 export default meta;
@@ -16,21 +16,21 @@ export default meta;
 /**
  * Story type for TypeScript support
  */
-type Story = StoryObj<typeof ButtonGroup>;
+type Story = StoryObj<typeof ToggleButtonGroup>;
 
 const defaultChildren = (
   <>
-    <ButtonGroup.Button id="left">Left</ButtonGroup.Button>
-    <ButtonGroup.Button id="center">Center</ButtonGroup.Button>
-    <ButtonGroup.Button id="right">Right</ButtonGroup.Button>
+    <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
   </>
 );
 
-type ButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
-type ButtonGroupTone = "primary" | "critical" | "neutral"; // Replace with actual derived type
+type ToggleButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
+type ToggleButtonGroupTone = "primary" | "critical" | "neutral"; // Replace with actual derived type
 
-const sizes: ButtonGroupSize[] = ["md", "xs"];
-const tones: ButtonGroupTone[] = ["primary", "critical", "neutral"];
+const sizes: ToggleButtonGroupSize[] = ["md", "xs"];
+const tones: ToggleButtonGroupTone[] = ["primary", "critical", "neutral"];
 
 /**
  * Base story
@@ -228,14 +228,14 @@ export const Sizes: Story = {
   render: (args) => (
     <Stack direction="row" gap="400" alignItems="center">
       {sizes.map((size) => (
-        <ButtonGroup
+        <ToggleButtonGroup
           key={size}
           {...args}
           size={size}
           aria-label={`Size ${size} Group`}
         >
           {defaultChildren}
-        </ButtonGroup>
+        </ToggleButtonGroup>
       ))}
     </Stack>
   ),
@@ -266,14 +266,14 @@ export const Tones: Story = {
   render: (args) => (
     <Stack>
       {tones.map((tone) => (
-        <ButtonGroup
+        <ToggleButtonGroup
           key={tone}
           {...args}
           tone={tone}
           aria-label={`Tone ${tone} Group`}
         >
           {defaultChildren}
-        </ButtonGroup>
+        </ToggleButtonGroup>
       ))}
     </Stack>
   ),

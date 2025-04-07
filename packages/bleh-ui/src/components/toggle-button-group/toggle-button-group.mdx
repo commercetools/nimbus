@@ -1,28 +1,30 @@
 ---
-id: Components-ButtonGroup
-title: ButtonGroup
-description: To group multiple `Button` or `IconButton` components together, visually and logically, representing a set of related actions.
+id: Components-ToggleButtonGroup
+title: ToggleButtonGroup
+description:
+  To group multiple `Button` or `IconButton` components together, visually and
+  logically, representing a set of related actions.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - ButtonGroup
+  - ToggleButtonGroup
 tags:
   - component
 ---
 
-# ButtonGroup
+# ToggleButtonGroup
 
-To group multiple `Button` or `IconButton` components together, visually and logically, representing a set of related actions.
+To group multiple `Button` or `IconButton` components together, visually and
+logically, representing a set of related actions.
 
 ## Basic Usage
 
 [Explain the basic usage / usecase of the component].
 
 ```jsx-live
-const App = () => <ButtonGroup>I am ButtonGroup!</ButtonGroup>
+const App = () => <ToggleButtonGroup>I am ToggleButtonGroup!</ToggleButtonGroup>
 ```
-
 
 ### Sizes
 
@@ -36,7 +38,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <ButtonGroup key={size} size={size}>'{size}' ButtonGroup</ButtonGroup>
+        <ToggleButtonGroup key={size} size={size}>'{size}' ToggleButtonGroup</ToggleButtonGroup>
       ))}
     </Stack>
   )
@@ -55,7 +57,7 @@ const App = () => {
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <ButtonGroup key={variant} variant={variant}>'{variant}' ButtonGroup</ButtonGroup>
+        <ToggleButtonGroup key={variant} variant={variant}>'{variant}' ToggleButtonGroup</ToggleButtonGroup>
       ))}
     </Stack>
   )
@@ -76,9 +78,9 @@ const App = () => {
       {colors.map((color) => (
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
-            <ButtonGroup colorPalette={color} key={variant} variant={variant}>
-              '{variant}' ButtonGroup
-            </ButtonGroup>
+            <ToggleButtonGroup colorPalette={color} key={variant} variant={variant}>
+              '{variant}' ToggleButtonGroup
+            </ToggleButtonGroup>
           ))}
         </Stack>
       ))}
@@ -89,4 +91,4 @@ const App = () => {
 
 ## Props
 
-<PropTable id="ButtonGroup" />
+<PropTable id="ToggleButtonGroup" />

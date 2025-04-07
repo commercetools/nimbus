@@ -2,7 +2,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 import { buttonRecipe } from "../button/button.recipe";
 
 /**
- * Recipe configuration for the ButtonGroup component.
+ * Recipe configuration for the ToggleButtonGroup component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const buttonGroupRecipe = defineSlotRecipe({
@@ -20,7 +20,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
       ...buttonRecipe.base,
       // Default style is outlined
       ...buttonRecipe.variants?.variant.outline,
-      // Create overrides for custom ButtonGroup styles
+      // Create overrides for custom ToggleButtonGroup styles
       borderRadius: "0",
       borderRightWidth: "0",
       "&:first-of-type": {

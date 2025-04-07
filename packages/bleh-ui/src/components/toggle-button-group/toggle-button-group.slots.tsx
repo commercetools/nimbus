@@ -1,9 +1,9 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
-import { buttonGroupRecipe } from "./button-group.recipe";
+import { buttonGroupRecipe } from "./toggle-button-group.recipe";
 import type {
-  ButtonGroupButtonProps,
-  ButtonGroupProps,
-} from "./button-group.types";
+  ToggleButtonGroupButtonProps,
+  ToggleButtonGroupProps,
+} from "./toggle-button-group.types";
 import {
   ToggleButton as RacToggleButton,
   ToggleButtonGroup as RacToggleButtonGroup,
@@ -13,12 +13,12 @@ const { withContext, withProvider } = createSlotRecipeContext({
   recipe: buttonGroupRecipe,
 });
 
-export const ButtonGroupRoot = withProvider<
+export const ToggleButtonGroupRoot = withProvider<
   typeof RacToggleButtonGroup,
-  ButtonGroupProps
+  ToggleButtonGroupProps
 >(RacToggleButtonGroup, "root");
 
-export const ButtonGroupButton = withContext<
+export const ToggleButtonGroupButton = withContext<
   typeof RacToggleButton,
-  ButtonGroupButtonProps
+  ToggleButtonGroupButtonProps
 >(RacToggleButton, "button");
