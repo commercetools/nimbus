@@ -8,9 +8,9 @@ import { badgeRecipe } from "./badge.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
+ * with the unstyled prop option for the span element.
  */
-export interface BadgeRecipeProps extends RecipeProps<"div">, UnstyledProp {}
+export interface BadgeRecipeProps extends RecipeProps<"span">, UnstyledProp {}
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
@@ -18,7 +18,7 @@ export interface BadgeRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
 export interface BadgeRootProps
-  extends HTMLChakraProps<"div", BadgeRecipeProps> {}
+  extends HTMLChakraProps<"span", BadgeRecipeProps> {}
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.

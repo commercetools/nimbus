@@ -15,11 +15,12 @@ export const badgeRecipe = defineRecipe({
     justifyContent: "center",
     whiteSpace: "nowrap",
     verticalAlign: "middle",
-    py: "1",
+    py: "25",
     fontWeight: "500",
     backgroundColor: "colorPalette.3",
     color: "colorPalette.11",
     w: "auto",
+    userSelect: "none",
     _icon: {
       flexShrink: "0",
     },

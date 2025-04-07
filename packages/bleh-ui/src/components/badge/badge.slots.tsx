@@ -5,4 +5,4 @@ import type { BadgeRootProps } from "./badge.types";
 
 const { withContext } = createRecipeContext({ recipe: badgeRecipe });
 
-export const BadgeRoot = withContext<HTMLDivElement, BadgeRootProps>("div");
+export const BadgeRoot = withContext<HTMLSpanElement, BadgeRootProps>("span");

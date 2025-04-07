@@ -45,8 +45,8 @@ export const Base: Story = {
     const canvas = within(canvasElement);
     const link = canvas.getByTestId("badge-test");
 
-    await step("Uses a <div> element by default", async () => {
-      await expect(link.tagName).toBe("DIV");
+    await step("Uses a <span> element by default", async () => {
+      await expect(link.tagName).toBe("SPAN");
     });
     await step("Forwards data- & aria-attributes", async () => {
       await expect(link).toHaveAttribute("data-testid", "badge-test");
