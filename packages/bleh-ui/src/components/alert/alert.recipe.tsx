@@ -37,35 +37,15 @@ export const alertRecipe = defineSlotRecipe({
     tone: {
       critical: {
         root: { colorPalette: "error" },
-        icon: { colorPalette: "error" },
-        dismissButton: { colorPalette: "error" },
-        title: { colorPalette: "error" },
-        description: { colorPalette: "error" },
-        actions: { colorPalette: "error" },
       },
       info: {
-        root: { colorPalette: "blue" },
-        icon: { colorPalette: "blue" },
-        dismissButton: { colorPalette: "blue" },
-        title: { colorPalette: "blue" },
-        description: { colorPalette: "blue" },
-        actions: { colorPalette: "blue" },
+        root: { colorPalette: "info" },
       },
       warning: {
         root: { colorPalette: "amber" },
-        icon: { colorPalette: "amber" },
-        dismissButton: { colorPalette: "amber" },
-        title: { colorPalette: "amber" },
-        description: { colorPalette: "amber" },
-        actions: { colorPalette: "amber" },
       },
       positive: {
-        root: { colorPalette: "grass" },
-        icon: { colorPalette: "grass" },
-        dismissButton: { colorPalette: "grass" },
-        title: { colorPalette: "grass" },
-        description: { colorPalette: "grass" },
-        actions: { colorPalette: "grass" },
+        root: { colorPalette: "success" },
       },
     },
 
