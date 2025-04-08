@@ -19,10 +19,10 @@ component), we will adopt the following directory structure:
   `packages/nimbus/src/components/<component-name>/`.
 - A subdirectory named `components` will be created within the main component's
   directory: `packages/nimbus/src/components/<component-name>/components/`.
-- The implementation files for the root component (`<ComponentName.Root>` or
-  simply `<ComponentName>` if no explicit `.Root` is used) and all its compound
-  sub-components (`<ComponentName.Part>`, `<ComponentName.Control>`, etc.) will
-  reside within this `components` subdirectory.
+- The implementation files for the root component (`<ComponentName.Root>`) and
+  all its compound sub-components (`<ComponentName.Part>`,
+  `<ComponentName.Control>`, etc.) will reside within this `components`
+  subdirectory.
 - The main `<component-name>.tsx` file within the `<component-name>` directory
   will be responsible for:
   - Importing the root component and all sub-components from the `components`
