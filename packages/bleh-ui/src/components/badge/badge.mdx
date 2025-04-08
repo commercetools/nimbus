@@ -1,0 +1,91 @@
+---
+id: Components-Badge
+title: Badge
+description: To display small status indicators or labels.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Badge
+tags:
+  - component
+---
+
+# Badge
+
+To display small status indicators or labels.
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <Badge>I am Badge!</Badge>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['md', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <Badge key={size} size={size}>'{size}' Badge</Badge>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <Badge key={variant} variant={variant}>'{variant}' Badge</Badge>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <Badge colorPalette={color} key={variant} variant={variant}>
+              '{variant}' Badge
+            </Badge>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="Badge" />
