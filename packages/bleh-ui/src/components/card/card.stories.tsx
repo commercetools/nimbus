@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "./card";
+import Card from "./card";
 import { Stack } from "./../stack";
 import type { CardProps } from "./card.types";
 import { within, expect, userEvent } from "@storybook/test";
@@ -9,9 +9,9 @@ const elevations: CardProps["elevation"][] = ["none", "elevated"];
 const borderStyles: CardProps["borderStyle"][] = ["none", "outlined"];
 const backgroundStyles: CardProps["backgroundStyle"][] = ["default", "muted"];
 
-const meta: Meta<typeof Card> = {
+const meta: Meta<typeof Card.Root> = {
   title: "components/Card",
-  component: Card,
+  component: Card.Root,
 };
 
 export default meta;
@@ -20,7 +20,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof Card>;
+type Story = StoryObj<typeof Card.Root>;
 
 /**
  * Base story
@@ -64,7 +64,7 @@ export const CardPaddings: Story = {
         {cardPaddings.map((cardPadding) => {
           return (
             <Stack direction="row" key={`stack-${cardPadding as string}`}>
-              <Card
+              <Card.Root
                 key={`${cardPadding as string}`}
                 {...args}
                 cardPadding={cardPadding}
@@ -80,7 +80,7 @@ export const CardPaddings: Story = {
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </p>
                 </Card.Content>
-              </Card>
+              </Card.Root>
             </Stack>
           );
         })}
@@ -104,7 +104,7 @@ export const Configurations: Story = {
               {elevations.map((shadow) => {
                 return backgroundStyles.map((background) => {
                   return (
-                    <Card
+                    <Card.Root
                       key={`${border as string}-${shadow as string}-${background as string}`}
                       {...args}
                       borderStyle={border}
@@ -148,7 +148,7 @@ export const WithoutCompound: Story = {
             <Stack direction="row" key={`stack-${border as string}`}>
               {elevations.map((shadow) => {
                 return (
-                  <Card
+                  <Card.Root
                     key={`${border as string}-${shadow as string}`}
                     {...args}
                     borderStyle={border}
