@@ -57,4 +57,8 @@ export const buttonGroupRecipe = defineSlotRecipe({
       },
     },
   },
+
+  defaultVariants: {
+    size: "md",
+  },
 });
