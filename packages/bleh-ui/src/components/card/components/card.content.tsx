@@ -3,7 +3,7 @@ import {
   CardContent as CardContentSlot,
   type CardContentProps,
 } from "../card.slots";
-import { CardContext } from "./cart.root";
+import { CardContext } from "./card.root";
 
 export const CardContent = ({ children, ...props }: CardContentProps) => {
   const context = useContext(CardContext);

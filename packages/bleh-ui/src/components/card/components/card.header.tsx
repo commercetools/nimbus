@@ -3,7 +3,7 @@ import {
   CardHeader as CardHeaderSlot,
   type CardHeaderProps,
 } from "../card.slots";
-import { CardContext } from "./cart.root";
+import { CardContext } from "./card.root";
 
 const CardHeader = ({ children, ...props }: CardHeaderProps) => {
   const context = useContext(CardContext);

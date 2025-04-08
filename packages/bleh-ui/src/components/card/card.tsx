@@ -1,4 +1,4 @@
-import CardRoot from "./components/cart.root";
+import CardRoot from "./components/card.root";
 import CardHeader from "./components/card.header";
 import CardContent from "./components/card.content";
 
