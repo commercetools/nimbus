@@ -1,5 +1,5 @@
-import ToggleButtonGroupRoot from "./components/toggle-button-group.root";
-import ToggleButtonGroupButton from "./components/toggle-button-group.button";
+import { ToggleButtonGroupRoot } from "./components/toggle-button-group.root";
+import { ToggleButtonGroupButton } from "./components/toggle-button-group.button";
 
 /**
  * ToggleButtonGroup
