@@ -1,35 +1,52 @@
 import { defineRecipe } from "@chakra-ui/react";
 
+/**
+ * Recipe configuration for the Link component.
+ * Defines the styling variants and base styles using Chakra UI's recipe system.
+ */
 export const linkRecipe = defineRecipe({
   className: "bleh-ui-link",
+  // Base styles applied to all instances of the component
   base: {
     display: "inline-flex",
     alignItems: "center",
+    color: "colorPalette.11",
+    borderRadius: "100",
+    focusVisibleRing: "outside",
+    bg: "transparent",
     outline: "none",
-    gap: "150",
     cursor: "pointer",
-    borderRadius: "50",
-    focusRing: "outside",
-  },
-  variants: {
-    variant: {
-      underline: {
-        color: "colorPalette.fg",
-        textDecoration: "underline",
-        textUnderlineOffset: "3px",
-        textDecorationColor: "currentColor/20",
-      },
-      plain: {
-        color: "colorPalette.fg",
-        _hover: {
-          textDecoration: "underline",
-          textUnderlineOffset: "3px",
-          textDecorationColor: "currentColor/20",
-        },
-      },
+    textDecoration: "underline",
+    textUnderlineOffset: "3px",
+    _hover: {
+      textDecorationThickness: "12%",
     },
   },
-  defaultVariants: {
-    variant: "plain",
+  // Available variants for customizing the component's appearance
+  variants: {
+    // Size variants from smallest to largest
+    size: {
+      xs: {
+        fontSize: "300",
+        lineHeight: "450",
+      },
+      sm: {
+        fontSize: "350",
+        lineHeight: "500",
+      },
+      md: {
+        fontSize: "400",
+        lineHeight: "600",
+      },
+    },
+    // style variants
+    fontColor: {
+      primary: {
+        color: "primary",
+      },
+      inherit: {
+        color: "inherit",
+      },
+    },
   },
 });

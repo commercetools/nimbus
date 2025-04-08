@@ -1,1 +1,2 @@
-export * from "./link.tsx";
+export * from "./link";
+export * from "./link.types";
