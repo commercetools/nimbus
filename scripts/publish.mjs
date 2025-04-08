@@ -199,6 +199,48 @@ const getRepoRoot = () => {
     process.exit(1);
   }
 
+  console.log(`Removing bundled dependencies from ${targetPackageJsonPath}...`);
+  try {
+    const packageJsonString = fs.readFileSync(targetPackageJsonPath, "utf8");
+    const packageJson = JSON.parse(packageJsonString);
+
+    // List of dependencies that are now bundled
+    const bundledDeps = ["@bleh-ui/icons", "@bleh-ui/tokens"]; // Add any others if needed
+
+    const removeBundledDeps = (deps) => {
+      if (!deps) return false;
+      let changed = false;
+      for (const depName of bundledDeps) {
+        if (deps[depName]) {
+          console.log(`  Removing bundled dependency: ${depName}`);
+          delete deps[depName];
+          changed = true;
+        }
+      }
+      return changed;
+    };
+
+    let dependenciesChanged = removeBundledDeps(packageJson.dependencies);
+    // removeBundledDeps(packageJson.devDependencies); // Uncomment if needed
+    // removeBundledDeps(packageJson.peerDependencies); // Uncomment if needed
+
+    if (dependenciesChanged) {
+      fs.writeFileSync(
+        targetPackageJsonPath,
+        JSON.stringify(packageJson, null, 2)
+      );
+      console.log("Bundled dependencies removed from package.json.");
+    } else {
+      console.log("No bundled dependencies found to remove from package.json.");
+    }
+  } catch (error) {
+    console.error(
+      "Error removing bundled dependencies from package.json:",
+      error
+    );
+    process.exit(1);
+  }
+
   // --- Commit Changes ---
   console.log("Staging changes...");
   runCommand("git add .", repoRoot);
