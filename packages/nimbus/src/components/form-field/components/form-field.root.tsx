@@ -19,7 +19,7 @@ import {
 } from "../form-field.slots";
 import { Dialog, DialogTrigger, Popover } from "react-aria-components";
 import { Box, IconButton } from "@/components";
-import { ErrorOutline, HelpOutline } from "@bleh-ui/icons";
+import { ErrorOutline, HelpOutline } from "@nimbus/icons";
 
 /**
  * FormField
@@ -116,6 +116,18 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
               )}
             </FormFieldLabelSlot>
           )}
+          {context.input && (
+            <FormFieldInputSlot>
+              {Children.map(context.input, (child) => {
+                // Important: Check if the child is a valid React element before cloning.
+                if (isValidElement(child)) {
+                  return cloneElement(child, inputProps);
+                }
+                // If it's not a valid element (e.g., text node, null, undefined), return it as is.
+                return child;
+              })}
+            </FormFieldInputSlot>
+          )}
           {context.description && (
             <FormFieldDescriptionSlot {...descriptionProps}>
               {context.description}
@@ -134,19 +146,6 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
             </FormFieldErrorSlot>
           )}
           {children}
-
-          {context.input && (
-            <FormFieldInputSlot>
-              {Children.map(context.input, (child) => {
-                // Important: Check if the child is a valid React element before cloning.
-                if (isValidElement(child)) {
-                  return cloneElement(child, inputProps);
-                }
-                // If it's not a valid element (e.g., text node, null, undefined), return it as is.
-                return child;
-              })}
-            </FormFieldInputSlot>
-          )}
         </FormFieldRootSlot>
       </FormFieldContext.Provider>
     );
