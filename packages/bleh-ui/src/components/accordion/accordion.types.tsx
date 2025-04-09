@@ -1,7 +1,7 @@
 import type { RecipeVariantProps, HTMLChakraProps } from "@chakra-ui/react";
 import { accordionSlotRecipe } from "./accordion.recipe";
 import { type DisclosureProps } from "react-aria-components";
-import type { ReactNode, RefObject } from "react";
+import type { ReactNode, RefObject, RefAttributes } from "react";
 import { useButton, useDisclosure } from "react-aria";
 import type { useDisclosureState } from "react-stately";
 
@@ -23,5 +23,32 @@ export interface AccordionProps
   additionalTriggerComponent?: ReactNode;
   children: ReactNode;
   recipe?: string;
-  size?: AccordionRootProps["size"];
+  size?: "sm" | "md";
 }
+
+export type AccordionItemProps = {
+  isDisabled?: boolean;
+  isExpanded?: boolean;
+  onExpandedChange?: (isExpanded: boolean) => void;
+  id?: string;
+  children: ReactNode;
+  title?: string;
+};
+
+export type DisclosureGroupProps = AccordionProps & {
+  children: ReactNode;
+  ref?: RefAttributes<HTMLButtonElement>;
+  allowsMultipleExpanded?: boolean;
+  onExpandedChange?: (isExpanded: boolean) => void;
+  isDisabled?: boolean;
+  isExpanded?: boolean;
+};
+
+export type DisclosureItemProps = AccordionItemProps & {
+  children: ReactNode;
+  id?: string;
+  value?: string;
+  isDisabled?: boolean;
+  isExpanded?: boolean;
+  onExpandedChange?: (isExpanded: boolean) => void;
+};

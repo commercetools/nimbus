@@ -13,32 +13,27 @@ export const AccordionRoot = withProvider<HTMLDivElement, AccordionRootProps>(
   "root"
 );
 
-export type AccordionDisclosureProps = HTMLChakraProps<"div">;
 export const AccordionDisclosure = withContext<
   HTMLDivElement,
-  AccordionDisclosureProps
+  HTMLChakraProps<"div">
 >("div", "disclosure");
 
-export type AccordionTriggerProps = HTMLChakraProps<"button">;
 export const AccordionTrigger = withContext<
   HTMLButtonElement,
-  AccordionTriggerProps
+  HTMLChakraProps<"button">
 >("button", "trigger");
 
-export type AccordionPanelProps = HTMLChakraProps<"div">;
-export const AccordionPanel = withContext<HTMLDivElement, AccordionPanelProps>(
-  "div",
-  "panel"
-);
+export const AccordionPanel = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "panel");
 
-export type AccordionTitleProps = HTMLChakraProps<"div">;
 export const AccordionTitle = withContext<
   HTMLButtonElement,
-  AccordionTitleProps
+  HTMLChakraProps<"div">
 >("div", "accordionTitle");
 
-export type HeaderRightContentProps = HTMLChakraProps<"div">;
 export const HeaderRightContent = withContext<
   HTMLDivElement,
-  HeaderRightContentProps
->("div", "headerRightContent");
+  HTMLChakraProps<"div">
+>("div", "headerContentRight");

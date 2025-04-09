@@ -11,7 +11,7 @@ export const accordionSlotRecipe = defineSlotRecipe({
     "trigger",
     "panel",
     "accordionTitle",
-    "headerRightContent",
+    "headerContentRight",
   ],
   // Unique class name prefix for the component
   className: "bleh-ui-accordion",
@@ -46,10 +46,10 @@ export const accordionSlotRecipe = defineSlotRecipe({
       },
     },
     panel: {
-      marginLeft: "var(--panel-spacing)",
+      paddingLeft: "var(--panel-spacing)",
     },
     accordionTitle: {
-      fontWeight: "bold",
+      fontWeight: "700",
     },
   },
 
