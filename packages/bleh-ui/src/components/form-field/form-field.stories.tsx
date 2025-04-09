@@ -1,13 +1,27 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { FormField } from "./form-field";
+import { FormField, type FormFieldProps } from "./index";
 import { Box, TextInput, Select } from "@/components";
 
 const meta: Meta<typeof FormField.Root> = {
   title: "components/FormField",
   component: FormField.Root,
+  argTypes: {
+    direction: {
+      options: ["row", "column"],
+      control: { type: "radio" },
+    },
+  },
 };
 
 export default meta;
+
+const defaultArgs: FormFieldProps = {
+  isInvalid: false,
+  isRequired: false,
+  isReadOnly: false,
+  isDisabled: false,
+  direction: "column",
+};
 
 /**
  * Story type for TypeScript support
@@ -21,10 +35,10 @@ type Story = StoryObj<typeof FormField.Root>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  args: {},
-  render: () => {
+  args: defaultArgs,
+  render: (args) => {
     return (
-      <FormField.Root>
+      <FormField.Root {...args}>
         <FormField.Label>Input Label (column)</FormField.Label>
         <FormField.Input>
           <TextInput placeholder="Enter some text here" type="text" />
@@ -39,10 +53,10 @@ export const Base: Story = {
 };
 
 export const WithDescription: Story = {
-  args: {},
-  render: () => {
+  args: defaultArgs,
+  render: (args) => {
     return (
-      <FormField.Root>
+      <FormField.Root {...args}>
         <FormField.Label>Input Label (column)</FormField.Label>
         <FormField.Input>
           <TextInput placeholder="Enter some text here" type="text" />
@@ -61,10 +75,13 @@ export const WithDescription: Story = {
 };
 
 export const RowDirection: Story = {
-  args: {},
-  render: () => {
+  args: {
+    ...defaultArgs,
+    direction: "row",
+  },
+  render: (args) => {
     return (
-      <FormField.Root direction="row">
+      <FormField.Root {...args}>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
           <TextInput placeholder="Enter some text here" type="text" />
@@ -83,10 +100,13 @@ export const RowDirection: Story = {
 };
 
 export const Invalid: Story = {
-  args: {},
-  render: () => {
+  args: {
+    ...defaultArgs,
+    isInvalid: true,
+  },
+  render: (args) => {
     return (
-      <FormField.Root isInvalid>
+      <FormField.Root {...args}>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
           <TextInput placeholder="Enter some text here" type="text" />
@@ -105,10 +125,13 @@ export const Invalid: Story = {
 };
 
 export const Required: Story = {
-  args: {},
-  render: () => {
+  args: {
+    ...defaultArgs,
+    isRequired: true,
+  },
+  render: (args) => {
     return (
-      <FormField.Root isRequired>
+      <FormField.Root {...args}>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
           <TextInput placeholder="Enter some text here" type="text" />
@@ -126,11 +149,11 @@ export const Required: Story = {
   },
 };
 
-export const MoreInfo: Story = {
-  args: {},
-  render: () => {
+export const MoreInfoBox: Story = {
+  args: defaultArgs,
+  render: (args) => {
     return (
-      <FormField.Root isRequired>
+      <FormField.Root {...args}>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
           <TextInput placeholder="Enter some text here" type="text" />
@@ -152,11 +175,14 @@ export const MoreInfo: Story = {
 };
 
 export const LongLabel: Story = {
-  args: {},
-  render: () => {
+  args: {
+    ...defaultArgs,
+    direction: "row",
+  },
+  render: (args) => {
     return (
       <Box width="384px">
-        <FormField.Root isRequired direction="row">
+        <FormField.Root {...args}>
           <FormField.Label>Super long Input Label (row)</FormField.Label>
           <FormField.Input>
             <TextInput placeholder="Enter some text here" type="text" />
@@ -181,11 +207,11 @@ export const LongLabel: Story = {
 };
 
 export const UsingASelectInput: Story = {
-  args: {},
-  render: () => {
+  args: defaultArgs,
+  render: (args) => {
     return (
       <Box width="384px">
-        <FormField.Root isRequired>
+        <FormField.Root {...args}>
           <FormField.Label>Super long Input Label (row)</FormField.Label>
           <FormField.Input>
             <Select.Root aria-label="Select a fruit" data-testid="select">
