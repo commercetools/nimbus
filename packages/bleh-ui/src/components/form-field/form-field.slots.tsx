@@ -41,16 +41,16 @@ export const FormFieldInputSlot = withContext<
 // Description Slot
 export interface FormFieldDescriptionSlotProps extends HTMLChakraProps<"p"> {}
 export const FormFieldDescriptionSlot = withContext<
-  HTMLParagraphElement,
+  HTMLDivElement,
   FormFieldDescriptionSlotProps
->("p", "description");
+>("div", "description");
 
 // Error Slot
 export interface FormFieldErrorSlotProps extends HTMLChakraProps<"p"> {}
 export const FormFieldErrorSlot = withContext<
-  HTMLParagraphElement,
+  HTMLDivElement,
   FormFieldErrorSlotProps
->("p", "error");
+>("div", "error");
 
 // Error Slot
 export interface FormFieldPopoverSlotProps extends HTMLChakraProps<"div"> {}
