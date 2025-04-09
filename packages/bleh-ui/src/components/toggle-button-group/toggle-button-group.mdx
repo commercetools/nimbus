@@ -1,0 +1,94 @@
+---
+id: Components-ToggleButtonGroup
+title: ToggleButtonGroup
+description:
+  To group multiple `Button` or `IconButton` components together, visually and
+  logically, representing a set of related actions.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - ToggleButtonGroup
+tags:
+  - component
+---
+
+# ToggleButtonGroup
+
+To group multiple `Button` or `IconButton` components together, visually and
+logically, representing a set of related actions.
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <ToggleButtonGroup>I am ToggleButtonGroup!</ToggleButtonGroup>
+```
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <ToggleButtonGroup key={size} size={size}>'{size}' ToggleButtonGroup</ToggleButtonGroup>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <ToggleButtonGroup key={variant} variant={variant}>'{variant}' ToggleButtonGroup</ToggleButtonGroup>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <ToggleButtonGroup colorPalette={color} key={variant} variant={variant}>
+              '{variant}' ToggleButtonGroup
+            </ToggleButtonGroup>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="ToggleButtonGroup" />
