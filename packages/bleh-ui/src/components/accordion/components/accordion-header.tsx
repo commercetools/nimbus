@@ -3,12 +3,12 @@ import {
   AccordionTrigger,
   AccordionTitle,
   HeaderRightContent,
-} from "./accordion.slots";
+} from "../accordion.slots";
 import { mergeRefs } from "@chakra-ui/react";
 import { Flex } from "@/components";
 import { ArrowForwardIos } from "@bleh-ui/icons";
-import type { DisclosureGroupProps } from "./accordion.types";
-import { ItemContext } from "./accordion-context";
+import type { DisclosureGroupProps } from "../accordion.types";
+import { ItemContext } from "../accordion-context";
 
 export const AccordionHeader = forwardRef<
   HTMLButtonElement,

@@ -1,10 +1,10 @@
 import React, { forwardRef, type Key } from "react";
-import { AccordionRoot as AccordionRootSlot } from "./accordion.slots";
+import { AccordionRoot as AccordionRootSlot } from "../accordion.slots";
 import { useDisclosureGroupState } from "react-stately";
 import { mergeProps } from "react-aria";
 import { useSlotRecipe } from "@chakra-ui/react";
-import type { DisclosureGroupProps } from "./accordion.types";
-import { DisclosureGroupStateContext } from "./accordion-context";
+import type { DisclosureGroupProps } from "../accordion.types";
+import { DisclosureGroupStateContext } from "../accordion-context";
 
 export const AccordionGroup = forwardRef<
   HTMLButtonElement,

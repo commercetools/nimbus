@@ -1,5 +1,5 @@
 import React, { forwardRef, useContext, useRef } from "react";
-import { AccordionDisclosure } from "./accordion.slots";
+import { AccordionDisclosure } from "../accordion.slots";
 import { useDisclosureState } from "react-stately";
 import {
   useDisclosure,
@@ -8,9 +8,9 @@ import {
   useFocusRing,
   useId,
 } from "react-aria";
-import type { DisclosureItemProps } from "./accordion.types";
+import type { DisclosureItemProps } from "../accordion.types";
 // Import the contexts from the shared file
-import { ItemContext, DisclosureGroupStateContext } from "./accordion-context";
+import { ItemContext, DisclosureGroupStateContext } from "../accordion-context";
 
 export const AccordionItem = forwardRef<HTMLDivElement, DisclosureItemProps>(
   (

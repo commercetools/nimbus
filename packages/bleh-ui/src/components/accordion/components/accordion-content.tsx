@@ -1,9 +1,9 @@
 import React, { forwardRef, useContext } from "react";
-import { AccordionPanel } from "./accordion.slots";
+import { AccordionPanel } from "../accordion.slots";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import type { DisclosureGroupProps } from "./accordion.types";
-import { ItemContext } from "./accordion-context";
+import type { DisclosureGroupProps } from "../accordion.types";
+import { ItemContext } from "../accordion-context";
 
 // Create Content component
 export const AccordionContent = forwardRef<

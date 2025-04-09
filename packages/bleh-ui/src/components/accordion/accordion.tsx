@@ -1,8 +1,8 @@
 import { HeaderRightContent } from "./accordion.slots";
-import { AccordionGroup } from "./accordion-group";
-import { AccordionHeader } from "./accordion-header";
-import { AccordionContent } from "./accordion-content";
-import { AccordionItem } from "./accordion-item";
+import { AccordionGroup } from "./components/accordion-group";
+import { AccordionHeader } from "./components/accordion-header";
+import { AccordionContent } from "./components/accordion-content";
+import { AccordionItem } from "./components/accordion-item";
 
 // Create the Accordion namespace object as an object literal
 const Accordion = {
