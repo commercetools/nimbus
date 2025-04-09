@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import type { FormFieldProps } from "../form-field.types";
-import { useLabel } from "react-aria";
+import { useField } from "react-aria";
 import { FormFieldContext } from "../form-field";
 import {
   FormFieldDescriptionSlot,
@@ -43,10 +43,12 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       isReadOnly,
     });
 
-    const { labelProps, fieldProps } = useLabel({
-      label: context.label,
-      ...props,
-    });
+    const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
+      useField({
+        label: context.label,
+        description: context.description,
+        errorMessage: context.error,
+      });
 
     useEffect(() => {
       setContext((prevContext) => ({
@@ -115,12 +117,12 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
             </FormFieldLabelSlot>
           )}
           {context.description && (
-            <FormFieldDescriptionSlot>
+            <FormFieldDescriptionSlot {...descriptionProps}>
               {context.description}
             </FormFieldDescriptionSlot>
           )}
           {isInvalid && context.error && (
-            <FormFieldErrorSlot>
+            <FormFieldErrorSlot {...errorMessageProps}>
               <Box
                 as={ErrorOutline}
                 display="inline-flex"
