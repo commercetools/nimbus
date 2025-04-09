@@ -40,7 +40,7 @@ const tones: ToggleButtonGroupTone[] = ["primary", "critical", "neutral"];
 export const Base: Story = {
   args: {
     size: "md",
-    tone: "critical",
+    tone: "primary",
     children: defaultChildren,
     onSelectionChange: fn(),
     "aria-label": "Test Button Group",
