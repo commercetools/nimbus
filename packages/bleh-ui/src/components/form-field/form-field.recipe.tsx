@@ -19,7 +19,7 @@ const rowLayout = `
 export const formFieldRecipe = defineSlotRecipe({
   slots: ["root", "label", "input", "description", "error", "popover"],
   // Unique class name prefix for the component
-  className: "bleh-ui-form-field",
+  className: "nimbus-ui-form-field",
 
   base: {
     root: {
@@ -27,7 +27,6 @@ export const formFieldRecipe = defineSlotRecipe({
 
       display: "inline-grid",
       width: "auto",
-      //outline: "1px solid black",
     },
     label: {
       gridArea: "label",
@@ -35,25 +34,21 @@ export const formFieldRecipe = defineSlotRecipe({
       color: "neutral.11",
       fontSize: "350",
       lineHeight: "500",
-      //outline: "1px solid black",
     },
     input: {
       gridArea: "input",
-      //outline: "1px solid black",
     },
     description: {
       gridArea: "description",
       color: "neutral.11",
       fontSize: "350",
       lineHeight: "500",
-      //outline: "1px solid black",
     },
     error: {
       gridArea: "error",
       color: "error.11",
       fontSize: "350",
       lineHeight: "500",
-      //outline: "1px solid black",
     },
     popover: {
       "--scrollbar-color": "colors.neutral.8",
