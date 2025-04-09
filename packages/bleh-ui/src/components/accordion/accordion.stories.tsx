@@ -24,13 +24,9 @@ const sizes: AccordionProps["size"][] = ["sm", "md"];
 export const Basic: Story = {
   render: () => (
     <Accordion.Root>
-      <Accordion.Item value="a">
+      <Accordion.Item>
         <Accordion.Header>First Item</Accordion.Header>
         <Accordion.Content>First item content</Accordion.Content>
-      </Accordion.Item>
-      <Accordion.Item value="b">
-        <Accordion.Header>Second Item</Accordion.Header>
-        <Accordion.Content>Second item content</Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
   ),

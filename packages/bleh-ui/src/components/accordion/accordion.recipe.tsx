@@ -26,6 +26,7 @@ export const accordionSlotRecipe = defineSlotRecipe({
     trigger: {
       fontSize: "var(--font-size)",
       focusVisibleRing: "outside",
+      minHeight: "1200",
       bg: "none",
       flexGrow: 1,
       display: "flex",
