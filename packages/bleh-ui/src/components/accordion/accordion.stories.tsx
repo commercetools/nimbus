@@ -118,6 +118,10 @@ export const WithHeaderItemsToRight: Story = {
       await userEvent.click(trigger);
       await expect(panel).toBeVisible();
     });
+
+    await step("Main trigger still works", async () => {
+      await userEvent.click(trigger);
+    });
   },
 };
 
