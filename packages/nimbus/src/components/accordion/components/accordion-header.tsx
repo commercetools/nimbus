@@ -6,7 +6,7 @@ import {
 } from "../accordion.slots";
 import { mergeRefs } from "@chakra-ui/react";
 import { Flex } from "@/components";
-import { KeyboardArrowRight } from "@bleh-ui/icons";
+import { KeyboardArrowRight } from "@nimbus/icons";
 import type { DisclosureGroupProps } from "../accordion.types";
 import { ItemContext } from "../accordion-context";
 

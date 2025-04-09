@@ -65,12 +65,12 @@ structure, primarily by referencing the appropriate root component (e.g.,
 **With `components` Subdirectory:**
 
 ```
-packages/bleh-ui/src/components/component-name/index.tsx
-packages/bleh-ui/src/components/component-name/component-name.tsx
-packages/bleh-ui/src/components/component-name/components/component-name.root.tsx
-packages/bleh-ui/src/components/component-name/components/component-name.part.tsx
-packages/bleh-ui/src/components/component-name/components/component-name.control.tsx
-packages/bleh-ui/src/components/component-name/component-name.stories.tsx
+packages/nimbus/src/components/component-name/index.tsx
+packages/nimbus/src/components/component-name/component-name.tsx
+packages/nimbus/src/components/component-name/components/component-name.root.tsx
+packages/nimbus/src/components/component-name/components/component-name.part.tsx
+packages/nimbus/src/components/component-name/components/component-name.control.tsx
+packages/nimbus/src/components/component-name/component-name.stories.tsx
 ```
 
 ## Summary

@@ -5,7 +5,7 @@ import { defineRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const linkRecipe = defineRecipe({
-  className: "bleh-ui-link",
+  className: "nimbus-link",
   // Base styles applied to all instances of the component
   base: {
     display: "inline-flex",

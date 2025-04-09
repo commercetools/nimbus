@@ -14,7 +14,7 @@ import {
   ErrorOutline,
   Info,
   WarningAmber,
-} from "@bleh-ui/icons";
+} from "@nimbus/icons";
 
 const getIconFromTone = (tone: AlertProps["tone"]) => {
   switch (tone) {

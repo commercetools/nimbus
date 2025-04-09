@@ -14,7 +14,7 @@ export const accordionSlotRecipe = defineSlotRecipe({
     "headerContentRight",
   ],
   // Unique class name prefix for the component
-  className: "bleh-ui-accordion",
+  className: "nimbus-accordion",
 
   base: {
     root: {

@@ -7,7 +7,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 export const alertRecipe = defineSlotRecipe({
   slots: ["root", "title", "description", "icon", "actions", "dismissButton"],
   // Unique class name prefix for the component
-  className: "bleh-ui-alert",
+  className: "nimbus-alert",
 
   // Base styles applied to all instances of the component
   base: {

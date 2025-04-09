@@ -5,7 +5,7 @@ import { defineRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const badgeRecipe = defineRecipe({
-  className: "bleh-ui-badge",
+  className: "nimbus-badge",
 
   // Base styles applied to all instances of the component
   base: {
