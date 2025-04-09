@@ -38,9 +38,6 @@ export const accordionSlotRecipe = defineSlotRecipe({
         height: "var(--height)",
         rotate: "0deg",
         transition: "rotate 200ms",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "3px",
       },
       '&[aria-expanded="true"] svg': {
         rotate: "90deg",
