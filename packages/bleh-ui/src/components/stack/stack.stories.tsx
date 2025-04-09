@@ -11,7 +11,7 @@ const meta: Meta<typeof Stack> = {
 export default meta;
 type Story = StoryObj<typeof Stack>;
 
-export const Basic: Story = {
+export const Base: Story = {
   args: {
     children: [
       <Box key="1" p="400" bg="primary.7">

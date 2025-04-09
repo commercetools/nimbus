@@ -1,0 +1,172 @@
+---
+id: Components-Accordion
+title: Accordion
+description:
+  A component used for organizing contents. This allows users to toggle
+  visibility of the content sections in their individual panels when the
+  panel&#39;s header is clicked.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Accordion
+tags:
+  - component
+---
+
+# Accordion
+
+A component used for organizing contents. This allows users to toggle visibility
+of the content sections in their individual panels when the panel's header is
+clicked.
+
+## Basic Usage
+
+```jsx-live
+const App = () => (
+  <Accordion>
+    <Accordion.Header>Test Accordion</Accordion.Header>
+    <Accordion.Content>Test Accordion Content</Accordion.Content>
+  </Accordion>
+)
+```
+
+### Sizes
+
+Accordion come in different sizes, sizing an accordion is done by setting the
+`size` prop.
+
+```jsx-live
+const App = () => {
+
+  const accordionSizes = ["sm", "md"];;
+
+  return (
+   <>
+    {accordionSizes.map((size, index) => (
+        <Accordion key={index} size={size}>
+          <Accordion.Header>{<>{size} size</>}</Accordion.Header>
+          <Accordion.Content>
+            <>{size} size text</>
+          </Accordion.Content>
+        </Accordion>
+      ))}
+    </>
+  )
+}
+```
+
+### With Additional Contents On The Accordion Trigger
+
+The accordion can take in more properties at the trigger button level to allow
+you add more features or actions on the trigger interface. You can add any
+component or additional text of choice; Texts, buttons, toggle botton etc. Do
+this by setting the `additionalTriggerComponent` prop.
+
+```jsx-live
+const App = () => {
+  const items = [
+    { value: "a", title: "First Item", text: "Some value 1..." },
+    { value: "b", title: "Second Item", text: "Some value 2..." },
+    {
+      value: "c",
+      title: "Third Item",
+      text: "Some value 3",
+    },
+  ]
+
+  return (
+    <>
+      {items.map((item, index) => (
+        <Accordion key={index} size={"md"}>
+          <Accordion.Header
+            additionalTriggerComponent={
+              <div style={{ padding: "10px" }}>
+                <Button marginRight="100" tone="primary">
+                  Click me
+                </Button>
+                <Button marginRight="100" tone="neutral">
+                  Click me
+                </Button>
+                <Button marginRight="100" tone="critical">
+                  Click me
+                </Button>
+              </div>
+            }
+          >
+            {item.title}
+          </Accordion.Header>
+          <Accordion.Content>
+            <Flex
+              justifyContent="space-between"
+              alignItems={"center"}
+              borderColor="neutral.4"
+            >
+              <div style={{ marginRight: "100" }}>{item.text}</div>
+            </Flex>
+          </Accordion.Content>
+        </Accordion>
+      ))}
+    </>
+  );
+}
+```
+
+### With A Custom Component In The Accordion Content
+
+To render any component of choice, pass in the custom component as the child of
+the accordion.
+
+```jsx-live
+const App = () => {
+  const items = [
+    { value: "a", title: "First Item", text: "Some value 1..." },
+    { value: "b", title: "Second Item", text: "Some value 2..." },
+    {
+      value: "c",
+      title: "Third Item",
+      text: "Some value 3",
+    },
+  ]
+
+  const AccordionContent = () => {
+  const avatarImg = "https://thispersondoesnotexist.com/ ";
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+      <Avatar src={avatarImg} firstName="Michael" lastName="Douglas" />
+      <Checkbox>Yes?</Checkbox>
+      <Checkbox>No?</Checkbox>
+    </div>
+  );
+};
+
+  return (
+    <>
+      {items.map((item, index) => (
+        <Accordion key={index} size={"md"}>
+          <Accordion.Header
+          >
+            {item.title}
+          </Accordion.Header>
+          <Accordion.Content>
+            <Flex
+              justifyContent="space-between"
+              alignItems={"center"}
+              borderColor="neutral.4"
+            >
+              <div style={{ marginRight: "100" }}>{item.text}</div>
+              <AccordionContent />
+            </Flex>
+          </Accordion.Content>
+        </Accordion>
+      ))}
+    </>
+  );
+}
+
+```
+
+## Props
+
+<PropTable id="Accordion" />

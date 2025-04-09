@@ -11,7 +11,7 @@ export default meta;
 
 type Story = StoryObj<typeof Box>;
 
-export const Basic: Story = {
+export const Base: Story = {
   args: {
     p: "100",
     bg: "primary.3",
