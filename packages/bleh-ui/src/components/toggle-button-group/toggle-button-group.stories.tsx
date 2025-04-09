@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import ToggleButtonGroup from "./toggle-button-group";
 import { Stack } from "../stack";
 import { userEvent, within, expect, fn } from "@storybook/test";
+import { SentimentSatisfied as DemoIcon } from "@bleh-ui/icons";
 
 /**
  * Storybook metadata configuration
@@ -272,7 +273,15 @@ export const Tones: Story = {
           tone={tone}
           aria-label={`Tone ${tone} Group`}
         >
-          {defaultChildren}
+          <ToggleButtonGroup.Button id="left">
+            <DemoIcon />
+          </ToggleButtonGroup.Button>
+          <ToggleButtonGroup.Button id="center">
+            <DemoIcon />
+          </ToggleButtonGroup.Button>
+          <ToggleButtonGroup.Button id="right">
+            <DemoIcon />
+          </ToggleButtonGroup.Button>
         </ToggleButtonGroup.Root>
       ))}
     </Stack>
