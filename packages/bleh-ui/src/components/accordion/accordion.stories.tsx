@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import Accordion from "./accordion";
 import type { AccordionProps } from "./accordion.types";
 import { Button } from "@/components";
+import { expect, userEvent, waitFor } from "@storybook/test";
 
 const meta: Meta<typeof Accordion.Root> = {
   title: "components/Accordion",
@@ -33,6 +34,39 @@ export const Basic: Story = {
       </Accordion.Item>
     </Accordion.Root>
   ),
+  play: async ({ canvasElement, step }) => {
+    // const canvas = within(canvasElement);
+    const accordion = canvasElement.querySelector(
+      '[data-slot="root"]'
+    ) as HTMLElement;
+
+    const trigger = accordion.querySelector(
+      '[data-slot="trigger"]'
+    ) as HTMLButtonElement;
+
+    const panel = accordion.querySelector(
+      '[data-slot="panel"]'
+    ) as HTMLDivElement;
+
+    await step("Can be focused with keyboard", async () => {
+      await userEvent.tab();
+      await waitFor(() => expect(trigger).toHaveFocus());
+    });
+
+    await step("Panel is initially hidden", async () => {
+      await expect(panel).not.toBeVisible();
+    });
+
+    await step("Can be triggered with Enter key", async () => {
+      await userEvent.keyboard("{Enter}");
+      await expect(panel).toBeVisible();
+    });
+
+    await step("Can be triggered with Space key", async () => {
+      await userEvent.keyboard(" ");
+      await expect(panel).not.toBeVisible();
+    });
+  },
 };
 
 export const WithHeaderItemsToRight: Story = {
@@ -58,6 +92,38 @@ export const WithHeaderItemsToRight: Story = {
       </Accordion.Item>
     </Accordion.Root>
   ),
+  play: async ({ canvasElement, step }) => {
+    const accordion = canvasElement.querySelector(
+      '[data-slot="root"]'
+    ) as HTMLElement;
+    const additionalButtons = accordion.querySelectorAll("button");
+    const trigger = accordion.querySelector(
+      '[data-slot="trigger"]'
+    ) as HTMLButtonElement;
+
+    await step("Additional buttons don't trigger accordion", async () => {
+      const panel = accordion.querySelector(
+        '[data-slot="panel"]'
+      ) as HTMLDivElement;
+      await expect(panel).not.toBeVisible();
+
+      // Click additional buttons
+      for (const button of Array.from(additionalButtons)) {
+        if (button !== trigger) {
+          await userEvent.click(button);
+          await expect(panel).not.toBeVisible();
+        }
+      }
+    });
+
+    await step("Main trigger still works", async () => {
+      const panel = accordion.querySelector(
+        '[data-slot="panel"]'
+      ) as HTMLDivElement;
+      await userEvent.click(trigger);
+      await expect(panel).toBeVisible();
+    });
+  },
 };
 
 export const Sizes: Story = {
