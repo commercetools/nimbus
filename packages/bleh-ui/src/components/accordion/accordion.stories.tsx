@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import Accordion from "./accordion";
 import type { AccordionProps } from "./accordion.types";
-import { Button } from "@/components";
+import { Avatar, Button, Checkbox, Flex } from "@/components";
 import { expect, userEvent, waitFor } from "@storybook/test";
 
 const meta: Meta<typeof Accordion.Root> = {
@@ -121,6 +121,18 @@ export const WithHeaderItemsToRight: Story = {
   },
 };
 
+const AccordionContent = () => {
+  const avatarImg = "https://thispersondoesnotexist.com/ ";
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+      <Avatar src={avatarImg} firstName="Michael" lastName="Douglas" />
+      <Checkbox marginLeft="100">Yes?</Checkbox>
+      <Checkbox marginLeft="100">No?</Checkbox>
+    </div>
+  );
+};
+
 export const Sizes: Story = {
   render: () => (
     <>
@@ -128,7 +140,16 @@ export const Sizes: Story = {
         <Accordion.Root key={index} size={size}>
           <Accordion.Item value={size}>
             <Accordion.Header>{size} size</Accordion.Header>
-            <Accordion.Content>{size} size</Accordion.Content>
+            <Accordion.Content>
+              <Flex
+                justifyContent="space-between"
+                alignItems={"center"}
+                borderColor="neutral.4"
+              >
+                <div style={{ marginRight: "100" }}>{size} size</div>
+                <AccordionContent />
+              </Flex>
+            </Accordion.Content>
           </Accordion.Item>
         </Accordion.Root>
       ))}
