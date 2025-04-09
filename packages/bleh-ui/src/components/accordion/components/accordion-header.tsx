@@ -6,7 +6,7 @@ import {
 } from "../accordion.slots";
 import { mergeRefs } from "@chakra-ui/react";
 import { Flex } from "@/components";
-import { ArrowForwardIos } from "@bleh-ui/icons";
+import { KeyboardArrowRight } from "@bleh-ui/icons";
 import type { DisclosureGroupProps } from "../accordion.types";
 import { ItemContext } from "../accordion-context";
 
@@ -48,7 +48,7 @@ export const AccordionHeader = forwardRef<
         data-slot="trigger"
         outline={context.isFocusVisible ? undefined : "none"}
       >
-        <ArrowForwardIos />
+        <KeyboardArrowRight />
         <AccordionTitle data-slot="accordionTitle">
           {headerContent.main}
         </AccordionTitle>

@@ -47,7 +47,12 @@ export const accordionSlotRecipe = defineSlotRecipe({
       },
     },
     panel: {
-      paddingLeft: "var(--panel-spacing)",
+      paddingTop: "var(--padding-top)",
+      paddingBottom: "var(--padding-bottom)",
+      paddingLeft: "var(--padding-left)",
+      '&[aria-hidden="true"]': {
+        display: "none",
+      },
     },
     accordionTitle: {
       fontWeight: "700",
@@ -60,24 +65,28 @@ export const accordionSlotRecipe = defineSlotRecipe({
         trigger: {
           "--font-size": "fontSizes.500",
           "& svg": {
-            "--width": "sizes.500",
-            "--height": "sizes.500",
+            "--width": "sizes.600",
+            "--height": "sizes.600",
           },
         },
         panel: {
-          "--panel-spacing": "spacing.700",
+          "--padding-top": "spacing.600",
+          "--padding-bottom": "spacing.800",
+          "--padding-left": "spacing.800",
         },
       },
       sm: {
         trigger: {
           "--font-size": "fontSizes.400",
           "& svg": {
-            "--width": "sizes.400",
-            "--height": "sizes.400",
+            "--width": "sizes.500",
+            "--height": "sizes.500",
           },
         },
         panel: {
-          "--panel-spacing": "spacing.600",
+          "--padding-top": "spacing.400",
+          "--padding-bottom": "spacing.600",
+          "--padding-left": "spacing.700",
         },
       },
     },
