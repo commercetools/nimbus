@@ -40,15 +40,6 @@ export const formFieldRecipe = defineSlotRecipe({
     input: {
       gridArea: "input",
       //outline: "1px solid black",
-
-      "& input": {
-        border: "solid-25",
-        px: "200",
-        borderColor: "neutral.8",
-        borderRadius: "200",
-        height: "1000",
-        focusRing: "outside",
-      },
     },
     description: {
       gridArea: "description",

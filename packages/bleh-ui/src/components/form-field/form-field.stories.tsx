@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FormField } from "./form-field";
-import { Input } from "react-aria-components";
-import { Box } from "@/components";
+import { Box, TextInput, Select } from "@/components";
 
 const meta: Meta<typeof FormField.Root> = {
   title: "components/FormField",
@@ -28,7 +27,7 @@ export const Base: Story = {
       <FormField.Root>
         <FormField.Label>Input Label (column)</FormField.Label>
         <FormField.Input>
-          <Input type="text" />
+          <TextInput placeholder="Enter some text here" type="text" />
         </FormField.Input>
         <FormField.Error>
           An error text which should only appear if the field gets an isInvalid
@@ -46,7 +45,7 @@ export const WithDescription: Story = {
       <FormField.Root>
         <FormField.Label>Input Label (column)</FormField.Label>
         <FormField.Input>
-          <Input type="text" />
+          <TextInput placeholder="Enter some text here" type="text" />
         </FormField.Input>
         <FormField.Description>
           Above you see a regular text input, fill it with text and hope that it
@@ -68,7 +67,7 @@ export const RowDirection: Story = {
       <FormField.Root direction="row">
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
-          <Input type="text" />
+          <TextInput placeholder="Enter some text here" type="text" />
         </FormField.Input>
         <FormField.Description>
           Above you see a regular text input, fill it with text and hope that it
@@ -90,7 +89,7 @@ export const Invalid: Story = {
       <FormField.Root isInvalid>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
-          <Input type="text" />
+          <TextInput placeholder="Enter some text here" type="text" />
         </FormField.Input>
         <FormField.Description>
           Above you see a regular text input, fill it with text and hope that it
@@ -112,7 +111,7 @@ export const Required: Story = {
       <FormField.Root isRequired>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
-          <Input type="text" />
+          <TextInput placeholder="Enter some text here" type="text" />
         </FormField.Input>
         <FormField.Description>
           Above you see a regular text input, fill it with text and hope that it
@@ -134,7 +133,7 @@ export const MoreInfo: Story = {
       <FormField.Root isRequired>
         <FormField.Label>Input Label (row)</FormField.Label>
         <FormField.Input>
-          <Input type="text" />
+          <TextInput placeholder="Enter some text here" type="text" />
         </FormField.Input>
         <FormField.Description>
           Above you see a regular text input, fill it with text and hope that it
@@ -160,7 +159,43 @@ export const LongLabel: Story = {
         <FormField.Root isRequired direction="row">
           <FormField.Label>Super long Input Label (row)</FormField.Label>
           <FormField.Input>
-            <Input type="text" />
+            <TextInput placeholder="Enter some text here" type="text" />
+          </FormField.Input>
+          <FormField.Description>
+            Above you see a regular text input, fill it with text and hope that
+            it validates.
+          </FormField.Description>
+          <FormField.Error>
+            An error text which should only appear if the field gets an
+            isInvalid prop
+          </FormField.Error>
+          <FormField.InfoBox>
+            {new Array(48)
+              .fill("Show me in a tooltip box or something")
+              .join(" ")}
+          </FormField.InfoBox>
+        </FormField.Root>
+      </Box>
+    );
+  },
+};
+
+export const UsingASelectInput: Story = {
+  args: {},
+  render: () => {
+    return (
+      <Box width="384px">
+        <FormField.Root isRequired>
+          <FormField.Label>Super long Input Label (row)</FormField.Label>
+          <FormField.Input>
+            <Select.Root aria-label="Select a fruit" data-testid="select">
+              <Select.Options>
+                <Select.Option>Apples</Select.Option>
+                <Select.Option>Bananas</Select.Option>
+                <Select.Option>Oranges</Select.Option>
+                <Select.Option>Cherries</Select.Option>
+              </Select.Options>
+            </Select.Root>
           </FormField.Input>
           <FormField.Description>
             Above you see a regular text input, fill it with text and hope that
