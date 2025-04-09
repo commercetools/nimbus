@@ -45,6 +45,9 @@ export const accordionSlotRecipe = defineSlotRecipe({
       '&[aria-expanded="true"] svg': {
         rotate: "90deg",
       },
+      "&[disabled]": {
+        layerStyle: "disabled",
+      },
     },
     panel: {
       paddingLeft: "var(--panel-spacing)",

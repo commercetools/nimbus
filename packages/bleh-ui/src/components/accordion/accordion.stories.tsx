@@ -31,7 +31,6 @@ export const Basic: Story = {
     </Accordion.Root>
   ),
   play: async ({ canvasElement, step }) => {
-    // const canvas = within(canvasElement);
     const accordion = canvasElement.querySelector(
       '[data-slot="root"]'
     ) as HTMLElement;
