@@ -10,14 +10,14 @@ import {
   TableHeader,
   TableRoot,
   TableRow,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 
 import { atom, useAtomValue } from "jotai";
-import { system } from "@bleh-ui/react";
+import { system } from "@nimbus/react";
 import CubicBezier from "./cubic-bezier";
 import AnimationDemo from "./animation-demo";
 import { useState } from "react";
-import { PlayArrow } from "@bleh-ui/icons";
+import { PlayArrow } from "@nimbus/icons";
 
 export const easingTokensAtom = atom(() => {
   const tokenMap = system.tokens.categoryMap.get("easings");

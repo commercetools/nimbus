@@ -1,4 +1,4 @@
-import { Box } from "@bleh-ui/react";
+import { Box } from "@nimbus/react";
 import { type ImgHTMLAttributes } from "react";
 
 export const Image = (props: ImgHTMLAttributes<HTMLImageElement>) => {

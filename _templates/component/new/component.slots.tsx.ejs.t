@@ -1,5 +1,5 @@
 ---
-to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.slots.tsx
+to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.slots.tsx
 ---
 import {
   type HTMLChakraProps,

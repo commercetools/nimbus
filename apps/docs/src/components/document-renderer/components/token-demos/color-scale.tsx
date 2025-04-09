@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text } from "@bleh-ui/react";
+import { Box, Flex, Stack, Text } from "@nimbus/react";
 import { useAtomValue } from "jotai";
 import { themeColorScalesAtom } from "@/atoms/theme-color-scales.ts";
 import { useMemo } from "react";

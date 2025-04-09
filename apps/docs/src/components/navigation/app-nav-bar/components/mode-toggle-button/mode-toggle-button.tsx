@@ -1,5 +1,5 @@
-import { DarkMode, LightMode } from "@bleh-ui/icons";
-import { useColorMode, IconButton } from "@bleh-ui/react";
+import { DarkMode, LightMode } from "@nimbus/icons";
+import { useColorMode, IconButton } from "@nimbus/react";
 
 export const ModeToggleButton = () => {
   const { colorMode, setColorMode } = useColorMode();

@@ -1,0 +1,56 @@
+---
+id: Home
+title: Home
+description: Start here if you're new.
+documentState: InitialDraft
+order: 1
+menu:
+  - Home
+tags:
+  - forms
+---
+
+# Hello!
+
+This repository aims to solve 2 problems:
+
+1. Provide everything necessary to create beautiful, accessible and resilient
+   user-interfaces.
+2. Document all the bits and pieces that make that happen.
+
+The repository is currently structured into 3 workspaces, 1 app-workspace and 2
+package-workspaces.
+
+## Apps
+
+### docs
+
+The doc-app is a developer tool for creating and managing content-driven web
+applications by leveraging MDX files, structured metadata, and reusable UI
+components.
+
+- **Web Frontend**: The app generates a web-based frontend for browsing and
+  interacting with the content.
+- **Development Environment**: A development server allows users to edit
+  documents and add images directly through their browser.
+- **Content Indexing**: The app scans designated folders for MDX documents,
+  automatically generating and linking pages.
+- **Content Organization**: Frontmatter in MDX files provides metadata for
+  structuring menus and annotating content, enabling flexible organization.
+- **UI Component Integration**: The app utilizes components from
+  `@nimbus/react`, demonstrating how to create polished frontends with this UI
+  library.
+
+## Packages
+
+Currently this two packages contain the mentioned bits and pieces, reusable
+across several frontends:
+
+### @nimbus/react
+
+This package contains react components & hooks, as well as a ct-tailored
+default-theme.
+
+### @nimbus/icons
+
+This package contains icons for many different scenarios.

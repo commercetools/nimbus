@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { system } from "@bleh-ui/react";
+import { system } from "@nimbus/react";
 
 // Define shirt sizes
 const SHIRT_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;

@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { SearchResultItemProps } from "../app-nav-bar-search.types";
-import * as icons from "@bleh-ui/icons";
-import { Box, Flex, Heading, Text } from "@bleh-ui/react";
+import * as icons from "@nimbus/icons";
+import { Box, Flex, Heading, Text } from "@nimbus/react";
 
 export const SearchResultItem = forwardRef(
   ({ item, ...props }: SearchResultItemProps, ref) => {

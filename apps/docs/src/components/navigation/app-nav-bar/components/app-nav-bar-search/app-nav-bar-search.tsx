@@ -1,4 +1,4 @@
-import { Search } from "@bleh-ui/icons";
+import { Search } from "@nimbus/icons";
 import {
   Flex,
   Input,
@@ -14,7 +14,7 @@ import {
   Bleed,
   DialogHeader,
   DialogTitle,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 
 // TODO: Replace with react-aria solution
 import {

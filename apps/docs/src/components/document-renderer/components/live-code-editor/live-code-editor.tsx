@@ -1,6 +1,6 @@
-import * as BlehUi from "@bleh-ui/react";
-import * as icons from "@bleh-ui/icons";
-import { Flex, Box } from "@bleh-ui/react";
+import * as BlehUi from "@nimbus/react";
+import * as icons from "@nimbus/icons";
+import { Flex, Box } from "@nimbus/react";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";

@@ -1,4 +1,4 @@
-import { Box } from "@bleh-ui/react";
+import { Box } from "@nimbus/react";
 
 import { useMemo } from "react";
 import { ColorScale } from "./color-scale.tsx";

@@ -1,4 +1,4 @@
-import { Flex, Box, Stack } from "@bleh-ui/react";
+import { Flex, Box, Stack } from "@nimbus/react";
 import { DevOnly } from "@/components/utils/dev-only";
 
 import { ModeToggleButton } from "./components/mode-toggle-button/index.ts";

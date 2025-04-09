@@ -1,4 +1,4 @@
-import { Box } from "@bleh-ui/react";
+import { Box } from "@nimbus/react";
 import { ComponentProps } from "react";
 
 type Foo = Record<string, ComponentProps<typeof Box>["css"]>;

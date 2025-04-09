@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 
 const clr = "\x1b[33m%s\x1b[0m";
 console.log(clr, `###################################################`);
-console.log(clr, `############    @BLEH-UI DEV-SERVER    ############`);
+console.log(clr, `############    @NIMBUS DEV-SERVER    ############`);
 console.log(clr, `###################################################`);
 
 const viteProcess = spawn(

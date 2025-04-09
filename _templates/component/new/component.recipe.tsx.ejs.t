@@ -1,5 +1,5 @@
 ---
-to: packages/bleh-ui/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.recipe.tsx
+to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.recipe.tsx
 ---
 import { defineRecipe } from "@chakra-ui/react";
 
@@ -9,8 +9,8 @@ import { defineRecipe } from "@chakra-ui/react";
  */
 export const <%= h.changeCase.camel(name) %>Recipe = defineRecipe({
   // Unique class name prefix for the component
-  className: "bleh-ui-<%= h.changeCase.paramCase(name) %>",
-  
+  className: "nimbus-<%= h.changeCase.paramCase(name) %>",
+
   // Base styles applied to all instances of the component
   base: {
     display: "block",

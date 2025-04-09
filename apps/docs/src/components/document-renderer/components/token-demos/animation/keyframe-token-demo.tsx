@@ -1,6 +1,6 @@
-import { Box, Code, Flex, SimpleGrid } from "@bleh-ui/react";
+import { Box, Code, Flex, SimpleGrid } from "@nimbus/react";
 import { atom, useAtomValue } from "jotai";
-import { system } from "@bleh-ui/react";
+import { system } from "@nimbus/react";
 
 export const keyframeTokensAtom = atom(() => {
   const obj = system._config.theme?.keyframes || {};

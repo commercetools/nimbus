@@ -1,4 +1,4 @@
-import { Info, Add } from "@bleh-ui/icons";
+import { Info, Add } from "@nimbus/icons";
 import {
   Button,
   DialogBackdrop,
@@ -13,7 +13,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 import { useCreateDocument } from "@/hooks/useCreateDocument";
 
 /**

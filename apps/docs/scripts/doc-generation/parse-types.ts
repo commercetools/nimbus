@@ -9,7 +9,7 @@ export const flog = (str) => {
 // Thats where compiled docs will be saved
 const compiledTypesFile = "./src/data/types.json";
 
-const fileToGrabTypesFrom: string = "./../../packages/bleh-ui/src/index.ts";
+const fileToGrabTypesFrom: string = "./../../packages/nimbus/src/index.ts";
 
 const writeDocs = debounce(() => {
   const options = {

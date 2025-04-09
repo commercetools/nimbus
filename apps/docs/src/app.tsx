@@ -1,4 +1,4 @@
-import { UiKitProvider, Flex, Box, Stack } from "@bleh-ui/react";
+import { UiKitProvider, Flex, Box, Stack } from "@nimbus/react";
 import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
 import { Toc } from "./components/navigation/toc";

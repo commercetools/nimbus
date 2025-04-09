@@ -1,7 +1,7 @@
 import { activeDocAtom } from "@/atoms/active-doc.ts";
 import { useAtom, useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
-import { Box, Flex, Stack, Text } from "@bleh-ui/react";
+import { Box, Flex, Stack, Text } from "@nimbus/react";
 import { components } from "./components";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { MdxEditor } from "./mdx-editor";

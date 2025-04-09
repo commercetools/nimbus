@@ -1,4 +1,4 @@
 {
-  "main": "dist/bleh-ui-tokens-generated-ts.cjs.js",
-  "module": "dist/bleh-ui-tokens-generated-ts.esm.js"
+  "main": "dist/nimbus-tokens-generated-ts.cjs.js",
+  "module": "dist/nimbus-tokens-generated-ts.esm.js"
 }

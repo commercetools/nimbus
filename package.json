@@ -1,5 +1,5 @@
 {
-  "name": "design-system-monorepo",
+  "name": "nimbus",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -17,8 +17,8 @@
     "build": "pnpm build:tokens && pnpm run build-packages && pnpm run build-docs",
     "build-packages": "pnpm -r --filter './packages/*' build",
     "build-docs": "pnpm --filter './apps/docs' build",
-    "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
-    "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build",
+    "generate:tokens": "pnpm --filter @nimbus/tokens run build",
+    "build:tokens": "pnpm --filter @nimbus/tokens run build && preconstruct build",
     "reset": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
     "component:new": "pnpm hygen component new"
   },

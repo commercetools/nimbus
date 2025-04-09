@@ -14,8 +14,8 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.0.7",
     "@ariakit/react": "^0.4.13",
-    "@bleh-ui/icons": "workspace:^",
-    "@bleh-ui/react": "workspace:^",
+    "@nimbus/icons": "workspace:^",
+    "@nimbus/react": "workspace:^",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@emotion/react": "^11.13.3",
     "@mdx-js/mdx": "^3.1.0",

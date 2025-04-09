@@ -1,5 +1,5 @@
-import { IconButton } from "@bleh-ui/react";
-import { Delete } from "@bleh-ui/icons";
+import { IconButton } from "@nimbus/react";
+import { Delete } from "@nimbus/icons";
 import { useRemoveDocument } from "@/hooks/useRemoveDocument";
 
 /**

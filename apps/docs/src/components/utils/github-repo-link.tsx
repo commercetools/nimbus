@@ -1,5 +1,5 @@
-import { IconButton } from "@bleh-ui/react";
-import { Github } from "@bleh-ui/icons";
+import { IconButton } from "@nimbus/react";
+import { Github } from "@nimbus/icons";
 
 // TODO: put this in some config file
 const prefix = "https://github.com/commercetools/ui-kit-docs-poc/blob/main/";

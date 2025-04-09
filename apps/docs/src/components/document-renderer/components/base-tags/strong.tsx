@@ -1,4 +1,4 @@
-import { Text } from "@bleh-ui/react";
+import { Text } from "@nimbus/react";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 
 type StrongProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;

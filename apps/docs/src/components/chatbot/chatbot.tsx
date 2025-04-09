@@ -1,5 +1,5 @@
-import { Box, Button, Code, Flex, Link, Stack, Text } from "@bleh-ui/react";
-import { ChatBubble, Send, Close } from "@bleh-ui/icons";
+import { Box, Button, Code, Flex, Link, Stack, Text } from "@nimbus/react";
+import { ChatBubble, Send, Close } from "@nimbus/icons";
 import { type Message, useChat } from "ai/react";
 import { useState } from "react";
 import { MdxStringRenderer } from "@/components/document-renderer/mdx-string-renderer.tsx";

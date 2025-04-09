@@ -1,3 +1,3 @@
-import { Em as StyledEm } from "@bleh-ui/react";
+import { Em as StyledEm } from "@nimbus/react";
 
 export const Em = StyledEm;

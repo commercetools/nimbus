@@ -1,5 +1,5 @@
-import * as icons from "@bleh-ui/icons";
-import { Text } from "@bleh-ui/react";
+import * as icons from "@nimbus/icons";
+import { Text } from "@nimbus/react";
 import { MenuIconProps } from "../menu.types";
 
 /**

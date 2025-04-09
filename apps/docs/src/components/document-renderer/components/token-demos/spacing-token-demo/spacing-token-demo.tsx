@@ -8,7 +8,7 @@ import {
   TableRow,
   Flex,
   Code,
-} from "@bleh-ui/react";
+} from "@nimbus/react";
 import { useAtom, useAtomValue } from "jotai";
 import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
 import { useState } from "react";

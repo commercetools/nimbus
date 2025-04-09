@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { IconButton, Input, Stack, Text } from "@bleh-ui/react";
+import { IconButton, Input, Stack, Text } from "@nimbus/react";
 
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
-import { Save } from "@bleh-ui/icons";
+import { Save } from "@nimbus/icons";
 import { MdxFileFrontmatter } from "@/types";
 
 type StringKeys<T> = {

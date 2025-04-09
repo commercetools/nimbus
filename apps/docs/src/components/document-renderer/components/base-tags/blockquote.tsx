@@ -8,8 +8,8 @@ import {
   cloneElement,
   isValidElement,
 } from "react";
-import { Box } from "@bleh-ui/react";
-import { Description, Lightbulb, Star, Warning, Error } from "@bleh-ui/icons";
+import { Box } from "@nimbus/react";
+import { Description, Lightbulb, Star, Warning, Error } from "@nimbus/icons";
 import { ListItem, UlList } from "./index";
 import { Paragraph } from "./index";
 
