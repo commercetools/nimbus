@@ -1,4 +1,5 @@
 {
+  "version": "1.0.0",
   "name": "@bleh-ui/react",
   "module": "./dist/index.js",
   "main": "./dist/index.umd.cjs",

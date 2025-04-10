@@ -1,6 +1,6 @@
 {
   "name": "@bleh-ui/tokens",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "dist/bleh-ui-tokens.cjs.js",
   "module": "dist/bleh-ui-tokens.esm.js",
   "type": "module",
