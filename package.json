@@ -1,47 +1,65 @@
 {
-  "name": "design-system-monorepo",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/docs"
+  "version": "1.0.0",
+  "name": "@bleh-ui/react",
+  "module": "./dist/index.js",
+  "main": "./dist/index.umd.cjs",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "*"
   ],
-  "preconstruct": {
-    "packages": [
-      "packages/tokens"
-    ]
+  "devDependencies": {
+    "@chakra-ui/cli": "catalog:react",
+    "@pandacss/types": "catalog:react",
+    "@storybook/addon-a11y": "catalog:tooling",
+    "@storybook/addon-essentials": "catalog:tooling",
+    "@storybook/experimental-addon-test": "catalog:tooling",
+    "@storybook/preview-api": "catalog:tooling",
+    "@storybook/react": "catalog:tooling",
+    "@storybook/react-vite": "catalog:tooling",
+    "@storybook/test": "catalog:tooling",
+    "@testing-library/react": "catalog:tooling",
+    "@testing-library/user-event": "catalog:tooling",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@types/testing-library__dom": "^7.5.0",
+    "@vitejs/plugin-react": "catalog:tooling",
+    "@vitest/browser": "catalog:tooling",
+    "@vitest/coverage-v8": "catalog:tooling",
+    "apca-w3": "^0.1.9",
+    "axe-core": "^4.10.2",
+    "playwright": "catalog:tooling",
+    "storybook": "catalog:tooling",
+    "storybook-dark-mode": "catalog:tooling",
+    "vite": "catalog:tooling",
+    "vite-plugin-dts": "catalog:tooling",
+    "vite-tsconfig-paths": "catalog:tooling",
+    "vitest": "catalog:tooling"
+  },
+  "peerDependencies": {
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "typescript": "catalog:tooling"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "catalog:react",
+    "@emotion/is-prop-valid": "catalog:react",
+    "@react-aria/optimize-locales-plugin": "^1.1.4",
+    "next-themes": "catalog:react",
+    "react-aria": "^3.37.0",
+    "react-aria-components": "1.6.0",
+    "react-hotkeys-hook": "^4.6.1",
+    "react-stately": "^3.35.0",
+    "react-use": "^17.5.1"
   },
   "scripts": {
-    "dev": "pnpm -r --parallel run dev",
-    "lint": "eslint .",
-    "test": "vitest run",
-    "build": "pnpm build:tokens && pnpm run build-packages && pnpm run build-docs",
-    "build-packages": "pnpm -r --filter './packages/*' build",
-    "build-docs": "pnpm --filter './apps/docs' build",
-    "generate:tokens": "pnpm --filter @bleh-ui/tokens run build",
-    "build:tokens": "pnpm --filter @bleh-ui/tokens run build && preconstruct build",
-    "reset": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
-    "component:new": "pnpm hygen component new"
-  },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
-  "pnpm": {
-    "overrides": {
-      "rollup": "^4.34.2"
-    }
-  },
-  "devDependencies": {
-    "@babel/core": "catalog:tooling",
-    "@eslint/js": "catalog:tooling",
-    "@preconstruct/cli": "catalog:tooling",
-    "eslint": "catalog:tooling",
-    "eslint-config-prettier": "catalog:tooling",
-    "eslint-plugin-prettier": "catalog:tooling",
-    "globals": "catalog:tooling",
-    "hygen": "catalog:tooling",
-    "playwright": "catalog:tooling",
-    "prettier": "catalog:tooling",
-    "tsx": "catalog:tooling",
-    "typescript": "catalog:tooling",
-    "typescript-eslint": "catalog:tooling",
-    "vitest": "catalog:tooling"
+    "build": "pnpm run build-theme-typings && pnpm run build-lib",
+    "build-lib": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest",
+    "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }
