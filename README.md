@@ -72,36 +72,6 @@ component templates to guide development.
 pnpm run component:new
 ```
 
-### "Publishing" locally and working in other repositories
-
-To work with Nimbus locally, we can use the `pnpm link` command to create a
-symlink from Nimbus to the target repo's `node_modules` folder.
-
-Follow these steps:
-
-1. Ensure that Nimbus and all its packages are built.
-2. In the design system repo at the root level, run `pnpm link --global` to
-   create a global symlink for Nimbus.
-3. In the target repo (for example, in the Merchant Center), run
-   `pnpm link --global nimbus` to link to the the Nimbus package.
-   - You can observe if the link worked by checking the `node_modules` folder in
-     the target repo. You should see a symlink to Nimbus.
-4. Now, in the target repo you can import from `node_modules/nimbus` as if it
-   was a regular package. For example:
-
-   ```
-   import {
-      Box,
-      Avatar,
-      NimbusProvider,
-      Button,
-      LoadingSpinner,
-   } from '../../../node_modules/nimbus/packages/nimbus'; <-- this is a relative path to the symlink - you'll have to adjust the depth as needed.
-   ```
-
-Okay, here's an expanded version focusing on clarity for newer developers while
-keeping it concise and correcting the import path example:
-
 ### Testing Local Nimbus Changes in Other Repositories
 
 Want to test your local Nimbus code changes in another repo (like Merchant
