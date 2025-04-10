@@ -9,12 +9,10 @@ import AlertRoot from "./components/alert.root";
  * ============================================================
  * Provides feedback to the user about the status of an action or system event
  */
-const Alert = {
+export const Alert = {
   Root: AlertRoot,
   Title: AlertTitle,
   Description: AlertDescription,
   Actions: AlertActions,
   DismissButton: AlertDismissButton,
 };
-
-export default Alert;

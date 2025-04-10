@@ -18,7 +18,7 @@ export * from "./simple-grid";
 export * from "./table";
 export * from "./text";
 export * from "./tooltip";
-export * from "./ui-kit-provider";
+export * from "./nimbus-provider";
 export * from "./checkbox";
 export * from "./stack";
 export * from "./visually-hidden";

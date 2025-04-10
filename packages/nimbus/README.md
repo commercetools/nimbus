@@ -1,4 +1,4 @@
-# ui-kit-v2
+# nimbus-v2
 
 To install dependencies:
 

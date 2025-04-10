@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ToggleButtonGroup from "./toggle-button-group";
+import { ToggleButtonGroup } from "./toggle-button-group";
 import { Stack } from "../stack";
 import { userEvent, within, expect, fn } from "@storybook/test";
 import { SentimentSatisfied as DemoIcon } from "@nimbus/icons";
