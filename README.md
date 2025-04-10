@@ -1,4 +1,4 @@
-# nimbus-v2
+# Nimbus
 
 This is a mono-repo. It contains multiple packages & apps.
 
