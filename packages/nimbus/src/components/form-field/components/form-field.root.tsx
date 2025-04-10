@@ -8,7 +8,10 @@ import {
 } from "react";
 import type { FormFieldProps } from "../form-field.types";
 import { useField } from "react-aria";
-import { FormFieldContext } from "../form-field";
+import {
+  FormFieldContext,
+  type FormFieldContextPayloadType,
+} from "../form-field";
 import {
   FormFieldDescriptionSlot,
   FormFieldErrorSlot,
@@ -31,7 +34,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
     { isInvalid, isRequired, isDisabled, isReadOnly, children, ...props },
     ref
   ) => {
-    const [context, setContext] = useState({
+    const [context, setContext] = useState<FormFieldContextPayloadType>({
       label: null,
       description: null,
       error: null,
@@ -69,10 +72,10 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
     };
 
     return (
-      <FormFieldContext.Provider value={[context, setContext]}>
+      <FormFieldContext.Provider value={{ context, setContext }}>
         <FormFieldRootSlot ref={ref} {...props}>
           {context.label && (
-            <FormFieldLabelSlot>
+            <FormFieldLabelSlot {...context.labelSlotProps}>
               <label {...labelProps}>
                 {context.label}
                 {isRequired && <sup aria-hidden="true">*</sup>}
@@ -89,7 +92,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                   >
                     <Box
                       as="span"
-                      display="flex"
+                      display="inline-flex"
                       position="absolute"
                       top="50%"
                       right="50%"
@@ -117,7 +120,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
             </FormFieldLabelSlot>
           )}
           {context.input && (
-            <FormFieldInputSlot>
+            <FormFieldInputSlot {...context.inputSlotProps}>
               {Children.map(context.input, (child) => {
                 // Important: Check if the child is a valid React element before cloning.
                 if (isValidElement(child)) {
@@ -129,12 +132,18 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
             </FormFieldInputSlot>
           )}
           {context.description && (
-            <FormFieldDescriptionSlot {...descriptionProps}>
+            <FormFieldDescriptionSlot
+              {...descriptionProps}
+              {...context.descriptionSlotProps}
+            >
               {context.description}
             </FormFieldDescriptionSlot>
           )}
           {isInvalid && context.error && (
-            <FormFieldErrorSlot {...errorMessageProps}>
+            <FormFieldErrorSlot
+              {...errorMessageProps}
+              {...context.errorSlotProps}
+            >
               <Box
                 as={ErrorOutline}
                 display="inline-flex"
