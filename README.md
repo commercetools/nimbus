@@ -1,4 +1,4 @@
-# ui-kit-v2
+# nimbus-v2
 
 This is a mono-repo. It contains multiple packages & apps.
 
@@ -93,7 +93,7 @@ Follow these steps:
    import {
       Box,
       Avatar,
-      UiKitProvider,
+      NimbusProvider,
       Button,
       LoadingSpinner,
    } from '../../../node_modules/nimbus/packages/nimbus'; <-- this is a relative path to the symlink - you'll have to adjust the depth as needed.
@@ -151,7 +151,7 @@ Follow these steps:
     import {
       Box,
       Avatar,
-      UiKitProvider,
+      NimbusProvider,
       Button,
       LoadingSpinner,
     } from '../../../node_modules/nimbus/packages/nimbus'; // <-- This is a relative path to the symlink - you'll have to adjust the depth as needed.
@@ -159,11 +159,11 @@ Follow these steps:
     // Use the components...
     function MyComponent() {
       return (
-        <UiKitProvider>
+        <NimbusProvider>
           <Box>
             <Button>Hello Nimbus!</Button>
           </Box>
-        </UiKitProvider>
+        </NimbusProvider>
       );
     }
     ```

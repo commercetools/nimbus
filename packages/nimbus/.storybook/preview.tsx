@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { Preview } from "@storybook/react";
-import { UiKitProvider } from "../src";
+import { NimbusProvider } from "../src";
 import { DARK_MODE_EVENT_NAME } from "storybook-dark-mode";
 import { addons } from "@storybook/preview-api";
 
@@ -43,7 +43,7 @@ const ThemeDecorator = ({ children }) => {
     document.documentElement.classList.add(theme);
   }, [theme]);
 
-  return <UiKitProvider defaultTheme={theme}>{children}</UiKitProvider>;
+  return <NimbusProvider defaultTheme={theme}>{children}</NimbusProvider>;
 };
 
 const preview: Preview = {

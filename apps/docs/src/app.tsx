@@ -1,4 +1,4 @@
-import { UiKitProvider, Flex, Box, Stack } from "@nimbus/react";
+import { NimbusProvider, Flex, Box, Stack } from "@nimbus/react";
 import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
 import { Toc } from "./components/navigation/toc";
@@ -43,7 +43,7 @@ function App() {
   const availableHeight = "calc(100vh - 69px)";
 
   return (
-    <UiKitProvider>
+    <NimbusProvider>
       <>
         <Flex
           direction="column"
@@ -103,7 +103,7 @@ function App() {
           <Chatbot />
         </DevOnly>
       </>
-    </UiKitProvider>
+    </NimbusProvider>
   );
 }
 

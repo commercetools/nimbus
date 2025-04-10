@@ -4,14 +4,14 @@ import {
   type RenderOptions,
   type RenderResult,
 } from "@testing-library/react";
-import { UiKitProvider } from "@/components";
+import { NimbusProvider } from "@/components";
 import { userEvent as baseUserEvent } from "@testing-library/user-event";
 
 const renderWithProvider = (
   ui: ReactNode,
   options?: RenderOptions
 ): RenderResult => {
-  return render(<UiKitProvider>{ui}</UiKitProvider>, options);
+  return render(<NimbusProvider>{ui}</NimbusProvider>, options);
 };
 
 export * from "@testing-library/react";
