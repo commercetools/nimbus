@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within, expect, fn } from "@storybook/test";
-import Alert from "./alert";
+import { Alert } from "./alert";
 import { Stack } from "./../stack";
 import { Button } from "../button";
 import type { AlertProps } from "./alert.types";

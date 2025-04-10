@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import Card from "./card";
+import { Card } from "./card";
 import { Stack } from "./../stack";
 import type { CardProps } from "./card.types";
 import { within, expect, userEvent } from "@storybook/test";
