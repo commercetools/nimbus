@@ -48,6 +48,9 @@ export const Base: Story = {
 };
 
 export const Sizes: Story = {
+  args: {
+    "aria-label": "test-input",
+  },
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
@@ -65,6 +68,10 @@ export const Sizes: Story = {
 };
 
 export const Variants: Story = {
+  args: {
+    placeholder: "text input",
+    ["aria-label"]: "test-input",
+  },
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
@@ -78,9 +85,6 @@ export const Variants: Story = {
         ))}
       </Stack>
     );
-  },
-  args: {
-    placeholder: "text input",
   },
 };
 
@@ -124,6 +128,9 @@ export const Disabled: Story = {
 };
 
 export const Invalid: Story = {
+  args: {
+    isInvalid: true,
+  },
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
@@ -138,10 +145,6 @@ export const Invalid: Story = {
         ))}
       </Stack>
     );
-  },
-  args: {
-    isInvalid: true,
-    placeholder: "Invalid input",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -166,7 +169,6 @@ export const Invalid: Story = {
 
 export const SmokeTest: Story = {
   args: {
-    placeholder: "Text Input",
     onChange: fn(),
     ["aria-label"]: "test-input",
   },
@@ -251,6 +253,9 @@ export const Controlled: Story = {
 };
 
 export const InputTypes: Story = {
+  args: {
+    ["aria-label"]: "test-input",
+  },
   render: (args) => {
     const inputTypes = [
       "date",
