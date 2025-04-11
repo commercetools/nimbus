@@ -17,6 +17,7 @@ export const LoadingSpinner = forwardRef<HTMLDivElement, LoadingSpinnerProps>(
   ({ "aria-label": ariaLabel = "Loading data", ...props }, ref) => {
     const { progressBarProps } = useProgressBar({
       isIndeterminate: true,
+      "aria-label": ariaLabel,
       ...props,
     });
 
