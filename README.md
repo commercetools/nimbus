@@ -74,7 +74,8 @@ All commands should be run from the repository root.
    pnpm nimbus:init
    ```
 
-> [!TIP] It is advisable to run the `repo:init` command after every
+> [!TIP]
+> It is advisable to run the `repo:init` command after every
 > branch-switch. The command gets rid of all `node_modules`- & `dist`-folders,
 > reinstalls dependencies and rebuilds all packages.
 
