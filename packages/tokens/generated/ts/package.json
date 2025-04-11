@@ -1,4 +1,4 @@
 {
-  "main": "dist/nimbus-tokens-generated-ts.cjs.js",
-  "module": "dist/nimbus-tokens-generated-ts.esm.js"
+  "main": "dist/commercetools-composable-commerce-nimbus-tokens-generated-ts.cjs.js",
+  "module": "dist/commercetools-composable-commerce-nimbus-tokens-generated-ts.esm.js"
 }
