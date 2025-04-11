@@ -7,22 +7,22 @@
 
 ## 📚 Table of Contents
 
-- [Overview](#overview)
-- [Repository Structure](#repository-structure)
-- [Getting Started](#getting-started)
+- [Overview](#-overview)
+- [Repository Structure](#%EF%B8%8F-repository-structure)
+- [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Development Workflow](#development-workflow)
+- [Development Workflow](#-development-workflow)
   - [Development Mode](#development-mode)
   - [Building the Project](#building-the-project)
   - [Creating New Components](#creating-new-components)
-- [Project Management](#project-management)
+- [Project Management](#%EF%B8%8F-project-management)
   - [Initialize or Reset](#initialize-or-reset)
   - [Working with Tokens](#working-with-tokens)
-- [Integration Guide](#integration-guide)
+- [Integration Guide](#-integration-guide)
   - [Testing Local Changes](#testing-local-changes)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
+- [Contributing](#-contributing)
+- [Troubleshooting](#-troubleshooting)
 
 ## 🔍 Overview
 
@@ -74,7 +74,8 @@ All commands should be run from the repository root.
    pnpm repo:init
    ```
 
-> [NOTE!] It is advisable to run the `repo:init` command after every
+> [!TIP]
+> It is advisable to run the `repo:init` command after every
 > branch-switch. The command gets rid of all `node_modules`- & `dist`-folders,
 > reinstalls dependencies and rebuilds all packages.
 
