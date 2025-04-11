@@ -37,7 +37,7 @@ export const Base: Story = {
       <Box key="1" p="400" bg="neutral.7">
         Item 1
       </Box>,
-      <Box key="1" p="400" bg="neutral.7">
+      <Box key="2" p="400" bg="neutral.7">
         Item 2
       </Box>,
     ],
