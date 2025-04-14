@@ -42,4 +42,6 @@ module.exports = {
       ],
     },
   },
+  // Enable ref forwarding for all SVG components
+  ref: true,
 };

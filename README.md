@@ -1,76 +1,186 @@
-# Nimbus
+# Nimbus Design System
 
-This is a mono-repo. It contains multiple packages & apps.
+![Nimbus Logo](https://placehold.co/840x270?text=Nimbus)
 
-## Packages & Apps
+> A modern, extensible design system for building consistent, accessible user
+> interfaces.
+
+## 📚 Table of Contents
+
+- [Overview](#-overview)
+- [Repository Structure](#%EF%B8%8F-repository-structure)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Development Workflow](#-development-workflow)
+  - [Development Mode](#development-mode)
+  - [Building the Project](#building-the-project)
+  - [Creating New Components](#creating-new-components)
+- [Project Management](#%EF%B8%8F-project-management)
+  - [Initialize or Reset](#initialize-or-reset)
+  - [Working with Tokens](#working-with-tokens)
+- [Integration Guide](#-integration-guide)
+  - [Testing Local Changes](#testing-local-changes)
+- [Contributing](#-contributing)
+- [Troubleshooting](#-troubleshooting)
+
+## 🔍 Overview
+
+Nimbus is a comprehensive design system that provides a collection of reusable
+components, icons, and design tokens for building consistent user interfaces.
+This monorepo contains multiple packages and applications that work together to
+provide a cohesive design system experience.
+
+## 🏗️ Repository Structure
 
 ### Packages
 
-- **@nimbus/react** ui-library, react components to build user interfaces
-- **@nimbus/icons** icon library, svg files as react-components
+| Package           | Description               | Purpose                                                |
+| ----------------- | ------------------------- | ------------------------------------------------------ |
+| **@nimbus/react** | Core UI component library | Provides React components for building user interfaces |
+| **@nimbus/icons** | Icon library              | SVG files wrapped as React components                  |
+| **tokens**        | Design tokens             | Color, spacing, typography, and other design variables |
+| **color-tokens**  | Brand colors              | Brand-specific color definitions                       |
 
-### Apps
+### Applications
 
-- **docs** a documentation site/app, scripts parse mdx-files inside the
-  _packages_ folder, the mdx-file content is brought into shape and a
-  documentation app is being build from it.
+| Application | Description        | Purpose                                                                                          |
+| ----------- | ------------------ | ------------------------------------------------------------------------------------------------ |
+| **docs**    | Documentation site | Interactive documentation for all Nimbus packages, auto-generated from MDX files in the packages |
 
-## Development Setup
+## 🚀 Getting Started
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js**: v22.14.0+
+- **PNPM**: v9.12.3+
 
 ### Installation
 
-Straight forward. Make sure you fulfill the requirements below and install
-dependencies with the provided command.
+All commands should be run from the repository root.
 
-> All commands are run in the repository root.
-
-#### Requirements
-
-The following software needs to be installed on your system before you can
-proceed:
-
-- Node v20+
-- PNPM // todo: version?
-
-#### Install dependencies
-
-```bash
-$ pnpm install
-```
-
-### Development
-
-1. If you are setting up for the first time, do an initial [build](#build).
-2. Start the development environment with the following command
+1. Clone the repository:
 
    ```bash
-   $ pnpm run dev
+   git clone https://github.com/your-org/nimbus.git
+   cd nimbus
    ```
 
-3. Open the documentation app in the browser: http://localhost:5173/
+2. Initialize the repository:
 
-### Build
+   ```bash
+   pnpm nimbus:init
+   ```
 
-To build packages & the documentation app:
+> [!TIP]  
+> It is advisable to run the `repo:init` command after every branch-switch. The
+> command gets rid of all `node_modules`- & `dist`-folders, reinstalls
+> dependencies and rebuilds all packages.
 
-```bash
-$ pnpm run build
-```
+## 💻 Development Workflow
 
-To only build packages:
+### Development Mode
 
-```bash
-$ pnpm run build-packages
-```
-
-### Creating a new component
-
-To create a new component, we run a script, using hygen, to initialize some
-component templates to guide development.
+Start the development environment with the following command:
 
 ```bash
-pnpm run component:new
+pnpm start
 ```
+
+This will start both the documentation app and Storybook in parallel:
+
+- Documentation app: http://localhost:5173/
+- Storybook: http://localhost:6006/
+
+If you prefer to run just one of the applications:
+
+```bash
+# Start only the documentation app
+pnpm start:docs
+
+# Start only Storybook
+pnpm start:storybook
+```
+
+### Building the Project
+
+#### Complete Build
+
+Build all packages and applications:
+
+```bash
+pnpm build
+```
+
+#### Targeted Builds
+
+Build only specific parts of the system:
+
+```bash
+# Build only the packages (not the docs application)
+pnpm build:packages
+
+# Build only the documentation application
+pnpm build:docs
+
+# Build only the design tokens
+pnpm build:tokens
+```
+
+### Creating New Components
+
+Nimbus provides a scaffolding tool to generate new component templates:
+
+```bash
+pnpm component:new
+```
+
+This interactive command will:
+
+1. Prompt you for the component name
+2. Generate all necessary files with appropriate templates
+3. Set up the component structure following our best practices
+
+The generated files include:
+
+- Component implementation
+- TypeScript types
+- Documentation (MDX)
+- Story files for visual testing
+- Index exports
+
+## 🛠️ Project Management
+
+### Initialize or Reset
+
+To initialize or reset the entire project:
+
+```bash
+# Full initialization (reset, install dependencies, build)
+pnpm nimbus:init
+
+# Reset only (remove node_modules and dist folders)
+pnpm nimbus:reset
+```
+
+### Working with Tokens
+
+Generate design tokens for the system:
+
+```bash
+pnpm generate:tokens
+```
+
+This command processes the token source files and outputs them in multiple
+formats:
+
+- CSS custom properties
+- TypeScript definitions
+- Component-specific token files
+
+## 🔄 Integration Guide
 
 ### Testing Local Nimbus Changes in Other Repositories
 
@@ -116,7 +226,7 @@ Follow these steps:
 4.  **Import and Use:** Now, in your target repo's code, you can import and use
     Nimbus components.
 
-    ```typescript
+````typescript
     // Correct way to import after linking:
     import {
       Box,
@@ -125,7 +235,6 @@ Follow these steps:
       Button,
       LoadingSpinner,
     } from '../../../node_modules/nimbus/packages/nimbus'; // <-- This is a relative path to the symlink - you'll have to adjust the depth as needed.
-
     // Use the components...
     function MyComponent() {
       return (
@@ -137,7 +246,39 @@ Follow these steps:
       );
     }
     ```
-
 5.  **Testing changes**: Make changes to your local Nimbus code, then run
     `pnpm build` in Nimbus to rebuild. You should now see changes reflected in
     the target repo.
+
+6. **Unlink when finished**:
+
+   ```bash
+   # In the target project:
+   pnpm unlink nimbus
+
+   # In the Nimbus repository:
+   pnpm unlink --global
+````
+
+## 👥 Contributing
+
+We welcome contributions from all team members. To contribute:
+
+1. Create a new branch for your feature or fix
+2. Make your changes
+3. Write or update tests
+4. Update documentation
+5. Submit a pull request
+
+Please follow our coding standards and commit message conventions.
+
+## ❓ Troubleshooting
+
+| Problem                                       | Solution                                                        |
+| --------------------------------------------- | --------------------------------------------------------------- |
+| Component styles not updating                 | Make sure you've rebuilt the tokens with `pnpm build:tokens`    |
+| Documentation site not showing latest changes | Restart the development server with `pnpm start`                |
+| Build errors after pulling latest changes     | Try running `pnpm nimbus:init` to reset, reinstall, and rebuild |
+
+For additional help, please contact the Nimbus team or submit an issue in our
+repository.

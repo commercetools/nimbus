@@ -1,9 +1,9 @@
-import { atomWithStorage } from "jotai/utils";
+import { atom } from "jotai";
 
 /**
- * Atom to store the currently active brand name in local storage.
+ * Atom to store the brand name.
  *
- * @type {string} The key used for local storage is "brand".
- * @default "@nimbus" The default value if no value is found in local storage.
+ * @type {string} The hardcoded brand name.
+ * @default "Nimbus" The system name.
  */
-export const brandNameAtom = atomWithStorage<string>("brand", "@nimbus");
+export const brandNameAtom = atom<string>("Nimbus");

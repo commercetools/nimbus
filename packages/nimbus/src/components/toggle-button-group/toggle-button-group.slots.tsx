@@ -3,6 +3,7 @@ import { buttonGroupRecipe } from "./toggle-button-group.recipe";
 import type {
   ToggleButtonGroupButtonProps,
   ToggleButtonGroupProps,
+  ToggleButtonGroupButtonComponent,
 } from "./toggle-button-group.types";
 import {
   ToggleButton as RacToggleButton,
@@ -18,7 +19,8 @@ export const ToggleButtonGroupRoot = withProvider<
   ToggleButtonGroupProps
 >(RacToggleButtonGroup, "root");
 
-export const ToggleButtonGroupButton = withContext<
-  typeof RacToggleButton,
-  ToggleButtonGroupButtonProps
->(RacToggleButton, "button");
+export const ToggleButtonGroupButton: ToggleButtonGroupButtonComponent =
+  withContext<typeof RacToggleButton, ToggleButtonGroupButtonProps>(
+    RacToggleButton,
+    "button"
+  );
