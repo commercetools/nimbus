@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { IconButton, Input, Stack, Text } from "@commercetools/nimbus";
+import { IconButton, TextInput, Stack, Text } from "@commercetools/nimbus";
 
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 import { Save } from "@commercetools/nimbus-icons";
@@ -49,10 +49,10 @@ export const DocumentStringFieldEdit = ({
         <label htmlFor="documentState">{label}</label>
       </Text>
       <Stack direction="row">
-        <Input
+        <TextInput
           size="md"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(value) => setValue(value)}
           placeholder={placeholder}
         />
         <IconButton
