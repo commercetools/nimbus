@@ -1,7 +1,6 @@
 import { Search } from "@commercetools/nimbus-icons";
 import {
   Flex,
-  Input,
   InputGroup,
   Kbd,
   useHotkeys,
@@ -76,7 +75,13 @@ export const AppNavBarSearch = () => {
             maxWidth="9600"
             mx="auto"
           >
-            <Input
+            <Box
+              as="input"
+              border="1px solid"
+              borderColor="neutral.6"
+              width="full"
+              px="400"
+              py="200"
               type="search"
               placeholder="Search for a component..."
               size="sm"
@@ -105,7 +110,14 @@ export const AppNavBarSearch = () => {
                     mt="400"
                     mb="600"
                   >
-                    <Input
+                    <Box
+                      as="input"
+                      border="1px solid"
+                      borderColor="neutral.6"
+                      width="full"
+                      px="400"
+                      py="200"
+                      focusRing="outside"
                       type="search"
                       placeholder="Search for a component..."
                       size="sm"
@@ -115,7 +127,7 @@ export const AppNavBarSearch = () => {
                       asChild
                     >
                       <Combobox placeholder="e.g., Tokens, Component, Installation" />
-                    </Input>
+                    </Box>
                   </InputGroup>
                 </Box>
 
