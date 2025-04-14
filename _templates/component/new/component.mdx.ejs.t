@@ -72,7 +72,7 @@ const App = () => {
 ```jsx-live
 const App = () => {
   const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
 
   return (
     <Stack>

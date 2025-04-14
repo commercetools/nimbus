@@ -5873,7 +5873,7 @@ export default {
           },
         },
       },
-      error: {
+      critical: {
         "1": {
           value: {
             _light: "hsl(0, 100%, 99%)",
@@ -6045,7 +6045,7 @@ export default {
           },
         },
       },
-      danger: {
+      warning: {
         "1": {
           value: {
             _light: "hsl(20, 60%, 99%)",
@@ -6217,7 +6217,7 @@ export default {
           },
         },
       },
-      success: {
+      positive: {
         "1": {
           value: {
             _light: "hsl(120, 60%, 99%)",

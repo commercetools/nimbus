@@ -50,7 +50,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
         button: { colorPalette: "primary" },
       },
       critical: {
-        button: { colorPalette: "error" },
+        button: { colorPalette: "critical" },
       },
       neutral: {
         button: { colorPalette: "neutral" },
