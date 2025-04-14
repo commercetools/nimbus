@@ -2338,7 +2338,7 @@ export default {
           contrast: "hsl(0, 0%, 100%)",
         },
       },
-      error: {
+      critical: {
         light: {
           "1": "hsl(0, 100%, 99%)",
           "2": "hsl(0, 100%, 98%)",
@@ -2406,7 +2406,7 @@ export default {
           contrast: "hsl(0, 0%, 100%)",
         },
       },
-      danger: {
+      warning: {
         light: {
           "1": "hsl(20, 60%, 99%)",
           "2": "hsl(33, 100%, 96%)",
@@ -2474,7 +2474,7 @@ export default {
           contrast: "hsl(0, 0%, 100%)",
         },
       },
-      success: {
+      positive: {
         light: {
           "1": "hsl(120, 60%, 99%)",
           "2": "hsl(120, 43%, 97%)",

@@ -34,14 +34,14 @@ export const colors = defineSemanticTokens.colors({
     inverted: {
       value: "{colors.neutral.9}",
     },
-    error: {
-      value: "{colors.error.8}",
+    critical: {
+      value: "{colors.critical.8}",
     },
     warning: {
-      value: "{colors.danger.8}",
+      value: "{colors.warning.8}",
     },
-    success: {
-      value: "{colors.success.8}",
+    positive: {
+      value: "{colors.positive.8}",
     },
     info: {
       value: "{colors.ingo.8}",

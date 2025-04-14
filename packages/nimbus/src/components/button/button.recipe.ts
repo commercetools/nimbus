@@ -171,7 +171,7 @@ export const buttonRecipe = defineRecipe({
         colorPalette: "primary",
       },
       critical: {
-        colorPalette: "error",
+        colorPalette: "critical",
       },
       neutral: {
         colorPalette: "neutral",

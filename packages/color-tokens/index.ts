@@ -181,8 +181,8 @@ const semanticPaletteMapping = {
   primary: "ctviolet", // Changed from 'violet' to 'ctviolet'
   info: "blue",
   error: "red",
-  danger: "orange",
-  success: "grass",
+  warning: "amber",
+  positive: "grass",
 };
 
 function createPaletteReference(
