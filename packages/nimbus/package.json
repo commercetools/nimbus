@@ -1,7 +1,8 @@
 {
-  "name": "@nimbus/react",
-  "module": "./dist/index.js",
+  "name": "@commercetools/nimbus",
+  "version": "0.0.1",
   "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
   "sideEffects": false,

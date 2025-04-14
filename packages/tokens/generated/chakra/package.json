@@ -1,4 +1,4 @@
 {
-  "main": "dist/nimbus-tokens-generated-chakra.cjs.js",
-  "module": "dist/nimbus-tokens-generated-chakra.esm.js"
+  "main": "dist/commercetools-nimbus-tokens-generated-chakra.cjs.js",
+  "module": "dist/commercetools-nimbus-tokens-generated-chakra.esm.js"
 }

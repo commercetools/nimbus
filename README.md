@@ -7,22 +7,28 @@
 
 ## 📚 Table of Contents
 
-- [Overview](#-overview)
-- [Repository Structure](#%EF%B8%8F-repository-structure)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Development Workflow](#-development-workflow)
-  - [Development Mode](#development-mode)
-  - [Building the Project](#building-the-project)
-  - [Creating New Components](#creating-new-components)
-- [Project Management](#%EF%B8%8F-project-management)
-  - [Initialize or Reset](#initialize-or-reset)
-  - [Working with Tokens](#working-with-tokens)
-- [Integration Guide](#-integration-guide)
-  - [Testing Local Changes](#testing-local-changes)
-- [Contributing](#-contributing)
-- [Troubleshooting](#-troubleshooting)
+- [Nimbus Design System](#nimbus-design-system)
+  - [📚 Table of Contents](#-table-of-contents)
+  - [🔍 Overview](#-overview)
+  - [🏗️ Repository Structure](#️-repository-structure)
+    - [Packages](#packages)
+    - [Applications](#applications)
+  - [🚀 Getting Started](#-getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [💻 Development Workflow](#-development-workflow)
+    - [Development Mode](#development-mode)
+    - [Building the Project](#building-the-project)
+      - [Complete Build](#complete-build)
+      - [Targeted Builds](#targeted-builds)
+    - [Creating New Components](#creating-new-components)
+  - [🛠️ Project Management](#️-project-management)
+    - [Initialize or Reset](#initialize-or-reset)
+    - [Working with Tokens](#working-with-tokens)
+  - [🔄 Integration Guide](#-integration-guide)
+    - [Testing Local Nimbus Changes in Other Repositories](#testing-local-nimbus-changes-in-other-repositories)
+  - [👥 Contributing](#-contributing)
+  - [❓ Troubleshooting](#-troubleshooting)
 
 ## 🔍 Overview
 
@@ -254,7 +260,7 @@ Follow these steps:
 
    ```bash
    # In the target project:
-   pnpm unlink nimbus
+   pnpm unlink -g nimbus
 
    # In the Nimbus repository:
    pnpm unlink --global
