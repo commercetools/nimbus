@@ -41,12 +41,12 @@ provide a cohesive design system experience.
 
 ### Packages
 
-| Package                   | Description               | Purpose                                                |
-| ------------------------- | ------------------------- | ------------------------------------------------------ |
-| **@commercetools/nimbus** | Core UI component library | Provides React components for building user interfaces |
-| **@nimbus/icons**         | Icon library              | SVG files wrapped as React components                  |
-| **tokens**                | Design tokens             | Color, spacing, typography, and other design variables |
-| **color-tokens**          | Brand colors              | Brand-specific color definitions                       |
+| Package                         | Description               | Purpose                                                |
+| ------------------------------- | ------------------------- | ------------------------------------------------------ |
+| **@commercetools/nimbus**       | Core UI component library | Provides React components for building user interfaces |
+| **@commercetools/nimbus-icons** | Icon library              | SVG files wrapped as React components                  |
+| **tokens**                      | Design tokens             | Color, spacing, typography, and other design variables |
+| **color-tokens**                | Brand colors              | Brand-specific color definitions                       |
 
 ### Applications
 

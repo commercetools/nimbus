@@ -41,7 +41,7 @@ export const IconSearch = () => {
    * @param {string} iconId - The ID of the icon to copy.
    */
   const onCopyRequest = (iconId: string) => {
-    copyToClipboard(`import { ${iconId} } from '@nimbus/icons';`);
+    copyToClipboard(`import { ${iconId} } from '@commercetools/nimbus-icons';`);
 
     alert("Copied the import statement to the clipboard");
   };

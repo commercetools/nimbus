@@ -76,6 +76,6 @@ export const components: MDXComponents = {
   DurationTokenDemo,
   KeyframeTokenDemo,
   TextStylesDemo,
-  /** all icons from @nimbus/icons, TODO: evaluate if this is a good idea */
+  /** all icons from @commercetools/nimbus-icons, TODO: evaluate if this is a good idea */
   Icons: icons,
 };
