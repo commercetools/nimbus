@@ -1,4 +1,10 @@
-import { Box, Button, Flex, Text, useColorModeValue } from "@nimbus/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  useColorModeValue,
+} from "@commercetools/nimbus";
 import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,

@@ -9,7 +9,7 @@ import {
   TableRoot,
   TableRow,
   Text,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 import { JSONTree } from "react-json-tree";
 import { useMemo } from "react";
 import { useAtom } from "jotai";

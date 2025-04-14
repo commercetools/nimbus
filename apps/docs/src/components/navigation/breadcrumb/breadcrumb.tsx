@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { Box, Link } from "@nimbus/react";
+import { Box, Link } from "@commercetools/nimbus";
 import { activeDocAtom } from "../../../atoms/active-doc";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";

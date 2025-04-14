@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Badge } from "./badge";
 import { Stack } from "./../stack";
 import type { BadgeProps } from "./badge.types";
-import { SentimentSatisfied as DemoIcon } from "@nimbus/icons";
+import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
 import { within, expect } from "@storybook/test";
 
 const sizes: BadgeProps["size"][] = ["2xs", "xs", "md"];

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { IconButton, Input, Stack, Text } from "@nimbus/react";
+import { IconButton, Input, Stack, Text } from "@commercetools/nimbus";
 
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
-import { Save } from "@nimbus/icons";
+import { Save } from "@commercetools/nimbus-icons";
 import { MdxFileFrontmatter } from "@/types";
 
 type StringKeys<T> = {

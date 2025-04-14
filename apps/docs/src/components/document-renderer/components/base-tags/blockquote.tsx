@@ -8,8 +8,14 @@ import {
   cloneElement,
   isValidElement,
 } from "react";
-import { Box } from "@nimbus/react";
-import { Description, Lightbulb, Star, Warning, Error } from "@nimbus/icons";
+import { Box } from "@commercetools/nimbus";
+import {
+  Description,
+  Lightbulb,
+  Star,
+  Warning,
+  Error,
+} from "@commercetools/nimbus-icons";
 import { ListItem, UlList } from "./index";
 import { Paragraph } from "./index";
 

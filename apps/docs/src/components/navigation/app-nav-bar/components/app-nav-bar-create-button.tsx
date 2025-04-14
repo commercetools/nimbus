@@ -1,4 +1,4 @@
-import { Info, Add } from "@nimbus/icons";
+import { Info, Add } from "@commercetools/nimbus-icons";
 import {
   Button,
   DialogBackdrop,
@@ -13,7 +13,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 import { useCreateDocument } from "@/hooks/useCreateDocument";
 
 /**

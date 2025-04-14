@@ -2,11 +2,6 @@ packages:
   - "packages/*"
   - "apps/docs"
 
-overrides:
-  "@nimbus/react": "link:packages/nimbus"
-  "@nimbus/icons": "link:packages/nimbus-icons"
-  "@nimbus/tokens": "link:packages/tokens"
-
 catalogs:
   # a dependency that exists in multiple packages can be managed
   # here in a single place via a catalog @see https://pnpm.io/catalogs

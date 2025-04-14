@@ -1,5 +1,5 @@
-import { Figma } from "@nimbus/icons";
-import { Button } from "@nimbus/react";
+import { Figma } from "@commercetools/nimbus-icons";
+import { Button } from "@commercetools/nimbus";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const FigmaLink = () => {

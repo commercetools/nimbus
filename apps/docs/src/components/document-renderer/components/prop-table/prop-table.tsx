@@ -1,4 +1,4 @@
-import { Box, Code, Table, Text } from "@nimbus/react";
+import { Box, Code, Table, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { typesAtom } from "../../../../atoms/types.ts";
 import { useMemo } from "react";

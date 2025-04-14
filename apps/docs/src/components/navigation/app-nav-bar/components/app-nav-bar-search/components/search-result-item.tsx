@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { SearchResultItemProps } from "../app-nav-bar-search.types";
-import * as icons from "@nimbus/icons";
-import { Box, Flex, Heading, Text } from "@nimbus/react";
+import * as icons from "@commercetools/nimbus-icons";
+import { Box, Flex, Heading, Text } from "@commercetools/nimbus";
 
 export const SearchResultItem = forwardRef(
   ({ item, ...props }: SearchResultItemProps, ref) => {

@@ -1,4 +1,4 @@
-import { List } from "@nimbus/react";
+import { List } from "@commercetools/nimbus";
 import {
   Children,
   isValidElement,

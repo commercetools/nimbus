@@ -3,7 +3,7 @@ import { Button } from "./button";
 import { Box, Stack } from "@/components";
 import type { ButtonProps } from "./button.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
-import { ArrowRight as DemoIcon } from "@nimbus/icons";
+import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
 
 const meta: Meta<typeof Button> = {

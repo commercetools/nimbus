@@ -12,7 +12,7 @@ import {
   TableColumnGroup,
   TableColumn,
   Code,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
 

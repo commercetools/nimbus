@@ -2,7 +2,7 @@ import { forwardRef, useRef } from "react";
 import { useToggleState } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { VisuallyHidden } from "@/components";
-import { Check, Remove as Minus } from "@nimbus/icons";
+import { Check, Remove as Minus } from "@commercetools/nimbus-icons";
 
 import {
   useFocusRing,

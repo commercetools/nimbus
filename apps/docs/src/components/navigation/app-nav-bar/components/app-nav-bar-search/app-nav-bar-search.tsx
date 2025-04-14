@@ -1,4 +1,4 @@
-import { Search } from "@nimbus/icons";
+import { Search } from "@commercetools/nimbus-icons";
 import {
   Flex,
   Input,
@@ -14,7 +14,7 @@ import {
   Bleed,
   DialogHeader,
   DialogTitle,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 
 // TODO: Replace with react-aria solution
 import {

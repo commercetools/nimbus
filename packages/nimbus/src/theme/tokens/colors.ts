@@ -1,4 +1,4 @@
-import { themeTokens } from "@nimbus/tokens";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 import { defineTokens } from "@chakra-ui/react";
 
 export const colors = defineTokens.colors({

@@ -1,4 +1,4 @@
-import { Kbd, Text } from "@nimbus/react";
+import { Kbd, Text } from "@commercetools/nimbus";
 import {
   Children,
   DetailedHTMLProps,

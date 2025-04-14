@@ -1,5 +1,5 @@
 import { activeRouteAtom } from "@/atoms/route.ts";
-import { Box, Text } from "@nimbus/react";
+import { Box, Text } from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import { MouseEvent } from "react";
 import { brandNameAtom } from "@/atoms/brand.ts";

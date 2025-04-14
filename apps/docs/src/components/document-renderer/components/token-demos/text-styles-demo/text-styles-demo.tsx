@@ -8,7 +8,7 @@ import {
   TableRoot,
   TableRow,
   Text,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 export const TextStylesDemo = () => {
   const obj = system._config.theme?.textStyles || [];
   const items = Object.entries(obj).map(([name, value]) => ({ name, value }));

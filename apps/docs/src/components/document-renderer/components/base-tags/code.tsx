@@ -1,4 +1,4 @@
-import { Box, Code as StyledCode } from "@nimbus/react";
+import { Box, Code as StyledCode } from "@commercetools/nimbus";
 import { LiveCodeEditor } from "@/components/document-renderer/components/live-code-editor/live-code-editor.tsx";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";

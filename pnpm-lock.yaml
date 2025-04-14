@@ -208,6 +208,12 @@ importers:
       '@codemirror/theme-one-dark':
         specifier: ^6.1.2
         version: 6.1.2
+      '@commercetools/nimbus':
+        specifier: workspace:^
+        version: link:../../packages/nimbus
+      '@commercetools/nimbus-icons':
+        specifier: workspace:^
+        version: link:../../packages/nimbus-icons
       '@emotion/react':
         specifier: ^11.13.3
         version: 11.14.0(@types/react@18.3.18)(react@18.3.1)
@@ -223,12 +229,6 @@ importers:
       '@mdxeditor/editor':
         specifier: ^3.19.3
         version: 3.21.5(@codemirror/language@6.10.8)(@lezer/highlight@1.2.1)(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(yjs@13.6.23)
-      '@nimbus/icons':
-        specifier: workspace:^
-        version: link:../../packages/nimbus-icons
-      '@nimbus/react':
-        specifier: workspace:^
-        version: link:../../packages/nimbus
       '@types/chokidar':
         specifier: ^2.1.7
         version: 2.1.7
@@ -420,15 +420,15 @@ importers:
       '@chakra-ui/react':
         specifier: catalog:react
         version: 3.15.1(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@commercetools/nimbus-icons':
+        specifier: workspace:^
+        version: link:../nimbus-icons
+      '@commercetools/nimbus-tokens':
+        specifier: workspace:^
+        version: link:../tokens
       '@emotion/is-prop-valid':
         specifier: catalog:react
         version: 1.3.1
-      '@nimbus/icons':
-        specifier: workspace:^
-        version: link:../nimbus-icons
-      '@nimbus/tokens':
-        specifier: workspace:^
-        version: link:../tokens
       '@react-aria/optimize-locales-plugin':
         specifier: ^1.1.4
         version: 1.1.4

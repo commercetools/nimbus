@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { type MenuItemProps } from "../menu.types";
 import { activeRouteAtom } from "@/atoms/route";
 import { useEffect, useState } from "react";
-import { Box, Text } from "@nimbus/react";
+import { Box, Text } from "@commercetools/nimbus";
 import { MenuIcon } from "./menu-icon";
 import { MenuList } from "./menu-list";
 

@@ -19,9 +19,9 @@ The `<Text>` component is a foundational element for displaying text content. It
 provides a simple and flexible way to style text with consistent design tokens
 and responsive behavior.
 
-> [!NOTE]
-> If you need to render **large, bold text with a semantic meaning** you may
-> want to use the [`Heading`](/components/typography/heading) component instead.
+> [!NOTE] If you need to render **large, bold text with a semantic meaning** you
+> may want to use the [`Heading`](/components/typography/heading) component
+> instead.
 
 `<Text>` is designed to:
 
@@ -37,7 +37,7 @@ without adding styling, solely relying on the cascade (**C**SS), inheriting
 existing styles:
 
 ```jsx-live
-import { Text } from "@nimbus/react";
+import { Text } from "@commercetools/nimbus";
 
 const App = () => <Text>I am a plain old paragraph.</Text>;
 ```
@@ -48,7 +48,7 @@ If you need to render a different HTML element than a `<p>` tag, you can use the
 `as` prop to change the html-tag that used to render the text to the DOM:
 
 ```jsx-live
-import { Text } from "@nimbus/react";
+import { Text } from "@commercetools/nimbus";
 
 const App = () => (
   <>
@@ -63,7 +63,7 @@ need it's own configuration, you can use the `asChild` prop to keep the props
 separated:
 
 ```jsx-live
-import { Text } from "@nimbus/react";
+import { Text } from "@commercetools/nimbus";
 
 const App = () => (
   <Text textStyle="2xl" asChild>
@@ -85,11 +85,11 @@ achieve the desired look.
 A `textStyle` can be a simple as a combination of font-size & line-height or
 more complex, containing capitalisation rules etc.
 
-> [!NOTE]
-> A list of available text-styles [can be found here](/tokens/typography)
+> [!NOTE] A list of available text-styles
+> [can be found here](/tokens/typography)
 
 ```jsx-live
-import { Text } from "@nimbus/react";
+import { Text } from "@commercetools/nimbus";
 
 const App = () => (
   <Text textStyle="xl">Extra Large Text</Text>
@@ -139,8 +139,7 @@ If you need to set the font-size manually and independent from the line-height,
 use `fontSize` and a font-size token. Be cautious as this may affect layout and
 readability.
 
-> [!NOTE]
-> The list of available font-sizes
+> [!NOTE] The list of available font-sizes
 > [can be found here](/tokens/typography#font-sizes)
 
 ```jsx-live
@@ -160,7 +159,7 @@ const App = () => (
 Use the `color` prop to change the color of the text.
 
 ```jsx-live
-import { Stack, Text } from "@nimbus/react"
+import { Stack, Text } from "@commercetools/nimbus"
 
 const App = () => (
     <Stack>
@@ -200,7 +199,7 @@ const App = () => {
 Use the `truncate` prop to truncate the text after a single line.
 
 ```jsx-live
-import { Flex, Text } from "@nimbus/react"
+import { Flex, Text } from "@commercetools/nimbus"
 
 const App = () => (
     <Flex maxW="300px">
@@ -216,7 +215,7 @@ const App = () => (
 Use the `lineClamp` prop to truncate the text after a certain number of lines.
 
 ```jsx-live
-import { Flex, Text } from "@nimbus/react"
+import { Flex, Text } from "@commercetools/nimbus"
 
 const App = () => (
     <Flex maxW="300px">

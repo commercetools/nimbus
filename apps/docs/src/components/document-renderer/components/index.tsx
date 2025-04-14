@@ -1,4 +1,4 @@
-import { Table } from "@nimbus/react";
+import { Table } from "@commercetools/nimbus";
 import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
 import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
@@ -7,7 +7,7 @@ import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
 import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TextStylesDemo } from "./token-demos/text-styles-demo";
-import * as icons from "@nimbus/icons";
+import * as icons from "@commercetools/nimbus-icons";
 
 import { MDXComponents } from "mdx/types";
 import {
