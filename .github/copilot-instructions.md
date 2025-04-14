@@ -36,6 +36,13 @@ Each component in the `nimbus` package follows this file structure:
   compound component (`component-name.slot-name.tsx`)
 - `utils` folder for component specific custom functions (formatters, etc.)
 
+#### Conventions
+
+- the `component-name.recipe.ts` file needs to be imported by
+  `packages/nimbus/src/theme/recipes/index.ts` or
+  `packages/nimbus/src/theme/slot-recipes/index.ts`, key-name is the capitalized
+  version of the component-name
+
 ### Naming Conventions
 
 1. Components exported from `*.slots.tsx` files should end with 'Slot' in their
@@ -64,6 +71,7 @@ When using React Aria Components:
 
 - Use strict typing for all components and functions
 - Export types for all component props
+- when importing types, annotate them as such (import { **type** FooBar })
 - Use interfaces for complex objects with documentation
 
 ### Styling
