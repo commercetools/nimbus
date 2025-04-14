@@ -60,7 +60,7 @@ export const Base: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const alertRoot = canvas.getByTestId("base-alert");
-    const dismissButton = canvas.getByTestId("dismiss-button");
+    const dismissButton = await canvas.findByTestId("dismiss-button");
     // Find the icon inside the button
     const dismissIcon = within(dismissButton).getByRole("img", {
       hidden: true,
