@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools/composable-commerce-nimbus",
+  "name": "@commercetools/nimbus",
   "version": "0.0.1",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",

@@ -1,8 +1,8 @@
 {
-  "name": "@commercetools/composable-commerce-nimbus-tokens",
+  "name": "@commercetools/nimbus-tokens",
   "version": "0.0.1",
-  "main": "dist/commercetools-composable-commerce-nimbus-tokens.cjs.js",
-  "module": "dist/commercetools-composable-commerce-nimbus-tokens.esm.js",
+  "main": "dist/commercetools-nimbus-tokens.cjs.js",
+  "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",
   "scripts": {
     "build": "style-dictionary build --verbose --config ./src/style-dictionary.config.js"
