@@ -25,7 +25,9 @@ Each component in the `nimbus` package follows this file structure:
 - `component-name.slots.tsx`: Slot-based components (naming convention:
   ComponentNameSlot)
 - `component-name.recipe.ts`: Styling recipes using Chakra UI v3
-- `component-name.stories.tsx`: Storybook stories + tests
+- `component-name.stories.tsx`: Storybook stories + tests (MANDATORY for all
+  components)
+- `component-name.mdx`: Documentation in MDX format
 - `index.ts`: Exports from the component
 
 #### Folders
