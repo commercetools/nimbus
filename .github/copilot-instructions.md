@@ -38,7 +38,7 @@ Each component in the `nimbus` package follows this file structure:
 
 #### Conventions
 
-- the `component-name.recipe.ts` file needs to be imported by
+- The `component-name.recipe.ts` file needs to be imported by
   `packages/nimbus/src/theme/recipes/index.ts` or
   `packages/nimbus/src/theme/slot-recipes/index.ts`, key-name is the capitalized
   version of the component-name
