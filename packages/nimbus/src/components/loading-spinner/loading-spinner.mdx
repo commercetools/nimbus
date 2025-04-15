@@ -6,6 +6,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Feedback
   - LoadingSpinner
 tags:
   - component
@@ -13,80 +14,55 @@ tags:
 
 # LoadingSpinner
 
-Indicates ongoing processes or loading states
+The LoadingSpinner component provides visual feedback to users that an operation is in progress. It helps improve the user experience by indicating that the application is working on a task rather than being stuck or unresponsive.
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
+In its simplest form, the LoadingSpinner can be used without any props to show the default loading indicator.
 
 ```jsx-live
-const App = () => <LoadingSpinner>I am LoadingSpinner!</LoadingSpinner>
+const App = () => <LoadingSpinner />
 ```
 
+## Sizes
 
-### Sizes
-
-Available sizes.
+The LoadingSpinner component comes in different sizes to accommodate various use cases. You can adjust the size using the `size` prop.
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
 
   return (
-    <Stack direction="horizontal" alignItems="center">
+    <Stack direction="horizontal" alignItems="center" gap="md">
       {sizes.map(size => (
-        <LoadingSpinner key={size} size={size}>'{size}' LoadingSpinner</LoadingSpinner>
+        <LoadingSpinner key={size} size={size} />
       ))}
     </Stack>
   )
 }
 ```
 
-### Variants
+## Tones
 
-Available variants.
+You can customize the color of the LoadingSpinner using the `tone` prop to match your application's design system.
 
 ```jsx-live
 const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const tones = ['primary', 'white'];
 
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <LoadingSpinner key={variant} variant={variant}>'{variant}' LoadingSpinner</LoadingSpinner>
-      ))}
+    <Stack direction="horizontal" alignItems="center" gap="md">
+    
+      
+      <Box p="400"><LoadingSpinner tone="primary" size="md" /></Box>
+      <Box p="400" bg="neutral.12"><LoadingSpinner tone="white" size="md" /></Box>
     </Stack>
   )
 }
 ```
 
-### Colors
 
-[Explain usage with different colors/semantics.]
 
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <LoadingSpinner colorPalette={color} key={variant} variant={variant}>
-              '{variant}' LoadingSpinner
-            </LoadingSpinner>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-```
-
-## Props
+## Properties / API
 
 <PropTable id="LoadingSpinner" />
