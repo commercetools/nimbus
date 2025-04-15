@@ -5,12 +5,10 @@ import { AccordionContent } from "./components/accordion-content";
 import { AccordionItem } from "./components/accordion-item";
 
 // Create the Accordion namespace object as an object literal
-const Accordion = {
+export const Accordion = {
   Root: AccordionGroup,
   Item: AccordionItem,
   Header: AccordionHeader,
   Content: AccordionContent,
   HeaderRightContent,
 };
-
-export default Accordion;
