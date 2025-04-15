@@ -25,7 +25,7 @@ export const formFieldRecipe = defineSlotRecipe({
     root: {
       "--grid-gap": "spacing.100",
 
-      display: "inline-grid",
+      display: "grid",
       width: "auto",
     },
     label: {
@@ -71,7 +71,6 @@ export const formFieldRecipe = defineSlotRecipe({
     direction: {
       column: {
         root: {
-          gridTemplateColumns: "auto 1fr",
           gridTemplateAreas: columnLayout,
         },
         input: {
@@ -87,6 +86,7 @@ export const formFieldRecipe = defineSlotRecipe({
       row: {
         root: {
           gridTemplateAreas: rowLayout,
+          gridTemplateColumns: "auto 1fr",
           gridColumnGap: "200",
         },
         description: {
