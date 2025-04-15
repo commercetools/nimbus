@@ -4,7 +4,7 @@ import { chakra, useSlotRecipe } from "@chakra-ui/react";
 import {
   KeyboardArrowDown as DropdownIndicatorIcon,
   Loop as SpinnerIcon,
-} from "@nimbus/icons";
+} from "@commercetools/nimbus-icons";
 
 import { Flex, Box } from "@/components";
 import {

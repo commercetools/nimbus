@@ -1,5 +1,5 @@
-import { IconButton } from "@nimbus/react";
-import { Code as EditorIcon } from "@nimbus/icons";
+import { IconButton } from "@commercetools/nimbus";
+import { Code as EditorIcon } from "@commercetools/nimbus-icons";
 
 const prefix = "vscode://file" + process.env.REPO_ROOT;
 

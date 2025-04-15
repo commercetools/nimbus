@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { system } from "@nimbus/react";
+import { system } from "@commercetools/nimbus";
 
 /**
  * Retrieves the color scales from the system tokens.

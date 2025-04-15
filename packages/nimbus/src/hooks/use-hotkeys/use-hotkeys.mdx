@@ -23,7 +23,7 @@ callback function once the user pressed down the given hotkey.
 Import the `useHotkeys` hook from the package:
 
 ```js
-import { useHotkeys } from "@nimbus/react";
+import { useHotkeys } from "@commercetools/nimbus";
 ```
 
 ## Simple Hotkey
@@ -32,7 +32,7 @@ The most basic usage for the hook is to assign a hotkey you want to listen to
 and a callback to get executed once the user hits that key.
 
 ```jsx-live
-import { useHotkeys } from "@nimbus/react";
+import { useHotkeys } from "@commercetools/nimbus";
 
 const App = () => {
   useHotkeys("a", () => alert("Key a was pressed"));

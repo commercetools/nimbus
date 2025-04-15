@@ -1,4 +1,4 @@
-import { Box } from "@nimbus/react";
+import { Box } from "@commercetools/nimbus";
 import React from "react";
 
 interface CubicBezierProps {

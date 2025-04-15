@@ -1,6 +1,6 @@
-import { Box, Code, Flex, SimpleGrid } from "@nimbus/react";
+import { Box, Code, Flex, SimpleGrid } from "@commercetools/nimbus";
 import { atom, useAtomValue } from "jotai";
-import { system } from "@nimbus/react";
+import { system } from "@commercetools/nimbus";
 
 export const keyframeTokensAtom = atom(() => {
   const obj = system._config.theme?.keyframes || {};

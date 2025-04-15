@@ -1,4 +1,4 @@
-import { Flex, Box, Stack } from "@nimbus/react";
+import { Flex, Box, Stack } from "@commercetools/nimbus";
 import { DevOnly } from "@/components/utils/dev-only";
 
 import { ModeToggleButton } from "./components/mode-toggle-button/index.ts";

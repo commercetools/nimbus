@@ -8,7 +8,7 @@ import {
   TableRow,
   Flex,
   Code,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
 import { useState } from "react";

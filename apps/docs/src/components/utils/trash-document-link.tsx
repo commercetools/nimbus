@@ -1,5 +1,5 @@
-import { IconButton } from "@nimbus/react";
-import { Delete } from "@nimbus/icons";
+import { IconButton } from "@commercetools/nimbus";
+import { Delete } from "@commercetools/nimbus-icons";
 import { useRemoveDocument } from "@/hooks/useRemoveDocument";
 
 /**

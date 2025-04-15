@@ -1,4 +1,4 @@
-import { Box } from "@nimbus/react";
+import { Box } from "@commercetools/nimbus";
 import { keyframes } from "@emotion/react";
 // ...existing code...
 

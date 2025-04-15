@@ -5,11 +5,11 @@ import {
   Stack,
   SimpleGrid,
   useCopyToClipboard,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 import { useEffect, useState } from "react";
 import take from "lodash/take";
 
-import * as icons from "@nimbus/icons";
+import * as icons from "@commercetools/nimbus-icons";
 
 /**
  * IconSearch component allows users to search and copy icon import statements.
@@ -41,7 +41,7 @@ export const IconSearch = () => {
    * @param {string} iconId - The ID of the icon to copy.
    */
   const onCopyRequest = (iconId: string) => {
-    copyToClipboard(`import { ${iconId} } from '@nimbus/icons';`);
+    copyToClipboard(`import { ${iconId} } from '@commercetools/nimbus-icons';`);
 
     alert("Copied the import statement to the clipboard");
   };

@@ -1,6 +1,6 @@
-import { Box, Link as StyledLink } from "@nimbus/react";
+import { Box, Link as StyledLink } from "@commercetools/nimbus";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
-import { OpenInNew } from "@nimbus/icons";
+import { OpenInNew } from "@commercetools/nimbus-icons";
 
 type LinkProps = DetailedHTMLProps<
   AnchorHTMLAttributes<HTMLAnchorElement>,

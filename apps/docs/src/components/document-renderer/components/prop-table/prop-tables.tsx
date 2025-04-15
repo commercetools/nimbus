@@ -1,4 +1,4 @@
-import { Button, Stack } from "@nimbus/react";
+import { Button, Stack } from "@commercetools/nimbus";
 import { PropTable } from "./prop-table.tsx";
 import { useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";

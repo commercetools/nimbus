@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { AlertDismissButton as AlertDismissButtonSlot } from "../alert.slots";
 import type { AlertDismissButtonProps } from "../alert.types";
-import { Clear } from "@nimbus/icons";
+import { Clear } from "@commercetools/nimbus-icons";
 import { IconButton } from "../../icon-button";
 import { AlertContext } from "./alert.root";
 

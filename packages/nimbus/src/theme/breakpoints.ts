@@ -1,4 +1,4 @@
-import { themeTokens } from "@nimbus/tokens";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 
 interface BreakpointValue {
   value?: string;

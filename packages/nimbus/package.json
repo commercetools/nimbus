@@ -40,8 +40,8 @@
     "typescript": "catalog:tooling"
   },
   "dependencies": {
-    "@nimbus/icons": "workspace:^",
-    "@nimbus/tokens": "workspace:^",
+    "@commercetools/nimbus-icons": "workspace:^",
+    "@commercetools/nimbus-tokens": "workspace:^",
     "@chakra-ui/react": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/optimize-locales-plugin": "^1.1.4",

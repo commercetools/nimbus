@@ -1,5 +1,5 @@
-import * as icons from "@nimbus/icons";
-import { Text } from "@nimbus/react";
+import * as icons from "@commercetools/nimbus-icons";
+import { Text } from "@commercetools/nimbus";
 import { MenuIconProps } from "../menu.types";
 
 /**

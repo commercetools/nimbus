@@ -4,8 +4,8 @@ import { GithubRepoLink } from "@/components/utils/github-repo-link";
 import { TrashDocumentLink } from "@/components/utils/trash-document-link";
 import { VsCodeEditLink } from "@/components/utils/vs-code-edit-link";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
-import { Edit, EditOff } from "@nimbus/icons";
-import { Box, IconButton, Stack } from "@nimbus/react";
+import { Edit, EditOff } from "@commercetools/nimbus-icons";
+import { Box, IconButton, Stack } from "@commercetools/nimbus";
 import { useAtom } from "jotai";
 
 export const DocumentActionButtons = () => {

@@ -3,8 +3,8 @@ import {
   documentStateDescriptions,
 } from "@/schemas/mdx-document-states";
 import { useCallback, useEffect, useMemo } from "react";
-import { Box, Stack, Text } from "@nimbus/react";
-import { KeyboardArrowDown } from "@nimbus/icons";
+import { Box, Stack, Text } from "@commercetools/nimbus";
+import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const DocumentStateSelector = () => {

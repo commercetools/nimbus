@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Close as CloseIcon } from "@nimbus/icons";
+import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { SelectStateContext } from "react-aria-components";
 

@@ -1,5 +1,13 @@
-import { Box, Button, Code, Flex, Link, Stack, Text } from "@nimbus/react";
-import { ChatBubble, Send, Close } from "@nimbus/icons";
+import {
+  Box,
+  Button,
+  Code,
+  Flex,
+  Link,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
+import { ChatBubble, Send, Close } from "@commercetools/nimbus-icons";
 import { type Message, useChat } from "ai/react";
 import { useState } from "react";
 import { MdxStringRenderer } from "@/components/document-renderer/mdx-string-renderer.tsx";

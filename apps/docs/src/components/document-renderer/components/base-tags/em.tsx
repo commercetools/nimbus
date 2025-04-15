@@ -1,3 +1,3 @@
-import { Em as StyledEm } from "@nimbus/react";
+import { Em as StyledEm } from "@commercetools/nimbus";
 
 export const Em = StyledEm;

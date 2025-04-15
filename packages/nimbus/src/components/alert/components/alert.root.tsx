@@ -14,7 +14,7 @@ import {
   ErrorOutline,
   Info,
   WarningAmber,
-} from "@nimbus/icons";
+} from "@commercetools/nimbus-icons";
 
 const getIconFromTone = (tone: AlertProps["tone"]) => {
   switch (tone) {

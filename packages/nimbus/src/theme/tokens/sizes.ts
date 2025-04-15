@@ -1,5 +1,5 @@
 import { defineTokens } from "@chakra-ui/react";
-import { themeTokens } from "@nimbus/tokens";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 
 export const sizes = defineTokens.sizes({
   ...themeTokens.size,

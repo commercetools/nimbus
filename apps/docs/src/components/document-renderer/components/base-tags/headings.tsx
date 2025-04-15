@@ -1,5 +1,5 @@
 import { sluggify } from "@/utils/sluggify";
-import { Heading } from "@nimbus/react";
+import { Heading } from "@commercetools/nimbus";
 import { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
 
 const sluggifyChildren = (children: ReactNode) => {

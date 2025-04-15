@@ -1,4 +1,4 @@
-import { Box, Link, Text } from "@nimbus/react";
+import { Box, Link, Text } from "@commercetools/nimbus";
 import { tocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
 import { useEffect } from "react";

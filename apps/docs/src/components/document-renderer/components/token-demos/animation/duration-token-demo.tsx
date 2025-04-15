@@ -10,13 +10,13 @@ import {
   TableHeader,
   TableRoot,
   TableRow,
-} from "@nimbus/react";
+} from "@commercetools/nimbus";
 
 import { atom, useAtomValue } from "jotai";
-import { system } from "@nimbus/react";
+import { system } from "@commercetools/nimbus";
 import AnimationDemo from "./animation-demo";
 import { useState } from "react";
-import { PlayArrow } from "@nimbus/icons";
+import { PlayArrow } from "@commercetools/nimbus-icons";
 
 export const durationTokensAtom = atom(() => {
   const tokenMap = system.tokens.categoryMap.get("durations");

@@ -1,5 +1,5 @@
-import { DarkMode, LightMode } from "@nimbus/icons";
-import { useColorMode, IconButton } from "@nimbus/react";
+import { DarkMode, LightMode } from "@commercetools/nimbus-icons";
+import { useColorMode, IconButton } from "@commercetools/nimbus";
 
 export const ModeToggleButton = () => {
   const { colorMode, setColorMode } = useColorMode();

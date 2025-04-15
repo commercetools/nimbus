@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { system } from "@nimbus/react";
+import { system } from "@commercetools/nimbus";
 
 // Define shirt sizes
 const SHIRT_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;

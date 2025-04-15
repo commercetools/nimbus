@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text } from "@nimbus/react";
+import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { themeColorScalesAtom } from "@/atoms/theme-color-scales.ts";
 import { useMemo } from "react";

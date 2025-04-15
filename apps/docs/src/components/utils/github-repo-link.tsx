@@ -1,5 +1,5 @@
-import { IconButton } from "@nimbus/react";
-import { Github } from "@nimbus/icons";
+import { IconButton } from "@commercetools/nimbus";
+import { Github } from "@commercetools/nimbus-icons";
 
 // TODO: put this in some config file
 const prefix = "https://github.com/commercetools/nimbus-docs-poc/blob/main/";

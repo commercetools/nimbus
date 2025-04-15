@@ -1,5 +1,5 @@
 import { defineTokens } from "@chakra-ui/react";
-import { themeTokens } from "@nimbus/tokens";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 
 // convert token percentage values (needed by figma) to em values (needded by code)
 // todo: fix this in the token build process

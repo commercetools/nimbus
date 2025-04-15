@@ -1,4 +1,4 @@
-import { NimbusProvider, Flex, Box, Stack } from "@nimbus/react";
+import { NimbusProvider, Flex, Box, Stack } from "@commercetools/nimbus";
 import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
 import { Toc } from "./components/navigation/toc";
