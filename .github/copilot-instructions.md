@@ -90,7 +90,7 @@ When using React Aria Components:
 
 ## Testing Guidelines
 
-- Write unit tests as part of the storybook stories for component functionality
+- Write unit tests as part of the Storybook stories for component functionality
 - Ensure accessibility testing is included
 - Test all variants and states
 
