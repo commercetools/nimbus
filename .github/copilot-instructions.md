@@ -4,7 +4,7 @@
 
 This is a UI component library project with the following structure:
 
-- **ui-kit-docs-poc**: Main monorepo
+- **nimbus**: Monorepo root folder
   - **packages/nimbus**: Core UI component library
   - **packages/tokens**: Design tokens
   - **packages/nimbus-icons**: Icon library
