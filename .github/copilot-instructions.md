@@ -55,7 +55,7 @@ Each component in the `nimbus` package follows this file structure:
 1. Use React Aria Components for accessibility when appropriate
 2. Components should be implemented as forwardRef components
 3. Use Chakra UI's styling system with slot recipes
-4. components which require state should provide a controlled and uncontrolled
+4. Components which require state should provide a controlled and uncontrolled
    mode if possible
 
 ### React Aria Components Integration
