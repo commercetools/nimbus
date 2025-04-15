@@ -45,38 +45,30 @@ function App() {
   return (
     <NimbusProvider>
       <>
-        <Flex
-          direction="column"
-          height="100vh"
-          width="full"
-          maxWidth="1600px"
-          mx="auto"
-        >
-          <Box flexShrink="0">
+        <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
+          <Box position="sticky" top="0" zIndex="1" bg="neutral.1">
             <AppNavBar />
           </Box>
 
-          <Flex flexGrow="1" flexShrink="1" height={availableHeight}>
+          <Flex zIndex="0" flexGrow="1" flexShrink="1" height={availableHeight}>
             <Box
+              as="nav"
               width="7200"
               borderRight="solid-25"
               borderColor="neutral.3"
               flexShrink="0"
               pt="600"
-              overflow="auto"
-              height="100%"
             >
               <Menu />
             </Box>
             <Flex
+              id="main"
+              as="main"
               flexGrow="1"
               flexShrink="1"
               minWidth="lg"
               pt="800"
               px="1600"
-              overflow="auto"
-              height="100%"
-              id="main"
             >
               <DocumentRenderer />
             </Flex>
