@@ -69,6 +69,7 @@ export const DocumentAudienceSelector = (): JSX.Element | null => {
       >
         {options.map(({ id, label }) => (
           <Checkbox
+            key={id}
             isSelected={meta?.documentAudiences?.includes(id) || false}
             onChange={() => handleCheckboxChange(id)}
           >
