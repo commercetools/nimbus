@@ -161,9 +161,8 @@ export const TitleOnly: Story = {
     const alert = canvas.getByTestId("alert-title-only");
 
     await step("Renders only the title", async () => {
-      await expect(
-        within(alert).getByText("Title Only Alert")
-      ).toBeInTheDocument();
+      const title = await within(alert).findByText("Title Only Alert");
+      expect(title).toBeInTheDocument();
     });
 
     await step("Does not render other parts", async () => {
@@ -195,9 +194,8 @@ export const DescriptionOnly: Story = {
     const alert = canvas.getByTestId("alert-desc-only");
 
     await step("Renders only the description", async () => {
-      await expect(
-        within(alert).getByText("Description Only Alert")
-      ).toBeInTheDocument();
+      const title = await within(alert).findByText("Description Only Alert");
+      expect(title).toBeInTheDocument();
     });
 
     await step("Does not render other parts", async () => {
@@ -233,9 +231,9 @@ export const TitleAndActions: Story = {
     const alert = canvas.getByTestId("alert-title-actions");
 
     await step("Renders title and action buttons", async () => {
-      await expect(
-        within(alert).getByText("Title and Actions only")
-      ).toBeInTheDocument();
+      const title = await within(alert).findByText("Title and Actions only");
+      expect(title).toBeInTheDocument();
+
       await expect(
         within(alert).getByRole("button", { name: "Action A" })
       ).toBeInTheDocument();
