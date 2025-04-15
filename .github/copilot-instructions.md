@@ -71,7 +71,7 @@ When using React Aria Components:
 
 - Use strict typing for all components and functions
 - Export types for all component props
-- when importing types, annotate them as such (import { **type** FooBar })
+- When importing types, annotate them as such (import { **type** FooBar })
 - Use interfaces for complex objects with documentation
 
 ### Styling
