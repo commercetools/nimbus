@@ -10,20 +10,38 @@ import { Chatbot } from "./components/chatbot";
 import { DevOnly } from "./components/utils/dev-only.tsx";
 import { DocumentMetaSettings } from "./components/document-meta-settings/document-meta-settings.tsx";
 import { StickySidebar } from "./components/navigation/sticky-sidebar.tsx";
+import { scrollToAnchor } from "./utils/scroll-to-anchor";
 
 function App() {
   const [activeRoute, setActiveroute] = useAtom(activeRouteAtom);
+
+  // Handle hash fragments when route changes or on initial load
+  const handleHashFragment = () => {
+    // Get hash (without the # character)
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      // We need a small delay to ensure content is rendered before scrolling
+      setTimeout(() => {
+        scrollToAnchor(hash);
+      }, 100);
+    }
+  };
 
   useEffect(() => {
     const handleRouteChange = () => {
       const route = location.pathname.slice(1);
       setActiveroute(route);
+      // Handle hash fragment when route changes
+      handleHashFragment();
     };
 
     window.addEventListener("popstate", handleRouteChange);
+    // Also listen for hashchange events
+    window.addEventListener("hashchange", handleHashFragment);
 
     return () => {
       window.removeEventListener("popstate", handleRouteChange);
+      window.removeEventListener("hashchange", handleHashFragment);
     };
   }, [activeRoute]);
 
@@ -36,9 +54,20 @@ function App() {
     const routeChanged = currentRoute !== activeRoute;
 
     if (routeChanged) {
-      history.pushState({ activeRoute }, "", "/" + activeRoute);
+      history.pushState(
+        { activeRoute },
+        "",
+        "/" + activeRoute + window.location.hash
+      );
+      // After route change is processed, handle hash fragment
+      handleHashFragment();
     }
   }, [activeRoute]);
+
+  // Handle hash fragment on initial page load
+  useEffect(() => {
+    handleHashFragment();
+  }, []);
 
   return (
     <NimbusProvider>
