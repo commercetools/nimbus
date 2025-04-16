@@ -9,9 +9,21 @@ import { useEffect } from "react";
 import { Chatbot } from "./components/chatbot";
 import { DevOnly } from "./components/utils/dev-only.tsx";
 import { DocumentMetaSettings } from "./components/document-meta-settings/document-meta-settings.tsx";
+import { createSidebarHook } from "./hooks/useStickyScroll";
+
+// Create separate hooks for left and right sidebars
+const useLeftSidebar = createSidebarHook();
+const useRightSidebar = createSidebarHook();
 
 function App() {
   const [activeRoute, setActiveroute] = useAtom(activeRouteAtom);
+
+  // Initialize sidebar hooks
+  const { sidebarRef: leftSidebarRef, sidebarStyles: leftSidebarStyles } =
+    useLeftSidebar();
+
+  const { sidebarRef: rightSidebarRef, sidebarStyles: rightSidebarStyles } =
+    useRightSidebar();
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -55,6 +67,20 @@ function App() {
               borderColor="neutral.3"
               flexShrink="0"
               pt="600"
+              id="sidebar-left"
+              ref={leftSidebarRef}
+              position="sticky"
+              top={0}
+              height="100%"
+              overflowY="auto"
+              style={{
+                position: leftSidebarStyles.position,
+                top: leftSidebarStyles.top,
+                height: leftSidebarStyles.height,
+                overflowY: leftSidebarStyles.overflowY,
+                display: leftSidebarStyles.display,
+                flexDirection: leftSidebarStyles.flexDirection,
+              }}
             >
               <Menu />
             </Box>
@@ -76,6 +102,20 @@ function App() {
               flexShrink="0"
               px="400"
               pt="600"
+              id="sidebar-right"
+              ref={rightSidebarRef}
+              position="sticky"
+              top={0}
+              height="100%"
+              overflowY="auto"
+              style={{
+                position: rightSidebarStyles.position,
+                top: rightSidebarStyles.top,
+                height: rightSidebarStyles.height,
+                overflowY: rightSidebarStyles.overflowY,
+                display: rightSidebarStyles.display,
+                flexDirection: rightSidebarStyles.flexDirection,
+              }}
             >
               <Stack gap="800">
                 <DevOnly>
