@@ -54,7 +54,7 @@ export const RouterProvider = ({ children }: { children: ReactNode }) => {
       history.pushState({ activeRoute }, "", "/" + activeRoute);
 
       // Reset scroll position to top when changing routes
-      scrollToAnchor("main");
+      scrollToAnchor("root");
 
       // After route change is processed, handle hash fragment
       handleHashFragment();
