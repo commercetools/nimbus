@@ -24,15 +24,24 @@ const watcher = chokidar.watch(directoryToWatch, {
   persistent: true,
   ignoreInitial: false, // Watch also for newly created files
   usePolling: true, // Can be set for environments that don't support native file watching
-  // only watch .mdx files
-  ignored: (path, stats) =>
-    (stats?.isFile() &&
-      !(
+  // Ignore node_modules and files that are not .ts, .tsx, or .mdx
+  ignored: (path, stats) => {
+    // Always ignore node_modules directories
+    if (path.includes("node_modules")) {
+      return true;
+    }
+
+    // For files, only watch .ts, .tsx, and .mdx files
+    if (stats?.isFile()) {
+      return !(
         path.endsWith(".ts") ||
         path.endsWith(".tsx") ||
         path.endsWith(".mdx")
-      )) ||
-    false, // only watch js files
+      );
+    }
+
+    return false; // Don't ignore directories (except node_modules)
+  },
 });
 
 // Watch for add and change events on .mdx files
