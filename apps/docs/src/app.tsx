@@ -39,9 +39,6 @@ function App() {
     }
   }, [activeRoute]);
 
-  // todo: meh
-  const availableHeight = "calc(100vh - 69px)";
-
   return (
     <NimbusProvider>
       <>
@@ -50,7 +47,7 @@ function App() {
             <AppNavBar />
           </Box>
 
-          <Flex zIndex="0" flexGrow="1" flexShrink="1" height={availableHeight}>
+          <Flex zIndex="0" flexGrow="1" flexShrink="1">
             <Box
               as="nav"
               width="7200"
@@ -79,8 +76,6 @@ function App() {
               flexShrink="0"
               px="400"
               pt="600"
-              overflow="auto"
-              height="100%"
             >
               <Stack gap="800">
                 <DevOnly>
