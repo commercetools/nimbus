@@ -1,41 +1,36 @@
-import { Search } from "@commercetools/nimbus-icons";
 import {
   Flex,
-  InputGroup,
-  Kbd,
+  Box,
   useHotkeys,
+  DialogHeader,
+  DialogTitle,
+  TextInput,
   DialogRoot,
   DialogBackdrop,
   DialogTrigger,
   DialogContent,
   DialogBody,
-  Box,
+  Text,
   Bleed,
-  DialogHeader,
-  DialogTitle,
+  Kbd,
 } from "@commercetools/nimbus";
 
-// TODO: Replace with react-aria solution
-import {
-  Combobox,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxProvider,
-} from "@ariakit/react";
+import { ComboBox, Input, ListBox, ListBoxItem } from "react-aria-components";
 
-import { MouseEvent, useRef } from "react";
+import { Key } from "react";
 import { useAtom } from "jotai";
-import { type SearchableDocItem } from "@/atoms/searchable-docs";
 import { activeRouteAtom } from "@/atoms/route";
 import { useSearch } from "./hooks/use-search";
 import { SearchResultItem } from "./components/search-result-item";
+import { SearchableDocItem } from "@/atoms/searchable-docs";
+
+export type SearchResultItemProps = {
+  item: SearchableDocItem;
+};
 
 export const AppNavBarSearch = () => {
-  const comboboxRef = useRef<HTMLInputElement>(null);
-  const listboxRef = useRef<HTMLDivElement>(null);
   const [, setActiveRoute] = useAtom(activeRouteAtom);
-
-  const { query: q, setQuery: setQ, results, open, setOpen } = useSearch();
+  const { query, setQuery, results, open, setOpen } = useSearch();
 
   useHotkeys(
     "mod+k",
@@ -45,13 +40,14 @@ export const AppNavBarSearch = () => {
     [open]
   );
 
-  const onItemConfirm = (
-    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
-    item: SearchableDocItem
-  ) => {
-    e.preventDefault();
-    setOpen(false);
-    setActiveRoute(item.route);
+  const handleSelectionChange = (key: Key | null) => {
+    if (key === null) return;
+
+    const selectedItem = results.find((item) => item.id === key);
+    if (selectedItem) {
+      setOpen(false);
+      setActiveRoute(selectedItem.route);
+    }
   };
 
   return (
@@ -65,104 +61,81 @@ export const AppNavBarSearch = () => {
         size="xl"
       >
         <DialogBackdrop />
-        <DialogTrigger asChild>
-          <InputGroup
-            startElement={<Search size="1em" />}
-            startElementProps={{ color: "neutral.8" }}
-            endElement={<Kbd>⌘K</Kbd>}
-            endElementProps={{ color: "neutral.9" }}
-            width="full"
-            maxWidth="9600"
-            mx="auto"
-          >
-            <Box
-              as="input"
-              border="1px solid"
-              borderColor="neutral.6"
-              width="full"
-              px="400"
-              py="200"
+        <DialogTrigger>
+          <Box position="relative">
+            <TextInput
+              size="md"
+              width="320px"
               type="search"
               placeholder="Search for a component..."
-              size="sm"
               onFocus={(e) => e.target.blur()}
             />
-          </InputGroup>
+
+            <Box position="absolute" top="150" right="250" color="neutral.11">
+              <Kbd>⌘+K</Kbd>
+            </Box>
+          </Box>
         </DialogTrigger>
-        <DialogContent divideY="1px">
+        <DialogContent divideY="1px" backdropBlur="5px">
           <DialogHeader>
-            <DialogTitle position="relative" display="flex">
-              <span>Site Search</span>
-              <Box flexGrow="1" />
-            </DialogTitle>
+            <DialogTitle fontWeight="600">Search the Documentation</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <ComboboxProvider open={open} setOpen={setOpen}>
-              <Flex direction="column">
-                <Box>
-                  <InputGroup
-                    startElement={<Search size="1em" />}
-                    startElementProps={{ color: "neutral.8" }}
-                    endElement={<Kbd>⌘K</Kbd>}
-                    endElementProps={{ color: "neutral.9" }}
-                    width="full"
-                    mx="auto"
-                    mt="400"
-                    mb="600"
-                  >
-                    <Box
-                      as="input"
-                      border="1px solid"
-                      borderColor="neutral.6"
-                      width="full"
-                      px="400"
-                      py="200"
-                      focusRing="outside"
-                      type="search"
-                      placeholder="Search for a component..."
-                      size="sm"
-                      value={q}
-                      onChange={(e) => setQ(e.target.value)}
-                      ref={comboboxRef}
-                      asChild
-                    >
-                      <Combobox placeholder="e.g., Tokens, Component, Installation" />
-                    </Box>
-                  </InputGroup>
+            <ComboBox
+              inputValue={query}
+              onInputChange={setQuery}
+              onSelectionChange={handleSelectionChange}
+            >
+              <Flex alignItems="center" width="100%" py="400" pb="600">
+                <Box
+                  border="1px solid"
+                  borderColor="neutral.6"
+                  focusRing="outside"
+                  height="1000"
+                  textStyle="md"
+                  _placeholder={{
+                    opacity: 0.5,
+                    color: "currentColor",
+                  }}
+                  px="400"
+                  borderRadius="200"
+                  width="full"
+                  asChild
+                >
+                  {/** TODO: TextInput should actually work here, try again once it's fixed*/}
+                  <Input placeholder="Type to search..." />
                 </Box>
-
-                <Bleed inline="600">
-                  <Box maxHeight="lg" divideY="1px" overflow="auto" asChild>
-                    <ComboboxList ref={listboxRef} role="listbox">
-                      {results?.map((item) => (
-                        <Box>
-                          <Box
-                            asChild
-                            css={{
-                              ["&[data-active-item]"]: {
-                                background: "primary.9",
-                                color: "primary.contrast",
-                              },
-                            }}
-                          >
-                            <ComboboxItem
-                              focusOnHover
-                              value={item.item.title}
-                              onClick={(e) => onItemConfirm(e, item.item)}
-                            >
-                              <SearchResultItem
-                                item={item.item}
-                                score={item.score}
-                              />
-                            </ComboboxItem>
-                          </Box>
-                        </Box>
-                      ))}
-                    </ComboboxList>
-                  </Box>
-                </Bleed>
               </Flex>
-            </ComboboxProvider>
+              <Bleed inline="600" borderTop="1px solid" borderColor="neutral.6">
+                <ListBox items={results} selectionMode="single">
+                  {(item) => (
+                    <Flex
+                      css={{
+                        "&[data-focused]": {
+                          backgroundColor: "primary.9",
+                          color: "primary.contrast",
+                        },
+                      }}
+                      direction="column"
+                      gap="1"
+                      py="100"
+                      px="600"
+                      asChild
+                      borderBottom="1px solid"
+                      borderBottomColor="neutral.6"
+                    >
+                      <ListBoxItem id={item.id} textValue={item.title}>
+                        <SearchResultItem item={item} />
+                      </ListBoxItem>
+                    </Flex>
+                  )}
+                </ListBox>
+              </Bleed>
+              <Text textStyle="xs" color={"neutral.11"} pt="600">
+                Use the <strong>Arrow</strong>-keys to navigate and{" "}
+                <strong>Enter</strong> to confirm selection.
+              </Text>
+            </ComboBox>
           </DialogBody>
         </DialogContent>
       </DialogRoot>
