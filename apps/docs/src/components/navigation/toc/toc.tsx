@@ -1,8 +1,8 @@
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { tocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
-import { useEffect } from "react";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
+import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 
 /**
  * Table of Contents (TOC) component
@@ -21,6 +21,25 @@ export const Toc = () => {
     5: "900",
   };
 
+  // Handle TOC link clicks
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    headingId: string
+  ) => {
+    e.preventDefault();
+
+    // Update the URL hash without full page reload
+    if (history.pushState) {
+      history.pushState(null, "", `#${headingId}`);
+    } else {
+      // Fallback for older browsers
+      window.location.hash = headingId;
+    }
+
+    // Use the router's scroll to anchor functionality
+    scrollToAnchor(headingId);
+  };
+
   return (
     <Box>
       <Text fontWeight="600" mb="400">
@@ -30,7 +49,8 @@ export const Toc = () => {
       <Box asChild>
         <nav aria-label="table of contents">
           {activeToc?.map((item) => {
-            const isActive = closestHeadingId === item.href.split("#").join("");
+            const headingId = item.href.split("#").join("");
+            const isActive = closestHeadingId === headingId;
 
             return (
               <Box key={item.href} width="full" pl={indent[item.depth]}>
@@ -44,6 +64,7 @@ export const Toc = () => {
                   textDecoration="none"
                   fontWeight={isActive ? "600" : undefined}
                   py="50"
+                  onClick={(e) => handleLinkClick(e, headingId)}
                 >
                   {item.value}
                 </Link>
