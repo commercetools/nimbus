@@ -9,7 +9,6 @@ export * from "./flex";
 export * from "./heading";
 export * from "./highlight";
 export * from "./icon-button";
-export * from "./input-group";
 export * from "./kbd";
 export * from "./link";
 export * from "./list";
