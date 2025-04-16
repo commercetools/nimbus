@@ -50,11 +50,8 @@ export const RouterProvider = ({ children }: { children: ReactNode }) => {
     const routeChanged = currentRoute !== activeRoute;
 
     if (routeChanged) {
-      history.pushState(
-        { activeRoute },
-        "",
-        "/" + activeRoute + window.location.hash
-      );
+      // When route changes, we should clear any existing hash
+      history.pushState({ activeRoute }, "", "/" + activeRoute);
       // After route change is processed, handle hash fragment
       handleHashFragment();
     }
