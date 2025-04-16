@@ -39,6 +39,7 @@ jobs:
       - name: Run tests
         run: pnpm test
         continue-on-error: true
+        timeout-minutes: 5 # Cancel this job after 5 minutes
         env:
           NODE_ENV: production
 
