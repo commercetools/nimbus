@@ -62,9 +62,6 @@ function App() {
               </StickySidebar>
             </Flex>
           </Flex>
-          <DevOnly>
-            <Chatbot />
-          </DevOnly>
         </>
       </NimbusProvider>
     </RouterProvider>
