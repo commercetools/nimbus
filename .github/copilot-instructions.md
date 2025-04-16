@@ -70,6 +70,7 @@ When using React Aria Components:
 ### TypeScript
 
 - Use strict typing for all components and functions
+- Use named exports whenever possible
 - Export types for all component props
 - When importing types, annotate them as such (import { **type** FooBar })
 - Use interfaces for complex objects with documentation
