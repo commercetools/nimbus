@@ -2,8 +2,6 @@ import { Heading } from "@commercetools/nimbus";
 import { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
 import GithubSlugger from "github-slugger";
 
-const slugger = new GithubSlugger();
-
 /**
  * Generates a slug from React children.
  *
@@ -15,10 +13,8 @@ const slugger = new GithubSlugger();
  * @returns {string} The generated slug
  */
 const sluggifyChildren = (children: ReactNode) => {
-  return slugger
-    .slug(children ? children.toString() : "")
-    .split("-1")
-    .join("");
+  const slugger = new GithubSlugger();
+  return slugger.slug(typeof children === "string" ? children.toString() : "");
 };
 
 type HeadingProps = DetailedHTMLProps<
