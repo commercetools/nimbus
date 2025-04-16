@@ -52,6 +52,10 @@ export const RouterProvider = ({ children }: { children: ReactNode }) => {
     if (routeChanged) {
       // When route changes, we should clear any existing hash
       history.pushState({ activeRoute }, "", "/" + activeRoute);
+
+      // Reset scroll position to top when changing routes
+      scrollToAnchor("main");
+
       // After route change is processed, handle hash fragment
       handleHashFragment();
     }
