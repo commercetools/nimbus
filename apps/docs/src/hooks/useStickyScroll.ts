@@ -10,6 +10,9 @@ type SidebarStylesType = {
   bottom?: string;
 };
 
+/** magic number: height of the navbar */
+const defaultOffset = 77;
+
 /**
  * Hook to handle sticky scroll behavior for sidebars
  * Sidebar should scroll with content until it reaches the end, then stick to bottom
@@ -20,7 +23,7 @@ export function useStickyScroll() {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [sidebarStyles, setSidebarStyles] = useState<SidebarStylesType>({
     position: "sticky",
-    top: 0,
+    top: defaultOffset,
     height: "100%",
     overflowY: "auto",
     display: "flex",
