@@ -3,7 +3,6 @@ import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
 import { Toc } from "./components/navigation/toc";
 import { AppNavBar } from "./components/navigation/app-nav-bar";
-import { Chatbot } from "./components/chatbot";
 import { DevOnly } from "./components/utils/dev-only.tsx";
 import { DocumentMetaSettings } from "./components/document-meta-settings/document-meta-settings.tsx";
 import { StickySidebar } from "./components/navigation/sticky-sidebar.tsx";
