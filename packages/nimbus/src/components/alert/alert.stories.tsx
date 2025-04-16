@@ -277,7 +277,7 @@ export const NoActions: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const alert = canvas.getByTestId("alert-no-actions");
-    const dismissButton = within(alert).getByTestId(
+    const dismissButton = await within(alert).findByTestId(
       "dismiss-no-actions-button"
     );
 
