@@ -48,12 +48,9 @@ users to take action and explore different parts of our interface.
 
 Deep dive on details and access design library
 
-[Figma library](https://example.com) <a href="https://example.com"
-style={{color: "blue"}}>Figma library</a>
+[Figma library](https://example.com)
 
 ### Hierachy
-
-Deep dive on details and access design library
 
 #### Primary actions
 
@@ -126,7 +123,7 @@ Get familiar with the features.
 
 ### Icons in buttons
 
-**Icons before or after in buttons**
+#### Icons before or after in buttons
 
 The default position of icons in primary and secondary buttons are to the left
 of the text, but we allow for icons to follow for special uses such as drop
@@ -249,19 +246,19 @@ contributing to a cohesive and predictable user experience.
 - Be aware that with localization/translation character count will add on
   average 20% more length.
 
-### Preferred words in buttons
+### Preferred words
 
-| **Text**                                | **Description**                                                                                                                                                                                                                                                                                                                          |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Save**                                | Carries out pending changes, commits to saving the information.                                                                                                                                                                                                                                                                          |
-| **Back**                                | This term typically implies a return to a previous state or location in a non-linear or less structured flow. It's often used for:<ul style={{listStyle: "disc"}}><li>Navigating browser history</li><li>Exiting a screen or section</li></ul>                                                                                           |
-| **Previous**                            | This term is more common in linear, sequential flows, such as: <ul style={{listStyle: "disc"}}><li>Stepping through a list of items</li><li>Moving between pages in a paginated view</li><li>Progressing through a multi-step process</li></ul> <br />Pair “Previous” with “Next” button language.                                       |
-| **Add new (noun)**                      | <ul style={{listStyle: "disc"}}><li>Establishes a new object from scratch. Always followed by an object. For example “add product” “add category”.</li><li>Can also be used in areas that establishes a new relationship. Example “add products to a category”.</li><li>Do not use “add new” as it does not give full context.</li></ul> |
-| **Revert changes**                      | “Revert” stops an action without saving pending changes. When paired with a form it should return the information to the previously saved state. Never make Revert changes red, it is not a destructive action.                                                                                                                          |
-| **Cancel**                              | “Cancel” stops an action without saving pending changes. Never make Cancel red, it is not a destructive action. Cancel should be outline, ghost or link button.                                                                                                                                                                          |
-| **Delete or Delete (X nouns)**          | Deletes a data so a user can no longer retrieve it. This is different from Remove.                                                                                                                                                                                                                                                       |
-| **Remove**                              | Removes a relationship, but does not permanently delete data.                                                                                                                                                                                                                                                                            |
-| **Expand/Collapse Show more/Show less** | Expands or collapses further details and information. No capitalization is needed for these placements.                                                                                                                                                                                                                                  |
+| **Text**                                | **Description**                                                                                                                                                                                                                                                                                              |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Save**                                | Carries out pending changes, commits to saving the information.                                                                                                                                                                                                                                              |
+| **Back**                                | This term typically implies a return to a previous state or location in a non-linear or less structured flow. It's often used for:<ul style={{listStyle: "disc"}}><li>Navigating browser history</li><li>Exiting a screen or section</li></ul>                                                               |
+| **Previous**                            | This term is more common in linear, sequential flows, such as: <ul style={{listStyle: "disc"}}><li>Stepping through a list of items</li><li>Moving between pages in a paginated view</li><li>Progressing through a multi-step process</li></ul> <br />Pair “Previous” with “Next” button language.           |
+| **Add new (noun)**                      | <ul><li>Establishes a new object from scratch. Always followed by an object. For example “add product” “add category”.</li><li>Can also be used in areas that establishes a new relationship. Example “add products to a category”.</li><li>Do not use “add new” as it does not give full context.</li></ul> |
+| **Revert changes**                      | “Revert” stops an action without saving pending changes. When paired with a form it should return the information to the previously saved state. Never make Revert changes red, it is not a destructive action.                                                                                              |
+| **Cancel**                              | “Cancel” stops an action without saving pending changes. Never make Cancel red, it is not a destructive action. Cancel should be outline, ghost or link button.                                                                                                                                              |
+| **Delete or Delete (X nouns)**          | Deletes a data so a user can no longer retrieve it. This is different from Remove.                                                                                                                                                                                                                           |
+| **Remove**                              | Removes a relationship, but does not permanently delete data.                                                                                                                                                                                                                                                |
+| **Expand/Collapse Show more/Show less** | Expands or collapses further details and information. No capitalization is needed for these placements.                                                                                                                                                                                                      |
 
 ### Avoid these words
 
@@ -542,10 +539,6 @@ choices or actions in a compact and organized way.
 )
 ```
 
-Button groups are UI elements that organize multiple buttons together, often
-visually as a single unit. They serve to present users with a set of related
-choices or actions in a compact and organized way.
-
 <Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
   <div>
     <strong>Don't</strong>
@@ -633,7 +626,7 @@ choices or actions in a compact and organized way.
 )
 ```
 
-### Button link
+### Button links
 
 These actions are likely seen when an action is optional to have more or less
 information shown.
@@ -741,26 +734,50 @@ const App = () => (
 
 ### Accessibility Standards
 
-  **1. Perceivable:**
-        - **Sufficient Color Contrast:**
-          - **Text on Button:** The contrast ratio between the button text and the button background should be at least 4.5:1 for normal text and 3:1 for large text.
-          - **Button to Background:** The contrast ratio between the button's background color and the surrounding page background should be at least 3:1.
-        - **Visual Cues:**  Don't rely solely on color to convey information. Use additional visual cues like shapes, patterns, or text labels to ensure the button's meaning is clear to everyone, including people with color blindness.
-        - **Focus Indicator:**  Provide a clear visual indicator when the button receives keyboard focus. This helps users understand which element is currently active.
-          - **WCAG 2.2 has specific criteria for focus indicators:**
-            - **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator must not be hidden by other content on the page.  
-            - **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must meet certain visibility requirements to be easily seen.    
+#### 1. Perceivable:
 
-  **2. Operable:**
-        - **Keyboard Accessibility:** Buttons must be operable using a keyboard. Users should be able to navigate to the button using the Tab key and activate it using the Enter or Space key.  
-        - **Target Size:**  Ensure that the button is large enough to be easily clickable, especially on touchscreens. WCAG recommends a minimum target size of 24x24 CSS pixels.
-        - **Dragging Movements (2.5.7 Level AA):** If a button's function relies on dragging, an alternative method should be provided that doesn't require dragging.
-         
-  **3. Understandable:**
-        - **Clear Labels:** The button's text label should clearly describe its function. 
-        - **Consistent Design:**  Use buttons consistently throughout your website. This helps users learn the meaning of each button and makes it easier for them to navigate your site.
-        - **Findable Help (3.2.6 Level A):**  If users might need help understanding how to use a button or what it does, provide clear and easily findable help resources.
+- **Sufficient Color Contrast:**
+- **Text on Button:** The contrast ratio between the button text and the button
+  background should be at least 4.5:1 for normal text and 3:1 for large text.
+- **Button to Background:** The contrast ratio between the button's background
+  color and the surrounding page background should be at least 3:1.
+- **Visual Cues:** Don't rely solely on color to convey information. Use
+  additional visual cues like shapes, patterns, or text labels to ensure the
+  button's meaning is clear to everyone, including people with color blindness.
+- **Focus Indicator:** Provide a clear visual indicator when the button receives
+  keyboard focus. This helps users understand which element is currently active.
+- **WCAG 2.2 has specific criteria for focus indicators:**
+- **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator must
+  not be hidden by other content on the page.  
+- **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must
+  meet certain visibility requirements to be easily seen.    
 
-  **4. Robust:**
-        - **Assistive Technology Compatibility:** Ensure that buttons are compatible with assistive technologies like screen readers. This often involves using proper HTML markup and ARIA attributes to provide semantic information about the button.
-      
+#### 2. Operable:
+
+- **Keyboard Accessibility:** Buttons must be operable using a keyboard. Users
+  should be able to navigate to the button using the Tab key and activate it
+  using the Enter or Space key.  
+- **Target Size:** Ensure that the button is large enough to be easily
+  clickable, especially on touchscreens. WCAG recommends a minimum target size
+  of 24x24 CSS pixels.
+- **Dragging Movements (2.5.7 Level AA):** If a button's function relies on
+  dragging, an alternative method should be provided that doesn't require
+  dragging.
+
+#### 3. Understandable:
+
+- **Clear Labels:** The button's text label should clearly describe its
+  function.
+- **Consistent Design:** Use buttons consistently throughout your website. This
+  helps users learn the meaning of each button and makes it easier for them to
+  navigate your site.
+- **Findable Help (3.2.6 Level A):** If users might need help understanding how
+  to use a button or what it does, provide clear and easily findable help
+  resources.
+
+#### 4. Robust:
+
+- **Assistive Technology Compatibility:** Ensure that buttons are compatible
+  with assistive technologies like screen readers. This often involves using
+  proper HTML markup and ARIA attributes to provide semantic information about
+  the button.
