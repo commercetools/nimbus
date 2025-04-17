@@ -176,6 +176,9 @@ export const buttonRecipe = defineRecipe({
       neutral: {
         colorPalette: "neutral",
       },
+      info: {
+        colorPalette: "info",
+      },
     },
   },
   defaultVariants: {
