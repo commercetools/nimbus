@@ -22,7 +22,7 @@ import {
 } from "../form-field.slots";
 import { Dialog, DialogTrigger, Popover } from "react-aria-components";
 import { Box, IconButton } from "@/components";
-import { ErrorOutline, HelpOutline } from "@nimbus/icons";
+import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
 
 /**
  * FormField
