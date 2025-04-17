@@ -1,6 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import { alertRecipe } from "./alert.recipe";
-import { Text } from "../text";
 import type {
   AlertActionsProps,
   AlertDescriptionProps,
@@ -19,15 +18,15 @@ export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
   "root"
 );
 
-export const AlertTitle = withContext<typeof Text, AlertTitleProps>(
-  Text,
+export const AlertTitle = withContext<HTMLDivElement, AlertTitleProps>(
+  "div",
   "title"
 );
 
-export const AlertDescription = withContext<typeof Text, AlertDescriptionProps>(
-  Text,
-  "description"
-);
+export const AlertDescription = withContext<
+  HTMLDivElement,
+  AlertDescriptionProps
+>("div", "description");
 
 export const AlertIcon = withContext<HTMLDivElement, AlertIconProps>(
   "div",
