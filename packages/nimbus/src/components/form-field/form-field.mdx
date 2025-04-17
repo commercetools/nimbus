@@ -6,6 +6,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Forms
   - FormField
 tags:
   - component
@@ -13,75 +14,279 @@ tags:
 
 # FormField
 
-displays inputs in a FormField context
+The `<FormField>` component is a wrapper for inputs that provides additional
+functionality and styling. It is used to create a consistent look and feel for
+form elements across the application.
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
+FormField provides context for form controls including labels, help text, and
+error messages. It works with various form input components to create accessible
+forms.
 
 ```jsx-live
-const App = () => <FormField>I am FormField!</FormField>
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Email address</FormField.Label>
+    <FormField.Input>
+      <TextInput placeholder="Enter your email" />
+    </FormField.Input>
+  </FormField.Root>
+)
 ```
 
+## Examples
 
-### Sizes
+### With Description
 
-Available sizes.
+Use the `FomField.Description` component to provide additional information about
+the form field.
+
+```jsx-live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Username</FormField.Label>
+    <FormField.Input>
+      <TextInput placeholder="Enter your username" />
+    </FormField.Input>
+    <FormField.Description>
+      Username must be at least 4 characters long
+    </FormField.Description>
+  </FormField.Root>
+)
+```
+
+### With Error
+
+When form validation fails, use the `FormField.Error` component to display error
+messages.
+
+```jsx-live
+const App = () => (
+  <FormField.Root isInvalid>
+    <FormField.Label>Password</FormField.Label>
+    <FormField.Input>
+      <TextInput placeholder="Enter your password" type="password" />
+    </FormField.Input>
+    <FormField.Error>Password must contain at least 8 characters</FormField.Error>
+  </FormField.Root>
+)
+```
+
+### Disabled State
+
+Use the `isDisabled` prop to indicate that a form field is not interactive.
+
+```jsx-live
+const App = () => (
+  <FormField.Root isDisabled>
+    <FormField.Label>Account Settings</FormField.Label>
+    <FormField.Input>
+      <TextInput placeholder="Settings locked" />
+    </FormField.Input>
+    <FormField.Description>
+      Contact your administrator to change account settings
+    </FormField.Description>
+  </FormField.Root>
+)
+```
+
+### Required Fields
+
+Use the `isRequired` prop to indicate fields that must be completed.
+
+```jsx-live
+const App = () => (
+  <FormField.Root isRequired>
+    <FormField.Label>Email Address</FormField.Label>
+    <FormField.Input>
+      <TextInput placeholder="Enter your email" />
+    </FormField.Input>
+    <FormField.Description>
+      We'll never share your email with anyone else
+    </FormField.Description>
+  </FormField.Root>
+)
+```
+
+### With Information Tooltip
+
+Provide additional helpful information using the `FormField.InfoBox` component.
+
+```jsx-live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>API Key</FormField.Label>
+    <FormField.InfoBox>
+      API keys are used to authenticate requests to our services.
+      Keep this key secure and don't share it with others.
+    </FormField.InfoBox>
+    <FormField.Input>
+      <TextInput placeholder="Enter API key" />
+    </FormField.Input>
+  </FormField.Root>
+)
+```
+
+### Comprehensive Example
+
+This example demonstrates all `FormField.*` components working together with
+various states.
 
 ```jsx-live
 const App = () => {
+  const [formValues, setFormValues] = React.useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    agreeTerms: false,
+  });
 
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const [errors, setErrors] = React.useState({});
+
+  const handleChange = (field, value) => {
+    setFormValues({
+      ...formValues,
+      [field]: value,
+    });
+
+    // Clear errors when field is edited
+    if (errors[field]) {
+      setErrors({
+        ...errors,
+        [field]: undefined,
+      });
+    }
+  };
+
+  const handleSubmit = () => {
+    const newErrors = {};
+
+    // Simple validation example
+    if (!formValues.username) {
+      newErrors.username = "Username is required";
+    } else if (formValues.username.length < 4) {
+      newErrors.username = "Username must be at least 4 characters";
+    }
+
+    if (!formValues.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
+      newErrors.email = "Email is invalid";
+    }
+
+    if (!formValues.password) {
+      newErrors.password = "Password is required";
+    } else if (formValues.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    if (formValues.password !== formValues.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (!formValues.agreeTerms) {
+      newErrors.agreeTerms = "You must agree to the terms";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      alert("Form submitted successfully!");
+    }
+  };
 
   return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <FormField key={size} size={size}>'{size}' FormField</FormField>
-      ))}
-    </Stack>
-  )
-}
-```
+    <Stack
+      spacing="4"
+      width="100%"
+      alignItems="start"
+    >
+      <FormField.Root isInvalid={!!errors.username} isRequired>
+        <FormField.Label>Username</FormField.Label>
+        <FormField.InfoBox>
+          Choose a unique username for your account.
+        </FormField.InfoBox>
+        <FormField.Input>
+          <TextInput
+            placeholder="Enter username"
+            value={formValues.username}
+            onChange={(v) => handleChange("username", v)}
+          />
+        </FormField.Input>
+        <FormField.Description>
+          Username must be at least 4 characters long
+        </FormField.Description>
+        {errors.username && (
+          <FormField.Error>{errors.username}</FormField.Error>
+        )}
+      </FormField.Root>
 
-### Variants
+      <FormField.Root isInvalid={!!errors.email} isRequired>
+        <FormField.Label>Email Address</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            placeholder="Enter email"
+            type="email"
+            value={formValues.email}
+            onChange={(v) => handleChange("email", v)}
+          />
+        </FormField.Input>
+        <FormField.Description>
+          We'll never share your email with anyone else
+        </FormField.Description>
+        {errors.email && <FormField.Error>{errors.email}</FormField.Error>}
+      </FormField.Root>
 
-Available variants.
+      <FormField.Root isInvalid={!!errors.password} isRequired>
+        <FormField.Label>Password</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            placeholder="Enter password"
+            type="password"
+            value={formValues.password}
+            onChange={(v) => handleChange("password", v)}
+          />
+        </FormField.Input>
+        <FormField.Description>
+          Password must be at least 8 characters
+        </FormField.Description>
+        {errors.password && (
+          <FormField.Error>{errors.password}</FormField.Error>
+        )}
+      </FormField.Root>
 
-```jsx-live
-const App = () => {
+      <FormField.Root isInvalid={!!errors.confirmPassword} isRequired>
+        <FormField.Label>Confirm Password</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            placeholder="Confirm password"
+            type="password"
+            value={formValues.confirmPassword}
+            onChange={(v) => handleChange("confirmPassword", v)}
+          />
+        </FormField.Input>
+        {errors.confirmPassword && (
+          <FormField.Error>{errors.confirmPassword}</FormField.Error>
+        )}
+      </FormField.Root>
 
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+      <FormField.Root isInvalid={!!errors.agreeTerms}>
+        <FormField.Input>
+          <Checkbox
+            checked={formValues.agreeTerms}
+            onChange={(v) => handleChange("agreeTerms", v)}
+          >
+            I agree to the terms and conditions
+          </Checkbox>
+        </FormField.Input>
+        {errors.agreeTerms && (
+          <FormField.Error>{errors.agreeTerms}</FormField.Error>
+        )}
+      </FormField.Root>
 
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <FormField key={variant} variant={variant}>'{variant}' FormField</FormField>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Colors
-
-[Explain usage with different colors/semantics.]
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <FormField colorPalette={color} key={variant} variant={variant}>
-              '{variant}' FormField
-            </FormField>
-          ))}
-        </Stack>
-      ))}
+      <Button variant="solid" tone="primary" onPress={()=>handleSubmit()}>Submit</Button>
     </Stack>
   );
 };
@@ -89,4 +294,4 @@ const App = () => {
 
 ## Props
 
-<PropTable id="FormField" />
+<PropTable id="FormField.Root" />
