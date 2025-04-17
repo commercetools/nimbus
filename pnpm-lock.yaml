@@ -39,6 +39,9 @@ catalogs:
     react-dom:
       specifier: ^18.3.1
       version: 18.3.1
+    react-stately:
+      specifier: ^3.35.0
+      version: 3.35.0
   tooling:
     '@babel/core':
       specifier: ^7.26.10
@@ -310,6 +313,9 @@ importers:
       react-live:
         specifier: ^4.1.7
         version: 4.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-stately:
+        specifier: catalog:react
+        version: 3.35.0(react@18.3.1)
       react-syntax-highlighter:
         specifier: ^15.6.1
         version: 15.6.1(react@18.3.1)
