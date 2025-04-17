@@ -15,14 +15,14 @@ export const inputRecipe = defineRecipe({
     height: "var(--input-height)",
     minW: "var(--input-height)",
     "--focus-color": "colors.colorPalette.focusRing",
-    "--error-color": "colors.border.error",
+    "--critical-color": "colors.border.critical",
     "&::placeholder": {
       color: "colorPalette.11",
       opacity: 3 / 4,
     },
     _invalid: {
-      focusRingColor: "var(--error-color)",
-      borderColor: "var(--error-color)",
+      focusRingColor: "var(--critical-color)",
+      borderColor: "var(--critical-color)",
     },
   },
   variants: {

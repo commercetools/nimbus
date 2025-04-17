@@ -145,11 +145,11 @@ const App = () => {
     <Stack>
       {sizes.map((size) => (
         <Stack key={size} direction="horizontal">
-          <Button size={size} colorPalette="success" variant="solid" startIcon={<Icons.Check />}>
+          <Button size={size} colorPalette="positive" variant="solid" startIcon={<Icons.Check />}>
             <Icons.Check />
             Yes
           </Button>
-          <Button size={size} colorPalette="error" variant="solid" startIcon={<Icons.X />}>
+          <Button size={size} colorPalette="critical" variant="solid" startIcon={<Icons.X />}>
             <Icons.Close />
             No
           </Button>

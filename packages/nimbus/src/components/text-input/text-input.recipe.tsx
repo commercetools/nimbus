@@ -25,8 +25,8 @@ export const textInputRecipe = defineRecipe({
       layerStyle: "disabled",
     },
     "&[data-invalid='true']": {
-      "--border-color": "colors.error.7",
-      color: "error.11",
+      "--border-color": "colors.critical.7",
+      color: "critical.11",
     },
   },
 
