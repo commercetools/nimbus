@@ -4,7 +4,8 @@
     "paths": {
       "@/scripts/*": ["./scripts/*"],
       "@/src/*": ["./src/*"],
-      "@/types/*": ["./types/*"]
+      "@/types/*": ["./types/*"],
+      "@/schemas/*": ["./schemas/*"]
     }
   },
   "files": [],

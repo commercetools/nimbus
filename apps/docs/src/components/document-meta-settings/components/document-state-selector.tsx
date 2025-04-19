@@ -1,7 +1,7 @@
 import {
   DocumentState,
   documentStateDescriptions,
-} from "@/src/schemas/mdx-document-states";
+} from "@/schemas/mdx-document-states";
 import { useCallback, useEffect, useMemo } from "react";
 import { Box, Stack, Text, Select } from "@commercetools/nimbus";
 import { KeyboardArrowDown } from "@commercetools/nimbus-icons";

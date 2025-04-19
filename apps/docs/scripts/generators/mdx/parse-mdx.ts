@@ -5,7 +5,7 @@ import { logger } from "../../utils/logger";
 import { fileCache, writeJsonFile } from "../../utils/file-utils";
 import { generateRoute, getRepoPath } from "../../utils/path-utils";
 import { CONFIG } from "../../config";
-import { mdxDocumentSchema } from "../../../src/schemas/mdx-document";
+import { mdxDocumentSchema } from "../../../schemas/mdx-document";
 import { getToc } from "./toc-builder";
 
 /**

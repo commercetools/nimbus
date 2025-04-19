@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { activeDocAtom } from "@/src/atoms/active-doc";
 import axios from "axios";
-import { mdxDocumentPayloadSchema } from "@/src/schemas/mdx-document";
+import { mdxDocumentPayloadSchema } from "@/schemas/mdx-document";
 import yaml from "js-yaml";
 import { MdxFileFrontmatterPayload } from "@/types";
 

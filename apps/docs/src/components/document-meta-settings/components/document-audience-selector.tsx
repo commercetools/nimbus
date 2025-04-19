@@ -1,7 +1,7 @@
 import {
   DocumentAudience,
   documentAudienceDescriptions,
-} from "@/src/schemas/mdx-document-audiences";
+} from "@/schemas/mdx-document-audiences";
 import { useMemo } from "react";
 import { Box, Flex, Stack, Text, Checkbox } from "@commercetools/nimbus";
 import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
