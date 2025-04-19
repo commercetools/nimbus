@@ -1,8 +1,8 @@
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { tocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
-import { useEffect } from "react";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
+import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 
 /**
  * Table of Contents (TOC) component
@@ -16,20 +16,29 @@ export const Toc = () => {
   const indent: { [key: number]: string | undefined } = {
     1: undefined,
     2: undefined,
-    3: "200",
-    4: "400",
-    5: "600",
+    3: "300",
+    4: "600",
+    5: "900",
   };
 
-  useEffect(() => {
-    // Scroll to the active TOC item smoothly
-    setTimeout(() => {
-      const el = document.getElementById("active-toc-item");
-      el?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }, 0);
-  }, [closestHeadingId]);
+  // Handle TOC link clicks
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    headingId: string
+  ) => {
+    e.preventDefault();
+
+    // Update the URL hash without full page reload
+    if (history.pushState) {
+      history.pushState(null, "", `#${headingId}`);
+    } else {
+      // Fallback for older browsers
+      window.location.hash = headingId;
+    }
+
+    // Use the router's scroll to anchor functionality
+    scrollToAnchor(headingId);
+  };
 
   return (
     <Box>
@@ -40,7 +49,8 @@ export const Toc = () => {
       <Box asChild>
         <nav aria-label="table of contents">
           {activeToc?.map((item) => {
-            const isActive = closestHeadingId === item.href.split("#").join("");
+            const headingId = item.href.split("#").join("");
+            const isActive = closestHeadingId === headingId;
 
             return (
               <Box key={item.href} width="full" pl={indent[item.depth]}>
@@ -49,10 +59,12 @@ export const Toc = () => {
                   colorPalette={isActive ? "primary" : "neutral"}
                   color="colorPalette.11"
                   href={item.href}
-                  fontWeight={isActive ? "700" : undefined}
                   display="block"
                   width="full"
-                  py="100"
+                  textDecoration="none"
+                  fontWeight={isActive ? "600" : undefined}
+                  py="50"
+                  onClick={(e) => handleLinkClick(e, headingId)}
                 >
                   {item.value}
                 </Link>

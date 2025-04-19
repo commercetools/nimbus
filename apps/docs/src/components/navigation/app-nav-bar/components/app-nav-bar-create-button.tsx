@@ -5,7 +5,7 @@ import {
   DialogBody,
   DialogFooter,
   DialogHeader,
-  Input,
+  TextInput,
   Stack,
   Text,
   DialogRoot,
@@ -62,10 +62,10 @@ export const AppNavBarCreateButton = () => {
                 <Text asChild fontWeight="600">
                   <label htmlFor="title">Title</label>
                 </Text>
-                <Input
+                <TextInput
                   id="title"
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(value) => setTitle(value)}
                   placeholder="Keep it short, you're busy."
                   autoComplete="off"
                   data-form-type="other"
@@ -75,10 +75,10 @@ export const AppNavBarCreateButton = () => {
                 <Text asChild fontWeight="600">
                   <label htmlFor="description">Description</label>
                 </Text>
-                <Input
+                <TextInput
                   id="description"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={(value) => setDescription(value)}
                   placeholder="Just enough to make it intriguing"
                   autoComplete="off"
                 />
@@ -87,10 +87,10 @@ export const AppNavBarCreateButton = () => {
                 <Text asChild fontWeight="600">
                   <label htmlFor="menuLabel">Menu Label</label>
                 </Text>
-                <Input
+                <TextInput
                   id="menuLabel"
                   value={menuLabel}
-                  onChange={(e) => setMenuLabel(e.target.value)}
+                  onChange={(value) => setMenuLabel(value)}
                   placeholder="What people will click, no pressure."
                   autoComplete="off"
                 />

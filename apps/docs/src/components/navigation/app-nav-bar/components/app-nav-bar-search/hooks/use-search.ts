@@ -14,20 +14,19 @@ export const useSearch = () => {
     const fuseOptions = {
       isCaseSensitive: false,
       ignoreLocation: true,
-      includeScore: true,
       shouldSort: true,
       ignoreFieldNorm: true,
       includeMatches: true,
       findAllMatches: true,
       useExtendedSearch: false,
-      minMatchCharLength: 2,
+      minMatchCharLength: 1,
       keys: ["title", "description", "content"],
     };
 
     return new Fuse(searchableDocs || [], fuseOptions);
   }, [searchableDocs]);
 
-  const results = fuse.search(query);
+  const results = fuse.search(query).map((v) => v.item);
 
   const [open, setOpen] = useState(false);
 

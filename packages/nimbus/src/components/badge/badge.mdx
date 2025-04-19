@@ -6,6 +6,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Data Display
   - Badge
 tags:
   - component
@@ -13,79 +14,129 @@ tags:
 
 # Badge
 
-To display small status indicators or labels.
+Badges are small visual indicators used for status displays, notifications, or labels. They're useful for highlighting information, showing counts, or indicating status.
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
+A simple Badge displays a short text label with default styling.
 
 ```jsx-live
-const App = () => <Badge>I am Badge!</Badge>
+const App = () => <Badge>Default Badge</Badge>
 ```
 
-### Sizes
+## Sizes
 
-Available sizes.
+Badges come in different sizes to accommodate various UI needs. Available sizes are `2xs`, `xs`, and `md`.
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['md', 'xs', '2xs'];
-
+  const sizes = ['2xs', 'xs', 'md'];
+  
   return (
-    <Stack direction="horizontal" alignItems="center">
+    <Stack direction="horizontal" gap="400" alignItems="center">
       {sizes.map(size => (
-        <Badge key={size} size={size}>'{size}' Badge</Badge>
+        <Badge key={size} size={size}>{size}</Badge>
       ))}
     </Stack>
   )
 }
 ```
 
-### Variants
+## Colors
 
-Available variants.
+Badges support all color palettes. You can use both system colors and semantic colors with the Badge component.
+
+### System Colors
 
 ```jsx-live
 const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
+  const systemColors = ['tomato', 'red', 'blue', 'cyan', 'teal', 'green', 'grass', 'amber', 'yellow', 'orange'];
+  
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <Badge key={variant} variant={variant}>'{variant}' Badge</Badge>
-      ))}
+
+      <Stack direction="horizontal" gap="400" alignItems="center" flexWrap="wrap">
+        {systemColors.map(color => (
+          <Badge key={color} colorPalette={color}>{color}</Badge>
+        ))}
+      </Stack>
+  )
+}
+```
+
+### Semantic Colors
+
+```jsx-live
+const App = () => {
+  const semanticColors = ['primary', 'neutral', 'info', 'success', 'error', 'danger'];
+  
+  return (
+    <Stack gap="400">
+      <Text fontWeight="bold">Semantic Colors</Text>
+      <Stack direction="horizontal" gap="400" alignItems="center" flexWrap="wrap">
+        {semanticColors.map(color => (
+          <Badge key={color} colorPalette={color}>{color}</Badge>
+        ))}
+      </Stack>
     </Stack>
   )
 }
 ```
 
-### Colors
+## With Icons
 
-[Explain usage with different colors/semantics.]
+Badges can include icons to enhance visual communication. Icons can be positioned before, after, or on both sides of the text.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
+  const demoText = "Badge";
+  
   return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Badge colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Badge
-            </Badge>
-          ))}
-        </Stack>
-      ))}
+    <Stack direction="horizontal" gap="400" alignItems="center">
+      <Badge>
+        {demoText} <Icons.SentimentSatisfied />
+      </Badge>
+      
+      <Badge>
+        <Icons.SentimentSatisfied /> {demoText}
+      </Badge>
+      
+      <Badge>
+        <Icons.SentimentSatisfied /> {demoText} <Icons.SentimentSatisfied />
+      </Badge>
     </Stack>
-  );
-};
+  )
+}
 ```
 
-## Props
+## HTML Element Customization
+
+By default, Badge renders as a `<span>` element, but you can change it by using the `as` prop.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" direction="row">
+    <Badge>Default span</Badge>
+    <Badge as="div">As a div</Badge>
+  </Stack>
+)
+```
+
+## Data and ARIA Attributes
+
+The Badge component supports forwarding `data-*` and `aria-*` attributes to the DOM, which can be useful for testing and accessibility.
+
+```jsx-live
+const App = () => (
+  <Badge 
+    data-testid="status-badge" 
+    aria-label="Status: Active"
+    colorPalette="grass"
+  >
+    Active
+  </Badge>
+)
+```
+
+## Properties / API
 
 <PropTable id="Badge" />

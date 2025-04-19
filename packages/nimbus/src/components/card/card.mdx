@@ -6,6 +6,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Data Display
   - Card
 tags:
   - component
@@ -13,80 +14,197 @@ tags:
 
 # Card
 
-A versatile bordered container for grouping related content
+The Card component is a versatile bordered container for grouping related content. It provides a structured way to present information with configurable styling options.
 
-## Basic Usage
 
-[Explain the basic usage / usecase of the component].
+### Basic Usage
+
+A simple Card displays content with default styling.
 
 ```jsx-live
-const App = () => <Card>I am Card!</Card>
+const App = () => (
+  <Card.Root>
+    <Card.Header>
+      Card Title
+    </Card.Header>
+    <Card.Content>
+      This is the content of my card. You can place any content here.
+    </Card.Content>
+  </Card.Root>
+)
 ```
 
+### Card Padding
 
-### Sizes
-
-Available sizes.
+Cards can have different padding sizes to accommodate various content needs. Available sizes are `sm`, `md`, and `lg`.
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
-
+  const paddings = ['sm', 'md', 'lg'];
+  
   return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <Card key={size} size={size}>'{size}' Card</Card>
+    <Stack gap="400">
+      {paddings.map(padding => (
+        <Card.Root key={padding} cardPadding={padding} borderStyle="outlined">
+          <Card.Header>
+            <b>Padding: {padding}</b>
+          </Card.Header>
+          <Card.Content>
+            <p>This card demonstrates the {padding} padding size.</p>
+          </Card.Content>
+        </Card.Root>
       ))}
     </Stack>
   )
 }
 ```
 
-### Variants
+### Border Styles
 
-Available variants.
+Cards can be displayed with or without borders using the `borderStyle` prop. Options are `none` and `outlined`.
 
 ```jsx-live
 const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
+  const borderStyles = ['none', 'outlined'];
+  
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <Card key={variant} variant={variant}>'{variant}' Card</Card>
+    <Stack gap="400" direction="row">
+      {borderStyles.map(border => (
+        <Card.Root key={border} borderStyle={border} cardPadding="md">
+          <Card.Header>
+            <b>Border: {border}</b>
+          </Card.Header>
+          <Card.Content>
+            <p>This card demonstrates the {border} border style.</p>
+          </Card.Content>
+        </Card.Root>
       ))}
     </Stack>
   )
 }
 ```
 
-### Colors
+### Elevation
 
-[Explain usage with different colors/semantics.]
+Cards can have elevation to create a shadow effect. Available options are `none` and `elevated`.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
+  const elevations = ['none', 'elevated'];
+  
   return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Card colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Card
-            </Card>
-          ))}
-        </Stack>
+    <Stack gap="400" direction="row">
+      {elevations.map(elevation => (
+        <Card.Root key={elevation} elevation={elevation} cardPadding="md">
+          <Card.Header>
+            <b>Elevation: {elevation}</b>
+          </Card.Header>
+          <Card.Content>
+            <p>This card demonstrates the {elevation} elevation style.</p>
+          </Card.Content>
+        </Card.Root>
       ))}
     </Stack>
-  );
-};
+  )
+}
 ```
 
-## Props
+### Background Styles
 
-<PropTable id="Card" />
+Cards support different background styles to help with visual hierarchy. Options include `default` (white/high contrast) and `muted` (subtle background color).
+
+```jsx-live
+const App = () => {
+  const backgroundStyles = ['default', 'muted'];
+  
+  return (
+    <Stack gap="400" direction="row">
+      {backgroundStyles.map(bg => (
+        <Card.Root key={bg} backgroundStyle={bg} cardPadding="md" borderStyle="outlined">
+          <Card.Header>
+            <b>Background: {bg}</b>
+          </Card.Header>
+          <Card.Content>
+            <p>This card demonstrates the {bg} background style.</p>
+          </Card.Content>
+        </Card.Root>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Combined Configurations
+
+Cards can combine various styling options to achieve the desired visual presentation.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400">
+    <Card.Root cardPadding="md" borderStyle="outlined" elevation="none" backgroundStyle="default">
+      <Card.Header>
+        <b>Standard Card</b>
+      </Card.Header>
+      <Card.Content>
+        <p>A standard card with outline and default background.</p>
+      </Card.Content>
+    </Card.Root>
+    
+    <Card.Root cardPadding="lg" borderStyle="none" elevation="elevated" backgroundStyle="muted">
+      <Card.Header>
+        <b>Elevated Card</b>
+      </Card.Header>
+      <Card.Content>
+        <p>An elevated card with no border and muted background.</p>
+      </Card.Content>
+    </Card.Root>
+  </Stack>
+)
+```
+
+### Flexible Content
+
+Card structure is flexible and allows for custom content outside the compound component pattern.
+
+```jsx-live
+const App = () => (
+  <Card.Root cardPadding="md" borderStyle="outlined">
+    <div>
+      <h3>Custom Content</h3>
+      <p>You can place any content directly within Card.Root for more flexibility.</p>
+      <Button tone="primary" variant="solid" size="sm">Action Button</Button>
+    </div>
+  </Card.Root>
+)
+```
+
+## Accessibility
+
+- Cards are keyboard focusable by default (tabIndex=0)
+- Focus states are visually indicated for keyboard navigation
+- The internal structure ensures a consistent layout for content
+
+## Card API
+
+Card is a compound component that consists of the following parts:
+
+### Card.Root
+
+Main container component that establishes the card boundaries and styling.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| cardPadding | 'sm' \| 'md' \| 'lg' | 'md' | Controls the internal padding of the card |
+| borderStyle | 'none' \| 'outlined' | 'none' | Determines if the card has a border |
+| elevation | 'none' \| 'elevated' | 'none' | Controls the shadow effect of the card |
+| backgroundStyle | 'default' \| 'muted' | 'default' | Sets the background color style |
+
+Card.Root also accepts all standard HTML div attributes and Chakra UI style props.
+
+### Card.Header
+
+Contains the header content of the card, typically a title or other identifying information.
+
+### Card.Content
+
+Contains the main content of the card.

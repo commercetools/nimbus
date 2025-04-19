@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import Accordion from "./accordion";
+import { Accordion } from "./accordion";
 import type { AccordionProps } from "./accordion.types";
 import { Avatar, Button, Checkbox, Flex } from "@/components";
 import { expect, userEvent, waitFor } from "@storybook/test";

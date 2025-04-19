@@ -60,6 +60,11 @@ const observable = (target, callback, _base = []) => {
 const typesObj = observable({}, writeDocs);
 
 export const parseTypes = async (filePath: string) => {
+  // Skip files from node_modules to avoid duplicated IDs
+  if (filePath.includes("node_modules")) {
+    return;
+  }
+
   fs.readFile(filePath, "utf8", async (err, content) => {
     if (err) {
       console.error(`Error reading file ${filePath}:`, err);

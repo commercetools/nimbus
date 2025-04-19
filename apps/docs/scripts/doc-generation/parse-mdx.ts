@@ -66,6 +66,11 @@ const documentation: Record<string, MdxFileFrontmatter> = observable(
 );
 
 export const parseMdx = async (filePath: string) => {
+  // Skip files from node_modules to avoid duplicated IDs
+  if (filePath.includes("node_modules")) {
+    return;
+  }
+
   fs.readFile(filePath, "utf8", async (err, content) => {
     if (err) {
       const repoPath = await getPathFromMonorepoRoot(filePath);

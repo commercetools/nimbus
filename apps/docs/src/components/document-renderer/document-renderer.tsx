@@ -5,12 +5,12 @@ import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
 import { components } from "./components";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { MdxEditor } from "./mdx-editor";
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { Helmet } from "react-helmet-async";
 import { brandNameAtom } from "@/atoms/brand";
 import { documentEditModeAtom } from "@/atoms/document-edit-mode.ts";
 
-export const DocumentRenderer = () => {
+const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
   const activeDoc = useAtomValue(activeDocAtom);
   const [editMode, setEditMode] = useAtom(documentEditModeAtom);
@@ -61,3 +61,5 @@ export const DocumentRenderer = () => {
     </>
   );
 };
+
+export const DocumentRenderer = memo(DocumentRendererComponent);

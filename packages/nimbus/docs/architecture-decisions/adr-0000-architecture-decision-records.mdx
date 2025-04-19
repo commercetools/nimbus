@@ -1,0 +1,109 @@
+---
+id: Architecture-Decision-Records
+title: "ADR: Using Architecture Decision Records"
+description:
+  "An explanation of what Architecture Decision Records are and how we use them"
+documentState: "InitialDraft"
+order: 0
+menu:
+  - Home
+  - ADR's
+tags:
+  - architecture
+  - documentation
+  - process
+icon: Gavel
+---
+
+# ADR: Using Architecture Decision Records
+
+## Context
+
+As our UI component library grows, we need a structured way to document
+important architectural decisions. This ensures that:
+
+- Team members understand the context and reasoning behind important decisions
+- Future contributors can reference past decisions rather than revisiting
+  settled issues
+- We maintain a useful historical record of how the project has evolved
+
+## Decision
+
+We will use Architecture Decision Records (ADRs) to document significant
+architectural decisions in the project.
+
+### What is an Architecture Decision Record?
+
+An ADR is a document that captures an important architectural decision made
+along with its context and consequences. Each ADR includes:
+
+1. **Title**: A descriptive title that clearly identifies the decision
+2. **Context**: The situation that calls for a decision, including technical,
+   social, and project constraints
+3. **Decision**: The decision that was made
+4. **Consequences**: What happens after the decision is applied, including both
+   positive and negative consequences
+
+### ADR Format
+
+Each ADR will follow this standard format:
+
+```markdown
+# ADR: [Title]
+
+## Context
+
+[Description of the situation and problem being solved]
+
+## Decision
+
+[Description of the decision that was made]
+
+## Consequences
+
+[Description of the results of the decision]
+
+## [Optional] Examples or Additional Sections
+
+[Any additional information to help clarify the decision]
+
+## Summary
+
+[Brief wrap-up of the key points]
+```
+
+### ADR Workflow
+
+1. **Creation**: When a significant architectural decision is made, the
+   responsible team member creates a new ADR file
+2. **Numbering**: ADRs are numbered sequentially (ADR-0001, ADR-0002, etc.)
+3. **Review**: ADRs can be reviewed by the team before being finalized
+4. **Amendments**: If a decision changes, we create a new ADR that supersedes
+   the old one, rather than modifying existing ADRs
+
+## Consequences
+
+- **Better Documentation**: Our architectural decisions and their reasoning are
+  clearly documented
+- **Historical Record**: We maintain a history of why our codebase looks the way
+  it does
+- **Onboarding Aid**: New team members can quickly understand important
+  architectural decisions
+- **Decision Quality**: The process of writing an ADR helps us think more
+  carefully about our decisions
+- **Additional Work**: Creating and maintaining ADRs requires time and effort
+
+## Examples of Decisions that Warrant an ADR
+
+- Adopting a new UI pattern (e.g., compound components)
+- Establishing file/folder organization standards
+- Changing our approach to styling
+- Adding or removing major dependencies
+- Creating standardized API patterns
+
+## Summary
+
+Architecture Decision Records provide a lightweight yet formal way to document
+significant architectural decisions. By maintaining ADRs, we preserve knowledge
+about why our codebase is structured the way it is and help future contributors
+understand the context behind important decisions.

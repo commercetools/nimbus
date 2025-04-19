@@ -6,6 +6,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Feedback
   - Alert
 tags:
   - component
@@ -13,80 +14,146 @@ tags:
 
 # Alert
 
-Provides feedback to the user about the status of an action or system event
+Alerts provide contextual feedback to users about an action, condition, or system event. They are used to communicate important messages that require attention.
+
+## Features
+
+- **Compound Component API**: Flexible and composable with Alert.Title, Alert.Description, Alert.Actions, and Alert.DismissButton
+- **Multiple Tones**: Critical, Info, Warning, and Positive
+- **Visual Variants**: Flat and Outlined styles
+- **Accessible by default**: Properly implements ARIA attributes for screen readers
 
 ## Basic Usage
 
-[Explain the basic usage / usecase of the component].
+The most basic implementation includes a title, description, and optional dismiss button.
 
 ```jsx-live
-const App = () => <Alert>I am Alert!</Alert>
+const App = () => (
+  <Alert.Root tone="info" variant="outlined">
+    <Alert.Title>Important Information</Alert.Title>
+    <Alert.Description>This is a simple informational alert.</Alert.Description>
+    <Alert.DismissButton onPress={() => alert('Alert dismissed')} />
+  </Alert.Root>
+)
 ```
 
+## Tones
 
-### Sizes
-
-Available sizes.
+Alerts come in four semantic tones to communicate different types of messages.
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
-
+  const tones = ["critical", "info", "warning", "positive"];
+  
   return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <Alert key={size} size={size}>'{size}' Alert</Alert>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Variants
-
-Available variants.
-
-```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <Alert key={variant} variant={variant}>'{variant}' Alert</Alert>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Colors
-
-[Explain usage with different colors/semantics.]
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Alert colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Alert
-            </Alert>
-          ))}
-        </Stack>
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {tones.map((tone) => (
+        <Alert.Root key={tone} tone={tone} variant="outlined">
+          <Alert.Title>{tone.charAt(0).toUpperCase() + tone.slice(1)} Alert</Alert.Title>
+          <Alert.Description>This is a {tone} message that requires attention.</Alert.Description>
+          <Alert.DismissButton onPress={() => alert(`Dismissed ${tone} alert`)} />
+        </Alert.Root>
       ))}
     </Stack>
   );
 };
 ```
 
+## Variants
+
+Alerts are available in two visual styles: flat and outlined.
+
+```jsx-live
+const App = () => {
+  const variants = ["flat", "outlined"];
+  
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {variants.map((variant) => (
+        <Alert.Root key={variant} tone="info" variant={variant}>
+          <Alert.Title>{variant.charAt(0).toUpperCase() + variant.slice(1)} Variant</Alert.Title>
+          <Alert.Description>This alert uses the {variant} visual style.</Alert.Description>
+          <Alert.DismissButton onPress={() => alert(`Dismissed ${variant} variant alert`)} />
+        </Alert.Root>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Composition Examples
+
+The Alert component is designed for flexible composition. Here are various ways to configure it:
+
+### Title Only
+
+```jsx-live
+const App = () => (
+  <Alert.Root tone="warning" variant="flat">
+    <Alert.Title>This alert contains only a title</Alert.Title>
+  </Alert.Root>
+);
+```
+
+### With Description Only
+
+```jsx-live
+const App = () => (
+  <Alert.Root tone="info" variant="flat">
+    <Alert.Description>This alert contains only a description without a title.</Alert.Description>
+  </Alert.Root>
+);
+```
+
+### With Actions
+
+You can add action buttons to provide users with follow-up options.
+
+```jsx-live
+const App = () => (
+  <Alert.Root tone="critical" variant="outlined">
+    <Alert.Title>File not saved</Alert.Title>
+    <Alert.Description>Your changes have not been saved due to a connection error.</Alert.Description>
+    <Alert.Actions>
+      <Stack direction="row" gap="8px" alignItems="center">
+        <Button variant="solid" colorScheme="primary">Try Again</Button>
+        <Button variant="outline">Discard Changes</Button>
+      </Stack>
+    </Alert.Actions>
+  </Alert.Root>
+);
+```
+
+### Complete Example
+
+A complete example with title, description, actions, and dismiss button.
+
+```jsx-live
+const App = () => (
+  <Alert.Root tone="positive" variant="outlined">
+    <Alert.Title>Success!</Alert.Title>
+    <Alert.Description>Your profile has been updated successfully.</Alert.Description>
+    <Alert.Actions>
+      <Stack direction="row" gap="8px" alignItems="center">
+        <Button variant="outline" size="md">View Profile</Button>
+      </Stack>
+    </Alert.Actions>
+    <Alert.DismissButton onPress={() => alert('Alert dismissed')} />
+  </Alert.Root>
+);
+```
+
+## Accessibility
+
+The Alert component includes proper ARIA roles for accessibility:
+
+- Uses `role="alert"` to notify screen readers of important content
+- Properly labeled dismiss button with `aria-label="Dismiss"`
+- Structured content with semantic title and description elements
+
 ## Props
 
-<PropTable id="Alert" />
+<PropTables
+  root="Alert"
+  ids="AlertRoot, AlertTitle, AlertDescription, AlertActions, AlertDismissButton"
+/>

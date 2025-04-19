@@ -12,49 +12,83 @@ tags:
 icon: Download
 ---
 
-## Development Setup
+## Getting Started
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js**: v22.14.0+
+- **PNPM**: v9.12.3+
 
 ### Installation
 
-Make sure you fulfill the requirements below and install dependencies with the
-provided command.
+All commands should be run from the repository root.
 
-#### Requirements
+1. Clone the repository:
 
-The following software needs to be installed on your system before you can
-proceed:
+   ```bash
+   git clone https://github.com/commercetools/nimbus.git
+   cd nimbus
+   ```
 
-- Node v20+
-- pnpm v9+
+2. Initialize the repository:
 
-#### Install dependencies
+   ```bash
+   pnpm nimbus:init
+   ```
+
+> [!TIP]  
+> It is advisable to run the `nimbus:init` command after every branch-switch.
+> The command gets rid of all `node_modules`- & `dist`-folders, reinstalls
+> dependencies and rebuilds all packages.
+
+## Development Workflow
+
+### Development Mode
+
+Start the development environment with the following command:
 
 ```bash
-$ pnpm install
+pnpm start
 ```
 
-### Development
+This will start both the documentation app and Storybook in parallel:
 
-1. If you just set up the repository, do an initial [build](#build).
-2. Start the development environment with the following command
+- Documentation app: http://localhost:5173/
+- Storybook: http://localhost:6006/
+
+If you prefer to run just one of the applications:
 
 ```bash
-$ pnpm run dev
+# Start only the documentation app
+pnpm start:docs
+
+# Start only Storybook
+pnpm start:storybook
 ```
 
-1. Open the documentation app in the
-   browser: [http://localhost:5173/](http://localhost:5173/)
+### Building the Project
 
-### Build
+#### Complete Build
 
-To build packages & the documentation app:
+Build all packages and applications:
 
 ```bash
-$ pnpm run build
+pnpm build
 ```
 
-To only build packages:
+#### Targeted Builds
+
+Build only specific parts of the system:
 
 ```bash
-$ pnpm run build-packages
+# Build only the packages (not the docs application)
+pnpm build:packages
+
+# Build only the documentation application
+pnpm build:docs
+
+# Build only the design tokens
+pnpm build:tokens
 ```

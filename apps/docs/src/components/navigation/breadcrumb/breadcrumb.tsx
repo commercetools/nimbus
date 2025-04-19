@@ -1,15 +1,17 @@
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { Box, Link } from "@commercetools/nimbus";
 import { activeDocAtom } from "../../../atoms/active-doc";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
+import { activeRouteAtom } from "@/atoms/route";
 
 /**
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
  */
 export const BreadcrumbNav = () => {
   const activeDoc = useAtomValue(activeDocAtom);
+  const [, setActiveRoute] = useAtom(activeRouteAtom);
 
   // Memoize the breadcrumb parts to avoid unnecessary recalculations
   const parts: BreadcrumbItem[] = useMemo(() => {
@@ -24,6 +26,14 @@ export const BreadcrumbNav = () => {
   }, [activeDoc]);
 
   const firstIsHome = parts[0]?.label === "Home";
+
+  const onItemClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    item: BreadcrumbItem
+  ) => {
+    e.preventDefault();
+    setActiveRoute(item.href.substring(1));
+  };
 
   return (
     <Box as="nav" aria-label="Breadcrumb">
@@ -42,7 +52,9 @@ export const BreadcrumbNav = () => {
               key={item.href}
               _after={!isLastItem ? { content: "'»'", mx: "200" } : {}}
             >
-              <Link href={item.href}>{item.label}</Link>
+              <Link onClick={(e) => onItemClick(e, item)} href={item.href}>
+                {item.label}
+              </Link>
             </Box>
           );
         })}

@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { IconButton, Input, Stack, Text } from "@commercetools/nimbus";
+import {
+  IconButton,
+  TextInput,
+  Stack,
+  Text,
+  Flex,
+  Box,
+  LoadingSpinner,
+} from "@commercetools/nimbus";
 
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 import { Save } from "@commercetools/nimbus-icons";
@@ -27,43 +35,58 @@ export const DocumentStringFieldEdit = ({
 }: DocumentStringFieldEditProps) => {
   const { meta, updateMeta } = useUpdateDocument();
   const [value, setValue] = useState<string>(meta?.[metaProperty] || "");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setValue(meta?.[metaProperty] || "");
   }, [meta, metaProperty]);
 
   const onSaveRequest = useCallback(
-    (value: string) => {
+    async (value: string) => {
       if (!meta) return;
       const payload = { [metaProperty]: value.length > 0 ? value : undefined };
-      updateMeta(payload);
+      await updateMeta(payload);
     },
     [meta, updateMeta, metaProperty]
   );
 
   const unsaved = value !== meta?.[metaProperty] && value.length > 0;
 
+  const handlePress = async () => {
+    if (busy) return;
+    setBusy(true);
+    await onSaveRequest(value);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setBusy(false);
+  };
+
   return (
-    <Stack>
+    <Stack width="full">
       <Text fontWeight="600" asChild>
         <label htmlFor="documentState">{label}</label>
       </Text>
-      <Stack direction="row">
-        <Input
-          size="md"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={placeholder}
-        />
+      <Flex alignItems="center" width="full" gap="200">
+        <Box flexGrow={1} marginRight="spacing.4">
+          <TextInput
+            size="md"
+            value={value}
+            onChange={(value) => setValue(value)}
+            placeholder={placeholder}
+            width="full"
+          />
+        </Box>
         <IconButton
-          variant="solid"
-          tone="primary"
+          variant={unsaved ? "solid" : undefined}
+          tone={unsaved ? "primary" : "neutral"}
           size="md"
-          onPress={() => onSaveRequest(value)}
+          onPress={() => {
+            void handlePress();
+          }}
+          aria-label={`Save ${metaProperty}`}
         >
-          <Save />
+          {busy ? <LoadingSpinner tone="white" /> : <Save />}
         </IconButton>
-      </Stack>
+      </Flex>
     </Stack>
   );
 };
