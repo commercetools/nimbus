@@ -1,46 +1,69 @@
-import fs from "fs";
 import path from "path";
-import { parseMdx } from "./doc-generation/parse-mdx";
-import { flog, parseTypes } from "./doc-generation/parse-types";
+import { CONFIG } from "./config";
+import { findFiles } from "./utils/file-utils";
+import { logger } from "./utils/logger";
+import { parseMdxFile, writeMdxDocs } from "./generators/mdx/parse-mdx";
+import { parseTypeFile, writeTypeDocs } from "./generators/types/parse-types";
 
-// Directory to watch
-const directoryToWatch: string = "./../../packages";
+/**
+ * Check if a file path is within the nimbus package
+ */
+function isInNimbusPackage(filePath: string): boolean {
+  const normalizedPath = path.normalize(filePath).replace(/\\/g, "/");
+  const normalizedNimbusPath = path
+    .normalize(CONFIG.packageDirs.nimbus)
+    .replace(/\\/g, "/");
+  return normalizedPath.startsWith(normalizedNimbusPath);
+}
 
-const findFiles = (dir: string, extension: string) => {
-  let results: string[] = [];
-  const files = fs.readdirSync(dir);
+/**
+ * Builds documentation for production
+ */
+export async function build(): Promise<void> {
+  logger.info("Starting documentation build process");
+  logger.separator();
 
-  files.forEach((file) => {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
+  try {
+    // Find all MDX files
+    logger.info(`Finding MDX files in ${CONFIG.watchDir}`);
+    const mdxFiles = await findFiles(CONFIG.watchDir, CONFIG.extensions.docs);
+    logger.info(`Found ${mdxFiles.length} MDX files`);
 
-    if (stat.isDirectory()) {
-      results = results.concat(findFiles(fullPath, extension));
-    } else if (path.extname(file).toLowerCase() === extension.toLowerCase()) {
-      results.push(fullPath);
-    }
+    // Find TypeScript files (only from nimbus package)
+    logger.info(`Finding TypeScript files in ${CONFIG.packageDirs.nimbus}`);
+    const tsFiles = await findFiles(
+      CONFIG.packageDirs.nimbus,
+      CONFIG.extensions.code
+    );
+    logger.info(`Found ${tsFiles.length} TypeScript files in nimbus package`);
+
+    // Process MDX files
+    logger.info("Processing MDX files...");
+    await Promise.all(mdxFiles.map(parseMdxFile));
+
+    // Process TypeScript files
+    logger.info("Processing TypeScript files...");
+    await Promise.all(tsFiles.map(parseTypeFile));
+
+    // Write documentation files
+    logger.info("Writing documentation files...");
+    await writeMdxDocs();
+    await writeTypeDocs();
+
+    logger.separator();
+    logger.success("Documentation build completed successfully");
+  } catch (error) {
+    logger.error("Documentation build failed:", error);
+    process.exit(1);
+  }
+}
+
+// Execute build when run directly
+// ES module compatible check for main module
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
+  build().catch((error) => {
+    logger.error("Unhandled error in build process:", error);
+    process.exit(1);
   });
-
-  return results;
-};
-
-export const build = async () => {
-  // Aggregate all mdx files
-  const mdxFiles = findFiles(directoryToWatch, ".mdx");
-  // Aggregate all ts & tsx files
-  const tsFiles = findFiles(directoryToWatch, ".ts");
-  const tsxFiles = findFiles(directoryToWatch, ".tsx");
-  // ...combine them...
-  const codeFiles = [...tsFiles, ...tsxFiles];
-
-  // Process them
-  await Promise.all(mdxFiles.map(parseMdx));
-  await Promise.all(codeFiles.map(parseTypes));
-
-  // wait a bit, cause it's cheaper than fixing the code
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  flog("✨ Documentation files created ✨");
-};
-
-await build();
+}
