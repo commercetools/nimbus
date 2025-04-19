@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const mdxDocumentAudiences = [
   "Developer",
   "Designer",
@@ -6,6 +8,9 @@ export const mdxDocumentAudiences = [
 ] as const;
 
 export type DocumentAudience = (typeof mdxDocumentAudiences)[number];
+
+// Define the Zod schema for document audiences
+export const documentAudienceSchema = z.enum(mdxDocumentAudiences);
 
 type DocumentAudienceDescription = {
   [K in DocumentAudience]: {
@@ -39,3 +44,24 @@ export const documentAudienceDescriptions: DocumentAudienceDescription = {
     order: 4,
   },
 };
+
+// Define a schema for the audience description object
+export const documentAudienceDescriptionSchema = z.object({
+  label: z.string().nonempty(),
+  description: z.string().nonempty(),
+  order: z.number().int().positive(),
+});
+
+export type AudienceDescription = z.infer<
+  typeof documentAudienceDescriptionSchema
+>;
+
+// Complete document audience schema with metadata
+export const documentAudienceWithMetadataSchema = z.object({
+  audience: documentAudienceSchema,
+  metadata: documentAudienceDescriptionSchema,
+});
+
+export type DocumentAudienceWithMetadata = z.infer<
+  typeof documentAudienceWithMetadataSchema
+>;

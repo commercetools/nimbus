@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const mdxDocumentStates = [
   "InitialDraft",
   "ReviewedInternal",
@@ -11,6 +13,9 @@ export const mdxDocumentStates = [
 ] as const;
 
 export type DocumentState = (typeof mdxDocumentStates)[number];
+
+// Define the Zod schema for document states
+export const documentStateSchema = z.enum(mdxDocumentStates);
 
 type DocumentStateDescription = {
   [K in DocumentState]: {
@@ -74,3 +79,22 @@ export const documentStateDescriptions: DocumentStateDescription = {
     order: 9,
   },
 };
+
+// Define a schema for the state description object
+export const documentStateDescriptionSchema = z.object({
+  label: z.string().nonempty(),
+  description: z.string().nonempty(),
+  order: z.number().int().positive(),
+});
+
+export type StateDescription = z.infer<typeof documentStateDescriptionSchema>;
+
+// Complete document state schema with metadata
+export const documentStateWithMetadataSchema = z.object({
+  state: documentStateSchema,
+  metadata: documentStateDescriptionSchema,
+});
+
+export type DocumentStateWithMetadata = z.infer<
+  typeof documentStateWithMetadataSchema
+>;
