@@ -48,7 +48,7 @@
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/optimize-locales-plugin": "^1.1.4",
     "next-themes": "catalog:react",
-    "react-aria": "^catalog:react",
+    "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^4.6.1",
     "react-stately": "catalog:react",
