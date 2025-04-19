@@ -1,6 +1,6 @@
 import { IconButton } from "@commercetools/nimbus";
 import { Delete } from "@commercetools/nimbus-icons";
-import { useRemoveDocument } from "@/hooks/useRemoveDocument";
+import { useRemoveDocument } from "@/src/hooks/useRemoveDocument";
 
 /**
  * Props for the TrashDocumentLink component

@@ -3,7 +3,7 @@ import { useAtom, useAtomValue } from "jotai";
 import {
   searchableDocItemsAtom,
   searchQueryAtom,
-} from "@/atoms/searchable-docs";
+} from "@/src/atoms/searchable-docs";
 import Fuse from "fuse.js";
 
 export const useSearch = () => {

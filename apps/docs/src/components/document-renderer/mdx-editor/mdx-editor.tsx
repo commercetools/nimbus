@@ -46,8 +46,8 @@ import "@mdxeditor/editor/style.css";
 import { useEffect, useRef, useState } from "react";
 import { MdxFileFrontmatter } from "../../../types";
 import { CustomEditorStyles } from "./configs/html-styles.tsx";
-import { uploadImage } from "@/utils/file-upload.ts";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument.ts";
+import { uploadImage } from "@/src/utils/file-upload.ts";
+import { useUpdateDocument } from "@/src/hooks/useUpdateDocument.ts";
 
 type MdxEditorProps = MDXEditorProps & {
   meta: MdxFileFrontmatter["meta"];

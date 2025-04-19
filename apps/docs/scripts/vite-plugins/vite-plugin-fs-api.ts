@@ -1,8 +1,9 @@
+// filepath: /Volumes/Code/nimbus/apps/docs/scripts/vite-plugins/vite-plugin-fs-api.ts
 import fs from "fs/promises";
 import path from "path";
 import express, { Request, Response } from "express";
 import { Plugin } from "vite";
-import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Import the function
+import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Updated import path
 
 interface FileSystemRequestBody {
   repoPath: string;

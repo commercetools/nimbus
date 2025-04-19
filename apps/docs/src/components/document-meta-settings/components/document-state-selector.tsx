@@ -1,11 +1,11 @@
 import {
   DocumentState,
   documentStateDescriptions,
-} from "@/schemas/mdx-document-states";
+} from "@/src/schemas/mdx-document-states";
 import { useCallback, useEffect, useMemo } from "react";
 import { Box, Stack, Text, Select } from "@commercetools/nimbus";
 import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
 
 export const DocumentStateSelector = () => {
   const { meta, updateMeta } = useUpdateDocument();

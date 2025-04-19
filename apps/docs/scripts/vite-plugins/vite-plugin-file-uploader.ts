@@ -1,3 +1,4 @@
+// filepath: /Volumes/Code/nimbus/apps/docs/scripts/vite-plugins/vite-plugin-file-uploader.ts
 import fs from "fs";
 import path from "path";
 import type { Plugin } from "vite";
@@ -16,7 +17,7 @@ export type FileUploadResponse = {
  */
 export function imageUploadMiddleware(): Plugin {
   // Define the directory where uploaded images will be stored
-  const uploadDirectory = path.resolve(__dirname, "./../public/s3");
+  const uploadDirectory = path.resolve(__dirname, "./../../public/s3");
 
   // Ensure the upload directory exists
   if (!fs.existsSync(uploadDirectory)) {

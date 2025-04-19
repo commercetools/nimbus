@@ -1,9 +1,9 @@
-import { documentEditModeAtom } from "@/atoms/document-edit-mode";
-import { FigmaLink } from "@/components/utils/figma-link";
-import { GithubRepoLink } from "@/components/utils/github-repo-link";
-import { TrashDocumentLink } from "@/components/utils/trash-document-link";
-import { VsCodeEditLink } from "@/components/utils/vs-code-edit-link";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { documentEditModeAtom } from "@/src/atoms/document-edit-mode";
+import { FigmaLink } from "@/src/components/utils/figma-link";
+import { GithubRepoLink } from "@/src/components/utils/github-repo-link";
+import { TrashDocumentLink } from "@/src/components/utils/trash-document-link";
+import { VsCodeEditLink } from "@/src/components/utils/vs-code-edit-link";
+import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
 import { Edit, EditOff } from "@commercetools/nimbus-icons";
 import { Box, IconButton, Stack } from "@commercetools/nimbus";
 import { useAtom } from "jotai";

@@ -13,7 +13,7 @@ import {
 import { JSONTree } from "react-json-tree";
 import { useMemo } from "react";
 import { useAtom } from "jotai";
-import { preferPxAtom } from "@/atoms/prefer-px-atom";
+import { preferPxAtom } from "@/src/atoms/prefer-px-atom";
 
 type GenericTableDemoProps = {
   /** the name of the token-category */

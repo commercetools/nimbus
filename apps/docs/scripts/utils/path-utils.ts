@@ -1,8 +1,8 @@
 import path from "path";
 import { CONFIG } from "../config";
-import { getPathFromMonorepoRoot } from "../../utils/find-monorepo-root";
+import { getPathFromMonorepoRoot } from "@/scripts/utils/find-monorepo-root";
 import { logger } from "./logger";
-import { sluggify } from "./../../src/utils/sluggify";
+import { sluggify } from "@/src/utils/sluggify";
 
 /**
  * Generates a route path from a menu structure

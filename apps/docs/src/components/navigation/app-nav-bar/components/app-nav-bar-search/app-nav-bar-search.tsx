@@ -19,10 +19,10 @@ import { ComboBox, Input, ListBox, ListBoxItem } from "react-aria-components";
 
 import { Key } from "react";
 import { useAtom } from "jotai";
-import { activeRouteAtom } from "@/atoms/route";
+import { activeRouteAtom } from "@/src/atoms/route";
 import { useSearch } from "./hooks/use-search";
 import { SearchResultItem } from "./components/search-result-item";
-import { SearchableDocItem } from "@/atoms/searchable-docs";
+import { SearchableDocItem } from "@/src/atoms/searchable-docs";
 
 export type SearchResultItemProps = {
   item: SearchableDocItem;

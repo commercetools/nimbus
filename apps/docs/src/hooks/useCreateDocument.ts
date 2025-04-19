@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
-import { activeDocAtom } from "@/atoms/active-doc.ts";
-import { sluggify } from "@/utils/sluggify.ts";
+import { activeDocAtom } from "@/src/atoms/active-doc.ts";
+import { sluggify } from "@/src/utils/sluggify.ts";
 import axios from "axios";
-import { mdxDocumentPayloadSchema } from "@/schemas/mdx-document";
+import { mdxDocumentPayloadSchema } from "@/src/schemas/mdx-document";
 import yaml from "js-yaml";
 
 /**

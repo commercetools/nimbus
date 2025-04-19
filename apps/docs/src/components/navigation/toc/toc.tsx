@@ -2,7 +2,7 @@ import { Box, Link, Text } from "@commercetools/nimbus";
 import { tocAtom } from "../../../atoms/toc.ts";
 import { useAtomValue } from "jotai";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
-import { scrollToAnchor } from "@/utils/scroll-to-anchor";
+import { scrollToAnchor } from "@/src/utils/scroll-to-anchor";
 
 /**
  * Table of Contents (TOC) component

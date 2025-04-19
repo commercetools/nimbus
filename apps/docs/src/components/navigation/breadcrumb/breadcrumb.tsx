@@ -4,7 +4,7 @@ import { Box, Link } from "@commercetools/nimbus";
 import { activeDocAtom } from "../../../atoms/active-doc";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
-import { activeRouteAtom } from "@/atoms/route";
+import { activeRouteAtom } from "@/src/atoms/route";
 
 /**
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.

@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { menuAtom } from "@/atoms/menu";
+import { menuAtom } from "@/src/atoms/menu";
 import { MenuList } from "./components/menu-list";
 
 /**

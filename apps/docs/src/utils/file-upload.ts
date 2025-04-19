@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type FileUploadResponse } from "./../../vite-plugins/vite-plugin-file-uploader";
+import { type FileUploadResponse } from "./../../scripts/vite-plugins/vite-plugin-file-uploader";
 /**
  * Uploads an image file to the server.
  * @param {File} file - The image file to be uploaded.

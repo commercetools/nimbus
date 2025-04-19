@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { ReactNode, useEffect } from "react";
-import { activeRouteAtom } from "@/atoms/route";
-import { scrollToAnchor } from "@/utils/scroll-to-anchor";
+import { activeRouteAtom } from "@/src/atoms/route";
+import { scrollToAnchor } from "@/src/utils/scroll-to-anchor";
 
 /**
  * RouterProvider handles all routing-related functionality for the application,

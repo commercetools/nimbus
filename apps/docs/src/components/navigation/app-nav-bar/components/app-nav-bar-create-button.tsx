@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@commercetools/nimbus";
-import { useCreateDocument } from "@/hooks/useCreateDocument";
+import { useCreateDocument } from "@/src/hooks/useCreateDocument";
 
 /**
  * Component for creating a new document from the navigation bar.

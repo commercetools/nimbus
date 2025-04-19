@@ -1,4 +1,4 @@
-import { activeDocAtom } from "@/atoms/active-doc.ts";
+import { activeDocAtom } from "@/src/atoms/active-doc.ts";
 import { useAtom, useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
@@ -7,8 +7,8 @@ import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { MdxEditor } from "./mdx-editor";
 import { useEffect, memo } from "react";
 import { Helmet } from "react-helmet-async";
-import { brandNameAtom } from "@/atoms/brand";
-import { documentEditModeAtom } from "@/atoms/document-edit-mode.ts";
+import { brandNameAtom } from "@/src/atoms/brand";
+import { documentEditModeAtom } from "@/src/atoms/document-edit-mode.ts";
 
 const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);

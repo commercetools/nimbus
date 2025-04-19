@@ -1,6 +1,6 @@
 import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
-import { themeColorScalesAtom } from "@/atoms/theme-color-scales.ts";
+import { themeColorScalesAtom } from "@/src/atoms/theme-color-scales.ts";
 import { useMemo } from "react";
 import last from "lodash/last";
 import compact from "lodash/compact";

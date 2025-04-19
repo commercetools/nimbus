@@ -1,5 +1,5 @@
-import { preferPxAtom } from "@/atoms/prefer-px-atom";
-import { themeSizeTokensAtom } from "@/atoms/theme-size-tokens.ts";
+import { preferPxAtom } from "@/src/atoms/prefer-px-atom";
+import { themeSizeTokensAtom } from "@/src/atoms/theme-size-tokens.ts";
 import {
   Box,
   TableRoot,

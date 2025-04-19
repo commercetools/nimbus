@@ -1,8 +1,8 @@
-import { activeRouteAtom } from "@/atoms/route.ts";
+import { activeRouteAtom } from "@/src/atoms/route.ts";
 import { Box, Text } from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import { MouseEvent } from "react";
-import { brandNameAtom } from "@/atoms/brand.ts";
+import { brandNameAtom } from "@/src/atoms/brand.ts";
 
 /**
  * Component for the brand section of the app navigation bar.

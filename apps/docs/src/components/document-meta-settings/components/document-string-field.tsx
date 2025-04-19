@@ -9,7 +9,7 @@ import {
   LoadingSpinner,
 } from "@commercetools/nimbus";
 
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
 import { Save } from "@commercetools/nimbus-icons";
 import { MdxFileFrontmatter } from "@/types";
 

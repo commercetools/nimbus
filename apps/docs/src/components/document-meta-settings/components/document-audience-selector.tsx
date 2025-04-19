@@ -1,10 +1,10 @@
 import {
   DocumentAudience,
   documentAudienceDescriptions,
-} from "@/schemas/mdx-document-audiences";
+} from "@/src/schemas/mdx-document-audiences";
 import { useMemo } from "react";
 import { Box, Flex, Stack, Text, Checkbox } from "@commercetools/nimbus";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
 
 // Define the type for the audience options
 interface AudienceOption {

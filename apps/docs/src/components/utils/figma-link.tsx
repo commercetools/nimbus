@@ -1,6 +1,6 @@
 import { Figma } from "@commercetools/nimbus-icons";
 import { Button } from "@commercetools/nimbus";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
 
 export const FigmaLink = () => {
   const { meta } = useUpdateDocument();

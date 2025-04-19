@@ -10,9 +10,9 @@ import {
   Code,
 } from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
-import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
+import { themeSpacingTokensAtom } from "@/src/atoms/spacing-tokens.ts";
 import { useState } from "react";
-import { preferPxAtom } from "@/atoms/prefer-px-atom";
+import { preferPxAtom } from "@/src/atoms/prefer-px-atom";
 
 export const SpacingTokenDemo = () => {
   const [showPx, setShowPx] = useAtom(preferPxAtom);

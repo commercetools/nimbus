@@ -1,5 +1,5 @@
 import { Flex, Box, Stack } from "@commercetools/nimbus";
-import { DevOnly } from "@/components/utils/dev-only";
+import { DevOnly } from "@/src/components/utils/dev-only";
 
 import { ModeToggleButton } from "./components/mode-toggle-button/index.ts";
 import { AppNavBarSearch } from "./components/app-nav-bar-search/app-nav-bar-search.tsx";

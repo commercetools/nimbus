@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { documentationAtom } from "./documentation";
 import { MdxFileFrontmatter } from "@/types";
-import { stripMarkdown } from "@/utils/stip-markdown";
+import { stripMarkdown } from "@/src/utils/stip-markdown";
 
 export type SearchableDocItem = MdxFileFrontmatter["meta"] & {
   content: string;
