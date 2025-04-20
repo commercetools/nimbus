@@ -98,7 +98,10 @@ class FileCache {
     const results: Record<string, any> = {};
     this._cache.forEach((file) => {
       if (file.processingResult) {
-        results[file.path] = file.processingResult;
+        // Use the repoPath property from the meta object as the key
+        // This is the relative path from the monorepo root
+        const key = file.processingResult.meta?.repoPath;
+        results[key] = file.processingResult;
       }
     });
     return results;
