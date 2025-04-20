@@ -3,7 +3,11 @@ import matter from "gray-matter";
 import { MdxFileFrontmatter } from "../../../src/types";
 import { logger } from "../../utils/logger";
 import { fileCache, writeJsonFile } from "../../utils/file-utils";
-import { generateRoute, getRepoPath } from "../../utils/path-utils";
+import {
+  findPackageName,
+  generateRoute,
+  getRepoPath,
+} from "../../utils/path-utils";
 import { CONFIG } from "../../config";
 import { mdxDocumentSchema } from "../../../schemas/mdx-document";
 import { getToc } from "./toc-builder";
@@ -44,11 +48,15 @@ export async function parseMdxFile(filePath: string): Promise<boolean> {
     // Get relative path from repo root for linking
     const repoPath = await getRepoPath(filePath);
 
+    // Find the package name from the closest package.json
+    const packageName = (await findPackageName(filePath)) || "unknown";
+
     // Construct document data
     const documentData = {
       meta: {
         ...meta,
         repoPath,
+        packageName,
         order: meta.order || 999,
         route: generateRoute(meta.menu),
         toc,

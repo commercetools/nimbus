@@ -28,6 +28,8 @@ const metaSchema = z.object({
   order: z.number().int(),
   /** the path to the file within the repo, from the repo-root */
   repoPath: z.string(),
+  /** the name of the package this document belongs to */
+  packageName: z.string(),
   /**
    * Array of menu labels
    * e.g. ["Getting Started", "API Reference"]
@@ -65,6 +67,8 @@ const metaSchemaWithoutGeneratedMeta = metaSchema.omit({
   route: true,
   /** generated, parsed from the heading structure of the markdown content */
   toc: true,
+  /** generated, based on the closest package.json file */
+  packageName: true,
 });
 
 /** the schema for validating a payload to generate or modify a file */

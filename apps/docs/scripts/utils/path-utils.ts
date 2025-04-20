@@ -3,6 +3,8 @@ import { CONFIG } from "../config";
 import { getPathFromMonorepoRoot } from "@/scripts/utils/find-monorepo-root";
 import { logger } from "./logger";
 import { sluggify } from "@/src/utils/sluggify";
+import { promises as fs } from "fs";
+import { findMonorepoRoot } from "./find-monorepo-root";
 
 /**
  * Generates a route path from a menu structure
@@ -63,4 +65,61 @@ export async function getRepoPath(filePath: string): Promise<string> {
  */
 export function normalizePath(filePath: string): string {
   return path.normalize(filePath).replace(/\\/g, "/");
+}
+
+/**
+ * Recursively find the closest package.json file to the given path,
+ * and extract the package name.
+ *
+ * @param filePath The starting file path to search from
+ * @returns The package name or null if not found
+ */
+export async function findPackageName(
+  filePath: string
+): Promise<string | null> {
+  try {
+    // Start with the directory containing the file
+    let currentDir = path.dirname(filePath);
+    const monorepoRoot = await findMonorepoRoot(currentDir);
+
+    if (!monorepoRoot) {
+      logger.warn(
+        `Monorepo root not found when searching for package name for ${filePath}`
+      );
+      return null;
+    }
+
+    // Don't search beyond the monorepo root
+    while (currentDir.startsWith(monorepoRoot)) {
+      const packageJsonPath = path.join(currentDir, "package.json");
+
+      try {
+        const content = await fs.readFile(packageJsonPath, "utf8");
+        const packageJson = JSON.parse(content);
+
+        if (packageJson.name) {
+          logger.debug(
+            `Found package name "${packageJson.name}" for ${filePath}`
+          );
+          return packageJson.name;
+        }
+      } catch (error) {
+        // package.json doesn't exist at this level, continue up
+      }
+
+      // Move up to parent directory
+      const parentDir = path.dirname(currentDir);
+      if (parentDir === currentDir) {
+        // We've reached the file system root
+        break;
+      }
+      currentDir = parentDir;
+    }
+
+    logger.warn(`No package.json with name found for ${filePath}`);
+    return null;
+  } catch (error) {
+    logger.error(`Error finding package name for ${filePath}:`, error);
+    return null;
+  }
 }
