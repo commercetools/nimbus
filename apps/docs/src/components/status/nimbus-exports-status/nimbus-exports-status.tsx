@@ -1,12 +1,7 @@
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import {
-  TableRoot,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableColumnHeader,
+  Table,
   Text,
   Box,
   Heading,
@@ -65,19 +60,19 @@ export const NimbusExportsStatus = () => {
           {title} Exports ({exports.length})
         </Heading>
 
-        <TableRoot>
-          <TableHeader>
-            <TableRow>
-              <TableColumnHeader width="1/5">Export Name</TableColumnHeader>
-              <TableColumnHeader width="1/5">Type</TableColumnHeader>
-              <TableColumnHeader width="1/5">Status</TableColumnHeader>
-              <TableColumnHeader>Description</TableColumnHeader>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+        <Table.Root>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader width="1/5">Export Name</Table.ColumnHeader>
+              <Table.ColumnHeader width="1/5">Type</Table.ColumnHeader>
+              <Table.ColumnHeader width="1/5">Status</Table.ColumnHeader>
+              <Table.ColumnHeader>Description</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {exports.map((exportItem) => (
-              <TableRow key={exportItem.name}>
-                <TableCell>
+              <Table.Row key={exportItem.name}>
+                <Table.Cell>
                   {exportItem.docRoute ? (
                     <Link href={`/${exportItem.docRoute}`}>
                       <Code>{exportItem.name}</Code>
@@ -85,16 +80,16 @@ export const NimbusExportsStatus = () => {
                   ) : (
                     <Code>{exportItem.name}</Code>
                   )}
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   <Badge
                     size="xs"
                     colorPalette={getColorForType(exportItem.type)}
                   >
                     {exportItem.type}
                   </Badge>
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   {exportItem.docStatus ? (
                     <Badge
                       size="xs"
@@ -107,14 +102,14 @@ export const NimbusExportsStatus = () => {
                       No documentation
                     </Text>
                   )}
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   <Text fontSize="sm">{exportItem.description}</Text>
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </TableBody>
-        </TableRoot>
+          </Table.Body>
+        </Table.Root>
       </Box>
     );
   };

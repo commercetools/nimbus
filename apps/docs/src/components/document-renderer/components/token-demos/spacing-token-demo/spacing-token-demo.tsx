@@ -1,14 +1,4 @@
-import {
-  Box,
-  TableRoot,
-  TableBody,
-  TableColumnHeader,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Flex,
-  Code,
-} from "@commercetools/nimbus";
+import { Box, Table, Flex, Code } from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import { themeSpacingTokensAtom } from "@/src/atoms/spacing-tokens.ts";
 import { useState } from "react";
@@ -32,32 +22,32 @@ export const SpacingTokenDemo = () => {
 
   return (
     <Box>
-      <TableRoot>
-        <TableHeader>
-          <TableRow>
-            <TableColumnHeader width="8ch" textAlign="right">
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader width="8ch" textAlign="right">
               Token
-            </TableColumnHeader>
-            <TableColumnHeader width="12ch" textAlign="right">
+            </Table.ColumnHeader>
+            <Table.ColumnHeader width="12ch" textAlign="right">
               Value
-            </TableColumnHeader>
-            <TableColumnHeader>Demo</TableColumnHeader>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+            </Table.ColumnHeader>
+            <Table.ColumnHeader>Demo</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {spacingTokens.map((item) => (
-            <TableRow key={item.id} id={item.id}>
-              <TableCell>
+            <Table.Row key={item.id} id={item.id}>
+              <Table.Cell>
                 <Code variant="subtle">{item.label}</Code>
-              </TableCell>
-              <TableCell
+              </Table.Cell>
+              <Table.Cell
                 onClick={() => setShowPx(!showPx)}
                 cursor="pointer"
                 textAlign="right"
               >
                 {formatterFn(item.value.originalValue)}
-              </TableCell>
-              <TableCell
+              </Table.Cell>
+              <Table.Cell
                 cursor="pointer"
                 onClick={() => setDemoAltLook(!demoAltLook)}
               >
@@ -74,11 +64,11 @@ export const SpacingTokenDemo = () => {
 
                   <Box flexGrow="1" height="400" bg="primary.3" />
                 </Flex>
-              </TableCell>
-            </TableRow>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </TableBody>
-      </TableRoot>
+        </Table.Body>
+      </Table.Root>
     </Box>
   );
 };
