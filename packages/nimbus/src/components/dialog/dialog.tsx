@@ -8,7 +8,7 @@ interface DialogContentProps extends ChakraDialog.ContentProps {
   backdrop?: boolean;
 }
 
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
+const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   function DialogContent(props, ref) {
     const {
       children,
@@ -31,7 +31,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   }
 );
 
-export const DialogCloseTrigger = forwardRef<
+const DialogCloseTrigger = forwardRef<
   HTMLButtonElement,
   ChakraDialog.CloseTriggerProps
 >(function DialogCloseTrigger(props, ref) {
@@ -50,12 +50,29 @@ export const DialogCloseTrigger = forwardRef<
   );
 });
 
-export const DialogRoot = ChakraDialog.Root;
-export const DialogFooter = ChakraDialog.Footer;
-export const DialogHeader = ChakraDialog.Header;
-export const DialogBody = ChakraDialog.Body;
-export const DialogBackdrop = ChakraDialog.Backdrop;
-export const DialogTitle = ChakraDialog.Title;
-export const DialogDescription = ChakraDialog.Description;
-export const DialogTrigger = ChakraDialog.Trigger;
-export const DialogActionTrigger = ChakraDialog.ActionTrigger;
+const DialogRoot = ChakraDialog.Root;
+const DialogFooter = ChakraDialog.Footer;
+const DialogHeader = ChakraDialog.Header;
+const DialogBody = ChakraDialog.Body;
+const DialogBackdrop = ChakraDialog.Backdrop;
+const DialogTitle = ChakraDialog.Title;
+const DialogDescription = ChakraDialog.Description;
+const DialogTrigger = ChakraDialog.Trigger;
+const DialogActionTrigger = ChakraDialog.ActionTrigger;
+
+export const Dialog = Object.assign(
+  {},
+  {
+    Root: DialogRoot,
+    Content: DialogContent,
+    CloseTrigger: DialogCloseTrigger,
+    Footer: DialogFooter,
+    Header: DialogHeader,
+    Body: DialogBody,
+    Backdrop: DialogBackdrop,
+    Title: DialogTitle,
+    Description: DialogDescription,
+    Trigger: DialogTrigger,
+    ActionTrigger: DialogActionTrigger,
+  }
+);

@@ -1,19 +1,5 @@
 import { Info, Add } from "@commercetools/nimbus-icons";
-import {
-  Button,
-  DialogBackdrop,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  TextInput,
-  Stack,
-  Text,
-  DialogRoot,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@commercetools/nimbus";
+import { Button, Dialog, TextInput, Stack, Text } from "@commercetools/nimbus";
 import { useCreateDocument } from "@/src/hooks/useCreateDocument";
 
 /**
@@ -35,9 +21,9 @@ export const AppNavBarCreateButton = () => {
   } = useCreateDocument();
 
   return (
-    <DialogRoot open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
-      <DialogBackdrop />
-      <DialogTrigger asChild>
+    <Dialog.Root open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
+      <Dialog.Backdrop />
+      <Dialog.Trigger asChild>
         <Button
           colorPalette="primary"
           size="xs"
@@ -47,15 +33,15 @@ export const AppNavBarCreateButton = () => {
           <Add />
           New document
         </Button>
-      </DialogTrigger>
-      <DialogContent divideY="1px">
-        <DialogHeader>
-          <DialogTitle>Create New Document</DialogTitle>
-          <DialogDescription>
+      </Dialog.Trigger>
+      <Dialog.Content divideY="1px">
+        <Dialog.Header>
+          <Dialog.Title>Create New Document</Dialog.Title>
+          <Dialog.Description>
             Fill in the details to create a new document.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogBody>
+          </Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Body>
           {!isLoading ? (
             <Stack gap="400" mt="400">
               <Stack>
@@ -118,9 +104,9 @@ export const AppNavBarCreateButton = () => {
               Saving in progress...
             </Text>
           )}
-        </DialogBody>
+        </Dialog.Body>
         {!isLoading && (
-          <DialogFooter>
+          <Dialog.Footer>
             <Button variant="ghost" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
@@ -132,9 +118,9 @@ export const AppNavBarCreateButton = () => {
             >
               Create
             </Button>
-          </DialogFooter>
+          </Dialog.Footer>
         )}
-      </DialogContent>
-    </DialogRoot>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };

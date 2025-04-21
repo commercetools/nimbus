@@ -9,10 +9,3 @@ export const Select = {
   Option: _SelectOption,
   OptionGroup: _SelectOptionGroup,
 };
-
-/**
- * todo: get rid of this, this is needed for the react-docgen-typescript script
- * that is parsing the typescript types for our documentation. The _ underscores
- * serve as a reminder that this exports are awkward and should not be used.
- */
-export { _SelectRoot, _SelectOptions, _SelectOption, _SelectOptionGroup };
