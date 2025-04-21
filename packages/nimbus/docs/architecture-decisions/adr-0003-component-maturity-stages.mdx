@@ -43,53 +43,14 @@ will be explicitly labeled with one of these stages:
 
 ### Status Stages
 
-1. **Experimental**
-
-   - Early-stage implementation with minimal testing
-   - No guarantees about API stability
-   - May contain significant bugs or performance issues
-   - May be removed without deprecation notice
-   - Intended for feedback and exploration only
-
-2. **Alpha**
-
-   - Core functionality is implemented
-   - Basic testing in place
-   - API likely to change significantly
-   - Known limitations and bugs may exist
-   - Not recommended for production use
-
-3. **Beta**
-
-   - Feature complete implementation
-   - Comprehensive test coverage
-   - API largely stabilized, but may still change
-   - Performance optimized for common use cases
-   - Suitable for production use with caution
-
-4. **Release Candidate (RC)**
-
-   - Fully implemented and tested
-   - API frozen except for critical issues
-   - Performance fully optimized
-   - Documentation complete
-   - Safe for production use
-   - Ready for final validation before GA
-
-5. **General Availability (GA)**
-
-   - Production-ready with full support
-   - API stable with semantic versioning
-   - Thoroughly tested and optimized
-   - Complete documentation
-   - Changes follow proper deprecation cycles
-
-6. **Deprecated**
-   - No longer recommended for use
-   - May receive critical bug fixes only
-   - Will be removed in a future version
-   - Alternatives documented
-   - Migration guide provided
+| Stage                         | Description                     | API Stability                                | Testing       | Production Use                 |
+| ----------------------------- | ------------------------------- | -------------------------------------------- | ------------- | ------------------------------ |
+| **Experimental**              | Early-stage implementation      | No guarantees, may be removed without notice | Minimal       | Not recommended, feedback only |
+| **Alpha**                     | Core functionality implemented  | Likely to change significantly               | Basic         | Not recommended                |
+| **Beta**                      | Feature complete implementation | Largely stabilized, may still change         | Comprehensive | With caution                   |
+| **Release Candidate (RC)**    | Fully implemented               | Frozen except for critical issues            | Complete      | Safe                           |
+| **General Availability (GA)** | Production-ready                | Stable with semantic versioning              | Thorough      | Fully supported                |
+| **Deprecated**                | No longer recommended           | No changes except critical fixes             | Maintained    | Not for new projects           |
 
 ### Implementation
 
