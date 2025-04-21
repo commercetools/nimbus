@@ -16,30 +16,8 @@ import {
   nimbusExportsCategorizedAtom,
   NimbusExportItem,
 } from "../../../atoms/nimbus-exports";
-
-// Helper function to get color for document status
-const getStatusColor = (status?: string) => {
-  if (!status) return "neutral";
-
-  switch (status) {
-    case "Published":
-      return "green";
-    case "FinalDraft":
-    case "Approved":
-      return "teal";
-    case "EditedForStyle":
-    case "PeerReviewed":
-    case "Revised":
-    case "ReviewedInternal":
-      return "blue";
-    case "InitialDraft":
-      return "amber";
-    case "Archived":
-      return "red";
-    default:
-      return "neutral";
-  }
-};
+import { ComponentStatus } from "../../status/component-status";
+import { DocLink } from "../../navigation/doc-link";
 
 export const NimbusExportsStatus = () => {
   const [categorized, setCategorizedAction] = useAtom(
@@ -73,13 +51,9 @@ export const NimbusExportsStatus = () => {
             {exports.map((exportItem) => (
               <Table.Row key={exportItem.name}>
                 <Table.Cell>
-                  {exportItem.docRoute ? (
-                    <Link href={`/${exportItem.docRoute}`}>
-                      <Code>{exportItem.name}</Code>
-                    </Link>
-                  ) : (
-                    <Code>{exportItem.name}</Code>
-                  )}
+                  <DocLink docRoute={exportItem.docRoute} asCode={true}>
+                    {exportItem.name}
+                  </DocLink>
                 </Table.Cell>
                 <Table.Cell>
                   <Badge
@@ -90,18 +64,10 @@ export const NimbusExportsStatus = () => {
                   </Badge>
                 </Table.Cell>
                 <Table.Cell>
-                  {exportItem.docStatus ? (
-                    <Badge
-                      size="xs"
-                      colorPalette={getStatusColor(exportItem.docStatus)}
-                    >
-                      {exportItem.docStatus}
-                    </Badge>
-                  ) : (
-                    <Text fontSize="sm" color="neutral.500">
-                      No documentation
-                    </Text>
-                  )}
+                  <ComponentStatus
+                    status={exportItem.componentStatus || null}
+                    size="sm"
+                  />
                 </Table.Cell>
                 <Table.Cell>
                   <Text fontSize="sm">{exportItem.description}</Text>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { documentStateSchema } from "./mdx-document-states";
 import { documentAudienceSchema } from "./mdx-document-audiences";
+import { componentStatusSchema } from "./mdx-document-status";
 
 export const TocItemSchema = z.object({
   value: z.string(),
@@ -24,6 +25,8 @@ const metaSchema = z.object({
   documentState: documentStateSchema.optional(),
   /** the audience the document is targeted at */
   documentAudiences: z.array(documentAudienceSchema).min(1).optional(),
+  /** the component status stage (experimental, alpha, beta, etc.) */
+  componentStatus: componentStatusSchema.optional(),
   /** menu display order */
   order: z.number().int(),
   /** the path to the file within the repo, from the repo-root */

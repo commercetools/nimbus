@@ -1,0 +1,69 @@
+---
+id: Bleed
+title: Bleed
+description: >-
+  A component that allows content to extend beyond its parent container's
+  padding boundaries
+documentState: InitialDraft
+componentStatus: Experimental
+order: 999
+menu:
+  - Components
+  - Layout
+  - Bleed
+tags:
+  - layout
+  - spacing
+
+---
+
+# Bleed
+
+The Bleed component allows content to extend (or "bleed") beyond its parent
+container's padding boundaries, creating visual interest and emphasizing certain
+elements without breaking the overall layout structure.
+
+## Features
+
+- **Customizable Bleeding:** Control how much content bleeds in each direction
+- **Responsive:** Adjusts bleeding based on screen size
+- **Flexible:** Works with any content type
+
+## Basic Usage
+
+The Bleed component is used to make content visually extend beyond its parent's
+boundaries.
+
+```jsx-live
+const App = () => (
+  <Box padding="500" border="1px solid" borderColor="neutral.6">
+    <Text>Parent container with padding</Text>
+    <Bleed margin="300">
+      <Box padding="300" bg="primary.5">
+        <Text color="white">This content bleeds outside the parent's padding</Text>
+      </Box>
+    </Bleed>
+  </Box>
+)
+```
+
+### Directional Bleeding
+
+You can control which directions the content bleeds.
+
+```jsx-live
+const App = () => (
+  <Box padding="500" border="1px solid" borderColor="neutral.6">
+    <Text>Parent container with padding</Text>
+    <Bleed marginY="300">
+      <Box padding="300" bg="secondary.5">
+        <Text color="white">This content only bleeds vertically</Text>
+      </Box>
+    </Bleed>
+  </Box>
+)
+```
+
+## Props
+
+<PropTable id="Bleed" />

@@ -42,7 +42,7 @@ export const DocumentStateSelector = () => {
   return (
     <Stack>
       <Text fontWeight="600" asChild>
-        <label htmlFor="documentState">Status</label>
+        <label htmlFor="documentState">Document Status</label>
       </Text>
       <Select.Root
         selectedKey={meta?.documentState}

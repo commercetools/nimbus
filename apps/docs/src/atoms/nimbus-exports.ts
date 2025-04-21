@@ -19,7 +19,7 @@ export interface NimbusExportItem {
   description: string;
   docPath?: string;
   docRoute?: string;
-  docStatus?: string;
+  componentStatus?: string;
 }
 
 export interface NimbusExportsData {
@@ -46,7 +46,7 @@ const findDocForExport = (exportName: string) => {
         description: docData.meta.description || "No description available",
         docPath: path,
         docRoute: docData.meta.route || undefined,
-        docStatus: docData.meta.documentState || undefined,
+        componentStatus: docData.meta.componentStatus || null, // Return null instead of "stable" default
       };
     }
   }
@@ -55,7 +55,7 @@ const findDocForExport = (exportName: string) => {
     description: "No documentation available",
     docPath: undefined,
     docRoute: undefined,
-    docStatus: undefined,
+    componentStatus: null, // Return null instead of "stable" default
   };
 };
 
@@ -89,7 +89,7 @@ export const nimbusExportsCategorizedAtom = atom(
           description: docInfo.description,
           docPath: docInfo.docPath,
           docRoute: docInfo.docRoute,
-          docStatus: docInfo.docStatus,
+          componentStatus: docInfo.componentStatus,
         };
       });
     });
