@@ -1,8 +1,11 @@
-import { IconButton, Heading, Box } from "@commercetools/nimbus";
+import { IconButton, Heading, Box, Flex } from "@commercetools/nimbus";
 import { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
 import GithubSlugger from "github-slugger";
 import { Link as LinkIcon } from "@commercetools/nimbus-icons";
 import { useCopyToClipboard } from "@commercetools/nimbus";
+import { useAtomValue } from "jotai";
+import { activeDocAtom } from "@/src/atoms/active-doc";
+import { ComponentStatus } from "@/src/components/status/component-status";
 /**
  * Generates a slug from React children.
  *
@@ -36,6 +39,14 @@ const commonProps = (props: HeadingProps) => ({
   scrollMarginTop: "2400",
   position: "relative",
   className: "group",
+  borderBottom: "solid-25",
+  borderColor: "neutral.6",
+  marginTop: "600",
+  marginBottom: "300",
+  pb: "300",
+  _first: {
+    marginTop: "0",
+  },
 });
 
 const CopyLink = ({ id }: { id: string }) => {
@@ -82,6 +93,7 @@ const CopyLink = ({ id }: { id: string }) => {
 
 export const H1 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
+
   return (
     <Heading
       {...commonProps({ children, ...props })}
@@ -99,13 +111,7 @@ export const H1 = ({ children, ...props }: HeadingProps) => {
 export const H2 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="2xl"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="2xl" asChild>
       <h2 {...props}>
         {children} <CopyLink id={id} />
       </h2>
@@ -116,13 +122,7 @@ export const H2 = ({ children, ...props }: HeadingProps) => {
 export const H3 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="xl"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="xl" asChild>
       <h3 {...props}>
         {children} <CopyLink id={id} />
       </h3>
@@ -132,13 +132,7 @@ export const H3 = ({ children, ...props }: HeadingProps) => {
 export const H4 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="lg"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="lg" asChild>
       <h4 {...props}>
         {children} <CopyLink id={id} />
       </h4>
@@ -150,8 +144,6 @@ export const H5 = ({ children, ...props }: HeadingProps) => {
   return (
     <Heading
       {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
       size="lg"
       fontWeight="500"
       asChild
@@ -167,8 +159,6 @@ export const H6 = ({ children, ...props }: HeadingProps) => {
   return (
     <Heading
       {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
       size="lg"
       fontWeight="400"
       asChild

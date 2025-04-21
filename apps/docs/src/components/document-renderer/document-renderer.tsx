@@ -5,10 +5,11 @@ import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
 import { components } from "./components";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { MdxEditor } from "./mdx-editor";
-import { useEffect, memo } from "react";
+import { useEffect, memo, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { brandNameAtom } from "@/src/atoms/brand";
 import { documentEditModeAtom } from "@/src/atoms/document-edit-mode.ts";
+import { DocumentTitle } from "./components/document-title";
 
 const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
@@ -21,6 +22,22 @@ const DocumentRendererComponent = () => {
 
   const content = activeDoc?.mdx;
   const meta = activeDoc?.meta;
+
+  // Extract the first h1 heading as the document title
+  const { title, contentWithoutTitle } = useMemo(() => {
+    if (!content) return { title: "", contentWithoutTitle: "" };
+
+    // Regular expression to match the first # heading
+    const titleMatch = content.match(/^#\s+(.+?)(?:\n|$)/m);
+    if (titleMatch) {
+      const title = titleMatch[1];
+      // Remove the first heading from the content
+      const contentWithoutTitle = content.replace(titleMatch[0], "");
+      return { title, contentWithoutTitle };
+    }
+
+    return { title: meta?.title || "", contentWithoutTitle: content };
+  }, [content, meta]);
 
   if (!content || !meta)
     return (
@@ -46,7 +63,13 @@ const DocumentRendererComponent = () => {
 
           <Box pb="2400">
             {!editMode && (
-              <MdxStringRenderer content={content} components={components} />
+              <>
+                <DocumentTitle title={title} />
+                <MdxStringRenderer
+                  content={contentWithoutTitle}
+                  components={components}
+                />
+              </>
             )}
             {editMode && (
               <MdxEditor
