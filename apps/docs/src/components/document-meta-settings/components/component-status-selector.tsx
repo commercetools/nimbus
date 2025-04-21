@@ -1,14 +1,21 @@
-// filepath: /Volumes/Code/nimbus/apps/docs/src/components/document-meta-settings/components/component-status-selector.tsx
 import {
   ComponentStatus,
   componentStatusDescriptions,
 } from "@/schemas/mdx-document-status";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Stack, Text, Select } from "@commercetools/nimbus";
 import { useUpdateDocument } from "@/src/hooks/useUpdateDocument";
 
 export const ComponentStatusSelector = () => {
   const { meta, updateMeta } = useUpdateDocument();
+  const [currentKey, setCurrentKey] = useState<ComponentStatus | null>(
+    meta?.componentStatus || null
+  );
+
+  // Update the currentKey when meta changes (when switching between documents)
+  useEffect(() => {
+    setCurrentKey(meta?.componentStatus || null);
+  }, [meta]);
 
   const options = useMemo(() => {
     const arr = Object.keys(componentStatusDescriptions).map((key) => {
@@ -40,10 +47,12 @@ export const ComponentStatusSelector = () => {
         <label htmlFor="componentStatus">Component Status</label>
       </Text>
       <Select.Root
-        selectedKey={meta?.componentStatus}
-        onSelectionChange={(key: string | number | null) =>
-          onSaveRequest(key as ComponentStatus | null)
-        }
+        selectedKey={currentKey}
+        onSelectionChange={(key: string | number | null) => {
+          const typedKey = key as ComponentStatus | null;
+          setCurrentKey(typedKey);
+          onSaveRequest(typedKey);
+        }}
         aria-label="Component status"
         allowsCustomValue
       >
@@ -53,11 +62,11 @@ export const ComponentStatusSelector = () => {
             <Text slot="description">No status specified</Text>
           </Select.Option>
           {options.map(({ id, label, order, description }) => (
-            <Select.Option key={id} id={id} width="256px">
+            <Select.Option key={id} id={id}>
               <Text slot="label">
                 {order}. {label}
               </Text>
-              <Text slot="description" truncate maxWidth="100%">
+              <Text slot="description" truncate>
                 {description}
               </Text>
             </Select.Option>
