@@ -162,7 +162,7 @@ sparingly.
 ```jsx-live
 const App = () => (
  <Button colorPalette="primary" size="xs" variant="solid">
-   Apply Filters
+   Apply filters
  </Button>
 )
 ```
@@ -647,20 +647,39 @@ const App = () => (
 #### 1. Perceivable:
 
 - **Sufficient Color Contrast:**
-- **Text on Button:** The contrast ratio between the button text and the button
-  background should be at least 4.5:1 for normal text and 3:1 for large text.
-- **Button to Background:** The contrast ratio between the button's background
-  color and the surrounding page background should be at least 3:1.
+
+  <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
+    <li>
+      **Text on Button:** The contrast ratio between the button text and the
+      button background should be at least 4.5:1 for normal text and 3:1 for
+      large text.
+    </li>
+    <li>
+      **Button to Background:** The contrast ratio between the button's
+      background color and the surrounding page background should be at least
+      3:1.
+    </li>
+  </ul>
+
 - **Visual Cues:** Don't rely solely on color to convey information. Use
   additional visual cues like shapes, patterns, or text labels to ensure the
   button's meaning is clear to everyone, including people with color blindness.
+
 - **Focus Indicator:** Provide a clear visual indicator when the button receives
   keyboard focus. This helps users understand which element is currently active.
+
 - **WCAG 2.2 has specific criteria for focus indicators:**
-- **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator must
-  not be hidden by other content on the page.  
-- **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must
-  meet certain visibility requirements to be easily seen.    
+
+  <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
+    <li>
+      **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator
+      must not be hidden by other content on the page.  
+    </li>
+    <li>
+      **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must
+      meet certain visibility requirements to be easily seen.  
+    </li>
+  </ul>
 
 #### 2. Operable:
 
