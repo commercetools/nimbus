@@ -1,10 +1,13 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
