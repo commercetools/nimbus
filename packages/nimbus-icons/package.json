@@ -1,9 +1,12 @@
 {
   "name": "@commercetools/nimbus-icons",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@material-design-icons/svg": "^0.14.15",
     "@svgr/cli": "^8.1.0",

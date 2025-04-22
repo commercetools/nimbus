@@ -1,9 +1,12 @@
 {
   "name": "@commercetools/nimbus-tokens",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/commercetools-nimbus-tokens.cjs.js",
   "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "style-dictionary build --verbose --config ./src/style-dictionary.config.js"
   },
