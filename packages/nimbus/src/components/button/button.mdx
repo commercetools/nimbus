@@ -19,23 +19,6 @@ figmaLink: >-
 
 ---
 
-export const Tip = ({ icon, tipColor, tipBackgroundColor, children }) => (
-  <div
-    style={{
-      backgroundColor: tipBackgroundColor,
-      borderLeft: `4px solid ${tipColor}`,
-      color: tipColor,
-      padding: "20px 13px",
-      display: "flex",
-      gap: "11px",
-      mergin: 0,
-    }}
-  >
-    <span style={{ color: "inherit", fontSize: "24px" }}>{icon}</span>
-    {children}
-  </div>
-);
-
 A button serves as a standardized, reusable component for triggering actions and
 navigating.
 
@@ -50,7 +33,7 @@ Deep dive on details and access design library
 
 [Figma library](https://example.com)
 
-### Hierachy
+### Hierarchy
 
 #### Primary actions
 
@@ -105,7 +88,7 @@ collection of actions — those that users are unlikely to perform.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="horizontal">
+  <Stack direction="horizontal" alignItems="center">
     <Button tone="primary" size="md" variant="ghost">
       Filter
     </Button>
@@ -193,7 +176,7 @@ where the size constraint is tightest.
 const App = () => (
   <Button colorPalette="primary" size="2xs" variant="ghost">
    <Icons.Edit />
-   Primary action
+   Edit Filters
  </Button>
 )
 ```
@@ -248,17 +231,17 @@ contributing to a cohesive and predictable user experience.
 
 ### Preferred words
 
-| **Text**                                | **Description**                                                                                                                                                                                                                                                                                              |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Save**                                | Carries out pending changes, commits to saving the information.                                                                                                                                                                                                                                              |
-| **Back**                                | This term typically implies a return to a previous state or location in a non-linear or less structured flow. It's often used for:<ul style={{listStyle: "disc"}}><li>Navigating browser history</li><li>Exiting a screen or section</li></ul>                                                               |
-| **Previous**                            | This term is more common in linear, sequential flows, such as: <ul style={{listStyle: "disc"}}><li>Stepping through a list of items</li><li>Moving between pages in a paginated view</li><li>Progressing through a multi-step process</li></ul> <br />Pair “Previous” with “Next” button language.           |
-| **Add new (noun)**                      | <ul><li>Establishes a new object from scratch. Always followed by an object. For example “add product” “add category”.</li><li>Can also be used in areas that establishes a new relationship. Example “add products to a category”.</li><li>Do not use “add new” as it does not give full context.</li></ul> |
-| **Revert changes**                      | “Revert” stops an action without saving pending changes. When paired with a form it should return the information to the previously saved state. Never make Revert changes red, it is not a destructive action.                                                                                              |
-| **Cancel**                              | “Cancel” stops an action without saving pending changes. Never make Cancel red, it is not a destructive action. Cancel should be outline, ghost or link button.                                                                                                                                              |
-| **Delete or Delete (X nouns)**          | Deletes a data so a user can no longer retrieve it. This is different from Remove.                                                                                                                                                                                                                           |
-| **Remove**                              | Removes a relationship, but does not permanently delete data.                                                                                                                                                                                                                                                |
-| **Expand/Collapse Show more/Show less** | Expands or collapses further details and information. No capitalization is needed for these placements.                                                                                                                                                                                                      |
+| **Text**                                | **Description**                                                                                                                                                                                                                                                                                                        |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Save**                                | Carries out pending changes, commits to saving the information.                                                                                                                                                                                                                                                        |
+| **Back**                                | This term typically implies a return to a previous state or location in a non-linear or less structured flow. It's often used for:<ul style={{listStyle: "disc", marginLeft: "20px"}}><li>Navigating browser history</li><li>Exiting a screen or section</li></ul>                                                     |
+| **Previous**                            | This term is more common in linear, sequential flows, such as: <ul style={{listStyle: "disc", marginLeft: "20px"}}><li>Stepping through a list of items</li><li>Moving between pages in a paginated view</li><li>Progressing through a multi-step process</li></ul> <br />Pair “Previous” with “Next” button language. |
+| **Add new (noun)**                      | Establishes a new object from scratch. Always followed by an object. For example “add product” “add category”.<br/><br/>Can also be used in areas that establishes a new relationship. Example “add products to a category”.<br/><br/>Do not use “add new” as it does not give full context.                           |
+| **Revert changes**                      | “Revert” stops an action without saving pending changes. When paired with a form it should return the information to the previously saved state. Never make Revert changes red, it is not a destructive action.                                                                                                        |
+| **Cancel**                              | “Cancel” stops an action without saving pending changes. Never make Cancel red, it is not a destructive action. Cancel should be outline, ghost or link button.                                                                                                                                                        |
+| **Delete or Delete (X nouns)**          | Deletes a data so a user can no longer retrieve it. This is different from Remove.                                                                                                                                                                                                                                     |
+| **Remove**                              | Removes a relationship, but does not permanently delete data.                                                                                                                                                                                                                                                          |
+| **Expand/Collapse Show more/Show less** | Expands or collapses further details and information. No capitalization is needed for these placements.                                                                                                                                                                                                                |
 
 ### Avoid these words
 
@@ -284,10 +267,8 @@ back in a process, or expanding/collapsing information.
 **Critically toned buttons** are reserved for destructive actions, such as
 deleting something or removing a connection.
 
-<Tip tipColor="#46A557" tipBackgroundColor="#F4FAF5" icon={<Icons.Lightbulb />}>
-  <>When to use</>
-</Tip>
-<br />
+> [!TIP]\
+> When to use
 
 - **Trigger an action:** Anything that happens (save, delete, submit, download,
   etc.).
@@ -297,10 +278,8 @@ deleting something or removing a connection.
 - **Select an option:** Especially complex or visual choices.
   <br />
 
-<Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
-  <>When not to use</>
-</Tip>
-<br />
+> [!CAUTION]\
+> When not to use
 
 - **Navigation:** Use links, not buttons, for page/section navigation.
 - **Too many:** Avoid button overload; group actions or use menus.
@@ -322,22 +301,12 @@ with drop downs and right pointing arrows.
 
 <br />
 
-<Tip tipColor="#46A557" tipBackgroundColor="#F4FAF5" icon={<Icons.Lightbulb />}>
-  <div>
-    <strong>Do</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>
-        Use the correct and consistently patterned icon for the action that a
-        user will be selecting.{" "}
-      </li>
-      <li>
-        Ok ways to break this rule are with drop downs and right pointing
-        arrows.
-      </li>
-    </ul>
-  </div>
-</Tip>
-<br />
+> [!TIP]\
+> **Do**
+>
+> - Use the correct and consistently patterned icon for the action that a user
+>   will be selecting.
+> - Ok ways to break this rule are with drop downs and right pointing arrows.
 
 ```jsx-live
 const App = () => (
@@ -366,17 +335,12 @@ const App = () => (
 )
 ```
 
-<Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
-  <div>
-    <strong>Don't</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>Icons should represent the action the user will be taking.</li>
-      <li>Don’t use two icons to represent an action. One icon will do.</li>
-      <li>Left icons are the default unless there is directional reason.</li>
-    </ul>
-  </div>
-</Tip>
-<br />
+> [!CAUTION]\
+> **Don't**
+>
+> - Icons should represent the action the user will be taking.
+> - Don’t use two icons to represent an action. One icon will do.
+> - Left icons are the default unless there is directional reason.
 
 ```jsx-live
 const App = () => (
@@ -399,22 +363,12 @@ const App = () => (
 )
 ```
 
-<Tip tipColor="#46A557" tipBackgroundColor="#F4FAF5" icon={<Icons.Lightbulb />}>
-  <div>
-    <strong>Do</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>
-        Use right icons to build a drop down component with the Popover
-        component.
-      </li>
-      <li>
-        Icons are on the left unless there is a directional reason to use a
-        right icon placement.
-      </li>
-    </ul>
-  </div>
-</Tip>
-<br />
+> [!TIP]\
+> **Do**
+>
+> - Use right icons to build a drop down component with the Popover component.
+> - Icons are on the left unless there is a directional reason to use a right
+>   icon placement.
 
 ```jsx-live
 const App = () => (
@@ -453,19 +407,11 @@ const App = () => (
 );
 ```
 
-<Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
-  <div>
-    <strong>Don't</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>Dropdown icons should always be on the right side.</li>
-      <li>
-        Don’t place action describing icons on the right if a drop down is
-        wanted.
-      </li>
-    </ul>
-  </div>
-</Tip>
-<br />
+> [!CAUTION]\
+> **Don't**
+>
+> - Dropdown icons should always be on the right side.
+> - Don’t place action describing icons on the right if a drop down is wanted.
 
 ```jsx-live
 const App = () => (
@@ -510,23 +456,17 @@ Button groups are UI elements that organize multiple buttons together, often
 visually as a single unit. They serve to present users with a set of related
 choices or actions in a compact and organized way.
 
-<Tip tipColor="#46A557" tipBackgroundColor="#F4FAF5" icon={<Icons.Lightbulb />}>
-  <div>
-    <strong>Do</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>
-        This is the correct hierarchy of button groupings. From right to left,
-        Primary, Outlined, and Link button.
-      </li>
-    </ul>
-  </div>
-</Tip>
+> [!TIP]\
+> **Do**
+>
+> This is the correct hierarchy of button groupings. From right to left,
+> Primary, Outlined, and Link button.
 
 ```jsx-live
   const App = () => (
   <Stack direction="horizontal">
     <Button tone="primary" as="a" size="md" variant="link">
-      Calcel and close
+      Cancel and close
     </Button>
     <Button tone="primary" size="md" variant="outline">
       <Icons.Undo />
@@ -539,15 +479,11 @@ choices or actions in a compact and organized way.
 )
 ```
 
-<Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
-  <div>
-    <strong>Don't</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li> Avoid stacking actions.</li>
-      <li>Don’t use two filled primary toned buttons in the same area. </li>
-    </ul>
-  </div>
-</Tip>
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid stacking actions.
+> - Don’t use two filled primary toned buttons in the same area.
 
 ```jsx-live
   const App = () => (
@@ -560,25 +496,19 @@ choices or actions in a compact and organized way.
       Revert
     </Button>
     <Button tone="primary" size="md" variant="ghost">
-      Calcel and close
+      Cancel and close
     </Button>
   </Stack>
 )
 ```
 
-<Tip tipColor="#46A557" tipBackgroundColor="#F4FAF5" icon={<Icons.Lightbulb />}>
-  <div>
-    <strong>Do</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>
-        Place the filled primary button to the right. This should represent the
-        action most likely taken by a user.
-      </li>
-      <li>Outlined secondary button to the left of the primary action.</li>
-      <li>Icon is on the left of the button.</li>
-    </ul>
-  </div>
-</Tip>
+> [!TIP]\
+> **Do**
+>
+> - Place the filled primary button to the right. This should represent the
+>   action most likely taken by a user.
+> - Outlined secondary button to the left of the primary action.
+> - Icon is on the left of the button.
 
 ```jsx-live
   const App = () => (
@@ -594,20 +524,12 @@ choices or actions in a compact and organized way.
 )
 ```
 
-<Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
-  <div>
-    <strong>Don't</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>
-        {" "}
-        Do not place the filled primary button to the left of another
-        option.{" "}
-      </li>
-      <li>Do not have two primary filled buttons near each other. </li>
-      <li>Do not include punctuation in buttons </li>
-    </ul>
-  </div>
-</Tip>
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not place the filled primary button to the left of another option.
+> - Do not have two primary filled buttons near each other.
+> - Do not include punctuation in buttons.
 
 ```jsx-live
   const App = () => (
@@ -616,7 +538,7 @@ choices or actions in a compact and organized way.
       Cancel!
     </Button>
     <Button tone="primary" size="md" variant="solid">
-      Save
+      Save.
     </Button>
     <Button tone="primary" as="a" size="sm" variant="link">
       External link
@@ -631,25 +553,19 @@ choices or actions in a compact and organized way.
 These actions are likely seen when an action is optional to have more or less
 information shown.
 
-<Tip tipColor="#46A557" tipBackgroundColor="#F4FAF5" icon={<Icons.Lightbulb />}>
-  <div>
-    <strong>Do</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>
-        Expand actions should be placed at the lower center or left hand side of
-        the element that will expand/collapse.
-      </li>
-      <li>Link button is using the correct size, 2x-small. </li>
-    </ul>
-  </div>
-</Tip>
+> [!TIP]\
+> **Do**
+>
+> - Expand actions should be placed at the lower center or left hand side of the
+>   element that will expand/collapse.
+> - Link button is using the correct size, 2x-small.
 
 ```jsx-live
  const App = () => (
   <>
    <div style={{
      width: "300px",
-     height: "60px",
+     height: "40px",
      backgroundColor: "#f0f8ff",
      border: "1px dashed #60a5fa",
      borderRadius: "12px",
@@ -672,25 +588,19 @@ information shown.
 )
 ```
 
-<Tip tipColor="#E5484D" tipBackgroundColor="#FFF5F5" icon={<Icons.Error />}>
-  <div>
-    <strong>Do</strong>
-    <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-      <li>The button is too large for this placement</li>
-      <li>
-        Expansion icons should be placed to the left side of the label to allow
-        for easier scanning by a user.{" "}
-      </li>
-    </ul>
-  </div>
-</Tip>
+> [!CAUTION]\
+> **Don't**
+>
+> - The button is too large for this placement
+> - Expansion icons should be placed to the left side of the label to allow for
+>   easier scanning by a user.
 
 ```jsx-live
   const App = () => (
   <>
    <div style={{
      width: "300px",
-     height: "60px",
+     height: "40px",
      backgroundColor: "#f0f8ff",
      border: "1px dashed #60a5fa",
      borderRadius: "12px",
@@ -719,10 +629,10 @@ information shown.
 
 ### Accessibility
 
-The Button component uses onPress\* props to handle all user interactions—mouse
-clicks, touch taps, and keyboard presses—consistently. These props (onPress,
-onPressStart, onPressEnd, etc.) ensure a smooth and accessible experience
-regardless of the user's input method or device.
+The Button component uses `onPress\*` props to handle all user
+interactions—mouse clicks, touch taps, and keyboard presses—consistently. These
+props (`onPress`, `onPressStart`, `onPressEnd`, etc.) ensure a smooth and
+accessible experience regardless of the user's input method or device.
 
 ```jsx-live
 const App = () => (
