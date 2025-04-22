@@ -9,6 +9,7 @@ import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TextStylesDemo } from "./token-demos/text-styles-demo";
 import * as icons from "@commercetools/nimbus-icons";
 import { NimbusExportsStatus } from "@/src/components/status/nimbus-exports-status";
+import { CategoryOverview } from "./category-overview";
 
 import { MDXComponents } from "mdx/types";
 import {
@@ -78,6 +79,7 @@ export const components: MDXComponents = {
   KeyframeTokenDemo,
   TextStylesDemo,
   NimbusExportsStatus,
+  CategoryOverview: CategoryOverview,
   /** all icons from @commercetools/nimbus-icons, TODO: evaluate if this is a good idea */
   Icons: icons,
 };

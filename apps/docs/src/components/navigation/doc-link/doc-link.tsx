@@ -13,13 +13,13 @@ interface DocLinkProps {
    */
   children: React.ReactNode;
   /**
-   * Whether to wrap the content in a Code component
-   */
-  asCode?: boolean;
-  /**
    * Optional click handler
    */
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  /**
+   * Optional flag to render an unstyled link
+   */
+  unstyled?: boolean;
 }
 
 /**
@@ -30,14 +30,14 @@ interface DocLinkProps {
 export const DocLink: React.FC<DocLinkProps> = ({
   docRoute,
   children,
-  asCode = false,
   onClick,
+  unstyled = false,
 }) => {
   const [, setActiveRoute] = useAtom(activeRouteAtom);
 
   // If no docRoute is provided, just render the content without a link
   if (!docRoute) {
-    return asCode ? <Code>{children}</Code> : <>{children}</>;
+    return <>{children}</>;
   }
 
   // Format the route path to make sure it starts with a "/"
@@ -56,8 +56,8 @@ export const DocLink: React.FC<DocLinkProps> = ({
   };
 
   return (
-    <Link href={formattedRoute} onClick={handleClick}>
-      {asCode ? <Code>{children}</Code> : children}
+    <Link href={formattedRoute} onClick={handleClick} unstyled={unstyled}>
+      {children}
     </Link>
   );
 };
