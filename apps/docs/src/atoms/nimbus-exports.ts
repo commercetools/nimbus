@@ -37,6 +37,9 @@ export const nimbusExportsAtom = atom<NimbusExportsData>({
   other: [],
 });
 
+// Define an atom for exports with missing documentation or component status
+export const missingDocsExportsAtom = atom<NimbusExportItem[]>([]);
+
 // Helper function to find documentation by export name
 const findDocForExport = (exportName: string) => {
   // Go through all docs and find one with a matching title
@@ -71,6 +74,9 @@ export const nimbusExportsCategorizedAtom = atom(
       other: [],
     };
 
+    // Track exports with missing documentation or component status
+    const missingDocsExports: NimbusExportItem[] = [];
+
     // Process each category and enrich with documentation data
     Object.entries(categorized).forEach(([category, exports]) => {
       const categoryKey = category as keyof NimbusExportCategory;
@@ -83,7 +89,7 @@ export const nimbusExportsCategorizedAtom = atom(
 
         const docInfo = findDocForExport(exportName);
 
-        return {
+        const exportItem = {
           name: exportName,
           type: exportType,
           description: docInfo.description,
@@ -91,9 +97,28 @@ export const nimbusExportsCategorizedAtom = atom(
           docRoute: docInfo.docRoute,
           componentStatus: docInfo.componentStatus,
         };
+
+        // Check if documentation or component status is missing
+        const hasNoDocumentation =
+          docInfo.description === "No documentation available" ||
+          !docInfo.docPath;
+        const hasNoComponentStatus = !docInfo.componentStatus;
+
+        // For components, both documentation and status are expected
+        // For other types, only documentation is expected
+        if (
+          (exportType.includes("Component") &&
+            (hasNoDocumentation || hasNoComponentStatus)) ||
+          (!exportType.includes("Component") && hasNoDocumentation)
+        ) {
+          missingDocsExports.push(exportItem);
+        }
+
+        return exportItem;
       });
     });
 
     set(nimbusExportsAtom, enrichedExports);
+    set(missingDocsExportsAtom, missingDocsExports);
   }
 );

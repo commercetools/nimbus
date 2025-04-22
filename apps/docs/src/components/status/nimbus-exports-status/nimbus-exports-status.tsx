@@ -9,34 +9,51 @@ import {
   Badge,
   Code,
   Link,
+  Alert,
 } from "@commercetools/nimbus";
 
 import { getColorForType } from "./utils/export-utils";
 import {
   nimbusExportsCategorizedAtom,
   NimbusExportItem,
+  missingDocsExportsAtom,
 } from "../../../atoms/nimbus-exports";
 import { ComponentStatus } from "../../status/component-status";
-import { DocLink } from "../../navigation/doc-link";
+import { DocLink } from "../../navigation/doc-link/doc-link";
 
 export const NimbusExportsStatus = () => {
   const [categorized, setCategorizedAction] = useAtom(
     nimbusExportsCategorizedAtom
   );
+  const [missingDocsExports] = useAtom(missingDocsExportsAtom);
 
   // Trigger the computation when the component mounts
   useEffect(() => {
     setCategorizedAction();
   }, [setCategorizedAction]);
 
-  const renderExportTable = (title: string, exports: NimbusExportItem[]) => {
+  const renderExportTable = (
+    title: string,
+    exports: NimbusExportItem[],
+    showAlert: boolean = false
+  ) => {
     if (exports.length === 0) return null;
 
     return (
       <Box mb="1200">
         <Heading as="h2" mb="600" id={title.toLowerCase()}>
-          {title} Exports ({exports.length})
+          {title} ({exports.length})
         </Heading>
+
+        {showAlert && (
+          <Alert.Root variant="outlined" tone="critical" mb="600">
+            <Alert.Title>Missing Documentation</Alert.Title>
+            <Alert.Description>
+              These exports are missing proper documentation or component status
+              and need to be addressed.
+            </Alert.Description>
+          </Alert.Root>
+        )}
 
         <Table.Root>
           <Table.Header>
@@ -82,20 +99,22 @@ export const NimbusExportsStatus = () => {
 
   return (
     <Box>
-      <Heading as="h1" mb="800">
-        Nimbus Package Exports
-      </Heading>
       <Text mb="800">
-        This page lists all the named exports from the @commercetools/nimbus
+        This page lists all the named exports from the{" "}
+        <Code mr="100">@commercetools/nimbus</Code>
         package, organized by category and linked to their documentation when
         available.
       </Text>
 
       <Stack gap="1200">
-        {renderExportTable("Component", categorized.components)}
-        {renderExportTable("Hook", categorized.hooks)}
-        {renderExportTable("Theme", categorized.theme)}
-        {renderExportTable("Other", categorized.other)}
+        {/* Display missing documentation exports at the top */}
+        {missingDocsExports.length > 0 &&
+          renderExportTable("Exports with issues", missingDocsExports, true)}
+
+        {renderExportTable("Components", categorized.components)}
+        {renderExportTable("Hooks", categorized.hooks)}
+        {renderExportTable("Themes", categorized.theme)}
+        {renderExportTable("Others", categorized.other)}
       </Stack>
     </Box>
   );
