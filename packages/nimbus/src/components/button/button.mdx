@@ -12,7 +12,7 @@ menu:
 tags:
   - document
 figmaLink: >-
-  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569
 ---
 
 # Button
@@ -31,7 +31,7 @@ users to take action and explore different parts of our interface.
 
 Deep dive on details and access design library
 
-[Figma library](https://example.com)
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)
 
 ### Hierarchy
 
@@ -636,9 +636,9 @@ accessible experience regardless of the user's input method or device.
 
 ```jsx-live
 const App = () => (
-    <Button tone="primary" size="md" variant="solid" onPress={() => alert("clicked!")}>
-      Click me... with your keyboard
-    </Button>
+  <Button tone="primary" size="md" variant="solid" onPress={() => alert("clicked!")}>
+    Click me... with your keyboard
+  </Button>
 )
 ```
 
@@ -647,39 +647,21 @@ const App = () => (
 #### 1. Perceivable:
 
 - **Sufficient Color Contrast:**
-
-  <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-    <li>
-      **Text on Button:** The contrast ratio between the button text and the
-      button background should be at least 4.5:1 for normal text and 3:1 for
-      large text.
-    </li>
-    <li>
-      **Button to Background:** The contrast ratio between the button's
-      background color and the surrounding page background should be at least
-      3:1.
-    </li>
-  </ul>
-
+  - **Text on Button:** The contrast ratio between the button text and the
+    button background should be at least 4.5:1 for normal text and 3:1 for large
+    text.
+  - **Button to Background:** The contrast ratio between the button's background
+    color and the surrounding page background should be at least 3:1.
 - **Visual Cues:** Don't rely solely on color to convey information. Use
   additional visual cues like shapes, patterns, or text labels to ensure the
   button's meaning is clear to everyone, including people with color blindness.
-
 - **Focus Indicator:** Provide a clear visual indicator when the button receives
   keyboard focus. This helps users understand which element is currently active.
-
-- **WCAG 2.2 has specific criteria for focus indicators:**
-
-  <ul style={{ listStyle: "disc", marginLeft: "20px" }}>
-    <li>
-      **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator
-      must not be hidden by other content on the page.  
-    </li>
-    <li>
-      **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must
-      meet certain visibility requirements to be easily seen.  
-    </li>
-  </ul>
+  - **WCAG 2.2 has specific criteria for focus indicators:**
+    - **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator
+      must not be hidden by other content on the page.
+    - **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must
+      meet certain visibility requirements to be easily seen.
 
 #### 2. Operable:
 
