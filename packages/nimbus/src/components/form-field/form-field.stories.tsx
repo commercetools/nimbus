@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FormField, type FormFieldProps } from "./index";
-import { Box, TextInput, Select } from "@/components";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { Box, TextInput, Select, Stack } from "@/components";
+import { userEvent, within, expect } from "@storybook/test";
 
 const meta: Meta<typeof FormField.Root> = {
   title: "components/FormField",
@@ -23,6 +23,8 @@ const defaultArgs: FormFieldProps = {
   isDisabled: false,
   direction: "column",
 };
+
+const sizes: FormFieldProps["size"][] = ["sm", "md"];
 
 /**
  * Story type for TypeScript support
@@ -72,6 +74,32 @@ export const Base: Story = {
     await step("Input is linked to label", async () => {
       await expect(input).toHaveAttribute("aria-labelledby", label.id);
     });
+  },
+};
+
+/**
+ * Sizes story
+ */
+export const Sizes: Story = {
+  args: defaultArgs,
+  render: (args) => {
+    return (
+      <Stack direction="column">
+        {sizes.map((size) => (
+          <FormField.Root {...args} size={size} data-testid="field-root">
+            <FormField.Label>Input Label (column)</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="Enter some text here" type="text" />
+            </FormField.Input>
+            <FormField.Description>I am descriptive</FormField.Description>
+            <FormField.Error>
+              An error text which should only appear if the field gets an
+              isInvalid prop
+            </FormField.Error>
+          </FormField.Root>
+        ))}
+      </Stack>
+    );
   },
 };
 

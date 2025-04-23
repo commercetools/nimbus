@@ -32,8 +32,8 @@ export const formFieldRecipe = defineSlotRecipe({
       gridArea: "label",
       fontWeight: "500",
       color: "neutral.11",
-      fontSize: "350",
-      lineHeight: "500",
+      fontSize: "var(--form-field-font-size)",
+      lineHeight: "var(--form-field-line-height)",
     },
     input: {
       gridArea: "input",
@@ -41,14 +41,14 @@ export const formFieldRecipe = defineSlotRecipe({
     description: {
       gridArea: "description",
       color: "neutral.11",
-      fontSize: "350",
-      lineHeight: "500",
+      fontSize: "var(--form-field-font-size)",
+      lineHeight: "var(--form-field-line-height)",
     },
     error: {
       gridArea: "error",
       color: "error.11",
-      fontSize: "350",
-      lineHeight: "500",
+      fontSize: "var(--form-field-font-size)",
+      lineHeight: "var(--form-field-line-height)",
     },
     popover: {
       "--scrollbar-color": "colors.neutral.8",
@@ -68,6 +68,20 @@ export const formFieldRecipe = defineSlotRecipe({
   },
 
   variants: {
+    size: {
+      md: {
+        root: {
+          "--form-field-font-size": "fontSizes.350",
+          "--form-field-line-height": "lineHeights.500",
+        },
+      },
+      sm: {
+        root: {
+          "--form-field-font-size": "fontSizes.300",
+          "--form-field-line-height": "lineHeights.450",
+        },
+      },
+    },
     direction: {
       column: {
         root: {
@@ -102,5 +116,6 @@ export const formFieldRecipe = defineSlotRecipe({
   // Default variant values when not explicitly specified
   defaultVariants: {
     direction: "column",
+    size: "md",
   },
 });
