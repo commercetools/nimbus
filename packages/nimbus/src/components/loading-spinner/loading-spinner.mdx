@@ -32,11 +32,11 @@ Deep dive on details and access design library:
 [TECH RELATED LINK](#)
 [Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1699-52373&m=dev)
 
-### Variables
+## Variables
 
 Get familiar with the features. 
 
-#### Visuals
+### Visuals
 
 ##### On white background
 
@@ -46,7 +46,7 @@ Most common, this is the default spinner animation to be used on white backgroun
 const App = () => <LoadingSpinner aria-label="Loading content" />
 ```
 
-##### On dark background
+#### On dark background
 
 This is the default spinner animation to be used on dark backgrounds.
 
@@ -54,7 +54,7 @@ This is the default spinner animation to be used on dark backgrounds.
 const App = () => <Stack backgroundColor="neutral.8"><LoadingSpinner aria-label="Loading content" tone="white" /></Stack>
 ```
 
-#### Size
+### Size
 
 Loading spinners have five sizes to choose from, large, medium, small, x-small, and 2x-small. 
 
@@ -68,11 +68,11 @@ const App = () => (
 )
 ```
 
-#### Animation logic
+### Animation logic
 
 This loader responds to a distinct timeline that corresponds to the progress of the loading content. 
 
-##### Indeterminate
+#### Indeterminate
 
 This spinner will spin indefinitely as it is being shown.
 
@@ -88,7 +88,7 @@ Loading spinner guidelines aim to provide clear and consistent visual feedback t
 
 ### Best practices
 
-##### Loading spinner:
+#### Loading spinner:
 
 - **Appropriate placement:** Position the spinner close to the element or area that's loading. For full-page loads, center the spinner on the screen. For inline loading, place the spinner in the location of the content that will be loading.
 - **Provide context:** If the loading time is expected to be lengthy, consider adding a brief message like "Loading..." or "Please wait..." alongside the spinner. For very long loading periods, consider adding a percentage bar, or estimated time to let the user come back when ready.
@@ -182,6 +182,10 @@ const App = () => <Flex height="185px">
 <PropTable id="LoadingSpinner" />
 
 ## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+### Accessibility Standards
 
 **1. Perceivable:**
 
