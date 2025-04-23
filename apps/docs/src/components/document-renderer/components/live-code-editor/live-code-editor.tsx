@@ -36,7 +36,7 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   }, [props.children]);
 
   return (
-    <Box fontFamily="body" mb="1600">
+    <Box fontFamily="body" mb="1600" whiteSpace="pre-wrap">
       <Flex>
         <Box
           borderBottom="solid-25"

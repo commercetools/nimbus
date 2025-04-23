@@ -1,159 +1,588 @@
 ---
 id: Components-Alert
 title: Alert
-description: Provides feedback to the user about the status of an action or system event
+description:
+  Provides feedback to the user about the status of an action or system event
 documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - Feedback
   - Alert
 tags:
   - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2702-5723
 ---
 
 # Alert
 
-Alerts provide contextual feedback to users about an action, condition, or system event. They are used to communicate important messages that require attention.
+---
 
-## Features
+For urgent, high-impact messages, such as system alerts, alert banners are used
+to ensure visibility and encourage immediate user response.
 
-- **Compound Component API**: Flexible and composable with Alert.Title, Alert.Description, Alert.Actions, and Alert.DismissButton
-- **Multiple Tones**: Critical, Info, Warning, and Positive
-- **Visual Variants**: Flat and Outlined styles
-- **Accessible by default**: Properly implements ARIA attributes for screen readers
+## Overview
 
-## Basic Usage
+These specifications define the standard styles and variations for icon buttons
+within our design system, covering different visual treatments for diverse use
+cases.
 
-The most basic implementation includes a title, description, and optional dismiss button.
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2702-5723)
+
+## Variables
+
+Get familiar with the features.
+
+### Adjustable elements
+
+Several of the features are flexible and optional for many use cases.
+Non-optional elements are the message, and the icons that are tied to the type
+of messaging.
+
+#### Buttons and links
+
+The alert component allows for two buttons and links within the paragraph
+message. These buttons and links can be customized for any messaging needs.
+
+#### Close and dismiss buttons
+
+Features that may be used for closing or dismissing the alert message are
+optional. Removing these elements will make this message persistent for the
+user. There is no need to duplicate a close action, using the close icon in the
+right corner or a dismiss button is enough for a user.
+
+#### Title and description
+
+The message is needed in all uses. Please always utilize messaging for the user.
+Use of the title is optional, use if it gives greater clarity to the user.
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="info" variant="outlined">
-    <Alert.Title>Important Information</Alert.Title>
-    <Alert.Description>This is a simple informational alert.</Alert.Description>
-    <Alert.DismissButton onPress={() => alert('Alert dismissed')} />
+  <Stack direction="column">
+    <Alert.Root tone="critical" variant="outlined">
+      <Alert.Title>Lorem Ipsum</Alert.Title>
+      <Alert.Description>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+      </Alert.Description>
+      <Alert.Actions>
+        <Stack direction="row" alignItems="center">
+          <Button variant="outline">Dismiss</Button>
+          <Button variant="outline">View changes</Button>
+        </Stack>
+      </Alert.Actions>
+      <Alert.DismissButton />
+    </Alert.Root>
+
+    <Alert.Root tone="info" variant="outlined">
+      <Alert.Title>Lorem Ipsum</Alert.Title>
+      <Alert.Description>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+      </Alert.Description>
+      <Alert.DismissButton />
+    </Alert.Root>
+
+    <Alert.Root tone="warning" variant="outlined">
+      <Alert.Title>Lorem Ipsum</Alert.Title>
+      <Alert.Description>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root tone="positive" variant="outlined">
+      <Alert.Description>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+      </Alert.Description>
+    </Alert.Root>
+  </Stack>
+)
+```
+
+### Style
+
+#### Outlined
+
+Use when getting attention is more important. These can be used inline, but they
+take up space and it is not as easy to slide into compact areas as much the flat
+variant.
+
+```jsx-live
+const App = () => (
+  <Alert.Root tone="positive" variant="outlined" width="8000">
+    <Alert.Title>Success! Your Account is Verified</Alert.Title>
+    <Alert.Description>
+      Congratulations! Your account has been successfully verified. You now have full access to all features.
+    </Alert.Description>
   </Alert.Root>
 )
 ```
 
-## Tones
+#### Flat
 
-Alerts come in four semantic tones to communicate different types of messages.
-
-```jsx-live
-const App = () => {
-  const tones = ["critical", "info", "warning", "positive"];
-  
-  return (
-    <Stack direction="column" gap="400" alignItems="flex-start">
-      {tones.map((tone) => (
-        <Alert.Root key={tone} tone={tone} variant="outlined">
-          <Alert.Title>{tone.charAt(0).toUpperCase() + tone.slice(1)} Alert</Alert.Title>
-          <Alert.Description>This is a {tone} message that requires attention.</Alert.Description>
-          <Alert.DismissButton onPress={() => alert(`Dismissed ${tone} alert`)} />
-        </Alert.Root>
-      ))}
-    </Stack>
-  );
-};
-```
-
-## Variants
-
-Alerts are available in two visual styles: flat and outlined.
-
-```jsx-live
-const App = () => {
-  const variants = ["flat", "outlined"];
-  
-  return (
-    <Stack direction="column" gap="400" alignItems="flex-start">
-      {variants.map((variant) => (
-        <Alert.Root key={variant} tone="info" variant={variant}>
-          <Alert.Title>{variant.charAt(0).toUpperCase() + variant.slice(1)} Variant</Alert.Title>
-          <Alert.Description>This alert uses the {variant} visual style.</Alert.Description>
-          <Alert.DismissButton onPress={() => alert(`Dismissed ${variant} variant alert`)} />
-        </Alert.Root>
-      ))}
-    </Stack>
-  );
-};
-```
-
-## Composition Examples
-
-The Alert component is designed for flexible composition. Here are various ways to configure it:
-
-### Title Only
+Use for inline messages specific to a field. You can also use this in dense
+areas with popovers. Do not use as a global page alert. In these placements, use
+links instead of buttons if a user needs to navigate to more information.
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="warning" variant="flat">
-    <Alert.Title>This alert contains only a title</Alert.Title>
-  </Alert.Root>
-);
+  <Stack direction="column" alignItems="start">
+    <Text fontWeight="500">Email</Text>
+    <TextInput type="email" />
+    <Alert.Root tone="positive" variant="flat">
+      <Alert.Description>
+        Email is verified
+      </Alert.Description>
+    </Alert.Root>
+  </Stack>
+)
 ```
 
-### With Description Only
+#### Width
+
+The width is flexible, intended for many inline placements and page wide areas.
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="info" variant="flat">
-    <Alert.Description>This alert contains only a description without a title.</Alert.Description>
-  </Alert.Root>
+  <Grid templateColumns="repeat(6, 1fr)" gap="400">
+    <Grid.Item colSpan={2}>
+      <Alert.Root tone="critical" variant="outlined">
+        <Alert.Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+        </Alert.Description>
+      </Alert.Root>
+    </Grid.Item>
+
+    <Grid.Item colSpan={3}>
+      <Alert.Root tone="critical" variant="outlined">
+        <Alert.Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+        </Alert.Description>
+      </Alert.Root>
+    </Grid.Item>
+
+    <Grid.Item colSpan={6}>
+      <Alert.Root tone="critical" variant="outlined">
+        <Alert.Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
+        </Alert.Description>
+        <Alert.Actions>
+          <Button variant="outline">View Changes</Button>
+        </Alert.Actions>
+        <Alert.DismissButton />
+      </Alert.Root>
+    </Grid.Item>
+  </Grid>
 );
 ```
 
-### With Actions
+### Tone
 
-You can add action buttons to provide users with follow-up options.
+#### Positive
+
+Positive alerts should be used for important updates, and product wide
+announcements. They should not be used in place of toasts or confirmation
+messages.
+
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Alert.Root tone="positive" variant="outlined">
+      <Alert.Title>Success! Your Account is Verified</Alert.Title>
+      <Alert.Description>
+        Congratulations! Your account has been successfully verified. You now have full access to all features.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root tone="positive" variant="flat">
+      <Alert.Title>Success! Your Account is Verified</Alert.Title>
+      <Alert.Description>
+        Congratulations! Your account has been successfully verified. You now have full access to all features.
+      </Alert.Description>
+    </Alert.Root>
+  </Grid>
+);
+```
+
+#### Info
+
+Should be used when extra explanation is needed, this alert is meant to be more
+temporary than using an info icon with a tooltip which declutters persistent
+information for users.
+
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Alert.Root tone="info" variant="outlined">
+      <Alert.Title>New Feature Available</Alert.Title>
+      <Alert.Description>
+        We've added a new 'Smart Suggestions' feature to help you find relevant content faster. <Link>Check it out in your settings.</Link>
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root tone="info" variant="flat">
+      <Alert.Title>New Feature Available</Alert.Title>
+      <Alert.Description>
+        We've added a new 'Smart Suggestions' feature to help you find relevant content faster. <Link>Check it out in your settings.</Link>
+      </Alert.Description>
+    </Alert.Root>
+  </Grid>
+)
+```
+
+#### Warning
+
+Messages potential problems or situations that require user attention to prevent
+issues. They require the user to take action to make needed corrections or
+confirmation.
+
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Alert.Root tone="warning" variant="outlined">
+      <Alert.Title>Low Storage Space</Alert.Title>
+      <Alert.Description>
+        Your device is running low on storage. Some features may be disabled until you free up space. <Link>Manage storage.</Link>
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root tone="warning" variant="flat">
+      <Alert.Title>Low Storage Space</Alert.Title>
+      <Alert.Description>
+        Your device is running low on storage. Some features may be disabled until you free up space. <Link>Manage storage.</Link>
+      </Alert.Description>
+    </Alert.Root>
+  </Grid>
+)
+```
+
+#### Critical
+
+These are used to message immediate, severe problems that require urgent action.
+They indicate that something has already gone wrong and needs to be addressed
+immediately.
+
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Alert.Root tone="critical" variant="outlined">
+      <Alert.Title>Payment Processing Error</Alert.Title>
+      <Alert.Description>
+        A payment processing error occurred for order #12345. Please <Link>verify your payment gateway settings</Link> immediately to prevent further issues.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root tone="critical" variant="flat">
+      <Alert.Title>Payment Processing Error</Alert.Title>
+      <Alert.Description>
+        A payment processing error occurred for order #12345. Please <Link>verify your payment gateway settings</Link> immediately to prevent further issues.
+      </Alert.Description>
+    </Alert.Root>
+  </Grid>
+)
+```
+
+## Guidelines
+
+Alert guidelines focus on delivering important and timely messages to users in a
+clear, noticeable, and accessible way, ensuring they understand the significance
+of the information and any required actions, while minimizing disruption to
+their workflow.
+
+### Writing guidelines
+
+- **Clarity and urgency:** Use clear, short messages with titles that match the
+  alert's urgency, and use visuals to reinforce it.
+- **User experience:** Place alerts strategically, allow dismissal when
+  available, provide actionable content, and avoid overuse to prevent alert
+  fatigue. Excessive and poorly designed alerts can lead to alert fatigue, a
+  state of desensitization where individuals disregard or fail to act upon
+  critical notifications due to overexposure, often stemming from alerts that
+  are too frequent, irrelevant to the user's context, or lacking in actionable
+  information.
+  - **Flat styled:** Use inline in forms and within popovers when needed. These
+    can be used inside forms to signal validation status.
+  - **Outlined styled:** Be mindful of how many alerts occur on one page. These
+    are best used for page or product wide information. They are not meant to be
+    used as toasts.
+- **Accessibility and design:** Maintain consistent styling, use color and icons
+  effectively, and ensure alerts are accessible to all users. For example, do
+  not use the information tone to communicate a critical error.
+
+### Usage
+
+Correct usage guides for alerts are important for we do not want to fatigue
+users to a point where alert messages are ignored.
+
+> [!TIP]\
+> When to use
+
+- **Do use alerts for important information:** Reserve alerts for critical,
+  urgent, or highly relevant messages that require user attention.
+- **Do choose the right alert type:** Match the alert's tone and visual style to
+  the severity of the message (positive, informational, warning, critical).
+- **Do provide clear and concise messages:** Write messages that are easy to
+  understand and avoid jargon.
+- **Do include actionable items:** If necessary, provide clear calls to action
+  (buttons, links) to help users resolve the issue.
+- **Do allow users to dismiss alerts:** Give users the option to dismiss alerts
+  when they are no longer relevant.
+- **Do place alerts strategically:** Position alerts where they are easily
+  noticed but don't disrupt the user's workflow.
+- **Do maintain consistency:** Use consistent styling and behavior for alerts
+  across your application or website.
+
+> [!CAUTION]\
+> When not to use
+
+- **Don't overuse alerts:** Avoid using alerts for minor or non-essential
+  information. Try to keep to one alert per view for most interactions. Overuse
+  leads to alert fatigue.
+- **Don't use alerts for regular updates:** Use other UI elements (e.g., toasts,
+  confirmation, and error states) for non-urgent updates.
+- **Don't obscure critical content:** Avoid placing alerts in a way that blocks
+  important information or functionality.
+- **Don't use confusing or ambiguous language:** Ensure alert messages are clear
+  and easy to understand.
+- **Don't create unnecessary interruptions:** Avoid using alerts that abruptly
+  interrupt the user's workflow without a valid reason.
+- **Don't make them too hard to dismiss:** Ensure that the user can easily close
+  an alert.
+
+### Use the correct tone
+
+Ensure that you choose the correct tone that will suit your message best. If you
+choose the wrong type, it will confuse users.
+
+> [!TIP]\
+> **Do**
+>
+> - This message correctly aligns message with the tone needed to let the user
+>   know the information should be taken seriously.
+> - There is enough detailed information for the user to understand the issue
+>   and how to perform next steps to correct it.
+> - Utilizing actionable buttons to guide the user faster to the area that needs
+>   to be addressed is useful and convenient.
 
 ```jsx-live
 const App = () => (
   <Alert.Root tone="critical" variant="outlined">
-    <Alert.Title>File not saved</Alert.Title>
-    <Alert.Description>Your changes have not been saved due to a connection error.</Alert.Description>
+    <Alert.Title>Payment Processing Error</Alert.Title>
+    <Alert.Description>
+      A payment processing error occurred for order #12345. Please <Link>verify your
+      payment gateway settings</Link> immediately to prevent further issues.
+    </Alert.Description>
     <Alert.Actions>
-      <Stack direction="row" gap="8px" alignItems="center">
-        <Button variant="solid" colorScheme="primary">Try Again</Button>
-        <Button variant="outline">Discard Changes</Button>
-      </Stack>
+      <Button variant="outline">Go to settings</Button>
     </Alert.Actions>
   </Alert.Root>
 );
 ```
 
-### Complete Example
-
-A complete example with title, description, actions, and dismiss button.
+> [!CAUTION]\
+> **Don't**
+>
+> - This message does not align with the correct tone needed.
+> - There isn’t enough information for the user to understand how to fix the
+>   issue, or what went wrong. Provide more detailed information and advice to
+>   clear the error.
+> - This type of message is critical, rethink about allowing the user to clear
+>   the message instead of fixing the issue.
+> - You do not need to use both a close icon and a dismiss button.
 
 ```jsx-live
 const App = () => (
   <Alert.Root tone="positive" variant="outlined">
-    <Alert.Title>Success!</Alert.Title>
-    <Alert.Description>Your profile has been updated successfully.</Alert.Description>
+    <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Actions>
-      <Stack direction="row" gap="8px" alignItems="center">
-        <Button variant="outline" size="md">View Profile</Button>
-      </Stack>
+      <Button variant="outline">Dismiss</Button>
     </Alert.Actions>
-    <Alert.DismissButton onPress={() => alert('Alert dismissed')} />
+    <Alert.DismissButton />
   </Alert.Root>
 );
 ```
 
-## Accessibility
+### Placements
 
-The Alert component includes proper ARIA roles for accessibility:
+Alerts are very flexible and can be placed in line or within pages, but be
+mindful not to use alert placement to cover or mask features that a user means
+to use. Judge if this message is permanent, or if it would be okay to allow the
+user to dismiss the alert to clean up their experience once digesting the
+information provided in the alert.
 
-- Uses `role="alert"` to notify screen readers of important content
-- Properly labeled dismiss button with `aria-label="Dismiss"`
-- Structured content with semantic title and description elements
+Alerts should not hover or lay on top of other elements.
 
-## Props
+> [!TIP]\
+> **Do**
+>
+> - Place inline where the information makes sense and is needed most without
+>   covering access to surrounding elements.
+> - Allow for the user to clear messages when applicable to keep their UI clean,
+>   and if they find non-critical information distracting.
+> - If information is needed permanently in the UI, try using another component
+>   like the info icon paired with the tooltip or popover.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" width="8000">
+    <Alert.Root tone="critical" variant="outlined">
+      <Alert.Title>Account needs validation</Alert.Title>
+      <Alert.Description>
+        To edit these fields you must first validate your account. Please check your email.
+      </Alert.Description>
+    </Alert.Root>
+    <Text fontWeight="500">Product price mode</Text>
+    <TextInput isInvalid />
+  </Stack>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not use alerts for form errors, instead use error helper text that
+>   populates below the field.
+> - Do not cover other elements on the page with the alert.
+> - Do not restrict the user from clearing messages when applicable. (Critical
+>   and warning messages are more likely to be persistent. Judge if the content
+>   needs to persist.)
+
+```jsx-live
+const App = () => (
+  <Box>
+    <Stack direction="column">
+      <Text fontWeight="500">Product price mode</Text>
+      <TextInput isInvalid />
+    </Stack>
+
+   <Alert.Root tone="critical" variant="outlined" width="9600" position="relative" top="-500" left="500">
+      <Alert.Title>Product price mode error</Alert.Title>
+      <Alert.Description>
+        This price mode has not been defined.
+      </Alert.Description>
+      <Alert.Actions>
+        <Button variant="outline">Define price mode</Button>
+      </Alert.Actions>
+    </Alert.Root>
+  </Box>
+);
+```
+
+> [!TIP]\
+> **Do**
+>
+> - With form specific validation alerts, use the flat styled alerts. Keep
+>   warnings short in these locations, and if needed, include links for users.
+> - When there is more information needed, you can use flat-styled alerts within
+>   popovers.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column">
+    <Text fontWeight="500">Customer group</Text>
+    <TextInput isDisabled />
+    <Alert.Root tone="warning" variant="flat">
+      <Alert.Description>You do not have access to edit this field</Alert.Description>
+    </Alert.Root>
+  </Stack>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> Do not put error messages within info popovers, use error or alert messaging
+> that is shown to the user instead of hiding them in areas that require
+> interaction.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column">
+    <Text fontWeight="500">Customer group</Text>
+    <TextInput isInvalid />
+    <Alert.Root tone="critical" variant="flat" position="relative" top="-1000" width="8000">
+      <Alert.Description>This customer group does not exist or may have been deleted. Try again.</Alert.Description>
+    </Alert.Root>
+  </Stack>
+);
+```
+
+## Specs
 
 <PropTables
   root="Alert"
   ids="AlertRoot, AlertTitle, AlertDescription, AlertActions, AlertDismissButton"
 />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Alert.Root tone="critical" variant="outlined">
+    <Alert.Title>Payment Processing Error</Alert.Title>
+    <Alert.Description>
+      A payment processing error occurred for order #12345. Please <Link>verify your
+      payment gateway settings</Link> immediately to prevent further issues.
+    </Alert.Description>
+    <Alert.Actions>
+      <Button variant="outline">View changes</Button>
+    </Alert.Actions>
+    <Alert.DismissButton />
+  </Alert.Root>
+);
+```
+
+### Accessibility Standards
+
+#### 1. Perceivable:
+
+- **1.3.1 Info and Relationships (Level A):**
+  - Ensure the alert's content and purpose are programmatically determinable.
+    Use `ARIA` attributes like `aria-live` and `aria-atomic` to announce dynamic
+    content changes to assistive technologies.
+  - If the alert contains non-text content (e.g., icons), provide text
+    alternatives (e.g., alt text for images).
+- **1.4.3 Contrast (Minimum) (Level AA):**
+  - Ensure sufficient color contrast between the alert's text and background.
+- **1.4.1 Use of Color (Level A):**
+  - Don't rely solely on color to convey the alert's meaning. Use additional
+    visual cues like icons or text.
+
+#### 2. Operable:
+
+- **2.1.1 Keyboard (Level A):**
+  - If the alert contains interactive elements (e.g., buttons), ensure they are
+    keyboard operable.
+  - If the alert requires dismissal, ensure it can be dismissed using the
+    keyboard (e.g., Esc key).
+- **2.4.7 Focus Visible (Level AA):**
+  - If the alert contains interactive elements, provide a clear visual focus
+    indicator.
+
+#### 3. Understandable:
+
+- **3.2.1 On Focus (Level A):**
+  - Ensure that the alert doesn't cause unexpected changes to the page or
+    context.
+- **3.3.1 Error Identification (Level A):**
+  - If the alert indicates an error, clearly identify and describe the error in
+    text.
+- **3.3.2 Labels or Instructions (Level A):**
+  - Provide clear and concise messages that are easy to understand.
+
+#### 4. Robust:
+
+- **4.1.2 Name, Role, Value (Level A):**
+  - Use appropriate semantic `HTML` and `ARIA` attributes to define the alert's
+    role, name, and value. This ensures compatibility with assistive
+    technologies.
+- Use `role="alert"` or `role="alertdialog"` to define the alert.
+- **4.1.3 Status Messages (Level AA):**
+  - For status messages that don't interrupt the user, use `role="status"`
+    instead of `role="alert"`.
