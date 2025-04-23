@@ -493,9 +493,9 @@ const App = () => (
 > [!CAUTION]\
 > **Don't**
 >
-> Do not put error messages within info popovers, use error or alert messaging
-> that is shown to the user instead of hiding them in areas that require
-> interaction.
+> - Do not put error messages within info popovers, use error or alert messaging
+>   that is shown to the user instead of hiding them in areas that require
+>   interaction.
 
 ```jsx-live
 const App = () => (
@@ -582,7 +582,7 @@ const App = () => (
   - Use appropriate semantic `HTML` and `ARIA` attributes to define the alert's
     role, name, and value. This ensures compatibility with assistive
     technologies.
-- Use `role="alert"` or `role="alertdialog"` to define the alert.
+  - Use `role="alert"` or `role="alertdialog"` to define the alert.
 - **4.1.3 Status Messages (Level AA):**
   - For status messages that don't interrupt the user, use `role="status"`
     instead of `role="alert"`.
