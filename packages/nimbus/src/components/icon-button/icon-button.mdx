@@ -611,6 +611,17 @@ clicks, touch taps, and keyboard presses—consistently. These props (`onPress`,
 `onPressStart`, `onPressEnd`, etc.) ensure a smooth and accessible experience
 regardless of the user's input method or device.
 
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton tone="primary" variant="solid" onPress={() => alert('Button pressed!')}>
+      <Icons.Edit />
+    </IconButton>
+  )
+}
+```
+
 ### Accessibility Standards
 
 **1. Perceivable:**
