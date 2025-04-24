@@ -65,9 +65,9 @@ export const components: MDXComponents = {
   td: Table.Cell,
   tr: Table.Row,
   /** layout components */
-  Box,
-  Flex,
-  Grid,
+  Box: (props) => <Box {...props} />,
+  Flex: (props) => <Flex {...props} />,
+  Grid: (props) => <Grid {...props} />,
   /** custom elements */
   PropTable: PropTable,
   PropTables: PropTables,
