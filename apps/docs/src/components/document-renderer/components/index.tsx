@@ -1,4 +1,4 @@
-import { Table } from "@commercetools/nimbus";
+import { Table, Box, Flex, Grid } from "@commercetools/nimbus";
 import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
 import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
@@ -64,6 +64,10 @@ export const components: MDXComponents = {
   tbody: Table.Body,
   td: Table.Cell,
   tr: Table.Row,
+  /** layout components */
+  Box,
+  Flex,
+  Grid,
   /** custom elements */
   PropTable: PropTable,
   PropTables: PropTables,
@@ -76,6 +80,7 @@ export const components: MDXComponents = {
   DurationTokenDemo,
   KeyframeTokenDemo,
   TextStylesDemo,
+
   /** all icons from @commercetools/nimbus-icons, TODO: evaluate if this is a good idea */
   Icons: icons,
 };
