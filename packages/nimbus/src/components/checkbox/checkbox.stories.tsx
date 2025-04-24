@@ -159,7 +159,7 @@ export const StyleProps: Story = {
     const htmlLabel = canvasElement.querySelector(
       '[data-slot="root"]'
     ) as HTMLLabelElement;
-    await step("Has alternative label", async () => {
+    await step("Passes style props as expected", async () => {
       await expect(
         getComputedStyle(htmlLabel).getPropertyValue("margin-inline")
       ).toBe("40px");
