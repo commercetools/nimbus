@@ -8,14 +8,15 @@ import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Add all external dependencies that should not be bundled
+// External dependencies that should not be bundled.
 const external = [
   // React core
   "react",
   "react-dom",
   "react/jsx-runtime",
 
-  // React Aria ecosystem
+  // RA ecosystem.
+  // 04/24-Bundled for now, options will be explored later. Once decided, comment/uncomment corresponding deps in the rollupOptions.globals section below.
   // "react-aria",
   // "react-aria-components",
   // "react-stately/*",
@@ -53,7 +54,6 @@ export const baseConfig = {
       formats: ["es", "umd"],
     },
     rollupOptions: {
-      // Externalized deps that shouldn't be bundled into your library
       external,
       output: {
         // Provide global variables to use in the UMD build for externalized deps
@@ -62,15 +62,15 @@ export const baseConfig = {
           "react-dom": "ReactDOM",
           "react/jsx-runtime": "jsxRuntime",
 
-          // React Aria ecosystem
-          "react-aria-components": "ReactAriaComponents",
-          "react-aria": "ReactAria",
-          "@react-aria/utils": "ReactAriaUtils",
-          "@react-aria/autocomplete": "ReactAriaAutocomplete",
-          "@react-aria/overlays": "ReactAriaOverlays",
-          "@react-aria/focus": "ReactAriaFocus",
-          "@react-aria/interactions": "ReactAriaInteractions",
-          "react-stately": "ReactStately",
+          // RA ecosystem.
+          // "react-aria-components": "ReactAriaComponents",
+          // "react-aria": "ReactAria",
+          // "@react-aria/utils": "ReactAriaUtils",
+          // "@react-aria/autocomplete": "ReactAriaAutocomplete",
+          // "@react-aria/overlays": "ReactAriaOverlays",
+          // "@react-aria/focus": "ReactAriaFocus",
+          // "@react-aria/interactions": "ReactAriaInteractions",
+          // "react-stately": "ReactStately",
 
           // UI frameworks & styling
           "@chakra-ui/react": "ChakraUI",

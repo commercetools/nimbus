@@ -24,9 +24,7 @@
     "access": "public"
   },
   "sideEffects": [
-    "*.css",
-    "./dist/index.js",
-    "./dist/index.umd.cjs"
+    "*.css"
   ],
   "source": "src/index.ts",
   "typesVersions": {
