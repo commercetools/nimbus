@@ -14,85 +14,644 @@ figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev
 ---
 
-# IconButton
+# Icon Button
 
-displays a button with an icon only as child.
+---
 
-## Basic Usage
+Provides a compact and visually efficient way to represent actions, especially
+when space is limited or the action is universally understood.
 
-If unconfigured `IconButton` will default to a neutral state. It is important to
-configure `IconButton` properly to ensure it displays as intended.
+## Overview
 
-```jsx-live
-const App = () => <IconButton><Icons.ArrowForward/></IconButton>
-```
+These specifications define the standard styles and variations for icon buttons
+within our design system, covering different visual treatments for diverse use
+cases.
 
-### Sizes
+### Resources
 
-Available sizes.
+Deep dive on details and access design library.
 
-```jsx-live
-const App = () => {
-  const sizes = ['md', 'xs', '2xs'];
+[TECH RELATED LINK](#) [TECH RELATED LINK](#)
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2570&m=dev)
 
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <IconButton tone="primary" variant="solid" key={size} size={size}>
-          <Icons.AutoFixHigh/>
-        </IconButton>
-      ))}
-    </Stack>
-  )
-}
-```
+## Hierarchy
 
-### Variants
+#### Most common: Ghost
 
-Available variants.
+Ghost icon buttons are used most often, the represent familiar actions that
+don’t compete with a primary action on the page.
 
 ```jsx-live
 const App = () => {
-
-  const variants = ['solid', 'outline', 'ghost', 'link'];
-
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <IconButton tone="primary" key={variant} variant={variant}>
-          <Icons.AutoFixHigh/>
-        </IconButton>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Tones
-
-Available tones.
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "outline", "ghost", "link"];
-  const colors = ["primary", "error"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <IconButton colorPalette={color} key={variant} variant={variant}>
-              <Icons.AutoFixHigh/>
-            </IconButton>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
+    <IconButton variant="ghost" tone="primary">
+      <Icons.Edit/>
+    </IconButton>
   );
 };
 ```
 
-## Props
+#### Use sparingly: Solid
+
+Solid icon buttons are sparingly used, but represent commonly understood primary
+actions by the user.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="solid" tone="primary">
+      <Icons.Edit/>
+    </IconButton>
+  );
+};
+```
+
+#### Least used: Outline
+
+Outline icon buttons are used as secondary buttons, used often in button groups
+to represent icon toggles and within data tables.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="outline" tone="primary">
+      <Icons.Edit/>
+    </IconButton>
+  );
+};
+```
+
+## Variables
+
+Get familiar with the features.
+
+### Size
+
+#### Medium (40px)
+
+These are the default and preferred size for icon buttons.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="solid" tone="primary" size="md">
+      <Icons.Edit/>
+    </IconButton>
+  );
+};
+```
+
+#### X-Small (32px)
+
+Placed in a small dense content areas, e.g., in pop-over or inside a data table.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="solid" tone="primary" size="xs">
+      <Icons.Edit/>
+    </IconButton>
+  );
+};
+```
+
+#### XX-Small (24px)
+
+2XS is used sparingly mostly inside other components e.g, inside inputs or
+filter badges.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="solid" tone="primary" size="2xs">
+      <Icons.Edit/>
+    </IconButton>
+  );
+};
+```
+
+### Tone
+
+#### Primary
+
+This is the default tone for the icon button. This styling should be used most
+commonly for all actions.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="ghost" tone="primary">
+      <Icons.ViewColumn/>
+    </IconButton>
+  );
+};
+```
+
+#### Critical
+
+Use this icon button when the user is approaching a permanent destructive
+action. See guidelines for more information.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton variant="ghost" tone="critical">
+      <Icons.Delete/>
+    </IconButton>
+  );
+};
+```
+
+#### Tooltip
+
+For accessibility compliance (and good user experience for all) all icon buttons
+must have a tooltip. Go to tooltips for more formation about the component.
+
+```jsx-live
+const App = () => {
+  return (
+    <TooltipTrigger delay={0} closeDelay={0}>
+      <IconButton variant="ghost" tone="primary">
+        <Icons.Edit/>
+      </IconButton>
+      <Tooltip>
+        Edit
+      </Tooltip>
+    </TooltipTrigger>
+  );
+};
+```
+
+## Guidelines
+
+Icon buttons are interactive elements that empower users to trigger actions and
+navigate within your product. They serve as clear calls to action, guiding users
+through key flows and enabling them to interact with content in meaningful ways.
+These guidelines ensure consistent styling and behavior for all buttons,
+contributing to a cohesive and predictable user experience.
+
+### Writing guidelines
+
+- Use
+  [Material Icons](https://mui.com/material-ui/material-icons/?theme=Outlined&query=access#search-material-icons)
+  in outline style before adding a new custom icon.
+- Use standard icons.
+- Provide tooltips.
+- Combine with text when needed.
+- Be consistent.
+- Test with users.
+
+#### Preferred words
+
+| **Example**                                                                       | **Description**                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <Icons.Edit color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />          | Use for “edit”.                                                                                                                                                                                 |
+| <Icons.FileUpload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />    | Upload.                                                                                                                                                                                         |
+| <Icons.FileDownload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />  | Download.                                                                                                                                                                                       |
+| <Icons.ViewColumn color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />    | “Table settings” Shows customizable elements for tables.                                                                                                                                        |
+| <Icons.MoreVert color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />      | “More options” shows a list of other features or tools that are not primary or secondary actions. Usually paired with buttons in a button group. For consistency, use the vertical dot version. |
+| <Icons.DragIndicator color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /> | “Drag” allows a user to drag elements to reorder.                                                                                                                                               |
+| <Icons.Clear color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />         | Use for “remove”. This removes the relationship but does **not** delete this item completely.                                                                                                   |
+| <Icons.Delete color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />        | Use for “delete”. This is a destructive action, removes item completely.                                                                                                                        |
+
+#### Avoid these words
+
+| **Avoid Icon/Concept**                                                                                                                                                                                                                                                                                                              | **Use this instead**                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <Icons.Check color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.CheckCircle color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />                                                                                                                                                                            | Use a button with “Save” instead of an icon button.                     |
+| <Icons.MoreHoriz color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />                                                                                                                                                                                                                                                       | Use the vertical dot version to show more options.                      |
+| <Icons.HighlightOff color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.DeleteForever color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.DoNotDisturb color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />                                                                                   | If using for the same function as “delete” use consistent icon above.   |
+| <Icons.Upload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.CloudUpload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.Upgrade color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.DriveFolderUpload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px"/>            | If using for the same function as “upload” use consistent icon above.   |
+| <Icons.ArrowCircleDown color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.Download color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.SimCardDownload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.CloudDownload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /> | If using for the same function as “download” use consistent icon above. |
+
+### Usage
+
+#### Common & effective placements:
+
+- **Toolbars**: Icon buttons are perfect for toolbars due to their compact size.
+  They allow for many actions to be readily available without cluttering the
+  interface.
+- **Navigation** bars/headers: Often used for actions like search, settings, or
+  menu access. Placement here makes these key functions easily accessible
+  throughout the app.
+- **Within** lists/grids: Icon buttons can be placed next to list items or grid
+  elements to provide actions specific to that item (e.g., edit, delete, share).
+- **Contextual** menus: Icon buttons can be used within dropdown menus or
+  context menus to provide a visual representation of available actions.
+
+#### Placement considerations:
+
+- **Related to content**: Place icon buttons close to the content they affect.
+  For example, an edit button should be near the text it's used to edit.
+- **Consistency**: Maintain consistent placement of similar icon buttons. Users
+  expect to find common actions in the same place.
+- **Groupings**: If you have multiple related icon buttons, grouping them
+  together visually. Helps users understand the relationships between the
+  actions.
+- **Avoid clutter**: Don't overcrowd your UI with too many icon buttons.
+
+> [!TIP]\
+> When to use
+
+- Space is limited.
+- Actions are universally recognized.
+- Reinforcing meaning.
+- Adding visual appeal.
+- Supporting multiple languages.
+- Interfaces are simple and consistent.
+
+> [!CAUTION]\
+> When not to use
+
+- Actions are ambiguous.
+- Context is crucial.
+- Actions are critical.
+- Space is plentiful.
+- Interfaces are complex.
+- Testing reveals confusion.
+
+### Tone and style usage
+
+Icons that are on the left are the best placement. Icons are used to lead the
+user to the right action quickly by scanning. Ok ways to break this rule are
+with drop downs and right pointing arrows.
+
+#### Most common: Ghost
+
+They are often seen next to tables, fields, and toolbars.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" justifyContent="center">
+      <IconButton tone="primary" variant="ghost">
+        <Icons.ViewColumn />
+      </IconButton>
+      <IconButton tone="primary" variant="ghost">
+        <Icons.Clear />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+#### Solid and Outline
+
+Solid icon buttons are most commonly seen in navigation. Outline buttons are
+most commonly seen in groups of two representing views that can be toggled.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" justifyContent="center">
+      <IconButton tone="primary" variant="solid">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton tone="primary" variant="outline">
+        <Icons.Add />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+#### Critically toned
+
+Reserved for destructive actions, such as deleting something or removing a
+connection.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" justifyContent="center">
+      <IconButton tone="critical" variant="outline">
+        <Icons.Delete />
+      </IconButton>
+      <IconButton tone="critical" variant="solid">
+        <Icons.Delete />
+      </IconButton>
+      <IconButton tone="critical" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+### Icon placement
+
+The ideal placement of an icon button depends heavily on its function and the
+overall UI design. Think about the button's function, the content it relates to,
+and how users will expect to find it. Consistency and user testing are key to
+optimizing icon button placement.
+
+> [!TIP]\
+> **Do**
+>
+> - Tools are grouped together, and adhere to current common page pattern
+>   design.
+
+
+<img src="/images/icon-button/icon-placement-do.png" alt="icon placement do guideline" width="447px" />
+
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Navigation is higher hierarchy than icon button tools, this is not a common
+>   pattern.
+
+<img src="/images/icon-button/icon-placement-dont.png" alt="icon placement do guideline" width="447px" />
+
+### Button groupings
+
+Button groups are UI elements that organize multiple buttons together, often
+visually as a single unit. They serve to present users with a set of related
+choices or actions in a compact and organized way.
+
+> [!TIP]\
+> **Do**
+>
+> - If you use a stack of icon buttons for actions, use max 4 and hide the rest
+>   within a “more” icon.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="0">
+      <IconButton tone="primary" variant="ghost">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton tone="primary" variant="ghost">
+        <Icons.PushPin />
+      </IconButton>
+      <IconButton tone="primary" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+      <IconButton tone="primary" variant="ghost">
+        <Icons.MoreVert />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid having all the options as solid primary filled buttons.
+> - Try not to have icon buttons sandwiched between buttons.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal">
+      <IconButton tone="primary" variant="solid">
+        <Icons.MoreVert />
+      </IconButton>
+      <Button tone="primary" variant="solid">
+        Save changes
+      </Button>
+      <IconButton tone="primary" variant="solid">
+        <Icons.ManageSearch />
+      </IconButton>
+      <Button tone="primary" variant="solid">
+        <Icons.Undo />
+        Revert
+      </Button>
+    </Stack>
+  )
+}
+```
+
+> [!TIP]\
+> **Do**
+>
+> - When offering a toggle experience, connect these icon buttons
+> - Include a tooltip explaining the options.
+> - Selected option is using the “Solid” state.
+
+```jsx-live
+const App = () => {
+  return (
+    <ToggleButtonGroup.Root tone="primary" selectedKeys={["left"]}>
+      <ToggleButtonGroup.Button id="left">
+        <Icons.AccountTree />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">
+        <Icons.Search />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - If offering a toggle like option view, do not show options as separate
+> - Does not include tooltips or labels, makes it confusing to users to
+>   understand this is a either/or choice.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="100">
+      <IconButton tone="primary" variant="solid">
+        <Icons.AccountTree />
+      </IconButton>
+      <IconButton tone="primary" variant="outline">
+        <Icons.Search />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+> [!TIP]\
+> **Do**
+>
+> - When pairing icon buttons together, use the ghost style.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="100">
+      <IconButton tone="primary" variant="ghost">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton tone="primary" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid having two primary solid icon buttons in the same area.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="100">
+      <IconButton tone="primary" variant="solid">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton tone="primary" variant="solid">
+        <Icons.Delete />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+### Tooltips
+
+Make sure to place tooltips in areas where they will be seen easily.
+
+> [!TIP]\
+> **Do**
+>
+> - Place tooltips so that it makes information easy to read.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack width="185px">
+      <TooltipTrigger delay={0} closeDelay={0} isOpen>
+        <IconButton variant="ghost" tone="primary" alignSelf="end">
+          <Icons.ViewColumn />
+        </IconButton>
+        <Tooltip placement="top" offset={-37} crossOffset={-100}>
+          Table settings
+        </Tooltip>
+      </TooltipTrigger>
+      <Select.Root
+        aria-label="Select a category"
+        selectedKey=""
+      >
+        <Select.Options>
+          <Select.Option id="productColumns" value="productColumns">
+            Product columns
+          </Select.Option>
+          <Select.Option id="variantColumns" value="variantColumns">
+            Variant columns
+          </Select.Option>
+          <Select.Option id="layoutSettings" value="layoutSettings">
+            Layout settings
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Be aware of overlap of element placements.
+> - Place tooltips so that it makes information easy to read.
+> - Don’t use tooltips to cover the icon button.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack width="144px">
+      <TooltipTrigger delay={0} closeDelay={0} isOpen>
+        <IconButton variant="ghost" tone="primary" alignSelf="end">
+          <Icons.ViewColumn />
+        </IconButton>
+        <Tooltip placement="top" offset={-70} crossOffset={-40}>
+          Table settings
+        </Tooltip>
+      </TooltipTrigger>
+      <Select.Root
+        aria-label="Select a category"
+        selectedKey=""
+      >
+        <Select.Options>
+          <Select.Option id="productColumns" value="productColumns">
+            Product columns
+          </Select.Option>
+          <Select.Option id="variantColumns" value="variantColumns">
+            Variant columns
+          </Select.Option>
+          <Select.Option id="layoutSettings" value="layoutSettings">
+            Layout settings
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Box>
+        <TooltipTrigger delay={0} closeDelay={0} isOpen>
+          <IconButton variant="ghost" tone="primary">
+            <Icons.ViewColumn />
+          </IconButton>
+          <Tooltip placement="bottom" crossOffset={50} offset={-25}>
+            Table settings
+          </Tooltip>
+        </TooltipTrigger>
+      </Box>
+    </Stack>
+  )
+}
+```
+
+## Properties
 
 <PropTable id="IconButton" />
+
+## Accessibility
+
+The component uses `onPress*` props to handle all user interactions—mouse
+clicks, touch taps, and keyboard presses—consistently. These props (`onPress`,
+`onPressStart`, `onPressEnd`, etc.) ensure a smooth and accessible experience
+regardless of the user's input method or device.
+
+### Accessibility Standards
+
+**1. Perceivable:**
+
+- **Sufficient Color Contrast:** Ensure enough contrast between the icon and its
+  background. WCAG requires a contrast ratio of at least 3:1 for graphical
+  elements and 4.5:1 for text. Tools like WebAIM's color contrast checker can
+  help you verify this.
+- **Non-text Content:** Icons are considered non-text content. WCAG requires
+  that all non-text content has a text alternative that serves the equivalent
+  purpose. This usually means providing an alternative text (alt text) for the
+  icon.
+- **Visual Cues:** Don't rely solely on color to convey information. Use
+  additional visual cues like shapes, patterns, or text labels to ensure that
+  the icon's meaning is clear to everyone, including people with color
+  blindness.
+
+**2. Operable:**
+
+- **Keyboard Accessibility:** Icon buttons must be operable using a keyboard.
+  Users should be able to navigate to the button using the Tab key and activate
+  it using the Enter or Space key.
+- **Target Size:** Ensure that the icon button is large enough to be easily
+  clickable, especially on touchscreens. WCAG recommends a minimum target size
+  of 24x24 CSS pixels.
+- **Focus Indicator:** Provide a clear visual indicator when the icon button
+  receives keyboard focus. This helps users understand which element is
+  currently active.
+
+**3. Understandable:**
+
+- **Clear Labels:** If the icon's meaning isn't universally understood, provide
+  a text label or tooltip to clarify its purpose. This is especially important
+  for less common icons.
+- **Consistent Design:** Use icons consistently throughout your website. This
+  helps users learn the meaning of each icon and makes it easier for them to
+  navigate your site.
+
+**4. Robust:**
+
+- **Assistive Technology Compatibility:** Ensure that icon buttons are
+  compatible with assistive technologies like screen readers. This often
+  involves using proper HTML markup and ARIA attributes to provide semantic
+  information about the button.
