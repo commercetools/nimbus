@@ -71,7 +71,10 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
             />
           </Box>
 
-          <Box display={activeTab === "preview" ? "block" : "none"}>
+          <Box
+            display={activeTab === "preview" ? "block" : "none"}
+            whiteSpace="pre-wrap"
+          >
             <Box p="400">
               <LivePreview />
             </Box>
