@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus-tokens",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "main": "dist/commercetools-nimbus-tokens.cjs.js",
   "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",

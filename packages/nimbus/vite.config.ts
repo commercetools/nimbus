@@ -46,7 +46,6 @@ export const baseConfig = {
   ],
   build: {
     sourcemap: true,
-    cssCodeSplit: true, // Wrkbetter CSS processing
     lib: {
       entry: resolve(__dirname, "./src/index.ts"),
       name: "nimbus",
