@@ -1,7 +1,7 @@
 ---
 id: Components-FormField
 title: FormField
-description: displays inputs in a FormField context
+description: displays miscellaneous inputs in a FormField context
 documentState: InitialDraft
 order: 999
 menu:
@@ -10,288 +10,540 @@ menu:
   - FormField
 tags:
   - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2635&m=dev
+
 ---
 
-# FormField
+# Form Field
 
-The `<FormField>` component is a wrapper for inputs that provides additional
-functionality and styling. It is used to create a consistent look and feel for
-form elements across the application.
+Form fields are the building blocks of user interaction, collecting essential data,
+facilitating actions, and enabling customization within digital interfaces.
 
-## Basic Usage
+## Overview
 
-FormField provides context for form controls including labels, help text, and
-error messages. It works with various form input components to create accessible
-forms.
+Composed of several elements, a label, optional helper icon, a text input. There
+is also an optional helper text feature that presents at the bottom of the field. 
 
-```jsx-live
-const App = () => (
-  <FormField.Root>
-    <FormField.Label>Email address</FormField.Label>
-    <FormField.Input>
-      <TextInput placeholder="Enter your email" />
-    </FormField.Input>
-  </FormField.Root>
-)
-```
+### Resources
 
-## Examples
+Deep dive on details and access design library.
 
-### With Description
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2635&m=dev)
 
-Use the `FomField.Description` component to provide additional information about
-the form field.
+## Variables
 
-```jsx-live
-const App = () => (
-  <FormField.Root>
-    <FormField.Label>Username</FormField.Label>
-    <FormField.Input>
-      <TextInput placeholder="Enter your username" />
-    </FormField.Input>
-    <FormField.Description>
-      Username must be at least 4 characters long
-    </FormField.Description>
-  </FormField.Root>
-)
-```
+Get familiar with the features. 
 
-### With Error
+### Label options
 
-When form validation fails, use the `FormField.Error` component to display error
-messages.
-
-```jsx-live
-const App = () => (
-  <FormField.Root isInvalid>
-    <FormField.Label>Password</FormField.Label>
-    <FormField.Input>
-      <TextInput placeholder="Enter your password" type="password" />
-    </FormField.Input>
-    <FormField.Error>Password must contain at least 8 characters</FormField.Error>
-  </FormField.Root>
-)
-```
-
-### Disabled State
-
-Use the `isDisabled` prop to indicate that a form field is not interactive.
-
-```jsx-live
-const App = () => (
-  <FormField.Root isDisabled>
-    <FormField.Label>Account Settings</FormField.Label>
-    <FormField.Input>
-      <TextInput placeholder="Settings locked" />
-    </FormField.Input>
-    <FormField.Description>
-      Contact your administrator to change account settings
-    </FormField.Description>
-  </FormField.Root>
-)
-```
-
-### Required Fields
-
-Use the `isRequired` prop to indicate fields that must be completed.
-
-```jsx-live
-const App = () => (
-  <FormField.Root isRequired>
-    <FormField.Label>Email Address</FormField.Label>
-    <FormField.Input>
-      <TextInput placeholder="Enter your email" />
-    </FormField.Input>
-    <FormField.Description>
-      We'll never share your email with anyone else
-    </FormField.Description>
-  </FormField.Root>
-)
-```
-
-### With Information Tooltip
-
-Provide additional helpful information using the `FormField.InfoBox` component.
-
-```jsx-live
-const App = () => (
-  <FormField.Root>
-    <FormField.Label>API Key</FormField.Label>
-    <FormField.InfoBox>
-      API keys are used to authenticate requests to our services.
-      Keep this key secure and don't share it with others.
-    </FormField.InfoBox>
-    <FormField.Input>
-      <TextInput placeholder="Enter API key" />
-    </FormField.Input>
-  </FormField.Root>
-)
-```
-
-### Comprehensive Example
-
-This example demonstrates all `FormField.*` components working together with
-various states.
+#### Simple
+Label is used to describe the form.
 
 ```jsx-live
 const App = () => {
-  const [formValues, setFormValues] = React.useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    agreeTerms: false,
-  });
-
-  const [errors, setErrors] = React.useState({});
-
-  const handleChange = (field, value) => {
-    setFormValues({
-      ...formValues,
-      [field]: value,
-    });
-
-    // Clear errors when field is edited
-    if (errors[field]) {
-      setErrors({
-        ...errors,
-        [field]: undefined,
-      });
-    }
-  };
-
-  const handleSubmit = () => {
-    const newErrors = {};
-
-    // Simple validation example
-    if (!formValues.username) {
-      newErrors.username = "Username is required";
-    } else if (formValues.username.length < 4) {
-      newErrors.username = "Username must be at least 4 characters";
-    }
-
-    if (!formValues.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
-      newErrors.email = "Email is invalid";
-    }
-
-    if (!formValues.password) {
-      newErrors.password = "Password is required";
-    } else if (formValues.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-
-    if (formValues.password !== formValues.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    if (!formValues.agreeTerms) {
-      newErrors.agreeTerms = "You must agree to the terms";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      alert("Form submitted successfully!");
-    }
-  };
-
+  const [val, setVal] = useState('Input value'); 
+  
   return (
-    <Stack
-      spacing="4"
-      width="100%"
-      alignItems="start"
-    >
-      <FormField.Root isInvalid={!!errors.username} isRequired>
-        <FormField.Label>Username</FormField.Label>
-        <FormField.InfoBox>
-          Choose a unique username for your account.
-        </FormField.InfoBox>
-        <FormField.Input>
-          <TextInput
-            placeholder="Enter username"
-            value={formValues.username}
-            onChange={(v) => handleChange("username", v)}
-          />
-        </FormField.Input>
-        <FormField.Description>
-          Username must be at least 4 characters long
-        </FormField.Description>
-        {errors.username && (
-          <FormField.Error>{errors.username}</FormField.Error>
-        )}
-      </FormField.Root>
-
-      <FormField.Root isInvalid={!!errors.email} isRequired>
-        <FormField.Label>Email Address</FormField.Label>
-        <FormField.Input>
-          <TextInput
-            placeholder="Enter email"
-            type="email"
-            value={formValues.email}
-            onChange={(v) => handleChange("email", v)}
-          />
-        </FormField.Input>
-        <FormField.Description>
-          We'll never share your email with anyone else
-        </FormField.Description>
-        {errors.email && <FormField.Error>{errors.email}</FormField.Error>}
-      </FormField.Root>
-
-      <FormField.Root isInvalid={!!errors.password} isRequired>
-        <FormField.Label>Password</FormField.Label>
-        <FormField.Input>
-          <TextInput
-            placeholder="Enter password"
-            type="password"
-            value={formValues.password}
-            onChange={(v) => handleChange("password", v)}
-          />
-        </FormField.Input>
-        <FormField.Description>
-          Password must be at least 8 characters
-        </FormField.Description>
-        {errors.password && (
-          <FormField.Error>{errors.password}</FormField.Error>
-        )}
-      </FormField.Root>
-
-      <FormField.Root isInvalid={!!errors.confirmPassword} isRequired>
-        <FormField.Label>Confirm Password</FormField.Label>
-        <FormField.Input>
-          <TextInput
-            placeholder="Confirm password"
-            type="password"
-            value={formValues.confirmPassword}
-            onChange={(v) => handleChange("confirmPassword", v)}
-          />
-        </FormField.Input>
-        {errors.confirmPassword && (
-          <FormField.Error>{errors.confirmPassword}</FormField.Error>
-        )}
-      </FormField.Root>
-
-      <FormField.Root isInvalid={!!errors.agreeTerms}>
-        <FormField.Input>
-          <Checkbox
-            checked={formValues.agreeTerms}
-            onChange={(v) => handleChange("agreeTerms", v)}
-          >
-            I agree to the terms and conditions
-          </Checkbox>
-        </FormField.Input>
-        {errors.agreeTerms && (
-          <FormField.Error>{errors.agreeTerms}</FormField.Error>
-        )}
-      </FormField.Root>
-
-      <Button variant="solid" tone="primary" onPress={()=>handleSubmit()}>Submit</Button>
-    </Stack>
-  );
-};
+    <FormField.Root>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+    </FormField.Root>
+  )
+}
 ```
 
-## Props
+#### With help text
+Label paired with form and description to give users extra clarification. 
 
-<PropTable id="FormField.Root" />
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>Help Text</FormField.Description>
+    </FormField.Root>
+  )
+}
+```
+
+#### With error message
+Explain errors to the user in an eye catching way. 
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root isInvalid>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Error>
+        Error message
+      </FormField.Error>
+    </FormField.Root>
+  )
+}
+```
+
+#### Required with info icon and help text
+This is the default placement of labels. Info button should always open an info
+dialog, not just a tooltip on hover.
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root isRequired>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>
+        Help Text
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  )
+}
+```
+
+#### Label on the left with info icon and help text
+These can be used to make the page a little more condensed for the user.  
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root direction="row" isRequired>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>
+        Help Text
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  )
+}
+```
+
+### Size
+
+
+#### Medium
+
+This is the default size for form fields. 
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root isRequired size="md">
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>
+        Help Text
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  )
+}
+```
+
+#### Small
+
+Use to condense forms.
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root isRequired size="sm">
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>
+        Help Text
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  )
+}
+```
+
+
+## Guidelines
+
+Design guidelines offer a set of standardized rules and recommendations that
+ensure consistency, usability, and accessibility across all design elements and
+interactions.
+
+Related guidelines see [labels](#) and [text-fields](#).
+
+### Best practices
+
+- **Clarity and simplicity:**
+  - Minimize the number of fields. Only ask for essential information.  
+  - Use clear, concise labels that accurately describe the required input.
+  - Choose what position (top or left) the labels will be and make it consistent
+    in the area to help with scanning.
+- **Labels:**
+  - Place labels above or to the left of input fields.
+  - Keep labels short and descriptive.  
+  - Avoid using placeholders as labels.  
+- **Error handling:**
+  - Display error messages clearly and prominently.  
+  - Use specific and helpful error messages and provide suggestions for
+    correcting errors.
+
+### Helper text vs info icon
+
+Use the right informative tool to aid your user to understand what is needed.
+See info button for more guidelines.
+
+- **Info Button:**
+  - **Complex or lengthy information:** When you need to provide more than a
+    short sentence or two of explanation. By default the info button will open
+    a dialog overlay. It can be used to show a tooltip on hover, but the amount
+    of information a popover and a help text can contain is similar. If there is
+    a want to simplify the UI, this can be used, but test to make sure that this
+    information needs to be shown without interaction from a user. 
+  - **Progressive disclosure:** To avoid cluttering the form with too much text
+    upfront, revealing details only when the user actively seeks them.
+  - **Contextual help:** When the help information is very specific to a
+    particular field or a user's current state within the form.  
+- **Help Text:**
+  - **Short, concise explanations:** For simple clarifications or hints about
+    the expected input. Try to keep helper text below 150 characters.
+  - **Formatting guidance:** To provide examples of the required format
+    (e.g., date formats, phone number patterns).
+  - **Input requirements:** To specify character limits, password rules, or 
+    other constraints.
+  - **Immediate visibility:** When it's crucial for the user to see the guidance
+    without any extra action like a click or a hover to display.
+
+### Usage
+
+Be sure to give enough information to the user to understand the form without
+being overwhelmed. Prioritize clarity and function over personality and over
+explanation. To increase understanding, test your forms with users to understand
+where confusion might occur.
+
+### Formatting
+
+Be consistent with your use of form fields label placements and size. 
+
+> [!TIP]  
+> **Do**
+> - Have one placement for labels in the same form, and consistently choose one
+>   size for the entire form.
+> - Help text is used to show the user what the accepted formatting will be.
+>   Placeholder text can be used when needed but help text is preferred for accessibility. 
+> - OK to capitalize proper nouns in labels instead of using sentence case.
+
+
+```jsx-live
+const App = () => (
+    <Stack>
+      <FormField.Root isRequired>
+        <FormField.Label>First name</FormField.Label>
+        <FormField.Input>
+          <TextInput width="9600" />
+        </FormField.Input>
+      </FormField.Root>
+      <FormField.Root isRequired>
+        <FormField.Label>Social Security Number</FormField.Label>
+        <FormField.Input>
+          <TextInput width="9600" />
+        </FormField.Input>
+        <FormField.Description>
+          Help Text
+        </FormField.Description>
+        <FormField.InfoBox>
+          Info box content.
+        </FormField.InfoBox>
+      </FormField.Root>
+    </Stack>
+  )
+````
+
+> [!CAUTION]  
+> **Don't**
+> - Use sentence case for labels. Do not capitalize every word.
+> - Do not combine top and side labels within the form.
+> - Only use description text and helper icons when it is needed. 
+> - Placeholder text should give hints to the user about what is expected,
+    not be used for quirky brand copy.
+> - Do not mix form sizes.
+
+
+```jsx-live
+const App = () => (
+    <Stack gap="400">
+      <FormField.Root size="md" isRequired>
+        <FormField.Label>First name</FormField.Label>
+        <FormField.Input>
+          <TextInput placeholder="What should we call you?" width="9600" />
+        </FormField.Input>
+      </FormField.Root>
+      <FormField.Root direction="row" size="sm" isRequired>
+        <FormField.Label>Last name</FormField.Label>
+        <FormField.Input>
+          <TextInput placeholder="What's in a name?" width="8000" />
+        </FormField.Input>
+      </FormField.Root>
+    </Stack>
+  )
+```
+
+### Validation
+
+Communicate clearly with users about how to correct form validation issues.
+
+> [!TIP]  
+> **Do**
+> - Have succinct reasons why the error happened for the user to correct.
+> - Keep previously entered information so a user can check their work to spot
+>   mistakes easier. 
+
+```jsx-live
+const App = () => (
+    <Stack>
+      <FormField.Root isRequired isInvalid>
+        <FormField.Label>Social Security Number (SSN)</FormField.Label>
+        <FormField.Input>
+          <TextInput value="555-55-5555" width="9600" />
+        </FormField.Input>
+        <FormField.Error>
+          This information does not match
+        </FormField.Error>
+        <FormField.InfoBox>
+          Info box content.
+        </FormField.InfoBox>
+      </FormField.Root>
+    </Stack>
+  )
+````
+
+> [!CAUTION]  
+> **Don't**
+> - Don’t forget to use error messaging. Convey clearly how a user can make
+>   corrections to move forward through the form. 
+> - Don’t clear the previously input information if applicable, to help the
+    user understand the mistake, and provide the best user experience.
+
+```jsx-live
+const App = () => (
+    <Stack>
+      <FormField.Root isRequired isInvalid>
+        <FormField.Label>Social Security Number (SSN)</FormField.Label>
+        <FormField.Input>
+          <TextInput placeholder="XXX-XX-XXXX" width="9600" />
+        </FormField.Input>
+        <FormField.InfoBox>
+          Info box content.
+        </FormField.InfoBox>
+      </FormField.Root>
+    </Stack>
+  )
+```
+
+### Helper text and info button
+
+Use the right informative tool to aid your user to understand what is needed.
+Help text should be short and is preferred when crucial information is needed.
+Use info button when supplemental information is too long for a help text,
+tooltips will by default open a dialog overlay, and can contain more detailed
+information, content types and formatting. See [dialog](#) for more guidelines
+concerning the content inside the modal. 
+
+> [!TIP]  
+> **Do**
+> - Maximum of 1-2 short sentences, around 20-30 words. Keep helper text below
+>   150 characters.
+> - If a long explanation is needed to explain anything related to this field,
+>   use the tooltip instead of the helper text. 
+> - A good example of balanced information. Helper text is being used to inform
+>   all users without interaction. The info button contains supplementary
+>   information. 
+
+```jsx-live
+const App = () => (
+    <Stack>
+      <FormField.Root isRequired>
+        <FormField.Label>Product discount rank</FormField.Label>
+        <FormField.Input>
+          <TextInput  width="9600" />
+        </FormField.Input>
+        <FormField.Description>
+          Sort order values can only be a value between 1 and 2,147,483,647.
+        </FormField.Description>
+        <FormField.InfoBox>
+          Info box content.
+        </FormField.InfoBox>
+      </FormField.Root>
+    </Stack>
+  )
+```
+
+> [!CAUTION]  
+> **Don't**
+> - Do not overload help text and do not use bullet points. Keep help text
+>   below 150 characters.
+> - If information is important for users, use the help text to show to users
+>   without interaction.
+> - Do not duplicate information in the help text and inside the info button.
+
+```jsx-live
+const App = () => (
+    <Stack>
+      <FormField.Root isRequired>
+        <FormField.Label>Product discount rank</FormField.Label>
+        <FormField.Input>
+          <TextInput  width="9600" />
+        </FormField.Input>
+        <FormField.Description>
+          Only one Product discount can be applied per product. The Sort order
+          determines which Product discount applies to your product. Discounts
+          with a Sort order value closer to 1 are considered first. Sort order
+          values can only be a value between 0 and 1.
+          <br/><br/>
+          <Text fontWeight="700">For example:</Text>
+          <br/>
+          <Text>• Product discount 1 has a Sort order value: 0.05</Text>
+          <Text>• Product discount 2 has a Sort order value: 0.07</Text>
+          <Text>• Both Product discounts are active and apply to the same
+          product.</Text>
+          <Text>• Product discount 2 will apply and Product discount 1 will not
+          because 0.07 is closer to 1 than 0.05.</Text>
+          
+        </FormField.Description>
+        <FormField.InfoBox>
+          Info box content.
+        </FormField.InfoBox>
+      </FormField.Root>
+    </Stack>
+  )
+```
+
+## Specs
+
+<PropTable id="FormField"/>
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value'); 
+  
+  return (
+    <FormField.Root isRequired>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>Help Text</FormField.Description>
+      <FormField.InfoBox>
+        Info box content. 
+      </FormField.InfoBox>
+    </FormField.Root>
+  )
+}
+```
+
+### Accessibility Standards
+
+#### Perceivable:
+- **1.1.1 Non-text Content (Level A):** Provide text alternatives for any
+  non-text content within or associated with form fields (e.g., icons, images).
+  Use alt text for images and provide text equivalents for other non-text content.
+- **1.3.1 Info and Relationships (Level A):**
+  - Use the `<label>` element to programmatically associate labels with form fields.
+  - Ensure that assistive technologies can determine the relationship between
+    labels and their corresponding inputs.
+  - Group related form fields using `<fieldset>` and provide a `<legend>` to
+    create logical sections.
+  - Use ARIA attributes (e.g., aria-describedby, aria-labelledby) to establish
+    relationships between form fields and related elements.
+- **1.4.1 Use of Color (Level A):**
+  - Avoid relying solely on color to convey information or indicate the state of
+    form fields (e.g., required fields, error states).
+  - Provide redundant visual cues, such as icons, text, or patterns, to
+    supplement color-based indicators.
+- **1.4.3 Contrast (Minimum) (Level AA):**
+  - Ensure sufficient color contrast between form field labels, input fields,
+    borders, and background colors.
+  - Use a contrast checking tool to verify that the contrast ratio meets the
+    minimum requirements.
+
+#### Operable:
+- **2.1.1 Keyboard (Level A):**
+  - Make all form field functionality operable using the keyboard.
+  - Enable users to navigate between form fields using the Tab key.
+  - Allow users to activate form field controls (e.g., buttons, checkboxes,
+    radio buttons) using the Spacebar or Enter key.
+  - Ensure that keyboard focus is not trapped within form fields.
+- **2.4.7 Focus Visible (Level AA):**
+  - Provide a clear and visible focus indicator for form fields when they
+    receive keyboard focus.
+  - Visually distinguish the focus state from the default state using outlines,
+    highlights, or other visual cues.
+  - Avoid relying solely on color changes to indicate focus.
+
+#### Understandable:
+
+- **3.2.1 On Focus (Level A):**
+  - Prevent form fields from unexpectedly changing the context of the page when
+    they receive focus.
+  - Ensure that any context changes are initiated by user actions, such as
+    submitting the form.
+- **3.3.1 Error Identification (Level A):**
+  - Identify and describe input errors in text when they are automatically detected.
+  - Display clear and concise error messages near the corresponding form fields.
+- **3.3.2 Labels or Instructions (Level A):**
+  - Provide clear, concise, and descriptive labels or instructions for all form fields.
+  - Write labels that accurately reflect the purpose of the form fields.
+  - Provide instructions about the expected input format or requirements.
+- **3.3.3 Error Suggestion (Level AA):**
+  - If an input error is automatically detected and suggestions for correction
+    are known, then1 provide the suggestions to the user, unless it would
+    jeopardize the security or purpose of the content.
+
+#### Robust:
+- **4.1.2 Name, Role, Value (Level A):**
+  - Use semantic HTML elements (e.g., `<input>, <textarea>, <select>`) to define
+    the role, name, and value of form fields.
+  - Ensure that assistive technologies can correctly interpret form fields
+    and their attributes.
+  - Use ARIA attributes when necessary to provide additional information to
+    assistive technologies, especially for complex or custom form fields.
