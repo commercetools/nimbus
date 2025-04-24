@@ -3,6 +3,7 @@ import { useToggleState } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { VisuallyHidden } from "@/components";
 import { Check, Remove as Minus } from "@commercetools/nimbus-icons";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 import {
   useFocusRing,
@@ -40,8 +41,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const recipe = useSlotRecipe({ key: "checkbox" });
     const [recipeProps] = recipe.splitVariantProps(props);
 
+    const [styleProps, restProps] = extractStyleProps(props);
+
     const state = useToggleState(props);
-    const { inputProps } = useCheckbox(props, state, ref);
+    const { inputProps } = useCheckbox(restProps, state, ref);
 
     const { isFocused, focusProps } = useFocusRing();
     const isSelected = state.isSelected && !props.isIndeterminate;
@@ -56,7 +59,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     };
 
     return (
-      <CheckboxRoot data-slot="root" {...recipeProps} {...stateProps}>
+      <CheckboxRoot
+        data-slot="root"
+        {...recipeProps}
+        {...stateProps}
+        {...styleProps}
+      >
         <CheckboxIndicator data-slot="indicator" {...stateProps}>
           {isSelected && <Check />}
           {isIndeterminate && <Minus />}
