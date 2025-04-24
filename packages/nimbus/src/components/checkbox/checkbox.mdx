@@ -11,22 +11,22 @@ menu:
   - Checkbox
 tags:
   - component
-figmaLink: >- 
+figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4
 ---
 
 # Checkbox
 
-Checkbox allows for toggling of features, allowing users to select 
-more than one option where needed. Checkboxes support selected, 
-unselected, indeterminate, and disabled states.  
+Checkbox allows for toggling of features, allowing users to select more than one
+option where needed. Checkboxes support selected, unselected, indeterminate, and
+disabled states.
 
 ## Overview
 
-Checkboxes are commonly used in forms, settings panels, and 
-other interactive contexts where users can choose one or more 
-options from a set. See below variables for further choices. 
- 
+Checkboxes are commonly used in forms, settings panels, and other interactive
+contexts where users can choose one or more options from a set. See below
+variables for further choices.
+
 ### Resources
 
 Deep dive on details and access design library.
@@ -35,7 +35,7 @@ Deep dive on details and access design library.
 
 ## Variables
 
-Get familiar with the features. 
+Get familiar with the features.
 
 ### Selection
 
@@ -49,26 +49,17 @@ const App = () => <Checkbox>Label</Checkbox>
 
 #### Select
 
-Visually confirms a user’s choice and is essential for 
-form submissions and interactive elements.
+Visually confirms a user’s choice and is essential for form submissions and
+interactive elements.
 
 ```jsx-live
-const App = () => {
-
-  const [isSelected, setIsSelected]  = useState(true)
-
-  return (
-   <Checkbox isSelected={isSelected} onChange={(v)=>setIsSelected(v)}>
-     Label
-   </Checkbox>
-  )
-}
+const App = () => <Checkbox isSelected>Label</Checkbox>
 ```
 
 #### Indeterminate
 
-If some, but not all, of the sub-options are selected, it will visually 
-indicate that the selection is partial or mixed.
+If some, but not all, of the sub-options are selected, it will visually indicate
+that the selection is partial or mixed.
 
 ```jsx-live
 const App = () => <Checkbox isIndeterminate>Label</Checkbox>
@@ -78,27 +69,18 @@ const App = () => <Checkbox isIndeterminate>Label</Checkbox>
 
 #### Default
 
-This is the standard initial state of the checkbox that doesn’t have 
-a reason to be invalid or disabled for the user. 
+This is the standard initial state of the checkbox that doesn’t have a reason to
+be invalid or disabled for the user.
 
 ```jsx-live
-const App = () => {
-
-  const [isSelected, setIsSelected]  = useState(true)
-
-  return (
-   <Checkbox isSelected={isSelected} onChange={(v)=>setIsSelected(v)}>
-     Default tone
-   </Checkbox>
-  )
-}
+const App = () => <Checkbox isSelected ml="600">Default tone</Checkbox>
 ```
 
 #### Invalid
 
-An invalid validation state for a checkbox indicates that the user's 
-input (or lack thereof) for that checkbox is not acceptable according 
-to the application's rules.
+An invalid validation state for a checkbox indicates that the user's input (or
+lack thereof) for that checkbox is not acceptable according to the application's
+rules.
 
 ```jsx-live
 const App = () => <Checkbox isInvalid>Invalid</Checkbox>
@@ -106,8 +88,8 @@ const App = () => <Checkbox isInvalid>Invalid</Checkbox>
 
 #### Disabled
 
-This is the styling of disabled elements. The icon is dimmed but 
-the label remains legible. 
+This is the styling of disabled elements. The icon is dimmed but the label
+remains legible.
 
 ```jsx-live
 const App = () => <Checkbox isDisabled>Disabled</Checkbox>
@@ -117,174 +99,214 @@ const App = () => <Checkbox isDisabled>Disabled</Checkbox>
 
 #### Vertical
 
-Vertical lists are the most common and generally recommended approach 
-for checkbox lists unless there's a specific reason to use a different layout.
+Vertical lists are the most common and generally recommended approach for
+checkbox lists unless there's a specific reason to use a different layout.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="column">
-      <Checkbox isSelected>Option 1</Checkbox>
-      <Checkbox isSelected>Option 2</Checkbox>
+  <Stack direction="column" gap="400">
+    <Checkbox>Option 1</Checkbox>
+    <Checkbox>Option 2</Checkbox>
   </Stack>
 )
 ```
 
 #### Horizontal
 
-These lists are best when they are concise, visually distinct, and don't 
-require much scanning. Used often in filters. 
+These lists are best when they are concise, visually distinct, and don't require
+much scanning. Used often in filters.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="horizontal">
-      <Checkbox isSelected>Option 1</Checkbox>
-      <Checkbox isSelected>Option 2</Checkbox>
+  <Stack direction="horizontal" gap="600">
+    <Checkbox>Option 1</Checkbox>
+    <Checkbox>Option 2</Checkbox>
   </Stack>
 )
 ```
 
 ## Guidelines
 
-Ensure users can clearly perceive and interact with binary selection 
-options, providing visual and programmatic cues for their checked or 
-unchecked state, along with accessible labels for understanding their purpose.
+Ensure users can clearly perceive and interact with binary selection options,
+providing visual and programmatic cues for their checked or unchecked state,
+along with accessible labels for understanding their purpose.
 
 ### Best practices
 
-- **Utilize positive phrasing in checkbox labels:** Prefer 'Enable notifications' 
-over 'Disable notifications’.
-
-- **Clear Labels:** Use descriptive labels that clearly explain the checkbox's purpose.
-
-- **Logical Grouping:** Group related checkboxes together visually and logically.
-
-- **Visual Feedback:** Provide clear visual feedback when the checkbox is checked or unchecked.
-
-- **Error Handling:** If a checkbox is required, provide clear error messages if the user 
-forgets to check it.
-
+- **Utilize positive phrasing in checkbox labels:** Prefer 'Enable
+  notifications' over 'Disable notifications’.
+- **Clear Labels:** Use descriptive labels that clearly explain the checkbox's
+  purpose.
+- **Logical Grouping:** Group related checkboxes together visually and
+  logically.
+- **Visual Feedback:** Provide clear visual feedback when the checkbox is
+  checked or unchecked.
+- **Error Handling:** If a checkbox is required, provide clear error messages if
+  the user forgets to check it.
 
 ### Usage
 
-- **Single Checkbox:** Used for binary choices (e.g., "I agree to the terms and conditions").
-
+- **Single Checkbox:** Used for binary choices (e.g., "I agree to the terms and
+  conditions").
 - **Checkbox Groups:** Allow users to select multiple options from a list.
-
-- **Within Tables or Lists:** Checkboxes can be used for bulk actions, like selecting multiple 
-items in a table.
+- **Within Tables or Lists:** Checkboxes can be used for bulk actions, like
+  selecting multiple items in a table.
 
 ### Logical grouping
 
-Maintain a clear and predictable order for checkboxes to facilitate efficient scanning and selection.
+Maintain a clear and predictable order for checkboxes to facilitate efficient
+scanning and selection.
 
 > [!TIP]\
 > **Do**
 >
-> - Capitalize the first letter of the label. 
+> - Capitalize the first letter of the label.
 > - Use short and clear labeling.
-> - Group information easily for the user to make the correct selection to accomplish their goals. 
+> - Group information easily for the user to make the correct selection to
+>   accomplish their goals.
 
-
-NEED THE CODE BLOCK
-
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Grid.Item>
+      <Checkbox isIndeterminate>All general fields</Checkbox>
+    </Grid.Item>
+    <Grid.Item>
+      <Stack direction="column">
+        <Checkbox isSelected isDisabled>Product key</Checkbox>
+        <Checkbox isSelected>Name</Checkbox>
+        <Checkbox>Product type key</Checkbox>
+        <Checkbox>Description</Checkbox>
+        <Checkbox>Category keys</Checkbox>
+      </Stack>
+    </Grid.Item>
+  </Grid>
+)
+```
 
 > [!CAUTION]\
 > **Don't**
 >
-> - Don’t overwhelm the user with options that are uncategorized. 
-> - There is no reason to use all caps or punctuation. 
+> - Don’t overwhelm the user with options that are uncategorized.
+> - There is no reason to use all caps or punctuation.
 
-NEED THE CODE BLOCK
-
-
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Grid.Item>
+      <Stack direction="column">
+        <Checkbox isSelected>Product key</Checkbox>
+        <Checkbox isSelected>NAME...</Checkbox>
+        <Checkbox>Valid from</Checkbox>
+        <Checkbox>Discount prices</Checkbox>
+        <Checkbox>Asset name!</Checkbox>
+      </Stack>
+    </Grid.Item>
+    <Grid.Item>
+      <Stack direction="column">
+        <Checkbox isSelected>Price key?</Checkbox>
+        <Checkbox isSelected>Price value.</Checkbox>
+        <Checkbox>PRICE COUNTRY</Checkbox>
+        <Checkbox isSelected>Valid until</Checkbox>
+        <Checkbox>Category keys.</Checkbox>
+      </Stack>
+    </Grid.Item>
+  </Grid>
+)
+```
 
 ### Positive framing
 
-Frame checkbox actions with affirmative language to promote clarity and user confidence.
-
+Frame checkbox actions with affirmative language to promote clarity and user
+confidence.
 
 > [!TIP]\
 > **Do**
 >
-> Simple labels provide clear options for users.
+> - Simple labels provide clear options for users.
 
-
-
-NEED THE CODE BLOCK
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="1400" alignItems="center">
+    <Text fontSize="300" fontWeight="500">Preferences</Checkbox>
+    <Checkbox isSelected>Include product and variant information</Checkbox>
+  </Stack>
+)
+```
 
 > [!CAUTION]\
 > **Don't**
 >
-> Don’t contradict available options. This information should be simplified further.
+> - Don’t contradict available options. This information should be simplified
+>   further.
 
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="1400" alignItems="top">
+    <Text fontSize="300" fontWeight="500">Preferences</Checkbox>
 
-NEED THE CODE BLOCK
-
+    <Stack direction="column">
+      <Checkbox isIndeterminate>Don’t include Product- and Variant- level information in every row.</Checkbox>
+      <Checkbox isSelected ml="600">Don’t include Variant level information, but keep Product- level information.</Checkbox>
+    </Stack>
+  </Stack>
+)
+```
 
 ## Specs
 
 <PropTable id="Checkbox" />
 
-
 ## Accessibility
 
-Accessibility ensures that digital content and functionality are usable by everyone, 
-including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
 
-NEED THE CODE BLOCK
-
+```jsx-live
+const App = () => <Checkbox>Test me</Checkbox>
+```
 
 ### Accessibility Standards
 
 #### 1.3.1 Info and Relationships (Level A):
 
-- Programmatically determine or provide information and relationships conveyed through 
-presentation in text.
-
-- Use the \<label\> element and the for attribute to associate every checkbox with a clear, descriptive label.
-
+- Programmatically determine or provide information and relationships conveyed
+  through presentation in text.
+- Use the `<label>` element and the for attribute to associate every checkbox
+  with a clear, descriptive label.
 - Ensure screen readers can access and interpret the checkbox label.
-
-- Group related checkboxes using \<fieldset\> and \<legend\> to provide context.
-
-- Label the checkbox group using \<legend\>.
-
+- Group related checkboxes using `<fieldset>` and `<legend>` to provide context.
+- Label the checkbox group using `<legend>`.
 
 #### 1.4.1 Use of Color (Level A):
 
 - Avoid relying solely on color to convey information or checkbox state.
-
-- Ensure the checked/unchecked state is programmatically determinable and 
-conveyed through visual appearance (e.g., the checkbox's state).
+- Ensure the checked/unchecked state is programmatically determinable and
+  conveyed through visual appearance (e.g., the checkbox's state).
 
 #### 2.1.1 Keyboard (Level A):
 
 - Make all checkbox functionality operable through a keyboard interface.
-
 - Enable users to navigate to the checkbox using the Tab key.
-
 - Allow users to change the checkbox state using the Spacebar or Enter key.
 
 #### 2.4.4 Link Purpose (In Context) (Level A):
 
-- Make the purpose of the checkbox clear from the surrounding context or its label.
-
+- Make the purpose of the checkbox clear from the surrounding context or its
+  label.
 - Avoid generic labels like "Option" or "Select."
-
 - Provide specific and descriptive labels.
 
 #### 2.4.7 Focus Visible (Level AA):
 
 - Provide a visible keyboard focus indicator for checkboxes.
-
-- Visually indicate when a checkbox has focus (e.g., highlight, outline, change in appearance).
-
+- Visually indicate when a checkbox has focus (e.g., highlight, outline, change
+  in appearance).
 - Avoid relying solely on color change for focus indication.
 
 #### 3.3.2 Labels or Instructions (Level A):
 
 - Provide clear labels or instructions for checkboxes.
-
-- Reinforce the information provided by the \<label\> element.
-
+- Reinforce the information provided by the `<label>` element.
 - Aid users with cognitive disabilities by providing clear instructions.
