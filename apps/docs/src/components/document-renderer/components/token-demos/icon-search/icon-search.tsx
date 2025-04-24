@@ -1,7 +1,7 @@
 import {
   Flex,
   Text,
-  Input,
+  TextInput,
   Stack,
   SimpleGrid,
   useCopyToClipboard,
@@ -48,10 +48,10 @@ export const IconSearch = () => {
 
   return (
     <Stack mt="800" mb="1600" gap="800">
-      <Input
+      <TextInput
         placeholder={`Search through ${Object.keys(icons).length} icons ...`}
         value={q}
-        onChange={(e) => setQ(e.target.value)}
+        onChange={(value) => setQ(value)}
       />
       <SimpleGrid columns={[5, 6, 6, 6, 10]}>
         {take(filteredIcons ?? [], q.length ? 128 : 256).map((iconId) => {

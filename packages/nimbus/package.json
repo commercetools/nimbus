@@ -23,7 +23,6 @@
     "@testing-library/user-event": "catalog:tooling",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
-    "@types/testing-library__dom": "^7.5.0",
     "@vitejs/plugin-react": "catalog:tooling",
     "@vitest/browser": "catalog:tooling",
     "@vitest/coverage-v8": "catalog:tooling",
@@ -49,10 +48,10 @@
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/optimize-locales-plugin": "^1.1.4",
     "next-themes": "catalog:react",
-    "react-aria": "^3.37.0",
-    "react-aria-components": "1.6.0",
+    "react-aria": "catalog:react",
+    "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^4.6.1",
-    "react-stately": "^3.35.0",
+    "react-stately": "catalog:react",
     "react-use": "^17.5.1"
   },
   "scripts": {
