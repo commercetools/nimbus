@@ -77,7 +77,30 @@ Content within cards should be concise and focused, prioritizing key information
 > - Cards are best for presenting self-contained pieces of information.
 > - Design cards with clear headings, concise text, and a logical visual hierarchy for easy scanning.
 
-<img src="/images/card/card-content-do.png" alt="card content do guideline" width="397px" />
+```jsx-live
+const App = () => (
+  <Card.Root cardPadding="md" borderStyle="outlined" width="397px">
+    <Card.Content>
+      {/* Placeholder for illustration */}
+      <Box height="150px" width="100%" bg="neutral.3" mb="400" display="flex" alignItems="center" justifyContent="center" borderRadius="md">
+        <Text color="neutral.10">Illustration Placeholder</Text>
+      </Box>
+      <Stack gap="400">
+        <Text as="h3" textStyle="h3" fontWeight="bold">Discount templates</Text>
+        <Text>Templates allow you to get started quickly and easily by displaying only what is needed for creating your discount.</Text>
+        <Select.Root aria-label="Select template" placeholder="Select...">
+          <Select.Options>
+            {/* Options would go here */}
+          </Select.Options>
+        </Select.Root>
+        <Box>
+          <Button tone="primary" variant="solid">Select template</Button>
+        </Box>
+      </Stack>
+    </Card.Content>
+  </Card.Root>
+)
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -86,7 +109,43 @@ Content within cards should be concise and focused, prioritizing key information
 > - Long, scrolling cards can be cumbersome; prioritize key information.
 > - Don't use a card to compare information.
 
-<img src="/images/card/card-content-dont.png" alt="card content don't guideline" width="574px" />
+```jsx-live
+const App = () => (
+    <Card.Root cardPadding="md" borderStyle="outlined" width="451px">
+      <Card.Content>
+        <Stack direction="horizontal" gap="400">
+          <Stack gap="400" width="1/2">
+          {/* Placeholder for illustration */}
+          <Box height="150px" width="100%" bg="neutral.3" mb="400" display="flex" alignItems="center" justifyContent="center" borderRadius="md">
+            <Text color="neutral.10">Illustration Placeholder</Text>
+          </Box>
+            <Text as="h3" textStyle="h3" fontWeight="bold">Discount templates</Text>
+            <Text>Templates allow you to get started quickly and easily by displaying only what is needed for creating your discount.</Text>
+            <Select.Root aria-label="Select template" placeholder="Select...">
+              <Select.Options>
+                {/* Options would go here */}
+              </Select.Options>
+            </Select.Root>
+            <Box>
+              <Button tone="primary" variant="solid">Select template</Button>
+            </Box>
+          </Stack>
+          <Stack gap="400" width="1/2">
+          {/* Placeholder for illustration */}
+          <Box height="150px" width="100%" bg="neutral.3" mb="400" display="flex" alignItems="center" justifyContent="center" borderRadius="md">
+            <Text color="neutral.10">Illustration Placeholder</Text>
+          </Box>
+            <Text as="h3" textStyle="h3" fontWeight="bold">Product discount</Text>
+            <Text>A product discount applies a percentage-off (relative) or amount-ff (absolute) discount to a specific product or subset of products before adding them to the cart. They are useful for displaying discounted or sale prices on a product info page</Text>
+            <Box>
+              <Button tone="primary" variant="solid">Add product discount</Button>
+            </Box>
+          </Stack>
+        </Stack>
+      </Card.Content>
+    </Card.Root>
+)
+```
 
 ### Actions
 
@@ -98,7 +157,33 @@ Actions within a card should be limited and focused, prioritizing the primary ac
 > - If interaction is needed, provide obvious and limited actions.
 > - Users often assume cards are clickable, especially when they contain visual cues that suggest interactivity, like buttons, links, or hover effects.
 
-<img src="/images/card/card-actions-do.png" alt="card actions do guideline" width="384px" />
+```jsx-live
+const App = () => (
+  <Card.Root cardPadding="md" borderStyle="outlined" width="384px">
+    <Card.Content>
+      <Stack direction="horizontal" gap="400" alignItems="center">
+        <Box
+          alignSelf="flex-start"
+          color="primary.11"
+          boxSize="42px"
+          borderRadius="50%"
+          bg="primary.3"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          flexShrink="0"
+        >
+          <Icons.ViewInAr width="24px" height="24px" />
+        </Box>
+        <Stack gap="100">
+          <Text as="h3" textStyle="h3" fontWeight="bold">Learn more about products</Text>
+          <Text color="neutral.11">Discover what a product list is and how to manage it.</Text>
+        </Stack>
+      </Stack>
+    </Card.Content>
+  </Card.Root>
+)
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -106,7 +191,100 @@ Actions within a card should be limited and focused, prioritizing the primary ac
 > - Don't use too many actions for the user within cards.
 > - Cards are generally not suitable for primary site navigation.
 
-<img src="/images/card/card-actions-dont.png" alt="card actions don't guideline" width="423px" />
+```jsx-live
+const App = () => (
+  <Stack gap="400" alignItems="start">
+    {/* Main Card */}
+    <Card.Root cardPadding="md" borderStyle="outlined" width="423px">
+      <Card.Content>
+        <Stack gap="400">
+          {/* Top Row: Icon and Title */}
+          <Stack direction="horizontal" gap="400" alignItems="center">
+            <Box
+              alignSelf="flex-start"
+              color="primary.11"
+              boxSize="42px"
+              borderRadius="50%"
+              bg="primary.3"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              flexShrink="0"
+            >
+              <Icons.ViewInAr width="24px" height="24px" />
+            </Box>
+            <Stack gap="50" flex={1}>
+              <Text as="h3" textStyle="h3" fontWeight="bold" color="primary.11">
+                See your products <Icons.ArrowForward color="primary.11" />
+              </Text>
+              <Text color="neutral.11">
+                You have modified products that are waiting to be published
+              </Text>
+            </Stack>
+          </Stack>
+
+          {/* Buttons */}
+          <Stack gap="200" pl="calc(42px + var(--space-400))"> {/* Indent buttons */} 
+            <Button tone="primary" variant="solid" alignSelf="start">Publish Products</Button>
+            <Stack direction="horizontal" gap="300">
+              <Button tone="primary" variant="link" size="sm">Review</Button>
+              <Button tone="critical" variant="link" size="sm">Reject</Button>
+              <Button tone="primary" variant="link" size="sm">See drafts</Button>
+            </Stack>
+          </Stack>
+        </Stack>
+      </Card.Content>
+    </Card.Root>
+
+    {/* Bottom Row Cards */}
+    <Stack direction="horizontal" gap="400">
+      {/* Products Card */}
+      <Card.Root cardPadding="md" borderStyle="outlined" width="201.5px"> {/* Half width approx */} 
+        <Card.Content>
+          <Stack direction="horizontal" gap="300" alignItems="center">
+            <Box
+              alignSelf="flex-start"
+              color="primary.11"
+              boxSize="32px"
+              borderRadius="50%"
+              bg="primary.3"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              flexShrink="0"
+            >
+              <Icons.ViewInAr width="20px" height="20px" />
+            </Box>
+            <Text textStyle="bodyStrong" fontWeight="bold" color="primary.11">Products</Text>
+          </Stack>
+        </Card.Content>
+      </Card.Root>
+
+      {/* Discounts Card */}
+      <Card.Root cardPadding="md" borderStyle="outlined" width="201.5px"> {/* Half width approx */} 
+        <Card.Content>
+          <Stack direction="horizontal" gap="300" alignItems="center">
+            <Box
+              alignSelf="flex-start"
+              color="primary.11"
+              boxSize="32px"
+              borderRadius="50%"
+              bg="primary.3"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              flexShrink="0"
+            >
+              <Icons.Discount width="20px" height="20px" />
+            </Box>
+            <Text textStyle="bodyStrong" fontWeight="bold" color="primary.11">Discounts</Text>
+          </Stack>
+        </Card.Content>
+      </Card.Root>
+    </Stack>
+  </Stack>
+)
+```
 
 ## Properties
 
