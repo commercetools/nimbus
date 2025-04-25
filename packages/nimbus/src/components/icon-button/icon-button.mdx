@@ -39,7 +39,7 @@ Deep dive on details and access design library.
 #### Most common: Ghost
 
 Ghost icon buttons are used most often, the represent familiar actions that
-don’t compete with a primary action on the page.
+don't compete with a primary action on the page.
 
 ```jsx-live
 const App = () => {
@@ -203,26 +203,26 @@ contributing to a cohesive and predictable user experience.
 
 #### Preferred words
 
-| **Example**                                                                       | **Description**                                                                                                                                                                                 |
-| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <Icons.Edit color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />          | Use for “edit”.                                                                                                                                                                                 |
-| <Icons.FileUpload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />    | Upload.                                                                                                                                                                                         |
-| <Icons.FileDownload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />  | Download.                                                                                                                                                                                       |
-| <Icons.ViewColumn color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />    | “Table settings” Shows customizable elements for tables.                                                                                                                                        |
-| <Icons.MoreVert color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />      | “More options” shows a list of other features or tools that are not primary or secondary actions. Usually paired with buttons in a button group. For consistency, use the vertical dot version. |
-| <Icons.DragIndicator color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /> | “Drag” allows a user to drag elements to reorder.                                                                                                                                               |
-| <Icons.Clear color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />         | Use for “remove”. This removes the relationship but does **not** delete this item completely.                                                                                                   |
-| <Icons.Delete color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />        | Use for “delete”. This is a destructive action, removes item completely.                                                                                                                        |
+| **Example**                                                | **Description**                                                                                                                                                                                 |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <Icon id="Edit" color="primary.11" boxSize="24px" />          | Use for "edit".                                                                                                                                                                                 |
+| <Icon id="FileUpload" color="primary.11" boxSize="24px" />    | Upload.                                                                                                                                                                                         |
+| <Icon id="FileDownload" color="primary.11" boxSize="24px" />  | Download.                                                                                                                                                                                       |
+| <Icon id="ViewColumn" color="primary.11" boxSize="24px" />    | "Table settings" Shows customizable elements for tables.                                                                                                                                        |
+| <Icon id="MoreVert" color="primary.11" boxSize="24px" />      | "More options" shows a list of other features or tools that are not primary or secondary actions. Usually paired with buttons in a button group. For consistency, use the vertical dot version. |
+| <Icon id="DragIndicator" color="primary.11" boxSize="24px" /> | "Drag" allows a user to drag elements to reorder.                                                                                                                                               |
+| <Icon id="Clear" color="primary.11" boxSize="24px" />         | Use for "remove". This removes the relationship but does **not** delete this item completely.                                                                                                   |
+| <Icon id="Delete" color="primary.11" boxSize="24px" />        | Use for "delete". This is a destructive action, removes item completely.                                                                                                                        |
 
 #### Avoid these words
 
 | **Avoid Icon/Concept**                                                                                                                                                                                                                                                                                                              | **Use this instead**                                                    |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| <Icons.Check color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.CheckCircle color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />                                                                                                                                                                            | Use a button with “Save” instead of an icon button.                     |
-| <Icons.MoreHoriz color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />                                                                                                                                                                                                                                                       | Use the vertical dot version to show more options.                      |
-| <Icons.HighlightOff color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.DeleteForever color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.DoNotDisturb color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" />                                                                                   | If using for the same function as “delete” use consistent icon above.   |
-| <Icons.Upload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.CloudUpload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.Upgrade color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.DriveFolderUpload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px"/>            | If using for the same function as “upload” use consistent icon above.   |
-| <Icons.ArrowCircleDown color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.Download color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.SimCardDownload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /><Icons.CloudDownload color="hsla(239, 58%, 56%, 1)" width="24px" height="24px" /> | If using for the same function as “download” use consistent icon above. |
+| <Icon id="Check" color="primary.11" boxSize="24px" /><Icon id="CheckCircle" color="primary.11" boxSize="24px" />                                                                                                                                                                                                                    | Use a button with "Save" instead of an icon button.                     |
+| <Icon id="MoreHoriz" color="primary.11" boxSize="24px" />                                                                                                                                                                                                                                                                            | Use the vertical dot version to show more options.                      |
+| <Icon id="HighlightOff" color="primary.11" boxSize="24px" /><Icon id="DeleteForever" color="primary.11" boxSize="24px" /><Icon id="DoNotDisturb" color="primary.11" boxSize="24px" />                                                                                                                                              | If using for the same function as "delete" use consistent icon above.   |
+| <Icon id="Upload" color="primary.11" boxSize="24px" /><Icon id="CloudUpload" color="primary.11" boxSize="24px" /><Icon id="Upgrade" color="primary.11" boxSize="24px" /><Icon id="DriveFolderUpload" color="primary.11" boxSize="24px" />                                                                                          | If using for the same function as "upload" use consistent icon above.   |
+| <Icon id="ArrowCircleDown" color="primary.11" boxSize="24px" /><Icon id="Download" color="primary.11" boxSize="24px" /><Icon id="SimCardDownload" color="primary.11" boxSize="24px" /><Icon id="CloudDownload" color="primary.11" boxSize="24px" />                                                                                | If using for the same function as "download" use consistent icon above. |
 
 ### Usage
 
@@ -373,7 +373,7 @@ choices or actions in a compact and organized way.
 > **Do**
 >
 > - If you use a stack of icon buttons for actions, use max 4 and hide the rest
->   within a “more” icon.
+>   within a "more" icon.
 
 ```jsx-live
 const App = () => {
@@ -429,7 +429,7 @@ const App = () => {
 >
 > - When offering a toggle experience, connect these icon buttons
 > - Include a tooltip explaining the options.
-> - Selected option is using the “Solid” state.
+> - Selected option is using the "Solid" state.
 
 ```jsx-live
 const App = () => {
@@ -555,7 +555,7 @@ const App = () => {
 >
 > - Be aware of overlap of element placements.
 > - Place tooltips so that it makes information easy to read.
-> - Don’t use tooltips to cover the icon button.
+> - Don't use tooltips to cover the icon button.
 
 ```jsx-live
 const App = () => {

@@ -80,7 +80,14 @@ export const components: MDXComponents = {
   DurationTokenDemo,
   KeyframeTokenDemo,
   TextStylesDemo,
-
-  /** all icons from @commercetools/nimbus-icons, TODO: evaluate if this is a good idea */
+  Icon: ({ id, ...props }) => {
+    const Component = icons[id as keyof typeof icons];
+    return (
+      <Box as="span" display="inline-block" {...props}>
+        <Component height="100%" width="100%" />
+      </Box>
+    );
+  },
+  /** all icons from @commercetools/nimbus-icons */
   Icons: icons,
 };
