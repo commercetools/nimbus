@@ -69,9 +69,16 @@ Icons often rely on shared universal understanding. A tooltip provides a text la
 > - Describe the icon’s action quickly and concisely.  
 
 ```jsx-live
-const App = () => <Flex height="100px">
-  <img src="/images/tooltip/tooltip-guideline-do.png" alt="tooltip do guideline" />
-</Flex>
+const App = () => {
+return (
+    <Stack direction="horizontal" alignItems="center" gap="100" >
+      <Badge backgroundColor="black" size="xs" color="white">Edit name</Badge>
+       <IconButton tone="primary" variant="ghost" size="md">
+        <Icons.Edit/>
+       </IconButton>
+    </Stack>
+  )
+}
 ```
 
 > [!CAUTION]\
@@ -82,9 +89,36 @@ const App = () => <Flex height="100px">
 > - Don’t overlap tooltips with the object it is clarifying.
 
 ```jsx-live
-const App = () => <Flex height="100px">
-  <img src="/images/tooltip/tooltip-guideline-dont.png" alt="tooltip do guideline" />
-</Flex>
+
+const App = () => {
+  return (
+    <Stack direction="horizontal" alignItems="center" position="relative" >
+      <Badge 
+        backgroundColor="black" 
+        size="xs" 
+        color="white" 
+        css={{ 
+          maxWidth: '275px',
+          whiteSpace: 'normal',
+          py: '20px',
+        }}
+      >
+        Pencil icon that will let you edit your profile name if you like.
+      </Badge>
+      <IconButton 
+        tone="primary" 
+        variant="ghost" 
+        size="md" 
+        css={{ 
+          position: 'absolute', 
+          left: '255px'
+        }}
+      >
+        <Icons.Edit/>
+      </IconButton>
+    </Stack>
+  )
+}
 ```
 
 
