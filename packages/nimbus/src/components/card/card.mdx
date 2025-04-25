@@ -82,24 +82,38 @@ const App = () => (
   <Card.Root cardPadding="md" borderStyle="outlined" width="397px">
     <Card.Content>
       {/* Placeholder for illustration */}
-      <Box height="150px" width="100%" bg="neutral.3" mb="400" display="flex" alignItems="center" justifyContent="center" borderRadius="md">
+      <Box
+        height="150px"
+        width="100%"
+        bg="neutral.3"
+        mb="400"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        borderRadius="md"
+      >
         <Text color="neutral.10">Illustration Placeholder</Text>
       </Box>
       <Stack gap="400">
-        <Text as="h3" textStyle="h3" fontWeight="bold">Discount templates</Text>
-        <Text>Templates allow you to get started quickly and easily by displaying only what is needed for creating your discount.</Text>
+        <Text fontWeight="bold">
+          Discount templates
+        </Text>
+        <Text>
+          Templates allow you to get started quickly and easily by displaying only
+          what is needed for creating your discount.
+        </Text>
         <Select.Root aria-label="Select template" placeholder="Select...">
-          <Select.Options>
-            {/* Options would go here */}
-          </Select.Options>
+          <Select.Options>{/* Options would go here */}</Select.Options>
         </Select.Root>
         <Box>
-          <Button tone="primary" variant="solid">Select template</Button>
+          <Button tone="primary" variant="solid">
+            Select template
+          </Button>
         </Box>
       </Stack>
     </Card.Content>
   </Card.Root>
-)
+);
 ```
 
 > [!CAUTION]\
@@ -111,40 +125,72 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-    <Card.Root cardPadding="md" borderStyle="outlined" width="451px">
-      <Card.Content>
-        <Stack direction="horizontal" gap="400">
-          <Stack gap="400" width="1/2">
+  <Card.Root cardPadding="md" borderStyle="outlined" width="451px">
+    <Card.Content>
+      <Stack direction="horizontal" gap="400">
+        <Stack gap="400" width="1/2">
           {/* Placeholder for illustration */}
-          <Box height="150px" width="100%" bg="neutral.3" mb="400" display="flex" alignItems="center" justifyContent="center" borderRadius="md">
+          <Box
+            height="150px"
+            width="100%"
+            bg="neutral.3"
+            mb="400"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius="md"
+          >
             <Text color="neutral.10">Illustration Placeholder</Text>
           </Box>
-            <Text as="h3" textStyle="h3" fontWeight="bold">Discount templates</Text>
-            <Text>Templates allow you to get started quickly and easily by displaying only what is needed for creating your discount.</Text>
-            <Select.Root aria-label="Select template" placeholder="Select...">
-              <Select.Options>
-                {/* Options would go here */}
-              </Select.Options>
-            </Select.Root>
-            <Box>
-              <Button tone="primary" variant="solid">Select template</Button>
-            </Box>
-          </Stack>
-          <Stack gap="400" width="1/2">
-          {/* Placeholder for illustration */}
-          <Box height="150px" width="100%" bg="neutral.3" mb="400" display="flex" alignItems="center" justifyContent="center" borderRadius="md">
-            <Text color="neutral.10">Illustration Placeholder</Text>
+          <Text fontWeight="bold">
+            Discount templates
+          </Text>
+          <Text>
+            Templates allow you to get started quickly and easily by displaying
+            only what is needed for creating your discount.
+          </Text>
+          <Select.Root aria-label="Select template" placeholder="Select...">
+            <Select.Options>{/* Options would go here */}</Select.Options>
+          </Select.Root>
+          <Box>
+            <Button tone="primary" variant="solid">
+              Select template
+            </Button>
           </Box>
-            <Text as="h3" textStyle="h3" fontWeight="bold">Product discount</Text>
-            <Text>A product discount applies a percentage-off (relative) or amount-ff (absolute) discount to a specific product or subset of products before adding them to the cart. They are useful for displaying discounted or sale prices on a product info page</Text>
-            <Box>
-              <Button tone="primary" variant="solid">Add product discount</Button>
-            </Box>
-          </Stack>
         </Stack>
-      </Card.Content>
-    </Card.Root>
-)
+        <Stack gap="400" width="1/2">
+          {/* Placeholder for illustration */}
+          <Box
+            height="150px"
+            width="100%"
+            bg="neutral.3"
+            mb="400"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius="md"
+          >
+            <Text color="neutral.10">Illustration Placeholder</Text>
+          </Box>
+          <Text fontWeight="bold">
+            Product discount
+          </Text>
+          <Text>
+            A product discount applies a percentage-off (relative) or amount-ff
+            (absolute) discount to a specific product or subset of products
+            before adding them to the cart. They are useful for displaying
+            discounted or sale prices on a product info page
+          </Text>
+          <Box>
+            <Button tone="primary" variant="solid">
+              Add product discount
+            </Button>
+          </Box>
+        </Stack>
+      </Stack>
+    </Card.Content>
+  </Card.Root>
+);
 ```
 
 ### Actions
@@ -161,11 +207,10 @@ Actions within a card should be limited and focused, prioritizing the primary ac
 const App = () => (
   <Card.Root cardPadding="md" borderStyle="outlined" width="384px">
     <Card.Content>
-      <Stack direction="horizontal" gap="400" alignItems="center">
+      <Stack direction="horizontal" gap="400">
         <Box
-          alignSelf="flex-start"
           color="primary.11"
-          boxSize="42px"
+          boxSize="1000"
           borderRadius="50%"
           bg="primary.3"
           display="flex"
@@ -176,13 +221,17 @@ const App = () => (
           <Icons.ViewInAr width="24px" height="24px" />
         </Box>
         <Stack gap="100">
-          <Text as="h3" textStyle="h3" fontWeight="bold">Learn more about products</Text>
-          <Text color="neutral.11">Discover what a product list is and how to manage it.</Text>
+          <Text fontWeight="bold">
+            Learn more about products
+          </Text>
+          <Text color="neutral.11">
+            Discover what a product list is and how to manage it.
+          </Text>
         </Stack>
       </Stack>
     </Card.Content>
   </Card.Root>
-)
+);
 ```
 
 > [!CAUTION]\
@@ -197,39 +246,54 @@ const App = () => (
     {/* Main Card */}
     <Card.Root cardPadding="md" borderStyle="outlined" width="423px">
       <Card.Content>
-        <Stack gap="400">
-          {/* Top Row: Icon and Title */}
+        <Stack direction="horizontal" gap="400">
+          <Box
+            alignSelf="flex-start"
+            color="primary.11"
+            boxSize="1000"
+            borderRadius="50%"
+            bg="primary.3"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            flexShrink="0"
+          >
+            <Icons.ViewInAr width="24px" height="24px" />
+          </Box>
           <Stack direction="horizontal" gap="400" alignItems="center">
-            <Box
-              alignSelf="flex-start"
-              color="primary.11"
-              boxSize="42px"
-              borderRadius="50%"
-              bg="primary.3"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexShrink="0"
-            >
-              <Icons.ViewInAr width="24px" height="24px" />
-            </Box>
-            <Stack gap="50" flex={1}>
-              <Text as="h3" textStyle="h3" fontWeight="bold" color="primary.11">
-                See your products <Icons.ArrowForward color="primary.11" />
-              </Text>
+            <Stack gap="200">
+              <Flex gap="100" alignItems="center">
+                <Text fontWeight="bold" color="primary.11">
+                  See your products
+                </Text>
+                <Box color="primary.11" boxSize="600">
+                  <Icons.ArrowForward width="full" height="full" />
+                </Box>
+              </Flex>
               <Text color="neutral.11">
                 You have modified products that are waiting to be published
               </Text>
-            </Stack>
-          </Stack>
-
-          {/* Buttons */}
-          <Stack gap="200" pl="calc(42px + var(--space-400))"> {/* Indent buttons */} 
-            <Button tone="primary" variant="solid" alignSelf="start">Publish Products</Button>
-            <Stack direction="horizontal" gap="300">
-              <Button tone="primary" variant="link" size="sm">Review</Button>
-              <Button tone="critical" variant="link" size="sm">Reject</Button>
-              <Button tone="primary" variant="link" size="sm">See drafts</Button>
+              {/* Buttons */}
+              <Stack gap="200">
+                <Button
+                  tone="primary"
+                  variant="solid"
+                  alignSelf="start"
+                >
+                  Publish Products
+                </Button>
+                <Stack direction="horizontal" gap="300">
+                  <Button tone="primary" variant="link" size="sm">
+                    Review
+                  </Button>
+                  <Button tone="primary" variant="link" size="sm">
+                    Reject
+                  </Button>
+                  <Button tone="primary" variant="link" size="sm">
+                    See drafts
+                  </Button>
+                </Stack>
+              </Stack>
             </Stack>
           </Stack>
         </Stack>
@@ -239,13 +303,17 @@ const App = () => (
     {/* Bottom Row Cards */}
     <Stack direction="horizontal" gap="400">
       {/* Products Card */}
-      <Card.Root cardPadding="md" borderStyle="outlined" width="201.5px"> {/* Half width approx */} 
+      <Card.Root
+        cardPadding="md"
+        borderStyle="outlined"
+        width="201.5px"
+      > {/* Half width approx */}
         <Card.Content>
           <Stack direction="horizontal" gap="300" alignItems="center">
             <Box
               alignSelf="flex-start"
               color="primary.11"
-              boxSize="32px"
+              boxSize="1000"
               borderRadius="50%"
               bg="primary.3"
               display="flex"
@@ -253,21 +321,27 @@ const App = () => (
               justifyContent="center"
               flexShrink="0"
             >
-              <Icons.ViewInAr width="20px" height="20px" />
+              <Icons.ViewInAr width="24px" height="24px" />
             </Box>
-            <Text textStyle="bodyStrong" fontWeight="bold" color="primary.11">Products</Text>
+            <Text textStyle="bodyStrong" fontWeight="bold" color="primary.11">
+              Products
+            </Text>
           </Stack>
         </Card.Content>
       </Card.Root>
 
       {/* Discounts Card */}
-      <Card.Root cardPadding="md" borderStyle="outlined" width="201.5px"> {/* Half width approx */} 
+      <Card.Root
+        cardPadding="md"
+        borderStyle="outlined"
+        width="201.5px"
+      > {/* Half width approx */}
         <Card.Content>
           <Stack direction="horizontal" gap="300" alignItems="center">
             <Box
               alignSelf="flex-start"
               color="primary.11"
-              boxSize="32px"
+              boxSize="1000"
               borderRadius="50%"
               bg="primary.3"
               display="flex"
@@ -275,15 +349,17 @@ const App = () => (
               justifyContent="center"
               flexShrink="0"
             >
-              <Icons.Discount width="20px" height="20px" />
+              <Icons.Discount width="24px" height="24px" />
             </Box>
-            <Text textStyle="bodyStrong" fontWeight="bold" color="primary.11">Discounts</Text>
+            <Text textStyle="bodyStrong" fontWeight="bold" color="primary.11">
+              Discounts
+            </Text>
           </Stack>
         </Card.Content>
       </Card.Root>
     </Stack>
   </Stack>
-)
+);
 ```
 
 ## Properties
@@ -297,7 +373,7 @@ Accessibility ensures that digital content and functionality are usable by every
 ```jsx-live
 const App = () => (
   <Card.Root cardPadding="md" borderStyle="outlined" elevation="elevated">
-    <Box backgroundColor="#FDE3E3" width="219px" height="20px"></Box>
+    <Box backgroundColor="#FDE3E3" width="5600" height="500"></Box>
   </Card.Root>
 )
 ```
