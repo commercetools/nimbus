@@ -25,8 +25,6 @@ Users can type, delete, copy, and paste text within the box. Sometimes, there ca
 
 Deep dive on details and access design library.
 
-[TECH RELATED LINK](#)
-[TECH RELATED LINK](#)
 [Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1696-48973&m=dev)
 
 ## Variables
@@ -57,7 +55,7 @@ const App = () => <TextInput size="sm" value="input value"/>
 This is the styling for placeholder text. It is a shade lighter than active text.
 
 ```jsx-live
-const App = () => <TextInput size="sm" placeholder="input value"/>
+const App = () => <TextInput placeholder="input value"/>
 ```
 
 **Primary**
@@ -65,7 +63,7 @@ const App = () => <TextInput size="sm" placeholder="input value"/>
 This is the default tone for inputs a user adds or is displayed within a text input.
 
 ```jsx-live
-const App = () => <TextInput size="sm" tone="primary" value="input value"/>
+const App = () => <TextInput tone="primary" value="input value"/>
 ```
 
 **Critical**
@@ -73,7 +71,7 @@ const App = () => <TextInput size="sm" tone="primary" value="input value"/>
 To be used when there is an error in form validation.
 
 ```jsx-live
-const App = () => <TextInput size="sm" tone="critical" isInvalid value="input value"/>
+const App = () => <TextInput tone="critical" isInvalid value="input value"/>
 ```
 
 ## Guidelines
@@ -82,14 +80,14 @@ Text input guidelines focus on creating clear, accessible, and user-friendly fie
 
 ### Best practices
 
-* **Keyboard Navigation:**
-    * Ensure that text inputs are fully keyboard accessible (using the Tab key to navigate).
-* **Error Handling:**
-    * Provide clear and specific error messages when invalid input is entered.
-    * Display error messages close to the input field.
-* **Placeholder text:**
-    * Avoid relying solely on placeholder text, as it disappears when the user starts typing.
-    * Make use of clear labels and helper text if clarifying information is needed.
+- **Keyboard Navigation:**
+    - Ensure that text inputs are fully keyboard accessible (using the Tab key to navigate).
+- **Error Handling:**
+    - Provide clear and specific error messages when invalid input is entered.
+    - Display error messages close to the input field.
+- **Placeholder text:**
+    - Avoid relying solely on placeholder text, as it disappears when the user starts typing.
+    - Make use of clear labels and helper text if clarifying information is needed.
 
 ### Placeholder text
 
@@ -169,24 +167,24 @@ const App = () => <TextInput placeholder="XX/XX/XXXX" />
 
 **1. Perceivable:**
   
-* **1.3.1 Info and Relationships:** Use proper `HTML (<label>, aria-labelledby, etc.)` to connect labels with their inputs. This helps assistive technologies (like screen readers) understand the connection and convey the information correctly.
-* **1.4.3 Contrast (Minimum):**  Ensure sufficient color contrast between the input field, its label, and the surrounding background. This makes it easier to read for people with low vision. The minimum contrast ratio is 4.5:1 for normal text and 3:1 for large text. 
+- **1.3.1 Info and Relationships:** Use proper HTML (`<label>`, `aria-labelledby`, etc.) to connect labels with their inputs. This helps assistive technologies (like screen readers) understand the connection and convey the information correctly.
+- **1.4.3 Contrast (Minimum):**  Ensure sufficient color contrast between the input field, its label, and the surrounding background. This makes it easier to read for people with low vision. The minimum contrast ratio is 4.5:1 for normal text and 3:1 for large text. 
 
 **2. Operable:**
 
-* **2.1.1 Keyboard:** Text inputs must be fully operable using only a keyboard (no mouse required). This includes navigating to the input, interacting with it, and submitting the form.
-* **2.4.6 Headings and Labels:** Labels should be clear, concise, and descriptive, accurately reflecting the purpose of the input field.
+- **2.1.1 Keyboard:** Text inputs must be fully operable using only a keyboard (no mouse required). This includes navigating to the input, interacting with it, and submitting the form.
+- **2.4.6 Headings and Labels:** Labels should be clear, concise, and descriptive, accurately reflecting the purpose of the input field.
 
 **3. Understandable:**
 
-* **3.3.2 Labels or Instructions:** Provide clear labels or instructions to help users understand what type of information is expected in the input field.
+- **3.3.2 Labels or Instructions:** Provide clear labels or instructions to help users understand what type of information is expected in the input field.
 
 **4. Robust:**
 
-* **4.1.2 Name, Role, Value:** Ensure the input field's name (label), role (type of input), and current value are programmatically available to assistive technologies.
+- **4.1.2 Name, Role, Value:** Ensure the input field's name (label), role (type of input), and current value are programmatically available to assistive technologies.
 
 **Key Considerations:**
 
-- **Error Messages:** When input errors occur, provide clear and specific error messages that are easy to understand and locate. Use ARIA attributes (aria-invalid, aria-describedby) to associate error messages with the input field.
+- **Error Messages:** When input errors occur, provide clear and specific error messages that are easy to understand and locate. Use ARIA attributes (`aria-invalid`, `aria-describedby`) to associate error messages with the input field.
 - **Placeholder Text:** While placeholder text can be helpful, it can also create accessibility issues. Avoid using it as a replacement for labels, and ensure sufficient color contrast if you do use it.  
 - **Autocomplete:** Autocomplete can improve usability, but make sure it doesn't interfere with accessibility. Users should be able to easily review and override suggestions.
