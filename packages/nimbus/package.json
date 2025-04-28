@@ -15,10 +15,12 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.umd.cjs"
       }
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "package.json"
   ],
   "publishConfig": {
     "access": "public"
