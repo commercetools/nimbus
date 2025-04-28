@@ -68,56 +68,44 @@ Icons often rely on shared universal understanding. A tooltip provides a text la
 > [!TIP]\
 > **Do**
 >
-> - Describe the icon’s action quickly and concisely.  
+> - Describe the icon's action quickly and concisely.  
 
 ```jsx-live
-const App = () =>  (
-    <Stack direction="horizontal" alignItems="center" gap="100" >
-      <Badge backgroundColor="black" size="xs" color="white">Edit name</Badge>
-       <IconButton tone="primary" variant="ghost" size="md">
-        <Icons.Edit/>
-       </IconButton>
-    </Stack>
-  )
-
+const App = () => (
+  <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
+        <TooltipTrigger >
+          <IconButton tone="primary" variant="ghost" size="md">
+            <Icons.Edit/>
+          </IconButton>
+          <Tooltip>Edit name</Tooltip>
+        </TooltipTrigger>
+      </Stack>
+)
 ```
-
 > [!CAUTION]\
 > **Don't**
 >
 > - Do not describe the icon visually.
 > - Do not over explain the action to the user.
-> - Don’t overlap tooltips with the object it is clarifying.
+> - Don't overlap tooltips with the object it is clarifying.
 
 ```jsx-live
-
-const App = () =>  (
-    <Stack direction="horizontal" alignItems="center" position="relative" >
-      <Badge 
-        backgroundColor="black" 
-        size="xs" 
-        color="white" 
-        css={{ 
-          maxWidth: '275px',
-          whiteSpace: 'normal',
-          py: '20px',
-        }}
-      >
-        Pencil icon that will let you edit your profile name if you like.
-      </Badge>
+const App = () => (
+  <Stack direction="horizontal" alignItems="center" gap="100" marginLeft="800" padding="800">
+    <TooltipTrigger>
       <IconButton 
         tone="primary" 
         variant="ghost" 
-        size="md" 
-        css={{ 
-          position: 'absolute', 
-          left: '255px'
-        }}
+        size="md"
       >
         <Icons.Edit/>
       </IconButton>
-    </Stack>
-  )
+      <Tooltip >
+        Pencil icon that will let you edit your profile name if you like.
+      </Tooltip>
+    </TooltipTrigger>
+  </Stack>
+)
 ```
 
 
@@ -160,3 +148,5 @@ Write tooltip text that is clear, concise, and easy to understand.
 #### 4. Robust:
 - **4.1.2 Name, Role, Value (Level A):**
 Ensure assistive technologies correctly interpret the role of the tooltip trigger element. Use semantic HTML. Use `aria-describedby` to associate the tooltip with the trigger.
+
+
