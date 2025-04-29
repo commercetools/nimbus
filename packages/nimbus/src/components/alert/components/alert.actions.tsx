@@ -3,7 +3,7 @@ import { AlertActions as AlertActionsSlot } from "../alert.slots";
 import type { AlertActionsProps } from "../alert.types";
 import { AlertContext } from "./alert.root";
 
-const AlertActions = ({ children, ...props }: AlertActionsProps) => {
+export const AlertActions = ({ children, ...props }: AlertActionsProps) => {
   const context = useContext(AlertContext);
 
   useEffect(() => {
@@ -23,5 +23,3 @@ const AlertActions = ({ children, ...props }: AlertActionsProps) => {
 };
 
 AlertActions.displayName = "Alert.Actions";
-
-export default AlertActions;

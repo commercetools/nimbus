@@ -47,46 +47,45 @@ export const AlertContext = createContext<AlertContextValue | undefined>(
  * ============================================================
  * Provides feedback to the user about the status of an action or system event
  */
-const AlertRoot: AlertRootComponent = forwardRef<HTMLDivElement, AlertProps>(
-  ({ children, ...props }, ref) => {
-    const [titleNode, setTitle] = useState<ReactNode>(null);
-    const [descriptionNode, setDescription] = useState<ReactNode>(null);
-    const [actionsNode, setActions] = useState<ReactNode>(null);
-    const [dismissNode, setDismiss] = useState<ReactNode>(null);
+export const AlertRoot: AlertRootComponent = forwardRef<
+  HTMLDivElement,
+  AlertProps
+>(({ children, ...props }, ref) => {
+  const [titleNode, setTitle] = useState<ReactNode>(null);
+  const [descriptionNode, setDescription] = useState<ReactNode>(null);
+  const [actionsNode, setActions] = useState<ReactNode>(null);
+  const [dismissNode, setDismiss] = useState<ReactNode>(null);
 
-    // Memoize the context value so we don't cause unnecessary re-renders
-    const contextValue = useMemo(
-      () => ({
-        setTitle,
-        setDescription,
-        setActions,
-        setDismiss,
-      }),
-      [setTitle, setDescription, setActions, setDismiss]
-    );
+  // Memoize the context value so we don't cause unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      setTitle,
+      setDescription,
+      setActions,
+      setDismiss,
+    }),
+    [setTitle, setDescription, setActions, setDismiss]
+  );
 
-    return (
-      <AlertContext.Provider value={contextValue}>
-        <AlertRootSlot ref={ref} {...props} role="alert">
-          <AlertIcon alignItems="flex-start">
-            {getIconFromTone(props.tone)}
-          </AlertIcon>
-          <Stack flex="1" gap="200">
-            <Box>
-              {titleNode}
-              {descriptionNode}
-            </Box>
-            {actionsNode}
-          </Stack>
-          {dismissNode}
+  return (
+    <AlertContext.Provider value={contextValue}>
+      <AlertRootSlot ref={ref} {...props} role="alert">
+        <AlertIcon alignItems="flex-start">
+          {getIconFromTone(props.tone)}
+        </AlertIcon>
+        <Stack flex="1" gap="200">
+          <Box>
+            {titleNode}
+            {descriptionNode}
+          </Box>
+          {actionsNode}
+        </Stack>
+        {dismissNode}
 
-          {children}
-        </AlertRootSlot>
-      </AlertContext.Provider>
-    );
-  }
-);
+        {children}
+      </AlertRootSlot>
+    </AlertContext.Provider>
+  );
+});
 
 AlertRoot.displayName = "Alert.Root";
-
-export default AlertRoot;
