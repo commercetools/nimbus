@@ -16,7 +16,7 @@ figmaLink: >-
 ---
 
 # Accordion
-
+---
 A collapsable component lets users show and hide sections of related content on a page.
 
 
@@ -30,6 +30,8 @@ controls for accessing information or offer a simple click-to-expand interaction
 
 Deep dive on details and access design library.
 
+[TECH RELATED LINK](https://react-spectrum.adobe.com/react-spectrum/Tooltip.html#tooltip)
+[TECH RELATED LINK](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
 [Figma library]( https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2702-5711&t=kxCRBAio5yKpfcU0-4)
 
 
@@ -43,13 +45,65 @@ Get familiar with the features.
 
 The default size for forms.
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Accordion.Root>
+    <Accordion.Item>
+      <Accordion.Header>
+        Headline
+        <Accordion.HeaderRightContent>
+          <IconButton tone="primary" variant="ghost">
+            <Icons.Edit />
+          </IconButton>
+          <IconButton tone="primary" variant="ghost">
+            <Icons.PushPin />
+          </IconButton>
+          <IconButton tone="primary" variant="ghost">
+            <Icons.FileCopy />
+          </IconButton>
+          <IconButton tone="critical" variant="ghost">
+            <Icons.Delete />
+          </IconButton>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>Content goes here</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+
+);
+```
 
 #### Small
 
 Use for small condensed areas, or if there is a user preference for more condensed forms.
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Accordion.Root size="sm">
+    <Accordion.Item>
+      <Accordion.Header>
+        Headline
+        <Accordion.HeaderRightContent >
+          <IconButton tone="primary" variant="ghost" size="sm">
+            <Icons.Edit />
+          </IconButton>
+          <IconButton tone="primary" variant="ghost" size="sm">
+            <Icons.PushPin />
+          </IconButton>
+          <IconButton tone="primary" variant="ghost" size="sm">
+            <Icons.FileCopy />
+          </IconButton>
+          <IconButton tone="critical" variant="ghost" size="sm">
+            <Icons.Delete />
+          </IconButton>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>Content goes here</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+
+);
+```
 
 ### Content
 
@@ -143,7 +197,7 @@ screen space.
 > [!TIP]\
 > When to use
 
-- **Lengthly content:** Use an accordion when you have a significant amount of content to display.
+- **Lengthy content:** Use an accordion when you have a significant amount of content to display.
 - **Logically grouped content:** Use an accordion when the content can be logically grouped under headings.
 - **Limited vertical space:** Use an accordion when vertical space is limited.
 - **Non-essential information:** Use an accordion when users don't need to see all the information at once.
