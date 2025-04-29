@@ -91,12 +91,6 @@ const App = () => (
     <ToggleButtonGroup.Button id="li-refunded">
       <Icons.CurrencyExchange /> Refunded
     </ToggleButtonGroup.Button>
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="li-more-options" aria-label="More Options">
-        <Icons.MoreVert />
-      </ToggleButtonGroup.Button>
-      <Tooltip>More Options</Tooltip>
-    </TooltipTrigger>
   </ToggleButtonGroup.Root>
 );
 ```
@@ -179,7 +173,7 @@ A button group is best used when you need to present users with a set of closely
 > When not to use
 -   **Do not use a button group as a tab navigation:** There is a specific [tab component](#), please use this component instead. There is better accessibility support, and consistency with other designs and uses.
 -   **Unrelated actions:** Don't group unrelated actions together. If buttons perform completely different tasks, a button group can be confusing.
--   **Overcrowding the UI:** Avoid too many buttons within a group. Too much choice confuses users and makes decision making more difficult. Tailor actions for the user by presenting common actions upfront and nesting other actions under a "more" icon or where they can be featured better.
+-   **Overcrowding the UI:** Avoid too many buttons within a group. Too much choice confuses users and makes decision making more difficult.
 -   **Do not use for multi-stepped processes:** Button groups are for single click actions, not for guiding users through complex sequences.
 -   **Avoid if actions aren't logically linked:** If there is no clear relationship between the buttons, grouping them may be misleading.
 
@@ -248,7 +242,7 @@ In data tables or lists, button groups can be used to filter or sort content.
 > **Do**
 >
 > -   When using button groups to show filtered lists, pair closely with information to make sure that users know that this interaction shows tagged information instead of changing the state of any selected data. This can sometimes look like an item count included with the button group items.
-> -   You may amend a "more" button at the end that is icon only to organize more options if needed. Otherwise it is not good practice to mix styles in button groupings.
+> -   It is not good practice to mix styles in button groupings.
 
 ```jsx-live
 const App = () => (
@@ -290,104 +284,7 @@ const App = () => (
 
 ## Properties
 
-<<<<<<< HEAD
-You can disable the entire ToggleButtonGroup or individual buttons:
-
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="400">
-    <ToggleButtonGroup.Root
-      aria-label="Disabled group"
-      isDisabled
-      selectedKeys={["disabled-group-center"]}
-    >
-      <ToggleButtonGroup.Button id="disabled-group-left">Left</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="disabled-group-center">Center</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="disabled-group-right">Right</ToggleButtonGroup.Button>
-    </ToggleButtonGroup.Root>
-
-    <ToggleButtonGroup.Root aria-label="Individual disabled buttons">
-      <ToggleButtonGroup.Button id="disabled-item-left">Enabled</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="disabled-item-center" isDisabled>Disabled</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="disabled-item-right">Enabled</ToggleButtonGroup.Button>
-    </ToggleButtonGroup.Root>
-  </Stack>
-);
-```
-
-## Selection Modes
-
-By default, the ToggleButtonGroup allows only one button to be selected at a
-time, and allows deselection by clicking the currently selected button. You can
-control this behavior with the `selectionMode` prop:
-
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="400">
-    <Text>Single Selection with Deselection Allowed (default)</Text>
-    <ToggleButtonGroup.Root
-      aria-label="Default selection behavior"
-      selectionMode="single"
-    >
-      <ToggleButtonGroup.Button id="single-left">Left</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="single-center">Center</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="single-right">Right</ToggleButtonGroup.Button>
-    </ToggleButtonGroup.Root>
-
-    <Text>Multiple Selection</Text>
-    <ToggleButtonGroup.Root
-      aria-label="Multiple selection example"
-      selectionMode="multiple"
-    >
-      <ToggleButtonGroup.Button id="multiple-bold">Bold</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="multiple-italic">Italic</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="multiple-underline">Underline</ToggleButtonGroup.Button>
-    </ToggleButtonGroup.Root>
-  </Stack>
-);
-```
-
-## Controlled Mode
-
-You can control the selection state externally:
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
-
-  return (
-    <Stack direction="column" gap="400">
-      <ToggleButtonGroup.Root
-        aria-label="Controlled example"
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-      >
-        <ToggleButtonGroup.Button id="controlled-left">Left</ToggleButtonGroup.Button>
-        <ToggleButtonGroup.Button id="controlled-center">Center</ToggleButtonGroup.Button>
-        <ToggleButtonGroup.Button id="controlled-right">Right</ToggleButtonGroup.Button>
-      </ToggleButtonGroup.Root>
-
-      <Text>Selected: {[...selectedKeys].join(', ') || 'none'}</Text>
-    </Stack>
-  );
-}
-```
-
-## Accessibility
-
-The ToggleButtonGroup component is built with accessibility in mind:
-
-- Implements proper ARIA roles (uses `radiogroup` and `radio` roles)
-- Supports keyboard navigation using arrow keys
-- Provides appropriate focus management
-- Requires an `aria-label` for the group to ensure screen reader users
-  understand its purpose
-
-## Properties / API
-=======
 Component properties allow for customization and control.
->>>>>>> 915dd52 (chore(docs): toggle button group docs)
 
 <PropTables ids="ToggleButtonGroupRoot, ToggleButtonGroupButton" />
 
@@ -452,12 +349,12 @@ const App = () => (
 
 #### 3. Understandable:
 
-*   **3.2.1 On Focus (Level A):**
+-   **3.2.1 On Focus (Level A):**
     -   Ensure that moving focus between buttons does not trigger unexpected actions.
-*   **3.3.2 Labels or Instructions (Level A):**
+-   **3.3.2 Labels or Instructions (Level A):**
     -   Provide a clear `aria-label` for the `ToggleButtonGroup.Root` element to describe the purpose of the group to assistive technologies.
 
 #### 4. Robust:
 
-*   **4.1.2 Name, Role, Value (Level A):**
+-   **4.1.2 Name, Role, Value (Level A):**
     -   Use appropriate ARIA roles (e.g., `radiogroup` for single selection, `group` for multiple selection, `radio` or `checkbox` for items depending on mode) to ensure compatibility with assistive technologies. Nimbus components built on React Aria generally handle this automatically.
