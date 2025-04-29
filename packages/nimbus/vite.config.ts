@@ -2,6 +2,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig } from "vite";
+import type { LibraryFormats } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
@@ -9,20 +10,15 @@ import dts from "vite-plugin-dts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // External dependencies that should not be bundled.
+// NOTE: Anything listed in the external array also needs to be listed as a peerDependency & devDependency in its corresponding package.json (exception: "react/jsx-runtime").
+
 const external = [
   // React core
   "react",
   "react-dom",
   "react/jsx-runtime",
 
-  // RA ecosystem.
-  // 04/24-Bundled for now, options will be explored later. Once decided, comment/uncomment corresponding deps in the rollupOptions.globals section below.
-  // "react-aria",
-  // "react-aria-components",
-  // "react-stately/*",
-  // "@react-aria/*",
-
-  // UI frameworks & styling
+  // UI frameworks & styling.
   "@chakra-ui/react",
   "@emotion/is-prop-valid",
 
@@ -51,7 +47,7 @@ export const baseConfig = {
       entry: resolve(__dirname, "./src/index.ts"),
       name: "nimbus",
       fileName: "index",
-      formats: ["es", "umd"],
+      formats: ["es", "umd"] satisfies LibraryFormats[],
     },
     rollupOptions: {
       external,
@@ -62,26 +58,13 @@ export const baseConfig = {
           "react-dom": "ReactDOM",
           "react/jsx-runtime": "jsxRuntime",
 
-          // RA ecosystem.
-          // "react-aria-components": "ReactAriaComponents",
-          // "react-aria": "ReactAria",
-          // "@react-aria/utils": "ReactAriaUtils",
-          // "@react-aria/autocomplete": "ReactAriaAutocomplete",
-          // "@react-aria/overlays": "ReactAriaOverlays",
-          // "@react-aria/focus": "ReactAriaFocus",
-          // "@react-aria/interactions": "ReactAriaInteractions",
-          // "react-stately": "ReactStately",
-
-          // UI frameworks & styling
           "@chakra-ui/react": "ChakraUI",
           "@emotion/is-prop-valid": "isPropValid",
 
-          // Utility libraries
           "next-themes": "NextThemes",
           "react-hotkeys-hook": "ReactHotkeysHook",
           "react-use": "ReactUse",
 
-          // Internal packages
           "@commercetools/nimbus-icons": "NimbusIcons",
           "@commercetools/nimbus-tokens": "NimbusTokens",
         },
