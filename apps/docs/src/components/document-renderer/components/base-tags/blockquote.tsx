@@ -106,7 +106,7 @@ export const Blockquote = (props: BlockquoteProps) => {
           break;
         case firstChild.trim() === "[!CAUTION]":
           flavorProps = {
-            colorPalette: "error",
+            colorPalette: "critical",
           };
           break;
         default:

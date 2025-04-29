@@ -46,7 +46,7 @@ export const formFieldRecipe = defineSlotRecipe({
     },
     error: {
       gridArea: "error",
-      color: "error.11",
+      color: "critical.11",
       fontSize: "350",
       lineHeight: "500",
     },
