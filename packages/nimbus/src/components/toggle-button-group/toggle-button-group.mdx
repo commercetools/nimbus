@@ -288,84 +288,6 @@ const App = () => (
 );
 ```
 
-### Offering many options
-
-In toolbars, button groups can organize related tools or actions.
-
-> [!TIP]\
-> **Do**
->
-> -   Use expected tooling and order that a user will be familiar with when associated with effected content, like a rich-text editor.
-> -   Use consistent styling when creating toolbars or curated sets of tools for the user. Include tooltips to label icons.
-> -   The last button can be paired with a popover to feature additional options. Use the vertical three dot "More" icon for consistency throughout the UI.
-
-```jsx-live
-const App = () => (
-  <ToggleButtonGroup.Root aria-label="Text formatting" selectionMode="multiple" selectedKeys={["format-italic"]} tone="primary">
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="format-bold" aria-label="Bold">
-        <Icons.FormatBold />
-      </ToggleButtonGroup.Button>
-      <Tooltip>Bold</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="format-italic" aria-label="Italic">
-        <Icons.FormatItalic />
-      </ToggleButtonGroup.Button>
-      <Tooltip>Italic</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="format-underline" aria-label="Underline">
-        <Icons.FormatUnderlined />
-      </ToggleButtonGroup.Button>
-      <Tooltip>Underline</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="format-strikethrough" aria-label="strikethrough">
-        <Icons.StrikethroughS />
-      </ToggleButtonGroup.Button>
-      <Tooltip>Strikethrough</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="options" aria-label="options">
-        <Icons.MoreVert />
-      </ToggleButtonGroup.Button>
-      <Tooltip>More Options</Tooltip>
-    </TooltipTrigger>
-  </ToggleButtonGroup.Root>
-);
-```
-
-> [!CAUTION]\
-> **Don't**
->
-> -   Do not mix unexpected and unrelated actions within toolbars.
-> -   Do not mix button styles, mixing styles can be confusing and alter hierarchy for the user.
-> -   Choices that need different tones may not be suitable for button group usages.
-> -   It is uncommon to select more than one action in a button grouping. Rich text styling is an example where this is loosened, and users may select to style text with multiple styles at once.
-
-```jsx-live
-const App = () => (
-    <ToggleButtonGroup.Root aria-label="Mixed Actions (Bad Example)" selectedKeys={["bad-italic"]} tone="primary">
-        <ToggleButtonGroup.Button id="bad-bold" aria-label="Bold">
-          <Icons.FormatBold />
-        </ToggleButtonGroup.Button>
-        <ToggleButtonGroup.Button id="bad-italic" aria-label="Italic">
-          <Icons.FormatItalic /> Italics
-        </ToggleButtonGroup.Button>
-            <ToggleButtonGroup.Button id="bad-underline" aria-label="Underline">
-      <Icons.FormatUnderlined />
-    </ToggleButtonGroup.Button>
-                <ToggleButtonGroup.Button id="bad-save" aria-label="Save">
-      <Icons.Save /> Save
-    </ToggleButtonGroup.Button>
-                  <ToggleButtonGroup.Button id="bad-cancel" aria-label="Cancel" colorPalette="error">
-      <Icons.Clear /> Cancel
-    </ToggleButtonGroup.Button>
-    </ToggleButtonGroup.Root>
-);
-```
-
 ## Properties
 
 <<<<<<< HEAD
@@ -499,12 +421,6 @@ const App = () => (
         <Icons.CurrencyExchange /> Refunded
       </ToggleButtonGroup.Button>
       <Tooltip>Refunded Status</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="li-more-options" aria-label="More Options">
-        <Icons.MoreVert />
-      </ToggleButtonGroup.Button>
-      <Tooltip>More Options</Tooltip>
     </TooltipTrigger>
   </ToggleButtonGroup.Root>
 );
