@@ -35,7 +35,6 @@
     }
   },
   "dependencies": {
-    "@react-aria/optimize-locales-plugin": "^1.1.4",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-stately": "catalog:react"
@@ -47,6 +46,7 @@
     "@commercetools/nimbus-tokens": "workspace:^",
     "@emotion/is-prop-valid": "catalog:react",
     "@pandacss/types": "catalog:react",
+    "@react-aria/optimize-locales-plugin": "^1.1.4",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-essentials": "catalog:tooling",
     "@storybook/experimental-addon-test": "catalog:tooling",
