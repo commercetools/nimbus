@@ -10,8 +10,8 @@ you need to do:
 
 ## Any color change needed?
 
-1. Do the change needed.
-2. run `pnpm tsx ./index.ts`
+1. Do the change needed in the `packages/color-tokens/index.ts` and/or the `packages/color-tokens/brand-colors.ts`.
+2. Navigate to `packages/color-tokens` directory and run `pnpm tsx ./index.ts`
 3. The colors end up in `dist/color-tokens.json`
-4. Replace the existing colors object in the token-package's
+4. Replace the existing `colors` object in the token-package's
    `src/base/tokens.json` file, with the object from `dist/color-tokens.json`

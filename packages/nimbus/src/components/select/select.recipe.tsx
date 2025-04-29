@@ -56,7 +56,7 @@ export const selectSlotRecipe = defineSlotRecipe({
 
       "[data-invalid] &": {
         "--border-width": "sizes.50",
-        "--border-color": "colors.error.7",
+        "--border-color": "colors.critical.7",
       },
 
       // [data-hovered]
@@ -87,7 +87,7 @@ export const selectSlotRecipe = defineSlotRecipe({
         opacity: 0.5,
       },
       "[data-invalid] &": {
-        color: "error.11",
+        color: "critical.11",
       },
     },
     // Popover

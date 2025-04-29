@@ -29,7 +29,7 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       color: "neutral.11",
 
       ["&[data-invalid='true']"]: {
-        color: "error.11",
+        color: "critical.11",
       },
     },
     indicator: {
@@ -56,11 +56,11 @@ export const checkboxSlotRecipe = defineSlotRecipe({
 
       ["&[data-invalid='true']"]: {
         bg: "transparent",
-        borderColor: "error.9",
-        color: "error.11",
+        borderColor: "critical.9",
+        color: "critical.11",
 
         "&:hover": {
-          borderColor: "error.10",
+          borderColor: "critical.10",
         },
       },
 
@@ -75,13 +75,13 @@ export const checkboxSlotRecipe = defineSlotRecipe({
         },
 
         "&[data-invalid='true']": {
-          bg: "error.9",
-          borderColor: "error.9",
-          color: "error.contrast",
+          bg: "critical.9",
+          borderColor: "critical.9",
+          color: "critical.contrast",
 
           "&:hover": {
-            bg: "error.10",
-            borderColor: "error.10",
+            bg: "critical.10",
+            borderColor: "critical.10",
           },
         },
       },

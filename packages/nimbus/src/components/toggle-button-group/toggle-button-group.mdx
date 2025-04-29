@@ -196,7 +196,8 @@ You can control the selection state externally:
 
 ```jsx-live
 const App = () => {
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set(['controlled-center']));
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
 
   return (
     <Stack direction="column" gap="400">

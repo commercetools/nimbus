@@ -5873,7 +5873,7 @@ export default {
           },
         },
       },
-      error: {
+      critical: {
         "1": {
           value: {
             _light: "hsl(0, 100%, 99%)",
@@ -5959,7 +5959,7 @@ export default {
           },
         },
       },
-      errorAlpha: {
+      criticalAlpha: {
         "1": {
           value: {
             _light: "hsl(0, 100%, 99%)",
@@ -6045,179 +6045,179 @@ export default {
           },
         },
       },
-      danger: {
+      warning: {
         "1": {
           value: {
-            _light: "hsl(20, 60%, 99%)",
-            _dark: "hsl(27, 24%, 7%)",
+            _light: "hsl(40, 60%, 99%)",
+            _dark: "hsl(36, 29%, 7%)",
           },
         },
         "2": {
           value: {
-            _light: "hsl(33, 100%, 96%)",
-            _dark: "hsl(28, 33%, 9%)",
+            _light: "hsl(51, 91%, 95%)",
+            _dark: "hsl(39, 32%, 9%)",
           },
         },
         "3": {
           value: {
-            _light: "hsl(37, 100%, 92%)",
-            _dark: "hsl(29, 65%, 12%)",
+            _light: "hsl(52, 100%, 88%)",
+            _dark: "hsl(36, 71%, 11%)",
           },
         },
         "4": {
           value: {
-            _light: "hsl(34, 100%, 85%)",
-            _dark: "hsl(28, 100%, 14%)",
+            _light: "hsl(50, 100%, 81%)",
+            _dark: "hsl(37, 100%, 12%)",
           },
         },
         "5": {
           value: {
-            _light: "hsl(33, 100%, 80%)",
-            _dark: "hsl(28, 100%, 17%)",
+            _light: "hsl(50, 94%, 73%)",
+            _dark: "hsl(37, 100%, 15%)",
           },
         },
         "6": {
           value: {
-            _light: "hsl(30, 100%, 75%)",
-            _dark: "hsl(27, 79%, 22%)",
+            _light: "hsl(46, 84%, 70%)",
+            _dark: "hsl(39, 90%, 19%)",
           },
         },
         "7": {
           value: {
-            _light: "hsl(27, 87%, 71%)",
-            _dark: "hsl(25, 63%, 30%)",
+            _light: "hsl(42, 75%, 65%)",
+            _dark: "hsl(37, 64%, 27%)",
           },
         },
         "8": {
           value: {
-            _light: "hsl(25, 80%, 63%)",
-            _dark: "hsl(23, 60%, 40%)",
+            _light: "hsl(38, 75%, 55%)",
+            _dark: "hsl(36, 60%, 35%)",
           },
         },
         "9": {
           value: {
-            _light: "hsl(23, 93%, 53%)",
-            _dark: "hsl(23, 93%, 53%)",
+            _light: "hsl(42, 100%, 62%)",
+            _dark: "hsl(42, 100%, 62%)",
           },
         },
         "10": {
           value: {
-            _light: "hsl(24, 100%, 47%)",
-            _dark: "hsl(26, 100%, 56%)",
+            _light: "hsl(42, 100%, 55%)",
+            _dark: "hsl(50, 100%, 52%)",
           },
         },
         "11": {
           value: {
-            _light: "hsl(23, 100%, 40%)",
-            _dark: "hsl(26, 100%, 67%)",
+            _light: "hsl(35, 100%, 34%)",
+            _dark: "hsl(46, 100%, 54%)",
           },
         },
         "12": {
           value: {
-            _light: "hsl(16, 50%, 23%)",
-            _dark: "hsl(30, 100%, 88%)",
+            _light: "hsl(24, 40%, 22%)",
+            _dark: "hsl(41, 100%, 85%)",
           },
         },
         DEFAULT: {
           value: {
-            _light: "hsl(23, 93%, 53%)",
-            _dark: "hsl(23, 93%, 53%)",
+            _light: "hsl(42, 100%, 62%)",
+            _dark: "hsl(42, 100%, 62%)",
           },
         },
         contrast: {
           value: {
-            _light: "hsl(0, 0%, 100%)",
-            _dark: "hsl(0, 0%, 100%)",
+            _light: "hsl(0, 0%, 0%)",
+            _dark: "hsl(0, 0%, 0%)",
           },
         },
       },
-      dangerAlpha: {
+      warningAlpha: {
         "1": {
           value: {
-            _light: "hsl(20, 60%, 99%)",
-            _dark: "hsl(27, 24%, 7%)",
+            _light: "hsl(40, 60%, 99%)",
+            _dark: "hsl(36, 29%, 7%)",
           },
         },
         "2": {
           value: {
-            _light: "hsl(33, 100%, 96%)",
-            _dark: "hsl(28, 33%, 9%)",
+            _light: "hsl(51, 91%, 95%)",
+            _dark: "hsl(39, 32%, 9%)",
           },
         },
         "3": {
           value: {
-            _light: "hsl(37, 100%, 92%)",
-            _dark: "hsl(29, 65%, 12%)",
+            _light: "hsl(52, 100%, 88%)",
+            _dark: "hsl(36, 71%, 11%)",
           },
         },
         "4": {
           value: {
-            _light: "hsl(34, 100%, 85%)",
-            _dark: "hsl(28, 100%, 14%)",
+            _light: "hsl(50, 100%, 81%)",
+            _dark: "hsl(37, 100%, 12%)",
           },
         },
         "5": {
           value: {
-            _light: "hsl(33, 100%, 80%)",
-            _dark: "hsl(28, 100%, 17%)",
+            _light: "hsl(50, 94%, 73%)",
+            _dark: "hsl(37, 100%, 15%)",
           },
         },
         "6": {
           value: {
-            _light: "hsl(30, 100%, 75%)",
-            _dark: "hsl(27, 79%, 22%)",
+            _light: "hsl(46, 84%, 70%)",
+            _dark: "hsl(39, 90%, 19%)",
           },
         },
         "7": {
           value: {
-            _light: "hsl(27, 87%, 71%)",
-            _dark: "hsl(25, 63%, 30%)",
+            _light: "hsl(42, 75%, 65%)",
+            _dark: "hsl(37, 64%, 27%)",
           },
         },
         "8": {
           value: {
-            _light: "hsl(25, 80%, 63%)",
-            _dark: "hsl(23, 60%, 40%)",
+            _light: "hsl(38, 75%, 55%)",
+            _dark: "hsl(36, 60%, 35%)",
           },
         },
         "9": {
           value: {
-            _light: "hsl(23, 93%, 53%)",
-            _dark: "hsl(23, 93%, 53%)",
+            _light: "hsl(42, 100%, 62%)",
+            _dark: "hsl(42, 100%, 62%)",
           },
         },
         "10": {
           value: {
-            _light: "hsl(24, 100%, 47%)",
-            _dark: "hsl(26, 100%, 56%)",
+            _light: "hsl(42, 100%, 55%)",
+            _dark: "hsl(50, 100%, 52%)",
           },
         },
         "11": {
           value: {
-            _light: "hsl(23, 100%, 40%)",
-            _dark: "hsl(26, 100%, 67%)",
+            _light: "hsl(35, 100%, 34%)",
+            _dark: "hsl(46, 100%, 54%)",
           },
         },
         "12": {
           value: {
-            _light: "hsl(16, 50%, 23%)",
-            _dark: "hsl(30, 100%, 88%)",
+            _light: "hsl(24, 40%, 22%)",
+            _dark: "hsl(41, 100%, 85%)",
           },
         },
         DEFAULT: {
           value: {
-            _light: "hsl(23, 93%, 53%)",
-            _dark: "hsl(23, 93%, 53%)",
+            _light: "hsl(42, 100%, 62%)",
+            _dark: "hsl(42, 100%, 62%)",
           },
         },
         contrast: {
           value: {
-            _light: "hsl(0, 0%, 100%)",
-            _dark: "hsl(0, 0%, 100%)",
+            _light: "hsl(0, 0%, 0%)",
+            _dark: "hsl(0, 0%, 0%)",
           },
         },
       },
-      success: {
+      positive: {
         "1": {
           value: {
             _light: "hsl(120, 60%, 99%)",
@@ -6303,7 +6303,7 @@ export default {
           },
         },
       },
-      successAlpha: {
+      positiveAlpha: {
         "1": {
           value: {
             _light: "hsl(120, 60%, 99%)",

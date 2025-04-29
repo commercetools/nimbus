@@ -91,7 +91,7 @@ export const Blockquote = (props: BlockquoteProps) => {
           break;
         case firstChild.trim() === "[!TIP]":
           flavorProps = {
-            colorPalette: "success",
+            colorPalette: "positive",
           };
           break;
         case firstChild.trim() === "[!IMPORTANT]":
@@ -101,12 +101,12 @@ export const Blockquote = (props: BlockquoteProps) => {
           break;
         case firstChild.trim() === "[!WARNING]":
           flavorProps = {
-            colorPalette: "danger",
+            colorPalette: "warning",
           };
           break;
         case firstChild.trim() === "[!CAUTION]":
           flavorProps = {
-            colorPalette: "error",
+            colorPalette: "critical",
           };
           break;
         default:

@@ -76,7 +76,24 @@ This loader responds to a distinct timeline that corresponds to the progress of 
 This spinner will spin indefinitely as it is being shown.
 
 ```jsx-live
-const App = () => <LoadingSpinner aria-label="Loading content" />
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <LoadingSpinner colorPalette={color} key={variant} variant={variant}>
+              '{variant}' LoadingSpinner
+            </LoadingSpinner>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
 ```
 
 ## Guidelines

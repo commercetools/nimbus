@@ -417,19 +417,22 @@ const App = () => (
 const App = () => (
   <Stack direction="horizontal">
     <Stack>
-      <Button tone="primary" size="md" variant="outline">
-        <Icons.KeyboardArrowDown />
-        Save changes
-      </Button>
-     <Card.Root elevation="elevated" cardPadding="md">
-        <Card.Content>
-        <div style={{fontSize: "16px", fontWeight: "400"}}>
-        <p>Save</p>
-        <p>Save and publish</p>
-        <p>Save and open next</p>
-        </div>
-        </Card.Content>
-      </Card.Root>
+      {sizes.map((size) => (
+        <Stack key={size} direction="horizontal">
+          <Button size={size} colorPalette="positive" variant="solid" startIcon={<Icons.Check />}>
+            <Icons.Check />
+            Yes
+          </Button>
+          <Button size={size} colorPalette="critical" variant="solid" startIcon={<Icons.X />}>
+            <Icons.Close />
+            No
+          </Button>
+          <Button size={size} colorPalette="neutral" variant="ghost" endIcon={<Box animation="spin" asChild><Icons.Loader/></Box>}>
+             Maybe
+             <Icons.HelpOutline />
+          </Button>
+        </Stack>
+      ))}
     </Stack>
     <Stack>
       <Button tone="primary" size="md" variant="solid">
