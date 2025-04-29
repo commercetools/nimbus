@@ -19,7 +19,7 @@ export const CardContext = createContext<CardContextValue | undefined>(
   undefined
 );
 
-const CardRoot = forwardRef<HTMLDivElement, CardProps>(
+export const CardRoot = forwardRef<HTMLDivElement, CardProps>(
   ({ children, ...props }, ref) => {
     const { isFocused, isFocusVisible, focusProps } = useFocusRing();
     const [headerNode, setHeader] = useState<ReactNode>(null);
@@ -58,5 +58,3 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(
 );
 
 CardRoot.displayName = "Card.Root";
-
-export default CardRoot;

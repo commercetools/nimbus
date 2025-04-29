@@ -25,5 +25,3 @@ export const CardContent = ({ children, ...props }: CardContentProps) => {
 };
 
 CardContent.displayName = "Card.Content";
-
-export default CardContent;
