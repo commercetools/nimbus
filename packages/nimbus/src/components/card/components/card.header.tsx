@@ -5,7 +5,7 @@ import {
 } from "../card.slots";
 import { CardContext } from "./card.root";
 
-const CardHeader = ({ children, ...props }: CardHeaderProps) => {
+export const CardHeader = ({ children, ...props }: CardHeaderProps) => {
   const context = useContext(CardContext);
 
   useEffect(() => {
@@ -24,5 +24,3 @@ const CardHeader = ({ children, ...props }: CardHeaderProps) => {
   return null;
 };
 CardHeader.displayName = "Card.Header";
-
-export default CardHeader;

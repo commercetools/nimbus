@@ -5,7 +5,7 @@ import { Clear } from "@commercetools/nimbus-icons";
 import { IconButton } from "../../icon-button";
 import { AlertContext } from "./alert.root";
 
-const AlertDismissButton = ({
+export const AlertDismissButton = ({
   children,
   ...props
 }: AlertDismissButtonProps) => {
@@ -37,5 +37,3 @@ const AlertDismissButton = ({
 };
 
 AlertDismissButton.displayName = "Alert.DismissButton";
-
-export default AlertDismissButton;

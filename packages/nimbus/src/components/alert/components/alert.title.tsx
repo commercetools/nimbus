@@ -3,7 +3,7 @@ import { AlertTitle as AlertTitleSlot } from "../alert.slots";
 import type { AlertTitleProps } from "../alert.types";
 import { AlertContext } from "./alert.root";
 
-const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
+export const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
   const context = useContext(AlertContext);
 
   useEffect(() => {
@@ -25,5 +25,3 @@ const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
 };
 
 AlertTitle.displayName = "Alert.Title";
-
-export default AlertTitle;

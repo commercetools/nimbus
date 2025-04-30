@@ -1,8 +1,8 @@
-import AlertTitle from "./components/alert.title";
-import AlertDescription from "./components/alert.description";
-import AlertActions from "./components/alert.actions";
-import AlertDismissButton from "./components/alert.dismiss-button";
-import AlertRoot from "./components/alert.root";
+import { AlertTitle } from "./components/alert.title";
+import { AlertDescription } from "./components/alert.description";
+import { AlertActions } from "./components/alert.actions";
+import { AlertDismissButton } from "./components/alert.dismiss-button";
+import { AlertRoot } from "./components/alert.root";
 
 /**
  * Alert

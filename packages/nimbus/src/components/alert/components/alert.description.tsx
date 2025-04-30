@@ -3,7 +3,10 @@ import { AlertDescription as AlertDescriptionSlot } from "../alert.slots";
 import type { AlertDescriptionProps } from "../alert.types";
 import { AlertContext } from "./alert.root";
 
-const AlertDescription = ({ children, ...props }: AlertDescriptionProps) => {
+export const AlertDescription = ({
+  children,
+  ...props
+}: AlertDescriptionProps) => {
   const context = useContext(AlertContext);
 
   useEffect(() => {
@@ -23,5 +26,3 @@ const AlertDescription = ({ children, ...props }: AlertDescriptionProps) => {
 };
 
 AlertDescription.displayName = "Alert.Description";
-
-export default AlertDescription;
