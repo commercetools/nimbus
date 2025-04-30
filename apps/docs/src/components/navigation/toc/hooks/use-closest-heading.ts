@@ -17,7 +17,10 @@ export const useClosestHeading = (): string | null => {
 
       headings.forEach((heading) => {
         const { top } = heading.getBoundingClientRect();
-        if (top >= 0 && top < closestOffset) {
+        // Consider headings that are slightly above the viewport too (with a small negative threshold)
+        // This helps with headings that are just at the top edge
+        const threshold = -50;
+        if (top >= threshold && top < closestOffset) {
           closestOffset = top;
           closestHeading = heading;
         }
@@ -28,11 +31,25 @@ export const useClosestHeading = (): string | null => {
 
     // Run on scroll and on initial render
     const scrollElement = document.getElementById("main");
-    scrollElement?.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
 
-    // Cleanup the event listener
-    return () => scrollElement?.removeEventListener("scroll", handleScroll);
+    // Listen to both the main element scroll and window scroll to ensure we capture all scroll events
+    if (scrollElement) {
+      scrollElement.addEventListener("scroll", handleScroll);
+    }
+
+    // Always add window scroll listener as a fallback
+    window.addEventListener("scroll", handleScroll);
+
+    // Initial check
+    handleScroll();
+
+    // Cleanup the event listeners
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener("scroll", handleScroll);
+      }
+      window.addEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return closestHeadingId;

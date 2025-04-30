@@ -9,6 +9,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Navigation
   - Accordion
 tags:
   - component
@@ -18,155 +19,138 @@ tags:
 
 A component used for organizing contents. This allows users to toggle visibility
 of the content sections in their individual panels when the panel's header is
-clicked.
+clicked. Accordions are useful when you want to display a large amount of content
+in a limited space.
+
+
 
 ## Basic Usage
 
+The Accordion component consists of a few main parts:
+- `Accordion.Root`: The container for all accordion items
+- `Accordion.Item`: A single collapsible section
+- `Accordion.Header`: The clickable heading/trigger
+- `Accordion.Content`: The content that appears/disappears
+
 ```jsx-live
 const App = () => (
-  <Accordion>
-    <Accordion.Header>Test Accordion</Accordion.Header>
-    <Accordion.Content>Test Accordion Content</Accordion.Content>
-  </Accordion>
+  <Accordion.Root>
+    <Accordion.Item value="item-1">
+      <Accordion.Header>Test Accordion</Accordion.Header>
+      <Accordion.Content>Test Accordion Content</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
 )
 ```
 
-### Sizes
+## Multiple Items
 
-Accordion come in different sizes, sizing an accordion is done by setting the
-`size` prop.
-
-```jsx-live
-const App = () => {
-
-  const accordionSizes = ["sm", "md"];;
-
-  return (
-   <>
-    {accordionSizes.map((size, index) => (
-        <Accordion key={index} size={size}>
-          <Accordion.Header>{<>{size} size</>}</Accordion.Header>
-          <Accordion.Content>
-            <>{size} size text</>
-          </Accordion.Content>
-        </Accordion>
-      ))}
-    </>
-  )
-}
-```
-
-### With Additional Contents On The Accordion Trigger
-
-The accordion can take in more properties at the trigger button level to allow
-you add more features or actions on the trigger interface. You can add any
-component or additional text of choice; Texts, buttons, toggle botton etc. Do
-this by setting the `additionalTriggerComponent` prop.
+You can add multiple items to an accordion:
 
 ```jsx-live
-const App = () => {
-  const items = [
-    { value: "a", title: "First Item", text: "Some value 1..." },
-    { value: "b", title: "Second Item", text: "Some value 2..." },
-    {
-      value: "c",
-      title: "Third Item",
-      text: "Some value 3",
-    },
-  ]
-
-  return (
-    <>
-      {items.map((item, index) => (
-        <Accordion key={index} size={"md"}>
-          <Accordion.Header
-            additionalTriggerComponent={
-              <div style={{ padding: "10px" }}>
-                <Button marginRight="100" tone="primary">
-                  Click me
-                </Button>
-                <Button marginRight="100" tone="neutral">
-                  Click me
-                </Button>
-                <Button marginRight="100" tone="critical">
-                  Click me
-                </Button>
-              </div>
-            }
-          >
-            {item.title}
-          </Accordion.Header>
-          <Accordion.Content>
-            <Flex
-              justifyContent="space-between"
-              alignItems={"center"}
-              borderColor="neutral.4"
-            >
-              <div style={{ marginRight: "100" }}>{item.text}</div>
-            </Flex>
-          </Accordion.Content>
-        </Accordion>
-      ))}
-    </>
-  );
-}
+const App = () => (
+  <Accordion.Root>
+    <Accordion.Item value="item-1">
+      <Accordion.Header>First Item</Accordion.Header>
+      <Accordion.Content>Content for the first item</Accordion.Content>
+    </Accordion.Item>
+    <Accordion.Item value="item-2">
+      <Accordion.Header>Second Item</Accordion.Header>
+      <Accordion.Content>Content for the second item</Accordion.Content>
+    </Accordion.Item>
+    <Accordion.Item value="item-3">
+      <Accordion.Header>Third Item</Accordion.Header>
+      <Accordion.Content>Content for the third item</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+)
 ```
 
-### With A Custom Component In The Accordion Content
+## Multiple Expanded Items
 
-To render any component of choice, pass in the custom component as the child of
-the accordion.
+By default, only one accordion item can be expanded at a time. You can allow multiple items to be expanded simultaneously by using the `allowsMultipleExpanded` prop:
 
 ```jsx-live
-const App = () => {
-  const items = [
-    { value: "a", title: "First Item", text: "Some value 1..." },
-    { value: "b", title: "Second Item", text: "Some value 2..." },
-    {
-      value: "c",
-      title: "Third Item",
-      text: "Some value 3",
-    },
-  ]
-
-  const AccordionContent = () => {
-  const avatarImg = "https://thispersondoesnotexist.com/ ";
-
-  return (
-    <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
-      <Avatar src={avatarImg} firstName="Michael" lastName="Douglas" />
-      <Checkbox>Yes?</Checkbox>
-      <Checkbox>No?</Checkbox>
-    </div>
-  );
-};
-
-  return (
-    <>
-      {items.map((item, index) => (
-        <Accordion key={index} size={"md"}>
-          <Accordion.Header
-          >
-            {item.title}
-          </Accordion.Header>
-          <Accordion.Content>
-            <Flex
-              justifyContent="space-between"
-              alignItems={"center"}
-              borderColor="neutral.4"
-            >
-              <div style={{ marginRight: "100" }}>{item.text}</div>
-              <AccordionContent />
-            </Flex>
-          </Accordion.Content>
-        </Accordion>
-      ))}
-    </>
-  );
-}
-
+const App = () => (
+  <Accordion.Root allowsMultipleExpanded>
+    <Accordion.Item value="item-1">
+      <Accordion.Header>First Item</Accordion.Header>
+      <Accordion.Content>Content for the first item</Accordion.Content>
+    </Accordion.Item>
+    <Accordion.Item value="item-2">
+      <Accordion.Header>Second Item</Accordion.Header>
+      <Accordion.Content>Content for the second item</Accordion.Content>
+    </Accordion.Item>
+    <Accordion.Item value="item-3">
+      <Accordion.Header>Third Item</Accordion.Header>
+      <Accordion.Content>Content for the third item</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+)
 ```
 
-## Props
+## Sizes
 
-<PropTable id="Accordion" />
+The Accordion component supports different sizes: `sm` and `md`.
+
+```jsx-live
+const App = () => (
+  <>
+    <h3>Small Size</h3>
+    <Accordion.Root size="sm">
+      <Accordion.Item value="small">
+        <Accordion.Header>Small Accordion</Accordion.Header>
+        <Accordion.Content>This is a small size accordion</Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+    
+    <h3>Medium Size (Default)</h3>
+    <Accordion.Root size="md">
+      <Accordion.Item value="medium">
+        <Accordion.Header>Medium Accordion</Accordion.Header>
+        <Accordion.Content>This is a medium size accordion</Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  </>
+)
+```
+
+## Disabled Accordion
+
+You can disable the entire accordion using the `isDisabled` prop:
+
+```jsx-live
+const App = () => (
+  <Accordion.Root isDisabled>
+    <Accordion.Item value="item-1">
+      <Accordion.Header>Disabled Accordion</Accordion.Header>
+      <Accordion.Content>This content cannot be accessed</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+)
+```
+
+## Header with Right Content
+
+You can add additional content to the right side of the accordion header using `Accordion.HeaderRightContent`:
+
+```jsx-live
+const App = () => (
+  <div>
+  
+  <Accordion.Root>
+    <Accordion.Item value="item-1">
+      <Accordion.Header>
+        Item With Actions
+        <Accordion.HeaderRightContent>
+          <Button tone="primary" variant="ghost" size="xs">Related Action</Button>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>
+      Content
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+  </div>
+)
+```

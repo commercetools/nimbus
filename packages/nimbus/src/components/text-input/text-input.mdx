@@ -13,106 +13,178 @@ tags:
 ---
 
 # TextInput
+---
 
-The TextInput component is a form control that allows users to enter text into
-an input field. It provides a clean, accessible interface for text input with
-support for different states and variants.
+Allows users to enter information like names, addresses, emails, passwords, search queries, or any other text-based data.
 
-## Features
+## Overview
 
-- **Accessible:** Built with ARIA attributes for screen reader support
-- **Customizable:** Supports different sizes and visual variants
-- **State Management:** Handles disabled, invalid, and focus states
+Users can type, delete, copy, and paste text within the box. Sometimes, there can be additional features like autocomplete or validation to help users enter information correctly.
 
-## Basic Usage
+### Resources
 
-The TextInput component is used to create form input fields where users can enter text. It supports various states and can be customized using props.
+Deep dive on details and access design library.
 
-```jsx-live
-const App = () => <TextInput placeholder="basic text input"/>
-```
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1696-48973&m=dev)
 
-### Sizes
+## Variables
+Get familiar with the features. 
 
-Available sizes.
+### Size
 
-```jsx-live
-const App = () => {
+**Medium**
 
-  const sizes = ['md', 'sm',];
-
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <TextInput key={size} size={size} placeholder={size}/>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Variants
-
-There are two variants currently:
-- **Solid:** The default variant with a solid background.
-- **Ghost:** A minimal variant without background.
-
+This is the default size for text inputs. 
 
 ```jsx-live
-const App = () => {
-
-  const variants = ['solid','ghost',];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <TextInput key={variant} variant={variant} placeholder={variant} />
-      ))}
-    </Stack>
-  )
-}
+const App = () => <TextInput size="md" value="input value"/>
 ```
 
-## States
+**Small**
 
-### Disabled
-
-When interaction is not allowed.
+Available for the times a more condensed text input is needed.
 
 ```jsx-live
-const App = () => {
-
-  const variants = ['solid','ghost',];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <TextInput key={variant} variant={variant} placeholder={variant} disabled/>
-      ))}
-    </Stack>
-  )
-}
+const App = () => <TextInput size="sm" value="input value"/>
 ```
 
-### Invalid
+### Tone
 
-For showing error states in forms.
+**Placeholder**
+
+This is the styling for placeholder text. It is a shade lighter than active text.
 
 ```jsx-live
-const App = () => {
-
-  const variants = ['solid','ghost',];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <TextInput key={variant} variant={variant} placeholder={variant} isInvalid/>
-      ))}
-    </Stack>
-  )
-}
+const App = () => <TextInput placeholder="input value"/>
 ```
+
+**Primary**
+
+This is the default tone for inputs a user adds or is displayed within a text input.
+
+```jsx-live
+const App = () => <TextInput tone="primary" value="input value"/>
+```
+
+**Critical**
+
+To be used when there is an error in form validation.
+
+```jsx-live
+const App = () => <TextInput tone="critical" isInvalid value="input value"/>
+```
+
+## Guidelines
+
+Text input guidelines focus on creating clear, accessible, and user-friendly fields for data entry by emphasizing proper labeling, providing helpful cues and validation, ensuring keyboard navigation, and offering clear feedback on input status.
+
+### Best practices
+
+- **Keyboard Navigation:**
+    - Ensure that text inputs are fully keyboard accessible (using the Tab key to navigate).
+- **Error Handling:**
+    - Provide clear and specific error messages when invalid input is entered.
+    - Display error messages close to the input field.
+- **Placeholder text:**
+    - Avoid relying solely on placeholder text, as it disappears when the user starts typing.
+    - Make use of clear labels and helper text if clarifying information is needed.
+
+### Placeholder text
+
+Good placeholder text informs the user what to expect and can easily understand the difference between placeholder and pre-filled content.
+
+> [!TIP]\
+> When to use
+
+- **Provide hints:** Use placeholder text to give users a brief hint or example of the expected input format.
+- **Keep it concise:** Placeholder text should be short and to the point. Avoid long sentences or paragraphs.
+- **Use a subtle visual style:** Visually differentiate placeholder text from actual input text by using the placeholder text styling. This helps users understand that it's a suggestion, not a pre-filled value.  
+
+> [!CAUTION]\
+> When not to use
+
+- **Don't use as labels:** Placeholder text should never replace proper labels. Labels provide persistent context, while placeholder text disappears when the user starts typing.  
+- **Don't include critical information:** Avoid putting essential instructions or information solely in the placeholder, as it will be hidden once the user interacts with the field.  
+- **Don't overuse:** Too much placeholder text can clutter the interface and make it harder for users to focus.
+
+> [!TIP]\
+> **Do**
+>
+> - Use the correct tone for placeholder text.
+> - Give the user a hint on what is expected, in a concise way. 
+> - If this information is important to always keep visible, use helper text instead.
+
+```jsx-live
+const App = () => <TextInput tone="critical" placeholder="MM/DD/YYYY"/>
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - This placeholder text looks like it has been prefilled for the user which is more likely to confuse the user. 
+
+```jsx-live
+const App = () => <TextInput tone="critical" placeholder="01/21/1970"/>
+```
+
+### Size
+
+Allow for enough width for the user to read and add in their information. Avoid truncation if possible especially if the user will be referring back or needing to make sure there isn’t inaccurate information.  
+
+> [!TIP]\
+> When to use
+> 
+> - There is enough space that the user can easily consume and correct this information if needed.
+
+```jsx-live
+const App = () => <TextInput placeholder="01/21/1970" value="805 St Cloud Road"/>
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - The user’s information is too long for this field to be able to read the details completely.
+
+```jsx-live
+const App = () => <TextInput value="805 St Cloud Road, Bel Air, Los Angeles, CA" />
+```
+
+## Specs
 
 ## Props
 
 <PropTable id="TextInput" />
+
+### Accessibility
+
+The component uses onPress* props to handle all user interactions—mouse clicks, touch taps, and keyboard presses—consistently.  These props (onPress, onPressStart, onPressEnd, etc.) ensure a smooth and accessible experience regardless of the user's input method or device.
+
+```jsx-live
+const App = () => <TextInput placeholder="XX/XX/XXXX" />
+```
+
+### Accessibility Standards
+
+**1. Perceivable:**
+  
+- **1.3.1 Info and Relationships:** Use proper HTML (`<label>`, `aria-labelledby`, etc.) to connect labels with their inputs. This helps assistive technologies (like screen readers) understand the connection and convey the information correctly.
+- **1.4.3 Contrast (Minimum):**  Ensure sufficient color contrast between the input field, its label, and the surrounding background. This makes it easier to read for people with low vision. The minimum contrast ratio is 4.5:1 for normal text and 3:1 for large text. 
+
+**2. Operable:**
+
+- **2.1.1 Keyboard:** Text inputs must be fully operable using only a keyboard (no mouse required). This includes navigating to the input, interacting with it, and submitting the form.
+- **2.4.6 Headings and Labels:** Labels should be clear, concise, and descriptive, accurately reflecting the purpose of the input field.
+
+**3. Understandable:**
+
+- **3.3.2 Labels or Instructions:** Provide clear labels or instructions to help users understand what type of information is expected in the input field.
+
+**4. Robust:**
+
+- **4.1.2 Name, Role, Value:** Ensure the input field's name (label), role (type of input), and current value are programmatically available to assistive technologies.
+
+**Key Considerations:**
+
+- **Error Messages:** When input errors occur, provide clear and specific error messages that are easy to understand and locate. Use ARIA attributes (`aria-invalid`, `aria-describedby`) to associate error messages with the input field.
+- **Placeholder Text:** While placeholder text can be helpful, it can also create accessibility issues. Avoid using it as a replacement for labels, and ensure sufficient color contrast if you do use it.  
+- **Autocomplete:** Autocomplete can improve usability, but make sure it doesn't interfere with accessibility. Users should be able to easily review and override suggestions.

@@ -6,70 +6,79 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
+  - Feedback
   - LoadingSpinner
 tags:
   - component
+figmaLink: >-
+  https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1699-52373&m=dev
+
 ---
 
-# LoadingSpinner
+# Loading spinner
 
-Indicates ongoing processes or loading states
+---
 
-## Basic Usage
+A visual indicator that displays the loading status of an ongoing process. It can represent either determinate or indeterminate progress.
 
-[Explain the basic usage / usecase of the component].
+## Overview
 
-```jsx-live
-const App = () => <LoadingSpinner>I am LoadingSpinner!</LoadingSpinner>
-```
+A loading spinner's primary usage is to visually communicate to the user that a process is ongoing and that they need to wait. It indicates that the system is working and prevents the user from thinking the application is frozen or unresponsive.
 
+### Resources
 
-### Sizes
+Deep dive on details and access design library:
 
-Available sizes.
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2629-5965&m=dev)
 
-```jsx-live
-const App = () => {
+## Variables
 
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+Get familiar with the features. 
 
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <LoadingSpinner key={size} size={size}>'{size}' LoadingSpinner</LoadingSpinner>
-      ))}
-    </Stack>
-  )
-}
-```
+### Visuals
 
-### Variants
+##### On white background
 
-Available variants.
+Most common, this is the default spinner animation to be used on white backgrounds.
 
 ```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <LoadingSpinner key={variant} variant={variant}>'{variant}' LoadingSpinner</LoadingSpinner>
-      ))}
-    </Stack>
-  )
-}
+const App = () => <LoadingSpinner aria-label="Loading content" />
 ```
 
-### Colors
+#### On dark background
 
-[Explain usage with different colors/semantics.]
+This is the default spinner animation to be used on dark backgrounds.
+
+```jsx-live
+const App = () => <Stack backgroundColor="neutral.8"><LoadingSpinner aria-label="Loading content" tone="white" /></Stack>
+```
+
+### Size
+
+Loading spinners have five sizes to choose from, large, medium, small, x-small, and 2x-small. 
+
+```jsx-live
+const App = () => (
+  <Flex>
+    {["lg", "md", "sm", "xs", "2xs"].map((size) => (
+      <LoadingSpinner size={size} />
+    ))}
+  </Flex>
+)
+```
+
+### Animation logic
+
+This loader responds to a distinct timeline that corresponds to the progress of the loading content. 
+
+#### Indeterminate
+
+This spinner will spin indefinitely as it is being shown.
 
 ```jsx-live
 const App = () => {
   const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
 
   return (
     <Stack>
@@ -87,6 +96,152 @@ const App = () => {
 };
 ```
 
-## Props
+## Guidelines
+
+Loading spinner guidelines aim to provide clear and consistent visual feedback to users during processing delays, ensuring they understand the system is active and preventing frustration by indicating that they need to wait.
+
+**Currently we support the loading spinner, later we will be reworking to provide a classic progress bar.**
+
+### Best practices
+
+#### Loading spinner:
+
+- **Appropriate placement:** Position the spinner close to the element or area that's loading. For full-page loads, center the spinner on the screen. For inline loading, place the spinner in the location of the content that will be loading.
+- **Provide context:** If the loading time is expected to be lengthy, consider adding a brief message like "Loading..." or "Please wait..." alongside the spinner. For very long loading periods, consider adding a percentage bar, or estimated time to let the user come back when ready.
+- **Responsive and smooth animation:** Ensure the spinner's animation is smooth and doesn't lag or stutter.
+- **Accessibility:** Use ARIA attributes (e.g., aria-busy, aria-label) to provide context for screen readers. If the loading time is excessive, provide a way to cancel the loading process.
+- **Avoid overuse:** Use spinners only when necessary, such as during data fetching or processing.
+- **Fallback options:** Have a fallback plan in case the loading action fails. Display an error message, and provide a way for the user to retry.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Data is being fetched:** When your application is retrieving data from a server or database, especially if it might take a noticeable amount of time.
+- **Processes are running:** During background operations, file uploads, or complex calculations that cause a delay.
+- **Content is loading:** When new content is being loaded dynamically, such as images, videos, or web pages.
+- **Actions are being processed:** After a user initiates an action, such as submitting a form or saving data, and the system requires time to complete the task.
+- **Any time a user action causes a delay:** When a user interacts with the UI and there is a delay that could cause confusion or a perception of the UI being broken.
+
+> [!CAUTION]\
+> When not to use
+
+- **For extremely quick actions:** If an action completes in less than a few hundred milliseconds, a spinner is unnecessary and can feel jarring or distracting.
+- **For simple UI interactions:** Actions like toggling a switch, expanding a menu, or simple animations shouldn't trigger a spinner.
+- **When the wait is unpredictable or excessively long:** If you can't provide any indication of how long the wait will be, or if it might be excessively long, consider alternative indicators with a cancel option or other help text.
+- **When it creates unnecessary visual clutter:** Overusing spinners can make the UI feel busy and distracting.
+- **When a more subtle visual cue is sufficient:** For very short delays, a change in cursor, a slight fade, or a brief message might be more appropriate.
+
+### Loading spinner within elements
+
+When showing the process of content loading in you may add the loading spinner within elements.
+
+> [!TIP]\
+> **Do**
+>
+> - Use loading spinner in a disabled state so a user cannot interact with the button fully till the action is complete. 
+> - If the time expected to complete is short, no language is needed. 
+
+```jsx-live
+const App = () => <Flex gap="200">
+  <Button tone="primary" variant="solid" isDisabled>
+    <LoadingSpinner tone="white" /> 
+    Saving...
+  </Button> 
+  <Button tone="primary" variant="solid" isDisabled>
+    <LoadingSpinner tone="white" />
+  </Button>
+</Flex>
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not keep the button clickable while using a loading state.
+> - Do not use creative or funny phrases if using loading spinner in small areas, to avoid confusing the user.
+
+```jsx-live
+const App = () => <Flex gap="200">
+  <Button tone="primary" variant="solid">
+    <LoadingSpinner tone="white" /> 
+    Remembering details...
+  </Button> 
+</Flex>
+```
+
+> [!TIP]\
+> **Do**
+>
+> - Use the loading spinner to show that content will be populated in that area.
+
+```jsx-live
+const App = () => <Flex height="185px">
+  <img src="/images/loading-spinner/combo-box-guideline-do.png" alt="combo box do guideline" />
+</Flex>
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - If offering a toggle like option view, do not show options as separate  
+> - Does not include tooltips or labels, makes it confusing to users to understand this is a either/or choice.
+ 
+```jsx-live
+const App = () => <Flex height="185px">
+  <img src="/images/loading-spinner/combo-box-guideline-dont.png" alt="combo box don't guideline" />
+</Flex>
+```
+
+## Properties
 
 <PropTable id="LoadingSpinner" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+### Accessibility Standards
+
+#### 1. Perceivable:
+
+- **1.1.1 Non-text Content (Level A):**
+    - Provide text alternatives for any non-text content within or associated with links (e.g., icons embedded in links).
+    - Use alt text for images within links and provide text equivalents for other non-text content.
+- **1.4.1 Use of Color (Level A):**
+    - Avoid relying solely on color to distinguish links from surrounding text.
+    - Provide additional visual cues, such as underlines, bold text, or icons, to indicate links.
+    - Ensure that links remain distinguishable even when color is not available.
+- **1.4.3 Contrast (Minimum) (Level AA):**
+    - Ensure sufficient color contrast between link text and the surrounding text and background.
+    - Use a contrast checking tool to verify that the contrast ratio meets the minimum requirements.
+
+#### 2. Operable:
+
+- **2.1.1 Keyboard (Level A):**
+    - Make all links fully operable using the keyboard.
+    - Enable users to navigate to links using the Tab key.
+    - Allow users to activate links using the Enter key.
+- **2.4.4 Link Purpose (In Context) (Level A):**
+    - Write link text that clearly describes the destination or purpose of the link.
+    - Avoid generic link text such as "click here" or "read more" without sufficient context.
+    - Ensure that the link's purpose is clear from the surrounding context.
+- **2.4.7 Focus Visible (Level AA):**
+    - Provide a clear and visible focus indicator for links when they receive keyboard focus.
+    - Visually distinguish the focus state from the default state using outlines, highlights, or other visual cues.
+    - Avoid relying solely on color changes to indicate focus.
+
+#### 3. Understandable:
+
+- **3.1.2 Language of Parts (Level AA):**
+    - If a link leads to content in a different language, use the `lang` attribute to indicate the language of the linked content.
+- **3.2.1 On Focus (Level A):**
+    - Prevent links from unexpectedly changing the context of the page when they receive focus.
+    - Ensure that any context changes are initiated by the user activating the link.
+
+#### 4. Robust:
+
+- **4.1.2 Name, Role, Value (Level A):**
+    - Use the `<a>` element correctly to define links.
+    - Ensure that assistive technologies can correctly interpret links and their attributes.
+    - Use ARIA attributes (e.g., `aria-label`, `aria-describedby`) when necessary to provide additional information to assistive technologies, especially for complex links or custom implementations.

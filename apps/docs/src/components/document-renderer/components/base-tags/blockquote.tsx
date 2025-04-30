@@ -91,7 +91,7 @@ export const Blockquote = (props: BlockquoteProps) => {
           break;
         case firstChild.trim() === "[!TIP]":
           flavorProps = {
-            colorPalette: "success",
+            colorPalette: "positive",
           };
           break;
         case firstChild.trim() === "[!IMPORTANT]":
@@ -101,12 +101,12 @@ export const Blockquote = (props: BlockquoteProps) => {
           break;
         case firstChild.trim() === "[!WARNING]":
           flavorProps = {
-            colorPalette: "danger",
+            colorPalette: "warning",
           };
           break;
         case firstChild.trim() === "[!CAUTION]":
           flavorProps = {
-            colorPalette: "error",
+            colorPalette: "critical",
           };
           break;
         default:
@@ -126,8 +126,7 @@ export const Blockquote = (props: BlockquoteProps) => {
       borderColor="colorPalette.9"
       bg="colorPalette.2"
       color="colorPalette.11"
-      {...quoteFlavorProps}
-    >
+      {...quoteFlavorProps}>
       {Children.map(children, (child, idx) => {
         const isLastList = lastListElementIndex === idx;
         const isParagraph = isValidElement(child) && child.type === Paragraph;
@@ -154,8 +153,7 @@ export const Blockquote = (props: BlockquoteProps) => {
                   mr="100"
                   display="inline-block"
                   fontSize="500"
-                  asChild
-                >
+                  asChild>
                   {cleanQuoteFlavor(firstChild.trim())}
                 </Box>,
                 ...child.props.children.slice(2),
@@ -175,7 +173,7 @@ export const Blockquote = (props: BlockquoteProps) => {
             ListItem
           );
 
-          if (listItemCount > 1) {
+          if (listItemCount >= 1) {
             return child;
           }
 

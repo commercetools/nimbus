@@ -140,9 +140,29 @@ export const InvisibleLabel: Story = {
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
     const htmlInput = canvas.getByTestId("test-checkbox");
-
     await step("Has alternative label", async () => {
       await expect(htmlInput).toHaveAttribute("aria-label", args["aria-label"]);
+    });
+  },
+};
+
+export const StyleProps: Story = {
+  args: {
+    children: "I have an inline margin of 40px",
+    // @ts-expect-error: data-testid is not a valid prop
+    "data-testid": "test-checkbox",
+    "aria-label": "Checkbox without label",
+    mx: "40px",
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const htmlLabel = canvasElement.querySelector(
+      '[data-slot="root"]'
+    ) as HTMLLabelElement;
+    await step("Passes style props as expected", async () => {
+      await expect(
+        getComputedStyle(htmlLabel).getPropertyValue("margin-inline")
+      ).toBe("40px");
     });
   },
 };

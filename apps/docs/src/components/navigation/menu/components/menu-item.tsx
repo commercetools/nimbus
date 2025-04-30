@@ -48,8 +48,8 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
         colorPalette={isActiveRoute ? "primary" : "neutral"}
         display="block"
         color={level === 0 ? "colorPalette.12" : "colorPalette.11"}
-        fontWeight={isActiveRoute || level === 0 ? "700" : "400"}
-        height="1000"
+        fontWeight={level === 0 ? "700" : "400"}
+        minHeight="1000"
         px="400"
         py="200"
         bg={isActiveRoute ? "colorPalette.3" : "transparent"}

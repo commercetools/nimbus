@@ -1,6 +1,6 @@
 # Nimbus Design System
 
-![Nimbus Logo](https://placehold.co/840x270?text=Nimbus)
+![Nimbus Logo](./apps/docs/public/readme_cover.jpg)
 
 > A modern, extensible design system for building consistent, accessible user
 > interfaces.
