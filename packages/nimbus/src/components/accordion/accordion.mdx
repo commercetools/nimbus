@@ -84,6 +84,7 @@ const App = () => (
       <Accordion.Header>
         Headline
         <Accordion.HeaderRightContent >
+          <Stack direction="horizontal" alignItems="center">
           <IconButton tone="primary" variant="ghost" size="sm">
             <Icons.Edit />
           </IconButton>
@@ -96,12 +97,12 @@ const App = () => (
           <IconButton tone="critical" variant="ghost" size="sm">
             <Icons.Delete />
           </IconButton>
+          </Stack>
         </Accordion.HeaderRightContent>
       </Accordion.Header>
       <Accordion.Content>Content goes here</Accordion.Content>
     </Accordion.Item>
   </Accordion.Root>
-
 );
 ```
 
@@ -111,7 +112,38 @@ The main use for accordions is for forms and filters. Custom content can be crea
 for the body of the accordion. 
 
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Accordion.Root size="sm">
+    <Accordion.Item>
+      <Accordion.Header>
+        Details
+        <Accordion.HeaderRightContent>
+          <Stack direction="horizontal" alignItems="center">
+            <Button tone="primary" size="xs" variant="outline">
+              <Icons.Undo />
+              Revert
+            </Button>
+            <Button tone="primary" size="xs" variant="solid">
+              Save changes
+            </Button>
+          </Stack>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>
+        First name
+        <TextInput size="sm" value="john" w="100%"/>
+        <br />
+        Last name
+        <TextInput size="sm" value="doe" w="100%"/>
+        <br />
+        Birthday
+        <TextInput size="sm" value="10.05.1982" w="100%"/>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
 
 ## Guidelines
 
@@ -142,8 +174,19 @@ figma library components to make designing common shared uses easier.
 This action allows users to discard any unsaved changes they've made to the 
 controls since the last successful save or the default settings were loaded.
 
-MISSING CODE
-
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center">
+    <Button tone="primary" size="xs" variant="outline">
+      <Icons.Undo />
+      Revert
+    </Button>
+    <Button tone="primary" size="xs" variant="solid">
+      Save changes
+    </Button>
+  </Stack>
+);
+```
 
 #### Cancel and save
 
@@ -152,36 +195,71 @@ Similar to revert and save, there is a difference in persistence and scope.
 over a longer period, while "Cancel" typically discards unsaved changes 
 from the current interaction.
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center">
+    <Button tone="primary" size="xs" variant="outline">
+      Cancel
+    </Button>
+    <Button tone="primary" size="xs" variant="solid">
+      Save
+    </Button>
+  </Stack>
+);
+```
 
 #### Four icon buttons
 
 Use up to four icons to allow your user to control the information within the 
 associated accordion.
 
-
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center">
+    <IconButton tone="primary" variant="ghost">
+      <Icons.Edit />
+    </IconButton>
+    <IconButton tone="primary" variant="ghost">
+      <Icons.PushPin />
+    </IconButton>
+    <IconButton tone="primary" variant="ghost">
+      <Icons.FileCopy />
+    </IconButton>
+    <IconButton tone="critical" variant="ghost">
+      <Icons.Delete />
+    </IconButton>
+  </Stack>
+);
+```
 
 #### Delete
 
 Single icon button, this is a common used control, used to delete the 
 entire accordion and content. 
 
-MISSING CODE
+```jsx-live
+  const App = () => (
+    <IconButton tone="critical" variant="ghost">
+      <Icons.Delete />
+    </IconButton>
+  );
+```
 
 #### Switch
 
 The use of switch often signals the effect of the settings being applied, 
 or activating the content within to be edited by the user.
 
-MISSING CODE
+
+![](/images/accordion/switch-button-with-label.png)
+
 
 #### Select input
 
 Allowing the users to select from a list. This control often controls the 
 type of form that will be shown for user completion.
 
-MISSING CODE
+![](/images/accordion/select-input.png)
 
 #### Custom controls
 
@@ -224,7 +302,27 @@ in meaningful ways for the user.
 > 
 > - Do organize the right information within accordions, if all closed, users should be able to navigate information easily.
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Accordion.Root size="sm">
+    <Accordion.Item>
+      <Accordion.Header>
+        General information
+      </Accordion.Header>
+      <Accordion.Content>
+        Product name
+        <TextInput size="sm" value="Cozy coffee mug" w="100%"/>
+        <br />
+        product description
+        <TextInput size="sm" value="A 15oz hand-thrown mug made by artisans." w="100%"/>
+        <br />
+        Product key
+        <TextInput size="sm" value="Cozy-coffee-mug" w="100%"/>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -232,7 +330,64 @@ MISSING CODE
 > - Do not nest accordions excessively.  
 > - Do not use accordion controls when nested to reduce complexity.
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Accordion.Root size="sm">
+    <Accordion.Item>
+      <Accordion.Header>
+        Product Details
+        <Accordion.HeaderRightContent>
+          <Stack direction="horizontal" alignItems="center">
+            <IconButton tone="primary" variant="ghost" size="sm">
+              <Icons.Edit />
+            </IconButton>
+            <IconButton tone="primary" variant="ghost" size="sm">
+              <Icons.PushPin />
+            </IconButton>
+            <IconButton tone="primary" variant="ghost" size="sm">
+              <Icons.FileCopy />
+            </IconButton>
+            <IconButton tone="critical" variant="ghost" size="sm">
+              <Icons.Delete />
+            </IconButton>
+          </Stack>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>
+        <Accordion.Root size="sm">
+          <Accordion.Item>
+            <Accordion.Header>
+              Variants
+              <Accordion.HeaderRightContent>
+                <IconButton tone="primary" variant="ghost" size="sm">
+                  <Icons.PushPin />
+                </IconButton>
+              </Accordion.HeaderRightContent>
+            </Accordion.Header>
+            <Accordion.Content>
+              <Accordion.Root size="sm">
+                <Accordion.Item>
+                  <Accordion.Header>
+                    Attributes
+                    <Accordion.HeaderRightContent>
+                      <IconButton tone="critical" variant="ghost" size="sm">
+                        <Icons.Delete />
+                      </IconButton>
+                    </Accordion.HeaderRightContent>
+                  </Accordion.Header>
+                  <Accordion.Content>
+                    An accordion in an accordion... Inception.
+                  </Accordion.Content>
+                </Accordion.Item>
+              </Accordion.Root>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
 
 #### Accordion controls
 
@@ -245,7 +400,43 @@ Make it easy for users to understand what the attached controls do, and how to i
 on what the tools are for and what their effects should be.
 > - Include tooltips to describe icon buttons when used.
 
-MISSING CODE
+```jsx-live
+const App = () => (
+  <Accordion.Root size="sm">
+    <Accordion.Item>
+      <Accordion.Header>
+        General information
+        <Accordion.HeaderRightContent>
+        <Stack direction="horizontal" alignItems="center">
+            <TooltipTrigger>
+              <Button tone="primary" size="xs" variant="outline">
+                Cancel
+              </Button>
+              <Tooltip>Cancel information changes</Tooltip>
+            </TooltipTrigger>
+            <TooltipTrigger>
+              <Button tone="primary" size="xs" variant="solid">
+                Save
+              </Button>
+              <Tooltip>Save general information changes</Tooltip>
+            </TooltipTrigger>
+          </Stack>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>
+        Product name
+        <TextInput size="sm" value="Cozy coffee mug" w="100%"/>
+        <br />
+        product description
+        <TextInput size="sm" value="A 15oz hand-thrown mug made by artisans." w="100%"/>
+        <br />
+        Product key
+        <TextInput size="sm" value="Cozy-coffee-mug" w="100%"/>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -253,8 +444,37 @@ MISSING CODE
 > - Do not add controls that have seemingly no reason to be there for the majority of the users. If certain 
 controls require permissions, consider hiding them from certain users to simplify workspaces.
 
-MISSING CODE
-
+```jsx-live
+const App = () => (
+  <Accordion.Root size="sm">
+    <Accordion.Item>
+      <Accordion.Header>
+        General information
+        <Accordion.HeaderRightContent>
+        <Stack direction="horizontal" alignItems="center">
+              <Button tone="primary" size="xs" variant="outline">
+                Cancel
+              </Button>
+              <Button tone="primary" size="xs" variant="solid">
+                Save
+              </Button>
+          </Stack>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>
+        Product name
+        <TextInput size="sm" value="Cozy coffee mug" w="100%"/>
+        <br />
+        product description
+        <TextInput size="sm" value="A 15oz hand-thrown mug made by artisans." w="100%"/>
+        <br />
+        Product key
+        <TextInput size="sm" value="Cozy-coffee-mug" w="100%"/>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
 ## Specs
 
 <PropTable id="Accordion" />
@@ -313,7 +533,6 @@ readers (`aria-hidden="true"`).
 
 - Avoid relying solely on \<details\> and \<summary\> for complex accordions. ARIA attributes offer 
 more reliable and controllable accessibility.
-
 
 
 
