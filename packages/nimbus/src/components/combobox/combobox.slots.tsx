@@ -1,32 +1,72 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
-  type RecipeProps,
-  type UnstyledProp,
-  createRecipeContext,
+  type RecipeVariantProps,
+  createSlotRecipeContext,
 } from "@chakra-ui/react";
+import { type ComboBoxProps as RaComboBoxProps } from "react-aria-components";
+import { comboBoxSlotRecipe } from "./combobox.recipe";
 
-import { comboboxRecipe } from "./combobox.recipe";
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "combobox",
+});
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
-interface ComboboxRecipeProps extends RecipeProps<"div">, UnstyledProp {}
+// ComboBox Root
+export interface ComboBoxRootSlotProps
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof comboBoxSlotRecipe> & RaComboBoxProps<object>
+  > {}
+export const ComboBoxRootSlot = withProvider<
+  HTMLDivElement,
+  ComboBoxRootSlotProps
+>("div", "root");
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export interface ComboboxRootProps
-  extends HTMLChakraProps<"div", ComboboxRecipeProps> {}
+// Trigger Button
+export interface ComboBoxTriggerSlotProps extends HTMLChakraProps<"button"> {}
+export const ComboBoxTriggerSlot = withContext<
+  HTMLButtonElement,
+  ComboBoxTriggerSlotProps
+>("button", "trigger");
 
-const { withContext } = createRecipeContext({ recipe: comboboxRecipe });
+// Input
+export interface ComboBoxInputSlotProps extends HTMLChakraProps<"input"> {}
+export const ComboBoxInputSlot = withContext<
+  HTMLInputElement,
+  ComboBoxInputSlotProps
+>("input", "input");
 
-/**
- * Root component that provides the styling context for the Combobox component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const ComboboxRoot = withContext<HTMLDivElement, ComboboxRootProps>(
-  "div"
+// Tag
+export interface ComboBoxTagSlotProps extends HTMLChakraProps<"li"> {}
+export const ComboBoxTagSlot = withContext<HTMLLIElement, ComboBoxTagSlotProps>(
+  "li",
+  "tag"
 );
+
+// TagGroup
+export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"ul"> {}
+export const ComboBoxTagGroupSlot = withContext<
+  HTMLUListElement,
+  ComboBoxTagGroupSlotProps
+>("ul", "tagGroup");
+
+// ListBox
+export interface ComboBoxListBoxSlotProps extends HTMLChakraProps<"ul"> {}
+export const ComboBoxListBoxSlot = withContext<
+  HTMLUListElement,
+  ComboBoxListBoxSlotProps
+>("ul", "listBox");
+
+// ListBoxItem (option)
+export interface ComboBoxOptionSlotProps extends HTMLChakraProps<"li"> {}
+export const ComboBoxOptionSlot = withContext<
+  HTMLLIElement,
+  ComboBoxOptionSlotProps
+>("li", "option");
+
+// ListBoxGroup (optionGroup)
+export interface ComboBoxOptionGroupSlotProps extends HTMLChakraProps<"ul"> {}
+export const ComboBoxOptionGroupSlot = withContext<
+  HTMLUListElement,
+  ComboBoxOptionGroupSlotProps
+>("ul", "optionGroup");
