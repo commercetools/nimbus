@@ -30,8 +30,8 @@ controls for accessing information or offer a simple click-to-expand interaction
 
 Deep dive on details and access design library.
 
-[TECH RELATED LINK](https://react-spectrum.adobe.com/react-spectrum/Tooltip.html#tooltip)
-[TECH RELATED LINK](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+[React ARIA](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)
+[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
 [Figma library]( https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2702-5711&t=kxCRBAio5yKpfcU0-4)
 
 
@@ -259,7 +259,16 @@ or activating the content within to be edited by the user.
 Allowing the users to select from a list. This control often controls the 
 type of form that will be shown for user completion.
 
-![](/images/accordion/select-input.png)
+```jsx-live
+
+const App = () => (
+  <Select.Root aria-label="Select an option" data-testid="select" selectedKey="1" >
+    <Select.Options>
+      <Select.Option id="1">Input value</Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 #### Custom controls
 
@@ -488,10 +497,10 @@ disabilities, by addressing visual, auditory, cognitive, and physical limitation
 
 #### 1. Structure and Semantics: 
 
-- **1.3.1 Info and Relationships:**  Use appropriate HTML elements to structure the accordion. Employ \<button\> 
+- **1.3.1 Info and Relationships:**  Use appropriate HTML elements to structure the accordion. Employ `<button>` 
 for headers controlling panels. Use separate elements for content panels. Establish clear relationships between 
 triggers and content programmatically.
-- **Headings:** Utilize heading elements (\<h3\>, \<h2\>, etc.) for accordion headers. Provide semantic structure 
+- **Headings:** Utilize heading elements (`<h3>`, `<h2>`, etc.) for accordion headers. Provide semantic structure 
 for navigation by assistive technologies.
 
 #### 2. ARIA Attributes:
@@ -505,19 +514,19 @@ the button to the content.
 
 #### 3. Keyboard Navigation:
 
-- **2.1.1 Keyboard:** Ensure full keyboard operability. Allow focus to reach each accordion header (\<button\>) 
+- **2.1.1 Keyboard:** Ensure full keyboard operability. Allow focus to reach each accordion header (`<button>`) 
 using Tab. Enable toggling panel visibility using Space or Enter on focused headers. Consider arrow key navigation 
 between headers (enhancement).
 
 #### 4. Visibility and Focus:
 
-- **2.4.7 Focus Visible:** Provide a clear visual focus indicator for focused accordion headers (\<button\>). 
+- **2.4.7 Focus Visible:** Provide a clear visual focus indicator for focused accordion headers (`<button>`). 
 Assist keyboard users in identifying the selected element.
 
 #### 5. Content Visibility (for Assistive Tech):
 
 - **Ensure content of collapsed panels is:** Not focusable via keyboard. Hidden from screen readers (e.g., 
-`aria-hidden="true", display: none`).
+`aria-hidden="true"`, `display: none`).
 
 #### 6. Color Contrast:
 
@@ -531,7 +540,7 @@ readers (`aria-hidden="true"`).
 
 #### 8. Avoidance of Less Accessible Methods:
 
-- Avoid relying solely on \<details\> and \<summary\> for complex accordions. ARIA attributes offer 
+- Avoid relying solely on `<details>` and `<summary>` for complex accordions. ARIA attributes offer 
 more reliable and controllable accessibility.
 
 
