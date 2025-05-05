@@ -209,7 +209,7 @@ importers:
         specifier: catalog:tooling
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.14.0)(@vitest/browser@3.1.1)(msw@2.7.0(@types/node@22.14.0)(typescript@5.8.3))(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)
 
-  apps/demo-app:
+  apps/blank-app:
     dependencies:
       '@commercetools/nimbus':
         specifier: workspace:*
