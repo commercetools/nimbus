@@ -6,7 +6,8 @@ import {
   useColorMode,
   Button,
 } from "@commercetools/nimbus";
-import { CocoCube } from "./components/cococube";
+
+import { CommercetoolsCube } from "@commercetools/nimbus-icons";
 
 export const App = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -22,7 +23,7 @@ export const App = () => {
           boxSize="5600"
           asChild
         >
-          <CocoCube />
+          <CommercetoolsCube />
         </Box>
         <Heading>@commercetools/nimbus</Heading>
         <Text mx="auto" color="colorPalette.11" mb="600">
