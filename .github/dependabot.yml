@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # Configuration for pnpm dependencies in the monorepo root
+  - package-ecosystem: "npm" # "npm" = for pnpm, yarn, and npm projects
+    directory: "/" # Root directory where pnpm-lock.yaml and pnpm-workspace.yaml are located
+    schedule:
+      interval: "daily" # How often to check for updates (e.g., "daily", "weekly", "monthly")
+      time: "04:00" # Optional: Time of day to check (UTC)
+      timezone: "Europe/Berlin" # Optional: Specify timezone for the schedule time
+    labels:
+      - "dependencies"
