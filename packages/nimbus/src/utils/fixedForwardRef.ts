@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, type JSX } from "react";
 
 /**
  * This is a workaround to fix the type of `forwardRef`.
