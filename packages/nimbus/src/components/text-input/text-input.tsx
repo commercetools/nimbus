@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, type ChangeEvent } from "react";
 import { TextInputRootSlot } from "./text-input.slots";
 import type { TextInputProps } from "./text-input.types";
 import { useObjectRef } from "react-aria";
@@ -31,9 +31,37 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 
     const { inputProps } = useTextField(otherProps, ref);
 
+    const handleNativeOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+      // You can access event.target, event.key, event.preventDefault(), etc.
+      // props.onChange might still be called with just the value by inputProps.onChange
+      if (props.onNativeChange) {
+        props.onNativeChange(event);
+      }
+    };
+
+    // A practical way to use chain for the event:
+    const originalAriaOnChange = inputProps.onChange;
+
+    const chainedOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+      // Call your custom handler with the native event
+      handleNativeOnChange(event);
+
+      // Ensure React Aria's original onChange logic (which calls your props.onChange with value) still runs
+      if (originalAriaOnChange) {
+        originalAriaOnChange(event); // React Aria's handler expects the event and extracts the value
+      }
+    };
+
+    const finalInputProps = {
+      ...inputProps,
+      onChange: chainedOnChange,
+    };
+
+    console.log("finalInputProps", finalInputProps);
+
     return (
       <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
-        <Input ref={ref} {...otherProps} {...inputProps} />
+        <Input ref={ref} {...otherProps} {...finalInputProps} />
       </TextInputRootSlot>
     );
   }

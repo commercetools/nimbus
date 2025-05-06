@@ -88,6 +88,37 @@ export const Variants: Story = {
   },
 };
 
+export const Required: Story = {
+  args: {
+    isRequired: true,
+    placeholder: "required text input",
+    ["aria-label"]: "test-input-required",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {inputVariants.map((variant) => (
+          <TextInput
+            key={variant as string}
+            {...args}
+            variant={variant}
+            placeholder={`${variant as string} required`}
+            aria-label={`${variant as string}-required`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("solid-required");
+
+    await step("Has aria-required attribute", async () => {
+      await expect(input).toHaveAttribute("aria-required", "true");
+    });
+  },
+};
+
 export const Disabled: Story = {
   args: {
     isDisabled: true,
@@ -277,6 +308,29 @@ export const InputTypes: Story = {
           <TextInput key={type} {...args} placeholder={type} type={type} />
         ))}
       </Stack>
+    );
+  },
+};
+
+export const NativeOnChange: Story = {
+  args: {
+    ["aria-label"]: "test-input",
+    onNativeChange: fn(),
+  },
+  play: async ({ canvasElement, step, args }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("test-input");
+
+    await step(
+      "Calls onNativeChange handler with a synthetic event",
+      async () => {
+        await userEvent.type(input, "Hello");
+        await expect(args.onNativeChange).toHaveBeenCalledWith(
+          expect.objectContaining({
+            target: expect.objectContaining({ value: "Hello" }),
+          })
+        );
+      }
     );
   },
 };

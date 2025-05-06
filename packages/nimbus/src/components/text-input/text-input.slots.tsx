@@ -11,7 +11,10 @@ export interface TextInputRecipeProps
   extends RecipeVariantProps<typeof textInputRecipe>,
     UnstyledProp {}
 
-export type TextInputRootProps = HTMLChakraProps<"input", TextInputRecipeProps>;
+export type TextInputRootSlotProps = HTMLChakraProps<
+  "input",
+  TextInputRecipeProps
+>;
 
 const { withContext } = createRecipeContext({ recipe: textInputRecipe });
 
@@ -21,5 +24,5 @@ const { withContext } = createRecipeContext({ recipe: textInputRecipe });
  */
 export const TextInputRootSlot = withContext<
   HTMLInputElement,
-  TextInputRootProps
+  TextInputRootSlotProps
 >("input");
