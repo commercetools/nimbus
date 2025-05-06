@@ -1,9 +1,10 @@
 {
   "name": "@commercetools/nimbus-icons",
-  "version": "0.0.3-rc1",
-  "main": "dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "version": "0.0.3-rc2",
+  "main": "dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "import": {
