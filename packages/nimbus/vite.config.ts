@@ -50,20 +50,6 @@ export const baseConfig = {
     },
     rollupOptions: {
       external,
-      output: {
-        // Provide global variables to use in the UMD build for externalized deps
-        globals: {
-          // react: "React",
-          // "react-dom": "ReactDOM",
-          // "react/jsx-runtime": "jsxRuntime",
-          // "@chakra-ui/react": "ChakraUI",
-          // // "@emotion/is-prop-valid": "isPropValid",
-          // // "next-themes": "NextThemes",
-          // // "react-use": "ReactUse",
-          // "@commercetools/nimbus-icons": "NimbusIcons",
-          // "@commercetools/nimbus-tokens": "NimbusTokens",
-        },
-      },
     },
   },
   // Ensure CommonJS and ES modules are handled properly
