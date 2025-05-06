@@ -33,7 +33,7 @@
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
-    "jotai": "^2.10.1",
+    "jotai": "^2.12.3",
     "js-yaml": "^4.1.0",
     "lodash": "catalog:utils",
     "mdx": "^0.3.1",
