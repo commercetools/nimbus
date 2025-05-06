@@ -53,8 +53,6 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       onChange: chainedOnChange,
     };
 
-    console.log("finalInputProps", finalInputProps);
-
     return (
       <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
         <Input ref={ref} {...finalInputProps} />
