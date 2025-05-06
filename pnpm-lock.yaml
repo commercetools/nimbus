@@ -167,7 +167,7 @@ catalogs:
 
 overrides:
   rollup: ^4.34.2
-  '@babel/runtime': ^7.26.10
+  '@babel/runtime': ^7.27.1
   prismjs: ^1.30.0
 
 importers:
