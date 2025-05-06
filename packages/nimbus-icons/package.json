@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus-icons",
-  "version": "0.0.3-rc2",
+  "version": "0.0.4",
   "main": "dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "sideEffects": false,
