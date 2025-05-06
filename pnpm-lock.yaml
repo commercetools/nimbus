@@ -429,6 +429,9 @@ importers:
       react-aria-components:
         specifier: catalog:react
         version: 1.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-hotkeys-hook:
+        specifier: ^4.6.1
+        version: 4.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-stately:
         specifier: catalog:react
         version: 3.35.0(react@18.3.1)
@@ -517,9 +520,6 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 18.3.1(react@18.3.1)
-      react-hotkeys-hook:
-        specifier: ^4.6.1
-        version: 4.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-use:
         specifier: ^17.5.1
         version: 17.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
