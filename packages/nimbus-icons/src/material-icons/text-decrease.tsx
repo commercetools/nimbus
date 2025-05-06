@@ -1,0 +1,21 @@
+import type { SVGProps } from "react";
+import { Ref, forwardRef } from "react";
+const SvgTextDecrease = (
+  props: SVGProps<SVGSVGElement>,
+  ref: Ref<SVGSVGElement>
+) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    ref={ref}
+    {...props}
+  >
+    <path d="M.99 19h2.42l1.27-3.58h5.65L11.59 19h2.42L8.75 5h-2.5zm4.42-5.61L7.44 7.6h.12l2.03 5.79zM23 11v2h-8v-2z" />
+  </svg>
+);
+const ForwardRef = forwardRef(SvgTextDecrease);
+export default ForwardRef;

@@ -1,0 +1,21 @@
+import type { SVGProps } from "react";
+import { Ref, forwardRef } from "react";
+const SvgSignalCellularNoSim = (
+  props: SVGProps<SVGSVGElement>,
+  ref: Ref<SVGSVGElement>
+) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    ref={ref}
+    {...props}
+  >
+    <path d="M10.83 5H17v9.11l2 2V5c0-1.1-.9-2-2-2h-7L7.94 5.06l1.42 1.42zm10.43 16.21L3.79 3.74 2.38 5.15 5 7.77V19a2 2 0 0 0 2 2h11.23l1.62 1.62zM7 19V9.79L16.23 19z" />
+  </svg>
+);
+const ForwardRef = forwardRef(SvgSignalCellularNoSim);
+export default ForwardRef;
