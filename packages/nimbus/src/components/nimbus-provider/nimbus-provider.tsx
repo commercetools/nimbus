@@ -6,7 +6,6 @@ import {
 } from "@chakra-ui/react";
 import { ColorModeProvider, type ColorModeProviderProps } from "./color-mode";
 import { system } from "../../theme";
-å;
 
 export function NimbusProvider({ children, ...props }: ColorModeProviderProps) {
   return (
