@@ -20,12 +20,14 @@ const external = [
 
   // UI frameworks & styling.
   "@chakra-ui/react",
-  "@emotion/is-prop-valid",
+  // "react-aria",
+  // "react-aria-components",
+  // "react-stately",
+  // "@emotion/is-prop-valid",
 
   // Utility libraries
-  "react-hotkeys-hook",
-  "react-use",
-  "next-themes",
+  // "react-use",
+  // "next-themes",
 
   // Internal packages
   "@commercetools/nimbus-icons",
@@ -47,28 +49,10 @@ export const baseConfig = {
       entry: resolve(__dirname, "./src/index.ts"),
       name: "nimbus",
       fileName: "index",
-      formats: ["es", "umd"] satisfies LibraryFormats[],
+      formats: ["es", "cjs"] satisfies LibraryFormats[],
     },
     rollupOptions: {
       external,
-      output: {
-        // Provide global variables to use in the UMD build for externalized deps
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-          "react/jsx-runtime": "jsxRuntime",
-
-          "@chakra-ui/react": "ChakraUI",
-          "@emotion/is-prop-valid": "isPropValid",
-
-          "next-themes": "NextThemes",
-          "react-hotkeys-hook": "ReactHotkeysHook",
-          "react-use": "ReactUse",
-
-          "@commercetools/nimbus-icons": "NimbusIcons",
-          "@commercetools/nimbus-tokens": "NimbusTokens",
-        },
-      },
     },
   },
   // Ensure CommonJS and ES modules are handled properly

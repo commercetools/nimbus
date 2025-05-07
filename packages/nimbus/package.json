@@ -1,7 +1,7 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.4",
-  "main": "./dist/index.umd.cjs",
+  "version": "0.0.5",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -13,7 +13,7 @@
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.umd.cjs"
+        "default": "./dist/index.cjs"
       }
     },
     "./package.json": "./package.json"
@@ -28,7 +28,6 @@
   "sideEffects": [
     "*.css"
   ],
-  "source": "src/index.ts",
   "typesVersions": {
     "*": {
       "*": [
@@ -39,14 +38,17 @@
   "dependencies": {
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
-    "react-stately": "catalog:react"
+    "react-stately": "catalog:react",
+    "react-hotkeys-hook": "^4.6.1",
+    "react-use": "^17.5.1",
+    "next-themes": "catalog:react",
+    "@emotion/is-prop-valid": "catalog:react"
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
-    "@emotion/is-prop-valid": "catalog:react",
     "@pandacss/types": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
@@ -65,10 +67,7 @@
     "@vitest/coverage-v8": "catalog:tooling",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.10.2",
-    "next-themes": "catalog:react",
     "playwright": "catalog:tooling",
-    "react-hotkeys-hook": "^4.6.1",
-    "react-use": "^17.5.1",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "storybook": "catalog:tooling",
@@ -82,12 +81,8 @@
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
-    "@emotion/is-prop-valid": "catalog:react",
-    "next-themes": "catalog:react",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "react-hotkeys-hook": "^4.6.1",
-    "react-use": "^17.5.1",
     "typescript": "catalog:tooling"
   },
   "scripts": {
