@@ -16,24 +16,24 @@ tags:
 
 # Image
 
-The `Image` component is used to display images. It's a proxy for the
-[Chakra UI Image component](https://chakra-ui.com/docs/components/image) and
-supports all its features, including fallback images and fit/sizing options.
+The `Image` component is used to display images.
 
-## Import
+
+
+## Usage
+
+### Import
 
 ```jsx
 import { Image } from "@commercetools/nimbus";
 ```
 
-## Usage
-
-### Basic Image
+### Basic Usage
 
 To display an image, provide a `src`-image and an `alt`-text via their respective props.
 
-By default the image will consume max. 100% of the available horizontal space
-and adjust its height to maintain the image's aspect ratio.
+Without further configuration, the image will occupy the lesser of its natural width or 100% of the available horizontal space.
+Its height will adjust to maintain the image's original aspect ratio.
 
 ```jsx-live
 const App = () => (
@@ -44,8 +44,8 @@ const App = () => (
 ### Sizing
 
 If you need to set a fixed width and/or height, you can use the `width` and `height` props.
-If you set both, the image will be cropped to fit the given dimensions. Other cropping strategies
-are available via the `fit` prop.
+If only one of these props is set, the image will scale to maintain its original aspect ratio.
+If you set both, the image will be forced into the given dimensions, ignoring its original aspect ratio
 
 ```jsx-live
 const App = () => (
@@ -53,24 +53,73 @@ const App = () => (
 );
 ```
 
+### Aspect Ratio
 
-### Fit + Position
+You can enforce a specific aspect ratio for the image using the `aspectRatio` prop.
+The image will maintain this ratio, and its dimensions will adjust accordingly based on the available space or other sizing props.
+If you also provide `width` or `height`, the `aspectRatio` will be maintained, and the other dimension will be calculated.
+If both `width` and `height` are provided, `aspectRatio` is ignored.
 
-Control how the image fits into its container using the `fit` prop and size props like `boxSize`, `width`, `height`.
+```jsx-live
+const App = () => (
+  <Stack direction="row" align="center">
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Original Aspect Ratio"
+      width="200px"
+      outline="1px solid lightblue"
+    />
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="16/9 Aspect Ratio"
+      aspectRatio={16/9}
+      width="200px"
+      outline="1px solid lightcoral"
+    />
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="4/3 Aspect Ratio, height driven"
+      aspectRatio={4/3}
+      height="150px"
+      outline="1px solid lightgreen"
+    />
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Square Aspect Ratio"
+      aspectRatio={1}
+      width="200px"
+      outline="1px solid gold"
+    />
+  </Stack>
+);
+```
+
+### Fit + Align
+
+Once the image element has occupied its allocated space (determined by `width`, `height`, or `aspectRatio` props, or by the browser's default behavior for images),
+the `fit` prop governs how the actual image content is displayed within that space.
 
 #### Fit
 
-- `fill` - This is default. The image is resized to fill the given dimension. If necessary, the image will be stretched or squished to fit
-- `contain` - The image keeps its aspect ratio, but is resized to fit within the given dimension
-- `cover` - The image keeps its aspect ratio and fills the given dimension. The image will be clipped to fit
-- `none` - The image is not resized
-- `scale-down` - the image is scaled down to the smallest version of none or contain
+| Value     | Description                                                                                                                          |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `cover`   | The default. The image keeps its aspect ratio and fills the given dimension. The image will be _clipped_ to fit.                     |
+| `fill`    | The image is resized to fill the given dimension. If necessary, the image will be _stretched_ or _squished_ to fit.                  |
+| `contain` | The image _keeps its aspect ratio_, but is resized to fit within the given dimension,<br/> potentially leaving some space uncovered. |
+| `none`    | The image is not resized.                                                                                                            |
 
+Here is a demo of the different fit values, the red outline shows the allocated space:
 
 ```jsx-live
 const App = () => (
   <Stack direction="row" spacing="200">
-   <Box>
+   <Image
+      boxSize="128px"
+      fit="cover"
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Covered image"
+      outline="1px solid red"
+    />
     <Image
       boxSize="128px"
       fit="fill"
@@ -78,28 +127,60 @@ const App = () => (
       alt="Filled image"
       outline="1px solid red"
     />
-   </Box>
     <Image
       boxSize="128px"
       fit="contain"
       src="https://i.imgur.com/fqpnfaN.png"
       alt="Contained image"
       outline="1px solid red"
-    />
-    <Image
-      boxSize="128px"
-      fit="cover"
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Covered image"
-      outline="1px solid red"
-    />
-    
+    />    
     <Image
       boxSize="128px"
       fit="none"
       src="https://i.imgur.com/fqpnfaN.png"
       alt="Filled image"
       outline="1px solid red"
+    />
+  </Stack>
+);
+```
+
+#### Align
+
+The `align` prop (shorthand for the CSS `object-position` property) controls the positioning of the image content within the component's bounds.
+This is relevant for `fit` modes like `"contain"` (where the image might not fill the bounds) or `"cover"` (where the image is clipped).
+
+It determines which part of the image is visible or how it's aligned within any empty space.
+You can use values like `"left"`, `"right"`, `"top"`, `"bottom"`, `"center"` (default), or combinations like `"top left"`, `"bottom right"`.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" spacing="4">
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Align Top Left"
+      boxSize="200px"
+      fit="contain"
+      align="top left"
+      outline="1px solid dodgerblue"
+      backgroundColor="aliceblue"
+    />
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Align Bottom Right"
+      boxSize="200px"
+      fit="contain"
+      align="bottom right"
+      outline="1px solid orangered"
+      backgroundColor="antiquewhite"
+    />
+    <Image
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Align Center (Default)"
+      boxSize="200px"
+      fit="contain"
+      outline="1px solid mediumseagreen"
+      backgroundColor="honeydew"
     />
   </Stack>
 );
@@ -133,7 +214,6 @@ const App = () => (
   />
 );
 ```
-
 ## Props
 
 <PropTable id="Image"/>

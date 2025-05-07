@@ -4,6 +4,7 @@ import {
 } from "@chakra-ui/react";
 import { forwardRef } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ImageProps extends ChakraImageProps {}
 
 /**
