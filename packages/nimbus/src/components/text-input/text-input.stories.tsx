@@ -96,22 +96,16 @@ export const Required: Story = {
   },
   render: (args) => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {inputVariants.map((variant) => (
-          <TextInput
-            key={variant as string}
-            {...args}
-            variant={variant}
-            placeholder={`${variant as string} required`}
-            aria-label={`${variant as string}-required`}
-          />
-        ))}
-      </Stack>
+      <TextInput
+        {...args}
+        placeholder="required text input"
+        aria-label="test-input-required"
+      />
     );
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const input = canvas.getByLabelText("solid-required");
+    const input = canvas.getByLabelText("test-input-required");
 
     await step("Has aria-required attribute", async () => {
       await expect(input).toHaveAttribute("aria-required", "true");
