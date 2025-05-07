@@ -22,7 +22,7 @@ catalogs:
       specifier: ^0.53.6
       version: 0.53.6
     '@react-aria/optimize-locales-plugin':
-      specifier: ^1.1.4
+      specifier: 1.1.4
       version: 1.1.4
     '@types/react':
       specifier: ^18.3.12
@@ -37,7 +37,7 @@ catalogs:
       specifier: ^18.3.1
       version: 18.3.1
     react-aria:
-      specifier: ^3.39.0
+      specifier: 3.39.0
       version: 3.39.0
     react-aria-components:
       specifier: 1.8.0
@@ -46,7 +46,7 @@ catalogs:
       specifier: ^18.3.1
       version: 18.3.1
     react-stately:
-      specifier: ^3.37.0
+      specifier: 3.37.0
       version: 3.37.0
   tooling:
     '@babel/core':

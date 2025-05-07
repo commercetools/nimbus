@@ -28,7 +28,6 @@
   "sideEffects": [
     "*.css"
   ],
-  "source": "src/index.ts",
   "typesVersions": {
     "*": {
       "*": [
