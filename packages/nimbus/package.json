@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.5-rc7",
+  "version": "0.0.5-rc8-experimental",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -42,7 +42,10 @@
     "react-hotkeys-hook": "^4.6.1",
     "react-use": "^17.5.1",
     "next-themes": "catalog:react",
-    "@emotion/is-prop-valid": "catalog:react"
+    "@emotion/is-prop-valid": "catalog:react",
+    "@chakra-ui/react": "catalog:react",
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
@@ -78,11 +81,8 @@
     "vitest": "catalog:tooling"
   },
   "peerDependencies": {
-    "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
-    "react": "catalog:react",
-    "react-dom": "catalog:react",
     "typescript": "catalog:tooling"
   },
   "scripts": {

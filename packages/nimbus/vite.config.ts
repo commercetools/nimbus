@@ -14,12 +14,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const external = [
   // React core
-  "react",
-  "react-dom",
-  "react/jsx-runtime",
+  // "react",
+  // "react-dom",
+  // "react/jsx-runtime",
 
   // UI frameworks & styling.
-  "@chakra-ui/react",
+  // "@chakra-ui/react",
   // "react-aria",
   // "react-aria-components",
   // "react-stately",
