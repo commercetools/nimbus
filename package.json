@@ -11,8 +11,10 @@
     ]
   },
   "scripts": {
-    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
+    "build": "pnpm build:tokens && pnpm build:icons && pnpm run build:nimbus && pnpm run build:docs",
     "build:packages": "pnpm -r --filter './packages/*' build",
+    "build:nimbus": "pnpm --filter @commercetools/nimbus run build",
+    "build:icons": "pnpm --filter @commercetools/nimbus-icons run build",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "component:new": "pnpm hygen component new",

@@ -3,6 +3,7 @@
   "version": "0.0.4",
   "main": "dist/cjs/index.js",
   "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -33,7 +34,7 @@
   },
   "scripts": {
     "build-icons": "pnpm svgr --filename-case kebab --typescript --jsx-runtime automatic --out-dir src/material-icons node_modules/@material-design-icons/svg/outlined",
-    "build": "pnpm run build-icons && tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
+    "build": "pnpm run build-icons && tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
     "dev": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json"
   }
 }
