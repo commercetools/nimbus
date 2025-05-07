@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useListData } from "react-stately";
-import { Stack } from "@/components";
+import { Stack, Text } from "@/components";
 import type { TagGroupProps } from "./tag-group.types";
 import { TagGroup } from "./tag-group";
 
@@ -40,22 +40,13 @@ const sizes: TagGroupProps["size"][] = ["lg", "md", "sm"];
  */
 export const Base: Story = {
   args: {},
-  render: () => {
-    const animalList = useListData({
-      initialItems: animalOptions,
-    });
-
-    return (
-      <TagGroup.Root
-        aria-label="animals"
-        onRemove={(keys) => animalList.remove(...keys)}
-      >
-        <TagGroup.TagList items={animalList.items}>
-          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-        </TagGroup.TagList>
-      </TagGroup.Root>
-    );
-  },
+  render: () => (
+    <TagGroup.Root aria-label="animals">
+      <TagGroup.TagList items={animalOptions}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  ),
 };
 
 /**
@@ -71,7 +62,8 @@ export const Sizes: Story = {
     return (
       <Stack direction="column" gap="400" alignItems="flex-start">
         {sizes.map((size) => (
-          <TagGroup.Root size={size} aria-label="animals">
+          <TagGroup.Root key={size as string} size={size} aria-label="animals">
+            <Text as="label">size {size as string}</Text>
             <TagGroup.TagList items={animalList.items}>
               {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
             </TagGroup.TagList>

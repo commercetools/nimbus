@@ -17,6 +17,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      alignContent: "center",
       gap: "100",
       borderRadius: "200",
       background: "primary.3",
