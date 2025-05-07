@@ -1,0 +1,139 @@
+---
+id: Components-Image
+title: Image
+description: A component to display images with support for fallback.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Media
+  - Image
+tags:
+  - component
+  - image
+  - picture
+---
+
+# Image
+
+The `Image` component is used to display images. It's a proxy for the
+[Chakra UI Image component](https://chakra-ui.com/docs/components/image) and
+supports all its features, including fallback images and fit/sizing options.
+
+## Import
+
+```jsx
+import { Image } from "@commercetools/nimbus";
+```
+
+## Usage
+
+### Basic Image
+
+To display an image, provide a `src`-image and an `alt`-text via their respective props.
+
+By default the image will consume max. 100% of the available horizontal space
+and adjust its height to maintain the image's aspect ratio.
+
+```jsx-live
+const App = () => (
+  <Image src="https://i.imgur.com/fqpnfaN.png" alt="Nimbus - the spaceship from Futurama" />
+);
+```
+
+### Sizing
+
+If you need to set a fixed width and/or height, you can use the `width` and `height` props.
+If you set both, the image will be cropped to fit the given dimensions. Other cropping strategies
+are available via the `fit` prop.
+
+```jsx-live
+const App = () => (
+  <Image src="https://i.imgur.com/fqpnfaN.png" alt="Nimbus - the spaceship from Futurama" width="256px" height="256px" />
+);
+```
+
+
+### Fit + Position
+
+Control how the image fits into its container using the `fit` prop and size props like `boxSize`, `width`, `height`.
+
+#### Fit
+
+- `fill` - This is default. The image is resized to fill the given dimension. If necessary, the image will be stretched or squished to fit
+- `contain` - The image keeps its aspect ratio, but is resized to fit within the given dimension
+- `cover` - The image keeps its aspect ratio and fills the given dimension. The image will be clipped to fit
+- `none` - The image is not resized
+- `scale-down` - the image is scaled down to the smallest version of none or contain
+
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" spacing="200">
+   <Box>
+    <Image
+      boxSize="128px"
+      fit="fill"
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Filled image"
+      outline="1px solid red"
+    />
+   </Box>
+    <Image
+      boxSize="128px"
+      fit="contain"
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Contained image"
+      outline="1px solid red"
+    />
+    <Image
+      boxSize="128px"
+      fit="cover"
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Covered image"
+      outline="1px solid red"
+    />
+    
+    <Image
+      boxSize="128px"
+      fit="none"
+      src="https://i.imgur.com/fqpnfaN.png"
+      alt="Filled image"
+      outline="1px solid red"
+    />
+  </Stack>
+);
+```
+
+### Border Radius
+
+Apply a border radius using the `borderRadius` prop.
+
+```jsx-live
+const App = () => (
+  <Image
+    src="https://placehold.co/600x400?text=Rounded\nImage"
+    alt="Round image"
+    borderRadius="400"
+  />
+);
+```
+
+### Round Image
+
+By combining the `borderRadius` prop with the `boxSize` prop, you can create a round image.
+
+```jsx-live
+const App = () => (
+  <Image
+    boxSize="6400"
+    src="https://placehold.co/600x400?text=Round\nImage"
+    alt="Round image"
+    borderRadius="full"
+  />
+);
+```
+
+## Props
+
+<PropTable id="Image"/>
