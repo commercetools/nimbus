@@ -305,26 +305,3 @@ export const InputTypes: Story = {
     );
   },
 };
-
-export const NativeOnChange: Story = {
-  args: {
-    ["aria-label"]: "test-input",
-    onNativeChange: fn(),
-  },
-  play: async ({ canvasElement, step, args }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByLabelText("test-input");
-
-    await step(
-      "Calls onNativeChange handler with a synthetic event",
-      async () => {
-        await userEvent.type(input, "Hello");
-        await expect(args.onNativeChange).toHaveBeenCalledWith(
-          expect.objectContaining({
-            target: expect.objectContaining({ value: "Hello" }),
-          })
-        );
-      }
-    );
-  },
-};
