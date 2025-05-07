@@ -27,7 +27,7 @@ export default defineConfig({
             "react-syntax-highlighter",
           ],
           react: ["react", "react-dom"],
-          mdx: ["mdx", "@mdx-js/mdx", "@mdx-js/react"],
+          mdx: ["@mdx-js/mdx", "@mdx-js/react"],
           ui: ["@commercetools/nimbus"],
           icons: ["@commercetools/nimbus-icons"],
         },
