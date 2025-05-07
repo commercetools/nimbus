@@ -14,7 +14,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
     root: { display: "flex", flexDirection: "column", gapY: "50" },
     tagList: { display: "flex", flexWrap: "wrap", gap: "100" },
     tag: {
-      display: "inline-flex",
+      display: "flex",
       alignItems: "center",
       gap: "100",
       borderRadius: "200",
@@ -32,7 +32,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         tag: {
-          minH: "3600",
+          maxH: "3600",
           paddingX: "200",
           fontSize: "350",
           lineHeight: "400",
@@ -40,14 +40,14 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
       }, // Small
       md: {
         tag: {
-          minH: "3800",
+          maxH: "3800",
           paddingX: "200",
           paddingY: "100",
         },
       }, // Medium
       lg: {
         tag: {
-          minH: "4000",
+          maxH: "4000",
           padding: "200",
         },
       }, // Large

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useListData } from "react-stately";
 import { TagGroup } from "./tag-group";
-import { Stack } from "./../stack";
 
 /**
  * Storybook metadata configuration
@@ -21,17 +20,6 @@ export default meta;
  */
 type Story = StoryObj<typeof TagGroup.Root>;
 
-/**
- * Base story
- * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
- */
-export const Base: Story = {
-  args: {
-    children: "Demo TagGroup",
-  },
-};
-
 const animalOptions = [
   { id: 1, name: "Koala" },
   { id: 2, name: "Kangaroo" },
@@ -40,73 +28,35 @@ const animalOptions = [
   { id: 5, name: "Bison" },
   { id: 6, name: "Skunk" },
 ];
+
 /**
- * Showcase Sizes
+ * Base story
+ * Demonstrates the most basic implementation
+ * Uses the args pattern for dynamic control panel inputs
  */
-export const Sizes: Story = {
-  render: (args) => {
-    const animalList = useListData({ initialItems: animalOptions });
+export const Base: Story = {
+  args: {},
+  render: () => {
+    const animalList = useListData({
+      initialItems: animalOptions,
+    });
     return (
-      <TagGroup.Root aria-label="animals">
+      <TagGroup.Root
+        aria-label="animals"
+        onRemove={(keys) => animalList.remove(...keys)}
+      >
         <TagGroup.TagList items={animalList.items}>
           {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
         </TagGroup.TagList>
       </TagGroup.Root>
     );
   },
-
-  args: {
-    children: "Demo TagGroup",
-  },
 };
 
 /**
- * Showcase Variants
+ * Showcase Sizes
  */
-export const Variants: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <TagGroup key={variant} {...args} variant={variant} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo TagGroup",
-  },
-};
-
-/**
- * Showcase Colors
- */
-export const Colors: Story = {
-  render: (args) => {
-    return (
-      <Stack>
-        {[].map((colorPalette) => (
-          <Stack
-            key={colorPalette}
-            direction="row"
-            gap="400"
-            alignItems="center"
-          >
-            {[].map((variant) => (
-              <TagGroup
-                key={variant}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-
+export const Sizes: Story = {
   args: {
     children: "Demo TagGroup",
   },
