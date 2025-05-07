@@ -48,7 +48,7 @@
     "@commercetools/nimbus-tokens": "workspace:^",
     "@emotion/is-prop-valid": "catalog:react",
     "@pandacss/types": "catalog:react",
-    "@react-aria/optimize-locales-plugin": "^1.1.4",
+    "@react-aria/optimize-locales-plugin": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-essentials": "catalog:tooling",
     "@storybook/experimental-addon-test": "catalog:tooling",
