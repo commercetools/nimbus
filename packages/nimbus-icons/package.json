@@ -32,8 +32,10 @@
     "typescript": "catalog:tooling"
   },
   "scripts": {
-    "build-icons": "pnpm svgr --filename-case kebab --typescript --jsx-runtime automatic --out-dir src/material-icons node_modules/@material-design-icons/svg/outlined",
-    "build": "pnpm run build-icons && tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
-    "dev": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json"
+    "build": "pnpm run build:icons && pnpm run build:esm && pnpm run build:cjs",
+    "build:icons": "pnpm svgr --filename-case kebab --typescript --jsx-runtime automatic --out-dir src/material-icons node_modules/@material-design-icons/svg/outlined",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "dev": "pnpm run build:esm && pnpm run build:cjs"
   }
 }
