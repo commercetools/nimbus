@@ -20,9 +20,9 @@ const external = [
 
   // UI frameworks & styling.
   "@chakra-ui/react",
-  "react-aria",
-  "react-aria-components",
-  "react-stately",
+  // "react-aria",
+  // "react-aria-components",
+  // "react-stately",
   // "@emotion/is-prop-valid",
 
   // Utility libraries
