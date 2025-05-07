@@ -63,7 +63,8 @@ export type TagGroupTagListComponent<T extends object> =
 type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Combined props for the tag element (Chakra styles + Aria behavior + Recipe variants). */
-export type TagGroupTagProps = TagGroupTagSlotProps & RaTagProps;
+export type TagGroupTagProps = RaTagProps &
+  Omit<TagGroupTagSlotProps, keyof RaTagProps>;
 
 /** Type signature for the `TagGroup.Tag` sub-component (using `forwardRef`). */
 export type TagGroupTagComponent = ForwardRefExoticComponent<
