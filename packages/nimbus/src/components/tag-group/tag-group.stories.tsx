@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useListData } from "react-stately";
+import { Stack } from "@/components";
+import type { TagGroupProps } from "./tag-group.types";
 import { TagGroup } from "./tag-group";
 
 /**
@@ -29,6 +31,8 @@ const animalOptions = [
   { id: 6, name: "Skunk" },
 ];
 
+const sizes: TagGroupProps["size"][] = ["lg", "md", "sm"];
+
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -40,6 +44,7 @@ export const Base: Story = {
     const animalList = useListData({
       initialItems: animalOptions,
     });
+
     return (
       <TagGroup.Root
         aria-label="animals"
@@ -57,7 +62,22 @@ export const Base: Story = {
  * Showcase Sizes
  */
 export const Sizes: Story = {
-  args: {
-    children: "Demo TagGroup",
+  args: {},
+  render: () => {
+    const animalList = useListData({
+      initialItems: animalOptions,
+    });
+
+    return (
+      <Stack direction="column" gap="400" alignItems="flex-start">
+        {sizes.map((size) => (
+          <TagGroup.Root size={size} aria-label="animals">
+            <TagGroup.TagList items={animalList.items}>
+              {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+            </TagGroup.TagList>
+          </TagGroup.Root>
+        ))}
+      </Stack>
+    );
   },
 };
