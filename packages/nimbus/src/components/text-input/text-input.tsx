@@ -1,17 +1,17 @@
 import { forwardRef, useRef, type ChangeEvent } from "react";
+import { mergeRefs, useRecipe } from "@chakra-ui/react";
+import { useObjectRef, useTextField } from "react-aria";
+import { Input } from "react-aria-components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
+
 import { TextInputRootSlot } from "./text-input.slots";
 import type { TextInputProps } from "./text-input.types";
-import { useObjectRef } from "react-aria";
-import { mergeRefs, useRecipe } from "@chakra-ui/react";
 import { textInputRecipe } from "./text-input.recipe";
-import { Input } from "react-aria-components";
-import { useTextField } from "react-aria";
-import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * TextInput
  * ============================================================
- * An input component that takes in a text as input
+ * An input component that takes in text as input
  *
  * Features:
  *
@@ -23,41 +23,25 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (props, forwardedRef) => {
     const recipe = useRecipe({ recipe: textInputRecipe });
+
     const localRef = useRef<HTMLInputElement>(null);
     const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
     const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
     const [styleProps, otherProps] = extractStyleProps(remainingProps);
-
     const { inputProps } = useTextField(otherProps, ref);
 
-    const handleNativeOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-      if (props.onNativeChange) {
-        props.onNativeChange(event);
-      }
-    };
-
-    const originalAriaOnChange = inputProps.onChange;
-
-    const chainedOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-      handleNativeOnChange(event);
-
-      if (originalAriaOnChange) {
-        originalAriaOnChange(event);
-      }
-    };
-
-    const finalInputProps = {
-      ...otherProps,
-      ...inputProps,
-      onChange: chainedOnChange,
-    };
-
     return (
-      <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
-        <Input ref={ref} {...finalInputProps} />
+      <TextInputRootSlot
+        {...recipeProps}
+        {...styleProps}
+        {...otherProps}
+        asChild
+      >
+        <Input ref={ref} {...inputProps} />
       </TextInputRootSlot>
     );
   }
 );
+
 TextInput.displayName = "TextInput";
