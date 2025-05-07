@@ -1,9 +1,22 @@
 {
   "name": "@commercetools/nimbus-icons",
-  "version": "0.0.2",
-  "main": "dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "version": "0.0.4",
+  "main": "dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -19,8 +32,10 @@
     "typescript": "catalog:tooling"
   },
   "scripts": {
-    "build-icons": "pnpm svgr --filename-case kebab --typescript --jsx-runtime automatic --out-dir src/material-icons node_modules/@material-design-icons/svg/outlined",
-    "build": "pnpm run build-icons && tsc",
-    "dev": "tsc"
+    "build": "pnpm run build:icons && pnpm run build:esm && pnpm run build:cjs",
+    "build:icons": "pnpm svgr --filename-case kebab --typescript --jsx-runtime automatic --out-dir src/material-icons node_modules/@material-design-icons/svg/outlined",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "dev": "pnpm run build:esm && pnpm run build:cjs"
   }
 }
