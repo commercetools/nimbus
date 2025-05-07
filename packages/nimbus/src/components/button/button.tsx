@@ -6,7 +6,7 @@ import type { ButtonProps } from "./button.types.ts";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, forwardedRef) => {
-    const { as, asChild, children, onClick, ...rest } = props;
+    const { as, asChild, children, ...rest } = props;
 
     // create a local ref (because the consumer may not provide a forwardedRef)
     const localRef = useRef<HTMLButtonElement>(null);
@@ -17,24 +17,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // has to be manually set to something else than button
 
     const elementType = as || (asChild ? "a" : "button") || "button";
-    console.log(onClick, rest);
+
     const { buttonProps } = useButton(
       {
         ...rest,
-        onPress: onClick
-          ? (e) => onClick(e as unknown as React.MouseEvent<HTMLButtonElement>)
-          : undefined,
         elementType,
       },
       ref
     );
-    console.log(buttonProps);
+
     return (
-      <ButtonRoot
-        {...mergeProps(rest, buttonProps, { as, asChild })}
-        onPress={buttonProps.onClick}
-        ref={ref}
-      >
+      <ButtonRoot {...mergeProps(rest, buttonProps, { as, asChild })} ref={ref}>
         {children}
       </ButtonRoot>
     );

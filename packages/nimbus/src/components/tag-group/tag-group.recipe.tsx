@@ -16,6 +16,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
     tag: {
       display: "flex",
       alignItems: "center",
+      justifyContent: "center",
       gap: "100",
       borderRadius: "200",
       background: "primary.3",
@@ -23,6 +24,16 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
       borderColor: "primary.5",
       fontSize: "400",
       lineHeight: "500",
+      focusVisibleRing: "outside",
+      "[data-disabled] &": {
+        layerStyle: "disabled",
+        pointerEvents: "none",
+      },
+      "& [role='gridcell']": {
+        display: "inline-flex !important",
+        alignItems: "center",
+        justifyContent: "space-between",
+      },
     },
   },
 
@@ -32,7 +43,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         tag: {
-          maxH: "3600",
+          minH: "600",
           paddingX: "200",
           fontSize: "350",
           lineHeight: "400",
@@ -40,14 +51,14 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
       }, // Small
       md: {
         tag: {
-          maxH: "3800",
+          minH: "800",
           paddingX: "200",
           paddingY: "100",
         },
       }, // Medium
       lg: {
         tag: {
-          maxH: "4000",
+          minH: "1000",
           padding: "200",
         },
       }, // Large
