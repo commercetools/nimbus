@@ -28,7 +28,7 @@
   ],
   "devDependencies": {
     "@babel/preset-typescript": "catalog:tooling",
-    "@tokens-studio/sd-transforms": "^1.2.9",
+    "@tokens-studio/sd-transforms": "^1.3.0",
     "is-plain-obj": "^4.1.0",
     "prettier": "catalog:tooling",
     "style-dictionary": "^4.3.0"
