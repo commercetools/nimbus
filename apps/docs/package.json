@@ -26,7 +26,7 @@
     "@types/mdx": "^2.0.13",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/slug": "^5.0.9",
-    "axios": "^1.8.2",
+    "axios": "^1.9.0",
     "chokidar": "^4.0.1",
     "express": "^4.21.1",
     "express-fileupload": "^1.5.1",
