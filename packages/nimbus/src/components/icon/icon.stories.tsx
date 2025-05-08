@@ -3,6 +3,7 @@ import { Icon } from "./icon";
 import { Stack } from "./../stack";
 import { Bathtub } from "@commercetools/nimbus-icons";
 import type { IconProps } from "./icon.types";
+import { within, expect } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -30,6 +31,20 @@ type Story = StoryObj<typeof Icon>;
 export const Base: Story = {
   args: {
     children: <Bathtub />,
+    // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
+    "data-testid": "icon-base",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const icon = canvas.getByTestId("icon-base");
+
+    await step("Icon is rendered", async () => {
+      await expect(icon).toBeInTheDocument();
+    });
+
+    await step("Icon is an svg element", async () => {
+      await expect(icon.tagName).toBe("svg");
+    });
   },
 };
 
@@ -39,6 +54,20 @@ export const Base: Story = {
 export const ViaAsProperty: Story = {
   args: {
     as: Bathtub,
+    // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
+    "data-testid": "icon-as-prop",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const icon = canvas.getByTestId("icon-as-prop");
+
+    await step("Icon is rendered when using as prop", async () => {
+      await expect(icon).toBeInTheDocument();
+    });
+
+    await step("Icon is an svg element", async () => {
+      await expect(icon.tagName).toBe("svg");
+    });
   },
 };
 
@@ -48,6 +77,8 @@ export const ViaAsProperty: Story = {
 export const Sizes: Story = {
   args: {
     as: Bathtub,
+    // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
+    "data-testid": "icon-sizes",
   },
   render: (args) => {
     return (
@@ -66,7 +97,21 @@ export const Sizes: Story = {
 export const CustomSize: Story = {
   args: {
     as: Bathtub,
-    boxSize: "3200",
+    boxSize: "240px",
+    // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
+    "data-testid": "icon-custom-size",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const icon = canvas.getByTestId("icon-custom-size");
+
+    await step("Icon with custom size is rendered", async () => {
+      await expect(icon).toBeInTheDocument();
+    });
+
+    await step("Icon has the correct custom size", async () => {
+      await expect(icon).toHaveStyle({ width: "240px", height: "240px" });
+    });
   },
 };
 
@@ -77,6 +122,8 @@ export const CustomColor: Story = {
   args: {
     as: Bathtub,
     size: "xl",
+    // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
+    "data-testid": "icon-custom-color",
   },
   render: (args) => {
     return (
@@ -87,10 +134,37 @@ export const CustomColor: Story = {
           "positive.11",
           "warning.11",
           "critical.11",
+          "deeppink",
         ].map((colorToken) => (
-          <Icon key={colorToken} color={colorToken} {...args} />
+          <Icon
+            key={colorToken}
+            color={colorToken}
+            {...args}
+            data-testid={`icon-custom-color-${colorToken}`}
+          />
         ))}
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const colorTokens = [
+      "primary.11",
+      "info.11",
+      "positive.11",
+      "warning.11",
+      "critical.11",
+      "deeppink",
+    ];
+
+    for (const colorToken of colorTokens) {
+      await step(`Icon with color ${colorToken} is rendered`, async () => {
+        const icon = canvas.getByTestId(`icon-custom-color-${colorToken}`);
+        await expect(icon).toBeInTheDocument();
+        if (colorToken === "deeppink") {
+          await expect(icon).toHaveStyle({ color: "rgb(255, 20, 147)" });
+        }
+      });
+    }
   },
 };
