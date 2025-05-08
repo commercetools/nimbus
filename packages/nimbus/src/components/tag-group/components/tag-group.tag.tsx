@@ -12,12 +12,16 @@ export const TagGroupTag: TagGroupTagComponent = ({
   const textValue = typeof children === "string" ? children : undefined;
   return (
     <TagGroupTagSlot ref={ref} textValue={textValue} {...rest}>
-      {({ allowsRemoving }) => (
+      {({ allowsRemoving, isSelected }) => (
         <>
           {children}
           {allowsRemoving && (
             // @ts-expect-error aria props are handled by ButtonContext internally in IconButton
-            <IconButton size="2xs" variant="ghost" slot="remove">
+            <IconButton
+              size="2xs"
+              variant={isSelected ? "solid" : "ghost"}
+              slot="remove"
+            >
               <CloseIcon />
             </IconButton>
           )}
