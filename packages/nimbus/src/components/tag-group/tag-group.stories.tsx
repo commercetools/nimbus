@@ -78,7 +78,7 @@ export const Selection: Story = {
   args: {},
   render: () => {
     const animalList = useListData({ initialItems: animalOptions });
-    const [selected, setSelected] = useState<RsSelection>(new Set(["parking"]));
+    const [selected, setSelected] = useState<RsSelection>(new Set([]));
     return (
       <TagGroup.Root
         aria-label="removable animals"
