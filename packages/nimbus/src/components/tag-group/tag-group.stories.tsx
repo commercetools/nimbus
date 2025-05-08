@@ -1,5 +1,7 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useListData } from "react-stately";
+import type { Selection as RsSelection } from "react-stately";
 import { Stack, Text } from "@/components";
 import type { TagGroupProps } from "./tag-group.types";
 import { TagGroup } from "./tag-group";
@@ -47,8 +49,51 @@ export const Base: Story = {
       </TagGroup.TagList>
     </TagGroup.Root>
   ),
+  // play: async ({ canvasElement, args, step }) => {
+  //   const canvas = within(canvasElement);
+  //   const tagList = canvas.getByRole("grid");
+  //   const tags = within(tagList).getAllByRole("row");
+  //   const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+  // },
 };
 
+export const TagRemoval: Story = {
+  args: {},
+  render: () => {
+    const animalList = useListData({ initialItems: animalOptions });
+    return (
+      <TagGroup.Root
+        aria-label="removable animals"
+        onRemove={(keys) => animalList.remove(...keys)}
+      >
+        <TagGroup.TagList items={animalList.items}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+  },
+};
+
+export const Selection: Story = {
+  args: {},
+  render: () => {
+    const animalList = useListData({ initialItems: animalOptions });
+    const [selected, setSelected] = useState<RsSelection>(new Set(["parking"]));
+    return (
+      <TagGroup.Root
+        aria-label="removable animals"
+        onRemove={(keys) => animalList.remove(...keys)}
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <TagGroup.TagList items={animalList.items}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+  },
+};
 /**
  * Showcase Sizes
  */

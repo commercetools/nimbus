@@ -14,21 +14,26 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
     root: { display: "flex", flexDirection: "column", gapY: "50" },
     tagList: { display: "flex", flexWrap: "wrap", gap: "100" },
     tag: {
+      colorPalette: "primary",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       alignContent: "center",
       gap: "100",
       borderRadius: "200",
-      background: "primary.3",
+      background: "colorPalette.3",
       border: "solid-25",
       borderColor: "primary.5",
       fontSize: "400",
       lineHeight: "500",
       focusVisibleRing: "outside",
-      "[data-disabled] &": {
+      "&[data-disabled] &": {
         layerStyle: "disabled",
         pointerEvents: "none",
+      },
+      "&[data-selected]": {
+        background: "colorPalette.9",
+        color: "colorPalette.contrast",
       },
       "& [role='gridcell']": {
         display: "inline-flex !important",
