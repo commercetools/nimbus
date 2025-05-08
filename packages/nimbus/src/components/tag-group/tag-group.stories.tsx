@@ -1,10 +1,19 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { userEvent, within, expect, fn } from "@storybook/test";
 import { useListData } from "react-stately";
 import type { Selection as RsSelection } from "react-stately";
 import { Stack, Text } from "@/components";
 import type { TagGroupProps } from "./tag-group.types";
 import { TagGroup } from "./tag-group";
+
+import { queryHelpers, buildQueries } from "@testing-library/react";
+
+// query
+const queryByDataFocused = queryHelpers.queryByAttribute.bind(
+  null,
+  "data-focused"
+);
 
 /**
  * Storybook metadata configuration
@@ -25,12 +34,12 @@ export default meta;
 type Story = StoryObj<typeof TagGroup.Root>;
 
 const animalOptions = [
-  { id: 1, name: "Koala" },
-  { id: 2, name: "Kangaroo" },
-  { id: 3, name: "Platypus" },
-  { id: 4, name: "Bald Eagle" },
-  { id: 5, name: "Bison" },
-  { id: 6, name: "Skunk" },
+  { id: "koala", name: "Koala" },
+  { id: "kangaroo", name: "Kangaroo" },
+  { id: "platypus", name: "Platypus" },
+  { id: "baldEagle", name: "Bald Eagle" },
+  { id: "bison", name: "Bison" },
+  { id: "skunk", name: "Skunk" },
 ];
 
 const sizes: TagGroupProps["size"][] = ["lg", "md", "sm"];
@@ -49,22 +58,60 @@ export const Base: Story = {
       </TagGroup.TagList>
     </TagGroup.Root>
   ),
-  // play: async ({ canvasElement, args, step }) => {
-  //   const canvas = within(canvasElement);
-  //   const tagList = canvas.getByRole("grid");
-  //   const tags = within(tagList).getAllByRole("row");
-  //   const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
-  // },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const tagList = canvas.getByRole("grid");
+    const tags = within(tagList).getAllByRole("row");
+    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+
+    await step("on render", async () => {
+      await expect(tagList).toBeInTheDocument();
+      await expect(tags).toHaveLength(6);
+    });
+
+    await step(
+      "Keyboard Navigation - Tab enters group, arrows move between tags",
+      async () => {
+        await userEvent.tab();
+        expect(koala).toHaveFocus();
+        await userEvent.keyboard("{ArrowRight}");
+        expect(kangaroo).toHaveFocus();
+        await userEvent.keyboard("{ArrowRight}");
+        expect(platypus).toHaveFocus();
+        await userEvent.keyboard("{ArrowRight}");
+        expect(baldEagle).toHaveFocus();
+        await userEvent.keyboard("{ArrowRight}");
+        expect(bison).toHaveFocus();
+        await userEvent.keyboard("{ArrowRight}");
+        expect(skunk).toHaveFocus();
+        // make sure focus wraps
+        await userEvent.keyboard("{ArrowRight}");
+        expect(koala).toHaveFocus();
+        await userEvent.keyboard("{ArrowLeft}");
+        expect(skunk).toHaveFocus();
+        await userEvent.tab();
+        // tab removes focus from tabs
+        expect(skunk).not.toHaveFocus();
+      }
+    );
+  },
 };
 
 export const TagRemoval: Story = {
-  args: {},
-  render: () => {
+  args: {
+    onRemove: fn((keys) => {
+      return keys;
+    }),
+  },
+  render: ({ onRemove }) => {
     const animalList = useListData({ initialItems: animalOptions });
     return (
       <TagGroup.Root
         aria-label="removable animals"
-        onRemove={(keys) => animalList.remove(...keys)}
+        onRemove={(keys) => {
+          onRemove && onRemove(keys);
+          animalList.remove(...keys);
+        }}
       >
         <TagGroup.TagList items={animalList.items}>
           {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
@@ -72,24 +119,118 @@ export const TagRemoval: Story = {
       </TagGroup.Root>
     );
   },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const tagList = canvas.getByRole("grid");
+    const tags = within(tagList).getAllByRole("row");
+    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    await step("Tags - keyboard removal", async () => {
+      await userEvent.tab();
+      expect(koala).toHaveFocus();
+      await userEvent.keyboard("{backspace}");
+      expect(koala).not.toBeInTheDocument();
+    });
+
+    await step("Tags - mouse removal", async () => {
+      const removeKangarooButton = within(kangaroo).getByLabelText("Remove");
+      await userEvent.click(removeKangarooButton);
+      expect(args.onRemove).toHaveBeenCalled();
+      expect(kangaroo).not.toBeInTheDocument();
+    });
+  },
 };
 
-export const Selection: Story = {
+export const MultipleSelection: Story = {
   args: {},
   render: () => {
     const animalList = useListData({ initialItems: animalOptions });
     const [selected, setSelected] = useState<RsSelection>(new Set([]));
     return (
+      <>
+        <TagGroup.Root
+          aria-label="selectable animals"
+          onRemove={(keys) => animalList.remove(...keys)}
+          selectionMode="multiple"
+          selectedKeys={selected}
+          onSelectionChange={setSelected}
+        >
+          <TagGroup.TagList items={animalList.items}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+        <Text as="p">
+          Current selection:{" "}
+          {selected === "all" ? "all" : [...selected].join(", ")}
+        </Text>
+      </>
+    );
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const tagList = canvas.getByRole("grid");
+    const tags = within(tagList).getAllByRole("row");
+    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    await step("Tags - keyboard selection", async () => {
+      await userEvent.tab();
+      expect(koala).toHaveFocus();
+      await userEvent.keyboard("{enter}");
+      await canvas.getByText("Current selection: koala");
+      await userEvent.keyboard("{ArrowRight}");
+      await userEvent.keyboard("{enter}");
+      await canvas.getByText("Current selection: koala, kangaroo");
+      //hitting enter again deselects
+      await userEvent.keyboard("{enter}");
+      await canvas.getByText("Current selection: koala");
+    });
+
+    // await step("Tags - mouse removal", async () => {
+    //   await userEvent.click(koala);
+    //   await canvas.getByText("Current selection: koala");
+    //   await userEvent.click(kangaroo);
+    // });
+  },
+};
+
+export const SingleSelection: Story = {
+  args: {},
+  render: () => {
+    const animalList = useListData({ initialItems: animalOptions });
+    const [selected, setSelected] = useState<RsSelection>(new Set([]));
+    return (
+      <>
+        <TagGroup.Root
+          aria-label="select an animal"
+          onRemove={(keys) => animalList.remove(...keys)}
+          selectionMode="single"
+          selectedKeys={selected}
+          onSelectionChange={setSelected}
+        >
+          <TagGroup.TagList items={animalList.items}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+        <Text as="p">Current selection: {[...selected].join(" ")}</Text>
+      </>
+    );
+  },
+};
+
+export const EmptyState: Story = {
+  args: {},
+  render: () => {
+    const animalList = useListData({ initialItems: [animalOptions[0]] });
+    return (
       <TagGroup.Root
-        aria-label="removable animals"
+        aria-label="empty animals"
         onRemove={(keys) => animalList.remove(...keys)}
-        selectionMode="multiple"
-        selectedKeys={selected}
-        onSelectionChange={setSelected}
       >
-        <TagGroup.TagList items={animalList.items}>
+        <TagGroup.TagList
+          items={animalList.items}
+          renderEmptyState={() => <Text>No Animals</Text>}
+        >
           {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
         </TagGroup.TagList>
+        <Text slot="description">Remove the item to see the empty state</Text>
       </TagGroup.Root>
     );
   },
