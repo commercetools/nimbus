@@ -1,7 +1,6 @@
 import { TagGroupRoot } from "./components/tag-group.root";
 import { TagGroupTagList } from "./components/tag-group.tag-list";
 import { TagGroupTag } from "./components/tag-group.tag";
-import type { ReactElement } from "react";
 
 /**
  * TagGroup
