@@ -1,12 +1,13 @@
 ---
-id: Home-Installation
-title: Installation
-description: Learn how to install @commercetools/nimbus and its dependencies.
+id: Home-Contribute-Setup
+title: Local Development Setup
+description: Set up nimbus for local development
 documentState: InitialDraft
 order: 1
 menu:
   - Home
-  - Installation
+  - Contribute
+  - Development Setup
 tags:
   - document
 icon: Download
@@ -16,36 +17,34 @@ icon: Download
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
+Before you begin, make sure you have the following installed:
 
 - **Node.js**: v22.14.0+
 - **PNPM**: v9.12.3+
 
 ### Installation
 
-All commands should be run from the repository root.
-
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/commercetools/nimbus.git
-   cd nimbus
-   ```
+```bash
+git clone https://github.com/commercetools/nimbus.git
+```
 
-2. Initialize the repository:
+2. Enter the repository directory:
 
-   ```bash
-   pnpm nimbus:init
-   ```
+```bash
+cd nimbus
+```
 
-> [!TIP]  
-> It is advisable to run the `nimbus:init` command after every branch-switch.
-> The command gets rid of all `node_modules`- & `dist`-folders, reinstalls
-> dependencies and rebuilds all packages.
+3. Initialize the project:
 
-## Development Workflow
+```bash
+pnpm nimbus:init
+```
 
-### Development Mode
+## Development
+
+### Starting the Development Environment
 
 Start the development environment with the following command:
 
