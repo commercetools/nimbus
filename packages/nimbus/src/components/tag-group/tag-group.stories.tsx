@@ -108,6 +108,7 @@ export const TagRemoval: Story = {
     return (
       <TagGroup.Root
         aria-label="removable animals"
+        selectionMode="none"
         onRemove={(keys) => {
           onRemove && onRemove(keys);
           animalList.remove(...keys);
@@ -140,6 +141,55 @@ export const TagRemoval: Story = {
   },
 };
 
+export const SingleSelection: Story = {
+  args: {},
+  render: () => {
+    const animalList = useListData({ initialItems: animalOptions });
+    const [selected, setSelected] = useState<RsSelection>(new Set([]));
+    return (
+      <>
+        <TagGroup.Root
+          aria-label="select an animal"
+          selectionMode="single"
+          selectedKeys={selected}
+          onSelectionChange={setSelected}
+        >
+          <TagGroup.TagList items={animalList.items}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+        <Text as="p">Current selection: {[...selected].join(" ")}</Text>
+      </>
+    );
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const tagList = canvas.getByRole("grid");
+    const tags = within(tagList).getAllByRole("row");
+    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+
+    await step("Tags - keyboard selection", async () => {
+      await userEvent.tab();
+      expect(koala).toHaveFocus();
+      await userEvent.keyboard("{enter}");
+      await canvas.queryByText("Current selection: koala");
+      await userEvent.keyboard("{ArrowRight}");
+      await userEvent.keyboard("{enter}");
+      //selecting another tag deselects the current selection
+      await canvas.queryByText("Current selection: kangaroo");
+    });
+
+    await step("Tags - mouse selection", async () => {
+      await userEvent.click(koala);
+      await userEvent.click(tagList);
+      await canvas.queryByText("Current selection: koala");
+      await userEvent.click(kangaroo);
+      //selecting another tag deselects the current selection
+      await canvas.queryByText("Current selection: kangaroo");
+    });
+  },
+};
+
 export const MultipleSelection: Story = {
   args: {},
   render: () => {
@@ -149,7 +199,6 @@ export const MultipleSelection: Story = {
       <>
         <TagGroup.Root
           aria-label="selectable animals"
-          onRemove={(keys) => animalList.remove(...keys)}
           selectionMode="multiple"
           selectedKeys={selected}
           onSelectionChange={setSelected}
@@ -170,48 +219,30 @@ export const MultipleSelection: Story = {
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
     const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
       expect(koala).toHaveFocus();
       await userEvent.keyboard("{enter}");
-      await canvas.getByText("Current selection: koala");
+      await canvas.queryByText("Current selection: koala");
       await userEvent.keyboard("{ArrowRight}");
       await userEvent.keyboard("{enter}");
-      await canvas.getByText("Current selection: koala, kangaroo");
+      await canvas.queryByText("Current selection: koala, kangaroo");
       //hitting enter again deselects
       await userEvent.keyboard("{enter}");
-      await canvas.getByText("Current selection: koala");
+      await canvas.queryByText("Current selection: koala");
     });
 
-    // await step("Tags - mouse removal", async () => {
-    //   await userEvent.click(koala);
-    //   await canvas.getByText("Current selection: koala");
-    //   await userEvent.click(kangaroo);
-    // });
-  },
-};
-
-export const SingleSelection: Story = {
-  args: {},
-  render: () => {
-    const animalList = useListData({ initialItems: animalOptions });
-    const [selected, setSelected] = useState<RsSelection>(new Set([]));
-    return (
-      <>
-        <TagGroup.Root
-          aria-label="select an animal"
-          onRemove={(keys) => animalList.remove(...keys)}
-          selectionMode="single"
-          selectedKeys={selected}
-          onSelectionChange={setSelected}
-        >
-          <TagGroup.TagList items={animalList.items}>
-            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-          </TagGroup.TagList>
-        </TagGroup.Root>
-        <Text as="p">Current selection: {[...selected].join(" ")}</Text>
-      </>
-    );
+    await step("Tags - mouse selection", async () => {
+      await userEvent.click(koala);
+      await userEvent.click(tagList);
+      await canvas.queryByText("Current selection: koala");
+      await userEvent.click(kangaroo);
+      await canvas.queryByText("Current selection: koala, kangaroo");
+      //clicking selected tag deselects
+      await userEvent.click(kangaroo);
+      await canvas.queryByText("Current selection: koala");
+    });
   },
 };
 
@@ -233,6 +264,18 @@ export const EmptyState: Story = {
         <Text slot="description">Remove the item to see the empty state</Text>
       </TagGroup.Root>
     );
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const tagList = canvas.getByRole("grid");
+    const tags = within(tagList).getAllByRole("row");
+    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    await step("Tags - empty state", async () => {
+      await userEvent.tab();
+      expect(koala).toHaveFocus();
+      await userEvent.keyboard("{backspace}");
+      await canvas.queryByText("No Animals");
+    });
   },
 };
 /**

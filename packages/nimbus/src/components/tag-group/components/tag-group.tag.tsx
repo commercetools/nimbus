@@ -12,19 +12,22 @@ export const TagGroupTag: TagGroupTagComponent = ({
   const textValue = typeof children === "string" ? children : undefined;
   return (
     <TagGroupTagSlot ref={ref} textValue={textValue} {...rest}>
-      {({ allowsRemoving, isSelected }) => (
+      {({ allowsRemoving, isSelected, selectionMode }) => (
         <>
           {children}
-          {allowsRemoving && (
-            // @ts-expect-error aria props are handled by ButtonContext internally in IconButton
-            <IconButton
-              size="2xs"
-              variant={isSelected ? "solid" : "ghost"}
-              slot="remove"
-            >
-              <CloseIcon />
-            </IconButton>
-          )}
+          {allowsRemoving &&
+            selectionMode !== "multiple" &&
+            selectionMode !== "single" && (
+              // @ts-expect-error aria props are handled by ButtonContext internally in IconButton
+              <IconButton
+                size="2xs"
+                variant={isSelected ? "solid" : "ghost"}
+                slot="remove"
+                tone={isSelected ? undefined : "neutral"}
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
         </>
       )}
     </TagGroupTagSlot>
