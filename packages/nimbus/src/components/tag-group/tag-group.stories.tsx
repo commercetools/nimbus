@@ -144,7 +144,6 @@ export const TagRemoval: Story = {
 export const SingleSelection: Story = {
   args: {},
   render: () => {
-    const animalList = useListData({ initialItems: animalOptions });
     const [selected, setSelected] = useState<RsSelection>(new Set([]));
     return (
       <>
@@ -154,7 +153,7 @@ export const SingleSelection: Story = {
           selectedKeys={selected}
           onSelectionChange={setSelected}
         >
-          <TagGroup.TagList items={animalList.items}>
+          <TagGroup.TagList items={animalOptions}>
             {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
           </TagGroup.TagList>
         </TagGroup.Root>
@@ -193,7 +192,6 @@ export const SingleSelection: Story = {
 export const MultipleSelection: Story = {
   args: {},
   render: () => {
-    const animalList = useListData({ initialItems: animalOptions });
     const [selected, setSelected] = useState<RsSelection>(new Set([]));
     return (
       <>
@@ -203,7 +201,7 @@ export const MultipleSelection: Story = {
           selectedKeys={selected}
           onSelectionChange={setSelected}
         >
-          <TagGroup.TagList items={animalList.items}>
+          <TagGroup.TagList items={animalOptions}>
             {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
           </TagGroup.TagList>
         </TagGroup.Root>

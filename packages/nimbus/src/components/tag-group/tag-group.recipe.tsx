@@ -32,6 +32,10 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
       "&[data-selected]": {
         background: "colorPalette.9",
         color: "colorPalette.contrast",
+        cursor: "button",
+      },
+      "&[aria-selected]": {
+        cursor: "button",
       },
       "& [role='gridcell']": {
         display: "inline-flex !important",

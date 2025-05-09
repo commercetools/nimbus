@@ -6,85 +6,204 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - TagGroup
+  - Data Display
+  - Tag Group
 tags:
   - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=4292-25466
 ---
 
 # TagGroup
 
+---
+
 A tag group is a focusable list of labels, categories, keywords, filters, or other items, with support for keyboard navigation, selection, and removal.
 
-## Basic Usage
+## Overview
 
-[Explain the basic usage / usecase of the component].
+Tags are a means of displaying items, they can be configured to be selectable or removable.
 
-```jsx-live
-const App = () => <TagGroup>I am TagGroup!</TagGroup>
-```
+### Resources
 
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=4292-25466)
+[React Aria Tag Group documentation](https://react-spectrum.adobe.com/react-aria/TagGroup.html)
+[Aria Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+
+## Variables
+
+Get familiar with the features.
 
 ### Sizes
 
-Available sizes.
+Tag Group Tags come in different sizes to fit various layout needs.
+
+#### Large
+
+Large is the default Tag size. 
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
-
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <TagGroup key={size} size={size}>'{size}' TagGroup</TagGroup>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Variants
-
-Available variants.
-
-```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const animalOptions = [
+  { id: "koala", name: "Koala" },
+  { id: "kangaroo", name: "Kangaroo" },
+  ];
 
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <TagGroup key={variant} variant={variant}>'{variant}' TagGroup</TagGroup>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Colors
-
-[Explain usage with different colors/semantics.]
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <TagGroup colorPalette={color} key={variant} variant={variant}>
-              '{variant}' TagGroup
-            </TagGroup>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
+    <TagGroup.Root>
+      <TagGroup.TagList items={animalOptions}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup>
   );
-};
+}
+```
+
+#### Medium
+
+```jsx-live
+const App = () => {
+  const animalOptions = [
+  { id: "koala", name: "Koala" },
+  { id: "kangaroo", name: "Kangaroo" },
+  ];
+
+  return (
+    <TagGroup.Root size="md">
+      <TagGroup.TagList items={animalOptions}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup>
+  );
+}
+```
+
+#### Small
+
+```jsx-live
+const App = () => {
+  const animalOptions = [
+  { id: "koala", name: "Koala" },
+  { id: "kangaroo", name: "Kangaroo" },
+  ];
+
+  return (
+    <TagGroup.Root size="sm">
+      <TagGroup.TagList items={animalOptions}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup>
+  );
+}
+```
+
+### Removing Tags
+
+The onRemove prop can be used to allow the user to remove tags. In the below example, an additional Button element is rendered when a tag group allows removing. The user can also press the backspace key while a tag is focused to remove the tag from the group. 
+Removal in TagGroup.TagList is handled easiest by React-Aria's [`Selection` component](https://react-spectrum.adobe.com/react-aria/selection.html).
+
+```jsx
+const App = () => {
+  const animalOptions = [
+  { id: "koala", name: "Koala" },
+  { id: "kangaroo", name: "Kangaroo" },
+  ];
+  // useListData is from react-stately
+  const animalList = useListData({ initialItems: animalOptions });
+  return (
+    <TagGroup.Root 
+      onRemove={(keys)=>{animalList.remove(...keys)}}
+    >
+      <TagGroup.TagList items={animalList.items}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup>
+  );
+}
+```
+
+### Selecting Tags
+
+TagGroup supports multiple selection modes. By default, selection is disabled, however this can be changed using the selectionMode prop. Use defaultSelectedKeys to provide a default set of selected items (uncontrolled) and selectedKeys to set the selected items (controlled). The value of the selected keys must match the id prop of the items.
+
+It is not possible for tags to be both removable and selectable.  If the `selectionMode` prop is set, tags cannot be removed and the removal button will not display.
+
+#### Single Selection
+```jsx-live
+const App = () => {
+    const [selected, setSelected] = useState(new Set([]));
+    const animalOptions = [
+      { id: "koala", name: "Koala" },
+      { id: "kangaroo", name: "Kangaroo" },
+    ];
+    return (
+      <>
+        <TagGroup.Root
+          aria-label="select an animal"
+          selectionMode="single"
+          selectedKeys={selected}
+          onSelectionChange={setSelected}
+        >
+          <TagGroup.TagList items={animalOptions}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+        <Text as="p">
+          Current selection:{" "}
+          {selected === "all" ? "all" : [...selected].join(", ")}
+        </Text>
+      </>
+    );
+}
+```
+
+
+#### Multiple Selection
+```jsx-live
+const App = () => {
+    const [selected, setSelected] = useState(new Set([]));
+    const animalOptions = [
+      { id: "koala", name: "Koala" },
+      { id: "kangaroo", name: "Kangaroo" },
+    ];
+    return (
+      <>
+        <TagGroup.Root
+          aria-label="selectable animals"
+          selectionMode="multiple"
+          selectedKeys={selected}
+          onSelectionChange={setSelected}
+        >
+          <TagGroup.TagList items={animalOptions}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+        <Text as="p">
+          Current selection:{" "}
+          {selected === "all" ? "all" : [...selected].join(", ")}
+        </Text>
+      </>
+    );
+}
+```
+### Empty State
+
+The Tag List component can render a message if the tag group is empty.
+
+```jsx-live
+const App = () => {
+  const animalOptions = [];
+  return (
+    <TagGroup.Root>
+      <TagGroup.TagList 
+        items={animalOptions}
+        renderEmptyState={() => <Text>No Animals - Tag Group is Empty</Text>}
+      >
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup>
+  );
+}
 ```
 
 ## Props
