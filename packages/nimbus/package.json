@@ -66,7 +66,7 @@
     "@vitest/browser": "catalog:tooling",
     "@vitest/coverage-v8": "catalog:tooling",
     "apca-w3": "^0.1.9",
-    "axe-core": "^4.10.2",
+    "axe-core": "^4.10.3",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
