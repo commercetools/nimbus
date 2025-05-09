@@ -1,6 +1,6 @@
 packages:
   - "packages/*"
-  - "apps/docs"
+  - "apps/*"
 
 catalogs:
   # a dependency that exists in multiple packages can be managed
