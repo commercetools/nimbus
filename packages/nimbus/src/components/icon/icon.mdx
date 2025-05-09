@@ -1,0 +1,86 @@
+---
+id: Components-Icon
+title: Icon
+description: displays icon components
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Media
+  - Icon
+tags:
+  - component
+---
+
+# Icon
+
+displays icon components
+
+## Examples
+
+Below are examples showcasing the different ways to use the `Icon` component.
+
+### Basic Usage
+
+The most basic way to use the `Icon` component is by passing the desired icon as a child. The icon will inherit the current font-size and -color by default.
+
+```jsx-live
+const App = () => (
+  <Icon>
+    <Icons.Bathtub />
+  </Icon>
+);
+```
+
+### Using the `as` prop
+
+As a shorthand, you can pass the icon component directly to the `as` prop.
+
+```jsx-live
+const App = () => <Icon as={Icons.Bathtub} />;
+```
+
+### Predefined Sizes
+
+The `Icon` component comes with a set of predefined sizes that can be applied using the `size` prop.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Icon as={Icons.Bathtub} size="2xs" />
+    <Icon as={Icons.Bathtub} size="xs" />
+    <Icon as={Icons.Bathtub} size="sm" />
+    <Icon as={Icons.Bathtub} size="md" />
+    <Icon as={Icons.Bathtub} size="lg" />
+    <Icon as={Icons.Bathtub} size="xl" />
+  </Stack>
+);
+```
+
+### Custom Size
+
+You can apply a custom size to the `Icon` using the `boxSize` style prop.
+
+```jsx-live
+const App = () => <Icon as={Icons.Bathtub} boxSize="3200" />;
+```
+
+### Custom Color
+
+A custom color can be applied using the `color` style prop.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row">
+    <Icon as={Icons.Bathtub} size="xl" color="primary.11" />
+    <Icon as={Icons.Bathtub} size="xl" color="info.11" />
+    <Icon as={Icons.Bathtub} size="xl" color="positive.11" />
+    <Icon as={Icons.Bathtub} size="xl" color="warning.11" />
+    <Icon as={Icons.Bathtub} size="xl" color="critical.11" />
+  </Stack>
+);
+```
+
+## Props
+
+<PropTable id="Icon" />
