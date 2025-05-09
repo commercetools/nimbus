@@ -246,7 +246,7 @@ export const Required: Story = {
     });
 
     await step("Input has required attribute", async () => {
-      await expect(input).toHaveAttribute("required");
+      await expect(input).toHaveAttribute("aria-required");
     });
   },
 };

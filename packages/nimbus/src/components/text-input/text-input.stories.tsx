@@ -88,6 +88,31 @@ export const Variants: Story = {
   },
 };
 
+export const Required: Story = {
+  args: {
+    isRequired: true,
+    placeholder: "required text input",
+    ["aria-label"]: "test-input-required",
+  },
+  render: (args) => {
+    return (
+      <TextInput
+        {...args}
+        placeholder="required text input"
+        aria-label="test-input-required"
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("test-input-required");
+
+    await step("Has aria-required attribute", async () => {
+      await expect(input).toHaveAttribute("aria-required", "true");
+    });
+  },
+};
+
 export const Disabled: Story = {
   args: {
     isDisabled: true,
