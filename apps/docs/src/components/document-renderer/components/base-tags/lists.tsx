@@ -11,7 +11,7 @@ export const OlList = ({
   children,
   ...props
 }: ComponentProps<typeof List.Root>) => (
-  <List.Root my="3" asChild {...props}>
+  <List.Root pl="600" mb="400" asChild {...props}>
     <ol>{children}</ol>
   </List.Root>
 );
@@ -22,25 +22,26 @@ export const UlList = ({
   children,
   ...props
 }: ComponentProps<typeof List.Root>) => (
-  <List.Root my="3" asChild {...props}>
+  <List.Root pl="600" mb="400" asChild {...props}>
     <ul>{children}</ul>
   </List.Root>
 );
 
 UlList.displayName = "UlList";
 
-type ListComponentProps =
-  | ComponentProps<typeof OlList> // Props for OlList
-  | ComponentProps<typeof UlList>; // Props for UlList
+type ListComponentProps = ComponentProps<typeof List.Root>;
 
 export const ListItem = (props: ComponentProps<typeof List.Item>) => {
   const { children, ...rest } = props;
   return (
     <List.Item
-      as={"li"}
+      pl="100"
+      css={{
+        "& + li": {
+          mt: "100",
+        },
+      }}
       listStylePosition="outside"
-      ml="500"
-      my="100"
       {...rest}
     >
       {Children.map(children, (child) => {
@@ -50,8 +51,8 @@ export const ListItem = (props: ComponentProps<typeof List.Item>) => {
 
         if (isAnotherList) {
           return cloneElement(child as ReactElement<ListComponentProps>, {
-            ml: "400",
-            my: undefined,
+            //ml: "400",
+            //my: undefined,
           });
         }
 

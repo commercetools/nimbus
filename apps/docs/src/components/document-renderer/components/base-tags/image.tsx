@@ -1,11 +1,11 @@
-import { Box } from "@commercetools/nimbus";
+import { Image as NimbusImage } from "@commercetools/nimbus";
 import { type ImgHTMLAttributes } from "react";
 
 export const Image = (props: ImgHTMLAttributes<HTMLImageElement>) => {
   return (
-    <Box asChild maxWidth="full">
+    <NimbusImage asChild maxWidth="full">
       <img {...props} />
-    </Box>
+    </NimbusImage>
   );
 };
 

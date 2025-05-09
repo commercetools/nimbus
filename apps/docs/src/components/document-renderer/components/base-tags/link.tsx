@@ -1,4 +1,4 @@
-import { Box, Link as StyledLink } from "@commercetools/nimbus";
+import { Box, Link as NimbusLink } from "@commercetools/nimbus";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import { OpenInNew } from "@commercetools/nimbus-icons";
 
@@ -17,13 +17,14 @@ export const Link = ({ children, ...rest }: LinkProps) => {
       }
     : {};
   return (
-    <StyledLink alignItems="baseline" variant="underline" {...rest} {...props}>
+    // @ts-expect-error - something is off
+    <NimbusLink alignItems="baseline" {...rest} {...props}>
       {isExternal && (
         <Box my="auto" asChild>
           <OpenInNew />
         </Box>
       )}
       {children}
-    </StyledLink>
+    </NimbusLink>
   );
 };
