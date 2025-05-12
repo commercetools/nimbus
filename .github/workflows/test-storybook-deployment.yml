@@ -1,4 +1,6 @@
 name: Test Nimbus Components in Deployed Storybook
+permissions:
+  contents: read
 on: deployment_status
 jobs:
   test-storybook-deploy:
@@ -21,6 +23,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Build the project
+        run: pnpm build:tokens && pnpm run build:packages # no reason to build docs since they have no tests, if that changes we should build them
+        env:
+          NODE_ENV: production
 
       # - name: Lint # this takes surprisingly long and why bother if we're going to continue if it fails?
       #   run: pnpm lint
