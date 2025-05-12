@@ -17,9 +17,6 @@ export default mergeConfig(
         // This should match your package.json script to run Storybook
         // The --ci flag will skip prompts and not open a browser
         storybookScript: "pnpm storybook --ci",
-        storybookUrl: process.env.SB_URL
-          ? process.env.SB_URL
-          : "localhost:6006",
       }),
     ],
     test: {
