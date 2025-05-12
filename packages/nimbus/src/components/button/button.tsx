@@ -15,6 +15,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     // if asChild is set, for react-aria to add the button-role, the elementType
     // has to be manually set to something else than button
+
     const elementType = as || (asChild ? "a" : "button") || "button";
 
     const { buttonProps } = useButton(
@@ -26,7 +27,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     return (
-      <ButtonRoot {...mergeProps(rest, buttonProps, { as, asChild, ref })}>
+      <ButtonRoot {...mergeProps(rest, buttonProps, { as, asChild })} ref={ref}>
         {children}
       </ButtonRoot>
     );

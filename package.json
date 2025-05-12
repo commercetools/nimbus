@@ -31,7 +31,8 @@
     "overrides": {
       "rollup": "catalog:tooling",
       "@babel/runtime": "catalog:tooling",
-      "prismjs": "^1.30.0"
+      "prismjs": "^1.30.0",
+      "typescript": "catalog:tooling"
     }
   },
   "devDependencies": {
