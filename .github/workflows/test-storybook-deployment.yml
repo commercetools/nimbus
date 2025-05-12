@@ -1,11 +1,9 @@
-name: Build and Test Nimbus Components
-on:
-  push:
-    branches:
-      - main
+name: Test Nimbus Components in Deployed Storybook
+on: deployment_status
 jobs:
-  build-and-deploy:
+  test-storybook-deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.deployment_status.state == 'success' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,11 +22,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build the project
-        run: pnpm build:tokens && pnpm run build:packages # no reason to build docs since they have no tests, if that changes we should build them
-        env:
-          NODE_ENV: production
-
       # - name: Lint # this takes surprisingly long and why bother if we're going to continue if it fails?
       #   run: pnpm lint
       #   continue-on-error: true # continue even if linting fails (for now) TODO: typechecking once we feel ok failing on lint
@@ -41,3 +34,4 @@ jobs:
         timeout-minutes: 5 # Cancel this job after 5 minutes
         env:
           NODE_ENV: production
+          SB_URL: "${{ github.event.deployment_status.target_url }}"
