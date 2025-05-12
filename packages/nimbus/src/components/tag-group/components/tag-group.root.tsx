@@ -13,7 +13,7 @@ export const TagGroupRoot: TagGroupRootComponent = ({
     (selectionMode === "multiple" || selectionMode === "single")
   ) {
     console.warn(
-      'Nimbus TagGroup: when "selectionMode" is "single" or "mutiple" Tags cannot be removed'
+      'Nimbus TagGroup: when "selectionMode" is "single" or "mutiple", Tags cannot be removed'
     );
   }
   return (
