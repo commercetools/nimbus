@@ -1,8 +1,9 @@
-name: Build and Deploy to GitHub Pages
+name: Build and Test Nimbus Components
 on:
   push:
     branches:
       - main
+  pull_request:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -31,20 +32,13 @@ jobs:
 
       - name: Lint
         run: pnpm lint
-        continue-on-error: true # continue even if linting fails (for now)
+        continue-on-error: true # continue even if linting fails (for now) TODO: typechecking once we feel ok failing on lint
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run tests
         run: pnpm test
-        continue-on-error: true
         timeout-minutes: 5 # Cancel this job after 5 minutes
         env:
           NODE_ENV: production
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./apps/docs/dist
