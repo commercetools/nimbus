@@ -39,7 +39,7 @@
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-stately": "catalog:react",
-    "react-hotkeys-hook": "^4.6.1",
+    "react-hotkeys-hook": "^5.0.1",
     "react-use": "^17.5.1",
     "next-themes": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react"
