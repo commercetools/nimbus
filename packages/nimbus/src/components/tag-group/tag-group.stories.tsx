@@ -7,14 +7,6 @@ import { Stack, Text } from "@/components";
 import type { TagGroupProps } from "./tag-group.types";
 import { TagGroup } from "./tag-group";
 
-import { queryHelpers, buildQueries } from "@testing-library/react";
-
-// query
-const queryByDataFocused = queryHelpers.queryByAttribute.bind(
-  null,
-  "data-focused"
-);
-
 /**
  * Storybook metadata configuration
  * - title: determines the location in the sidebar
