@@ -1,9 +1,9 @@
 import type { ButtonRootProps } from "./button.slots.tsx";
-import type { AriaButtonProps } from "react-aria";
+import type { AriaButtonProps, PressEvents } from "react-aria";
 
 /** combine chakra-button props with aria-button props */
-type FunctionalButtonProps = ButtonRootProps &
-  AriaButtonProps & {
+type FunctionalButtonProps = AriaButtonProps &
+  Omit<ButtonRootProps, keyof AriaButtonProps> & {
     [key: `data-${string}`]: unknown;
   };
 

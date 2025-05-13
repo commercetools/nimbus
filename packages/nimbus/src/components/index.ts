@@ -9,6 +9,7 @@ export * from "./flex";
 export * from "./heading";
 export * from "./highlight";
 export * from "./icon-button";
+export * from "./image";
 export * from "./kbd";
 export * from "./link";
 export * from "./list";
@@ -31,4 +32,6 @@ export * from "./alert";
 export * from "./toggle-button-group";
 export * from "./form-field";
 export * from "./icon";
+export * from "./tag-group";
+
 

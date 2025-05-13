@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef, type ReactNode } from "react";
+import { type ForwardedRef, type ReactNode } from "react";
 
 import {
   ListBoxSection as RaListBoxSection,
