@@ -8,11 +8,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "trigger",
-    "triggerLabel",
     "input",
     "tagGroup",
-    "tag",
-    "listBox",
+    "options",
     "optionGroup",
     "option",
   ],
@@ -68,34 +66,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       // [data-disabled]
       // [data-pending]
     },
-    triggerLabel: {
-      // *Magic*
-      // the trigger-label defines the overall width of the select,
-      // but since we position 2 buttons/icons next to it, we need to account for
-      // their width as well and reserve some space for them
-      // = label-button-gap + button-size + icon-size
-      // = 8px + 24px + 24px
-      // = 56px * 25 = 1400 token
-      "--button-safespace": "sizes.1400",
-      color: "neutral.12",
-      textAlign: "left",
-      marginRight: "var(--button-safespace)",
-      maxWidth: "100%",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
 
-      "&[data-placeholder]": {
-        opacity: 0.5,
-      },
-      "[data-invalid] &": {
-        color: "critical.11",
-      },
-    },
     input: {},
     tagGroup: {},
-    tag: {},
-    listBox: {
+    options: {
       "--scrollbar-color": "colors.neutral.8",
       "--scrollbar-bg": "colors.neutral.3",
 
