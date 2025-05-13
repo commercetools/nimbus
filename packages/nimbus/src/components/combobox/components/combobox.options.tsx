@@ -9,7 +9,7 @@ export const ComboBoxOptions = <T extends object>({
   ...props
 }: ComboBoxOptionsProps<T> & RefAttributes<HTMLDivElement>) => {
   const state = useContext(ComboBoxStateContext);
-  console.log(state);
+  console.log(state?.inputValue);
   return (
     <ComboBoxOptionsSlot ref={ref} {...props}>
       {children}
