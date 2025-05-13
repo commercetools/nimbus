@@ -46,12 +46,23 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       isReadOnly,
     });
 
+    const useFieldArgs: Parameters<typeof useField>[0] = {
+      description: context.description,
+      errorMessage: context.error,
+    };
+
+    if (context.label) {
+      useFieldArgs.label = context.label;
+    } else {
+      // Context will always start out null, so we need to stub out some aria attributes
+      useFieldArgs["aria-label"] = "empty-label";
+      useFieldArgs["aria-labelledby"] = "empty-label";
+    }
+
+    console.log(useFieldArgs);
+
     const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
-      useField({
-        label: context.label,
-        description: context.description,
-        errorMessage: context.error,
-      });
+      useField(useFieldArgs);
 
     useEffect(() => {
       setContext((prevContext) => ({
