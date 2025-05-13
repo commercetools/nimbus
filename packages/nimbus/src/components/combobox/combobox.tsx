@@ -1,25 +1,11 @@
-import { forwardRef } from "react";
-import { ComboboxRoot } from "./combobox.slots";
-import type { ComboboxProps } from "./combobox.types";
+import { ComboBoxRoot as _ComboBoxRoot } from "./components/combobox.root";
+import { ComboBoxListBox as _ComboBoxListBox } from "./components/combobox.list-box";
+import { ComboBoxOptionGroup as _ComboBoxOptionGroup } from "./components/combobox.option-group";
+import { ComboBoxOption as _ComboBoxOption } from "./components/combobox.option";
 
-/**
- * Combobox
- * ============================================================
- * A combo box combines a text input with a listbox, allowing users to filter a list of options to items matching a query.
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
- */
-export const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
-({children, ...props}, ref) => {
-    return (
-     <ComboboxRoot ref={ref} {...props}>{children}</ComboboxRoot>
-    )
- }
-);
-Combobox.displayName = "Combobox";
+export const ComboBox = {
+  Root: _ComboBoxRoot,
+  ListBox: _ComboBoxListBox,
+  OptionGroup: _ComboBoxOptionGroup,
+  Option: _ComboBoxOption,
+};
