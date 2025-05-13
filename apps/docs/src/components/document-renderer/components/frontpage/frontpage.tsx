@@ -58,7 +58,7 @@ export const Frontpage = () => {
       <SimpleGrid columns={2} gap="400">
         {links.map((link) => (
           <DocLink docRoute={link.href} unstyled>
-            <Card.Root borderStyle="outlined" cardPadding="lg">
+            <Card.Root borderStyle="outlined" cardPadding="lg" width="full">
               <Card.Content>
                 <Flex gap="600" direction="row" height="80px">
                   <Box>

@@ -1,11 +1,5 @@
 import { List } from "@commercetools/nimbus";
-import {
-  Children,
-  isValidElement,
-  cloneElement,
-  ComponentProps,
-  ReactElement,
-} from "react";
+import { ComponentProps } from "react";
 
 export const OlList = ({
   children,
@@ -29,8 +23,6 @@ export const UlList = ({
 
 UlList.displayName = "UlList";
 
-type ListComponentProps = ComponentProps<typeof List.Root>;
-
 export const ListItem = (props: ComponentProps<typeof List.Item>) => {
   const { children, ...rest } = props;
   return (
@@ -44,21 +36,7 @@ export const ListItem = (props: ComponentProps<typeof List.Item>) => {
       listStylePosition="outside"
       {...rest}
     >
-      {Children.map(children, (child) => {
-        const isAnotherList =
-          isValidElement(child) &&
-          (child.type === OlList || child.type === UlList);
-
-        if (isAnotherList) {
-          return cloneElement(child as ReactElement<ListComponentProps>, {
-            //ml: "400",
-            //my: undefined,
-          });
-        }
-
-        // Otherwise, return the child unchanged
-        return child;
-      })}
+      {children}
     </List.Item>
   );
 };

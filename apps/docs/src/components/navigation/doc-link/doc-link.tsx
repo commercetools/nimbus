@@ -32,6 +32,7 @@ export const DocLink: React.FC<DocLinkProps> = ({
   children,
   onClick,
   unstyled = false,
+  ...props
 }) => {
   const [, setActiveRoute] = useAtom(activeRouteAtom);
 
@@ -56,7 +57,12 @@ export const DocLink: React.FC<DocLinkProps> = ({
   };
 
   return (
-    <Link href={formattedRoute} onClick={handleClick} unstyled={unstyled}>
+    <Link
+      href={formattedRoute}
+      onClick={handleClick}
+      unstyled={unstyled}
+      {...props}
+    >
       {children}
     </Link>
   );
