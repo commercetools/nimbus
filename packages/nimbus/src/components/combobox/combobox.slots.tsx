@@ -1,26 +1,136 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
+import type { ReactElement, Ref } from "react";
 import {
   type HTMLChakraProps,
   type RecipeVariantProps,
+  type ConfigRecipeSlots,
+  type WithProviderOptions,
+  type WithContextOptions,
   createSlotRecipeContext,
 } from "@chakra-ui/react";
-import { type ComboBoxProps as RaComboBoxProps } from "react-aria-components";
-import { comboBoxSlotRecipe } from "./combobox.recipe";
 
-const { withProvider, withContext } = createSlotRecipeContext({
+import {
+  ComboBox as RaComboBox,
+  ListBox as RaListBox,
+  GridList as RaGridList,
+  ListBoxItem as RaListBoxItem,
+  GridListItem as RaGridListItem,
+  ListBoxSection as RaListBoxSection,
+} from "react-aria-components";
+import type {
+  ComboBoxRootProps,
+  ComboBoxRootComponent,
+  ComboBoxOptionsProps,
+  ComboBoxOptionsComponent,
+  ComboBoxOptionProps,
+  ComboBoxOptionComponent,
+  ComboBoxOptionGroupProps,
+  ComboBoxOptionGroupComponent,
+} from "./combobox.types";
+import { fixedForwardRef } from "@/utils/fixedForwardRef";
+
+type ComboBoxSlotNames =
+  | "root"
+  | "trigger"
+  | "input"
+  | "tagGroup"
+  | "options"
+  | "optionGroup"
+  | "option";
+
+export const {
+  withProvider,
+  withContext,
+}: {
+  withProvider: <T, P>(
+    Component: React.ElementType<any>,
+    slot: ComboBoxSlotNames,
+    options?: WithProviderOptions<P>
+  ) => React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<P> & React.RefAttributes<T>
+  >;
+  withContext: <T, P>(
+    Component: React.ElementType<any>,
+    slot?: ComboBoxSlotNames,
+    options?: WithContextOptions<P>
+  ) => React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<P> & React.RefAttributes<T>
+  >;
+} = createSlotRecipeContext({
   key: "combobox",
 });
 
 // ComboBox Root
-export interface ComboBoxRootSlotProps
-  extends HTMLChakraProps<
-    "div",
-    RecipeVariantProps<typeof comboBoxSlotRecipe> & RaComboBoxProps<object>
-  > {}
-export const ComboBoxRootSlot = withProvider<
-  HTMLDivElement,
-  ComboBoxRootSlotProps
->("div", "root");
+// TODO: Change slot component based on multiselect props
+export const ComboBoxRootSlot = fixedForwardRef(
+  <T extends object>(
+    props: ComboBoxRootProps<T>,
+    ref: Ref<HTMLDivElement>
+  ): ReactElement<ComboBoxRootProps<T>, ComboBoxRootComponent<T>> => {
+    const SlotComponent = withProvider<HTMLDivElement, ComboBoxRootProps<T>>(
+      RaComboBox,
+      "root"
+    );
+
+    return <SlotComponent {...props} ref={ref} />;
+  }
+);
+
+// Options - ListBox (single) or GridList (multi)
+export const ComboBoxOptionsSlot = fixedForwardRef(
+  <T extends object>(
+    props: ComboBoxOptionsProps<T>,
+    ref: Ref<HTMLDivElement>
+  ): ReactElement<ComboBoxOptionsProps<T>, ComboBoxOptionsComponent<T>> => {
+    const SlotComponent =
+      props.selectionMode === "multiple"
+        ? withContext<HTMLDivElement, ComboBoxOptionsProps<T>>(
+            RaGridList,
+            "options"
+          )
+        : withContext<HTMLDivElement, ComboBoxOptionsProps<T>>(
+            RaListBox,
+            "options"
+          );
+
+    return <SlotComponent {...props} ref={ref} />;
+  }
+);
+
+// Option - ListBoxItem (single) or GridListItem (multi)
+export const ComboBoxOptionSlot = fixedForwardRef(
+  <T extends object>(
+    props: ComboBoxOptionProps<T>,
+    ref: Ref<HTMLDivElement>
+  ): ReactElement<ComboBoxOptionProps<T>, ComboBoxOptionComponent<T>> => {
+    const SlotComponent = withContext<HTMLDivElement, ComboBoxOptionProps<T>>(
+      props.selectionMode === "multiple" ? RaGridListItem : RaListBoxItem,
+      "option"
+    );
+
+    return <SlotComponent {...props} ref={ref} />;
+  }
+);
+
+// OptionGroup
+export const ComboBoxOptionGroupSlot = fixedForwardRef(
+  <T extends object>(
+    props: ComboBoxOptionGroupProps<T>,
+    ref: Ref<HTMLDivElement>
+  ): ReactElement<
+    ComboBoxOptionGroupProps<T>,
+    ComboBoxOptionGroupComponent<T>
+  > => {
+    const SlotComponent = withContext<
+      HTMLDivElement,
+      ComboBoxOptionGroupProps<T>
+    >(RaListBoxSection, "optionGroup");
+
+    return <SlotComponent {...props} ref={ref} />;
+  }
+);
+
+// TODO: are these necessary?  we'll find out!
 
 // Trigger Button
 export interface ComboBoxTriggerSlotProps extends HTMLChakraProps<"button"> {}
@@ -36,37 +146,9 @@ export const ComboBoxInputSlot = withContext<
   ComboBoxInputSlotProps
 >("input", "input");
 
-// Tag
-export interface ComboBoxTagSlotProps extends HTMLChakraProps<"li"> {}
-export const ComboBoxTagSlot = withContext<HTMLLIElement, ComboBoxTagSlotProps>(
-  "li",
-  "tag"
-);
-
 // TagGroup
-export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"ul"> {}
+export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"div"> {}
 export const ComboBoxTagGroupSlot = withContext<
   HTMLUListElement,
   ComboBoxTagGroupSlotProps
->("ul", "tagGroup");
-
-// ListBox
-export interface ComboBoxListBoxSlotProps extends HTMLChakraProps<"ul"> {}
-export const ComboBoxListBoxSlot = withContext<
-  HTMLUListElement,
-  ComboBoxListBoxSlotProps
->("ul", "listBox");
-
-// ListBoxItem (option)
-export interface ComboBoxOptionSlotProps extends HTMLChakraProps<"li"> {}
-export const ComboBoxOptionSlot = withContext<
-  HTMLLIElement,
-  ComboBoxOptionSlotProps
->("li", "option");
-
-// ListBoxGroup (optionGroup)
-export interface ComboBoxOptionGroupSlotProps extends HTMLChakraProps<"ul"> {}
-export const ComboBoxOptionGroupSlot = withContext<
-  HTMLUListElement,
-  ComboBoxOptionGroupSlotProps
->("ul", "optionGroup");
+>("div", "tagGroup");
