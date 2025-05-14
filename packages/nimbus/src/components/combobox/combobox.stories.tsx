@@ -37,7 +37,7 @@ const options = [
  */
 export const Base: Story = {
   render: () => {
-    let [animalId, setAnimalId] = useState<Key | null>(null);
+    const [animalId, setAnimalId] = useState<Key | null>(null);
 
     console.log(animalId);
     return (

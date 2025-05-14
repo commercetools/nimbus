@@ -24,9 +24,12 @@ import { comboBoxSlotRecipe } from "./combobox.recipe";
 type ComboBoxRootSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
-export type ComboBoxRootProps<T extends object> = RaComboBoxProps<T> &
-  Omit<ComboBoxRootSlotProps, keyof RaComboBoxProps<T>> &
-  RecipeVariantProps<typeof comboBoxSlotRecipe>;
+export type ComboBoxRootProps<T extends object> = Omit<
+  RaComboBoxProps<T>,
+  "children"
+> & {
+  children: React.ReactNode | ((item: T) => React.ReactNode);
+};
 
 /** Type signature for the main `ComboBox` single-select component (using `forwardRef`). */
 export type ComboBoxRootComponent<T extends object> = FC<
