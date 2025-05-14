@@ -243,6 +243,7 @@ export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState("");
     const onChangeRequest = (e: string) => {
+      console.log("onChangeRequest", e);
       setValue(e);
     };
 
