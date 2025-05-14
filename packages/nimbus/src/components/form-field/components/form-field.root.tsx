@@ -46,12 +46,23 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       isReadOnly,
     });
 
+    const useFieldArgs: Parameters<typeof useField>[0] = {
+      description: context.description,
+      errorMessage: context.error,
+    };
+
+    if (context.label) {
+      useFieldArgs.label = context.label;
+    } else {
+      // Context will always start out null, so we need to stub out some aria attributes
+      // FIXME: This is a hack to get the form field to work, but it's not the best solution
+      // FIXME: We should find a better way to handle this by redesigning the FormField component's structure
+      useFieldArgs["aria-label"] = "empty-label";
+      useFieldArgs["aria-labelledby"] = "empty-label";
+    }
+
     const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
-      useField({
-        label: context.label,
-        description: context.description,
-        errorMessage: context.error,
-      });
+      useField(useFieldArgs);
 
     useEffect(() => {
       setContext((prevContext) => ({
