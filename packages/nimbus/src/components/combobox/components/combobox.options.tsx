@@ -1,18 +1,23 @@
 import { type RefAttributes, useContext } from "react";
-import { ComboBoxStateContext } from "react-aria-components";
+import { ComboBoxStateContext, ListBox } from "react-aria-components";
 import { ComboBoxOptionsSlot } from "../combobox.slots";
 import type { ComboBoxOptionsProps } from "../combobox.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 export const ComboBoxOptions = <T extends object>({
   children,
   ref,
   ...props
 }: ComboBoxOptionsProps<T> & RefAttributes<HTMLDivElement>) => {
+  const [styleProps, restProps] = extractStyleProps(props);
+
   const state = useContext(ComboBoxStateContext);
-  console.log(state?.inputValue);
+  console.log(state);
   return (
-    <ComboBoxOptionsSlot ref={ref} {...props}>
-      {children}
+    <ComboBoxOptionsSlot asChild>
+      <ListBox ref={ref} {...restProps} {...styleProps}>
+        {children}
+      </ListBox>
     </ComboBoxOptionsSlot>
   );
 };
