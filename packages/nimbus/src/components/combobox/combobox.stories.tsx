@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { type Key, ListBoxItem } from "react-aria-components";
+import { type Key } from "react-aria-components";
 import { ComboBox } from "./combobox";
-import { Text, Stack, Box } from "@/components";
+import { Text } from "@/components";
 
 /**
  * Storybook metadata configuration
