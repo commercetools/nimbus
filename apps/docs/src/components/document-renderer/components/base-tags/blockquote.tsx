@@ -119,14 +119,21 @@ export const Blockquote = (props: BlockquoteProps) => {
 
   return (
     <Box
-      my="300"
+      as="blockquote"
       borderLeft="solid-75"
       py="50"
-      px="200"
+      px="400"
+      mb="400"
       borderColor="colorPalette.9"
       bg="colorPalette.2"
       color="colorPalette.11"
-      {...quoteFlavorProps}>
+      css={{
+        "& > p": {
+          mt: "400",
+        },
+      }}
+      {...quoteFlavorProps}
+    >
       {Children.map(children, (child, idx) => {
         const isLastList = lastListElementIndex === idx;
         const isParagraph = isValidElement(child) && child.type === Paragraph;
@@ -153,13 +160,14 @@ export const Blockquote = (props: BlockquoteProps) => {
                   mr="100"
                   display="inline-block"
                   fontSize="500"
-                  asChild>
+                  asChild
+                >
                   {cleanQuoteFlavor(firstChild.trim())}
                 </Box>,
                 ...child.props.children.slice(2),
               ],
               mt: "400",
-              mb: "200",
+              //mb: "200",
             });
           }
 

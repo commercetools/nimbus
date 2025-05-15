@@ -17,7 +17,7 @@ export const Code = (props: CodeProps) => {
     const language = className.replace(/language-/, "");
 
     return (
-      <Box display="block" my="600" fontSize="350">
+      <Box mb="400" display="block" fontSize="350">
         <SyntaxHighlighter
           language={language}
           // @ts-expect-error - the `style` property of SyntaxHighlighter specified a wrong type
@@ -28,6 +28,7 @@ export const Code = (props: CodeProps) => {
       </Box>
     );
   } else {
+    // Inline code
     return (
       <StyledCode asChild>
         <code {...props} />

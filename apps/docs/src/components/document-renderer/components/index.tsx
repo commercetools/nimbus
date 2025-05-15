@@ -8,7 +8,7 @@ import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TextStylesDemo } from "./token-demos/text-styles-demo";
 import * as icons from "@commercetools/nimbus-icons";
-
+import { CategoryOverview } from "./category-overview/category-overview";
 import { MDXComponents } from "mdx/types";
 import {
   EasingTokenDemo,
@@ -34,6 +34,7 @@ import {
   Link,
   Strong,
 } from "./base-tags";
+import { Frontpage } from "./frontpage";
 
 export const components: MDXComponents = {
   h1: H1,
@@ -43,8 +44,10 @@ export const components: MDXComponents = {
   h5: H5,
   h6: H6,
   p: Paragraph,
+  pre: (props) => <Box as="pre" mb="400" {...props} />,
   em: Em,
   blockquote: (props) => <Blockquote {...props} />,
+  hr: (props) => <Box as="hr" my="600" {...props} />,
   code: Code,
   a: Link,
   strong: Strong,
@@ -62,7 +65,7 @@ export const components: MDXComponents = {
   thead: Table.Header,
   th: Table.ColumnHeader,
   tbody: Table.Body,
-  td: Table.Cell,
+  td: (props) => <Table.Cell whiteSpace="normal" {...props} />,
   tr: Table.Row,
   /** layout components */
   Box: (props) => <Box {...props} />,
@@ -90,4 +93,6 @@ export const components: MDXComponents = {
   },
   /** all icons from @commercetools/nimbus-icons */
   Icons: icons,
+  Frontpage,
+  CategoryOverview,
 };

@@ -40,6 +40,10 @@ export const Toc = () => {
     scrollToAnchor(headingId);
   };
 
+  if (!activeToc || activeToc.length === 0) {
+    return null;
+  }
+
   return (
     <Box>
       <Text fontWeight="600" mb="400">

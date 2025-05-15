@@ -36,6 +36,8 @@ const commonProps = (props: HeadingProps) => ({
   scrollMarginTop: "2400",
   position: "relative",
   className: "group",
+  mt: "600",
+  mb: "400",
 });
 
 const CopyLink = ({ id }: { id: string }) => {
@@ -85,8 +87,11 @@ export const H1 = ({ children, ...props }: HeadingProps) => {
   return (
     <Heading
       {...commonProps({ children, ...props })}
-      mb="600"
       size="3xl"
+      mt="0"
+      pb="200"
+      borderBottom="1px solid"
+      borderColor="neutral.6"
       asChild
     >
       <h1 {...props}>
@@ -101,10 +106,11 @@ export const H2 = ({ children, ...props }: HeadingProps) => {
   return (
     <Heading
       {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
       size="2xl"
+      pb="200"
       asChild
+      borderBottom="1px solid"
+      borderColor="neutral.6"
     >
       <h2 {...props}>
         {children} <CopyLink id={id} />
@@ -116,13 +122,7 @@ export const H2 = ({ children, ...props }: HeadingProps) => {
 export const H3 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="xl"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="xl" asChild>
       <h3 {...props}>
         {children} <CopyLink id={id} />
       </h3>
@@ -132,13 +132,7 @@ export const H3 = ({ children, ...props }: HeadingProps) => {
 export const H4 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="lg"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="lg" asChild>
       <h4 {...props}>
         {children} <CopyLink id={id} />
       </h4>
@@ -148,14 +142,7 @@ export const H4 = ({ children, ...props }: HeadingProps) => {
 export const H5 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="lg"
-      fontWeight="500"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="lg" asChild>
       <h5 {...props}>
         {children} <CopyLink id={id} />
       </h5>
@@ -165,14 +152,7 @@ export const H5 = ({ children, ...props }: HeadingProps) => {
 export const H6 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading
-      {...commonProps({ children, ...props })}
-      mb="300"
-      mt="600"
-      size="lg"
-      fontWeight="400"
-      asChild
-    >
+    <Heading {...commonProps({ children, ...props })} size="lg" asChild>
       <h6 {...props}>
         {children} <CopyLink id={id} />
       </h6>
