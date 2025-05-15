@@ -1,0 +1,99 @@
+---
+id: Home-Installation-1746704940030
+title: Installation
+description: How to add Nimbus to your react frontend
+documentState: InitialDraft
+order: 1
+menu:
+  - Home
+  - Installation
+tags: []
+icon: Download
+---
+
+# Installation
+
+How to add Nimbus to your react frontend.
+
+## 1. Install the nimbus packages
+
+You can install Nimbus using your preferred package manager.
+
+### pnpm
+
+```bash
+pnpm add @commercetools/nimbus @commercetools/nimbus-icons
+```
+
+### npm
+
+```bash
+npm install @commercetools/nimbus @commercetools/nimbus-icons
+```
+
+### yarn
+
+```bash
+yarn add @commercetools/nimbus @commercetools/nimbus-icons
+```
+
+## 2. Set up NimbusProvider
+
+Wrap your application with the `NimbusProvider` at the root level. This provider
+is essential for Nimbus components to function correctly, as it supplies the
+necessary theme and context.
+
+```tsx
+// App.tsx or main.tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { NimbusProvider } from "@commercetools/nimbus";
+import App from "./App";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <NimbusProvider>
+      <App />
+    </NimbusProvider>
+  </React.StrictMode>
+);
+```
+
+## 3. Use Nimbus Components
+
+Once the provider is set up, you can start using Nimbus components in your
+application.
+
+```jsx
+// App.tsx
+import { Flex, Box, Button } from "@commercetools/nimbus";
+import { ArrowForward } from "@commercetools/nimbus-icons";
+
+const App = () => {
+  return (
+    <Flex width="100vw" height="100vh">
+      <Box margin="auto">
+        <Button
+          variant="solid"
+          tone="primary"
+          onPress={() => alert("It just works!")}
+        >
+          <ArrowForward /> Click me
+        </Button>
+      </Box>
+    </Flex>
+  );
+};
+
+export default App;
+```
+
+That's it! You've successfully installed and set up Nimbus in your project. You
+can now explore and use the wide range of components offered by the library.
+
+## Next steps
+
+Before diving into actual implementation work with Nimbus, take some time to familiarize yourself with the fundamentals.
+Once you have a solid grasp of these concepts, you'll be well-prepared to explore the individual component documentation and start building beautiful, accessible interfaces with Nimbus.
+
+👉 **[Explore the Core Concepts in detail →](/home/core-concepts)**

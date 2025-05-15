@@ -1,0 +1,369 @@
+---
+id: Home-Core Concepts
+title: Core Concepts
+description: Quick start guide to set up and use the package.
+documentState: InitialDraft
+order: 2
+menu:
+  - Home
+  - Core Concepts
+tags:
+  - document
+icon: LocalLibrary
+---
+
+# Core concepts
+
+This page is designed to help you understand the foundational concepts so that
+you can get quickly started with using the Nimbus Design System in your
+projects.
+
+Nimbus aims to provide a comprehensive suite of accessible and pre-themed React components, enabling developers to build beautiful and consistent user interfaces with ease. However, it's important to understand the following underlying concepts to make the most of the system.
+
+## Technical foundation
+
+- Nimbus is a [`react`](https://react.dev/) component library built to provide a
+  consistent and accessible design system.
+- Under the hood, it leverages the power of CSS-in-JS through
+  [`@emotion/react`](https://emotion.sh/)
+- For its styling and theming capabilities, Nimbus utilizes
+  [Chakra UI](https://chakra-ui.com/).
+- For all components that are requiring user-interaction Nimbus is making use of
+  suitable [`react-aria`](https://react-spectrum.adobe.com/react-aria/)
+  components or hooks to guarantee enterprise-grade accessibility.
+
+## Core Concepts
+
+To effectively use the Nimbus Design System, it's helpful to understand the
+following core concepts:
+
+### 1. NimbusProvider
+
+At the root of your application, you'll need to include the `NimbusProvider`.
+This component is essential as it provides the theme (colors, spacing,
+typography, etc.) and other context necessary for all Nimbus components to
+function correctly.
+
+```tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+import { YourApp } from "./you-app";
+
+function App() {
+  return (
+    <NimbusProvider>
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+
+export default App;
+```
+
+### 2. Component Types
+
+Nimbus offers a rich library of pre-built UI components that you can use to
+construct your application's interface. These components are designed to be
+accessible, customizable, and consistent with the Nimbus design language.
+
+We differentiate between two types of components:
+
+#### Primitive Components
+
+These are fundamental building blocks, often representing a single HTML element
+or a very simple UI concept. They are designed to be used on their own or
+composed to create more complex UIs.
+
+Examples: `Button`, `Box`, `Flex`, `Text`, `Heading`, `Icon`.
+
+```tsx
+import { Stack, Heading, Text, Button } from "@commercetools/nimbus";
+
+function MyPrimitiveExample() {
+  return (
+    <Stack>
+      <Heading>This is a heading</Heading>
+      <Text>This is a paragraph of text.</Text>
+      <Button>Click me</Button>
+    </Stack>
+  );
+}
+```
+
+#### Compound Components
+
+These components are more complex and are typically made up of several distinct
+parts that work together to provide a piece of functionality. They often manage
+internal state or have a specific structure.
+
+Examples: `Alert`, `Card`, `Grid`, `Select`, `Accordion`, `Table`.
+
+When using compound components, you'll import multiple related components at
+once. For instance, with `Select`, you might use `Select.Root`,
+`Select.Options`, `Select.Option`, etc.
+
+```tsx
+import { Select } from "@commercetools/nimbus"; // Assuming Select is a top-level import
+
+function MySelectExample() {
+  return (
+    <Select.Root placeholder="Select a fruit">
+      <Select.Options>
+        <Select.Option>Apples</Select.Option>
+        <Select.Option>Bananas</Select.Option>
+        <Select.Option>Oranges</Select.Option>
+        <Select.Option>Cherries</Select.Option>
+      </Select.Options>
+    </Select.Root>
+  );
+}
+```
+
+### 3. Design Tokens
+
+At the heart of Nimbus's theming capabilities are **Design Tokens**. These are
+named entities that store indivisible pieces of the visual design, such as
+specific colors, spacing units, font sizes, border radii, etc. Instead of
+hardcoding a hex value like `#007bff` or a pixel value like `16px`, you simply
+use a token.
+
+Design tokens are organized by their **purpose** and map to one or more
+style-props.
+
+- **Color Tokens**: For any property that accepts a color value, like
+  `backgroundColor`, `color`, `borderColor`.
+- **Spacing Tokens**: Exclusively for properties that define space, such as
+  `padding`, `margin`, `gap`, `top`, `left`, etc.
+- **Size Tokens** : Used for `width`, `height`, `minWidth`, `maxWidth`,
+  `minHeight`, `maxHeight`.
+- **Typography Tokens**: For text-related style props like `fontSize`,
+  `fontWeight`, `lineHeight`.
+- etc.
+
+All Nimbus components are fundamentally built using these design tokens.
+
+### 4. Style Props
+
+For direct and granular CSS control, many Nimbus components expose **Style
+Props**. These props are typically named after their corresponding CSS
+properties (e.g., `backgroundColor`, `padding`, `margin`, `width`, `display`,
+`alignItems`).
+
+The key advantage of using Nimbus Style Props over inline `style` attributes is
+their direct integration with the **Design Token** system (see the
+[Design Tokens](#3-design-tokens) section). You should primarily use Design
+Tokens as values for these props. This ensures that even fine-grained
+adjustments remain consistent with the overall design system and are easily
+maintainable.
+
+Style props are excellent for:
+
+- Making specific layout adjustments
+- Applying a specific color from the token palette directly (e.g.,
+  `color="primary.11"`).
+- Overriding a particular aspect of a component's appearance when a more general
+  theming prop (like `variant` or `tone`) doesn't cover the specific need, or
+  when a highly localized, one-off style is required.
+
+```tsx
+import { Box, Text } from "@commercetools/nimbus";
+
+function CustomTextInBox() {
+  return (
+    <Box
+      padding="400" // Design token for padding, comming from the spacing tokens
+      backgroundColor="primary.2" // Design token for color, comming from the color tokens
+      border="solid-25" // Token for borders
+      borderRadius="full" // Design token for radii
+    >
+      <Text color="primary.11" fontSize="1200" fontWeight="500">
+        This box uses Style Props with Design Tokens for custom styling.
+      </Text>
+    </Box>
+  );
+}
+```
+
+While Style Props offer great flexibility, it's generally recommended to use
+standard theming props (discussed in the
+[Theming and Styling](#6-theming-and-styling) section) for common styling
+scenarios. Reserve Style Props for situations requiring specific, low-level
+control, always pairing them with Design Tokens to maintain consistency.
+
+### 5. Polymorphism
+
+Many Nimbus components, particularly Primitive Components, support polymorphism.
+This powerful feature allows you to change the underlying HTML element a
+component renders to the DOM while retaining its established styling and
+behavior. This is primarily achieved through the `as` or `asChild` props.
+
+- The `as` prop directly changes the rendered HTML tag. For example, a `Text`
+  component, which might render a `<span>` by default, can be changed to render
+  a `<p>` or an `<em>` tag:
+
+  ```tsx
+  import { Text } from "@commercetools/nimbus";
+
+  <Text as="p">This text will be rendered as a paragraph.</Text>
+  <Text as="span">This text will be rendered as a span.</Text>
+  ```
+
+- The `asChild` prop offers a more advanced way to handle polymorphism. It
+  allows a Nimbus component to delegate its rendering to a single child
+  component. When `asChild` is true, the Nimbus component itself doesn't render
+  a DOM element; instead, it clones its child and merges its own props (like
+  styles and event handlers) onto the child. This is incredibly useful for
+  applying Nimbus styling and behavior to an existing component (e.g., a `Link`
+  from a routing library) without altering the child's core functionality or
+  prop structure. It ensures that the child retains its own capabilities while
+  seamlessly integrating the parent's visual attributes.
+
+  ```tsx
+  import { Button } from "@commercetools/nimbus";
+  import { Link } from "your-router-library"; // Fictional router Link
+
+  <Button variant="solid" tone="primary" asChild>
+    <Link to="/some-page">Navigate</Link>
+  </Button>;
+
+  // = the Button's styles and behaviors are applied to the Link
+  ```
+
+  While most common in Primitive Components, some Compound Components might also
+  offer polymorphic capabilities where appropriate.
+
+### 6. Theming
+
+Nimbus components derive their appearance from the underlying
+[Design Tokens](#3-design-tokens). Beyond direct styling with
+[Style Props](#4-style-props), components offer dedicated **theming props** to
+apply common, pre-defined visual treatments.
+
+These theming props are the primary way to align components with the established
+Nimbus design language and ensure a consistent look and feel. They encapsulate
+sets of styles related to a component's variants, sizes, or semantic tones.
+
+Common theming props include:
+
+- `variant`: Often dictates the overall style of a component (e.g., `solid`,
+  `outline`, `ghost`).
+- `size`: Controls the dimensions of the component (e.g., `sm`, `md`, `lg`).
+- `textStyle`: Specifically for text-based components like `Text` or `Heading`,
+  this prop applies a predefined typographic style (which includes font size,
+  weight, line height, etc.) like `body`, `caption`, `h1`, etc.
+- `tone`: Typically used to convey semantic meaning or state through color
+  (e.g., `primary`, `neutral`, `critical` for a `Button` or `Alert`).
+- `colorPalette`: This prop is used to apply a specific color scheme to a
+  component when the color isn't necessarily tied to a semantic meaning (like
+  `success` or `warning`). Instead, it offers a way to achieve visual variation
+  or categorization. For example, a `Badge` component might use `colorPalette`
+  to offer various background and text color combinations (e.g., "blue",
+  "green", "purple", "orange") for purely aesthetic purposes or to group items
+  by a non-semantic color.
+
+```tsx
+import { Button, Text, Card, Badge } from "@commercetools/nimbus";
+
+function ThemedComponents() {
+  return (
+    <>
+      <Text textStyle="caption">I look like a caption</Text>
+      <Button variant="solid" tone="primary" size="lg">
+        Large Primary Button
+      </Button>
+      <Button variant="outline" tone="critical" size="xs">
+        xSmall Critical Outline
+      </Button>
+      <Badge colorPalette="blue">Blue Badge</Badge>
+      <Badge colorPalette="purple">Purple Badge</Badge>
+    </>
+  );
+}
+```
+
+### 7. Responsive Styling
+
+Nimbus components are designed to be responsive, allowing you to adapt their
+styles for different screen sizes. This is typically achieved by providing an an
+object to [Style Props](#4-style-props) or some theming props.
+
+The [breakpoints](/tokens/other/breakpoints) (e.g., `sm`, `md`, `lg`, `xl`,
+`2xl`) used for responsive styling are defined within the theme provided by
+`NimbusProvider`.
+
+The `base` key is the default value that applies if no screen size matches.
+
+```tsx
+import { Stack, Text } from "@commercetools/nimbus";
+
+function ResponsiveStack() {
+  return (
+    <Stack
+      direction={{ base: "column", md: "row" }} // Column on mobile, row on medium screens and up
+      padding={{ base: "400", lg: "600" }} // Different padding for small vs large screens
+      gap="400"
+    >
+      <Text>Item 1</Text>
+      <Text>Item 2</Text>
+    </Stack>
+  );
+}
+```
+
+This approach allows for intuitive and declarative responsive design directly
+within your component's props.
+
+### 8. Using Icons
+
+The `@nimbus/icons` package provides a large set of icons optimized for use with
+Nimbus components. These icons can be easily integrated to enhance the visual
+communication of your interface. They will adapt to the context they are used in
+by default and allow for easy customization when used in combination with the
+Icon component.
+
+To use an icon, import it from `@commercetools/nimbus-icons` and use it like any
+other React component.
+
+```tsx
+import { Button } from "@commercetools/nimbus";
+import { IconCheckCircle } from "@commercetools/nimbus-icons";
+
+function ComponentsWithIcons() {
+  return (
+    <Button variant="solid" tone="primary">
+      <IconCheckCircle /> Submit
+    </Button>
+  );
+}
+```
+
+For more granular control over icon appearance, you can use the `Icon` component 
+from Nimbus to customize properties such as size, color, and other style 
+attributes. This component wraps the imported icons and allows them to be styled 
+consistently with the design system's tokens.
+
+```tsx
+import { Icon, Box } from "@commercetools/nimbus";
+import { IconEdit, IconDelete } from "@commercetools/nimbus-icons";
+
+function CustomizedIcons() {
+  return (
+    <Box display="flex" gap="400">
+      {/* Customize icon size */}
+      <Icon as={IconEdit} boxSize="800" />
+      
+      {/* Customize icon color */}
+      <Icon as={IconDelete} color="critical.9" />
+      
+      {/* Apply multiple style properties */}
+      <Icon
+        as={IconEdit}
+        boxSize="1000"
+        color="primary.11"
+        opacity="0.8"
+        transition="all 0.2s"
+        _hover={{ opacity: "1", transform: "scale(1.1)" }}
+      />
+    </Box>
+  );
+}
+```
