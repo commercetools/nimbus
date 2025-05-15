@@ -239,11 +239,14 @@ export const SmokeTest: Story = {
   },
 };
 
+const mockOnChangeRequest = fn();
+
 export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState("");
     const onChangeRequest = (e: string) => {
       setValue(e);
+      mockOnChangeRequest(e);
     };
 
     return (
@@ -273,6 +276,14 @@ export const Controlled: Story = {
       await userEvent.clear(input);
       await expect(input).toHaveValue("");
       await expect(valueDisplay).toHaveTextContent("Current value:");
+    });
+
+    await step("Does not call onChange with an event", async () => {
+      await userEvent.type(input, "Hello");
+      // Expect the input to never have been called with an object type
+      for (const call of mockOnChangeRequest.mock.calls) {
+        await expect(typeof call[0]).toBe("string");
+      }
     });
   },
 };

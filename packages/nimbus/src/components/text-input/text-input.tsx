@@ -32,12 +32,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     const { inputProps } = useTextField(otherProps, ref);
 
     return (
-      <TextInputRootSlot
-        {...recipeProps}
-        {...styleProps}
-        {...otherProps}
-        asChild
-      >
+      <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
         <Input ref={ref} {...inputProps} />
       </TextInputRootSlot>
     );
