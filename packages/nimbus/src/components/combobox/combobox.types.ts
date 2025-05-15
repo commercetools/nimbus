@@ -1,4 +1,5 @@
-import type { ReactNode, RefAttributes, FC } from "react";
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import type { ReactNode } from "react";
 import type {
   HTMLChakraProps,
   RecipeProps,
@@ -13,54 +14,51 @@ import type {
   ListBoxSectionProps as RaListBoxSectionProps,
   SelectionMode as RaSelectionMode,
 } from "react-aria-components";
-import type { IconButtonProps } from "@/components";
+
 import { comboBoxSlotRecipe } from "./combobox.recipe";
 
 // ============================================================
 // Root Component (`<ComboBox.Root>`)
 // ============================================================
-
-/** Base Chakra styling props for the root `div` slot. */
-type ComboBoxRootSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
-/** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
-export type ComboBoxRootProps<T extends object> = Omit<
+/** ComboBox with overridden children prop based on expected dom structure. */
+type ComboBoxWithCustomChildren<T extends object> = Omit<
   RaComboBoxProps<T>,
   "children"
 > & {
-  children: React.ReactNode | ((item: T) => React.ReactNode);
+  isLoading?: boolean;
+  children: ReactNode | ((item: T) => React.ReactNode);
 };
-
-/** Type signature for the main `ComboBox` single-select component (using `forwardRef`). */
-export type ComboBoxRootComponent<T extends object> = FC<
-  ComboBoxRootProps<T> &
-    RefAttributes<HTMLDivElement> & {
-      children: React.ReactNode | ((item: T) => React.ReactNode);
-    }
->;
+/** Base Chakra styling props for the root `div` slot. */
+export interface ComboBoxRootSlotProps<T extends object>
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof comboBoxSlotRecipe> &
+      ComboBoxWithCustomChildren<T>
+  > {}
+/** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
+export interface ComboBoxRootProps<T extends object>
+  extends ComboBoxRootSlotProps<T>,
+    ComboBoxWithCustomChildren<T> {}
 
 // ============================================================
 // Options Sub-Component (`<ComboBox.Options>`)
 // ============================================================
 
 /** Base Chakra styling props for the root `div` slot. */
-type ComboBoxOptionsSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
+export interface ComboBoxOptionsSlotProps
+  extends HTMLChakraProps<"div", RecipeProps<"options">> {}
 /** Combined props for the ListBox element used in Single Select (Chakra styles + Aria behavior + Recipe variants) */
-type ComboBoxListBoxProps<T extends object> = RaListBoxProps<T> &
-  Omit<ComboBoxOptionsSlotProps, keyof RaListBoxProps<T>>;
-
+interface ComboBoxListBoxProps<T extends object>
+  extends RaListBoxProps<T>,
+    Omit<ComboBoxOptionsSlotProps, keyof RaListBoxProps<T>> {}
 /** Combined props for the GridList element used in Multi Select (Chakra styles + Aria behavior + Recipe variants) */
-type ComboBoxGridListProps<T extends object> = RaGridListProps<T> &
-  Omit<ComboBoxOptionsSlotProps, keyof RaGridListProps<T>>;
-
+interface ComboBoxGridListProps<T extends object>
+  extends RaGridListProps<T>,
+    Omit<ComboBoxOptionsSlotProps, keyof RaGridListProps<T>> {}
 /** Union type of ListBox or Gridlist, since slot could use either as base component  */
-export type ComboBoxOptionsProps<T extends object> = ComboBoxListBoxProps<T>;
-
-/** Type signature for the `ComboBox.Options` sub-component (using `forwardRef`). */
-export type ComboBoxOptionsComponent<T extends object> = FC<
-  ComboBoxOptionsProps<T> & RefAttributes<HTMLDivElement>
->;
+export type ComboBoxOptionsProps<T extends object> =
+  | ComboBoxListBoxProps<T>
+  | ComboBoxGridListProps<T>;
 
 // ============================================================
 // Option Sub-Component (`<ComboBox.Option>`)
@@ -68,23 +66,22 @@ export type ComboBoxOptionsComponent<T extends object> = FC<
 
 /** Base Chakra styling props for the root `div` slot. */
 type ComboBoxOptionSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
 /** Combined props for the ListBoxItem element (Chakra styles + Aria behavior + Recipe variants). */
-type ComboBoxListBoxItemProps<T extends object> = RaListBoxItemProps<T> &
-  Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>>;
-
+interface ComboBoxListBoxItemProps<T extends object>
+  extends RaListBoxItemProps<T>,
+    Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> {
+  selectionMode?: RaSelectionMode;
+}
 /** Combined props for the GridListItem element (Chakra styles + Aria behavior + Recipe variants). */
-type ComboBoxGridListItemProps<T extends object> = RaGridListItemProps<T> &
-  Omit<ComboBoxOptionSlotProps, keyof RaGridListItemProps<T>>;
-
+interface ComboBoxGridListItemProps<T extends object>
+  extends RaGridListItemProps<T>,
+    Omit<ComboBoxOptionSlotProps, keyof RaGridListItemProps<T>> {
+  selectionMode?: RaSelectionMode;
+}
 /** Union type of ListBox or Gridlist, since slot could use either as base component  */
 export type ComboBoxOptionProps<T extends object> =
-  ComboBoxListBoxItemProps<T> & { selectionMode?: RaSelectionMode };
-
-/** Type signature for the `ComboBox.Option` sub-component (using `forwardRef`). */
-export type ComboBoxOptionComponent<T extends object> = FC<
-  ComboBoxOptionProps<T> & RefAttributes<HTMLDivElement>
->;
+  | ComboBoxListBoxItemProps<T>
+  | ComboBoxGridListItemProps<T>;
 
 // ============================================================
 // OptionGroup Sub-Component (`<ComboBox.OptionGroup>`)
@@ -94,16 +91,11 @@ export type ComboBoxOptionComponent<T extends object> = FC<
 type ComboBoxOptionGroupSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Combined props for the tag element (Chakra styles + Aria behavior + Recipe variants). */
-export type ComboBoxOptionGroupProps<T extends object> =
-  RaListBoxSectionProps<T> &
-    Omit<ComboBoxOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> & {
-      label?: ReactNode;
-    };
-
-/** Type signature for the `ComboBox.OptionGroup` sub-component (using `forwardRef`). */
-export type ComboBoxOptionGroupComponent<T extends object> = FC<
-  ComboBoxOptionGroupProps<T> & RefAttributes<HTMLDivElement>
->;
+export interface ComboBoxOptionGroupProps<T extends object>
+  extends RaListBoxSectionProps<T>,
+    Omit<ComboBoxOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> {
+  label?: ReactNode;
+}
 
 // ============================================================
 // Trigger Slot - internal, not exported in compound component
