@@ -12,14 +12,10 @@ import { Button } from "@/components";
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ children, ...props }, ref) => {
     // button context must be passed down as props to button component, or it is lost
-    const [buttonContextProps, buttonRef] = useContextProps(
-      props,
-      ref,
-      ButtonContext
-    );
+    const [buttonContextProps] = useContextProps(props, ref, ButtonContext);
 
     return (
-      <Button px={0} py={0} ref={buttonRef} {...buttonContextProps}>
+      <Button px={0} py={0} {...buttonContextProps} ref={ref}>
         {children}
       </Button>
     );
