@@ -335,3 +335,35 @@ function ComponentsWithIcons() {
   );
 }
 ```
+
+For more granular control over icon appearance, you can use the `Icon` component 
+from Nimbus to customize properties such as size, color, and other style 
+attributes. This component wraps the imported icons and allows them to be styled 
+consistently with the design system's tokens.
+
+```tsx
+import { Icon, Box } from "@commercetools/nimbus";
+import { IconEdit, IconDelete } from "@commercetools/nimbus-icons";
+
+function CustomizedIcons() {
+  return (
+    <Box display="flex" gap="400">
+      {/* Customize icon size */}
+      <Icon as={IconEdit} boxSize="800" />
+      
+      {/* Customize icon color */}
+      <Icon as={IconDelete} color="critical.9" />
+      
+      {/* Apply multiple style properties */}
+      <Icon
+        as={IconEdit}
+        boxSize="1000"
+        color="primary.11"
+        opacity="0.8"
+        transition="all 0.2s"
+        _hover={{ opacity: "1", transform: "scale(1.1)" }}
+      />
+    </Box>
+  );
+}
+```
