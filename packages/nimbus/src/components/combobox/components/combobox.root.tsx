@@ -1,38 +1,31 @@
-import { type RefAttributes } from "react";
-import { Flex } from "@/components";
-import {
-  Popover as RaPopover,
-  Input,
-  ListBox,
-  ComboBox,
-} from "react-aria-components";
-import { TextInput, IconButton } from "@/components";
-import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
-import { ComboBoxRootSlot, ComboBoxOptionsSlot } from "../combobox.slots";
-import { ComboBoxOptions } from "./combobox.options";
+import { type ForwardedRef } from "react";
+import { useSlotRecipe } from "@chakra-ui/react";
+// import { Flex } from "@/components";
+import { comboBoxSlotRecipe } from "../combobox.recipe";
+import { ComboBoxRootSlot } from "../combobox.slots";
+import { SingleSelectRoot } from "./combobox.single-select-root";
 import type { ComboBoxRootProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { fixedForwardRef } from "@/utils/fixedForwardRef";
 
-export const ComboBoxRoot = <T extends object>({
-  children,
-  ref,
-  ...rest
-}: ComboBoxRootProps<T> & RefAttributes<HTMLDivElement>) => {
-  const [styleProps, restProps] = extractStyleProps(rest);
-  return (
-    <ComboBox {...restProps} ref={ref}>
-      <ComboBoxRootSlot {...styleProps}>
-        <Input />
-        <IconButton>
-          <KeyboardArrowDown />
-        </IconButton>
-
-        <RaPopover>
-          <ComboBoxOptions>{children}</ComboBoxOptions>
-        </RaPopover>
+export const ComboBoxRoot = fixedForwardRef(
+  <T extends object>(
+    { children, ...rest }: ComboBoxRootProps<T>,
+    ref: ForwardedRef<HTMLDivElement>
+  ) => {
+    const recipe = useSlotRecipe({ recipe: comboBoxSlotRecipe });
+    const [recipeProps, restRecipeProps] = recipe.splitVariantProps(rest);
+    const [styleProps, restProps] = extractStyleProps(restRecipeProps);
+    //TODO: it may be necessary to instantiate a context for multi-select
+    return (
+      <ComboBoxRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
+        <SingleSelectRoot {...restProps} ref={ref}>
+          {children}
+        </SingleSelectRoot>
       </ComboBoxRootSlot>
-    </ComboBox>
-  );
-};
+    );
+  }
+);
 
+// @ts-expect-error - doesn't work with this complex types
 ComboBoxRoot.displayName = "ComboBox.Root";
