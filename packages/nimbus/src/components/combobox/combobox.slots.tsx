@@ -68,7 +68,7 @@ export const ComboBoxRootSlot = fixedForwardRef(
     ref: Ref<HTMLDivElement>
   ): ReactElement<ComboBoxRootProps<T>, ComboBoxRootComponent<T>> => {
     const SlotComponent = withProvider<HTMLDivElement, ComboBoxRootProps<T>>(
-      RaComboBox,
+      RaComboBox<T>,
       "root"
     );
 
@@ -83,15 +83,16 @@ export const ComboBoxOptionsSlot = fixedForwardRef(
     ref: Ref<HTMLDivElement>
   ): ReactElement<ComboBoxOptionsProps<T>, ComboBoxOptionsComponent<T>> => {
     const SlotComponent =
-      props.selectionMode === "multiple"
-        ? withContext<HTMLDivElement, ComboBoxOptionsProps<T>>(
-            RaGridList,
-            "options"
-          )
-        : withContext<HTMLDivElement, ComboBoxOptionsProps<T>>(
-            RaListBox,
-            "options"
-          );
+      // props.selectionMode === "multiple"
+      //   ? withContext<HTMLDivElement, ComboBoxOptionsProps<T>>(
+      //       RaGridList,
+      //       "options"
+      //     )
+      //   :
+      withContext<HTMLDivElement, ComboBoxOptionsProps<T>>(
+        RaListBox<T>,
+        "options"
+      );
 
     return <SlotComponent {...props} ref={ref} />;
   }
@@ -104,7 +105,7 @@ export const ComboBoxOptionSlot = fixedForwardRef(
     ref: Ref<HTMLDivElement>
   ): ReactElement<ComboBoxOptionProps<T>, ComboBoxOptionComponent<T>> => {
     const SlotComponent = withContext<HTMLDivElement, ComboBoxOptionProps<T>>(
-      props.selectionMode === "multiple" ? RaGridListItem : RaListBoxItem,
+      RaListBoxItem<T>,
       "option"
     );
 
