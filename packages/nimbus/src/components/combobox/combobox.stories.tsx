@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { Key, ComboBoxProps } from "react-aria-components";
+import { type Key, ListBoxItem } from "react-aria-components";
 import { ComboBox } from "./combobox";
 // import { Text, Stack, Box } from "@/components";
 
@@ -37,12 +37,16 @@ const options = [
  */
 export const Base: Story = {
   render: () => {
+    let [animalId, setAnimalId] = useState<Key | null>(null);
+    let [value, setValue] = useState("");
+    console.log(animalId);
     return (
-      <ComboBox.Root>
-        <ComboBox.Option>Chocolate</ComboBox.Option>
-        <ComboBox.Option>Mint</ComboBox.Option>
-        <ComboBox.Option>Strawberry</ComboBox.Option>
-        <ComboBox.Option>Vanilla</ComboBox.Option>
+      <ComboBox.Root
+        aria-label="animals"
+        defaultItems={options}
+        onSelectionChange={setAnimalId}
+      >
+        {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
       </ComboBox.Root>
     );
   },

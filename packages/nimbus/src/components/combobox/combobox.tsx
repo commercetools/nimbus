@@ -1,9 +1,11 @@
-import { ComboBoxRoot as _ComboBoxRoot } from "./components/combobox.root";
-import { ComboBoxOptionGroup as _ComboBoxOptionGroup } from "./components/combobox.option-group";
-import { ComboBoxOption as _ComboBoxOption } from "./components/combobox.option";
+import { ComboBoxRoot } from "./components/combobox.root";
+import { ComboBoxOptions } from "./components/combobox.options";
+import { ComboBoxOptionGroup } from "./components/combobox.option-group";
+import { ComboBoxOption } from "./components/combobox.option";
 
 export const ComboBox = {
-  Root: _ComboBoxRoot,
-  OptionGroup: _ComboBoxOptionGroup,
-  Option: _ComboBoxOption,
+  Root: ComboBoxRoot,
+  Options: ComboBoxOption,
+  OptionGroup: ComboBoxOptionGroup,
+  Option: ComboBoxOption,
 };

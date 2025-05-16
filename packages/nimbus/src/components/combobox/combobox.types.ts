@@ -30,7 +30,10 @@ export type ComboBoxRootProps<T extends object> = RaComboBoxProps<T> &
 
 /** Type signature for the main `ComboBox` single-select component (using `forwardRef`). */
 export type ComboBoxRootComponent<T extends object> = FC<
-  ComboBoxRootProps<T> & RefAttributes<HTMLDivElement>
+  ComboBoxRootProps<T> &
+    RefAttributes<HTMLDivElement> & {
+      children: React.ReactNode | ((item: T) => React.ReactNode);
+    }
 >;
 
 // ============================================================
@@ -49,9 +52,7 @@ type ComboBoxGridListProps<T extends object> = RaGridListProps<T> &
   Omit<ComboBoxOptionsSlotProps, keyof RaGridListProps<T>>;
 
 /** Union type of ListBox or Gridlist, since slot could use either as base component  */
-export type ComboBoxOptionsProps<T extends object> =
-  | ComboBoxListBoxProps<T>
-  | ComboBoxGridListProps<T>;
+export type ComboBoxOptionsProps<T extends object> = ComboBoxListBoxProps<T>;
 
 /** Type signature for the `ComboBox.Options` sub-component (using `forwardRef`). */
 export type ComboBoxOptionsComponent<T extends object> = FC<
@@ -75,8 +76,7 @@ type ComboBoxGridListItemProps<T extends object> = RaGridListItemProps<T> &
 
 /** Union type of ListBox or Gridlist, since slot could use either as base component  */
 export type ComboBoxOptionProps<T extends object> =
-  | (ComboBoxListBoxItemProps<T> & { selectionMode?: RaSelectionMode })
-  | (ComboBoxGridListItemProps<T> & { selectionMode?: RaSelectionMode });
+  ComboBoxListBoxItemProps<T> & { selectionMode?: RaSelectionMode };
 
 /** Type signature for the `ComboBox.Option` sub-component (using `forwardRef`). */
 export type ComboBoxOptionComponent<T extends object> = FC<
@@ -94,7 +94,7 @@ type ComboBoxOptionGroupSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 export type ComboBoxOptionGroupProps<T extends object> =
   RaListBoxSectionProps<T> &
     Omit<ComboBoxOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> & {
-      label: ReactNode;
+      label?: ReactNode;
     };
 
 /** Type signature for the `ComboBox.OptionGroup` sub-component (using `forwardRef`). */
