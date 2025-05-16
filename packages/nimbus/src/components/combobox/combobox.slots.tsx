@@ -24,7 +24,7 @@ export const ComboBoxRootSlot = withProvider<
 // Value - Input (single) or TagList (multi)
 export interface ComboBoxValueSlotProps extends HTMLChakraProps<"div"> {}
 export const ComboBoxValueSlot = withContext<
-  HTMLInputElement,
+  HTMLDivElement,
   ComboBoxValueSlotProps
 >("div", "value");
 
@@ -55,23 +55,23 @@ export const ComboBoxOptionGroupSlot = withContext<
 
 // TODO: are these necessary?  we'll find out!
 
-// Trigger Button
-export interface ComboBoxTriggerSlotProps extends HTMLChakraProps<"button"> {}
-export const ComboBoxTriggerSlot = withContext<
-  HTMLButtonElement,
-  ComboBoxTriggerSlotProps
->("button", "trigger");
+// // Trigger Button
+// export interface ComboBoxTriggerSlotProps extends HTMLChakraProps<"button"> {}
+// export const ComboBoxTriggerSlot = withContext<
+//   HTMLButtonElement,
+//   ComboBoxTriggerSlotProps
+// >("button", "trigger");
 
-// Input
-export interface ComboBoxInputSlotProps extends HTMLChakraProps<"input"> {}
-export const ComboBoxInputSlot = withContext<
-  HTMLInputElement,
-  ComboBoxInputSlotProps
->("input", "input");
+// // Input
+// export interface ComboBoxInputSlotProps extends HTMLChakraProps<"input"> {}
+// export const ComboBoxInputSlot = withContext<
+//   HTMLInputElement,
+//   ComboBoxInputSlotProps
+// >("input", "input");
 
-// TagGroup
-export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"div"> {}
-export const ComboBoxTagGroupSlot = withContext<
-  HTMLUListElement,
-  ComboBoxTagGroupSlotProps
->("div", "tagGroup");
+// // TagGroup
+// export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"div"> {}
+// export const ComboBoxTagGroupSlot = withContext<
+//   HTMLUListElement,
+//   ComboBoxTagGroupSlotProps
+// >("div", "tagGroup");
