@@ -1,4 +1,4 @@
-import { forwardRef, useRef, type ChangeEvent } from "react";
+import { forwardRef, useRef } from "react";
 import { mergeRefs, useRecipe } from "@chakra-ui/react";
 import { useObjectRef, useTextField } from "react-aria";
 import { Input } from "react-aria-components";
