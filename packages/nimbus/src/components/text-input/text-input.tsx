@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { mergeRefs, useRecipe } from "@chakra-ui/react";
 import { useObjectRef, useTextField } from "react-aria";
-import { Input } from "react-aria-components";
+import { Input, useContextProps, InputContext } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
 import { TextInputRootSlot } from "./text-input.slots";
