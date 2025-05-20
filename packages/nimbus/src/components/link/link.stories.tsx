@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Link } from "./link";
-import { Box, Stack } from "@/components";
+import { Box, Stack, Text } from "@/components";
 import type { LinkProps } from "./link.types";
 import { userEvent, within, expect, fn } from "@storybook/test";
 import { createRef } from "react";
@@ -86,17 +86,15 @@ export const Sizes: Story = {
 export const FontColors: Story = {
   render: (args) => {
     return (
-      <Box p="400" bg="primary.7">
-        <Stack direction="row" gap="500" alignItems="center">
-          {fontColors.map((color) => (
-            <p key={color as string} style={{ color: "white" }}>
-              This is a {JSON.stringify(color)}{" "}
-              <Link key={color as string} {...args} fontColor={color} /> in
-              action.
-            </p>
-          ))}
-        </Stack>
-      </Box>
+      <Stack direction="column">
+        {fontColors.map((color) => (
+          <Text key={color as string}>
+            This is a {JSON.stringify(color)}{" "}
+            <Link key={color as string} {...args} fontColor={color} /> in
+            action.
+          </Text>
+        ))}
+      </Stack>
     );
   },
 
