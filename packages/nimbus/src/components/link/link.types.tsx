@@ -11,8 +11,8 @@ import { linkRecipe } from "./link.recipe";
  * Differences between LinkRootProps and LinkVariantProps necessitate
  * the use of Omit and Pick to ensure the correct props are passed
  */
-type LinkVariantProps = Omit<LinkRootProps, "onFocus" | "onBlur"> &
-  Pick<AriaLinkOptions, "onFocus" | "onBlur"> &
+type LinkVariantProps = Omit<LinkRootProps, "onFocus" | "onBlur" | "onClick"> &
+  Pick<AriaLinkOptions, "onFocus" | "onBlur" | "onClick"> &
   RecipeVariantProps<typeof linkRecipe> & {
     [key: `data-${string}`]: string;
   };
