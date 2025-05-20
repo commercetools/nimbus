@@ -41,20 +41,22 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     };
     return (
       <SwitchRootSlot
-        data-slot="root"
+        slot="root"
         {...recipeProps}
         {...stateProps}
         {...styleProps}
       >
-        <SwitchTrackSlot {...stateProps}>
-          <SwitchThumbSlot {...stateProps} />
+        <SwitchTrackSlot slot="track" {...stateProps}>
+          <SwitchThumbSlot slot="thumb" {...stateProps} />
           <VisuallyHidden as="span">
-            <input {...inputProps} {...focusProps} ref={ref} />
+            <input slot="input" {...inputProps} {...focusProps} ref={ref} />
           </VisuallyHidden>
         </SwitchTrackSlot>
 
         {props.children && (
-          <SwitchLabelSlot {...stateProps}>{props.children}</SwitchLabelSlot>
+          <SwitchLabelSlot slot="label" {...stateProps}>
+            {props.children}
+          </SwitchLabelSlot>
         )}
       </SwitchRootSlot>
     );

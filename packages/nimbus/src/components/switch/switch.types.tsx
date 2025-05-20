@@ -28,7 +28,10 @@ export interface SwitchRootProps
  * Extends SwitchRootProps to include both root props and variant props,
  * while adding ARIA toggle props.
  */
-export type SwitchProps = Omit<SwitchRootProps, ExcludedSwitchProps> &
+export type SwitchProps = Omit<
+  SwitchRootProps,
+  ExcludedSwitchProps | "onChange"
+> &
   Omit<AriaCheckboxProps, ExcludedSwitchProps> & {
     /**
      * The content to display next to the switch.

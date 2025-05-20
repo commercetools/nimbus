@@ -30,9 +30,6 @@ export const switchSlotRecipe = defineSlotRecipe({
       userSelect: "none",
       color: "neutral.11",
       fontSize: "var(--label-font-size)",
-      ["&[data-invalid='true']"]: {
-        color: "critical.11",
-      },
     },
     track: {
       colorPalette: "neutral",
