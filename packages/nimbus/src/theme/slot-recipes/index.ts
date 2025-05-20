@@ -5,6 +5,7 @@ import { checkboxSlotRecipe } from "@/components/checkbox/checkbox.recipe";
 import { selectSlotRecipe } from "@/components/select/select.recipe";
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
+import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -14,4 +15,5 @@ export const slotRecipes = {
   select: selectSlotRecipe,
   accordion: accordionSlotRecipe,
   taggroup: tagGroupSlotRecipe,
+  switch: switchSlotRecipe,
 };

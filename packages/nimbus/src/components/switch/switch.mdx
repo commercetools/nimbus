@@ -1,0 +1,102 @@
+---
+id: Components-Switch
+title: Switch
+description:
+  Displays a switch toggle and optionally an associated label
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - Switch
+tags:
+  - component
+  - input
+  - toggle
+---
+
+# Switch
+
+The Switch component is used as an alternative to the Checkbox component. It toggles between enabled or disabled states.
+
+## Import
+
+```jsx
+import { Switch } from "@commercetools/nimbus";
+```
+
+## Usage
+
+```jsx-live
+const App = () => <Switch>Wi-Fi</Switch>
+```
+
+## Sizes
+
+The Switch component comes in two sizes: `sm` and `md` (default).
+
+```jsx
+<Stack direction="row" spacing="200">
+  <Switch size="sm">Small</Switch>
+  <Switch size="md">Medium</Switch>
+</Stack>
+```
+
+## States
+
+The Switch component can be disabled or marked as invalid.
+
+```jsx
+<Stack direction="row" spacing="200">
+  <Switch>Default</Switch>
+  <Switch isSelected>Selected</Switch>
+  <Switch isDisabled>Disabled</Switch>
+  <Switch isInvalid>Invalid</Switch>
+  <Switch isInvalid isSelected>
+    Invalid Selected
+  </Switch>
+</Stack>
+```
+
+## Controlled vs Uncontrolled
+
+You can control the Switch component by using the `isSelected` and `onChange` props.
+
+```jsx
+function ControlledSwitchExample() {
+  const [isSelected, setIsSelected] = React.useState(false);
+  return (
+    <Switch
+      isSelected={isSelected}
+      onChange={setIsSelected}
+    >
+      {isSelected ? "On" : "Off"}
+    </Switch>
+  );
+}
+```
+
+For uncontrolled behavior, you can use the `defaultSelected` prop.
+
+```jsx
+<Switch defaultSelected>Uncontrolled (default on)</Switch>
+```
+
+## Accessibility
+
+The Switch component follows WAI-ARIA best practices:
+
+- It uses a visually hidden native input for accessibility
+- It supports keyboard navigation and focus management
+- It includes proper ARIA attributes for screen readers
+- It provides proper labeling through children or aria-label
+
+When no visible label is provided, an `aria-label` must be used:
+
+```jsx
+<Switch aria-label="Toggle Wi-Fi"></Switch>
+```
+
+## Props
+
+<PropTable id="Switch"/>
