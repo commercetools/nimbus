@@ -50,6 +50,45 @@ export const Base: Story = {
   },
 };
 
+/**
+ * Tests for accessibility criteria
+ */
+export const Accessibility: Story = {
+  args: {
+    children: "Accessible Switch",
+    // @ts-expect-error: data-testid is not a valid prop
+    ["data-testid"]: "a11y-switch",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const switchEl = canvas.getByTestId("a11y-switch");
+    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
+
+    await step("Has proper role", async () => {
+      await expect(switchEl).toHaveAttribute("type", "checkbox");
+    });
+
+    await step("Supports keyboard navigation", async () => {
+      // Test focus management
+      await userEvent.tab();
+      await expect(switchEl).toHaveFocus();
+
+      // Test keyboard activation
+      await userEvent.keyboard(" ");
+      await expect(switchRoot?.getAttribute("data-selected")).toBe("true");
+
+      // Test toggling back
+      await userEvent.keyboard(" ");
+      await expect(switchRoot?.getAttribute("data-selected")).toBe("false");
+    });
+
+    await step("Has accessible name", async () => {
+      // Check that the input has an accessible name via the label
+      await expect(switchEl).toHaveAccessibleName("Accessible Switch");
+    });
+  },
+};
+
 export const ControlledUse: Story = {
   args: {
     children: "Selected Switch",
