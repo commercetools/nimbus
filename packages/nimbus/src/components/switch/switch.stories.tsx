@@ -62,7 +62,7 @@ export const ControlledUse: Story = {
     return <Switch isSelected={value} onChange={setValue} {...args} />;
   },
   play: async ({ canvasElement, step }) => {
-    const switchRoot = canvasElement.querySelector('[slot="root"]');
+    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
 
     if (!switchRoot) {
       throw new Error("Switch root not found");
@@ -90,7 +90,7 @@ export const Disabled: Story = {
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
     const switchEl = canvas.getByTestId("disabled-switch");
-    const switchRoot = canvasElement.querySelector('[slot="root"]');
+    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
     const onChange = args.onChange;
 
     await step("Has disabled attribute", async () => {
@@ -116,7 +116,7 @@ export const Invalid: Story = {
     ["data-testid"]: "invalid-switch",
   },
   play: async ({ canvasElement, step }) => {
-    const switchRoot = canvasElement.querySelector('[slot="root"]');
+    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
 
     await step("Is in invalid state", async () => {
       await expect(switchRoot).not.toBeNull();
@@ -134,7 +134,7 @@ export const WithDefaultSelected: Story = {
   },
   play: async ({ canvasElement, step }) => {
     // Check if the track element has data-selected="true"
-    const switchTrack = canvasElement.querySelector('[slot="track"]');
+    const switchTrack = canvasElement.querySelector('[data-slot="track"]');
 
     await step("Is initially selected from defaultSelected prop", async () => {
       await expect(switchTrack).not.toBeNull();

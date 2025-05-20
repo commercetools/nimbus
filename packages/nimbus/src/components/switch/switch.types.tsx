@@ -14,7 +14,8 @@ export type ExcludedSwitchProps =
   | "validate";
 
 /**
- * Props for the Switch component root element
+ * Props for the Switch component root element.
+ * Includes all HTML props for the label element and recipe variant props.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SwitchRootProps
@@ -25,8 +26,7 @@ export interface SwitchRootProps
 
 /**
  * Main props interface for the Switch component.
- * Extends SwitchRootProps to include both root props and variant props,
- * while adding ARIA toggle props.
+ * Combines root element props with ARIA toggle functionality props.
  */
 export type SwitchProps = Omit<
   SwitchRootProps,

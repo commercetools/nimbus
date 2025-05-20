@@ -1,6 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { useToggleState } from "react-stately";
-import { useFocusRing, useSwitch, useObjectRef } from "react-aria";
+import { useFocusRing, useSwitch, useObjectRef, mergeProps } from "react-aria";
 import { useSlotRecipe, mergeRefs } from "@chakra-ui/react";
 import { VisuallyHidden } from "@/components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -41,20 +41,24 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     };
     return (
       <SwitchRootSlot
-        slot="root"
+        data-slot="root"
         {...recipeProps}
         {...stateProps}
         {...styleProps}
       >
-        <SwitchTrackSlot slot="track" {...stateProps}>
-          <SwitchThumbSlot slot="thumb" {...stateProps} />
+        <SwitchTrackSlot data-slot="track" {...stateProps}>
+          <SwitchThumbSlot data-slot="thumb" {...stateProps} />
           <VisuallyHidden as="span">
-            <input slot="input" {...inputProps} {...focusProps} ref={ref} />
+            <input
+              data-slot="input"
+              {...mergeProps(inputProps, focusProps)}
+              ref={ref}
+            />
           </VisuallyHidden>
         </SwitchTrackSlot>
 
         {props.children && (
-          <SwitchLabelSlot slot="label" {...stateProps}>
+          <SwitchLabelSlot data-slot="label" {...stateProps}>
             {props.children}
           </SwitchLabelSlot>
         )}
