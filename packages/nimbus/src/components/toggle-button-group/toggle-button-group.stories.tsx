@@ -264,6 +264,10 @@ export const Sizes: Story = {
  * Showcase Tones - Minimal test focusing on rendering
  */
 export const Tones: Story = {
+  args: {
+    size: "md",
+    onSelectionChange: fn(),
+  },
   render: (args) => (
     <Stack>
       {tones.map((tone) => (
@@ -273,23 +277,19 @@ export const Tones: Story = {
           tone={tone}
           aria-label={`Tone ${tone} Group`}
         >
-          <ToggleButtonGroup.Button id="left">
+          <ToggleButtonGroup.Button id="left" aria-label="Start Button">
             <DemoIcon />
           </ToggleButtonGroup.Button>
-          <ToggleButtonGroup.Button id="center">
+          <ToggleButtonGroup.Button id="center" aria-label="Center Button">
             <DemoIcon />
           </ToggleButtonGroup.Button>
-          <ToggleButtonGroup.Button id="right">
+          <ToggleButtonGroup.Button id="right" aria-label="End Button">
             <DemoIcon />
           </ToggleButtonGroup.Button>
         </ToggleButtonGroup.Root>
       ))}
     </Stack>
   ),
-  args: {
-    size: "md",
-    onSelectionChange: fn(),
-  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     // Ensure all groups render
