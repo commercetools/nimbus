@@ -8,32 +8,33 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "accordion",
 });
 
-export const AccordionRoot = withProvider<HTMLDivElement, AccordionRootProps>(
-  "div",
-  "root"
-);
+export const AccordionRootSlot = withProvider<
+  HTMLDivElement,
+  AccordionRootProps
+>("div", "root");
 
-export const AccordionDisclosure = withContext<
+export const AccordionDisclosureSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "disclosure");
 
-export const AccordionTrigger = withContext<
+export const AccordionTriggerSlot = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"button">
 >("button", "trigger");
 
-export const AccordionPanel = withContext<
+export const AccordionPanelSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "panel");
 
-export const AccordionTitle = withContext<
+export const AccordionTitleSlot = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"div">
 >("div", "accordionTitle");
 
-export const HeaderRightContent = withContext<
+// TODO: should have slot, but if it does, it will break the props table
+export const AccordionHeaderRightContent = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "headerContentRight");

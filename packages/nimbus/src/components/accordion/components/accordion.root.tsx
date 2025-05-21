@@ -1,11 +1,11 @@
 import React, { forwardRef, type Key } from "react";
-import { AccordionRoot as AccordionRootSlot } from "../accordion.slots";
+import { AccordionRootSlot } from "../accordion.slots";
 import { useDisclosureGroupState } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react";
 import type { DisclosureGroupProps } from "../accordion.types";
-import { DisclosureGroupStateContext } from "../accordion-context";
+import { DisclosureGroupStateContext } from "./accordion.context";
 
-export const AccordionGroup = forwardRef<HTMLDivElement, DisclosureGroupProps>(
+export const AccordionRoot = forwardRef<HTMLDivElement, DisclosureGroupProps>(
   ({ children, onExpandedChange, ...props }, forwardedRef) => {
     const state = useDisclosureGroupState({
       ...props,

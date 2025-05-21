@@ -1,14 +1,14 @@
 import React, { forwardRef, useContext } from "react";
 import {
-  AccordionTrigger,
-  AccordionTitle,
-  HeaderRightContent,
+  AccordionTriggerSlot,
+  AccordionTitleSlot,
+  AccordionHeaderRightContent,
 } from "../accordion.slots";
 import { mergeRefs } from "@chakra-ui/react";
 import { Flex } from "@/components";
 import { KeyboardArrowRight } from "@commercetools/nimbus-icons";
 import type { DisclosureGroupProps } from "../accordion.types";
-import { ItemContext } from "../accordion-context";
+import { ItemContext } from "./accordion.context";
 
 export const AccordionHeader = forwardRef<
   HTMLButtonElement,
@@ -25,7 +25,10 @@ export const AccordionHeader = forwardRef<
     rightContent: React.ReactNode[];
   }>(
     (acc, child) => {
-      if (React.isValidElement(child) && child.type === HeaderRightContent) {
+      if (
+        React.isValidElement(child) &&
+        child.type === AccordionHeaderRightContent
+      ) {
         acc.rightContent.push(child);
       } else {
         acc.main.push(child);
@@ -42,21 +45,21 @@ export const AccordionHeader = forwardRef<
       borderBottom="solid-25"
       borderColor="neutral.4"
     >
-      <AccordionTrigger
+      <AccordionTriggerSlot
         ref={mergeRefs(context.triggerRef, ref)}
         {...context.buttonProps}
         data-slot="trigger"
         outline={context.isFocusVisible ? undefined : "none"}
       >
         <KeyboardArrowRight />
-        <AccordionTitle data-slot="accordionTitle">
+        <AccordionTitleSlot data-slot="accordionTitle">
           {headerContent.main}
-        </AccordionTitle>
-      </AccordionTrigger>
+        </AccordionTitleSlot>
+      </AccordionTriggerSlot>
       {headerContent.rightContent.length > 0 && (
-        <HeaderRightContent data-slot="headerContentRight">
+        <AccordionHeaderRightContent data-slot="headerContentRight">
           {headerContent.rightContent}
-        </HeaderRightContent>
+        </AccordionHeaderRightContent>
       )}
     </Flex>
   );

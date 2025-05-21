@@ -1,5 +1,5 @@
 import React, { forwardRef, useContext, useRef } from "react";
-import { AccordionDisclosure } from "../accordion.slots";
+import { AccordionDisclosureSlot } from "../accordion.slots";
 import { useDisclosureState } from "react-stately";
 import {
   useDisclosure,
@@ -10,7 +10,7 @@ import {
 } from "react-aria";
 import type { DisclosureItemProps } from "../accordion.types";
 // Import the contexts from the shared file
-import { ItemContext, DisclosureGroupStateContext } from "../accordion-context";
+import { ItemContext, DisclosureGroupStateContext } from "./accordion.context";
 
 export const AccordionItem = forwardRef<HTMLDivElement, DisclosureItemProps>(
   (
@@ -73,14 +73,14 @@ export const AccordionItem = forwardRef<HTMLDivElement, DisclosureItemProps>(
     // Using the imported ItemContext
     return (
       <ItemContext.Provider value={contextValue}>
-        <AccordionDisclosure
+        <AccordionDisclosureSlot
           data-slot="disclosure"
           data-value={itemValue}
           data-expanded={state.isExpanded}
           ref={forwardedRef}
         >
           {children}
-        </AccordionDisclosure>
+        </AccordionDisclosureSlot>
       </ItemContext.Provider>
     );
   }
