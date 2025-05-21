@@ -15,6 +15,7 @@ import {
   DurationTokenDemo,
   KeyframeTokenDemo,
 } from "./token-demos/animation";
+import { NimbusExportsList } from "@/components/utils/nimbus-exports-list";
 
 import {
   ListItem,
@@ -95,4 +96,5 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  NimbusExportsList,
 };
