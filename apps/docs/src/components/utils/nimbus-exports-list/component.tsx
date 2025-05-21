@@ -1,6 +1,16 @@
-import { Box, Heading, Stack, Table, TagGroup } from "@commercetools/nimbus";
+import {
+  Box,
+  Heading,
+  Stack,
+  Table,
+  TagGroup,
+  Button,
+} from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
+import { useState } from "react";
+import React from "react";
 import { nimbusExportsAtom, NimbusExportItem } from "./atom";
+import { PropsTable } from "@/components/document-renderer/components/props-table";
 
 interface NimbusExportsListProps {
   filter?: (item: NimbusExportItem) => boolean;
@@ -16,6 +26,16 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
 }) => {
   const allExports = useAtomValue(nimbusExportsAtom);
   const filteredExports = filter ? allExports.filter(filter) : allExports;
+  const [expandedComponents, setExpandedComponents] = useState<string[]>([]);
+
+  // Toggle expanded state for a component
+  const toggleExpanded = (componentName: string) => {
+    setExpandedComponents((prev) =>
+      prev.includes(componentName)
+        ? prev.filter((name) => name !== componentName)
+        : [...prev, componentName]
+    );
+  };
 
   // Group exports by type
   const groupedExports = filteredExports.reduce<
@@ -58,24 +78,52 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
               <Table.Row>
                 <Table.ColumnHeader>Name</Table.ColumnHeader>
                 <Table.ColumnHeader>Type</Table.ColumnHeader>
+                {type === "component" && (
+                  <Table.ColumnHeader>Actions</Table.ColumnHeader>
+                )}
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {items.map((item) => (
-                <Table.Row key={item.name}>
-                  <Table.Cell>
-                    <code>{item.name}</code>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <TagGroup.Root>
-                      <TagGroup.TagList>
-                        <TagGroup.Tag colorPalette={getTagColor(item.type)}>
-                          {item.type}
-                        </TagGroup.Tag>
-                      </TagGroup.TagList>
-                    </TagGroup.Root>
-                  </Table.Cell>
-                </Table.Row>
+                <React.Fragment key={item.name}>
+                  <Table.Row>
+                    <Table.Cell>
+                      <code>{item.name}</code>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <TagGroup.Root>
+                        <TagGroup.TagList>
+                          <TagGroup.Tag colorPalette={getTagColor(item.type)}>
+                            {item.type}
+                          </TagGroup.Tag>
+                        </TagGroup.TagList>
+                      </TagGroup.Root>
+                    </Table.Cell>
+                    {type === "component" && (
+                      <Table.Cell>
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onPress={() => toggleExpanded(item.name)}
+                        >
+                          {expandedComponents.includes(item.name)
+                            ? "Hide props"
+                            : "Show props"}
+                        </Button>
+                      </Table.Cell>
+                    )}
+                  </Table.Row>
+                  {type === "component" &&
+                    expandedComponents.includes(item.name) && (
+                      <Table.Row>
+                        <Table.Cell colSpan={3}>
+                          <Box py="m" px="s">
+                            <PropsTable id={item.name} />
+                          </Box>
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
+                </React.Fragment>
               ))}
             </Table.Body>
           </Table.Root>
