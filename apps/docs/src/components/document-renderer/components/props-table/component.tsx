@@ -163,6 +163,9 @@ export const PropsTable = ({ id }: { id: string }) => {
             </Box>
           )}
           {selectedComponent && <ComponentPropsTable id={selectedComponent} />}
+          {exportInfo.componentTypes?.length === 0 && (
+            <ComponentPropsTable id={id} />
+          )}
         </Box>
       )}
     </Box>
