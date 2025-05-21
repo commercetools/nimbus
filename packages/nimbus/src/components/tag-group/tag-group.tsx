@@ -13,3 +13,9 @@ export const TagGroup = {
   TagList: TagGroupTagList,
   Tag: TagGroupTag,
 };
+
+export {
+  TagGroupRoot as _TagGroupRoot,
+  TagGroupTagList as _TagGroupTagList,
+  TagGroupTag as _TagGroupTag,
+};
