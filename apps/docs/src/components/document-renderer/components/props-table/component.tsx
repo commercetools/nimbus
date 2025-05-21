@@ -1,6 +1,7 @@
-import { Box, Code, Text } from "@commercetools/nimbus";
-import { useMemo } from "react";
+import { Box, Code, Text, Stack, Button } from "@commercetools/nimbus";
+import { useMemo, useState } from "react";
 import * as nimbus from "@commercetools/nimbus";
+import { ComponentPropsTable } from "./component-props-table.tsx";
 
 // Interface for React components with $$typeof
 interface ReactComponentLike {
@@ -13,9 +14,13 @@ interface ExportInfo {
   isReactComponent?: boolean;
   subKeys?: string[];
   subComponents?: string[];
+  componentTypes?: string[];
 }
 
 export const PropsTable = ({ id }: { id: string }) => {
+  const [selectedComponent, setSelectedComponent] = useState<string | null>(
+    null
+  );
   // Get basic type information about the export
   const exportInfo = useMemo<ExportInfo>(() => {
     // Type assertion to access nimbus exports by string key
@@ -46,6 +51,25 @@ export const PropsTable = ({ id }: { id: string }) => {
     const subComponents =
       basicType === "object" && exportItem !== null
         ? Object.keys(exportItem).filter((key) => {
+            // For compound components, include all keys
+            if (
+              basicType === "object" &&
+              exportItem !== null &&
+              Object.keys(exportItem).some((subKey) => {
+                const subItem = (exportItem as Record<string, unknown>)[subKey];
+                const maybeSubComponent = subItem as ReactComponentLike;
+                return (
+                  subItem !== null &&
+                  typeof subItem === "object" &&
+                  "$$typeof" in maybeSubComponent &&
+                  typeof maybeSubComponent.$$typeof === "symbol"
+                );
+              })
+            ) {
+              return true; // Include all keys for compound components
+            }
+
+            // Otherwise, only include keys that are React components
             const subItem = (exportItem as Record<string, unknown>)[key];
             const maybeSubComponent = subItem as ReactComponentLike;
             return (
@@ -57,12 +81,16 @@ export const PropsTable = ({ id }: { id: string }) => {
           })
         : [];
 
+    // Create componentTypes by prepending parent export name to each subComponent
+    const componentTypes = subComponents.map((key) => `${id}${key}`);
+
     return {
       exists: true,
       type: isArray ? "array" : basicType,
       isReactComponent,
       subKeys,
       subComponents,
+      componentTypes,
     };
   }, [id]);
 
@@ -109,32 +137,32 @@ export const PropsTable = ({ id }: { id: string }) => {
             </Box>
           )}
 
-          {exportInfo.type === "object" &&
-            exportInfo.subKeys &&
-            exportInfo.subKeys.length > 0 &&
-            (!exportInfo.isReactComponent ||
-              exportInfo.subComponents?.length === 0) && (
+          {exportInfo.componentTypes &&
+            exportInfo.componentTypes.length > 0 && (
               <Box mt="s">
-                <Text>Contains these keys:</Text>
+                <Text>Component types:</Text>
                 <Box as="ul" ml="m">
-                  {exportInfo.subKeys.map((key) => (
-                    <Box as="li" key={key}>
-                      <Code>{key}</Code>:{" "}
-                      <Code>
-                        {
-                          typeof (
-                            nimbus[id as keyof typeof nimbus] as Record<
-                              string,
-                              unknown
-                            >
-                          )[key]
-                        }
-                      </Code>
+                  {exportInfo.componentTypes.map((type) => (
+                    <Box as="li" key={type}>
+                      <Code>{type}</Code>
                     </Box>
                   ))}
                 </Box>
               </Box>
             )}
+
+          {exportInfo.componentTypes && (
+            <Box my="400">
+              <Stack direction="row" wrap="wrap">
+                {exportInfo.componentTypes.map((cid) => (
+                  <Button size="xs" onPress={() => setSelectedComponent(cid)}>
+                    {cid.split(id).join(id + ".")}
+                  </Button>
+                ))}
+              </Stack>
+            </Box>
+          )}
+          {selectedComponent && <ComponentPropsTable id={selectedComponent} />}
         </Box>
       )}
     </Box>
