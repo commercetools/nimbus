@@ -1,4 +1,4 @@
-import { Box, Code, Table, Text } from "@commercetools/nimbus";
+import { Box, Code, Heading, Table, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { typesAtom } from "../../../../atoms/types.ts";
 import { useMemo } from "react";
@@ -44,6 +44,7 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
 
   return (
     <Box>
+      <Heading mb="400">@typename: {id}</Heading>
       {propsArr.length > 0 ? (
         <Table.Root variant="outline">
           <Table.ColumnGroup>
