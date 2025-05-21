@@ -16,3 +16,11 @@ export const Alert = {
   Actions: AlertActions,
   DismissButton: AlertDismissButton,
 };
+
+export {
+  AlertRoot as _AlertRoot,
+  AlertTitle as _AlertTitle,
+  AlertDescription as _AlertDescription,
+  AlertActions as _AlertActions,
+  AlertDismissButton as _AlertDismissButton,
+};
