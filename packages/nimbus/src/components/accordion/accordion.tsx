@@ -12,3 +12,11 @@ export const Accordion = {
   Content: AccordionContent,
   HeaderRightContent,
 };
+
+export {
+  AccordionGroup as _AccordionGroup,
+  AccordionItem as _AccordionItem,
+  AccordionHeader as _AccordionHeader,
+  AccordionContent as _AccordionContent,
+  HeaderRightContent as _AccordionHeaderRightContent,
+};
