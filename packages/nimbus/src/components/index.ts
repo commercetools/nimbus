@@ -1,6 +1,5 @@
 export * from "./avatar";
 export * from "./box";
-export * from "./bleed";
 export * from "./button";
 export * from "./code";
 export * from "./dialog";
@@ -33,5 +32,3 @@ export * from "./toggle-button-group";
 export * from "./form-field";
 export * from "./icon";
 export * from "./tag-group";
-
-

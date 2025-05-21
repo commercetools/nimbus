@@ -102,7 +102,7 @@ export const AppNavBarSearch = () => {
                   <Input placeholder="Type to search..." />
                 </Box>
               </Flex>
-              <Bleed inline="600" borderTop="1px solid" borderColor="neutral.6">
+              <Box mx="-600" borderTop="1px solid" borderColor="neutral.6">
                 <ListBox items={results} selectionMode="single">
                   {(item) => (
                     <Flex
@@ -126,7 +126,7 @@ export const AppNavBarSearch = () => {
                     </Flex>
                   )}
                 </ListBox>
-              </Bleed>
+              </Box>
               <Text textStyle="xs" color={"neutral.11"} pt="600">
                 Use the <strong>Arrow</strong>-keys to navigate and{" "}
                 <strong>Enter</strong> to confirm selection.
