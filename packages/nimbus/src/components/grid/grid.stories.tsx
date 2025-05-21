@@ -8,9 +8,9 @@ import { within, expect } from "@storybook/test";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<typeof Grid> = {
+const meta: Meta<typeof Grid.Root> = {
   title: "components/Grid",
-  component: Grid,
+  component: Grid.Root,
 };
 
 export default meta;
@@ -19,7 +19,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof Grid>;
+type Story = StoryObj<typeof Grid.Root>;
 
 /**
  * Base story
@@ -77,7 +77,7 @@ export const WithColumns: Story = {
 export const WithVarryingLayout: Story = {
   render: () => {
     return (
-      <Grid
+      <Grid.Root
         h="200px"
         templateRows="repeat(2, 1fr)"
         templateColumns="repeat(5, 1fr)"
@@ -103,7 +103,7 @@ export const WithVarryingLayout: Story = {
             colSpan=4
           </Box>
         </Grid.Item>
-      </Grid>
+      </Grid.Root>
     );
   },
 };
@@ -115,7 +115,7 @@ export const WithVarryingLayout: Story = {
 export const WithTemplateAreas: Story = {
   render: () => {
     return (
-      <Grid
+      <Grid.Root
         h="400px"
         templateAreas={`
           "header header"
@@ -145,7 +145,7 @@ export const WithTemplateAreas: Story = {
             Footer
           </Box>
         </Grid.Item>
-      </Grid>
+      </Grid.Root>
     );
   },
 };

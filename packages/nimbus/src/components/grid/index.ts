@@ -1,1 +1,1 @@
-export { Grid, type GridProps } from "./grid";
+export * from "./grid";
