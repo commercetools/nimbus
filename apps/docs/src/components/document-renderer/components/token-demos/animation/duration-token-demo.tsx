@@ -1,16 +1,4 @@
-import {
-  Box,
-  Button,
-  Code,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableColumnGroup,
-  TableColumnHeader,
-  TableHeader,
-  TableRoot,
-  TableRow,
-} from "@commercetools/nimbus";
+import { Box, Button, Code, Table } from "@commercetools/nimbus";
 
 import { atom, useAtomValue } from "jotai";
 import { system } from "@commercetools/nimbus";
@@ -38,17 +26,17 @@ export const DurationTokenDemo = () => {
 
   return (
     <Box mb="1200" mt="600">
-      <TableRoot width="full" maxWidth="full">
-        <TableColumnGroup>
-          <TableColumn width="18ch" />
-          <TableColumn width="3600" />
-          <TableColumn />
-        </TableColumnGroup>
-        <TableHeader>
-          <TableRow>
-            <TableColumnHeader>Token-Name</TableColumnHeader>
-            <TableColumnHeader>Value</TableColumnHeader>
-            <TableColumnHeader>
+      <Table.Root width="full" maxWidth="full">
+        <Table.ColumnGroup>
+          <Table.Column width="18ch" />
+          <Table.Column width="3600" />
+          <Table.Column />
+        </Table.ColumnGroup>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader>Token-Name</Table.ColumnHeader>
+            <Table.ColumnHeader>Value</Table.ColumnHeader>
+            <Table.ColumnHeader>
               Demo
               <Button
                 size="2xs"
@@ -59,28 +47,28 @@ export const DurationTokenDemo = () => {
               >
                 <PlayArrow /> Trigger animations
               </Button>
-            </TableColumnHeader>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+            </Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {items.map((item) => (
-            <TableRow key={item.id} id={item.id}>
-              <TableCell>
+            <Table.Row key={item.id} id={item.id}>
+              <Table.Cell>
                 <Code variant="subtle">{item.label}</Code>
-              </TableCell>
-              <TableCell>{item.value.originalValue}</TableCell>
-              <TableCell>
+              </Table.Cell>
+              <Table.Cell>{item.value.originalValue}</Table.Cell>
+              <Table.Cell>
                 <AnimationDemo
                   key={seed}
                   size="80px"
                   emoji="🐎"
                   duration={item.value.originalValue}
                 />
-              </TableCell>
-            </TableRow>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </TableBody>
-      </TableRoot>
+        </Table.Body>
+      </Table.Root>
     </Box>
   );
 };

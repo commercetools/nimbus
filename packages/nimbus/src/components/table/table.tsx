@@ -1,6 +1,6 @@
-import { Table } from "@chakra-ui/react";
+export { Table } from "@chakra-ui/react";
 
-// Extracting props types from subcomponents
+/* // Extracting props types from subcomponents
 export type TableRootProps = React.ComponentProps<typeof Table.Root>;
 export type TableColumnGroupProps = React.ComponentProps<
   typeof Table.ColumnGroup
@@ -41,3 +41,4 @@ export {
   TableBody,
   TableColumnHeader,
 };
+ */
