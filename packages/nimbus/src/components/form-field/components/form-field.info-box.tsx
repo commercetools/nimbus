@@ -1,5 +1,5 @@
 import { useContext, useEffect, type ReactNode } from "react";
-import { FormFieldContext } from "../form-field";
+import { FormFieldContext } from "./form-field.context";
 
 export const FormFieldInfoBox = ({ children }: { children: ReactNode }) => {
   const { setContext } = useContext(FormFieldContext);
