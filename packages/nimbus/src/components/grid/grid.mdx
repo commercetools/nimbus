@@ -38,7 +38,7 @@ To use the Grid layout, ensure to wrap the individual grid items inside of the
 
 ```jsx-live
 const App = () => (
-  <Grid gap="100">
+  <Grid.Root gap="100">
     <Grid.Item>
       <Box key="1" p="400" bg="neutral.7">
         Item 1
@@ -49,7 +49,7 @@ const App = () => (
         Item 2
       </Box>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -57,7 +57,7 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-  <Grid gap="100" templateColumns="repeat(2, 1fr)">
+  <Grid.Root gap="100" templateColumns="repeat(2, 1fr)">
     <Grid.Item>
       <Box key="1" p="400" bg="neutral.7">
         Item 1
@@ -68,7 +68,7 @@ const App = () => (
         Item 2
       </Box>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -80,7 +80,7 @@ components where elements need different sizes while maintaining alignment.
 
 ```jsx-live
 const App = () => (
-  <Grid
+  <Grid.Root
     h="200px"
     templateRows="repeat(2, 1fr)"
     templateColumns="repeat(5, 1fr)"
@@ -106,7 +106,7 @@ const App = () => (
         colSpan=4
       </Box>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -117,7 +117,7 @@ layout pattern
 
 ```jsx-live
 const App = () => (
- <Grid
+ <Grid.Root
     h="400px"
     templateAreas={`
       "header header"
@@ -147,10 +147,10 @@ const App = () => (
         Footer
       </Box>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
 ## Props
 
-<PropTable id="Grid" />
+<PropsTable id="Grid" />
