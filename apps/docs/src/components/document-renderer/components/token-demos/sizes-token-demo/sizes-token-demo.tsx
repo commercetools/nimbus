@@ -3,6 +3,7 @@ import { themeSizeTokensAtom } from "@/atoms/theme-size-tokens.ts";
 import { Box, Table, Flex, Code } from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
+import { ReactElement } from "react";
 
 // Define sorter functions for different token types
 const sorter = {
@@ -10,7 +11,13 @@ const sorter = {
     parseFloat(obj.value.originalValue),
   fraction: () => [
     (fraction: string) => parseInt(fraction.split("/")[1]),
-    (fraction: string) => eval(fraction),
+    (fraction: string) => {
+      const parts = fraction.split("/");
+      if (parts.length === 2) {
+        return parseFloat(parts[0]) / parseFloat(parts[1]);
+      }
+      return 0;
+    },
   ],
   other: (obj: { label: string }) => obj.label,
 };
@@ -21,16 +28,25 @@ interface SizesTokenDemoProps {
   group: string;
 }
 
+interface SizeToken {
+  id: string;
+  label: string;
+  group: string;
+  value: {
+    originalValue: string;
+  };
+}
+
 /**
  * SizesTokenDemo component to display size tokens in a table format.
  * @param {SizesTokenDemoProps} props - The props for the component.
- * @returns {JSX.Element | null} The rendered component.
+ * @returns {ReactElement | null} The rendered component.
  */
 export const SizesTokenDemo = ({
   group,
-}: SizesTokenDemoProps): JSX.Element | null => {
+}: SizesTokenDemoProps): ReactElement | null => {
   const [showPx, setShowPx] = useAtom(preferPxAtom);
-  const sizeTokens = useAtomValue(themeSizeTokensAtom);
+  const sizeTokens = useAtomValue(themeSizeTokensAtom) as SizeToken[] | null;
 
   if (!sizeTokens) return null;
 
@@ -38,7 +54,7 @@ export const SizesTokenDemo = ({
   const subset = orderBy(
     sizeTokens.filter((item) => item.group === group),
     sorter[(group || "other") as SorterKeys]
-  ) as typeof sizeTokens;
+  );
 
   /**
    * Formatter function to convert values between rem and px.
