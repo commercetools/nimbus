@@ -1,13 +1,12 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { evaluate } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
 import { remarkMark } from "remark-mark-highlight";
+import { components } from "./components";
 
 import type { FC, ReactNode } from "react";
-import { MDXComponents, MDXProps } from "mdx/types";
+import { MDXProps } from "mdx/types";
 import type { EvaluateOptions } from "@mdx-js/mdx";
 
 type ReactMDXContent = (props: MDXProps) => ReactNode;
@@ -17,14 +16,13 @@ const runtime = { jsx, jsxs, Fragment } as Runtime;
 
 export const MdxStringRenderer: FC<{
   content?: string;
-  components?: MDXComponents;
-}> = ({ content = "", components }) => {
+}> = ({ content = "" }) => {
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null
   );
 
   useEffect(() => {
-    evaluate(content, {
+    void evaluate(content, {
       ...runtime,
       remarkPlugins: [remarkGfm, remarkMark],
     }).then((r) => {
