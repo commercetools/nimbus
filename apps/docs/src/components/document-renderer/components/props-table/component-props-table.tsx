@@ -2,15 +2,17 @@ import { Box, Code, Table, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { typesAtom } from "../../../../atoms/types.ts";
 import { ReactNode, useMemo } from "react";
+import { MdxStringRenderer } from "../../mdx-string-renderer.tsx";
+import { DefaultValue } from "./components/default-value";
 
 interface PropItem {
   name: string;
-  type: {
-    name: string;
+  type?: {
+    name?: string;
   };
   description: string;
   required: boolean;
-  defaultValue: ReactNode;
+  defaultValue: ReactNode | { value?: string | number | boolean | null };
 }
 
 export const ComponentPropsTable = ({ id }: { id: string }) => {
@@ -81,12 +83,12 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
                   </Text>
                 </Table.Cell>
                 <Table.Cell>
-                  <Code>{item.type.name}</Code>
-                  <Text mt="200">{item.description}</Text>
+                  <Code mb="200">{item.type?.name || "unknown"}</Code>
+                  <MdxStringRenderer content={item.description} />
                 </Table.Cell>
 
                 <Table.Cell display="flex" justifyContent="flex-start">
-                  {item.defaultValue ?? "-"}
+                  <DefaultValue value={item.defaultValue} />
                 </Table.Cell>
               </Table.Row>
             ))}
