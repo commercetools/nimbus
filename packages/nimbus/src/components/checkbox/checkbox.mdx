@@ -167,7 +167,7 @@ scanning and selection.
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(2, 1fr)" gap="400">
     <Grid.Item>
       <Checkbox isIndeterminate>All general fields</Checkbox>
     </Grid.Item>
@@ -180,7 +180,7 @@ const App = () => (
         <Checkbox>Category keys</Checkbox>
       </Stack>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -192,7 +192,7 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(2, 1fr)" gap="400">
     <Grid.Item>
       <Stack direction="column">
         <Checkbox isSelected>Product key</Checkbox>
@@ -211,7 +211,7 @@ const App = () => (
         <Checkbox>Category keys.</Checkbox>
       </Stack>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -255,7 +255,7 @@ const App = () => (
 
 ## Specs
 
-<PropTable id="Checkbox" />
+<PropsTable id="Checkbox"/>
 
 ## Accessibility
 

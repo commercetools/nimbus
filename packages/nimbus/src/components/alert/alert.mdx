@@ -145,7 +145,7 @@ The width is flexible, intended for many inline placements and page wide areas.
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(6, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(6, 1fr)" gap="400">
     <Grid.Item colSpan={2}>
       <Alert.Root tone="critical" variant="outlined">
         <Alert.Description>
@@ -173,7 +173,7 @@ const App = () => (
         <Alert.DismissButton />
       </Alert.Root>
     </Grid.Item>
-  </Grid>
+  </Grid.Root>
 );
 ```
 
@@ -187,7 +187,7 @@ messages.
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root tone="positive" variant="outlined">
       <Alert.Title>Success! Your Account is Verified</Alert.Title>
       <Alert.Description>
@@ -201,7 +201,7 @@ const App = () => (
         Congratulations! Your account has been successfully verified. You now have full access to all features.
       </Alert.Description>
     </Alert.Root>
-  </Grid>
+  </Grid.Root>
 );
 ```
 
@@ -213,7 +213,7 @@ information for users.
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root tone="info" variant="outlined">
       <Alert.Title>New Feature Available</Alert.Title>
       <Alert.Description>
@@ -227,7 +227,7 @@ const App = () => (
         We've added a new 'Smart Suggestions' feature to help you find relevant content faster. <Link>Check it out in your settings.</Link>
       </Alert.Description>
     </Alert.Root>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -239,7 +239,7 @@ confirmation.
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root tone="warning" variant="outlined">
       <Alert.Title>Low Storage Space</Alert.Title>
       <Alert.Description>
@@ -253,7 +253,7 @@ const App = () => (
         Your device is running low on storage. Some features may be disabled until you free up space. <Link>Manage storage.</Link>
       </Alert.Description>
     </Alert.Root>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -265,7 +265,7 @@ immediately.
 
 ```jsx-live
 const App = () => (
-  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+  <Grid.Root templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root tone="critical" variant="outlined">
       <Alert.Title>Payment Processing Error</Alert.Title>
       <Alert.Description>
@@ -279,7 +279,7 @@ const App = () => (
         A payment processing error occurred for order #12345. Please <Link>verify your payment gateway settings</Link> immediately to prevent further issues.
       </Alert.Description>
     </Alert.Root>
-  </Grid>
+  </Grid.Root>
 )
 ```
 
@@ -510,10 +510,7 @@ const App = () => (
 
 ## Specs
 
-<PropTables
-  root="Alert"
-  ids="AlertRoot, AlertTitle, AlertDescription, AlertActions, AlertDismissButton"
-/>
+<PropsTable id="Alert"/>
 
 ## Accessibility
 
