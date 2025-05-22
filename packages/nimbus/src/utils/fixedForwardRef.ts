@@ -1,17 +1,17 @@
-import { forwardRef, type JSX } from "react";
+import { type JSX } from "react";
 
 /**
- * This is a workaround to fix the type of `forwardRef`.
- * The issue is that the type of `forwardRef` is not correct when using generics.
+ * This utility creates a function component that properly handles refs
+ * in React 19+ where forwardRef is deprecated.
  *
- * While not ideal from a type-safety perspective, it's necessary because
- * TypeScript cannot properly express the transformation that happens when
- * combining generics with `forwardRef`.
+ * In React 19, function components can directly receive refs as props,
+ * so this wrapper extracts the ref and passes it to the render function.
  */
 export const fixedForwardRef = <T, P extends object>(
   render: (props: P, ref: React.Ref<T>) => JSX.Element
-): ((props: P & React.RefAttributes<T>) => JSX.Element) => {
-  // @ts-expect-error - This tells TypeScript to "trust us" about the resulting type.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
-  return forwardRef(render) as any;
+): ((props: P & { ref?: React.Ref<T> }) => JSX.Element) => {
+  return (props: P & { ref?: React.Ref<T> }) => {
+    const { ref, ...restProps } = props;
+    return render(restProps as P, ref || null);
+  };
 };

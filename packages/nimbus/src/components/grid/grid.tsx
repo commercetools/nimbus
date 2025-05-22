@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import {
   Grid as ChakraGrid,
   GridItem,
@@ -16,11 +15,13 @@ import {
  */
 export interface GridProps extends ChakraGridProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
-const GridComponent = forwardRef<HTMLDivElement, GridProps>((props, ref) => {
-  return <ChakraGrid ref={ref} {...props} />;
-});
+const GridComponent = (props: GridProps) => {
+  const { ref, ...restProps } = props;
+  return <ChakraGrid ref={ref} {...restProps} />;
+};
 
 GridComponent.displayName = "Grid";
 
