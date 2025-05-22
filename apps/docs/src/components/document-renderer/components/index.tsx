@@ -68,8 +68,8 @@ export const components: MDXComponents = {
   td: (props) => <Table.Cell whiteSpace="normal" {...props} />,
   tr: Table.Row,
   /** layout components */
-  Box,
-  Flex,
+  Box: (props) => <Box {...props} />,
+  Flex: (props) => <Flex {...props} />,
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
   PropsTable: PropsTable,
