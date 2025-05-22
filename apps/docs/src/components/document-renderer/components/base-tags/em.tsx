@@ -1,3 +1,5 @@
-import { Em as StyledEm } from "@commercetools/nimbus";
+import { Text, type TextProps } from "@commercetools/nimbus";
 
-export const Em = StyledEm;
+export const Em = (props: TextProps) => (
+  <Text fontStyle="italic" as="em" {...props} />
+);

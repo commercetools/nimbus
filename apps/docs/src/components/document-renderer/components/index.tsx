@@ -1,6 +1,4 @@
 import { Table, Box, Flex, Grid } from "@commercetools/nimbus";
-import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
-import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
@@ -15,6 +13,7 @@ import {
   DurationTokenDemo,
   KeyframeTokenDemo,
 } from "./token-demos/animation";
+import { NimbusExportsList } from "@/components/document-renderer/components/nimbus-exports-list";
 
 import {
   ListItem,
@@ -35,6 +34,7 @@ import {
   Strong,
 } from "./base-tags";
 import { Frontpage } from "./frontpage";
+import { PropsTable } from "./props-table";
 
 export const components: MDXComponents = {
   h1: H1,
@@ -72,8 +72,7 @@ export const components: MDXComponents = {
   Flex: (props) => <Flex {...props} />,
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
-  PropTable: PropTable,
-  PropTables: PropTables,
+  PropsTable: PropsTable,
   ColorScales: ColorScales,
   IconSearch,
   SpacingTokenDemo,
@@ -95,4 +94,5 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  NimbusExportsList,
 };

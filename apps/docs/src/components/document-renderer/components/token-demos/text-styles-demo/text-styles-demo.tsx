@@ -1,45 +1,35 @@
-import {
-  Code,
-  system,
-  TableBody,
-  TableCell,
-  TableColumnHeader,
-  TableHeader,
-  TableRoot,
-  TableRow,
-  Text,
-} from "@commercetools/nimbus";
+import { Code, system, Table, Text } from "@commercetools/nimbus";
 export const TextStylesDemo = () => {
   const obj = system._config.theme?.textStyles || [];
   const items = Object.entries(obj).map(([name, value]) => ({ name, value }));
 
   return (
     <div>
-      <TableRoot>
-        <TableHeader>
-          <TableRow>
-            <TableColumnHeader width="16ch">Token-Name</TableColumnHeader>
-            <TableColumnHeader>Demo</TableColumnHeader>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader width="16ch">Token-Name</Table.ColumnHeader>
+            <Table.ColumnHeader>Demo</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {items &&
             items.map((item) => {
               const { name } = item;
 
               return (
-                <TableRow key={name}>
-                  <TableCell>
+                <Table.Row key={name}>
+                  <Table.Cell>
                     <Code variant="subtle">{name}</Code>
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     <Text textStyle={name}>Demo Text</Text>
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               );
             })}
-        </TableBody>
-      </TableRoot>
+        </Table.Body>
+      </Table.Root>
     </div>
   );
 };

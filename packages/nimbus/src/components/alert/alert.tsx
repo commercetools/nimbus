@@ -16,3 +16,12 @@ export const Alert = {
   Actions: AlertActions,
   DismissButton: AlertDismissButton,
 };
+
+// exports for internal use by react-docgen
+export {
+  AlertRoot as _AlertRoot,
+  AlertTitle as _AlertTitle,
+  AlertDescription as _AlertDescription,
+  AlertActions as _AlertActions,
+  AlertDismissButton as _AlertDismissButton,
+};
