@@ -5,12 +5,16 @@ import {
   Table,
   TagGroup,
   Button,
+  Icon,
 } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import React from "react";
 import { nimbusExportsAtom, NimbusExportItem } from "./atom";
 import { PropsTable } from "@/components/document-renderer/components/props-table";
+import { documentationAtom } from "@/atoms/documentation";
+import { DocLink } from "@/components/navigation/doc-link";
+import { CheckCircle, HighlightOff } from "@commercetools/nimbus-icons";
 
 interface NimbusExportsListProps {
   filter?: (item: NimbusExportItem) => boolean;
@@ -25,6 +29,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
   filter,
 }) => {
   const allExports = useAtomValue(nimbusExportsAtom);
+  const documentation = useAtomValue(documentationAtom);
   const filteredExports = filter ? allExports.filter(filter) : allExports;
   const [expandedComponents, setExpandedComponents] = useState<string[]>([]);
 
@@ -34,6 +39,13 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
       prev.includes(componentName)
         ? prev.filter((name) => name !== componentName)
         : [...prev, componentName]
+    );
+  };
+
+  // Find documentation for an export item
+  const findDocForExport = (exportName: string) => {
+    return Object.values(documentation).find(
+      (doc) => doc.meta.title === exportName
     );
   };
 
@@ -78,6 +90,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
               <Table.Row>
                 <Table.ColumnHeader>Name</Table.ColumnHeader>
                 <Table.ColumnHeader>Type</Table.ColumnHeader>
+                <Table.ColumnHeader>Docs</Table.ColumnHeader>
                 {type === "component" && (
                   <Table.ColumnHeader>Actions</Table.ColumnHeader>
                 )}
@@ -99,6 +112,21 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                         </TagGroup.TagList>
                       </TagGroup.Root>
                     </Table.Cell>
+                    <Table.Cell>
+                      {findDocForExport(item.name) ? (
+                        <DocLink
+                          docRoute={findDocForExport(item.name)?.meta.route}
+                        >
+                          <Icon size="2xs" color="positive.9">
+                            <CheckCircle />
+                          </Icon>
+                        </DocLink>
+                      ) : (
+                        <Icon size="2xs" color="critical.9">
+                          <HighlightOff />
+                        </Icon>
+                      )}
+                    </Table.Cell>
                     {type === "component" && (
                       <Table.Cell>
                         <Button
@@ -116,7 +144,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                   {type === "component" &&
                     expandedComponents.includes(item.name) && (
                       <Table.Row>
-                        <Table.Cell colSpan={3}>
+                        <Table.Cell colSpan={4}>
                           <Box py="m" px="s">
                             <PropsTable id={item.name} />
                           </Box>
