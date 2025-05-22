@@ -15,6 +15,7 @@ import {
   DurationTokenDemo,
   KeyframeTokenDemo,
 } from "./token-demos/animation";
+import { NimbusExportsList } from "@/components/document-renderer/components/nimbus-exports-list";
 
 import {
   ListItem,
@@ -35,6 +36,7 @@ import {
   Strong,
 } from "./base-tags";
 import { Frontpage } from "./frontpage";
+import { PropsTable } from "./props-table";
 
 export const components: MDXComponents = {
   h1: H1,
@@ -68,12 +70,13 @@ export const components: MDXComponents = {
   td: (props) => <Table.Cell whiteSpace="normal" {...props} />,
   tr: Table.Row,
   /** layout components */
-  Box: (props) => <Box {...props} />,
-  Flex: (props) => <Flex {...props} />,
+  Box,
+  Flex,
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
   PropTable: PropTable,
   PropTables: PropTables,
+  PropsTable: PropsTable,
   ColorScales: ColorScales,
   IconSearch,
   SpacingTokenDemo,
@@ -95,4 +98,5 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  NimbusExportsList,
 };
