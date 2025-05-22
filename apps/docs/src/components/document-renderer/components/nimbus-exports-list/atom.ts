@@ -6,63 +6,49 @@ import * as nimbus from "@commercetools/nimbus";
  */
 export interface NimbusExportItem {
   name: string;
-  type:
-    | "component"
-    | "compound-component"
-    | "subcomponent"
-    | "hook"
-    | "util"
-    | "unknown";
+  type: "component" | "hook" | "util" | "type-export";
 }
 
 /**
- * Atom that contains a list of all exports from the @commercetools/nimbus package
+ * Priority order for sorting export types
+ */
+const typePriority: Record<NimbusExportItem["type"], number> = {
+  component: 1,
+  hook: 2,
+  util: 3,
+  "type-export": 4,
+};
+
+/**
+ * Determines the type of a nimbus export based on its name.
+ */
+function getExportType(name: string): NimbusExportItem["type"] {
+  if (name.startsWith("use")) {
+    return "hook";
+  }
+  if (name.charAt(0) === "_") {
+    return "type-export";
+  }
+  if (name.charAt(0) === name.charAt(0).toUpperCase()) {
+    return "component";
+  }
+  return "util";
+}
+
+/**
+ * Atom that contains a list of all exports from the @commercetools/nimbus package,
+ * categorized and sorted by type and name.
  */
 export const nimbusExportsAtom = atom<NimbusExportItem[]>(() => {
-  // Get all export names from the nimbus package
   const exportNames = Object.keys(nimbus);
 
-  // Categorize exports based on naming conventions or inspection
   return exportNames
-    .map((name) => {
-      let type: NimbusExportItem["type"] = "unknown";
-
-      // Categorize based on conventions
-      if (name.startsWith("use")) {
-        type = "hook";
-      } else if (name.charAt(0) === "_") {
-        // Subcomponents now go to unknown
-        type = "unknown";
-      } else if (name.charAt(0) === name.charAt(0).toUpperCase()) {
-        // All components (including compound components) are now just "component"
-        type = "component";
-      } else if (
-        typeof nimbus[name as keyof typeof nimbus] === "function" &&
-        !name.startsWith("use")
-      ) {
-        type = "util";
-      }
-
-      return {
-        name,
-        type,
-      };
-    })
+    .map((name) => ({
+      name,
+      type: getExportType(name),
+    }))
     .sort((a, b) => {
-      // Define priority order for types
-      const typePriority = {
-        component: 1,
-        hook: 2,
-        util: 3,
-        unknown: 4,
-        "compound-component": 4,
-        subcomponent: 4,
-      };
-
-      // Compare by type priority first
       const typeDiff = typePriority[a.type] - typePriority[b.type];
-
-      // If same type, sort alphabetically by name
       return typeDiff !== 0 ? typeDiff : a.name.localeCompare(b.name);
     });
 });
