@@ -37,4 +37,8 @@ export interface IconProps extends IconVariantProps {
    * Accepts a React component to be rendered as the icon .
    */
   as?: BoxProps["as"];
+  /**
+   * Ref to the icon element
+   */
+  ref?: React.Ref<SVGSVGElement>;
 }

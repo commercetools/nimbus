@@ -12,11 +12,7 @@ import {
   ToggleButton as RacToggleButton,
   ToggleButtonGroup as RacToggleButtonGroup,
 } from "react-aria-components";
-import type {
-  ForwardRefExoticComponent,
-  PropsWithChildren,
-  RefAttributes,
-} from "react";
+import type { PropsWithChildren } from "react";
 
 // ============================================================
 // Root Component (`<ToggleButtonGroup>`)
@@ -35,12 +31,12 @@ type ToggleButtonGroupRootProps = ToggleButtonGroupRootSlotProps &
 
 /** Final external props for the `<ToggleButtonGroup>` component, including `children`. */
 export type ToggleButtonGroupProps =
-  PropsWithChildren<ToggleButtonGroupRootProps>;
+  PropsWithChildren<ToggleButtonGroupRootProps> & {
+    ref?: React.Ref<typeof RacToggleButtonGroup>;
+  };
 
-/** Type signature for the main `ToggleButtonGroup` component (using `forwardRef`). */
-export type ToggleButtonGroupRootComponent = ForwardRefExoticComponent<
-  ToggleButtonGroupProps & RefAttributes<typeof RacToggleButtonGroup>
->;
+/** Type signature for the main `ToggleButtonGroup` component. */
+export type ToggleButtonGroupRootComponent = React.FC<ToggleButtonGroupProps>;
 
 // ============================================================
 // Button Sub-Component (`<ToggleButtonGroup.Button>`)
@@ -54,9 +50,10 @@ type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<
 
 /** Combined props for the button element (Chakra styles + Aria behavior). */
 export type ToggleButtonGroupButtonProps = ToggleButtonGroupButtonSlotProps &
-  AriaToggleButtonProps;
+  AriaToggleButtonProps & {
+    ref?: React.Ref<typeof RacToggleButton>;
+  };
 
-/** Type signature for the `ToggleButtonGroup.Button` sub-component (using `forwardRef`). */
-export type ToggleButtonGroupButtonComponent = ForwardRefExoticComponent<
-  ToggleButtonGroupButtonProps & RefAttributes<typeof RacToggleButton>
->;
+/** Type signature for the `ToggleButtonGroup.Button` sub-component. */
+export type ToggleButtonGroupButtonComponent =
+  React.FC<ToggleButtonGroupButtonProps>;

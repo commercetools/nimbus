@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import {
   SimpleGrid as ChakraSimpleGrid,
   GridItem,
@@ -16,13 +15,13 @@ import {
  */
 export interface SimpleGridProps extends ChakraSimpleGridProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
-const GridComponent = forwardRef<HTMLDivElement, SimpleGridProps>(
-  (props, ref) => {
-    return <ChakraSimpleGrid ref={ref} {...props} />;
-  }
-);
+const GridComponent = (props: SimpleGridProps) => {
+  const { ref, ...restProps } = props;
+  return <ChakraSimpleGrid ref={ref} {...restProps} />;
+};
 
 GridComponent.displayName = "SimpleGrid";
 
