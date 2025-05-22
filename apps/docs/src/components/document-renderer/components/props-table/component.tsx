@@ -1,5 +1,5 @@
-import { Box, Code, Text, Stack, Button } from "@commercetools/nimbus";
-import { useMemo, useState } from "react";
+import { Box, Text, Stack, Button } from "@commercetools/nimbus";
+import { useMemo, useState, useEffect } from "react";
 import * as nimbus from "@commercetools/nimbus";
 // Keep the import even though it's commented out in the render for now
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,11 +22,10 @@ interface ExportInfo {
 }
 
 export const PropsTable = ({ id }: { id: string }) => {
-  // Keep this state even though it's commented out in the render for now
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedComponent, setSelectedComponent] = useState<string | null>(
     null
   );
+
   // Get basic type information about the export
   const exportInfo = useMemo<ExportInfo>(() => {
     // Access nimbus exports by string key
@@ -89,17 +88,27 @@ export const PropsTable = ({ id }: { id: string }) => {
     };
   }, [id]);
 
-  const getComponentType = () => {
-    if (!exportInfo.exists) return null;
+  // Set default selection when component first loads or changes
+  useEffect(() => {
+    if (exportInfo.exists) {
+      if (exportInfo.isCompoundComponent && exportInfo.componentTypes?.length) {
+        // For compound components, select the Root component by default
+        const rootComponentType = `${id}Root`;
+        const hasRootComponent =
+          exportInfo.componentTypes.includes(rootComponentType);
 
-    // For compound components
-    if (exportInfo.isCompoundComponent) return "compound component";
-    // For regular components
-    if (exportInfo.isComponent) return "component";
-    return null;
-  };
-
-  const componentType = getComponentType();
+        if (hasRootComponent) {
+          setSelectedComponent(rootComponentType);
+        } else {
+          // If no Root component exists, select the first component
+          setSelectedComponent(exportInfo.componentTypes[0]);
+        }
+      } else if (exportInfo.isComponent) {
+        // For single components, select the component itself
+        setSelectedComponent(id);
+      }
+    }
+  }, [id, exportInfo]);
 
   return (
     <Box>
@@ -109,59 +118,27 @@ export const PropsTable = ({ id }: { id: string }) => {
 
       {exportInfo.exists && (
         <Box>
-          {componentType && (
-            <Text fontWeight="bold" mb="s">
-              {id} is a {componentType}
-            </Text>
-          )}
-
-          <Text>
-            Type: <Code>{exportInfo.type}</Code>
-            {exportInfo.isComponent && " (React Component)"}
-          </Text>
-
-          {exportInfo.subComponents && exportInfo.subComponents.length > 0 && (
-            <Box mt="s">
-              <Text>Contains these React components:</Text>
-              <Box as="ul" ml="m">
-                {exportInfo.subComponents.map((key) => (
-                  <Box as="li" key={key}>
-                    <Code>{key}</Code>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          )}
-
-          {exportInfo.componentTypes &&
+          {/* Only show component selection for compound components */}
+          {exportInfo.isCompoundComponent &&
+            exportInfo.componentTypes &&
             exportInfo.componentTypes.length > 0 && (
-              <Box mt="s">
-                <Text>Component types:</Text>
-                <Box as="ul" ml="m">
-                  {exportInfo.componentTypes.map((type) => (
-                    <Box as="li" key={type}>
-                      <Code>{type}</Code>
-                    </Box>
+              <Box my="400">
+                <Stack direction="row" wrap="wrap">
+                  {exportInfo.componentTypes.map((cid) => (
+                    <Button
+                      key={cid}
+                      size="xs"
+                      variant={selectedComponent === cid ? "solid" : "ghost"}
+                      onPress={() => setSelectedComponent(cid)}
+                    >
+                      {cid.split(id).join(id + ".")}
+                    </Button>
                   ))}
-                </Box>
+                </Stack>
               </Box>
             )}
 
-          {exportInfo.componentTypes && (
-            <Box my="400">
-              <Stack direction="row" wrap="wrap">
-                {exportInfo.componentTypes.map((cid) => (
-                  <Button size="xs" onPress={() => setSelectedComponent(cid)}>
-                    {cid.split(id).join(id + ".")}
-                  </Button>
-                ))}
-              </Stack>
-            </Box>
-          )}
           {selectedComponent && <ComponentPropsTable id={selectedComponent} />}
-          {exportInfo.componentTypes?.length === 0 && (
-            <ComponentPropsTable id={id} />
-          )}
           {/* <pre>{JSON.stringify(exportInfo, null, 2)}</pre> */}
         </Box>
       )}

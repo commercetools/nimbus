@@ -1,7 +1,7 @@
-import { Box, Code, Heading, Table, Text } from "@commercetools/nimbus";
+import { Box, Code, Table, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { typesAtom } from "../../../../atoms/types.ts";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 interface PropItem {
   name: string;
@@ -10,6 +10,7 @@ interface PropItem {
   };
   description: string;
   required: boolean;
+  defaultValue: ReactNode;
 }
 
 export const ComponentPropsTable = ({ id }: { id: string }) => {
@@ -44,33 +45,48 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
 
   return (
     <Box>
-      <Heading mb="400">@typename: {id}</Heading>
       {propsArr.length > 0 ? (
         <Table.Root variant="outline">
           <Table.ColumnGroup>
-            <Table.Column width="1/3" />
-            <Table.Column width="1/3" />
-            <Table.Column />
+            <Table.Column width="1/4" />
+            <Table.Column width="2/4" />
+            <Table.Column width="1/4" />
           </Table.ColumnGroup>
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader>name</Table.ColumnHeader>
               <Table.ColumnHeader>type / description</Table.ColumnHeader>
-              <Table.ColumnHeader>required</Table.ColumnHeader>
+              <Table.ColumnHeader>default</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {propsArr.map((item, idx) => (
               <Table.Row key={idx}>
                 <Table.Cell display="flex" justifyContent="flex-start">
-                  <Text fontWeight="600">{item.name}</Text>
+                  <Text fontWeight="600">
+                    {item.name}
+                    {item.required ? (
+                      <Box
+                        as="sup"
+                        title="required"
+                        display="inline-block"
+                        color="critical.10"
+                        cursor="help"
+                      >
+                        *
+                      </Box>
+                    ) : (
+                      ""
+                    )}
+                  </Text>
                 </Table.Cell>
                 <Table.Cell>
                   <Code>{item.type.name}</Code>
                   <Text mt="200">{item.description}</Text>
                 </Table.Cell>
+
                 <Table.Cell display="flex" justifyContent="flex-start">
-                  {item.required ? "Yes" : "-"}
+                  {item.defaultValue ?? "-"}
                 </Table.Cell>
               </Table.Row>
             ))}

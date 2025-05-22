@@ -63,17 +63,17 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
   };
 
   return (
-    <Stack gap="m">
+    <Stack gap="600">
       {Object.entries(groupedExports).map(([type, items]) => (
         <Box key={type}>
           <Heading
             size="lg"
-            marginBottom="m"
+            marginBottom="400"
             style={{ textTransform: "capitalize" }}
           >
             {type}s
           </Heading>
-          <Table.Root>
+          <Table.Root variant="outline">
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader>Name</Table.ColumnHeader>
