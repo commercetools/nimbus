@@ -1,6 +1,4 @@
 import { Table, Box, Flex, Grid } from "@commercetools/nimbus";
-import { PropTable } from "@/components/document-renderer/components/prop-table/prop-table.tsx";
-import { PropTables } from "@/components/document-renderer/components/prop-table/prop-tables.tsx";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
@@ -74,8 +72,6 @@ export const components: MDXComponents = {
   Flex,
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
-  PropTable: PropTable,
-  PropTables: PropTables,
   PropsTable: PropsTable,
   ColorScales: ColorScales,
   IconSearch,
