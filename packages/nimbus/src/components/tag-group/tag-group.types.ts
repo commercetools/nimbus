@@ -1,9 +1,4 @@
-import type {
-  ForwardRefExoticComponent,
-  PropsWithChildren,
-  RefAttributes,
-  FC,
-} from "react";
+import type { PropsWithChildren, FC } from "react";
 import type {
   HTMLChakraProps,
   RecipeProps,
@@ -12,7 +7,6 @@ import type {
 import {
   TagGroup as RaTagGroup,
   type TagGroupProps as RaTagGroupProps,
-  TagList as RaTagList,
   type TagListProps as RaTagListProps,
   Tag as RaTag,
   type TagProps as RaTagProps,
@@ -32,12 +26,12 @@ type TagGroupRootProps = TagGroupRootSlotProps &
   RecipeVariantProps<typeof tagGroupSlotRecipe>;
 
 /** Final external props for the `<TagGroup>` component, including `children`. */
-export type TagGroupProps = PropsWithChildren<TagGroupRootProps>;
+export type TagGroupProps = PropsWithChildren<TagGroupRootProps> & {
+  ref?: React.Ref<typeof RaTagGroup>;
+};
 
-/** Type signature for the main `TagGroup` component (using `forwardRef`). */
-export type TagGroupRootComponent = FC<
-  TagGroupRootProps & RefAttributes<typeof RaTagGroup>
->;
+/** Type signature for the main `TagGroup` component. */
+export type TagGroupRootComponent = FC<TagGroupProps>;
 
 // ============================================================
 // TagList Sub-Component (`<TagGroup.TagList>`)
@@ -48,11 +42,13 @@ type TagGroupTagListSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Combined props for the tagList element (Chakra styles + Aria behavior + Recipe variants). */
 export type TagGroupTagListProps<T extends object> = RaTagListProps<T> &
-  Omit<TagGroupTagListSlotProps, keyof RaTagListProps<T>>;
+  Omit<TagGroupTagListSlotProps, keyof RaTagListProps<T>> & {
+    ref?: React.Ref<HTMLDivElement>;
+  };
 
-/** Type signature for the `TagGroup.TagList` sub-component (using `forwardRef`). */
+/** Type signature for the `TagGroup.TagList` sub-component. */
 export type TagGroupTagListComponent<T extends object> = FC<
-  TagGroupTagListProps<T> & RefAttributes<HTMLDivElement>
+  TagGroupTagListProps<T>
 >;
 
 // ============================================================
@@ -64,9 +60,9 @@ type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 /** Combined props for the tag element (Chakra styles + Aria behavior + Recipe variants). */
 export type TagGroupTagProps = RaTagProps &
-  Omit<TagGroupTagSlotProps, keyof RaTagProps>;
+  Omit<TagGroupTagSlotProps, keyof RaTagProps> & {
+    ref?: React.Ref<typeof RaTag>;
+  };
 
-/** Type signature for the `TagGroup.Tag` sub-component (using `forwardRef`). */
-export type TagGroupTagComponent = FC<
-  TagGroupTagProps & RefAttributes<typeof RaTag>
->;
+/** Type signature for the `TagGroup.Tag` sub-component. */
+export type TagGroupTagComponent = FC<TagGroupTagProps>;
