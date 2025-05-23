@@ -1,10 +1,4 @@
-import {
-  createContext,
-  forwardRef,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useMemo, useState, type ReactNode } from "react";
 import { AlertRoot as AlertRootSlot, AlertIcon } from "../alert.slots";
 import type { AlertProps, AlertRootComponent } from "../alert.types";
 import { Box } from "../../box";
@@ -47,10 +41,8 @@ export const AlertContext = createContext<AlertContextValue | undefined>(
  * ============================================================
  * Provides feedback to the user about the status of an action or system event
  */
-export const AlertRoot: AlertRootComponent = forwardRef<
-  HTMLDivElement,
-  AlertProps
->(({ children, ...props }, ref) => {
+export const AlertRoot: AlertRootComponent = (props) => {
+  const { ref, children, ...restProps } = props;
   const [titleNode, setTitle] = useState<ReactNode>(null);
   const [descriptionNode, setDescription] = useState<ReactNode>(null);
   const [actionsNode, setActions] = useState<ReactNode>(null);
@@ -69,9 +61,9 @@ export const AlertRoot: AlertRootComponent = forwardRef<
 
   return (
     <AlertContext.Provider value={contextValue}>
-      <AlertRootSlot ref={ref} {...props} role="alert">
+      <AlertRootSlot ref={ref} {...restProps} role="alert">
         <AlertIcon alignItems="flex-start">
-          {getIconFromTone(props.tone)}
+          {getIconFromTone(restProps.tone)}
         </AlertIcon>
         <Stack flex="1" gap="200">
           <Box>
@@ -86,6 +78,6 @@ export const AlertRoot: AlertRootComponent = forwardRef<
       </AlertRootSlot>
     </AlertContext.Provider>
   );
-});
+};
 
 AlertRoot.displayName = "Alert.Root";

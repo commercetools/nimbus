@@ -1,4 +1,4 @@
-import { type ForwardedRef, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import {
   ListBoxSection as RaListBoxSection,
@@ -7,42 +7,39 @@ import {
 } from "react-aria-components";
 import { SelectOptionGroupSlot } from "./../select.slots";
 import type { SelectOptionGroupProps } from "../select.types";
-import { fixedForwardRef } from "@/utils/fixedForwardRef";
 
-export const SelectOptionGroup = fixedForwardRef(
-  <T extends object>(
-    { label, items, children, ...props }: SelectOptionGroupProps<T>,
-    forwardedRef: ForwardedRef<HTMLDivElement>
-  ) => {
-    // Validate that children is a function when items is provided
-    if (items && typeof children !== "function") {
-      throw new Error(
-        'SelectOptionGroup: When "items" is provided, "children" must be a function'
-      );
-    }
+export const SelectOptionGroup = <T extends object>(
+  props: SelectOptionGroupProps<T> & { ref?: React.Ref<HTMLDivElement> }
+) => {
+  const { ref, label, items, children, ...restProps } = props;
 
-    return (
-      <RaListBoxSection ref={forwardedRef} {...props}>
-        <SelectOptionGroupSlot asChild>
-          <RaHeader>{label}</RaHeader>
-        </SelectOptionGroupSlot>
-
-        {items ? (
-          <Collection items={items}>
-            {(item: T) => {
-              if (typeof children === "function") {
-                return children(item);
-              }
-              return null;
-            }}
-          </Collection>
-        ) : (
-          (children as ReactNode)
-        )}
-      </RaListBoxSection>
+  // Validate that children is a function when items is provided
+  if (items && typeof children !== "function") {
+    throw new Error(
+      'SelectOptionGroup: When "items" is provided, "children" must be a function'
     );
   }
-);
 
-// @ts-expect-error - doesn't work with this complex types
+  return (
+    <RaListBoxSection ref={ref} {...restProps}>
+      <SelectOptionGroupSlot asChild>
+        <RaHeader>{label}</RaHeader>
+      </SelectOptionGroupSlot>
+
+      {items ? (
+        <Collection items={items}>
+          {(item: T) => {
+            if (typeof children === "function") {
+              return children(item);
+            }
+            return null;
+          }}
+        </Collection>
+      ) : (
+        (children as ReactNode)
+      )}
+    </RaListBoxSection>
+  );
+};
+
 SelectOptionGroup.displayName = "Select.OptionGroup";

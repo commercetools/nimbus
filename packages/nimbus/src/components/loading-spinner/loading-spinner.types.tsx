@@ -18,4 +18,6 @@ type LoadingSpinnerVariantProps = LoadingSpinnerRootProps &
  * Extends LoadingSpinnerVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export type LoadingSpinnerProps = LoadingSpinnerVariantProps;
+export type LoadingSpinnerProps = LoadingSpinnerVariantProps & {
+  ref?: React.Ref<HTMLDivElement>;
+};

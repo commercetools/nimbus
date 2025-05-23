@@ -37,4 +37,5 @@ type BadgeVariantProps = BadgeRootProps &
  */
 export interface BadgeProps extends BadgeVariantProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLSpanElement>;
 }

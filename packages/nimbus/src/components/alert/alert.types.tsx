@@ -6,11 +6,7 @@ import type {
 import { alertRecipe } from "./alert.recipe";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
-import type {
-  ForwardRefExoticComponent,
-  PropsWithChildren,
-  RefAttributes,
-} from "react";
+import type { PropsWithChildren } from "react";
 
 // ============================================================
 // Root Component (`<Alert>`)
@@ -27,12 +23,11 @@ type AlertVariantProps = AlertRootProps &
 export type AlertProps = PropsWithChildren<AlertVariantProps> & {
   // Allow passthrough of data-* attributes
   [key: `data-${string}`]: unknown;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
-/** Type signature for the main `Alert` component (using `forwardRef`). */
-export type AlertRootComponent = ForwardRefExoticComponent<
-  AlertProps & RefAttributes<HTMLDivElement>
->;
+/** Type signature for the main `Alert` component. */
+export type AlertRootComponent = React.FC<AlertProps>;
 
 // ============================================================
 // Icon Slot
