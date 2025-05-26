@@ -22,7 +22,12 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const [showPassword, setShowPassword] = useState(false);
     const toggleVisibility = () => setShowPassword(!showPassword);
 
+    /** size icon based on input size */
     const iconSize = size === "md" ? "xs" : "2xs";
+    /**
+     * position the icon button at the right edge of the input based on
+     * the size of the input
+     */
     const iconPositionProps =
       size === "md"
         ? {
@@ -34,13 +39,17 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             right: "400",
           };
 
+    /** safe space between the text within the input and the icon button */
+    const iconButtonSafeSpace = size === "md" ? "1400" : "1100";
+
     return (
       <Box display="inline-block" position="relative">
         <TextInput
-          {...props}
+          width="full"
           ref={forwardedRef}
           type={showPassword ? "text" : "password"}
-          paddingRight="1200"
+          {...props}
+          pr={iconButtonSafeSpace}
         />
         <Box position="absolute" {...iconPositionProps}>
           <IconButton
