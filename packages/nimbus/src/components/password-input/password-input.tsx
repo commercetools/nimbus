@@ -1,5 +1,5 @@
 import { forwardRef, useState } from "react";
-import { Box, IconButton } from "@/components";
+import { Box, IconButton, Tooltip, TooltipTrigger } from "@/components";
 import { TextInput } from "@/components/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
@@ -52,16 +52,21 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           pr={iconButtonSafeSpace}
         />
         <Box position="absolute" {...iconPositionProps}>
-          <IconButton
-            size={iconSize}
-            variant="ghost"
-            tone="primary"
-            aria-label={showPassword ? "Hide password" : "Show password"}
-            onClick={toggleVisibility}
-            isDisabled={isDisabled}
-          >
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
+          <TooltipTrigger>
+            <IconButton
+              size={iconSize}
+              variant="ghost"
+              tone="primary"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              onClick={toggleVisibility}
+              isDisabled={isDisabled}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+            <Tooltip>
+              {showPassword ? "Hide password" : "Show Password"}
+            </Tooltip>
+          </TooltipTrigger>
         </Box>
       </Box>
     );
