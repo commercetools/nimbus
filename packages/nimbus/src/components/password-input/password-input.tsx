@@ -18,7 +18,7 @@ import type { PasswordInputProps } from "./password-input.types";
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, forwardedRef) => {
-    const { size = "md" } = props;
+    const { size = "md", isDisabled } = props;
     const [showPassword, setShowPassword] = useState(false);
     const toggleVisibility = () => setShowPassword(!showPassword);
 
@@ -26,9 +26,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const iconPositionProps =
       size === "md"
         ? {
-            size: "xs",
-            right: "400",
             top: "100",
+            right: "400",
           }
         : {
             top: "50",
@@ -50,6 +49,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             tone="primary"
             aria-label={showPassword ? "Hide password" : "Show password"}
             onClick={toggleVisibility}
+            isDisabled={isDisabled}
           >
             {showPassword ? <VisibilityOff /> : <Visibility />}
           </IconButton>

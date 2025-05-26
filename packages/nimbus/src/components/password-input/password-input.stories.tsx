@@ -3,7 +3,7 @@ import { Box, Stack } from "@/components";
 import { PasswordInput } from "./password-input";
 
 export default {
-  title: "Components/Forms/PasswordInput",
+  title: "Components/PasswordInput",
   component: PasswordInput,
 } as Meta<typeof PasswordInput>;
 
@@ -43,26 +43,13 @@ export const WithSizes: Story = {
   ),
 };
 
-export const WithPlaceholder: Story = {
-  render: (args) => (
-    <Box maxWidth="500px">
-      <label htmlFor="password">Password</label>
-      <PasswordInput
-        id="password"
-        placeholder="Enter your password"
-        {...args}
-      />
-    </Box>
-  ),
-};
-
 export const Disabled: Story = {
   render: (args) => (
     <Box maxWidth="500px">
       <label htmlFor="password">Password (Disabled)</label>
       <PasswordInput
         id="password"
-        disabled
+        isDisabled
         value="DisabledPassword123"
         {...args}
       />
