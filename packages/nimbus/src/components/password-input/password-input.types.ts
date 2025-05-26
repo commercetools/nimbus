@@ -1,4 +1,4 @@
-import type { TextInputProps } from "@/components/text-input/text-input.types";
+import type { TextInputProps } from "../text-input/text-input.types";
 
 /**
  * Interface for PasswordInput component props
