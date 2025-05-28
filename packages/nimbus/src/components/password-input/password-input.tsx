@@ -58,7 +58,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               variant="ghost"
               tone="primary"
               aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={toggleVisibility}
+              onPress={toggleVisibility}
               isDisabled={isDisabled}
             >
               {showPassword ? <VisibilityOff /> : <Visibility />}
