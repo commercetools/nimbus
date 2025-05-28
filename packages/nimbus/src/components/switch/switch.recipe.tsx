@@ -21,8 +21,7 @@ export const switchSlotRecipe = defineSlotRecipe({
 
       ["&[data-disabled='true']"]: {
         layerStyle: "disabled",
-        cursor: "not-allowed",
-        opacity: 0.5,
+        pointerEvents: "none",
       },
     },
     label: {
