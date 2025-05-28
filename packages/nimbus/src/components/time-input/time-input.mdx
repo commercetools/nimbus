@@ -1,0 +1,92 @@
+---
+id: Components-TimeInput
+title: TimeInput
+description: allows entering a time
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - TimeInput
+tags:
+  - component
+---
+
+# TimeInput
+
+allows entering a time
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <TimeInput>I am TimeInput!</TimeInput>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <TimeInput key={size} size={size}>'{size}' TimeInput</TimeInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <TimeInput key={variant} variant={variant}>'{variant}' TimeInput</TimeInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <TimeInput colorPalette={color} key={variant} variant={variant}>
+              '{variant}' TimeInput
+            </TimeInput>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="TimeInput" />
