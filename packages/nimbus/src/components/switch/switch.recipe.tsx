@@ -85,7 +85,7 @@ export const switchSlotRecipe = defineSlotRecipe({
           "--thumb-size": "sizes.400",
         },
         label: {
-          "--label-font-size": "fontSizes.300",
+          "--label-font-size": "fontSizes.350",
         },
       },
       md: {
@@ -97,7 +97,7 @@ export const switchSlotRecipe = defineSlotRecipe({
           "--thumb-size": "sizes.600",
         },
         label: {
-          "--label-font-size": "fontSizes.350",
+          "--label-font-size": "fontSizes.400",
         },
       },
     },
