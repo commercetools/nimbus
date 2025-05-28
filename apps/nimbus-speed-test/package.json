@@ -1,0 +1,31 @@
+{
+  "name": "nimbus-speed-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "@commercetools/nimbus": "workspace:*",
+    "@commercetools/nimbus-icons": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:tooling",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react-swc": "catalog:tooling",
+    "eslint": "catalog:tooling",
+    "eslint-plugin-react-hooks": "catalog:tooling",
+    "eslint-plugin-react-refresh": "catalog:tooling",
+    "globals": "catalog:tooling",
+    "typescript": "catalog:tooling",
+    "typescript-eslint": "catalog:tooling",
+    "vite": "catalog:tooling"
+  }
+}

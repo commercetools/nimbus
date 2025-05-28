@@ -10,5 +10,5 @@ type FunctionalButtonProps = AriaButtonProps &
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ButtonProps extends FunctionalButtonProps {
   // TODO: evaluate if we should require setting a tone
-  // tone: FunctionalButtonProps["tone"];
+  tone: FunctionalButtonProps["tone"];
 }
