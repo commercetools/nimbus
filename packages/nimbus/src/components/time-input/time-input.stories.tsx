@@ -56,54 +56,20 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Variants
+ * Showcase Hour Cycle
  */
-export const Variants: Story = {
+export const HourCycle: Story = {
+  args: {
+    defaultValue: michaelsBirthday,
+    hideTimeZone: true,
+  },
   render: (args) => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <TimeInput key={variant} {...args} variant={variant} />
-        ))}
+      <Stack direction="column" gap="400">
+        <TimeInput {...args} hourCycle={12} aria-label="Hour Cycle 12" />
+        <TimeInput {...args} hourCycle={24} aria-label="Hour Cycle 24" />
       </Stack>
     );
-  },
-
-  args: {
-    children: "Demo TimeInput",
-  },
-};
-
-/**
- * Showcase Colors
- */
-export const Colors: Story = {
-  render: (args) => {
-    return (
-      <Stack>
-        {[].map((colorPalette) => (
-          <Stack
-            key={colorPalette}
-            direction="row"
-            gap="400"
-            alignItems="center"
-          >
-            {[].map((variant) => (
-              <TimeInput
-                key={variant}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo TimeInput",
   },
 };
 
@@ -121,24 +87,6 @@ export const HideTimeZone: Story = {
         <TimeInput {...args} aria-label="Timezone shown" />
         <Text>Hide the timezone</Text>
         <TimeInput {...args} hideTimeZone aria-label="Timezone hidden" />
-      </Stack>
-    );
-  },
-};
-
-/**
- * Showcase Hour Cycle
- */
-export const HourCycle: Story = {
-  args: {
-    defaultValue: michaelsBirthday,
-    hideTimeZone: true,
-  },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400">
-        <TimeInput {...args} hourCycle={12} aria-label="Hour Cycle 12" />
-        <TimeInput {...args} hourCycle={24} aria-label="Hour Cycle 24" />
       </Stack>
     );
   },
