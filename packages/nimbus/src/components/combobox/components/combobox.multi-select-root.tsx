@@ -1,4 +1,4 @@
-import { useState, useRef, type ForwardedRef } from "react";
+import { useState, useRef, type ForwardedRef, type KeyboardEvent } from "react";
 import { useSlotRecipe } from "@chakra-ui/react";
 // import { Flex } from "@/components";
 import {
@@ -12,16 +12,17 @@ import {
   TextField,
   useFilter,
 } from "react-aria-components";
-import { TagGroup } from "@/components";
+
+import { MultiSelectValue } from "./combobox.multi-select-tag-group";
 import { ComboBoxOptions } from "./combobox.options";
 import { ComboBoxButtonGroup } from "./combobox.button-group";
 import { comboBoxSlotRecipe } from "../combobox.recipe";
 import { ComboBoxRootSlot } from "../combobox.slots";
 import type { ComboBoxMultiSelectRootProps } from "../combobox.types";
-import { ComboBoxValueSlot } from "../combobox.slots";
+
 import { fixedForwardRef } from "@/utils/fixedForwardRef";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { useListData } from "react-stately";
+
 function getLastValueInSet(set: Set<Key>) {
   let value;
   for (value of set);
@@ -35,10 +36,13 @@ export const MultiSelectRoot = fixedForwardRef(
       defaultFilter,
       inputValue,
       onInputChange,
-      selectedKeys,
-      onSelectionChange,
+      defaultSelectedKeys = new Set(),
+      selectedKeys: selectedKeysProp,
+      onSelectionChange: onSelectionChangeProp,
       disabledKeys,
       items,
+      itemID = "id",
+      itemText = "name",
       ...props
     }: ComboBoxMultiSelectRootProps<T>,
     ref: ForwardedRef<HTMLDivElement>
@@ -46,96 +50,41 @@ export const MultiSelectRoot = fixedForwardRef(
     const recipe = useSlotRecipe({ recipe: comboBoxSlotRecipe });
     const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
     const [styleProps] = extractStyleProps(restRecipeProps);
-    const selectedList = useListData<T>({
-      initialItems: [],
-    });
 
-    const itemsList = useListData<T>({
-      initialItems: items,
-      initialSelectedKeys: selectedKeys,
-    });
+    const [_selectedKeys, _setSelectedKeys] = useState<Selection>();
+    const selectedKeys =
+      selectedKeysProp ?? _selectedKeys ?? defaultSelectedKeys;
+    const setSelectedKeys = onSelectionChangeProp ?? _setSelectedKeys;
 
     const [inputState, setInputState] = useState<string>(inputValue ?? "");
 
-    const handleRemove = (keys: Set<Key>) => {
-      console.log(keys);
-
-      const key = keys.values().next().value;
-      if (key !== undefined) {
-        const item = selectedList.getItem(key);
-        console.log(item);
-        if (item !== undefined) {
-          selectedList.remove(key);
-          let nextSelected = new Set(itemsList.selectedKeys);
-          if (itemsList.selectedKeys === "all") {
-            nextSelected = new Set(items && items.map((item) => item.id));
-          }
-          nextSelected.delete(key);
-          itemsList.setSelectedKeys(nextSelected);
-        }
-      }
-    };
-    const handleSelectionChange = (keys: Selection) => {
-      setInputState("");
-
-      if (onSelectionChange) {
-        onSelectionChange(keys);
-      }
-      // get keys for currently selected items
-      const selectedListKeys = selectedList.items
-        .slice()
-        .map((item) => item.id);
-      if (keys === "all") {
-        // there is no good way to clear the useListData set, so remove all current keys, then add all items from the list
-        selectedListKeys.map((key) => selectedList.remove(key));
-        selectedList.append(itemsList.items);
-      } else if (keys.size === 0) {
-        // if there are no selected keys, remove all keys from the selectedList
-        selectedListKeys.map((key) => selectedList.remove(key));
-      } else {
-        selectedListKeys.forEach((id) => {
-          // if an existing selected item is not in the selected keys array, remove it
-          if (!keys.has(id)) {
-            console.log("remove existing selected item", id);
-            selectedList.remove(id);
-          }
-        });
-        keys.forEach((key) => {
-          // if a selected key is not in the selectedList, add the item from the itemsList to the selected list
-          if (!selectedList.getItem(key)) {
-            console.log("adding selected item");
-            const item = itemsList.getItem(key);
-            if (item !== undefined) {
-              selectedList.append(item);
-            }
-          }
-        });
-      }
-
-      itemsList.setSelectedKeys(keys);
-    };
     const handleInputChange = (value: string) => {
       if (onInputChange) onInputChange(value);
       setInputState(value);
     };
 
     const deleteLastSelectedItem = () => {
-      // eslint-ignore
-      const lastKey = getLastValueInSet(itemsList.selectedKeys);
-      if (lastKey !== null) {
-        console.log(lastKey, selectedList.getItem(lastKey));
-        handleRemove(new Set([lastKey]));
+      // Only handle if selectedKeys is a Set (not "all")
+      if (selectedKeys !== "all") {
+        const lastKey = getLastValueInSet(selectedKeys as Set<Key>);
+        if (lastKey !== null && lastKey !== undefined) {
+          setSelectedKeys(
+            (selectedKeys as Set<Key>).difference(new Set([lastKey]))
+          );
+        }
       }
     };
 
-    const handleInputKeyDown = (e) => {
+    const handleInputKeyDown = (e: KeyboardEvent) => {
       console.log(e.key, inputState);
       if (e.key === "Backspace" && inputState === "") {
         deleteLastSelectedItem();
       }
     };
 
-    const { contains } = useFilter({ sensitivity: "base" });
+    const filterUtils = useFilter({ sensitivity: "base" });
+    const contains = (...args: Parameters<typeof filterUtils.contains>) =>
+      filterUtils.contains.apply(undefined, args);
 
     const triggerRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -159,33 +108,18 @@ export const MultiSelectRoot = fixedForwardRef(
       >
         <RaGroup ref={triggerRef}>
           <RaDialogTrigger>
-            <ComboBoxValueSlot
-              asChild
-              alignItems="space-between"
-              justifyContent="center"
-            >
-              <TagGroup.Root
-                size="md"
-                onRemove={handleRemove}
-                aria-label="nimbus-combobox"
-              >
-                <TagGroup.TagList
-                  items={selectedList.items}
-                  renderEmptyState={() => "select an animal "}
-                >
-                  {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-                </TagGroup.TagList>
-              </TagGroup.Root>
-            </ComboBoxValueSlot>
+            <MultiSelectValue
+              items={items}
+              selectedKeys={selectedKeys}
+              setSelectedKeys={setSelectedKeys}
+              itemID={itemID}
+              itemText={itemText}
+            />
             <ComboBoxButtonGroup />
 
             <RaPopover
               triggerRef={triggerRef}
               scrollRef={scrollRef}
-              shouldCloseOnInteractOutside={(element) => {
-                console.log(element);
-                return true;
-              }}
               placement="bottom start"
             >
               <RaAutocomplete
@@ -204,12 +138,13 @@ export const MultiSelectRoot = fixedForwardRef(
                 </TextField>
                 <ComboBoxOptions
                   ref={scrollRef}
-                  items={itemsList.items}
+                  items={items}
                   selectionMode={"multiple"}
-                  onSelectionChange={handleSelectionChange}
-                  selectedKeys={itemsList.selectedKeys}
+                  onSelectionChange={setSelectedKeys}
+                  selectedKeys={selectedKeys}
                   shouldFocusWrap={true}
                   disabledKeys={disabledKeys}
+                  escapeKeyBehavior="none"
                 >
                   {children}
                 </ComboBoxOptions>
