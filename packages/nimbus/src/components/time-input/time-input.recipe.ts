@@ -32,14 +32,28 @@ export const timeInputRecipe = defineSlotRecipe({
     segment: {
       fontVariantNumeric: "tabular-nums",
       outline: "0",
-      py: "0",
       px: "50",
-      ml: "-25",
       borderRadius: "50",
+
+      "&:empty": {
+        border: "1px solid",
+      },
 
       "&[data-focused='true']": {
         bg: "primary.10",
         color: "primary.contrast",
+      },
+
+      /**
+       * The first segment contains a hidden character for screen readers
+       * that indicates number reading direction. Since this character is
+       * inside a segment element, it creates unwanted padding. This CSS
+       * removes the extra padding and aligns the text to match a regular
+       * TextInput's positioning.
+       */
+      "&[data-type='literal']&:first-child": {
+        px: "0",
+        ml: "-50",
       },
 
       "&[data-type='minute']": {
