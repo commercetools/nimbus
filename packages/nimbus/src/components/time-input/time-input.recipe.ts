@@ -30,9 +30,12 @@ export const timeInputRecipe = defineSlotRecipe({
       },
     },
     segment: {
-      display: "inline-block",
-      textAlign: "right",
-      outline: "none",
+      fontVariantNumeric: "tabular-nums",
+      outline: "0",
+      py: "0",
+      px: "50",
+      ml: "-25",
+      borderRadius: "50",
 
       "&[data-focused='true']": {
         bg: "primary.10",
@@ -40,13 +43,16 @@ export const timeInputRecipe = defineSlotRecipe({
       },
 
       "&[data-type='minute']": {
-        minWidth: "2ch",
+        // textAlign: "right",
       },
       "&[data-type='hour']": {
-        minWidth: "2ch",
+        // textAlign: "right",
       },
       "&[data-type='dayPeriod']": {
-        minWidth: "2ch",
+        // textAlign: "right",
+      },
+      "&[data-type='timeZoneName']": {
+        // textAlign: "right",
       },
     },
   },
