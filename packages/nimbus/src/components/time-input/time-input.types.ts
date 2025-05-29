@@ -4,16 +4,42 @@ import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeFieldStateOptions } from "react-stately";
 import type { TimeValue } from "react-aria";
 
-type OmittedProps =
-  | keyof TimeFieldStateOptions<TimeValue>
+/**
+ * Properties from TimeFieldStateOptions that would conflict with similarly named
+ * properties in TimeInputRootProps. We use this to prevent TypeScript interface
+ * merging conflicts by prioritizing the TimeFieldStateOptions implementation.
+ *
+ * Examples include: value, defaultValue, onChange, onBlur, onFocus, etc.
+ */
+type ConflictingFieldStateProps = keyof TimeFieldStateOptions<TimeValue>;
+
+/**
+ * Additional properties we want to exclude from the TimeInput component.
+ * These are either deprecated or not intended for use in this component.
+ */
+type ExcludedProps =
+  // deprecated
   | "validationState"
+  // handled by <FormField> component
+  | "label"
+  | "description"
+  | "errorMessage"
+  // chakra-ui props we don't want exposed
+  | "css"
   | "colorScheme"
+  | "unstyled"
+  | "recipe"
+  | "as"
   | "asChild";
 
 /**
  * Main props interface for the TimeInput component.
+ *
+ * We use Omit to remove:
+ * 1. Conflicting props from TimeInputRootProps to avoid TypeScript errors
+ * 2. Explicitly excluded props that we don't want users to access
  */
 export interface TimeInputProps
-  extends Omit<TimeInputRootProps, OmittedProps>,
-    TimeFieldStateOptions<TimeValue>,
+  extends Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
+    Omit<TimeFieldStateOptions<TimeValue>, ExcludedProps>,
     RecipeVariantProps<typeof timeInputRecipe> {}
