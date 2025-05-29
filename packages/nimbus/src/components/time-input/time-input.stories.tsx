@@ -186,10 +186,12 @@ export const Sizes: Story = {
     return (
       <Stack direction="column">
         {["sm", "md"].map((size) => (
-          <>
-            <TimeInput key={size} {...args} size={size as "sm" | "md"} />
-            <TextInput size={size as "sm" | "md"} />
-          </>
+          <TimeInput
+            aria-label={`${size}-size TimeInput`}
+            key={size}
+            {...args}
+            size={size as "sm" | "md"}
+          />
         ))}
       </Stack>
     );
@@ -229,7 +231,7 @@ export const HideTimeZone: Story = {
     return (
       <Stack direction="column" gap="400">
         <Text>Show the timezone (if present in value) (default)</Text>
-        <TimeInput {...args} aria-label="Timezone shown" />
+        <TimeInput {...args} aria-label="Timezone visible" />
         <Text>Hide the timezone</Text>
         <TimeInput {...args} hideTimeZone aria-label="Timezone hidden" />
       </Stack>
