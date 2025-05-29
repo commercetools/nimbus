@@ -33,6 +33,9 @@ export const timeInputRecipe = defineSlotRecipe({
         "--border-color": "colors.critical.7",
         color: "critical.11",
       },
+      "&[data-disabled='true']": {
+        layerStyle: "disabled",
+      },
     },
     segment: {
       fontVariantNumeric: "tabular-nums",

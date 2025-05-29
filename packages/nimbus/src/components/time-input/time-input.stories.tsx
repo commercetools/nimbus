@@ -54,6 +54,26 @@ export const IsInvalid: Story = {
 };
 
 /**
+ * Showcase IsDisabled
+ */
+export const IsDisabled: Story = {
+  args: {
+    hideTimeZone: true,
+    locale: "en-US",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>IsDisabled: true</Text>
+        <TimeInput {...args} isDisabled={true} aria-label="IsDisabled true" />
+        <Text>IsDisabled: false (default)</Text>
+        <TimeInput {...args} isDisabled={false} aria-label="IsDisabled false" />
+      </Stack>
+    );
+  },
+};
+
+/**
  * Showcase Sizes
  */
 export const Sizes: Story = {
