@@ -19,4 +19,5 @@ type CheckboxVariantProps = CheckboxRootProps &
  */
 export interface CheckboxProps extends CheckboxVariantProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLInputElement>;
 }

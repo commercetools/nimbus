@@ -7,4 +7,5 @@ import { type ButtonProps } from "@/components";
 export interface IconButtonProps extends ButtonProps {
   /** explains the intended action, required for accessibility */
   "aria-label": string;
+  ref?: React.Ref<HTMLButtonElement>;
 }
