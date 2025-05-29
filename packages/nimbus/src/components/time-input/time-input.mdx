@@ -46,50 +46,6 @@ const App = () => {
 }
 ```
 
-### Variants
-
-Available variants.
-
-```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <TimeInput key={variant} variant={variant}>'{variant}' TimeInput</TimeInput>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Colors
-
-[Explain usage with different colors/semantics.]
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <TimeInput colorPalette={color} key={variant} variant={variant}>
-              '{variant}' TimeInput
-            </TimeInput>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-```
-
 ## Props
 
 <PropTable id="TimeInput" />
