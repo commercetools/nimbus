@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar } from "./avatar";
 import type { AvatarProps } from "./avatar.types";
-import { within, expect } from "@storybook/test";
+import { within, expect, waitFor } from "@storybook/test";
 import { Button, Stack } from "@/components";
 
 /**
@@ -118,6 +118,38 @@ export const Colors: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+export const ImageErrorFallback: Story = {
+  args: {
+    firstName: "Jane",
+    lastName: "Smith",
+    src: "https://example.com/non-existent-image.jpg", // This will 404
+    ["aria-label"]: "Jane Smith avatar",
+    alt: "Jane Smith",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByLabelText("Jane Smith avatar");
+
+    await step(
+      "Should fall back to initials when image fails to load",
+      async () => {
+        // Wait for the image error to be handled
+        await waitFor(
+          async () => {
+            await expect(avatar).toHaveTextContent("JS");
+          },
+          { timeout: 3000 }
+        );
+      }
+    );
+
+    await step("Should not contain an img element after error", async () => {
+      const img = avatar.querySelector("img");
+      await expect(img).toBeNull();
+    });
   },
 };
 
