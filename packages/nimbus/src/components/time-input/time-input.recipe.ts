@@ -21,12 +21,17 @@ export const timeInputRecipe = defineSlotRecipe({
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       width: "100%",
       alignItems: "center",
+
       "&[data-focus-within='true']": {
         outlineWidth: "2px",
         outlineColor: "primary.7",
         outlineStyle: "solid",
         outlineOffset: "2px",
         borderRadius: "200",
+      },
+      "&[data-invalid='true']": {
+        "--border-color": "colors.critical.7",
+        color: "critical.11",
       },
     },
     segment: {
