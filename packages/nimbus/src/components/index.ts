@@ -33,5 +33,4 @@ export * from "./toggle-button-group";
 export * from "./form-field";
 export * from "./icon";
 export * from "./tag-group";
-
-
+export * from "./password-input";
