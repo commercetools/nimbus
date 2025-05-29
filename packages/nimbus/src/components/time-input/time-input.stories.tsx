@@ -74,6 +74,27 @@ export const IsDisabled: Story = {
 };
 
 /**
+ * Showcase IsReadOnly
+ */
+export const IsReadOnly: Story = {
+  args: {
+    defaultValue: michaelsBirthday, // So there's a value to see it's read-only
+    hideTimeZone: true,
+    locale: "en-US",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>IsReadOnly: true</Text>
+        <TimeInput {...args} isReadOnly={true} aria-label="IsReadOnly true" />
+        <Text>IsReadOnly: false (default)</Text>
+        <TimeInput {...args} isReadOnly={false} aria-label="IsReadOnly false" />
+      </Stack>
+    );
+  },
+};
+
+/**
  * Showcase Sizes
  */
 export const Sizes: Story = {
