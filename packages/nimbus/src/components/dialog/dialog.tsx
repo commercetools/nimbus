@@ -1,34 +1,33 @@
 import { Dialog as ChakraDialog, Portal } from "@chakra-ui/react";
-import { forwardRef } from "react";
 
 interface DialogContentProps extends ChakraDialog.ContentProps {
   portalled?: boolean;
   portalRef?: React.RefObject<HTMLElement>;
   backdrop?: boolean;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
-const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
-  function DialogContent(props, ref) {
-    const {
-      children,
-      portalled = true,
-      portalRef,
-      backdrop = true,
-      ...rest
-    } = props;
+const DialogContent = function DialogContent(props: DialogContentProps) {
+  const {
+    children,
+    portalled = true,
+    portalRef,
+    backdrop = true,
+    ref,
+    ...rest
+  } = props;
 
-    return (
-      <Portal disabled={!portalled} container={portalRef}>
-        {backdrop && <ChakraDialog.Backdrop />}
-        <ChakraDialog.Positioner>
-          <ChakraDialog.Content ref={ref} {...rest} asChild={false}>
-            {children}
-          </ChakraDialog.Content>
-        </ChakraDialog.Positioner>
-      </Portal>
-    );
-  }
-);
+  return (
+    <Portal disabled={!portalled} container={portalRef}>
+      {backdrop && <ChakraDialog.Backdrop />}
+      <ChakraDialog.Positioner>
+        <ChakraDialog.Content ref={ref} {...rest} asChild={false}>
+          {children}
+        </ChakraDialog.Content>
+      </ChakraDialog.Positioner>
+    </Portal>
+  );
+};
 
 // Create a type-safe composite object with explicit component definitions
 interface DialogComponents {
