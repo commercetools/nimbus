@@ -1,15 +1,4 @@
-import {
-  Box,
-  Code,
-  system,
-  TableBody,
-  TableCell,
-  TableColumnHeader,
-  TableHeader,
-  TableRoot,
-  TableRow,
-  Text,
-} from "@commercetools/nimbus";
+import { Box, Code, system, Table, Text } from "@commercetools/nimbus";
 import { JSONTree } from "react-json-tree";
 import { useMemo } from "react";
 import { useAtom } from "jotai";
@@ -174,36 +163,36 @@ export const GenericTokenTableDemo = ({
 
   return (
     <div>
-      <TableRoot>
-        <TableHeader>
-          <TableRow>
-            <TableColumnHeader width="16ch">Token-Name</TableColumnHeader>
-            <TableColumnHeader width="24ch">Value</TableColumnHeader>
-            {demoProperty && <TableColumnHeader>Demo</TableColumnHeader>}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader width="16ch">Token-Name</Table.ColumnHeader>
+            <Table.ColumnHeader width="24ch">Value</Table.ColumnHeader>
+            {demoProperty && <Table.ColumnHeader>Demo</Table.ColumnHeader>}
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {data.map((item) => {
             return (
-              <TableRow key={item.name}>
-                <TableCell>
+              <Table.Row key={item.name}>
+                <Table.Cell>
                   <Code variant="subtle">{item.name}</Code>
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   <Box maxW="20ch">
                     <Text truncate>{formatterFn(item.value.value)}</Text>
                   </Box>
-                </TableCell>
+                </Table.Cell>
                 {demoProperty && (
-                  <TableCell>
+                  <Table.Cell>
                     <DemoComponent {...{ [demoProperty]: item.name }} />
-                  </TableCell>
+                  </Table.Cell>
                 )}
-              </TableRow>
+              </Table.Row>
             );
           })}
-        </TableBody>
-      </TableRoot>
+        </Table.Body>
+      </Table.Root>
       {debug && <JSONTree data={system.tokens.categoryMap} />}
     </div>
   );

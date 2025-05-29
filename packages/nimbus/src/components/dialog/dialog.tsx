@@ -1,6 +1,5 @@
 import { Dialog as ChakraDialog, Portal } from "@chakra-ui/react";
 import { forwardRef } from "react";
-import { Button } from "../button";
 
 interface DialogContentProps extends ChakraDialog.ContentProps {
   portalled?: boolean;
@@ -8,7 +7,7 @@ interface DialogContentProps extends ChakraDialog.ContentProps {
   backdrop?: boolean;
 }
 
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
+const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   function DialogContent(props, ref) {
     const {
       children,
@@ -31,31 +30,34 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   }
 );
 
-export const DialogCloseTrigger = forwardRef<
-  HTMLButtonElement,
-  ChakraDialog.CloseTriggerProps
->(function DialogCloseTrigger(props, ref) {
-  return (
-    <ChakraDialog.CloseTrigger
-      position="absolute"
-      top="2"
-      insetEnd="2"
-      {...props}
-      asChild
-    >
-      <Button size="xs" ref={ref}>
-        {props.children}
-      </Button>
-    </ChakraDialog.CloseTrigger>
-  );
-});
+// Create a type-safe composite object with explicit component definitions
+interface DialogComponents {
+  Root: typeof ChakraDialog.Root;
+  Trigger: typeof ChakraDialog.Trigger;
+  Content: typeof DialogContent;
+  Backdrop: typeof ChakraDialog.Backdrop;
+  Positioner: typeof ChakraDialog.Positioner;
+  Title: typeof ChakraDialog.Title;
+  Description: typeof ChakraDialog.Description;
+  Body: typeof ChakraDialog.Body;
+  Footer: typeof ChakraDialog.Footer;
+  Header: typeof ChakraDialog.Header;
+  CloseTrigger: typeof ChakraDialog.CloseTrigger;
+  ActionTrigger: typeof ChakraDialog.ActionTrigger;
+}
 
-export const DialogRoot = ChakraDialog.Root;
-export const DialogFooter = ChakraDialog.Footer;
-export const DialogHeader = ChakraDialog.Header;
-export const DialogBody = ChakraDialog.Body;
-export const DialogBackdrop = ChakraDialog.Backdrop;
-export const DialogTitle = ChakraDialog.Title;
-export const DialogDescription = ChakraDialog.Description;
-export const DialogTrigger = ChakraDialog.Trigger;
-export const DialogActionTrigger = ChakraDialog.ActionTrigger;
+// Export the Dialog composite with proper typing
+export const Dialog: DialogComponents = {
+  Root: ChakraDialog.Root,
+  Trigger: ChakraDialog.Trigger,
+  Content: DialogContent,
+  Backdrop: ChakraDialog.Backdrop,
+  Positioner: ChakraDialog.Positioner,
+  Title: ChakraDialog.Title,
+  Description: ChakraDialog.Description,
+  Body: ChakraDialog.Body,
+  Footer: ChakraDialog.Footer,
+  Header: ChakraDialog.Header,
+  CloseTrigger: ChakraDialog.CloseTrigger,
+  ActionTrigger: ChakraDialog.ActionTrigger,
+};
