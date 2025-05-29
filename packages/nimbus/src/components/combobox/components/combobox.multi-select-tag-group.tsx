@@ -3,20 +3,20 @@ import { type Key } from "react-aria-components";
 
 import { TagGroup } from "@/components";
 
-import type { ComboBoxMultiSelectRootProps } from "../combobox.types";
+import type { ComboBoxMultiSelectValueProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
 import { fixedForwardRef } from "@/utils/fixedForwardRef";
 
 export const MultiSelectValue = fixedForwardRef(
-  <T extends object>(
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  <T extends Record<string, any>>(
     {
       selectedKeys = new Set(),
       items,
       itemID = "id",
-      itemText = "name",
-      setSelectedKeys,
-      ...props
-    }: ComboBoxMultiSelectRootProps<T>,
+      itemValue = "name",
+      onSelectionChange,
+    }: ComboBoxMultiSelectValueProps<T>,
     ref: ForwardedRef<HTMLDivElement>
   ) => {
     const selectedItems = useMemo(() => {
@@ -33,7 +33,7 @@ export const MultiSelectValue = fixedForwardRef(
       if (selectedKeys instanceof Set && key.isSubsetOf(selectedKeys)) {
         const newSelectedKeys = selectedKeys.difference(key);
 
-        setSelectedKeys(newSelectedKeys);
+        onSelectionChange?.(newSelectedKeys);
       }
     };
     return (
@@ -41,18 +41,19 @@ export const MultiSelectValue = fixedForwardRef(
         asChild
         alignItems="space-between"
         justifyContent="center"
+        ref={ref}
       >
         <TagGroup.Root
           size="md"
           onRemove={handleRemoveSelectedItem}
-          aria-label="nimbus-combobox"
+          aria-label="Selected values"
           selectionMode="none"
         >
           <TagGroup.TagList
             items={selectedItems}
             renderEmptyState={() => "search.."}
           >
-            {(item) => <TagGroup.Tag>{item[itemText]}</TagGroup.Tag>}
+            {(item) => <TagGroup.Tag>{item[itemValue]}</TagGroup.Tag>}
           </TagGroup.TagList>
         </TagGroup.Root>
       </ComboBoxValueSlot>
