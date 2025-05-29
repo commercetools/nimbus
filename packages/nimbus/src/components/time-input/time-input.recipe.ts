@@ -23,11 +23,11 @@ export const timeInputRecipe = defineSlotRecipe({
       alignItems: "center",
 
       "&[data-focus-within='true']": {
-        outlineWidth: "2px",
-        outlineColor: "primary.7",
-        outlineStyle: "solid",
-        outlineOffset: "2px",
-        borderRadius: "200",
+        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
+        outlineWidth: "var(--focus-ring-width)",
+        outlineColor: "var(--focus-ring-color)",
+        outlineStyle: "var(--focus-ring-style)",
+        outlineOffset: "var(--focus-ring-offset)",
       },
       "&[data-invalid='true']": {
         "--border-color": "colors.critical.7",
@@ -53,28 +53,29 @@ export const timeInputRecipe = defineSlotRecipe({
       },
 
       /**
-       * The first segment contains a hidden character for screen readers
+       * The first and last segment contains a hidden character for screen readers
        * that indicates number reading direction. Since this character is
        * inside a segment element, it creates unwanted padding. This CSS
        * removes the extra padding and aligns the text to match a regular
-       * TextInput's positioning.
+       * TextInput's text position.
        */
-      "&[data-type='literal']&:first-child": {
-        px: "0",
-        ml: "-50",
-      },
+      "&[data-type='literal']&:first-child, &[data-type='literal']&:last-child":
+        {
+          px: "0",
+          ml: "-50",
+        },
 
       "&[data-type='minute']": {
-        // textAlign: "right",
+        // for reference
       },
       "&[data-type='hour']": {
-        // textAlign: "right",
+        // for reference
       },
       "&[data-type='dayPeriod']": {
-        // textAlign: "right",
+        // for reference
       },
       "&[data-type='timeZoneName']": {
-        // textAlign: "right",
+        // for reference
       },
     },
   },
