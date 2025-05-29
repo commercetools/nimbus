@@ -10,7 +10,11 @@ export const globalCss = defineGlobalStyles({
     "--ring-color": "rgba(66, 153, 225, 0.6)",
     "--ring-offset-shadow": "0 0 #0000",
     "--ring-shadow": "0 0 #0000",
+    // Set default chakra-variables for focus ring
     "--focus-ring-color": "colors.primary.7",
+    "--focus-ring-width": "sizes.50",
+    "--focus-ring-offset": "spacing.50",
+    "--focus-ring-style": "solid",
     "--brightness": "var(--chakra-empty,/*!*/ /*!*/)",
     "--contrast": "var(--chakra-empty,/*!*/ /*!*/)",
     "--grayscale": "var(--chakra-empty,/*!*/ /*!*/)",
