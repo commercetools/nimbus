@@ -59,7 +59,7 @@ export const timeInputRecipe = defineSlotRecipe({
        * removes the extra padding and aligns the text to match a regular
        * TextInput's text position.
        */
-      "&[data-type='literal']&:first-child, &[data-type='literal']&:last-child":
+      "&[data-type='literal']&:first-of-type, &[data-type='literal']&:last-of-type":
         {
           px: "0",
           ml: "-50",
