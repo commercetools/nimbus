@@ -95,6 +95,26 @@ export const IsReadOnly: Story = {
 };
 
 /**
+ * Showcase IsRequired
+ */
+export const IsRequired: Story = {
+  args: {
+    hideTimeZone: true,
+    locale: "en-US",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>IsRequired: true</Text>
+        <TimeInput {...args} isRequired={true} aria-label="IsRequired true" />
+        <Text>IsRequired: false (default)</Text>
+        <TimeInput {...args} isRequired={false} aria-label="IsRequired false" />
+      </Stack>
+    );
+  },
+};
+
+/**
  * Showcase Sizes
  */
 export const Sizes: Story = {
