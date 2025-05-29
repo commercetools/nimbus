@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TimeInput } from "./time-input";
-import { Stack, Text } from "@/components";
+import { Button, Stack, Text } from "@/components";
 import { TextInput } from "../text-input";
 import { parseZonedDateTime, Time } from "@internationalized/date";
+import { useState } from "react";
+import type { TimeValue } from "react-aria";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -33,6 +35,69 @@ type Story = StoryObj<typeof TimeInput>;
  */
 export const Base: Story = {
   args: {},
+};
+
+/**
+ * Showcase Uncontrolled
+ */
+export const Uncontrolled: Story = {
+  args: {
+    hideTimeZone: true,
+    locale: "en-US",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With defaultValue (9:30 AM)</Text>
+        <TimeInput
+          {...args}
+          defaultValue={new Time(9, 30)}
+          aria-label="With default value"
+        />
+        <Text>With defaultValue (3:45 PM)</Text>
+        <TimeInput
+          {...args}
+          defaultValue={new Time(15, 45)}
+          aria-label="With different default value"
+        />
+        <Text>No defaultValue (empty)</Text>
+        <TimeInput {...args} aria-label="Without default value" />
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Showcase Controlled
+ * Demonstrates how to use the TimeInput as a controlled component
+ * with the value property and state management
+ */
+export const Controlled: Story = {
+  args: {
+    hideTimeZone: true,
+    locale: "en-US",
+  },
+  render: (args) => {
+    const [time, setTime] = useState<TimeValue | null>(new Time(12, 0));
+    const handleTimeChange = (value: TimeValue | null) => {
+      if (value) {
+        setTime(value as Time);
+      }
+    };
+
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Controlled TimeInput (current value: {time?.toString()})</Text>
+        <TimeInput
+          {...args}
+          value={time}
+          onChange={handleTimeChange}
+          aria-label="Controlled time input"
+        />
+        <Button onPress={() => setTime(null)}>Reset</Button>
+      </Stack>
+    );
+  },
 };
 
 /**
