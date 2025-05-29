@@ -134,6 +134,7 @@ export const MultiSelectRoot = fixedForwardRef(
                     autoFocus
                     onKeyDownCapture={handleInputKeyDown}
                     aria-label="nimbus-combobox-input"
+                    placeholder="search..."
                   />
                 </TextField>
                 <ComboBoxOptions
