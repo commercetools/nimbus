@@ -9,7 +9,6 @@ import type {
   ComboBoxProps as RaComboBoxProps,
   AutocompleteProps as RaAutoCompleteProps,
   ListBoxProps as RaListBoxProps,
-  GridListProps as RaGridListProps,
   ListBoxItemProps as RaListBoxItemProps,
   ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
@@ -30,13 +29,17 @@ type ComboBoxWithCustomChildren<T extends object> = Omit<
 
 interface ComboBoxMultiSelect<T extends object>
   extends Omit<RaAutoCompleteProps, "children">,
-    Omit<RaGridListProps<T>, "filter"> {
+    Omit<RaListBoxProps<T>, "filter"> {
   defaultFilter?: (textValue: string, inputValue: string) => boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
   isReadOnly?: boolean;
   isRequired?: boolean;
   isInvalid?: boolean;
+  // name of key in items that is the unique id
+  itemID?: string;
+  // name of key in items that is the text value to display
+  itemValue?: string;
 }
 /** Base Chakra styling props for the root `div` slot when single select*/
 export interface ComboBoxSingleSelectRootSlotProps<T extends object>
@@ -103,8 +106,26 @@ export interface ComboBoxOptionGroupProps<T extends object>
 }
 
 // ============================================================
-// Trigger Slot - internal, not exported in compound component
+// Multi Select Value Slot - internal, not exported in compound component
 // ============================================================
+
+export type ComboBoxMultiSelectValueProps<T extends object> = {
+  items: ComboBoxMultiSelectRootProps<T>["items"];
+  itemID: ComboBoxMultiSelectRootProps<T>["itemID"];
+  itemValue: ComboBoxMultiSelectRootProps<T>["itemValue"];
+  selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
+  onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];
+};
+
+// ============================================================
+// Button Group Slot - internal, not exported in compound component
+// ============================================================
+
+export type ComboBoxButtonGroupProps = {
+  selectedKeys?: ComboBoxMultiSelectRootProps<{}>["selectedKeys"];
+  onSelectionChange?: ComboBoxMultiSelectRootProps<{}>["onSelectionChange"];
+  onInputChange?: ComboBoxMultiSelectRootProps<{}>["onInputChange"];
+};
 
 // /** Base Chakra styling props for the root `button` slot. */
 // type ComboBoxOptionsSlotProps = HTMLChakraProps<"div", RecipeProps<"button">>;

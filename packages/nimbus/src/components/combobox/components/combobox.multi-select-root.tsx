@@ -1,6 +1,5 @@
 import { useState, useRef, type ForwardedRef, type KeyboardEvent } from "react";
 import { useSlotRecipe } from "@chakra-ui/react";
-// import { Flex } from "@/components";
 import {
   Popover as RaPopover,
   Group as RaGroup,
@@ -34,15 +33,15 @@ export const MultiSelectRoot = fixedForwardRef(
     {
       children,
       defaultFilter,
-      inputValue,
-      onInputChange,
+      inputValue: inputValueProp,
+      onInputChange: onInputChangeProp,
       defaultSelectedKeys = new Set(),
       selectedKeys: selectedKeysProp,
       onSelectionChange: onSelectionChangeProp,
       disabledKeys,
       items,
       itemID = "id",
-      itemText = "name",
+      itemValue = "name",
       ...props
     }: ComboBoxMultiSelectRootProps<T>,
     ref: ForwardedRef<HTMLDivElement>
@@ -56,12 +55,9 @@ export const MultiSelectRoot = fixedForwardRef(
       selectedKeysProp ?? _selectedKeys ?? defaultSelectedKeys;
     const setSelectedKeys = onSelectionChangeProp ?? _setSelectedKeys;
 
-    const [inputState, setInputState] = useState<string>(inputValue ?? "");
-
-    const handleInputChange = (value: string) => {
-      if (onInputChange) onInputChange(value);
-      setInputState(value);
-    };
+    const [_inputValue, _setInputValue] = useState<string>("");
+    const inputValue = inputValueProp ?? _inputValue;
+    const setInputValue = onInputChangeProp ?? _setInputValue;
 
     const deleteLastSelectedItem = () => {
       // Only handle if selectedKeys is a Set (not "all")
@@ -76,8 +72,8 @@ export const MultiSelectRoot = fixedForwardRef(
     };
 
     const handleInputKeyDown = (e: KeyboardEvent) => {
-      console.log(e.key, inputState);
-      if (e.key === "Backspace" && inputState === "") {
+      console.log(e.key, inputValue);
+      if (e.key === "Backspace" && inputValue === "") {
         deleteLastSelectedItem();
       }
     };
@@ -91,13 +87,13 @@ export const MultiSelectRoot = fixedForwardRef(
 
     //TODO:
     // - mechanism to know which item key to use in the tag to display the selected item
-    // - better control of opening/closing the popover
+    // - better control of opening/closing the popover - up/down keys trigger open, open on focus of down arrow button, etc
     // - types in general, esp around items, etc
     // - sections: will they even work here?
     // - styling: input in popover, better focus styling on options, etc
     // - props for empty states for the tag group and listbox
     // - resize the popover body to match the input width
-
+    // - disabled, read only, etc states
     return (
       <ComboBoxRootSlot
         selectionMode="multiple"
@@ -111,12 +107,15 @@ export const MultiSelectRoot = fixedForwardRef(
             <MultiSelectValue
               items={items}
               selectedKeys={selectedKeys}
-              setSelectedKeys={setSelectedKeys}
+              onSelectionChange={setSelectedKeys}
               itemID={itemID}
-              itemText={itemText}
+              itemValue={itemValue}
             />
-            <ComboBoxButtonGroup />
-
+            <ComboBoxButtonGroup
+              selectedKeys={selectedKeys}
+              onSelectionChange={setSelectedKeys}
+              onInputChange={setInputValue}
+            />
             <RaPopover
               triggerRef={triggerRef}
               scrollRef={scrollRef}
@@ -125,15 +124,14 @@ export const MultiSelectRoot = fixedForwardRef(
               <RaAutocomplete
                 aria-label="nimbus-combobox-autocomplete"
                 filter={defaultFilter ?? contains}
-                inputValue={inputState}
-                onInputChange={handleInputChange}
+                inputValue={inputValue}
+                onInputChange={setInputValue}
                 {...props}
               >
-                <TextField>
+                <TextField aria-label="combobox input">
                   <RaInput
                     autoFocus
                     onKeyDownCapture={handleInputKeyDown}
-                    aria-label="nimbus-combobox-input"
                     placeholder="search..."
                   />
                 </TextField>
