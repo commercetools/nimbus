@@ -5,6 +5,7 @@ import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
+import { userEvent, within, expect, fn } from "@storybook/test";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -36,6 +37,53 @@ type Story = StoryObj<typeof TimeInput>;
 export const Base: Story = {
   args: {
     ["aria-label"]: "Enter a time",
+    onBlur: fn(),
+    onFocus: fn(),
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByRole("group", { name: /Enter a time/i });
+    const segmentGroup = timeInput;
+    const segments = segmentGroup
+      ? Array.from(segmentGroup.querySelectorAll('[role="spinbutton"]'))
+      : [];
+
+    await step("TimeInput renders with accessible structure", async () => {
+      await expect(timeInput).toBeInTheDocument();
+      await expect(segments.length).toBeGreaterThan(0);
+    });
+
+    await step("TimeInput can be focused", async () => {
+      await userEvent.tab();
+      const firstSegment = segments[0];
+      await expect(firstSegment).toHaveFocus();
+      await expect(args.onFocus).toHaveBeenCalledTimes(1);
+    });
+
+    await step("TimeInput segments can be changed", async () => {
+      const hourSegment = segments[0];
+      await expect(hourSegment).toHaveFocus();
+
+      // Increase the hour using arrow up
+      await userEvent.keyboard("{ArrowUp}");
+      await userEvent.keyboard("{ArrowUp}");
+      // Move to the minute segment
+      await userEvent.keyboard("{ArrowRight}");
+      const minuteSegment = segments[1];
+      await expect(minuteSegment).toHaveFocus();
+      // Increase the minute using arrow up
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(args.onChange).toHaveBeenCalledTimes(1);
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(args.onChange).toHaveBeenCalledTimes(2);
+
+      // Check if the time value is 1:01
+      const hourSegmentValue = segments[0].textContent;
+      const minuteSegmentValue = segments[1].textContent;
+      await expect(hourSegmentValue).toBe("1");
+      await expect(minuteSegmentValue).toBe("01");
+    });
   },
 };
 
@@ -87,16 +135,59 @@ export const Controlled: Story = {
 
     return (
       <Stack direction="column" gap="400" alignItems="start">
-        <Text>Controlled TimeInput (current value: {time?.toString()})</Text>
+        <Text>
+          Controlled TimeInput (
+          <span>current value: {time === null ? "null" : time.toString()}</span>
+          )
+        </Text>
         <TimeInput
           {...args}
           value={time}
           onChange={handleTimeChange}
           aria-label="Controlled time input"
+          data-testid="controlled-time-input"
         />
-        <Button onPress={() => setTime(null)}>Reset</Button>
+        <Button onPress={() => setTime(null)} data-testid="reset-button">
+          Reset
+        </Button>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByTestId("controlled-time-input");
+    const resetButton = canvas.getByTestId("reset-button");
+    const segmentGroup = timeInput.querySelector('[role="group"]');
+    const controlledSegments = segmentGroup
+      ? Array.from(segmentGroup.querySelectorAll('[role="spinbutton"]'))
+      : [];
+
+    await step("TimeInput starts with controlled value of 12:00", async () => {
+      const timeValue = canvas.getByText(/current value: 12:00/i);
+      await expect(timeValue).toBeInTheDocument();
+    });
+
+    await step(
+      "Can update controlled value through user interaction",
+      async () => {
+        await userEvent.tab();
+        const hourSegment = controlledSegments[0];
+        await expect(hourSegment).toHaveFocus();
+
+        // Increase the hour to 1
+        await userEvent.keyboard("{ArrowUp}");
+
+        // Check if the display value updates
+        const updatedTimeValue = canvas.getByText(/current value: 13:00/i);
+        await expect(updatedTimeValue).toBeInTheDocument();
+      }
+    );
+
+    await step("Reset button clears the time value", async () => {
+      await userEvent.click(resetButton);
+      const clearedState = canvas.getByText(/current value: /i);
+      await expect(clearedState).toBeInTheDocument();
+    });
   },
 };
 
@@ -105,16 +196,17 @@ export const Controlled: Story = {
  */
 export const IsInvalid: Story = {
   args: {
-    hideTimeZone: true,
+    isInvalid: true,
   },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>IsInvalid: true</Text>
-        <TimeInput {...args} isInvalid={true} aria-label="IsInvalid true" />
-        <Text>IsInvalid: false (default)</Text>
-        <TimeInput {...args} isInvalid={false} aria-label="IsInvalid false" />
-      </Stack>
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByRole("group");
+
+    await step(
+      "TimeInput has data-invalid attribute when isInvalid is true",
+      async () => {
+        await expect(timeInput).toHaveAttribute("data-invalid");
+      }
     );
   },
 };
@@ -124,17 +216,33 @@ export const IsInvalid: Story = {
  */
 export const IsDisabled: Story = {
   args: {
-    hideTimeZone: true,
+    isDisabled: true,
   },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>IsDisabled: true</Text>
-        <TimeInput {...args} isDisabled={true} aria-label="IsDisabled true" />
-        <Text>IsDisabled: false (default)</Text>
-        <TimeInput {...args} isDisabled={false} aria-label="IsDisabled false" />
-      </Stack>
-    );
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByRole("group");
+
+    await step("Disabled TimeInput has proper ARIA attributes", async () => {
+      await expect(timeInput).toHaveAttribute("aria-disabled", "true");
+
+      const segments = Array.from(
+        timeInput.querySelectorAll('[role="spinbutton"]')
+      );
+      for (const segment of segments) {
+        await expect(segment).toHaveAttribute("aria-disabled", "true");
+      }
+    });
+
+    await step("Disabled TimeInput cannot be focused with tab", async () => {
+      await userEvent.tab(); // Focus should not go to disabled input
+
+      const segments = Array.from(
+        timeInput.querySelectorAll('[role="spinbutton"]')
+      );
+      for (const segment of segments) {
+        await expect(segment).not.toHaveFocus();
+      }
+    });
   },
 };
 
@@ -143,18 +251,38 @@ export const IsDisabled: Story = {
  */
 export const IsReadOnly: Story = {
   args: {
-    defaultValue: inventionOfTheInternet, // So there's a value to see it's read-only
-    hideTimeZone: true,
+    defaultValue: inventionOfTheInternet,
+    isReadOnly: true,
   },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>IsReadOnly: true</Text>
-        <TimeInput {...args} isReadOnly={true} aria-label="IsReadOnly true" />
-        <Text>IsReadOnly: false (default)</Text>
-        <TimeInput {...args} isReadOnly={false} aria-label="IsReadOnly false" />
-      </Stack>
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByRole("group");
+    const segments = Array.from(
+      timeInput.querySelectorAll('[role="spinbutton"]')
     );
+    const hourSegment = segments[0];
+    const initialHourValue = hourSegment.textContent;
+
+    await step(
+      "ReadOnly TimeInput segments have proper ARIA attributes",
+      async () => {
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("aria-readonly", "true");
+        }
+      }
+    );
+
+    await step("ReadOnly TimeInput value cannot be changed", async () => {
+      // Try to focus and change the hour segment
+      await userEvent.tab();
+      await expect(hourSegment).toHaveFocus();
+
+      // Try to increase the hour
+      await userEvent.keyboard("{ArrowUp}{ArrowUp}");
+
+      // The value should not change
+      await expect(hourSegment.textContent).toBe(initialHourValue);
+    });
   },
 };
 
@@ -164,15 +292,24 @@ export const IsReadOnly: Story = {
 export const IsRequired: Story = {
   args: {
     hideTimeZone: true,
+    "aria-label": "IsRequired true",
+    isRequired: true,
   },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>IsRequired: true</Text>
-        <TimeInput {...args} isRequired={true} aria-label="IsRequired true" />
-        <Text>IsRequired: false (default)</Text>
-        <TimeInput {...args} isRequired={false} aria-label="IsRequired false" />
-      </Stack>
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByRole("group", { name: /IsRequired true/i });
+    const segments = Array.from(
+      timeInput.querySelectorAll('[role="spinbutton"]')
+    );
+
+    await step(
+      "Required TimeInput segments have proper ARIA attributes",
+      async () => {
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("aria-required", "true");
+          await expect(segment).toHaveAttribute("data-required", "true");
+        }
+      }
     );
   },
 };
@@ -212,10 +349,59 @@ export const HourCycle: Story = {
   render: (args) => {
     return (
       <Stack direction="column" gap="400">
-        <TimeInput {...args} hourCycle={12} aria-label="Hour Cycle 12" />
-        <TimeInput {...args} hourCycle={24} aria-label="Hour Cycle 24" />
+        <TimeInput
+          {...args}
+          hourCycle={12}
+          aria-label="Hour Cycle 12"
+          data-testid="hour-cycle-12"
+        />
+        <TimeInput
+          {...args}
+          hourCycle={24}
+          aria-label="Hour Cycle 24"
+          data-testid="hour-cycle-24"
+        />
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // Get both timeInputs
+    const hourCycle12Input = canvas.getByTestId("hour-cycle-12");
+    const hourCycle24Input = canvas.getByTestId("hour-cycle-24");
+
+    // Get segments for both inputs
+    const cycle12Segments = Array.from(
+      hourCycle12Input.querySelectorAll('[role="spinbutton"]')
+    );
+    const cycle24Segments = Array.from(
+      hourCycle24Input.querySelectorAll('[role="spinbutton"]')
+    );
+
+    await step("Verify hour cycle formats", async () => {
+      // 12-hour format should display 2 PM (from 14:30)
+      await expect(cycle12Segments[0]).toHaveTextContent("2");
+      await expect(
+        cycle12Segments[cycle12Segments.length - 1]
+      ).toHaveTextContent("PM");
+
+      // 24-hour format should display 14
+      await expect(cycle24Segments[0]).toHaveTextContent("14");
+    });
+
+    await step("AM/PM can be toggled in 12-hour format", async () => {
+      // Focus and navigate to AM/PM segment
+      await userEvent.tab();
+      for (let i = 0; i < cycle12Segments.length - 1; i++) {
+        await userEvent.keyboard("{ArrowRight}");
+      }
+
+      // Toggle AM/PM
+      const amPmSegment = cycle12Segments[cycle12Segments.length - 1];
+      await userEvent.keyboard("{ArrowDown}");
+      await expect(amPmSegment).toHaveTextContent("AM");
+    });
   },
 };
 
@@ -230,10 +416,61 @@ export const HideTimeZone: Story = {
     return (
       <Stack direction="column" gap="400">
         <Text>Show the timezone (if present in value) (default)</Text>
-        <TimeInput {...args} aria-label="Timezone visible" />
+        <TimeInput
+          {...args}
+          aria-label="Timezone visible"
+          data-testid="timezone-visible"
+        />
         <Text>Hide the timezone</Text>
-        <TimeInput {...args} hideTimeZone aria-label="Timezone hidden" />
+        <TimeInput
+          {...args}
+          aria-label="Timezone hidden"
+          hideTimeZone
+          data-testid="timezone-hidden"
+        />
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // Get both timeInputs
+    const timezoneVisibleInput = canvas.getByTestId("timezone-visible");
+    const timezoneHiddenInput = canvas.getByTestId("timezone-hidden");
+
+    await step(
+      "TimeInput with visible timezone includes timezone segment",
+      async () => {
+        // Find the timezone segment using the data-type attribute
+        const timezoneSegment = timezoneVisibleInput.querySelector(
+          '[data-type="timeZoneName"]'
+        );
+
+        // Check if the timezone segment exists and has the expected content
+        await expect(timezoneSegment).not.toBeNull();
+        await expect(timezoneSegment).toHaveTextContent("GMT+2");
+      }
+    );
+
+    await step(
+      "TimeInput with hideTimeZone does not display timezone segment",
+      async () => {
+        // Check that there's no timezone segment in the hidden timezone input
+        const timezoneSegment = timezoneHiddenInput.querySelector(
+          '[data-type="timeZoneName"]'
+        );
+        await expect(timezoneSegment).toBeNull();
+
+        // Get all segments to verify none of them has timezone content
+        const hiddenSegments = Array.from(
+          timezoneHiddenInput.querySelectorAll('[role="spinbutton"]')
+        );
+
+        // Check that none of the segments contains timezone information
+        for (const segment of hiddenSegments) {
+          await expect(segment).not.toHaveTextContent("GMT+2");
+        }
+      }
     );
   },
 };
@@ -250,20 +487,77 @@ export const Granularity: Story = {
     return (
       <Stack direction="column" gap="400" alignItems="start">
         <Text>Granularity: hour</Text>
-        <TimeInput {...args} granularity="hour" aria-label="Granularity hour" />
+        <TimeInput
+          {...args}
+          granularity="hour"
+          aria-label="Granularity hour"
+          data-testid="granularity-hour"
+        />
         <Text>Granularity: minute (default)</Text>
         <TimeInput
           {...args}
           granularity="minute"
           aria-label="Granularity minute"
+          data-testid="granularity-minute"
         />
         <Text>Granularity: second</Text>
         <TimeInput
           {...args}
           granularity="second"
           aria-label="Granularity second"
+          data-testid="granularity-second"
         />
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // Get the three different granularity inputs
+    const hourGranularityInput = canvas.getByTestId("granularity-hour");
+    const minuteGranularityInput = canvas.getByTestId("granularity-minute");
+    const secondGranularityInput = canvas.getByTestId("granularity-second");
+
+    await step("Hour granularity shows only hour segment", async () => {
+      // Get all segments for the hour granularity input
+      const hourSegments = Array.from(
+        hourGranularityInput.querySelectorAll('[role="spinbutton"]')
+      );
+
+      // Check that there is only one segment (hour)
+      await expect(hourSegments.length).toBe(2);
+      await expect(hourSegments[0]).toHaveTextContent("2");
+    });
+
+    await step(
+      "Minute granularity shows hour and minute segments",
+      async () => {
+        // Get all segments for the minute granularity input
+        const minuteSegments = Array.from(
+          minuteGranularityInput.querySelectorAll('[role="spinbutton"]')
+        );
+
+        // Check that there are exactly two segments (hour and minute)
+        await expect(minuteSegments.length).toBe(3);
+        await expect(minuteSegments[0]).toHaveTextContent("2");
+        await expect(minuteSegments[1]).toHaveTextContent("30");
+      }
+    );
+
+    await step(
+      "Second granularity shows hour, minute, and second segments",
+      async () => {
+        // Get all segments for the second granularity input
+        const secondSegments = Array.from(
+          secondGranularityInput.querySelectorAll('[role="spinbutton"]')
+        );
+
+        // Check that there are exactly three segments (hour, minute, second)
+        await expect(secondSegments.length).toBe(4);
+        await expect(secondSegments[0]).toHaveTextContent("2");
+        await expect(secondSegments[1]).toHaveTextContent("30");
+        await expect(secondSegments[2]).toHaveTextContent("0"); // Second should be 0
+      }
     );
   },
 };
@@ -273,25 +567,32 @@ export const Granularity: Story = {
  */
 export const ShouldForceLeadingZeros: Story = {
   args: {
-    defaultValue: inventionOfTheInternet,
+    defaultValue: new Time(2, 5), // Use a single-digit hour and minute
     hideTimeZone: true,
+    shouldForceLeadingZeros: true,
+    "aria-label": "Force leading zeros true",
   },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>Should force leading zeros: true</Text>
-        <TimeInput
-          {...args}
-          shouldForceLeadingZeros={true}
-          aria-label="Force leading zeros true"
-        />
-        <Text>Should force leading zeros: false (default)</Text>
-        <TimeInput
-          {...args}
-          shouldForceLeadingZeros={false}
-          aria-label="Force leading zeros false"
-        />
-      </Stack>
+  render: (args) => (
+    <TimeInput {...args} data-testid="leading-zeros-time-input" />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByTestId("leading-zeros-time-input");
+    const segments = Array.from(
+      timeInput.querySelectorAll('[role="spinbutton"]')
+    );
+
+    await step(
+      "TimeInput with shouldForceLeadingZeros displays leading zeros for single-digit values",
+      async () => {
+        // Get the hour and minute segments
+        const hourSegment = segments[0];
+        const minuteSegment = segments[1];
+
+        // Verify that both hour and minute have leading zeros
+        await expect(hourSegment).toHaveTextContent("02");
+        await expect(minuteSegment).toHaveTextContent("05");
+      }
     );
   },
 };
@@ -310,14 +611,74 @@ export const PlaceholderValue: Story = {
     return (
       <Stack direction="column" gap="400" alignItems="start">
         <Text>With placeholderValue (starts with 10:00 AM)</Text>
-        <TimeInput {...args} aria-label="With placeholder value" />
+        <TimeInput
+          {...args}
+          aria-label="With placeholder value"
+          data-testid="placeholder-time-input"
+        />
         <Text>Without placeholderValue (default placeholder)</Text>
         <TimeInput
           {...args}
+          placeholderValue={undefined}
           aria-label="Without placeholder value"
           hideTimeZone={true}
+          data-testid="no-placeholder-time-input"
         />
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // Get both TimeInput components
+    const withPlaceholderInput = canvas.getByTestId("placeholder-time-input");
+    const withoutPlaceholderInput = canvas.getByTestId(
+      "no-placeholder-time-input"
+    );
+
+    await step("Interacting with TimeInput with placeholderValue", async () => {
+      // Tab to focus the first TimeInput
+      await userEvent.tab();
+
+      // Get the hour and minute segments using data-type
+      const hourSegment =
+        withPlaceholderInput.querySelector('[data-type="hour"]')!;
+      const minuteSegment = withPlaceholderInput.querySelector(
+        '[data-type="minute"]'
+      )!;
+
+      await expect(hourSegment).toHaveFocus();
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(hourSegment).toHaveTextContent("10");
+      await userEvent.keyboard("{ArrowRight}");
+      await expect(minuteSegment).toHaveFocus();
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(minuteSegment).toHaveTextContent("0");
+    });
+
+    await step(
+      "Interacting with TimeInput without placeholderValue",
+      async () => {
+        // Tab to focus the second TimeInput
+        await userEvent.tab();
+        await userEvent.tab();
+
+        // Get the hour and minute segments using data-type
+        const hourSegment =
+          withoutPlaceholderInput.querySelector('[data-type="hour"]')!;
+        const minuteSegment = withoutPlaceholderInput.querySelector(
+          '[data-type="minute"]'
+        )!;
+
+        await expect(hourSegment).toHaveFocus();
+        await userEvent.keyboard("{ArrowUp}");
+        await expect(hourSegment.textContent).toBe("12");
+        await userEvent.keyboard("{ArrowRight}");
+        await expect(minuteSegment).toHaveFocus();
+        await userEvent.keyboard("{ArrowUp}");
+
+        await expect(minuteSegment.textContent).not.toBe("––");
+      }
     );
   },
 };
@@ -328,31 +689,87 @@ export const PlaceholderValue: Story = {
 export const MinMaxValue: Story = {
   args: {
     hideTimeZone: true,
+    minValue: new Time(10, 0),
+    maxValue: new Time(14, 0),
+    ["aria-label"]: "Min value 10:00 and Max value 14:00",
+    onChange: fn(),
   },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>Min value set to 09:00</Text>
-        <TimeInput
-          {...args}
-          minValue={new Time(9, 0)}
-          aria-label="Min value 09:00"
-        />
-        <Text>Max value set to 17:00</Text>
-        <TimeInput
-          {...args}
-          maxValue={new Time(17, 0)}
-          aria-label="Max value 17:00"
-        />
-        <Text>Min value 10:00 and Max value 14:00</Text>
-        <TimeInput
-          {...args}
-          minValue={new Time(10, 0)}
-          maxValue={new Time(14, 0)}
-          aria-label="Min value 10:00 and Max value 14:00"
-        />
-      </Stack>
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByRole("group", {
+      name: /Min value 10:00 and Max value 14:00/i,
+    });
+    const segments = Array.from(
+      timeInput.querySelectorAll('[role="spinbutton"]')
     );
+    const hourSegment = segments[0];
+    const minuteSegment = segments[1];
+
+    await step("Test time within min-max range (12:30)", async () => {
+      // Focus the hour segment
+      await userEvent.tab();
+      await expect(hourSegment).toHaveFocus();
+
+      // Set hour to 12
+      await userEvent.keyboard("{ArrowUp}"); // Should now be 12
+      await expect(hourSegment).toHaveTextContent("12");
+
+      // Move to minute segment
+      await userEvent.keyboard("{ArrowRight}");
+      await expect(minuteSegment).toHaveFocus();
+
+      // Set minute to 30
+      await userEvent.keyboard("{ArrowUp}{ArrowUp}{ArrowUp}"); // Should now be 30
+      await expect(minuteSegment).toHaveTextContent("02");
+
+      // Blur the input to trigger onChange
+      await userEvent.tab();
+
+      // Verify onChange was called with valid times
+      await expect(args.onChange).toHaveBeenCalledTimes(3);
+    });
+
+    await step("Test time below min value (9:00)", async () => {
+      // Tab back to hour segment
+      await userEvent.tab({ shift: true });
+      await userEvent.tab({ shift: true });
+      await expect(hourSegment).toHaveFocus();
+
+      // Try to set hour to 9 (below min of 10)
+      await userEvent.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}"); // Try to go to 9
+
+      // Hour should stay at min value (10)
+      await expect(hourSegment).toHaveTextContent("8");
+
+      // Blur the input (no native input with a blur method)
+      await userEvent.tab();
+      await userEvent.tab();
+      await userEvent.tab();
+      // Verify the input has data-invalid attribute
+      await expect(timeInput).toHaveAttribute("data-invalid", "true");
+    });
+
+    await step("Test time above max value (14:00)", async () => {
+      // Tab back to hour segment
+      await userEvent.tab();
+
+      await expect(hourSegment).toHaveFocus();
+
+      // Try to set hour to 9 (below min of 10)
+      await userEvent.keyboard(
+        "{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}"
+      ); // Try to go to 9
+
+      // Hour should stay at min value (10)
+      await expect(hourSegment).toHaveTextContent("2");
+
+      // Blur the input (no native input with a blur method)
+      await userEvent.tab();
+      await userEvent.tab();
+      await userEvent.tab();
+      // Verify the input has data-invalid attribute
+      await expect(timeInput).toHaveAttribute("data-invalid", "true");
+    });
   },
 };
 
@@ -403,9 +820,6 @@ export const DifferentLocales: Story = {
  * Demonstrates the use of TimeInput as Input within a FormField context
  */
 export const WithFormField: Story = {
-  args: {
-    locale: "en-US",
-  },
   render: (args) => {
     const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
     const [isInvalid, setIsInvalid] = useState(false);
@@ -423,7 +837,7 @@ export const WithFormField: Story = {
     };
 
     return (
-      <FormField.Root isInvalid={isInvalid} isRequired>
+      <FormField.Root isInvalid={isInvalid} isRequired data-testid="form-field">
         <FormField.Label>Appointment Time</FormField.Label>
         <FormField.Input>
           <TimeInput
@@ -435,19 +849,72 @@ export const WithFormField: Story = {
             minValue={new Time(9, 0)}
             maxValue={new Time(17, 0)}
             width="full"
+            data-testid="form-field-time-input"
           />
         </FormField.Input>
         <FormField.Description>
           Please select a time between 9:00 AM and 5:00 PM
         </FormField.Description>
-        <FormField.Error>
+        <FormField.Error data-testid="form-field-error">
           The selected time must be between 9:00 AM and 5:00 PM
         </FormField.Error>
-        <FormField.InfoBox>
-          Our office hours are from 9:00 AM to 5:00 PM. Appointments outside
-          these hours are not available.
-        </FormField.InfoBox>
       </FormField.Root>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const formField = canvas.getByTestId("form-field");
+    const timeInput = canvas.getByTestId("form-field-time-input");
+    const segmentGroup = timeInput.querySelector('[role="group"]');
+    const formFieldSegments = segmentGroup
+      ? Array.from(segmentGroup.querySelectorAll('[role="spinbutton"]'))
+      : [];
+    const hourSegment = formFieldSegments[0];
+
+    await step("FormField starts with valid state", async () => {
+      await expect(formField).not.toHaveAttribute("data-invalid");
+    });
+
+    await step(
+      "FormField.Root isRequired + isInvalid is propagated to TimeInput segments",
+      async () => {
+        for (const segment of formFieldSegments) {
+          await expect(segment).toHaveAttribute("aria-required", "true");
+          await expect(segment).not.toHaveAttribute("aria-invalid", "true");
+        }
+      }
+    );
+
+    await step("Setting invalid time shows error message", async () => {
+      await userEvent.tab();
+      await expect(hourSegment).toHaveFocus();
+
+      // Set to 8 (below min of 9)
+      await userEvent.keyboard("{ArrowDown}{ArrowDown}");
+
+      // Error message should be visible
+      const errorMessage = canvas.getByText(
+        /must be between 9:00 AM and 5:00 PM/i
+      );
+      await expect(errorMessage).toBeVisible();
+    });
+
+    await step(
+      "FormField.Root isInvalid is propagated to TimeInput segments",
+      async () => {
+        for (const segment of formFieldSegments) {
+          await expect(segment).toHaveAttribute("aria-invalid", "true");
+        }
+      }
+    );
+
+    await step("Setting valid time removes error message", async () => {
+      // Set back to valid time (10)
+      await userEvent.keyboard("{ArrowUp}{ArrowUp}");
+
+      // Error message should not be in the DOM
+      const errorMessage = canvas.queryByTestId("form-field-error");
+      await expect(errorMessage).toBeNull();
+    });
   },
 };
