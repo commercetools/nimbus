@@ -11,6 +11,7 @@ function getInitials(firstName: string, lastName: string) {
 
 export const Avatar = (props: AvatarProps) => {
   const { ref, firstName, lastName, src, alt, ...rest } = props;
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const fullName = `${firstName} ${lastName}`;
@@ -21,28 +22,30 @@ export const Avatar = (props: AvatarProps) => {
     ...rest,
   };
 
-  // Reset error state when src changes
-  const handleImageLoad = () => {
+  const onLoad = () => {
+    setImageLoaded(true);
     setImageError(false);
   };
 
-  const handleImageError = () => {
+  const onError = () => {
+    setImageLoaded(false);
     setImageError(true);
   };
 
-  // Show initials if no src provided or if image failed to load
-  const shouldShowInitials = !src || imageError;
+  // Show initials if no src provided, image hasn't loaded yet, or image failed
+  const shouldShowInitials = !src || !imageLoaded || imageError;
 
   return (
     <AvatarRoot {...sharedProps}>
-      {shouldShowInitials ? (
-        getInitials(firstName, lastName)
-      ) : (
+      {shouldShowInitials ? getInitials(firstName, lastName) : null}
+
+      {src && (
         <Image
           src={src}
           alt={alt || fullName}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
+          onLoad={onLoad}
+          onError={onError}
+          display={imageLoaded && !imageError ? "block" : "none"}
         />
       )}
     </AvatarRoot>

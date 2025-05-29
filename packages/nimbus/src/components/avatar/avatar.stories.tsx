@@ -30,6 +30,8 @@ const avatarImg = "https://thispersondoesnotexist.com/ ";
 
 export const Base: Story = {
   args: {
+    firstName: "John",
+    lastName: "Doe",
     src: avatarImg,
     ["aria-label"]: "avatar",
     alt: "avatar",
@@ -46,6 +48,8 @@ export const Base: Story = {
 
 export const Sizes: Story = {
   args: {
+    firstName: "John",
+    lastName: "Doe",
     src: avatarImg,
     ["aria-label"]: "avatar",
     alt: "avatar",
@@ -146,15 +150,18 @@ export const ImageErrorFallback: Story = {
       }
     );
 
-    await step("Should not contain an img element after error", async () => {
+    await step("Should hide the img element after error", async () => {
       const img = avatar.querySelector("img");
-      await expect(img).toBeNull();
+      await expect(img).not.toBeNull(); // Image element should still exist
+      await expect(img).toHaveStyle("display: none"); // But should be hidden
     });
   },
 };
 
 export const InAButton: Story = {
   args: {
+    firstName: "Jane",
+    lastName: "Smith",
     src: avatarImg,
   },
 
