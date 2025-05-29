@@ -5,6 +5,7 @@ import { TextInput } from "../text-input";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
+import { I18nProvider } from "react-aria";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -354,6 +355,48 @@ export const MinMaxValue: Story = {
           maxValue={new Time(14, 0)}
           aria-label="Min value 10:00 and Max value 14:00"
         />
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Showcase Different Locale
+ */
+export const DifferentLocales: Story = {
+  args: {
+    defaultValue: inventionOfTheInternet,
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="800">
+        <Stack direction="column" gap="400">
+          <Text fontWeight="600">German (de-DE)</Text>
+          <I18nProvider locale="de-DE">
+            <TimeInput {...args} aria-label="German locale" />
+          </I18nProvider>
+        </Stack>
+
+        <Stack direction="column" gap="400">
+          <Text fontWeight="600">French (fr-FR)</Text>
+          <I18nProvider locale="fr-FR">
+            <TimeInput {...args} aria-label="French locale" />
+          </I18nProvider>
+        </Stack>
+
+        <Stack direction="column" gap="400">
+          <Text fontWeight="600">Japanese (ja-JP)</Text>
+          <I18nProvider locale="ja-JP">
+            <TimeInput {...args} aria-label="Japanese locale" />
+          </I18nProvider>
+        </Stack>
+
+        <Stack direction="column" gap="400">
+          <Text fontWeight="600">Arabic (ar-SA)</Text>
+          <I18nProvider locale="ar-SA">
+            <TimeInput {...args} aria-label="Arabic locale" />
+          </I18nProvider>
+        </Stack>
       </Stack>
     );
   },
