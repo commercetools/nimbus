@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { TimeInput } from "./time-input";
 import { Stack, Text } from "@/components";
 import { TextInput } from "../text-input";
-import { parseZonedDateTime } from "@internationalized/date";
+import { parseZonedDateTime, Time } from "@internationalized/date";
 
 const michaelsBirthday = parseZonedDateTime("1985-12-17T04:45[Europe/Berlin]");
 
@@ -144,6 +144,32 @@ export const ShouldForceLeadingZeros: Story = {
           {...args}
           shouldForceLeadingZeros={false}
           aria-label="Force leading zeros false"
+        />
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Showcase Placeholder Value
+ * Unlike one could expect, the placeholderValue is not being displayed right away.
+ * It rather controls the default values of each segment when the user first interacts with them
+ */
+export const PlaceholderValue: Story = {
+  args: {
+    placeholderValue: new Time(10, 0),
+    hideTimeZone: true,
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With placeholderValue (starts with 10:00 AM)</Text>
+        <TimeInput {...args} aria-label="With placeholder value" />
+        <Text>Without placeholderValue (default placeholder)</Text>
+        <TimeInput
+          aria-label="Without placeholder value"
+          hideTimeZone={true}
+          locale="en-US"
         />
       </Stack>
     );
