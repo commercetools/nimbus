@@ -43,9 +43,7 @@ export const Base: Story = {
           items={options}
           selectionMode="multiple"
         >
-          {(item) => (
-            <ComboBox.Option textValue={item.name}>{item.name}</ComboBox.Option>
-          )}
+          {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
         </ComboBox.Root>
       </>
     );
