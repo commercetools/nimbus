@@ -129,7 +129,7 @@ export const ImageErrorFallback: Story = {
   args: {
     firstName: "Jane",
     lastName: "Smith",
-    src: "https://example.com/non-existent-image.jpg", // This will 404
+    src: "https://www.gravatar.com/avatar/thisWill404?s=200&d=404", // d=404 will return a 404 if the image doesn't exist
     ["aria-label"]: "Jane Smith avatar",
     alt: "Jane Smith",
   },
