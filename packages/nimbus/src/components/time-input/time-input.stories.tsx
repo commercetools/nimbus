@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TimeInput } from "./time-input";
-import { Button, Stack, Text } from "@/components";
-import { TextInput } from "../text-input";
+import { Button, Stack, Text, FormField } from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
@@ -395,6 +394,60 @@ export const DifferentLocales: Story = {
           </I18nProvider>
         </Stack>
       </Stack>
+    );
+  },
+};
+
+/**
+ * Showcase TimeInput within FormField
+ * Demonstrates the use of TimeInput as Input within a FormField context
+ */
+export const WithFormField: Story = {
+  args: {
+    locale: "en-US",
+  },
+  render: (args) => {
+    const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
+    const [isInvalid, setIsInvalid] = useState(false);
+
+    const handleTimeChange = (value: TimeValue | null) => {
+      setTime(value);
+
+      // Validate time - for this example we'll consider times before 9am or after 5pm invalid
+      if (value) {
+        const hours = (value as Time).hour;
+        setIsInvalid(hours < 9 || hours > 17);
+      } else {
+        setIsInvalid(true); // Empty value is invalid
+      }
+    };
+
+    return (
+      <FormField.Root isInvalid={isInvalid} isRequired>
+        <FormField.Label>Appointment Time</FormField.Label>
+        <FormField.Input>
+          <TimeInput
+            {...args}
+            value={time}
+            onChange={handleTimeChange}
+            hourCycle={12}
+            hideTimeZone
+            minValue={new Time(9, 0)}
+            maxValue={new Time(17, 0)}
+            width="full"
+          />
+        </FormField.Input>
+        <FormField.Description>
+          Please select a time between 9:00 AM and 5:00 PM
+        </FormField.Description>
+        <FormField.Error>
+          The selected time must be between 9:00 AM and 5:00 PM
+        </FormField.Error>
+        <FormField.InfoBox>
+          Our office hours are from 9:00 AM to 5:00 PM. Appointments outside
+          these hours are not available.
+        </FormField.InfoBox>
+      </FormField.Root>
     );
   },
 };
