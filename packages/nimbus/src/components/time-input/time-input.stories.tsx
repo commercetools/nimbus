@@ -4,7 +4,9 @@ import { Stack, Text } from "@/components";
 import { TextInput } from "../text-input";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 
-const michaelsBirthday = parseZonedDateTime("1985-12-17T04:45[Europe/Berlin]");
+const inventionOfTheInternet = parseZonedDateTime(
+  "1993-04-30T14:30[Europe/Zurich]"
+);
 
 /**
  * Storybook metadata configuration
@@ -78,7 +80,7 @@ export const IsDisabled: Story = {
  */
 export const IsReadOnly: Story = {
   args: {
-    defaultValue: michaelsBirthday, // So there's a value to see it's read-only
+    defaultValue: inventionOfTheInternet, // So there's a value to see it's read-only
     hideTimeZone: true,
     locale: "en-US",
   },
@@ -141,7 +143,7 @@ export const Sizes: Story = {
  */
 export const HourCycle: Story = {
   args: {
-    defaultValue: michaelsBirthday,
+    defaultValue: inventionOfTheInternet,
     hideTimeZone: true,
   },
   render: (args) => {
@@ -159,7 +161,7 @@ export const HourCycle: Story = {
  */
 export const HideTimeZone: Story = {
   args: {
-    defaultValue: michaelsBirthday,
+    defaultValue: inventionOfTheInternet,
   },
   render: (args) => {
     return (
@@ -178,7 +180,7 @@ export const HideTimeZone: Story = {
  */
 export const Granularity: Story = {
   args: {
-    defaultValue: michaelsBirthday,
+    defaultValue: inventionOfTheInternet,
     hideTimeZone: true,
   },
   render: (args) => {
@@ -208,7 +210,7 @@ export const Granularity: Story = {
  */
 export const ShouldForceLeadingZeros: Story = {
   args: {
-    defaultValue: michaelsBirthday,
+    defaultValue: inventionOfTheInternet,
     hideTimeZone: true,
   },
   render: (args) => {
