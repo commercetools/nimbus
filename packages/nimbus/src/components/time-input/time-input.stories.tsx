@@ -175,3 +175,38 @@ export const PlaceholderValue: Story = {
     );
   },
 };
+
+/**
+ * Showcase Min and Max Value
+ */
+export const MinMaxValue: Story = {
+  args: {
+    hideTimeZone: true,
+    locale: "en-US",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Min value set to 09:00</Text>
+        <TimeInput
+          {...args}
+          minValue={new Time(9, 0)}
+          aria-label="Min value 09:00"
+        />
+        <Text>Max value set to 17:00</Text>
+        <TimeInput
+          {...args}
+          maxValue={new Time(17, 0)}
+          aria-label="Max value 17:00"
+        />
+        <Text>Min value 10:00 and Max value 14:00</Text>
+        <TimeInput
+          {...args}
+          minValue={new Time(10, 0)}
+          maxValue={new Time(14, 0)}
+          aria-label="Min value 10:00 and Max value 14:00"
+        />
+      </Stack>
+    );
+  },
+};
