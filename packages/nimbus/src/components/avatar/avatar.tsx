@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { Image } from "@chakra-ui/react";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
@@ -9,8 +8,8 @@ function getInitials(firstName: string, lastName: string) {
   );
 }
 
-export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
-  const { firstName, lastName, src, alt, ...rest } = props;
+export const Avatar = (props: AvatarProps) => {
+  const { ref, firstName, lastName, src, alt, ...rest } = props;
 
   const fullName = `${firstName} ${lastName}`;
 
@@ -29,6 +28,6 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
       )}
     </AvatarRoot>
   );
-});
+};
 
 Avatar.displayName = "Avatar";

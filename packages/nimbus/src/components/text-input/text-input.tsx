@@ -1,4 +1,4 @@
-import { forwardRef, useRef, type ChangeEvent } from "react";
+import { useRef } from "react";
 import { mergeRefs, useRecipe } from "@chakra-ui/react";
 import { useObjectRef, useTextField } from "react-aria";
 import { Input } from "react-aria-components";
@@ -20,23 +20,22 @@ import { textInputRecipe } from "./text-input.recipe";
  * - supports 'variants', 'sizes', etc. configured in the recipe
  * - allows overriding styles by using style-props
  */
-export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  (props, forwardedRef) => {
-    const recipe = useRecipe({ recipe: textInputRecipe });
+export const TextInput = (props: TextInputProps) => {
+  const { ref: forwardedRef, ...restProps } = props;
+  const recipe = useRecipe({ recipe: textInputRecipe });
 
-    const localRef = useRef<HTMLInputElement>(null);
-    const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const localRef = useRef<HTMLInputElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-    const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
-    const [styleProps, otherProps] = extractStyleProps(remainingProps);
-    const { inputProps } = useTextField(otherProps, ref);
+  const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
+  const [styleProps, otherProps] = extractStyleProps(remainingProps);
+  const { inputProps } = useTextField(otherProps, ref);
 
-    return (
-      <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
-        <Input ref={ref} {...inputProps} />
-      </TextInputRootSlot>
-    );
-  }
-);
+  return (
+    <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
+      <Input ref={ref} {...inputProps} />
+    </TextInputRootSlot>
+  );
+};
 
 TextInput.displayName = "TextInput";

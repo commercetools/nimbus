@@ -30,4 +30,5 @@ export interface AvatarComponentProps
 type FunctionalAvatarProps = AvatarRootProps & AvatarComponentProps;
 export interface AvatarProps extends FunctionalAvatarProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
 }

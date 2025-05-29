@@ -2,9 +2,10 @@ import {
   Text as ChakraText,
   type TextProps as ChakraTextProps,
 } from "@chakra-ui/react";
-import { forwardRef } from "react";
 
-export interface TextProps extends ChakraTextProps {}
+export interface TextProps extends ChakraTextProps {
+  ref?: React.Ref<HTMLParagraphElement>;
+}
 
 /**
  * Render Text
@@ -14,10 +15,9 @@ export interface TextProps extends ChakraTextProps {}
  *
  * @see https://DOMAIN/components/typography/text
  */
-export const Text = forwardRef<HTMLParagraphElement, TextProps>(
-  (props, ref) => {
-    return <ChakraText ref={ref} {...props} />;
-  }
-);
+export const Text = (props: TextProps) => {
+  const { ref, ...restProps } = props;
+  return <ChakraText ref={ref} {...restProps} />;
+};
 
 Text.displayName = "Text";
