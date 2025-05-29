@@ -121,3 +121,31 @@ export const Granularity: Story = {
     );
   },
 };
+
+/**
+ * Showcase Should Force Leading Zeros
+ */
+export const ShouldForceLeadingZeros: Story = {
+  args: {
+    defaultValue: michaelsBirthday,
+    hideTimeZone: true,
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Should force leading zeros: true</Text>
+        <TimeInput
+          {...args}
+          shouldForceLeadingZeros={true}
+          aria-label="Force leading zeros true"
+        />
+        <Text>Should force leading zeros: false (default)</Text>
+        <TimeInput
+          {...args}
+          shouldForceLeadingZeros={false}
+          aria-label="Force leading zeros false"
+        />
+      </Stack>
+    );
+  },
+};
