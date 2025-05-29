@@ -35,7 +35,9 @@ type Story = StoryObj<typeof TimeInput>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  args: {},
+  args: {
+    ["aria-label"]: "Enter a time",
+  },
 };
 
 /**
@@ -44,7 +46,6 @@ export const Base: Story = {
 export const Uncontrolled: Story = {
   args: {
     hideTimeZone: true,
-    locale: "en-US",
   },
   render: (args) => {
     return (
@@ -76,7 +77,6 @@ export const Uncontrolled: Story = {
 export const Controlled: Story = {
   args: {
     hideTimeZone: true,
-    locale: "en-US",
   },
   render: (args) => {
     const [time, setTime] = useState<TimeValue | null>(new Time(12, 0));
@@ -107,7 +107,6 @@ export const Controlled: Story = {
 export const IsInvalid: Story = {
   args: {
     hideTimeZone: true,
-    locale: "de-US",
   },
   render: (args) => {
     return (
@@ -127,7 +126,6 @@ export const IsInvalid: Story = {
 export const IsDisabled: Story = {
   args: {
     hideTimeZone: true,
-    locale: "en-US",
   },
   render: (args) => {
     return (
@@ -148,7 +146,6 @@ export const IsReadOnly: Story = {
   args: {
     defaultValue: inventionOfTheInternet, // So there's a value to see it's read-only
     hideTimeZone: true,
-    locale: "en-US",
   },
   render: (args) => {
     return (
@@ -168,7 +165,6 @@ export const IsReadOnly: Story = {
 export const IsRequired: Story = {
   args: {
     hideTimeZone: true,
-    locale: "en-US",
   },
   render: (args) => {
     return (
@@ -316,9 +312,9 @@ export const PlaceholderValue: Story = {
         <TimeInput {...args} aria-label="With placeholder value" />
         <Text>Without placeholderValue (default placeholder)</Text>
         <TimeInput
+          {...args}
           aria-label="Without placeholder value"
           hideTimeZone={true}
-          locale="en-US"
         />
       </Stack>
     );
@@ -331,7 +327,6 @@ export const PlaceholderValue: Story = {
 export const MinMaxValue: Story = {
   args: {
     hideTimeZone: true,
-    locale: "en-US",
   },
   render: (args) => {
     return (
