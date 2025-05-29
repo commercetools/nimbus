@@ -50,7 +50,7 @@ export const MultiSelectValue = fixedForwardRef(
         >
           <TagGroup.TagList
             items={selectedItems}
-            renderEmptyState={() => "select an animal "}
+            renderEmptyState={() => "search.."}
           >
             {(item) => <TagGroup.Tag>{item[itemText]}</TagGroup.Tag>}
           </TagGroup.TagList>
