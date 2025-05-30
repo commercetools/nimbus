@@ -6,6 +6,8 @@ import { selectSlotRecipe } from "@/components/select/select.recipe";
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
+// import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
+import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -16,4 +18,6 @@ export const slotRecipes = {
   accordion: accordionSlotRecipe,
   taggroup: tagGroupSlotRecipe,
   switch: switchSlotRecipe,
+  // textinput: textInputSlotRecipe,
+  combobox: comboBoxSlotRecipe,
 };
