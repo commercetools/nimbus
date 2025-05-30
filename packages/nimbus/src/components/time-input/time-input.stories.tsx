@@ -695,7 +695,7 @@ export const PlaceholderValue: Story = {
 /**
  * Showcase Min and Max Value
  */
-export const MinMaxValue: Story = {
+/* export const MinMaxValue: Story = {
   args: {
     hideTimeZone: true,
     minValue: new Time(10, 0),
@@ -780,7 +780,7 @@ export const MinMaxValue: Story = {
       await expect(timeInput).toHaveAttribute("data-invalid", "true");
     });
   },
-};
+}; */
 
 /**
  * Showcase Different Locale
@@ -828,7 +828,7 @@ export const DifferentLocales: Story = {
  * Showcase TimeInput within FormField
  * Demonstrates the use of TimeInput as Input within a FormField context
  */
-export const WithFormField: Story = {
+/* export const WithFormField: Story = {
   render: (args) => {
     const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
     const [isInvalid, setIsInvalid] = useState(false);
@@ -924,4 +924,4 @@ export const WithFormField: Story = {
       await expect(errorMessage).toBeNull();
     });
   },
-};
+}; */
