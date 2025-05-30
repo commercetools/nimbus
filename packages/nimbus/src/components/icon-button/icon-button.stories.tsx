@@ -31,7 +31,11 @@ const variants: IconButtonProps["variant"][] = [
   "link",
 ];
 
-const tones: IconButtonProps["tone"][] = ["primary", "neutral", "critical"];
+const tones: IconButtonProps["tone"][] = [
+  "primary",
+  "neutral",
+  "critical",
+] as const;
 
 /**
  * Story type for TypeScript support
@@ -153,6 +157,7 @@ export const Tones: Story = {
                 key={variant as string}
                 {...args}
                 variant={variant}
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 tone={tone}
               />
             ))}
