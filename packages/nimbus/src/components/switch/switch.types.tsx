@@ -38,4 +38,5 @@ export type SwitchProps = Omit<
      * Can be a string or React node.
      */
     children?: React.ReactNode;
+    ref?: React.Ref<HTMLInputElement>;
   };

@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { useRef } from "react";
 import { useToggleState } from "react-stately";
 import { useFocusRing, useSwitch, useObjectRef, mergeProps } from "react-aria";
 import { useSlotRecipe, mergeRefs } from "@chakra-ui/react";
@@ -18,52 +18,52 @@ import { switchSlotRecipe } from "./switch.recipe";
  * ============================================================
  * displays a switch toggle and optionally an associated label
  */
-export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
-  (props, forwardedRef) => {
-    const localRef = useRef<HTMLInputElement>(null);
-    const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
+  const localRef = useRef<HTMLInputElement>(null);
+  const ref = useObjectRef(
+    externalRef ? mergeRefs(localRef, externalRef) : localRef
+  );
 
-    const recipe = useSlotRecipe({ recipe: switchSlotRecipe });
+  const recipe = useSlotRecipe({ recipe: switchSlotRecipe });
 
-    const [recipeProps, recipeLessProps] = recipe.splitVariantProps(props);
-    const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
+  const [recipeProps, recipeLessProps] = recipe.splitVariantProps(props);
+  const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
-    const state = useToggleState(props);
-    const { inputProps } = useSwitch(functionalProps, state, ref);
+  const state = useToggleState(props);
+  const { inputProps } = useSwitch(functionalProps, state, ref);
 
-    const { isFocused, focusProps } = useFocusRing();
+  const { isFocused, focusProps } = useFocusRing();
 
-    const stateProps = {
-      "data-selected": state.isSelected,
-      "data-invalid": props.isInvalid,
-      "data-disabled": props.isDisabled,
-      "data-focus": isFocused || undefined,
-    };
-    return (
-      <SwitchRootSlot
-        data-slot="root"
-        {...recipeProps}
-        {...stateProps}
-        {...styleProps}
-      >
-        <SwitchTrackSlot data-slot="track" {...stateProps}>
-          <SwitchThumbSlot data-slot="thumb" {...stateProps} />
-          <VisuallyHidden as="span">
-            <input
-              data-slot="input"
-              {...mergeProps(inputProps, focusProps)}
-              ref={ref}
-            />
-          </VisuallyHidden>
-        </SwitchTrackSlot>
+  const stateProps = {
+    "data-selected": state.isSelected,
+    "data-invalid": props.isInvalid,
+    "data-disabled": props.isDisabled,
+    "data-focus": isFocused || undefined,
+  };
+  return (
+    <SwitchRootSlot
+      data-slot="root"
+      {...recipeProps}
+      {...stateProps}
+      {...styleProps}
+    >
+      <SwitchTrackSlot data-slot="track" {...stateProps}>
+        <SwitchThumbSlot data-slot="thumb" {...stateProps} />
+        <VisuallyHidden as="span">
+          <input
+            data-slot="input"
+            {...mergeProps(inputProps, focusProps)}
+            ref={ref}
+          />
+        </VisuallyHidden>
+      </SwitchTrackSlot>
 
-        {props.children && (
-          <SwitchLabelSlot data-slot="label" {...stateProps}>
-            {props.children}
-          </SwitchLabelSlot>
-        )}
-      </SwitchRootSlot>
-    );
-  }
-);
+      {props.children && (
+        <SwitchLabelSlot data-slot="label" {...stateProps}>
+          {props.children}
+        </SwitchLabelSlot>
+      )}
+    </SwitchRootSlot>
+  );
+};
 Switch.displayName = "Switch";
