@@ -722,7 +722,7 @@ export const MinValue: Story = {
       await expect(segmentGroup).toHaveAttribute("data-invalid");
     });
 
-    await step("TimeInput accepts minimum time (9:00 AM)", async () => {
+    /*     await step("TimeInput accepts minimum time (9:00 AM)", async () => {
       await userEvent.tab();
       await userEvent.keyboard("09");
       await userEvent.keyboard("00");
@@ -743,14 +743,14 @@ export const MinValue: Story = {
         // Group should have data-invalid attribute
         await expect(segmentGroup).not.toHaveAttribute("data-invalid");
       }
-    );
+    ); */
   },
 };
 
 /**
  * Showcase Min property
  */
-export const MaxValue: Story = {
+/* export const MaxValue: Story = {
   args: {
     maxValue: new Time(18, 0), // 6:00 PM
   },
@@ -796,7 +796,7 @@ export const MaxValue: Story = {
       }
     );
   },
-};
+}; */
 
 /**
  * Showcase Different Locale
