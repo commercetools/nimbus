@@ -1,4 +1,3 @@
-import { type ForwardedRef } from "react";
 import {
   ComboBox as RaComboBox,
   Popover as RaPopover,

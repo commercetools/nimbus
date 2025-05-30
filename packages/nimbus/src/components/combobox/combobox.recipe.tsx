@@ -6,31 +6,84 @@ import { selectSlotRecipe } from "../select/select.recipe";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const comboBoxSlotRecipe = defineSlotRecipe({
-  slots: ["root", "value", "buttonGroup", "options", "optionGroup", "option"],
+  slots: [
+    "root",
+    "value",
+    "buttonGroup",
+    "multiSelectInput",
+    "options",
+    "optionGroup",
+    "option",
+  ],
   // Unique class name prefix for the component
   className: "nimbus-combobox",
 
   // Base styles applied to all instances of the component
   base: {
     root: {
-      ...selectSlotRecipe.base?.root,
-
+      colorPalette: "primary",
+      focusRing: "outside",
+      display: "inline-block",
+      position: "relative",
+      maxWidth: "100%",
+      borderRadius: "200",
+      "&[data-disabled]": {
+        layerStyle: "disabled",
+        pointerEvents: "none",
+      },
       "& input": { cursor: "text" },
+      "& [data-placeholder]": {
+        opacity: 0.5,
+      },
     },
     value: {
-      ...selectSlotRecipe.base?.trigger,
-      ...selectSlotRecipe.base?.triggerLabel,
-      margin: 0,
+      display: "inline-flex",
+      focusRing: "outside",
+      alignItems: "flex-start",
+      borderRadius: "200",
+      color: "neutral.12",
+      width: "100%",
+      textAlign: "left",
+      maxWidth: "100%",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      "& span": {
+        display: "inline-block",
+        my: "auto",
+      },
+      '& [slot="description"]': {
+        display: "none",
+      },
+
+      "[data-invalid] &": {
+        "--border-width": "sizes.50",
+        "--border-color": "colors.critical.7",
+      },
     },
     buttonGroup: {
       position: "absolute",
       display: "inline-flex",
       top: 0,
       bottom: 0,
-      right: 400,
+      right: 300,
+    },
+    multiSelectInput: {
+      px: 200,
+      py: "100",
+      "& input": {
+        focusRing: "none",
+        borderBottom: "solid 1px",
+        borderBottomColor: "neutral.9",
+        bg: "bg",
+        _placeholder: { opacity: 0.5 },
+      },
     },
     options: {
       ...selectSlotRecipe.base?.options,
+      borderRadius: "0 0 200 200",
+      boxShadow: "none",
     },
     optionGroup: {
       ...selectSlotRecipe.base?.optionGroup,
@@ -61,9 +114,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     // Visual style variants
     variant: {
       solid: {
-        root: {
-          ...selectSlotRecipe.variants?.variant.outline.root,
-        },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,
         },
