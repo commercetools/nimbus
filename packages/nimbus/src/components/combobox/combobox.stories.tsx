@@ -39,10 +39,10 @@ export const Base: Story = {
     return (
       <>
         <ComboBox.Root
-          isDisabled={true}
           aria-label="animals"
           items={options}
           selectionMode="multiple"
+          placeholder="search..."
         >
           {(item) => (
             <ComboBox.Option aria-label={item.name}>

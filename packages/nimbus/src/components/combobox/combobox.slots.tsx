@@ -11,7 +11,7 @@ import type {
   ComboBoxOptionGroupProps,
 } from "./combobox.types";
 
-export const { withProvider, withContext } = createSlotRecipeContext({
+const { withProvider, withContext } = createSlotRecipeContext({
   key: "combobox",
 });
 
@@ -62,12 +62,12 @@ export const ComboBoxOptionGroupSlot = withContext<
 //   ComboBoxTriggerSlotProps
 // >("button", "trigger");
 
-// // Input
-// export interface ComboBoxInputSlotProps extends HTMLChakraProps<"input"> {}
-// export const ComboBoxInputSlot = withContext<
-//   HTMLInputElement,
-//   ComboBoxInputSlotProps
-// >("input", "input");
+// Input
+export interface ComboBoxInputSlotProps extends HTMLChakraProps<"input"> {}
+export const ComboBoxMultiSelectInputSlot = withContext<
+  HTMLInputElement,
+  ComboBoxInputSlotProps
+>("input", "multiSelectInput");
 
 // // TagGroup
 // export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"div"> {}
