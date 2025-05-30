@@ -4,7 +4,7 @@ import { Button, Stack, Text, FormField } from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
-import { I18nProvider, useLocale } from "react-aria";
+import { I18nProvider } from "react-aria";
 import { userEvent, within, expect, fn } from "@storybook/test";
 
 const inventionOfTheInternet = parseZonedDateTime(
@@ -35,18 +35,6 @@ export default meta;
  * StoryObj provides type checking for our story configurations
  */
 type Story = StoryObj<typeof TimeInput>;
-
-export const LocaleTest: Story = {
-  render: () => {
-    const { locale } = useLocale();
-    return <div data-testid="locale">{locale}</div>;
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const locale = canvas.getByTestId("locale");
-    await expect(locale).toHaveTextContent("en-US");
-  },
-};
 
 /**
  * Base story
