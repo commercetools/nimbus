@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import type {
   HTMLChakraProps,
   RecipeProps,
@@ -14,6 +14,7 @@ import type {
 } from "react-aria-components";
 
 import { comboBoxSlotRecipe } from "./combobox.recipe";
+import type React from "react";
 
 // ============================================================
 // Root Component (`<ComboBox.Root>`)
@@ -51,7 +52,9 @@ export interface ComboBoxSingleSelectRootSlotProps<T extends object>
 /** Combined props for the single select root element (Chakra styles + Aria behavior + Recipe variants). */
 export interface ComboBoxSingleSelectRootProps<T extends object>
   extends ComboBoxSingleSelectRootSlotProps<T>,
-    ComboBoxWithCustomChildren<T> {}
+    ComboBoxWithCustomChildren<T> {
+  ref?: Ref<HTMLDivElement>;
+}
 
 /** Base Chakra styling props for the root `div` slot when multi select*/
 export interface ComboBoxMultiSelectRootSlotProps<T extends object>
@@ -62,7 +65,9 @@ export interface ComboBoxMultiSelectRootSlotProps<T extends object>
 /** Combined props for the multi select root element (Chakra styles + Aria behavior + Recipe variants). */
 export interface ComboBoxMultiSelectRootProps<T extends object>
   extends Omit<ComboBoxMultiSelectRootSlotProps<T>, "selectionMode">,
-    ComboBoxMultiSelect<T> {}
+    ComboBoxMultiSelect<T> {
+  ref?: Ref<HTMLDivElement>;
+}
 
 export type ComboBoxRootProps<T extends object> =
   | ComboBoxSingleSelectRootProps<T>
@@ -78,7 +83,9 @@ export interface ComboBoxOptionsSlotProps
 /** Combined props for the ListBox element used in Single Select (Chakra styles + Aria behavior + Recipe variants) */
 export interface ComboBoxOptionsProps<T extends object>
   extends RaListBoxProps<T>,
-    Omit<ComboBoxOptionsSlotProps, keyof RaListBoxProps<T>> {}
+    Omit<ComboBoxOptionsSlotProps, keyof RaListBoxProps<T>> {
+  ref?: Ref<HTMLDivElement>;
+}
 
 // ============================================================
 // Option Sub-Component (`<ComboBox.Option>`)
@@ -89,7 +96,9 @@ type ComboBoxOptionSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 /** Combined props for the ListBoxItem element (Chakra styles + Aria behavior + Recipe variants). */
 export interface ComboBoxOptionProps<T extends object>
   extends RaListBoxItemProps<T>,
-    Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> {}
+    Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> {
+  ref?: Ref<HTMLDivElement>;
+}
 
 // ============================================================
 // OptionGroup Sub-Component (`<ComboBox.OptionGroup>`)
@@ -115,6 +124,7 @@ export type ComboBoxMultiSelectValueProps<T extends object> = {
   itemValue: ComboBoxMultiSelectRootProps<T>["itemValue"];
   selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
   onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];
+  ref?: Ref<HTMLDivElement>;
 };
 
 // ============================================================
