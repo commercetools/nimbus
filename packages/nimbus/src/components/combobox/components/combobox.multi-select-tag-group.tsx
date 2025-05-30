@@ -1,24 +1,21 @@
-import { useMemo, type ForwardedRef } from "react";
+import { useMemo } from "react";
 import { type Key } from "react-aria-components";
 
 import { TagGroup } from "@/components";
 
 import type { ComboBoxMultiSelectValueProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
-import { fixedForwardRef } from "@/utils/fixedForwardRef";
 
-export const MultiSelectValue = fixedForwardRef(
+export const MultiSelectValue =
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  <T extends Record<string, any>>(
-    {
-      selectedKeys = new Set(),
-      items,
-      itemID = "id",
-      itemValue = "name",
-      onSelectionChange,
-    }: ComboBoxMultiSelectValueProps<T>,
-    ref: ForwardedRef<HTMLDivElement>
-  ) => {
+  <T extends Record<string, any>>({
+    selectedKeys = new Set(),
+    items,
+    itemID = "id",
+    itemValue = "name",
+    onSelectionChange,
+    ref,
+  }: ComboBoxMultiSelectValueProps<T>) => {
     const selectedItems = useMemo(() => {
       return [...selectedKeys]
         .map((key) =>
@@ -58,5 +55,4 @@ export const MultiSelectValue = fixedForwardRef(
         </TagGroup.Root>
       </ComboBoxValueSlot>
     );
-  }
-);
+  };
