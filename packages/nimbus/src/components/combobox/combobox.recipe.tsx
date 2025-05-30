@@ -4,7 +4,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Recipe configuration for the Combobox component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const comboboxSlotRecipe = defineSlotRecipe({
+export const comboBoxSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "trigger",
@@ -23,7 +23,7 @@ export const comboboxSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       colorPalette: "primary",
-      display: "inline-block",
+      display: "inline-flex",
       position: "relative",
       maxWidth: "100%",
       borderRadius: "200",
@@ -169,7 +169,7 @@ export const comboboxSlotRecipe = defineSlotRecipe({
 
     // Visual style variants
     variant: {
-      outline: {
+      solid: {
         root: {
           bg: "bg",
           "&:hover": {
@@ -180,7 +180,7 @@ export const comboboxSlotRecipe = defineSlotRecipe({
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
         },
-
+      },
       ghost: {
         root: {
           bg: "transparent",
@@ -201,21 +201,19 @@ export const comboboxSlotRecipe = defineSlotRecipe({
       single: {},
       multiple: {},
     },
+    // compoundVariants: [
+    //   { selectionMode: "none", variant: "outline", css: {} },
+    //   { selectionMode: "single", variant: "outline", css: {} },
+    //   { selectionMode: "multiple", variant: "outline", css: {} },
+    //   { selectionMode: "none", variant: "ghost", css: {} },
+    //   { selectionMode: "single", variant: "ghost", css: {} },
+    //   { selectionMode: "multiple", variant: "ghost", css: {} },
+    // ],
   },
-
-  // compoundVariants: [
-  //   { selectionMode: "none", variant: "outline", css: {} },
-  //   { selectionMode: "single", variant: "outline", css: {} },
-  //   { selectionMode: "multiple", variant: "outline", css: {} },
-  //   { selectionMode: "none", variant: "ghost", css: {} },
-  //   { selectionMode: "single", variant: "ghost", css: {} },
-  //   { selectionMode: "multiple", variant: "ghost", css: {} },
-  // ],
-
   // Default variant values when not explicitly specified
   defaultVariants: {
     size: "md",
-    variant: "outline",
+    variant: "solid",
     selectionMode: "single",
   },
 });
