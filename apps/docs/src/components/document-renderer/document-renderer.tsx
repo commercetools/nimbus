@@ -2,7 +2,6 @@ import { activeDocAtom } from "@/atoms/active-doc.ts";
 import { useAtom, useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
-import { components } from "./components";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { MdxEditor } from "./mdx-editor";
 import { useEffect, memo } from "react";
@@ -45,9 +44,7 @@ const DocumentRendererComponent = () => {
           )}
 
           <Box pb="2400">
-            {!editMode && (
-              <MdxStringRenderer content={content} components={components} />
-            )}
+            {!editMode && <MdxStringRenderer content={content} />}
             {editMode && (
               <MdxEditor
                 meta={meta}

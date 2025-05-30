@@ -2,16 +2,9 @@ import {
   Flex,
   Box,
   useHotkeys,
-  DialogHeader,
-  DialogTitle,
+  Dialog,
   TextInput,
-  DialogRoot,
-  DialogBackdrop,
-  DialogTrigger,
-  DialogContent,
-  DialogBody,
   Text,
-  Bleed,
   Kbd,
 } from "@commercetools/nimbus";
 
@@ -52,7 +45,7 @@ export const AppNavBarSearch = () => {
 
   return (
     <Flex grow="1">
-      <DialogRoot
+      <Dialog.Root
         open={open}
         placement="top"
         motionPreset="slide-in-bottom"
@@ -60,8 +53,8 @@ export const AppNavBarSearch = () => {
         scrollBehavior="outside"
         size="xl"
       >
-        <DialogBackdrop />
-        <DialogTrigger>
+        <Dialog.Backdrop />
+        <Dialog.Trigger>
           <Box position="relative">
             <TextInput
               size="md"
@@ -75,12 +68,14 @@ export const AppNavBarSearch = () => {
               <Kbd>⌘+K</Kbd>
             </Box>
           </Box>
-        </DialogTrigger>
-        <DialogContent divideY="1px" backdropBlur="5px">
-          <DialogHeader>
-            <DialogTitle fontWeight="600">Search the Documentation</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
+        </Dialog.Trigger>
+        <Dialog.Content divideY="1px" backdropBlur="5px">
+          <Dialog.Header>
+            <Dialog.Title fontWeight="600">
+              Search the Documentation
+            </Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
             <ComboBox
               inputValue={query}
               onInputChange={setQuery}
@@ -106,7 +101,7 @@ export const AppNavBarSearch = () => {
                   <Input placeholder="Type to search..." />
                 </Box>
               </Flex>
-              <Bleed inline="600" borderTop="1px solid" borderColor="neutral.6">
+              <Box mx="-600" borderTop="1px solid" borderColor="neutral.6">
                 <ListBox items={results} selectionMode="single">
                   {(item) => (
                     <Flex
@@ -130,15 +125,15 @@ export const AppNavBarSearch = () => {
                     </Flex>
                   )}
                 </ListBox>
-              </Bleed>
+              </Box>
               <Text textStyle="xs" color={"neutral.11"} pt="600">
                 Use the <strong>Arrow</strong>-keys to navigate and{" "}
                 <strong>Enter</strong> to confirm selection.
               </Text>
             </ComboBox>
-          </DialogBody>
-        </DialogContent>
-      </DialogRoot>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
     </Flex>
   );
 };

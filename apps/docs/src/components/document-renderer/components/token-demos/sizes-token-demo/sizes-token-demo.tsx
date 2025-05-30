@@ -1,20 +1,9 @@
 import { preferPxAtom } from "@/atoms/prefer-px-atom";
 import { themeSizeTokensAtom } from "@/atoms/theme-size-tokens.ts";
-import {
-  Box,
-  TableRoot,
-  TableBody,
-  TableColumnHeader,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Flex,
-  TableColumnGroup,
-  TableColumn,
-  Code,
-} from "@commercetools/nimbus";
+import { Box, Table, Flex, Code } from "@commercetools/nimbus";
 import { useAtom, useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
+import { ReactElement } from "react";
 
 // Define sorter functions for different token types
 const sorter = {
@@ -22,7 +11,13 @@ const sorter = {
     parseFloat(obj.value.originalValue),
   fraction: () => [
     (fraction: string) => parseInt(fraction.split("/")[1]),
-    (fraction: string) => eval(fraction),
+    (fraction: string) => {
+      const parts = fraction.split("/");
+      if (parts.length === 2) {
+        return parseFloat(parts[0]) / parseFloat(parts[1]);
+      }
+      return 0;
+    },
   ],
   other: (obj: { label: string }) => obj.label,
 };
@@ -33,16 +28,25 @@ interface SizesTokenDemoProps {
   group: string;
 }
 
+interface SizeToken {
+  id: string;
+  label: string;
+  group: string;
+  value: {
+    originalValue: string;
+  };
+}
+
 /**
  * SizesTokenDemo component to display size tokens in a table format.
  * @param {SizesTokenDemoProps} props - The props for the component.
- * @returns {JSX.Element | null} The rendered component.
+ * @returns {ReactElement | null} The rendered component.
  */
 export const SizesTokenDemo = ({
   group,
-}: SizesTokenDemoProps): JSX.Element | null => {
+}: SizesTokenDemoProps): ReactElement | null => {
   const [showPx, setShowPx] = useAtom(preferPxAtom);
-  const sizeTokens = useAtomValue(themeSizeTokensAtom);
+  const sizeTokens = useAtomValue(themeSizeTokensAtom) as SizeToken[] | null;
 
   if (!sizeTokens) return null;
 
@@ -50,7 +54,7 @@ export const SizesTokenDemo = ({
   const subset = orderBy(
     sizeTokens.filter((item) => item.group === group),
     sorter[(group || "other") as SorterKeys]
-  ) as typeof sizeTokens;
+  );
 
   /**
    * Formatter function to convert values between rem and px.
@@ -70,30 +74,30 @@ export const SizesTokenDemo = ({
 
   return (
     <Box mb="1200" mt="600">
-      <TableRoot width="full" maxWidth="full">
-        <TableColumnGroup>
-          <TableColumn width="18ch" />
-          <TableColumn width="18ch" />
-          <TableColumn maxWidth="1600" />
-        </TableColumnGroup>
-        <TableHeader>
-          <TableRow>
-            <TableColumnHeader>Token</TableColumnHeader>
-            <TableColumnHeader>Value</TableColumnHeader>
-            <TableColumnHeader>Demo</TableColumnHeader>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+      <Table.Root width="full" maxWidth="full">
+        <Table.ColumnGroup>
+          <Table.Column width="18ch" />
+          <Table.Column width="18ch" />
+          <Table.Column maxWidth="1600" />
+        </Table.ColumnGroup>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader>Token</Table.ColumnHeader>
+            <Table.ColumnHeader>Value</Table.ColumnHeader>
+            <Table.ColumnHeader>Demo</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {subset.map((item) => {
             return (
-              <TableRow key={item.id} id={item.id}>
-                <TableCell>
+              <Table.Row key={item.id} id={item.id}>
+                <Table.Cell>
                   <Code variant="subtle">{item.label}</Code>
-                </TableCell>
-                <TableCell onClick={() => setShowPx(!showPx)} cursor="button">
+                </Table.Cell>
+                <Table.Cell onClick={() => setShowPx(!showPx)} cursor="button">
                   {formatterFn(item.value.originalValue)}
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   <Box position="relative">
                     <Flex minHeight="1em" overflow="hidden">
                       <Box
@@ -113,12 +117,12 @@ export const SizesTokenDemo = ({
                       width="600"
                     />
                   </Box>
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             );
           })}
-        </TableBody>
-      </TableRoot>
+        </Table.Body>
+      </Table.Root>
     </Box>
   );
 };

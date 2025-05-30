@@ -1,7 +1,6 @@
 import type { ReactElement } from "react";
 import {
   createSlotRecipeContext,
-  type ConfigRecipeSlots,
   type WithProviderOptions,
   type WithContextOptions,
 } from "@chakra-ui/react";
@@ -19,7 +18,6 @@ import type {
   TagGroupTagComponent,
   TagGroupTagProps,
 } from "./tag-group.types";
-import { fixedForwardRef } from "@/utils/fixedForwardRef";
 
 type TagListSlotNames = "root" | "tagList" | "tag";
 
@@ -28,14 +26,14 @@ export const {
   withContext,
 }: {
   withProvider: <T, P>(
-    Component: React.ElementType<any>,
+    Component: React.ElementType<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
     slot: TagListSlotNames,
     options?: WithProviderOptions<P>
   ) => React.ForwardRefExoticComponent<
     React.PropsWithoutRef<P> & React.RefAttributes<T>
   >;
   withContext: <T, P>(
-    Component: React.ElementType<any>,
+    Component: React.ElementType<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
     slot?: TagListSlotNames,
     options?: WithContextOptions<P>
   ) => React.ForwardRefExoticComponent<
@@ -50,18 +48,16 @@ export const TagGroupRootSlot = withProvider<typeof RaTagGroup, TagGroupProps>(
   "root"
 );
 
-export const TagGroupTagListSlot = fixedForwardRef(
-  <T extends object>(
-    props: TagGroupTagListProps<T>,
-    ref: React.Ref<HTMLDivElement>
-  ): ReactElement<TagGroupTagListProps<T>, TagGroupTagListComponent<T>> => {
-    const SlotComponent = withContext<HTMLDivElement, TagGroupTagListProps<T>>(
-      RaTagList,
-      "tagList"
-    );
-    return <SlotComponent {...props} ref={ref} />;
-  }
-);
+export const TagGroupTagListSlot = <T extends object>(
+  props: TagGroupTagListProps<T>
+): ReactElement<TagGroupTagListProps<T>, TagGroupTagListComponent<T>> => {
+  const { ref, ...restProps } = props;
+  const SlotComponent = withContext<HTMLDivElement, TagGroupTagListProps<T>>(
+    RaTagList,
+    "tagList"
+  );
+  return <SlotComponent {...restProps} ref={ref} />;
+};
 
 export const TagGroupTagSlot: TagGroupTagComponent = withContext<
   typeof RaTag,

@@ -23,4 +23,5 @@ type LinkVariantProps = Omit<LinkRootProps, "onFocus" | "onBlur" | "onClick"> &
  */
 export interface LinkProps extends LinkVariantProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLAnchorElement>;
 }

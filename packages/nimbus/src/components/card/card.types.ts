@@ -19,4 +19,5 @@ type CardVariantProps = CardRootProps &
  */
 export interface CardProps extends CardVariantProps {
   children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
 }
