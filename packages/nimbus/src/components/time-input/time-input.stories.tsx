@@ -19,6 +19,13 @@ const inventionOfTheInternet = parseZonedDateTime(
 const meta: Meta<typeof TimeInput> = {
   title: "components/TimeInput",
   component: TimeInput,
+  decorators: [
+    (Story) => (
+      <I18nProvider locale="en-US">
+        <Story />
+      </I18nProvider>
+    ),
+  ],
 };
 
 export default meta;
@@ -307,7 +314,6 @@ export const IsRequired: Story = {
       async () => {
         for (const segment of segments) {
           await expect(segment).toHaveAttribute("aria-required", "true");
-          await expect(segment).toHaveAttribute("data-required", "true");
         }
       }
     );

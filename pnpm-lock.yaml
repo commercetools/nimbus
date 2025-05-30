@@ -19,7 +19,7 @@ catalogs:
       specifier: ^11.14.0
       version: 11.14.0
     '@internationalized/date':
-      specifier: ^3.8.1
+      specifier: ^3.8.0
       version: 3.8.1
     '@pandacss/types':
       specifier: ^0.53.6
@@ -9346,7 +9346,7 @@ snapshots:
 
   '@react-aria/calendar@3.8.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@internationalized/date': 3.8.0
+      '@internationalized/date': 3.8.1
       '@react-aria/i18n': 3.12.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-aria/interactions': 3.25.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-aria/live-announcer': 3.4.2
@@ -9427,7 +9427,7 @@ snapshots:
 
   '@react-aria/datepicker@3.14.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@internationalized/date': 3.8.0
+      '@internationalized/date': 3.8.1
       '@internationalized/number': 3.6.1
       '@internationalized/string': 3.2.6
       '@react-aria/focus': 3.20.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -9540,7 +9540,7 @@ snapshots:
 
   '@react-aria/i18n@3.12.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@internationalized/date': 3.8.0
+      '@internationalized/date': 3.8.1
       '@internationalized/message': 3.1.7
       '@internationalized/number': 3.6.1
       '@internationalized/string': 3.2.6
@@ -10226,7 +10226,7 @@ snapshots:
 
   '@react-types/calendar@3.7.0(react@19.1.0)':
     dependencies:
-      '@internationalized/date': 3.8.0
+      '@internationalized/date': 3.8.1
       '@react-types/shared': 3.29.0(react@19.1.0)
       react: 19.1.0
 
@@ -10248,7 +10248,7 @@ snapshots:
 
   '@react-types/datepicker@3.12.0(react@19.1.0)':
     dependencies:
-      '@internationalized/date': 3.8.0
+      '@internationalized/date': 3.8.1
       '@react-types/calendar': 3.7.0(react@19.1.0)
       '@react-types/overlays': 3.8.14(react@19.1.0)
       '@react-types/shared': 3.29.0(react@19.1.0)
