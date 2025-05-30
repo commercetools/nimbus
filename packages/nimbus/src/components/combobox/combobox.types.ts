@@ -24,11 +24,13 @@ type ComboBoxWithCustomChildren<T extends object> = Omit<
   RaComboBoxProps<T>,
   "children"
 > & {
+  placeholder?: string;
   isLoading?: boolean;
   children: ReactNode | ((item: T) => React.ReactNode);
+  ref?: Ref<HTMLDivElement>;
 };
 
-interface ComboBoxMultiSelect<T extends object>
+export interface ComboBoxMultiSelect<T extends object>
   extends Omit<RaAutoCompleteProps, "children">,
     Omit<RaListBoxProps<T>, "filter"> {
   defaultFilter?: (textValue: string, inputValue: string) => boolean;
@@ -41,6 +43,8 @@ interface ComboBoxMultiSelect<T extends object>
   itemID?: string;
   // name of key in items that is the text value to display
   itemValue?: string;
+  placeholder?: string;
+  ref?: Ref<HTMLDivElement>;
 }
 /** Base Chakra styling props for the root `div` slot when single select*/
 export interface ComboBoxSingleSelectRootSlotProps<T extends object>
@@ -124,6 +128,7 @@ export type ComboBoxMultiSelectValueProps<T extends object> = {
   itemValue: ComboBoxMultiSelectRootProps<T>["itemValue"];
   selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
   onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];
+  placeholder?: string;
   ref?: Ref<HTMLDivElement>;
 };
 
@@ -135,6 +140,7 @@ export type ComboBoxButtonGroupProps = {
   selectedKeys?: ComboBoxMultiSelectRootProps<{}>["selectedKeys"];
   onSelectionChange?: ComboBoxMultiSelectRootProps<{}>["onSelectionChange"];
   onInputChange?: ComboBoxMultiSelectRootProps<{}>["onInputChange"];
+  isLoading?: boolean;
 };
 
 // /** Base Chakra styling props for the root `button` slot. */

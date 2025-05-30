@@ -13,6 +13,7 @@ export const MultiSelectValue =
     items,
     itemID = "id",
     itemValue = "name",
+    placeholder,
     onSelectionChange,
     ref,
   }: ComboBoxMultiSelectValueProps<T>) => {
@@ -48,9 +49,16 @@ export const MultiSelectValue =
         >
           <TagGroup.TagList
             items={selectedItems}
-            renderEmptyState={() => "search.."}
+            tabIndex={-1}
+            renderEmptyState={() =>
+              placeholder && <div data-placeholder="true">{placeholder}</div>
+            }
           >
-            {(item) => <TagGroup.Tag>{item[itemValue]}</TagGroup.Tag>}
+            {(item) => (
+              <TagGroup.Tag aria-expanded={false}>
+                {item[itemValue]}
+              </TagGroup.Tag>
+            )}
           </TagGroup.TagList>
         </TagGroup.Root>
       </ComboBoxValueSlot>

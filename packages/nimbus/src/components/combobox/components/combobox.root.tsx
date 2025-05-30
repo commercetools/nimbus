@@ -20,8 +20,13 @@ export const ComboBoxRoot = <T extends object>({
       : SingleSelectRoot;
 
   return (
-    <ComboBoxRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
-      <Component {...restProps} ref={ref}>
+    <ComboBoxRootSlot
+      asChild
+      selectionMode={props.selectionMode}
+      {...recipeProps}
+      {...styleProps}
+    >
+      <Component ref={ref} {...restProps}>
         {children}
       </Component>
     </ComboBoxRootSlot>
