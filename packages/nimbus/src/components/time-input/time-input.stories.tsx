@@ -715,6 +715,9 @@ export const MinValue: Story = {
       await userEvent.keyboard("59");
       await userEvent.keyboard("AM");
       await userEvent.tab();
+
+      // Now wait a second ...
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       // Group should have data-invalid attribute
       await expect(segmentGroup).toHaveAttribute("data-invalid");
     });
