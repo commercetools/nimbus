@@ -75,6 +75,8 @@ const preview: Preview = {
        * to learn more about the available options.
        */
       options: {},
+      // fail the test runner if a11y violations are found
+      test: "error",
     },
   },
   tags: ["autodocs", "a11y-test"],
