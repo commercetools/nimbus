@@ -1,5 +1,4 @@
 import { type ForwardedRef } from "react";
-// import { Flex } from "@/components";
 import {
   ComboBox as RaComboBox,
   Popover as RaPopover,
@@ -7,13 +6,14 @@ import {
 } from "react-aria-components";
 import { ComboBoxOptions } from "./combobox.options";
 import { ComboBoxButtonGroup } from "./combobox.button-group";
-import type { ComboBoxRootProps } from "../combobox.types";
+
+import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
 import { fixedForwardRef } from "@/utils/fixedForwardRef";
 
 export const SingleSelectRoot = fixedForwardRef(
   <T extends object>(
-    { children, ...rest }: ComboBoxRootProps<T>,
+    { children, ...rest }: ComboBoxSingleSelectRootProps<T>,
     ref: ForwardedRef<HTMLDivElement>
   ) => {
     return (

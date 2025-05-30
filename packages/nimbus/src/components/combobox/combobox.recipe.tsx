@@ -20,6 +20,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     value: {
       ...selectSlotRecipe.base?.trigger,
       ...selectSlotRecipe.base?.triggerLabel,
+      margin: 0,
     },
     buttonGroup: {
       position: "absolute",
@@ -73,6 +74,22 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         },
         value: { ...selectSlotRecipe.variants?.variant.ghost.trigger },
       },
+    },
+    selectionMode: {
+      multiple: {
+        option: {
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
+          '&[data-focused="true"], &:hover': {
+            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+          },
+          '&[aria-selected="true"], &[data-focused="true"]': {
+            bg: "inherit",
+          },
+        },
+      },
+      single: {},
+      none: {},
     },
   },
   // Default variant values when not explicitly specified
