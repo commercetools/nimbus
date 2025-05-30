@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
 import { userEvent, within, expect, fn, fireEvent } from "@storybook/test";
+import { useEvent } from "react-use";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -693,81 +694,104 @@ export const PlaceholderValue: Story = {
 };
 
 /**
- * Showcase Min and Max Value
+ * Showcase Min property
  */
-export const MinMaxValue: Story = {
+export const MinValue: Story = {
   args: {
-    hideTimeZone: true,
-    minValue: new Time(10, 0),
-    maxValue: new Time(14, 0),
-    ["aria-label"]: "Min value 10:00 AM and Max value 2:00 PM",
-    onChange: fn(),
+    minValue: new Time(9, 0), // 9:00 AM
+  },
+  render: (args) => {
+    return <TimeInput {...args} data-testid="min-value-time-input" />;
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const timeInput = canvas.getByRole("group");
-    const segments = Array.from(
-      timeInput.querySelectorAll('[role="spinbutton"]')
-    );
-    const hourSegment = segments[0];
-    const minuteSegment = segments[1];
-    const dayPeriodSegment = segments[2];
+    const timeInput = canvas.getByTestId("min-value-time-input");
+    const segmentGroup = timeInput.querySelector('[role="group"]');
 
-    await step("Test time below min value (9:00 AM)", async () => {
-      // Focus hour segment
-      await userEvent.click(hourSegment);
-      await expect(hourSegment).toHaveFocus();
-      await userEvent.keyboard("8");
-
-      // Focus minute segment
-      await userEvent.click(minuteSegment);
-      await expect(minuteSegment).toHaveFocus();
-      await userEvent.keyboard("30");
-
-      // AM/PM input should have focus now
-      await expect(dayPeriodSegment).toHaveFocus();
-
-      // Tab to leave the input
+    await step("TimeInput rejects values below minimum (9:00 AM)", async () => {
+      // Clear and set to 8 (below min of 9)
       await userEvent.tab();
-      // Verify the input has data-invalid attribute
-      await expect(timeInput).toHaveAttribute("data-invalid", "true");
+      await userEvent.keyboard("08");
+      await userEvent.keyboard("59");
+      await userEvent.keyboard("AM");
+      await userEvent.tab();
+      // Group should have data-invalid attribute
+      await expect(segmentGroup).toHaveAttribute("data-invalid");
     });
 
-    /* await step("Test time within min-max range (11:30)", async () => {
-      // Focus the hour segment
-      await userEvent.click(hourSegment);
-      await expect(hourSegment).toHaveFocus();
-      await userEvent.keyboard("11");
-
-      // Focus minute segment
-      await userEvent.click(minuteSegment);
-      await expect(minuteSegment).toHaveFocus();
-      await userEvent.keyboard("30");
-
-      // Verify the input has data-invalid attribute
-      await fireEvent.blur(minuteSegment);
-      await expect(args.onChange).toHaveBeenCalled();
-    });
-
-    await step("Test time above max value (2:00 PM)", async () => {
-      // Focus the hour segment
-      await userEvent.click(hourSegment);
-      await expect(hourSegment).toHaveFocus();
-      await userEvent.keyboard("11");
-
-      // Focus minute segment
-      await userEvent.click(minuteSegment);
-      await expect(minuteSegment).toHaveFocus();
+    await step("TimeInput accepts minimum time (9:00 AM)", async () => {
+      await userEvent.tab();
+      await userEvent.keyboard("09");
       await userEvent.keyboard("00");
+      await userEvent.keyboard("AM");
+      await userEvent.tab();
+      // Group should have data-invalid attribute
+      await expect(segmentGroup).not.toHaveAttribute("data-invalid");
+    });
 
-      // Set dayPeriod to PM
-      await userEvent.click(dayPeriodSegment);
+    await step(
+      "TimeInput accepts values above minimum time (9:00 AM)",
+      async () => {
+        await userEvent.tab();
+        await userEvent.keyboard("09");
+        await userEvent.keyboard("01");
+        await userEvent.keyboard("AM");
+        await userEvent.tab();
+        // Group should have data-invalid attribute
+        await expect(segmentGroup).not.toHaveAttribute("data-invalid");
+      }
+    );
+  },
+};
+
+/**
+ * Showcase Min property
+ */
+export const MaxValue: Story = {
+  args: {
+    maxValue: new Time(18, 0), // 6:00 PM
+  },
+  render: (args) => {
+    return <TimeInput {...args} data-testid="max-value-time-input" />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const timeInput = canvas.getByTestId("max-value-time-input");
+    const segmentGroup = timeInput.querySelector('[role="group"]');
+
+    await step("TimeInput rejects values above maximum (6:00 PM)", async () => {
+      // Clear and set to 8 (below min of 9)
+      await userEvent.tab();
+      await userEvent.keyboard("06");
+      await userEvent.keyboard("01");
       await userEvent.keyboard("PM");
-      await fireEvent.blur(minuteSegment);
+      await userEvent.tab();
+      // Group should have data-invalid attribute
+      await expect(segmentGroup).toHaveAttribute("data-invalid");
+    });
 
-      // Verify the input has data-invalid attribute
-      await expect(timeInput).toHaveAttribute("data-invalid", "true");
-    }); */
+    await step("TimeInput accepts the maxium time (6:00 PM)", async () => {
+      await userEvent.tab();
+      await userEvent.keyboard("06");
+      await userEvent.keyboard("00");
+      await userEvent.keyboard("PM");
+      await userEvent.tab();
+      // Group should have data-invalid attribute
+      await expect(segmentGroup).not.toHaveAttribute("data-invalid");
+    });
+
+    await step(
+      "TimeInput accepts value below maxium time (6:00 PM)",
+      async () => {
+        await userEvent.tab();
+        await userEvent.keyboard("05");
+        await userEvent.keyboard("59");
+        await userEvent.keyboard("PM");
+        await userEvent.tab();
+        // Group should have data-invalid attribute
+        await expect(segmentGroup).not.toHaveAttribute("data-invalid");
+      }
+    );
   },
 };
 
