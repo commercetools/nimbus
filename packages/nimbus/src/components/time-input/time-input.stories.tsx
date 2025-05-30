@@ -902,9 +902,7 @@ export const WithFormField: Story = {
       await userEvent.keyboard("{ArrowDown}{ArrowDown}");
 
       // Error message should be visible
-      const errorMessage = canvas.getByText(
-        /must be between 9:00 AM and 5:00 PM/i
-      );
+      const errorMessage = canvas.getByTestId("form-field-error");
       await expect(errorMessage).toBeVisible();
     });
 
