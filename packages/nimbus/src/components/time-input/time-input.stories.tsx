@@ -204,6 +204,7 @@ export const Controlled: Story = {
 export const IsInvalid: Story = {
   args: {
     isInvalid: true,
+    ["aria-label"]: "IsInvalid true",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -224,6 +225,7 @@ export const IsInvalid: Story = {
 export const IsDisabled: Story = {
   args: {
     isDisabled: true,
+    ["aria-label"]: "isDisabled true",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -260,6 +262,7 @@ export const IsReadOnly: Story = {
   args: {
     defaultValue: inventionOfTheInternet,
     isReadOnly: true,
+    ["aria-label"]: "isReadOnly true",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
