@@ -1,0 +1,51 @@
+---
+id: Components-TimeInput
+title: TimeInput
+description: allows entering a time
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - TimeInput
+tags:
+  - component
+  - time
+  - date
+---
+
+# TimeInput
+
+allows entering a time
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <TimeInput>I am TimeInput!</TimeInput>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['md', 'sm'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <TimeInput key={size} size={size}>'{size}' TimeInput</TimeInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+## Props
+
+<PropTable id="TimeInput" />
