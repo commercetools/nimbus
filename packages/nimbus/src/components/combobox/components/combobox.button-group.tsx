@@ -7,6 +7,8 @@ import { IconButton } from "@/components";
 import { ComboBoxStateContext } from "react-aria-components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 
+// TODO: pass isLoading and onClear as props
+
 export const ComboBoxButtonGroup = () => {
   const state = useContext(ComboBoxStateContext);
   return (
