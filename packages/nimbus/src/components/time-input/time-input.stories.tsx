@@ -5,7 +5,7 @@ import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn, fireEvent } from "@storybook/test";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -695,92 +695,81 @@ export const PlaceholderValue: Story = {
 /**
  * Showcase Min and Max Value
  */
-/* export const MinMaxValue: Story = {
+export const MinMaxValue: Story = {
   args: {
     hideTimeZone: true,
     minValue: new Time(10, 0),
     maxValue: new Time(14, 0),
-    ["aria-label"]: "Min value 10:00 and Max value 14:00",
+    ["aria-label"]: "Min value 10:00 AM and Max value 2:00 PM",
     onChange: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const timeInput = canvas.getByRole("group", {
-      name: /Min value 10:00 and Max value 14:00/i,
-    });
+    const timeInput = canvas.getByRole("group");
     const segments = Array.from(
       timeInput.querySelectorAll('[role="spinbutton"]')
     );
     const hourSegment = segments[0];
     const minuteSegment = segments[1];
+    const dayPeriodSegment = segments[2];
 
-    await step("Test time within min-max range (12:30)", async () => {
-      // Focus the hour segment
-      await userEvent.tab();
+    await step("Test time below min value (9:00 AM)", async () => {
+      // Focus hour segment
+      await userEvent.click(hourSegment);
       await expect(hourSegment).toHaveFocus();
+      await userEvent.keyboard("8");
 
-      // Set hour to 12
-      await userEvent.keyboard("{ArrowUp}"); // Should now be 12
-      await expect(hourSegment).toHaveTextContent("12");
-
-      // Move to minute segment
-      await userEvent.keyboard("{ArrowRight}");
+      // Focus minute segment
+      await userEvent.click(minuteSegment);
       await expect(minuteSegment).toHaveFocus();
+      await userEvent.keyboard("30");
 
-      // Set minute to 30
-      await userEvent.keyboard("{ArrowUp}{ArrowUp}{ArrowUp}"); // Should now be 30
-      await expect(minuteSegment).toHaveTextContent("02");
+      // AM/PM input should have focus now
+      await expect(dayPeriodSegment).toHaveFocus();
 
-      // Blur the input to trigger onChange
-      await userEvent.tab();
-
-      // Verify onChange was called with valid times
-      await expect(args.onChange).toHaveBeenCalledTimes(3);
-    });
-
-    await step("Test time below min value (9:00)", async () => {
-      // Tab back to hour segment
-      await userEvent.tab({ shift: true });
-      await userEvent.tab({ shift: true });
-      await expect(hourSegment).toHaveFocus();
-
-      // Try to set hour to 9 (below min of 10)
-      await userEvent.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}"); // Try to go to 9
-
-      // Hour should stay at min value (10)
-      await expect(hourSegment).toHaveTextContent("8");
-
-      // Blur the input (no native input with a blur method)
-      await userEvent.tab();
-      await userEvent.tab();
+      // Tab to leave the input
       await userEvent.tab();
       // Verify the input has data-invalid attribute
       await expect(timeInput).toHaveAttribute("data-invalid", "true");
     });
 
-    await step("Test time above max value (14:00)", async () => {
-      // Tab back to hour segment
-      await userEvent.tab();
-
+    /* await step("Test time within min-max range (11:30)", async () => {
+      // Focus the hour segment
+      await userEvent.click(hourSegment);
       await expect(hourSegment).toHaveFocus();
+      await userEvent.keyboard("11");
 
-      // Try to set hour to 9 (below min of 10)
-      await userEvent.keyboard(
-        "{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}"
-      ); // Try to go to 9
+      // Focus minute segment
+      await userEvent.click(minuteSegment);
+      await expect(minuteSegment).toHaveFocus();
+      await userEvent.keyboard("30");
 
-      // Hour should stay at min value (10)
-      await expect(hourSegment).toHaveTextContent("2");
+      // Verify the input has data-invalid attribute
+      await fireEvent.blur(minuteSegment);
+      await expect(args.onChange).toHaveBeenCalled();
+    });
 
-      // Blur the input (no native input with a blur method)
-      await userEvent.tab();
-      await userEvent.tab();
-      await userEvent.tab();
+    await step("Test time above max value (2:00 PM)", async () => {
+      // Focus the hour segment
+      await userEvent.click(hourSegment);
+      await expect(hourSegment).toHaveFocus();
+      await userEvent.keyboard("11");
+
+      // Focus minute segment
+      await userEvent.click(minuteSegment);
+      await expect(minuteSegment).toHaveFocus();
+      await userEvent.keyboard("00");
+
+      // Set dayPeriod to PM
+      await userEvent.click(dayPeriodSegment);
+      await userEvent.keyboard("PM");
+      await fireEvent.blur(minuteSegment);
+
       // Verify the input has data-invalid attribute
       await expect(timeInput).toHaveAttribute("data-invalid", "true");
-    });
+    }); */
   },
-}; */
+};
 
 /**
  * Showcase Different Locale
