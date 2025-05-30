@@ -1,8 +1,6 @@
-import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { type Key } from "react-aria-components";
+
 import { ComboBox } from "./combobox";
-import { Text } from "@/components";
 
 /**
  * Storybook metadata configuration
@@ -37,19 +35,18 @@ const options = [
  */
 export const Base: Story = {
   render: () => {
-    const [animalId, setAnimalId] = useState<Key | null>(null);
-
-    console.log(animalId);
+    // console.log(animalId);
     return (
       <>
         <ComboBox.Root
           aria-label="animals"
-          defaultItems={options}
-          onSelectionChange={setAnimalId}
+          items={options}
+          selectionMode="multiple"
         >
-          {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+          {(item) => (
+            <ComboBox.Option textValue={item.name}>{item.name}</ComboBox.Option>
+          )}
         </ComboBox.Root>
-        <Text>selected ID is: {animalId}</Text>
       </>
     );
   },
