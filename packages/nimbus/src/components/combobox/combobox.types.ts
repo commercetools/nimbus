@@ -7,12 +7,11 @@ import type {
 } from "@chakra-ui/react";
 import type {
   ComboBoxProps as RaComboBoxProps,
+  AutocompleteProps as RaAutoCompleteProps,
   ListBoxProps as RaListBoxProps,
   GridListProps as RaGridListProps,
   ListBoxItemProps as RaListBoxItemProps,
-  GridListItemProps as RaGridListItemProps,
   ListBoxSectionProps as RaListBoxSectionProps,
-  SelectionMode as RaSelectionMode,
 } from "react-aria-components";
 
 import { comboBoxSlotRecipe } from "./combobox.recipe";
@@ -28,17 +27,43 @@ type ComboBoxWithCustomChildren<T extends object> = Omit<
   isLoading?: boolean;
   children: ReactNode | ((item: T) => React.ReactNode);
 };
-/** Base Chakra styling props for the root `div` slot. */
-export interface ComboBoxRootSlotProps<T extends object>
+
+interface ComboBoxMultiSelect<T extends object>
+  extends Omit<RaAutoCompleteProps, "children">,
+    Omit<RaGridListProps<T>, "filter"> {
+  defaultFilter?: (textValue: string, inputValue: string) => boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  isRequired?: boolean;
+  isInvalid?: boolean;
+}
+/** Base Chakra styling props for the root `div` slot when single select*/
+export interface ComboBoxSingleSelectRootSlotProps<T extends object>
   extends HTMLChakraProps<
     "div",
     RecipeVariantProps<typeof comboBoxSlotRecipe> &
       ComboBoxWithCustomChildren<T>
   > {}
-/** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
-export interface ComboBoxRootProps<T extends object>
-  extends ComboBoxRootSlotProps<T>,
+/** Combined props for the single select root element (Chakra styles + Aria behavior + Recipe variants). */
+export interface ComboBoxSingleSelectRootProps<T extends object>
+  extends ComboBoxSingleSelectRootSlotProps<T>,
     ComboBoxWithCustomChildren<T> {}
+
+/** Base Chakra styling props for the root `div` slot when multi select*/
+export interface ComboBoxMultiSelectRootSlotProps<T extends object>
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof comboBoxSlotRecipe> & ComboBoxMultiSelect<T>
+  > {}
+/** Combined props for the multi select root element (Chakra styles + Aria behavior + Recipe variants). */
+export interface ComboBoxMultiSelectRootProps<T extends object>
+  extends Omit<ComboBoxMultiSelectRootSlotProps<T>, "selectionMode">,
+    ComboBoxMultiSelect<T> {}
+
+export type ComboBoxRootProps<T extends object> =
+  | ComboBoxSingleSelectRootProps<T>
+  | ComboBoxMultiSelectRootProps<T>;
 
 // ============================================================
 // Options Sub-Component (`<ComboBox.Options>`)
@@ -48,17 +73,9 @@ export interface ComboBoxRootProps<T extends object>
 export interface ComboBoxOptionsSlotProps
   extends HTMLChakraProps<"div", RecipeProps<"options">> {}
 /** Combined props for the ListBox element used in Single Select (Chakra styles + Aria behavior + Recipe variants) */
-interface ComboBoxListBoxProps<T extends object>
+export interface ComboBoxOptionsProps<T extends object>
   extends RaListBoxProps<T>,
     Omit<ComboBoxOptionsSlotProps, keyof RaListBoxProps<T>> {}
-/** Combined props for the GridList element used in Multi Select (Chakra styles + Aria behavior + Recipe variants) */
-interface ComboBoxGridListProps<T extends object>
-  extends RaGridListProps<T>,
-    Omit<ComboBoxOptionsSlotProps, keyof RaGridListProps<T>> {}
-/** Union type of ListBox or Gridlist, since slot could use either as base component  */
-export type ComboBoxOptionsProps<T extends object> =
-  | ComboBoxListBoxProps<T>
-  | ComboBoxGridListProps<T>;
 
 // ============================================================
 // Option Sub-Component (`<ComboBox.Option>`)
@@ -67,21 +84,9 @@ export type ComboBoxOptionsProps<T extends object> =
 /** Base Chakra styling props for the root `div` slot. */
 type ComboBoxOptionSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 /** Combined props for the ListBoxItem element (Chakra styles + Aria behavior + Recipe variants). */
-interface ComboBoxListBoxItemProps<T extends object>
+export interface ComboBoxOptionProps<T extends object>
   extends RaListBoxItemProps<T>,
-    Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> {
-  selectionMode?: RaSelectionMode;
-}
-/** Combined props for the GridListItem element (Chakra styles + Aria behavior + Recipe variants). */
-interface ComboBoxGridListItemProps<T extends object>
-  extends RaGridListItemProps<T>,
-    Omit<ComboBoxOptionSlotProps, keyof RaGridListItemProps<T>> {
-  selectionMode?: RaSelectionMode;
-}
-/** Union type of ListBox or Gridlist, since slot could use either as base component  */
-export type ComboBoxOptionProps<T extends object> =
-  | ComboBoxListBoxItemProps<T>
-  | ComboBoxGridListItemProps<T>;
+    Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> {}
 
 // ============================================================
 // OptionGroup Sub-Component (`<ComboBox.OptionGroup>`)
