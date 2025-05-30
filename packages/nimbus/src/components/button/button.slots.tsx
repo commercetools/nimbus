@@ -14,7 +14,7 @@ import shouldForwardProp from "@emotion/is-prop-valid";
  * with the unstyled prop option for the button element.
  */
 interface ButtonRecipeProps
-  extends RecipeProps<typeof buttonRecipe>,
+  extends RecipeProps<"typeof buttonRecipe">,
     UnstyledProp {}
 
 /**
