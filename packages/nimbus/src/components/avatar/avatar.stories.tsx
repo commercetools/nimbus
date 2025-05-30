@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar } from "./avatar";
 import type { AvatarProps } from "./avatar.types";
-import { within, expect } from "@storybook/test";
+import { within, expect, waitFor } from "@storybook/test";
 import { Button, Stack } from "@/components";
 
 /**
@@ -30,6 +30,8 @@ const avatarImg = "https://thispersondoesnotexist.com/ ";
 
 export const Base: Story = {
   args: {
+    firstName: "John",
+    lastName: "Doe",
     src: avatarImg,
     ["aria-label"]: "avatar",
     alt: "avatar",
@@ -46,6 +48,8 @@ export const Base: Story = {
 
 export const Sizes: Story = {
   args: {
+    firstName: "John",
+    lastName: "Doe",
     src: avatarImg,
     ["aria-label"]: "avatar",
     alt: "avatar",
@@ -121,8 +125,43 @@ export const Colors: Story = {
   },
 };
 
+export const ImageErrorFallback: Story = {
+  args: {
+    firstName: "Jane",
+    lastName: "Smith",
+    src: "https://www.gravatar.com/avatar/thisWill404?s=200&d=404", // d=404 will return a 404 if the image doesn't exist
+    ["aria-label"]: "Jane Smith avatar",
+    alt: "Jane Smith",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByLabelText("Jane Smith avatar");
+
+    await step(
+      "Should fall back to initials when image fails to load",
+      async () => {
+        // Wait for the image error to be handled
+        await waitFor(
+          async () => {
+            await expect(avatar).toHaveTextContent("JS");
+          },
+          { timeout: 3000 }
+        );
+      }
+    );
+
+    await step("Should hide the img element after error", async () => {
+      const img = avatar.querySelector("img");
+      await expect(img).not.toBeNull(); // Image element should still exist
+      await expect(img).toHaveStyle("display: none"); // But should be hidden
+    });
+  },
+};
+
 export const InAButton: Story = {
   args: {
+    firstName: "Jane",
+    lastName: "Smith",
     src: avatarImg,
   },
 

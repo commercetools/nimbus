@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Image } from "@chakra-ui/react";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
@@ -10,6 +11,8 @@ function getInitials(firstName: string, lastName: string) {
 
 export const Avatar = (props: AvatarProps) => {
   const { ref, firstName, lastName, src, alt, ...rest } = props;
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const fullName = `${firstName} ${lastName}`;
 
@@ -18,13 +21,32 @@ export const Avatar = (props: AvatarProps) => {
     ref,
     ...rest,
   };
+
+  const onLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  const onError = () => {
+    setImageLoaded(false);
+    setImageError(true);
+  };
+
+  // Show initials if no src provided, image hasn't loaded yet, or image failed
+  const shouldShowInitials = !src || !imageLoaded || imageError;
+
   return (
     <AvatarRoot {...sharedProps}>
-      {src ? (
-        // TODO: implement more robust error handling for image
-        <Image src={src} alt={alt || fullName} />
-      ) : (
-        getInitials(firstName, lastName)
+      {shouldShowInitials ? getInitials(firstName, lastName) : null}
+
+      {src && (
+        <Image
+          src={src}
+          alt={alt || fullName}
+          onLoad={onLoad}
+          onError={onError}
+          display={imageLoaded && !imageError ? "block" : "none"}
+        />
       )}
     </AvatarRoot>
   );
