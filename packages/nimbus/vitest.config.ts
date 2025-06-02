@@ -1,3 +1,4 @@
+/// <reference types="@vitest/browser/providers/playwright" />
 import {
   coverageConfigDefaults,
   defineConfig,
