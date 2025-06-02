@@ -4,6 +4,7 @@ import { Flex, Box } from "@commercetools/nimbus";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
+import { Time } from "@internationalized/date";
 
 const baseHooks = {
   useState,
@@ -13,7 +14,7 @@ const baseHooks = {
 };
 
 // funcitons & components available to the live code editor
-const scope = { ...BlehUi, ...baseHooks, Icons: { ...icons } };
+const scope = { ...BlehUi, ...baseHooks, Icons: { ...icons }, Time };
 
 const removeImportStatements = (code: string) => {
   // Regular expression to match import statements
