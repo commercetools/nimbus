@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TimeInput } from "./time-input";
-import { Button, Stack, Text } from "@/components";
+import { Button, FormField, Stack, Text } from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
@@ -924,7 +924,7 @@ export const DifferentLocales: Story = {
  * Showcase TimeInput within FormField
  * Demonstrates the use of TimeInput as Input within a FormField context
  */
-/* export const WithFormField: Story = {
+export const WithFormField: Story = {
   render: (args) => {
     const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
     const [isInvalid, setIsInvalid] = useState(false);
@@ -1020,4 +1020,4 @@ export const DifferentLocales: Story = {
       await expect(errorMessage).toBeNull();
     });
   },
-}; */
+};
