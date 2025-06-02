@@ -743,7 +743,7 @@ export const MinValue: Story = {
       await expect(hourSegment).toHaveFocus();
 
       // Set hour
-      await userEvent.keyboard("10");
+      await userEvent.keyboard("08");
       // Set Minute
       await userEvent.keyboard("00");
       // set day period
@@ -754,7 +754,7 @@ export const MinValue: Story = {
 
       // Check that no segments have aria-invalid attribute
       for (const segment of segments) {
-        await expect(segment).not.toHaveAttribute("aria-invalid");
+        await expect(segment).toHaveAttribute("aria-invalid");
       }
     });
 
@@ -789,76 +789,88 @@ export const MinValue: Story = {
 /**
  * Showcase Max property
  */
-/* export const MaxValue: Story = {
+export const MaxValue: Story = {
   args: {
-    maxValue: new Time(18, 0), // 6:00 PM
+    maxValue: new Time(17, 0), // 5:00 PM
+    "aria-label": "Max value time input",
+    hideTimeZone: true,
   },
-  render: (args) => {
-    return <TimeInput {...args} data-testid="max-value-time-input" />;
-  },
+  render: (args) => <TimeInput {...args} data-testid="max-value-time-input" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const timeInput = canvas.getByTestId("max-value-time-input");
     const segmentGroup = timeInput.querySelector('[role="group"]');
-    const segments = Array.from(
-      timeInput.querySelectorAll('[role="spinbutton"]')
-    );
+    const segments = segmentGroup
+      ? Array.from(segmentGroup.querySelectorAll('[role="spinbutton"]'))
+      : [];
 
-    await step("TimeInput rejects values above maximum (6:00 PM)", async () => {
-      // Clear and set to 7 PM (above max of 6 PM)
+    const hourSegment = segments[0];
+
+    await step("Testing value below maximum (4:00 PM is valid)", async () => {
+      // Focus the hour segment
       await userEvent.tab();
-      await userEvent.keyboard("07");
+      await expect(hourSegment).toHaveFocus();
+
+      // Set hour
+      await userEvent.keyboard("04");
+      // Set Minute
       await userEvent.keyboard("00");
+      // set day period
       await userEvent.keyboard("PM");
+
+      // Tab out to trigger validation
       await userEvent.tab();
 
-      // Wait a second for validation to apply
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Group should have aria-invalid attribute
-      await expect(segmentGroup).toHaveAttribute("aria-invalid");
-
-      // All spinbuttons should have aria-invalid attribute
-      for (const segment of segments) {
-        await expect(segment).toHaveAttribute("aria-invalid");
-      }
-    });
-
-    await step("TimeInput accepts the maximum time (6:00 PM)", async () => {
-      await userEvent.tab();
-      await userEvent.keyboard("06");
-      await userEvent.keyboard("00");
-      await userEvent.keyboard("PM");
-      await userEvent.tab();
-
-      // Wait a second for validation to apply
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Group should not have aria-invalid attribute
-      await expect(segmentGroup).not.toHaveAttribute("aria-invalid");
-
-      // None of the spinbuttons should have aria-invalid attribute
+      // Check that no segments have aria-invalid attribute
       for (const segment of segments) {
         await expect(segment).not.toHaveAttribute("aria-invalid");
       }
     });
 
+    await step("Testing value above maximum (6:00 PM is invalid)", async () => {
+      // Tab back to the input
+      await userEvent.tab({ shift: true });
+
+      // Focus and set hour to 6
+      await userEvent.keyboard("{ArrowLeft}{ArrowLeft}");
+      await expect(hourSegment).toHaveFocus();
+
+      // Set hour
+      await userEvent.keyboard("06");
+      // Set Minute
+      await userEvent.keyboard("00");
+      // set day period
+      await userEvent.keyboard("PM");
+
+      // Tab out to trigger validation
+      await userEvent.tab();
+
+      // Check that no segments have aria-invalid attribute
+      for (const segment of segments) {
+        await expect(segment).toHaveAttribute("aria-invalid");
+      }
+    });
+
     await step(
-      "TimeInput accepts value below maximum time (6:00 PM)",
+      "Testing value exactly at maximum (5:00 PM is valid)",
       async () => {
-        await userEvent.tab();
+        // Tab back to the input
+        await userEvent.tab({ shift: true });
+
+        // Focus and set hour to 5
+        await userEvent.keyboard("{ArrowLeft}{ArrowLeft}");
+        await expect(hourSegment).toHaveFocus();
+        // Set hour
         await userEvent.keyboard("05");
-        await userEvent.keyboard("59");
+        // Set Minute
+        await userEvent.keyboard("00");
+        // set day period
         await userEvent.keyboard("PM");
+
+        // Tab out to trigger validation
         await userEvent.tab();
 
-        // Wait a second for validation to apply
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Group should not have aria-invalid attribute
-        await expect(segmentGroup).not.toHaveAttribute("aria-invalid");
-
-        // None of the spinbuttons should have aria-invalid attribute
+        // Check that no segments have aria-invalid attribute
         for (const segment of segments) {
           await expect(segment).not.toHaveAttribute("aria-invalid");
         }
@@ -866,7 +878,7 @@ export const MinValue: Story = {
     );
   },
 };
- */
+
 /**
  * Showcase Different Locale
  */
