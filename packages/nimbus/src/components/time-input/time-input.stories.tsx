@@ -6,7 +6,6 @@ import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
 import { userEvent, within, expect, fn } from "@storybook/test";
-import { fieldAnatomy } from "@chakra-ui/react/anatomy";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
