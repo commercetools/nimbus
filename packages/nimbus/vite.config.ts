@@ -66,7 +66,12 @@ export default defineConfig((/* config */) => {
   const config = baseConfig;
 
   if (!isWatchMode) {
-    config.plugins.push(dts({ rollupTypes: true }));
+    // TODO: if we can ever move off typescript 5.2.2, we should re-enable the `rollupTypes`
+    // option for `dts`, e.g. `dts({ rollupTypes: true })`, as this will output 1 d.ts file
+    // for the entire package instead of a d.ts file for each.
+    // The `rollupTypes` option was disabled for TS 5.2.2 because of an issue in the most recent
+    // version of `@microsoft/api-extractor` that supports ts 5.2.2 (7.38.5).
+    config.plugins.push(dts({}));
   }
 
   return config;
