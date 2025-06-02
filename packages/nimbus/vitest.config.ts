@@ -29,7 +29,14 @@ export default mergeConfig(
         // ... use playwright to run tests
         provider: "playwright",
         // ... only in chromium
-        instances: [{ browser: "chromium" }],
+        instances: [
+          {
+            browser: "chromium",
+            context: {
+              locale: "en-US",
+            },
+          },
+        ],
         // ... do not open the browser-ui
         headless: true,
         // ... do not capture screenshots on failure
