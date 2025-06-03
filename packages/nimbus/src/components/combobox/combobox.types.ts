@@ -24,6 +24,8 @@ type ComboBoxWithCustomChildren<T extends object> = Omit<
   RaComboBoxProps<T>,
   "children"
 > & {
+  onSubmitCustomValue?: (value: string) => void;
+  renderEmptyState?: RaListBoxProps<T>["renderEmptyState"];
   placeholder?: string;
   isLoading?: boolean;
   children: ReactNode | ((item: T) => React.ReactNode);
@@ -31,9 +33,15 @@ type ComboBoxWithCustomChildren<T extends object> = Omit<
 };
 
 export interface ComboBoxMultiSelect<T extends object>
-  extends Omit<RaAutoCompleteProps, "children">,
-    Omit<RaListBoxProps<T>, "filter"> {
+  extends Omit<RaAutoCompleteProps, "children" | "filter" | "slot">,
+    Omit<RaListBoxProps<T>, "filter" | "autoFocus" | "style" | "slot"> {
   defaultFilter?: (textValue: string, inputValue: string) => boolean;
+  defaultInputValue?: RaComboBoxProps<T>["defaultInputValue"];
+  defaultItems?: RaComboBoxProps<T>["defaultItems"];
+  validate?: RaComboBoxProps<T>["validate"];
+  allowsCustomValue?: boolean;
+  onSubmitCustomValue?: (value: string) => void;
+  autoFocus?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
   isReadOnly?: boolean;
@@ -45,6 +53,7 @@ export interface ComboBoxMultiSelect<T extends object>
   itemValue?: string;
   placeholder?: string;
   ref?: Ref<HTMLDivElement>;
+  size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
 }
 /** Base Chakra styling props for the root `div` slot when single select*/
 export interface ComboBoxSingleSelectRootSlotProps<T extends object>
@@ -129,7 +138,10 @@ export type ComboBoxMultiSelectValueProps<T extends object> = {
   selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
   onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];
   placeholder?: string;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
   ref?: Ref<HTMLDivElement>;
+  size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
 };
 
 // ============================================================
@@ -141,16 +153,6 @@ export type ComboBoxButtonGroupProps = {
   onSelectionChange?: ComboBoxMultiSelectRootProps<{}>["onSelectionChange"];
   onInputChange?: ComboBoxMultiSelectRootProps<{}>["onInputChange"];
   isLoading?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
 };
-
-// /** Base Chakra styling props for the root `button` slot. */
-// type ComboBoxOptionsSlotProps = HTMLChakraProps<"div", RecipeProps<"button">>;
-
-// /** Combined props for the tagList element (Chakra styles + Aria behavior + Recipe variants). */
-// export type ComboBoxListBoxProps<T extends object> = RaListBoxProps<T> &
-//   Omit<ComboBoxOptionsSlotProps, keyof RaListBoxProps<T>>;
-
-// /** Type signature for the `ComboBox.ListBox` sub-component (using `forwardRef`). */
-// export type ComboBoxListBoxComponent<T extends object> = FC<
-//   ComboBoxListBoxProps<T> & RefAttributes<HTMLDivElement>
-// >;

@@ -69,6 +69,14 @@ export const ComboBoxMultiSelectInputSlot = withContext<
   ComboBoxInputSlotProps
 >("input", "multiSelectInput");
 
+//popover container
+
+export interface ComboBoxPopoverSlotProps extends HTMLChakraProps<"div"> {}
+export const ComboBoxPopoverSlot = withContext<
+  HTMLDivElement,
+  ComboBoxPopoverSlotProps
+>("div", "popover");
+
 // // TagGroup
 // export interface ComboBoxTagGroupSlotProps extends HTMLChakraProps<"div"> {}
 // export const ComboBoxTagGroupSlot = withContext<

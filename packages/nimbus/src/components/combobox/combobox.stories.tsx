@@ -28,6 +28,26 @@ const options = [
   { id: 5, name: "Bison" },
   { id: 6, name: "Skunk" },
 ];
+
+const sectionedItems = [
+  {
+    name: "Fruits",
+    id: "fruit",
+    children: [
+      { id: 1, name: "Apple" },
+      { id: 2, name: "Banana" },
+    ],
+  },
+  {
+    name: "Vegetables",
+    id: "veg",
+    children: [
+      { id: 3, name: "Carrot" },
+      { id: 4, name: "Broccoli" },
+      { id: 5, name: "Avocado" },
+    ],
+  },
+];
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -39,15 +59,23 @@ export const Base: Story = {
     return (
       <>
         <ComboBox.Root
+          isDisabled
           aria-label="animals"
-          items={options}
+          items={sectionedItems}
           selectionMode="multiple"
           placeholder="search..."
+          allowsCustomValue
+          onSubmitCustomValue={(value) => console.log(value)}
+          variant="ghost"
         >
-          {(item) => (
-            <ComboBox.Option aria-label={item.name}>
-              {item.name}
-            </ComboBox.Option>
+          {(section) => (
+            <ComboBox.OptionGroup label={section.name} items={section.children}>
+              {(item) => (
+                <ComboBox.Option aria-label={item.name}>
+                  {item.name}
+                </ComboBox.Option>
+              )}
+            </ComboBox.OptionGroup>
           )}
         </ComboBox.Root>
       </>
@@ -58,7 +86,7 @@ export const Base: Story = {
 export const SimpleOptions: Story = {
   render: () => {
     return (
-      <ComboBox.Root aria-label="animals" defaultItems={options}>
+      <ComboBox.Root isDisabled aria-label="animals" defaultItems={options}>
         <ComboBox.Option>Koala</ComboBox.Option>
         <ComboBox.Option>Kangaroo</ComboBox.Option>
         <ComboBox.Option>Panda</ComboBox.Option>
