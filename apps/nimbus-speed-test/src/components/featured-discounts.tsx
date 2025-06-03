@@ -6,6 +6,7 @@ import {
   type BadgeProps,
   CardRoot,
   Grid,
+  Box,
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 import { FavoriteIcon } from "../favorite_border";
@@ -71,12 +72,23 @@ const FeaturedCard = (props: TFeaturedCardProps) => {
         <Grid.Item colSpan={7} rowSpan={1}>
           <Stack gap="200" width="100%">
             <Heading fontWeight="700" fontSize="500">
-              {props.title || "Featured Card Title"}
+              {props.title}
             </Heading>
-            <Text lineHeight="600" fontSize="350">
-              {props.description ||
-                "Automatically trigger discounts based on specific customer actions, such as abandoning a cart. "}
-            </Text>
+            <Box
+              display="-webkit-box"
+              // This is needed for the text truncation to work
+              style={{
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+              }}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              maxHeight="4.8rem"
+            >
+              <Text lineHeight="600" fontSize="350">
+                {props.description}
+              </Text>
+            </Box>
           </Stack>
         </Grid.Item>
       </Grid>
@@ -86,18 +98,20 @@ const FeaturedCard = (props: TFeaturedCardProps) => {
 
 const FeaturedDiscounts = () => {
   return (
-    <Stack>
-      <Stack direction="row" gap="200" alignItems="center">
-        <Badge colorPalette="primary">
-          <Icons.Celebration /> New
-        </Badge>
-        <Heading fontWeight="500" fontSize="500">
-          Featured discounts
-        </Heading>
+    <>
+      <Stack>
+        <Stack direction="row" gap="400" alignItems="center">
+          <Badge colorPalette="primary">
+            <Icons.Celebration /> New
+          </Badge>
+          <Heading fontWeight="500" fontSize="500">
+            Featured discounts
+          </Heading>
+        </Stack>
+        <Text lineHeight="600">
+          Take advantage of these are popular new discounts creation tools.{" "}
+        </Text>
       </Stack>
-      <Text lineHeight="600">
-        Take advantage of these are popular new discounts creation tools.{" "}
-      </Text>
       <Grid templateColumns="repeat(4, 1fr)" gridGap="400">
         {discountFeatures.map((feature, index) => (
           <Grid.Item colSpan={1} rowSpan={1}>
@@ -111,7 +125,7 @@ const FeaturedDiscounts = () => {
           </Grid.Item>
         ))}
       </Grid>
-    </Stack>
+    </>
   );
 };
 export default FeaturedDiscounts;
