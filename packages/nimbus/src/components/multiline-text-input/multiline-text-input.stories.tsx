@@ -1,0 +1,323 @@
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react";
+import { MultilineTextInput } from "./multiline-text-input";
+import type { MultilineTextInputProps } from "./multiline-text-input.types";
+import { userEvent, within, expect, fn } from "@storybook/test";
+import { Box, Stack, Text } from "@/components";
+
+const meta: Meta<typeof MultilineTextInput> = {
+  title: "components/MultilineTextInput",
+  component: MultilineTextInput,
+};
+
+export default meta;
+
+type Story = StoryObj<typeof MultilineTextInput>;
+
+const inputVariants: MultilineTextInputProps["variant"][] = ["solid", "ghost"];
+const inputSize: MultilineTextInputProps["size"][] = ["md", "sm"];
+
+export const Base: Story = {
+  args: {
+    placeholder: "base multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByLabelText("test-textarea");
+
+    await step("Uses a <textarea> element by default", async () => {
+      await expect(textarea.tagName).toBe("TEXTAREA");
+    });
+
+    await step("Forwards data- & aria-attributes", async () => {
+      await expect(textarea).toHaveAttribute("aria-label", "test-textarea");
+    });
+
+    await step("Is focusable with <tab> key", async () => {
+      await userEvent.tab();
+      await expect(textarea).toHaveFocus();
+    });
+
+    await step("Can type multiline text", async () => {
+      await userEvent.type(textarea, "First line{enter}Second line");
+      await expect(textarea).toHaveValue("First line\nSecond line");
+      await userEvent.clear(textarea);
+    });
+  },
+};
+
+export const Sizes: Story = {
+  args: {
+    "aria-label": "test-textarea",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="flex-start">
+        {inputSize.map((size) => (
+          <MultilineTextInput
+            key={size as string}
+            {...args}
+            size={size}
+            placeholder={`${size as string} textarea`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const Variants: Story = {
+  args: {
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="flex-start">
+        {inputVariants.map((variant) => (
+          <MultilineTextInput
+            key={variant as string}
+            {...args}
+            variant={variant}
+            placeholder={`${variant as string} textarea`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const Required: Story = {
+  args: {
+    isRequired: true,
+    placeholder: "required multiline text input",
+    ["aria-label"]: "test-textarea-required",
+  },
+  render: (args) => {
+    return (
+      <MultilineTextInput
+        {...args}
+        placeholder="required multiline text input"
+        aria-label="test-textarea-required"
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByLabelText("test-textarea-required");
+
+    await step("Has aria-required attribute", async () => {
+      await expect(textarea).toHaveAttribute("aria-required", "true");
+    });
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    isDisabled: true,
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="flex-start">
+        {inputVariants.map((variant) => (
+          <MultilineTextInput
+            key={variant as string}
+            {...args}
+            variant={variant}
+            placeholder={`${variant as string} disabled`}
+            aria-label={`${variant as string}-disabled`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByLabelText("solid-disabled");
+
+    await step("Has disabled attribute", async () => {
+      await expect(textarea).toBeDisabled();
+    });
+
+    await step("Cannot be focused", async () => {
+      await userEvent.tab();
+      await expect(textarea).not.toHaveFocus();
+    });
+
+    await step("Cannot type text when disabled", async () => {
+      await userEvent.type(textarea, "Test");
+      await expect(textarea).toHaveValue("");
+    });
+  },
+};
+
+export const Invalid: Story = {
+  args: {
+    isInvalid: true,
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="flex-start">
+        {inputVariants.map((variant) => (
+          <MultilineTextInput
+            key={variant as string}
+            {...args}
+            variant={variant}
+            placeholder={`${variant as string} invalid`}
+            aria-label={`${variant as string}-invalid`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByLabelText("solid-invalid");
+
+    await step("Has invalid state", async () => {
+      await expect(textarea).toHaveAttribute("data-invalid", "true");
+    });
+
+    await step("Is still focusable when invalid", async () => {
+      await userEvent.tab();
+      await expect(textarea).toHaveFocus();
+    });
+
+    await step("Can still type when invalid", async () => {
+      await userEvent.type(textarea, "Test Input");
+      await expect(textarea).toHaveValue("Test Input");
+      await userEvent.clear(textarea);
+    });
+  },
+};
+
+export const SmokeTest: Story = {
+  args: {
+    onChange: fn(),
+    ["aria-label"]: "test-textarea",
+  },
+  render: (args) => {
+    const states = [
+      { label: "Default", props: {} },
+      { label: "Disabled", props: { isDisabled: true } },
+      { label: "Invalid", props: { isInvalid: true } },
+      {
+        label: "Invalid & Disabled",
+        props: { isInvalid: true, isDisabled: true },
+      },
+    ];
+
+    return (
+      <Stack gap="600">
+        {states.map((state) => (
+          <Stack key={state.label} direction="column" gap="400">
+            <Text fontWeight="bold">{state.label}</Text>
+            {inputSize.map((size) => (
+              <Stack
+                direction="row"
+                key={size as string}
+                gap="400"
+                alignItems="flex-start"
+              >
+                {inputVariants.map((variant) => (
+                  <Box key={variant as string}>
+                    <MultilineTextInput
+                      {...args}
+                      {...state.props}
+                      variant={variant}
+                      size={size}
+                      placeholder={`${variant as string} ${size as string} ${state.label}`}
+                    />
+                  </Box>
+                ))}
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+const mockOnChangeRequest = fn();
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    const onChangeRequest = (e: string) => {
+      setValue(e);
+      mockOnChangeRequest(e);
+    };
+
+    return (
+      <Stack gap="400">
+        <MultilineTextInput
+          value={value}
+          onChange={onChangeRequest}
+          placeholder="Type something multiline..."
+          aria-label="controlled-textarea"
+        />
+        <Text data-testid="value-display">Current value: {value}</Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByLabelText("controlled-textarea");
+    const valueDisplay = canvas.getByTestId("value-display");
+
+    await step("Updates controlled value", async () => {
+      await userEvent.type(textarea, "Hello{enter}World");
+      await expect(textarea).toHaveValue("Hello\nWorld");
+      await expect(valueDisplay).toHaveTextContent(
+        "Current value: Hello World"
+      );
+    });
+
+    await step("Clears controlled value", async () => {
+      await userEvent.clear(textarea);
+      await expect(textarea).toHaveValue("");
+      await expect(valueDisplay).toHaveTextContent("Current value:");
+    });
+
+    await step("Does not call onChange with an event", async () => {
+      await userEvent.type(textarea, "Hello");
+      // Expect the input to never have been called with an object type
+      for (const call of mockOnChangeRequest.mock.calls) {
+        await expect(typeof call[0]).toBe("string");
+      }
+    });
+  },
+};
+
+export const WithRows: Story = {
+  args: {
+    rows: 5,
+    placeholder: "Textarea with 5 rows",
+    ["aria-label"]: "test-textarea-rows",
+  },
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <Text>Default (no rows specified - should be 1 row):</Text>
+        <MultilineTextInput
+          placeholder="Default textarea"
+          aria-label="default-textarea"
+        />
+        <Text>With 3 rows:</Text>
+        <MultilineTextInput
+          rows={3}
+          placeholder="Textarea with 3 rows"
+          aria-label="rows-3-textarea"
+        />
+        <Text>With 8 rows:</Text>
+        <MultilineTextInput
+          rows={8}
+          placeholder="Textarea with 8 rows"
+          aria-label="rows-8-textarea"
+        />
+      </Stack>
+    );
+  },
+};

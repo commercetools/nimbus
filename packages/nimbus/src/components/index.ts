@@ -35,3 +35,4 @@ export * from "./tag-group";
 export * from "./switch";
 export * from "./password-input";
 export * from "./time-input";
+export * from "./multiline-text-input";
