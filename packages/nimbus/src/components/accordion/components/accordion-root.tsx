@@ -5,7 +5,7 @@ import { useSlotRecipe } from "@chakra-ui/react";
 import type { DisclosureGroupProps } from "../accordion.types";
 import { DisclosureGroupStateContext } from "../accordion-context";
 
-export const AccordionGroup = forwardRef<HTMLDivElement, DisclosureGroupProps>(
+export const AccordionRoot = forwardRef<HTMLDivElement, DisclosureGroupProps>(
   ({ children, onExpandedChange, ...props }, forwardedRef) => {
     const state = useDisclosureGroupState({
       ...props,

@@ -33,7 +33,7 @@ export const AccordionTitle = withContext<
   HTMLChakraProps<"div">
 >("div", "accordionTitle");
 
-export const HeaderRightContent = withContext<
+export const AccordionHeaderRightContent = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "headerContentRight");

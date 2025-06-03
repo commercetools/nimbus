@@ -62,8 +62,8 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {propsArr.map((item, idx) => (
-              <Table.Row key={idx}>
+            {propsArr.map((item) => (
+              <Table.Row key={[id, item.name].join("-")}>
                 <Table.Cell display="flex" justifyContent="flex-start">
                   <Text fontWeight="600">
                     {item.name}
