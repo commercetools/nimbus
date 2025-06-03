@@ -15,6 +15,8 @@ export const ComboBoxButtonGroup = ({
   selectedKeys,
   onSelectionChange,
   onInputChange,
+  isDisabled,
+  isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
   const state = useContext(ComboBoxStateContext);
@@ -29,6 +31,7 @@ export const ComboBoxButtonGroup = ({
           tone="primary"
           aria-label="Clear Selection"
           aria-expanded={false}
+          isDisabled={isDisabled || isReadOnly}
           onPress={() => state?.setSelectedKey(null)}
           my="auto"
           aria-hidden={true}
@@ -45,6 +48,7 @@ export const ComboBoxButtonGroup = ({
           tone="primary"
           aria-label="Clear Selection"
           aria-expanded={false}
+          isDisabled={isDisabled || isReadOnly}
           onPress={() => {
             onSelectionChange?.(new Set());
             onInputChange?.("");

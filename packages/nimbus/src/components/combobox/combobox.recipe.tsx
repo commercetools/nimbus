@@ -10,6 +10,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "root",
     "value",
     "buttonGroup",
+    "popover",
     "multiSelectInput",
     "options",
     "optionGroup",
@@ -23,7 +24,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     root: {
       colorPalette: "primary",
       focusRing: "outside",
-      display: "inline-block",
+      display: "block",
       position: "relative",
       maxWidth: "100%",
       borderRadius: "200",
@@ -37,9 +38,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       },
     },
     value: {
-      display: "inline-flex",
+      display: "flex",
       focusRing: "outside",
       alignItems: "flex-start",
+      paddingRight: "1500 !important",
       borderRadius: "200",
       color: "neutral.12",
       width: "100%",
@@ -69,21 +71,31 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       bottom: 0,
       right: 300,
     },
+    popover: {
+      bg: "bg",
+      borderRadius: "200",
+      boxShadow: "5",
+      padding: "200",
+    },
     multiSelectInput: {
-      px: 200,
-      py: "100",
       "& input": {
+        py: "200",
+        px: "200",
         focusRing: "none",
         borderBottom: "solid 1px",
-        borderBottomColor: "neutral.9",
+        borderBottomColor: "neutral.6",
         bg: "bg",
+        w: "100%",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        fontSize: "350",
+        fontWeight: "400",
+        lineHeight: "400",
         _placeholder: { opacity: 0.5 },
       },
     },
     options: {
       ...selectSlotRecipe.base?.options,
-      borderRadius: "0 0 200 200",
-      boxShadow: "none",
     },
     optionGroup: {
       ...selectSlotRecipe.base?.optionGroup,
@@ -99,14 +111,18 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         value: {
-          ...selectSlotRecipe.variants?.size.sm.trigger,
-          paddingRight: "1600",
+          minH: "800",
+          py: "100",
+          px: "400",
+          textStyle: "sm",
         },
       }, // Small
       md: {
         value: {
-          ...selectSlotRecipe.variants?.size.md.trigger,
-          paddingRight: "1600",
+          minH: "1000",
+          px: "400",
+          py: "100",
+          textStyle: "md",
         },
       }, // Medium
     },
@@ -114,6 +130,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     // Visual style variants
     variant: {
       solid: {
+        root: {
+          width: "7200",
+        },
+        popover: {
+          width: "7200",
+        },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,
         },
@@ -121,16 +143,26 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       ghost: {
         root: {
           ...selectSlotRecipe.variants?.variant.ghost.root,
+          maxW: "7200",
         },
+        popover: { minW: "1800", maxW: "7200" },
         value: { ...selectSlotRecipe.variants?.variant.ghost.trigger },
       },
     },
     selectionMode: {
       multiple: {
+        options: {
+          borderRadius: "0 0 200 200",
+          boxShadow: "none",
+        },
         option: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
-          '&[data-focused="true"], &:hover': {
+          cursor: "pointer",
+          "&:hover": {
+            bg: "primary.4",
+          },
+          '&[data-focused="true"]': {
             boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
           },
           '&[aria-selected="true"], &[data-focused="true"]': {
