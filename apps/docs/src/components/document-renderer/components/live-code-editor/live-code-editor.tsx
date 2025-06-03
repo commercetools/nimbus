@@ -1,4 +1,4 @@
-import * as BlehUi from "@commercetools/nimbus";
+import * as NimbusUi from "@commercetools/nimbus";
 import * as icons from "@commercetools/nimbus-icons";
 import { Flex, Box } from "@commercetools/nimbus";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
@@ -14,7 +14,7 @@ const baseHooks = {
 };
 
 // funcitons & components available to the live code editor
-const scope = { ...BlehUi, ...baseHooks, Icons: { ...icons }, Time };
+const scope = { ...NimbusUi, ...baseHooks, Icons: { ...icons }, Time };
 
 const removeImportStatements = (code: string) => {
   // Regular expression to match import statements
