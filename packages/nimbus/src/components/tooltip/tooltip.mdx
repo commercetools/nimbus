@@ -29,9 +29,35 @@ Tooltips offer concise, non-obtrusive guidance and supplemental information, enh
 
 Deep dive on details and access design library.
 
-[TECH RELATED LINK](https://react-spectrum.adobe.com/react-spectrum/Tooltip.html#tooltip)
+[TECH RELATED LINK](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
 [TECH RELATED LINK](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
 [Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
+
+## API
+
+The Tooltip component is structured as a compound component with two main parts:
+
+### Tooltip.Root
+
+The root component that wraps around a trigger element and manages the tooltip state. It handles opening and closing the tooltip when the user hovers over or focuses the trigger.
+
+**Props:**
+- `delay?: number` - Delay in milliseconds before showing the tooltip (default: 1500)
+- `closeDelay?: number` - Delay in milliseconds before hiding the tooltip (default: 500)
+- `isOpen?: boolean` - Controls the open state of the tooltip
+- `defaultOpen?: boolean` - Sets the initial open state of the tooltip
+- `onOpenChange?: (isOpen: boolean) => void` - Callback when the tooltip open state changes
+- Plus all standard React Aria `TooltipTrigger` props
+
+### Tooltip.Content
+
+The content component that renders the actual tooltip popup with styling.
+
+**Props:**
+- `placement?: Placement` - Position of the tooltip relative to the trigger
+  - Options: `"top"`, `"bottom"`, `"left"`, `"right"`, `"start"`, `"end"`
+  - With modifiers: `"top left"`, `"top right"`, `"bottom start"`, `"bottom end"`, etc.
+- Plus all standard HTML `div` attributes and React Aria `Tooltip` props
 
 ## Variables
 
@@ -60,6 +86,20 @@ Use tooltips to provide brief explanations, definitions, or instructions for int
 
 Tooltips are a valuable tool for providing concise, contextual information, but they should be used strategically and not as a replacement for clear and accessible design. Think carefully about the type of information you're presenting and choose the most appropriate UI element for the job.
 
+### Basic Usage
+
+The recommended approach using the compound component pattern:
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
+    <Tooltip.Root>
+      <Button>Hover me</Button>
+      <Tooltip.Content>This is a tooltip</Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
 
 ### Using tooltips for icons buttons
 
@@ -73,15 +113,16 @@ Icons often rely on shared universal understanding. A tooltip provides a text la
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
-        <TooltipTrigger >
-          <IconButton tone="primary" variant="ghost" size="md">
-            <Icons.Edit/>
-          </IconButton>
-          <Tooltip>Edit name</Tooltip>
-        </TooltipTrigger>
-      </Stack>
+    <Tooltip.Root>
+      <IconButton tone="primary" variant="ghost" size="md">
+        <Icons.Edit/>
+      </IconButton>
+      <Tooltip.Content>Edit name</Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
 )
 ```
+
 > [!CAUTION]\
 > **Don't**
 >
@@ -92,7 +133,7 @@ const App = () => (
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" alignItems="center" gap="100" marginLeft="800" padding="800">
-    <TooltipTrigger>
+    <Tooltip.Root>
       <IconButton 
         tone="primary" 
         variant="ghost" 
@@ -100,15 +141,40 @@ const App = () => (
       >
         <Icons.Edit/>
       </IconButton>
-      <Tooltip >
+      <Tooltip.Content>
         Pencil icon that will let you edit your profile name if you like.
-      </Tooltip>
-    </TooltipTrigger>
+      </Tooltip.Content>
+    </Tooltip.Root>
   </Stack>
 )
 ```
 
+### Placement Options
 
+Control where the tooltip appears relative to its trigger:
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
+    <Tooltip.Root>
+      <Button>Top placement</Button>
+      <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Button>Bottom placement</Button>
+      <Tooltip.Content placement="bottom">Tooltip on bottom</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Button>Left placement</Button>
+      <Tooltip.Content placement="left">Tooltip on left</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Button>Right placement</Button>
+      <Tooltip.Content placement="right">Tooltip on right</Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
 
 ### Specs
 
@@ -116,9 +182,9 @@ const App = () => (
 
 ### Accessibility
 
-Tooltip triggers must be focusable and hoverable in order to ensure that all users can activate them. When displayed, TooltipTrigger automatically associates the tooltip with the trigger element so that it is described by the tooltip content.
+Tooltip triggers must be focusable and hoverable in order to ensure that all users can activate them. When displayed, the Tooltip automatically associates the tooltip with the trigger element so that it is described by the tooltip content.
 
-Authors SHOULD ensure that elements with the [role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles) tooltip are referenced through the use of [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby) before or at the time the tooltip is displayed.
+Authors SHOULD ensure that elements with the [role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles) tooltip are referenced through the use of [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby) before or at the time the tooltip is displayed.
 
 ### Accessibility Standards
 #### 1. Perceivable:

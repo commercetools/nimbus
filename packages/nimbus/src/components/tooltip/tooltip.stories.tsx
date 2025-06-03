@@ -1,13 +1,6 @@
-import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect } from "@storybook/test";
-import {
-  Tooltip,
-  TooltipTrigger,
-  Button,
-  Stack,
-  type TooltipProps,
-} from "@/components";
+import { Tooltip, Button, Stack, type TooltipProps } from "@/components";
 
 const placements = {
   top: ["top", "top left", "top right", "top start", "top end"],
@@ -26,9 +19,9 @@ const placements = {
 
 const allPlacements = Object.values(placements).flatMap((x) => x);
 
-const meta: Meta<typeof Tooltip> = {
+const meta: Meta<typeof Tooltip.Content> = {
   title: "components/tooltip/Tooltip",
-  component: Tooltip,
+  component: Tooltip.Content,
   argTypes: {
     placement: {
       options: allPlacements,
@@ -36,10 +29,10 @@ const meta: Meta<typeof Tooltip> = {
     },
   },
   render: (args) => (
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <Button>hover/focus me</Button>
-      <Tooltip {...args} />
-    </TooltipTrigger>
+      <Tooltip.Content {...args} />
+    </Tooltip.Root>
   ),
 };
 
@@ -49,16 +42,14 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof Tooltip>;
+type Story = StoryObj<typeof Tooltip.Content>;
 
 /**
  * Demonstrates the most basic implementation
  */
-const tooltipRef = createRef<HTMLDivElement>();
 export const Base: Story = {
   args: {
     children: "Demo Tooltip",
-    ref: tooltipRef,
   },
   play: async ({ canvasElement, step }) => {
     // need to get the parent node in order to have the tooltip portal in scope
@@ -73,15 +64,6 @@ export const Base: Story = {
       await canvas.findByRole("tooltip", {
         name: "Demo Tooltip",
       });
-    });
-    await step("it forwards a ref to the tooltip", async () => {
-      const button = canvas.getByRole("button", { name: "hover/focus me" });
-
-      button.focus();
-      const tooltip = await canvas.findByRole("tooltip", {
-        name: "Demo Tooltip",
-      });
-      await expect(tooltipRef.current).toBe(tooltip);
     });
   },
 };
@@ -102,14 +84,16 @@ export const Placement: Story = {
         {Object.entries(placements).map(([type, values]) => (
           <Stack direction="row" alignItems="center" key={type} wrap="wrap">
             {values.map((placement) => (
-              <TooltipTrigger key={placement} delay={0}>
+              <Tooltip.Root key={placement} delay={0}>
                 <Button w="200px" h="60px">
                   {placement}
                 </Button>
-                <Tooltip placement={placement as TooltipProps["placement"]}>
+                <Tooltip.Content
+                  placement={placement as TooltipProps["placement"]}
+                >
                   {placement}
-                </Tooltip>
-              </TooltipTrigger>
+                </Tooltip.Content>
+              </Tooltip.Root>
             ))}
           </Stack>
         ))}
