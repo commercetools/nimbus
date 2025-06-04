@@ -11,7 +11,7 @@ import { useField } from "react-aria";
 import {
   FormFieldContext,
   type FormFieldContextPayloadType,
-} from "../form-field";
+} from "./form-field.context";
 import {
   FormFieldDescriptionSlot,
   FormFieldErrorSlot,
