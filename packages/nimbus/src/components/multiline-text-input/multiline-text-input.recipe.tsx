@@ -12,6 +12,7 @@ export const multilineTextInputRecipe = defineRecipe({
   // Base styles applied to all instances of the component
   base: {
     display: "block",
+    overflowY: "auto",
     borderRadius: "200",
     colorPalette: "neutral",
     focusVisibleRing: "outside",

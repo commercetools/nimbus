@@ -43,26 +43,21 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
     const textarea = ref.current;
     if (!textarea || !autoGrow) return;
 
-    // Store the current manually set height (if any) to compare
-    const currentHeight = textarea.clientHeight;
-
     // Reset height to auto to get the correct scrollHeight
     textarea.style.height = "auto";
 
     // Calculate the new height based on content
     const contentHeight = textarea.scrollHeight;
 
-    // Auto-grow should ensure content is always visible, even if user manually resized smaller
-    const newHeight = Math.max(contentHeight, currentHeight);
+    // Always resize to fit content (both growing and shrinking)
+    // This ensures the textarea always fits the content exactly
+    const newHeight = contentHeight;
 
     // Apply maxHeight constraint if specified
     const finalHeight = maxHeight ? Math.min(newHeight, maxHeight) : newHeight;
 
     // Set the new height
     textarea.style.height = `${finalHeight}px`;
-
-    // Content needs to be scrollable
-    textarea.style.overflowY = "auto";
   }, [autoGrow, maxHeight, ref]);
 
   // Set up auto-grow behavior with event listeners
