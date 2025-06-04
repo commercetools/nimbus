@@ -58,6 +58,7 @@ const DiscountCard = (props: TDiscountCardProps) => {
       borderStyle="none"
       cardPadding="md"
       elevation="elevated"
+      bgColor="white"
     >
       <Stack>
         <IconButton

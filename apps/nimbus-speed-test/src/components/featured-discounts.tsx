@@ -62,6 +62,8 @@ const FeaturedCard = (props: TFeaturedCardProps) => {
       borderStyle="none"
       cardPadding="md"
       elevation="elevated"
+      onClick={() => alert("Card clicked!")}
+      bgColor="white"
     >
       <Grid templateColumns="repeat(8, 1fr)" gridGap="400">
         <Grid.Item colSpan={1} rowSpan={1}>

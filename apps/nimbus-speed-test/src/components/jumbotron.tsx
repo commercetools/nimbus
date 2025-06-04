@@ -12,11 +12,10 @@ import {
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 import JumbotronSvg from "../../public/jumbotron-image.svg";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 const Jumbotron = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const attachButtonRef = useRef<HTMLButtonElement>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -75,7 +74,6 @@ const Jumbotron = () => {
                 aria-label="Attach"
                 tone="primary"
                 onClick={toggleDropdown}
-                ref={attachButtonRef}
               >
                 <Icons.Add />
               </IconButton>
