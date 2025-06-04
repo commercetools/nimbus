@@ -381,8 +381,8 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1
       slug:
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: ^11.0.0
+        version: 11.0.0
       to-vfile:
         specifier: ^8.0.0
         version: 8.0.0
@@ -6573,8 +6573,8 @@ packages:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
     engines: {node: '>=14.16'}
 
-  slug@10.0.0:
-    resolution: {integrity: sha512-M8s2PWOUeSCdD4S1NH5lCzXg2zFV1fozrtfr0FSKl65x+EF1rUowj+/vyFlnHgxPxWzT+DL0VXKfYc1DHJoymg==}
+  slug@11.0.0:
+    resolution: {integrity: sha512-71pb27F9TII2dIweGr2ybS220IUZo1A9GKZ+e2q8rpUr24mejBb6fTaSStM0SE1ITUUOshilqZze8Yt1BKj+ew==}
     hasBin: true
 
   snake-case@2.1.0:
@@ -15494,7 +15494,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slug@10.0.0: {}
+  slug@11.0.0: {}
 
   snake-case@2.1.0:
     dependencies:
