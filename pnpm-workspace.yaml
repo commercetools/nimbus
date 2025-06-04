@@ -55,7 +55,7 @@ catalogs:
   react:
     # React
     "@types/react": ^19.0.0
-    "@types/react-dom": ^19.0.0
+    "@types/react-dom": ^19.1.6
     "react": ^19.0.0
     "react-dom": ^19.0.0
     # Emotion
