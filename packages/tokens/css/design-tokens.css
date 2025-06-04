@@ -1632,7 +1632,7 @@
   --color-brand-palettes-ctviolet-light-8: hsl(232, 88%, 77%);
   --color-brand-palettes-ctviolet-light-9: hsl(240, 64%, 58%);
   --color-brand-palettes-ctviolet-light-10: hsl(240, 49%, 50%);
-  --color-brand-palettes-ctviolet-light-11: hsl(239, 58%, 56%);
+  --color-brand-palettes-ctviolet-light-11: hsl(239, 47%, 47%);
   --color-brand-palettes-ctviolet-light-12: hsl(237, 47%, 27%);
   --color-brand-palettes-ctviolet-light-default: hsl(240, 64%, 58%);
   --color-brand-palettes-ctviolet-light-contrast: hsl(0, 0%, 100%);
@@ -1800,7 +1800,7 @@
   --color-semantic-palettes-primary-light-8: hsl(232, 88%, 77%);
   --color-semantic-palettes-primary-light-9: hsl(240, 64%, 58%);
   --color-semantic-palettes-primary-light-10: hsl(240, 49%, 50%);
-  --color-semantic-palettes-primary-light-11: hsl(239, 58%, 56%);
+  --color-semantic-palettes-primary-light-11: hsl(239, 47%, 47%);
   --color-semantic-palettes-primary-light-12: hsl(237, 47%, 27%);
   --color-semantic-palettes-primary-light-default: hsl(240, 64%, 58%);
   --color-semantic-palettes-primary-light-contrast: hsl(0, 0%, 100%);
@@ -1828,7 +1828,7 @@
   --color-semantic-palettes-primary-alpha-light-8: hsl(232, 88%, 77%);
   --color-semantic-palettes-primary-alpha-light-9: hsl(240, 64%, 58%);
   --color-semantic-palettes-primary-alpha-light-10: hsl(240, 49%, 50%);
-  --color-semantic-palettes-primary-alpha-light-11: hsl(239, 58%, 56%);
+  --color-semantic-palettes-primary-alpha-light-11: hsl(239, 47%, 47%);
   --color-semantic-palettes-primary-alpha-light-12: hsl(237, 47%, 27%);
   --color-semantic-palettes-primary-alpha-light-default: hsl(240, 64%, 58%);
   --color-semantic-palettes-primary-alpha-light-contrast: hsl(0, 0%, 100%);
