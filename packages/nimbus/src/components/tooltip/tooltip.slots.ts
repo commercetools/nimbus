@@ -29,7 +29,7 @@ const { withContext } = createRecipeContext({ recipe: tooltipRecipe });
  * Root component that provides the styling context for the Tooltip component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const TooltipRoot = withContext<
+export const TooltipRootSlot = withContext<
   HTMLDivElement,
   TooltipRootProps & RATooltipProps
 >("div");

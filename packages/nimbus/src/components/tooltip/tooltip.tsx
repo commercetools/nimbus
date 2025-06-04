@@ -1,8 +1,8 @@
 import { TooltipRoot } from "./components/tooltip.root";
 import { TooltipContent } from "./components/tooltip.content";
 
-// Export individual components
-export { TooltipRoot, TooltipContent };
+// Exports for internal use by react-docgen
+export { TooltipRoot as _TooltipRoot, TooltipContent as _TooltipContent };
 
 // Export compound component object
 export const Tooltip = {
