@@ -321,3 +321,105 @@ export const WithRows: Story = {
     );
   },
 };
+
+export const AutoGrow: Story = {
+  args: {
+    autoGrow: true,
+    placeholder: "Start typing... This textarea will grow automatically!",
+    "aria-label": "autogrow-textarea",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="flex-start">
+        <Box>
+          <Text textStyle="sm" color="neutral.11" mb="200">
+            Auto-grow with manual resize handle (default behavior)
+          </Text>
+          <MultilineTextInput {...args} />
+        </Box>
+
+        <Box>
+          <Text textStyle="sm" color="neutral.11" mb="200">
+            Auto-grow with max height (200px) + manual resize
+          </Text>
+          <MultilineTextInput
+            {...args}
+            maxHeight={200}
+            placeholder="This will grow up to 200px max height, then scroll. You can also resize manually!"
+            aria-label="autogrow-limited-textarea"
+          />
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const autoGrowTextarea = canvas.getByLabelText("autogrow-textarea");
+    const limitedTextarea = canvas.getByLabelText("autogrow-limited-textarea");
+
+    await step("Auto-grow textarea adjusts height on input", async () => {
+      const initialHeight = autoGrowTextarea.clientHeight;
+
+      await userEvent.click(autoGrowTextarea);
+      await userEvent.type(
+        autoGrowTextarea,
+        "Line 1{enter}Line 2{enter}Line 3{enter}Line 4"
+      );
+
+      // Height should have increased
+      await expect(autoGrowTextarea.clientHeight).toBeGreaterThan(
+        initialHeight
+      );
+    });
+
+    await step("Auto-grow with manual resize shows resize handle", async () => {
+      // Check that the default auto-grow textarea still has resize capability
+      const computedStyle = window.getComputedStyle(autoGrowTextarea);
+      await expect(computedStyle.resize).not.toBe("none");
+    });
+
+    await step("Limited auto-grow respects max height", async () => {
+      await userEvent.click(limitedTextarea);
+
+      // Add many lines to exceed the limit
+      const longText = Array(15).fill("This is a long line of text").join("\n");
+      await userEvent.type(limitedTextarea, longText);
+
+      // Height should be limited to approximately 200px
+      await expect(limitedTextarea.clientHeight).toBeLessThanOrEqual(220); // Allow some margin
+    });
+
+    // Clean up
+    await userEvent.clear(autoGrowTextarea);
+    await userEvent.clear(limitedTextarea);
+  },
+};
+
+export const AutoGrowVariants: Story = {
+  args: {
+    autoGrow: true,
+    "aria-label": "test-textarea",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="flex-start">
+        {inputVariants.map((variant) => {
+          const variantStr = variant as string;
+          return (
+            <Box key={variantStr}>
+              <Text textStyle="sm" color="neutral.11" mb="200">
+                {variantStr} variant with auto-grow
+              </Text>
+              <MultilineTextInput
+                {...args}
+                variant={variant}
+                placeholder={`Type here to see ${variantStr} auto-grow...`}
+                aria-label={`${variantStr}-autogrow`}
+              />
+            </Box>
+          );
+        })}
+      </Stack>
+    );
+  },
+};

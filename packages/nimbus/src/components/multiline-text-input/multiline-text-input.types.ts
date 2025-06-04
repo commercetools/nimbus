@@ -8,4 +8,14 @@ export interface MultilineTextInputProps
       keyof TextFieldProps | "as" | "asChild"
     > {
   ref?: React.Ref<HTMLTextAreaElement>;
+  /**
+   * When true, the textarea will automatically grow in height to fit its content.
+   * This works in addition to the default draggable resize behavior.
+   */
+  autoGrow?: boolean;
+  /**
+   * Maximum height when autoGrow is enabled (in pixels).
+   * If not specified, the textarea can grow without limit.
+   */
+  maxHeight?: number;
 }
