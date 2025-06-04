@@ -1,0 +1,144 @@
+---
+id: Components-multiline-text-input
+title: Multiline Text Input
+description: A multiline text input component for capturing longer text content.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Forms
+  - Multiline Text Input
+tags:
+  - component
+  - form
+---
+
+# Multiline Text Input
+
+A multiline text input component for capturing longer text content such as comments, descriptions, or messages.
+
+## Import
+
+```jsx
+import { MultilineTextInput } from "@commercetools/nimbus";
+```
+
+## Usage
+
+### Basic Usage
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput 
+    placeholder="Enter your message here..."
+    aria-label="Message input"
+  />
+);
+```
+
+### Sizes
+
+The component supports different sizes: `sm` and `md`.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="flex-start">
+    <MultilineTextInput 
+      size="sm"
+      placeholder="Small textarea"
+      aria-label="Small input"
+    />
+    <MultilineTextInput 
+      size="md"
+      placeholder="Medium textarea"
+      aria-label="Medium input"
+    />
+  </Stack>
+);
+```
+
+### Variants
+
+The component supports `solid` and `ghost` variants.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="flex-start">
+    <MultilineTextInput 
+      variant="solid"
+      placeholder="Solid variant"
+      aria-label="Solid input"
+    />
+    <MultilineTextInput 
+      variant="ghost"
+      placeholder="Ghost variant"
+      aria-label="Ghost input"
+    />
+  </Stack>
+);
+```
+
+### Required
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput 
+    isRequired
+    placeholder="Required field"
+    aria-label="Required input"
+  />
+);
+```
+
+### Disabled
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput 
+    isDisabled
+    placeholder="Disabled field"
+    aria-label="Disabled input"
+  />
+);
+```
+
+### Invalid State
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput 
+    isInvalid
+    placeholder="Invalid field"
+    aria-label="Invalid input"
+  />
+);
+```
+
+### Controlled Component
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState("");
+  
+  return (
+    <MultilineTextInput 
+      value={value}
+      onChange={setValue}
+      placeholder="Type something..."
+      aria-label="Controlled input"
+    />
+  );
+};
+```
+
+## Props
+
+<PropsTable id="MultilineTextInput" />
+
+## Accessibility
+
+- Uses semantic `textarea` element for proper screen reader support
+- Supports keyboard navigation with Tab key
+- Forwards `aria-*` and `data-*` attributes
+- Required fields are properly marked with `aria-required`
+- Invalid states are indicated with `data-invalid` attribute 
