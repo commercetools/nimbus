@@ -48,7 +48,7 @@ export const textInputRecipe = defineRecipe({
       solid: {
         "--border-width": "sizes.25",
         "--border-color": "colors.neutral.7",
-        backgroundColor: "neutral.1",
+        backgroundColor: "primary.1",
         _hover: {
           backgroundColor: "primary.2",
         },
