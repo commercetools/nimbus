@@ -19,8 +19,8 @@ catalogs:
       specifier: ^11.14.0
       version: 11.14.0
     '@pandacss/types':
-      specifier: ^0.53.6
-      version: 0.53.6
+      specifier: ^0.53.7
+      version: 0.53.7
     '@react-aria/optimize-locales-plugin':
       specifier: 1.1.4
       version: 1.1.4
@@ -508,7 +508,7 @@ importers:
         version: link:../tokens
       '@pandacss/types':
         specifier: catalog:react
-        version: 0.53.6
+        version: 0.53.7
       '@react-aria/optimize-locales-plugin':
         specifier: catalog:react
         version: 1.1.4
@@ -1594,8 +1594,8 @@ packages:
   '@pandacss/is-valid-prop@0.53.6':
     resolution: {integrity: sha512-TgWBQmz/5j/oAMjavqJAjQh1o+yxhYspKvepXPn4lFhAN3yBhilrw9HliAkvpUr0sB2CkJ2BYMpFXbAJYEocsA==}
 
-  '@pandacss/types@0.53.6':
-    resolution: {integrity: sha512-rRAW+BnGg4lVgzF5siD2JGkIQPJ60jOJVNE6174OvcJoDE8EQ0OR71FPZTXgZg8vnelQbeDNhLGQCV2bUcsIdQ==}
+  '@pandacss/types@0.53.7':
+    resolution: {integrity: sha512-BBl4a2G5PQT45crYfVqDKhvfhjnltDwD9HtCbMP6375LFrBKDjoKqj8N5GaLE6xSuP09OZYbVXhRsQOaRVSXHA==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -8864,7 +8864,7 @@ snapshots:
 
   '@pandacss/is-valid-prop@0.53.6': {}
 
-  '@pandacss/types@0.53.6': {}
+  '@pandacss/types@0.53.7': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
