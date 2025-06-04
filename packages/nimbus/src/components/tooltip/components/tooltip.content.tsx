@@ -1,5 +1,5 @@
 import { Tooltip as RATooltip } from "react-aria-components";
-import { TooltipRoot } from "../tooltip.slots";
+import { TooltipRootSlot } from "../tooltip.slots";
 import type { TooltipProps } from "../tooltip.types";
 
 /**
@@ -23,11 +23,11 @@ export function TooltipContent({
   ...props
 }: TooltipProps & { ref?: React.Ref<HTMLDivElement> }) {
   return (
-    <TooltipRoot ref={ref} asChild {...props}>
+    <TooltipRootSlot ref={ref} asChild {...props}>
       <RATooltip placement={placement} {...props}>
         {children}
       </RATooltip>
-    </TooltipRoot>
+    </TooltipRootSlot>
   );
 }
 
