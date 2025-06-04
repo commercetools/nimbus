@@ -67,9 +67,14 @@ const FeaturedCard = (props: TFeaturedCardProps) => {
     >
       <Grid templateColumns="repeat(8, 1fr)" gridGap="400">
         <Grid.Item colSpan={1} rowSpan={1}>
-          <Badge aria-label={props.title as string} bg={props.bgColor}>
+          <Box
+            aria-label={props.title as string}
+            bg={props.bgColor}
+            borderRadius="200"
+            padding="200"
+          >
             {props.icon}
-          </Badge>
+          </Box>
         </Grid.Item>
         <Grid.Item colSpan={7} rowSpan={1}>
           <Stack gap="200" width="100%">

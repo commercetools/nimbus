@@ -6,6 +6,7 @@ import {
   CardRoot,
   Grid,
   IconButton,
+  Box,
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 import { useState } from "react";
@@ -93,9 +94,14 @@ const TemplateCard = () => {
       bgColor="primary.2"
     >
       <Stack gap="600">
-        <Badge colorPalette="primary" alignSelf="flex-start">
+        <Box
+          bg="primary.4"
+          borderRadius="200"
+          padding="200"
+          alignSelf="flex-start"
+        >
           <Icons.LocalOffer />
-        </Badge>
+        </Box>
         <Heading fontWeight="500" fontSize="500" lineHeight="600">
           Recently used templates
         </Heading>
