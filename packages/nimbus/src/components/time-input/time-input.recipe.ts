@@ -52,7 +52,7 @@ export const timeInputRecipe = defineSlotRecipe({
         color: "primary.contrast",
       },
 
-      "&[data-placeholder='true']": {
+      "&[data-placeholder='true']:not([data-focused='true'])": {
         opacity: 0.5,
       },
 
