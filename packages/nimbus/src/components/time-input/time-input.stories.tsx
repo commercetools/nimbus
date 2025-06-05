@@ -341,9 +341,27 @@ export const Sizes: Story = {
       </Stack>
     );
   },
+};
 
-  args: {
-    children: "Demo TimeInput",
+/**
+ * Showcase Variants
+ */
+export const Variants: Story = {
+  render: (args) => {
+    const variants = ["ghost", "solid"] as const;
+
+    return (
+      <Stack direction="column">
+        {variants.map((variant) => (
+          <TimeInput
+            aria-label={`${variant}-variant TimeInput`}
+            key={variant}
+            {...args}
+            variant={variant}
+          />
+        ))}
+      </Stack>
+    );
   },
 };
 

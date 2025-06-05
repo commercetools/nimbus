@@ -114,6 +114,13 @@ export const timeInputRecipe = defineSlotRecipe({
           },
         },
       },
+      ghost: {
+        segmentGroup: {
+          _hover: {
+            backgroundColor: "primary.2",
+          },
+        },
+      },
     },
   },
   defaultVariants: {
