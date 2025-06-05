@@ -1,2 +1,2 @@
 export * from "./nimbus-provider.tsx";
-export { useColorMode, useColorModeValue, ColorModeLabel } from "./color-mode";
+export { useColorMode, useColorModeValue } from "./color-mode";

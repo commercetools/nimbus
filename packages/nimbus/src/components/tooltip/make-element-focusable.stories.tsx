@@ -1,16 +1,16 @@
 import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect } from "@storybook/test";
-import { Tooltip, TooltipTrigger, MakeElementFocusable } from "@/components";
+import { Tooltip, MakeElementFocusable } from "@/components";
 
 const meta: Meta<typeof MakeElementFocusable> = {
   title: "components/Tooltip/MakeElementFocusable",
   component: MakeElementFocusable,
   render: (args) => (
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <MakeElementFocusable {...args} />
-      <Tooltip>Demo Tooltip</Tooltip>
-    </TooltipTrigger>
+      <Tooltip.Content>Demo Tooltip</Tooltip.Content>
+    </Tooltip.Root>
   ),
 };
 

@@ -1,8 +1,5 @@
 import type { PropsWithChildren } from "react";
-import type {
-  TooltipProps as RATooltipProps,
-  TooltipTriggerComponentProps,
-} from "react-aria-components";
+import type { TooltipProps as RATooltipProps } from "react-aria-components";
 import type { TooltipRootProps } from "./tooltip.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import { tooltipRecipe } from "./tooltip.recipe";
@@ -40,5 +37,3 @@ type TooltipVariantProps = ExcludePolymorphicFromProps<
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TooltipProps extends PropsWithChildren<TooltipVariantProps> {}
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TooltipTriggerProps extends TooltipTriggerComponentProps {}
