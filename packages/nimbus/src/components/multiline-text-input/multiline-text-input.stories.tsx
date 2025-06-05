@@ -349,6 +349,19 @@ export const AutoGrow: Story = {
             aria-label="autogrow-limited-textarea"
           />
         </Box>
+
+        <Box>
+          <Text textStyle="sm" color="neutral.11" mb="200">
+            Auto-grow with minimum and maximum height constraints
+          </Text>
+          <MultilineTextInput
+            {...args}
+            minH={1600}
+            maxH={3200}
+            placeholder="This starts at minimum height and grows up to maximum height"
+            aria-label="autogrow-minmax-textarea"
+          />
+        </Box>
       </Stack>
     );
   },
