@@ -52,6 +52,10 @@ export const timeInputRecipe = defineSlotRecipe({
         color: "primary.contrast",
       },
 
+      "&[data-placeholder='true']": {
+        opacity: 0.5,
+      },
+
       /**
        * The first and last segment contains a hidden character for screen readers
        * that indicates number reading direction. Since this character is
