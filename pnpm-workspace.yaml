@@ -16,7 +16,7 @@ catalogs:
     "@babel/runtime": "^7.27.1"
     "@babel/preset-typescript": ^7.27.1
     # ESLint + Prettier
-    "@eslint/js": ^9.26.0
+    "@eslint/js": ^9.28.0
     "eslint": ^9.26.0
     "eslint-config-prettier": ^10.1.2
     "eslint-plugin-prettier": ^5.4.0
