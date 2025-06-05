@@ -22,13 +22,7 @@ import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
  * - supports auto-growing height based on content when `autoGrow` is enabled
  */
 export const MultilineTextInput = (props: MultilineTextInputProps) => {
-  const {
-    ref: forwardedRef,
-    rows = 1,
-    autoGrow = false,
-    maxHeight,
-    ...restProps
-  } = props; // The default `rows` attribute for a textarea is 2, so we need to override it
+  const { ref: forwardedRef, rows = 1, autoGrow = false, ...restProps } = props; // The default `rows` attribute for a textarea is 2, so we need to override it
   const recipe = useRecipe({ recipe: multilineTextInputRecipe });
 
   const localRef = useRef<HTMLTextAreaElement>(null);
@@ -54,11 +48,15 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
     const newHeight = contentHeight;
 
     // Apply maxHeight constraint if specified
-    const finalHeight = maxHeight ? Math.min(newHeight, maxHeight) : newHeight;
+    const computedStyle = window.getComputedStyle(textarea);
+    const maxHeightPxValue = parseInt(computedStyle.maxHeight);
+    const finalHeight = maxHeightPxValue
+      ? Math.min(newHeight, maxHeightPxValue)
+      : newHeight;
 
     // Set the new height
     textarea.style.height = `${finalHeight}px`;
-  }, [autoGrow, maxHeight, ref]);
+  }, [autoGrow, ref]);
 
   // Set up auto-grow behavior with event listeners
   useEffect(() => {

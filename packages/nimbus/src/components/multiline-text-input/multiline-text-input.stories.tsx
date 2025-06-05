@@ -340,12 +340,12 @@ export const AutoGrow: Story = {
 
         <Box>
           <Text textStyle="sm" color="neutral.11" mb="200">
-            Auto-grow with max height (200px) + manual resize
+            Auto-grow with max height + manual resize
           </Text>
           <MultilineTextInput
             {...args}
-            maxHeight={200}
-            placeholder="This will grow up to 200px max height, then scroll. You can also resize manually!"
+            maxHeight={3200}
+            placeholder="This will grow up to a max height, then scroll if made smaller"
             aria-label="autogrow-limited-textarea"
           />
         </Box>

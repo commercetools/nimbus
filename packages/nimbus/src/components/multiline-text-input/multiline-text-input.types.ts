@@ -13,9 +13,4 @@ export interface MultilineTextInputProps
    * This works in addition to the default draggable resize behavior.
    */
   autoGrow?: boolean;
-  /**
-   * Maximum height when autoGrow is enabled (in pixels).
-   * If not specified, the textarea can grow without limit.
-   */
-  maxHeight?: number;
 }
