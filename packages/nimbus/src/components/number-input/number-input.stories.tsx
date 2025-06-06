@@ -63,7 +63,11 @@ export const Sizes: Story = {
           <Text mb={1} fontSize="sm" fontWeight="medium">
             Size: {String(size)}
           </Text>
-          <NumberInput size={size} placeholder="123" aria-label={`Size ${size} number input`} />
+          <NumberInput
+            size={size}
+            placeholder="123"
+            aria-label={`Size ${size} number input`}
+          />
         </Box>
       ))}
     </Box>
@@ -78,7 +82,11 @@ export const Variants: Story = {
           <Text mb={1} fontSize="sm" fontWeight="medium">
             Variant: {String(variant)}
           </Text>
-          <NumberInput variant={variant} placeholder="123" aria-label={`Variant ${variant} number input`} />
+          <NumberInput
+            variant={variant}
+            placeholder="123"
+            aria-label={`Variant ${variant} number input`}
+          />
         </Box>
       ))}
     </Stack>
@@ -131,19 +139,32 @@ export const NumberConstraints: Story = {
         <Text mb={1} fontSize="sm" fontWeight="medium">
           Min/Max (1-100)
         </Text>
-        <NumberInput placeholder="Enter 1-100" minValue={1} maxValue={100} aria-label="Min/Max number input" />
+        <NumberInput
+          placeholder="Enter 1-100"
+          minValue={1}
+          maxValue={100}
+          aria-label="Min/Max number input"
+        />
       </Box>
       <Box>
         <Text mb={1} fontSize="sm" fontWeight="medium">
           Step (increments of 5)
         </Text>
-        <NumberInput placeholder="Multiples of 5" step={5} aria-label="Step number input" />
+        <NumberInput
+          placeholder="Multiples of 5"
+          step={5}
+          aria-label="Step number input"
+        />
       </Box>
       <Box>
         <Text mb={1} fontSize="sm" fontWeight="medium">
           Decimal precision
         </Text>
-        <NumberInput placeholder="2 decimal places" step={0.01} aria-label="Decimal precision number input" />
+        <NumberInput
+          placeholder="2 decimal places"
+          step={0.01}
+          aria-label="Decimal precision number input"
+        />
       </Box>
     </Stack>
   ),
@@ -282,9 +303,7 @@ export const WithFormField: Story = {
             <FormField.Description>
               This field shows how error styling is applied.
             </FormField.Description>
-            <FormField.Error>
-              The value must be greater than 0.
-            </FormField.Error>
+            <FormField.Error>The value must be greater than 0.</FormField.Error>
           </FormField.Root>
         </Box>
 
@@ -394,8 +413,8 @@ export const WithFormField: Story = {
               Click the info icon next to the label for more details.
             </FormField.Description>
             <FormField.InfoBox>
-              Enter the weight in kilograms. The value should be a positive number
-              with up to one decimal place. For example: 75.5 kg.
+              Enter the weight in kilograms. The value should be a positive
+              number with up to one decimal place. For example: 75.5 kg.
             </FormField.InfoBox>
           </FormField.Root>
         </Box>
@@ -419,9 +438,7 @@ export const WithFormField: Story = {
       "Basic integration - description is linked to input",
       async () => {
         const basicInput = canvas.getByTestId("basic-number-input");
-        const description = canvas.getByText(
-          /This is a number input wrapped/
-        );
+        const description = canvas.getByText(/This is a number input wrapped/);
 
         await expect(basicInput).toHaveAttribute(
           "aria-describedby",
@@ -443,13 +460,15 @@ export const WithFormField: Story = {
       "Invalid field - has invalid attributes and shows error",
       async () => {
         const invalidInput = canvas.getByTestId("invalid-number-input");
-        const errorMessage = canvas.getByText(/The value must be greater than 0/);
+        const errorMessage = canvas.getByText(
+          /The value must be greater than 0/
+        );
 
         await expect(invalidInput).toHaveAttribute("data-invalid", "true");
         await expect(errorMessage).toBeVisible();
-        await expect(
-          invalidInput.getAttribute("aria-describedby")
-        ).toContain(errorMessage.id);
+        await expect(invalidInput.getAttribute("aria-describedby")).toContain(
+          errorMessage.id
+        );
       }
     );
 
@@ -522,16 +541,19 @@ export const WithFormField: Story = {
       await expect(infoBoxAfterEscape).not.toBeInTheDocument();
     });
 
-    await step("Number input functionality works within FormField", async () => {
-      const basicInput = canvas.getByTestId("basic-number-input");
+    await step(
+      "Number input functionality works within FormField",
+      async () => {
+        const basicInput = canvas.getByTestId("basic-number-input");
 
-      await userEvent.click(basicInput);
-      await userEvent.type(basicInput, "42");
+        await userEvent.click(basicInput);
+        await userEvent.type(basicInput, "42");
 
-      await expect(basicInput).toHaveValue("42");
+        await expect(basicInput).toHaveValue("42");
 
-      // Clean up
-      await userEvent.clear(basicInput);
-    });
+        // Clean up
+        await userEvent.clear(basicInput);
+      }
+    );
   },
 };
