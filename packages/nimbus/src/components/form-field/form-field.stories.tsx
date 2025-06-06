@@ -86,7 +86,12 @@ export const Sizes: Story = {
     return (
       <Stack direction="column">
         {sizes.map((size) => (
-          <FormField.Root {...args} size={size} data-testid="field-root">
+          <FormField.Root
+            key={size as string}
+            {...args}
+            size={size}
+            data-testid="field-root"
+          >
             <FormField.Label>Input Label (column)</FormField.Label>
             <FormField.Input>
               <TextInput placeholder="Enter some text here" type="text" />
