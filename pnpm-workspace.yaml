@@ -32,7 +32,7 @@ catalogs:
     "@storybook/addon-essentials": ^8.6.12
     "@storybook/experimental-addon-test": ^8.6.12
     "@storybook/preview-api": ^8.6.12
-    "@storybook/react": ^8.6.12
+    "@storybook/react": ^9.0.5
     "@storybook/react-vite": ^8.6.12
     "@storybook/test": ^8.6.12
     "storybook": ^8.6.12
