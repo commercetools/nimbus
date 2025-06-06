@@ -1,9 +1,10 @@
-import * as BlehUi from "@commercetools/nimbus";
+import * as NimbusUi from "@commercetools/nimbus";
 import * as icons from "@commercetools/nimbus-icons";
 import { Flex, Box } from "@commercetools/nimbus";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
+import { Time } from "@internationalized/date";
 
 const baseHooks = {
   useState,
@@ -13,7 +14,7 @@ const baseHooks = {
 };
 
 // funcitons & components available to the live code editor
-const scope = { ...BlehUi, ...baseHooks, Icons: { ...icons } };
+const scope = { ...NimbusUi, ...baseHooks, Icons: { ...icons }, Time };
 
 const removeImportStatements = (code: string) => {
   // Regular expression to match import statements

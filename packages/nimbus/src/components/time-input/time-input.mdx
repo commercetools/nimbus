@@ -1,0 +1,228 @@
+---
+id: Components-TimeInput
+title: TimeInput
+description: allows entering a time
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - TimeInput
+tags:
+  - component
+  - time
+  - date
+---
+
+# TimeInput
+
+The TimeInput component allows users to enter and select a time value using a segmented input field. It provides internationalization support, validation, and accessibility features.
+
+## Basic Usage
+
+Use the TimeInput component to capture time values from users.
+
+```jsx-live
+const App = () => <TimeInput aria-label="Enter a time" />
+```
+
+### Controlled vs Uncontrolled
+
+The TimeInput component can be used in both controlled and uncontrolled modes.
+
+```jsx-live
+const App = () => {
+  // Uncontrolled with default value
+  const [time, setTime] = useState(new Time(12, 0));
+  
+  // Handler for controlled input
+  const handleTimeChange = (value) => {
+    if (value) {
+      setTime(value);
+    }
+  };
+  
+  return (
+    <Stack direction="column" gap="400" alignItems="start">
+      <Text>Uncontrolled with defaultValue</Text>
+      <TimeInput defaultValue={new Time(9, 30)} aria-label="Uncontrolled input" hideTimeZone />
+      
+      <Text>Controlled input (current value: {time.toString()})</Text>
+      <TimeInput 
+        value={time} 
+        onChange={handleTimeChange} 
+        aria-label="Controlled input" 
+        hideTimeZone 
+      />
+      
+      <Button onPress={() => setTime(new Time(12, 0))}>Reset to 12:00</Button>
+    </Stack>
+  );
+}
+```
+
+### Hour Cycle
+
+You can specify 12-hour or 24-hour format using the `hourCycle` prop.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text>12-hour format (with AM/PM)</Text>
+      <TimeInput 
+        defaultValue={new Time(14, 30)} 
+        hourCycle={12} 
+        aria-label="12-hour format" 
+        hideTimeZone 
+      />
+      
+      <Text>24-hour format</Text>
+      <TimeInput 
+        defaultValue={new Time(14, 30)} 
+        hourCycle={24} 
+        aria-label="24-hour format" 
+        hideTimeZone 
+      />
+    </Stack>
+  );
+}
+```
+
+### Granularity
+
+Control which time segments are displayed using the `granularity` prop.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="column" gap="400" alignItems="start">
+      <Text>Hour only</Text>
+      <TimeInput defaultValue={new Time(14, 30)} granularity="hour" aria-label="Hour granularity" hideTimeZone />
+      
+      <Text>Hour and minute (default)</Text>
+      <TimeInput defaultValue={new Time(14, 30)} granularity="minute" aria-label="Minute granularity" hideTimeZone />
+      
+      <Text>Hour, minute, and second</Text>
+      <TimeInput defaultValue={new Time(14, 30)} granularity="second" aria-label="Second granularity" hideTimeZone />
+    </Stack>
+  );
+}
+```
+
+### Validation
+
+Use `minValue` and `maxValue` to restrict input to a specific time range.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="column" gap="400" alignItems="start">
+      <Text>Time must be between 9:00 AM and 5:00 PM</Text>
+      <TimeInput 
+        minValue={new Time(9, 0)} 
+        maxValue={new Time(17, 0)} 
+        defaultValue={new Time(12, 0)} 
+        aria-label="Time with validation" 
+        hourCycle={12}
+        hideTimeZone 
+      />
+    </Stack>
+  );
+}
+```
+
+### Sizes
+
+Available sizes for the TimeInput component.
+
+```jsx-live
+const App = () => {
+  const sizes = ['sm', 'md'];
+
+  return (
+    <Stack direction="column" gap="400">
+      {sizes.map(size => (
+        <Stack key={size} direction="horizontal" alignItems="center" gap="200">
+          <Text width="50px">{size}:</Text>
+          <TimeInput size={size} defaultValue={new Time(14, 30)} aria-label={`${size} size`} hideTimeZone />
+        </Stack>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### States
+
+The TimeInput component supports various states like disabled, read-only, invalid, and required.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text>Disabled</Text>
+      <TimeInput isDisabled defaultValue={new Time(14, 30)} aria-label="Disabled input" hideTimeZone />
+      
+      <Text>Read-only</Text>
+      <TimeInput isReadOnly defaultValue={new Time(14, 30)} aria-label="Read-only input" hideTimeZone />
+      
+      <Text>Invalid</Text>
+      <TimeInput isInvalid defaultValue={new Time(14, 30)} aria-label="Invalid input" hideTimeZone />
+      
+      <Text>Required</Text>
+      <TimeInput isRequired defaultValue={new Time(14, 30)} aria-label="Required input" hideTimeZone />
+    </Stack>
+  );
+}
+```
+
+### With FormField
+
+TimeInput integrates seamlessly with the FormField component.
+
+```jsx-live
+const App = () => {
+  const [time, setTime] = useState(new Time(10, 30));
+  const [isInvalid, setIsInvalid] = useState(false);
+
+  const handleTimeChange = (value) => {
+    setTime(value);
+    
+    // Validate time - for this example we'll consider times before 9am or after 5pm invalid
+    if (value) {
+      const hours = value.hour;
+      setIsInvalid(hours < 9 || hours > 17);
+    } else {
+      setIsInvalid(true); // Empty value is invalid
+    }
+  };
+
+  return (
+    <FormField.Root isInvalid={isInvalid} isRequired>
+      <FormField.Label>Appointment Time</FormField.Label>
+      <FormField.Input>
+        <TimeInput
+          value={time}
+          onChange={handleTimeChange}
+          hourCycle={12}
+          hideTimeZone
+          minValue={new Time(9, 0)}
+          maxValue={new Time(17, 0)}
+          width="full"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Please select a time between 9:00 AM and 5:00 PM
+      </FormField.Description>
+      <FormField.Error>
+        The selected time must be between 9:00 AM and 5:00 PM
+      </FormField.Error>
+    </FormField.Root>
+  );
+}
+```
+
+## Props
+
+<PropsTable id="TimeInput" />
