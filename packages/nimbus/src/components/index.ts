@@ -3,7 +3,6 @@ export * from "./box";
 export * from "./button";
 export * from "./code";
 export * from "./dialog";
-export * from "./em";
 export * from "./flex";
 export * from "./heading";
 export * from "./highlight";
