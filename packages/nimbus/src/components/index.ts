@@ -20,6 +20,7 @@ export * from "./checkbox";
 export * from "./stack";
 export * from "./visually-hidden";
 export * from "./text-input";
+export * from "./number-input";
 export * from "./grid";
 export * from "./select";
 export * from "./accordion";
