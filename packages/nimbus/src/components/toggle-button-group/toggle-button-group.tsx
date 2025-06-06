@@ -1,8 +1,6 @@
 import { ToggleButtonGroupRoot } from "./components/toggle-button-group.root";
 import { ToggleButtonGroupButton } from "./components/toggle-button-group.button";
 
-export { ToggleButtonGroupRoot, ToggleButtonGroupButton };
-
 /**
  * ToggleButtonGroup
  * ============================================================
@@ -11,4 +9,9 @@ export { ToggleButtonGroupRoot, ToggleButtonGroupButton };
 export const ToggleButtonGroup = {
   Root: ToggleButtonGroupRoot,
   Button: ToggleButtonGroupButton,
+};
+
+export {
+  ToggleButtonGroupRoot as _ToggleButtonGroupRoot,
+  ToggleButtonGroupButton as _ToggleButtonGroupButton,
 };
