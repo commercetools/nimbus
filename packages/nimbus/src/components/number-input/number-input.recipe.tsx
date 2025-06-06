@@ -134,22 +134,22 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         incrementButton: {
+          "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
-          boxShadow:
-            "inset 1px 0 0 0 var(--border-color), inset 0 -0.5px 0 0 var(--border-color)",
-          _hover: {
-            boxShadow:
-              "inset 1px 0 0 0 var(--border-color), inset 0 1px 0 0 var(--border-color), inset -1px 0 0 0 var(--border-color), inset 0 -0.5px 0 0 var(--border-color)",
-          },
+          borderTop: "var(--border-width) solid var(--border-color)",
+          borderRight: "var(--border-width) solid var(--border-color)",
+          borderLeft: "var(--border-width) solid var(--border-color)",
+          // Half-pixel shadow to create the illusion of a complete border when paired with the other button
+          boxShadow: "inset 0 -0.5px 0 0 var(--border-color)",
         },
         decrementButton: {
+          "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
-          boxShadow:
-            "inset 1px 0 0 0 var(--border-color), inset 0 0.5px 0 0 var(--border-color)",
-          _hover: {
-            boxShadow:
-              "inset 1px 0 0 0 var(--border-color), inset 0 -1px 0 0 var(--border-color), inset -1px 0 0 0 var(--border-color), inset 0 0.5px 0 0 var(--border-color)",
-          },
+          borderBottom: "var(--border-width) solid var(--border-color)",
+          borderRight: "var(--border-width) solid var(--border-color)",
+          borderLeft: "var(--border-width) solid var(--border-color)",
+          // Half-pixel shadow to create the illusion of a complete border when paired with the other button
+          boxShadow: "inset 0 0.5px 0 0 var(--border-color)",
         },
       },
       ghost: {
