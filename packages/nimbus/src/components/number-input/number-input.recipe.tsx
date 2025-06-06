@@ -116,7 +116,7 @@ export const numberInputRecipe = defineSlotRecipe({
           h: 1000,
           textStyle: "md",
           px: 400,
-          paddingRight: 1000,
+          paddingRight: 800,
         },
         incrementButton: {
           w: 600,
