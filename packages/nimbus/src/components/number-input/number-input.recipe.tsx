@@ -16,6 +16,10 @@ export const numberInputRecipe = defineSlotRecipe({
     root: {
       display: "inline-block",
       position: "relative",
+      // Apply input hover styles when buttons are hovered
+      "&:has(button:hover) input": {
+        backgroundColor: "primary.2",
+      },
     },
     input: {
       display: "block",
@@ -125,6 +129,12 @@ export const numberInputRecipe = defineSlotRecipe({
 
     variant: {
       solid: {
+        root: {
+          // Apply input hover styles when buttons are hovered for solid variant
+          "&:has(button:hover) input": {
+            backgroundColor: "primary.2",
+          },
+        },
         input: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
@@ -141,6 +151,9 @@ export const numberInputRecipe = defineSlotRecipe({
           borderLeft: "var(--border-width) solid var(--border-color)",
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 -0.5px 0 0 var(--border-color)",
+          _hover: {
+            backgroundColor: "primary.3",
+          },
         },
         decrementButton: {
           "--border-width": "sizes.25",
@@ -150,12 +163,31 @@ export const numberInputRecipe = defineSlotRecipe({
           borderLeft: "var(--border-width) solid var(--border-color)",
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 0.5px 0 0 var(--border-color)",
+          _hover: {
+            backgroundColor: "primary.3",
+          },
         },
       },
       ghost: {
+        root: {
+          // Apply input hover styles when buttons are hovered for ghost variant
+          "&:has(button:hover) input": {
+            backgroundColor: "primary.2",
+          },
+        },
         input: {
           _hover: {
             backgroundColor: "primary.2",
+          },
+        },
+        incrementButton: {
+          _hover: {
+            backgroundColor: "primary.3",
+          },
+        },
+        decrementButton: {
+          _hover: {
+            backgroundColor: "primary.3",
           },
         },
       },
