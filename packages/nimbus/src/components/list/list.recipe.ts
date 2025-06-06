@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const listSlotRecipe = defineSlotRecipe({
-  className: "chakra-list",
+  className: "nimbus-list",
   slots: ["root", "item", "indicator"],
   base: {
     root: {

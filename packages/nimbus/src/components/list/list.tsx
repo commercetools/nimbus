@@ -1,9 +1,17 @@
-import { List } from "@chakra-ui/react";
+import { List as ChakraList } from "@chakra-ui/react";
 
-export type ListRootType = React.ComponentProps<typeof List.Root>;
-export type ListItemType = React.ComponentProps<typeof List.Item>;
+const ListRoot = ChakraList.Root;
+const ListItem = ChakraList.Item;
+const ListIndicator = ChakraList.Indicator;
 
-const ListRoot = (props: ListRootType) => <List.Root {...props} />;
-const ListItem = (props: ListItemType) => <List.Item {...props} />;
+export const List = {
+  Root: ListRoot,
+  Item: ListItem,
+  Indicator: ListIndicator,
+};
 
-export { List, ListRoot, ListItem };
+export {
+  ListRoot as _ListRoot,
+  ListItem as _ListItem,
+  ListIndicator as _ListIndicator,
+};
