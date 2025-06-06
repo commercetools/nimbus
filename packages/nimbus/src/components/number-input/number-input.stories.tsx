@@ -63,7 +63,7 @@ export const Sizes: Story = {
           <Text mb={1} fontSize="sm" fontWeight="medium">
             Size: {String(size)}
           </Text>
-          <NumberInput size={size} placeholder="123" />
+          <NumberInput size={size} placeholder="123" aria-label={`Size ${size} number input`} />
         </Box>
       ))}
     </Box>
@@ -78,7 +78,7 @@ export const Variants: Story = {
           <Text mb={1} fontSize="sm" fontWeight="medium">
             Variant: {String(variant)}
           </Text>
-          <NumberInput variant={variant} placeholder="123" />
+          <NumberInput variant={variant} placeholder="123" aria-label={`Variant ${variant} number input`} />
         </Box>
       ))}
     </Stack>
@@ -131,19 +131,19 @@ export const NumberConstraints: Story = {
         <Text mb={1} fontSize="sm" fontWeight="medium">
           Min/Max (1-100)
         </Text>
-        <NumberInput placeholder="Enter 1-100" minValue={1} maxValue={100} />
+        <NumberInput placeholder="Enter 1-100" minValue={1} maxValue={100} aria-label="Min/Max number input" />
       </Box>
       <Box>
         <Text mb={1} fontSize="sm" fontWeight="medium">
           Step (increments of 5)
         </Text>
-        <NumberInput placeholder="Multiples of 5" step={5} />
+        <NumberInput placeholder="Multiples of 5" step={5} aria-label="Step number input" />
       </Box>
       <Box>
         <Text mb={1} fontSize="sm" fontWeight="medium">
           Decimal precision
         </Text>
-        <NumberInput placeholder="2 decimal places" step={0.01} />
+        <NumberInput placeholder="2 decimal places" step={0.01} aria-label="Decimal precision number input" />
       </Box>
     </Stack>
   ),
@@ -213,6 +213,7 @@ export const Controlled: Story = {
           value={value}
           onChange={setValue}
           placeholder="Enter a number"
+          aria-label="Controlled number input"
         />
       </Box>
     );
