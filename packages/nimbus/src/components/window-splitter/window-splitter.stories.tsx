@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Box } from "@chakra-ui/react";
+import { Box, Heading, Text, List, Button } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "@storybook/test";
 import { WindowSplitter } from "./window-splitter";
 
@@ -40,36 +40,46 @@ type Story = StoryObj<typeof WindowSplitter.Root>;
 
 // Sample content components
 const PrimaryPaneContent = () => (
-  <Box p={4} bg="blue.50" h="100%" overflow="auto">
-    <h2>Primary Pane</h2>
-    <p>This is the primary pane content. It can contain any React content.</p>
-    <p>The size of this pane is controlled by the splitter value.</p>
-    <p>
+  <Box p="400" bg="blue.3" h="100%" overflow="auto">
+    <Heading size="lg" mb="300">
+      Primary Pane
+    </Heading>
+    <Text mb="300">
+      This is the primary pane content. It can contain any React content.
+    </Text>
+    <Text mb="300">
+      The size of this pane is controlled by the splitter value.
+    </Text>
+    <Text mb="300">
       Try dragging the separator or using keyboard navigation (Tab to focus,
       then arrow keys).
-    </p>
+    </Text>
     <div style={{ height: "200vh" }}>
-      <p>This content is scrollable...</p>
-      <p>Keep scrolling...</p>
-      <p>More content here...</p>
-      <p>And even more...</p>
-      <p>Bottom of content</p>
+      <Text mb="200">This content is scrollable...</Text>
+      <Text mb="200">Keep scrolling...</Text>
+      <Text mb="200">More content here...</Text>
+      <Text mb="200">And even more...</Text>
+      <Text>Bottom of content</Text>
     </div>
   </Box>
 );
 
 const SecondaryPaneContent = () => (
-  <Box p={4} bg="green.50" h="100%" overflow="auto">
-    <h2>Secondary Pane</h2>
-    <p>This is the secondary pane content.</p>
-    <p>Its size is automatically calculated as 100% - primary pane size.</p>
-    <ul>
-      <li>Item 1</li>
-      <li>Item 2</li>
-      <li>Item 3</li>
-      <li>Item 4</li>
-      <li>Item 5</li>
-    </ul>
+  <Box p="400" bg="green.3" h="100%" overflow="auto">
+    <Heading size="lg" mb="300">
+      Secondary Pane
+    </Heading>
+    <Text mb="300">This is the secondary pane content.</Text>
+    <Text mb="300">
+      Its size is automatically calculated as 100% - primary pane size.
+    </Text>
+    <List.Root>
+      <List.Item>Item 1</List.Item>
+      <List.Item>Item 2</List.Item>
+      <List.Item>Item 3</List.Item>
+      <List.Item>Item 4</List.Item>
+      <List.Item>Item 5</List.Item>
+    </List.Root>
   </Box>
 );
 
@@ -79,7 +89,7 @@ export const Default: Story = {
     defaultValue: 50,
   },
   render: (args) => (
-    <Box height="500px" width="100%" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
           <PrimaryPaneContent />
@@ -102,7 +112,7 @@ export const Vertical: Story = {
     defaultValue: 40,
   },
   render: (args) => (
-    <Box height="500px" width="100%" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
           <PrimaryPaneContent />
@@ -126,7 +136,7 @@ export const Controlled: Story = {
     onValueChange: fn(),
   },
   render: (args) => (
-    <Box height="500px" width="100%" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
           <PrimaryPaneContent />
@@ -151,7 +161,7 @@ export const WithConstraints: Story = {
     maxValue: 80,
   },
   render: (args) => (
-    <Box height="500px" width="100%" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
           <PrimaryPaneContent />
@@ -175,7 +185,7 @@ export const Disabled: Story = {
     isDisabled: true,
   },
   render: (args) => (
-    <Box height="500px" width="100%" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
           <PrimaryPaneContent />
@@ -205,12 +215,14 @@ export const KeyboardInteractionHorizontal: Story = {
     maxValue: 90,
   },
   render: (args) => (
-    <Box height="400px" width="600px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary data-testid="primary-pane">
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Primary Pane</h3>
-            <p>Use keyboard to resize this pane</p>
+          <Box p="400" bg="blue.3">
+            <Heading size="md" mb="200">
+              Primary Pane
+            </Heading>
+            <Text>Use keyboard to resize this pane</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -218,9 +230,11 @@ export const KeyboardInteractionHorizontal: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane data-testid="secondary-pane">
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Secondary Pane</h3>
-            <p>This pane adjusts automatically</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Secondary Pane
+            </Heading>
+            <Text>This pane adjusts automatically</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -294,12 +308,14 @@ export const KeyboardInteractionVertical: Story = {
     maxValue: 100,
   },
   render: (args) => (
-    <Box height="500px" width="400px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary data-testid="primary-pane">
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Primary Pane</h3>
-            <p>Vertical layout</p>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">
+              Primary Pane
+            </Heading>
+            <Text>Vertical layout</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -307,9 +323,11 @@ export const KeyboardInteractionVertical: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane data-testid="secondary-pane">
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Secondary Pane</h3>
-            <p>Bottom section</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Secondary Pane
+            </Heading>
+            <Text>Bottom section</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -369,12 +387,14 @@ export const DisabledKeyboardInteraction: Story = {
     isDisabled: true,
   },
   render: (args) => (
-    <Box height="400px" width="600px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Primary Pane</h3>
-            <p>Disabled splitter</p>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">
+              Primary Pane
+            </Heading>
+            <Text>Disabled splitter</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -382,9 +402,11 @@ export const DisabledKeyboardInteraction: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane>
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Secondary Pane</h3>
-            <p>Cannot be resized</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Secondary Pane
+            </Heading>
+            <Text>Cannot be resized</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -426,12 +448,14 @@ export const ConstrainedKeyboardInteraction: Story = {
     step: 5,
   },
   render: (args) => (
-    <Box height="400px" width="600px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Primary Pane</h3>
-            <p>Constrained between 30% and 70%</p>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">
+              Primary Pane
+            </Heading>
+            <Text>Constrained between 30% and 70%</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -439,9 +463,11 @@ export const ConstrainedKeyboardInteraction: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane>
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Secondary Pane</h3>
-            <p>Automatically sized</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Secondary Pane
+            </Heading>
+            <Text>Automatically sized</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -492,12 +518,14 @@ export const ControlledValueInteraction: Story = {
     onValueChange: fn(),
   },
   render: (args) => (
-    <Box height="400px" width="600px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary>
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Primary Pane</h3>
-            <p>Controlled value</p>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">
+              Primary Pane
+            </Heading>
+            <Text>Controlled value</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -505,9 +533,11 @@ export const ControlledValueInteraction: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane>
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Secondary Pane</h3>
-            <p>Value changes trigger callback</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Secondary Pane
+            </Heading>
+            <Text>Value changes trigger callback</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -548,12 +578,14 @@ export const AriaControlsAttribute: Story = {
     defaultValue: 50,
   },
   render: (args) => (
-    <Box height="400px" width="600px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary id="primary-pane-test">
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Primary Pane</h3>
-            <p>This pane should be referenced by aria-controls</p>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">
+              Primary Pane
+            </Heading>
+            <Text>This pane should be referenced by aria-controls</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -561,9 +593,11 @@ export const AriaControlsAttribute: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane>
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Secondary Pane</h3>
-            <p>Not controlled directly</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Secondary Pane
+            </Heading>
+            <Text>Not controlled directly</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -599,13 +633,15 @@ export const ComprehensiveW3CCompliance: Story = {
     step: 5,
   },
   render: (args) => (
-    <Box height="400px" width="600px" border="1px solid" borderColor="gray.200">
+    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary data-testid="primary-pane">
-          <Box p={4} bg="blue.50" h="100%" tabIndex={0}>
-            <h3>Table of Contents</h3>
-            <p>This is the primary pane that gets resized.</p>
-            <button>Focusable element in primary pane</button>
+          <Box p="400" bg="blue.3" h="100%" tabIndex={0}>
+            <Heading size="md" mb="200">
+              Table of Contents
+            </Heading>
+            <Text mb="300">This is the primary pane that gets resized.</Text>
+            <Button size="xs">Focusable element in primary pane</Button>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -613,10 +649,12 @@ export const ComprehensiveW3CCompliance: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane data-testid="secondary-pane">
-          <Box p={4} bg="green.50" h="100%" tabIndex={0}>
-            <h3>Content</h3>
-            <p>This is the secondary pane.</p>
-            <button>Focusable element in secondary pane</button>
+          <Box p="400" bg="green.3" h="100%" tabIndex={0}>
+            <Heading size="md" mb="200">
+              Content
+            </Heading>
+            <Text mb="300">This is the secondary pane.</Text>
+            <Button size="xs">Focusable element in secondary pane</Button>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
@@ -720,12 +758,19 @@ export const VerticalW3CCompliance: Story = {
     step: 10,
   },
   render: (args) => (
-    <Box height="500px" width="400px" border="1px solid" borderColor="gray.200">
+    <Box
+      height="1200px"
+      width="1000px"
+      borderWidth="25"
+      borderColor="neutral.6"
+    >
       <WindowSplitter.Root {...args}>
         <WindowSplitter.Pane isPrimary data-testid="primary-pane">
-          <Box p={4} bg="blue.50" h="100%">
-            <h3>Navigation Panel</h3>
-            <p>Primary pane in vertical layout</p>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">
+              Navigation Panel
+            </Heading>
+            <Text>Primary pane in vertical layout</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator
@@ -733,9 +778,11 @@ export const VerticalW3CCompliance: Story = {
           data-testid="splitter"
         />
         <WindowSplitter.Pane data-testid="secondary-pane">
-          <Box p={4} bg="green.50" h="100%">
-            <h3>Content Area</h3>
-            <p>Secondary pane in vertical layout</p>
+          <Box p="400" bg="green.3" h="100%">
+            <Heading size="md" mb="200">
+              Content Area
+            </Heading>
+            <Text>Secondary pane in vertical layout</Text>
           </Box>
         </WindowSplitter.Pane>
       </WindowSplitter.Root>
