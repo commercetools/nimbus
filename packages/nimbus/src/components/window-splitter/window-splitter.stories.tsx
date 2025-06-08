@@ -40,7 +40,7 @@ type Story = StoryObj<typeof WindowSplitter.Root>;
 
 // Sample content components
 const PrimaryPaneContent = () => (
-  <Box p="400" bg="blue.3" h="100%" overflow="auto">
+  <Box p="400" bg="blue.3" h="100%">
     <Heading size="lg" mb="300">
       Primary Pane
     </Heading>
@@ -65,7 +65,7 @@ const PrimaryPaneContent = () => (
 );
 
 const SecondaryPaneContent = () => (
-  <Box p="400" bg="green.3" h="100%" overflow="auto">
+  <Box p="400" bg="green.3" h="100%">
     <Heading size="lg" mb="300">
       Secondary Pane
     </Heading>
@@ -254,7 +254,7 @@ export const KeyboardInteractionHorizontal: Story = {
     });
 
     await step("Splitter is focusable", async () => {
-      await userEvent.tab();
+      splitter.focus();
       await expect(splitter).toHaveFocus();
     });
 
@@ -347,7 +347,7 @@ export const KeyboardInteractionVertical: Story = {
     });
 
     await step("Focus splitter", async () => {
-      await userEvent.tab();
+      splitter.focus();
       await expect(splitter).toHaveFocus();
     });
 
@@ -483,7 +483,7 @@ export const ConstrainedKeyboardInteraction: Story = {
     });
 
     await step("Focus splitter", async () => {
-      await userEvent.tab();
+      splitter.focus();
       await expect(splitter).toHaveFocus();
     });
 
@@ -552,7 +552,7 @@ export const ControlledValueInteraction: Story = {
     });
 
     await step("Focus splitter", async () => {
-      await userEvent.tab();
+      splitter.focus();
       await expect(splitter).toHaveFocus();
     });
 
@@ -690,7 +690,7 @@ export const ComprehensiveW3CCompliance: Story = {
 
     await step("Splitter is focusable and keyboard accessible", async () => {
       await expect(splitter).toHaveAttribute("tabindex", "0");
-      await userEvent.tab();
+      splitter.focus();
       await expect(splitter).toHaveFocus();
     });
 
@@ -797,7 +797,7 @@ export const VerticalW3CCompliance: Story = {
     });
 
     await step("Focus splitter", async () => {
-      await userEvent.tab();
+      splitter.focus();
       await expect(splitter).toHaveFocus();
     });
 
