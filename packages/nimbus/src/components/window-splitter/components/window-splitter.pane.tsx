@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useId } from "react";
 import { WindowSplitterPaneSlot } from "../window-splitter.slots";
-import { useWindowSplitterContext } from "./window-splitter.context";
+import { useWindowSplitterContext } from "./../window-splitter";
 import type { WindowSplitterPaneProps } from "../window-splitter.types";
 
 export const WindowSplitterPane = forwardRef<
