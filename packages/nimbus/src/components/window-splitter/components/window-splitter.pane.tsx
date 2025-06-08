@@ -6,10 +6,13 @@ import type { WindowSplitterPaneProps } from "../window-splitter.types";
 export const WindowSplitterPane = forwardRef<
   HTMLDivElement,
   WindowSplitterPaneProps
->(({ children, isPrimary = false, style, ...props }, ref) => {
+>(({ children, isPrimary = false, style, id: explicitId, ...props }, ref) => {
   const context = useWindowSplitterContext();
   const { value, orientation, setPrimaryPaneId } = context;
-  const id = useId();
+  const generatedId = useId();
+
+  // Use explicit ID if provided, otherwise use generated ID
+  const id = explicitId || generatedId;
 
   // Register this pane as the primary pane if specified
   useEffect(() => {
@@ -29,9 +32,10 @@ export const WindowSplitterPane = forwardRef<
 
   return (
     <WindowSplitterPaneSlot
-      ref={ref as any}
+      ref={ref}
       id={isPrimary ? id : undefined}
       style={paneStyle}
+      tabIndex={0}
       {...props}
     >
       {children}
