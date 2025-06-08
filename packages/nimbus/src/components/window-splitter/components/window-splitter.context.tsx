@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 
 export interface WindowSplitterContextValue {
   /** Current value of the splitter (0-100) */
@@ -24,13 +24,3 @@ export interface WindowSplitterContextValue {
 export const WindowSplitterContext = createContext<
   WindowSplitterContextValue | undefined
 >(undefined);
-
-export const useWindowSplitterContext = () => {
-  const context = useContext(WindowSplitterContext);
-  if (!context) {
-    throw new Error(
-      "useWindowSplitterContext must be used within a WindowSplitter.Root"
-    );
-  }
-  return context;
-};

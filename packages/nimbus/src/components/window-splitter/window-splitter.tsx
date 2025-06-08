@@ -8,12 +8,11 @@ export const WindowSplitter = {
   Separator: WindowSplitterSeparator,
 };
 
-// Export types for consumers
-export type {
-  WindowSplitterRootProps,
-  WindowSplitterPaneProps,
-  WindowSplitterSeparatorProps,
-} from "./window-splitter.types";
-
 // Export context hook for advanced use cases
-export { useWindowSplitterContext } from "./components/window-splitter.context";
+export { useWindowSplitterContext } from "./hooks/use-window-splitter-context";
+
+export {
+  WindowSplitterRoot as Root,
+  WindowSplitterPane as Pane,
+  WindowSplitterSeparator as Separator,
+};
