@@ -8,7 +8,7 @@ import {
 } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { WindowSplitterSeparatorSlot } from "../window-splitter.slots";
-import { useWindowSplitterContext } from "./window-splitter.context";
+import { useWindowSplitterContext } from "./../window-splitter";
 import type { WindowSplitterSeparatorProps } from "../window-splitter.types";
 
 export const WindowSplitterSeparator = forwardRef<
