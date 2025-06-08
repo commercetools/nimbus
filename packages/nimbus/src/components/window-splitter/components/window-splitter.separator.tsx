@@ -16,7 +16,12 @@ export const WindowSplitterSeparator = forwardRef<
   WindowSplitterSeparatorProps
 >(
   (
-    { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, ...props },
+    {
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
+      style,
+      ...props
+    },
     ref
   ) => {
     const context = useWindowSplitterContext();
@@ -130,6 +135,12 @@ export const WindowSplitterSeparator = forwardRef<
       [value, setValue, orientation, isDisabled, step, minValue, maxValue]
     );
 
+    // Calculate position based on the splitter value
+    const positionStyle =
+      orientation === "horizontal"
+        ? { left: `${value}%` }
+        : { top: `${value}%` };
+
     const combinedProps = mergeProps(
       separatorProps,
       moveProps,
@@ -144,15 +155,16 @@ export const WindowSplitterSeparator = forwardRef<
         "aria-controls": primaryPaneId,
         "data-focus-visible": isFocusVisible || undefined,
         onKeyDown: handleKeyDown,
+        style: {
+          ...positionStyle,
+          ...style,
+        },
       },
       props
     );
 
     return (
-      <WindowSplitterSeparatorSlot
-        ref={separatorRef as any}
-        {...combinedProps}
-      />
+      <WindowSplitterSeparatorSlot ref={separatorRef} {...combinedProps} />
     );
   }
 );
