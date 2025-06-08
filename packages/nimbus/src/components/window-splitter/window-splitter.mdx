@@ -75,16 +75,16 @@ Content within splitter panes should be designed to work well at various sizes, 
 
 ```jsx-live
 const App = () => (
-  <Box height="400px" width="100%" border="1px solid" borderColor="gray.200">
+  <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
     <WindowSplitter.Root orientation="horizontal" defaultValue={60}>
       <WindowSplitter.Pane isPrimary>
-        <Box p={4} bg="blue.50" h="100%" overflow="auto">
-          <Heading size="md" mb={3}>Primary Content</Heading>
-          <Text mb={3}>
+        <Box p="400" bg="blue.3" h="100%" overflow="auto">
+          <Heading size="lg" mb="300">Primary Content</Heading>
+          <Text mb="300">
             This pane contains the main content that users typically focus on.
             The content is designed to be readable and functional at various sizes.
           </Text>
-          <Stack gap={2}>
+          <Stack gap="200">
             <Text>• Adaptable content layout</Text>
             <Text>• Scrollable when needed</Text>
             <Text>• Maintains functionality at different sizes</Text>
@@ -93,8 +93,8 @@ const App = () => (
       </WindowSplitter.Pane>
       <WindowSplitter.Separator aria-label="Resize content areas" />
       <WindowSplitter.Pane>
-        <Box p={4} bg="green.50" h="100%" overflow="auto">
-          <Heading size="md" mb={3}>Secondary Content</Heading>
+        <Box p="400" bg="green.3" h="100%" overflow="auto">
+          <Heading size="lg" mb="300">Secondary Content</Heading>
           <Text>
             This pane contains supplementary content that adjusts its size
             based on the primary pane's allocation.
@@ -115,12 +115,12 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-  <Box height="400px" width="100%" border="1px solid" borderColor="gray.200">
+  <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
     <WindowSplitter.Root orientation="horizontal" defaultValue={50}>
       <WindowSplitter.Pane isPrimary>
-        <Box p={4} bg="red.50" h="100%">
-          <Heading size="md" mb={3}>Poor Example</Heading>
-          <Box width="500px" bg="white" p={3} border="1px solid" borderColor="red.200">
+        <Box p="400" bg="red.3" h="100%">
+          <Heading size="lg" mb="300">Poor Example</Heading>
+          <Box width="500px" bg="white" p="300" borderWidth="25" borderColor="red.6">
             <Text>
               This content has a fixed width of 500px and will overflow or be cut off
               when the pane is resized smaller. This creates a poor user experience.
@@ -130,7 +130,7 @@ const App = () => (
       </WindowSplitter.Pane>
       <WindowSplitter.Separator aria-label="Resize content areas" />
       <WindowSplitter.Pane>
-        <Box p={4} bg="red.50" h="100%">
+        <Box p="400" bg="red.3" h="100%">
           <Text fontSize="xs">
             This text is too small and the content doesn't provide enough value
             to justify a resizable pane.
@@ -156,18 +156,18 @@ Use horizontal orientation when you need to split content left and right, such a
 
 ```jsx-live
 const App = () => (
-  <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+  <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
     <WindowSplitter.Root orientation="horizontal" defaultValue={30}>
       <WindowSplitter.Pane isPrimary>
-        <Box p={4} bg="blue.50" h="100%">
-          <Text fontWeight="bold">Left Pane</Text>
+        <Box p="400" bg="blue.3" h="100%">
+          <Heading size="md" mb="200">Left Pane</Heading>
           <Text>This pane takes up 30% of the width by default.</Text>
         </Box>
       </WindowSplitter.Pane>
       <WindowSplitter.Separator aria-label="Resize horizontally" />
       <WindowSplitter.Pane>
-        <Box p={4} bg="green.50" h="100%">
-          <Text fontWeight="bold">Right Pane</Text>
+        <Box p="400" bg="green.3" h="100%">
+          <Heading size="md" mb="200">Right Pane</Heading>
           <Text>This pane takes up the remaining 70% of the width.</Text>
         </Box>
       </WindowSplitter.Pane>
@@ -182,18 +182,18 @@ Use vertical orientation when you need to split content top and bottom, such as 
 
 ```jsx-live
 const App = () => (
-  <Box height="400px" width="100%" border="1px solid" borderColor="gray.200">
+  <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
     <WindowSplitter.Root orientation="vertical" defaultValue={40}>
       <WindowSplitter.Pane isPrimary>
-        <Box p={4} bg="purple.50" h="100%">
-          <Text fontWeight="bold">Top Pane</Text>
+        <Box p="400" bg="purple.3" h="100%">
+          <Heading size="md" mb="200">Top Pane</Heading>
           <Text>This pane takes up 40% of the height by default.</Text>
         </Box>
       </WindowSplitter.Pane>
       <WindowSplitter.Separator aria-label="Resize vertically" />
       <WindowSplitter.Pane>
-        <Box p={4} bg="orange.50" h="100%">
-          <Text fontWeight="bold">Bottom Pane</Text>
+        <Box p="400" bg="orange.3" h="100%">
+          <Heading size="md" mb="200">Bottom Pane</Heading>
           <Text>This pane takes up the remaining 60% of the height.</Text>
         </Box>
       </WindowSplitter.Pane>
@@ -212,21 +212,21 @@ Use uncontrolled mode when the component should manage its own state internally.
 
 ```jsx-live
 const App = () => (
-  <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+  <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
     <WindowSplitter.Root 
       orientation="horizontal" 
       defaultValue={40}
       onValueChange={(value) => console.log('Value changed:', value)}
     >
       <WindowSplitter.Pane isPrimary>
-        <Box p={4} bg="blue.50" h="100%">
-          <Text fontWeight="bold">Uncontrolled Mode</Text>
+        <Box p="400" bg="blue.3" h="100%">
+          <Heading size="md" mb="200">Uncontrolled Mode</Heading>
           <Text>The component manages its own state.</Text>
         </Box>
       </WindowSplitter.Pane>
       <WindowSplitter.Separator aria-label="Resize panes" />
       <WindowSplitter.Pane>
-        <Box p={4} bg="green.50" h="100%">
+        <Box p="400" bg="green.3" h="100%">
           <Text>Check the console to see value changes.</Text>
         </Box>
       </WindowSplitter.Pane>
@@ -244,27 +244,29 @@ const App = () => {
   const [value, setValue] = React.useState(60);
   
   return (
-    <Stack gap={4}>
-      <Box>
-        <Text>Current value: {value}%</Text>
-        <Button size="sm" onClick={() => setValue(25)}>Set to 25%</Button>
-        <Button size="sm" onClick={() => setValue(75)} ml={2}>Set to 75%</Button>
+    <Stack gap="400">
+      <Box p="300" bg="neutral.2" borderRadius="md">
+        <Text mb="200" fontWeight="bold">Current value: {value}%</Text>
+        <Stack direction="horizontal" gap="200">
+          <Button size="sm" onClick={() => setValue(25)}>Set to 25%</Button>
+          <Button size="sm" onClick={() => setValue(75)}>Set to 75%</Button>
+        </Stack>
       </Box>
-      <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+      <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
         <WindowSplitter.Root 
           orientation="horizontal" 
           value={value}
           onValueChange={setValue}
         >
           <WindowSplitter.Pane isPrimary>
-            <Box p={4} bg="blue.50" h="100%">
-              <Text fontWeight="bold">Controlled Mode</Text>
+            <Box p="400" bg="blue.3" h="100%">
+              <Heading size="md" mb="200">Controlled Mode</Heading>
               <Text>Value is managed externally: {value}%</Text>
             </Box>
           </WindowSplitter.Pane>
           <WindowSplitter.Separator aria-label="Resize panes" />
           <WindowSplitter.Pane>
-            <Box p={4} bg="green.50" h="100%">
+            <Box p="400" bg="green.3" h="100%">
               <Text>Remaining space: {100 - value}%</Text>
             </Box>
           </WindowSplitter.Pane>
@@ -281,7 +283,7 @@ Set minimum and maximum values to prevent the splitter from creating unusable la
 
 ```jsx-live
 const App = () => (
-  <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+  <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
     <WindowSplitter.Root 
       orientation="horizontal" 
       defaultValue={50}
@@ -289,14 +291,14 @@ const App = () => (
       maxValue={80}
     >
       <WindowSplitter.Pane isPrimary>
-        <Box p={4} bg="blue.50" h="100%">
-          <Text fontWeight="bold">Constrained Splitter</Text>
+        <Box p="400" bg="blue.3" h="100%">
+          <Heading size="md" mb="200">Constrained Splitter</Heading>
           <Text>This pane can only be 20% to 80% of the total width.</Text>
         </Box>
       </WindowSplitter.Pane>
       <WindowSplitter.Separator aria-label="Resize panes (constrained 20%-80%)" />
       <WindowSplitter.Pane>
-        <Box p={4} bg="green.50" h="100%">
+        <Box p="400" bg="green.3" h="100%">
           <Text>Try dragging the separator to the extremes.</Text>
         </Box>
       </WindowSplitter.Pane>
@@ -314,8 +316,8 @@ const App = () => {
   const [isDisabled, setIsDisabled] = React.useState(true);
   
   return (
-    <Stack gap={4}>
-      <Box>
+    <Stack gap="400">
+      <Box p="300" bg="neutral.2" borderRadius="md">
         <Button 
           size="sm" 
           onClick={() => setIsDisabled(!isDisabled)}
@@ -323,21 +325,21 @@ const App = () => {
           {isDisabled ? 'Enable' : 'Disable'} Splitter
         </Button>
       </Box>
-      <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+      <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
         <WindowSplitter.Root 
           orientation="horizontal" 
           defaultValue={40}
           isDisabled={isDisabled}
         >
           <WindowSplitter.Pane isPrimary>
-            <Box p={4} bg="gray.50" h="100%">
-              <Text fontWeight="bold">Disabled Splitter</Text>
+            <Box p="400" bg="neutral.3" h="100%">
+              <Heading size="md" mb="200">Disabled Splitter</Heading>
               <Text>The separator cannot be dragged when disabled.</Text>
             </Box>
           </WindowSplitter.Pane>
           <WindowSplitter.Separator aria-label="Disabled splitter" />
           <WindowSplitter.Pane>
-            <Box p={4} bg="gray.100" h="100%">
+            <Box p="400" bg="neutral.4" h="100%">
               <Text>Status: {isDisabled ? 'Disabled' : 'Enabled'}</Text>
             </Box>
           </WindowSplitter.Pane>
@@ -388,27 +390,26 @@ The Window Splitter component follows accessibility best practices to ensure it'
 
 ```jsx-live
 const App = () => (
-  <Stack gap={4}>
-    <Box p={3} bg="blue.50" borderRadius="md">
-      <Text fontWeight="bold" mb={2}>Keyboard Instructions:</Text>
+  <Stack gap="400">
+    <Box p="400" bg="blue.2" borderRadius="md">
+      <Heading size="sm" mb="300">Keyboard Instructions:</Heading>
       <Text fontSize="sm">
         1. Tab to focus the separator<br/>
         2. Use arrow keys to resize (← → for horizontal, ↑ ↓ for vertical)<br/>
-        3. Use Home/End for min/max values<br/>
-        4. Use Page Up/Down for larger steps
+        3. Use Home/End for min/max values
       </Text>
     </Box>
-    <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+    <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
       <WindowSplitter.Root orientation="horizontal" defaultValue={50} step={10}>
         <WindowSplitter.Pane isPrimary>
-          <Box p={4} bg="blue.50" h="100%">
-            <Text fontWeight="bold">Keyboard Accessible</Text>
+          <Box p="400" bg="blue.3" h="100%">
+            <Heading size="md" mb="200">Keyboard Accessible</Heading>
             <Text>Focus the separator and use arrow keys to resize.</Text>
           </Box>
         </WindowSplitter.Pane>
         <WindowSplitter.Separator aria-label="Resize panes using arrow keys" />
         <WindowSplitter.Pane>
-          <Box p={4} bg="green.50" h="100%">
+          <Box p="400" bg="green.3" h="100%">
             <Text>This splitter is fully keyboard accessible.</Text>
           </Box>
         </WindowSplitter.Pane>
