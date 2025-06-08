@@ -1,0 +1,419 @@
+---
+id: Components-WindowSplitter
+title: Window Splitter
+description: A resizable pane component that allows users to adjust the size of two content areas with a draggable separator
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Layout
+  - Window Splitter
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1793-8790&m=dev
+---
+
+# Window Splitter
+
+A resizable pane component that allows users to adjust the size of two content areas with a draggable separator, providing flexible layout control for complex interfaces.
+
+## Overview
+
+The Window Splitter component enables users to dynamically resize two adjacent content areas by dragging a separator between them. It supports both horizontal and vertical orientations, controlled and uncontrolled modes, and includes accessibility features for keyboard navigation.
+
+### Resources
+
+Deep dive on details and access design library.
+
+
+
+## Guidelines
+
+Window Splitter component guidelines focus on providing intuitive resizing controls, clear visual feedback, and maintaining usability across different screen sizes and input methods.
+
+### Best practices
+
+- **Clear visual separation:** Ensure the separator is visually distinct and easily identifiable as an interactive element.
+- **Appropriate constraints:** Set reasonable minimum and maximum values to prevent content from becoming unusable.
+- **Responsive behavior:** Consider how the splitter behaves on different screen sizes and touch devices.
+- **Content preservation:** Ensure both panes maintain readable and functional content at various sizes.
+- **Keyboard accessibility:** Support keyboard navigation for users who cannot use a mouse or touch input.
+- **Visual feedback:** Provide clear hover and focus states to indicate interactivity.
+
+### Usage
+
+The Window Splitter is ideal for interfaces that need flexible content areas, such as code editors, file browsers, or dashboard layouts where users benefit from customizable space allocation.
+
+> [!TIP]\
+> When to use
+- **Flexible layouts:** When users need to adjust the relative size of two content areas based on their workflow.
+- **Content comparison:** When users need to view and compare content side by side with adjustable proportions.
+- **Multi-panel interfaces:** In applications like code editors, file managers, or design tools where space allocation is important.
+- **Dashboard layouts:** When different sections of a dashboard need flexible sizing based on user preferences.
+- **Detail/master views:** When showing a list alongside detailed content that may need different amounts of space.
+- **Responsive design needs:** When you need to provide user control over layout in addition to responsive breakpoints.
+
+> [!CAUTION]\
+> When not to use
+- **Simple two-column layouts:** When the content doesn't benefit from user-controlled resizing, use standard grid or flex layouts.
+- **Mobile-first designs:** On small screens where dragging interactions are difficult and space is limited.
+- **Static content:** When the content in both panes doesn't vary in size or importance.
+- **Temporary content:** For modal dialogs or temporary overlays where persistent layout preferences aren't needed.
+- **Complex multi-pane layouts:** For more than two panes, consider alternative layout solutions or nested splitters.
+
+### Content
+
+Content within splitter panes should be designed to work well at various sizes, with appropriate minimum widths/heights and responsive behavior to maintain usability.
+
+> [!TIP]\
+> **Do**
+>
+> - Design content that adapts gracefully to different pane sizes.
+> - Provide meaningful default proportions that work for most use cases.
+> - Include scrollable areas when content might overflow at smaller sizes.
+
+```jsx-live
+const App = () => (
+  <Box height="400px" width="100%" border="1px solid" borderColor="gray.200">
+    <WindowSplitter.Root orientation="horizontal" defaultValue={60}>
+      <WindowSplitter.Pane isPrimary>
+        <Box p={4} bg="blue.50" h="100%" overflow="auto">
+          <Heading size="md" mb={3}>Primary Content</Heading>
+          <Text mb={3}>
+            This pane contains the main content that users typically focus on.
+            The content is designed to be readable and functional at various sizes.
+          </Text>
+          <Stack gap={2}>
+            <Text>• Adaptable content layout</Text>
+            <Text>• Scrollable when needed</Text>
+            <Text>• Maintains functionality at different sizes</Text>
+          </Stack>
+        </Box>
+      </WindowSplitter.Pane>
+      <WindowSplitter.Separator aria-label="Resize content areas" />
+      <WindowSplitter.Pane>
+        <Box p={4} bg="green.50" h="100%" overflow="auto">
+          <Heading size="md" mb={3}>Secondary Content</Heading>
+          <Text>
+            This pane contains supplementary content that adjusts its size
+            based on the primary pane's allocation.
+          </Text>
+        </Box>
+      </WindowSplitter.Pane>
+    </WindowSplitter.Root>
+  </Box>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't create content that becomes unusable at smaller sizes.
+> - Avoid fixed-width content that doesn't adapt to pane resizing.
+> - Don't use splitters when content doesn't benefit from size adjustment.
+
+```jsx-live
+const App = () => (
+  <Box height="400px" width="100%" border="1px solid" borderColor="gray.200">
+    <WindowSplitter.Root orientation="horizontal" defaultValue={50}>
+      <WindowSplitter.Pane isPrimary>
+        <Box p={4} bg="red.50" h="100%">
+          <Heading size="md" mb={3}>Poor Example</Heading>
+          <Box width="500px" bg="white" p={3} border="1px solid" borderColor="red.200">
+            <Text>
+              This content has a fixed width of 500px and will overflow or be cut off
+              when the pane is resized smaller. This creates a poor user experience.
+            </Text>
+          </Box>
+        </Box>
+      </WindowSplitter.Pane>
+      <WindowSplitter.Separator aria-label="Resize content areas" />
+      <WindowSplitter.Pane>
+        <Box p={4} bg="red.50" h="100%">
+          <Text fontSize="xs">
+            This text is too small and the content doesn't provide enough value
+            to justify a resizable pane.
+          </Text>
+        </Box>
+      </WindowSplitter.Pane>
+    </WindowSplitter.Root>
+  </Box>
+);
+```
+
+## Variables
+
+Get familiar with the features and customization options.
+
+### Orientation
+
+The splitter supports both horizontal and vertical orientations to accommodate different layout needs.
+
+#### Horizontal
+
+Use horizontal orientation when you need to split content left and right, such as for sidebar and main content layouts.
+
+```jsx-live
+const App = () => (
+  <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+    <WindowSplitter.Root orientation="horizontal" defaultValue={30}>
+      <WindowSplitter.Pane isPrimary>
+        <Box p={4} bg="blue.50" h="100%">
+          <Text fontWeight="bold">Left Pane</Text>
+          <Text>This pane takes up 30% of the width by default.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+      <WindowSplitter.Separator aria-label="Resize horizontally" />
+      <WindowSplitter.Pane>
+        <Box p={4} bg="green.50" h="100%">
+          <Text fontWeight="bold">Right Pane</Text>
+          <Text>This pane takes up the remaining 70% of the width.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+    </WindowSplitter.Root>
+  </Box>
+);
+```
+
+#### Vertical
+
+Use vertical orientation when you need to split content top and bottom, such as for header/content or content/footer layouts.
+
+```jsx-live
+const App = () => (
+  <Box height="400px" width="100%" border="1px solid" borderColor="gray.200">
+    <WindowSplitter.Root orientation="vertical" defaultValue={40}>
+      <WindowSplitter.Pane isPrimary>
+        <Box p={4} bg="purple.50" h="100%">
+          <Text fontWeight="bold">Top Pane</Text>
+          <Text>This pane takes up 40% of the height by default.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+      <WindowSplitter.Separator aria-label="Resize vertically" />
+      <WindowSplitter.Pane>
+        <Box p={4} bg="orange.50" h="100%">
+          <Text fontWeight="bold">Bottom Pane</Text>
+          <Text>This pane takes up the remaining 60% of the height.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+    </WindowSplitter.Root>
+  </Box>
+);
+```
+
+### Control Mode
+
+The splitter can be used in both controlled and uncontrolled modes depending on your application's state management needs.
+
+#### Uncontrolled
+
+Use uncontrolled mode when the component should manage its own state internally. This is the most common usage pattern.
+
+```jsx-live
+const App = () => (
+  <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+    <WindowSplitter.Root 
+      orientation="horizontal" 
+      defaultValue={40}
+      onValueChange={(value) => console.log('Value changed:', value)}
+    >
+      <WindowSplitter.Pane isPrimary>
+        <Box p={4} bg="blue.50" h="100%">
+          <Text fontWeight="bold">Uncontrolled Mode</Text>
+          <Text>The component manages its own state.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+      <WindowSplitter.Separator aria-label="Resize panes" />
+      <WindowSplitter.Pane>
+        <Box p={4} bg="green.50" h="100%">
+          <Text>Check the console to see value changes.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+    </WindowSplitter.Root>
+  </Box>
+);
+```
+
+#### Controlled
+
+Use controlled mode when you need to manage the splitter's state externally, such as for persistence or complex state management.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState(60);
+  
+  return (
+    <Stack gap={4}>
+      <Box>
+        <Text>Current value: {value}%</Text>
+        <Button size="sm" onClick={() => setValue(25)}>Set to 25%</Button>
+        <Button size="sm" onClick={() => setValue(75)} ml={2}>Set to 75%</Button>
+      </Box>
+      <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+        <WindowSplitter.Root 
+          orientation="horizontal" 
+          value={value}
+          onValueChange={setValue}
+        >
+          <WindowSplitter.Pane isPrimary>
+            <Box p={4} bg="blue.50" h="100%">
+              <Text fontWeight="bold">Controlled Mode</Text>
+              <Text>Value is managed externally: {value}%</Text>
+            </Box>
+          </WindowSplitter.Pane>
+          <WindowSplitter.Separator aria-label="Resize panes" />
+          <WindowSplitter.Pane>
+            <Box p={4} bg="green.50" h="100%">
+              <Text>Remaining space: {100 - value}%</Text>
+            </Box>
+          </WindowSplitter.Pane>
+        </WindowSplitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+### Constraints
+
+Set minimum and maximum values to prevent the splitter from creating unusable layouts.
+
+```jsx-live
+const App = () => (
+  <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+    <WindowSplitter.Root 
+      orientation="horizontal" 
+      defaultValue={50}
+      minValue={20}
+      maxValue={80}
+    >
+      <WindowSplitter.Pane isPrimary>
+        <Box p={4} bg="blue.50" h="100%">
+          <Text fontWeight="bold">Constrained Splitter</Text>
+          <Text>This pane can only be 20% to 80% of the total width.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+      <WindowSplitter.Separator aria-label="Resize panes (constrained 20%-80%)" />
+      <WindowSplitter.Pane>
+        <Box p={4} bg="green.50" h="100%">
+          <Text>Try dragging the separator to the extremes.</Text>
+        </Box>
+      </WindowSplitter.Pane>
+    </WindowSplitter.Root>
+  </Box>
+);
+```
+
+### Disabled State
+
+Disable the splitter when resizing should not be allowed in certain application states.
+
+```jsx-live
+const App = () => {
+  const [isDisabled, setIsDisabled] = React.useState(true);
+  
+  return (
+    <Stack gap={4}>
+      <Box>
+        <Button 
+          size="sm" 
+          onClick={() => setIsDisabled(!isDisabled)}
+        >
+          {isDisabled ? 'Enable' : 'Disable'} Splitter
+        </Button>
+      </Box>
+      <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+        <WindowSplitter.Root 
+          orientation="horizontal" 
+          defaultValue={40}
+          isDisabled={isDisabled}
+        >
+          <WindowSplitter.Pane isPrimary>
+            <Box p={4} bg="gray.50" h="100%">
+              <Text fontWeight="bold">Disabled Splitter</Text>
+              <Text>The separator cannot be dragged when disabled.</Text>
+            </Box>
+          </WindowSplitter.Pane>
+          <WindowSplitter.Separator aria-label="Disabled splitter" />
+          <WindowSplitter.Pane>
+            <Box p={4} bg="gray.100" h="100%">
+              <Text>Status: {isDisabled ? 'Disabled' : 'Enabled'}</Text>
+            </Box>
+          </WindowSplitter.Pane>
+        </WindowSplitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+## Properties
+
+<PropsTable id="WindowSplitter" />
+
+## Accessibility
+
+The Window Splitter component follows accessibility best practices to ensure it's usable by everyone, including users with disabilities.
+
+### Accessibility Standards
+
+#### 1. Perceivable:
+
+- **1.3.1 Info and Relationships:** The separator uses proper ARIA attributes to communicate its role and relationship to the panes.
+- **1.4.3 Contrast (Minimum):** The separator has sufficient visual contrast to be easily identifiable.
+
+#### 2. Operable:
+
+- **2.1.1 Keyboard:** The separator is fully operable using keyboard navigation (Tab to focus, arrow keys to resize).
+- **2.1.3 Keyboard (No Exception):** All functionality is available through keyboard interface.
+- **2.4.7 Focus Visible:** Clear focus indicators are provided when the separator is focused.
+
+#### 3. Understandable:
+
+- **3.2.2 On Input:** Changes to the splitter position are predictable and don't cause unexpected context changes.
+- **3.3.2 Labels or Instructions:** The separator includes descriptive aria-label text.
+
+#### 4. Robust:
+
+- **4.1.2 Name, Role, Value:** Proper ARIA attributes communicate the separator's role, current value, and constraints to assistive technologies.
+
+### Keyboard Navigation
+
+- **Tab:** Focus the separator
+- **Arrow Keys:** Resize the panes (Left/Right for horizontal, Up/Down for vertical)
+- **Home:** Move to minimum value
+- **End:** Move to maximum value
+- **Page Up/Page Down:** Move by larger increments
+
+```jsx-live
+const App = () => (
+  <Stack gap={4}>
+    <Box p={3} bg="blue.50" borderRadius="md">
+      <Text fontWeight="bold" mb={2}>Keyboard Instructions:</Text>
+      <Text fontSize="sm">
+        1. Tab to focus the separator<br/>
+        2. Use arrow keys to resize (← → for horizontal, ↑ ↓ for vertical)<br/>
+        3. Use Home/End for min/max values<br/>
+        4. Use Page Up/Down for larger steps
+      </Text>
+    </Box>
+    <Box height="300px" width="100%" border="1px solid" borderColor="gray.200">
+      <WindowSplitter.Root orientation="horizontal" defaultValue={50} step={10}>
+        <WindowSplitter.Pane isPrimary>
+          <Box p={4} bg="blue.50" h="100%">
+            <Text fontWeight="bold">Keyboard Accessible</Text>
+            <Text>Focus the separator and use arrow keys to resize.</Text>
+          </Box>
+        </WindowSplitter.Pane>
+        <WindowSplitter.Separator aria-label="Resize panes using arrow keys" />
+        <WindowSplitter.Pane>
+          <Box p={4} bg="green.50" h="100%">
+            <Text>This splitter is fully keyboard accessible.</Text>
+          </Box>
+        </WindowSplitter.Pane>
+      </WindowSplitter.Root>
+    </Box>
+  </Stack>
+);
+``` 
