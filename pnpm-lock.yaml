@@ -628,8 +628,8 @@ importers:
         specifier: catalog:tooling
         version: 7.27.1(@babel/core@7.27.1)
       '@tokens-studio/sd-transforms':
-        specifier: ^1.2.9
-        version: 1.2.9(style-dictionary@4.3.3)
+        specifier: ^2.0.0
+        version: 2.0.0(style-dictionary@4.3.3)
       is-plain-obj:
         specifier: ^4.1.0
         version: 4.1.0
@@ -3164,11 +3164,11 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@tokens-studio/sd-transforms@1.2.9':
-    resolution: {integrity: sha512-doRL3tjhwmSck/9fH0X1mlBA6derw+8wpmi5hbG2vhAmvc8F89MxIN6JCKSIbVIJNvaprDVlQqSzXLG7Ug7F9A==}
+  '@tokens-studio/sd-transforms@2.0.0':
+    resolution: {integrity: sha512-6c34wjB93ZwrYPscb6CLRQNbu9cnmgRW0vP9OjvfaMeuEe7uqAdEm3wPfEea+PCS+t6csfC1JZm6doie0aWXJw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      style-dictionary: ^4.1.4
+      style-dictionary: ^5.0.0
 
   '@tokens-studio/types@0.5.2':
     resolution: {integrity: sha512-rzMcZP0bj2E5jaa7Fj0LGgYHysoCrbrxILVbT0ohsCUH5uCHY/u6J7Qw/TE0n6gR9Js/c9ZO9T8mOoz0HdLMbA==}
@@ -4107,8 +4107,8 @@ packages:
     resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
     engines: {node: '>=12.5.0'}
 
-  colorjs.io@0.4.5:
-    resolution: {integrity: sha512-yCtUNCmge7llyfd/Wou19PMAcf5yC3XXhgFoAh6zsO2pGswhUPBaaUh8jzgHnXtXuZyFKzXZNAnyF5i+apICow==}
+  colorjs.io@0.5.2:
+    resolution: {integrity: sha512-twmVoizEW7ylZSN32OgKdXRmo1qg+wT5/6C3xu5b9QsWzSFAhHLn2xd8ro0diCsKfCj1RdaTP/nrcW+vAoQPIw==}
 
   colorparsley@0.1.8:
     resolution: {integrity: sha512-rObESTTTE6G5qO5WFwFxWPggpw4KfpxnLC6Ssl8bITBnNVRhDsyCeTRAUxWQNVTx2pRknKlO2nddYTxjkdNFaw==}
@@ -11021,12 +11021,12 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.0
 
-  '@tokens-studio/sd-transforms@1.2.9(style-dictionary@4.3.3)':
+  '@tokens-studio/sd-transforms@2.0.0(style-dictionary@4.3.3)':
     dependencies:
       '@bundled-es-modules/deepmerge': 4.3.1
       '@bundled-es-modules/postcss-calc-ast-parser': 0.1.6
       '@tokens-studio/types': 0.5.2
-      colorjs.io: 0.4.5
+      colorjs.io: 0.5.2
       expr-eval-fork: 2.0.2
       is-mergeable-object: 1.1.1
       style-dictionary: 4.3.3
@@ -12378,7 +12378,7 @@ snapshots:
       color-convert: 2.0.1
       color-string: 1.9.1
 
-  colorjs.io@0.4.5: {}
+  colorjs.io@0.5.2: {}
 
   colorparsley@0.1.8: {}
 
