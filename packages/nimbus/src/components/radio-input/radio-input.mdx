@@ -1,0 +1,93 @@
+---
+id: Components-RadioGroup
+title: RadioInput
+description: A RadioInput component allows users to select a single option from a mutually exclusive set of choices.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - RadioInput
+tags:
+  - component
+---
+
+# RadioInput
+
+A RadioInput component allows users to select a single option from a mutually exclusive set of choices.
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <RadioInput>I am RadioInput!</RadioInput>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <RadioInput key={size} size={size}>'{size}' RadioInput</RadioInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <RadioInput key={variant} variant={variant}>'{variant}' RadioInput</RadioInput>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <RadioInput colorPalette={color} key={variant} variant={variant}>
+              '{variant}' RadioInput
+            </RadioInput>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropsTable id="RadioInput" />
