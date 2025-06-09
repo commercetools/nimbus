@@ -21,7 +21,15 @@ A RadioInput component allows users to select a single option from a mutually ex
 [Explain the basic usage / usecase of the component].
 
 ```jsx-live
-const App = () => <RadioInput>I am RadioInput!</RadioInput>
+const App = () => (
+  <RadioGroup name="example">
+    <Stack direction="horizontal" gap="600">
+      <RadioInput value="option1">Option 1</RadioInput>
+      <RadioInput value="option2">Option 2</RadioInput>
+      <RadioInput value="option3">Option 3</RadioInput>
+    </Stack>
+  </RadioGroup>
+)
 ```
 
 
