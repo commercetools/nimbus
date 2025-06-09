@@ -7,6 +7,7 @@ import { kbdRecipe } from "@/components/kbd/kbd.recipe";
 import { linkRecipe } from "@/components/link/link.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
 import { textInputRecipe } from "@/components/text-input/text-input.recipe";
+import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 
 export const recipes = {
   avatar: avatarRecipe,
@@ -17,4 +18,5 @@ export const recipes = {
   link: linkRecipe,
   tooltip: tooltipRecipe,
   textInput: textInputRecipe,
+  radioInput: radioInputSlotRecipe,
 };
