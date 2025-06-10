@@ -9,8 +9,6 @@ import { ComboBoxStateContext } from "react-aria-components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
 
-// TODO: pass isLoading and onClear as props
-
 export const ComboBoxButtonGroup = ({
   selectedKeys,
   onSelectionChange,
@@ -30,11 +28,10 @@ export const ComboBoxButtonGroup = ({
           variant="ghost"
           tone="primary"
           aria-label="Clear Selection"
-          aria-expanded={false}
           isDisabled={isDisabled || isReadOnly}
+          _expanded={{ bg: "primary.1" }}
           onPress={() => state?.setSelectedKey(null)}
           my="auto"
-          aria-hidden={true}
         >
           <CloseIcon />
         </IconButton>
@@ -47,29 +44,39 @@ export const ComboBoxButtonGroup = ({
           variant="ghost"
           tone="primary"
           aria-label="Clear Selection"
-          aria-expanded={false}
           isDisabled={isDisabled || isReadOnly}
+          _expanded={{ bg: "primary.1" }}
           onPress={() => {
             onSelectionChange?.(new Set());
             onInputChange?.("");
           }}
           my="auto"
-          aria-hidden={true}
         >
           <CloseIcon />
         </IconButton>
       )}
-      <Flex my="auto" w="600" h="600" pointerEvents="none">
-        <Box color="neutral.9" asChild m="auto" w="400" h="400">
-          {isLoading ? (
+      {isLoading ? (
+        <Flex my="auto" w="600" h="600" pointerEvents="none">
+          <Box color="neutral.9" asChild m="auto" w="400" h="400">
             <Box asChild animation="spin" animationDuration="slowest">
               <SpinnerIcon />
             </Box>
-          ) : (
-            <KeyboardArrowDownIcon />
-          )}
-        </Box>
-      </Flex>
+          </Box>
+        </Flex>
+      ) : (
+        <IconButton
+          size="2xs"
+          variant="ghost"
+          aria-label="toggle combobox"
+          tone="neutral"
+          my="auto"
+          tabIndex={5}
+          isDisabled={isDisabled || isReadOnly}
+          _expanded={{ bg: "primary.1" }}
+        >
+          <KeyboardArrowDownIcon />
+        </IconButton>
+      )}
     </ComboBoxButtonGroupSlot>
   );
 };

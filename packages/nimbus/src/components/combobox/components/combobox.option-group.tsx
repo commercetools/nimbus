@@ -14,16 +14,6 @@ export const ComboBoxOptionGroup = <T extends object>({
   ref,
   ...props
 }: ComboBoxOptionGroupProps<T> & RefAttributes<HTMLDivElement>) => {
-  // Validate that items have proper keys for React Aria Collections
-  if (items) {
-    const itemsArray = Array.from(items);
-    if (itemsArray.length > 0 && !("id" in itemsArray[0])) {
-      throw new Error(
-        'ComboBoxOptionGroup: When "items" is provided, each item must have an "id" property'
-      );
-    }
-  }
-
   // Validate that children is a function when items is provided
   if (items && typeof children !== "function") {
     throw new Error(

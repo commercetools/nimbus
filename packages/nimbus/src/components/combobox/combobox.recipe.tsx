@@ -28,11 +28,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       position: "relative",
       maxWidth: "100%",
       borderRadius: "200",
+
       "&[data-disabled]": {
         layerStyle: "disabled",
         pointerEvents: "none",
       },
-      "& input": { cursor: "text" },
+      "& input": { cursor: "text", _placeholder: { opacity: 0.5 } },
       "& [data-placeholder]": {
         opacity: 0.5,
       },
@@ -41,12 +42,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       display: "flex",
       focusRing: "outside",
       alignItems: "flex-start",
-      paddingRight: "1500 !important",
+      paddingRight: "1600!",
       borderRadius: "200",
       color: "neutral.12",
-      width: "100%",
-      textAlign: "left",
       maxWidth: "100%",
+      textAlign: "left",
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -59,9 +59,15 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         display: "none",
       },
 
-      "[data-invalid] &": {
+      '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
+      },
+
+      '& button[slot="remove"]': {
+        _expanded: {
+          bg: "colorPalette.3",
+        },
       },
     },
     buttonGroup: {
@@ -84,7 +90,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         focusRing: "none",
         borderBottom: "solid 1px",
         borderBottomColor: "neutral.6",
-        bg: "bg",
+        bg: "transparent",
         w: "100%",
         overflow: "hidden",
         textOverflow: "ellipsis",
@@ -102,6 +108,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     option: {
       ...selectSlotRecipe.base?.option,
+      whiteSpace: "wrap",
     },
   },
 
@@ -131,13 +138,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     variant: {
       solid: {
         root: {
-          width: "7200",
-        },
-        popover: {
+          bg: "primary.1",
           width: "7200",
         },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,
+          width: "100%",
         },
       },
       ghost: {
@@ -145,15 +151,21 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           ...selectSlotRecipe.variants?.variant.ghost.root,
           maxW: "7200",
         },
-        popover: { minW: "1800", maxW: "7200" },
-        value: { ...selectSlotRecipe.variants?.variant.ghost.trigger },
+
+        value: {
+          ...selectSlotRecipe.variants?.variant.ghost.trigger,
+          fieldSizing: "content",
+        },
       },
     },
     selectionMode: {
       multiple: {
         options: {
-          borderRadius: "0 0 200 200",
+          borderRadius: "0 ",
           boxShadow: "none",
+          px: "200",
+          py: 0,
+          my: "200",
         },
         option: {
           "--border-width": "sizes.25",
@@ -168,15 +180,58 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           '&[aria-selected="true"], &[data-focused="true"]': {
             bg: "inherit",
           },
+          "& label": {
+            width: "100%",
+            '& span[data-slot="label"]': {
+              whiteSpace: "wrap",
+              width: "calc(100% - var(--nimbus-sizes-600))",
+              display: "inline-block",
+            },
+          },
         },
       },
       single: {},
       none: {},
     },
   },
+  compoundVariants: [
+    {
+      variant: "solid",
+      selectionMode: "multiple",
+      css: {
+        popover: {
+          width: "7200",
+        },
+      },
+    },
+    {
+      variant: "solid",
+      selectionMode: "single",
+      css: {
+        options: {
+          width: "7200",
+        },
+      },
+    },
+    {
+      variant: "ghost",
+      selectionMode: "multiple",
+      css: {
+        popover: { minW: "var(--trigger-width)", maxW: "7200" },
+      },
+    },
+    {
+      variant: "ghost",
+      selectionMode: "single",
+      css: {
+        options: { minW: "var(--trigger-width)", maxW: "7200" },
+      },
+    },
+  ],
   // Default variant values when not explicitly specified
   defaultVariants: {
     size: "md",
     variant: "solid",
+    selectionMode: "single",
   },
 });

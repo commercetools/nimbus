@@ -46,6 +46,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
         alignItems: "center",
         justifyContent: "space-between",
         gapX: "100",
+        whiteSpace: "initial",
       },
     },
   },
