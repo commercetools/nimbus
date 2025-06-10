@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { type Key, type Selection } from "react-aria-components";
 
 import { TagGroup } from "@/components";
@@ -69,20 +69,23 @@ export const MultiSelectTagGroup =
         .filter((item): item is T => item !== undefined);
     }, [items, selectedKeys, itemID]);
 
-    const handleRemoveSelectedItem = (keys: Set<Key>) => {
-      // Don't allow removal if disabled
-      if (isDisabled || isReadOnly) return;
+    const handleRemoveSelectedItem = useCallback(
+      (keys: Set<Key>) => {
+        // Don't allow removal if disabled
+        if (isDisabled || isReadOnly) return;
 
-      if (selectedKeys instanceof Set) {
-        // Create new selection by removing the specified keys
-        const currentKeys = selectedKeys as Set<Key>;
-        const newSelectedKeys: Selection = new Set(
-          [...currentKeys].filter((key) => !keys.has(key))
-        );
+        if (selectedKeys instanceof Set) {
+          // Create new selection by removing the specified keys
+          const currentKeys = selectedKeys as Set<Key>;
+          const newSelectedKeys: Selection = new Set(
+            [...currentKeys].filter((key) => !keys.has(key))
+          );
 
-        onSelectionChange?.(newSelectedKeys);
-      }
-    };
+          onSelectionChange?.(newSelectedKeys);
+        }
+      },
+      [isDisabled, isReadOnly, selectedKeys, onSelectionChange]
+    );
 
     return (
       <ComboBoxValueSlot
@@ -104,23 +107,25 @@ export const MultiSelectTagGroup =
             items={selectedItems}
             dependencies={[itemID]}
             tabIndex={-1}
+            maxW={"100%"}
             renderEmptyState={() =>
-              placeholder && <div data-placeholder="true">{placeholder}</div>
+              placeholder && (
+                <div
+                  data-placeholder="true"
+                  style={{
+                    maxWidth: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {placeholder}
+                </div>
+              )
             }
           >
-            {(item: T) => {
-              const itemKey = item[itemID] as Key;
-              const itemText = String(item[itemValue]);
-              const tagLabel = `Remove ${itemText}`;
-
+            {(item) => {
               return (
-                <TagGroup.Tag
-                  id={itemKey}
-                  textValue={itemText}
-                  aria-label={tagLabel}
-                >
-                  {itemText}
-                </TagGroup.Tag>
+                <TagGroup.Tag maxW={"100%"}>{item[itemValue]}</TagGroup.Tag>
               );
             }}
           </TagGroup.TagList>

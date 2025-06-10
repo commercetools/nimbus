@@ -19,6 +19,7 @@ export const SingleSelectRoot = <T extends object>({
   allowsCustomValue,
   onSubmitCustomValue,
   renderEmptyState,
+  isLoading,
   ref,
   ...rest
 }: ComboBoxSingleSelectRootProps<T>) => {
@@ -33,6 +34,11 @@ export const SingleSelectRoot = <T extends object>({
       allowsCustomValue &&
       onSubmitCustomValue
     ) {
+      // don't create a custom value if there are results in the listbox
+      const target = e.target as Element | null;
+      if (target && target.getAttribute("aria-activedescendant")) {
+        return;
+      }
       onSubmitCustomValue(inputValue);
       setInputValue("");
     }
@@ -46,14 +52,13 @@ export const SingleSelectRoot = <T extends object>({
       ref={ref}
     >
       <ComboBoxValueSlot asChild>
-        <Input
-          onKeyDown={handleInputKeyDown}
-          placeholder={placeholder}
-          disabled={rest.isDisabled}
-          readOnly={rest.isReadOnly}
-        />
+        <Input onKeyDown={handleInputKeyDown} placeholder={placeholder} />
       </ComboBoxValueSlot>
-      <ComboBoxButtonGroup />
+      <ComboBoxButtonGroup
+        isLoading={isLoading}
+        isDisabled={rest.isDisabled}
+        isReadOnly={rest.isReadOnly}
+      />
       <RaPopover>
         <ComboBoxOptions renderEmptyState={renderEmptyState}>
           {children}

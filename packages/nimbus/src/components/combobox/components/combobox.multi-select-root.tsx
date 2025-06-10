@@ -1,10 +1,11 @@
-import { useState, useRef, type KeyboardEvent } from "react";
+import { useState, useRef, useCallback, type KeyboardEvent } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import {
   Popover as RaPopover,
   Input as RaInput,
   Autocomplete as RaAutocomplete,
   DialogTrigger as RaDialogTrigger,
+  Dialog,
   type Selection,
   type Key,
   TextField,
@@ -56,6 +57,7 @@ export const MultiSelectRoot = <T extends object>({
   ...props
 }: ComboBoxMultiSelect<T>) => {
   const [isOpen, setOpen] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   const [_selectedKeys, _setSelectedKeys] = useState<Selection>();
   const selectedKeys = selectedKeysProp ?? _selectedKeys ?? defaultSelectedKeys;
@@ -67,7 +69,30 @@ export const MultiSelectRoot = <T extends object>({
 
   const items = itemsProp ?? defaultItems;
 
-  const deleteLastSelectedItem = () => {
+  // Handle popover open/close changes
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setOpen(open);
+      // Mark as touched when user interacts with the popover
+      if (!isTouched) {
+        setIsTouched(true);
+      }
+    },
+    [isTouched]
+  );
+
+  const handleOpenPopoverWhenEmpty = useCallback(() => {
+    // Only open on focus if there are no selected items, popover is currently closed,
+    // and the user hasn't interacted with the component yet
+    const hasNoSelection =
+      !selectedKeys || (selectedKeys instanceof Set && selectedKeys.size === 0);
+
+    if (hasNoSelection && !isOpen && !isTouched) {
+      setOpen(true);
+    }
+  }, [selectedKeys, isOpen, isTouched]);
+
+  const deleteLastSelectedItem = useCallback(() => {
     // Only handle if selectedKeys is a Set (not "all")
     if (selectedKeys !== "all" && selectedKeys instanceof Set) {
       const lastKey = getLastValueInSet(selectedKeys as Set<Key>);
@@ -77,10 +102,10 @@ export const MultiSelectRoot = <T extends object>({
         setSelectedKeys(newSelection);
       }
     }
-  };
+  }, [selectedKeys, setSelectedKeys]);
 
   // Enhanced keyboard navigation
-  const handleTriggerKeyDown = (e: KeyboardEvent) => {
+  const handleTriggerKeyDown = useCallback((e: KeyboardEvent) => {
     if (
       (e.key === "ArrowDown" || e.key === "ArrowUp") &&
       e.target === triggerRef.current
@@ -88,70 +113,77 @@ export const MultiSelectRoot = <T extends object>({
       e.preventDefault();
       setOpen(true);
     }
-  };
+  }, []);
 
-  const handleInputKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Backspace" && inputValue === "") {
-      deleteLastSelectedItem();
-    }
-    // Handle Escape key to close popover and return focus
-    if (e.key === "Escape") {
-      setOpen(false);
-      // Focus management - return to trigger
-      setTimeout(() => triggerRef.current?.focus(), 0);
-    }
+  const handleInputKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Backspace" && inputValue === "") {
+        deleteLastSelectedItem();
+        return;
+      }
 
-    if (
-      e.key === "Enter" &&
-      inputValue.trim() !== "" &&
-      allowsCustomValue &&
-      onSubmitCustomValue
-    ) {
-      // Find matching item from the collection
-      const matchingItem =
-        items &&
-        Array.from(items).find((item) => {
-          const itemText = String(item[itemValue as keyof T]).toLowerCase();
-          return itemText === inputValue.toLowerCase().trim();
-        });
+      // Handle Escape key to close popover and return focus
+      if (e.key === "Escape") {
+        handleOpenChange(false);
+        // Focus management - return to trigger after popover closes
+        // Use setTimeout to ensure the popover closes before focusing
+        setTimeout(() => {
+          if (triggerRef.current) {
+            triggerRef.current.focus();
+          }
+        }, 0);
+        return; // Prevent any other key handling
+      }
 
-      if (matchingItem) {
-        // Select the matching item
-        const itemKey = matchingItem[itemID as keyof T] as Key;
-        if (selectedKeys instanceof Set) {
-          const newSelection = new Set(selectedKeys);
-          newSelection.add(itemKey);
-          setSelectedKeys(newSelection);
+      if (
+        e.key === "Enter" &&
+        inputValue.trim() !== "" &&
+        allowsCustomValue &&
+        onSubmitCustomValue
+      ) {
+        // don't create a custom value if there are results in the listbox
+        const target = e.target as Element | null;
+        if (target && target.getAttribute("aria-activedescendant")) {
+          return;
         }
-        setInputValue("");
-      } else {
-        // Only submit custom value if it doesn't match any existing items
-        // TODO: show how you can use this value to pop it onto the items array
+        // Only submit custom value if the listbox contains no matching results
         onSubmitCustomValue(inputValue);
         setInputValue("");
       }
-    }
-  };
+    },
+    [
+      inputValue,
+      deleteLastSelectedItem,
+      handleOpenChange,
+      allowsCustomValue,
+      onSubmitCustomValue,
+      items,
+      itemValue,
+      itemID,
+      selectedKeys,
+      setSelectedKeys,
+      setInputValue,
+    ]
+  );
 
   const filterUtils = useFilter({ sensitivity: "base" });
   const contains = (...args: Parameters<typeof filterUtils.contains>) =>
     filterUtils.contains.apply(undefined, args);
 
   const triggerRef = useRef<HTMLDivElement>(null);
-
-  const mergedRef = mergeRefs(ref, triggerRef);
+  const rootRef = mergeRefs(ref, triggerRef);
 
   //TODO:
   // - resize the popover body to match the input width
   // - styles for disabled, readonly, required, invalid, etc
   // - like, yknow, tests or whatever
   return (
-    <RaDialogTrigger isOpen={isOpen} onOpenChange={setOpen}>
+    <RaDialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
       <Pressable>
         <div
           className={className as string}
           tabIndex={0}
-          ref={mergedRef}
+          ref={rootRef}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
           aria-disabled={isDisabled}
@@ -164,6 +196,7 @@ export const MultiSelectRoot = <T extends object>({
           data-open={isOpen}
           role="combobox"
           onKeyDown={handleTriggerKeyDown}
+          onFocus={handleOpenPopoverWhenEmpty}
           {...props}
         >
           <MultiSelectTagGroup
@@ -192,42 +225,45 @@ export const MultiSelectRoot = <T extends object>({
       <ComboBoxPopoverSlot asChild>
         <RaPopover
           triggerRef={triggerRef}
-          trigger="ComboBox"
           placement="bottom start"
+          isOpen={isOpen}
+          onOpenChange={handleOpenChange}
         >
-          <RaAutocomplete
-            filter={defaultFilter ?? contains}
-            inputValue={inputValue}
-            onInputChange={setInputValue}
-          >
-            <ComboBoxMultiSelectInputSlot asChild>
-              <TextField
-                isDisabled={isDisabled}
-                isReadOnly={isReadOnly}
-                isRequired={isRequired}
-              >
-                <RaInput
-                  autoFocus
-                  onKeyDown={handleInputKeyDown}
-                  placeholder={placeholder}
-                  aria-label="filter combobox options"
-                />
-              </TextField>
-            </ComboBoxMultiSelectInputSlot>
-            <ComboBoxOptions
-              items={items}
-              selectionMode="multiple"
-              onSelectionChange={setSelectedKeys}
-              selectedKeys={selectedKeys}
-              shouldFocusWrap={true}
-              disabledKeys={isDisabled ? "all" : disabledKeys}
-              escapeKeyBehavior="none"
-              aria-label="combobox options"
-              renderEmptyState={renderEmptyState}
+          <Dialog>
+            <RaAutocomplete
+              filter={defaultFilter ?? contains}
+              inputValue={inputValue}
+              onInputChange={setInputValue}
             >
-              {children}
-            </ComboBoxOptions>
-          </RaAutocomplete>
+              <ComboBoxMultiSelectInputSlot asChild>
+                <TextField
+                  autoFocus
+                  isDisabled={isDisabled}
+                  isReadOnly={isReadOnly}
+                  isRequired={isRequired}
+                  aria-label="filter combobox options"
+                >
+                  <RaInput
+                    onKeyDown={handleInputKeyDown}
+                    placeholder={placeholder}
+                  />
+                </TextField>
+              </ComboBoxMultiSelectInputSlot>
+              <ComboBoxOptions
+                items={items}
+                selectionMode="multiple"
+                onSelectionChange={setSelectedKeys}
+                selectedKeys={selectedKeys}
+                shouldFocusWrap={true}
+                disabledKeys={isDisabled ? "all" : disabledKeys}
+                escapeKeyBehavior="none"
+                aria-label="combobox options"
+                renderEmptyState={renderEmptyState}
+              >
+                {children}
+              </ComboBoxOptions>
+            </RaAutocomplete>
+          </Dialog>
         </RaPopover>
       </ComboBoxPopoverSlot>
     </RaDialogTrigger>
