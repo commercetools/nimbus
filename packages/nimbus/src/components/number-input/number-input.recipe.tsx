@@ -44,6 +44,7 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     incrementButton: {
+      w: 600,
       h: "50%",
       display: "flex",
       alignItems: "center",
@@ -69,6 +70,7 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     decrementButton: {
+      w: 600,
       h: "50%",
       display: "flex",
       alignItems: "center",
@@ -104,12 +106,6 @@ export const numberInputRecipe = defineSlotRecipe({
           px: 300,
           paddingRight: 800,
         },
-        incrementButton: {
-          w: 600,
-        },
-        decrementButton: {
-          w: 600,
-        },
       },
       md: {
         input: {
@@ -117,12 +113,6 @@ export const numberInputRecipe = defineSlotRecipe({
           textStyle: "md",
           px: 400,
           paddingRight: 800,
-        },
-        incrementButton: {
-          w: 600,
-        },
-        decrementButton: {
-          w: 600,
         },
       },
     },
