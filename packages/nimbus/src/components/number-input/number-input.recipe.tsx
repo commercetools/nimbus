@@ -22,13 +22,14 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     input: {
+      "--border-width": "sizes.25",
+      "--border-color": "colors.neutral.7",
       display: "block",
       borderRadius: "200",
       colorPalette: "neutral",
       focusVisibleRing: "outside",
       bg: "transparent",
       outline: "none",
-      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       appearance: "textfield",
       width: "full",
       _placeholder: {
@@ -44,6 +45,8 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     incrementButton: {
+      "--border-width": "sizes.25",
+      "--border-color": "colors.neutral.7",
       w: 600,
       h: "50%",
       display: "flex",
@@ -70,6 +73,8 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     decrementButton: {
+      "--border-width": "sizes.25",
+      "--border-color": "colors.neutral.7",
       w: 600,
       h: "50%",
       display: "flex",
@@ -126,16 +131,13 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         input: {
-          "--border-width": "sizes.25",
-          "--border-color": "colors.neutral.7",
+          boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
           backgroundColor: "neutral.1",
           _hover: {
             backgroundColor: "primary.2",
           },
         },
         incrementButton: {
-          "--border-width": "sizes.25",
-          "--border-color": "colors.neutral.7",
           borderTop: "var(--border-width) solid var(--border-color)",
           borderRight: "var(--border-width) solid var(--border-color)",
           borderLeft: "var(--border-width) solid var(--border-color)",
@@ -146,8 +148,6 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         decrementButton: {
-          "--border-width": "sizes.25",
-          "--border-color": "colors.neutral.7",
           borderBottom: "var(--border-width) solid var(--border-color)",
           borderRight: "var(--border-width) solid var(--border-color)",
           borderLeft: "var(--border-width) solid var(--border-color)",
