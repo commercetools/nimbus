@@ -18,6 +18,7 @@ export const ComboBoxOption = <T extends object>({
       <ListBoxItem
         ref={ref}
         textValue={props.textValue ?? textValue}
+        aria-label={props.textValue ?? textValue}
         {...restProps}
       >
         {(renderProps) => {
@@ -28,7 +29,7 @@ export const ComboBoxOption = <T extends object>({
                 })
               : children;
           return renderProps.selectionMode === "multiple" ? (
-            <Checkbox isSelected={renderProps.isSelected}>
+            <Checkbox maxW={"100%"} isSelected={renderProps.isSelected}>
               {children as ReactNode}
             </Checkbox>
           ) : (
