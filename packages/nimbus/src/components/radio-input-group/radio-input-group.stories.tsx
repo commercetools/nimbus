@@ -3,6 +3,7 @@ import { RadioInputGroup } from "./radio-input-group";
 import { Stack } from "@/components";
 import { userEvent, within, expect, fn } from "@storybook/test";
 import type { RadioInputGroupOptionProps } from "./radio-input-group.types";
+import { FormField } from "@/components/form-field";
 
 /**
  * Storybook metadata configuration
@@ -291,5 +292,101 @@ export const Direction: StoryObj<typeof RadioInputGroup.Root> = {
         }
       );
     }
+  },
+};
+
+export const WithFormField: StoryObj = {
+  render: () => (
+    <FormField.Root isRequired isInvalid>
+      <FormField.Label>Favorite Artist</FormField.Label>
+      <FormField.Input>
+        <RadioInputGroup.Root name="fruit">
+          <RadioInputGroup.Option value="dreamy">
+            Dreamy Dave
+          </RadioInputGroup.Option>
+          <RadioInputGroup.Option value="cure">The Cure</RadioInputGroup.Option>
+          <RadioInputGroup.Option value="gaga">
+            Lady Gaga
+          </RadioInputGroup.Option>
+        </RadioInputGroup.Root>
+      </FormField.Input>
+      <FormField.Description>Pick your favorite artist.</FormField.Description>
+      <FormField.Error>This field is required.</FormField.Error>
+    </FormField.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // FormField elements
+    const formLabel = canvas.getByText("Favorite Artist");
+    const formDescription = canvas.getByText("Pick your favorite artist.");
+    const formError = canvas.getByText("This field is required.");
+
+    // RadioInputGroup elements
+    const radioGroup = canvas.getByRole("radiogroup");
+    const radioDreamyDave = canvas.getByLabelText("Dreamy Dave");
+    const radioTheCure = canvas.getByLabelText("The Cure");
+    const radioLadyGaga = canvas.getByLabelText("Lady Gaga");
+
+    await step("FormField renders the label for the field", async () => {
+      await expect(formLabel).toBeInTheDocument();
+      await expect(formLabel).toBeVisible();
+    });
+
+    await step(
+      "FormField renders the description below the input",
+      async () => {
+        await expect(formDescription).toBeInTheDocument();
+        await expect(formDescription).toBeVisible();
+      }
+    );
+
+    await step("FormField renders the error message when invalid", async () => {
+      await expect(formError).toBeInTheDocument();
+      await expect(formError).toBeVisible();
+    });
+
+    await step(
+      "RadioInputGroup renders a radio group with correct ARIA attributes",
+      async () => {
+        await expect(radioGroup).toBeInTheDocument();
+        await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
+        // Check ARIA associations
+        const labelledby = radioGroup.getAttribute("aria-labelledby");
+        const describedby = radioGroup.getAttribute("aria-describedby");
+        if (labelledby) {
+          const labelElem = document.getElementById(labelledby);
+          await expect(labelElem?.textContent).toContain("Favorite Artist");
+        }
+        if (describedby) {
+          /* NOTE: aria-describedby can be a space-separated list of IDs, because a field can be described by multiple elements (e.g., help text, error message, etc.).
+          This is different from most aria-labelledby usage, which typically references a single label element.
+          Here, we check all described elements to ensure at least one contains the expected description text.
+          */
+          const ids = describedby.split(/\s+/);
+          let found = false;
+          for (const id of ids) {
+            const descElem = document.getElementById(id);
+            if (
+              descElem &&
+              descElem.textContent?.includes("Pick your favorite artist.")
+            ) {
+              found = true;
+              break;
+            }
+          }
+          expect(found).toBe(true);
+        }
+      }
+    );
+
+    await step(
+      "RadioInputGroup renders all radio options as accessible inputs",
+      async () => {
+        await expect(radioDreamyDave).toBeInTheDocument();
+        await expect(radioTheCure).toBeInTheDocument();
+        await expect(radioLadyGaga).toBeInTheDocument();
+      }
+    );
   },
 };
