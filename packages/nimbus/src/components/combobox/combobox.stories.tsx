@@ -175,10 +175,59 @@ const complexOptions: TeamMember[] = [
   },
 ];
 
+// Helper functions to reduce test verbosity
+const getTagList = async (multiSelect: HTMLElement) =>
+  await within(multiSelect).findByLabelText(/selected values/i);
+
+const getFilterInput = () =>
+  document.querySelector(
+    '[aria-label="filter combobox options"]'
+  ) as HTMLInputElement;
+
+const getListboxOptions = () => document.querySelectorAll('[role="option"]');
+
+const findOptionByText = (text: string) =>
+  Array.from(getListboxOptions()).find((option) =>
+    option.textContent?.includes(text)
+  );
+
+const isOptionSelected = (option: Element | undefined) =>
+  option?.getAttribute("aria-selected") === "true" ||
+  option?.getAttribute("data-selected") === "true";
+
+const selectOptionsWithKeyboard = async (optionNames: string[]) => {
+  for (let i = 0; i < optionNames.length; i++) {
+    await userEvent.keyboard("{ArrowDown}");
+    await userEvent.keyboard("{enter}");
+  }
+};
+
+const verifyTagsExist = async (
+  multiSelect: HTMLElement,
+  expectedTags: string[]
+) => {
+  const tagList = await getTagList(multiSelect);
+  const tags = tagList.childNodes;
+  await expect(tags.length).toBe(expectedTags.length);
+
+  for (let i = 0; i < expectedTags.length; i++) {
+    await expect(tags[i]).toHaveTextContent(expectedTags[i]);
+  }
+};
+
+const verifyOptionsSelected = async (
+  optionNames: string[],
+  shouldBeSelected: boolean
+) => {
+  for (const name of optionNames) {
+    const option = findOptionByText(name);
+    await expect(isOptionSelected(option)).toBe(shouldBeSelected);
+  }
+};
+
 /**
  * Base story
  * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
   render: () => {
@@ -191,11 +240,7 @@ export const Base: Story = {
               defaultItems={options}
               placeholder="Select an animal..."
             >
-              {(item) => (
-                <ComboBox.Option key={item.id} id={item.id}>
-                  {item.name}
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
@@ -208,11 +253,7 @@ export const Base: Story = {
               selectionMode="multiple"
               placeholder="Select multiple animals..."
             >
-              {(item) => (
-                <ComboBox.Option key={item.id} id={item.id}>
-                  {item.name}
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
@@ -237,7 +278,7 @@ export const Base: Story = {
       "single select input opens popover when user enters text",
       async () => {
         await userEvent.keyboard("{k}");
-
+        // popover is activated when user types
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
       }
@@ -245,10 +286,11 @@ export const Base: Story = {
     await step(
       "single select input shows matching options in popover",
       async () => {
-        let options = document.querySelectorAll('[role="option"]');
+        let options = getListboxOptions();
+        // 'k' from previous test filters options - should show Koala and Kangaroo (and Skunk contains 'k')
         await expect(options.length).toBe(3);
         await userEvent.keyboard("{o}");
-        options = document.querySelectorAll('[role="option"]');
+        options = getListboxOptions();
         await expect(options.length).toBe(1);
       }
     );
@@ -258,6 +300,7 @@ export const Base: Story = {
         const listbox = document.querySelector('[role="listbox"]');
         const option = document.querySelector('[role="option"]');
         await userEvent.click(option!);
+        // click should close listbox and populate input with selected value
         await expect(listbox).not.toBeInTheDocument();
         await expect(singleSelect.value).toBe("Koala");
       }
@@ -290,7 +333,8 @@ export const Base: Story = {
         await expect(
           document.querySelector('[role="listbox"]')
         ).toBeInTheDocument();
-        const options = document.querySelectorAll('[role="option"]');
+        const options = getListboxOptions();
+        // first option should be aria-activedescendant
         await expect(
           singleSelect.getAttribute("aria-activedescendant")
         ).toEqual(options[0].getAttribute("id"));
@@ -314,7 +358,8 @@ export const Base: Story = {
         await expect(
           document.querySelector('[role="listbox"]')
         ).toBeInTheDocument();
-        const options = document.querySelectorAll('[role="option"]');
+        const options = getListboxOptions();
+        // last option should be aria-activedescendant
         await expect(
           singleSelect.getAttribute("aria-activedescendant")
         ).toEqual(options[options.length - 1].getAttribute("id"));
@@ -324,13 +369,13 @@ export const Base: Story = {
       "multi select opens popover on first focus when no items have been selected",
       async () => {
         multiSelect.focus();
+        // popover will open on focus if the combobox is not touched and there are no selected values
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
-        const options = document.querySelectorAll('[role="option"]');
+        const options = getListboxOptions();
         await expect(options.length).toBe(6);
-        const multiselectinput = document.querySelector(
-          '[aria-label="filter combobox options"]'
-        );
+        // input in popover should have focus
+        const multiselectinput = getFilterInput();
         await expect(multiselectinput).toHaveFocus();
       }
     );
@@ -345,7 +390,6 @@ export const Base: Story = {
         await expect(multiSelect).toHaveFocus();
       }
     );
-
     await step(
       "multi select does not open listbox when focused a second time",
       async () => {
@@ -359,22 +403,17 @@ export const Base: Story = {
       async () => {
         // Ensure no popover is open initially
         await expect(document.querySelector('[role="listbox"]')).toBeNull();
-
         // Focus the multiselect combobox
         multiSelect.focus();
         await expect(multiSelect).toHaveFocus();
-
         // Press Enter key
         await userEvent.keyboard("{enter}");
-
         // Verify popover opens
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
-
         // Verify options are visible
-        const options = document.querySelectorAll('[role="option"]');
+        const options = getListboxOptions();
         await expect(options.length).toBe(6);
-
         // Close popover for next test
         await userEvent.keyboard("{escape}");
       }
@@ -384,20 +423,16 @@ export const Base: Story = {
       async () => {
         // Ensure no popover is open initially
         await expect(document.querySelector('[role="listbox"]')).toBeNull();
-
         // Focus the multiselect combobox
         multiSelect.focus();
         await expect(multiSelect).toHaveFocus();
-
         // Press ArrowDown key
         await userEvent.keyboard("{ArrowDown}");
-
         // Verify popover opens
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
-
         // Verify options are visible
-        const options = document.querySelectorAll('[role="option"]');
+        const options = getListboxOptions();
         await expect(options.length).toBe(6);
       }
     );
@@ -407,22 +442,20 @@ export const Base: Story = {
         document.querySelector('[role="listbox"]')
       ).toBeInTheDocument();
       // Initially all 6 options should be visible
-      let options = document.querySelectorAll('[role="option"]');
+      let options = getListboxOptions();
       await expect(options.length).toBe(6);
       // Type 'k' to filter options - should show Koala and Kangaroo (and Skunk contains 'k')
-      const filterInput = document.querySelector(
-        '[aria-label="filter combobox options"]'
-      ) as HTMLInputElement;
+      const filterInput = getFilterInput();
       await expect(filterInput).toBeInTheDocument();
       // Clear any existing input and type 'k'
       await userEvent.clear(filterInput);
       await userEvent.type(filterInput, "k");
       // Verify filtered options - should show options containing 'k'
-      options = document.querySelectorAll('[role="option"]');
+      options = getListboxOptions();
       await expect(options.length).toBe(3); // Koala, Kangaroo, Skunk
       // Type 'o' to further filter - should show only Koala
       await userEvent.type(filterInput, "o");
-      options = document.querySelectorAll('[role="option"]');
+      options = getListboxOptions();
       await expect(options.length).toBe(1); // Only Koala
       // Verify the remaining option is Koala
       const remainingOption = options[0];
@@ -435,46 +468,35 @@ export const Base: Story = {
         await expect(
           document.querySelector('[role="listbox"]')
         ).toBeInTheDocument();
-        let options = document.querySelectorAll('[role="option"]');
+        let options = getListboxOptions();
         await expect(options.length).toBe(1);
-
-        const filterInput = document.querySelector(
-          '[aria-label="filter combobox options"]'
-        ) as HTMLInputElement;
+        // Ensure filter input has focus
+        const filterInput = getFilterInput();
         await expect(filterInput).toHaveFocus();
-
         // Press Enter to select the focused option (Koala)
         await userEvent.keyboard("{enter}");
-
         // Verify the option is selected by checking for a tag in the taglist
-        let tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
+        let tagList = await getTagList(multiSelect);
         await expect(tagList).toBeInTheDocument();
         let tags = tagList.childNodes;
         // Verify the tag contains "Koala"
         const koalaTag = tags[0];
         await expect(koalaTag).toHaveTextContent("Koala");
-
         // Clear the filter to show all options again
         await userEvent.clear(filterInput);
-
         // Verify all options are visible again
-        options = document.querySelectorAll('[role="option"]');
+        options = getListboxOptions();
         await expect(options.length).toBe(6);
-
         // Select another option using Enter key (navigate to Kangaroo and select it)
         await userEvent.keyboard("{ArrowDown}{ArrowDown}"); // Navigate to Kangaroo (second option)
         await userEvent.keyboard("{enter}");
-
         // Verify we now have 2 tags
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
+        tagList = await getTagList(multiSelect);
         tags = tagList.childNodes;
         await expect(tags.length).toBe(2);
-
         // Verify the second tag contains "Kangaroo"
         const kangarooTag = tags[1];
         await expect(kangarooTag).toHaveTextContent("Kangaroo");
-
         // Close popover for next test
         await userEvent.keyboard("{escape}");
       }
@@ -483,38 +505,30 @@ export const Base: Story = {
       "multi select clear all button clears all tags and selected options",
       async () => {
         // Verify we start with tags from the previous test (should have Koala and Kangaroo selected)
-        let tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
+        let tagList = await getTagList(multiSelect);
         let tags = tagList.childNodes;
         await expect(tags.length).toBe(2);
-
         // Find and click the clear all button
         const clearAllButton = await within(multiSelect).findByRole("button", {
           name: /clear selection/i,
         });
         await expect(clearAllButton).toBeInTheDocument();
-
         // Click the clear all button
         await userEvent.click(clearAllButton);
-
         // Open the popover to verify no options are selected
         await userEvent.keyboard("{enter}");
-
         // Verify all tags are cleared
         // After clearing, the taglist will contain a placeholder
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
+        tagList = await getTagList(multiSelect);
         tags = tagList.childNodes;
         await expect(tags.length).toBe(1);
         // insure that the tagsList child is the placeholder
         await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-
         // Verify popover opens with all options visible (none filtered)
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
-
-        const options = document.querySelectorAll('[role="option"]');
+        const options = getListboxOptions();
         await expect(options.length).toBe(6);
-
         // Verify no options show as selected (check for aria-selected="true" or selected styling)
         for (const option of Array.from(options)) {
           // Check that no options are marked as selected
@@ -523,7 +537,6 @@ export const Base: Story = {
             option.getAttribute("data-selected") === "true";
           await expect(isSelected).toBe(false);
         }
-
         // Close popover
         await userEvent.keyboard("{escape}");
       }
@@ -531,225 +544,67 @@ export const Base: Story = {
     await step(
       "multi select allows removing individual selections by clicking tag remove buttons",
       async () => {
-        // First, we need to make some selections since the previous test cleared everything
-        // Open the popover
+        // Setup: Select 3 options
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-
-        // Verify popover is open
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-
-        // Select Koala (first option)
-        await userEvent.keyboard("{ArrowDown}");
-        await userEvent.keyboard("{enter}");
-
-        // Select Kangaroo (second option)
-        await userEvent.keyboard("{ArrowDown}");
-        await userEvent.keyboard("{enter}");
-
-        // Select Platypus (third option)
-        await userEvent.keyboard("{ArrowDown}");
-        await userEvent.keyboard("{enter}");
-
-        // Close popover
+        await selectOptionsWithKeyboard(["Koala", "Kangaroo", "Platypus"]);
         await userEvent.keyboard("{escape}");
-
-        // Verify we have 3 tags
-        let tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
-        let tags = tagList.childNodes;
-        await expect(tags.length).toBe(3);
-
-        // Verify the tags contain the expected values
-        await expect(tags[0]).toHaveTextContent("Koala");
-        await expect(tags[1]).toHaveTextContent("Kangaroo");
-        await expect(tags[2]).toHaveTextContent("Platypus");
-
-        // Find and click the remove button on the Kangaroo tag (middle tag)
-        const kangarooTag = tags[1] as HTMLElement;
-        const kangarooRemoveButton = within(kangarooTag).getByRole("button", {
+        // Verify initial state
+        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
+        // Remove middle tag (Kangaroo)
+        const tagList = await getTagList(multiSelect);
+        const kangarooTag = tagList.childNodes[1] as HTMLElement;
+        const removeButton = within(kangarooTag).getByRole("button", {
           name: /remove kangaroo/i,
         });
-        await expect(kangarooRemoveButton).toBeInTheDocument();
-
-        // Click the remove button
-        await userEvent.click(kangarooRemoveButton);
-
-        // Verify we now have 2 tags (Kangaroo should be removed)
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-
-        // Verify remaining tags are Koala and Platypus
-        await expect(tags[0]).toHaveTextContent("Koala");
-        await expect(tags[1]).toHaveTextContent("Platypus");
-
-        // Verify Kangaroo is no longer in the tags
-        const tagTexts = Array.from(tags).map(
-          (tag) => (tag as Element).textContent
-        );
-        await expect(tagTexts).not.toContain("Kangaroo");
-
-        // Open popover to verify Kangaroo is no longer selected
+        await userEvent.click(removeButton);
+        // Verify Kangaroo removed
+        await verifyTagsExist(multiSelect, ["Koala", "Platypus"]);
+        // Verify listbox state
         await userEvent.keyboard("{enter}");
-
-        const options = document.querySelectorAll('[role="option"]');
-        const kangarooOption = Array.from(options).find((option) =>
-          option.textContent?.includes("Kangaroo")
-        );
-
-        // Verify Kangaroo option is no longer selected
-        const kangarooSelected =
-          kangarooOption?.getAttribute("aria-selected") === "true" ||
-          kangarooOption?.getAttribute("data-selected") === "true";
-        await expect(kangarooSelected).toBe(false);
-
-        // Verify Koala and Platypus are still selected
-        const koalaOption = Array.from(options).find((option) =>
-          option.textContent?.includes("Koala")
-        );
-        const platypusOption = Array.from(options).find((option) =>
-          option.textContent?.includes("Platypus")
-        );
-
-        const koalaSelected =
-          koalaOption?.getAttribute("aria-selected") === "true" ||
-          koalaOption?.getAttribute("data-selected") === "true";
-        const platypusSelected =
-          platypusOption?.getAttribute("aria-selected") === "true" ||
-          platypusOption?.getAttribute("data-selected") === "true";
-
-        await expect(koalaSelected).toBe(true);
-        await expect(platypusSelected).toBe(true);
-
-        // Close popover
+        await verifyOptionsSelected(["Koala", "Platypus"], true);
+        await verifyOptionsSelected(["Kangaroo"], false);
         await userEvent.keyboard("{escape}");
-
-        // Test removing another tag (Koala)
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-
-        const koalaTag = tags[0] as HTMLElement;
+        // Remove first tag (Koala)
+        const updatedTagList = await getTagList(multiSelect);
+        const koalaTag = updatedTagList.childNodes[0] as HTMLElement;
         const koalaRemoveButton = within(koalaTag).getByRole("button", {
           name: /remove koala/i,
         });
-
         await userEvent.click(koalaRemoveButton);
-
         // Verify only Platypus remains
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        await expect(tags[0]).toHaveTextContent("Platypus");
+        await verifyTagsExist(multiSelect, ["Platypus"]);
       }
     );
     await step(
       "multi select allows removing selected options by clicking on them in the listbox",
       async () => {
-        // First, we need to make some selections since the previous test left us with only Platypus
-        // Open the popover
+        // Setup: Start with Platypus from previous test, add Koala and Kangaroo
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-
-        // Verify popover is open
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-
-        // Select Koala (first option) - navigate and select
-        await userEvent.keyboard("{ArrowDown}");
-        await userEvent.keyboard("{enter}");
-
-        // Select Kangaroo (second option) - navigate and select
-        await userEvent.keyboard("{ArrowDown}");
-        await userEvent.keyboard("{enter}");
-
-        // Verify we now have 3 tags (Platypus from previous test + Koala + Kangaroo)
-        let tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
-        let tags = tagList.childNodes;
-        await expect(tags.length).toBe(3);
-
-        // Verify the options are marked as selected in the listbox
-        const options = document.querySelectorAll('[role="option"]');
-        const platypusOption = Array.from(options).find((option) =>
-          option.textContent?.includes("Platypus")
-        );
-        const koalaOption = Array.from(options).find((option) =>
-          option.textContent?.includes("Koala")
-        );
-        const kangarooOption = Array.from(options).find((option) =>
-          option.textContent?.includes("Kangaroo")
-        );
-
-        // Verify all three options show as selected
-        const platypusSelected =
-          platypusOption?.getAttribute("aria-selected") === "true" ||
-          platypusOption?.getAttribute("data-selected") === "true";
-        const koalaSelected =
-          koalaOption?.getAttribute("aria-selected") === "true" ||
-          koalaOption?.getAttribute("data-selected") === "true";
-        const kangarooSelected =
-          kangarooOption?.getAttribute("aria-selected") === "true" ||
-          kangarooOption?.getAttribute("data-selected") === "true";
-
-        await expect(platypusSelected).toBe(true);
-        await expect(koalaSelected).toBe(true);
-        await expect(kangarooSelected).toBe(true);
-
-        // Click on the Kangaroo option in the listbox to deselect it
-        await expect(kangarooOption).toBeDefined();
+        await selectOptionsWithKeyboard(["Koala", "Kangaroo"]);
+        // Verify 3 tags total
+        await verifyTagsExist(multiSelect, ["Platypus", "Koala", "Kangaroo"]);
+        // Verify all options show as selected
+        await verifyOptionsSelected(["Platypus", "Koala", "Kangaroo"], true);
+        // Click Kangaroo option to deselect
+        const kangarooOption = findOptionByText("Kangaroo");
         await userEvent.click(kangarooOption!);
-
-        // Verify Kangaroo is no longer selected in the listbox
-        const kangarooSelectedAfterClick =
-          kangarooOption?.getAttribute("aria-selected") === "true" ||
-          kangarooOption?.getAttribute("data-selected") === "true";
-        await expect(kangarooSelectedAfterClick).toBe(false);
-
-        // Verify the Kangaroo tag is removed from the taglist
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-
-        // Verify remaining tags are Platypus and Koala
-        const tagTexts = Array.from(tags).map(
-          (tag) => (tag as Element).textContent
-        );
-        await expect(tagTexts).toContain("Platypus");
-        await expect(tagTexts).toContain("Koala");
-        await expect(tagTexts).not.toContain("Kangaroo");
-
-        // Click on the Koala option in the listbox to deselect it
+        // Verify Kangaroo deselected
+        await expect(isOptionSelected(kangarooOption)).toBe(false);
+        await verifyTagsExist(multiSelect, ["Platypus", "Koala"]);
+        // Click Koala option to deselect
+        const koalaOption = findOptionByText("Koala");
         await userEvent.click(koalaOption!);
-
-        // Verify only Platypus remains selected
-        const koalaSelectedAfterClick =
-          koalaOption?.getAttribute("aria-selected") === "true" ||
-          koalaOption?.getAttribute("data-selected") === "true";
-        await expect(koalaSelectedAfterClick).toBe(false);
-
-        // Verify only one tag remains
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        await expect(tags[0]).toHaveTextContent("Platypus");
-
-        // Click on the Platypus option to deselect the last item
+        await verifyTagsExist(multiSelect, ["Platypus"]);
+        // Click Platypus option to deselect last item
+        const platypusOption = findOptionByText("Platypus");
         await userEvent.click(platypusOption!);
-
-        // Verify no options are selected
-        const platypusSelectedAfterClick =
-          platypusOption?.getAttribute("aria-selected") === "true" ||
-          platypusOption?.getAttribute("data-selected") === "true";
-        await expect(platypusSelectedAfterClick).toBe(false);
-
-        // Verify taglist shows placeholder
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
+        // Verify all cleared - placeholder shown
+        const tagList = await getTagList(multiSelect);
+        const tags = tagList.childNodes;
         await expect(tags.length).toBe(1);
         await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-
         // Close popover
         await userEvent.keyboard("{escape}");
       }
@@ -757,99 +612,31 @@ export const Base: Story = {
     await step(
       "multi select allows removing last selected item by hitting backspace when filter input is empty",
       async () => {
-        // First, we need to make some selections since the previous test cleared everything
-        // Open the popover
+        // Setup: Select 3 options
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-
-        // Verify popover is open
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-
-        // Select multiple options using keyboard navigation
-        await userEvent.keyboard("{ArrowDown}"); // Navigate to Koala
-        await userEvent.keyboard("{enter}"); // Select Koala
-
-        await userEvent.keyboard("{ArrowDown}"); // Navigate to Kangaroo
-        await userEvent.keyboard("{enter}"); // Select Kangaroo
-
-        await userEvent.keyboard("{ArrowDown}"); // Navigate to Platypus
-        await userEvent.keyboard("{enter}"); // Select Platypus
-
-        // Verify we have 3 tags selected
-        let tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
-        let tags = tagList.childNodes;
-        await expect(tags.length).toBe(3);
-
-        // Verify the tags contain the expected values (in selection order)
-        await expect(tags[0]).toHaveTextContent("Koala");
-        await expect(tags[1]).toHaveTextContent("Kangaroo");
-        await expect(tags[2]).toHaveTextContent("Platypus");
-
-        // Get the filter input
-        const filterInput = document.querySelector(
-          '[aria-label="filter combobox options"]'
-        ) as HTMLInputElement;
-        await expect(filterInput).toBeInTheDocument();
-
-        // Ensure the filter input is empty
+        await selectOptionsWithKeyboard(["Koala", "Kangaroo", "Platypus"]);
+        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
+        // Ensure filter input is empty and focused
+        const filterInput = getFilterInput();
         await userEvent.clear(filterInput);
-        await expect(filterInput.value).toBe("");
-
-        // Focus the filter input and hit backspace - should remove the last selected item (Platypus)
         filterInput.focus();
+        // Test backspace removes items in LIFO order
         await userEvent.keyboard("{Backspace}");
-
-        // Verify Platypus tag was removed
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-        await expect(tags[0]).toHaveTextContent("Koala");
-        await expect(tags[1]).toHaveTextContent("Kangaroo");
-
-        // Verify Platypus is no longer in the tags
-        const tagTexts = Array.from(tags).map(
-          (tag) => (tag as Element).textContent
-        );
-        await expect(tagTexts).not.toContain("Platypus");
-
-        // Hit backspace again - should remove Kangaroo (the new last item)
+        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
         await userEvent.keyboard("{Backspace}");
-
-        // Verify Kangaroo tag was removed
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        await expect(tags[0]).toHaveTextContent("Koala");
-
-        // Hit backspace again - should remove Koala (the last remaining item)
+        await verifyTagsExist(multiSelect, ["Koala"]);
         await userEvent.keyboard("{Backspace}");
-
-        // Verify all tags are removed and placeholder is shown
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
+        // Verify placeholder shown when all cleared
+        const tagList = await getTagList(multiSelect);
+        const tags = tagList.childNodes;
         await expect(tags.length).toBe(1);
         await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-
-        // Verify no options are selected in the listbox
-        const options = document.querySelectorAll('[role="option"]');
-        for (const option of Array.from(options)) {
-          const isSelected =
-            option.getAttribute("aria-selected") === "true" ||
-            option.getAttribute("data-selected") === "true";
-          await expect(isSelected).toBe(false);
-        }
-
-        // Test that backspace does nothing when there are no selected items
+        // Verify all options deselected
+        await verifyOptionsSelected(["Koala", "Kangaroo", "Platypus"], false);
+        // Test backspace does nothing when no selections
         await userEvent.keyboard("{Backspace}");
-
-        // Verify placeholder is still shown (no change)
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
         await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-
         // Close popover
         await userEvent.keyboard("{escape}");
       }
@@ -857,77 +644,51 @@ export const Base: Story = {
     await step(
       "multi select does not remove items with backspace when filter input has text",
       async () => {
-        // First, make some selections
+        // Setup: Select 2 options
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-
-        // Select a couple of options
-        await userEvent.keyboard("{ArrowDown}"); // Navigate to Koala
-        await userEvent.keyboard("{enter}"); // Select Koala
-
-        await userEvent.keyboard("{ArrowDown}"); // Navigate to Kangaroo
-        await userEvent.keyboard("{enter}"); // Select Kangaroo
-
-        // Verify we have 2 tags
-        let tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
-        let tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-
-        // Get the filter input and type some text
-        const filterInput = document.querySelector(
-          '[aria-label="filter combobox options"]'
-        ) as HTMLInputElement;
-        await expect(filterInput).toBeInTheDocument();
-
-        // Type some text in the filter input
+        await selectOptionsWithKeyboard(["Koala", "Kangaroo"]);
+        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
+        // Type text in filter input
+        const filterInput = getFilterInput();
         await userEvent.type(filterInput, "test");
         await expect(filterInput.value).toBe("test");
-
-        // Hit backspace - should remove the text, not the selected items
+        // Backspace should remove text, not selections
         await userEvent.keyboard("{Backspace}");
         await expect(filterInput.value).toBe("tes");
-
-        // Verify tags are still there (no selection was removed)
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-        await expect(tags[0]).toHaveTextContent("Koala");
-        await expect(tags[1]).toHaveTextContent("Kangaroo");
-
-        // Clear the input completely
+        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
+        // Clear input completely, then backspace should remove selection
         await userEvent.clear(filterInput);
-        await expect(filterInput.value).toBe("");
-
-        // Now backspace should remove the last selected item
         await userEvent.keyboard("{Backspace}");
-
-        // Verify Kangaroo was removed
-        tagList = await within(multiSelect).findByLabelText(/selected values/i);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        await expect(tags[0]).toHaveTextContent("Koala");
-
+        await verifyTagsExist(multiSelect, ["Koala"]);
         // Close popover
         await userEvent.keyboard("{escape}");
       }
     );
     await step(
-      "multi select tab order goes from combobox to tags to clear button to toggle button",
+      "multi select tab order goes from combobox to tag to remove tag button to clear button to toggle button",
       async () => {
-        // focus combobox
+        // Focus combobox
         multiSelect.focus();
-        // tab to tags
+        // Tab to tags
         await userEvent.tab();
         const tagList =
           await within(multiSelect).findByLabelText(/selected values/i);
         await expect(tagList.childNodes[0]).toHaveFocus();
-        // tab to clear button
+        // Tab to remove tag button
+        await userEvent.tab();
+        const removeButton = within(
+          tagList.childNodes[0] as HTMLElement
+        ).getByRole("button", {
+          name: /remove koala/i,
+        });
+        await expect(removeButton).toHaveFocus();
+        // Tab to clear button
         await userEvent.tab();
         const clearButton =
           await within(multiSelect).findByLabelText(/clear selection/i);
         await expect(clearButton).toHaveFocus();
-        //tab to toggle button
+        // Tab to toggle button
         await userEvent.tab();
         const toggleButton =
           await within(multiSelect).findByLabelText(/toggle combobox/i);
@@ -967,9 +728,7 @@ export const AllVariantsAndSizes: Story = {
                         placeholder={`type to search...`}
                       >
                         {(item) => (
-                          <ComboBox.Option key={item.id} id={item.id}>
-                            {item.name}
-                          </ComboBox.Option>
+                          <ComboBox.Option>{item.name}</ComboBox.Option>
                         )}
                       </ComboBox.Root>
                     </FormField.Input>
@@ -986,9 +745,7 @@ export const AllVariantsAndSizes: Story = {
                         placeholder={`open to search...`}
                       >
                         {(item) => (
-                          <ComboBox.Option key={item.id} id={item.id}>
-                            {item.name}
-                          </ComboBox.Option>
+                          <ComboBox.Option>{item.name}</ComboBox.Option>
                         )}
                       </ComboBox.Root>
                     </FormField.Input>
@@ -1019,11 +776,7 @@ export const OptionGroups: Story = {
                   label={section.name}
                   items={section.children}
                 >
-                  {(item) => (
-                    <ComboBox.Option key={item.id} id={item.id}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
+                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
                 </ComboBox.OptionGroup>
               )}
             </ComboBox.Root>
@@ -1043,11 +796,7 @@ export const OptionGroups: Story = {
                   label={section.name}
                   items={section.children}
                 >
-                  {(item) => (
-                    <ComboBox.Option key={item.id} id={item.id}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
+                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
                 </ComboBox.OptionGroup>
               )}
             </ComboBox.Root>
@@ -1067,17 +816,12 @@ export const ComplexOptionsWithDescriptions: Story = {
     const PlanOptionComponent = ({ item }: { item: PlanOption }) => (
       <Flex direction="column" gap="200">
         <Flex justify="space-between" align="center">
-          <Text fontWeight="600">{item.type}</Text>
-          <Text fontSize="350" fontWeight="600" color="positive.11">
-            {item.price}
-          </Text>
+          <Text slot="label">{item.type}</Text>
+          <Text color="positive.11">{item.price}</Text>
         </Flex>
-        <Text fontSize="350" color="neutral.11" lineHeight="short">
-          {item.description}
-        </Text>
+        <Text slot="description">{item.description}</Text>
         <Text fontSize="300" color="neutral.9">
-          {item.features.slice(0, 2).join(" • ")}
-          {item.features.length > 2 && " • ..."}
+          {item.features.join(" • ")}
         </Text>
       </Flex>
     );
@@ -1085,7 +829,7 @@ export const ComplexOptionsWithDescriptions: Story = {
     const TeamMemberOptionComponent = ({ member }: { member: TeamMember }) => (
       <Flex direction="column" gap="200">
         <Flex justify="space-between" align="center">
-          <Text fontWeight="600">{member.full_name}</Text>
+          <Text slot="label">{member.full_name}</Text>
           <Badge
             colorPalette={
               member.status === "online"
@@ -1099,7 +843,7 @@ export const ComplexOptionsWithDescriptions: Story = {
             {member.status}
           </Badge>
         </Flex>
-        <Text fontSize="350" color="neutral.11">
+        <Text slot="description">
           {member.role} • {member.department}
         </Text>
         <Text fontSize="300" color="neutral.9">
@@ -1304,11 +1048,7 @@ export const AsyncLoading: Story = {
               isLoading={isLoading}
               placeholder="Type at least 2 characters to search..."
             >
-              {(item) => (
-                <ComboBox.Option key={item.id} id={item.id}>
-                  {item.name}
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
@@ -1325,11 +1065,7 @@ export const AsyncLoading: Story = {
               isLoading={multiIsLoading}
               placeholder="Type at least 2 characters to search..."
             >
-              {(item) => (
-                <ComboBox.Option key={item.id} id={item.id}>
-                  {item.name}
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
@@ -1362,11 +1098,7 @@ export const ControlledVsUncontrolled: Story = {
                 onSelectionChange={setControlledValue}
                 placeholder="Select an animal..."
               >
-                {(item) => (
-                  <ComboBox.Option key={item.id} id={item.id}>
-                    {item.name}
-                  </ComboBox.Option>
-                )}
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
             <p>Selected: {controlledValue?.toString() || "None"}</p>
@@ -1386,11 +1118,7 @@ export const ControlledVsUncontrolled: Story = {
                 onSelectionChange={setControlledMultiValue}
                 placeholder="Select multiple animals..."
               >
-                {(item) => (
-                  <ComboBox.Option key={item.id} id={item.id}>
-                    {item.name}
-                  </ComboBox.Option>
-                )}
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
             <p>
@@ -1424,11 +1152,7 @@ export const ControlledVsUncontrolled: Story = {
                 }
                 placeholder="Select an animal..."
               >
-                {(item) => (
-                  <ComboBox.Option key={item.id} id={item.id}>
-                    {item.name}
-                  </ComboBox.Option>
-                )}
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
           </FormField.Root>
@@ -1451,11 +1175,7 @@ export const ControlledVsUncontrolled: Story = {
                 }
                 placeholder="Select multiple animals..."
               >
-                {(item) => (
-                  <ComboBox.Option key={item.id} id={item.id}>
-                    {item.name}
-                  </ComboBox.Option>
-                )}
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
           </FormField.Root>
@@ -1657,20 +1377,17 @@ export const DisabledAndReadOnlyComboboxes: Story = {
         <Stack direction="column" gap="300">
           <h3>Single Select ComboBoxes</h3>
           <Stack direction="row" gap="400">
-            <FormField.Root>
+            <FormField.Root isDisabled>
               <FormField.Label>Disabled Single Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
-                  isDisabled={true}
+                  isDisabled
                   defaultSelectedKey={2}
+                  variant="ghost"
                   placeholder="This combobox is disabled..."
                 >
-                  {(item) => (
-                    <ComboBox.Option key={item.id} id={item.id}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
+                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
                 </ComboBox.Root>
               </FormField.Input>
               <FormField.Description>
@@ -1678,20 +1395,17 @@ export const DisabledAndReadOnlyComboboxes: Story = {
               </FormField.Description>
             </FormField.Root>
 
-            <FormField.Root>
+            <FormField.Root isReadOnly>
               <FormField.Label>Read-Only Single Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   isReadOnly
+                  variant="ghost"
                   defaultSelectedKey={2}
                   placeholder="This combobox is read-only..."
                 >
-                  {(item) => (
-                    <ComboBox.Option key={item.id} id={item.id}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
+                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
                 </ComboBox.Root>
               </FormField.Input>
               <FormField.Description>
@@ -1704,21 +1418,18 @@ export const DisabledAndReadOnlyComboboxes: Story = {
         <Stack direction="column" gap="300">
           <h3>Multi-Select ComboBoxes</h3>
           <Stack direction="row" gap="400">
-            <FormField.Root>
+            <FormField.Root isDisabled>
               <FormField.Label>Disabled Multi-Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   selectionMode="multiple"
                   isDisabled
+                  variant="ghost"
                   defaultSelectedKeys={new Set([1, 3, 5])}
                   placeholder="This combobox is disabled..."
                 >
-                  {(item) => (
-                    <ComboBox.Option key={item.id} id={item.id}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
+                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
                 </ComboBox.Root>
               </FormField.Input>
               <FormField.Description>
@@ -1726,21 +1437,18 @@ export const DisabledAndReadOnlyComboboxes: Story = {
               </FormField.Description>
             </FormField.Root>
 
-            <FormField.Root>
+            <FormField.Root isReadOnly>
               <FormField.Label>Read-Only Multi-Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   selectionMode="multiple"
                   isReadOnly
+                  variant="ghost"
                   defaultSelectedKeys={new Set([1, 3, 5])}
                   placeholder="This combobox is read-only..."
                 >
-                  {(item) => (
-                    <ComboBox.Option key={item.id} id={item.id}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
+                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
                 </ComboBox.Root>
               </FormField.Input>
               <FormField.Description>
@@ -1877,27 +1585,23 @@ export const FormValidation: Story = {
 
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root isInvalid={isInvalid}>
+        <FormField.Root isInvalid={isInvalid} isRequired>
           <FormField.Label>Single Select with Validation</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
               defaultItems={options}
               selectedKey={selectedValue}
               onSelectionChange={handleSelectionChange}
-              isRequired
+              variant="ghost"
               placeholder="Select an animal..."
             >
-              {(item) => (
-                <ComboBox.Option key={item.id} id={item.id}>
-                  {item.name}
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
           {errorMessage && <FormField.Error>{errorMessage}</FormField.Error>}
         </FormField.Root>
 
-        <FormField.Root isInvalid={multiIsInvalid}>
+        <FormField.Root isInvalid={multiIsInvalid} isRequired>
           <FormField.Label>Multi-Select with Validation</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1905,14 +1609,10 @@ export const FormValidation: Story = {
               selectionMode="multiple"
               selectedKeys={multiSelectedValues}
               onSelectionChange={handleMultiSelectionChange}
-              isRequired
+              variant="ghost"
               placeholder="Select multiple animals..."
             >
-              {(item) => (
-                <ComboBox.Option key={item.id} id={item.id}>
-                  {item.name}
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
           {multiErrorMessage && (
@@ -2065,11 +1765,7 @@ export const FormikIntegration: Story = {
                 inputValue={inputValue}
                 onSelectionChange={handleSingleValueSelectionChange("animal")}
               >
-                {(item) => (
-                  <ComboBox.Option key={item.id} id={item.id}>
-                    {item.name}
-                  </ComboBox.Option>
-                )}
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
 
@@ -2087,11 +1783,7 @@ export const FormikIntegration: Story = {
                 selectedKeys={formData.animals}
                 onSelectionChange={handleMultiValueSelectionChange("animals")}
               >
-                {(item) => (
-                  <ComboBox.Option key={item.id} id={item.id}>
-                    {item.name}
-                  </ComboBox.Option>
-                )}
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
 

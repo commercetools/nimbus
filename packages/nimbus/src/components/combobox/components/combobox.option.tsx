@@ -1,4 +1,3 @@
-import { type ReactNode } from "react";
 import { ListBoxItem } from "react-aria-components";
 import { Checkbox } from "@/components";
 import { ComboBoxOptionSlot } from "../combobox.slots";
@@ -30,7 +29,7 @@ export const ComboBoxOption = <T extends object>({
               : children;
           return renderProps.selectionMode === "multiple" ? (
             <Checkbox maxW={"100%"} isSelected={renderProps.isSelected}>
-              {children as ReactNode}
+              {content}
             </Checkbox>
           ) : (
             <>{content}</>

@@ -29,7 +29,7 @@ export const ComboBoxButtonGroup = ({
           tone="primary"
           aria-label="Clear Selection"
           isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "primary.1" }}
+          _expanded={{ bg: "transparent" }}
           onPress={() => state?.setSelectedKey(null)}
           my="auto"
         >
@@ -45,7 +45,7 @@ export const ComboBoxButtonGroup = ({
           tone="primary"
           aria-label="Clear Selection"
           isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "primary.1" }}
+          _expanded={{ bg: "transparent" }}
           onPress={() => {
             onSelectionChange?.(new Set());
             onInputChange?.("");
@@ -72,7 +72,7 @@ export const ComboBoxButtonGroup = ({
           my="auto"
           tabIndex={5}
           isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "primary.1" }}
+          _expanded={{ bg: "transparent" }}
         >
           <KeyboardArrowDownIcon />
         </IconButton>

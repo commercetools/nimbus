@@ -18,7 +18,9 @@ export const ComboBoxRoot = <T extends object>({
     "selectionMode" in props && props.selectionMode === "multiple"
       ? MultiSelectRoot
       : SingleSelectRoot;
-
+  // TODO: should there be a prop to allow for user control of the menu width?
+  // TODO: should there be a prop to allow the user to pass in an icon to display on the left of the input?
+  //       how would this work with the multiselect?
   return (
     <ComboBoxRootSlot
       asChild

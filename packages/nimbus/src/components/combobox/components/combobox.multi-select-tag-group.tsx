@@ -96,18 +96,21 @@ export const MultiSelectTagGroup =
       >
         <TagGroup.Root
           size={size}
-          onRemove={
-            isReadOnly || isDisabled ? undefined : handleRemoveSelectedItem
-          }
+          onRemove={handleRemoveSelectedItem}
           aria-label="Selected values"
           selectionMode="none"
-          disabledKeys={isDisabled ? "all" : undefined}
+          disabledKeys={isDisabled || isReadOnly ? selectedKeys : undefined}
+          data-disabled={isDisabled}
         >
           <TagGroup.TagList
             items={selectedItems}
             dependencies={[itemID]}
-            tabIndex={-1}
             maxW={"100%"}
+            tabIndex={
+              selectedItems.length === 0 || isDisabled || isReadOnly
+                ? -1
+                : undefined
+            }
             renderEmptyState={() =>
               placeholder && (
                 <div

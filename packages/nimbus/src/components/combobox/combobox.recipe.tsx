@@ -28,12 +28,14 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       position: "relative",
       maxWidth: "100%",
       borderRadius: "200",
-
       "&[data-disabled]": {
         layerStyle: "disabled",
-        pointerEvents: "none",
+        focusRing: "none",
       },
-      "& input": { cursor: "text", _placeholder: { opacity: 0.5 } },
+      "& input": {
+        cursor: "text",
+        _placeholder: { opacity: 0.5 },
+      },
       "& [data-placeholder]": {
         opacity: 0.5,
       },
@@ -51,19 +53,15 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       overflow: "hidden",
       textOverflow: "ellipsis",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _disabled: { pointerEvents: "none" },
       "& span": {
         display: "inline-block",
         my: "auto",
       },
-      '& [slot="description"]': {
-        display: "none",
-      },
-
       '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
       },
-
       '& button[slot="remove"]': {
         _expanded: {
           bg: "colorPalette.3",

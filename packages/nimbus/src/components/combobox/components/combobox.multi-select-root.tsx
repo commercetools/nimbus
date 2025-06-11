@@ -10,7 +10,6 @@ import {
   type Key,
   TextField,
   useFilter,
-  Pressable,
 } from "react-aria-components";
 
 import { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
@@ -107,7 +106,7 @@ export const MultiSelectRoot = <T extends object>({
   // Enhanced keyboard navigation
   const handleTriggerKeyDown = useCallback((e: KeyboardEvent) => {
     if (
-      (e.key === "ArrowDown" || e.key === "ArrowUp") &&
+      (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") &&
       e.target === triggerRef.current
     ) {
       e.preventDefault();
@@ -178,56 +177,57 @@ export const MultiSelectRoot = <T extends object>({
   // - styles for disabled, readonly, required, invalid, etc
   // - like, yknow, tests or whatever
   return (
-    <RaDialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
-      <Pressable>
-        <div
-          className={className as string}
-          tabIndex={0}
-          ref={rootRef}
-          aria-expanded={isOpen}
-          aria-haspopup="listbox"
-          aria-disabled={isDisabled}
-          aria-readonly={isReadOnly}
-          aria-required={isRequired}
-          aria-invalid={isInvalid}
-          data-disabled={isDisabled}
-          data-invalid={isInvalid}
-          data-required={isRequired}
-          data-open={isOpen}
-          role="combobox"
-          onKeyDown={handleTriggerKeyDown}
-          onFocus={handleOpenPopoverWhenEmpty}
-          {...props}
-        >
-          <MultiSelectTagGroup
-            items={items}
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            itemID={itemID}
-            itemValue={itemValue}
-            placeholder={placeholder}
-            size={size}
-            isDisabled={isDisabled}
-            isReadOnly={isReadOnly}
-          />
+    <RaDialogTrigger
+      isOpen={isOpen}
+      onOpenChange={isReadOnly || isDisabled ? undefined : handleOpenChange}
+    >
+      <div
+        className={className as string}
+        tabIndex={isDisabled ? -1 : 0}
+        ref={rootRef}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-disabled={isDisabled}
+        aria-readonly={isReadOnly}
+        aria-required={isRequired}
+        aria-invalid={isInvalid}
+        data-disabled={isDisabled}
+        data-invalid={isInvalid}
+        data-required={isRequired}
+        data-open={isOpen}
+        role="combobox"
+        onKeyDown={handleTriggerKeyDown}
+        onFocus={handleOpenPopoverWhenEmpty}
+        {...props}
+      >
+        <MultiSelectTagGroup
+          items={items}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          itemID={itemID}
+          itemValue={itemValue}
+          placeholder={placeholder}
+          size={size}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+        />
 
-          <ComboBoxButtonGroup
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            onInputChange={setInputValue}
-            isDisabled={isDisabled}
-            isReadOnly={isReadOnly}
-            isLoading={isLoading}
-          />
-        </div>
-      </Pressable>
+        <ComboBoxButtonGroup
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          onInputChange={setInputValue}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          isLoading={isLoading}
+        />
+      </div>
 
       <ComboBoxPopoverSlot asChild>
         <RaPopover
           triggerRef={triggerRef}
           placement="bottom start"
           isOpen={isOpen}
-          onOpenChange={handleOpenChange}
+          onOpenChange={isReadOnly || isDisabled ? undefined : handleOpenChange}
         >
           <Dialog>
             <RaAutocomplete
