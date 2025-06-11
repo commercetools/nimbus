@@ -67,9 +67,9 @@ catalogs:
     "@pandacss/types": ^0.53.6
     "next-themes": ^0.4.6
     # React Aria
-    "react-aria": "3.39.0"
-    "react-aria-components": "1.8.0"
-    "react-stately": "3.37.0"
+    "react-aria": "3.41.1"
+    "react-aria-components": "1.10.1"
+    "react-stately": "3.39.0"
     "@react-aria/optimize-locales-plugin": "1.1.4"
     "@internationalized/date": "^3.8.0"
   utils:
