@@ -54,4 +54,14 @@ export const globalCss = defineGlobalStyles({
     bg: "colorPalette.9",
     color: "colorPalette.contrast",
   },
+  /** overrides for styling in the chakra theme's preflight @reset layer
+   * overview of preflight config:
+   * https://chakra-ui.com/docs/theming/overview#preflight
+   * values set in @reset layer by preflight option:
+   * https://github.com/chakra-ui/chakra-ui/blob/main/packages/react/src/styled-system/preflight.ts
+   */
+  "img, svg, video, canvas, audio, iframe, embed, object": {
+    display: "initial",
+    verticalAlign: "initial",
+  },
 });
