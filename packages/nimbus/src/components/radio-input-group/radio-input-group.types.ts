@@ -1,41 +1,37 @@
 import type { HTMLChakraProps, RecipeVariantProps } from "@chakra-ui/react";
-import { radioInputSlotRecipe } from "./radio-input.recipe";
+import { radioInputSlotRecipe } from "./radio-input-group.recipe";
 import type { AriaRadioProps } from "react-aria";
-
+import type { AriaRadioGroupProps } from "react-aria";
 /**
  * Combines the root props with Chakra UI's recipe variant props.
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type RadioInputVariantProps = RadioInputRootProps &
-  RecipeVariantProps<typeof radioInputSlotRecipe> &
+type RadioInputGroupOptionVariantProps = RecipeVariantProps<
+  typeof radioInputSlotRecipe
+> &
   AriaRadioProps;
 
 /**
- * Main props interface for the RadioInput component.
- * Extends RadioInputVariantProps to include both root props and variant props,
+ * Main props interface for the RadioInputGroupOption component.
+ * Extends RadioInputGroupOptionVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface RadioInputProps extends RadioInputVariantProps {
+export interface RadioInputGroupOptionProps
+  extends RadioInputGroupOptionVariantProps {
   children?: React.ReactNode;
-  value: string;
   ref?: React.Ref<HTMLInputElement>;
   isInvalid?: boolean;
-  isDisabled?: boolean;
 }
 
 /**
  * Props for the radio group container component.
  * Manages a set of radio inputs and their shared state.
  */
-export interface RadioGroupProps {
+export interface RadioGroupProps
+  extends AriaRadioGroupProps,
+    RecipeVariantProps<typeof radioInputSlotRecipe> {
   label?: string;
-  name?: string;
-  value?: string;
-  defaultValue?: string;
-  isDisabled?: boolean;
-  isInvalid?: boolean;
-  onChange?: (value: string) => void;
   children?: React.ReactNode;
 }
 
@@ -62,3 +58,12 @@ export interface RadioInputLabelProps extends HTMLChakraProps<"span"> {}
  * Renders as a <span> and displays the visual indicator (checked/unchecked icon) for the radio input.
  */
 export interface RadioInputIndicatorProps extends HTMLChakraProps<"span"> {}
+
+/**
+ * Renders as a <div> and arranges the radio options in a row or column.
+ */
+export interface RadioInputGroupSlotProps
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof radioInputSlotRecipe>
+  > {}
