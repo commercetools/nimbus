@@ -1,17 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { RadioInput } from "./radio-input";
-import { RadioGroup } from "./radio-group";
+import { RadioInputGroup } from "./radio-input-group";
 import { Stack } from "@/components";
 import { userEvent, within, expect, fn } from "@storybook/test";
+import type { RadioInputGroupOptionProps } from "./radio-input-group.types";
 
 /**
  * Storybook metadata configuration
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<typeof RadioInput> = {
-  title: "components/RadioInput",
-  component: RadioInput,
+const meta: Meta<typeof RadioInputGroup.Root> = {
+  title: "components/RadioInputGroup",
+  component: RadioInputGroup.Root,
+  argTypes: {
+    direction: {
+      options: ["row", "column"],
+      control: { type: "radio" },
+    },
+  },
 };
 
 export default meta;
@@ -20,7 +26,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof RadioInput>;
+type Story = StoryObj<RadioInputGroupOptionProps>;
 
 const onChange = fn();
 
@@ -30,18 +36,18 @@ const onChange = fn();
 export const Base: Story = {
   args: {
     children: "Radio Label",
+
     // @ts-expect-error: data-testid is not a valid prop
     "data-testid": "test-radio-input",
     "aria-label": "test-label",
   },
   render: (args) => (
     <Stack gap="1000">
-      <RadioGroup name="storybook-radio-base" onChange={onChange}>
-        <RadioInput {...args} />
-      </RadioGroup>
+      <RadioInputGroup.Root name="storybook-radio-base" onChange={onChange}>
+        <RadioInputGroup.Option {...args} />
+      </RadioInputGroup.Root>
     </Stack>
   ),
-
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const htmlLabel = canvasElement.querySelector(
@@ -102,16 +108,15 @@ export const Disabled: Story = {
     "data-testid": "test-radio-input",
     isDisabled: true,
     isSelected: false,
-    onChange: fn(),
   },
   render: (args) => (
     <Stack gap="1000">
-      <RadioGroup name="storybook-radio-disabled">
-        <RadioInput {...args} />
-      </RadioGroup>
+      <RadioInputGroup.Root name="storybook-radio-disabled" onChange={onChange}>
+        <RadioInputGroup.Option {...args} />
+      </RadioInputGroup.Root>
     </Stack>
   ),
-  play: async ({ canvasElement, step, args }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const htmlLabel = canvasElement.querySelector(
       '[data-slot="root"]'
@@ -133,7 +138,7 @@ export const Disabled: Story = {
         await expect(htmlInput).not.toBeChecked();
         htmlLabel.click();
         await expect(htmlInput).not.toBeChecked();
-        await expect(args.onChange).not.toBeCalled();
+        await expect(onChange).not.toBeCalled();
       }
     );
   },
@@ -141,22 +146,24 @@ export const Disabled: Story = {
 
 export const Invalid: Story = {
   args: {
-    // isInvalid is passed to RadioInput for styling only (e.g., red border).
-    // Accessibility (aria-invalid) is handled on radioGroup, not on individual radioInputs
+    // isInvalid is passed to RadioInputGroup.Option for styling only (e.g., red border).
+    // Accessibility (aria-invalid) is handled on radioGroup, not on individual RadioInputGroupOptions
     children: "Invalid Radio Input",
     // @ts-expect-error: data-testid is not a valid prop
     "data-testid": "test-radio-input",
-    onChange: fn(),
     isInvalid: true,
   },
   render: (args) => (
     <Stack gap="1000">
-      <RadioGroup name="storybook-radio-invalid" isInvalid>
-        <RadioInput {...args} />
-      </RadioGroup>
+      <RadioInputGroup.Root
+        name="storybook-radio-invalid"
+        isInvalid
+        onChange={onChange}
+      >
+        <RadioInputGroup.Option {...args} />
+      </RadioInputGroup.Root>
     </Stack>
   ),
-
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const radioGroup = canvas.getByRole("radiogroup");
@@ -182,18 +189,22 @@ export const InvalidAndDisabled: Story = {
     children: "Invalid & Disabled Radio Input",
     // @ts-expect-error: data-testid is not a valid prop
     "data-testid": "test-radio-input",
-    onChange: fn(),
     isInvalid: true,
     isDisabled: true,
   },
   render: (args) => (
     <Stack gap="1000">
-      <RadioGroup name="storybook-radio-invalid-disabled" isInvalid isDisabled>
-        <RadioInput {...args} />
-      </RadioGroup>
+      <RadioInputGroup.Root
+        name="storybook-radio-invalid-disabled"
+        isInvalid
+        isDisabled
+        onChange={onChange}
+      >
+        <RadioInputGroup.Option {...args} />
+      </RadioInputGroup.Root>
     </Stack>
   ),
-  play: async ({ canvasElement, step, args }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const radioGroup = canvas.getByRole("radiogroup");
     const htmlInput = canvas.getByTestId("test-radio-input");
@@ -226,12 +237,11 @@ export const InvisibleLabel: Story = {
   },
   render: (args) => (
     <Stack gap="1000">
-      <RadioGroup name="storybook-radio-no-label">
-        <RadioInput {...args} />
-      </RadioGroup>
+      <RadioInputGroup.Root name="storybook-radio-no-label">
+        <RadioInputGroup.Option {...args} />
+      </RadioInputGroup.Root>
     </Stack>
   ),
-
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
     const htmlInput = canvas.getByTestId("test-radio-input");
@@ -241,17 +251,25 @@ export const InvisibleLabel: Story = {
   },
 };
 
-export const Group: Story = {
-  args: {},
-  render: () => (
-    <RadioGroup name="storybook-radio-grouping-horizontal">
-      <Stack direction="row" gap="800">
-        <RadioInput value="option1">Option 1</RadioInput>
-        <RadioInput value="option2">Option 2</RadioInput>
-        <RadioInput value="option3">Option 3</RadioInput>
-        <RadioInput value="option4">Option 4</RadioInput>
-      </Stack>
-    </RadioGroup>
+export const Direction: StoryObj<typeof RadioInputGroup.Root> = {
+  args: {
+    name: "storybook-radio-grouping-direction",
+  },
+  render: (args) => (
+    <RadioInputGroup.Root {...args}>
+      <RadioInputGroup.Option value="option1" key="option1">
+        Option 1
+      </RadioInputGroup.Option>
+      <RadioInputGroup.Option value="option2" key="option2">
+        Option 2
+      </RadioInputGroup.Option>
+      <RadioInputGroup.Option value="option3" key="option3">
+        Option 3
+      </RadioInputGroup.Option>
+      <RadioInputGroup.Option value="option4" key="option4">
+        Option 4
+      </RadioInputGroup.Option>
+    </RadioInputGroup.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

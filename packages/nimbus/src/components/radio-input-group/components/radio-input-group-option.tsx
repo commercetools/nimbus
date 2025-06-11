@@ -6,16 +6,16 @@ import {
   RadioButtonUnchecked,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { useRadioGroupContext } from "./radio-group";
+import { useRadioGroupContext } from "./radio-input-group-root";
 
 import { useFocusRing, useRadio, useObjectRef, mergeProps } from "react-aria";
 
-import type { RadioInputProps } from "./radio-input.types";
+import type { RadioInputGroupOptionProps } from "../radio-input-group.types";
 import {
   RadioInputIndicator,
   RadioInputRoot,
   RadioInputLabel,
-} from "./radio-input.slots";
+} from "../radio-input-group.slots";
 
 /**
  * RadioInput
@@ -30,7 +30,7 @@ import {
  * - allows overriding styles by using style-props
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  */
-export const RadioInput = (props: RadioInputProps) => {
+export const RadioInputGroupOption = (props: RadioInputGroupOptionProps) => {
   const { ref: forwardedRef } = props;
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
@@ -38,6 +38,10 @@ export const RadioInput = (props: RadioInputProps) => {
   const [styleProps] = extractStyleProps(props);
 
   const state = useRadioGroupContext();
+  if (!state)
+    throw new Error(
+      "RadioInputGroupOption must be used within a RadioGroupProvider."
+    );
 
   const { inputProps } = useRadio(props, state, ref);
 
@@ -67,4 +71,4 @@ export const RadioInput = (props: RadioInputProps) => {
     </RadioInputRoot>
   );
 };
-RadioInput.displayName = "RadioInput";
+RadioInputGroupOption.displayName = "RadioInputGroup.Option";
