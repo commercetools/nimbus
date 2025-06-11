@@ -9,10 +9,7 @@ import { ComboBoxStateContext } from "react-aria-components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
 
-export const ComboBoxButtonGroup = ({
-  selectedKeys,
-  onSelectionChange,
-  onInputChange,
+export const ComboBoxSingleSelectButtonGroup = ({
   isDisabled,
   isReadOnly,
   isLoading,
@@ -29,27 +26,8 @@ export const ComboBoxButtonGroup = ({
           tone="primary"
           aria-label="Clear Selection"
           isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "primary.1" }}
+          _expanded={{ bg: "transparent" }}
           onPress={() => state?.setSelectedKey(null)}
-          my="auto"
-        >
-          <CloseIcon />
-        </IconButton>
-      )}
-      {selectedKeys instanceof Set && selectedKeys.size > 0 && (
-        <IconButton
-          pointerEvents="all"
-          slot={null}
-          size="2xs"
-          variant="ghost"
-          tone="primary"
-          aria-label="Clear Selection"
-          isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "primary.1" }}
-          onPress={() => {
-            onSelectionChange?.(new Set());
-            onInputChange?.("");
-          }}
           my="auto"
         >
           <CloseIcon />
@@ -70,9 +48,8 @@ export const ComboBoxButtonGroup = ({
           aria-label="toggle combobox"
           tone="neutral"
           my="auto"
-          tabIndex={5}
           isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "primary.1" }}
+          _expanded={{ bg: "transparent" }}
         >
           <KeyboardArrowDownIcon />
         </IconButton>
