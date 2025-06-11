@@ -1,5 +1,6 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 import { selectSlotRecipe } from "../select/select.recipe";
+import { checkboxSlotRecipe } from "../checkbox/checkbox.recipe";
 
 /**
  * Recipe configuration for the Combobox component.
@@ -15,6 +16,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "options",
     "optionGroup",
     "option",
+    "optionIndicator",
+    "optionContent",
   ],
   // Unique class name prefix for the component
   className: "nimbus-combobox",
@@ -24,16 +27,19 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     root: {
       colorPalette: "primary",
       focusRing: "outside",
-      display: "block",
+      display: "inline-block",
       position: "relative",
+      alignSelf: "flex-start",
       maxWidth: "100%",
       borderRadius: "200",
-
       "&[data-disabled]": {
         layerStyle: "disabled",
-        pointerEvents: "none",
+        focusRing: "none",
       },
-      "& input": { cursor: "text", _placeholder: { opacity: 0.5 } },
+      "& input": {
+        cursor: "text",
+        _placeholder: { opacity: 0.5 },
+      },
       "& [data-placeholder]": {
         opacity: 0.5,
       },
@@ -51,19 +57,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       overflow: "hidden",
       textOverflow: "ellipsis",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-      "& span": {
-        display: "inline-block",
-        my: "auto",
-      },
-      '& [slot="description"]': {
-        display: "none",
-      },
-
+      _disabled: { pointerEvents: "none" },
       '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
       },
-
       '& button[slot="remove"]': {
         _expanded: {
           bg: "colorPalette.3",
@@ -76,6 +74,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       top: 0,
       bottom: 0,
       right: 300,
+      my: "auto",
     },
     popover: {
       bg: "bg",
@@ -110,12 +109,24 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       ...selectSlotRecipe.base?.option,
       whiteSpace: "wrap",
     },
+    optionIndicator: {
+      ...checkboxSlotRecipe.base?.indicator,
+      ...checkboxSlotRecipe.variants?.size.md.indicator,
+    },
+    optionContent: {
+      ...checkboxSlotRecipe.base?.label,
+      ...checkboxSlotRecipe.variants?.size.md.label,
+      whiteSpace: "wrap",
+      width: "calc(100% - var(--nimbus-sizes-600))",
+      display: "inline-block",
+    },
   },
 
   // Available variants for customizing the component's appearance
   variants: {
     // Size variants from smallest to largest
     size: {
+      // Small
       sm: {
         value: {
           minH: "800",
@@ -123,7 +134,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           px: "400",
           textStyle: "sm",
         },
-      }, // Small
+      },
+      // Medium
       md: {
         value: {
           minH: "1000",
@@ -131,18 +143,18 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           py: "100",
           textStyle: "md",
         },
-      }, // Medium
+      },
     },
 
     // Visual style variants
     variant: {
       solid: {
         root: {
-          bg: "primary.1",
           width: "7200",
         },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,
+          bg: "primary.1",
           width: "100%",
         },
       },
@@ -154,7 +166,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
 
         value: {
           ...selectSlotRecipe.variants?.variant.ghost.trigger,
-          fieldSizing: "content",
+          bg: "transparent",
         },
       },
     },
@@ -168,9 +180,16 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           my: "200",
         },
         option: {
+          colorPalette: "primary",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
           cursor: "pointer",
+          gap: "200",
+
           "&:hover": {
             bg: "primary.4",
           },
@@ -217,14 +236,14 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       variant: "ghost",
       selectionMode: "multiple",
       css: {
-        popover: { minW: "var(--trigger-width)", maxW: "7200" },
+        popover: { maxW: "7200" },
       },
     },
     {
       variant: "ghost",
       selectionMode: "single",
       css: {
-        options: { minW: "var(--trigger-width)", maxW: "7200" },
+        options: { maxW: "7200" },
       },
     },
   ],

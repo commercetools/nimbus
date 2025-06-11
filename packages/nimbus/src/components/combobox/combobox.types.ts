@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import type { ReactNode, Ref } from "react";
+import type { ReactNode, Ref, RefObject } from "react";
 import type {
   HTMLChakraProps,
   RecipeProps,
@@ -31,7 +31,7 @@ type ComboBoxWithCustomChildren<T extends object> = Omit<
   children: ReactNode | ((item: T) => React.ReactNode);
   ref?: Ref<HTMLDivElement>;
 };
-
+/** MultiSelect combobox */
 export interface ComboBoxMultiSelect<T extends object>
   extends Omit<RaAutoCompleteProps, "children" | "filter" | "slot">,
     Omit<RaListBoxProps<T>, "filter" | "autoFocus" | "style" | "slot"> {
@@ -41,6 +41,7 @@ export interface ComboBoxMultiSelect<T extends object>
   validate?: RaComboBoxProps<T>["validate"];
   allowsCustomValue?: boolean;
   onSubmitCustomValue?: (value: string) => void;
+  onOpenChange?: RaComboBoxProps<T>["onOpenChange"];
   autoFocus?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
@@ -68,7 +69,6 @@ export interface ComboBoxSingleSelectRootProps<T extends object>
     ComboBoxWithCustomChildren<T> {
   ref?: Ref<HTMLDivElement>;
 }
-
 /** Base Chakra styling props for the root `div` slot when multi select*/
 export interface ComboBoxMultiSelectRootSlotProps<T extends object>
   extends HTMLChakraProps<
@@ -81,15 +81,70 @@ export interface ComboBoxMultiSelectRootProps<T extends object>
     ComboBoxMultiSelect<T> {
   ref?: Ref<HTMLDivElement>;
 }
-
+/** Root element can either be single or multi select */
 export type ComboBoxRootProps<T extends object> =
   | ComboBoxSingleSelectRootProps<T>
   | ComboBoxMultiSelectRootProps<T>;
 
 // ============================================================
+// Value Slot - internal, not exported in compound component
+// ============================================================
+/** The slot is a wrapper for multiple components,
+ *  and therefore not combined with the component props
+ *  because it is not used to style the component directly using asChild */
+export interface ComboBoxValueSlotProps
+  extends HTMLChakraProps<"div", RecipeProps<"value">> {}
+/** component prop interface */
+export type ComboBoxMultiSelectValueProps<T extends object> = {
+  items: ComboBoxMultiSelectRootProps<T>["items"];
+  itemID: ComboBoxMultiSelectRootProps<T>["itemID"];
+  itemValue: ComboBoxMultiSelectRootProps<T>["itemValue"];
+  selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
+  onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];
+  placeholder?: string;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  ref?: Ref<HTMLDivElement>;
+  containerRef?: RefObject<HTMLDivElement | null>;
+  size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
+};
+
+// ============================================================
+// Button Group Slot - internal, not exported in compound component
+// ============================================================
+/** The slot is a wrapper for multiple components,
+ *  and therefore not combined with the component props
+ *  because it is not used to style the component directly using asChild */
+export interface ComboBoxButtonGroupSlotProps
+  extends HTMLChakraProps<"div", RecipeProps<"buttonGroup">> {}
+/** component prop interface */
+export type ComboBoxButtonGroupProps = {
+  selectedKeys?: ComboBoxMultiSelectRootProps<{}>["selectedKeys"];
+  onSelectionChange?: ComboBoxMultiSelectRootProps<{}>["onSelectionChange"];
+  onInputChange?: ComboBoxMultiSelectRootProps<{}>["onInputChange"];
+  onOpenChange?: ComboBoxSingleSelectRootProps<{}>["onOpenChange"];
+  containerRef?: RefObject<HTMLDivElement | null>;
+  isOpen?: boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+};
+
+// ============================================================
+// Popover Slot - internal, not exported in compound component
+// ============================================================
+export interface ComboBoxPopoverSlotProps
+  extends HTMLChakraProps<"div", RecipeProps<"popover">> {}
+
+// ============================================================
+// MultiSelect Input Slot - internal, not exported in compound component
+// ============================================================
+export interface ComboBoxMultiSelectInputSlotProps
+  extends HTMLChakraProps<"input", RecipeProps<"multiSelectInput">> {}
+
+// ============================================================
 // Options Sub-Component (`<ComboBox.Options>`)
 // ============================================================
-
 /** Base Chakra styling props for the root `div` slot. */
 export interface ComboBoxOptionsSlotProps
   extends HTMLChakraProps<"div", RecipeProps<"options">> {}
@@ -101,9 +156,20 @@ export interface ComboBoxOptionsProps<T extends object>
 }
 
 // ============================================================
+// OptionGroup Sub-Component (`<ComboBox.OptionGroup>`)
+// ============================================================
+/** Base Chakra styling props for the root `div` slot. */
+type ComboBoxOptionGroupSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+/** Combined props for the OptionGroup element (Chakra styles + Aria behavior + Recipe variants). */
+export interface ComboBoxOptionGroupProps<T extends object>
+  extends RaListBoxSectionProps<T>,
+    Omit<ComboBoxOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> {
+  label?: ReactNode;
+}
+
+// ============================================================
 // Option Sub-Component (`<ComboBox.Option>`)
 // ============================================================
-
 /** Base Chakra styling props for the root `div` slot. */
 type ComboBoxOptionSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 /** Combined props for the ListBoxItem element (Chakra styles + Aria behavior + Recipe variants). */
@@ -114,45 +180,17 @@ export interface ComboBoxOptionProps<T extends object>
 }
 
 // ============================================================
-// OptionGroup Sub-Component (`<ComboBox.OptionGroup>`)
+// Option Indicator Slot - internal, not exported in compound component
 // ============================================================
-
-/** Base Chakra styling props for the root `div` slot. */
-type ComboBoxOptionGroupSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
-/** Combined props for the tag element (Chakra styles + Aria behavior + Recipe variants). */
-export interface ComboBoxOptionGroupProps<T extends object>
-  extends RaListBoxSectionProps<T>,
-    Omit<ComboBoxOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> {
-  label?: ReactNode;
-}
+export type ComboBoxOptionIndicatorSlotProps = HTMLChakraProps<
+  "span",
+  RecipeProps<"span">
+>;
 
 // ============================================================
-// Multi Select Value Slot - internal, not exported in compound component
+// Option Content Slot - internal, not exported in compound component
 // ============================================================
-
-export type ComboBoxMultiSelectValueProps<T extends object> = {
-  items: ComboBoxMultiSelectRootProps<T>["items"];
-  itemID: ComboBoxMultiSelectRootProps<T>["itemID"];
-  itemValue: ComboBoxMultiSelectRootProps<T>["itemValue"];
-  selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
-  onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];
-  placeholder?: string;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  ref?: Ref<HTMLDivElement>;
-  size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
-};
-
-// ============================================================
-// Button Group Slot - internal, not exported in compound component
-// ============================================================
-
-export type ComboBoxButtonGroupProps = {
-  selectedKeys?: ComboBoxMultiSelectRootProps<{}>["selectedKeys"];
-  onSelectionChange?: ComboBoxMultiSelectRootProps<{}>["onSelectionChange"];
-  onInputChange?: ComboBoxMultiSelectRootProps<{}>["onInputChange"];
-  isLoading?: boolean;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-};
+export type ComboBoxOptionContentSlotProps = HTMLChakraProps<
+  "span",
+  RecipeProps<"span">
+>;

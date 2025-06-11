@@ -70,6 +70,7 @@ catalogs:
     "react-aria": "3.41.1"
     "react-aria-components": "1.10.1"
     "react-stately": "3.39.0"
+    "@react-aria/interactions": "3.25.3"
     "@react-aria/optimize-locales-plugin": "1.1.4"
     "@internationalized/date": "^3.8.0"
   utils:

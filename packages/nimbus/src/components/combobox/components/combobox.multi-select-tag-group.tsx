@@ -1,8 +1,7 @@
 import { useMemo, useCallback } from "react";
 import { type Key, type Selection } from "react-aria-components";
-
+import { ClearPressResponder } from "@react-aria/interactions";
 import { TagGroup } from "@/components";
-
 import type { ComboBoxMultiSelectValueProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
 
@@ -19,6 +18,27 @@ function hasChildrenArray<T extends object>(
   );
 }
 
+function checkItemValidity(
+  item: Record<string, unknown>,
+  idKey: string,
+  valueKey: string
+) {
+  if (!item) return;
+  if (!Object.prototype.hasOwnProperty.call(item, "id") && idKey === "id") {
+    throw new Error(
+      "ComboBox: if items do not have an `id` key, you must specify which key uniquely identifies items using the `itemID` prop"
+    );
+  }
+  if (
+    !Object.prototype.hasOwnProperty.call(item, "name") &&
+    valueKey === "name"
+  ) {
+    throw new Error(
+      "ComboBox: if items do not have a `name` key, you must specify which key can be used as a text value using the `itemValue` prop"
+    );
+  }
+}
+
 export const MultiSelectTagGroup =
   /* eslint-disable @typescript-eslint/no-explicit-any */
   <T extends Record<string, any>>({
@@ -31,6 +51,7 @@ export const MultiSelectTagGroup =
     isDisabled,
     isReadOnly,
     size,
+    containerRef,
     ref,
   }: ComboBoxMultiSelectValueProps<T>) => {
     const selectedItems = useMemo(() => {
@@ -38,7 +59,6 @@ export const MultiSelectTagGroup =
 
       const selectedKeysArray = Array.from(selectedKeys);
       // Handle sectioned data structure
-      // TODO: should the method to flatten sectioned data be a util?
       if (Array.isArray(items)) {
         // Check if items are sections (have children property)
         const firstItem = items[0] as unknown;
@@ -50,7 +70,8 @@ export const MultiSelectTagGroup =
               allItems.push(...(section as { children: T[] }).children);
             }
           });
-
+          // make sure we have an id and value
+          checkItemValidity(allItems?.[0], itemID, itemValue);
           return selectedKeysArray
             .map((key) => allItems.find((item) => item[itemID] === key))
             .filter((item): item is T => item !== undefined);
@@ -58,15 +79,20 @@ export const MultiSelectTagGroup =
 
         // Handle flat array - cast to T[] since we know it's not sectioned
         const flatItems = items as T[];
+        // make sure we have an id and value
+        checkItemValidity(flatItems?.[0], itemID, itemValue);
         return selectedKeysArray
           .map((key) => flatItems.find((item) => item[itemID] === key))
           .filter((item): item is T => item !== undefined);
       }
 
       // Handle other iterable types
-      return selectedKeysArray
+      const iterableItems = selectedKeysArray
         .map((key) => Array.from(items).find((item) => item[itemID] === key))
         .filter((item): item is T => item !== undefined);
+      // make sure we have an id and value
+      checkItemValidity(iterableItems?.[0], itemID, itemValue);
+      return iterableItems;
     }, [items, selectedKeys, itemID]);
 
     const handleRemoveSelectedItem = useCallback(
@@ -82,54 +108,65 @@ export const MultiSelectTagGroup =
           );
 
           onSelectionChange?.(newSelectedKeys);
+
+          if (containerRef?.current) {
+            containerRef.current.focus();
+          }
         }
       },
       [isDisabled, isReadOnly, selectedKeys, onSelectionChange]
     );
-
     return (
-      <ComboBoxValueSlot
-        asChild
-        alignItems="space-between"
-        justifyContent="center"
-        ref={ref}
-      >
-        <TagGroup.Root
-          size={size}
-          onRemove={
-            isReadOnly || isDisabled ? undefined : handleRemoveSelectedItem
-          }
-          aria-label="Selected values"
-          selectionMode="none"
-          disabledKeys={isDisabled ? "all" : undefined}
+      <ClearPressResponder>
+        <ComboBoxValueSlot
+          asChild
+          alignItems="space-between"
+          justifyContent="center"
+          ref={ref}
         >
-          <TagGroup.TagList
-            items={selectedItems}
-            dependencies={[itemID]}
-            tabIndex={-1}
-            maxW={"100%"}
-            renderEmptyState={() =>
-              placeholder && (
-                <div
-                  data-placeholder="true"
-                  style={{
-                    maxWidth: "100%",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {placeholder}
-                </div>
-              )
-            }
+          <TagGroup.Root
+            size={size}
+            onRemove={handleRemoveSelectedItem}
+            aria-label="Selected values"
+            selectionMode="none"
+            disabledKeys={isDisabled || isReadOnly ? selectedKeys : undefined}
+            data-disabled={isDisabled}
           >
-            {(item) => {
-              return (
-                <TagGroup.Tag maxW={"100%"}>{item[itemValue]}</TagGroup.Tag>
-              );
-            }}
-          </TagGroup.TagList>
-        </TagGroup.Root>
-      </ComboBoxValueSlot>
+            <TagGroup.TagList
+              items={selectedItems}
+              dependencies={[itemID]}
+              maxW={"100%"}
+              tabIndex={
+                selectedItems.length === 0 || isDisabled || isReadOnly
+                  ? -1
+                  : undefined
+              }
+              renderEmptyState={() =>
+                placeholder && (
+                  <div
+                    data-placeholder="true"
+                    style={{
+                      maxWidth: "100%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    onClick={() => containerRef?.current?.focus()}
+                  >
+                    {placeholder}
+                  </div>
+                )
+              }
+            >
+              {(item) => {
+                return (
+                  <TagGroup.Tag id={item[itemID] as string} maxW={"100%"}>
+                    {item[itemValue]}
+                  </TagGroup.Tag>
+                );
+              }}
+            </TagGroup.TagList>
+          </TagGroup.Root>
+        </ComboBoxValueSlot>
+      </ClearPressResponder>
     );
   };

@@ -10,17 +10,17 @@ import {
   type Key,
   TextField,
   useFilter,
-  Pressable,
 } from "react-aria-components";
-
 import { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
 import { ComboBoxOptions } from "./combobox.options";
-import { ComboBoxButtonGroup } from "./combobox.button-group";
+import { ComboBoxButtonGroup } from "./combobox.multi-select-button-group";
 import {
   ComboBoxPopoverSlot,
   ComboBoxMultiSelectInputSlot,
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
+
+type MenuTriggerAction = "focus" | "input" | "manual" | undefined;
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -37,6 +37,7 @@ export const MultiSelectRoot = <T extends object>({
   defaultSelectedKeys = new Set(),
   selectedKeys: selectedKeysProp,
   onSelectionChange: onSelectionChangeProp,
+  onOpenChange: onOpenChangeProp,
   disabledKeys,
   items: itemsProp,
   defaultItems,
@@ -56,24 +57,41 @@ export const MultiSelectRoot = <T extends object>({
   ref,
   ...props
 }: ComboBoxMultiSelect<T>) => {
+  // Internal state for popover, enables opening on first focus
   const [isOpen, setOpen] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
 
+  // Internal state for selected keys
   const [_selectedKeys, _setSelectedKeys] = useState<Selection>();
+  // Prefer selected keys from props (controlled), otherwise from internal state and falls back to default (uncontrolled)
   const selectedKeys = selectedKeysProp ?? _selectedKeys ?? defaultSelectedKeys;
+  // Prefer selection handler from props (controlled), otherwise use internal state (uncontrolled)
   const setSelectedKeys = onSelectionChangeProp ?? _setSelectedKeys;
 
+  // Internal state for input
   const [_inputValue, _setInputValue] = useState<string>("");
+  // Prefer input value from props (controlled), otherwise from internal state and falls back to default (uncontrolled)
   const inputValue = inputValueProp ?? _inputValue ?? defaultInputValue;
+  // Prefer input handler from props (controlled), otherwise use internal state (uncontrolled)
   const setInputValue = onInputChangeProp ?? _setInputValue;
-
+  // Prefer items (controlled), fallback to defaultItems (uncontrolled)
   const items = itemsProp ?? defaultItems;
 
   // Handle popover open/close changes
   const handleOpenChange = useCallback(
-    (open: boolean) => {
+    (open: boolean, menuTrigger?: MenuTriggerAction) => {
+      // The popover should not be able to open if it is disabled or readonly
+      if (isDisabled || isReadOnly) {
+        // Close the dialog if its open
+        if (isOpen) setOpen(false);
+        return;
+      }
+      if (onOpenChangeProp) {
+        onOpenChangeProp?.(open, menuTrigger);
+      }
       setOpen(open);
-      // Mark as touched when user interacts with the popover
+      // Mark as touched when user interacts with the popover,
+      // this enables opening the popover on first focus, but not subsequently
       if (!isTouched) {
         setIsTouched(true);
       }
@@ -88,7 +106,7 @@ export const MultiSelectRoot = <T extends object>({
       !selectedKeys || (selectedKeys instanceof Set && selectedKeys.size === 0);
 
     if (hasNoSelection && !isOpen && !isTouched) {
-      setOpen(true);
+      handleOpenChange(true);
     }
   }, [selectedKeys, isOpen, isTouched]);
 
@@ -105,13 +123,13 @@ export const MultiSelectRoot = <T extends object>({
   }, [selectedKeys, setSelectedKeys]);
 
   // Enhanced keyboard navigation
-  const handleTriggerKeyDown = useCallback((e: KeyboardEvent) => {
+  const handleWrapperKeyDown = useCallback((e: KeyboardEvent) => {
     if (
-      (e.key === "ArrowDown" || e.key === "ArrowUp") &&
+      (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") &&
       e.target === triggerRef.current
     ) {
       e.preventDefault();
-      setOpen(true);
+      handleOpenChange(true);
     }
   }, []);
 
@@ -179,56 +197,50 @@ export const MultiSelectRoot = <T extends object>({
   // - like, yknow, tests or whatever
   return (
     <RaDialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
-      <Pressable>
-        <div
-          className={className as string}
-          tabIndex={0}
-          ref={rootRef}
-          aria-expanded={isOpen}
-          aria-haspopup="listbox"
-          aria-disabled={isDisabled}
-          aria-readonly={isReadOnly}
-          aria-required={isRequired}
-          aria-invalid={isInvalid}
-          data-disabled={isDisabled}
-          data-invalid={isInvalid}
-          data-required={isRequired}
-          data-open={isOpen}
-          role="combobox"
-          onKeyDown={handleTriggerKeyDown}
-          onFocus={handleOpenPopoverWhenEmpty}
-          {...props}
-        >
-          <MultiSelectTagGroup
-            items={items}
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            itemID={itemID}
-            itemValue={itemValue}
-            placeholder={placeholder}
-            size={size}
-            isDisabled={isDisabled}
-            isReadOnly={isReadOnly}
-          />
-
-          <ComboBoxButtonGroup
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            onInputChange={setInputValue}
-            isDisabled={isDisabled}
-            isReadOnly={isReadOnly}
-            isLoading={isLoading}
-          />
-        </div>
-      </Pressable>
+      <div
+        className={className as string}
+        tabIndex={isDisabled ? -1 : 0}
+        ref={rootRef}
+        role="combobox"
+        onKeyDown={handleWrapperKeyDown}
+        onFocus={handleOpenPopoverWhenEmpty}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-disabled={isDisabled}
+        aria-readonly={isReadOnly}
+        aria-required={isRequired}
+        aria-invalid={isInvalid}
+        data-disabled={isDisabled}
+        data-invalid={isInvalid}
+        data-required={isRequired}
+        data-open={isOpen}
+        {...props}
+      >
+        <MultiSelectTagGroup
+          items={items}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          itemID={itemID}
+          itemValue={itemValue}
+          placeholder={placeholder}
+          size={size}
+          containerRef={triggerRef}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+        />
+        <ComboBoxButtonGroup
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          onInputChange={setInputValue}
+          containerRef={triggerRef}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          isLoading={isLoading}
+        />
+      </div>
 
       <ComboBoxPopoverSlot asChild>
-        <RaPopover
-          triggerRef={triggerRef}
-          placement="bottom start"
-          isOpen={isOpen}
-          onOpenChange={handleOpenChange}
-        >
+        <RaPopover triggerRef={triggerRef} placement="bottom start">
           <Dialog>
             <RaAutocomplete
               filter={defaultFilter ?? contains}

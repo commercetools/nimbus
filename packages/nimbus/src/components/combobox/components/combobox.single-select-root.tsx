@@ -1,20 +1,19 @@
-import { useState, type KeyboardEvent } from "react";
+import { type KeyboardEvent } from "react";
 import {
   ComboBox as RaComboBox,
   Popover as RaPopover,
   Input,
 } from "react-aria-components";
 import { ComboBoxOptions } from "./combobox.options";
-import { ComboBoxButtonGroup } from "./combobox.button-group";
+import { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button-group";
 
 import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
 
 export const SingleSelectRoot = <T extends object>({
   children,
-  inputValue: inputValueProp,
-  defaultInputValue,
-  onInputChange: onInputChangeProp,
+  inputValue,
+  onInputChange,
   placeholder,
   allowsCustomValue,
   onSubmitCustomValue,
@@ -23,14 +22,19 @@ export const SingleSelectRoot = <T extends object>({
   ref,
   ...rest
 }: ComboBoxSingleSelectRootProps<T>) => {
-  const [_inputValue, _setInputValue] = useState<string>("");
-  const inputValue = inputValueProp ?? _inputValue ?? defaultInputValue;
-  const setInputValue = onInputChangeProp ?? _setInputValue;
+  if (onSubmitCustomValue && (!inputValue || !onInputChange)) {
+    // ComboBox has to be controlled to be able to get the input value when user presses enter
+    throw new Error(
+      'ComboBox: When "onSubmitCustomValue" is provided, "inputValue" must be controlled with "onInputChange"'
+    );
+  }
 
   const handleInputKeyDown = (e: KeyboardEvent) => {
     if (
       e.key === "Enter" &&
-      inputValue.trim() !== "" &&
+      inputValue &&
+      inputValue?.trim() !== "" &&
+      onInputChange &&
       allowsCustomValue &&
       onSubmitCustomValue
     ) {
@@ -40,21 +44,22 @@ export const SingleSelectRoot = <T extends object>({
         return;
       }
       onSubmitCustomValue(inputValue);
-      setInputValue("");
+      onInputChange("");
     }
   };
 
   return (
     <RaComboBox
       inputValue={inputValue}
-      onInputChange={setInputValue}
+      onInputChange={onInputChange}
       {...rest}
       ref={ref}
+      allowsEmptyCollection={true}
     >
       <ComboBoxValueSlot asChild>
         <Input onKeyDown={handleInputKeyDown} placeholder={placeholder} />
       </ComboBoxValueSlot>
-      <ComboBoxButtonGroup
+      <ComboBoxSingleSelectButtonGroup
         isLoading={isLoading}
         isDisabled={rest.isDisabled}
         isReadOnly={rest.isReadOnly}
