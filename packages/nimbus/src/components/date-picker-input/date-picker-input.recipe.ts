@@ -67,42 +67,6 @@ export const datePickerInputRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyContent: "space-between",
       mb: "200",
-
-      "& button": {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "800",
-        height: "800",
-        borderRadius: "200",
-        bg: "transparent",
-        border: "none",
-        cursor: "pointer",
-        color: "neutral.11",
-
-        "&:hover": {
-          bg: "primary.2",
-          color: "primary.11",
-        },
-
-        "&[data-pressed='true']": {
-          bg: "primary.3",
-        },
-
-        "&[data-focus-visible='true']": {
-          outlineWidth: "var(--focus-ring-width)",
-          outlineColor: "var(--focus-ring-color)",
-          outlineStyle: "var(--focus-ring-style)",
-          outlineOffset: "var(--focus-ring-offset)",
-        },
-      },
-
-      "& h2": {
-        fontSize: "md",
-        fontWeight: "semibold",
-        color: "neutral.12",
-        margin: 0,
-      },
     },
     calendarGrid: {
       borderCollapse: "collapse",
