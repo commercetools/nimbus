@@ -1,0 +1,52 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { DatePickerInput } from "./date-picker-input";
+import { I18nProvider } from "react-aria";
+import { Box, Stack } from "@/components";
+
+/**
+ * Storybook metadata configuration
+ * - title: determines the location in the sidebar
+ * - component: references the component being documented
+ */
+const meta: Meta<typeof DatePickerInput> = {
+  title: "components/DatePickerInput",
+  component: DatePickerInput,
+  decorators: [
+    (Story) => (
+      <I18nProvider locale="en-US">
+        <Story />
+      </I18nProvider>
+    ),
+  ],
+};
+
+export default meta;
+
+/**
+ * Story type for TypeScript support
+ * StoryObj provides type checking for our story configurations
+ */
+type Story = StoryObj<typeof DatePickerInput>;
+
+/**
+ * Base story
+ * Demonstrates the most basic implementation
+ */
+export const Base: Story = {
+  args: {
+    ["aria-label"]: "Select a date",
+    granularity: "second",
+  },
+  render: (args) => {
+    return (
+      <Stack>
+        <Box>
+          <DatePickerInput size="sm" {...args} />
+        </Box>
+        <Box>
+          <DatePickerInput size="md" {...args} />
+        </Box>
+      </Stack>
+    );
+  },
+};
