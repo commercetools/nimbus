@@ -32,7 +32,7 @@ export * from "./loading-spinner";
 export * from "./password-input";
 export * from "./time-input";
 export * from "./multiline-text-input";
-export * from "./radio-input-group";
+export * from "./radio-input";
 export * from "./switch";
 export * from "./tag-group";
 export * from "./toggle-button-group";

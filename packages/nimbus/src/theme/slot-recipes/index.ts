@@ -6,7 +6,7 @@ import { selectSlotRecipe } from "@/components/select/select.recipe";
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
-import { radioInputSlotRecipe } from "@/components/radio-input-group/radio-input-group.recipe";
+import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,

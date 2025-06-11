@@ -5,15 +5,11 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const radioInputSlotRecipe = defineSlotRecipe({
-  slots: ["group", "root", "label", "indicator"],
+  slots: ["root", "option"],
   // Unique class name prefix for the component
   className: "nimbus-radio-input",
 
   base: {
-    group: {
-      display: "flex",
-      gap: "600",
-    },
     root: {
       colorPalette: "primary",
       display: "inline-flex",
@@ -27,27 +23,19 @@ export const radioInputSlotRecipe = defineSlotRecipe({
         layerStyle: "disabled",
       },
     },
-    label: {
+    option: {
       flexShrink: 0,
       whiteSpace: "nowrap",
       userSelect: "none",
       color: "neutral.11",
-
-      ["&[data-invalid='true']"]: {
-        color: "critical.11",
-      },
-    },
-    indicator: {
       position: "relative",
       display: "flex",
-      flexShrink: 0,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "300",
       focusRing: "outside",
       borderColor: "neutral.9",
       bg: "transparent",
-      color: "neutral.9",
       "&:hover": {
         color: "neutral.10",
       },
@@ -68,20 +56,21 @@ export const radioInputSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
-    direction: {
-      row: {
-        group: {
+    orientation: {
+      horizontal: {
+        root: {
           flexDirection: "row",
         },
       },
-      column: {
-        group: {
+      vertical: {
+        root: {
           flexDirection: "column",
+          alignItems: "flex-start",
         },
       },
     },
   },
   defaultVariants: {
-    direction: "row",
+    orientation: "vertical",
   },
 });
