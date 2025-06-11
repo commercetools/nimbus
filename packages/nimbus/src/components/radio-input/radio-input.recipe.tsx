@@ -71,6 +71,6 @@ export const radioInputSlotRecipe = defineSlotRecipe({
     },
   },
   defaultVariants: {
-    orientation: "vertical",
+    orientation: "horizontal",
   },
 });
