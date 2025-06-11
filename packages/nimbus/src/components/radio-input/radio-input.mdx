@@ -1,20 +1,20 @@
 ---
-id: Components-RadioInputGroup
-title: RadioInputGroup
-description: A RadioInputGroup component allows users to select a single option from a mutually exclusive set of choices.
+id: Components-RadioInput
+title: RadioInput
+description: A RadioInput component allows users to select a single option from a mutually exclusive set of choices.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
   - Inputs
-  - RadioInputGroup
+  - RadioInput
 tags:
   - component
 ---
 
-# RadioInputGroup
+# RadioInput
 
-A RadioInputGroup component allows users to select a single option from a mutually exclusive set of choices.
+A RadioInput component allows users to select a single option from a mutually exclusive set of choices.
 
 ## Basic Usage
 
@@ -22,13 +22,13 @@ A RadioInputGroup component allows users to select a single option from a mutual
 
 ```jsx-live
 const App = () => (
-  <RadioInputGroup.Root name="example">
+  <RadioInputGro.Root name="example">
     <Stack direction="horizontal" gap="600">
-      <RadioInputGroup.Option value="option1">Option 1</RadioInputGroup.Option>
-      <RadioInputGroup.Option value="option2">Option 2</RadioInputGroup.Option>
-      <RadioInputGroup.Option value="option3">Option 3</RadioInputGroup.Option>
+      <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+      <RadioInput.Option value="option2">Option 2</RadioInput.Option>
+      <RadioInput.Option value="option3">Option 3</RadioInput.Option>
     </Stack>
-  </RadioInputGroup.Root>
+  </RadioInputGro.Root>
 )
 ```
 
@@ -45,7 +45,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <RadioInputGroup key={size} size={size}>'{size}' RadioInputGroup</RadioInputGroup>
+        <RadioInput key={size} size={size}>'{size}' RadioInput</RadioInput>
       ))}
     </Stack>
   )
@@ -64,7 +64,7 @@ const App = () => {
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <RadioInputGroup key={variant} variant={variant}>'{variant}' RadioInputGroup</RadioInputGroup>
+        <RadioInput key={variant} variant={variant}>'{variant}' RadioInput</RadioInput>
       ))}
     </Stack>
   )
@@ -85,9 +85,9 @@ const App = () => {
       {colors.map((color) => (
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
-            <RadioInputGroup colorPalette={color} key={variant} variant={variant}>
-              '{variant}' RadioInputGroup
-            </RadioInputGroup>
+            <RadioInput colorPalette={color} key={variant} variant={variant}>
+              '{variant}' RadioInput
+            </RadioInput>
           ))}
         </Stack>
       ))}
