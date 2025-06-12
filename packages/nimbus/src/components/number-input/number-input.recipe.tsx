@@ -144,7 +144,7 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 -0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primary.3",
+            backgroundColor: "primaryAlpha.3",
           },
         },
         decrementButton: {
@@ -154,7 +154,7 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primary.3",
+            backgroundColor: "primaryAlpha.3",
           },
         },
       },
@@ -172,12 +172,12 @@ export const numberInputRecipe = defineSlotRecipe({
         },
         incrementButton: {
           _hover: {
-            backgroundColor: "primary.3",
+            backgroundColor: "primaryAlpha.3",
           },
         },
         decrementButton: {
           _hover: {
-            backgroundColor: "primary.3",
+            backgroundColor: "primaryAlpha.3",
           },
         },
       },
