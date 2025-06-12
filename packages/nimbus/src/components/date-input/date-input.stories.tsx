@@ -13,7 +13,7 @@ import { I18nProvider } from "react-aria";
  * - component: references the component being documented
  */
 const meta: Meta<typeof DateInput> = {
-  title: "components/DateInput",
+  title: "Components/Date/DateInput",
   component: DateInput,
   decorators: [
     (Story) => (

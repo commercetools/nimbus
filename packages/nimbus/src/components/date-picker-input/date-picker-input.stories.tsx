@@ -9,7 +9,7 @@ import { Box, Stack } from "@/components";
  * - component: references the component being documented
  */
 const meta: Meta<typeof DatePickerInput> = {
-  title: "components/DatePickerInput",
+  title: "Components/Date/DatePickerInput",
   component: DatePickerInput,
   decorators: [
     (Story) => (
