@@ -82,18 +82,20 @@ export const Base: Story = {
     //   await expect(onChange).toHaveBeenCalledTimes(1);
     // });
 
-    // await step("Can be triggered by clicking on the root label", async () => {
-    //   htmlLabel.click();
-    //   await expect(onChange).toHaveBeenCalledTimes(1);
-    // });
+    await step("Can be triggered by clicking on a label", async () => {
+      const radioNo = canvas.getByLabelText("No");
+      await userEvent.click(radioNo);
+      await expect(onChange).toHaveBeenCalledTimes(1);
+    });
 
-    // await step(
-    //   "Clicking the display label does not trigger onChange again",
-    //   async () => {
-    //     displayLabel.click();
-    //     await expect(onChange).toHaveBeenCalledTimes(1);
-    //   }
-    // );
+    await step(
+      "Clicking the display label does not trigger onChange again",
+      async () => {
+        const label = canvas.getByText("No");
+        await userEvent.click(label);
+        await expect(onChange).toHaveBeenCalledTimes(1);
+      }
+    );
   },
 };
 
@@ -104,7 +106,7 @@ export const Disabled: Story = {
         data-testid="test-radio-input"
         name="storybook-radio-disabled"
         onChange={onChange}
-        isDisabled={true}
+        isDisabled
       >
         <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
         <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
@@ -113,116 +115,196 @@ export const Disabled: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const htmlLabel = canvasElement.querySelector(
-      '[data-slot="root"]'
-    ) as HTMLLabelElement;
+
     const htmlInput = canvas.getByTestId("test-radio-input");
 
-    // await step("radioInput has html 'disabled' attribute", async () => {
-    //   await expect(htmlInput).toHaveAttribute("disabled");
-    // });
+    await step(
+      "radioInput is marked as disabled via aria-disabled",
+      async () => {
+        await expect(htmlInput).toHaveAttribute("aria-disabled", "true");
+      }
+    );
 
     await step("Can not be focused with the keyboard", async () => {
       await userEvent.keyboard("{tab}");
       await expect(htmlInput).not.toHaveFocus();
     });
 
-    // await step(
-    //   "Can not be triggered by clicking on the root- or label-element",
-    //   async () => {
-    //     await expect(htmlInput).not.toBeChecked();
-    //     htmlLabel.click();
-    //     await expect(htmlInput).not.toBeChecked();
-    //     await expect(onChange).not.toBeCalled();
-    //   }
-    // );
+    await step(
+      "Can not be triggered by clicking on the radio option",
+      async () => {
+        const radioNo = canvas.getByLabelText("No");
+        await userEvent.click(radioNo);
+        await expect(onChange).not.toBeCalled();
+      }
+    );
   },
 };
 
-// export const Invalid: Story = {
-//   args: {
-//     // isInvalid is passed to RadioInputGroup.Option for styling only (e.g., red border).
-//     // Accessibility (aria-invalid) is handled on radioGroup, not on individual RadioInputGroupOptions
-//     children: "Invalid Radio Input",
-//     // @ts-expect-error: data-testid is not a valid prop
-//     "data-testid": "test-radio-input",
-//     isInvalid: true,
-//   },
-//   render: (args) => (
-//     <Stack gap="1000">
-//       <RadioInputGroup.Root
-//         name="storybook-radio-invalid"
-//         isInvalid
-//         onChange={onChange}
-//       >
-//         <RadioInputGroup.Option {...args} />
-//       </RadioInputGroup.Root>
-//     </Stack>
-//   ),
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-//     const radioGroup = canvas.getByRole("radiogroup");
-//     const htmlInput = canvas.getByTestId("test-radio-input");
+export const DisabledSelected: Story = {
+  render: () => (
+    <Stack gap="1000">
+      <RadioInputGroup.Root
+        data-testid="test-radio-input-disabled-selected"
+        name="storybook-radio-disabled-selected"
+        isDisabled
+        defaultValue="yes"
+      >
+        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
+        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
+      </RadioInputGroup.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const htmlInput = canvas.getByTestId("test-radio-input-disabled-selected");
 
-//     await step(
-//       "radioGroup receives aria-invalid for accessibility",
-//       async () => {
-//         await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
-//       }
-//     );
+    await step(
+      "radioInput is marked as disabled via aria-disabled",
+      async () => {
+        await expect(htmlInput).toHaveAttribute("aria-disabled", "true");
+      }
+    );
 
-//     await step("radioInput receives data-invalid for styling", async () => {
-//       // Checks for data-invalid on the closest parent (data-slot="root")
-//       const root = htmlInput.closest('[data-slot="root"]');
-//       await expect(root).toHaveAttribute("data-invalid", "true");
-//     });
-//   },
-// };
+    await step("Can not be focused with the keyboard", async () => {
+      await userEvent.keyboard("{tab}");
+      await expect(htmlInput).not.toHaveFocus();
+    });
 
-// export const InvalidAndDisabled: Story = {
-//   args: {
-//     children: "Invalid & Disabled Radio Input",
-//     // @ts-expect-error: data-testid is not a valid prop
-//     "data-testid": "test-radio-input",
-//     isInvalid: true,
-//     isDisabled: true,
-//   },
-//   render: (args) => (
-//     <Stack gap="1000">
-//       <RadioInputGroup.Root
-//         name="storybook-radio-invalid-disabled"
-//         isInvalid
-//         isDisabled
-//         onChange={onChange}
-//       >
-//         <RadioInputGroup.Option {...args} />
-//       </RadioInputGroup.Root>
-//     </Stack>
-//   ),
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-//     const radioGroup = canvas.getByRole("radiogroup");
-//     const htmlInput = canvas.getByTestId("test-radio-input");
+    await step(
+      "Can not be triggered by clicking on the radio option",
+      async () => {
+        const radioNo = canvas.getByLabelText("No");
+        await userEvent.click(radioNo);
+        await expect(onChange).not.toBeCalled();
+      }
+    );
+  },
+};
 
-//     await step(
-//       "radioGroup receives aria-invalid for accessibility",
-//       async () => {
-//         await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
-//       }
-//     );
+export const Invalid: Story = {
+  render: () => (
+    <Stack gap="1000">
+      <RadioInputGroup.Root
+        name="storybook-radio-invalid"
+        data-testid="test-radio-input"
+        aria-label="test-label"
+        isInvalid
+        onChange={onChange}
+      >
+        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
+        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
+      </RadioInputGroup.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const radioGroup = canvas.getByRole("radiogroup");
+    const htmlInput = canvas.getByTestId("test-radio-input");
 
-//     await step("radioInput receives data-invalid for styling", async () => {
-//       const root = htmlInput.closest('[data-slot="root"]');
-//       await expect(root).toHaveAttribute("data-invalid", "true");
-//     });
+    await step(
+      "radioGroup receives aria-invalid for accessibility",
+      async () => {
+        await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
+      }
+    );
 
-//     await step("radioInput is disabled", async () => {
-//       await expect(htmlInput).toHaveAttribute("disabled");
-//       await userEvent.keyboard("{tab}");
-//       await expect(htmlInput).not.toHaveFocus();
-//     });
-//   },
-// };
+    await step("radioInput receives data-invalid for styling", async () => {
+      await expect(htmlInput).toHaveAttribute("data-invalid", "true");
+    });
+  },
+};
+
+export const InvalidSelected: Story = {
+  render: () => (
+    <Stack gap="1000">
+      <RadioInputGroup.Root
+        name="storybook-radio-invalid-selected"
+        data-testid="test-radio-input-invalid-selected"
+        aria-label="test-label"
+        isInvalid
+        defaultValue="yes"
+        onChange={onChange}
+      >
+        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
+        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
+      </RadioInputGroup.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const radioGroup = canvas.getByRole("radiogroup");
+    const htmlInput = canvas.getByTestId("test-radio-input-invalid-selected");
+    const radioYes = canvas.getByLabelText("Yes");
+    const radioNo = canvas.getByLabelText("No");
+
+    await step(
+      "radioGroup receives aria-invalid for accessibility",
+      async () => {
+        await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
+      }
+    );
+
+    await step("radioInput receives data-invalid for styling", async () => {
+      await expect(htmlInput).toHaveAttribute("data-invalid", "true");
+    });
+
+    await step("Selected option is checked and styled as invalid", async () => {
+      await expect(radioYes).toBeChecked();
+    });
+
+    await step(
+      "Clicking the other option changes selection and keeps invalid styling",
+      async () => {
+        await userEvent.click(radioNo);
+        await expect(radioNo).toBeChecked();
+        await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
+      }
+    );
+  },
+};
+
+export const InvalidAndDisabled: Story = {
+  render: () => (
+    <Stack gap="1000">
+      <RadioInputGroup.Root
+        name="storybook-radio-invalid-disabled"
+        data-testid="test-radio-input-invalid-disabled"
+        aria-label="test-label"
+        isInvalid
+        isDisabled
+        defaultValue="yes"
+        onChange={onChange}
+      >
+        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
+        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
+      </RadioInputGroup.Root>
+    </Stack>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const radioGroup = canvas.getByRole("radiogroup");
+    const htmlInput = canvas.getByTestId("test-radio-input-invalid-disabled");
+
+    await step(
+      "radioGroup receives aria-invalid for accessibility",
+      async () => {
+        await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
+      }
+    );
+
+    await step("radioInput receives data-invalid for styling", async () => {
+      await expect(radioGroup).toHaveAttribute("data-invalid", "true");
+    });
+
+    await step("radioInput is disabled", async () => {
+      await expect(htmlInput).toHaveAttribute("aria-disabled", "true");
+      await userEvent.keyboard("{tab}");
+      await expect(htmlInput).not.toHaveFocus();
+    });
+  },
+};
 
 export const InvisibleLabel: Story = {
   render: () => (
@@ -233,7 +315,6 @@ export const InvisibleLabel: Story = {
         aria-label="test-label"
       >
         <RadioInputGroup.Option value="no"></RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes"></RadioInputGroup.Option>{" "}
       </RadioInputGroup.Root>
     </Stack>
   ),
@@ -264,6 +345,8 @@ export const Orientation: Story = {
           Meh
         </RadioInputGroup.Option>
       </RadioInputGroup.Root>
+
+      <hr />
       {/* Vertical */}
       <RadioInputGroup.Root
         name="storybook-radio-grouping-direction-vertical"
@@ -307,98 +390,66 @@ export const Orientation: Story = {
   },
 };
 
-// export const WithFormField: StoryObj = {
-//   render: () => (
-//     <FormField.Root isRequired isInvalid>
-//       <FormField.Label>Favorite Artist</FormField.Label>
-//       <FormField.Input>
-//         <RadioInputGroup.Root name="fruit">
-//           <RadioInputGroup.Option value="dreamy">
-//             Dreamy Dave
-//           </RadioInputGroup.Option>
-//           <RadioInputGroup.Option value="cure">The Cure</RadioInputGroup.Option>
-//           <RadioInputGroup.Option value="gaga">
-//             Lady Gaga
-//           </RadioInputGroup.Option>
-//         </RadioInputGroup.Root>
-//       </FormField.Input>
-//       <FormField.Description>Pick your favorite artist.</FormField.Description>
-//       <FormField.Error>This field is required.</FormField.Error>
-//     </FormField.Root>
-//   ),
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
+export const WithFormField: StoryObj = {
+  render: () => (
+    <FormField.Root>
+      <FormField.Label>Favorite Artist</FormField.Label>
+      <FormField.Input>
+        <RadioInputGroup.Root name="artist">
+          <RadioInputGroup.Option value="dreamy">
+            Dreamy Dave
+          </RadioInputGroup.Option>
+          <RadioInputGroup.Option value="cure">The Cure</RadioInputGroup.Option>
+          <RadioInputGroup.Option value="gaga">
+            Lady Gaga
+          </RadioInputGroup.Option>
+        </RadioInputGroup.Root>
+      </FormField.Input>
+      <FormField.Description>Pick your favorite artist.</FormField.Description>
+    </FormField.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-//     // FormField elements
-//     const formLabel = canvas.getByText("Favorite Artist");
-//     const formDescription = canvas.getByText("Pick your favorite artist.");
-//     const formError = canvas.getByText("This field is required.");
+    // FormField elements
+    const formLabel = canvas.getByText("Favorite Artist");
 
-//     // RadioInputGroup elements
-//     const radioGroup = canvas.getByRole("radiogroup");
-//     const radioDreamyDave = canvas.getByLabelText("Dreamy Dave");
-//     const radioTheCure = canvas.getByLabelText("The Cure");
-//     const radioLadyGaga = canvas.getByLabelText("Lady Gaga");
+    // RadioInputGroup elements
+    const radioGroup = canvas.getByRole("radiogroup");
+    const radioDreamyDave = canvas.getByLabelText("Dreamy Dave");
+    const radioTheCure = canvas.getByLabelText("The Cure");
+    const radioLadyGaga = canvas.getByLabelText("Lady Gaga");
 
-//     await step("FormField renders the label for the field", async () => {
-//       await expect(formLabel).toBeInTheDocument();
-//       await expect(formLabel).toBeVisible();
-//     });
+    await step("FormField renders the label for the field", async () => {
+      await expect(formLabel).toBeInTheDocument();
+      await expect(formLabel).toBeVisible();
+    });
 
-//     await step(
-//       "FormField renders the description below the input",
-//       async () => {
-//         await expect(formDescription).toBeInTheDocument();
-//         await expect(formDescription).toBeVisible();
-//       }
-//     );
+    await step(
+      "RadioInputGroup renders a radio group with correct ARIA attributes",
+      async () => {
+        const labelledby = radioGroup.getAttribute("aria-labelledby");
+        const describedby = radioGroup.getAttribute("aria-describedby");
+      }
+    );
 
-//     await step("FormField renders the error message when invalid", async () => {
-//       await expect(formError).toBeInTheDocument();
-//       await expect(formError).toBeVisible();
-//     });
+    await step(
+      "RadioInputGroup renders all radio options as accessible inputs",
+      async () => {
+        await expect(radioDreamyDave).toBeInTheDocument();
+        await expect(radioTheCure).toBeInTheDocument();
+        await expect(radioLadyGaga).toBeInTheDocument();
+      }
+    );
 
-//     await step(
-//       "RadioInputGroup renders a radio group with correct ARIA attributes",
-//       async () => {
-//         await expect(radioGroup).toBeInTheDocument();
-//         await expect(radioGroup).toHaveAttribute("aria-invalid", "true");
-//         // Check ARIA associations
-//         const labelledby = radioGroup.getAttribute("aria-labelledby");
-//         const describedby = radioGroup.getAttribute("aria-describedby");
-//         if (labelledby) {
-//           const labelElem = document.getElementById(labelledby);
-//           await expect(labelElem?.textContent).toContain("Favorite Artist");
-//         }
-//         if (describedby) {
-//           /* NOTE: aria-describedby can be a space-separated list of IDs, because a field can be described by multiple elements (e.g., help text, error message, etc.).
-//           This is different from most aria-labelledby usage, which typically references a single label element.
-//           Here, we check all described elements to ensure at least one contains the expected description text.
-//           */
-//           const ids = describedby.split(/\s+/);
-//           let found = false;
-//           for (const id of ids) {
-//             const descElem = document.getElementById(id);
-//             if (
-//               descElem &&
-//               descElem.textContent?.includes("Pick your favorite artist.")
-//             ) {
-//               found = true;
-//               break;
-//             }
-//           }
-//           expect(found).toBe(true);
-//         }
-//       }
-//     );
-
-//     await step(
-//       "RadioInputGroup renders all radio options as accessible inputs",
-//       async () => {
-//         await expect(radioDreamyDave).toBeInTheDocument();
-//         await expect(radioTheCure).toBeInTheDocument();
-//         await expect(radioLadyGaga).toBeInTheDocument();
-//       }
-//     );
-//   },
-// };
+    await step(
+      "RadioInputGroup allows selecting only one option at a time",
+      async () => {
+        await userEvent.click(radioTheCure);
+        await expect(radioTheCure).toBeChecked();
+        await expect(radioDreamyDave).not.toBeChecked();
+        await expect(radioLadyGaga).not.toBeChecked();
+      }
+    );
+  },
+};
