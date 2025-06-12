@@ -21,7 +21,8 @@ import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
  *
  * Silent failure results in there being no generated types for slot recipes, and causes all kinds of
  * false typescript errors that are really hard to debug.
- */
+ */ import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
+
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
   list: listSlotRecipe,
@@ -34,4 +35,5 @@ export const slotRecipes = {
   numberInput: numberInputRecipe,
   radioInput: radioInputSlotRecipe,
   combobox: comboBoxSlotRecipe,
+  calendar: calendarSlotRecipe,
 };

@@ -1,12 +1,19 @@
-import { CalendarRoot } from "./components/calendar.root";
-import { CalendarHeader } from "./components/calendar.header";
-import { CalendarGrid } from "./components/calendar.grid";
+import type { CalendarProps } from "./calendar.types";
+import type { DateValue } from "react-aria";
 
-export const Calendar = () => {
+import { Calendar as RaCalendar } from "react-aria-components";
+
+import { CalendarRootSlot } from "./calendar.slots";
+import { CalendarGrids } from "./components/calendar.grids";
+import { CalendarHeader } from "./components/calendar.header";
+
+export const Calendar = (props: CalendarProps<DateValue>) => {
   return (
-    <CalendarRoot>
-      <CalendarHeader />
-      <CalendarGrid />
-    </CalendarRoot>
+    <CalendarRootSlot asChild>
+      <RaCalendar {...props}>
+        <CalendarHeader />
+        <CalendarGrids />
+      </RaCalendar>
+    </CalendarRootSlot>
   );
 };

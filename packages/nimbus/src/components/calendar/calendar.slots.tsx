@@ -4,7 +4,7 @@ import {
   type HTMLChakraProps,
   type RecipeVariantProps,
 } from "@chakra-ui/react";
-import { calendarSlotRecipe } from "./calendar.styles";
+import { calendarSlotRecipe } from "./calendar.recipe";
 import type { CalendarProps } from "react-aria-components";
 import type { DateValue } from "@internationalized/date";
 
@@ -22,11 +22,17 @@ export const CalendarRootSlot = withProvider<
   CalendarRootSlotProps
 >("div", "root");
 
-export interface CalendarHeaderSlotProps extends HTMLChakraProps<"div"> {}
+export interface CalendarHeaderSlotProps extends HTMLChakraProps<"header"> {}
 export const CalendarHeaderSlot = withContext<
-  HTMLDivElement,
+  HTMLElement,
   CalendarHeaderSlotProps
->("div", "header");
+>("header", "header");
+
+export interface CalendarGridsSlotProps extends HTMLChakraProps<"div"> {}
+export const CalendarGridsSlot = withContext<
+  HTMLDivElement,
+  CalendarGridsSlotProps
+>("div", "grids");
 
 export interface CalendarGridSlotProps extends HTMLChakraProps<"table"> {}
 export const CalendarGridSlot = withContext<
@@ -56,4 +62,4 @@ export interface CalendarCellSlotProps extends HTMLChakraProps<"td"> {}
 export const CalendarCellSlot = withContext<
   HTMLTableCellElement,
   CalendarCellSlotProps
->("td", "cell");
+>("td", "bodyCell");

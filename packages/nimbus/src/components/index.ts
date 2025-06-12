@@ -38,3 +38,4 @@ export * from "./switch";
 export * from "./tag-group";
 export * from "./toggle-button-group";
 export * from "./date-input";
+export * from "./calendar";
