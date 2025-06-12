@@ -14,7 +14,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
   className: "nimbus-calendar",
   base: {
     root: {
-      width: "fit-content",
+      width: "full",
       maxWidth: "100vw",
     },
     header: {
@@ -22,7 +22,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
       p: "200",
       mb: "300",
       borderBottom: "1px solid",
-      borderColor: "neutral.6",
+      borderColor: "neutral.3",
     },
     // the container contianing the month(s) grid(s)
     grids: {
