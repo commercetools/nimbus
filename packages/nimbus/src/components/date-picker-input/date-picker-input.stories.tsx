@@ -50,3 +50,20 @@ export const Base: Story = {
     );
   },
 };
+
+/**
+ * Base story
+ * Demonstrates the most basic implementation
+ */
+export const GermanLocale: Story = {
+  args: {
+    ["aria-label"]: "Select a date",
+  },
+  render: (args) => {
+    return (
+      <I18nProvider locale="de-DE">
+        <DatePickerInput {...args} />
+      </I18nProvider>
+    );
+  },
+};

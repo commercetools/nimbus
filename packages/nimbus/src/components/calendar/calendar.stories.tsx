@@ -39,7 +39,7 @@ export const Default: Story = {
  */
 export const CustomWidth: Story = {
   args: {
-    width: "480px",
+    width: "354px",
   },
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };

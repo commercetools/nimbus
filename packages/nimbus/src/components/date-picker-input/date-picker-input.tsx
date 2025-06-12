@@ -13,7 +13,9 @@ import { useSlotRecipe } from "@chakra-ui/react";
 import { datePickerInputRecipe } from "./date-picker-input.recipe";
 import type { DatePickerInputProps } from "./date-picker-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { DateInput, Calendar, IconButton } from "@/components";
+import { Flex, DateInput, Calendar, IconButton, Text } from "@/components";
+import { DatePickerTimeInput } from "./components/date-picker.time-input";
+
 /**
  * DatePickerInput
  * ============================================================
@@ -58,6 +60,10 @@ export const DatePickerInput = (props: DatePickerInputProps) => {
               <DatePickerInputCalendarSlot>
                 <Calendar />
               </DatePickerInputCalendarSlot>
+              <Flex>
+                <Text>Start Time</Text>
+                <DatePickerTimeInput />
+              </Flex>
             </Dialog>
           </Popover>
         </DatePickerInputPopoverSlot>
