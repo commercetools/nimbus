@@ -11,7 +11,7 @@ import { I18nProvider } from "react-aria";
 import { Box } from "@/components";
 
 const meta: Meta<typeof Calendar> = {
-  title: "Components/Calendar",
+  title: "Components/Date/Calendar",
   component: Calendar,
   argTypes: {
     //
@@ -48,6 +48,17 @@ export const CustomWidth: Story = {
  * Display more than one month
  */
 export const VisibleDuration: Story = {
+  args: {
+    defaultValue: today(getLocalTimeZone()),
+    visibleDuration: { months: 3 },
+  },
+  render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
+};
+
+/**
+ * Display more than one month
+ */
+export const Uncontrolled: Story = {
   args: {
     defaultValue: today(getLocalTimeZone()),
     visibleDuration: { months: 3 },

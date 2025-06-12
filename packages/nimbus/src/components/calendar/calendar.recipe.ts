@@ -15,7 +15,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       width: "fit-content",
-      maxWidth: "full",
+      maxWidth: "100vw",
     },
     header: {
       height: "1200",
