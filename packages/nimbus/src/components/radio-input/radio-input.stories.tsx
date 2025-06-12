@@ -314,7 +314,10 @@ export const InvisibleLabel: Story = {
         data-testid="test-radio-input"
         aria-label="test-label"
       >
-        <RadioInputGroup.Option value="no"></RadioInputGroup.Option>
+        <RadioInputGroup.Option
+          value="no"
+          aria-label="No"
+        ></RadioInputGroup.Option>
       </RadioInputGroup.Root>
     </Stack>
   ),
