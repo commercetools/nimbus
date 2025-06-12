@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
- * Recipe configuration for the RadioInputGroupOption component.
+ * Recipe configuration for the RadioInputGroup component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const radioInputSlotRecipe = defineSlotRecipe({
@@ -14,43 +14,42 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       colorPalette: "primary",
       display: "inline-flex",
       flexDirection: "row",
-      gap: "200",
       alignItems: "center",
       verticalAlign: "top",
-      borderRadius: "300",
-
-      ["&[data-disabled='true']"]: {
-        layerStyle: "disabled",
-      },
     },
     option: {
+      gap: "200",
       flexShrink: 0,
       whiteSpace: "nowrap",
       userSelect: "none",
-      color: "neutral.11",
       position: "relative",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: "300",
       focusRing: "outside",
-      borderColor: "neutral.9",
-      bg: "transparent",
-      "&:hover": {
-        color: "neutral.10",
-      },
-      "&[data-selected='true']": {
-        color: "primary.9",
-      },
 
-      ["&[data-invalid='true']"]: {
-        bg: "transparent",
-        borderColor: "critical.9",
-        color: "critical.11",
+      "& > svg": {
+        width: "500",
+        height: "500",
+        color: "neutral.9",
 
         "&:hover": {
-          borderColor: "critical.10",
-          color: "critical.10",
+          color: "neutral.10",
+        },
+      },
+
+      "&[data-selected] > svg": {
+        color: "colorPalette.9",
+      },
+
+      ["&[data-disabled='true']"]: {
+        layerStyle: "disabled",
+      },
+      // Sets the text & svg color
+      ["&[data-invalid='true']"]: {
+        color: "critical.9",
+        "& > svg": {
+          color: "critical.9",
         },
       },
     },
@@ -60,12 +59,14 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       horizontal: {
         root: {
           flexDirection: "row",
+          gap: "600",
         },
       },
       vertical: {
         root: {
           flexDirection: "column",
           alignItems: "flex-start",
+          gap: "400",
         },
       },
     },
