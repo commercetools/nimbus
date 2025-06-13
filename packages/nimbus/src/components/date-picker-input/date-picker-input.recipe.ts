@@ -39,115 +39,20 @@ export const datePickerInputRecipe = defineSlotRecipe({
     },
     popover: {
       bg: "neutral.1",
-      border: "1px solid",
-      borderColor: "neutral.7",
+      boxShadow: "4",
+
       borderRadius: "300",
-      boxShadow: "lg",
-      p: "400",
-      zIndex: 50,
+      px: "200",
       width: "354px",
 
       "&[data-entering]": {
         animationName: "fade-in, scale-in",
-        animationDuration: "150ms",
+        animationDuration: "fast",
       },
 
       "&[data-exiting]": {
         animationName: "fade-out, scale-out",
-        animationDuration: "100ms",
-      },
-    },
-    calendar: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "300",
-    },
-    calendarHeader: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      mb: "200",
-    },
-    calendarGrid: {
-      borderCollapse: "collapse",
-      width: "100%",
-
-      "& th": {
-        textAlign: "center",
-        fontSize: "sm",
-        fontWeight: "medium",
-        color: "neutral.11",
-        pb: "200",
-        width: "36px",
-        height: "32px",
-      },
-    },
-    calendarCell: {
-      textAlign: "center",
-      p: 0,
-
-      "& button": {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "36px",
-        height: "36px",
-        borderRadius: "200",
-        bg: "transparent",
-        border: "none",
-        cursor: "pointer",
-        fontSize: "sm",
-        color: "neutral.12",
-        fontVariantNumeric: "tabular-nums",
-
-        "&:hover": {
-          bg: "primary.2",
-          color: "primary.11",
-        },
-
-        "&[data-pressed='true']": {
-          bg: "primary.3",
-        },
-
-        "&[data-focus-visible='true']": {
-          outlineWidth: "var(--focus-ring-width)",
-          outlineColor: "var(--focus-ring-color)",
-          outlineStyle: "var(--focus-ring-style)",
-          outlineOffset: "var(--focus-ring-offset)",
-        },
-
-        "&[data-selected='true']": {
-          bg: "primary.9",
-          color: "primary.contrast",
-
-          "&:hover": {
-            bg: "primary.10",
-          },
-        },
-
-        "&[data-disabled='true']": {
-          opacity: 0.5,
-          cursor: "not-allowed",
-
-          "&:hover": {
-            bg: "transparent",
-            color: "neutral.12",
-          },
-        },
-
-        "&[data-outside-month='true']": {
-          color: "neutral.8",
-        },
-
-        "&[data-unavailable='true']": {
-          color: "critical.9",
-          textDecoration: "line-through",
-
-          "&:hover": {
-            bg: "critical.2",
-            color: "critical.11",
-          },
-        },
+        animationDuration: "faster",
       },
     },
   },

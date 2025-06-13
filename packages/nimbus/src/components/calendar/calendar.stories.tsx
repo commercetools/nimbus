@@ -18,7 +18,7 @@ const meta: Meta<typeof Calendar> = {
   },
   decorators: [
     (Story) => (
-      <I18nProvider locale="de-US">
+      <I18nProvider locale="en-US">
         <Box display="inline-block" borderRadius="200" p="400" boxShadow="4">
           <Story />
         </Box>
@@ -32,6 +32,14 @@ type Story = StoryObj<typeof Calendar>;
 
 export const Default: Story = {
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
+};
+
+export const GermanCalendar: Story = {
+  render: (args: CalendarProps<DateValue>) => (
+    <I18nProvider locale="de-DE">
+      <Calendar {...args} />
+    </I18nProvider>
+  ),
 };
 
 /**
