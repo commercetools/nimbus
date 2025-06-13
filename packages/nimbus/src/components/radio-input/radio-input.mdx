@@ -22,80 +22,15 @@ A RadioInput component allows users to select a single option from a mutually ex
 
 ```jsx-live
 const App = () => (
-  <RadioInputGroup.Root name="example">
-    <Stack direction="horizontal" gap="600">
-      <RadioInputGroup.Option value="option1">Option 1</RadioInputGroup.Option>
-      <RadioInputGroup.Option value="option2">Option 2</RadioInputGroup.Option>
-      <RadioInputGroup.Option value="option3">Option 3</RadioInputGroup.Option>
-    </Stack>
-  </RadioInputGroup.Root>
+  <RadioInput.Root name="example">
+    <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+    <RadioInput.Option value="option2">Option 2</RadioInput.Option>
+    <RadioInput.Option value="option3">Option 3</RadioInput.Option>
+  </RadioInput.Root>
 )
 ```
 
 
-### Sizes
-
-Available sizes.
-
-```jsx-live
-const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
-
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <RadioInput key={size} size={size}>'{size}' RadioInput</RadioInput>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Variants
-
-Available variants.
-
-```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <RadioInput key={variant} variant={variant}>'{variant}' RadioInput</RadioInput>
-      ))}
-    </Stack>
-  )
-}
-```
-
-### Colors
-
-[Explain usage with different colors/semantics.]
-
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
-
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <RadioInput colorPalette={color} key={variant} variant={variant}>
-              '{variant}' RadioInput
-            </RadioInput>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-```
-
 ## Props
 
-<PropsTable id="RadioInputGroup" />
+<PropsTable id="RadioInput" />

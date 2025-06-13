@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { RadioInputGroup } from "./radio-input";
+import { RadioInput } from "./radio-input";
 import { Stack } from "@/components";
 import { userEvent, within, expect, fn } from "@storybook/test";
 
@@ -10,9 +10,9 @@ import { FormField } from "@/components/form-field";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<typeof RadioInputGroup.Root> = {
+const meta: Meta<typeof RadioInput.Root> = {
   title: "components/RadioInput",
-  component: RadioInputGroup.Root,
+  component: RadioInput.Root,
 };
 
 export default meta;
@@ -21,7 +21,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof RadioInputGroup.Root>;
+type Story = StoryObj<typeof RadioInput.Root>;
 
 const onChange = fn();
 
@@ -32,15 +32,15 @@ export const Base: Story = {
   args: {},
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         name="storybook-radio-base"
         onChange={onChange}
         data-testid="test-radio-input"
         aria-label="test-label"
       >
-        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no">No</RadioInput.Option>
+        <RadioInput.Option value="yes">Yes</RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
 
@@ -96,15 +96,15 @@ export const Base: Story = {
 export const Disabled: Story = {
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         data-testid="test-radio-input"
         name="storybook-radio-disabled"
         onChange={onChange}
         isDisabled
       >
-        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no">No</RadioInput.Option>
+        <RadioInput.Option value="yes">Yes</RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -138,15 +138,15 @@ export const Disabled: Story = {
 export const DisabledAndSelected: Story = {
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         data-testid="test-radio-input-disabled-selected"
         name="storybook-radio-disabled-selected"
         isDisabled
         defaultValue="yes"
       >
-        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no">No</RadioInput.Option>
+        <RadioInput.Option value="yes">Yes</RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -179,16 +179,16 @@ export const DisabledAndSelected: Story = {
 export const Invalid: Story = {
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         name="storybook-radio-invalid"
         data-testid="test-radio-input"
         aria-label="test-label"
         isInvalid
         onChange={onChange}
       >
-        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no">No</RadioInput.Option>
+        <RadioInput.Option value="yes">Yes</RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -212,7 +212,7 @@ export const Invalid: Story = {
 export const InvalidAndSelected: Story = {
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         name="storybook-radio-invalid-selected"
         data-testid="test-radio-input-invalid-selected"
         aria-label="test-label"
@@ -220,9 +220,9 @@ export const InvalidAndSelected: Story = {
         defaultValue="yes"
         onChange={onChange}
       >
-        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no">No</RadioInput.Option>
+        <RadioInput.Option value="yes">Yes</RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -261,7 +261,7 @@ export const InvalidAndSelected: Story = {
 export const InvalidAndDisabled: Story = {
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         name="storybook-radio-invalid-disabled"
         data-testid="test-radio-input-invalid-disabled"
         aria-label="test-label"
@@ -270,9 +270,9 @@ export const InvalidAndDisabled: Story = {
         defaultValue="yes"
         onChange={onChange}
       >
-        <RadioInputGroup.Option value="no">No</RadioInputGroup.Option>
-        <RadioInputGroup.Option value="yes">Yes</RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no">No</RadioInput.Option>
+        <RadioInput.Option value="yes">Yes</RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
 
@@ -303,16 +303,13 @@ export const InvalidAndDisabled: Story = {
 export const InvisibleLabel: Story = {
   render: () => (
     <Stack gap="1000">
-      <RadioInputGroup.Root
+      <RadioInput.Root
         name="storybook-radio-no-label"
         data-testid="test-radio-input"
         aria-label="test-label"
       >
-        <RadioInputGroup.Option
-          value="no"
-          aria-label="No"
-        ></RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        <RadioInput.Option value="no" aria-label="No"></RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
   play: async ({ canvasElement, step, args }) => {
@@ -328,40 +325,40 @@ export const Orientation: Story = {
   render: () => (
     <Stack gap="1000">
       {/* Horizontal (default) */}
-      <RadioInputGroup.Root name="storybook-radio-grouping-direction-horizontal">
-        <RadioInputGroup.Option value="yes" key="input5">
+      <RadioInput.Root name="storybook-radio-grouping-direction-horizontal">
+        <RadioInput.Option value="yes" key="input5">
           Yes
-        </RadioInputGroup.Option>
-        <RadioInputGroup.Option value="no" key="input6">
+        </RadioInput.Option>
+        <RadioInput.Option value="no" key="input6">
           No
-        </RadioInputGroup.Option>
-        <RadioInputGroup.Option value="probably" key="input7">
+        </RadioInput.Option>
+        <RadioInput.Option value="probably" key="input7">
           Probably
-        </RadioInputGroup.Option>
-        <RadioInputGroup.Option value="meh" key="input8">
+        </RadioInput.Option>
+        <RadioInput.Option value="meh" key="input8">
           Meh
-        </RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        </RadioInput.Option>
+      </RadioInput.Root>
 
       <hr />
       {/* Vertical */}
-      <RadioInputGroup.Root
+      <RadioInput.Root
         name="storybook-radio-grouping-direction-vertical"
         orientation="vertical"
       >
-        <RadioInputGroup.Option value="ja" key="input1-vert">
+        <RadioInput.Option value="ja" key="input1-vert">
           Ja
-        </RadioInputGroup.Option>
-        <RadioInputGroup.Option value="nein " key="input2-vert">
+        </RadioInput.Option>
+        <RadioInput.Option value="nein " key="input2-vert">
           Nein
-        </RadioInputGroup.Option>
-        <RadioInputGroup.Option value="wahrscheinlich" key="input3-vert">
+        </RadioInput.Option>
+        <RadioInput.Option value="wahrscheinlich" key="input3-vert">
           Wahrscheinlich
-        </RadioInputGroup.Option>
-        <RadioInputGroup.Option value="naja" key="input4-vert">
+        </RadioInput.Option>
+        <RadioInput.Option value="naja" key="input4-vert">
           Naja
-        </RadioInputGroup.Option>
-      </RadioInputGroup.Root>
+        </RadioInput.Option>
+      </RadioInput.Root>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -392,15 +389,11 @@ export const WithFormField: StoryObj = {
     <FormField.Root>
       <FormField.Label>Favorite Artist</FormField.Label>
       <FormField.Input>
-        <RadioInputGroup.Root name="artist">
-          <RadioInputGroup.Option value="dreamy">
-            Dreamy Dave
-          </RadioInputGroup.Option>
-          <RadioInputGroup.Option value="cure">The Cure</RadioInputGroup.Option>
-          <RadioInputGroup.Option value="gaga">
-            Lady Gaga
-          </RadioInputGroup.Option>
-        </RadioInputGroup.Root>
+        <RadioInput.Root name="artist">
+          <RadioInput.Option value="dreamy">Dreamy Dave</RadioInput.Option>
+          <RadioInput.Option value="cure">The Cure</RadioInput.Option>
+          <RadioInput.Option value="gaga">Lady Gaga</RadioInput.Option>
+        </RadioInput.Root>
       </FormField.Input>
       <FormField.Description>Pick your favorite artist.</FormField.Description>
     </FormField.Root>
@@ -411,7 +404,7 @@ export const WithFormField: StoryObj = {
     // FormField elements
     const formLabel = canvas.getByText("Favorite Artist");
 
-    // RadioInputGroup elements
+    // RadioInput elements
     const radioGroup = canvas.getByRole("radiogroup");
     const radioDreamyDave = canvas.getByLabelText("Dreamy Dave");
     const radioTheCure = canvas.getByLabelText("The Cure");
@@ -423,7 +416,7 @@ export const WithFormField: StoryObj = {
     });
 
     await step(
-      "RadioInputGroup renders a radio group with correct ARIA attributes",
+      "RadioInput renders a radio group with correct ARIA attributes",
       async () => {
         const labelledby = radioGroup.getAttribute("aria-labelledby");
         const describedby = radioGroup.getAttribute("aria-describedby");
@@ -431,7 +424,7 @@ export const WithFormField: StoryObj = {
     );
 
     await step(
-      "RadioInputGroup renders all radio options as accessible inputs",
+      "RadioInput renders all radio options as accessible inputs",
       async () => {
         await expect(radioDreamyDave).toBeInTheDocument();
         await expect(radioTheCure).toBeInTheDocument();
@@ -440,7 +433,7 @@ export const WithFormField: StoryObj = {
     );
 
     await step(
-      "RadioInputGroup allows selecting only one option at a time",
+      "RadioInput allows selecting only one option at a time",
       async () => {
         await userEvent.click(radioTheCure);
         await expect(radioTheCure).toBeChecked();
