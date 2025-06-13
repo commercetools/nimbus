@@ -1,0 +1,106 @@
+---
+id: Components-NumberInput
+title: NumberInput
+description: An input component that accepts only numbers with increment/decrement buttons
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - NumberInput
+tags:
+  - component
+  - input
+  - number
+---
+
+# NumberInput
+
+A NumberInput is an input that accepts only numbers and provides increment/decrement buttons for easy value adjustment.
+
+## Features
+
+- Accepts numeric input only
+- Built-in increment/decrement buttons
+- Supports min/max value constraints
+- Configurable step increments
+- Full accessibility support
+- Integrates with FormField for labels and validation
+
+## Basic Usage
+
+```jsx-live
+import { NumberInput } from "@commercetools/nimbus";
+
+function Example() {
+  return <NumberInput placeholder="Enter a number" />;
+}
+```
+
+## With Constraints
+
+```jsx-live
+import { NumberInput } from "@commercetools/nimbus";
+
+function Example() {
+  return (
+    <NumberInput
+      placeholder="Enter 1-100"
+      minValue={1}
+      maxValue={100}
+      step={5}
+    />
+  );
+}
+```
+
+## With FormField
+
+```jsx-live
+import { NumberInput, FormField } from "@commercetools/nimbus";
+
+function Example() {
+  return (
+    <FormField.Root>
+      <FormField.Label>Quantity</FormField.Label>
+      <FormField.Input>
+        <NumberInput placeholder="Enter quantity" minValue={1} />
+      </FormField.Input>
+    </FormField.Root>
+  );
+}
+```
+
+## Sizes
+
+NumberInput supports two sizes: `sm` and `md` (default).
+
+```jsx-live
+import { NumberInput } from "@commercetools/nimbus";
+
+function Example() {
+  return (
+    <>
+      <NumberInput size="sm" placeholder="Small" />
+      <NumberInput size="md" placeholder="Medium" />
+    </>
+  );
+}
+```
+
+## Variants
+
+NumberInput supports two visual variants: `solid` (default) and `ghost`.
+
+```jsx-live
+import { NumberInput } from "@commercetools/nimbus";
+
+function Example() {
+  return (
+    <>
+      <NumberInput variant="solid" placeholder="Solid" />
+      <NumberInput variant="ghost" placeholder="Ghost" />
+    </>
+  );
+}
+```
