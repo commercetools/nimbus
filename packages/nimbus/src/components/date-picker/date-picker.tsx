@@ -65,10 +65,7 @@ export const DatePicker = (props: DatePickerProps) => {
               <DatePickerCalendarSlot>
                 <Calendar variant="plain" />
               </DatePickerCalendarSlot>
-              <Flex>
-                <Text>Start Time</Text>
-                <DatePickerTimeInput />
-              </Flex>
+              <DatePickerTimeInput />
             </Dialog>
           </Popover>
         </DatePickerPopoverSlot>
