@@ -127,3 +127,35 @@ export const MaxValue: Story = {
     maxValue: today(getLocalTimeZone()).add({ days: 1 }),
   },
 };
+
+/**
+ * Specify the day that starts the week.
+ */
+export const CustomWeekStartDay: Story = {
+  args: {
+    firstDayOfWeek: "tue",
+  },
+};
+
+/**
+ * Mark certain dates as unavailable for selection.
+ * This example marks weekends as unavailable, making only weekdays selectable.
+ */
+export const UnavailableDates: Story = {
+  args: {
+    defaultValue: today(getLocalTimeZone()),
+    isDateUnavailable: (date: DateValue) => {
+      // Mark weekends as unavailable (only weekdays are selectable)
+      const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
+      return dayOfWeek === 0 || dayOfWeek === 6; // Sunday = 0, Saturday = 6
+    },
+  },
+  render: (args: CalendarProps<DateValue>) => (
+    <Stack alignItems="start">
+      <Text fontSize="sm" color="gray.600">
+        Only weekdays are available for selection. Weekends are disabled.
+      </Text>
+      <Calendar {...args} />
+    </Stack>
+  ),
+};
