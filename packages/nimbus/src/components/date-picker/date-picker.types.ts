@@ -10,7 +10,7 @@ import type { DateValue } from "react-aria";
 type ConflictingPickerStateProps = keyof DatePickerStateOptions<DateValue>;
 
 /**
- * Additional properties we want to exclude from the DatePickerInput component.
+ * Additional properties we want to exclude from the DatePicker component.
  * These are either deprecated or not intended for use in this component.
  */
 type ExcludedProps =
@@ -29,13 +29,13 @@ type ExcludedProps =
   | "asChild";
 
 /**
- * Main props interface for the DatePickerInput component.
+ * Main props interface for the DatePicker component.
  *
  * We use Omit to remove:
  * 1. Conflicting props from DateInputProps to avoid TypeScript errors
  * 2. Explicitly excluded props that we don't want users to access
  */
-export interface DatePickerInputProps
+export interface DatePickerProps
   extends Omit<DateInputProps, ConflictingPickerStateProps | ExcludedProps>,
     Omit<DatePickerStateOptions<DateValue>, ExcludedProps> {
   /**

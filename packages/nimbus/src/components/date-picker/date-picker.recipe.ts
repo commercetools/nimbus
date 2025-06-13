@@ -1,12 +1,12 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
- * Recipe configuration for the DatePickerInput component.
+ * Recipe configuration for the DatePicker component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const datePickerInputRecipe = defineSlotRecipe({
+export const datePickerRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
-  className: "nimbus-date-picker-input",
+  className: "nimbus-date-picker",
   slots: [
     "root",
     "group",
