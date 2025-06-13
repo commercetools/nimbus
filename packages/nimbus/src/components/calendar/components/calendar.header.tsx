@@ -100,7 +100,7 @@ export const CalendarHeader = () => {
             textStyle="sm"
             fontWeight="500"
             color="neutral.11"
-            width="4ch"
+            width="5ch"
             textAlign="center"
           >
             {yearLabel}
