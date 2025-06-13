@@ -4,32 +4,50 @@ import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
 } from "@commercetools/nimbus-icons";
-import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
+import { getLocalTimeZone } from "@internationalized/date";
 import { useContext } from "react";
 
-import { CalendarStateContext, useLocale } from "react-aria-components";
+import {
+  CalendarContext,
+  CalendarStateContext,
+  useLocale,
+} from "react-aria-components";
 
 export const CalendarHeader = () => {
-  const state = useContext(CalendarStateContext)!;
   const { locale } = useLocale();
+
+  const calendarState = useContext(CalendarStateContext)!;
+  const calendarProps = useContext(CalendarContext)!;
+
+  // Needed to decide wether to show a single month or a range
+  const visibleDurationMonths = calendarProps.visibleDuration?.months || 1;
+  const showRangeLabel = visibleDurationMonths > 1;
 
   // Now, use Intl.DateTimeFormat with the dynamic locale
   const monthLabel = new Intl.DateTimeFormat(locale, {
     month: "long",
-  }).format(state.focusedDate.toDate(getLocalTimeZone()));
+  }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
+
+  const monthRangeLabel = [
+    new Intl.DateTimeFormat(locale, {
+      month: "long",
+    }).format(calendarState.visibleRange.start.toDate(getLocalTimeZone())),
+    new Intl.DateTimeFormat(locale, {
+      month: "long",
+    }).format(calendarState.visibleRange.end.toDate(getLocalTimeZone())),
+  ].join(" - ");
 
   const yearLabel = new Intl.DateTimeFormat(locale, {
     year: "numeric",
-  }).format(state.focusedDate.toDate(getLocalTimeZone()));
-
-  console.log("calendar state", state);
-  console.log("focused date", state.focusedDate);
+  }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
 
   const goto = {
-    nextMonth: () => state.focusNextSection(),
-    previousMonth: () => state.focusPreviousSection(),
-    nextYear: () => state.focusNextSection(true),
-    previousYear: () => state.focusPreviousSection(true),
+    nextPage: () => calendarState.focusNextPage(),
+    previousPage: () => calendarState.focusPreviousPage(),
+    nextMonth: () => calendarState.focusNextSection(),
+    previousMonth: () => calendarState.focusPreviousSection(),
+    nextYear: () => calendarState.focusNextSection(true),
+    previousYear: () => calendarState.focusPreviousSection(true),
   };
 
   return (
@@ -38,7 +56,7 @@ export const CalendarHeader = () => {
         <Stack direction="row" alignItems="center">
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={goto.previousMonth}
+            onPress={showRangeLabel ? goto.previousPage : goto.previousMonth}
             slot={null}
             size="xs"
             variant="ghost"
@@ -50,14 +68,14 @@ export const CalendarHeader = () => {
             textStyle="sm"
             fontWeight="500"
             color="neutral.11"
-            width="9ch"
+            width={showRangeLabel ? "18ch" : "9ch"}
             textAlign="center"
           >
-            {monthLabel}
+            {showRangeLabel ? monthRangeLabel : monthLabel}
           </Text>
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={goto.nextMonth}
+            onPress={showRangeLabel ? goto.nextPage : goto.nextMonth}
             slot={null}
             size="xs"
             variant="ghost"
