@@ -5,13 +5,13 @@ import {
   createSlotRecipeContext,
 } from "@chakra-ui/react";
 
-import { datePickerInputRecipe } from "./date-picker-input.recipe";
+import { datePickerRecipe } from "./date-picker.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-interface DatePickerInputRecipeProps extends RecipeProps<"div">, UnstyledProp {}
+interface DatePickerRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
@@ -19,27 +19,27 @@ interface DatePickerInputRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DatePickerInputRootProps
-  extends HTMLChakraProps<"div", DatePickerInputRecipeProps> {}
+export interface DatePickerRootProps
+  extends HTMLChakraProps<"div", DatePickerRecipeProps> {}
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: datePickerInputRecipe,
+  recipe: datePickerRecipe,
 });
 
 /**
- * Root component that provides the styling context for the DatePickerInput component.
+ * Root component that provides the styling context for the DatePicker component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const DatePickerInputRootSlot = withProvider<
+export const DatePickerRootSlot = withProvider<
   HTMLDivElement,
-  DatePickerInputRootProps
+  DatePickerRootProps
 >("div", "root");
 
 /**
  * Slot component for the input group containing the DateInput and trigger button.
  */
-export const DatePickerInputGroupSlot = withContext<
+export const DatePickerGroupSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "group");
@@ -47,7 +47,7 @@ export const DatePickerInputGroupSlot = withContext<
 /**
  * Slot component for the trigger button that opens the calendar popover.
  */
-export const DatePickerInputTriggerSlot = withContext<
+export const DatePickerTriggerSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "trigger");
@@ -55,7 +55,7 @@ export const DatePickerInputTriggerSlot = withContext<
 /**
  * Slot component for the popover container.
  */
-export const DatePickerInputPopoverSlot = withContext<
+export const DatePickerPopoverSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "popover");
@@ -63,7 +63,7 @@ export const DatePickerInputPopoverSlot = withContext<
 /**
  * Slot component for the calendar container within the popover.
  */
-export const DatePickerInputCalendarSlot = withContext<
+export const DatePickerCalendarSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "calendar");
@@ -71,7 +71,7 @@ export const DatePickerInputCalendarSlot = withContext<
 /**
  * Slot component for the calendar header.
  */
-export const DatePickerInputCalendarHeaderSlot = withContext<
+export const DatePickerCalendarHeaderSlot = withContext<
   HTMLElement,
   HTMLChakraProps<"header">
 >("header", "calendarHeader");
@@ -79,7 +79,7 @@ export const DatePickerInputCalendarHeaderSlot = withContext<
 /**
  * Slot component for the calendar grid.
  */
-export const DatePickerInputCalendarGridSlot = withContext<
+export const DatePickerCalendarGridSlot = withContext<
   HTMLTableElement,
   HTMLChakraProps<"table">
 >("table", "calendarGrid");
@@ -87,7 +87,7 @@ export const DatePickerInputCalendarGridSlot = withContext<
 /**
  * Slot component for individual calendar cells.
  */
-export const DatePickerInputCalendarCellSlot = withContext<
+export const DatePickerCalendarCellSlot = withContext<
   HTMLTableCellElement,
   HTMLChakraProps<"td">
 >("td", "calendarCell");

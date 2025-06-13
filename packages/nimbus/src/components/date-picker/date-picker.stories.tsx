@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { DatePickerInput } from "./date-picker-input";
+import { DatePicker } from "./date-picker";
 import { I18nProvider } from "react-aria";
 import { Box, Stack } from "@/components";
 
@@ -8,9 +8,9 @@ import { Box, Stack } from "@/components";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<typeof DatePickerInput> = {
-  title: "Components/Date/DatePickerInput",
-  component: DatePickerInput,
+const meta: Meta<typeof DatePicker> = {
+  title: "Components/Date/DatePicker",
+  component: DatePicker,
   decorators: [
     (Story) => (
       <I18nProvider locale="en-US">
@@ -26,7 +26,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof DatePickerInput>;
+type Story = StoryObj<typeof DatePicker>;
 
 /**
  * Base story
@@ -41,10 +41,10 @@ export const Base: Story = {
     return (
       <Stack>
         <Box>
-          <DatePickerInput size="sm" {...args} />
+          <DatePicker size="sm" {...args} />
         </Box>
         <Box>
-          <DatePickerInput size="md" {...args} />
+          <DatePicker size="md" {...args} />
         </Box>
       </Stack>
     );
@@ -62,7 +62,7 @@ export const GermanLocale: Story = {
   render: (args) => {
     return (
       <I18nProvider locale="de-DE">
-        <DatePickerInput {...args} />
+        <DatePicker {...args} />
       </I18nProvider>
     );
   },
