@@ -19,8 +19,7 @@ export const ComboBoxRoot = <T extends object>({
       ? MultiSelectRoot
       : SingleSelectRoot;
   // TODO: should there be a prop to allow for user control of the menu width?
-  // TODO: should there be a prop to allow the user to pass in an icon to display on the left of the input?
-  //       how would this work with the multiselect?
+  // TODO: should there be a prop to allow the user to pass in an icon to display on the right of the input other than the down caret (eg search)?
   return (
     <ComboBoxRootSlot
       asChild
@@ -28,7 +27,7 @@ export const ComboBoxRoot = <T extends object>({
       {...recipeProps}
       {...styleProps}
     >
-      <Component ref={ref} {...restProps}>
+      <Component ref={ref} size={recipeProps.size} {...restProps}>
         {children}
       </Component>
     </ComboBoxRootSlot>

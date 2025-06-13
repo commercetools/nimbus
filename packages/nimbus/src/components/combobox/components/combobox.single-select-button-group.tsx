@@ -9,10 +9,7 @@ import { ComboBoxStateContext } from "react-aria-components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
 
-export const ComboBoxButtonGroup = ({
-  selectedKeys,
-  onSelectionChange,
-  onInputChange,
+export const ComboBoxSingleSelectButtonGroup = ({
   isDisabled,
   isReadOnly,
   isLoading,
@@ -36,25 +33,6 @@ export const ComboBoxButtonGroup = ({
           <CloseIcon />
         </IconButton>
       )}
-      {selectedKeys instanceof Set && selectedKeys.size > 0 && (
-        <IconButton
-          pointerEvents="all"
-          slot={null}
-          size="2xs"
-          variant="ghost"
-          tone="primary"
-          aria-label="Clear Selection"
-          isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "transparent" }}
-          onPress={() => {
-            onSelectionChange?.(new Set());
-            onInputChange?.("");
-          }}
-          my="auto"
-        >
-          <CloseIcon />
-        </IconButton>
-      )}
       {isLoading ? (
         <Flex my="auto" w="600" h="600" pointerEvents="none">
           <Box color="neutral.9" asChild m="auto" w="400" h="400">
@@ -70,7 +48,6 @@ export const ComboBoxButtonGroup = ({
           aria-label="toggle combobox"
           tone="neutral"
           my="auto"
-          tabIndex={5}
           isDisabled={isDisabled || isReadOnly}
           _expanded={{ bg: "transparent" }}
         >

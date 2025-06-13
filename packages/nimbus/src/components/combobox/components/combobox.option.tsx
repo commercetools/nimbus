@@ -1,6 +1,10 @@
 import { ListBoxItem } from "react-aria-components";
-import { Checkbox } from "@/components";
-import { ComboBoxOptionSlot } from "../combobox.slots";
+import { Check } from "@commercetools/nimbus-icons";
+import {
+  ComboBoxOptionSlot,
+  ComboBoxOptionIndicatorSlot,
+  ComboBoxOptionContentSlot,
+} from "../combobox.slots";
 import type { ComboBoxOptionProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
@@ -28,9 +32,14 @@ export const ComboBoxOption = <T extends object>({
                 })
               : children;
           return renderProps.selectionMode === "multiple" ? (
-            <Checkbox maxW={"100%"} isSelected={renderProps.isSelected}>
-              {content}
-            </Checkbox>
+            <>
+              <ComboBoxOptionIndicatorSlot
+                data-selected={renderProps.isSelected}
+              >
+                {renderProps.isSelected && <Check />}
+              </ComboBoxOptionIndicatorSlot>
+              <ComboBoxOptionContentSlot>{content}</ComboBoxOptionContentSlot>
+            </>
           ) : (
             <>{content}</>
           );

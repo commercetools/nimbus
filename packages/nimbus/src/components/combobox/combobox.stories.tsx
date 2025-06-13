@@ -8,7 +8,7 @@ import {
 } from "react";
 import type { Key, Selection } from "react-aria-components";
 import { userEvent, within, expect } from "@storybook/test";
-import { FormField, Stack, Text, Box, Flex, Badge } from "@/components";
+import { FormField, Stack, Text, Box, Flex } from "@/components";
 import { ComboBox } from "./combobox";
 
 /**
@@ -69,15 +69,6 @@ interface PlanOption {
   features: string[];
 }
 
-interface TeamMember {
-  uuid: number;
-  full_name: string;
-  role: string;
-  department: string;
-  email: string;
-  status: "online" | "away" | "offline";
-}
-
 interface PlanGroup {
   name: string;
   id: string;
@@ -90,19 +81,18 @@ const complexOptionsWithGroups: PlanGroup[] = [
     id: "indplans",
     children: [
       {
-        uuid: 1,
-        type: "Premium Plan",
-        description: "Full access to all features with priority support",
-        price: "$29/month",
-        features: ["Unlimited projects", "24/7 support", "Advanced analytics"],
-      },
-
-      {
         uuid: 3,
         type: "Starter Plan",
         description: "Great for individuals and small projects",
         price: "$9/month",
         features: ["Up to 3 projects", "Community support", "Basic features"],
+      },
+      {
+        uuid: 1,
+        type: "Premium Plan",
+        description: "Full access to all features with priority support",
+        price: "$29/month",
+        features: ["Unlimited projects", "24/7 support", "Advanced analytics"],
       },
     ],
   },
@@ -112,7 +102,7 @@ const complexOptionsWithGroups: PlanGroup[] = [
     children: [
       {
         uuid: 2,
-        type: "Business Plan",
+        type: "Small Team Plan",
         description: "Perfect for growing teams and businesses",
         price: "$19/month",
         features: ["Up to 10 projects", "Email support", "Basic analytics"],
@@ -129,49 +119,6 @@ const complexOptionsWithGroups: PlanGroup[] = [
         ],
       },
     ],
-  },
-];
-
-const complexOptions: TeamMember[] = [
-  {
-    uuid: 1,
-    full_name: "Sarah Chen",
-    role: "Senior Frontend Developer",
-    department: "Engineering",
-    email: "sarah.chen@company.com",
-    status: "online",
-  },
-  {
-    uuid: 2,
-    full_name: "Marcus Johnson",
-    role: "Product Manager",
-    department: "Product",
-    email: "marcus.johnson@company.com",
-    status: "away",
-  },
-  {
-    uuid: 3,
-    full_name: "Elena Rodriguez",
-    role: "UX Designer",
-    department: "Design",
-    email: "elena.rodriguez@company.com",
-    status: "online",
-  },
-  {
-    uuid: 4,
-    full_name: "David Kim",
-    role: "Backend Developer",
-    department: "Engineering",
-    email: "david.kim@company.com",
-    status: "offline",
-  },
-  {
-    uuid: 5,
-    full_name: "Priya Patel",
-    role: "Data Scientist",
-    department: "Analytics",
-    email: "priya.patel@company.com",
-    status: "online",
   },
 ];
 
@@ -233,7 +180,7 @@ export const Base: Story = {
   render: () => {
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Single Select ComboBox</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -244,12 +191,11 @@ export const Base: Story = {
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
-
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select ComboBox</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              items={options}
+              defaultItems={options}
               selectionMode="multiple"
               placeholder="Select multiple animals..."
             >
@@ -666,7 +612,7 @@ export const Base: Story = {
       }
     );
     await step(
-      "multi select tab order goes from combobox to tag to remove tag button to clear button to toggle button",
+      "multi select tab order goes from combobox to tag to clear button to toggle button",
       async () => {
         // Focus combobox
         multiSelect.focus();
@@ -718,7 +664,7 @@ export const AllVariantsAndSizes: Story = {
               <Stack key={`${variant}-${size}`} direction="column" gap="300">
                 <h4>Size: {size.toUpperCase()}</h4>
                 <Stack direction="row" gap="400">
-                  <FormField.Root>
+                  <FormField.Root alignSelf={"flex-start"}>
                     <FormField.Label>{`Single Select ${variant} ${size}`}</FormField.Label>
                     <FormField.Input>
                       <ComboBox.Root
@@ -733,8 +679,7 @@ export const AllVariantsAndSizes: Story = {
                       </ComboBox.Root>
                     </FormField.Input>
                   </FormField.Root>
-
-                  <FormField.Root>
+                  <FormField.Root alignSelf={"flex-start"}>
                     <FormField.Label>{`Multi-Select ${variant} ${size}`}</FormField.Label>
                     <FormField.Input>
                       <ComboBox.Root
@@ -764,11 +709,11 @@ export const OptionGroups: Story = {
   render: () => {
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Single Select with Option Groups</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              items={sectionedItems}
+              defaultItems={sectionedItems}
               placeholder="Select a food item..."
             >
               {(section) => (
@@ -776,18 +721,21 @@ export const OptionGroups: Story = {
                   label={section.name}
                   items={section.children}
                 >
-                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+                  {(item) => (
+                    <ComboBox.Option textValue={item.name}>
+                      {item.name}
+                    </ComboBox.Option>
+                  )}
                 </ComboBox.OptionGroup>
               )}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
-
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select with Option Groups</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              items={sectionedItems}
+              defaultItems={sectionedItems}
               selectionMode="multiple"
               placeholder="Select multiple food items..."
             >
@@ -805,13 +753,225 @@ export const OptionGroups: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /single select with option groups/i,
+    });
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /multi-select with option groups/i,
+    });
+
+    await step(
+      "Single Select option groups are rendered with proper roles",
+      async () => {
+        // Focus combobox
+        singleSelect.focus();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Find sections
+        const groups = document.querySelectorAll('[role="group"]');
+        await expect(groups.length).toBe(2);
+        // Check section labels
+        const groupLabels = document.querySelectorAll('[role="presentation"]');
+        await expect(groupLabels[0]).toHaveTextContent("Fruits");
+        await expect(groupLabels[1]).toHaveTextContent("Vegetables");
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Single Select options are filtered correctly when user enters text",
+      async () => {
+        // Focus combobox
+        singleSelect.focus();
+        // Hit 'a' key
+        await userEvent.keyboard("{a}");
+        let options = getListboxOptions();
+        // There are 5 options with 'a' in them
+        await expect(options.length).toBe(5);
+        // There are options with 'a' in both sections
+        let groups = document.querySelectorAll('[role="group"]');
+        await expect(groups.length).toBe(2);
+        // Hit 'p' key
+        await userEvent.keyboard("{p}");
+        options = getListboxOptions();
+        // There is only one option with 'ap'
+        await expect(options.length).toBe(1);
+        await expect(findOptionByText("Apple")).toBeInTheDocument();
+        // there is only one section displayed
+        groups = document.querySelectorAll('[role="group"]');
+        await expect(groups.length).toBe(1);
+        const groupLabels = document.querySelectorAll('[role="presentation"]');
+        await expect(groupLabels[0]).toHaveTextContent("Fruits");
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step("Single Select options can be selected", async () => {
+      // Focus combobox
+      singleSelect.focus();
+      // Select apple option
+      await selectOptionsWithKeyboard(["apple"]);
+      // Input value should be 'apple'
+      await expect(singleSelect).toHaveValue("Apple");
+      // Open listbox check that apple option has selected state
+      await userEvent.keyboard("{ArrowDown}");
+      await verifyOptionsSelected(["Apple"], true);
+      // Close popover for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step(
+      "Multi Select option groups are rendered with proper roles",
+      async () => {
+        // Focus combobox
+        multiSelect.focus();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Find sections
+        const groups = document.querySelectorAll('[role="group"]');
+        await expect(groups.length).toBe(2);
+        // Check section labels
+        const groupLabels = document.querySelectorAll('[role="presentation"]');
+        await expect(groupLabels[0]).toHaveTextContent("Fruits");
+        await expect(groupLabels[1]).toHaveTextContent("Vegetables");
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Multi Select options are filtered correctly when user enters text",
+      async () => {
+        // Focus combobox
+        multiSelect.focus();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Hit 'a' key
+        await userEvent.keyboard("{a}");
+        let options = getListboxOptions();
+        // There are 5 options with 'a' in them
+        await expect(options.length).toBe(5);
+        // There are options with 'a' in both sections
+        let groups = document.querySelectorAll('[role="group"]');
+        await expect(groups.length).toBe(2);
+        // Hit 'p' key
+        await userEvent.keyboard("{p}");
+        options = getListboxOptions();
+        // There is only one option with 'ap'
+        await expect(options.length).toBe(1);
+        await expect(findOptionByText("Apple")).toBeInTheDocument();
+        // there is only one section displayed
+        groups = document.querySelectorAll('[role="group"]');
+        await expect(groups.length).toBe(1);
+        const groupLabels = document.querySelectorAll('[role="presentation"]');
+        await expect(groupLabels[0]).toHaveTextContent("Fruits");
+        // Clear input and close popover for next test
+        const filterInput = getFilterInput();
+        await userEvent.clear(filterInput);
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Multi Select options can be selected from multiple sections",
+      async () => {
+        // Focus combobox
+        multiSelect.focus();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Select apple option in fruits section
+        await selectOptionsWithKeyboard(["apple"]);
+        // TagList should have apple tag
+        await verifyTagsExist(multiSelect, ["Apple"]);
+        // Apple option should be selected
+        await verifyOptionsSelected(["Apple"], true);
+        // Select carrot option in vegetables section
+        const carrotOption = findOptionByText("Carrot");
+        await userEvent.click(carrotOption!);
+        // TagList should have apple and carrot tag
+        await verifyTagsExist(multiSelect, ["Apple", "Carrot"]);
+        // Apple and carrot options should be selected
+        await verifyOptionsSelected(["Apple", "Carrot"], true);
+        // All other options should not be selected
+        await verifyOptionsSelected(
+          ["Banana", "Orange", "Broccoli", "Avocado", "Cucumber"],
+          false
+        );
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Multi select selected option can be removed by pressing its' tag's remove button",
+      async () => {
+        // Focus combobox
+        multiSelect.focus();
+        // Remove carrot tag
+        const tagList = await getTagList(multiSelect);
+        const carrotTag = tagList.childNodes[1] as HTMLElement;
+        const removeButton = within(carrotTag).getByRole("button", {
+          name: /remove carrot/i,
+        });
+        await userEvent.click(removeButton);
+        // Verify carrot tag is removed
+        await expect(carrotTag).not.toBeInTheDocument();
+        // Verify apple tag exists
+        await verifyTagsExist(multiSelect, ["Apple"]);
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Verify Apple is selected
+        await verifyOptionsSelected(["Apple"], true);
+        // Verify all other options not selected
+        await verifyOptionsSelected(
+          ["Banana", "Orange", "Carrot", "Broccoli", "Avocado", "Cucumber"],
+          false
+        );
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Multi select selected option can be removed by selecting its option",
+      async () => {
+        // Focus combobox
+        multiSelect.focus();
+        const tagList = await getTagList(multiSelect);
+        const appleTag = tagList.childNodes[0] as HTMLElement;
+        // Verify appleTag exists
+        await expect(appleTag).toBeInTheDocument();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Select Apple option
+        await selectOptionsWithKeyboard(["Apple"]);
+        // Verify apple tag is removed
+        await expect(appleTag).not.toBeInTheDocument();
+        // Verify all options not selected
+        await verifyOptionsSelected(
+          [
+            "Apple",
+            "Banana",
+            "Orange",
+            "Carrot",
+            "Broccoli",
+            "Avocado",
+            "Cucumber",
+          ],
+          false
+        );
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+  },
 };
 
 /**
  * Complex Options with Descriptions Example
- * Demonstrates options with rich content including descriptions for both single and multi-select
+ * Demonstrates:
+ * - handling item objects that do not have an id or name key
+ * - options with rich content including descriptions for both single and multi-select
+ * - complex options with non-standard keys inside sections
  */
-export const ComplexOptionsWithDescriptions: Story = {
+export const ComplexOptions: Story = {
   render: () => {
     const PlanOptionComponent = ({ item }: { item: PlanOption }) => (
       <Flex direction="column" gap="200">
@@ -826,149 +986,63 @@ export const ComplexOptionsWithDescriptions: Story = {
       </Flex>
     );
 
-    const TeamMemberOptionComponent = ({ member }: { member: TeamMember }) => (
-      <Flex direction="column" gap="200">
-        <Flex justify="space-between" align="center">
-          <Text slot="label">{member.full_name}</Text>
-          <Badge
-            colorPalette={
-              member.status === "online"
-                ? "positive"
-                : member.status === "away"
-                  ? "warning"
-                  : "critical"
-            }
-            size="2xs"
-          >
-            {member.status}
-          </Badge>
-        </Flex>
-        <Text slot="description">
-          {member.role} • {member.department}
-        </Text>
-        <Text fontSize="300" color="neutral.9">
-          {member.email}
-        </Text>
-      </Flex>
-    );
-
     return (
-      <Stack direction="column" gap="600">
-        <Stack direction="column" gap="300">
-          <h3>Subscription Plans</h3>
-          <Stack direction="row" gap="400">
-            <FormField.Root>
-              <FormField.Label>Single Select Plan</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={complexOptionsWithGroups}
-                  placeholder="Choose a subscription plan..."
-                >
-                  {(group) => (
-                    <ComboBox.OptionGroup
-                      label={group.name}
-                      items={group.children}
-                    >
-                      {(item) => (
-                        <ComboBox.Option
-                          id={item.uuid}
-                          textValue={`${item.type} ${item.price} ${item.description} ${item.price} ${item.features.join(" ")}`}
-                        >
-                          <PlanOptionComponent item={item} />{" "}
-                        </ComboBox.Option>
-                      )}
-                    </ComboBox.OptionGroup>
-                  )}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Select a subscription plan that fits your needs
-              </FormField.Description>
-            </FormField.Root>
-
-            <FormField.Root>
-              <FormField.Label>Multi-Select Plans</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={complexOptionsWithGroups}
-                  selectionMode="multiple"
-                  placeholder="Compare multiple plans..."
-                  itemID="uuid"
-                  itemValue="name"
-                >
-                  {(group) => (
-                    <ComboBox.OptionGroup
-                      label={group.name}
-                      items={group.children}
-                    >
-                      {(item) => (
-                        <ComboBox.Option
-                          id={item.uuid}
-                          textValue={`${item.type} ${item.price} ${item.description} ${item.price} ${item.features.join(" ")}`}
-                        >
-                          <PlanOptionComponent item={item} />
-                        </ComboBox.Option>
-                      )}
-                    </ComboBox.OptionGroup>
-                  )}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Select multiple plans to compare features
-              </FormField.Description>
-            </FormField.Root>
-          </Stack>
-        </Stack>
-
-        <Stack direction="column" gap="300">
-          <h3>Team Member Assignment</h3>
-          <Stack direction="row" gap="400">
-            <FormField.Root>
-              <FormField.Label>Single Team Member</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={complexOptions}
-                  placeholder="Assign to team member..."
-                >
-                  {(member) => (
-                    <ComboBox.Option
-                      id={member.uuid}
-                      textValue={`${member.full_name} ${member.status} ${member.role} ${member.department} ${member.email}`}
-                    >
-                      <TeamMemberOptionComponent member={member} />
+      <Stack direction="row" gap="400">
+        <FormField.Root alignSelf={"flex-start"}>
+          <FormField.Label>Single Select Plan</FormField.Label>
+          <FormField.Input>
+            <ComboBox.Root
+              defaultItems={complexOptionsWithGroups}
+              placeholder="Choose a plan..."
+            >
+              {(group) => (
+                <ComboBox.OptionGroup label={group.name} items={group.children}>
+                  {(item) => (
+                    <ComboBox.Option id={item.uuid} textValue={item.type}>
+                      <PlanOptionComponent item={item} />
                     </ComboBox.Option>
                   )}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Assign task to a single team member
-              </FormField.Description>
-            </FormField.Root>
-
-            <FormField.Root>
-              <FormField.Label>Multiple Team Members</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={complexOptions}
-                  selectionMode="multiple"
-                  placeholder="Assign to multiple members..."
-                >
-                  {(member) => (
-                    <ComboBox.Option
-                      id={member.uuid}
-                      textValue={`${member.full_name} ${member.status} ${member.role} ${member.department} ${member.email}`}
-                    >
-                      <TeamMemberOptionComponent member={member} />
+                </ComboBox.OptionGroup>
+              )}
+            </ComboBox.Root>
+          </FormField.Input>
+          <FormField.Description>
+            <Text as="pre">
+              Combobox.Root: itemID and itemValue not necessary in single-select
+            </Text>
+            <Text as="pre">
+              Combobox.Option: id=item.uuid, textValue=item.type
+            </Text>
+          </FormField.Description>
+        </FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
+          <FormField.Label>Multi-Select Plans</FormField.Label>
+          <FormField.Input>
+            <ComboBox.Root
+              defaultItems={complexOptionsWithGroups}
+              selectionMode="multiple"
+              placeholder="Compare multiple plans..."
+              itemID="uuid"
+              itemValue="type"
+            >
+              {(group) => (
+                <ComboBox.OptionGroup label={group.name} items={group.children}>
+                  {(item) => (
+                    <ComboBox.Option id={item.uuid} textValue={item.type}>
+                      <PlanOptionComponent item={item} />
                     </ComboBox.Option>
                   )}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Assign task to multiple team members
-              </FormField.Description>
-            </FormField.Root>
-          </Stack>
-        </Stack>
+                </ComboBox.OptionGroup>
+              )}
+            </ComboBox.Root>
+          </FormField.Input>
+          <FormField.Description>
+            <Text as="pre">Combobox.Root: itemID=uuid itemValue=type</Text>
+            <Text as="pre">
+              Combobox.Option: id=item.uuid, textValue=item.type
+            </Text>
+          </FormField.Description>
+        </FormField.Root>
       </Stack>
     );
   },
@@ -1037,7 +1111,7 @@ export const AsyncLoading: Story = {
 
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Single Select Async ComboBox</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1053,7 +1127,7 @@ export const AsyncLoading: Story = {
           </FormField.Input>
         </FormField.Root>
 
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select Async ComboBox</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1075,21 +1149,48 @@ export const AsyncLoading: Story = {
 };
 
 /**
- * Controlled vs Uncontrolled Patterns
- * Demonstrates both controlled and uncontrolled usage patterns for single and multi-select
+ * Controlled State
+ * Demonstrates both controlled usage patterns for single and multi-select
  */
-export const ControlledVsUncontrolled: Story = {
+export const ControlledState: Story = {
   render: () => {
     const [controlledValue, setControlledValue] = useState<Key | null>(2);
     const [controlledMultiValue, setControlledMultiValue] = useState<Selection>(
       new Set([1, 3])
     );
 
+    // Helper function to get the display text for single selection
+    const getSingleSelectionDisplay = (selectedKey: Key | null) => {
+      if (!selectedKey) return "None";
+      const selectedOption = options.find(
+        (option) => option.id === selectedKey
+      );
+      return selectedOption
+        ? `${selectedKey} (${selectedOption.name})`
+        : selectedKey.toString();
+    };
+
+    // Helper function to get the display text for multiple selection
+    const getMultiSelectionDisplay = (selectedKeys: Selection) => {
+      if (selectedKeys === "all") return "All items";
+      const selectedArray = Array.from(selectedKeys);
+      if (selectedArray.length === 0) return "None";
+
+      return selectedArray
+        .map((key) => {
+          const selectedOption = options.find((option) => option.id === key);
+          return selectedOption
+            ? `${key} (${selectedOption.name})`
+            : key.toString();
+        })
+        .join(", ");
+    };
+
     return (
       <Stack direction="column" gap="400">
         <Stack direction="row" gap="400">
-          <FormField.Root>
-            <FormField.Label>Controlled Single-Select ComboBox</FormField.Label>
+          <FormField.Root alignSelf={"flex-start"}>
+            <FormField.Label>Controlled Single-Select</FormField.Label>
             <FormField.Input>
               <ComboBox.Root
                 aria-label="controlled animals"
@@ -1101,14 +1202,12 @@ export const ControlledVsUncontrolled: Story = {
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
-            <p>Selected: {controlledValue?.toString() || "None"}</p>
-            <button onClick={() => setControlledValue(3)}>
-              Set to Platypus
-            </button>
+            <FormField.Description>
+              Selected: {getSingleSelectionDisplay(controlledValue)}
+            </FormField.Description>
           </FormField.Root>
-
-          <FormField.Root>
-            <FormField.Label>Controlled Multi-Select ComboBox</FormField.Label>
+          <FormField.Root alignSelf={"flex-start"}>
+            <FormField.Label>Controlled Multi-Select</FormField.Label>
             <FormField.Input>
               <ComboBox.Root
                 aria-label="controlled multi animals"
@@ -1121,63 +1220,9 @@ export const ControlledVsUncontrolled: Story = {
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
-            <p>
-              Selected:{" "}
-              {controlledMultiValue === "all"
-                ? "All items"
-                : Array.from(controlledMultiValue).length > 0
-                  ? Array.from(controlledMultiValue).join(", ")
-                  : "None"}
-            </p>
-            <button onClick={() => setControlledMultiValue(new Set([2, 4, 6]))}>
-              Set to Kangaroo, Bald Eagle, Skunk
-            </button>
-            <button onClick={() => setControlledMultiValue(new Set())}>
-              Clear All
-            </button>
-          </FormField.Root>
-        </Stack>
-        <Stack direction="row" gap="400">
-          <FormField.Root>
-            <FormField.Label>
-              Uncontrolled Single-Select ComboBox
-            </FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                aria-label="uncontrolled animals"
-                defaultItems={options}
-                defaultSelectedKey={1}
-                onSelectionChange={(key: Key | null) =>
-                  console.log("Uncontrolled single selection:", key)
-                }
-                placeholder="Select an animal..."
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-          </FormField.Root>
-
-          <FormField.Root>
-            <FormField.Label>
-              Uncontrolled Multi-Select ComboBox
-            </FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                aria-label="uncontrolled multi animals"
-                defaultItems={options}
-                selectionMode="multiple"
-                defaultSelectedKeys={new Set([2, 5])}
-                onSelectionChange={(keys: Selection) =>
-                  console.log(
-                    "Uncontrolled multi selection:",
-                    keys === "all" ? "all" : Array.from(keys)
-                  )
-                }
-                placeholder="Select multiple animals..."
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
+            <FormField.Description>
+              Selected: {getMultiSelectionDisplay(controlledMultiValue)}
+            </FormField.Description>
           </FormField.Root>
         </Stack>
       </Stack>
