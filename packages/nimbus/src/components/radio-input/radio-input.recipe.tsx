@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
- * Recipe configuration for the RadioInputGroup component.
+ * Recipe configuration for the RadioInput component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 export const radioInputSlotRecipe = defineSlotRecipe({
