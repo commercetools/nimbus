@@ -4,7 +4,7 @@ import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
 } from "@commercetools/nimbus-icons";
-import { getLocalTimeZone } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
 import { useContext } from "react";
 
 import { CalendarStateContext, useLocale } from "react-aria-components";
@@ -25,13 +25,11 @@ export const CalendarHeader = () => {
   console.log("calendar state", state);
   console.log("focused date", state.focusedDate);
 
-  const { focusedDate } = state;
-
-  const dates = {
-    nextMonth: focusedDate.add({ months: 1 }),
-    previousMonth: focusedDate.add({ months: -1 }),
-    nextYear: focusedDate.add({ years: 1 }),
-    previousYear: focusedDate.add({ years: -1 }),
+  const goto = {
+    nextMonth: () => state.focusNextSection(),
+    previousMonth: () => state.focusPreviousSection(),
+    nextYear: () => state.focusNextSection(true),
+    previousYear: () => state.focusPreviousSection(true),
   };
 
   return (
@@ -40,11 +38,11 @@ export const CalendarHeader = () => {
         <Stack direction="row" alignItems="center">
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={() => state.setFocusedDate(dates.previousMonth)}
+            onPress={goto.previousMonth}
+            slot={null}
             size="xs"
             variant="ghost"
             tone="primary"
-            slot={null}
           >
             <KeyboardArrowLeft />
           </IconButton>
@@ -59,11 +57,11 @@ export const CalendarHeader = () => {
           </Text>
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={() => state.setFocusedDate(dates.nextMonth)}
+            onPress={goto.nextMonth}
+            slot={null}
             size="xs"
             variant="ghost"
             tone="primary"
-            slot={null}
           >
             <KeyboardArrowRight />
           </IconButton>
@@ -72,11 +70,11 @@ export const CalendarHeader = () => {
         <Stack direction="row" alignItems="center">
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
+            onPress={goto.previousYear}
+            slot={null}
             size="xs"
             variant="ghost"
             tone="primary"
-            onPress={() => state.setFocusedDate(dates.previousYear)}
-            slot={null}
           >
             <KeyboardArrowLeft />
           </IconButton>
@@ -91,11 +89,11 @@ export const CalendarHeader = () => {
           </Text>
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
+            onPress={goto.nextYear}
+            slot={null}
             size="xs"
             variant="ghost"
             tone="primary"
-            slot={null}
-            onPress={() => state.setFocusedDate(dates.nextYear)}
           >
             <KeyboardArrowRight />
           </IconButton>

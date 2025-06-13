@@ -19,7 +19,7 @@ const meta: Meta<typeof Calendar> = {
   decorators: [
     (Story) => (
       <I18nProvider locale="en-US">
-        <Box display="inline-block" borderRadius="200" p="400" boxShadow="4">
+        <Box w="8000" display="inline-block" borderRadius="200" boxShadow="4">
           <Story />
         </Box>
       </I18nProvider>
@@ -30,8 +30,13 @@ const meta: Meta<typeof Calendar> = {
 export default meta;
 type Story = StoryObj<typeof Calendar>;
 
-export const Default: Story = {
-  render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
+export const Base: Story = {};
+
+/** Uncontrolled, with starting Date */
+export const DefaultValue: Story = {
+  args: {
+    defaultValue: today(getLocalTimeZone()),
+  },
 };
 
 export const GermanCalendar: Story = {
@@ -47,7 +52,7 @@ export const GermanCalendar: Story = {
  */
 export const CustomWidth: Story = {
   args: {
-    width: "354px",
+    width: "9000",
   },
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };
