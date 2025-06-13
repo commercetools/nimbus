@@ -87,6 +87,7 @@ export const VisibleDuration: Story = {
   args: {
     defaultValue: today(getLocalTimeZone()),
     visibleDuration: { months: 3 },
+    pageBehavior: "single",
   },
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };
@@ -106,5 +107,23 @@ export const CalendarFormStates: Story = {
         <Calendar isInvalid />
       </Stack>
     );
+  },
+};
+
+/**
+ * The minimum allowed date that a user may select.
+ */
+export const MinValue: Story = {
+  args: {
+    minValue: today(getLocalTimeZone()).add({ days: -1 }),
+  },
+};
+
+/**
+ * The maximum allowed date that a user may select.
+ */
+export const MaxValue: Story = {
+  args: {
+    maxValue: today(getLocalTimeZone()).add({ days: 1 }),
   },
 };
