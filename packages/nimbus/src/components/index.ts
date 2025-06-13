@@ -35,3 +35,6 @@ export * from "./switch";
 export * from "./password-input";
 export * from "./time-input";
 export * from "./multiline-text-input";
+export * from "./date-input";
+export * from "./calendar";
+export * from "./date-picker";
