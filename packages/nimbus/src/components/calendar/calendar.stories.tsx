@@ -8,7 +8,8 @@ import {
 } from "@internationalized/date";
 
 import { I18nProvider } from "react-aria";
-import { Box } from "@/components";
+import { Box, Stack, Text } from "@/components";
+import { useState } from "react";
 
 const meta: Meta<typeof Calendar> = {
   title: "Components/Date/Calendar",
@@ -19,9 +20,7 @@ const meta: Meta<typeof Calendar> = {
   decorators: [
     (Story) => (
       <I18nProvider locale="en-US">
-        <Box w="8000" display="inline-block" borderRadius="200" boxShadow="4">
-          <Story />
-        </Box>
+        <Story />
       </I18nProvider>
     ),
   ],
@@ -32,10 +31,34 @@ type Story = StoryObj<typeof Calendar>;
 
 export const Base: Story = {};
 
-/** Uncontrolled, with starting Date */
+/** Uncontrolled usage, with a starting Date supplied*/
 export const DefaultValue: Story = {
   args: {
     defaultValue: today(getLocalTimeZone()),
+  },
+};
+
+/**
+ * Controlled usage, receiving the data via the value prop
+ */
+export const Controlled: Story = {
+  render: (args: CalendarProps<DateValue>) => {
+    const [date, setDate] = useState<DateValue | null>(null);
+    return (
+      <div>
+        <Calendar {...args} value={date} onChange={setDate} />
+        <Box mt="400" p="200">
+          Selected date: {date ? date?.toString() : "null"}
+        </Box>
+      </div>
+    );
+  },
+};
+
+/**  focus the calendar when it mounts. */
+export const Autofocus: Story = {
+  args: {
+    autoFocus: true,
   },
 };
 
@@ -52,7 +75,7 @@ export const GermanCalendar: Story = {
  */
 export const CustomWidth: Story = {
   args: {
-    width: "9000",
+    width: "512px",
   },
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };
@@ -71,10 +94,17 @@ export const VisibleDuration: Story = {
 /**
  * Display more than one month
  */
-export const Uncontrolled: Story = {
-  args: {
-    defaultValue: today(getLocalTimeZone()),
-    visibleDuration: { months: 3 },
+export const CalendarFormStates: Story = {
+  render: () => {
+    return (
+      <Stack align="start">
+        <Text>Disabled</Text>
+        <Calendar isDisabled />
+        <Text>Read Only</Text>
+        <Calendar isReadOnly />
+        <Text>Invalid</Text>
+        <Calendar isInvalid />
+      </Stack>
+    );
   },
-  render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };

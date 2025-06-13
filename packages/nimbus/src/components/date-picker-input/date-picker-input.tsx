@@ -58,7 +58,7 @@ export const DatePickerInput = (props: DatePickerInputProps) => {
           <Popover>
             <Dialog>
               <DatePickerInputCalendarSlot>
-                <Calendar />
+                <Calendar variant="plain" />
               </DatePickerInputCalendarSlot>
               <Flex>
                 <Text>Start Time</Text>

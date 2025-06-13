@@ -42,7 +42,6 @@ export const datePickerInputRecipe = defineSlotRecipe({
       boxShadow: "4",
 
       borderRadius: "300",
-      px: "200",
       width: "354px",
 
       "&[data-entering]": {
