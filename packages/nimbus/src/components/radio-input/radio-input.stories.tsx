@@ -46,13 +46,8 @@ export const Base: Story = {
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const htmlLabel = canvasElement.querySelector(
-      '[data-slot="root"]'
-    ) as HTMLLabelElement;
-    const displayLabel = canvasElement.querySelector(
-      '[data-slot="label"]'
-    ) as HTMLSpanElement;
     const htmlInput = canvas.getByTestId("test-radio-input");
+    const radioInput = canvas.getByLabelText("No");
 
     await step(
       "Forwards data- & aria-attributes to the actual html-input",
@@ -66,33 +61,32 @@ export const Base: Story = {
       }
     );
 
-    // await step("Can be focused with the keyboard", async () => {
-    //   await userEvent.keyboard("{tab}");
-    //   await expect(htmlInput).toHaveFocus();
-    // });
+    await step("Can be focused with the keyboard", async () => {
+      await userEvent.keyboard("{tab}");
+      await expect(radioInput).toHaveFocus();
+    });
 
-    // await step("Can be triggered with space-bar", async () => {
-    //   await expect(htmlInput).toHaveFocus();
-    //   await userEvent.keyboard(" ");
-    //   await expect(onChange).toHaveBeenCalledTimes(1);
-    // });
+    await step("Can be triggered with space-bar", async () => {
+      await expect(radioInput).toHaveFocus();
+      await userEvent.keyboard(" ");
+      await expect(onChange).toHaveBeenCalledTimes(1);
+    });
 
-    // await step("Can not be triggered with enter", async () => {
-    //   await userEvent.keyboard("{enter}");
-    //   await expect(onChange).toHaveBeenCalledTimes(1);
-    // });
+    await step("Can not be triggered with enter", async () => {
+      await expect(radioInput).toHaveFocus();
+      await userEvent.keyboard("{enter}");
+      await expect(onChange).toHaveBeenCalledTimes(1);
+    });
 
     await step("Can be triggered by clicking on a label", async () => {
-      const radioNo = canvas.getByLabelText("No");
-      await userEvent.click(radioNo);
+      await userEvent.click(radioInput);
       await expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     await step(
       "Clicking the display label does not trigger onChange again",
       async () => {
-        const label = canvas.getByText("No");
-        await userEvent.click(label);
+        await userEvent.click(radioInput);
         await expect(onChange).toHaveBeenCalledTimes(1);
       }
     );
@@ -141,7 +135,7 @@ export const Disabled: Story = {
   },
 };
 
-export const DisabledSelected: Story = {
+export const DisabledAndSelected: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInputGroup.Root
@@ -215,7 +209,7 @@ export const Invalid: Story = {
   },
 };
 
-export const InvalidSelected: Story = {
+export const InvalidAndSelected: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInputGroup.Root
@@ -294,7 +288,7 @@ export const InvalidAndDisabled: Story = {
       }
     );
 
-    await step("radioInput receives data-invalid for styling", async () => {
+    await step("radioGroup receives data-invalid for styling", async () => {
       await expect(radioGroup).toHaveAttribute("data-invalid", "true");
     });
 

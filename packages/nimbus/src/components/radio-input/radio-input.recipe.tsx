@@ -26,7 +26,6 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      focusRing: "outside",
 
       "& > svg": {
         width: "500",
@@ -51,6 +50,11 @@ export const radioInputSlotRecipe = defineSlotRecipe({
         "& > svg": {
           color: "critical.9",
         },
+      },
+      "&[data-focus] > svg": {
+        outline: "2px solid var(--focus-ring-color, ##AFBBFF)",
+        outlineOffset: "1px",
+        borderRadius: "50%",
       },
     },
   },
