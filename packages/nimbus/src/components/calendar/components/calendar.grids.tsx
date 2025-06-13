@@ -6,7 +6,6 @@ import {
   CalendarCell as RaCalendarCell,
   useSlottedContext,
   CalendarContext,
-  Calendar,
 } from "react-aria-components";
 import {
   CalendarCellSlot,

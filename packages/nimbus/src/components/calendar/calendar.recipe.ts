@@ -54,6 +54,8 @@ export const calendarSlotRecipe = defineSlotRecipe({
       fontSize: "350",
       lineHeight: "500",
       fontWeight: "400",
+      transitionProperty: "all",
+      transitionDuration: "fastest",
 
       textAlign: "center",
       color: "neutral.12",
@@ -64,6 +66,10 @@ export const calendarSlotRecipe = defineSlotRecipe({
 
       "&[aria-disabled=true]": {
         layerStyle: "disabled",
+      },
+
+      "&[data-hovered=true]": {
+        bg: "primary.3",
       },
 
       "&[data-selected=true]": {
