@@ -1,4 +1,10 @@
-import { useState, useRef, useCallback, type KeyboardEvent } from "react";
+import {
+  useState,
+  useRef,
+  useCallback,
+  type KeyboardEvent,
+  type CSSProperties,
+} from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import {
   Popover as RaPopover,
@@ -11,6 +17,8 @@ import {
   TextField,
   useFilter,
 } from "react-aria-components";
+import { themeTokens } from "@commercetools/nimbus-tokens";
+import { useResizeObserver } from "@/utils/useResizeObserver";
 import { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
 import { ComboBoxOptions } from "./combobox.options";
 import { ComboBoxButtonGroup } from "./combobox.multi-select-button-group";
@@ -191,10 +199,16 @@ export const MultiSelectRoot = <T extends object>({
   const triggerRef = useRef<HTMLDivElement>(null);
   const rootRef = mergeRefs(ref, triggerRef);
 
-  //TODO:
-  // - resize the popover body to match the input width
-  // - styles for disabled, readonly, required, invalid, etc
-  // - like, yknow, tests or whatever
+  // Internal state to allow popover width to match input width
+  const [triggerWidth, setTriggerWidth] = useState<string | null>(null);
+  const onResize = useCallback(() => {
+    if (triggerRef.current) {
+      setTriggerWidth(triggerRef.current?.offsetWidth + "px");
+    }
+  }, []);
+
+  useResizeObserver({ ref: triggerRef, onResize });
+
   return (
     <RaDialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
       <div
@@ -239,7 +253,14 @@ export const MultiSelectRoot = <T extends object>({
         />
       </div>
 
-      <ComboBoxPopoverSlot asChild>
+      <ComboBoxPopoverSlot // Set css variable for the trigger width, fall back to 288px if state.triggerWidth is undefined
+        style={
+          {
+            "--trigger-width": triggerWidth ?? themeTokens.size[7200],
+          } as CSSProperties
+        }
+        asChild
+      >
         <RaPopover triggerRef={triggerRef} placement="bottom start">
           <Dialog>
             <RaAutocomplete

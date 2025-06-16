@@ -7,7 +7,7 @@ import {
   type FormEvent,
 } from "react";
 import type { Key, Selection } from "react-aria-components";
-import { userEvent, within, expect } from "@storybook/test";
+import { userEvent, within, expect, fn } from "@storybook/test";
 import { FormField, Stack, Text, Box, Flex } from "@/components";
 import { ComboBox } from "./combobox";
 
@@ -142,10 +142,13 @@ const isOptionSelected = (option: Element | undefined) =>
   option?.getAttribute("aria-selected") === "true" ||
   option?.getAttribute("data-selected") === "true";
 
-const selectOptionsWithKeyboard = async (optionNames: string[]) => {
-  for (let i = 0; i < optionNames.length; i++) {
-    await userEvent.keyboard("{ArrowDown}");
-    await userEvent.keyboard("{enter}");
+const selectOptionsByName = async (optionNames: string[]) => {
+  for (const optionName of optionNames) {
+    const option = findOptionByText(optionName);
+    if (option) {
+      // Select the option with a mouse click
+      await userEvent.click(option);
+    }
   }
 };
 
@@ -171,6 +174,8 @@ const verifyOptionsSelected = async (
     await expect(isOptionSelected(option)).toBe(shouldBeSelected);
   }
 };
+
+const mockFn = fn();
 
 /**
  * Base story
@@ -246,9 +251,14 @@ export const Base: Story = {
         const listbox = document.querySelector('[role="listbox"]');
         const option = document.querySelector('[role="option"]');
         await userEvent.click(option!);
-        // click should close listbox and populate input with selected value
+        // Click should close listbox and populate input with selected value
         await expect(listbox).not.toBeInTheDocument();
         await expect(singleSelect.value).toBe("Koala");
+        // Make sure koala option has selected state
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Koala"], true);
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
       }
     );
     await step(
@@ -493,7 +503,7 @@ export const Base: Story = {
         // Setup: Select 3 options
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-        await selectOptionsWithKeyboard(["Koala", "Kangaroo", "Platypus"]);
+        await selectOptionsByName(["Koala", "Kangaroo", "Platypus"]);
         await userEvent.keyboard("{escape}");
         // Verify initial state
         await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
@@ -528,7 +538,7 @@ export const Base: Story = {
         // Setup: Start with Platypus from previous test, add Koala and Kangaroo
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-        await selectOptionsWithKeyboard(["Koala", "Kangaroo"]);
+        await selectOptionsByName(["Koala", "Kangaroo"]);
         // Verify 3 tags total
         await verifyTagsExist(multiSelect, ["Platypus", "Koala", "Kangaroo"]);
         // Verify all options show as selected
@@ -561,7 +571,7 @@ export const Base: Story = {
         // Setup: Select 3 options
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-        await selectOptionsWithKeyboard(["Koala", "Kangaroo", "Platypus"]);
+        await selectOptionsByName(["Koala", "Kangaroo", "Platypus"]);
         await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
         // Ensure filter input is empty and focused
         const filterInput = getFilterInput();
@@ -593,7 +603,7 @@ export const Base: Story = {
         // Setup: Select 2 options
         multiSelect.focus();
         await userEvent.keyboard("{enter}");
-        await selectOptionsWithKeyboard(["Koala", "Kangaroo"]);
+        await selectOptionsByName(["Koala", "Kangaroo"]);
         await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
         // Type text in filter input
         const filterInput = getFilterInput();
@@ -639,6 +649,233 @@ export const Base: Story = {
         const toggleButton =
           await within(multiSelect).findByLabelText(/toggle combobox/i);
         await expect(toggleButton).toHaveFocus();
+      }
+    );
+  },
+};
+
+/**
+ * Controlled State
+ * Demonstrates controlled usage patterns for single and multi-select
+ */
+export const ControlledState: Story = {
+  args: {
+    selectedKey: 2,
+  },
+  render: (args) => {
+    const [controlledValue, setControlledValue] = useState<Key | null>(
+      /* eslint-disable @typescript-eslint/no-unsafe-argument  */
+      // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
+      args.selectedKey
+    );
+    const [controlledMultiValue, setControlledMultiValue] = useState<Selection>(
+      new Set([1, 3])
+    );
+    const [singleInputValue, setSingleInputValue] = useState(
+      // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
+      args.selectedKey
+        ? // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
+          (options.find((o) => o.id === args.selectedKey)?.name ?? "")
+        : ""
+    );
+    const [multiInputValue, setMultiInputValue] = useState("");
+
+    // Wrapper functions that call both the state setter and mock function
+    const handleSingleSelectionChange = (key: Key | null) => {
+      // If the input is controlled, it is necessary to set the input value to the text value of the selected option
+      const inputValue = options.find((o) => o.id === key)?.name ?? "";
+      setSingleInputValue(inputValue);
+      setControlledValue(key);
+      mockFn(key, inputValue);
+    };
+
+    const handleMultiSelectionChange = (keys: Selection) => {
+      setControlledMultiValue(keys);
+      mockFn(keys);
+    };
+
+    // Input value change handlers
+    const handleSingleInputChange = (value: string) => {
+      setSingleInputValue(value);
+      mockFn(value);
+    };
+
+    const handleMultiInputChange = (value: string) => {
+      setMultiInputValue(value);
+      mockFn(value);
+    };
+
+    // Helper function to get the display text for single selection
+    const getSingleSelectionDisplay = (selectedKey: Key | null) => {
+      if (!selectedKey) return "None";
+      const selectedOption = options.find(
+        (option) => option.id === selectedKey
+      );
+      return selectedOption
+        ? `${selectedKey} (${selectedOption.name})`
+        : selectedKey.toString();
+    };
+
+    // Helper function to get the display text for multiple selection
+    const getMultiSelectionDisplay = (selectedKeys: Selection) => {
+      if (selectedKeys === "all") return "All items";
+      const selectedArray = Array.from(selectedKeys);
+      if (selectedArray.length === 0) return "None";
+
+      return selectedArray
+        .map((key) => {
+          const selectedOption = options.find((option) => option.id === key);
+          return selectedOption
+            ? `${key} (${selectedOption.name})`
+            : key.toString();
+        })
+        .join(", ");
+    };
+
+    return (
+      <Stack direction="column" gap="400">
+        <Stack direction="row" gap="400">
+          <FormField.Root alignSelf={"flex-start"}>
+            <FormField.Label>Controlled Single-Select</FormField.Label>
+            <FormField.Input>
+              <ComboBox.Root
+                aria-label="controlled animals"
+                defaultItems={options}
+                selectedKey={controlledValue}
+                onSelectionChange={handleSingleSelectionChange}
+                inputValue={singleInputValue}
+                onInputChange={handleSingleInputChange}
+                placeholder="Select an animal..."
+              >
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+              </ComboBox.Root>
+            </FormField.Input>
+            <FormField.Description data-testid="single-select-state">
+              Selected: {getSingleSelectionDisplay(controlledValue)}
+            </FormField.Description>
+          </FormField.Root>
+          <FormField.Root alignSelf={"flex-start"}>
+            <FormField.Label>Controlled Multi-Select</FormField.Label>
+            <FormField.Input>
+              <ComboBox.Root
+                aria-label="controlled multi animals"
+                defaultItems={options}
+                selectionMode="multiple"
+                selectedKeys={controlledMultiValue}
+                onSelectionChange={handleMultiSelectionChange}
+                inputValue={multiInputValue}
+                onInputChange={handleMultiInputChange}
+                placeholder="Select multiple animals..."
+              >
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+              </ComboBox.Root>
+            </FormField.Input>
+            <FormField.Description data-testid="multi-select-state">
+              Selected: {getMultiSelectionDisplay(controlledMultiValue)}
+            </FormField.Description>
+          </FormField.Root>
+        </Stack>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /controlled single-select/i,
+    });
+    const singleSelectStateValue = await canvas.findByTestId(
+      "single-select-state"
+    );
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /controlled multi-select/i,
+    });
+    const multiSelectStateValue =
+      await canvas.findByTestId("multi-select-state");
+
+    await step(
+      "Single select shows text value of selected item in input and items option is selected in popover",
+      async () => {
+        // Focus
+        singleSelect.focus();
+        // Check that input value is text value of selected item from external state (2 - kangaroo)
+        await expect(singleSelect.value).toBe("Kangaroo");
+        // Check that external state in description is correct
+        await expect(singleSelectStateValue.textContent).toBe(
+          "Selected: 2 (Kangaroo)"
+        );
+        // Check that option for selected item from external state is selected in popover
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Kangaroo"], true);
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Single select updates external state when user selects a different option",
+      async () => {
+        // Focus
+        singleSelect.focus();
+        // Remove text from input, which opens popover
+        await userEvent.clear(singleSelect);
+        // Select koala option
+        await selectOptionsByName(["Koala"]);
+        // Verify that external state handler was called with correct value
+        await expect(mockFn).toHaveBeenCalledWith(1, "Koala");
+        // Verfiy that expected input value is correct
+        await expect(singleSelect.value).toBe("Koala");
+        // Check that external state in description is correct
+        await expect(singleSelectStateValue.textContent).toBe(
+          "Selected: 1 (Koala)"
+        );
+        // Open popover and verify that Koala option is selected and Kangaroo is not
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Koala"], true);
+        await verifyOptionsSelected(["Kangaroo"], false);
+      }
+    );
+    await step(
+      "Multi select shows text value of selected items from props in tags and options are selected in popover",
+      async () => {
+        // Focus
+        multiSelect.focus();
+        // Check that input value is text value of selected item from external state (2 - kangaroo)
+        await verifyTagsExist(multiSelect, ["Koala", "Platypus"]);
+        // Check that external state in description is correct
+        await expect(multiSelectStateValue.textContent).toBe(
+          "Selected: 1 (Koala), 3 (Platypus)"
+        );
+        // Check that options for selected items from external state are selected in popover
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Koala", "Platypus"], true);
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step(
+      "Multi select updates external state when user selects a different option",
+      async () => {
+        // Focus
+        multiSelect.focus();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Select skunk option
+        await selectOptionsByName(["Skunk"]);
+        // Verify that external state handler was called with correct value
+        await expect(mockFn).toHaveBeenCalled();
+        // Verfiy that expected input value is correct
+        await expect(singleSelect.value).toBe("Koala");
+        // Check that external state in description is correct
+        await expect(multiSelectStateValue.textContent).toBe(
+          "Selected: 1 (Koala), 3 (Platypus), 6 (Skunk)"
+        );
+        // Check that options for selected items from external state are selected in popover
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Koala", "Platypus", "Skunk"], true);
+        // Check that options for unselected items are not selected in popover
+        await verifyOptionsSelected(
+          ["Kangaroo", "Bald Eagle with a very long name hooray", "Bison"],
+          false
+        );
       }
     );
   },
@@ -812,7 +1049,7 @@ export const OptionGroups: Story = {
       // Focus combobox
       singleSelect.focus();
       // Select apple option
-      await selectOptionsWithKeyboard(["apple"]);
+      await selectOptionsByName(["apple"]);
       // Input value should be 'apple'
       await expect(singleSelect).toHaveValue("Apple");
       // Open listbox check that apple option has selected state
@@ -879,7 +1116,7 @@ export const OptionGroups: Story = {
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
         // Select apple option in fruits section
-        await selectOptionsWithKeyboard(["apple"]);
+        await selectOptionsByName(["apple"]);
         // TagList should have apple tag
         await verifyTagsExist(multiSelect, ["Apple"]);
         // Apple option should be selected
@@ -941,7 +1178,7 @@ export const OptionGroups: Story = {
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
         // Select Apple option
-        await selectOptionsWithKeyboard(["Apple"]);
+        await selectOptionsByName(["Apple"]);
         // Verify apple tag is removed
         await expect(appleTag).not.toBeInTheDocument();
         // Verify all options not selected
@@ -1143,88 +1380,6 @@ export const AsyncLoading: Story = {
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
-      </Stack>
-    );
-  },
-};
-
-/**
- * Controlled State
- * Demonstrates both controlled usage patterns for single and multi-select
- */
-export const ControlledState: Story = {
-  render: () => {
-    const [controlledValue, setControlledValue] = useState<Key | null>(2);
-    const [controlledMultiValue, setControlledMultiValue] = useState<Selection>(
-      new Set([1, 3])
-    );
-
-    // Helper function to get the display text for single selection
-    const getSingleSelectionDisplay = (selectedKey: Key | null) => {
-      if (!selectedKey) return "None";
-      const selectedOption = options.find(
-        (option) => option.id === selectedKey
-      );
-      return selectedOption
-        ? `${selectedKey} (${selectedOption.name})`
-        : selectedKey.toString();
-    };
-
-    // Helper function to get the display text for multiple selection
-    const getMultiSelectionDisplay = (selectedKeys: Selection) => {
-      if (selectedKeys === "all") return "All items";
-      const selectedArray = Array.from(selectedKeys);
-      if (selectedArray.length === 0) return "None";
-
-      return selectedArray
-        .map((key) => {
-          const selectedOption = options.find((option) => option.id === key);
-          return selectedOption
-            ? `${key} (${selectedOption.name})`
-            : key.toString();
-        })
-        .join(", ");
-    };
-
-    return (
-      <Stack direction="column" gap="400">
-        <Stack direction="row" gap="400">
-          <FormField.Root alignSelf={"flex-start"}>
-            <FormField.Label>Controlled Single-Select</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                aria-label="controlled animals"
-                defaultItems={options}
-                selectedKey={controlledValue}
-                onSelectionChange={setControlledValue}
-                placeholder="Select an animal..."
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Description>
-              Selected: {getSingleSelectionDisplay(controlledValue)}
-            </FormField.Description>
-          </FormField.Root>
-          <FormField.Root alignSelf={"flex-start"}>
-            <FormField.Label>Controlled Multi-Select</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                aria-label="controlled multi animals"
-                defaultItems={options}
-                selectionMode="multiple"
-                selectedKeys={controlledMultiValue}
-                onSelectionChange={setControlledMultiValue}
-                placeholder="Select multiple animals..."
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Description>
-              Selected: {getMultiSelectionDisplay(controlledMultiValue)}
-            </FormField.Description>
-          </FormField.Root>
-        </Stack>
       </Stack>
     );
   },

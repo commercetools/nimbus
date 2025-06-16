@@ -27,7 +27,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     root: {
       colorPalette: "primary",
       focusRing: "outside",
-      display: "inline-block",
+      display: "inline-flex",
       position: "relative",
       alignSelf: "flex-start",
       maxWidth: "100%",
@@ -178,6 +178,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           px: "200",
           py: 0,
           my: "200",
+          minW: "unset",
         },
         option: {
           colorPalette: "primary",
@@ -219,7 +220,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       selectionMode: "multiple",
       css: {
         popover: {
-          width: "7200",
+          width: "var(--trigger-width)",
         },
       },
     },
@@ -228,7 +229,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       selectionMode: "single",
       css: {
         options: {
-          width: "7200",
+          width: "var(--trigger-width)",
         },
       },
     },
@@ -236,14 +237,23 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       variant: "ghost",
       selectionMode: "multiple",
       css: {
-        popover: { maxW: "7200" },
+        popover: {
+          minW: "max(var(--trigger-width), var(--nimbus-sizes-2000))",
+          maxW: "max(var(--trigger-width), var(--nimbus-sizes-7200))",
+        },
       },
     },
     {
       variant: "ghost",
       selectionMode: "single",
       css: {
-        options: { maxW: "7200" },
+        value: {
+          flex: "1 1 auto",
+        },
+        options: {
+          minW: "max(var(--trigger-width), var(--nimbus-sizes-2000))",
+          maxW: "max(var(--trigger-width), var(--nimbus-sizes-7200))",
+        },
       },
     },
   ],
