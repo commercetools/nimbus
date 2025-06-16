@@ -80,16 +80,6 @@ export const GermanLocale: Story = {
 };
 
 /**
- * The Popover is open by default (uncontrolled)
- */
-export const DefaultOpenUncontrolled: Story = {
-  args: {
-    ["aria-label"]: "Select a date",
-    defaultOpen: true,
-  },
-};
-
-/**
  * Change the open state with a controlled prop
  */
 export const IsOpenControlled: Story = {
@@ -98,7 +88,7 @@ export const IsOpenControlled: Story = {
   },
 
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
       <Stack alignItems="start">
         <Button onClick={() => setIsOpen(!isOpen)}>
