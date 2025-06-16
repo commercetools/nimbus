@@ -22,11 +22,11 @@ export const CalendarRootSlot = withProvider<
   CalendarRootSlotProps
 >("div", "root");
 
-export interface CalendarHeaderSlotProps extends HTMLChakraProps<"header"> {}
+export interface CalendarHeaderSlotProps extends HTMLChakraProps<"div"> {}
 export const CalendarHeaderSlot = withContext<
-  HTMLElement,
+  HTMLDivElement,
   CalendarHeaderSlotProps
->("header", "header");
+>("div", "header");
 
 export interface CalendarGridsSlotProps extends HTMLChakraProps<"div"> {}
 export const CalendarGridsSlot = withContext<
