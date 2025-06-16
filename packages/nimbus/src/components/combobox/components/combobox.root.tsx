@@ -18,7 +18,7 @@ export const ComboBoxRoot = <T extends object>({
     "selectionMode" in props && props.selectionMode === "multiple"
       ? MultiSelectRoot
       : SingleSelectRoot;
-  // TODO: should there be a prop to allow for user control of the menu width?
+  // TODO: should there be a prop to allow for user control of the menu width? (based on the figma, I think that allowing control of the input width is enough, but if not we can pass a prop)
   // TODO: should there be a prop to allow the user to pass in an icon to display on the right of the input other than the down caret (eg search)?
   return (
     <ComboBoxRootSlot
