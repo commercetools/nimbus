@@ -74,6 +74,9 @@ export const GermanCalendar: Story = {
  * Display more than one month
  */
 export const CustomWidth: Story = {
+  args: {
+    width: "720px",
+  },
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };
 

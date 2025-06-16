@@ -40,9 +40,7 @@ export const datePickerRecipe = defineSlotRecipe({
     popover: {
       bg: "neutral.1",
       boxShadow: "4",
-
       borderRadius: "300",
-      width: "354px",
 
       "&[data-entering]": {
         animationName: "fade-in, scale-in",

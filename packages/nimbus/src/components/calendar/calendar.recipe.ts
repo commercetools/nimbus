@@ -14,8 +14,10 @@ export const calendarSlotRecipe = defineSlotRecipe({
   ],
   className: "nimbus-calendar",
   base: {
+    // the container element
     root: {
-      maxWidth: "100vw",
+      display: "inline-block",
+      maxWidth: "100%",
     },
     header: {
       height: "1200",
@@ -27,8 +29,10 @@ export const calendarSlotRecipe = defineSlotRecipe({
     // the container contianing the month(s) grid(s)
     grids: {
       display: "flex",
+      flexWrap: "wrap",
       gap: "800",
       mx: "200",
+      maxWidth: "100%",
     },
     // Month title above each grid
     monthTitle: {
@@ -42,7 +46,8 @@ export const calendarSlotRecipe = defineSlotRecipe({
     // A single grid (<table>) containing a months days
     grid: {
       w: "full",
-      minW: "8000",
+      minW: "fit-content",
+      flex: "1 1 auto",
     },
     // Weekday Row
     gridHeader: {},
@@ -62,6 +67,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
     bodyCell: {
       cursor: "pointer",
       p: "200",
+      minW: "6ch",
       borderRadius: "200",
       fontSize: "350",
       lineHeight: "500",
