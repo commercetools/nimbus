@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DatePickerStateContext } from "react-aria-components";
 import { Close } from "@commercetools/nimbus-icons";
-import { IconButton } from "@/components";
+import { IconButton, type IconButtonProps } from "@/components";
 
 /**
  * DatePickerClearButton
@@ -9,7 +9,11 @@ import { IconButton } from "@/components";
  * Internal component that provides clear functionality for the DatePicker.
  * Uses the DatePickerStateContext to access the setValue method.
  */
-export const DatePickerClearButton = ({ size }: { size: "xs" | "2xs" }) => {
+export const DatePickerClearButton = ({
+  size,
+}: {
+  size: IconButtonProps["size"];
+}) => {
   const datePickerState = useContext(DatePickerStateContext);
 
   const handleClear = () => {
@@ -18,14 +22,17 @@ export const DatePickerClearButton = ({ size }: { size: "xs" | "2xs" }) => {
     }
   };
 
+  const noValue = datePickerState?.dateValue === null;
+
   return (
     <IconButton
-      tone="primary"
+      tone={noValue ? "neutral" : "primary"}
       variant="ghost"
       aria-label="Clear input"
       size={size}
       slot={null}
       onPress={handleClear}
+      isDisabled={noValue}
     >
       <Close />
     </IconButton>

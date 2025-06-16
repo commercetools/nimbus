@@ -137,3 +137,28 @@ export const Granularity: Story = {
     );
   },
 };
+
+/**
+ * Custom Width story
+ * Demonstrates that DatePicker accepts a width property
+ */
+export const CustomWidth: Story = {
+  args: {
+    ["aria-label"]: "Select a date",
+  },
+  render: (args) => {
+    return (
+      <Stack>
+        <Box>
+          <DatePicker {...args} width="256px" />
+        </Box>
+        <Box>
+          <DatePicker {...args} width="512px" />
+        </Box>
+        <Box>
+          <DatePicker {...args} width="full" />
+        </Box>
+      </Stack>
+    );
+  },
+};

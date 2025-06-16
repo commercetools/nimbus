@@ -20,7 +20,7 @@ import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { DateInput, Calendar, IconButton } from "@/components";
 import { DatePickerTimeInput } from "./components/date-picker.time-input";
-import { DatePickerClearButton } from "./components/date-picker.buttons";
+import { DatePickerClearButton } from "./components/date-picker.clear-button";
 
 /**
  * DatePicker
@@ -57,7 +57,7 @@ export const DatePicker = (props: DatePickerProps) => {
         </DatePickerGroupSlot>
 
         <DatePickerPopoverSlot asChild>
-          <Popover>
+          <Popover placement="bottom end">
             <Dialog>
               <DatePickerCalendarSlot>
                 <Calendar variant="plain" />

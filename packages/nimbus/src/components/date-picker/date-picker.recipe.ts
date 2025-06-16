@@ -23,6 +23,7 @@ export const datePickerRecipe = defineSlotRecipe({
     root: {
       //outline: "1px solid deeppink",
       display: "inline-block",
+      overflow: "hidden",
     },
     group: {
       //outline: "1px solid seagreen",
