@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { DatePicker } from "./date-picker";
 import { I18nProvider } from "react-aria";
-import { Box, Button, Stack } from "@/components";
+import { Box, Button, Stack, FormField } from "@/components";
 import { useState } from "react";
 
 /**
@@ -148,6 +148,61 @@ export const CustomWidth: Story = {
         <Box>
           <DatePicker {...args} width="full" />
         </Box>
+      </Stack>
+    );
+  },
+};
+
+/**
+ * InFormFieldContext story
+ * Demonstrates the DatePicker working inside a FormField context
+ */
+export const InFormFieldContext: Story = {
+  args: {
+    ["aria-label"]: "Select a date",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        {/* Basic FormField integration */}
+        <FormField.Root isRequired>
+          <FormField.Label>Event Date</FormField.Label>
+          <FormField.Input>
+            <DatePicker {...args} width="full" />
+          </FormField.Input>
+          <FormField.Description>
+            Select the date for your event
+          </FormField.Description>
+        </FormField.Root>
+
+        {/* Invalid state */}
+        <FormField.Root isInvalid>
+          <FormField.Label>Deadline Date</FormField.Label>
+          <FormField.Input>
+            <DatePicker {...args} width="full" />
+          </FormField.Input>
+          <FormField.Description>
+            Choose a deadline for the project
+          </FormField.Description>
+          <FormField.Error>
+            Please select a valid date in the future
+          </FormField.Error>
+        </FormField.Root>
+
+        {/* With granularity and info box */}
+        <FormField.Root>
+          <FormField.Label>Meeting Time</FormField.Label>
+          <FormField.Input>
+            <DatePicker {...args} granularity="minute" width="full" />
+          </FormField.Input>
+          <FormField.Description>
+            Select the exact date and time for the meeting
+          </FormField.Description>
+          <FormField.InfoBox>
+            This date picker supports minute-level precision. Use the calendar
+            to select a date and the time fields to set the exact time.
+          </FormField.InfoBox>
+        </FormField.Root>
       </Stack>
     );
   },
