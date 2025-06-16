@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { DateInput } from "./date-input";
 import type { DateInputProps } from "./date-input.types";
 import { Button, FormField, Stack, Text } from "@/components";
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, CalendarDateTime } from "@internationalized/date";
 import { useState } from "react";
 import type { DateValue } from "react-aria";
 import { I18nProvider } from "react-aria";
@@ -196,6 +196,39 @@ export const VariantsSizesAndStates: Story = {
             </Stack>
           </Stack>
         ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Showcase Hour Cycle
+ * Demonstrates the hourCycle property with both 12-hour and 24-hour formats
+ * when using date-time values that include time components
+ */
+export const HourCycle: Story = {
+  render: (args: DateInputProps) => {
+    // Create a date-time value with both date and time components
+    const dateTimeValue = new CalendarDateTime(2024, 6, 15, 14, 30, 0);
+
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>12-hour format (2:30 PM)</Text>
+        <DateInput
+          {...args}
+          defaultValue={dateTimeValue}
+          hourCycle={12}
+          aria-label="Date input with 12-hour format"
+          data-testid="hour-cycle-12"
+        />
+        <Text>24-hour format (14:30)</Text>
+        <DateInput
+          {...args}
+          defaultValue={dateTimeValue}
+          hourCycle={24}
+          aria-label="Date input with 24-hour format"
+          data-testid="hour-cycle-24"
+        />
       </Stack>
     );
   },
