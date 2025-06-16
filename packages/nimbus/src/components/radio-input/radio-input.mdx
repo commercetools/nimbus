@@ -1,36 +1,186 @@
 ---
 id: Components-RadioInput
 title: RadioInput
-description: A RadioInput component allows users to select a single option from a mutually exclusive set of choices.
+description: A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
   - Inputs
-  - RadioInput
+  - Radio input
 tags:
   - component
 ---
 
-# RadioInput
+# Radio input
 
-A RadioInput component allows users to select a single option from a mutually exclusive set of choices.
+A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.
 
-## Basic Usage
+## Overview
 
-[Explain the basic usage / usecase of the component].
+Radio inputs ensure users can easily select one option from a small, visible set of mutually exclusive choices with clear labels and visual feedback.
+
+### Resources
+
+Deep dive on details and access design library
+
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1852-4333&m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+### Visual options
+
+#### Default
 
 ```jsx-live
 const App = () => (
-  <RadioInput.Root name="example">
-    <RadioInput.Option value="option1">Option 1</RadioInput.Option>
-    <RadioInput.Option value="option2">Option 2</RadioInput.Option>
-    <RadioInput.Option value="option3">Option 3</RadioInput.Option>
+  <RadioInput.Root orientation="horizontal" name="default-example">
+    <RadioInput.Option value="option1">Select me</RadioInput.Option>
+    <RadioInput.Option value="option2">Select me instead</RadioInput.Option>
   </RadioInput.Root>
 )
 ```
 
+#### Active
 
-## Props
+```jsx-live
+const App = () => (
+  <RadioInput.Root orientation="horizontal" name="active-example" defaultValue="option1">
+    <RadioInput.Option value="option1">Selected option</RadioInput.Option>
+    <RadioInput.Option value="option2">Unselected option</RadioInput.Option>
+  </RadioInput.Root>
+)
+```
+
+#### Disabled
+
+```jsx-live
+const App = () => (
+  <RadioInput.Root orientation="horizontal" name="disabled-example" isDisabled>
+    <RadioInput.Option value="option1">Disabled option</RadioInput.Option>
+    <RadioInput.Option value="option2">Also disabled</RadioInput.Option>
+  </RadioInput.Root>
+)
+```
+
+#### Invalid toned
+
+```jsx-live
+const App = () => (
+  <RadioInput.Root orientation="horizontal" name="invalid-example" isInvalid>
+    <RadioInput.Option value="option1">Invalid option</RadioInput.Option>
+    <RadioInput.Option value="option2">Another invalid option</RadioInput.Option>
+  </RadioInput.Root>
+)
+```
+
+## Guidelines
+
+Radio input guidelines focus on providing a clear, accessible, and mutually exclusive set of options, ensuring users can easily understand the available choices and select only one, with clear visual indication of the selected state and proper labeling for accessibility.
+
+### Best practices
+
+- **Clear and concise labels:** Ensure each radio input has a descriptive label placed consistently (usually to the right).
+- **Logical grouping:** Enclose related radio inputs within a `<fieldset>` element and provide a clear `<legend>` to describe the group's purpose.
+- **Visual distinction:** Clearly indicate the selected state (e.g., filled circle) and the non-selected state (e.g., empty circle).
+- **Sufficient spacing:** Provide enough spacing between radio inputs and their labels for easy selection.
+- **Keyboard accessibility:** Ensure users can navigate through radio inputs using the Tab key and select an option using the arrow keys and Spacebar.
+- **Clear default selection (use sparingly):** Only pre-select a radio input if there's a genuinely logical default option. Avoid forcing a choice unnecessarily.
+- **Avoid too many options:** If you have a long list of mutually exclusive choices, consider a dropdown select instead.
+
+### Usage
+
+Radio inputs are used when you need users to pick a single choice from a limited number of options, presenting all possibilities upfront for easy comparison and selection of just one.
+
+> [!TIP]\
+> When to use
+
+- **Single selection required:** When users must choose only one option from a predefined list.
+- **Limited number of options:** When the number of choices is relatively small (typically 2-5) and all options can be displayed clearly.
+- **Equal importance of options:** When all choices are presented as equally valid and the user needs to make a deliberate selection.
+- **Visual comparison is beneficial:** When seeing all available options at once helps users understand and compare them before choosing.
+- **Clear and mutually exclusive choices:** When the options are distinct and there's no possibility of selecting more than one.
+
+> [!CAUTION]\
+> When not to use
+
+- **Multiple selections allowed:** If users can select more than one option, use checkboxes instead.
+- **Large number of options:** For long lists of choices, a dropdown select is more space-efficient.
+- **Obscure or infrequently used options:** If many options are rarely chosen, a dropdown can hide them until needed, reducing visual clutter.
+- **Saving screen space is critical:** Radio inputs display all options, which can take up significant space, especially on smaller screens.
+- **Default selection is strongly preferred:** If one option is almost always the correct choice, a pre-selected checkbox might be more efficient (with clear indication that it can be unchecked).
+- **Complex or dynamic options:** When the available choices change frequently or depend on other user inputs, a dynamic select or autocomplete field might be better.
+
+### Limited options
+
+Radio inputs work best when there are a limited number of options for a user.
+
+> [!TIP]\
+> **Do**
+>
+> - Use when there are a few options available for the user.
+
+![](/images/radio-input/radio-options-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not use radio inputs when there are an excessive amount of options. Radio input options on default will show every option to a user so it can be overwhelming for a user when there is a lot of information to digest in a small area. Instead, use a dropdown selector to simplify the UI and make it easier to search quickly to find the right option.
+
+![](/images/radio-input/radio-options-dont.png)
+
+## Properties
 
 <PropsTable id="RadioInput" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <RadioInput.Root 
+    orientation="horizontal"
+    name="accessibility-example"
+    id="accessibility-example-group"
+    aria-label="Select an option"
+    isRequired={true}
+  >
+    <RadioInput.Option 
+      value="option1"
+      id="option1"
+      aria-label="Select me option"
+    >
+      Select me
+    </RadioInput.Option>
+    <RadioInput.Option 
+      value="option2"
+      id="option2"
+      aria-label="Select me instead option"
+    >
+      Select me instead
+    </RadioInput.Option>
+  </RadioInput.Root>
+)
+```
+
+### Accessibility Standards
+
+- Always provide a visible label for the radio input.
+- Clearly associate the label with the input using the `for` attribute on the `<label>` and a matching `id` on the `<input type="radio">`.
+- Group related radio inputs within a `<fieldset>` with a `<legend>` to provide a clear group label for screen readers.
+- Ensure sufficient color contrast for all elements (text, borders, icons, focus indicators).
+- Clearly indicate the focused state.
+- Support keyboard navigation:
+  - Use Tab to navigate into and out of the radio group.
+  - Use arrow keys (left/right or up/down) to navigate between radio inputs within the group.
+- Selected state should be clearly indicated.
+- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
+
+### Resources
+
+- [Adobe Spectrum Design System](https://spectrum.adobe.com/)
+- [React Spectrum](https://react-spectrum.adobe.com/)
+- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) (Search for "Radio Button" pattern)
