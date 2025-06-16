@@ -56,6 +56,11 @@ export const Base: Story = {
     const [leftButton, centerButton, rightButton] = buttons;
     const onSelectionChange = args.onSelectionChange as ReturnType<typeof fn>;
 
+    // Helper function to wait for CSS transitions to complete
+    const waitForTransitions = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Wait for moderate transition duration
+    };
+
     await step("Initial Rendering", async () => {
       await expect(group).toBeInTheDocument();
       await expect(buttons).toHaveLength(3);
@@ -70,15 +75,19 @@ export const Base: Story = {
       "Keyboard Navigation (Tab into group, Arrows between buttons)",
       async () => {
         await userEvent.tab(); // Tab into the group (focuses the first button)
+        await waitForTransitions(); // Wait for any focus/hover transitions
         await expect(leftButton).toHaveFocus();
 
         await userEvent.keyboard("{ArrowRight}");
+        await waitForTransitions(); // Wait for focus transitions
         await expect(centerButton).toHaveFocus();
 
         await userEvent.keyboard("{ArrowRight}");
+        await waitForTransitions(); // Wait for focus transitions
         await expect(rightButton).toHaveFocus();
 
         await userEvent.keyboard("{ArrowLeft}");
+        await waitForTransitions(); // Wait for focus transitions
         await expect(centerButton).toHaveFocus();
       }
     );
@@ -106,10 +115,12 @@ export const Base: Story = {
 
     // Reset selection for next step
     await userEvent.click(leftButton); // Click to select 'left'
+    await waitForTransitions(); // Wait for click transitions
     onSelectionChange.mockClear(); // Clear mock history
 
     await step("Mouse Selection", async () => {
       await userEvent.click(rightButton);
+      await waitForTransitions(); // Wait for click/hover transitions
       await expect(rightButton).toHaveAttribute("aria-checked", "true");
       await expect(leftButton).toHaveAttribute("aria-checked", "false");
       await expect(centerButton).toHaveAttribute("aria-checked", "false");
@@ -117,6 +128,7 @@ export const Base: Story = {
 
       // Click again to deselect
       await userEvent.click(rightButton);
+      await waitForTransitions(); // Wait for click/hover transitions
       await expect(rightButton).toHaveAttribute("aria-checked", "false");
       await expect(onSelectionChange).toHaveBeenCalledTimes(2);
     });
