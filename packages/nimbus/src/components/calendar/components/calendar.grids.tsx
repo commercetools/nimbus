@@ -7,6 +7,7 @@ import {
   useSlottedContext,
   CalendarContext,
 } from "react-aria-components";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
   CalendarCellSlot,
   CalendarGridBodySlot,
@@ -18,8 +19,8 @@ import {
 
 export const CalendarGrids = () => {
   const context = useSlottedContext(CalendarContext);
-
   const arr = new Array(context?.visibleDuration?.months || 1).fill("");
+  const todayDate = today(getLocalTimeZone());
 
   return (
     <CalendarGridsSlot>
@@ -37,11 +38,14 @@ export const CalendarGrids = () => {
             </CalendarGridHeaderSlot>
             <CalendarGridBodySlot asChild>
               <RaCalendarGridBody>
-                {(date) => (
-                  <CalendarCellSlot asChild>
-                    <RaCalendarCell date={date} />
-                  </CalendarCellSlot>
-                )}
+                {(date) => {
+                  const isToday = date.compare(todayDate) === 0;
+                  return (
+                    <CalendarCellSlot asChild data-today={isToday}>
+                      <RaCalendarCell date={date} />
+                    </CalendarCellSlot>
+                  );
+                }}
               </RaCalendarGridBody>
             </CalendarGridBodySlot>
           </RaCalendarGrid>

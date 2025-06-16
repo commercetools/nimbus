@@ -74,9 +74,6 @@ export const GermanCalendar: Story = {
  * Display more than one month
  */
 export const CustomWidth: Story = {
-  args: {
-    width: "512px",
-  },
   render: (args: CalendarProps<DateValue>) => <Calendar {...args} />,
 };
 
@@ -154,6 +151,21 @@ export const UnavailableDates: Story = {
     <Stack alignItems="start">
       <Text fontSize="sm" color="gray.600">
         Only weekdays are available for selection. Weekends are disabled.
+      </Text>
+      <Calendar {...args} />
+    </Stack>
+  ),
+};
+
+/**
+ * Shows the current day highlighted with a neutral.3 background.
+ * The today highlighting is automatically applied without any configuration.
+ */
+export const TodayHighlighting: Story = {
+  render: (args: CalendarProps<DateValue>) => (
+    <Stack alignItems="start">
+      <Text fontSize="sm" color="gray.600">
+        Today's date is automatically highlighted with a neutral.3 background.
       </Text>
       <Calendar {...args} />
     </Stack>
