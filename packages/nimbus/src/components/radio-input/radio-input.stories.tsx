@@ -324,38 +324,38 @@ export const InvisibleLabel: Story = {
 export const Orientation: Story = {
   render: () => (
     <Stack gap="1000">
-      {/* Horizontal (default) */}
-      <RadioInput.Root name="storybook-radio-grouping-direction-horizontal">
+      {/* Vertical (default) */}
+      <RadioInput.Root name="storybook-radio-grouping-direction-vertical">
         <RadioInput.Option value="yes" key="input5">
           Yes
         </RadioInput.Option>
-        <RadioInput.Option value="no" key="input6">
+        <RadioInput.Option value="no" key="input1-vertical">
           No
         </RadioInput.Option>
-        <RadioInput.Option value="probably" key="input7">
+        <RadioInput.Option value="probably" key="input2-vertical">
           Probably
         </RadioInput.Option>
-        <RadioInput.Option value="meh" key="input8">
+        <RadioInput.Option value="meh" key="input3-vertical">
           Meh
         </RadioInput.Option>
       </RadioInput.Root>
 
       <hr />
-      {/* Vertical */}
+      {/* Horizontal */}
       <RadioInput.Root
-        name="storybook-radio-grouping-direction-vertical"
-        orientation="vertical"
+        name="storybook-radio-grouping-direction-horizontal"
+        orientation="horizontal"
       >
-        <RadioInput.Option value="ja" key="input1-vert">
+        <RadioInput.Option value="ja" key="input1-horizontal">
           Ja
         </RadioInput.Option>
-        <RadioInput.Option value="nein " key="input2-vert">
+        <RadioInput.Option value="nein " key="input2-horizontal">
           Nein
         </RadioInput.Option>
-        <RadioInput.Option value="wahrscheinlich" key="input3-vert">
+        <RadioInput.Option value="wahrscheinlich" key="input3-horizontal">
           Wahrscheinlich
         </RadioInput.Option>
-        <RadioInput.Option value="naja" key="input4-vert">
+        <RadioInput.Option value="naja" key="input4-horizontal">
           Naja
         </RadioInput.Option>
       </RadioInput.Root>
@@ -390,9 +390,9 @@ export const WithFormField: StoryObj = {
       <FormField.Label>Favorite Artist</FormField.Label>
       <FormField.Input>
         <RadioInput.Root name="artist">
-          <RadioInput.Option value="dreamy">Dreamy Dave</RadioInput.Option>
-          <RadioInput.Option value="cure">The Cure</RadioInput.Option>
-          <RadioInput.Option value="gaga">Lady Gaga</RadioInput.Option>
+          <RadioInput.Option value="raphael">Raphael</RadioInput.Option>
+          <RadioInput.Option value="donatello">Donatello</RadioInput.Option>
+          <RadioInput.Option value="leonardo">Leonardo</RadioInput.Option>
         </RadioInput.Root>
       </FormField.Input>
       <FormField.Description>Pick your favorite artist.</FormField.Description>
@@ -406,9 +406,9 @@ export const WithFormField: StoryObj = {
 
     // RadioInput elements
     const radioGroup = canvas.getByRole("radiogroup");
-    const radioDreamyDave = canvas.getByLabelText("Dreamy Dave");
-    const radioTheCure = canvas.getByLabelText("The Cure");
-    const radioLadyGaga = canvas.getByLabelText("Lady Gaga");
+    const radioRaphael = canvas.getByLabelText("Raphael");
+    const radioDonatello = canvas.getByLabelText("Donatello");
+    const radioLeonardo = canvas.getByLabelText("Leonardo");
 
     await step("FormField renders the label for the field", async () => {
       await expect(formLabel).toBeInTheDocument();
@@ -426,19 +426,19 @@ export const WithFormField: StoryObj = {
     await step(
       "RadioInput renders all radio options as accessible inputs",
       async () => {
-        await expect(radioDreamyDave).toBeInTheDocument();
-        await expect(radioTheCure).toBeInTheDocument();
-        await expect(radioLadyGaga).toBeInTheDocument();
+        await expect(radioRaphael).toBeInTheDocument();
+        await expect(radioDonatello).toBeInTheDocument();
+        await expect(radioLeonardo).toBeInTheDocument();
       }
     );
 
     await step(
       "RadioInput allows selecting only one option at a time",
       async () => {
-        await userEvent.click(radioTheCure);
-        await expect(radioTheCure).toBeChecked();
-        await expect(radioDreamyDave).not.toBeChecked();
-        await expect(radioLadyGaga).not.toBeChecked();
+        await userEvent.click(radioRaphael);
+        await expect(radioRaphael).toBeChecked();
+        await expect(radioDonatello).not.toBeChecked();
+        await expect(radioLeonardo).not.toBeChecked();
       }
     );
   },
