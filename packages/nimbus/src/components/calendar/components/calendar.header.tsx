@@ -60,6 +60,7 @@ export const CalendarHeader = () => {
             color="neutral.11"
             width={showRangeLabel ? "18ch" : "9ch"}
             textAlign="center"
+            aria-hidden="true"
           >
             {showRangeLabel ? monthRangeLabel : monthLabel}
           </Text>
@@ -90,6 +91,7 @@ export const CalendarHeader = () => {
             color="neutral.11"
             width="5ch"
             textAlign="center"
+            aria-hidden="true"
           >
             {yearLabel}
           </Text>

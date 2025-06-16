@@ -9,7 +9,7 @@ import { CalendarHeader } from "./components/calendar.header";
 import { calendarSlotRecipe } from "./calendar.recipe";
 import { useRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { CalendarButtonContext } from "./components/calendar.button-context";
+import { CalendarCustomContext } from "./components/calendar.custom-context";
 
 export const Calendar = (props: CalendarProps<DateValue>) => {
   const recipe = useRecipe({ recipe: calendarSlotRecipe });
@@ -19,10 +19,10 @@ export const Calendar = (props: CalendarProps<DateValue>) => {
   return (
     <CalendarRootSlot {...recipeProps} {...styleProps} asChild>
       <RaCalendar {...otherProps}>
-        <CalendarButtonContext>
+        <CalendarCustomContext>
           <CalendarHeader />
           <CalendarGrids />
-        </CalendarButtonContext>
+        </CalendarCustomContext>
       </RaCalendar>
     </CalendarRootSlot>
   );
