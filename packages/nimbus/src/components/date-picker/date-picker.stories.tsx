@@ -110,33 +110,30 @@ export const IsOpenControlled: Story = {
   },
 };
 
-export const GranularityDay: Story = {
+/**
+ * Granularity story
+ * Demonstrates available granularity options
+ */
+export const Granularity: Story = {
   args: {
     ["aria-label"]: "Select a date",
-    granularity: "day",
-    isOpen: true,
   },
-};
-
-export const GranularityHour: Story = {
-  args: {
-    ["aria-label"]: "Select a date",
-    granularity: "hour",
-    isOpen: true,
-  },
-};
-
-export const GranularityMinute: Story = {
-  args: {
-    ["aria-label"]: "Select a date",
-    granularity: "minute",
-    isOpen: true,
-  },
-};
-export const GranularitySecond: Story = {
-  args: {
-    ["aria-label"]: "Select a date",
-    granularity: "second",
-    isOpen: true,
+  render: (args) => {
+    return (
+      <Stack>
+        <Box>
+          <DatePicker {...args} granularity="day" />
+        </Box>
+        <Box>
+          <DatePicker {...args} granularity="hour" />
+        </Box>
+        <Box>
+          <DatePicker {...args} granularity="minute" />
+        </Box>
+        <Box>
+          <DatePicker {...args} granularity="second" />
+        </Box>
+      </Stack>
+    );
   },
 };
