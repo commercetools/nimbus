@@ -52,9 +52,10 @@ export const dateInputRecipe = defineSlotRecipe({
         color: "primary.contrast",
       },
 
-      "&[data-placeholder='true']:not([data-focused='true'])": {
-        opacity: 0.5,
-      },
+      "&[data-placeholder='true']:not([data-focused='true']), &[data-type='literal']":
+        {
+          opacity: 0.5,
+        },
 
       /**
        * The first and last segment contains a hidden character for screen readers

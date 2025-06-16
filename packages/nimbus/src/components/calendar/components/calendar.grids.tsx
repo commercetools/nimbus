@@ -44,7 +44,7 @@ export const CalendarGrids = () => {
         }).format(gridDate.toDate(getLocalTimeZone()));
 
         return (
-          <Box key={monthName}>
+          <Box key={monthName} width={visibleMonths == 1 ? "full" : "auto"}>
             {showMonthTitles && (
               <CalendarMonthTitleSlot>{monthName}</CalendarMonthTitleSlot>
             )}
