@@ -336,3 +336,76 @@ export const HideTimeZone: Story = {
     );
   },
 };
+
+/**
+ * Showcase Should Force Leading Zeros
+ * Demonstrates the shouldForceLeadingZeros property with different date values
+ * to show the difference between forced leading zeros and locale-default behavior
+ */
+export const ShouldForceLeadingZeros: Story = {
+  render: (args: DateInputProps) => {
+    // Create date values with single-digit months and days to demonstrate leading zeros
+    const singleDigitDate = new CalendarDate(2024, 3, 5); // March 5th
+    const singleDigitDateTime = new CalendarDateTime(2024, 3, 5, 9, 7, 0); // March 5th, 9:07 AM
+
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text fontWeight="700">Date Only (March 5, 2024)</Text>
+        <Text>Default behavior (locale-determined)</Text>
+        <DateInput
+          {...args}
+          defaultValue={singleDigitDate}
+          granularity="day"
+          aria-label="Date input with default leading zeros behavior"
+          data-testid="leading-zeros-default-date"
+        />
+        <Text>Force leading zeros (shouldForceLeadingZeros=true)</Text>
+        <DateInput
+          {...args}
+          defaultValue={singleDigitDate}
+          granularity="day"
+          shouldForceLeadingZeros={true}
+          aria-label="Date input with forced leading zeros"
+          data-testid="leading-zeros-forced-date"
+        />
+        <Text>No leading zeros (shouldForceLeadingZeros=false)</Text>
+        <DateInput
+          {...args}
+          defaultValue={singleDigitDate}
+          granularity="day"
+          shouldForceLeadingZeros={false}
+          aria-label="Date input without leading zeros"
+          data-testid="leading-zeros-disabled-date"
+        />
+
+        <Text fontWeight="700">Date and Time (March 5, 2024, 9:07 AM)</Text>
+        <Text>Default behavior (locale-determined)</Text>
+        <DateInput
+          {...args}
+          defaultValue={singleDigitDateTime}
+          granularity="minute"
+          aria-label="DateTime input with default leading zeros behavior"
+          data-testid="leading-zeros-default-datetime"
+        />
+        <Text>Force leading zeros (shouldForceLeadingZeros=true)</Text>
+        <DateInput
+          {...args}
+          defaultValue={singleDigitDateTime}
+          granularity="minute"
+          shouldForceLeadingZeros={true}
+          aria-label="DateTime input with forced leading zeros"
+          data-testid="leading-zeros-forced-datetime"
+        />
+        <Text>No leading zeros (shouldForceLeadingZeros=false)</Text>
+        <DateInput
+          {...args}
+          defaultValue={singleDigitDateTime}
+          granularity="minute"
+          shouldForceLeadingZeros={false}
+          aria-label="DateTime input without leading zeros"
+          data-testid="leading-zeros-disabled-datetime"
+        />
+      </Stack>
+    );
+  },
+};
