@@ -41,23 +41,13 @@ export const CalendarHeader = () => {
     year: "numeric",
   }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
 
-  const goto = {
-    nextPage: () => calendarState.focusNextPage(),
-    previousPage: () => calendarState.focusPreviousPage(),
-    nextMonth: () => calendarState.focusNextSection(),
-    previousMonth: () => calendarState.focusPreviousSection(),
-    nextYear: () => calendarState.focusNextSection(true),
-    previousYear: () => calendarState.focusPreviousSection(true),
-  };
-
   return (
     <CalendarHeaderSlot>
       <Flex>
         <Stack direction="row" alignItems="center">
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={showRangeLabel ? goto.previousPage : goto.previousMonth}
-            slot={null}
+            slot={showRangeLabel ? "previous" : "previous-month"}
             size="xs"
             variant="ghost"
             tone="primary"
@@ -75,8 +65,7 @@ export const CalendarHeader = () => {
           </Text>
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={showRangeLabel ? goto.nextPage : goto.nextMonth}
-            slot={null}
+            slot={showRangeLabel ? "next" : "next-month"}
             size="xs"
             variant="ghost"
             tone="primary"
@@ -88,8 +77,7 @@ export const CalendarHeader = () => {
         <Stack direction="row" alignItems="center">
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
-            onPress={goto.previousYear}
-            slot={null}
+            slot="previous-year"
             size="xs"
             variant="ghost"
             tone="primary"
@@ -106,13 +94,7 @@ export const CalendarHeader = () => {
             {yearLabel}
           </Text>
           {/* @ts-expect-error react aria is adding the aria-label prop */}
-          <IconButton
-            onPress={goto.nextYear}
-            slot={null}
-            size="xs"
-            variant="ghost"
-            tone="primary"
-          >
+          <IconButton slot="next-year" size="xs" variant="ghost" tone="primary">
             <KeyboardArrowRight />
           </IconButton>
         </Stack>
