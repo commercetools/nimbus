@@ -6,7 +6,7 @@ import {
   DatePickerCalendarSlot,
 } from "./date-picker.slots";
 
-import { CalendarMonth, Close } from "@commercetools/nimbus-icons";
+import { CalendarMonth } from "@commercetools/nimbus-icons";
 
 import {
   DatePicker as ReactAriaDatePicker,
@@ -20,6 +20,7 @@ import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { DateInput, Calendar, IconButton } from "@/components";
 import { DatePickerTimeInput } from "./components/date-picker.time-input";
+import { DatePickerClearButton } from "./components/date-picker.buttons";
 
 /**
  * DatePicker
@@ -42,15 +43,7 @@ export const DatePicker = (props: DatePickerProps) => {
           <Group>
             <DateInput size={size} width="full" />
             <DatePickerTriggerSlot>
-              <IconButton
-                tone="primary"
-                variant="ghost"
-                aria-label="Clear input"
-                size={calendarButtonSize}
-                slot={null}
-              >
-                <Close />
-              </IconButton>
+              <DatePickerClearButton size={calendarButtonSize} />
               <IconButton
                 tone="primary"
                 variant="ghost"
