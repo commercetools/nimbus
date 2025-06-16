@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { DateInput } from "./date-input";
 import type { DateInputProps } from "./date-input.types";
 import { Button, FormField, Stack, Text } from "@/components";
-import { CalendarDate, CalendarDateTime } from "@internationalized/date";
+import {
+  CalendarDate,
+  CalendarDateTime,
+  ZonedDateTime,
+} from "@internationalized/date";
 import { useState } from "react";
 import type { DateValue } from "react-aria";
 import { I18nProvider } from "react-aria";
@@ -286,6 +290,49 @@ export const Granularity: Story = {
           </I18nProvider>
         ))}
       </>
+    );
+  },
+};
+
+/**
+ * Showcase Hide Time Zone
+ * Demonstrates the hideTimeZone property with datetime values that include timezone information
+ */
+export const HideTimeZone: Story = {
+  render: (args: DateInputProps) => {
+    // Create a zoned date-time value that includes timezone information
+    const zonedDateTime = new ZonedDateTime(
+      2024,
+      6,
+      15,
+      "America/New_York",
+      -4 * 60 * 60 * 1000,
+      14,
+      30,
+      0
+    );
+
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With timezone displayed (hideTimeZone=false)</Text>
+        <DateInput
+          {...args}
+          defaultValue={zonedDateTime}
+          hideTimeZone={false}
+          granularity="minute"
+          aria-label="Date input with timezone displayed"
+          data-testid="timezone-visible"
+        />
+        <Text>With timezone hidden (hideTimeZone=true)</Text>
+        <DateInput
+          {...args}
+          defaultValue={zonedDateTime}
+          hideTimeZone={true}
+          granularity="minute"
+          aria-label="Date input with timezone hidden"
+          data-testid="timezone-hidden"
+        />
+      </Stack>
     );
   },
 };
