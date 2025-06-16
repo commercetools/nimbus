@@ -34,6 +34,12 @@ export const CalendarGridsSlot = withContext<
   CalendarGridsSlotProps
 >("div", "grids");
 
+export interface CalendarMonthTitleSlotProps extends HTMLChakraProps<"div"> {}
+export const CalendarMonthTitleSlot = withContext<
+  HTMLDivElement,
+  CalendarMonthTitleSlotProps
+>("div", "monthTitle");
+
 export interface CalendarGridSlotProps extends HTMLChakraProps<"table"> {}
 export const CalendarGridSlot = withContext<
   HTMLTableElement,

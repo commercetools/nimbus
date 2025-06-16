@@ -5,6 +5,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
     "root",
     "header",
     "grids",
+    "monthTitle",
     "grid",
     "gridHeader",
     "headerCell",
@@ -27,12 +28,21 @@ export const calendarSlotRecipe = defineSlotRecipe({
     grids: {
       display: "flex",
       gap: "800",
+      mx: "200",
+    },
+    // Month title above each grid
+    monthTitle: {
+      textAlign: "center",
+      fontSize: "400",
+      fontWeight: "600",
+      color: "neutral.11",
+      mb: "300",
+      px: "200",
     },
     // A single grid (<table>) containing a months days
     grid: {
       w: "full",
       minW: "8000",
-      mx: "200",
     },
     // Weekday Row
     gridHeader: {},
