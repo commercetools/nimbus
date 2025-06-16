@@ -26,7 +26,7 @@ export const CalendarGrids = () => {
     <CalendarGridsSlot>
       {arr.map((_, index) => (
         <CalendarGridSlot asChild>
-          <RaCalendarGrid offset={{ months: index }}>
+          <RaCalendarGrid offset={{ months: index }} weekdayStyle="short">
             <CalendarGridHeaderSlot asChild>
               <RaCalendarGridHeader>
                 {(day) => (
