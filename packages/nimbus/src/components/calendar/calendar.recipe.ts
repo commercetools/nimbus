@@ -75,6 +75,10 @@ export const calendarSlotRecipe = defineSlotRecipe({
         bg: "primary.3",
       },
 
+      "&[data-today=true]": {
+        bg: "neutral.3",
+      },
+
       "&[data-selected=true]": {
         bg: "primary.9",
         color: "primary.contrast",
