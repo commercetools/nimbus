@@ -6,7 +6,7 @@ import {
   DatePickerCalendarSlot,
 } from "./date-picker.slots";
 
-import { CalendarMonth } from "@commercetools/nimbus-icons";
+import { CalendarMonth, Close } from "@commercetools/nimbus-icons";
 
 import {
   DatePicker as ReactAriaDatePicker,
@@ -18,7 +18,7 @@ import { useSlotRecipe } from "@chakra-ui/react";
 import { datePickerRecipe } from "./date-picker.recipe";
 import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { Flex, DateInput, Calendar, IconButton, Text } from "@/components";
+import { DateInput, Calendar, IconButton } from "@/components";
 import { DatePickerTimeInput } from "./components/date-picker.time-input";
 
 /**
@@ -36,17 +36,21 @@ export const DatePicker = (props: DatePickerProps) => {
   const calendarButtonSize = size === "md" ? "xs" : "2xs";
 
   return (
-    <DatePickerRootSlot {...recipeProps} {...styleProps}>
+    <DatePickerRootSlot {...recipeProps} {...styleProps} asChild>
       <ReactAriaDatePicker {...otherProps}>
         <DatePickerGroupSlot asChild>
           <Group>
-            <DateInput
-              size={size}
-              width="full"
-              locale={props.locale}
-              createCalendar={props.createCalendar}
-            />
+            <DateInput size={size} width="full" />
             <DatePickerTriggerSlot>
+              <IconButton
+                tone="primary"
+                variant="ghost"
+                aria-label="Clear input"
+                size={calendarButtonSize}
+                slot={null}
+              >
+                <Close />
+              </IconButton>
               <IconButton
                 tone="primary"
                 variant="ghost"
