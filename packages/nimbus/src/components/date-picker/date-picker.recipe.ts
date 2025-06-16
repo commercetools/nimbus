@@ -69,7 +69,7 @@ export const datePickerRecipe = defineSlotRecipe({
         group: {
           "& .nimbus-date-input__root": {
             // combine 2 tokens cause there is no token for this crooked value
-            mr: "calc({spacing.1600} + {spacing.100})",
+            mr: "calc({spacing.1600} + {spacing.200})",
           },
         },
         trigger: {
