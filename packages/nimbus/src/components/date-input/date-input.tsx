@@ -21,12 +21,12 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  */
 export const DateInput = (props: DateInputProps) => {
   const recipe = useRecipe({ recipe: dateInputRecipe });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
-  const [styleProps, otherProps] = extractStyleProps(remainingProps);
+  const [recipeProps, recipeFreeProps] = recipe.splitVariantProps(props);
+  const [styleProps, functionalProps] = extractStyleProps(recipeFreeProps);
 
   return (
-    <DateInputRootSlot asChild {...recipeProps} {...styleProps}>
-      <DateField {...otherProps}>
+    <DateInputRootSlot {...recipeProps} {...styleProps} asChild>
+      <DateField {...functionalProps}>
         <DateInputSegmentGroupSlot asChild>
           <DateInputField>
             {(segment) => (

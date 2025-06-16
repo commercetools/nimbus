@@ -1,17 +1,8 @@
 import type { DateInputRootProps } from "./date-input.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import { dateInputRecipe } from "./date-input.recipe";
-import type { DateFieldStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
-
-/**
- * Properties from DateFieldStateOptions that would conflict with similarly named
- * properties in DateInputRootProps. We use this to prevent TypeScript interface
- * merging conflicts by prioritizing the DateFieldStateOptions implementation.
- *
- * Examples include: value, defaultValue, onChange, onBlur, onFocus, etc.
- */
-type ConflictingFieldStateProps = keyof DateFieldStateOptions<DateValue>;
+import type { DateFieldProps } from "react-aria-components";
 
 /**
  * Additional properties we want to exclude from the DateInput component.
@@ -35,11 +26,12 @@ type ExcludedProps =
 /**
  * Main props interface for the DateInput component.
  *
- * We use Omit to remove:
- * 1. Conflicting props from DateInputRootProps to avoid TypeScript errors
- * 2. Explicitly excluded props that we don't want users to access
+ * We use the same pattern as TextInput to avoid type conflicts:
+ * 1. Start with DateFieldProps as the base
+ * 2. Merge with DateInputRootProps, excluding conflicting keys
+ * 3. Add recipe variant props
  */
 export interface DateInputProps
-  extends Omit<DateInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
-    Omit<DateFieldStateOptions<DateValue>, ExcludedProps>,
+  extends DateFieldProps<DateValue>,
+    Omit<DateInputRootProps, keyof DateFieldProps<DateValue> | ExcludedProps>,
     RecipeVariantProps<typeof dateInputRecipe> {}
