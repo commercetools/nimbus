@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { mdxDocumentStates } from "./mdx-document-states";
 import { mdxDocumentAudiences } from "./mdx-document-audiences";
 import { lifecycleStates } from "./lifecycle-states";
 
@@ -22,8 +21,6 @@ export const mdxDocumentSchema = z.object({
     title: z.string(),
     /** a one sentence descirption of the file-contents */
     description: z.string(),
-    /** the current state of progress of the document */
-    documentState: z.enum(mdxDocumentStates).optional(),
     /** the audience the document is targeted at */
     documentAudiences: z.array(z.enum(mdxDocumentAudiences)).optional(),
     /** the lifecycle state of the component/feature */

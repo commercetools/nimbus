@@ -30,13 +30,12 @@ export const useCreateDocument = () => {
       "-"
     );
     const fileName = `${sluggify(fileNameSeed)}.mdx`;
-    const repoPath = `${activeDoc.meta.repoPath.replace(/\/[^\/]+$/, "")}/${fileName}`;
+    const repoPath = `${activeDoc.meta.repoPath.replace(/\/[^/]+$/, "")}/${fileName}`;
 
     const meta = {
       id: fileNameSeed,
       title,
       description,
-      documentState: "InitialDraft",
       order: 999,
       repoPath,
       menu: [...activeDoc.meta.menu, menuLabel],
