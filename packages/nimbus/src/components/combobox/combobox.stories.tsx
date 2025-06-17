@@ -7,7 +7,7 @@ import {
   type FormEvent,
 } from "react";
 import type { Key, Selection } from "react-aria-components";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, fireEvent, within, expect, fn } from "@storybook/test";
 import { FormField, Stack, Text, Box, Flex } from "@/components";
 import { ComboBox } from "./combobox";
 
@@ -355,6 +355,24 @@ export const Base: Story = {
       }
     );
     await step(
+      "multi select opens popover on click when no options are selected and popover is closed",
+      async () => {
+        // Click the root component
+        await userEvent.click(multiSelect);
+        // Toggle popover to open state
+        await expect(
+          document.querySelector('[role="listbox"]')
+        ).toBeInTheDocument();
+        await expect(multiSelect.getAttribute("data-open")).toBe("true");
+        // Click root component again
+        // fireEvent used here due to this bug: https://github.com/testing-library/user-event/issues/1075#issuecomment-1948093169
+        await fireEvent.click(multiSelect);
+        // Toggle popover to closed state
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        await expect(multiSelect.getAttribute("data-open")).toBe("false");
+      }
+    );
+    await step(
       "multi select opens popover when focused and user presses enter",
       async () => {
         // Ensure no popover is open initially
@@ -619,6 +637,43 @@ export const Base: Story = {
         await verifyTagsExist(multiSelect, ["Koala"]);
         // Close popover
         await userEvent.keyboard("{escape}");
+      }
+    );
+    await step(
+      "multi select - when items are selected clicking root component does not toggle popover",
+      async () => {
+        // Verify popover is closed
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        await expect(multiSelect.getAttribute("data-open")).toBe("false");
+        // Click the root component
+        await userEvent.click(multiSelect);
+        // Verify popover is still closed
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        await expect(multiSelect.getAttribute("data-open")).toBe("false");
+      }
+    );
+    await step(
+      "multi select - when items are selected expand button toggles popover",
+      async () => {
+        // Verify popover is closed
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        await expect(multiSelect.getAttribute("data-open")).toBe("false");
+        // Click the expand button
+        const expandButton = await within(multiSelect).findByRole("button", {
+          name: "toggle combobox",
+        });
+        await userEvent.click(expandButton);
+        // Toggle popover to open state
+        await expect(
+          document.querySelector('[role="listbox"]')
+        ).toBeInTheDocument();
+        await expect(multiSelect.getAttribute("data-open")).toBe("true");
+        // Click expand button again
+        // fireEvent used here due to this bug: https://github.com/testing-library/user-event/issues/1075#issuecomment-1948093169
+        await fireEvent.click(expandButton);
+        // Toggle popover to closed state
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        await expect(multiSelect.getAttribute("data-open")).toBe("false");
       }
     );
     await step(
@@ -1218,8 +1273,10 @@ export const ComplexOptions: Story = {
           <Text slot="label">{item.type}</Text>
           <Text color="positive.11">{item.price}</Text>
         </Flex>
-        <Text slot="description">{item.description}</Text>
-        <Text fontSize="300" color="neutral.9">
+        <Text slot="description" color="neutral.12">
+          {item.description}
+        </Text>
+        <Text fontSize="300" color="neutral.11">
           {item.features.join(" • ")}
         </Text>
       </Flex>
@@ -1284,6 +1341,25 @@ export const ComplexOptions: Story = {
         </FormField.Root>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /single select plan/i,
+    });
+    // const multiSelect = await canvas.findByRole("combobox", {
+    //   name: /multi-select plans/i,
+    // });
+    await step("single select displays options in popover", async () => {
+      // Focus the input
+      await userEvent.tab();
+      await expect(singleSelect).toHaveFocus();
+      // // Open the popover
+      await userEvent.keyboard("{ArrowDown}");
+      // Check that there are the expected number of options
+      await expect(getListboxOptions().length).toBe(4);
+      await userEvent.keyboard("{Escape}");
+    });
   },
 };
 

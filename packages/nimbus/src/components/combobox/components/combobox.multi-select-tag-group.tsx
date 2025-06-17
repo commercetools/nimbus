@@ -150,7 +150,6 @@ export const MultiSelectTagGroup =
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                     }}
-                    onClick={() => containerRef?.current?.focus()}
                   >
                     {placeholder}
                   </div>
