@@ -5,7 +5,6 @@ export * from "./code";
 export * from "./dialog";
 export * from "./flex";
 export * from "./heading";
-export * from "./highlight";
 export * from "./icon-button";
 export * from "./image";
 export * from "./kbd";
