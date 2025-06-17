@@ -130,6 +130,10 @@ export const MultiSelectRoot = <T extends object>({
     }
   }, [selectedKeys, setSelectedKeys]);
 
+  const filterUtils = useFilter({ sensitivity: "base" });
+  const contains = (...args: Parameters<typeof filterUtils.contains>) =>
+    filterUtils.contains.apply(undefined, args);
+
   // Enhanced keyboard navigation
   const handleWrapperKeyDown = useCallback((e: KeyboardEvent) => {
     if (
@@ -167,14 +171,42 @@ export const MultiSelectRoot = <T extends object>({
         allowsCustomValue &&
         onSubmitCustomValue
       ) {
-        // don't create a custom value if there are results in the listbox
-        const target = e.target as Element | null;
-        if (target && target.getAttribute("aria-activedescendant")) {
-          return;
+        e.stopPropagation();
+        // Use items and filter function to check if input matches any existing item
+        if (items) {
+          const inputValueTrimmed = inputValue.trim();
+          // Find the item that matches the input exactly (case insensitive)
+          const matchingItem = Array.from(items).find((item) => {
+            // Get the text value from the item using itemValue prop
+            const itemText =
+              typeof item === "object" && item !== null && itemValue in item
+                ? String((item as Record<string, unknown>)[itemValue])
+                : JSON.stringify(item);
+            return itemText.toLowerCase() === inputValueTrimmed.toLowerCase();
+          });
+          if (matchingItem) {
+            // get the matching item's key
+            const itemKey =
+              typeof matchingItem === "object" &&
+              matchingItem !== null &&
+              itemID in matchingItem
+                ? ((matchingItem as Record<string, unknown>)[itemID] as Key)
+                : (matchingItem as unknown as Key);
+            // add key to previously selected items
+            const nextSelection = new Set(selectedKeys);
+            nextSelection.add(itemKey);
+            setSelectedKeys(nextSelection);
+            setInputValue("");
+          } else {
+            // Only create custom value if no exact match exists
+            onSubmitCustomValue(inputValue);
+            setInputValue("");
+          }
+        } else {
+          // Fallback: if no items, create the custom value
+          onSubmitCustomValue(inputValue);
+          setInputValue("");
         }
-        // Only submit custom value if the listbox contains no matching results
-        onSubmitCustomValue(inputValue);
-        setInputValue("");
       }
     },
     [
@@ -191,10 +223,6 @@ export const MultiSelectRoot = <T extends object>({
       setInputValue,
     ]
   );
-
-  const filterUtils = useFilter({ sensitivity: "base" });
-  const contains = (...args: Parameters<typeof filterUtils.contains>) =>
-    filterUtils.contains.apply(undefined, args);
 
   const triggerRef = useRef<HTMLDivElement>(null);
   const rootRef = mergeRefs(ref, triggerRef);
@@ -277,7 +305,7 @@ export const MultiSelectRoot = <T extends object>({
                   aria-label="filter combobox options"
                 >
                   <RaInput
-                    onKeyDown={handleInputKeyDown}
+                    onKeyDownCapture={handleInputKeyDown}
                     placeholder={placeholder}
                   />
                 </TextField>
@@ -292,6 +320,8 @@ export const MultiSelectRoot = <T extends object>({
                 escapeKeyBehavior="none"
                 aria-label="combobox options"
                 renderEmptyState={renderEmptyState}
+                shouldSelectOnPressUp
+                shouldFocusOnHover
               >
                 {children}
               </ComboBoxOptions>

@@ -143,6 +143,17 @@ export interface ComboBoxMultiSelectInputSlotProps
   extends HTMLChakraProps<"input", RecipeProps<"multiSelectInput">> {}
 
 // ============================================================
+// SingleSelect Input Slot - internal, not exported in compound component
+// ============================================================
+export interface SingleSelectInputProps {
+  placeholder?: string;
+  inputValue?: string;
+  allowsCustomValue?: boolean;
+  onSubmitCustomValue?: (value: string) => void;
+  onInputChange?: (value: string) => void;
+  ref?: React.Ref<HTMLInputElement>;
+}
+// ============================================================
 // Options Sub-Component (`<ComboBox.Options>`)
 // ============================================================
 /** Base Chakra styling props for the root `div` slot. */
