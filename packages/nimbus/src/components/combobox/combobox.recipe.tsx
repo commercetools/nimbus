@@ -80,12 +80,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
-      padding: "200",
     },
     multiSelectInput: {
       "& input": {
-        py: "200",
-        px: "200",
+        py: "300",
+        px: "400",
         focusRing: "none",
         borderBottom: "solid 1px",
         borderBottomColor: "neutral.6",
@@ -173,17 +172,19 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     selectionMode: {
       multiple: {
         options: {
-          borderRadius: "0 ",
           boxShadow: "none",
           px: "200",
-          py: 0,
-          my: "200",
+          py: "200",
           minW: "unset",
+          "& section:first-of-type > header": {
+            mt: 0,
+          },
         },
+
         option: {
           colorPalette: "primary",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "center",
           position: "relative",
           "--border-width": "sizes.25",

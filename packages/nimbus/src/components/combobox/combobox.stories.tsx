@@ -424,7 +424,7 @@ export const Base: Story = {
       // Clear any existing input and type 'k'
       await userEvent.clear(filterInput);
       await userEvent.type(filterInput, "k");
-      // Verify filtered options - should show options containing 'k'
+      // Verify filtered options - should show options containing 'k
       options = getListboxOptions();
       await expect(options.length).toBe(3); // Koala, Kangaroo, Skunk
       // Type 'o' to further filter - should show only Koala
@@ -1269,14 +1269,14 @@ export const ComplexOptions: Story = {
   render: () => {
     const PlanOptionComponent = ({ item }: { item: PlanOption }) => (
       <Flex direction="column" gap="200">
-        <Flex justify="space-between" align="center">
+        <Flex justify="space-between" align="center" fontWeight="bold">
           <Text slot="label">{item.type}</Text>
           <Text color="positive.11">{item.price}</Text>
         </Flex>
         <Text slot="description" color="neutral.12">
           {item.description}
         </Text>
-        <Text fontSize="300" color="neutral.11">
+        <Text fontSize="300" lineHeight="400" color="neutral.11">
           {item.features.join(" • ")}
         </Text>
       </Flex>
@@ -1347,17 +1347,124 @@ export const ComplexOptions: Story = {
     const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
       name: /single select plan/i,
     });
-    // const multiSelect = await canvas.findByRole("combobox", {
-    //   name: /multi-select plans/i,
-    // });
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /multi-select plans/i,
+    });
+    await step("Options display labels and descriptions", async () => {
+      singleSelect.focus();
+      await userEvent.keyboard("{ArrowDown}");
+      const starterPlanOption = findOptionByText("Starter Plan");
+      await expect(
+        starterPlanOption?.querySelector('[slot="label"]')
+      ).toHaveTextContent("Starter Plan");
+      await expect(
+        starterPlanOption?.querySelector('[slot="description"]')
+      ).toHaveTextContent("Great for individuals and small projects");
+      // Close popover for next test
+      await userEvent.keyboard("{Escape}");
+    });
     await step("single select displays options in popover", async () => {
       // Focus the input
-      await userEvent.tab();
-      await expect(singleSelect).toHaveFocus();
-      // // Open the popover
+      singleSelect.focus();
+      // Open the popover
       await userEvent.keyboard("{ArrowDown}");
       // Check that there are the expected number of options
       await expect(getListboxOptions().length).toBe(4);
+      // Close popover for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step(
+      "single select filters options and allows for selection when user enters text in input",
+      async () => {
+        singleSelect.focus();
+        // Type 's'
+        await userEvent.keyboard("{s}");
+        // 'Premium Plan' option should be filtered out
+        await expect(getListboxOptions().length).toBe(3);
+        // Type 't'
+        await userEvent.keyboard("{t}");
+        // 'Small Team' and 'Enterprise' plans should be filtered out
+        await expect(getListboxOptions().length).toBe(1);
+        // Select 'Stater Plan' option
+        await selectOptionsByName(["Starter Plan"]);
+        // Popover should be closed
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        await expect(singleSelect.getAttribute("aria-expanded")).toBe("false");
+        // Input value should be 'Starter Plan'
+        await expect(singleSelect.value).toBe("Starter Plan");
+        // 'Starter Plan' option should be selected
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Starter Plan"], true);
+        // Other options should not be selected
+        await verifyOptionsSelected(
+          ["Enterprise Plan", "Small Team Plan", "Premium Plan"],
+          false
+        );
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step("multi select displays options in popover", async () => {
+      // Focus the component
+      multiSelect.focus();
+      // Open the popover
+      await userEvent.keyboard("{ArrowDown}");
+      // Check that there are the expected number of options
+      await expect(getListboxOptions().length).toBe(4);
+      // Close popover for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step(
+      "multi select filters options and allows for selection when user enters text in input",
+      async () => {
+        multiSelect.focus();
+        // Open popover
+        await userEvent.keyboard("{ArrowDown}");
+        // Type 's'
+        await userEvent.keyboard("{s}");
+        // 'Premium Plan' option should be filtered out
+        await expect(getListboxOptions().length).toBe(3);
+        // Select  'Starter Plan' option in 'individual plans' section and 'Enterprise Plan' and 'Small Team Plan' in business plans section
+        await selectOptionsByName([
+          "Starter Plan",
+          "Enterprise Plan",
+          "Small Team Plan",
+        ]);
+        // TagsList should include tags for all 3 selected plans
+        await verifyTagsExist(multiSelect, [
+          "Starter Plan",
+          "Enterprise Plan",
+          "Small Team Plan",
+        ]);
+        // Clear filter input
+        await userEvent.clear(getFilterInput());
+        // 3 options should be selected
+        await verifyOptionsSelected(
+          ["Starter Plan", "Enterprise Plan", "Small Team Plan"],
+          true
+        );
+        // Premium plan option should not be selected
+        await verifyOptionsSelected(["Premium Plan"], false);
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
+    await step("multi select tags can be removed", async () => {
+      const tagList = await getTagList(multiSelect);
+      const enterpriseTag = tagList.childNodes[1] as HTMLElement;
+      const removeButton = within(enterpriseTag).getByRole("button", {
+        name: /remove enterprise plan/i,
+      });
+      await userEvent.click(removeButton);
+      // TagsList should include tags for Starter Plan and Small Team Plan
+      await verifyTagsExist(multiSelect, ["Starter Plan", "Small Team Plan"]);
+      // Open popover
+      await userEvent.keyboard("{ArrowDown}");
+      // 2 options should be selected
+      await verifyOptionsSelected(["Starter Plan", "Small Team Plan"], true);
+      // Premium plan and Enterprise plan should not be selected
+      await verifyOptionsSelected(["Premium Plan", "Enterprise Plan"], false);
+      // Close popover for next test
       await userEvent.keyboard("{Escape}");
     });
   },
@@ -1431,7 +1538,7 @@ export const AsyncLoading: Story = {
           <FormField.Input>
             <ComboBox.Root
               aria-label="async search single"
-              items={items}
+              defaultItems={items}
               inputValue={inputValue}
               onInputChange={setInputValue}
               isLoading={isLoading}
@@ -1447,7 +1554,7 @@ export const AsyncLoading: Story = {
           <FormField.Input>
             <ComboBox.Root
               aria-label="async search multi"
-              items={multiItems}
+              defaultItems={multiItems}
               selectionMode="multiple"
               inputValue={multiInputValue}
               onInputChange={setMultiInputValue}
@@ -1469,21 +1576,58 @@ export const AsyncLoading: Story = {
  */
 export const LargeDataset: Story = {
   render: () => {
-    // Generate a large dataset
-    const largeDataset = useMemo(
-      () =>
-        Array.from({ length: 1000 }, (_, i) => ({
+    // Generate a large dataset with unique word-only names
+    const largeDataset = useMemo(() => {
+      const categories = [
+        "Technology",
+        "Science",
+        "Arts",
+        "Sports",
+        "Food",
+        "Travel",
+        "Health",
+        "Education",
+        "Business",
+        "Entertainment",
+      ];
+
+      const adjectives = [
+        "Advanced",
+        "Modern",
+        "Premium",
+        "Creative",
+        "Smart",
+        "Elegant",
+        "Robust",
+        "Dynamic",
+        "Efficient",
+        "Innovative",
+      ];
+
+      const nouns = [
+        "Platform",
+        "System",
+        "Framework",
+        "Solution",
+        "Service",
+        "Application",
+        "Network",
+        "Interface",
+        "Database",
+        "Engine",
+      ];
+
+      return Array.from({ length: 1000 }, (_, i) => {
+        const categoryIndex = Math.floor(i / 100) % 10;
+        const adjectiveIndex = Math.floor(i / 10) % 10;
+        const nounIndex = i % 10;
+
+        return {
           id: i + 1,
-          name: `Item ${i + 1}`,
-          category:
-            i % 3 === 0
-              ? "Category A"
-              : i % 3 === 1
-                ? "Category B"
-                : "Category C",
-        })),
-      []
-    );
+          name: `${adjectives[adjectiveIndex]} ${nouns[nounIndex]} ${categories[categoryIndex]}`,
+        };
+      });
+    }, []);
 
     return (
       <Stack direction="row" gap="400">
@@ -1495,15 +1639,7 @@ export const LargeDataset: Story = {
               defaultItems={largeDataset}
               placeholder="Search through 1000 items..."
             >
-              {(item) => (
-                <ComboBox.Option
-                  key={item.id}
-                  id={item.id}
-                  textValue={`${item.name} ${item.category}`}
-                >
-                  {item.name} ({item.category})
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
@@ -1517,15 +1653,7 @@ export const LargeDataset: Story = {
               selectionMode="multiple"
               placeholder="Search and select multiple items..."
             >
-              {(item) => (
-                <ComboBox.Option
-                  key={item.id}
-                  id={item.id}
-                  textValue={`${item.name} ${item.category}`}
-                >
-                  {item.name} ({item.category})
-                </ComboBox.Option>
-              )}
+              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
