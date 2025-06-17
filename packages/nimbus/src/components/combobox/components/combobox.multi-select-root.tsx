@@ -234,8 +234,20 @@ export const MultiSelectRoot = <T extends object>({
       setTriggerWidth(triggerRef.current?.offsetWidth + "px");
     }
   }, []);
-
+  // Update triggerWidth on resize
   useResizeObserver({ ref: triggerRef, onResize });
+  // Toggle the popover when root div is clicked and there are no selected keys to display
+  const handleClickWhenEmpty = useCallback(() => {
+    // Don't do anything if disabled or readonly
+    if (isDisabled || isReadOnly) return;
+    if (
+      (selectedKeys === undefined ||
+        (selectedKeys instanceof Set && selectedKeys.size === 0)) &&
+      isOpen !== undefined
+    ) {
+      handleOpenChange(!isOpen);
+    }
+  }, [selectedKeys, isDisabled, isReadOnly, isOpen, handleOpenChange]);
 
   return (
     <RaDialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
@@ -256,6 +268,7 @@ export const MultiSelectRoot = <T extends object>({
         data-invalid={isInvalid}
         data-required={isRequired}
         data-open={isOpen}
+        onClick={handleClickWhenEmpty}
         {...props}
       >
         <MultiSelectTagGroup
