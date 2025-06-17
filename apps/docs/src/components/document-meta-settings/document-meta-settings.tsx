@@ -1,5 +1,4 @@
 import { Stack } from "@commercetools/nimbus";
-import { DocumentAudienceSelector } from "./components/document-audience-selector";
 import { DocumentActionButtons } from "./components/document-action-buttons";
 import { LifecycleStateSelector } from "./components/lifecycle-state-selector";
 import { useAtomValue } from "jotai";
@@ -25,7 +24,6 @@ export const DocumentMetaSettings = () => {
         metaProperty="description"
       />
       <LifecycleStateSelector />
-      <DocumentAudienceSelector />
       <DocumentStringFieldEdit
         label="Figma Link"
         placeholder="http://www.figma.com/..."
