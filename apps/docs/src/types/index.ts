@@ -8,3 +8,5 @@ export type MdxFileFrontmatter = z.infer<typeof mdxDocumentSchema>;
 export type MdxFileFrontmatterPayload = z.infer<
   typeof mdxDocumentPayloadSchema
 >;
+
+export type { LifecycleState } from "@/schemas/lifecycle-states";
