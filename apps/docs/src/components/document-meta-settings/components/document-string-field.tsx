@@ -63,7 +63,7 @@ export const DocumentStringFieldEdit = ({
   return (
     <Stack width="full">
       <Text fontWeight="600" asChild>
-        <label htmlFor="documentState">{label}</label>
+        <label htmlFor={metaProperty}>{label}</label>
       </Text>
       <Flex alignItems="center" width="full" gap="200">
         <Box flexGrow={1} marginRight="spacing.4">
