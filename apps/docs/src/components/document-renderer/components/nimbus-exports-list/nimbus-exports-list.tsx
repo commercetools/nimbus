@@ -112,7 +112,13 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                   <React.Fragment key={item.name}>
                     <Table.Row>
                       <Table.Cell>
-                        <code>{item.name}</code>
+                        {doc ? (
+                          <DocLink docRoute={doc.meta.route}>
+                            <code>{item.name}</code>
+                          </DocLink>
+                        ) : (
+                          <code>{item.name}</code>
+                        )}
                       </Table.Cell>
                       <Table.Cell>
                         <TagGroup.Root>
@@ -139,11 +145,9 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                       </Table.Cell>
                       <Table.Cell>
                         {doc ? (
-                          <DocLink docRoute={doc.meta.route}>
-                            <Icon size="2xs" color="positive.9">
-                              <CheckCircle />
-                            </Icon>
-                          </DocLink>
+                          <Icon size="2xs" color="positive.9">
+                            <CheckCircle />
+                          </Icon>
                         ) : (
                           <Icon size="2xs" color="critical.9">
                             <HighlightOff />
