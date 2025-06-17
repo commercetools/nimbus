@@ -73,6 +73,7 @@ export const DocumentStringFieldEdit = ({
             onChange={(value) => setValue(value)}
             placeholder={placeholder}
             width="full"
+            aria-label={`${label} input`}
           />
         </Box>
         <IconButton
