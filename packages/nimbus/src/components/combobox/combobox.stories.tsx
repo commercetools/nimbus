@@ -1048,8 +1048,10 @@ export const OptionGroups: Story = {
     await step("Single Select options can be selected", async () => {
       // Focus combobox
       singleSelect.focus();
+      // Open popover
+      await userEvent.keyboard("{ArrowDown}");
       // Select apple option
-      await selectOptionsByName(["apple"]);
+      await selectOptionsByName(["Apple"]);
       // Input value should be 'apple'
       await expect(singleSelect).toHaveValue("Apple");
       // Open listbox check that apple option has selected state
@@ -1116,7 +1118,7 @@ export const OptionGroups: Story = {
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
         // Select apple option in fruits section
-        await selectOptionsByName(["apple"]);
+        await selectOptionsByName(["Apple"]);
         // TagList should have apple tag
         await verifyTagsExist(multiSelect, ["Apple"]);
         // Apple option should be selected
@@ -1469,6 +1471,7 @@ export const CreateCustomValue: Story = {
     const [singleCustomItems, setSingleCustomItems] = useState<
       Array<{ id: string; name: string }>
     >([]);
+    const [singleInputValue, setSingleInputValue] = useState("");
 
     // Multi-select state
     const [multiSelectedItems, setMultiSelectedItems] = useState<Selection>(
@@ -1477,6 +1480,7 @@ export const CreateCustomValue: Story = {
     const [multiCustomItems, setMultiCustomItems] = useState<
       Array<{ id: string; name: string }>
     >([]);
+    const [multiInputValue, setMultiInputValue] = useState("");
 
     const singleAllItems = useMemo(
       () => [...options, ...singleCustomItems],
@@ -1486,6 +1490,13 @@ export const CreateCustomValue: Story = {
       () => [...options, ...multiCustomItems],
       [multiCustomItems]
     );
+
+    const handleSingleSelectionChange = (key: Key | null) => {
+      const nextInputValue =
+        singleAllItems.find((o) => o.id === key)?.name ?? "";
+      setSingleSelectedItem(key);
+      setSingleInputValue(nextInputValue);
+    };
 
     const handleSingleCustomValue = (value: string) => {
       // Add custom item
@@ -1505,6 +1516,15 @@ export const CreateCustomValue: Story = {
       });
     };
 
+    // Input change handlers
+    const handleSingleInputChange = (value: string) => {
+      setSingleInputValue(value);
+    };
+
+    const handleMultiInputChange = (value: string) => {
+      setMultiInputValue(value);
+    };
+
     return (
       <Stack direction="row" gap="400">
         <FormField.Root>
@@ -1512,9 +1532,11 @@ export const CreateCustomValue: Story = {
           <FormField.Input>
             <ComboBox.Root
               aria-label="single select custom values"
-              items={singleAllItems}
+              defaultItems={singleAllItems}
               selectedKey={singleSelectedItem}
-              onSelectionChange={setSingleSelectedItem}
+              onSelectionChange={handleSingleSelectionChange}
+              inputValue={singleInputValue}
+              onInputChange={handleSingleInputChange}
               allowsCustomValue
               onSubmitCustomValue={handleSingleCustomValue}
               placeholder="Select an item or create a new one..."
@@ -1539,10 +1561,12 @@ export const CreateCustomValue: Story = {
           <FormField.Input>
             <ComboBox.Root
               aria-label="multi select custom values"
-              items={multiAllItems}
+              defaultItems={multiAllItems}
               selectionMode="multiple"
               selectedKeys={multiSelectedItems}
               onSelectionChange={setMultiSelectedItems}
+              inputValue={multiInputValue}
+              onInputChange={handleMultiInputChange}
               allowsCustomValue
               onSubmitCustomValue={handleMultiCustomValue}
               placeholder="Select multiple items or create new ones..."
