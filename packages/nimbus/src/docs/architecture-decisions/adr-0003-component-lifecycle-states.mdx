@@ -70,7 +70,7 @@ change, and not yet recommended for general production use.
 - **Goal**: Early adopter testing and initial feedback on core concepts
 - **Consumer Usage**: Not for production use; exploration and feedback only
 - **Breaking Changes**: Frequent breaking changes without warning
-- **Transitions**: To Beta (if successful) or Deprecated (if unviable)
+- **Transitions**: To Beta (if successful) or Deprecated (if not viable)
 - **Marking**: Clearly marked as `(Alpha)` in documentation, changelogs, and
   `@alpha` JSDoc tag
 
@@ -82,7 +82,7 @@ change, and not yet recommended for general production use.
   environments
 - **Breaking Changes**: Some breaking changes, typically with prior notice,
   may occur in minor versions
-- **Transitions**: To Stable (if successful) or Deprecated (if unviable)
+- **Transitions**: To Stable (if successful) or Deprecated (if not viable)
 - **Marking**: Clearly marked as `(Beta)` in documentation, changelogs, and
   `@beta` JSDoc tag
 
@@ -105,8 +105,8 @@ phased out.
   confirms stability
 
 #### 5. Deprecated
-- **Purpose**: No longer recommended for new development; superseded by
-  better alternatives
+- **Purpose**: Not to be used in new development. Superseded by better
+  alternatives or found not viable as an Alpha or Beta
 - **Stability**: Maintained for compatibility but no new features
 - **Goal**: Provide transition period for migration to alternatives
 - **Consumer Usage**: Avoid for new development; migrate existing usage to
@@ -114,7 +114,8 @@ phased out.
 - **Breaking Changes**: Only critical bug fixes; no new features
 - **Transitions**: To End-of-Life (EOL)
 - **Marking**: Clear warnings in documentation with recommended alternatives;
-  `@deprecated` JSDoc tag; console warnings during development
+  `@deprecated` JSDoc tag; console warnings during development; date for 
+  the EOL transition
 
 #### 6. End-of-Life (EOL)
 - **Purpose**: Complete removal from the library
