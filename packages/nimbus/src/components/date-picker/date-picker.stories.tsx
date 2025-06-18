@@ -40,23 +40,46 @@ export const Base: Story = {
 };
 
 /**
- * Sizes story
- * Demonstrates available sizes
+ * Sizes and Variants story
+ * Demonstrates all combinations of available sizes and variants
  */
-export const Sizes: Story = {
+export const SizesAndVariants: Story = {
   args: {
     ["aria-label"]: "Select a date",
     granularity: "second",
   },
   render: (args) => {
+    const sizes = ["sm", "md"] as const;
+    const variants = ["solid", "ghost"] as const;
+
     return (
-      <Stack>
-        <Box>
-          <DatePicker size="sm" {...args} />
-        </Box>
-        <Box>
-          <DatePicker size="md" {...args} />
-        </Box>
+      <Stack direction="column" gap="600">
+        {sizes.map((size) => (
+          <Stack key={size} direction="column" gap="300">
+            <Box fontWeight="bold" textTransform="capitalize">
+              Size: {size}
+            </Box>
+            <Stack direction="row" gap="400">
+              {variants.map((variant) => (
+                <Stack
+                  key={variant}
+                  direction="column"
+                  gap="200"
+                  alignItems="start"
+                >
+                  <Box
+                    fontSize="sm"
+                    color="neutral.11"
+                    textTransform="capitalize"
+                  >
+                    {variant}
+                  </Box>
+                  <DatePicker size={size} variant={variant} {...args} />
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
       </Stack>
     );
   },
