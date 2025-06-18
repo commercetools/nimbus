@@ -862,3 +862,185 @@ export const ValidationBehavior: Story = {
     );
   },
 };
+
+/**
+ * Showcase German Locale
+ * Demonstrates the DateInput component with German locale (de-DE)
+ * showing different date formats, granularities, and cultural conventions
+ */
+export const GermanLocale: Story = {
+  render: (args: DateInputProps) => {
+    const [controlledDate, setControlledDate] = useState<DateValue | null>(
+      new CalendarDate(2025, 6, 15)
+    );
+
+    const dateValue = new CalendarDate(2025, 6, 15);
+    const dateTimeValue = new CalendarDateTime(2025, 6, 15, 14, 30, 0);
+    const zonedDateTime = new ZonedDateTime(
+      2025,
+      6,
+      15,
+      "Europe/Berlin",
+      2 * 60 * 60 * 1000, // +2 hours (CEST)
+      14,
+      30,
+      0
+    );
+
+    return (
+      <I18nProvider locale="de-DE">
+        <Stack direction="column" gap="600" alignItems="start">
+          <Text fontWeight="700">German Locale (de-DE) Examples</Text>
+
+          <Stack direction="column" gap="400" alignItems="start">
+            <Text fontWeight="600">Basic Date Input</Text>
+            <DateInput
+              {...args}
+              defaultValue={dateValue}
+              aria-label="Deutsches Datum"
+              data-testid="german-basic"
+            />
+            <Text color="gray.600">
+              German date format: DD.MM.YYYY (15.06.2025)
+            </Text>
+          </Stack>
+
+          <Stack direction="column" gap="400" alignItems="start">
+            <Text fontWeight="600">Date and Time</Text>
+            <DateInput
+              {...args}
+              defaultValue={dateTimeValue}
+              granularity="minute"
+              aria-label="Deutsches Datum mit Zeit"
+              data-testid="german-datetime"
+            />
+            <Text color="gray.600">
+              German datetime format with 24-hour clock
+            </Text>
+          </Stack>
+
+          <Stack direction="column" gap="400" alignItems="start">
+            <Text fontWeight="600">With Berlin Timezone</Text>
+            <DateInput
+              {...args}
+              defaultValue={zonedDateTime}
+              granularity="minute"
+              hideTimeZone={false}
+              aria-label="Deutsches Datum mit Zeitzone"
+              data-testid="german-timezone"
+            />
+            <Text color="gray.600">
+              German datetime with Europe/Berlin timezone
+            </Text>
+          </Stack>
+
+          <Stack direction="column" gap="400" alignItems="start">
+            <Text fontWeight="600">Different Granularities</Text>
+            <Stack direction="column" gap="200" alignItems="start">
+              <Stack direction="row" gap="400" alignItems="center">
+                <DateInput
+                  {...args}
+                  defaultValue={dateValue}
+                  granularity="day"
+                  aria-label="Tag-Granularität"
+                  data-testid="german-day"
+                />
+                <Text>Day only</Text>
+              </Stack>
+              <Stack direction="row" gap="400" alignItems="center">
+                <DateInput
+                  {...args}
+                  defaultValue={dateTimeValue}
+                  granularity="hour"
+                  aria-label="Stunden-Granularität"
+                  data-testid="german-hour"
+                />
+                <Text>Hour granularity</Text>
+              </Stack>
+              <Stack direction="row" gap="400" alignItems="center">
+                <DateInput
+                  {...args}
+                  defaultValue={dateTimeValue}
+                  granularity="second"
+                  aria-label="Sekunden-Granularität"
+                  data-testid="german-second"
+                />
+                <Text>Second granularity</Text>
+              </Stack>
+            </Stack>
+          </Stack>
+
+          <Stack direction="column" gap="400" alignItems="start">
+            <Text fontWeight="600">Controlled with German Validation</Text>
+            <FormField.Root
+              isInvalid={
+                !!(
+                  controlledDate &&
+                  (controlledDate.compare(new CalendarDate(2025, 1, 1)) < 0 ||
+                    controlledDate.compare(new CalendarDate(2025, 12, 31)) > 0)
+                )
+              }
+            >
+              <FormField.Label>Geburtsdatum</FormField.Label>
+              <FormField.Input>
+                <DateInput
+                  {...args}
+                  value={controlledDate}
+                  onChange={setControlledDate}
+                  minValue={new CalendarDate(2025, 1, 1)}
+                  maxValue={new CalendarDate(2025, 12, 31)}
+                  aria-label="Geburtsdatum eingeben"
+                  data-testid="german-controlled"
+                />
+              </FormField.Input>
+              <FormField.Description>
+                Geben Sie Ihr Geburtsdatum ein (nur 2025 erlaubt)
+              </FormField.Description>
+              {controlledDate &&
+                (controlledDate.compare(new CalendarDate(2025, 1, 1)) < 0 ||
+                  controlledDate.compare(new CalendarDate(2025, 12, 31)) >
+                    0) && (
+                  <FormField.Error>
+                    Das Datum muss im Jahr 2025 liegen
+                  </FormField.Error>
+                )}
+            </FormField.Root>
+          </Stack>
+
+          <Stack direction="column" gap="400" alignItems="start">
+            <Text fontWeight="600">Leading Zeros Behavior</Text>
+            <Stack direction="column" gap="200" alignItems="start">
+              <Stack direction="row" gap="400" alignItems="center">
+                <DateInput
+                  {...args}
+                  defaultValue={new CalendarDate(2025, 3, 5)}
+                  shouldForceLeadingZeros={true}
+                  aria-label="Mit führenden Nullen"
+                  data-testid="german-leading-zeros-true"
+                />
+                <Text>With leading zeros (05.03.2025)</Text>
+              </Stack>
+              <Stack direction="row" gap="400" alignItems="center">
+                <DateInput
+                  {...args}
+                  defaultValue={new CalendarDate(2025, 3, 5)}
+                  shouldForceLeadingZeros={false}
+                  aria-label="Ohne führende Nullen"
+                  data-testid="german-leading-zeros-false"
+                />
+                <Text>Without leading zeros (5.3.2025)</Text>
+              </Stack>
+            </Stack>
+          </Stack>
+
+          <Stack direction="column" gap="200" alignItems="start">
+            <Text fontWeight="600">Current Value</Text>
+            <Text fontFamily="mono">
+              {controlledDate ? controlledDate.toString() : "null"}
+            </Text>
+          </Stack>
+        </Stack>
+      </I18nProvider>
+    );
+  },
+};
