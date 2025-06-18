@@ -1,5 +1,12 @@
 import { CalendarHeaderSlot } from "../calendar.slots";
-import { Box, Flex, IconButton, Stack, Text } from "@/components";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Stack,
+  Text,
+  VisuallyHidden,
+} from "@/components";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
@@ -10,6 +17,7 @@ import { useContext } from "react";
 import {
   CalendarContext,
   CalendarStateContext,
+  Heading,
   useLocale,
 } from "react-aria-components";
 
@@ -45,6 +53,10 @@ export const CalendarHeader = () => {
     <CalendarHeaderSlot>
       <Flex>
         <Stack direction="row" alignItems="center">
+          {/** a11y issues without RA's heading */}
+          <VisuallyHidden>
+            <Heading />
+          </VisuallyHidden>
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
             slot={showRangeLabel ? "previous" : "previous-month"}
