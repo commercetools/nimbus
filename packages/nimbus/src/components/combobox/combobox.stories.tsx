@@ -6,9 +6,9 @@ import {
   useEffect,
   type FormEvent,
 } from "react";
-import type { Key, Selection } from "react-aria-components";
+import { type Key, type Selection } from "react-aria-components";
 import { userEvent, fireEvent, within, expect, fn } from "@storybook/test";
-import { FormField, Stack, Text, Box, Flex } from "@/components";
+import { FormField, Stack, Text, Box, Flex, RadioInput } from "@/components";
 import { ComboBox } from "./combobox";
 
 /**
@@ -979,7 +979,7 @@ export const AllVariantsAndSizes: Story = {
                         selectionMode="multiple"
                         size={size}
                         variant={variant}
-                        placeholder={`open to search...`}
+                        placeholder={`focus to search...`}
                       >
                         {(item) => (
                           <ComboBox.Option>{item.name}</ComboBox.Option>
@@ -1304,7 +1304,7 @@ export const ComplexOptions: Story = {
           </FormField.Input>
           <FormField.Description>
             <Text as="pre">
-              Combobox.Root: itemID and itemValue not necessary in single-select
+              Combobox.Root: itemId and itemValue not necessary in single-select
             </Text>
             <Text as="pre">
               Combobox.Option: id=item.uuid, textValue=item.type
@@ -1318,7 +1318,7 @@ export const ComplexOptions: Story = {
               defaultItems={complexOptionsWithGroups}
               selectionMode="multiple"
               placeholder="Compare multiple plans..."
-              itemID="uuid"
+              itemId="uuid"
               itemValue="type"
             >
               {(group) => (
@@ -1333,7 +1333,7 @@ export const ComplexOptions: Story = {
             </ComboBox.Root>
           </FormField.Input>
           <FormField.Description>
-            <Text as="pre">Combobox.Root: itemID=uuid itemValue=type</Text>
+            <Text as="pre">Combobox.Root: itemId=uuid itemValue=type</Text>
             <Text as="pre">
               Combobox.Option: id=item.uuid, textValue=item.type
             </Text>
@@ -1631,7 +1631,7 @@ export const LargeDataset: Story = {
 
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Single Select Large Dataset</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1644,7 +1644,7 @@ export const LargeDataset: Story = {
           </FormField.Input>
         </FormField.Root>
 
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select Large Dataset</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1731,7 +1731,7 @@ export const CreateCustomValue: Story = {
 
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Single Select with Custom Values</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1760,7 +1760,7 @@ export const CreateCustomValue: Story = {
           </FormField.Input>
         </FormField.Root>
 
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select with Custom Values</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1800,19 +1800,20 @@ export const CreateCustomValue: Story = {
  */
 export const DisabledAndReadOnlyComboboxes: Story = {
   render: () => {
+    const [variant, setVariant] = useState<"solid" | "ghost">("solid");
     return (
       <Stack direction="column" gap="600">
         <Stack direction="column" gap="300">
           <h3>Single Select ComboBoxes</h3>
           <Stack direction="row" gap="400">
-            <FormField.Root isDisabled>
+            <FormField.Root alignSelf={"flex-start"} isDisabled>
               <FormField.Label>Disabled Single Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   isDisabled
                   defaultSelectedKey={2}
-                  variant="ghost"
+                  variant={variant}
                   placeholder="This combobox is disabled..."
                 >
                   {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
@@ -1823,13 +1824,13 @@ export const DisabledAndReadOnlyComboboxes: Story = {
               </FormField.Description>
             </FormField.Root>
 
-            <FormField.Root isReadOnly>
+            <FormField.Root alignSelf={"flex-start"} isReadOnly>
               <FormField.Label>Read-Only Single Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   isReadOnly
-                  variant="ghost"
+                  variant={variant}
                   defaultSelectedKey={2}
                   placeholder="This combobox is read-only..."
                 >
@@ -1846,14 +1847,14 @@ export const DisabledAndReadOnlyComboboxes: Story = {
         <Stack direction="column" gap="300">
           <h3>Multi-Select ComboBoxes</h3>
           <Stack direction="row" gap="400">
-            <FormField.Root isDisabled>
+            <FormField.Root alignSelf={"flex-start"} isDisabled>
               <FormField.Label>Disabled Multi-Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   selectionMode="multiple"
                   isDisabled
-                  variant="ghost"
+                  variant={variant}
                   defaultSelectedKeys={new Set([1, 3, 5])}
                   placeholder="This combobox is disabled..."
                 >
@@ -1865,14 +1866,14 @@ export const DisabledAndReadOnlyComboboxes: Story = {
               </FormField.Description>
             </FormField.Root>
 
-            <FormField.Root isReadOnly>
+            <FormField.Root alignSelf={"flex-start"} isReadOnly>
               <FormField.Label>Read-Only Multi-Select</FormField.Label>
               <FormField.Input>
                 <ComboBox.Root
                   defaultItems={options}
                   selectionMode="multiple"
                   isReadOnly
-                  variant="ghost"
+                  variant={variant}
                   defaultSelectedKeys={new Set([1, 3, 5])}
                   placeholder="This combobox is read-only..."
                 >
@@ -1885,6 +1886,15 @@ export const DisabledAndReadOnlyComboboxes: Story = {
             </FormField.Root>
           </Stack>
         </Stack>
+        <RadioInput.Root
+          onChange={setVariant as (value: string) => void}
+          value={variant}
+          orientation="horizontal"
+          aria-label="choose variant"
+        >
+          <RadioInput.Option value="solid">Solid</RadioInput.Option>
+          <RadioInput.Option value="ghost">Ghost</RadioInput.Option>
+        </RadioInput.Root>
       </Stack>
     );
   },
@@ -1907,7 +1917,7 @@ export const DisabledOptions: Story = {
 
     return (
       <Stack direction="row" gap="400">
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Single Select with Disabled Options</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1929,8 +1939,7 @@ export const DisabledOptions: Story = {
             Kangaroo, Bald Eagle, and Skunk are disabled
           </FormField.Description>
         </FormField.Root>
-
-        <FormField.Root>
+        <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select with Disabled Options</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
@@ -1964,17 +1973,21 @@ export const DisabledOptions: Story = {
  */
 export const FormValidation: Story = {
   render: () => {
+    // Variant state
+    const [variant, setVariant] = useState<"solid" | "ghost">("solid");
     // Single select state
     const [selectedValue, setSelectedValue] = useState<Key | null>(null);
-    const [isInvalid, setIsInvalid] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [isInvalid, setIsInvalid] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("Please select an option");
 
     // Multi-select state
     const [multiSelectedValues, setMultiSelectedValues] = useState<Selection>(
       new Set()
     );
-    const [multiIsInvalid, setMultiIsInvalid] = useState(false);
-    const [multiErrorMessage, setMultiErrorMessage] = useState("");
+    const [multiIsInvalid, setMultiIsInvalid] = useState(true);
+    const [multiErrorMessage, setMultiErrorMessage] = useState(
+      "Please select at least one option"
+    );
 
     const handleSelectionChange = (key: Key | null) => {
       setSelectedValue(key);
@@ -2012,41 +2025,65 @@ export const FormValidation: Story = {
     };
 
     return (
-      <Stack direction="row" gap="400">
-        <FormField.Root isInvalid={isInvalid} isRequired>
-          <FormField.Label>Single Select with Validation</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={options}
-              selectedKey={selectedValue}
-              onSelectionChange={handleSelectionChange}
-              variant="ghost"
-              placeholder="Select an animal..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-          {errorMessage && <FormField.Error>{errorMessage}</FormField.Error>}
-        </FormField.Root>
-
-        <FormField.Root isInvalid={multiIsInvalid} isRequired>
-          <FormField.Label>Multi-Select with Validation</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={options}
-              selectionMode="multiple"
-              selectedKeys={multiSelectedValues}
-              onSelectionChange={handleMultiSelectionChange}
-              variant="ghost"
-              placeholder="Select multiple animals..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-          {multiErrorMessage && (
-            <FormField.Error>{multiErrorMessage}</FormField.Error>
-          )}
-        </FormField.Root>
+      <Stack direction="column" gap="600">
+        <Stack direction="row" gap="400">
+          <FormField.Root
+            alignSelf={"flex-start"}
+            isInvalid={isInvalid}
+            isRequired
+          >
+            <FormField.Label>Single Select with Validation</FormField.Label>
+            <FormField.Input>
+              <ComboBox.Root
+                defaultItems={options}
+                selectedKey={selectedValue}
+                onSelectionChange={handleSelectionChange}
+                variant={variant}
+                placeholder="Select an animal..."
+              >
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+              </ComboBox.Root>
+            </FormField.Input>
+            <FormField.Description>
+              Select 'Skunk' option to trigger invalid selected state
+            </FormField.Description>
+            {errorMessage && <FormField.Error>{errorMessage}</FormField.Error>}
+          </FormField.Root>
+          <FormField.Root
+            alignSelf={"flex-start"}
+            isInvalid={multiIsInvalid}
+            isRequired
+          >
+            <FormField.Label>Multi-Select with Validation</FormField.Label>
+            <FormField.Input>
+              <ComboBox.Root
+                defaultItems={options}
+                selectionMode="multiple"
+                selectedKeys={multiSelectedValues}
+                onSelectionChange={handleMultiSelectionChange}
+                variant={variant}
+                placeholder="Select multiple animals..."
+              >
+                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+              </ComboBox.Root>
+            </FormField.Input>
+            <FormField.Description>
+              Select 'Skunk' option to trigger invalid selected state
+            </FormField.Description>
+            {multiErrorMessage && (
+              <FormField.Error>{multiErrorMessage}</FormField.Error>
+            )}
+          </FormField.Root>
+        </Stack>
+        <RadioInput.Root
+          onChange={setVariant as (value: string) => void}
+          value={variant}
+          orientation="horizontal"
+          aria-label="choose variant"
+        >
+          <RadioInput.Option value="solid">Solid</RadioInput.Option>
+          <RadioInput.Option value="ghost">Ghost</RadioInput.Option>
+        </RadioInput.Root>
       </Stack>
     );
   },
