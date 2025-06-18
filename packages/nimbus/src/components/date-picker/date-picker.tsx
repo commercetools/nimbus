@@ -29,7 +29,7 @@ import { DatePickerClearButton } from "./components/date-picker.clear-button";
  * Users can either type a date directly or select from the calendar.
  */
 export const DatePicker = (props: DatePickerProps) => {
-  const { size = "md" } = props;
+  const { size = "md", variant } = props;
   const recipe = useSlotRecipe({ recipe: datePickerRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
@@ -41,7 +41,7 @@ export const DatePicker = (props: DatePickerProps) => {
       <ReactAriaDatePicker {...otherProps}>
         <DatePickerGroupSlot asChild>
           <Group>
-            <DateInput size={size} width="full" />
+            <DateInput size={size} variant={variant} width="full" />
             <DatePickerTriggerSlot>
               <DatePickerClearButton size={calendarButtonSize} />
               <IconButton
@@ -60,7 +60,7 @@ export const DatePicker = (props: DatePickerProps) => {
           <Popover placement="bottom end">
             <Dialog>
               <DatePickerCalendarSlot>
-                <Calendar variant="plain" />
+                <Calendar />
               </DatePickerCalendarSlot>
               <DatePickerTimeInput />
             </Dialog>
