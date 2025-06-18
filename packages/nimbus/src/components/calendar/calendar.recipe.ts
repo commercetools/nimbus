@@ -101,23 +101,4 @@ export const calendarSlotRecipe = defineSlotRecipe({
       },
     },
   },
-  variants: {
-    size: {
-      md: {},
-    },
-    variant: {
-      plain: {},
-      standalone: {
-        root: {
-          display: "inline-block",
-          borderRadius: "200",
-          boxShadow: "4",
-        },
-      },
-    },
-  },
-  defaultVariants: {
-    size: "md",
-    variant: "standalone",
-  },
 });
