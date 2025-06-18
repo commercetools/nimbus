@@ -13,132 +13,192 @@ tags:
   - form
 ---
 
-# Multiline Text Input
+# Multiline text input
+A multi-line text input allows users to enter longer blocks of text across multiple lines. It is suitable for paragraphs, descriptions, or any input requiring more than a single line.
 
-A multiline text input component for capturing longer text content such as comments, descriptions, or messages.
+## Overview
 
-## Import
+A multi-line text input allows users to enter multiple lines of text. It expands vertically to accommodate more content.
 
-```jsx
-import { MultilineTextInput } from "@commercetools/nimbus";
-```
+### Resources
 
-## Usage
+Deep dive on details and access design library
 
-### Basic Usage
+[WAI-ARIA Authoring Practices Guide 1.2: Textarea](https://www.w3.org/WAI/ARIA/apg/patterns/textarea/)
 
-```jsx-live
-const App = () => (
-  <MultilineTextInput 
-    placeholder="Enter your message here..."
-    aria-label="Message input"
-  />
-);
-```
+[Figma Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=2602-6001&m=dev)
 
-### Sizes
+## Variables
 
-The component supports different sizes: `sm` and `md`.
+Get familiar with the features.
+
+### Visual options
+
+This component supports different sizes, medium (default) and small (for compact uses).
+
+#### Sizes
 
 ```jsx-live
 const App = () => (
-  <Stack direction="row" gap="400" alignItems="flex-start">
-    <MultilineTextInput 
-      size="sm"
-      placeholder="Small textarea"
-      aria-label="Small input"
+ <Stack direction="row" gap="400" alignItems="flex-start">
+    <MultilineTextInput
+        size="md"
+        placeholder="Medium textarea"
+        aria-label="Medium input"
+        value="I am a medium size, and used as a default."
     />
-    <MultilineTextInput 
-      size="md"
-      placeholder="Medium textarea"
-      aria-label="Medium input"
+    <MultilineTextInput
+        size="sm"
+        placeholder="Small textarea"
+        aria-label="Small input"
+        value="This is the small size for compact uses."
     />
-  </Stack>
-);
+ </Stack>
+ );
 ```
 
-### Variants
+#### Readability
 
-The component supports `solid` and `ghost` variants.
+Users can resize the input vertically using a handle, and it can grow with the content added.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="row" gap="400" alignItems="flex-start">
-    <MultilineTextInput 
-      variant="solid"
-      placeholder="Solid variant"
-      aria-label="Solid input"
+ <Stack direction="row" gap="400" alignItems="flex-start">
+    <MultilineTextInput
+        size="md"
+        placeholder="Medium textarea"
+        aria-label="Medium input"
+        value="Resize me by dragging the icon in the lower right corner. I can only move up and down to adjust the height of this element."
     />
-    <MultilineTextInput 
-      variant="ghost"
-      placeholder="Ghost variant"
-      aria-label="Ghost input"
+    <MultilineTextInput
+        size="md"
+        placeholder="Medium textarea less content"
+        aria-label="Medium input"
+        value="Add more text and I will grow to contain it. Additionally, you can set a max height."
     />
-  </Stack>
-);
+ </Stack>
+ );
 ```
 
-### Required
+### Minimum and maximum row allowance
+
+A min. rows property sets the initial minimum visible height (e.g., 2 rows). A max. rows property sets the maximum visible height before the content becomes scrollable (e.g., 5 rows).
 
 ```jsx-live
 const App = () => (
-  <MultilineTextInput 
-    isRequired
-    placeholder="Required field"
-    aria-label="Required input"
-  />
-);
-```
-
-### Disabled
-
-```jsx-live
-const App = () => (
-  <MultilineTextInput 
-    isDisabled
-    placeholder="Disabled field"
-    aria-label="Disabled input"
-  />
-);
-```
-
-### Invalid State
-
-```jsx-live
-const App = () => (
-  <MultilineTextInput 
-    isInvalid
-    placeholder="Invalid field"
-    aria-label="Invalid input"
-  />
-);
-```
-
-### Controlled Component
-
-```jsx-live
-const App = () => {
-  const [value, setValue] = React.useState("");
-  
-  return (
-    <MultilineTextInput 
-      value={value}
-      onChange={setValue}
-      placeholder="Type something..."
-      aria-label="Controlled input"
+  <MultilineTextInput
+        size="md"
+        placeholder="placeholder with min row"
+        aria-label="Medium input"
+        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+        rows={5}
     />
-  );
-};
+);
 ```
 
-## Props
+## Guidelines
+
+Number input guidelines focus on clear labels, suitable ranges, easy interaction via keyboard and buttons, and strong error handling, all while following WCAG accessibility rules.
+
+### Best practices
+
+- **Labels:** Always include a concise and clear label using sentence case. Labels should not be hidden. In the rare case where context is sufficient and label can be absent, review the design with an accessibility expert.
+- **Placeholder text:** Use concise placeholder text to provide an example or hint about the expected content. If consistent help is needed for context, utilize an info icon or use helper text below the field, as placeholder text disappears when a user interacts with the field, and some find it difficult to read placeholder text.
+- **Initial height:** Set an appropriate initial height (min. rows) that accommodates the typical expected input length without requiring immediate scrolling or resizing
+- **Maximum height:** Define a reasonable max. rows to prevent the input from growing excessively large and pushing other content off-screen. Once the maximum is reached, the content should become scrollable.
+- **Resizability:** Enable resizing when users might need to view more content at once or prefer a larger input area. Ensure the resize handle is visually clear and functional.
+- **Validation:**
+    - Provide clear and concise error messages below the input field, replacing any helper text.
+    - Highlight errors visually, for example, with a red border and an error icon.
+    - Validate input for any specified constraints (e.g., character limits, required fields).
+
+
+
+### Usage
+
+A multi-line text input is used when users need to enter extended textual information, providing ample space and flexibility.
+
+> [!TIP]\
+> When to use
+- Collecting descriptions, comments, or notes.
+- Allowing users to write full sentences or paragraphs.
+- When the length of the expected input is variable and could range from a few words to multiple paragraphs.
+- When the user needs to see a significant portion of their input at once.
+
+> [!CAUTION]\
+> When not to use
+- For single-line inputs (e.g., names, email addresses); use a single-line text input.
+- For highly structured data that would be better handled with multiple specific input fields (e.g., separate fields for street, city, state).
+- When character limits are very strict and a precise visual count is required (though character counters can be added).
+
+### Labeling and sizing
+
+Providing clear labels and contextual information aids users to fill out the correct information. 
+
+> [!TIP]\
+> **Do**
+> * Do always include a label.
+> * Do include helper text to guide users.
+> * Do set an appropriate initial height.
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput
+        size="md"
+        placeholder="well described placeholder"
+        aria-label="Medium input"
+        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        rows={5}
+    />
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+> * Don’t use for single-line inputs.
+> * Don’t use only placeholder text.
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput
+        size="md"
+        placeholder="well described placeholder"
+        aria-label="Medium input"
+        value="1:30"
+    />
+)
+```
+
+### Properties
 
 <PropsTable id="MultilineTextInput" />
 
-## Accessibility
+### Accessibility
 
-- Uses semantic `textarea` element for proper screen reader support
-- Supports keyboard navigation with Tab key
-- Forwards `aria-*` and `data-*` attributes
-- Required fields are properly marked with `aria-required`
-- Invalid states are indicated with `data-invalid` attribute 
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput
+        size="md"
+        placeholder="well described placeholder"
+        aria-label="lorem ipsum text"
+        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        rows={5}
+    />
+)
+```
+
+### Accessibility Standards
+
+- Always provide a visible label for the input.
+- If a visible label is not used, provide an aria-label or aria-labelledby for screen readers.
+- Ensure sufficient color contrast for all elements (text, borders).
+- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
+- Clearly indicate the focused state.
+
+### Resources
+
+- [Adobe Spectrum TextArea](https://www.google.com/search?q=https://spectrum.adobe.com/components/textarea/)
+- [React Spectrum TextArea](https://react-spectrum.adobe.com/react-spectrum/TextArea.html)
+- [W3C ARIA Authoring Practices Guide (APG) (Search for "text area" patterns)](https://www.w3.org/WAI/ARIA/apg/)
