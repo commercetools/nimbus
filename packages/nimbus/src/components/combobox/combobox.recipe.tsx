@@ -48,7 +48,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       display: "flex",
       focusRing: "outside",
       alignItems: "flex-start",
-      paddingRight: "1600!",
+      pr: "1600",
+      pl: "400",
+      py: "100",
       borderRadius: "200",
       color: "neutral.12",
       maxWidth: "100%",
@@ -61,6 +63,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
+        color: "critical.11",
       },
       '& button[slot="remove"]': {
         _expanded: {
@@ -116,7 +119,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       ...checkboxSlotRecipe.base?.label,
       ...checkboxSlotRecipe.variants?.size.md.label,
       whiteSpace: "wrap",
-      width: "calc(100% - var(--nimbus-sizes-600))",
+      width: "calc(100% - {sizes.600})",
       display: "inline-block",
     },
   },
@@ -129,8 +132,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       sm: {
         value: {
           minH: "800",
-          py: "100",
-          px: "400",
+
           textStyle: "sm",
         },
       },
@@ -138,8 +140,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       md: {
         value: {
           minH: "1000",
-          px: "400",
-          py: "100",
+
           textStyle: "md",
         },
       },
@@ -180,32 +181,31 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
             mt: 0,
           },
         },
-
         option: {
           colorPalette: "primary",
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "center",
           position: "relative",
-          "--border-width": "sizes.25",
-          "--border-color": "colors.neutral.7",
           cursor: "pointer",
           gap: "200",
-
           "&:hover": {
             bg: "primary.4",
           },
           '&[data-focused="true"]': {
-            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+            // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
+            outlineWidth: "var(--focus-ring-width)",
+            outlineColor: "var(--focus-ring-color)",
+            outlineStyle: "var(--focus-ring-style)",
           },
           '&[aria-selected="true"], &[data-focused="true"]': {
-            bg: "inherit",
+            bg: "unset",
           },
           "& label": {
             width: "100%",
             '& span[data-slot="label"]': {
               whiteSpace: "wrap",
-              width: "calc(100% - var(--nimbus-sizes-600))",
+              width: "calc(100% - {sizes.600})",
               display: "inline-block",
             },
           },
@@ -239,8 +239,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       selectionMode: "multiple",
       css: {
         popover: {
-          minW: "max(var(--trigger-width), var(--nimbus-sizes-2000))",
-          maxW: "max(var(--trigger-width), var(--nimbus-sizes-7200))",
+          minW: "max(var(--trigger-width), {sizes.2000})",
+          maxW: "max(var(--trigger-width), {sizes.7200})",
         },
       },
     },
@@ -252,8 +252,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           flex: "1 1 auto",
         },
         options: {
-          minW: "max(var(--trigger-width), var(--nimbus-sizes-2000))",
-          maxW: "max(var(--trigger-width), var(--nimbus-sizes-7200))",
+          minW: "max(var(--trigger-width), {sizes.2000})",
+          maxW: "max(var(--trigger-width), {sizes.7200})",
         },
       },
     },

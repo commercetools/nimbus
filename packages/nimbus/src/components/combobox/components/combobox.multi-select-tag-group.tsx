@@ -26,7 +26,7 @@ function checkItemValidity(
   if (!item) return;
   if (!Object.prototype.hasOwnProperty.call(item, "id") && idKey === "id") {
     throw new Error(
-      "ComboBox: if items do not have an `id` key, you must specify which key uniquely identifies items using the `itemID` prop"
+      "ComboBox: if items do not have an `id` key, you must specify which key uniquely identifies items using the `itemId` prop"
     );
   }
   if (
@@ -44,7 +44,7 @@ export const MultiSelectTagGroup =
   <T extends Record<string, any>>({
     selectedKeys = new Set(),
     items,
-    itemID = "id",
+    itemId = "id",
     itemValue = "name",
     placeholder,
     onSelectionChange,
@@ -71,29 +71,29 @@ export const MultiSelectTagGroup =
             }
           });
           // make sure we have an id and value
-          checkItemValidity(allItems?.[0], itemID, itemValue);
+          checkItemValidity(allItems?.[0], itemId, itemValue);
           return selectedKeysArray
-            .map((key) => allItems.find((item) => item[itemID] === key))
+            .map((key) => allItems.find((item) => item[itemId] === key))
             .filter((item): item is T => item !== undefined);
         }
 
         // Handle flat array - cast to T[] since we know it's not sectioned
         const flatItems = items as T[];
         // make sure we have an id and value
-        checkItemValidity(flatItems?.[0], itemID, itemValue);
+        checkItemValidity(flatItems?.[0], itemId, itemValue);
         return selectedKeysArray
-          .map((key) => flatItems.find((item) => item[itemID] === key))
+          .map((key) => flatItems.find((item) => item[itemId] === key))
           .filter((item): item is T => item !== undefined);
       }
 
       // Handle other iterable types
       const iterableItems = selectedKeysArray
-        .map((key) => Array.from(items).find((item) => item[itemID] === key))
+        .map((key) => Array.from(items).find((item) => item[itemId] === key))
         .filter((item): item is T => item !== undefined);
       // make sure we have an id and value
-      checkItemValidity(iterableItems?.[0], itemID, itemValue);
+      checkItemValidity(iterableItems?.[0], itemId, itemValue);
       return iterableItems;
-    }, [items, selectedKeys, itemID]);
+    }, [items, selectedKeys, itemId]);
 
     const handleRemoveSelectedItem = useCallback(
       (keys: Set<Key>) => {
@@ -134,7 +134,7 @@ export const MultiSelectTagGroup =
           >
             <TagGroup.TagList
               items={selectedItems}
-              dependencies={[itemID]}
+              dependencies={[itemId]}
               maxW={"100%"}
               tabIndex={
                 selectedItems.length === 0 || isDisabled || isReadOnly
@@ -158,7 +158,7 @@ export const MultiSelectTagGroup =
             >
               {(item) => {
                 return (
-                  <TagGroup.Tag id={item[itemID] as string} maxW={"100%"}>
+                  <TagGroup.Tag id={item[itemId] as string} maxW={"100%"}>
                     {item[itemValue]}
                   </TagGroup.Tag>
                 );

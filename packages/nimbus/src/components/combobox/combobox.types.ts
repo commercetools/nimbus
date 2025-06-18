@@ -49,7 +49,7 @@ export interface ComboBoxMultiSelect<T extends object>
   isRequired?: boolean;
   isInvalid?: boolean;
   // name of key in items that is the unique id
-  itemID?: string;
+  itemId?: string;
   // name of key in items that is the text value to display
   itemValue?: string;
   placeholder?: string;
@@ -97,7 +97,7 @@ export interface ComboBoxValueSlotProps
 /** component prop interface */
 export type ComboBoxMultiSelectValueProps<T extends object> = {
   items: ComboBoxMultiSelectRootProps<T>["items"];
-  itemID: ComboBoxMultiSelectRootProps<T>["itemID"];
+  itemId: ComboBoxMultiSelectRootProps<T>["itemId"];
   itemValue: ComboBoxMultiSelectRootProps<T>["itemValue"];
   selectedKeys: ComboBoxMultiSelectRootProps<T>["selectedKeys"];
   onSelectionChange: ComboBoxMultiSelectRootProps<T>["onSelectionChange"];

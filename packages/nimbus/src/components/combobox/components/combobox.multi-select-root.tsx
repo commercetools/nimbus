@@ -17,7 +17,7 @@ import {
   TextField,
   useFilter,
 } from "react-aria-components";
-import { themeTokens } from "@commercetools/nimbus-tokens";
+import { sizes } from "@/theme/tokens/sizes";
 import { useResizeObserver } from "@/utils/useResizeObserver";
 import { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
 import { ComboBoxOptions } from "./combobox.options";
@@ -49,7 +49,7 @@ export const MultiSelectRoot = <T extends object>({
   disabledKeys,
   items: itemsProp,
   defaultItems,
-  itemID = "id",
+  itemId = "id",
   itemValue = "name",
   isLoading,
   isDisabled,
@@ -189,8 +189,8 @@ export const MultiSelectRoot = <T extends object>({
             const itemKey =
               typeof matchingItem === "object" &&
               matchingItem !== null &&
-              itemID in matchingItem
-                ? ((matchingItem as Record<string, unknown>)[itemID] as Key)
+              itemId in matchingItem
+                ? ((matchingItem as Record<string, unknown>)[itemId] as Key)
                 : (matchingItem as unknown as Key);
             // add key to previously selected items
             const nextSelection = new Set(selectedKeys);
@@ -217,7 +217,7 @@ export const MultiSelectRoot = <T extends object>({
       onSubmitCustomValue,
       items,
       itemValue,
-      itemID,
+      itemId,
       selectedKeys,
       setSelectedKeys,
       setInputValue,
@@ -275,7 +275,7 @@ export const MultiSelectRoot = <T extends object>({
           items={items}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
-          itemID={itemID}
+          itemId={itemId}
           itemValue={itemValue}
           placeholder={placeholder}
           size={size}
@@ -294,10 +294,12 @@ export const MultiSelectRoot = <T extends object>({
         />
       </div>
 
-      <ComboBoxPopoverSlot // Set css variable for the trigger width, fall back to 288px if state.triggerWidth is undefined
+      <ComboBoxPopoverSlot
+        // Set css variable for the trigger width, fall back to 288px if state.triggerWidth is undefined
+        // Must use `style` here to overwrite react-aria's setting the trigger-width the width of the toggle button in the popover style object
         style={
           {
-            "--trigger-width": triggerWidth ?? themeTokens.size[7200],
+            "--trigger-width": triggerWidth ?? sizes[7200],
           } as CSSProperties
         }
         asChild
