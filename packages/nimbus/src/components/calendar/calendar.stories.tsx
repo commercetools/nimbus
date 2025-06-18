@@ -159,6 +159,25 @@ export const MaxValue: Story = {
 };
 
 /**
+ * Allow only dates in the next 7 days by combining min and max values.
+ */
+export const MinAndMaxValue: Story = {
+  args: {
+    minValue: today(getLocalTimeZone()).add({ days: 1 }),
+    maxValue: today(getLocalTimeZone()).add({ days: 7 }),
+  },
+  render: (args: CalendarProps<DateValue>) => (
+    <Stack alignItems="start">
+      <Text fontSize="sm" color="gray.600">
+        Only dates from tomorrow to 7 days from today are available for
+        selection.
+      </Text>
+      <Calendar {...args} />
+    </Stack>
+  ),
+};
+
+/**
  * Specify the day that starts the week.
  */
 export const CustomWeekStartDay: Story = {
