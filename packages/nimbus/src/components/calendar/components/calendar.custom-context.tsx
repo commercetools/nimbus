@@ -1,8 +1,11 @@
+import { getLocalTimeZone } from "@internationalized/date";
 import { useContext } from "react";
 import {
   Provider,
   ButtonContext,
   CalendarStateContext,
+  TextContext,
+  useLocale,
 } from "react-aria-components";
 
 export const CalendarCustomContext = ({
@@ -10,10 +13,16 @@ export const CalendarCustomContext = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { locale } = useLocale();
   const buttonContext = useContext(ButtonContext)!;
+  const textContext = useContext(TextContext)!;
   const calendarState = useContext(CalendarStateContext)!;
 
-  const slots = {
+  /**
+   * Button slots
+   * ================================
+   */
+  const buttonSlots = {
     "next-month": {
       onPress: () => calendarState.focusNextSection(),
       "aria-label": "Next month",
@@ -32,6 +41,33 @@ export const CalendarCustomContext = ({
     },
   };
 
+  /**
+   * Text slots
+   * ================================
+   */
+  const monthLabel = new Intl.DateTimeFormat(locale, {
+    month: "long",
+  }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
+
+  const monthRangeLabel = [
+    new Intl.DateTimeFormat(locale, {
+      month: "long",
+    }).format(calendarState.visibleRange.start.toDate(getLocalTimeZone())),
+    new Intl.DateTimeFormat(locale, {
+      month: "long",
+    }).format(calendarState.visibleRange.end.toDate(getLocalTimeZone())),
+  ].join(" - ");
+
+  const yearLabel = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+  }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
+
+  const textSlots = {
+    month: { children: monthLabel },
+    monthRange: { children: monthRangeLabel },
+    year: { children: yearLabel },
+  };
+
   return (
     <Provider
       values={[
@@ -41,7 +77,17 @@ export const CalendarCustomContext = ({
             ...buttonContext,
             slots: {
               ...buttonContext.slots,
-              ...slots,
+              ...buttonSlots,
+            },
+          },
+        ],
+        [
+          TextContext,
+          {
+            ...textContext,
+            slots: {
+              ...textContext.slots,
+              ...textSlots,
             },
           },
         ],
