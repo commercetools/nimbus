@@ -70,7 +70,7 @@ catalogs:
     "react-aria": "3.39.0"
     "react-aria-components": "1.8.0"
     "react-stately": "3.37.0"
-    "@react-aria/optimize-locales-plugin": "1.1.4"
+    "@react-aria/optimize-locales-plugin": "1.1.5"
     "@internationalized/date": "^3.8.0"
   utils:
     "lodash": ^4.17.21
