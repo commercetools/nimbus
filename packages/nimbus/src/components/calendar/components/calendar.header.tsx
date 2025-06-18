@@ -1,4 +1,5 @@
-import { CalendarHeaderSlot } from "../calendar.slots";
+import { useContext } from "react";
+import { CalendarContext, Heading } from "react-aria-components";
 import {
   Box,
   Flex,
@@ -11,43 +12,14 @@ import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
 } from "@commercetools/nimbus-icons";
-import { getLocalTimeZone } from "@internationalized/date";
-import { useContext } from "react";
-
-import {
-  CalendarContext,
-  CalendarStateContext,
-  Heading,
-  useLocale,
-} from "react-aria-components";
+import { CalendarHeaderSlot } from "../calendar.slots";
 
 export const CalendarHeader = () => {
-  const { locale } = useLocale();
-
-  const calendarState = useContext(CalendarStateContext)!;
   const calendarProps = useContext(CalendarContext)!;
 
   // Needed to decide wether to show a single month or a range
   const visibleDurationMonths = calendarProps.visibleDuration?.months || 1;
   const showRangeLabel = visibleDurationMonths > 1;
-
-  // Now, use Intl.DateTimeFormat with the dynamic locale
-  const monthLabel = new Intl.DateTimeFormat(locale, {
-    month: "long",
-  }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
-
-  const monthRangeLabel = [
-    new Intl.DateTimeFormat(locale, {
-      month: "long",
-    }).format(calendarState.visibleRange.start.toDate(getLocalTimeZone())),
-    new Intl.DateTimeFormat(locale, {
-      month: "long",
-    }).format(calendarState.visibleRange.end.toDate(getLocalTimeZone())),
-  ].join(" - ");
-
-  const yearLabel = new Intl.DateTimeFormat(locale, {
-    year: "numeric",
-  }).format(calendarState.focusedDate.toDate(getLocalTimeZone()));
 
   return (
     <CalendarHeaderSlot>
@@ -73,9 +45,8 @@ export const CalendarHeader = () => {
             width={showRangeLabel ? "18ch" : "9ch"}
             textAlign="center"
             aria-hidden="true"
-          >
-            {showRangeLabel ? monthRangeLabel : monthLabel}
-          </Text>
+            slot={showRangeLabel ? "monthRange" : "month"}
+          />
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
             slot={showRangeLabel ? "next" : "next-month"}
@@ -104,9 +75,8 @@ export const CalendarHeader = () => {
             width="5ch"
             textAlign="center"
             aria-hidden="true"
-          >
-            {yearLabel}
-          </Text>
+            slot="year"
+          />
           {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton slot="next-year" size="xs" variant="ghost" tone="primary">
             <KeyboardArrowRight />
