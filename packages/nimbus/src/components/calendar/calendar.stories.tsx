@@ -93,6 +93,36 @@ export const VisibleDuration: Story = {
 };
 
 /**
+ * Next and previous buttons are used to navigate between months.
+ * The `pageBehavior` prop controls how the calendar navigates between months.
+ *
+ * - `single` navigates by one month at a time.
+ * - `visible` navigates by the number of visible months.
+ */
+export const PagingBehaviour: Story = {
+  args: {
+    defaultValue: today(getLocalTimeZone()),
+    visibleDuration: { months: 3 },
+  },
+  render: (args: CalendarProps<DateValue>) => (
+    <Stack>
+      <Text fontWeight="700">`single` - pages months by single months</Text>
+      <Box>
+        <Calendar {...args} pageBehavior="single" />
+      </Box>
+      <Box as="hr" my="400" />
+      <Text fontWeight="700">
+        `visible` - pages months by amount of visible months (+/-
+        visibleDuration.months)
+      </Text>
+      <Box>
+        <Calendar {...args} pageBehavior="visible" />
+      </Box>
+    </Stack>
+  ),
+};
+
+/**
  * Display more than one month
  */
 export const CalendarFormStates: Story = {
