@@ -49,7 +49,12 @@ export const ComboBoxButtonGroup = ({
       {isLoading ? (
         <Flex my="auto" w="600" h="600" pointerEvents="none">
           <Box color="neutral.9" asChild m="auto" w="400" h="400">
-            <Box asChild animation="spin" animationDuration="slowest">
+            <Box
+              asChild
+              animation="spin"
+              animationDuration="slowest"
+              data-testid="nimbus-combobox-loading"
+            >
               <SpinnerIcon />
             </Box>
           </Box>

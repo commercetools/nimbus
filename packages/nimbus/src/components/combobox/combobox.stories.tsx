@@ -1,12 +1,8 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  type FormEvent,
-} from "react";
+import { useState, useCallback, useMemo, type FormEvent } from "react";
 import { type Key, type Selection } from "react-aria-components";
+import { useAsyncList } from "react-stately";
 import { userEvent, fireEvent, within, expect, fn } from "@storybook/test";
 import { FormField, Stack, Text, Box, Flex, RadioInput } from "@/components";
 import { ComboBox } from "./combobox";
@@ -361,7 +357,7 @@ export const Base: Story = {
         await userEvent.click(multiSelect);
         // Toggle popover to open state
         await expect(
-          document.querySelector('[role="listbox"]')
+          document.querySelector('[role="listbox"]') as HTMLElement
         ).toBeInTheDocument();
         await expect(multiSelect.getAttribute("data-open")).toBe("true");
         // Click root component again
@@ -1476,90 +1472,52 @@ export const ComplexOptions: Story = {
  */
 export const AsyncLoading: Story = {
   render: () => {
-    const [items, setItems] = useState<Array<{ id: number; name: string }>>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-    // State for multi-select
-    const [multiItems, setMultiItems] = useState<
-      Array<{ id: number; name: string }>
-    >([]);
-    const [multiIsLoading, setMultiIsLoading] = useState(false);
-    const [multiInputValue, setMultiInputValue] = useState("");
-
-    // Simulate API call with debouncing for single select
-    useEffect(() => {
-      if (inputValue.length < 2) {
-        setItems([]);
-        setIsLoading(false);
-        return;
-      }
-      setIsLoading(true);
-      const timeoutId = setTimeout(() => {
-        // Simulate API response
-        const mockResults = [
-          { id: 1, name: `${inputValue} - Result 1` },
-          { id: 2, name: `${inputValue} - Result 2` },
-          { id: 3, name: `${inputValue} - Result 3` },
-        ];
-        setItems(mockResults);
-        setIsLoading(false);
-      }, 200);
-      return () => clearTimeout(timeoutId);
-    }, [inputValue]);
-
-    // Simulate API call with debouncing for multi-select
-    useEffect(() => {
-      if (multiInputValue.length < 2) {
-        setMultiItems([]);
-        setMultiIsLoading(false);
-        return;
-      }
-
-      setMultiIsLoading(true);
-      const timeoutId = setTimeout(() => {
-        // Simulate API response
-        const mockResults = [
-          { id: 1, name: `${multiInputValue} - Option 1` },
-          { id: 2, name: `${multiInputValue} - Option 2` },
-          { id: 3, name: `${multiInputValue} - Option 3` },
-          { id: 4, name: `${multiInputValue} - Option 4` },
-        ];
-        setMultiItems(mockResults);
-        setMultiIsLoading(false);
-      }, 200);
-
-      return () => clearTimeout(timeoutId);
-    }, [multiInputValue]);
-
+    const singleSelectState = useAsyncList<{ id: number; name: string }>({
+      async load() {
+        // Add 500ms delay before returning results, so that we can test loading state reliably
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return { items: options };
+      },
+    });
+    const multiSelectState = useAsyncList<{ id: number; name: string }>({
+      async load() {
+        // Add 500ms delay before returning results, so that we can test loading state reliably
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return { items: options };
+      },
+    });
     return (
       <Stack direction="row" gap="400">
         <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select Async ComboBox</FormField.Label>
+          <FormField.Label>Single Select Async</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              aria-label="async search single"
-              defaultItems={items}
-              inputValue={inputValue}
-              onInputChange={setInputValue}
-              isLoading={isLoading}
-              placeholder="Type at least 2 characters to search..."
+              defaultItems={singleSelectState.items}
+              // Workaround for known combobox bug (single select), allowsEmptyCollection should be set for async loaded items to trigger opening the dropdown on initial load
+              // https://github.com/adobe/react-spectrum/issues/5234
+              allowsEmptyCollection={true}
+              renderEmptyState={() => (
+                <Text color="neutral.11" fontStyle="italic">
+                  {singleSelectState.loadingState === "loading"
+                    ? "loading..."
+                    : "no results"}
+                </Text>
+              )}
+              isLoading={singleSelectState.loadingState === "loading"}
+              placeholder="select a character..."
             >
               {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
-
         <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select Async ComboBox</FormField.Label>
+          <FormField.Label>Multi-Select Async</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              aria-label="async search multi"
-              defaultItems={multiItems}
+              defaultItems={multiSelectState.items}
+              isLoading={multiSelectState.loadingState === "loading"}
               selectionMode="multiple"
-              inputValue={multiInputValue}
-              onInputChange={setMultiInputValue}
-              isLoading={multiIsLoading}
-              placeholder="Type at least 2 characters to search..."
+              placeholder="select characters..."
             >
               {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
             </ComboBox.Root>
@@ -1568,100 +1526,48 @@ export const AsyncLoading: Story = {
       </Stack>
     );
   },
-};
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /single select async/i,
+    });
+    // const multiSelect = await canvas.findByRole("combobox", {
+    //   name: /multi-select async/i,
+    // });
+    await step(
+      "single select options are displayed when loaded, and are selectable",
+      async () => {
+        singleSelect.focus();
+        await userEvent.keyboard("{k}");
+        // Loading spinner is displayed;
+        await canvas.findAllByTestId("nimbus-combobox-loading");
+        // Popover is displayed
+        const listbox = document.querySelector(
+          '[role="listbox"]'
+        ) as HTMLElement;
+        await expect(listbox).toBeInTheDocument();
+        // Options are displayed
+        await within(listbox).findByRole("option", { name: /koala/i });
+        // Options are filtered based on input
+        await expect(getListboxOptions().length).toBe(3);
+        // Select Koala option
+        await selectOptionsByName(["Koala"]);
+        // Input value should be koala
+        await expect(singleSelect.value).toBe("Koala");
+        // Koala option is selected
+        await userEvent.keyboard("{ArrowDown}");
+        await verifyOptionsSelected(["Koala"], true);
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
+    );
 
-/**
- * Large Dataset with Performance Optimization
- * Demonstrates handling large datasets efficiently
- */
-export const LargeDataset: Story = {
-  render: () => {
-    // Generate a large dataset with unique word-only names
-    const largeDataset = useMemo(() => {
-      const categories = [
-        "Technology",
-        "Science",
-        "Arts",
-        "Sports",
-        "Food",
-        "Travel",
-        "Health",
-        "Education",
-        "Business",
-        "Entertainment",
-      ];
-
-      const adjectives = [
-        "Advanced",
-        "Modern",
-        "Premium",
-        "Creative",
-        "Smart",
-        "Elegant",
-        "Robust",
-        "Dynamic",
-        "Efficient",
-        "Innovative",
-      ];
-
-      const nouns = [
-        "Platform",
-        "System",
-        "Framework",
-        "Solution",
-        "Service",
-        "Application",
-        "Network",
-        "Interface",
-        "Database",
-        "Engine",
-      ];
-
-      return Array.from({ length: 1000 }, (_, i) => {
-        const categoryIndex = Math.floor(i / 100) % 10;
-        const adjectiveIndex = Math.floor(i / 10) % 10;
-        const nounIndex = i % 10;
-
-        return {
-          id: i + 1,
-          name: `${adjectives[adjectiveIndex]} ${nouns[nounIndex]} ${categories[categoryIndex]}`,
-        };
-      });
-    }, []);
-
-    return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select Large Dataset</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              aria-label="large dataset single"
-              defaultItems={largeDataset}
-              placeholder="Search through 1000 items..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select Large Dataset</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              aria-label="large dataset multi"
-              defaultItems={largeDataset}
-              selectionMode="multiple"
-              placeholder="Search and select multiple items..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-      </Stack>
+    await step(
+      "single select displays options when they are loaded",
+      async () => {}
     );
   },
 };
-
 /**
  * Create Custom Value Example
  * Demonstrates custom value creation and validation for both single and multi-select
@@ -1676,7 +1582,6 @@ export const CreateCustomValue: Story = {
       Array<{ id: string; name: string }>
     >([]);
     const [singleInputValue, setSingleInputValue] = useState("");
-
     // Multi-select state
     const [multiSelectedItems, setMultiSelectedItems] = useState<Selection>(
       new Set()
@@ -1694,21 +1599,18 @@ export const CreateCustomValue: Story = {
       () => [...options, ...multiCustomItems],
       [multiCustomItems]
     );
-
     const handleSingleSelectionChange = (key: Key | null) => {
       const nextInputValue =
         singleAllItems.find((o) => o.id === key)?.name ?? "";
       setSingleSelectedItem(key);
       setSingleInputValue(nextInputValue);
     };
-
     const handleSingleCustomValue = (value: string) => {
       // Add custom item
       const newItem = { id: `single-custom-${Date.now()}`, name: value };
       setSingleCustomItems((prev) => [...prev, newItem]);
       setSingleSelectedItem(newItem.id);
     };
-
     const handleMultiCustomValue = (value: string) => {
       // Add custom item
       const newItem = { id: `multi-custom-${Date.now()}`, name: value };
@@ -1719,12 +1621,10 @@ export const CreateCustomValue: Story = {
         return newSelection;
       });
     };
-
     // Input change handlers
     const handleSingleInputChange = (value: string) => {
       setSingleInputValue(value);
     };
-
     const handleMultiInputChange = (value: string) => {
       setMultiInputValue(value);
     };
@@ -1735,15 +1635,14 @@ export const CreateCustomValue: Story = {
           <FormField.Label>Single Select with Custom Values</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              aria-label="single select custom values"
+              allowsCustomValue
+              onSubmitCustomValue={handleSingleCustomValue}
               defaultItems={singleAllItems}
               selectedKey={singleSelectedItem}
               onSelectionChange={handleSingleSelectionChange}
               inputValue={singleInputValue}
               onInputChange={handleSingleInputChange}
-              allowsCustomValue
-              onSubmitCustomValue={handleSingleCustomValue}
-              placeholder="Select an item or create a new one..."
+              placeholder="Select or create an item..."
             >
               {(item) => (
                 <ComboBox.Option
@@ -1764,16 +1663,15 @@ export const CreateCustomValue: Story = {
           <FormField.Label>Multi-Select with Custom Values</FormField.Label>
           <FormField.Input>
             <ComboBox.Root
-              aria-label="multi select custom values"
+              allowsCustomValue
+              onSubmitCustomValue={handleMultiCustomValue}
               defaultItems={multiAllItems}
               selectionMode="multiple"
               selectedKeys={multiSelectedItems}
               onSelectionChange={setMultiSelectedItems}
               inputValue={multiInputValue}
               onInputChange={handleMultiInputChange}
-              allowsCustomValue
-              onSubmitCustomValue={handleMultiCustomValue}
-              placeholder="Select multiple items or create new ones..."
+              placeholder="Select or create items..."
             >
               {(item) => (
                 <ComboBox.Option

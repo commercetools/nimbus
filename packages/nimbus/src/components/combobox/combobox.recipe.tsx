@@ -175,7 +175,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         options: {
           boxShadow: "none",
           px: "200",
-          py: "200",
+          my: "200",
           minW: "unset",
           "& section:first-of-type > header": {
             mt: 0,
