@@ -1,106 +1,174 @@
 ---
 id: Components-NumberInput
 title: NumberInput
-description: An input component that accepts only numbers with increment/decrement buttons
+description: A number input allows users to enter numerical values and adjust them incrementally.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
   - Inputs
-  - NumberInput
+  - Number input
 tags:
   - component
-  - input
-  - number
 ---
 
-# NumberInput
+# Number input
 
-A NumberInput is an input that accepts only numbers and provides increment/decrement buttons for easy value adjustment.
+A number input allows users to enter numerical values and adjust them incrementally.
 
-## Features
+## Overview
 
-- Accepts numeric input only
-- Built-in increment/decrement buttons
-- Supports min/max value constraints
-- Configurable step increments
-- Full accessibility support
-- Integrates with FormField for labels and validation
+A number input allows users to enter a numeric value and adjust it using stepper buttons. It provides a quick and precise way to modify values within defined parameters, especially for small incremental changes.
 
-## Basic Usage
+### Resources
 
-```jsx-live
-import { NumberInput } from "@commercetools/nimbus";
+Deep dive on details and access design library
 
-function Example() {
-  return <NumberInput placeholder="Enter a number" />;
-}
-```
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1852-4333&m=dev)
 
-## With Constraints
+## Variables
+
+Get familiar with the features.
+
+### Visual options
+
+#### Size
+Medium is the default size, with a small size for compact needs.
 
 ```jsx-live
-import { NumberInput } from "@commercetools/nimbus";
-
-function Example() {
-  return (
-    <NumberInput
-      placeholder="Enter 1-100"
-      minValue={1}
-      maxValue={100}
-      step={5}
-    />
-  );
-}
+const App = () => (
+  <Stack direction="horizontal" gap="400" alignItems="center">
+    <NumberInput size="md" defaultValue={123} />
+    <NumberInput size="sm" defaultValue={123} />
+  </Stack>
+)
 ```
 
-## With FormField
+#### Appearance
+Medium is the default size, with a small size for compact needs.
 
 ```jsx-live
-import { NumberInput, FormField } from "@commercetools/nimbus";
-
-function Example() {
-  return (
-    <FormField.Root>
-      <FormField.Label>Quantity</FormField.Label>
-      <FormField.Input>
-        <NumberInput placeholder="Enter quantity" minValue={1} />
-      </FormField.Input>
-    </FormField.Root>
-  );
-}
+const App = () => (
+  <Stack direction="horizontal" gap="400" alignItems="center">
+    <NumberInput defaultValue={123} />
+    <NumberInput size="sm" defaultValue={123} />
+  </Stack>
+)
 ```
 
-## Sizes
+## Guidelines
 
-NumberInput supports two sizes: `sm` and `md` (default).
+Number input guidelines focus on clear labels, suitable ranges, easy interaction via keyboard and buttons, and strong error handling, all while following WCAG accessibility rules.
+
+### Best practices
+
+- **Labels:** Always include a concise and clear label using sentence case. Labels should not be hidden. In the rare case where context is sufficient and label can be absent, review the design with an accessibility expert.
+- **Default values:** Provide a clear default value (e.g., '1' for quantity, '0' for children) that is likely to be the most common selection. Avoid leaving the input blank.
+- **Helper text:** Use helper text to indicate maximum or minimum values, or other constraints. It is optional and is replaced by error messages during validation.
+- **Increment size:** Determine an increment size that is relative to the value range. For example, use increments of 1 for a 0-10 range and increments of 10 for a 0-100 range.
+- **Unit symbols:** Include unit symbols to the right of the input field or increase button when applicable, using standard abbreviations.
+- **Read-only state:** Use when the user can view but not modify the value.
+- **Disabled state:** Use when the number input is not interactive.
+- **Validation:**
+  - Provide clear and concise error messages below the input field, replacing any helper text.
+  - Highlight errors visually, for example, with a red border and an error icon.
+  - Avoid immediate validation that may frustrate users; allow them to complete their input before displaying validation results.
+
+### Usage
+
+A number input lets users enter and adjust a numeric value with stepper buttons, best for small, incremental changes within set limits.
+
+> [!TIP]\
+> When to use
+
+- **Numeric values:** When the input is exclusively a number (e.g., quantity, age).
+- **Small, incremental adjustments:** When users need to change values by a few clicks, or relative to the current state, without knowing exact figures.
+- **Bypassing keyboard limitations:** Particularly useful for mobile devices where direct numerical input might be cumbersome.
+
+> [!CAUTION]\
+> When not to use
+
+- **Large value changes:** When a wide range of values requires many clicks (e.g., 1 to 300); a slider is more appropriate.
+- **Continuous variables:** For values like prices or distances where exact, precise input within a wide range is crucial; a text input is better.
+- **Infinite numeric ranges:** Without defined limits, users are unsure of "reasonable" values, causing frustration. Storing infinite values on the backend is often unfeasible; applications need concrete data.
+- **Non-mathematical numbers:** Values like credit card numbers, phone numbers, or postal codes, which are strings despite containing digits.
+
+### Keeping interactions simple
+
+Simple interactions are vital because they minimize user effort and cognitive load, allowing for quick and efficient value management.
+
+> [!TIP]\
+> **Do**
+>
+> - Use for quantifiable numeric values.
+> - Provide clear and concise labels.
+> - Set appropriate min and max values.
+> - Define a logical step value.
+> - Include units (e.g., "$", "kg", "%") as prefixes or suffixes.
+> - Allow keyboard interaction for incrementing and decrementing.
+> - Provide helpful error messages for invalid input.
+> - Design for clear visual feedback in all states (hover, focus, disabled, invalid).
+
+<img src="/images/number-input/number-input-do.png" alt="number input do guideline" width="384px" />
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Use for non-numeric input (e.g., phone numbers that are better suited for text fields to allow for formatting).
+> - Omit clear labels or help text.
+> - Forget to set min and max values when there are constraints.
+> - Use excessively small or large step values that hinder usability.
+> - Rely solely on visual cues for accessibility; use ARIA attributes.
+> - Present a number input without clear feedback for different states.
+
+<img src="/images/number-input/number-input-dont.png" alt="number input dont guideline" width="275px" />
+
+## Specs
+
+### Keyboard Interaction
+
+- `ArrowUp`: Increments the value.
+- `ArrowDown`: Decrements the value.
+- `Shift + ArrowUp/Down`: Increments/decrements the value by a larger step (typically 10x the defined step).
+- `Scroll Wheel`: Increments/decrements the value when the input is focused.
+
+### Features
+
+- **Value Clamping:** If a user types a value outside the defined min or max range, the value will snap to the nearest valid step or the min/max value on blur.
+- **Decimals:** Supports decimal values and step sizes.
+- **Percentages:** Can be configured to display values as percentages, automatically multiplying input by 100 for display and dividing by 100 for output.
+
+## Properties
+
+<PropsTable id="NumberInput" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
 ```jsx-live
-import { NumberInput } from "@commercetools/nimbus";
-
-function Example() {
-  return (
-    <>
-      <NumberInput size="sm" placeholder="Small" />
-      <NumberInput size="md" placeholder="Medium" />
-    </>
-  );
-}
+const App = () => (
+  <NumberInput 
+    defaultValue={10}
+    aria-label="Quantity"
+    min={1}
+    max={100}
+    step={1}
+  />
+)
 ```
 
-## Variants
+### Accessibility Standards
 
-NumberInput supports two visual variants: `solid` (default) and `ghost`.
+- Always provide a visible label for the input.
+- If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.
+- Ensure sufficient color contrast for all elements (text, borders, icons).
+- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
+- Clearly indicate the focused state.
+- Support keyboard navigation with arrow keys, scroll wheel, and modifier keys.
+- Provide clear feedback for value changes and constraints.
 
-```jsx-live
-import { NumberInput } from "@commercetools/nimbus";
+### Resources
 
-function Example() {
-  return (
-    <>
-      <NumberInput variant="solid" placeholder="Solid" />
-      <NumberInput variant="ghost" placeholder="Ghost" />
-    </>
-  );
-}
-```
+- [React Spectrum NumberField](https://react-spectrum.adobe.com/react-spectrum/NumberField.html)
+- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) (Search for "spinbutton" or "number input" patterns)
