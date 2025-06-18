@@ -47,6 +47,28 @@ export const Base: Story = {
 };
 
 /**
+ * Placeholder Value
+ * Demonstrates the placeholderValue property which is used
+ * to set the start value when the input is empty and handled with the keyboard.
+ */
+export const PlaceholderValue: Story = {
+  render: (args: DateInputProps) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With placeholder value (2025-06-15)</Text>
+        <DateInput
+          {...args}
+          placeholderValue={new CalendarDate(2025, 6, 15)}
+          aria-label="Date input with placeholder"
+        />
+        <Text>Without placeholder value</Text>
+        <DateInput {...args} aria-label="Date input without placeholder" />
+      </Stack>
+    );
+  },
+};
+
+/**
  * Showcase Uncontrolled
  */
 export const Uncontrolled: Story = {
