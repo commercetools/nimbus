@@ -26,8 +26,8 @@ export const CheckboxLabel = withContext<HTMLSpanElement, CheckboxLabelProps>(
   "label"
 );
 
-interface ChekcboxIndicatorProps extends HTMLChakraProps<"span"> {}
+interface CheckboxIndicatorProps extends HTMLChakraProps<"span"> {}
 export const CheckboxIndicator = withContext<
   HTMLSpanElement,
-  ChekcboxIndicatorProps
+  CheckboxIndicatorProps
 >("span", "indicator");

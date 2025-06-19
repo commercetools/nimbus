@@ -1,0 +1,214 @@
+---
+id: Component-Lifecycle-States
+title: "ADR: Nimbus Software Lifecycle States"
+description:
+  "Architecture decision record defining the lifecycle states for Nimbus
+  components, hooks, utilities, classes, etc."
+documentState: "InitialDraft"
+order: 3
+menu:
+  - Home
+  - Contribute
+  - ADR's
+  - ADR0003 Component Lifecycle States
+tags:
+  - architecture
+  - lifecycle
+  - versioning
+  - stability
+---
+
+# ADR: Nimbus Software Lifecycle States
+
+## Context
+
+As Nimbus grows and evolves, we need a clear system to communicate the
+stability, support level, and future trajectory of our components, hooks,
+utilities, functions, and classes to consumers. Without a standardized
+lifecycle system, consumers cannot make informed decisions about adoption,
+migration planning, or production readiness.
+
+The lack of clear lifecycle states leads to:
+- Uncertainty about which features are safe for production use
+- Difficulty planning migrations when APIs change
+- Inconsistent expectations about support and maintenance
+- Confusion about the maturity level of different library elements
+
+We need a structured approach that balances innovation (allowing for
+experimentation and iteration) with stability (providing reliable,
+production-ready features).
+
+## Decision
+
+We will implement a six-stage lifecycle system for all UI library elements,
+divided into Pre-Release States and General Availability States. Each state
+clearly communicates stability expectations, support commitments, and
+transition pathways.
+
+### Pre-Release States
+
+These states are for features under active development, subject to rapid
+change, and not yet recommended for general production use.
+
+#### 1. Experimental
+- **Purpose**: Earliest public state for new concepts, significant API
+  redesigns, or exploratory features
+- **Stability**: Highly unstable, may be removed entirely without notice
+- **Goal**: Validate ideas and gather initial conceptual feedback
+- **Consumer Usage**: Absolutely not for production use; only for deep
+  exploration and early-stage feedback
+- **Breaking Changes**: Highest frequency, no advance warning
+- **Transitions**: To Alpha (if viable) or Deprecated (if not viable)
+- **Marking**: Clearly marked as `(Experimental)` in documentation,
+  changelogs, and `@experimental` JSDoc tag
+
+#### 2. Alpha
+- **Purpose**: Features with clearer direction that have passed experimental
+  validation
+- **Stability**: Still highly unstable with known bugs and incomplete
+  functionality
+- **Goal**: Early adopter testing and initial feedback on core concepts
+- **Consumer Usage**: Not for production use; exploration and feedback only
+- **Breaking Changes**: Frequent breaking changes without warning
+- **Transitions**: To Beta (if successful) or Deprecated (if not viable)
+- **Marking**: Clearly marked as `(Alpha)` in documentation, changelogs, and
+  `@alpha` JSDoc tag
+
+#### 3. Beta
+- **Purpose**: More stable features with mostly complete core functionality
+- **Stability**: Subject to breaking changes but less frequently than Alpha
+- **Goal**: Gather broad feedback on functionality and usability
+- **Consumer Usage**: Use with caution in non-critical production
+  environments
+- **Breaking Changes**: Some breaking changes, typically with prior notice,
+  may occur in minor versions
+- **Transitions**: To Stable (if successful) or Deprecated (if not viable)
+- **Marking**: Clearly marked as `(Beta)` in documentation, changelogs, and
+  `@beta` JSDoc tag
+
+### General Availability States
+
+These states represent stable and supported features, and features being
+phased out.
+
+#### 4. Stable
+- **Purpose**: Standard, production-ready state
+- **Stability**: API considered stable, thoroughly tested, and actively
+  maintained
+- **Goal**: Provide reliable, consistent functionality for production
+  applications
+- **Consumer Usage**: Recommended for all production applications
+- **Breaking Changes**: Adhere to strict semantic versioning (only in major
+  releases) with clear migration guides
+- **Transitions**: To Deprecated (when superseded or no longer relevant)
+- **Marking**: Default status requiring no special marking; documentation
+  confirms stability
+
+#### 5. Deprecated
+- **Purpose**: Not to be used in new development. Superseded by better
+  alternatives or found not viable as an Alpha or Beta
+- **Stability**: Maintained for compatibility but no new features
+- **Goal**: Provide transition period for migration to alternatives
+- **Consumer Usage**: Avoid for new development; migrate existing usage to
+  recommended alternatives
+- **Breaking Changes**: Only critical bug fixes; no new features
+- **Transitions**: To End-of-Life (EOL)
+- **Marking**: Clear warnings in documentation with recommended alternatives;
+  `@deprecated` JSDoc tag; console warnings during development; date for 
+  the EOL transition
+
+#### 6. End-of-Life (EOL)
+- **Purpose**: Complete removal from the library
+- **Stability**: No longer available
+- **Goal**: Clean up deprecated features
+- **Consumer Usage**: Element is gone; applications using it will break upon
+  upgrade
+- **Breaking Changes**: N/A (element removed)
+- **Transitions**: N/A (terminal state)
+- **Marking**: Not present in current documentation or code; removal noted in
+  release notes
+
+## Consequences
+
+### Positive Consequences
+
+- **Clear Communication**: Consumers can make informed decisions about
+  feature adoption based on explicit stability guarantees
+- **Predictable Migration Path**: Well-defined transition states help
+  consumers plan upgrades and migrations
+- **Innovation Support**: Pre-release states allow for experimentation while
+  protecting production users
+- **Maintenance Clarity**: Clear support commitments for each state help
+  prioritize development resources
+- **Semantic Versioning Alignment**: Lifecycle states work with semantic
+  versioning to provide comprehensive change communication
+
+### Negative Consequences
+
+- **Additional Overhead**: Requires consistent marking and tracking of
+  lifecycle states across all library elements
+- **Documentation Complexity**: More detailed documentation needed to explain
+  states and transitions
+- **Consumer Learning Curve**: Users must understand the lifecycle system to
+  make appropriate adoption decisions
+- **Potential Confusion**: Multiple pre-release states might create
+  uncertainty about which features to try
+
+### Implementation Requirements
+
+- **Documentation Standards**: All elements must be clearly marked with their
+  lifecycle state
+- **Tooling Integration**: JSDoc tags, TypeScript definitions, and build
+  tools should reflect lifecycle states
+- **Communication Process**: Clear guidelines for announcing state
+  transitions in changelogs and release notes
+- **Development Workflow**: Integration with development processes to ensure
+  proper state management
+
+## Examples
+
+### Experimental Feature
+```jsx
+/**
+ * @experimental This component is experimental and may be removed without
+ * notice
+ */
+export const ExperimentalDataGrid = () => {
+  // Implementation
+};
+```
+
+### Beta Feature with Migration Path
+```jsx
+/**
+ * @beta This component is in beta. API may change in minor versions.
+ * Expected to reach stable in v2.1.0
+ */
+export const BetaAdvancedSelect = () => {
+  // Implementation
+};
+```
+
+### Deprecated Feature
+```jsx
+/**
+ * @deprecated Use `NewButton` instead. Will be removed in v3.0.0
+ * @see {@link NewButton}
+ */
+export const OldButton = () => {
+  console.warn('OldButton is deprecated. Use NewButton instead.');
+  // Implementation
+};
+```
+
+## Summary
+
+The six-stage lifecycle system provides clear communication about feature
+stability and support commitments. Pre-release states (Experimental, Alpha,
+Beta) enable innovation while protecting production users, while General
+Availability states (Stable, Deprecated, EOL) ensure reliable long-term
+support and predictable migration paths.
+
+This system balances the need for innovation with stability requirements,
+giving consumers the information they need to make appropriate adoption
+decisions while providing clear guidelines for library maintainers. 
