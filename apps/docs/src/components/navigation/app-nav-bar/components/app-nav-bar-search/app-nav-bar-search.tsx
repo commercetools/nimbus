@@ -62,6 +62,7 @@ export const AppNavBarSearch = () => {
               type="search"
               placeholder="Search for a component..."
               onFocus={(e) => e.target.blur()}
+              aria-label="Search for a component"
             />
 
             <Box position="absolute" top="150" right="250" color="neutral.11">

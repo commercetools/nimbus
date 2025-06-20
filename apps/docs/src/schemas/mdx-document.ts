@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { mdxDocumentStates } from "./mdx-document-states";
-import { mdxDocumentAudiences } from "./mdx-document-audiences";
+import { lifecycleStates } from "./lifecycle-states";
 
 export const TocItemSchema = z.object({
   value: z.string(),
@@ -21,10 +20,8 @@ export const mdxDocumentSchema = z.object({
     title: z.string(),
     /** a one sentence descirption of the file-contents */
     description: z.string(),
-    /** the current state of progress of the document */
-    documentState: z.enum(mdxDocumentStates).optional(),
-    /** the audience the document is targeted at */
-    documentAudiences: z.array(z.enum(mdxDocumentAudiences)).optional(),
+    /** the lifecycle state of the component/feature */
+    lifecycleState: z.enum(lifecycleStates).optional(),
     /** menu display order */
     order: z.number(),
     /** the path to the file within the repo, from the repo-root */
