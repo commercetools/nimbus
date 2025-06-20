@@ -38,6 +38,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       "&[data-disabled]": {
         layerStyle: "disabled",
         focusRing: "none",
+        "& input, & button": {
+          // if you set 'pointer-events: none' on an element, it does not display a cursor,
+          // so in order to display `cursor: not-allowed`, we must set pointerEvents: none on the interactive children
+          pointerEvents: "none!",
+        },
       },
       "& input": {
         cursor: "text",

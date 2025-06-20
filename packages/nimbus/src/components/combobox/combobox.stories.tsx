@@ -4,7 +4,15 @@ import { useState, useCallback, useMemo, type FormEvent } from "react";
 import { type Key, type Selection } from "react-aria-components";
 import { useAsyncList } from "react-stately";
 import { userEvent, fireEvent, within, expect, fn } from "@storybook/test";
-import { FormField, Stack, Text, Box, Flex, RadioInput } from "@/components";
+import {
+  FormField,
+  Stack,
+  Text,
+  Box,
+  Flex,
+  RadioInput,
+  Button,
+} from "@/components";
 import { ComboBox } from "./combobox";
 
 /**
@@ -1256,10 +1264,17 @@ export const OptionGroups: Story = {
 
 /**
  * Complex Options with Descriptions Example
- * Demonstrates:
- * - handling item objects that do not have an id or name key
- * - options with rich content including descriptions for both single and multi-select
- * - complex options with non-standard keys inside sections
+ * Demonstrates handling item objects that do not have an `id` key.  An `id` key is necessary to allow the selection of items in the dropdown.
+ * When there is no `id` key:
+ * - `<ComboBox.Option>` the `id` prop must be set on to the name of the item key that can be used instead
+ * - `<ComboBox.Root>` multiselect: the `itemId` prop must be set to match the `id` prop passed to `<ComboBox.Option>`
+ *
+ * Demonstrates handling item objects that do not have a `name` key.  A `name` key is necessary to allow filtering in the dropdown and displaying selected values in the multi-select.
+ * When there is no `name` key:
+ * - `<ComboBox.Option>` the `textValue` prop must be set on to the name of the item key that can be used to display the option
+ * - `<ComboBox.Root>` multiselect: the `itemValue` prop must be set to match the `textValue` prop passed to `<ComboBox.Option>`
+ *
+ * Demonstrates options with rich content including descriptions for both single and multi-select
  */
 export const ComplexOptions: Story = {
   render: () => {
@@ -1469,6 +1484,9 @@ export const ComplexOptions: Story = {
 /**
  * Async Loading Example
  * Demonstrates fetching data from an API with search functionality
+ * - for single-select to display options on initial search, the `allowsEmptyCollection` prop must be `true`
+   - when `allowsEmptyCollection` is true, it is advisable to also provide a component to display via the `renderEmptyState` prop
+ `
  */
 export const AsyncLoading: Story = {
   render: () => {
@@ -1531,16 +1549,23 @@ export const AsyncLoading: Story = {
     const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
       name: /single select async/i,
     });
-    // const multiSelect = await canvas.findByRole("combobox", {
-    //   name: /multi-select async/i,
-    // });
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /multi-select async/i,
+    });
+    await step(
+      "loading spinner is displayed when options are loaded",
+      async () => {
+        await within(singleSelect.parentElement!).findByTestId(
+          "nimbus-combobox-loading"
+        );
+        await within(multiSelect).findByTestId("nimbus-combobox-loading");
+      }
+    );
     await step(
       "single select options are displayed when loaded, and are selectable",
       async () => {
         singleSelect.focus();
         await userEvent.keyboard("{k}");
-        // Loading spinner is displayed;
-        await canvas.findAllByTestId("nimbus-combobox-loading");
         // Popover is displayed
         const listbox = document.querySelector(
           '[role="listbox"]'
@@ -1563,8 +1588,28 @@ export const AsyncLoading: Story = {
     );
 
     await step(
-      "single select displays options when they are loaded",
-      async () => {}
+      "multi select options are displayed when loaded, and are selectable",
+      async () => {
+        multiSelect.focus();
+        await userEvent.keyboard("{k}");
+        // Popover is displayed
+        const listbox = document.querySelector(
+          '[role="listbox"]'
+        ) as HTMLElement;
+        await expect(listbox).toBeInTheDocument();
+        // Options are displayed
+        await within(listbox).findByRole("option", { name: /koala/i });
+        // Options are filtered based on input
+        await expect(getListboxOptions().length).toBe(3);
+        // Select Koala option
+        await selectOptionsByName(["Koala"]);
+        // Koala tag is visible
+        await verifyTagsExist(multiSelect, ["Koala"]);
+        // Koala option is selected
+        await verifyOptionsSelected(["Koala"], true);
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
+      }
     );
   },
 };
@@ -1695,6 +1740,8 @@ export const CreateCustomValue: Story = {
 /**
  * Disabled and Read-Only Comboboxes Example
  * Demonstrates disabled and read-only comboboxes side by side for both single and multi-select modes
+ * - Disabled comboboxes do not allow any interaction and have disabled styling
+ * - Read-only comboboxes can be focused but do not allow any updates
  */
 export const DisabledAndReadOnlyComboboxes: Story = {
   render: () => {
@@ -1721,7 +1768,6 @@ export const DisabledAndReadOnlyComboboxes: Story = {
                 Disabled - cannot interact at all
               </FormField.Description>
             </FormField.Root>
-
             <FormField.Root alignSelf={"flex-start"} isReadOnly>
               <FormField.Label>Read-Only Single Select</FormField.Label>
               <FormField.Input>
@@ -1741,7 +1787,6 @@ export const DisabledAndReadOnlyComboboxes: Story = {
             </FormField.Root>
           </Stack>
         </Stack>
-
         <Stack direction="column" gap="300">
           <h3>Multi-Select ComboBoxes</h3>
           <Stack direction="row" gap="400">
@@ -1763,7 +1808,6 @@ export const DisabledAndReadOnlyComboboxes: Story = {
                 Disabled - cannot interact at all
               </FormField.Description>
             </FormField.Root>
-
             <FormField.Root alignSelf={"flex-start"} isReadOnly>
               <FormField.Label>Read-Only Multi-Select</FormField.Label>
               <FormField.Input>
@@ -1795,6 +1839,149 @@ export const DisabledAndReadOnlyComboboxes: Story = {
         </RadioInput.Root>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelectDisabled: HTMLInputElement = await canvas.findByRole(
+      "combobox",
+      {
+        name: /disabled single select/i,
+      }
+    );
+    const multiSelectDisabled = await canvas.findByRole("combobox", {
+      name: /disabled multi-select/i,
+    });
+    const singleSelectReadOnly: HTMLInputElement = await canvas.findByRole(
+      "combobox",
+      {
+        name: /read-only single select/i,
+      }
+    );
+    const multiSelectReadOnly = await canvas.findByRole("combobox", {
+      name: /read-only multi-select/i,
+    });
+    await step(
+      "Disabled comboboxes are not focusable, read-only comboboxes are focusable",
+      async () => {
+        await userEvent.tab();
+        // First tab should skip disabled single select
+        await expect(singleSelectDisabled).not.toHaveFocus();
+        // First tab focuses read only single select
+        await expect(singleSelectReadOnly).toHaveFocus();
+        await userEvent.tab();
+        // Second tab skips multi disabled
+        await expect(multiSelectDisabled).not.toHaveFocus();
+        // Second tab focuses multi read-only
+        await expect(multiSelectReadOnly).toHaveFocus();
+      }
+    );
+    await step("Disabled single select has disabled attributes", async () => {
+      await expect(singleSelectDisabled).toHaveAttribute("disabled");
+      await expect(singleSelectDisabled).toHaveStyle({
+        pointerEvents: "none",
+      });
+      // the input has the 'combobox' role in the single select, we need to target the wrapper container to check for the not-allowed cursor
+      await expect(singleSelectDisabled.parentElement).toHaveStyle({
+        cursor: "not-allowed",
+      });
+    });
+    await step("Disabled single select cannot be clicked to open", async () => {
+      await userEvent.click(singleSelectDisabled, { pointerEventsCheck: 0 });
+      await expect(getListboxOptions().length).toBe(0);
+      await expect(singleSelectDisabled).toHaveStyle({ pointerEvents: "none" });
+    });
+    await step("Disabled single select buttons are disabled", async () => {
+      const buttons = await within(
+        singleSelectDisabled.parentElement!
+      ).findAllByRole("button");
+      for (let i = 0; i < buttons.length; i++) {
+        await expect(buttons[i]).toHaveStyle({ pointerEvents: "none" });
+        await expect(buttons[i]).toHaveAttribute("disabled");
+      }
+    });
+    await step("Disabled multi select has disabled attributes", async () => {
+      await expect(multiSelectDisabled.getAttribute("aria-disabled")).toBe(
+        "true"
+      );
+      await expect(multiSelectDisabled).toHaveStyle({
+        cursor: "not-allowed",
+      });
+    });
+    await step("Disabled multi select cannot be clicked to open", async () => {
+      await userEvent.click(multiSelectDisabled, { pointerEventsCheck: 0 });
+      await expect(getListboxOptions().length).toBe(0);
+    });
+    await step("Disabled multi select tag group is disabled", async () => {
+      const tagGroup = multiSelectDisabled.childNodes[1] as HTMLElement;
+      await expect(tagGroup.getAttribute("data-disabled")).toBe("true");
+      await expect(tagGroup).toHaveStyle({
+        pointerEvents: "none",
+      });
+    });
+    await step("Disabled multi select buttons are disabled", async () => {
+      const buttons = await within(multiSelectDisabled).findAllByRole("button");
+      for (let i = 0; i < buttons.length; i++) {
+        await expect(buttons[i]).toHaveStyle({ pointerEvents: "none" });
+        await expect(buttons[i]).toHaveAttribute("disabled");
+      }
+    });
+    await step("Read Only single select has read-only attributes", async () => {
+      await expect(singleSelectReadOnly).toHaveAttribute("readonly");
+      await expect(singleSelectReadOnly).not.toHaveAttribute("disabled");
+      await expect(singleSelectReadOnly).not.toHaveStyle({
+        pointerEvents: "none",
+      });
+      // the input has the 'combobox' role in the single select, we need to target the wrapper container to check for the not-allowed cursor
+      await expect(singleSelectReadOnly.parentElement).not.toHaveStyle({
+        cursor: "not-allowed",
+      });
+    });
+    await step(
+      "Read Only single select cannot be clicked to open",
+      async () => {
+        await userEvent.click(singleSelectReadOnly);
+        await expect(getListboxOptions().length).toBe(0);
+        await expect(singleSelectReadOnly).not.toHaveStyle({
+          pointerEvents: "none",
+        });
+      }
+    );
+    await step("Read Only single select buttons are disabled", async () => {
+      const buttons = await within(
+        singleSelectReadOnly.parentElement!
+      ).findAllByRole("button");
+      for (let i = 0; i < buttons.length; i++) {
+        await expect(buttons[i]).toHaveStyle({ userSelect: "none" });
+        await expect(buttons[i]).toHaveAttribute("disabled");
+      }
+    });
+    await step("Read Only multi select has readonly attributes", async () => {
+      await expect(multiSelectReadOnly.getAttribute("aria-readonly")).toBe(
+        "true"
+      );
+      await expect(multiSelectReadOnly).not.toHaveAttribute("aria-disabled");
+      await expect(multiSelectReadOnly).not.toHaveStyle({
+        cursor: "not-allowed",
+      });
+    });
+    await step("Read Only multi select cannot be clicked to open", async () => {
+      await userEvent.click(multiSelectReadOnly);
+      await expect(getListboxOptions().length).toBe(0);
+    });
+    await step("Read Only multi select tag group is not disabled", async () => {
+      const tagGroup = multiSelectReadOnly.childNodes[1] as HTMLElement;
+      await expect(tagGroup).not.toHaveAttribute("data-disabled");
+      await expect(tagGroup).not.toHaveStyle({
+        pointerEvents: "none",
+      });
+    });
+    await step("Read Only multi select buttons are disabled", async () => {
+      const buttons = await within(multiSelectReadOnly).findAllByRole("button");
+      for (let i = 0; i < buttons.length; i++) {
+        await expect(buttons[i]).toHaveStyle({ userSelect: "none" });
+        await expect(buttons[i]).toHaveAttribute("disabled");
+      }
+    });
   },
 };
 
@@ -1862,6 +2049,105 @@ export const DisabledOptions: Story = {
         </FormField.Root>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /single select with disabled options/i,
+    });
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /multi-select with disabled options/i,
+    });
+    const disabledOptions = ["Kangaroo", "Bald Eagle", "Skunk"];
+    await step("Single select can be opened", async () => {
+      singleSelect.focus();
+      await userEvent.keyboard("{ArrowDown}");
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+    await step("Disabled options have aria-disabled attribute", async () => {
+      for (let i = 0; i < disabledOptions.length; i++) {
+        const option = findOptionByText(disabledOptions[i]);
+        await expect(option).toHaveAttribute("aria-disabled", "true");
+      }
+    });
+    await step("Enabled options can be selected", async () => {
+      await selectOptionsByName(["Koala"]);
+      await expect(singleSelect.value).toBe("Koala");
+      await userEvent.keyboard("{ArrowDown}");
+      await verifyOptionsSelected(["Koala"], true);
+    });
+    await step("Disabled options cannot be selected", async () => {
+      await selectOptionsByName(disabledOptions);
+      await expect(singleSelect.value).toBe("Koala");
+      // Close for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step("Disabled options cannot be selected via keyboard", async () => {
+      singleSelect.focus();
+      // Open popover
+      await userEvent.keyboard("{ArrowDown}");
+      // Koala is active option
+      await expect(findOptionByText("Koala")?.getAttribute("id")).toBe(
+        singleSelect.getAttribute("aria-activedescendant")
+      );
+      // Go to next item
+      await userEvent.keyboard("{ArrowDown}");
+      // Kangaroo is skipped
+      await expect(findOptionByText("Kangaroo")?.getAttribute("id")).not.toBe(
+        singleSelect.getAttribute("aria-activedescendant")
+      );
+      // Platypus is active option
+      await expect(findOptionByText("Platypus")?.getAttribute("id")).toBe(
+        singleSelect.getAttribute("aria-activedescendant")
+      );
+      // Close for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step("Multi select can be opened", async () => {
+      multiSelect.focus();
+      await userEvent.keyboard("{ArrowDown}");
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+    });
+    await step("Disabled options have aria-disabled attribute", async () => {
+      for (let i = 0; i < disabledOptions.length; i++) {
+        const option = findOptionByText(disabledOptions[i]);
+        await expect(option).toHaveAttribute("aria-disabled", "true");
+      }
+    });
+    await step("Enabled options can be selected", async () => {
+      await selectOptionsByName(["Koala", "Platypus", "Bison"]);
+      await verifyTagsExist(multiSelect, ["Koala", "Platypus", "Bison"]);
+      await verifyOptionsSelected(["Koala", "Platypus", "Bison"], true);
+    });
+    await step("Disabled options cannot be selected", async () => {
+      await selectOptionsByName(disabledOptions);
+      await verifyOptionsSelected(disabledOptions, false);
+      // Close for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step("Disabled options cannot be selected via keyboard", async () => {
+      multiSelect.focus();
+      // Open popover
+      await userEvent.keyboard("{ArrowDown}");
+      // Select first option
+      await userEvent.keyboard("{ArrowDown}");
+      // Koala is active option
+      await expect(findOptionByText("Koala")?.getAttribute("id")).toBe(
+        getFilterInput().getAttribute("aria-activedescendant")
+      );
+      // Go to next item
+      await userEvent.keyboard("{ArrowDown}");
+      // Kangaroo is skipped
+      await expect(findOptionByText("Kangaroo")?.getAttribute("id")).not.toBe(
+        getFilterInput().getAttribute("aria-activedescendant")
+      );
+      // Platypus is active option
+      await expect(findOptionByText("Platypus")?.getAttribute("id")).toBe(
+        getFilterInput().getAttribute("aria-activedescendant")
+      );
+    });
   },
 };
 
@@ -1985,6 +2271,54 @@ export const FormValidation: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /single select with validation/i,
+    });
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /multi-select with validation/i,
+    });
+
+    await step("Invalid single select has invalid attributes", async () => {
+      await expect(singleSelect).toHaveAttribute("aria-invalid", "true");
+      await expect(singleSelect).toHaveAttribute("data-invalid", "true");
+    });
+    await step("Invalid single select can be opened and used", async () => {
+      singleSelect.focus();
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+      await expect(singleSelect.value).toBe("Koala");
+      // Close for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step(
+      "Invalid single select updates state when isInvalid is updated",
+      async () => {
+        await expect(singleSelect).not.toHaveAttribute("aria-invalid");
+        await expect(singleSelect).not.toHaveAttribute("data-invalid");
+      }
+    );
+    await step("Invalid multi select has invalid attributes", async () => {
+      await expect(multiSelect).toHaveAttribute("aria-invalid", "true");
+      await expect(multiSelect).toHaveAttribute("data-invalid", "true");
+    });
+    await step("Invalid multi select can be opened and used", async () => {
+      multiSelect.focus();
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+      await verifyTagsExist(multiSelect, ["Koala"]);
+      // Close for next test
+      await userEvent.keyboard("{Escape}");
+    });
+    await step(
+      "Invalid multi select updates state when isInvalid is updated",
+      async () => {
+        await expect(multiSelect).toHaveAttribute("aria-invalid", "false");
+        await expect(multiSelect).toHaveAttribute("data-invalid", "false");
+      }
+    );
+  },
 };
 
 /**
@@ -2002,45 +2336,34 @@ export const FormikIntegration: Story = {
       animal: null,
       animals: new Set(),
     });
-
     const [errors, setErrors] = useState<{
       animal?: string;
       animals?: string;
     }>({});
-
     const [touched, setTouched] = useState<{
       animal?: boolean;
       animals?: boolean;
     }>({});
-
     const [inputValue, setInputValue] = useState<string>("");
-
     // Simulate Formik's validation function
     const validate = (values: typeof formData) => {
       const newErrors: typeof errors = {};
-
       if (!values.animal) {
         newErrors.animal = "Please select an animal";
       }
-
       if (values.animals instanceof Set && values.animals.size === 0) {
         newErrors.animals = "Please select at least one animal";
       }
-
       return newErrors;
     };
-
     // Simulate Formik's handleSubmit
     const handleSubmit = (e: FormEvent) => {
       console.log("handling submission");
       e.preventDefault();
-
       // Always clear previous errors before validation
       setErrors({});
-
       const validationErrors = validate(formData);
       console.log("Validation errors:", validationErrors);
-
       if (Object.keys(validationErrors).length === 0) {
         // Success - reset form and show success message
         alert(
@@ -2056,7 +2379,6 @@ export const FormikIntegration: Story = {
             2
           )}`
         );
-
         // Reset form state after successful submission
         setFormData({ animal: null, animals: new Set() });
         setInputValue("");
@@ -2067,7 +2389,6 @@ export const FormikIntegration: Story = {
         setTouched({ animal: true, animals: true });
       }
     };
-
     // Reset form function
     const resetForm = () => {
       setFormData({ animal: null, animals: new Set() });
@@ -2075,7 +2396,6 @@ export const FormikIntegration: Story = {
       setErrors({});
       setTouched({});
     };
-
     // Curried handlers - return functions that can be used directly in props
     const handleSingleValueSelectionChange = useCallback(
       (fieldName: string) => (selectedId: Key | null) => {
@@ -2093,7 +2413,6 @@ export const FormikIntegration: Story = {
       },
       [errors]
     );
-
     const handleMultiValueSelectionChange = useCallback(
       (fieldName: string) => (value: Selection) => {
         setFormData((prev) => ({ ...prev, [fieldName]: value }));
@@ -2106,7 +2425,6 @@ export const FormikIntegration: Story = {
       },
       [errors]
     );
-
     return (
       <Stack direction="column" gap="md" asChild>
         <form onSubmit={handleSubmit}>
@@ -2131,10 +2449,8 @@ export const FormikIntegration: Story = {
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
-
             <FormField.Error>{errors.animal}</FormField.Error>
           </FormField.Root>
-
           <FormField.Root isInvalid={!!(errors.animals && touched.animals)}>
             <FormField.Label>Multi-Select Animals:</FormField.Label>
             <FormField.Input>
@@ -2149,17 +2465,16 @@ export const FormikIntegration: Story = {
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
             </FormField.Input>
-
             <FormField.Error>{errors.animals}</FormField.Error>
           </FormField.Root>
-
-          <Stack direction="row" gap="200">
-            <button type="submit">Submit Form</button>
-            <button type="button" onClick={resetForm}>
+          <Stack direction="row" gap="200" mt="200">
+            <Button tone="primary" type="submit">
+              Submit Form
+            </Button>
+            <Button variant="ghost" onPress={resetForm}>
               Reset Form
-            </button>
+            </Button>
           </Stack>
-
           <Box mt="400">
             <Text fontWeight="600" fontSize="400">
               Form State (Formik-style):
