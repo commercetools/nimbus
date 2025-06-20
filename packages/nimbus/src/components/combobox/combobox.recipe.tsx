@@ -32,12 +32,18 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignSelf: "flex-start",
       maxWidth: "100%",
       borderRadius: "200",
+      _hover: {
+        bg: "primary.2",
+      },
       "&[data-disabled]": {
         layerStyle: "disabled",
         focusRing: "none",
       },
       "& input": {
         cursor: "text",
+        _hover: {
+          bg: "primary.2",
+        },
         _placeholder: { opacity: 0.5 },
       },
       "& [data-placeholder]": {
@@ -90,7 +96,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         px: "400",
         focusRing: "none",
         borderBottom: "solid 1px",
-        borderBottomColor: "neutral.6",
+        borderBottomColor: "neutral.3",
         bg: "transparent",
         w: "100%",
         overflow: "hidden",
@@ -103,6 +109,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     options: {
       ...selectSlotRecipe.base?.options,
+      gap: "100",
     },
     optionGroup: {
       ...selectSlotRecipe.base?.optionGroup,
@@ -112,12 +119,18 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       whiteSpace: "wrap",
     },
     optionIndicator: {
-      ...checkboxSlotRecipe.base?.indicator,
-      ...checkboxSlotRecipe.variants?.size.md.indicator,
+      // make sure option is aligned with the first line of text (using lh units)
+      height: "max(1lh, {sizes.600})",
+      width: "max(1lh, {sizes.600})",
+      display: "flex",
+      alignItems: "center",
+      "& span[data-selected]": {
+        ...checkboxSlotRecipe.base?.indicator,
+        ...checkboxSlotRecipe.variants?.size.md.indicator,
+      },
     },
     optionContent: {
       ...checkboxSlotRecipe.base?.label,
-      ...checkboxSlotRecipe.variants?.size.md.label,
       whiteSpace: "wrap",
       width: "calc(100% - {sizes.600})",
       display: "inline-block",
@@ -132,7 +145,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       sm: {
         value: {
           minH: "800",
-
           textStyle: "sm",
         },
       },
@@ -140,21 +152,19 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       md: {
         value: {
           minH: "1000",
-
           textStyle: "md",
         },
       },
     },
-
     // Visual style variants
     variant: {
       solid: {
         root: {
           width: "7200",
+          bg: "primary.1",
         },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,
-          bg: "primary.1",
           width: "100%",
         },
       },
@@ -189,25 +199,22 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           position: "relative",
           cursor: "pointer",
           gap: "200",
-          "&:hover": {
-            bg: "primary.4",
+          mb: "var(--focus-ring-width)",
+          "&:last-of-type": {
+            mb: 0,
+          },
+          '&[aria-selected="true"]': {
+            bg: "unset",
           },
           '&[data-focused="true"]': {
             // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
             outlineWidth: "var(--focus-ring-width)",
             outlineColor: "var(--focus-ring-color)",
             outlineStyle: "var(--focus-ring-style)",
-          },
-          '&[aria-selected="true"], &[data-focused="true"]': {
             bg: "unset",
           },
-          "& label": {
-            width: "100%",
-            '& span[data-slot="label"]': {
-              whiteSpace: "wrap",
-              width: "calc(100% - {sizes.600})",
-              display: "inline-block",
-            },
+          _hover: {
+            bg: "primary.2",
           },
         },
       },
@@ -229,6 +236,13 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       variant: "solid",
       selectionMode: "single",
       css: {
+        root: {
+          "&:has(button:hover)": {
+            "& input": {
+              bg: "primary.2",
+            },
+          },
+        },
         options: {
           width: "var(--trigger-width)",
         },

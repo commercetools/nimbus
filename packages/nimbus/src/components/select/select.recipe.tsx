@@ -120,7 +120,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       textTransform: "uppercase",
       p: "200",
       borderBottom: "solid-25",
-      borderColor: "neutral.6",
+      borderColor: "neutral.3",
       mx: "-200",
       mt: "200",
       mb: "300",
@@ -136,11 +136,12 @@ export const selectSlotRecipe = defineSlotRecipe({
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-
-      '&[aria-selected="true"], &[data-focused="true"]': {
-        bg: "primary.4",
+      '&[aria-selected="true"]': {
+        bg: "primary.3",
       },
-
+      '&[data-focused="true"]': {
+        bg: "primary.2",
+      },
       '& [slot="label"]': {
         display: "block",
       },

@@ -33,11 +33,12 @@ export const ComboBoxOption = <T extends object>({
               : children;
           return renderProps.selectionMode === "multiple" ? (
             <>
-              <ComboBoxOptionIndicatorSlot
-                data-selected={renderProps.isSelected}
-              >
-                {renderProps.isSelected && <Check />}
+              <ComboBoxOptionIndicatorSlot>
+                <span data-selected={renderProps.isSelected}>
+                  {renderProps.isSelected && <Check />}
+                </span>
               </ComboBoxOptionIndicatorSlot>
+
               <ComboBoxOptionContentSlot>{content}</ComboBoxOptionContentSlot>
             </>
           ) : (

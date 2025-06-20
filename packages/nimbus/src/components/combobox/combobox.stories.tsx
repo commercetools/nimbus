@@ -1264,7 +1264,7 @@ export const OptionGroups: Story = {
 export const ComplexOptions: Story = {
   render: () => {
     const PlanOptionComponent = ({ item }: { item: PlanOption }) => (
-      <Flex direction="column" gap="200">
+      <Flex direction="column" gap="100">
         <Flex justify="space-between" align="center" fontWeight="bold">
           <Text slot="label">{item.type}</Text>
           <Text color="positive.11">{item.price}</Text>
@@ -1272,7 +1272,7 @@ export const ComplexOptions: Story = {
         <Text slot="description" color="neutral.12">
           {item.description}
         </Text>
-        <Text fontSize="300" lineHeight="400" color="neutral.11">
+        <Text textStyle="xs" lineHeight="400" color="neutral.11">
           {item.features.join(" • ")}
         </Text>
       </Flex>

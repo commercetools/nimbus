@@ -335,8 +335,6 @@ export const MultiSelectRoot = <T extends object>({
                 escapeKeyBehavior="none"
                 aria-label="combobox options"
                 renderEmptyState={renderEmptyState}
-                shouldSelectOnPressUp
-                shouldFocusOnHover
               >
                 {children}
               </ComboBoxOptions>
