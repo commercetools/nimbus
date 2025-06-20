@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
   type RecipeProps,
@@ -19,7 +20,8 @@ interface ButtonRecipeProps extends RecipeProps<"button">, UnstyledProp {}
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-export type ButtonRootProps = HTMLChakraProps<"button", ButtonRecipeProps>;
+export interface ButtonRootProps
+  extends HTMLChakraProps<"button", ButtonRecipeProps> {}
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,

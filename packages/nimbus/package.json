@@ -36,13 +36,14 @@
     }
   },
   "dependencies": {
+    "@emotion/is-prop-valid": "catalog:react",
+    "@react-aria/interactions": "catalog:react",
+    "next-themes": "catalog:react",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
-    "react-stately": "catalog:react",
     "react-hotkeys-hook": "^4.6.1",
-    "react-use": "^17.5.1",
-    "next-themes": "catalog:react",
-    "@emotion/is-prop-valid": "catalog:react"
+    "react-stately": "catalog:react",
+    "react-use": "^17.5.1"
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",

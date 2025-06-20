@@ -32,7 +32,11 @@
       "rollup": "catalog:tooling",
       "@babel/runtime": "catalog:tooling",
       "prismjs": "^1.30.0",
-      "typescript": "catalog:tooling"
+      "typescript": "catalog:tooling",
+      "react-aria": "catalog:react",
+      "react-aria-components": "catalog:react",
+      "react-stately": "catalog:react",
+      "@react-aria/interactions": "catalog:react"
     }
   },
   "devDependencies": {
