@@ -1,16 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { DatePicker } from "./date-picker";
 import { I18nProvider } from "react-aria";
-import { Box, Button, Stack, FormField, Text } from "@/components";
+import { Button, Stack, FormField, Text } from "@/components";
 import { useState } from "react";
 import {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
-  today,
   getLocalTimeZone,
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
+import { userEvent, within, expect, waitFor } from "@storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -44,6 +44,192 @@ type Story = StoryObj<typeof DatePicker>;
 export const Base: Story = {
   args: {
     ["aria-label"]: "Select a date",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Renders with proper DatePicker structure and accessibility",
+      async () => {
+        // DatePicker should have a group container with proper aria-label
+        const dateGroup = canvas.getByRole("group", { name: "Select a date" });
+        await expect(dateGroup).toBeInTheDocument();
+        await expect(dateGroup).toHaveAttribute("aria-label", "Select a date");
+
+        // Should contain date input segments (React Aria uses segmented date input)
+        const dateSegments = canvas.getAllByRole("spinbutton");
+
+        // Should have at least month, day, year segments for basic date input
+        await expect(dateSegments.length).toBeGreaterThanOrEqual(3);
+
+        // Should have calendar toggle button
+        const calendarButton = canvas.getByRole("button", {
+          name: /calendar/i,
+        });
+        await expect(calendarButton).toBeInTheDocument();
+      }
+    );
+
+    await step("Date segments are focusable and navigable", async () => {
+      const dateSegments = canvas.getAllByRole("spinbutton");
+
+      // First segment should be focusable with Tab
+      await userEvent.tab();
+      await expect(dateSegments[0]).toHaveFocus();
+
+      // Should be able to navigate between segments with arrow keys
+      await userEvent.keyboard("{ArrowRight}");
+      if (dateSegments.length > 1) {
+        await expect(dateSegments[1]).toHaveFocus();
+      }
+
+      // Should be able to navigate to calendar button eventually
+      await userEvent.tab();
+      await userEvent.tab(); // May need multiple tabs depending on segments
+      const calendarButton = canvas.getByRole("button", { name: /calendar/i });
+      // Check if calendar button has focus or if we need more tabs
+      if (!calendarButton.matches(":focus")) {
+        await userEvent.tab();
+      }
+      await expect(calendarButton).toHaveFocus();
+    });
+
+    await step("Date segments accept keyboard input", async () => {
+      const dateSegments = canvas.getAllByRole("spinbutton");
+      const firstSegment = dateSegments[0];
+
+      // Focus first segment and type a value
+      await userEvent.click(firstSegment);
+      await userEvent.keyboard("12");
+
+      // Segment should have the typed value
+      await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
+
+      // Clear segments for next tests by selecting all and deleting
+      for (const segment of dateSegments) {
+        await userEvent.click(segment);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("{Delete}");
+      }
+    });
+
+    await step("Calendar popover opens and closes correctly", async () => {
+      const calendarButton = canvas.getByRole("button", { name: /calendar/i });
+
+      // Initially, calendar should not be visible (check in entire document since popover is portaled)
+      let calendar = within(document.body).queryByRole("application");
+      await expect(calendar).not.toBeInTheDocument();
+
+      // Click calendar button to open popover
+      await userEvent.click(calendarButton);
+
+      // Wait for calendar to appear (it's rendered in a portal)
+      await waitFor(async () => {
+        calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+
+      // Should be able to close with Escape key
+      await userEvent.keyboard("{Escape}");
+
+      // Wait for calendar to disappear
+      await waitFor(async () => {
+        calendar = within(document.body).queryByRole("application");
+        await expect(calendar).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Clear button functionality works correctly", async () => {
+      const dateSegments = canvas.getAllByRole("spinbutton");
+
+      // Initially, clear button should be disabled (no value selected)
+      const clearButton = canvas.getByRole("button", { name: /clear/i });
+      await expect(clearButton).toBeDisabled();
+
+      // Set a date value first by changing from placeholder values
+      await userEvent.click(dateSegments[0]); // month
+      await userEvent.keyboard("1");
+      if (dateSegments[1]) {
+        await userEvent.click(dateSegments[1]); // day
+        await userEvent.keyboard("15");
+      }
+      if (dateSegments[2]) {
+        await userEvent.click(dateSegments[2]); // year
+        await userEvent.keyboard("2025");
+      }
+
+      // Clear button should now be enabled (actual date was entered)
+      await expect(clearButton).not.toBeDisabled();
+
+      // Click clear button to remove values
+      await userEvent.click(clearButton);
+
+      // After clearing, segments return to placeholder state (showing current date)
+      // The segments will still have values (current date placeholders) but DatePicker considers it "empty"
+      // Clear button should be disabled again indicating no actual value is selected
+      await expect(clearButton).toBeDisabled();
+    });
+
+    await step("Date selection from calendar works", async () => {
+      const calendarButton = canvas.getByRole("button", { name: /calendar/i });
+
+      // Open calendar
+      await userEvent.click(calendarButton);
+
+      // Wait for calendar to appear in the document
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+
+      // Find calendar grid and selectable date cells (search in document body)
+      const calendarGrid = within(document.body).getByRole("grid");
+      await expect(calendarGrid).toBeInTheDocument();
+
+      // Find available date buttons (gridcell role with button inside)
+      const dateCells = within(document.body).getAllByRole("gridcell");
+      const availableDates = dateCells.filter((cell) => {
+        const button = cell.querySelector("button");
+        return button && !button.hasAttribute("aria-disabled");
+      });
+
+      if (availableDates.length > 0) {
+        const dateButton = availableDates[0].querySelector("button");
+        if (dateButton) {
+          await userEvent.click(dateButton);
+
+          // Calendar should close after selection (default behavior)
+          await waitFor(async () => {
+            const calendarAfterSelection = within(document.body).queryByRole(
+              "application"
+            );
+            await expect(calendarAfterSelection).not.toBeInTheDocument();
+          });
+
+          // After selecting a date, clear button should be enabled indicating a value is selected
+          const clearButton = canvas.getByRole("button", { name: /clear/i });
+          await expect(clearButton).not.toBeDisabled();
+        }
+      }
+    });
+
+    await step("DatePicker has proper ARIA attributes", async () => {
+      const dateGroup = canvas.getByRole("group", { name: "Select a date" });
+
+      // Group should have proper role and label
+      await expect(dateGroup).toHaveAttribute("role", "group");
+      await expect(dateGroup).toHaveAttribute("aria-label", "Select a date");
+
+      // Date segments should have proper spinbutton role and ARIA attributes
+      const dateSegments = canvas.getAllByRole("spinbutton");
+      for (const segment of dateSegments) {
+        await expect(segment).toHaveAttribute("role", "spinbutton");
+        await expect(segment).toHaveAttribute("tabindex", "0");
+        // Each segment should have an aria-label describing what it represents
+        const ariaLabel = segment.getAttribute("aria-label");
+        await expect(ariaLabel).toBeTruthy();
+      }
+    });
   },
 };
 
