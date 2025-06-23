@@ -6,7 +6,7 @@ import {
   DatePickerCalendarSlot,
 } from "./date-picker.slots";
 
-import { CalendarMonth } from "@commercetools/nimbus-icons";
+import { CalendarMonth, Close } from "@commercetools/nimbus-icons";
 
 import {
   DatePicker as ReactAriaDatePicker,
@@ -20,7 +20,7 @@ import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { DateInput, Calendar, IconButton } from "@/components";
 import { DatePickerTimeInput } from "./components/date-picker.time-input";
-import { DatePickerClearButton } from "./components/date-picker.clear-button";
+import { DatePickerCustomContext } from "./components/date-picker.custom-context";
 
 /**
  * DatePicker
@@ -34,38 +34,48 @@ export const DatePicker = (props: DatePickerProps) => {
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
-  const calendarButtonSize = size === "md" ? "xs" : "2xs";
+  // the size of the buttons overlaying the input
+  const overlayButtonSize = size === "md" ? "xs" : "2xs";
 
   return (
     <DatePickerRootSlot {...recipeProps} {...styleProps} asChild>
       <ReactAriaDatePicker {...otherProps}>
-        <DatePickerGroupSlot asChild>
-          <Group>
-            <DateInput size={size} variant={variant} width="full" />
-            <DatePickerTriggerSlot>
-              <DatePickerClearButton size={calendarButtonSize} />
-              <IconButton
-                tone="primary"
-                variant="ghost"
-                aria-label="Open calendar"
-                size={calendarButtonSize}
-              >
-                <CalendarMonth />
-              </IconButton>
-            </DatePickerTriggerSlot>
-          </Group>
-        </DatePickerGroupSlot>
-
-        <DatePickerPopoverSlot asChild>
-          <Popover placement="bottom end">
-            <Dialog>
-              <DatePickerCalendarSlot>
-                <Calendar />
-              </DatePickerCalendarSlot>
-              <DatePickerTimeInput />
-            </Dialog>
-          </Popover>
-        </DatePickerPopoverSlot>
+        <DatePickerCustomContext>
+          <DatePickerGroupSlot asChild>
+            <Group>
+              <DateInput size={size} variant={variant} width="full" />
+              <DatePickerTriggerSlot>
+                <IconButton
+                  tone="primary"
+                  variant="ghost"
+                  aria-label="Clear input"
+                  size={overlayButtonSize}
+                  slot="clear"
+                >
+                  <Close />
+                </IconButton>
+                <IconButton
+                  tone="primary"
+                  variant="ghost"
+                  size={overlayButtonSize}
+                  slot="calendarToggle"
+                >
+                  <CalendarMonth />
+                </IconButton>
+              </DatePickerTriggerSlot>
+            </Group>
+          </DatePickerGroupSlot>
+          <DatePickerPopoverSlot asChild>
+            <Popover placement="bottom end">
+              <Dialog>
+                <DatePickerCalendarSlot>
+                  <Calendar />
+                </DatePickerCalendarSlot>
+                <DatePickerTimeInput />
+              </Dialog>
+            </Popover>
+          </DatePickerPopoverSlot>
+        </DatePickerCustomContext>
       </ReactAriaDatePicker>
     </DatePickerRootSlot>
   );
