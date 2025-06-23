@@ -420,64 +420,6 @@ export const UnavailableDates: Story = {
 };
 
 /**
- * Custom Validation
- * Demonstrates custom validation logic using isInvalid and error handling
- */
-export const CustomValidation: Story = {
-  args: {
-    ["aria-label"]: "Select a date",
-  },
-  render: (args) => {
-    const [date, setDate] = useState<DateValue | null>(null);
-    const [validationError, setValidationError] = useState<string | null>(null);
-
-    const isValidCustomDate = (date: DateValue): boolean => {
-      // Only allow dates that are weekdays and in the future
-      const jsDate = date.toDate(getLocalTimeZone());
-      const dayOfWeek = jsDate.getDay();
-      const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
-      const isFuture = date.compare(today(getLocalTimeZone())) > 0;
-
-      return isWeekday && isFuture;
-    };
-
-    const handleDateChange = (newDate: DateValue | null) => {
-      setDate(newDate);
-
-      if (!newDate) {
-        setValidationError("Date is required");
-      } else if (!isValidCustomDate(newDate)) {
-        setValidationError("Please select a future weekday");
-      } else {
-        setValidationError(null);
-      }
-    };
-
-    return (
-      <Stack direction="column" gap="400" alignItems="start">
-        <Text>Custom validation: Future weekdays only</Text>
-        <DatePicker
-          {...args}
-          value={date}
-          onChange={handleDateChange}
-          isInvalid={!!validationError}
-          aria-label="Custom validation picker"
-        />
-        {validationError && (
-          <Text color="red.500" fontSize="sm">
-            {validationError}
-          </Text>
-        )}
-        <Text fontSize="sm" color="neutral.11">
-          Only future weekdays are allowed. Try selecting a weekend or past
-          date.
-        </Text>
-      </Stack>
-    );
-  },
-};
-
-/**
  * Custom Width
  * Demonstrates that DatePicker accepts a width property
  */
