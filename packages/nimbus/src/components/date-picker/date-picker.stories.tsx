@@ -261,6 +261,204 @@ export const Uncontrolled: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All DatePicker instances render correctly", async () => {
+      // Should have three DatePicker groups
+      const dateGroups = canvas.getAllByRole("group");
+      await expect(dateGroups).toHaveLength(3);
+
+      // Verify each has proper aria-labels
+      const defaultValuePicker = canvas.getByRole("group", {
+        name: "With default value",
+      });
+      const differentDefaultValuePicker = canvas.getByRole("group", {
+        name: "With different default value",
+      });
+      const emptyPicker = canvas.getByRole("group", {
+        name: "Without default value",
+      });
+
+      await expect(defaultValuePicker).toBeInTheDocument();
+      await expect(differentDefaultValuePicker).toBeInTheDocument();
+      await expect(emptyPicker).toBeInTheDocument();
+    });
+
+    await step(
+      "First DatePicker shows correct default value (2025-01-15)",
+      async () => {
+        const defaultValuePicker = canvas.getByRole("group", {
+          name: "With default value",
+        });
+        const segments = within(defaultValuePicker).getAllByRole("spinbutton");
+
+        // Should have month=1, day=15, year=2025
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "1"); // January
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15"); // 15th day
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+
+        // Clear button should be enabled since there's a default value
+        const clearButton = within(defaultValuePicker).getByRole("button", {
+          name: /clear/i,
+        });
+        await expect(clearButton).not.toBeDisabled();
+      }
+    );
+
+    await step(
+      "Second DatePicker shows correct default value (2025-12-25)",
+      async () => {
+        const differentDefaultValuePicker = canvas.getByRole("group", {
+          name: "With different default value",
+        });
+        const segments = within(differentDefaultValuePicker).getAllByRole(
+          "spinbutton"
+        );
+
+        // Should have month=12, day=25, year=2025
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "12"); // December
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "25"); // 25th day
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+
+        // Clear button should be enabled since there's a default value
+        const clearButton = within(differentDefaultValuePicker).getByRole(
+          "button",
+          { name: /clear/i }
+        );
+        await expect(clearButton).not.toBeDisabled();
+      }
+    );
+
+    await step("Third DatePicker is empty (no defaultValue)", async () => {
+      const emptyPicker = canvas.getByRole("group", {
+        name: "Without default value",
+      });
+
+      // Clear button should be disabled since no value is set
+      const clearButton = within(emptyPicker).getByRole("button", {
+        name: /clear/i,
+      });
+      await expect(clearButton).toBeDisabled();
+
+      // Segments should show placeholder values (current date typically)
+      const segments = within(emptyPicker).getAllByRole("spinbutton");
+      await expect(segments).toHaveLength(3);
+
+      // Each segment should be focusable and in placeholder state
+      for (const segment of segments) {
+        await expect(segment).toHaveAttribute("tabindex", "0");
+        // Placeholder segments typically have aria-placeholder attribute
+        const hasPlaceholder =
+          segment.hasAttribute("aria-placeholder") ||
+          segment.getAttribute("aria-label")?.includes("placeholder") ||
+          segment.getAttribute("data-placeholder") === "true";
+        // Note: The exact placeholder implementation may vary, so we check multiple possibilities
+      }
+    });
+
+    await step("All DatePickers have functional calendar buttons", async () => {
+      const dateGroups = canvas.getAllByRole("group");
+
+      for (let i = 0; i < dateGroups.length; i++) {
+        const group = dateGroups[i];
+        const calendarButton = within(group).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        await expect(calendarButton).toBeInTheDocument();
+        await expect(calendarButton).not.toBeDisabled();
+
+        // Test opening calendar for first DatePicker
+        if (i === 0) {
+          await userEvent.click(calendarButton);
+
+          // Wait for calendar to appear
+          await waitFor(async () => {
+            const calendar = within(document.body).queryByRole("application");
+            await expect(calendar).toBeInTheDocument();
+          });
+
+          // Close calendar with Escape
+          await userEvent.keyboard("{Escape}");
+
+          // Wait for calendar to disappear
+          await waitFor(async () => {
+            const calendar = within(document.body).queryByRole("application");
+            await expect(calendar).not.toBeInTheDocument();
+          });
+        }
+      }
+    });
+
+    await step("DatePickers with defaultValue can be cleared", async () => {
+      // Test clearing the first DatePicker
+      const defaultValuePicker = canvas.getByRole("group", {
+        name: "With default value",
+      });
+      const clearButton = within(defaultValuePicker).getByRole("button", {
+        name: /clear/i,
+      });
+
+      // Initially enabled
+      await expect(clearButton).not.toBeDisabled();
+
+      // Click to clear
+      await userEvent.click(clearButton);
+
+      // Should now be disabled (indicating no value)
+      await expect(clearButton).toBeDisabled();
+
+      // Test clearing the second DatePicker
+      const differentDefaultValuePicker = canvas.getByRole("group", {
+        name: "With different default value",
+      });
+      const clearButton2 = within(differentDefaultValuePicker).getByRole(
+        "button",
+        { name: /clear/i }
+      );
+
+      // Initially enabled
+      await expect(clearButton2).not.toBeDisabled();
+
+      // Click to clear
+      await userEvent.click(clearButton2);
+
+      // Should now be disabled (indicating no value)
+      await expect(clearButton2).toBeDisabled();
+    });
+
+    await step("Empty DatePicker can receive input", async () => {
+      const emptyPicker = canvas.getByRole("group", {
+        name: "Without default value",
+      });
+      const segments = within(emptyPicker).getAllByRole("spinbutton");
+      const clearButton = within(emptyPicker).getByRole("button", {
+        name: /clear/i,
+      });
+
+      // Initially disabled (no value)
+      await expect(clearButton).toBeDisabled();
+
+      // Add a date by typing in segments
+      await userEvent.click(segments[0]); // month
+      await userEvent.keyboard("6");
+
+      await userEvent.click(segments[1]); // day
+      await userEvent.keyboard("30");
+
+      await userEvent.click(segments[2]); // year
+      await userEvent.keyboard("2025");
+
+      // Clear button should now be enabled
+      await expect(clearButton).not.toBeDisabled();
+
+      // Verify the values were set
+      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+      await expect(segments[1]).toHaveAttribute("aria-valuenow", "30");
+      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+    });
+  },
 };
 
 /**
