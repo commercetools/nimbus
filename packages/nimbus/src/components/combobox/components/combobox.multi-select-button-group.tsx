@@ -46,9 +46,17 @@ export const ComboBoxButtonGroup = ({
           </IconButton>
         )}
       </ClearPressResponder>
-      {isLoading ? (
-        <Flex my="auto" w="600" h="600" pointerEvents="none">
-          <Box color="neutral.9" asChild m="auto" w="400" h="400">
+
+      <Flex
+        my="auto"
+        w="600"
+        h="600"
+        color="neutral.11"
+        opacity={isReadOnly || isDisabled ? "0.5" : undefined}
+        cursor={isReadOnly || isDisabled ? "not-allowed" : undefined}
+      >
+        <Box pointerEvents="none" asChild m="auto" w="400" h="400">
+          {isLoading ? (
             <Box
               asChild
               animation="spin"
@@ -57,22 +65,11 @@ export const ComboBoxButtonGroup = ({
             >
               <SpinnerIcon />
             </Box>
-          </Box>
-        </Flex>
-      ) : (
-        <IconButton
-          size="2xs"
-          variant="ghost"
-          aria-label="toggle combobox"
-          tone="neutral"
-          my="auto"
-          isDisabled={isDisabled || isReadOnly}
-          _expanded={{ bg: "transparent" }}
-        >
-          {/** _expanded style is a workaround for this bug: https://github.com/adobe/react-spectrum/issues/8339 */}
-          <KeyboardArrowDownIcon />
-        </IconButton>
-      )}
+          ) : (
+            <KeyboardArrowDownIcon />
+          )}
+        </Box>
+      </Flex>
     </ComboBoxButtonGroupSlot>
   );
 };

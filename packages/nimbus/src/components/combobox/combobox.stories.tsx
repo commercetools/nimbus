@@ -224,25 +224,23 @@ export const Base: Story = {
       name: /multi-select combobox/i,
     });
 
-    await step("single select input can be focused with keyboard", async () => {
-      await userEvent.tab();
-      await expect(singleSelect).toHaveFocus();
-    });
-
     await step(
-      "single select input opens popover when user enters text",
+      "single select input is focusable and opens popover on focus",
       async () => {
-        await userEvent.keyboard("{k}");
-        // popover is activated when user types
+        await userEvent.tab();
+        await expect(singleSelect).toHaveFocus();
+        // popover is activated when component is focused
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
       }
     );
     await step(
-      "single select input shows matching options in popover",
+      "single select input when user enters text options in popover are filtered",
       async () => {
+        // Enter 'k'
+        await userEvent.keyboard("{k}");
         let options = getListboxOptions();
-        // 'k' from previous test filters options - should show Koala and Kangaroo (and Skunk contains 'k')
+        // 'k' should show Koala and Kangaroo (and Skunk contains 'k')
         await expect(options.length).toBe(3);
         await userEvent.keyboard("{o}");
         options = getListboxOptions();
@@ -273,16 +271,6 @@ export const Base: Story = {
         });
         await userEvent.click(clearButton);
         await expect(singleSelect.value).toBe("");
-      }
-    );
-    await step(
-      "single select does not open popover when user hits enter or space while input is focused",
-      async () => {
-        singleSelect.focus();
-        await userEvent.keyboard("{enter}");
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await userEvent.keyboard("{space}");
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
       }
     );
     await step(
@@ -323,12 +311,15 @@ export const Base: Story = {
         await expect(
           singleSelect.getAttribute("aria-activedescendant")
         ).toEqual(options[options.length - 1].getAttribute("id"));
+        // Close popover for next test
+        await userEvent.keyboard("{Escape}");
       }
     );
     await step(
       "multi select opens popover on first focus when no items have been selected",
       async () => {
-        multiSelect.focus();
+        // Tab from single to multi select
+        await userEvent.tab();
         // popover will open on focus if the combobox is not touched and there are no selected values
         const listbox = document.querySelector('[role="listbox"]');
         await expect(listbox).toBeInTheDocument();
@@ -354,7 +345,7 @@ export const Base: Story = {
       "multi select does not open listbox when focused a second time",
       async () => {
         singleSelect.focus();
-        multiSelect.focus();
+        await userEvent.tab();
         await expect(document.querySelector('[role="listbox"]')).toBeNull();
       }
     );
@@ -644,45 +635,85 @@ export const Base: Story = {
       }
     );
     await step(
-      "multi select - when items are selected clicking root component does not toggle popover",
+      "multi select - when items are selected clicking root component toggles popover",
       async () => {
         // Verify popover is closed
         await expect(document.querySelector('[role="listbox"]')).toBeNull();
         await expect(multiSelect.getAttribute("data-open")).toBe("false");
         // Click the root component
         await userEvent.click(multiSelect);
-        // Verify popover is still closed
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(multiSelect.getAttribute("data-open")).toBe("false");
-      }
-    );
-    await step(
-      "multi select - when items are selected expand button toggles popover",
-      async () => {
-        // Verify popover is closed
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(multiSelect.getAttribute("data-open")).toBe("false");
-        // Click the expand button
-        const expandButton = await within(multiSelect).findByRole("button", {
-          name: "toggle combobox",
-        });
-        await userEvent.click(expandButton);
-        // Toggle popover to open state
+        // Verify popover is open
         await expect(
           document.querySelector('[role="listbox"]')
         ).toBeInTheDocument();
         await expect(multiSelect.getAttribute("data-open")).toBe("true");
-        // Click expand button again
-        // fireEvent used here due to this bug: https://github.com/testing-library/user-event/issues/1075#issuecomment-1948093169
-        await fireEvent.click(expandButton);
-        // Toggle popover to closed state
+        // Click the root component
+        await fireEvent.click(multiSelect);
+        // Verify popover is closed
         await expect(document.querySelector('[role="listbox"]')).toBeNull();
         await expect(multiSelect.getAttribute("data-open")).toBe("false");
       }
     );
     await step(
-      "multi select tab order goes from combobox to tag to clear button to toggle button",
+      "multi select - when multiple items are selected, clicking clear button removes all items without opening popover",
       async () => {
+        // Open popover
+        multiSelect.focus();
+        await userEvent.keyboard("{ArrowDown}");
+        // Select multiple options
+        await selectOptionsByName(["Kangaroo", "Platypus"]);
+        // Verify options selected
+        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
+        // Close popover
+        await userEvent.keyboard("{escape}");
+        // Click clear button
+        const clearButton = await within(multiSelect).findByRole("button", {
+          name: /clear selection/i,
+        });
+        await userEvent.click(clearButton);
+        // Verify all tags have been cleared (placeholder should be rendered)
+        const placeholder = (await getTagList(multiSelect)).childNodes[0];
+        await expect(placeholder).toHaveTextContent(
+          "Select multiple animals..."
+        );
+        await expect(placeholder).toHaveAttribute("data-placeholder");
+        // Verify popover is not open
+        await expect(document.querySelector('[role="listbox"]')).toBeNull();
+        // Verify clear button is not displayed
+        await expect(clearButton).not.toBeInTheDocument();
+      }
+    );
+    await step(
+      "multi select - when items are selected clicking remove item button does not expand popover",
+      async () => {
+        // Open popover
+        multiSelect.focus();
+        await userEvent.keyboard("{ArrowDown}");
+        // Select multiple options
+        await selectOptionsByName(["Koala"]);
+        // Verify options selected
+        await verifyTagsExist(multiSelect, ["Koala"]);
+        // Close popover
+        await userEvent.keyboard("{escape}");
+        // Click the remove button
+        const removeButton = await within(multiSelect).findByRole("button", {
+          name: /remove koala/i,
+        });
+        await userEvent.click(removeButton);
+        // Check popover is closed
+        await expect(document.querySelector('[role="listbox"]')).toBe(null);
+        await expect(multiSelect.getAttribute("data-open")).toBe("false");
+        // Close popover
+        await userEvent.keyboard("{escape}");
+      }
+    );
+    await step(
+      "multi select tab order goes from combobox to tag to clear button then outside combobox",
+      async () => {
+        // Focus combobox
+        multiSelect.focus();
+        // Select an option so tag exists for next test
+        await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}");
         // Focus combobox
         multiSelect.focus();
         // Tab to tags
@@ -705,9 +736,7 @@ export const Base: Story = {
         await expect(clearButton).toHaveFocus();
         // Tab to toggle button
         await userEvent.tab();
-        const toggleButton =
-          await within(multiSelect).findByLabelText(/toggle combobox/i);
-        await expect(toggleButton).toHaveFocus();
+        await expect(multiSelect).not.toHaveFocus();
       }
     );
   },

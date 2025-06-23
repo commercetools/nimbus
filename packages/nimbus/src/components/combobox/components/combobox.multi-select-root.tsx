@@ -1,24 +1,17 @@
-import {
-  useState,
-  useRef,
-  useCallback,
-  type KeyboardEvent,
-  type CSSProperties,
-} from "react";
+import { useState, useRef, useCallback, type KeyboardEvent } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import {
   Popover as RaPopover,
   Input as RaInput,
   Autocomplete as RaAutocomplete,
   DialogTrigger as RaDialogTrigger,
-  Dialog,
+  Dialog as RaDialog,
+  TextField as RaTextField,
+  Pressable as RaPressable,
   type Selection,
   type Key,
-  TextField,
   useFilter,
 } from "react-aria-components";
-import { sizes } from "@/theme/tokens/sizes";
-import { useResizeObserver } from "@/utils/useResizeObserver";
 import { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
 import { ComboBoxOptions } from "./combobox.options";
 import { ComboBoxButtonGroup } from "./combobox.multi-select-button-group";
@@ -227,92 +220,61 @@ export const MultiSelectRoot = <T extends object>({
   const triggerRef = useRef<HTMLDivElement>(null);
   const rootRef = mergeRefs(ref, triggerRef);
 
-  // Internal state to allow popover width to match input width
-  const [triggerWidth, setTriggerWidth] = useState<string | null>(null);
-  const onResize = useCallback(() => {
-    if (triggerRef.current) {
-      setTriggerWidth(triggerRef.current?.offsetWidth + "px");
-    }
-  }, []);
-  // Update triggerWidth on resize
-  useResizeObserver({ ref: triggerRef, onResize });
-  // Toggle the popover when root div is clicked and there are no selected keys to display
-  const handleClickWhenEmpty = useCallback(() => {
-    // Don't do anything if disabled or readonly
-    if (isDisabled || isReadOnly) return;
-    if (
-      (selectedKeys === undefined ||
-        (selectedKeys instanceof Set && selectedKeys.size === 0)) &&
-      isOpen !== undefined
-    ) {
-      handleOpenChange(!isOpen);
-    }
-  }, [selectedKeys, isDisabled, isReadOnly, isOpen, handleOpenChange]);
-
   return (
     <RaDialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
-      <div
-        className={className as string}
-        tabIndex={isDisabled ? -1 : 0}
-        ref={rootRef}
-        role="combobox"
-        onKeyDown={handleWrapperKeyDown}
-        onFocus={handleOpenPopoverWhenEmpty}
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        aria-disabled={isDisabled}
-        aria-readonly={isReadOnly}
-        aria-required={isRequired}
-        aria-invalid={isInvalid}
-        data-disabled={isDisabled}
-        data-invalid={isInvalid}
-        data-required={isRequired}
-        data-open={isOpen}
-        onClick={handleClickWhenEmpty}
-        {...props}
-      >
-        <MultiSelectTagGroup
-          items={items}
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-          itemId={itemId}
-          itemValue={itemValue}
-          placeholder={placeholder}
-          size={size}
-          containerRef={triggerRef}
-          isDisabled={isDisabled}
-          isReadOnly={isReadOnly}
-        />
-        <ComboBoxButtonGroup
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-          onInputChange={setInputValue}
-          containerRef={triggerRef}
-          isDisabled={isDisabled}
-          isReadOnly={isReadOnly}
-          isLoading={isLoading}
-        />
-      </div>
-
-      <ComboBoxPopoverSlot
-        // Set css variable for the trigger width, fall back to 288px if state.triggerWidth is undefined
-        // Must use `style` here to overwrite react-aria's setting the trigger-width the width of the toggle button in the popover style object
-        style={
-          {
-            "--trigger-width": triggerWidth ?? sizes[7200],
-          } as CSSProperties
-        }
-        asChild
-      >
+      <RaPressable allowTextSelectionOnPress={true}>
+        <div
+          className={className as string}
+          tabIndex={isDisabled ? -1 : 0}
+          ref={rootRef}
+          role="combobox"
+          onKeyDown={handleWrapperKeyDown}
+          onFocus={handleOpenPopoverWhenEmpty}
+          aria-expanded={isOpen}
+          aria-haspopup="dialog"
+          aria-disabled={isDisabled}
+          aria-readonly={isReadOnly}
+          aria-required={isRequired}
+          aria-invalid={isInvalid}
+          data-disabled={isDisabled}
+          data-invalid={isInvalid}
+          data-required={isRequired}
+          data-open={isOpen}
+          {...props}
+        >
+          <MultiSelectTagGroup
+            items={items}
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            itemId={itemId}
+            itemValue={itemValue}
+            placeholder={placeholder}
+            size={size}
+            containerRef={triggerRef}
+            isDisabled={isDisabled}
+            isReadOnly={isReadOnly}
+          />
+          <ComboBoxButtonGroup
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            onInputChange={setInputValue}
+            containerRef={triggerRef}
+            isDisabled={isDisabled}
+            isReadOnly={isReadOnly}
+            isLoading={isLoading}
+          />
+        </div>
+      </RaPressable>
+      <ComboBoxPopoverSlot asChild>
         <RaPopover triggerRef={triggerRef} placement="bottom start">
-          <Dialog>
+          <RaDialog aria-label="combobox dialog">
             <RaAutocomplete
               filter={defaultFilter ?? contains}
               inputValue={inputValue}
               onInputChange={setInputValue}
             >
               <ComboBoxMultiSelectInputSlot asChild>
-                <TextField
+                <RaTextField
                   autoFocus
                   isDisabled={isDisabled}
                   isReadOnly={isReadOnly}
@@ -323,7 +285,7 @@ export const MultiSelectRoot = <T extends object>({
                     onKeyDownCapture={handleInputKeyDown}
                     placeholder={placeholder}
                   />
-                </TextField>
+                </RaTextField>
               </ComboBoxMultiSelectInputSlot>
               <ComboBoxOptions
                 items={items}
@@ -339,7 +301,7 @@ export const MultiSelectRoot = <T extends object>({
                 {children}
               </ComboBoxOptions>
             </RaAutocomplete>
-          </Dialog>
+          </RaDialog>
         </RaPopover>
       </ComboBoxPopoverSlot>
     </RaDialogTrigger>

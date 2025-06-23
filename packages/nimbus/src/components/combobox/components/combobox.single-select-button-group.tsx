@@ -35,7 +35,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
       )}
       {isLoading ? (
         <Flex my="auto" w="600" h="600">
-          <Box color="neutral.9" asChild m="auto" w="400" h="400">
+          <Box color="neutral.11" asChild m="auto" w="400" h="400">
             <Box
               asChild
               animation="spin"

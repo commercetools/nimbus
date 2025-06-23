@@ -31,6 +31,7 @@ export const SingleSelectRoot = <T extends object>({
       inputValue={inputValue}
       onInputChange={onInputChange}
       allowsCustomValue={allowsCustomValue}
+      menuTrigger="focus"
       {...rest}
       ref={ref}
     >

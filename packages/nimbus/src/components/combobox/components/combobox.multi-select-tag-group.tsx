@@ -116,6 +116,7 @@ export const MultiSelectTagGroup =
       },
       [isDisabled, isReadOnly, selectedKeys, onSelectionChange]
     );
+
     return (
       <ClearPressResponder>
         <ComboBoxValueSlot
