@@ -1,4 +1,11 @@
-import { useState, useRef, useCallback, type KeyboardEvent } from "react";
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  type KeyboardEvent,
+} from "react";
+import React from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import {
   Popover as RaPopover,
@@ -20,8 +27,6 @@ import {
   ComboBoxMultiSelectInputSlot,
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
-
-type MenuTriggerAction = "focus" | "input" | "manual" | undefined;
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -60,7 +65,7 @@ export const MultiSelectRoot = <T extends object>({
 }: ComboBoxMultiSelect<T>) => {
   // Internal state for popover, enables opening on first focus
   const [isOpen, setOpen] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
+  const preventNextFocusOpen = useRef(false);
 
   // Internal state for selected keys
   const [_selectedKeys, _setSelectedKeys] = useState<Selection>();
@@ -78,38 +83,64 @@ export const MultiSelectRoot = <T extends object>({
   // Prefer items (controlled), fallback to defaultItems (uncontrolled)
   const items = itemsProp ?? defaultItems;
 
+  const filterUtils = useFilter({ sensitivity: "base" });
+  const contains = (...args: Parameters<typeof filterUtils.contains>) =>
+    filterUtils.contains.apply(undefined, args);
+
   // Handle popover open/close changes
   const handleOpenChange = useCallback(
-    (open: boolean, menuTrigger?: MenuTriggerAction) => {
+    (open: boolean) => {
       // The popover should not be able to open if it is disabled or readonly
       if (isDisabled || isReadOnly) {
         // Close the dialog if its open
         if (isOpen) setOpen(false);
         return;
       }
+      // Call onOpenChange prop supplied from props
       if (onOpenChangeProp) {
-        onOpenChangeProp?.(open, menuTrigger);
+        onOpenChangeProp?.(open);
       }
+      // Set state value
       setOpen(open);
-      // Mark as touched when user interacts with the popover,
-      // this enables opening the popover on first focus, but not subsequently
-      if (!isTouched) {
-        setIsTouched(true);
+      // When popover goes from open to closed, prevent immediate focus from opening it again (eg when esc key hit, or click outside popover)
+      // TODO: this is definitely a hack, at some point focus management
+      // should be better handled so that there is a set of conditions that
+      // we can use to reliably toggle on focus
+      if (!open) {
+        preventNextFocusOpen.current = true;
+        // Reset the flag after a short delay
+        setTimeout(() => {
+          preventNextFocusOpen.current = false;
+        }, 100);
       }
     },
-    [isTouched]
+    [isDisabled, isReadOnly, onOpenChangeProp, isOpen]
   );
 
-  const handleOpenPopoverWhenEmpty = useCallback(() => {
-    // Only open on focus if there are no selected items, popover is currently closed,
-    // and the user hasn't interacted with the component yet
-    const hasNoSelection =
-      !selectedKeys || (selectedKeys instanceof Set && selectedKeys.size === 0);
-
-    if (hasNoSelection && !isOpen && !isTouched) {
-      handleOpenChange(true);
+  // if disabled or readonly after mount, update component
+  useEffect(() => {
+    if (isDisabled || isReadOnly) {
+      handleOpenChange(false);
     }
-  }, [selectedKeys, isOpen, isTouched]);
+  }, [isDisabled, isReadOnly]);
+
+  // Handle focus - open popover unless recently closed by user
+  const handleOpenPopoverOnFocus = useCallback(
+    (e: React.FocusEvent) => {
+      // Don't open if disabled or readonly
+      if (isDisabled || isReadOnly) {
+        return;
+      }
+      // Only open popover if focus is directly on the main container, not on child elements
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      if (!isOpen && !preventNextFocusOpen.current) {
+        handleOpenChange(true);
+      }
+    },
+    [isOpen]
+  );
 
   const deleteLastSelectedItem = useCallback(() => {
     // Only handle if selectedKeys is a Set (not "all")
@@ -122,10 +153,6 @@ export const MultiSelectRoot = <T extends object>({
       }
     }
   }, [selectedKeys, setSelectedKeys]);
-
-  const filterUtils = useFilter({ sensitivity: "base" });
-  const contains = (...args: Parameters<typeof filterUtils.contains>) =>
-    filterUtils.contains.apply(undefined, args);
 
   // Enhanced keyboard navigation
   const handleWrapperKeyDown = useCallback((e: KeyboardEvent) => {
@@ -149,12 +176,9 @@ export const MultiSelectRoot = <T extends object>({
       if (e.key === "Escape") {
         handleOpenChange(false);
         // Focus management - return to trigger after popover closes
-        // Use setTimeout to ensure the popover closes before focusing
-        setTimeout(() => {
-          if (triggerRef.current) {
-            triggerRef.current.focus();
-          }
-        }, 0);
+        if (triggerRef.current) {
+          triggerRef.current.focus();
+        }
         return; // Prevent any other key handling
       }
 
@@ -205,7 +229,6 @@ export const MultiSelectRoot = <T extends object>({
     [
       inputValue,
       deleteLastSelectedItem,
-      handleOpenChange,
       allowsCustomValue,
       onSubmitCustomValue,
       items,
@@ -229,7 +252,7 @@ export const MultiSelectRoot = <T extends object>({
           ref={rootRef}
           role="combobox"
           onKeyDown={handleWrapperKeyDown}
-          onFocus={handleOpenPopoverWhenEmpty}
+          onFocus={handleOpenPopoverOnFocus}
           aria-expanded={isOpen}
           aria-haspopup="dialog"
           aria-disabled={isDisabled}
