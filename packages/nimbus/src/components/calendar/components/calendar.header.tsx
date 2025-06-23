@@ -42,7 +42,7 @@ export const CalendarHeader = () => {
             textStyle="sm"
             fontWeight="500"
             color="neutral.11"
-            width={showRangeLabel ? "18ch" : "9ch"}
+            width={showRangeLabel ? "4000" : "2000"}
             textAlign="center"
             aria-hidden="true"
             slot={showRangeLabel ? "monthRange" : "month"}
