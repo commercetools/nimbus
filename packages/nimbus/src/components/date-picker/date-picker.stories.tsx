@@ -233,6 +233,14 @@ export const TimeSupport: Story = {
           aria-label="Date only picker"
         />
 
+        <Text>Date and hour</Text>
+        <DatePicker
+          {...args}
+          granularity="hour"
+          defaultValue={new CalendarDateTime(2025, 6, 15, 14)}
+          aria-label="Date and time picker (hour)"
+        />
+
         <Text>Date and time to minute</Text>
         <DatePicker
           {...args}
@@ -464,45 +472,6 @@ export const CustomValidation: Story = {
           Only future weekdays are allowed. Try selecting a weekend or past
           date.
         </Text>
-      </Stack>
-    );
-  },
-};
-
-/**
- * Calendar Configuration
- * Demonstrates calendar-specific configuration options
- */
-export const CalendarConfiguration: Story = {
-  args: {
-    ["aria-label"]: "Select a date",
-  },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="600" alignItems="start">
-        <Box>
-          <Text fontWeight="700" mb="200">
-            Custom week start (Tuesday)
-          </Text>
-          <DatePicker
-            {...args}
-            defaultValue={today(getLocalTimeZone())}
-            firstDayOfWeek="tue"
-            aria-label="Custom week start picker"
-          />
-        </Box>
-
-        <Box>
-          <Text fontWeight="700" mb="200">
-            Page behavior configuration
-          </Text>
-          <DatePicker
-            {...args}
-            defaultValue={today(getLocalTimeZone())}
-            pageBehavior="single"
-            aria-label="Single page behavior picker"
-          />
-        </Box>
       </Stack>
     );
   },
