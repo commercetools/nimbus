@@ -6,8 +6,7 @@ import { DatePickerStateContext } from "react-aria-components";
 export const DatePickerTimeInput = () => {
   const { locale } = useLocale();
   const datePickerState = useContext(DatePickerStateContext);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { timeValue, setTimeValue, granularity } = datePickerState!;
+  const { granularity } = datePickerState!;
 
   // do not show up to the party if you're not invited
   if (granularity === "day") {
@@ -24,17 +23,14 @@ export const DatePickerTimeInput = () => {
       justifyContent="center"
       gap="200"
     >
-      <Text textStyle="xs" fontWeight="500" color="neutral.12">
-        Start Time
-      </Text>
-      <TimeInput
-        locale={locale}
-        value={timeValue}
-        granularity={granularity}
-        variant="ghost"
-        size="sm"
-        onChange={(v) => v && setTimeValue(v)}
+      <Text
+        slot="startTime"
+        textStyle="xs"
+        fontWeight="500"
+        color="neutral.12"
       />
+
+      <TimeInput slot="timeInput" locale={locale} variant="ghost" size="sm" />
     </Flex>
   );
 };
