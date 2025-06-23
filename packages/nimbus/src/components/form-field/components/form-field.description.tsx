@@ -1,20 +1,11 @@
-import { useContext, useEffect } from "react";
-import { FormFieldContext } from "./form-field.context";
 import type { FormFieldDescriptionSlotProps } from "../form-field.slots";
 
 export const FormFieldDescription = ({
-  children,
-  ...descriptionSlotProps
+  children: _children, // eslint-disable-line @typescript-eslint/no-unused-vars
+  ..._descriptionSlotProps // eslint-disable-line @typescript-eslint/no-unused-vars
 }: FormFieldDescriptionSlotProps) => {
-  const { setContext } = useContext(FormFieldContext);
-
-  useEffect(() => {
-    setContext((prevContext) => ({
-      ...prevContext,
-      description: children,
-      descriptionSlotProps,
-    }));
-  }, [children, setContext]);
-
+  // This component now acts as a declarative marker for the FormFieldRoot
+  // The actual rendering is handled by FormFieldRoot through children analysis
+  // This approach is SSR-safe as it doesn't rely on useEffect or useState
   return null;
 };

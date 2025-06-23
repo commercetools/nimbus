@@ -3,14 +3,13 @@ import {
   cloneElement,
   forwardRef,
   isValidElement,
-  useEffect,
-  useState,
+  useMemo,
 } from "react";
 import type { FormFieldProps } from "../form-field.types";
 import { useField } from "react-aria";
 import {
   FormFieldContext,
-  type FormFieldContextPayloadType,
+  type FormFieldContextValue,
 } from "./form-field.context";
 import {
   FormFieldDescriptionSlot,
@@ -23,6 +22,7 @@ import {
 import { Dialog, DialogTrigger, Popover } from "react-aria-components";
 import { Box, IconButton } from "@/components";
 import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
+import { analyzeFormFieldChildren } from "../utils/analyze-form-field-children";
 
 /**
  * FormField
@@ -34,64 +34,85 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
     { isInvalid, isRequired, isDisabled, isReadOnly, children, ...props },
     ref
   ) => {
-    const [context, setContext] = useState<FormFieldContextPayloadType>({
-      label: null,
-      description: null,
-      error: null,
-      info: null,
-      input: null,
-      isInvalid,
-      isRequired,
-      isDisabled,
-      isReadOnly,
-    });
+    // Analyze children to extract content and determine structure
+    const childrenAnalysis = useMemo(
+      () => analyzeFormFieldChildren(children),
+      [children]
+    );
 
-    const useFieldArgs: Parameters<typeof useField>[0] = {
-      description: context.description,
-      errorMessage: context.error,
-    };
+    // Prepare useField arguments based on analyzed children
+    const useFieldArgs = useMemo(() => {
+      const args: Parameters<typeof useField>[0] = {};
 
-    if (context.label) {
-      useFieldArgs.label = context.label;
-    } else {
-      // Context will always start out null, so we need to stub out some aria attributes
-      // FIXME: This is a hack to get the form field to work, but it's not the best solution
-      // FIXME: We should find a better way to handle this by redesigning the FormField component's structure
-      useFieldArgs["aria-label"] = "empty-label";
-      useFieldArgs["aria-labelledby"] = "empty-label";
-    }
+      if (childrenAnalysis.hasDescription) {
+        args.description = childrenAnalysis.descriptionContent;
+      }
 
+      if (childrenAnalysis.hasError && isInvalid) {
+        args.errorMessage = childrenAnalysis.errorContent;
+      }
+
+      if (childrenAnalysis.hasLabel) {
+        args.label = childrenAnalysis.labelContent;
+      } else {
+        // Fallback for accessibility when no label is provided
+        args["aria-label"] = "form field";
+      }
+
+      return args;
+    }, [childrenAnalysis, isInvalid]);
+
+    // Get React Aria field props
     const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
       useField(useFieldArgs);
 
-    useEffect(() => {
-      setContext((prevContext) => ({
-        ...prevContext,
+    // Create context value for child components
+    const contextValue: FormFieldContextValue = useMemo(
+      () => ({
+        labelProps,
+        fieldProps: {
+          ...fieldProps,
+          isInvalid,
+          isRequired,
+          isDisabled,
+          isReadOnly,
+        },
+        descriptionProps,
+        errorMessageProps,
         isInvalid,
         isRequired,
         isDisabled,
         isReadOnly,
-      }));
-    }, [isInvalid, isRequired, isDisabled, isReadOnly]);
-
-    const inputProps = {
-      ...fieldProps,
-      isInvalid,
-      isRequired,
-      isDisabled,
-      isReadOnly,
-    };
+        hasLabel: childrenAnalysis.hasLabel,
+        hasDescription: childrenAnalysis.hasDescription,
+        hasError: childrenAnalysis.hasError,
+        hasInfo: childrenAnalysis.hasInfo,
+      }),
+      [
+        labelProps,
+        fieldProps,
+        descriptionProps,
+        errorMessageProps,
+        isInvalid,
+        isRequired,
+        isDisabled,
+        isReadOnly,
+        childrenAnalysis,
+      ]
+    );
 
     return (
-      <FormFieldContext.Provider value={{ context, setContext }}>
+      <FormFieldContext.Provider value={contextValue}>
         <FormFieldRootSlot ref={ref} {...props}>
-          {context.label && (
-            <FormFieldLabelSlot {...context.labelSlotProps}>
+          {/* Render label if present */}
+          {childrenAnalysis.hasLabel && (
+            <FormFieldLabelSlot>
               <label {...labelProps}>
-                {context.label}
+                {childrenAnalysis.labelContent}
                 {isRequired && <sup aria-hidden="true">*</sup>}
               </label>
-              {context.info && (
+              {/* Render info popover if present */}
+              {childrenAnalysis.hasInfo && (
                 <DialogTrigger>
                   <Box
                     as="span"
@@ -112,8 +133,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                       <IconButton
                         aria-label="__MORE INFO"
                         size="2xs"
-                        tone="info"
-                        variant="link"
+                        variant="ghost"
                       >
                         <HelpOutline />
                       </IconButton>
@@ -122,7 +142,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                   <Popover>
                     <FormFieldPopoverSlot asChild>
                       <Dialog>
-                        <Box p="300">{context.info}</Box>
+                        <Box p="300">{childrenAnalysis.infoContent}</Box>
                       </Dialog>
                     </FormFieldPopoverSlot>
                   </Popover>
@@ -130,31 +150,31 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
               )}
             </FormFieldLabelSlot>
           )}
-          {context.input && (
-            <FormFieldInputSlot {...context.inputSlotProps}>
-              {Children.map(context.input, (child) => {
+
+          {/* Render input if present */}
+          {childrenAnalysis.inputContent && (
+            <FormFieldInputSlot>
+              {Children.map(childrenAnalysis.inputContent, (child) => {
                 // Important: Check if the child is a valid React element before cloning.
                 if (isValidElement(child)) {
-                  return cloneElement(child, inputProps);
+                  return cloneElement(child, contextValue.fieldProps);
                 }
                 // If it's not a valid element (e.g., text node, null, undefined), return it as is.
                 return child;
               })}
             </FormFieldInputSlot>
           )}
-          {context.description && (
-            <FormFieldDescriptionSlot
-              {...descriptionProps}
-              {...context.descriptionSlotProps}
-            >
-              {context.description}
+
+          {/* Render description if present */}
+          {childrenAnalysis.hasDescription && (
+            <FormFieldDescriptionSlot {...descriptionProps}>
+              {childrenAnalysis.descriptionContent}
             </FormFieldDescriptionSlot>
           )}
-          {isInvalid && context.error && (
-            <FormFieldErrorSlot
-              {...errorMessageProps}
-              {...context.errorSlotProps}
-            >
+
+          {/* Render error if present and field is invalid */}
+          {isInvalid && childrenAnalysis.hasError && (
+            <FormFieldErrorSlot {...errorMessageProps}>
               <Box
                 as={ErrorOutline}
                 display="inline-flex"
@@ -162,9 +182,11 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                 verticalAlign="text-bottom"
                 mr="100"
               />
-              {context.error}
+              {childrenAnalysis.errorContent}
             </FormFieldErrorSlot>
           )}
+
+          {/* Render any additional children that aren't FormField components */}
           {children}
         </FormFieldRootSlot>
       </FormFieldContext.Provider>

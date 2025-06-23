@@ -1,39 +1,37 @@
 import { createContext, type ReactNode } from "react";
-import type {
-  FormFieldDescriptionSlotProps,
-  FormFieldErrorSlotProps,
-  FormFieldInputSlotProps,
-  FormFieldLabelSlotProps,
-} from "../form-field.slots";
 
-export type FormFieldContextPayloadType = {
-  label: ReactNode;
-  labelSlotProps?: FormFieldLabelSlotProps;
-  input: ReactNode;
-  inputSlotProps?: FormFieldInputSlotProps;
-  description: ReactNode;
-  descriptionSlotProps?: FormFieldDescriptionSlotProps;
-  error: ReactNode;
-  errorSlotProps?: FormFieldErrorSlotProps;
-  info: ReactNode;
+export type FormFieldContextValue = {
+  // React Aria field props
+  labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
+  fieldProps: React.InputHTMLAttributes<HTMLInputElement>;
+  descriptionProps: React.HTMLAttributes<HTMLElement>;
+  errorMessageProps: React.HTMLAttributes<HTMLElement>;
+
+  // Field state
   isInvalid?: boolean;
   isRequired?: boolean;
   isDisabled?: boolean;
   isReadOnly?: boolean;
+
+  // Content tracking for rendering
+  hasLabel: boolean;
+  hasDescription: boolean;
+  hasError: boolean;
+  hasInfo: boolean;
 };
 
-export type FormFieldContextType = {
-  context: FormFieldContextPayloadType;
-  setContext: React.Dispatch<React.SetStateAction<FormFieldContextPayloadType>>;
-};
+export const FormFieldContext = createContext<FormFieldContextValue | null>(
+  null
+);
 
-export const FormFieldContext = createContext<FormFieldContextType>({
-  context: {
-    label: null,
-    description: null,
-    error: null,
-    info: null,
-    input: null,
-  },
-  setContext: () => {},
-});
+export type FormFieldChildrenAnalysis = {
+  labelContent: ReactNode;
+  inputContent: ReactNode;
+  descriptionContent: ReactNode;
+  errorContent: ReactNode;
+  infoContent: ReactNode;
+  hasLabel: boolean;
+  hasDescription: boolean;
+  hasError: boolean;
+  hasInfo: boolean;
+};
