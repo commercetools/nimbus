@@ -47,9 +47,9 @@ export const DatePickerCustomContext = ({
 
   const timeInputSlots = {
     timeInput: {
+      value: timeValue,
       onChange: setTimeValue,
       granularity,
-      timeValue,
     },
   };
 
