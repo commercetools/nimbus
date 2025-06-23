@@ -1651,12 +1651,16 @@ export const CreateCustomValue: Story = {
       setSingleInputValue(nextInputValue);
     };
     const handleSingleCustomValue = (value: string) => {
+      mockFn();
+      console.log("single custom value called");
       // Add custom item
       const newItem = { id: `single-custom-${Date.now()}`, name: value };
       setSingleCustomItems((prev) => [...prev, newItem]);
       setSingleSelectedItem(newItem.id);
     };
     const handleMultiCustomValue = (value: string) => {
+      mockFn();
+      console.log("multi custom value called");
       // Add custom item
       const newItem = { id: `multi-custom-${Date.now()}`, name: value };
       setMultiCustomItems((prev) => [...prev, newItem]);
@@ -1703,7 +1707,6 @@ export const CreateCustomValue: Story = {
             </ComboBox.Root>
           </FormField.Input>
         </FormField.Root>
-
         <FormField.Root alignSelf={"flex-start"}>
           <FormField.Label>Multi-Select with Custom Values</FormField.Label>
           <FormField.Input>
@@ -1733,6 +1736,70 @@ export const CreateCustomValue: Story = {
           </FormField.Input>
         </FormField.Root>
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
+      name: /single select with custom values/i,
+    });
+    const multiSelect = await canvas.findByRole("combobox", {
+      name: /multi-select with custom values/i,
+    });
+
+    await step(
+      "single select allows setting a custom value when the submitted value does not match an existing option",
+      async () => {
+        singleSelect.focus();
+        // Type in string that does not match any options
+        await userEvent.keyboard("koa");
+        // Create custom 'koa' option by hitting 'enter'
+        await userEvent.keyboard("{Enter}");
+        // Check that onCreateCustomValue has been called
+        await expect(mockFn).toHaveBeenCalled();
+      }
+    );
+    await step(
+      "single select does not allow setting a custom value when the submitted value matches an existing option",
+      async () => {
+        mockFn.mockClear();
+        singleSelect.focus();
+        // Clear input
+        await userEvent.clear(singleSelect);
+        // Type in string that does matches an option
+        await userEvent.keyboard("koala");
+        // Select 'koala' option by hitting 'enter'
+        await userEvent.keyboard("{Enter}");
+        // Check that onCreateCustomValue has not been called
+        await expect(mockFn).not.toHaveBeenCalled();
+      }
+    );
+    await step(
+      "multi select allows setting a custom value when the submitted value does not match an existing option",
+      async () => {
+        mockFn.mockClear();
+        multiSelect.focus();
+        // Type in string that does not match any options
+        await userEvent.keyboard("koa");
+        // Create custom 'koa' option by hitting 'enter'
+        await userEvent.keyboard("{Enter}");
+        // Check that onCreateCustomValue has been called
+        await expect(mockFn).toHaveBeenCalled();
+      }
+    );
+    await step(
+      "single select does not allow setting a custom value when the submitted value matches an existing option",
+      async () => {
+        mockFn.mockClear();
+        // Clear input
+        await userEvent.clear(getFilterInput());
+        // Type in string that does matches an option
+        await userEvent.keyboard("koala");
+        // Select 'koala' option by hitting 'enter'
+        await userEvent.keyboard("{Enter}");
+        // Check that onCreateCustomValue has not been called
+        await expect(mockFn).not.toHaveBeenCalled();
+      }
     );
   },
 };
