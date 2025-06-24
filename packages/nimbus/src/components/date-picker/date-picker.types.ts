@@ -2,7 +2,7 @@ import type { DateInputProps } from "@/components/date-input";
 import type { DatePickerStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
 import type { RecipeVariantProps } from "@chakra-ui/react";
-import { datePickerRecipe } from "./date-picker.recipe";
+import { datePickerSlotRecipe } from "./date-picker.recipe";
 
 /**
  * Properties from DatePickerStateOptions that would conflict with similarly named
@@ -40,7 +40,7 @@ type ExcludedProps =
 export interface DatePickerProps
   extends Omit<DateInputProps, ConflictingPickerStateProps | ExcludedProps>,
     Omit<DatePickerStateOptions<DateValue>, ExcludedProps>,
-    RecipeVariantProps<typeof datePickerRecipe> {
+    RecipeVariantProps<typeof datePickerSlotRecipe> {
   /**
    * Whether the calendar popover should be open by default (uncontrolled).
    */

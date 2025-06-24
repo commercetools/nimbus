@@ -4,7 +4,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Recipe configuration for the DatePicker component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const datePickerRecipe = defineSlotRecipe({
+export const datePickerSlotRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
   className: "nimbus-date-picker",
   slots: [

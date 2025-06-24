@@ -10,7 +10,7 @@ import {
   DateSegment,
 } from "react-aria-components";
 import { useRecipe } from "@chakra-ui/react";
-import { dateInputRecipe } from "./date-input.recipe";
+import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateInputProps } from "./date-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
@@ -20,7 +20,7 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  * allows entering a date in the currently selected locale
  */
 export const DateInput = (props: DateInputProps) => {
-  const recipe = useRecipe({ recipe: dateInputRecipe });
+  const recipe = useRecipe({ recipe: dateInputSlotRecipe });
   const [recipeProps, recipeFreeProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(recipeFreeProps);
 
