@@ -5,6 +5,7 @@ import {
   // defaultSystem as defaultSystemChakra,
 } from "@chakra-ui/react";
 import { ColorModeProvider, type ColorModeProviderProps } from "./color-mode";
+import { LocaleContext } from "./locale-context";
 import { system } from "../../theme";
 import { useEffect, useState } from "react";
 
@@ -40,11 +41,21 @@ export function useColorScheme() {
   return colorScheme;
 }
 
-export function NimbusProvider({ children, ...props }: ColorModeProviderProps) {
+export function NimbusProvider({
+  children,
+  locale,
+  ...props
+}: ColorModeProviderProps & { locale?: string }) {
+  // The provider can accept an optional locale prop, ex from App-Kit
+  // then we fallback first to the navigator.language, then to "en-US"
+  const resolvedLocale = locale || navigator.language || "en-US";
+
   return (
     <ChakraProvider value={system}>
       <ColorModeProvider enableSystem={false} {...props}>
-        <>{children}</>
+        <LocaleContext.Provider value={resolvedLocale}>
+          {children}
+        </LocaleContext.Provider>
       </ColorModeProvider>
     </ChakraProvider>
   );
