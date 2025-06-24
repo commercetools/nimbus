@@ -5,7 +5,7 @@ import {
   createSlotRecipeContext,
 } from "@chakra-ui/react";
 
-import { dateInputRecipe } from "./date-input.recipe";
+import { dateInputSlotRecipe } from "./date-input.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -24,7 +24,7 @@ export interface DateInputRootProps
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: dateInputRecipe,
+  recipe: dateInputSlotRecipe,
 });
 
 /**

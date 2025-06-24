@@ -5,7 +5,7 @@ import {
   createSlotRecipeContext,
 } from "@chakra-ui/react";
 
-import { datePickerRecipe } from "./date-picker.recipe";
+import { datePickerSlotRecipe } from "./date-picker.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -24,7 +24,7 @@ export interface DatePickerRootProps
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: datePickerRecipe,
+  recipe: datePickerSlotRecipe,
 });
 
 /**

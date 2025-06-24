@@ -15,7 +15,7 @@ import {
   Dialog,
 } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react";
-import { datePickerRecipe } from "./date-picker.recipe";
+import { datePickerSlotRecipe } from "./date-picker.recipe";
 import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { DateInput, Calendar, IconButton } from "@/components";
@@ -30,7 +30,7 @@ import { DatePickerCustomContext } from "./components/date-picker.custom-context
  */
 export const DatePicker = (props: DatePickerProps) => {
   const { size = "md", variant } = props;
-  const recipe = useSlotRecipe({ recipe: datePickerRecipe });
+  const recipe = useSlotRecipe({ recipe: datePickerSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 

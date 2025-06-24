@@ -1,6 +1,6 @@
 import type { DateInputRootProps } from "./date-input.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
-import { dateInputRecipe } from "./date-input.recipe";
+import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateValue } from "react-aria";
 import type { DateFieldProps } from "react-aria-components";
 
@@ -34,4 +34,4 @@ type ExcludedProps =
 export interface DateInputProps
   extends DateFieldProps<DateValue>,
     Omit<DateInputRootProps, keyof DateFieldProps<DateValue> | ExcludedProps>,
-    RecipeVariantProps<typeof dateInputRecipe> {}
+    RecipeVariantProps<typeof dateInputSlotRecipe> {}

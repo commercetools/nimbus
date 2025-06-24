@@ -9,6 +9,8 @@ import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
+import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
+import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -20,6 +22,8 @@ export const slotRecipes = {
   taggroup: tagGroupSlotRecipe,
   switch: switchSlotRecipe,
   calendar: calendarSlotRecipe,
+  dateInput: dateInputSlotRecipe,
+  datePicker: datePickerSlotRecipe,
   "number-input": numberInputRecipe,
   radioInput: radioInputSlotRecipe,
 };
