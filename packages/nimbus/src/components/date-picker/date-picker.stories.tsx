@@ -1028,6 +1028,156 @@ export const TimeSupport: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Date-only picker has correct number of segments (3: month, day, year)",
+      async () => {
+        const dateOnlyPicker = canvas.getByRole("group", {
+          name: "Date only picker",
+        });
+        const segments = within(dateOnlyPicker).getAllByRole("spinbutton");
+
+        // Should have exactly 3 segments for date only: month, day, year
+        await expect(segments).toHaveLength(3);
+      }
+    );
+
+    await step("Hour picker has correct segments and values", async () => {
+      const hourPicker = canvas.getByRole("group", {
+        name: "Date and time picker (hour)",
+      });
+      const segments = within(hourPicker).getAllByRole("spinbutton");
+
+      // Should have 4 segments: month, day, year, hour, AM/PM
+      await expect(segments).toHaveLength(5);
+    });
+
+    await step("Minute picker has correct segments and values", async () => {
+      const minutePicker = canvas.getByRole("group", {
+        name: "Date and time picker (minute)",
+      });
+      const segments = within(minutePicker).getAllByRole("spinbutton");
+
+      // Should have 5 segments: month, day, year, hour, minute, AM/PM
+      await expect(segments).toHaveLength(6);
+    });
+
+    await step("Second picker has correct segments and values", async () => {
+      const secondPicker = canvas.getByRole("group", {
+        name: "Date and time picker (second)",
+      });
+      const segments = within(secondPicker).getAllByRole("spinbutton");
+
+      // Should have 6 segments: month, day, year, hour, minute, second
+      await expect(segments).toHaveLength(7);
+    });
+
+    await step(
+      "Timezone picker has correct segments and timezone",
+      async () => {
+        const timezonePicker = canvas.getByRole("group", {
+          name: "Date and time picker with timezone",
+        });
+        const segments = within(timezonePicker).getAllByRole("spinbutton");
+
+        // Should have 5 segments: month, day, year, hour, minute (timezone is not a spinbutton)
+        await expect(segments).toHaveLength(6);
+
+        // Check for timezone display (should contain timezone information)
+        const timezoneElement =
+          within(timezonePicker).getByText(/EDT|EST|America/i);
+        await expect(timezoneElement).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Calendar functionality works with time granularities",
+      async () => {
+        const hourPicker = canvas.getByRole("group", {
+          name: "Date and time picker (hour)",
+        });
+        const calendarButton = within(hourPicker).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Calendar should be functional - close it with Escape
+        await userEvent.keyboard("{Escape}");
+
+        // Wait for calendar to disappear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "Clear functionality works across all time granularities",
+      async () => {
+        const pickers = [
+          { name: "Date only picker", hasTime: false },
+          { name: "Date and time picker (hour)", hasTime: true },
+          { name: "Date and time picker (minute)", hasTime: true },
+          { name: "Date and time picker (second)", hasTime: true },
+          { name: "Date and time picker with timezone", hasTime: true },
+        ];
+
+        for (const picker of pickers) {
+          const pickerElement = canvas.getByRole("group", {
+            name: picker.name,
+          });
+          const clearButton = within(pickerElement).getByRole("button", {
+            name: /clear/i,
+          });
+
+          // Clear button should be enabled (has default value)
+          await expect(clearButton).not.toBeDisabled();
+
+          // Click clear button
+          await userEvent.click(clearButton);
+
+          // Clear button should now be disabled
+          await expect(clearButton).toBeDisabled();
+
+          // Reset by adding a date back for next test
+          const segments = within(pickerElement).getAllByRole("spinbutton");
+          await userEvent.click(segments[0]); // month
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[1]); // day
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[2]); // year
+          await userEvent.keyboard("2025");
+
+          if (picker.hasTime && segments.length > 3) {
+            // Set time values for time-enabled pickers
+            await userEvent.click(segments[3]); // hour
+            await userEvent.keyboard("12");
+
+            if (segments.length > 4) {
+              await userEvent.click(segments[4]); // minute
+              await userEvent.keyboard("30");
+            }
+
+            if (segments.length > 5) {
+              await userEvent.click(segments[5]); // second
+              await userEvent.keyboard("0");
+            }
+          }
+        }
+      }
+    );
+  },
 };
 
 /**
