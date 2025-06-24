@@ -1,93 +1,282 @@
 ---
-id: Components-combobox
-title: combobox
-description: A combo box combines a text input with a listbox, allowing users to filter a list of options to items matching a query.
+id: Components-ComboBox
+title: ComboBox
+description: A combo box combines a text input with a dropdown list, allowing users to filter a list of options to items matching a query.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
   - Inputs
-  - Combobox
+  - ComboBox
 tags:
   - component
 ---
 
-# combobox
+# ComboBox input
 
-A combo box combines a text input with a listbox, allowing users to filter a list of options to items matching a query.
+A combobox is an input that combines a text field with a pop-up list of options. It allows users to select a value from a predefined list or enter their own custom value.
 
-## Basic Usage
+## Overview
 
-[Explain the basic usage / usecase of the component].
+The combobox component provides both selection and text input capabilities. It displays a list of options that users can choose from, while also allowing them to type directly into the text field. This functionality improves user experience by assisting with value selection and, in some cases, prevents invalid entries.
 
-```jsx-live
-const App = () => <Combobox>I am Combobox!</Combobox>
-```
+### Resources
 
+Deep dive on details and access design library
 
-### Sizes
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1852-4333&m=dev)
 
-Available sizes.
+## Variables
+
+Get familiar with the features.
+
+### Visual options
+
+#### Size
+The medium size of the combobox is default, the small sizes are meant for more compact uses.
 
 ```jsx-live
 const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+  const options = [
+    { id: "seasonal", name: "Seasonal", description: "Grower's choice" },
+    { id: "greens", name: "Greens", description: "Leafy and nutritious" },
+    { id: "fruit", name: "Fruit", description: "Sweet and tart" },
+    { id: "root-vegetables", name: "Root Vegetables", description: "Firm and hearty" }
+  ];
 
   return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <Combobox key={size} size={size}>'{size}' Combobox</Combobox>
-      ))}
+    <Stack direction="horizontal" gap="400" alignItems="flex-start">
+      <ComboBox.Root size="md" defaultItems={options} placeholder="Search...">
+        {(item) => (
+          <ComboBox.Option id={item.id} textValue={item.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{item.name}</Text>
+              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
+      
+      <ComboBox.Root size="sm" defaultItems={options} placeholder="Search...">
+        {(item) => (
+          <ComboBox.Option id={item.id} textValue={item.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{item.name}</Text>
+              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
     </Stack>
   )
 }
 ```
 
-### Variants
-
-Available variants.
+#### Appearances
+Combobox supports solid and ghost styles.
 
 ```jsx-live
 const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+  const options = [
+    { id: "seasonal", name: "Seasonal", description: "Grower's choice" },
+    { id: "greens", name: "Greens", description: "Leafy and nutritious" },
+    { id: "fruit", name: "Fruit", description: "Sweet and tart" },
+    { id: "root-vegetables", name: "Root Vegetables", description: "Firm and hearty" }
+  ];
 
   return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <Combobox key={variant} variant={variant}>'{variant}' Combobox</Combobox>
-      ))}
+    <Stack direction="horizontal" gap="400" alignItems="flex-start">
+      <ComboBox.Root variant="solid" defaultItems={options} placeholder="Search...">
+        {(item) => (
+          <ComboBox.Option id={item.id} textValue={item.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{item.name}</Text>
+              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
+      
+      <ComboBox.Root variant="ghost" defaultItems={options} placeholder="Search...">
+        {(item) => (
+          <ComboBox.Option id={item.id} textValue={item.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{item.name}</Text>
+              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
     </Stack>
   )
 }
 ```
 
-### Colors
-
-[Explain usage with different colors/semantics.]
+#### Selection types
+Single and multi-select is supported by comboboxes.
 
 ```jsx-live
 const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "success", "danger", "error"];
+  const options = [
+    { id: "surprise-me", name: "Surprise me", description: "A mix of delights" },
+    { id: "toys-only", name: "Toys only", description: "Balls, stuffies, and tug toys" },
+    { id: "treats-only", name: "Treats only", description: "Chews, bites, and crunchy snacks" },
+    { id: "heavy-chewers", name: "Heavy chewers", description: "Only difficult to destroy toys" }
+  ];
 
   return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <Combobox colorPalette={color} key={variant} variant={variant}>
-              '{variant}' Combobox
-            </Combobox>
-          ))}
-        </Stack>
-      ))}
+    <Stack direction="horizontal" gap="400" alignItems="flex-start">
+      <ComboBox.Root defaultItems={options} placeholder="Search...">
+        {(item) => (
+          <ComboBox.Option id={item.id} textValue={item.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{item.name}</Text>
+              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
+      
+      <ComboBox.Root 
+        selectionMode="multiple"
+        defaultItems={options} 
+        placeholder="Search..."
+        itemId="id"
+        itemValue="name"
+      >
+        {(item) => (
+          <ComboBox.Option id={item.id} textValue={item.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{item.name}</Text>
+              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
     </Stack>
-  );
-};
+  )
+}
 ```
 
-## Props
+## Guidelines
 
-<PropTable id="Combobox" />
+A combobox combines a text input with a dropdown list, allowing users to type a value or select from predefined options.
+
+### Best practices
+
+- **Provide Instant Feedback:** Filter results in real-time as users type.
+- **Handle No Results Graciously:** Display a clear message when no matching options are found.
+- **Optimize for Keyboard Navigation:** Ensure full functionality using only the keyboard.
+- **Consider Performance:** For very long lists, implement virtualization or lazy loading to prevent performance issues.
+- **Offer Clear/Reset Option:** Provide a way for users to clear their selection if needed.
+- **Match Input to Options:** If the user types a value that exactly matches an option, automatically select it.
+
+### Usage
+
+Users interact with a combobox by typing to filter options or by selecting from the dropdown list, expecting the component to dynamically narrow choices and allow either a selection or custom entry.
+
+> [!TIP]\
+> When to use
+
+- Allowing custom input alongside predefined options.
+- Filtering long lists.
+- Providing suggestions as a user types.
+
+> [!CAUTION]\
+> When not to use
+
+- Only predefined options are allowed.
+- The list of options is very short (e.g., 2-5 options).
+- Multi-selection is the primary goal without typing.
+- Real-time validation of complex custom input is difficult.
+
+### Intuitive interactions
+
+A well-designed combobox enhances user efficiency and accuracy by offering flexible input methods with clear, dynamic feedback.
+
+> [!TIP]\
+> **Do**
+>
+> - Provide a clear and concise label.
+> - Filter options dynamically as the user types.
+> - Support both keyboard and mouse interactions.
+> - Offer clear feedback for all states (focus, hover, active, disabled, invalid).
+> - Ensure accessibility with appropriate ARIA attributes.
+> - Pre-populate with common values if applicable.
+
+<img src="/images/combobox/combobox-do.png" alt="combobox do guideline" width="316px" />
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Use for simple dropdowns where no custom input is needed (use a select component instead).
+> - Neglect to provide feedback when no options match the input.
+> - Force users to type an exact match if a selection from the list is expected.
+> - Rely solely on visual cues; provide ARIA attributes for screen readers.
+> - Display an overwhelming number of options without filtering or pagination.
+
+<img src="/images/combobox/combobox-dont.png" alt="combobox do guideline" width="316px" />
+
+## Specs
+
+### Features
+
+- **Dynamic Filtering:** Options are filtered in real-time as users type
+- **Keyboard Navigation:** Full keyboard support with arrow keys and enter
+- **Custom Values:** Allows users to enter values not in the predefined list
+- **Multi-Selection:** Supports both single and multiple selection modes
+- **Accessibility:** Built-in ARIA attributes and screen reader support
+- **Loading States:** Shows loading indicators during async operations
+
+## Properties
+
+<PropsTable id="ComboBox" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const options = [
+    { id: "seasonal", name: "Seasonal", description: "Grower's choice" },
+    { id: "greens", name: "Greens", description: "Leafy and nutritious" },
+    { id: "fruit", name: "Fruit", description: "Sweet and tart" },
+    { id: "root-vegetables", name: "Root Vegetables", description: "Firm and hearty" }
+  ];
+
+  return (
+    <ComboBox.Root 
+      selectionMode="multiple"
+      defaultItems={options} 
+      placeholder="Search..."
+      aria-label="Food category selection"
+      isRequired
+    >
+      {(item) => (
+        <ComboBox.Option id={item.id} textValue={item.name}>
+          <Stack gap="100">
+            <Text textStyle="sm">{item.name}</Text>
+            <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+          </Stack>
+        </ComboBox.Option>
+      )}
+    </ComboBox.Root>
+  )
+}
+```
+
+### Accessibility Standards
+
+- Always provide a visible label for the input.
+- If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.
+- Ensure proper ARIA roles (`combobox`, `listbox`, `option`) and attributes (`aria-expanded`, `aria-autocomplete`, `aria-activedescendant`) are used.
+- Ensure sufficient color contrast for all elements (text, borders, icons).
+- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
+- Clearly indicate the focused and selected states.
+
+### Resources
+
+- [Adobe Spectrum ComboBox](https://spectrum.adobe.com/page/combo-box/)
+- [React Spectrum ComboBox](https://react-spectrum.adobe.com/react-spectrum/ComboBox.html)
+- [W3C ARIA Authoring Practices Guide (APG) - Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)
