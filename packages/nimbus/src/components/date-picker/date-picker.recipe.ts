@@ -39,6 +39,7 @@ export const datePickerSlotRecipe = defineSlotRecipe({
       bg: "neutral.1",
       boxShadow: "4",
       borderRadius: "300",
+      overflow: "auto",
 
       "&[data-entering]": {
         animationName: "fade-in, scale-in",
