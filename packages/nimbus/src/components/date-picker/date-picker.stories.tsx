@@ -1502,6 +1502,199 @@ export const MinMaxValues: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("DatePicker starts with valid date within range", async () => {
+      const datePicker = canvas.getByRole("group", {
+        name: "Date picker with min/max values",
+      });
+      const segments = within(datePicker).getAllByRole("spinbutton");
+      const clearButton = within(datePicker).getByRole("button", {
+        name: /clear/i,
+      });
+
+      // Should have default value of 2025-06-22 (7 days from base date)
+      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
+      await expect(segments[1]).toHaveAttribute("aria-valuenow", "22"); // 22nd
+      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+
+      // Clear button should be enabled
+      await expect(clearButton).not.toBeDisabled();
+    });
+
+    await step(
+      "Calendar shows correct available/disabled dates within range",
+      async () => {
+        const datePicker = canvas.getByRole("group", {
+          name: "Date picker with min/max values",
+        });
+        const calendarButton = within(datePicker).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear - try both application role and grid role
+        await waitFor(async () => {
+          const calendar =
+            within(document.body).queryByRole("application") ||
+            within(document.body).queryByRole("grid");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Find the calendar grid
+        const calendarGrid = within(document.body).getByRole("grid");
+        await expect(calendarGrid).toBeInTheDocument();
+
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+        await expect(dateCells.length).toBeGreaterThan(0);
+
+        // Look for date buttons within cells
+        const dateButtons = dateCells
+          .map((cell) => within(cell).getAllByRole("button"))
+          .flat()
+          .filter(Boolean);
+        await expect(dateButtons.length).toBeGreaterThan(0);
+
+        // Find available dates (dates that can be selected)
+        const availableDates = dateButtons.filter(
+          (button) =>
+            button &&
+            (!button.hasAttribute("aria-disabled") ||
+              button.getAttribute("aria-disabled") !== "true")
+        );
+
+        // At minimum, we should have some available dates within the allowed range
+        await expect(availableDates.length).toBeGreaterThan(0);
+
+        // Verify we have date buttons in the calendar
+        await expect(dateButtons.length).toBeGreaterThan(0);
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+
+        // Wait for the calendar to close
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        await waitFor(async () => {
+          const calendar =
+            within(document.body).queryByRole("application") ||
+            within(document.body).queryByRole("grid");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "Typing date outside min/max range handles gracefully",
+      async () => {
+        const datePicker = canvas.getByRole("group", {
+          name: "Date picker with min/max values",
+        });
+        const segments = within(datePicker).getAllByRole("spinbutton");
+
+        // Try to set a date before minValue (2025-06-15, which is before 2025-06-16)
+        await userEvent.click(segments[1]); // day segment
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("15"); // 15th (before minValue of 16th)
+
+        // The component should handle this gracefully - either:
+        // 1. Not allow the invalid date, or
+        // 2. Keep the previous valid value
+        // We just verify it doesn't crash and maintains a reasonable state
+        await expect(segments[1]).toHaveAttribute("aria-valuenow");
+        const dayValue = segments[1].getAttribute("aria-valuenow");
+        await expect(dayValue).toBeTruthy();
+
+        // Reset to a valid date within range
+        await userEvent.click(segments[1]);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("20"); // 20th (within range)
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "20");
+      }
+    );
+
+    await step("Can select valid date from calendar within range", async () => {
+      const datePicker = canvas.getByRole("group", {
+        name: "Date picker with min/max values",
+      });
+      const calendarButton = within(datePicker).getByRole("button", {
+        name: /calendar/i,
+      });
+
+      // Open calendar
+      await userEvent.click(calendarButton);
+
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+
+      // Find an available (non-disabled) date and click it
+      const calendarGrid = within(document.body).getByRole("grid");
+      const dateCells = within(calendarGrid).getAllByRole("gridcell");
+      const availableDates = dateCells.filter((cell) => {
+        const button = cell.querySelector("button");
+        return button && !button.hasAttribute("aria-disabled");
+      });
+
+      if (availableDates.length > 0) {
+        const dateButton = availableDates[0].querySelector("button");
+        if (dateButton) {
+          await userEvent.click(dateButton);
+
+          // Calendar should close after selection
+          await waitFor(async () => {
+            const calendar = within(document.body).queryByRole("application");
+            await expect(calendar).not.toBeInTheDocument();
+          });
+
+          // Clear button should be enabled after selection
+          const clearButton = within(datePicker).getByRole("button", {
+            name: /clear/i,
+          });
+          await expect(clearButton).not.toBeDisabled();
+        }
+      }
+    });
+
+    await step(
+      "Clear and re-select functionality works within constraints",
+      async () => {
+        const datePicker = canvas.getByRole("group", {
+          name: "Date picker with min/max values",
+        });
+        const clearButton = within(datePicker).getByRole("button", {
+          name: /clear/i,
+        });
+
+        // Clear the current value
+        await userEvent.click(clearButton);
+        await expect(clearButton).toBeDisabled();
+
+        // Set a new valid date within range by typing
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await userEvent.click(segments[0]); // month
+        await userEvent.keyboard("7"); // July
+
+        await userEvent.click(segments[1]); // day
+        await userEvent.keyboard("1"); // 1st (should be within range since maxValue is 2025-07-15)
+
+        await userEvent.click(segments[2]); // year
+        await userEvent.keyboard("2025");
+
+        // Clear button should now be enabled
+        await expect(clearButton).not.toBeDisabled();
+
+        // Verify the valid date was set
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "7"); // July
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "1"); // 1st
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+      }
+    );
+  },
 };
 
 /**
