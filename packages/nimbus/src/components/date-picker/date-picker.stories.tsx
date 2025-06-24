@@ -778,6 +778,114 @@ export const PlaceholderValue: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Both DatePickers start empty (no selected value)", async () => {
+      const withPlaceholder = canvas.getByRole("group", {
+        name: "Date picker with placeholder",
+      });
+      const withoutPlaceholder = canvas.getByRole("group", {
+        name: "Date picker without placeholder",
+      });
+
+      // Clear buttons should be disabled since no value is selected initially
+      const clearButton1 = within(withPlaceholder).getByRole("button", {
+        name: /clear/i,
+      });
+      const clearButton2 = within(withoutPlaceholder).getByRole("button", {
+        name: /clear/i,
+      });
+
+      await expect(clearButton1).toBeDisabled();
+      await expect(clearButton2).toBeDisabled();
+    });
+
+    await step(
+      "DatePicker with placeholder value uses placeholder when navigating with keyboard",
+      async () => {
+        const withPlaceholder = canvas.getByRole("group", {
+          name: "Date picker with placeholder",
+        });
+        const segments = within(withPlaceholder).getAllByRole("spinbutton");
+
+        // Focus the first segment
+        await userEvent.click(segments[0]);
+
+        // Invisible
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        await userEvent.keyboard("{ArrowUp}");
+        // Now visible
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+
+        // Continue editing to create a complete date
+        await userEvent.tab(); // Move to day segment
+        // Invisible
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        await userEvent.keyboard("{ArrowDown}");
+        // Now visible
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+
+        // Move to year and modify
+        await userEvent.tab(); // Move to year segment
+        // Invisible
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        await userEvent.keyboard("{ArrowUp}");
+        // Now visible
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+
+        // Now that we have a complete date, clear button should be enabled
+        const clearButton = within(withPlaceholder).getByRole("button", {
+          name: /clear/i,
+        });
+        await expect(clearButton).not.toBeDisabled();
+      }
+    );
+
+    await step(
+      "Placeholder value doesn't affect typing input directly",
+      async () => {
+        // Clear the first DatePicker to reset it
+        const withPlaceholder = canvas.getByRole("group", {
+          name: "Date picker with placeholder",
+        });
+        const clearButton = within(withPlaceholder).getByRole("button", {
+          name: /clear/i,
+        });
+
+        // Only click clear if it's enabled
+        if (!clearButton.hasAttribute("disabled")) {
+          await userEvent.click(clearButton);
+        }
+
+        const segments = within(withPlaceholder).getAllByRole("spinbutton");
+
+        // Type directly into segments - this should work independently of placeholder value
+        await userEvent.click(segments[0]); // month
+        await userEvent.keyboard("12"); // December
+
+        await userEvent.click(segments[1]); // day
+        await userEvent.keyboard("25"); // 25th
+
+        await userEvent.click(segments[2]); // year
+        await userEvent.keyboard("2024"); // 2024
+
+        // Values should be exactly what was typed, not influenced by placeholder
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2024");
+
+        // Clear button should be enabled since we have a value
+        const clearButtonAfterTyping = within(withPlaceholder).getByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
+        await expect(clearButtonAfterTyping).not.toBeDisabled();
+      }
+    );
+  },
 };
 
 /**
