@@ -1351,7 +1351,7 @@ export const HideTimeZone: Story = {
       6,
       15,
       "America/New_York",
-      -4 * 60 * 60 * 1000,
+      -4 * (60 * 60 * 1000),
       14,
       30
     );
@@ -1375,6 +1375,98 @@ export const HideTimeZone: Story = {
           aria-label="With timezone hidden"
         />
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "DatePicker with timezone shown displays timezone information",
+      async () => {
+        const timezoneShownPicker = canvas.getByRole("group", {
+          name: "With timezone shown",
+        });
+
+        // Should display timezone information (EDT/EST/America)
+        const timezoneElement =
+          within(timezoneShownPicker).getByText(/EDT|EST|America/i);
+        await expect(timezoneElement).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "DatePicker with timezone hidden does not display timezone information",
+      async () => {
+        const timezoneHiddenPicker = canvas.getByRole("group", {
+          name: "With timezone hidden",
+        });
+
+        // Should NOT display timezone information
+        const timezoneElement =
+          within(timezoneHiddenPicker).queryByText(/EDT|EST|America/i);
+        await expect(timezoneElement).not.toBeInTheDocument();
+      }
+    );
+
+    await step("Both DatePickers have identical input segments", async () => {
+      const timezoneShownPicker = canvas.getByRole("group", {
+        name: "With timezone shown",
+      });
+      const timezoneHiddenPicker = canvas.getByRole("group", {
+        name: "With timezone hidden",
+      });
+
+      const shownSegments =
+        within(timezoneShownPicker).getAllByRole("spinbutton");
+      const hiddenSegments =
+        within(timezoneHiddenPicker).getAllByRole("spinbutton");
+
+      // Both should have same number of input segments (hiding timezone only affects display)
+      await expect(shownSegments).toHaveLength(hiddenSegments.length);
+
+      // Both should have the same date/time values
+      for (let i = 0; i < Math.min(shownSegments.length, 5); i++) {
+        // Compare first 5 segments (date/time, excluding potential timezone segment)
+        const shownValue = shownSegments[i].getAttribute("aria-valuenow");
+        const hiddenValue = hiddenSegments[i].getAttribute("aria-valuenow");
+        await expect(shownValue).toBe(hiddenValue);
+      }
+    });
+
+    await step(
+      "Both DatePickers maintain identical functionality",
+      async () => {
+        const timezoneHiddenPicker = canvas.getByRole("group", {
+          name: "With timezone hidden",
+        });
+        const clearButton = within(timezoneHiddenPicker).getByRole("button", {
+          name: /clear/i,
+        });
+        const calendarButton = within(timezoneHiddenPicker).getByRole(
+          "button",
+          { name: /calendar/i }
+        );
+
+        // Clear button should be enabled (has default value)
+        await expect(clearButton).not.toBeDisabled();
+
+        // Calendar button should be functional
+        await expect(calendarButton).not.toBeDisabled();
+
+        // Quick test of calendar opening (without full interaction test)
+        await userEvent.click(calendarButton);
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
     );
   },
 };
