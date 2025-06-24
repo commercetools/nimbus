@@ -1211,6 +1211,130 @@ export const HourCycle: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("12-hour format displays PM and has AM/PM segment", async () => {
+      const twelveHourPicker = canvas.getByRole("group", {
+        name: "12-hour format picker",
+      });
+      const segments = within(twelveHourPicker).getAllByRole("spinbutton");
+
+      // 12-hour format should have 6 segments: month, day, year, hour, minute, AM/PM
+      await expect(segments).toHaveLength(6);
+
+      // Hour should show as 2 (14:30 = 2:30 PM in 12-hour format)
+      await expect(segments[3]).toHaveAttribute("aria-valuetext", "2 PM");
+
+      // Should have AM/PM segment
+      const amPmSegment = segments[5];
+      await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM"); // PM = 1, AM = 0
+    });
+
+    await step(
+      "24-hour format displays 14 and has no AM/PM segment",
+      async () => {
+        const twentyFourHourPicker = canvas.getByRole("group", {
+          name: "24-hour format picker",
+        });
+        const segments =
+          within(twentyFourHourPicker).getAllByRole("spinbutton");
+
+        // 24-hour format should have 5 segments: month, day, year, hour, minute (no AM/PM)
+        await expect(segments).toHaveLength(5);
+
+        // Hour should show as 14 (14:30 in 24-hour format)
+        await expect(segments[3]).toHaveAttribute("aria-valuenow", "14");
+
+        // Minute should be the last segment (index 4)
+        await expect(segments[4]).toHaveAttribute("aria-valuenow", "30");
+      }
+    );
+
+    await step(
+      "12-hour format AM/PM segment can be toggled with keyboard",
+      async () => {
+        const twelveHourPicker = canvas.getByRole("group", {
+          name: "12-hour format picker",
+        });
+        const segments = within(twelveHourPicker).getAllByRole("spinbutton");
+        const amPmSegment = segments[5];
+
+        // Focus AM/PM segment
+        await userEvent.click(amPmSegment);
+
+        // Initially should be PM (value 1)
+        await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+
+        // Arrow up should toggle to AM
+        await userEvent.keyboard("{ArrowUp}");
+        await expect(amPmSegment).toHaveAttribute("aria-valuetext", "AM");
+
+        // Arrow down should toggle back to PM
+        await userEvent.keyboard("{ArrowDown}");
+        await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+      }
+    );
+
+    await step(
+      "12-hour format hour values are constrained to 1-12",
+      async () => {
+        const twelveHourPicker = canvas.getByRole("group", {
+          name: "12-hour format picker",
+        });
+        const segments = within(twelveHourPicker).getAllByRole("spinbutton");
+        const hourSegment = segments[3];
+
+        // Focus hour segment
+        await userEvent.click(hourSegment);
+
+        // Clear current value and type 12
+        await userEvent.keyboard("12");
+        await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+
+        // back to hour segment
+        await userEvent.tab({ shift: true });
+
+        // Arrow up from 12 should wrap to 1
+        await userEvent.keyboard("{ArrowUp}");
+        await expect(hourSegment).toHaveAttribute("aria-valuetext", "1 PM");
+
+        // Arrow down from 1 should wrap to 12
+        await userEvent.keyboard("{ArrowDown}");
+        await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+      }
+    );
+
+    await step(
+      "24-hour format hour values are constrained to 0-23",
+      async () => {
+        const twentyFourHourPicker = canvas.getByRole("group", {
+          name: "24-hour format picker",
+        });
+        const segments =
+          within(twentyFourHourPicker).getAllByRole("spinbutton");
+        const hourSegment = segments[3];
+
+        // Focus hour segment
+        await userEvent.click(hourSegment);
+
+        // Clear current value and type 23
+        await userEvent.keyboard("23");
+        await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+
+        // back to hour segment
+        await userEvent.tab({ shift: true });
+
+        // Arrow up from 23 should wrap to 0
+        await userEvent.keyboard("{ArrowUp}");
+        await expect(hourSegment).toHaveAttribute("aria-valuenow", "0");
+
+        // Arrow down from 0 should wrap to 23
+        await userEvent.keyboard("{ArrowDown}");
+        await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+      }
+    );
+  },
 };
 
 /**
