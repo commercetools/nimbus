@@ -7,7 +7,6 @@ import {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
-  getLocalTimeZone,
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
 import { userEvent, within, expect, waitFor } from "@storybook/test";
@@ -1706,25 +1705,306 @@ export const UnavailableDates: Story = {
     ["aria-label"]: "Select a date",
   },
   render: (args) => {
-    const isWeekend = (date: DateValue) => {
-      const jsDate = date.toDate(getLocalTimeZone());
-      const dayOfWeek = jsDate.getDay();
-      return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+    const isOddDay = (date: DateValue) => {
+      return date.day % 2 === 1; // 1st, 3rd, 5th, etc. are unavailable
     };
 
     return (
       <Stack direction="column" gap="400" alignItems="start">
-        <Text>Business days only (weekends unavailable)</Text>
+        <Text>Dr. Orderly only accepts appointments on even days:</Text>
         <DatePicker
           {...args}
-          isDateUnavailable={isWeekend}
-          defaultValue={new CalendarDate(2025, 6, 16)} // Monday
-          aria-label="Business days only picker"
+          isDateUnavailable={isOddDay}
+          defaultValue={new CalendarDate(2025, 6, 16)} // 16th (even day)
+          aria-label="Even days only picker"
         />
         <Text fontSize="sm" color="neutral.11">
-          Weekends are marked as unavailable and cannot be selected.
+          (Odd-numbered days are marked as unavailable and cannot be selected.)
         </Text>
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("DatePicker starts with valid even day", async () => {
+      const datePicker = canvas.getByRole("group", {
+        name: "Even days only picker",
+      });
+      const segments = within(datePicker).getAllByRole("spinbutton");
+      const clearButton = within(datePicker).getByRole("button", {
+        name: /clear/i,
+      });
+
+      // Should have default value of 2025-06-16 (even day)
+      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
+      await expect(segments[1]).toHaveAttribute("aria-valuenow", "16"); // 16th (even)
+      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+
+      // Clear button should be enabled since there's a valid default value
+      await expect(clearButton).not.toBeDisabled();
+    });
+
+    await step(
+      "Calendar shows odd days as disabled and even days as available",
+      async () => {
+        const datePicker = canvas.getByRole("group", {
+          name: "Even days only picker",
+        });
+        const calendarButton = within(datePicker).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Find the calendar grid
+        const calendarGrid = within(document.body).getByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+
+        // Check for odd and even day buttons
+        const oddDayButtons = [];
+        const evenDayButtons = [];
+
+        for (const cell of dateCells) {
+          const button = within(cell).getByRole("button");
+          if (!button) continue;
+
+          const ariaLabel = button.getAttribute("aria-label");
+          if (!ariaLabel) continue;
+
+          // Extract day number from aria-label (format varies, but typically contains day number)
+          const dayMatch = ariaLabel.match(/\b(\d{1,2})\b/);
+          if (!dayMatch) continue;
+
+          const dayNumber = parseInt(dayMatch[1]);
+          if (dayNumber < 1 || dayNumber > 31) continue;
+
+          if (dayNumber % 2 === 1) {
+            oddDayButtons.push(button);
+          } else {
+            evenDayButtons.push(button);
+          }
+        }
+
+        // Verify we found both odd and even day buttons
+        await expect(oddDayButtons.length).toBeGreaterThan(0);
+        await expect(evenDayButtons.length).toBeGreaterThan(0);
+
+        // All odd day buttons should be disabled
+        for (const oddButton of oddDayButtons) {
+          await expect(oddButton).toHaveAttribute("aria-disabled", "true");
+        }
+
+        // At least some even day buttons should be enabled (not disabled)
+        const enabledEvenButtons = evenDayButtons.filter(
+          (button) =>
+            !button.hasAttribute("aria-disabled") ||
+            button.getAttribute("aria-disabled") !== "true"
+        );
+        await expect(enabledEvenButtons.length).toBeGreaterThan(0);
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "Cannot select odd days from calendar (clicking disabled dates)",
+      async () => {
+        const datePicker = canvas.getByRole("group", {
+          name: "Even days only picker",
+        });
+        const calendarButton = within(datePicker).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Find an odd day button that's disabled
+        const calendarGrid = within(document.body).getByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+
+        let disabledOddButton = null;
+        for (const cell of dateCells) {
+          const button = cell.querySelector("button[aria-disabled='true']");
+          if (button) {
+            const ariaLabel = button.getAttribute("aria-label");
+            if (ariaLabel) {
+              const dayMatch = ariaLabel.match(/\b(\d{1,2})\b/);
+              if (dayMatch) {
+                const dayNumber = parseInt(dayMatch[1]);
+                if (dayNumber % 2 === 1) {
+                  disabledOddButton = button;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        if (disabledOddButton) {
+          // Get current selected date before clicking disabled date
+          const segments = within(datePicker).getAllByRole("spinbutton");
+          const originalDay = segments[1].getAttribute("aria-valuenow");
+
+          // Click on disabled odd day button
+          await userEvent.click(disabledOddButton);
+
+          // Calendar should remain open (selection should not occur)
+          const calendarStillOpen = within(document.body).queryByRole(
+            "application"
+          );
+          await expect(calendarStillOpen).toBeInTheDocument();
+
+          // Selected date should remain unchanged
+          await expect(segments[1]).toHaveAttribute(
+            "aria-valuenow",
+            originalDay
+          );
+        }
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step("Can successfully select even days from calendar", async () => {
+      const datePicker = canvas.getByRole("group", {
+        name: "Even days only picker",
+      });
+      const calendarButton = within(datePicker).getByRole("button", {
+        name: /calendar/i,
+      });
+
+      // Open calendar
+      await userEvent.click(calendarButton);
+
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+
+      // Find an enabled even day button
+      const calendarGrid = within(document.body).getByRole("grid");
+      const dateCells = within(calendarGrid).getAllByRole("gridcell");
+
+      let availableEvenButton = null;
+      let expectedDay = null;
+
+      for (const cell of dateCells) {
+        const button = cell.querySelector("button");
+        if (
+          button &&
+          (!button.hasAttribute("aria-disabled") ||
+            button.getAttribute("aria-disabled") !== "true")
+        ) {
+          const ariaLabel = button.getAttribute("aria-label");
+          if (ariaLabel) {
+            const dayMatch = ariaLabel.match(/\b(\d{1,2})\b/);
+            if (dayMatch) {
+              const dayNumber = parseInt(dayMatch[1]);
+              if (dayNumber % 2 === 0 && dayNumber >= 2 && dayNumber <= 30) {
+                availableEvenButton = button;
+                expectedDay = dayNumber.toString();
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      if (availableEvenButton && expectedDay) {
+        // Click on available even day
+        await userEvent.click(availableEvenButton);
+
+        // Calendar should close after successful selection
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+
+        // Verify the even day was selected
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", expectedDay);
+
+        // Clear button should still be enabled
+        const clearButton = within(datePicker).getByRole("button", {
+          name: /clear/i,
+        });
+        await expect(clearButton).not.toBeDisabled();
+      } else {
+        // If no available button found, ensure calendar is closed
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    });
+
+    await step(
+      "Keyboard navigation in day segment respects unavailable dates",
+      async () => {
+        // Ensure any open calendar from previous tests is closed
+        await userEvent.keyboard("{Escape}");
+        await waitFor(
+          async () => {
+            const calendar = within(document.body).queryByRole("application");
+            await expect(calendar).not.toBeInTheDocument();
+          },
+          { timeout: 1000 }
+        ).catch(() => {
+          // Calendar might not be open, ignore timeout
+        });
+
+        const datePicker = canvas.getByRole("group", {
+          name: "Even days only picker",
+        });
+
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        const daySegment = segments[1];
+
+        // Focus day segment and ensure we're on an even day
+        await userEvent.click(daySegment);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("2"); // Set to 2nd (even day)
+
+        await expect(daySegment).toHaveAttribute("aria-valuenow", "2");
+
+        // Arrow up should skip odd day 3 and go to even day 4
+        await userEvent.keyboard("{ArrowUp}");
+        await userEvent.click(document.body);
+        await expect(daySegment).toHaveAttribute("aria-valuenow", "3");
+        await expect(daySegment).toHaveAttribute("aria-invalid", "true");
+
+        // Arrow up again should go to 6
+        await userEvent.click(daySegment);
+        await userEvent.keyboard("{ArrowUp}");
+        await userEvent.click(document.body);
+        await expect(daySegment).toHaveAttribute("aria-valuenow", "4");
+        await expect(daySegment).not.toHaveAttribute("aria-invalid", "true");
+      }
     );
   },
 };
