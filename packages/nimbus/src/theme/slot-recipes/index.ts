@@ -8,6 +8,7 @@ import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
+import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -20,4 +21,5 @@ export const slotRecipes = {
   switch: switchSlotRecipe,
   "number-input": numberInputRecipe,
   radioInput: radioInputSlotRecipe,
+  combobox: comboBoxSlotRecipe,
 };

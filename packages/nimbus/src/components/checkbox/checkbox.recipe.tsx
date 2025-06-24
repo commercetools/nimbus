@@ -26,7 +26,7 @@ export const checkboxSlotRecipe = defineSlotRecipe({
     label: {
       flexShrink: 0,
       userSelect: "none",
-      color: "neutral.11",
+      color: "neutral.12",
 
       ["&[data-invalid='true']"]: {
         color: "critical.11",

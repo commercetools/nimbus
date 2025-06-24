@@ -12,7 +12,11 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: { display: "flex", flexDirection: "column", gapY: "50" },
-    tagList: { display: "flex", flexWrap: "wrap", gap: "100" },
+    tagList: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "100",
+    },
     tag: {
       colorPalette: "primary",
       display: "flex",
@@ -42,6 +46,7 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
         alignItems: "center",
         justifyContent: "space-between",
         gapX: "100",
+        whiteSpace: "initial",
       },
     },
   },
