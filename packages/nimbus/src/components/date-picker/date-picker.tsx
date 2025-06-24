@@ -29,7 +29,7 @@ import { DatePickerCustomContext } from "./components/date-picker.custom-context
  * Users can either type a date directly or select from the calendar.
  */
 export const DatePicker = (props: DatePickerProps) => {
-  const { size = "md", variant } = props;
+  const { size = "md", variant, granularity = "day" } = props;
   const recipe = useSlotRecipe({ recipe: datePickerSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
@@ -37,9 +37,17 @@ export const DatePicker = (props: DatePickerProps) => {
   // the size of the buttons overlaying the input
   const overlayButtonSize = size === "md" ? "xs" : "2xs";
 
+  // Determine if popover should close on select based on granularity
+  // If time selection is needed, keep popover open
+  const shouldCloseOnSelect =
+    props.shouldCloseOnSelect || granularity === "day";
+
   return (
     <DatePickerRootSlot {...recipeProps} {...styleProps} asChild>
-      <ReactAriaDatePicker {...otherProps}>
+      <ReactAriaDatePicker
+        {...otherProps}
+        shouldCloseOnSelect={shouldCloseOnSelect}
+      >
         <DatePickerCustomContext>
           <DatePickerGroupSlot asChild>
             <Group>
@@ -48,7 +56,6 @@ export const DatePicker = (props: DatePickerProps) => {
                 <IconButton
                   tone="primary"
                   variant="ghost"
-                  aria-label="Clear input"
                   size={overlayButtonSize}
                   slot="clear"
                 >
