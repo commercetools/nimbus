@@ -4,6 +4,12 @@ export const globalCss = defineGlobalStyles({
   "*": {
     fontFeatureSettings:
       '"liga", "calt", "case", "ss01", "ss07", "ss08", "tnum"',
+    /**
+     * OVERRIDES FOR CSS VARS PROVIDED BY CHAKRA's `defaultBaseConfig` THEME
+     * OBJECT THAT CANNOT BE RENAMED / OVERRIDDEN VIA THEME CONFIGURATION
+     * `defaultBaseConfig` is defined here:
+     * https://github.com/chakra-ui/chakra-ui/blob/daa05b1c7962990075ae5065a17d897d80e276f2/packages/react/src/preset-base.ts#L220
+     */
     "--ring-inset": "var(--chakra-empty,/*!*/ /*!*/)",
     "--ring-offset-width": "0px",
     "--ring-offset-color": "#fff",
@@ -35,6 +41,10 @@ export const globalCss = defineGlobalStyles({
     "--global-font-mono": "fonts.mono",
     "--global-font-body": "fonts.body",
     "--global-color-border": "colors.border",
+    /**
+     * PREFIX ANY GLOBAL CSS VARIABLE THAT IS DEFINED BELOW THIS COMMENT WITH `--nimbus`
+     * TO DENOTE THAT IT IS SPECIFIC TO THE NIMBUS THEME AND NOT OVERRIDING CHAKRA
+     */
   },
   /** 'liga' may replace 2 characters with a single one,
    * which causes differences in formatting when a monospace font is used.*/
