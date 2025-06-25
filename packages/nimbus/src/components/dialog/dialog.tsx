@@ -45,6 +45,9 @@ interface DialogComponents {
   ActionTrigger: typeof ChakraDialog.ActionTrigger;
 }
 
+/**
+ * @experimental This component is experimental and may change or be removed in future versions.
+ */
 // Export the Dialog composite with proper typing
 export const Dialog: DialogComponents = {
   Root: ChakraDialog.Root,

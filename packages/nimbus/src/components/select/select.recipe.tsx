@@ -39,17 +39,14 @@ export const selectSlotRecipe = defineSlotRecipe({
       cursor: "button",
       display: "inline-flex",
       focusRing: "outside",
-      alignItems: "flex-start",
+      alignItems: "center",
+      justifyContent: "flex-start",
       borderRadius: "200",
       color: "neutral.12",
       width: "100%",
       userSelect: "none",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
 
-      "& span": {
-        display: "inline-block",
-        my: "auto",
-      },
       '& [slot="description"]': {
         display: "none",
       },
@@ -120,7 +117,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       textTransform: "uppercase",
       p: "200",
       borderBottom: "solid-25",
-      borderColor: "neutral.6",
+      borderColor: "neutral.3",
       mx: "-200",
       mt: "200",
       mb: "300",
@@ -136,11 +133,12 @@ export const selectSlotRecipe = defineSlotRecipe({
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-
-      '&[aria-selected="true"], &[data-focused="true"]': {
-        bg: "primary.4",
+      '&[aria-selected="true"]': {
+        bg: "primary.3",
       },
-
+      '&[data-focused="true"]': {
+        bg: "primary.2",
+      },
       '& [slot="label"]': {
         display: "block",
       },

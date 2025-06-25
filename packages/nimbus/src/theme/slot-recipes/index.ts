@@ -11,7 +11,20 @@ import { numberInputRecipe } from "@/components/number-input/number-input.recipe
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
+import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
 
+/**
+ * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
+ *
+ * you MUST be able to access the key with dot notation: ✅ slotRecipes.exampleComponent ✅
+ * NOT with bracket notation: ❌ slotRecipes["example-component"] ❌
+ *
+ * Failure to do so will make it so that `pnpm build-theme-typings` will fail silently
+ * due to some truly awful interplay between `@chakra-ui/cli` and `prettier`
+ *
+ * Silent failure results in there being no generated types for slot recipes, and causes all kinds of
+ * false typescript errors that are really hard to debug.
+ */
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
   list: listSlotRecipe,
@@ -24,6 +37,7 @@ export const slotRecipes = {
   calendar: calendarSlotRecipe,
   dateInput: dateInputSlotRecipe,
   datePicker: datePickerSlotRecipe,
-  "number-input": numberInputRecipe,
+  numberInput: numberInputRecipe,
   radioInput: radioInputSlotRecipe,
+  combobox: comboBoxSlotRecipe,
 };

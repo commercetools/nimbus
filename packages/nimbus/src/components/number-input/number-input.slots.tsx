@@ -36,7 +36,7 @@ export type NumberInputDecrementButtonSlotProps = HTMLChakraProps<
   AriaButtonProps;
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  key: "number-input",
+  key: "numberInput",
 });
 
 /**

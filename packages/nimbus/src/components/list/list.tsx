@@ -4,6 +4,9 @@ const ListRoot = ChakraList.Root;
 const ListItem = ChakraList.Item;
 const ListIndicator = ChakraList.Indicator;
 
+/**
+ * @experimental This component is experimental and may change or be removed in future versions.
+ */
 export const List = {
   Root: ListRoot,
   Item: ListItem,
