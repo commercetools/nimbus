@@ -14,6 +14,4 @@ export interface ButtonProps extends FunctionalButtonProps {
   // in react-aria slots "An explicit null value indicates that the local props completely override all props received from a parent."
   slot?: string | null | undefined;
   ref?: React.Ref<HTMLButtonElement>;
-  /** A slot name for the component. Slots allow the component to receive props from a parent component. */
-  slot?: string | null;
 }
