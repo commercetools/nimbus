@@ -2225,6 +2225,230 @@ export const InFormFieldContext: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All FormField contexts render with DatePickers", async () => {
+      // Find all FormField labels to identify the different contexts
+      const eventDateLabel = canvas.getByText("Event Date");
+      const deadlineDateLabel = canvas.getByText("Deadline Date");
+      const meetingTimeLabel = canvas.getByText("Meeting Time");
+
+      await expect(eventDateLabel).toBeInTheDocument();
+      await expect(deadlineDateLabel).toBeInTheDocument();
+      await expect(meetingTimeLabel).toBeInTheDocument();
+
+      // Verify corresponding DatePicker groups exist
+      const datePickers = canvas.getAllByRole("group");
+      await expect(datePickers).toHaveLength(3);
+    });
+
+    await step(
+      "Required FormField integrates properly with DatePicker",
+      async () => {
+        // Locate the DatePicker by its accessible name derived from the label
+        const datePicker = canvas.getByRole("group", { name: /event date/i });
+        await expect(datePicker).toBeInTheDocument();
+
+        // Ensure segments are present and tabbable
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await expect(segments.length).toBeGreaterThan(0);
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("tabindex", "0");
+        }
+
+        // Verify description text is present
+        const description = canvas.getByText("Select the date for your event");
+        await expect(description).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Invalid FormField integrates properly with DatePicker",
+      async () => {
+        // Locate the invalid DatePicker by accessible name
+        const datePicker = canvas.getByRole("group", {
+          name: /deadline date/i,
+        });
+        await expect(datePicker).toBeInTheDocument();
+
+        // Verify error message is present and accessible
+        const errorMessage = canvas.getByText(
+          "Please select a valid date in the future"
+        );
+        await expect(errorMessage).toBeInTheDocument();
+
+        // Check that invalid state does not break segment accessibility
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await expect(segments.length).toBeGreaterThan(0);
+
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("tabindex", "0");
+        }
+
+        // Verify description text is present
+        const description = canvas.getByText(
+          "Choose a deadline for the project"
+        );
+        await expect(description).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "DatePicker with granularity works in FormField with InfoBox",
+      async () => {
+        // Locate the Meeting Time DatePicker by accessible name
+        const datePicker = canvas.getByRole("group", { name: /meeting time/i });
+        await expect(datePicker).toBeInTheDocument();
+
+        // Verify granularity="minute" results in more segments (including time)
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        // Should have at least 5 segments: month, day, year, hour, minute
+        await expect(segments.length).toBeGreaterThanOrEqual(5);
+
+        // Test basic time input functionality
+        const hourSegment = segments[3];
+        const minuteSegment = segments[4];
+
+        await userEvent.click(hourSegment);
+        await userEvent.keyboard("2");
+
+        await userEvent.click(minuteSegment);
+        await userEvent.keyboard("30");
+
+        await expect(hourSegment).toHaveAttribute("aria-valuenow");
+        await expect(minuteSegment).toHaveAttribute("aria-valuenow");
+      }
+    );
+
+    await step(
+      "DatePicker width='full' fills FormField container",
+      async () => {
+        const datePickers = canvas.getAllByRole("group");
+
+        for (const datePicker of datePickers) {
+          // Check that DatePicker is rendered properly
+          await expect(datePicker).toBeInTheDocument();
+
+          // Verify DatePicker is wide enough by checking it's not tiny
+          const rect = datePicker.getBoundingClientRect();
+          await expect(rect.width).toBeGreaterThan(200); // Reasonable minimum width
+        }
+      }
+    );
+
+    await step(
+      "FormField accessibility relationships are established",
+      async () => {
+        // Test each FormField context for proper ARIA relationships
+        const formFieldContexts = [
+          {
+            label: "Event Date",
+            description: "Select the date for your event",
+          },
+          {
+            label: "Deadline Date",
+            description: "Choose a deadline for the project",
+          },
+          {
+            label: "Meeting Time",
+            description: "Select the exact date and time for the meeting",
+          },
+        ];
+
+        for (const context of formFieldContexts) {
+          // Verify label and description are present
+          await expect(canvas.getByText(context.label)).toBeInTheDocument();
+          await expect(
+            canvas.getByText(context.description)
+          ).toBeInTheDocument();
+
+          const datePicker = canvas.getByRole("group", {
+            name: new RegExp(context.label, "i"),
+          });
+          await expect(datePicker).toBeInTheDocument();
+
+          const segments = within(datePicker).getAllByRole("spinbutton");
+          for (const segment of segments) {
+            const ariaLabel = segment.getAttribute("aria-label");
+            await expect(ariaLabel).toBeTruthy();
+            await expect(segment).toHaveAttribute("tabindex", "0");
+          }
+        }
+      }
+    );
+
+    await step(
+      "Calendar functionality works within FormField contexts",
+      async () => {
+        // Test calendar functionality in the first FormField context
+        const datePickers = canvas.getAllByRole("group");
+        const firstDatePicker = datePickers[0];
+
+        const calendarButton = within(firstDatePicker).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        await expect(calendarButton).toBeInTheDocument();
+        await expect(calendarButton).not.toBeDisabled();
+
+        // Quick test of calendar opening
+        await userEvent.click(calendarButton);
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step("Clear functionality works in FormField contexts", async () => {
+      // Test clear functionality in each FormField context
+      const datePickers = canvas.getAllByRole("group");
+
+      for (let i = 0; i < datePickers.length; i++) {
+        const datePicker = datePickers[i];
+        const clearButton = within(datePicker).getByRole("button", {
+          name: /clear/i,
+        });
+
+        // Initially should be disabled (no value)
+        await expect(clearButton).toBeDisabled();
+
+        // Set a value by typing in first segment
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await userEvent.click(segments[0]);
+        await userEvent.keyboard("6");
+
+        if (segments[1]) {
+          await userEvent.click(segments[1]);
+          await userEvent.keyboard("15");
+        }
+
+        if (segments[2]) {
+          await userEvent.click(segments[2]);
+          await userEvent.keyboard("2025");
+        }
+
+        // Clear button should now be enabled
+        await expect(clearButton).not.toBeDisabled();
+
+        // Clear the value
+        await userEvent.click(clearButton);
+
+        // Should be disabled again
+        await expect(clearButton).toBeDisabled();
+      }
+    });
+  },
 };
 
 /**
