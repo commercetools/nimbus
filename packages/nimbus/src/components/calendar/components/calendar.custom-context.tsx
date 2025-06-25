@@ -76,7 +76,11 @@ export const CalendarCustomContext = ({
           {
             ...buttonContext,
             slots: {
-              ...buttonContext.slots,
+              ...(buttonContext &&
+              typeof buttonContext === "object" &&
+              "slots" in buttonContext
+                ? buttonContext.slots
+                : {}),
               ...buttonSlots,
             },
           },
@@ -86,7 +90,11 @@ export const CalendarCustomContext = ({
           {
             ...textContext,
             slots: {
-              ...textContext.slots,
+              ...(textContext &&
+              typeof textContext === "object" &&
+              "slots" in textContext
+                ? textContext.slots
+                : {}),
               ...textSlots,
             },
           },
