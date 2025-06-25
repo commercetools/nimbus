@@ -1,5 +1,8 @@
-import { useContext } from "react";
-import { CalendarContext, Heading } from "react-aria-components";
+import {
+  CalendarContext,
+  Heading,
+  useSlottedContext,
+} from "react-aria-components";
 import {
   Box,
   Flex,
@@ -15,10 +18,10 @@ import {
 import { CalendarHeaderSlot } from "../calendar.slots";
 
 export const CalendarHeader = () => {
-  const calendarProps = useContext(CalendarContext)!;
+  const calendarProps = useSlottedContext(CalendarContext);
 
   // Needed to decide wether to show a single month or a range
-  const visibleDurationMonths = calendarProps.visibleDuration?.months || 1;
+  const visibleDurationMonths = calendarProps?.visibleDuration?.months || 1;
   const showRangeLabel = visibleDurationMonths > 1;
 
   return (
