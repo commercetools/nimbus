@@ -21,7 +21,7 @@ export const Calendar = (props: CalendarProps<DateValue>) => {
       <RaCalendar {...otherProps}>
         <CalendarCustomContext>
           <CalendarHeader />
-          <CalendarGrids key={JSON.stringify(props.visibleDuration)} />
+          <CalendarGrids />
         </CalendarCustomContext>
       </RaCalendar>
     </CalendarRootSlot>

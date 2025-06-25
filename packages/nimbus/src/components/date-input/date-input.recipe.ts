@@ -19,7 +19,7 @@ export const dateInputSlotRecipe = defineSlotRecipe({
       borderRadius: "200",
       bg: "transparent",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-      width: "100%",
+      width: "full",
       alignItems: "center",
 
       "&[data-focus-within='true']": {
@@ -44,7 +44,7 @@ export const dateInputSlotRecipe = defineSlotRecipe({
       borderRadius: "50",
 
       "&:empty": {
-        border: "1px solid",
+        border: "solid-25",
       },
 
       "&[data-focused='true']": {
@@ -59,7 +59,7 @@ export const dateInputSlotRecipe = defineSlotRecipe({
 
       /**
        * The first and last segment contains a hidden character for screen readers
-       * that indicates number reading direction. Since this character is
+       * that indicates the reading direction. Since this character is
        * inside a segment element, it creates unwanted padding. This CSS
        * removes the extra padding and aligns the text to match a regular
        * TextInput's text position.
