@@ -27,7 +27,7 @@ export const DatePickerCustomContext = ({
    */
   const buttonSlots = {
     /** toggles the calendar popover */
-    calendarToggle: buttonContext,
+    calendarToggle: buttonContext as Record<string, unknown>,
     /** clears the input value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
@@ -72,7 +72,11 @@ export const DatePickerCustomContext = ({
           {
             ...textContext,
             slots: {
-              ...textContext.slots,
+              ...(textContext &&
+              typeof textContext === "object" &&
+              "slots" in textContext
+                ? textContext.slots
+                : {}),
               ...textSlots,
             },
           },
