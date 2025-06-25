@@ -5,7 +5,7 @@ import {
 import { TextContext, useContextProps } from "react-aria-components";
 
 export interface TextProps extends ChakraTextProps {
-  ref?: React.Ref<HTMLParagraphElement>;
+  ref?: React.Ref<HTMLElement>;
 }
 
 /**
@@ -14,8 +14,17 @@ export interface TextProps extends ChakraTextProps {
  * Use this component to display text.
  */
 export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {
-  const [contextProps, ref] = useContextProps(props, forwardedRef, TextContext);
-  return <ChakraText ref={ref} {...contextProps} />;
+  const [contextProps, ref] = useContextProps(
+    props,
+    forwardedRef ?? null,
+    TextContext
+  );
+  return (
+    <ChakraText
+      ref={ref as React.Ref<HTMLParagraphElement>}
+      {...contextProps}
+    />
+  );
 };
 
 Text.displayName = "Text";
