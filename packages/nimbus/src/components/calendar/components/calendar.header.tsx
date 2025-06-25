@@ -25,11 +25,10 @@ export const CalendarHeader = () => {
     <CalendarHeaderSlot>
       <Flex>
         <Stack direction="row" alignItems="center">
-          {/** a11y issues without RA's heading */}
+          {/** solely for screen readers, if not present, a11y issues are raised */}
           <VisuallyHidden>
             <Heading />
           </VisuallyHidden>
-          {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
             slot={showRangeLabel ? "previous" : "previous-month"}
             size="xs"
@@ -47,7 +46,6 @@ export const CalendarHeader = () => {
             aria-hidden="true"
             slot={showRangeLabel ? "monthRange" : "month"}
           />
-          {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
             slot={showRangeLabel ? "next" : "next-month"}
             size="xs"
@@ -59,7 +57,6 @@ export const CalendarHeader = () => {
         </Stack>
         <Box flexGrow="1" />
         <Stack direction="row" alignItems="center">
-          {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton
             slot="previous-year"
             size="xs"
@@ -77,13 +74,10 @@ export const CalendarHeader = () => {
             aria-hidden="true"
             slot="year"
           />
-          {/* @ts-expect-error react aria is adding the aria-label prop */}
           <IconButton slot="next-year" size="xs" variant="ghost" tone="primary">
             <KeyboardArrowRight />
           </IconButton>
         </Stack>
-
-        {/* <Heading /> */}
       </Flex>
     </CalendarHeaderSlot>
   );

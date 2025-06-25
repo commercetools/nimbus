@@ -49,7 +49,7 @@ export const DatePickerTimeInput = () => {
   return (
     <Flex
       ref={timeInputRef}
-      borderTop="1px solid"
+      borderTop="solid-25"
       borderColor="neutral.3"
       py="300"
       px="400"

@@ -23,7 +23,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
       height: "1200",
       p: "200",
       mb: "300",
-      borderBottom: "1px solid",
+      borderBottom: "solid-25",
       borderColor: "neutral.3",
     },
     // the container contianing the month(s) grid(s)
@@ -32,7 +32,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
       flexWrap: "wrap",
       gap: "800",
       mx: "200",
-      maxWidth: "100%",
+      maxWidth: "full",
     },
     // Month title above each grid
     monthTitle: {
@@ -67,14 +67,13 @@ export const calendarSlotRecipe = defineSlotRecipe({
     bodyCell: {
       cursor: "pointer",
       p: "200",
-      minW: "6ch",
+      minW: "1400",
       borderRadius: "200",
       fontSize: "350",
       lineHeight: "500",
       fontWeight: "400",
       transitionProperty: "all",
       transitionDuration: "fastest",
-
       textAlign: "center",
       color: "neutral.12",
       display: "flex",

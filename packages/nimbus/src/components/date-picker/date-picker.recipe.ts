@@ -21,19 +21,16 @@ export const datePickerSlotRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
-      //outline: "1px solid deeppink",
       display: "inline-block",
       overflow: "hidden",
     },
     group: {
-      //outline: "1px solid seagreen",
       position: "relative",
     },
     trigger: {
       position: "absolute",
       right: "400",
       top: "100",
-      //outline: "1px solid red",
     },
     popover: {
       bg: "neutral.1",
@@ -52,8 +49,6 @@ export const datePickerSlotRecipe = defineSlotRecipe({
       },
     },
   },
-
-  // Available variants for customizing the component's appearance
   variants: {
     // Size variants from smallest to largest
     size: {
@@ -80,12 +75,9 @@ export const datePickerSlotRecipe = defineSlotRecipe({
       },
     },
     variant: {
+      // those need to exist, as the date-input has and needs those variants
       solid: {},
-      ghost: {
-        trigger: {
-          bg: "transparent",
-        },
-      },
+      ghost: {},
     },
   },
   defaultVariants: {

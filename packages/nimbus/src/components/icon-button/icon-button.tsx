@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { ButtonContext, useContextProps } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import type { IconButtonProps } from "./icon-button.types";
@@ -18,11 +17,8 @@ export const IconButton = (props: IconButtonProps) => {
   const localRef = useRef<HTMLButtonElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  // button context must be passed down as props to button component, or it is lost
-  const [buttonContextProps] = useContextProps(restProps, ref, ButtonContext);
-
   return (
-    <Button px={0} py={0} {...buttonContextProps} ref={ref}>
+    <Button px={0} py={0} {...restProps} ref={ref}>
       {children}
     </Button>
   );
