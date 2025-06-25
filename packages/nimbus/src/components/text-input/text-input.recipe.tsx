@@ -26,6 +26,7 @@ export const textInputRecipe = defineRecipe({
     },
     "&[data-invalid='true']": {
       "--border-color": "colors.critical.7",
+      "--border-width": "sizes.50",
       color: "critical.11",
     },
   },

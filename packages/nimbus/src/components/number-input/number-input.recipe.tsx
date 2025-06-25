@@ -131,6 +131,10 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         input: {
+          "&[data-invalid='true']": {
+            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+            "--border-width": "sizes.50",
+          },
           boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
           backgroundColor: "neutral.1",
           _hover: {
@@ -138,6 +142,10 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         incrementButton: {
+          "&[data-invalid='true']": {
+            borderTop: "2px solid var(--border-color)",
+            borderRight: "2px solid var(--border-color)",
+          },
           borderTop: "var(--border-width) solid var(--border-color)",
           borderRight: "var(--border-width) solid var(--border-color)",
           borderLeft: "var(--border-width) solid var(--border-color)",
@@ -148,6 +156,10 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         decrementButton: {
+          "&[data-invalid='true']": {
+            borderBottom: "2px solid var(--border-color)",
+            borderRight: "2px solid var(--border-color)",
+          },
           borderBottom: "var(--border-width) solid var(--border-color)",
           borderRight: "var(--border-width) solid var(--border-color)",
           borderLeft: "var(--border-width) solid var(--border-color)",
@@ -166,16 +178,28 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         input: {
+          "&[data-invalid='true']": {
+            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+            "--border-width": "sizes.50",
+          },
           _hover: {
             backgroundColor: "primary.2",
           },
         },
         incrementButton: {
+          "&[data-invalid='true']": {
+            borderTop: "2px solid var(--border-color)",
+            borderRight: "2px solid var(--border-color)",
+          },
           _hover: {
             backgroundColor: "primaryAlpha.3",
           },
         },
         decrementButton: {
+          "&[data-invalid='true']": {
+            borderBottom: "2px solid var(--border-color)",
+            borderRight: "2px solid var(--border-color)",
+          },
           _hover: {
             backgroundColor: "primaryAlpha.3",
           },
