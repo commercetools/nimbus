@@ -5,6 +5,7 @@ import {
   // defaultSystem as defaultSystemChakra,
 } from "@chakra-ui/react";
 import { ColorModeProvider, type ColorModeProviderProps } from "./color-mode";
+import { I18nProvider } from "react-aria";
 import { system } from "../../theme";
 import { useEffect, useState } from "react";
 
@@ -40,11 +41,15 @@ export function useColorScheme() {
   return colorScheme;
 }
 
-export function NimbusProvider({ children, ...props }: ColorModeProviderProps) {
+export function NimbusProvider({
+  children,
+  locale,
+  ...props
+}: ColorModeProviderProps & { locale?: string }) {
   return (
     <ChakraProvider value={system}>
       <ColorModeProvider enableSystem={false} {...props}>
-        <>{children}</>
+        <I18nProvider locale={locale}>{children}</I18nProvider>
       </ColorModeProvider>
     </ChakraProvider>
   );
