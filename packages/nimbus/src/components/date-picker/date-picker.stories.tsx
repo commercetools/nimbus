@@ -2034,27 +2034,141 @@ export const CustomWidth: Story = {
 };
 
 /**
- * German Locale
- * Demonstrates internationalization support
+ * Multiple Locales
+ * Demonstrates the DatePicker adapting to different locales
  */
-export const GermanLocale: Story = {
+export const MultipleLocales: Story = {
   args: {
-    ["aria-label"]: "Datum auswählen",
+    ["aria-label"]: "Select a date",
   },
   render: (args) => {
     return (
-      <I18nProvider locale="de-DE">
-        <Stack direction="column" gap="400" alignItems="start">
-          <Text>German locale with different granularities</Text>
-          <DatePicker {...args} granularity="day" />
-          <DatePicker
-            {...args}
-            granularity="minute"
-            defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
-          />
+      <Stack direction="column" gap="600" alignItems="start">
+        <Stack direction="column" gap="200" alignItems="start">
+          <Text fontWeight="700">English (US) - 12-hour format</Text>
+          <I18nProvider locale="en-US">
+            <DatePicker
+              {...args}
+              granularity="minute"
+              defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}
+              aria-label="US English picker"
+            />
+          </I18nProvider>
         </Stack>
-      </I18nProvider>
+
+        <Stack direction="column" gap="200" alignItems="start">
+          <Text fontWeight="700">German (DE) - 24-hour format</Text>
+          <I18nProvider locale="de-DE">
+            <DatePicker
+              {...args}
+              granularity="minute"
+              defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}
+              aria-label="German picker"
+            />
+          </I18nProvider>
+        </Stack>
+
+        <Stack direction="column" gap="200" alignItems="start">
+          <Text fontWeight="700">Spanish (ES) - Different date format</Text>
+          <I18nProvider locale="es-ES">
+            <DatePicker
+              {...args}
+              granularity="minute"
+              defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}
+              aria-label="Spanish picker"
+            />
+          </I18nProvider>
+        </Stack>
+      </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All locale variants render correctly", async () => {
+      const usEnglishPicker = canvas.getByRole("group", {
+        name: "US English picker",
+      });
+      const germanPicker = canvas.getByRole("group", {
+        name: "German picker",
+      });
+      const spanishPicker = canvas.getByRole("group", {
+        name: "Spanish picker",
+      });
+
+      await expect(usEnglishPicker).toBeInTheDocument();
+      await expect(germanPicker).toBeInTheDocument();
+      await expect(spanishPicker).toBeInTheDocument();
+    });
+
+    await step("US English uses 12-hour format with AM/PM", async () => {
+      const usEnglishPicker = canvas.getByRole("group", {
+        name: "US English picker",
+      });
+      const segments = within(usEnglishPicker).getAllByRole("spinbutton");
+
+      // US English should have 6 segments: month, day, year, hour, minute, AM/PM
+      await expect(segments).toHaveLength(6);
+
+      // Hour should be in 12-hour format (14:30 = 2:30 PM)
+      const hourSegment = segments[3];
+      await expect(hourSegment).toHaveAttribute("aria-valuetext", "2 PM");
+
+      // Should have AM/PM segment
+      const amPmSegment = segments[5];
+      await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+    });
+
+    await step("German uses 24-hour format without AM/PM", async () => {
+      const germanPicker = canvas.getByRole("group", {
+        name: "German picker",
+      });
+      const segments = within(germanPicker).getAllByRole("spinbutton");
+
+      // German should have 5 segments: day, month, year, hour, minute (no AM/PM)
+      await expect(segments).toHaveLength(5);
+
+      // Hour should be in 24-hour format
+      const hourSegment = segments[3];
+      await expect(hourSegment).toHaveAttribute("aria-valuenow", "14");
+    });
+
+    await step("Spanish locale adapts date structure", async () => {
+      const spanishPicker = canvas.getByRole("group", {
+        name: "Spanish picker",
+      });
+      const segments = within(spanishPicker).getAllByRole("spinbutton");
+
+      // Spanish should have segments (exact count may vary by implementation)
+      await expect(segments.length).toBeGreaterThanOrEqual(5);
+
+      // All segments should be accessible
+      for (const segment of segments) {
+        await expect(segment).toHaveAttribute("tabindex", "0");
+        const ariaLabel = segment.getAttribute("aria-label");
+        await expect(ariaLabel).toBeTruthy();
+      }
+    });
+
+    await step("Locale-specific differences are observable", async () => {
+      const usEnglishPicker = canvas.getByRole("group", {
+        name: "US English picker",
+      });
+      const germanPicker = canvas.getByRole("group", {
+        name: "German picker",
+      });
+
+      const usSegments = within(usEnglishPicker).getAllByRole("spinbutton");
+      const germanSegments = within(germanPicker).getAllByRole("spinbutton");
+
+      // US and German should have different segment counts due to AM/PM difference
+      await expect(usSegments.length).not.toBe(germanSegments.length);
+
+      // Both should display the same date/time but formatted differently
+      // US: 6/15/2025, 2:30 PM vs German: 15.6.2025, 14:30
+      await expect(usSegments[0]).toHaveAttribute("aria-valuenow", "6"); // US month first
+      await expect(germanSegments[0]).toHaveAttribute("aria-valuenow", "15"); // German day first
+    });
   },
 };
 
