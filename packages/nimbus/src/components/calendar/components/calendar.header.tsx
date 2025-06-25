@@ -72,7 +72,7 @@ export const CalendarHeader = () => {
             textStyle="sm"
             fontWeight="500"
             color="neutral.11"
-            width="5ch"
+            width="1400"
             textAlign="center"
             aria-hidden="true"
             slot="year"
