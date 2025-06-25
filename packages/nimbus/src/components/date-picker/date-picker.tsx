@@ -53,6 +53,7 @@ export const DatePicker = (props: DatePickerProps) => {
             <Group>
               <DateInput size={size} variant={variant} width="full" />
               <DatePickerTriggerSlot>
+                {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
                   tone="primary"
                   variant="ghost"
@@ -61,6 +62,7 @@ export const DatePicker = (props: DatePickerProps) => {
                 >
                   <Close />
                 </IconButton>
+                {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
                   tone="primary"
                   variant="ghost"
