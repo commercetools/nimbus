@@ -6,6 +6,7 @@ import {
   DatePickerStateContext,
   TimeFieldContext,
 } from "react-aria-components";
+import type { TimeValue } from "react-aria";
 
 export const DatePickerCustomContext = ({
   children,
@@ -48,8 +49,12 @@ export const DatePickerCustomContext = ({
   const timeInputSlots = {
     timeInput: {
       value: timeValue,
-      onChange: setTimeValue,
-      granularity,
+      onChange: (value: TimeValue | null) => {
+        if (value !== null) {
+          setTimeValue(value);
+        }
+      },
+      granularity: granularity === "day" ? undefined : granularity,
     },
   };
 
