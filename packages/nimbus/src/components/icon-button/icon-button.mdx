@@ -520,14 +520,14 @@ Make sure to place tooltips in areas where they will be seen easily.
 const App = () => {
   return (
     <Stack width="185px">
-      <TooltipTrigger delay={0} closeDelay={0} isOpen>
+      <Tooltip.Root delay={0} closeDelay={0} isOpen>
         <IconButton variant="ghost" tone="primary" alignSelf="end">
           <Icons.ViewColumn />
         </IconButton>
-        <Tooltip placement="top" offset={-37} crossOffset={-100}>
+        <Tooltip.Content placement="top" offset={-37} crossOffset={-100}>
           Table settings
-        </Tooltip>
-      </TooltipTrigger>
+        </Tooltip.Content>
+      </Tooltip.Root>
       <Select.Root
         aria-label="Select a category"
         selectedKey=""
@@ -560,14 +560,14 @@ const App = () => {
 const App = () => {
   return (
     <Stack width="144px">
-      <TooltipTrigger delay={0} closeDelay={0} isOpen>
+      <Tooltip.Root delay={0} closeDelay={0} isOpen>
         <IconButton variant="ghost" tone="primary" alignSelf="end">
           <Icons.ViewColumn />
         </IconButton>
-        <Tooltip placement="top" offset={-70} crossOffset={-40}>
+        <Tooltip.Content placement="top" offset={-70} crossOffset={-40}>
           Table settings
-        </Tooltip>
-      </TooltipTrigger>
+        </Tooltip.Content>
+      </Tooltip.Root>
       <Select.Root
         aria-label="Select a category"
         selectedKey=""
@@ -585,14 +585,14 @@ const App = () => {
         </Select.Options>
       </Select.Root>
       <Box>
-        <TooltipTrigger delay={0} closeDelay={0} isOpen>
+        <Tooltip.Root delay={0} closeDelay={0} isOpen>
           <IconButton variant="ghost" tone="primary">
             <Icons.ViewColumn />
           </IconButton>
-          <Tooltip placement="bottom" crossOffset={50} offset={-25}>
+          <Tooltip.Content placement="bottom" crossOffset={50} offset={-25}>
             Table settings
-          </Tooltip>
-        </TooltipTrigger>
+          </Tooltip.Content>
+        </Tooltip.Root>
       </Box>
     </Stack>
   )

@@ -13,8 +13,8 @@ import type { TooltipTriggerComponentProps } from "react-aria-components";
  */
 export function TooltipRoot({
   // Match delays to current ui-kit tooltip
-  delay = "300",
-  closeDelay = "200",
+  delay = 300,
+  closeDelay = 200,
   ...props
 }: TooltipTriggerComponentProps) {
   // Note: In React 19, ref forwarding is automatic for function components

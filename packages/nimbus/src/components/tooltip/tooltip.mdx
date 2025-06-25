@@ -43,8 +43,8 @@ The Tooltip component is structured as a compound component with two main parts:
 The root component that wraps around a trigger element and manages the tooltip state. It handles opening and closing the tooltip when the user hovers over or focuses the trigger.
 
 **Props:**
-- `delay?: number` - Delay in milliseconds before showing the tooltip (default: **1500**)
-- `closeDelay?: number` - Delay in milliseconds before hiding the tooltip (default: 500)
+- `delay?: number` - Delay in milliseconds before showing the tooltip (default: 300)
+- `closeDelay?: number` - Delay in milliseconds before hiding the tooltip (default: 200)
 - `isOpen?: boolean` - Controls the open state of the tooltip
 - `defaultOpen?: boolean` - Sets the initial open state of the tooltip
 - `onOpenChange?: (isOpen: boolean) => void` - Callback when the tooltip open state changes
@@ -157,19 +157,19 @@ Control where the tooltip appears relative to its trigger:
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
-    <Tooltip.Root delay={0}>
+    <Tooltip.Root>
       <Button>Top placement</Button>
       <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
     </Tooltip.Root>
-    <Tooltip.Root delay={0}>
+    <Tooltip.Root>
       <Button>Bottom placement</Button>
       <Tooltip.Content placement="bottom">Tooltip on bottom</Tooltip.Content>
     </Tooltip.Root>
-    <Tooltip.Root delay={0}>
+    <Tooltip.Root>
       <Button>Left placement</Button>
       <Tooltip.Content placement="left">Tooltip on left</Tooltip.Content>
     </Tooltip.Root>
-    <Tooltip.Root delay={0}>
+    <Tooltip.Root>
       <Button>Right placement</Button>
       <Tooltip.Content placement="right">Tooltip on right</Tooltip.Content>
     </Tooltip.Root>
