@@ -39,17 +39,14 @@ export const selectSlotRecipe = defineSlotRecipe({
       cursor: "button",
       display: "inline-flex",
       focusRing: "outside",
-      alignItems: "flex-start",
+      alignItems: "center",
+      justifyContent: "flex-start",
       borderRadius: "200",
       color: "neutral.12",
       width: "100%",
       userSelect: "none",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
 
-      "& span": {
-        display: "inline-block",
-        my: "auto",
-      },
       '& [slot="description"]': {
         display: "none",
       },

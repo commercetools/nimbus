@@ -6,6 +6,8 @@ import {
   TagGroup,
   Button,
   Icon,
+  Badge,
+  Text,
 } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
@@ -15,6 +17,7 @@ import { PropsTable } from "@/components/document-renderer/components/props-tabl
 import { documentationAtom } from "@/atoms/documentation";
 import { DocLink } from "@/components/navigation/doc-link";
 import { CheckCircle, HighlightOff } from "@commercetools/nimbus-icons";
+import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 
 interface NimbusExportsListProps {
   filter?: (item: NimbusExportItem) => boolean;
@@ -90,6 +93,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
               <Table.Row>
                 <Table.ColumnHeader>Name</Table.ColumnHeader>
                 <Table.ColumnHeader>Type</Table.ColumnHeader>
+                <Table.ColumnHeader>Lifecycle</Table.ColumnHeader>
                 <Table.ColumnHeader>Docs</Table.ColumnHeader>
                 {type === "component" && (
                   <Table.ColumnHeader>Actions</Table.ColumnHeader>
@@ -97,62 +101,86 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {items.map((item) => (
-                <React.Fragment key={item.name}>
-                  <Table.Row>
-                    <Table.Cell>
-                      <code>{item.name}</code>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <TagGroup.Root>
-                        <TagGroup.TagList>
-                          <TagGroup.Tag colorPalette={getTagColor(item.type)}>
-                            {item.type}
-                          </TagGroup.Tag>
-                        </TagGroup.TagList>
-                      </TagGroup.Root>
-                    </Table.Cell>
-                    <Table.Cell>
-                      {findDocForExport(item.name) ? (
-                        <DocLink
-                          docRoute={findDocForExport(item.name)?.meta.route}
-                        >
+              {items.map((item) => {
+                const doc = findDocForExport(item.name);
+                const lifecycleState = doc?.meta.lifecycleState;
+                const lifecycleInfo = lifecycleState
+                  ? lifecycleStateDescriptions[lifecycleState]
+                  : null;
+
+                return (
+                  <React.Fragment key={item.name}>
+                    <Table.Row>
+                      <Table.Cell>
+                        {doc ? (
+                          <DocLink docRoute={doc.meta.route}>
+                            <code>{item.name}</code>
+                          </DocLink>
+                        ) : (
+                          <code>{item.name}</code>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <TagGroup.Root>
+                          <TagGroup.TagList>
+                            <TagGroup.Tag colorPalette={getTagColor(item.type)}>
+                              {item.type}
+                            </TagGroup.Tag>
+                          </TagGroup.TagList>
+                        </TagGroup.Root>
+                      </Table.Cell>
+                      <Table.Cell>
+                        {lifecycleInfo ? (
+                          <Badge
+                            size="xs"
+                            colorPalette={lifecycleInfo.colorPalette}
+                          >
+                            {lifecycleInfo.label}
+                          </Badge>
+                        ) : (
+                          <Text fontSize="xs" color="neutral.10">
+                            -
+                          </Text>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell>
+                        {doc ? (
                           <Icon size="2xs" color="positive.9">
                             <CheckCircle />
                           </Icon>
-                        </DocLink>
-                      ) : (
-                        <Icon size="2xs" color="critical.9">
-                          <HighlightOff />
-                        </Icon>
-                      )}
-                    </Table.Cell>
-                    {type === "component" && (
-                      <Table.Cell>
-                        <Button
-                          size="xs"
-                          variant="ghost"
-                          onPress={() => toggleExpanded(item.name)}
-                        >
-                          {expandedComponents.includes(item.name)
-                            ? "Hide props"
-                            : "Show props"}
-                        </Button>
+                        ) : (
+                          <Icon size="2xs" color="critical.9">
+                            <HighlightOff />
+                          </Icon>
+                        )}
                       </Table.Cell>
-                    )}
-                  </Table.Row>
-                  {type === "component" &&
-                    expandedComponents.includes(item.name) && (
-                      <Table.Row>
-                        <Table.Cell colSpan={4}>
-                          <Box py="m" px="s">
-                            <PropsTable id={item.name} />
-                          </Box>
+                      {type === "component" && (
+                        <Table.Cell>
+                          <Button
+                            size="xs"
+                            variant="ghost"
+                            onPress={() => toggleExpanded(item.name)}
+                          >
+                            {expandedComponents.includes(item.name)
+                              ? "Hide props"
+                              : "Show props"}
+                          </Button>
                         </Table.Cell>
-                      </Table.Row>
-                    )}
-                </React.Fragment>
-              ))}
+                      )}
+                    </Table.Row>
+                    {type === "component" &&
+                      expandedComponents.includes(item.name) && (
+                        <Table.Row>
+                          <Table.Cell colSpan={5}>
+                            <Box py="m" px="s">
+                              <PropsTable id={item.name} />
+                            </Box>
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+                  </React.Fragment>
+                );
+              })}
             </Table.Body>
           </Table.Root>
         </Box>
