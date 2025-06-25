@@ -31,7 +31,16 @@ export const Button = (props: ButtonProps) => {
 
   return (
     <ButtonRoot
-      {...mergeProps(contextProps, buttonProps, { as, asChild })}
+      {...mergeProps(contextProps, buttonProps, {
+        as,
+        asChild,
+        /**
+         * In case `slot` was null, the `useContextProps` hook already
+         * processed it at this point, so it's safe to not attach it
+         * to the DOM element
+         */
+        slot: contextProps.slot || undefined,
+      })}
       ref={ref}
     >
       {children}
