@@ -29,9 +29,10 @@ Tooltips offer concise, non-obtrusive guidance and supplemental information, enh
 
 Deep dive on details and access design library.
 
-[TECH RELATED LINK](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
-[TECH RELATED LINK](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+[React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
+[ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
 [Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
+
 
 ## API
 
@@ -42,7 +43,7 @@ The Tooltip component is structured as a compound component with two main parts:
 The root component that wraps around a trigger element and manages the tooltip state. It handles opening and closing the tooltip when the user hovers over or focuses the trigger.
 
 **Props:**
-- `delay?: number` - Delay in milliseconds before showing the tooltip (default: 1500)
+- `delay?: number` - Delay in milliseconds before showing the tooltip (default: **1500**)
 - `closeDelay?: number` - Delay in milliseconds before hiding the tooltip (default: 500)
 - `isOpen?: boolean` - Controls the open state of the tooltip
 - `defaultOpen?: boolean` - Sets the initial open state of the tooltip
@@ -156,19 +157,19 @@ Control where the tooltip appears relative to its trigger:
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
-    <Tooltip.Root>
+    <Tooltip.Root delay={0}>
       <Button>Top placement</Button>
       <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
     </Tooltip.Root>
-    <Tooltip.Root>
+    <Tooltip.Root delay={0}>
       <Button>Bottom placement</Button>
       <Tooltip.Content placement="bottom">Tooltip on bottom</Tooltip.Content>
     </Tooltip.Root>
-    <Tooltip.Root>
+    <Tooltip.Root delay={0}>
       <Button>Left placement</Button>
       <Tooltip.Content placement="left">Tooltip on left</Tooltip.Content>
     </Tooltip.Root>
-    <Tooltip.Root>
+    <Tooltip.Root delay={0}>
       <Button>Right placement</Button>
       <Tooltip.Content placement="right">Tooltip on right</Tooltip.Content>
     </Tooltip.Root>

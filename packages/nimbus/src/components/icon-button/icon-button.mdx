@@ -163,20 +163,20 @@ const App = () => {
 
 #### Tooltip
 
-For accessibility compliance (and good user experience for all) all icon buttons
-must have a tooltip. Go to tooltips for more formation about the component.
+For accessibility compliance (and good user experience for all) icon buttons
+that do not have a label must have a tooltip. Go to tooltips for more information about the component.
 
 ```jsx-live
 const App = () => {
   return (
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <IconButton variant="ghost" tone="primary">
         <Icons.Edit/>
       </IconButton>
-      <Tooltip>
+      <Tooltip.Content>
         Edit
-      </Tooltip>
-    </TooltipTrigger>
+      </Tooltip.Content>
+    </Tooltip.Root>
   );
 };
 ```

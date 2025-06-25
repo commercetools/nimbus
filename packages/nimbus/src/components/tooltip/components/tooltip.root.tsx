@@ -11,10 +11,15 @@ import type { TooltipTriggerComponentProps } from "react-aria-components";
  *
  * This acts as the context provider for the compound Tooltip component.
  */
-export function TooltipRoot(props: TooltipTriggerComponentProps) {
+export function TooltipRoot({
+  // Match delays to current ui-kit tooltip
+  delay = "300",
+  closeDelay = "200",
+  ...props
+}: TooltipTriggerComponentProps) {
   // Note: In React 19, ref forwarding is automatic for function components
   // The ref should be placed on the trigger element directly when needed
-  return <TooltipTrigger {...props} />;
+  return <TooltipTrigger delay={delay} closeDelay={closeDelay} {...props} />;
 }
 
 TooltipRoot.displayName = "Tooltip.Root";
