@@ -22,9 +22,30 @@ export const SingleSelectInput = (props: SingleSelectInputProps) => {
   const [inputProps, inputRef] = useContextProps({}, ref || null, InputContext);
   // This component exists because it has to be a child of the root to get the combobox state
   const state = useContext(ComboBoxStateContext);
-  // this method checks the inputValue against the textValue of every item in the collection, and if it doesnt match any items, sets a custom value
+
   const handleInputKeyDown = useCallback(
+    // This method clears the input if the user has focused on a pre-populated combobox and starts typing
     (e: KeyboardEvent) => {
+      if (
+        state?.selectedKey &&
+        inputRef.current &&
+        // cursor is at the beginning of input...
+        inputRef.current.selectionStart === 0 &&
+        inputRef.current.selectionEnd === 0 &&
+        // ...and it has a value, which can only happen on focus
+        inputRef.current.value.length > 0 &&
+        e.key.length === 1 && // Single character key
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Set the input value to the typed key (which clears the previous value)
+        state.setInputValue(e.key);
+        return;
+      }
+      // This method checks the inputValue against the textValue of every item in the collection, and if it doesnt match any items, sets a custom value
       if (
         e.key === "Enter" &&
         inputValue &&

@@ -103,15 +103,15 @@ export const MultiSelectRoot = <T extends object>({
       // Set state value
       setOpen(open);
       // When popover goes from open to closed, prevent immediate focus from opening it again (eg when esc key hit, or click outside popover)
-      // TODO: this is definitely a hack, at some point focus management
-      // should be better handled so that there is a set of conditions that
-      // we can use to reliably toggle on focus
+      // Use requestAnimationFrame + setTimeout to ensure focus events have completed
       if (!open) {
         preventNextFocusOpen.current = true;
-        // Reset the flag after a short delay
-        setTimeout(() => {
-          preventNextFocusOpen.current = false;
-        }, 100);
+        // Use RAF to wait for the current frame to complete, then add a small buffer
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            preventNextFocusOpen.current = false;
+          }, 50);
+        });
       }
     },
     [isDisabled, isReadOnly, onOpenChangeProp, isOpen]
