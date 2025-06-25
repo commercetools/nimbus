@@ -46,14 +46,10 @@ export function NimbusProvider({
   locale,
   ...props
 }: ColorModeProviderProps & { locale?: string }) {
-  // The provider can accept an optional locale prop, ex from App-Kit
-  // then we fallback first to the navigator.language, then to "en-US"
-  const resolvedLocale = locale ?? navigator.language ?? "en-US";
-
   return (
     <ChakraProvider value={system}>
       <ColorModeProvider enableSystem={false} {...props}>
-        <I18nProvider locale={resolvedLocale}>{children}</I18nProvider>
+        <I18nProvider locale={locale}>{children}</I18nProvider>
       </ColorModeProvider>
     </ChakraProvider>
   );
