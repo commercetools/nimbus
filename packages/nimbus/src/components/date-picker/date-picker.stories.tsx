@@ -2463,47 +2463,165 @@ export const PopoverBehavior: Story = {
     const [isOpen1, setIsOpen1] = useState(false);
     const [isOpen2, setIsOpen2] = useState(false);
 
+    const w = 320;
+
     return (
       <Stack direction="column" gap="600" alignItems="start">
+        {/* Controlled popover state */}
         <Stack direction="column" gap="400" alignItems="start">
           <Text fontWeight="700">Controlled popover state</Text>
-          <DatePicker
-            {...args}
-            isOpen={isOpen1}
-            onOpenChange={setIsOpen1}
-            aria-label="Controlled popover picker"
-          />
-          <Stack direction="row" gap="200">
-            <Button onPress={() => setIsOpen1(true)}>Open Calendar</Button>
-            <Button onPress={() => setIsOpen1(false)}>Close Calendar</Button>
+          <Stack direction="row" gap="600" alignItems="start">
+            {/* Controls column */}
+            <Stack
+              direction="column"
+              gap="200"
+              flex="1"
+              minWidth={w}
+              align="flex-start"
+            >
+              <Button onPress={() => setIsOpen1(true)}>Open Calendar</Button>
+            </Stack>
+            {/* DatePicker column */}
+            <Stack direction="column" gap="200" flex="1">
+              <DatePicker
+                {...args}
+                isOpen={isOpen1}
+                onOpenChange={setIsOpen1}
+                aria-label="Controlled popover picker"
+              />
+            </Stack>
           </Stack>
         </Stack>
 
+        {/* Default open popover */}
         <Stack direction="column" gap="400" alignItems="start">
           <Text fontWeight="700">Default open popover</Text>
-          <DatePicker {...args} defaultOpen aria-label="Default open picker" />
-          <Text fontSize="sm" color="neutral.11">
-            Calendar opens by default
-          </Text>
+          <Stack direction="row" gap="600" alignItems="start">
+            {/* Info column */}
+            <Stack direction="column" gap="200" flex="1" minWidth={w}>
+              <Text fontSize="sm" color="neutral.11">
+                Calendar opens by default
+              </Text>
+            </Stack>
+            {/* DatePicker column */}
+            <Stack direction="column" gap="200" flex="1">
+              <DatePicker
+                {...args}
+                defaultOpen
+                aria-label="Default open picker"
+              />
+            </Stack>
+          </Stack>
         </Stack>
 
+        {/* Custom close behavior */}
         <Stack direction="column" gap="400" alignItems="start">
           <Text fontWeight="700">Custom close behavior</Text>
-          <DatePicker
-            {...args}
-            isOpen={isOpen2}
-            onOpenChange={setIsOpen2}
-            shouldCloseOnSelect={false}
-            aria-label="Custom close behavior picker"
-          />
-          <Text fontSize="sm" color="neutral.11">
-            Calendar stays open after selecting a date
-          </Text>
-          <Button onPress={() => setIsOpen2(false)}>
-            Manually Close Calendar
-          </Button>
+          <Stack direction="row" gap="600" alignItems="start">
+            {/* Controls column */}
+            <Stack
+              direction="column"
+              gap="200"
+              flex="1"
+              minWidth={w}
+              align="start"
+            >
+              <Text fontSize="sm" color="neutral.11">
+                Calendar stays open after selecting a date
+              </Text>
+            </Stack>
+            {/* DatePicker column */}
+            <Stack direction="column" gap="200" flex="1">
+              <DatePicker
+                {...args}
+                isOpen={isOpen2}
+                onOpenChange={setIsOpen2}
+                shouldCloseOnSelect={false}
+                aria-label="Custom close behavior picker"
+              />
+            </Stack>
+          </Stack>
         </Stack>
       </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Default open picker has calendar already open", async () => {
+      // Check that the calendar is already open for the default open picker
+      const calendar = within(document.body).queryByRole("application");
+      await expect(calendar).toBeInTheDocument();
+
+      // Verify the calendar grid is present
+      const calendarGrid = within(document.body).getByRole("grid");
+      await expect(calendarGrid).toBeInTheDocument();
+
+      // Verify we can see date cells in the calendar
+      const dateCells = within(calendarGrid).getAllByRole("gridcell");
+      await expect(dateCells.length).toBeGreaterThan(0);
+    });
+
+    await step("Controlled picker starts with calendar closed", async () => {
+      // The calendar should already be open from the default open picker,
+      // so we need to close it first to test the controlled picker
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).not.toBeInTheDocument();
+      });
+
+      // Now verify the controlled picker can open the calendar
+      const openButton = canvas.getByRole("button", { name: "Open Calendar" });
+      await userEvent.click(openButton);
+
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+
+      // Close it again for the next test
+      await userEvent.keyboard("{Escape}");
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).not.toBeInTheDocument();
+      });
+    });
+
+    await step(
+      "Custom close behavior picker stays open after date selection",
+      async () => {
+        const customClosePicker = canvas.getByRole("group", {
+          name: "Custom close behavior picker",
+        });
+        const calendarButton = within(customClosePicker).getByRole("button", {
+          name: /calendar/i,
+        });
+
+        // Open the calendar
+        await userEvent.click(calendarButton);
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Select the first available date
+        const calendarGrid = within(document.body).getByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+        const firstAvailableDate = dateCells.find((cell) => {
+          const button = cell.querySelector("button");
+          return button && !button.hasAttribute("aria-disabled");
+        });
+
+        const dateButton = firstAvailableDate?.querySelector("button");
+        await userEvent.click(dateButton!);
+
+        // Calendar should remain open due to shouldCloseOnSelect={false}
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      }
     );
   },
 };
