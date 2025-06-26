@@ -70,6 +70,13 @@ export const globalCss = defineGlobalStyles({
    * values set in @reset layer by preflight option:
    * https://github.com/chakra-ui/chakra-ui/blob/main/packages/react/src/styled-system/preflight.ts
    */
+  body: {
+    /** stops reset layer from triggering react-aria bug in overlay/tooltip positioning:
+     * https://github.com/adobe/react-spectrum/issues/7654
+     * https://github.com/adobe/react-spectrum/issues/7960
+     */
+    position: "initial",
+  },
   "img, svg, video, canvas, audio, iframe, embed, object": {
     display: "initial",
     verticalAlign: "initial",

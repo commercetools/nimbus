@@ -426,18 +426,18 @@ const App = () => (
         General information
         <Accordion.HeaderRightContent>
         <Stack direction="horizontal" alignItems="center">
-            <TooltipTrigger>
+            <Tooltip.Root>
               <Button tone="primary" size="xs" variant="outline">
                 Cancel
               </Button>
-              <Tooltip>Cancel information changes</Tooltip>
-            </TooltipTrigger>
-            <TooltipTrigger>
+              <Tooltip.Content>Cancel information changes</Tooltip.Content>
+            </Tooltip.Root>
+            <Tooltip.Root>
               <Button tone="primary" size="xs" variant="solid">
                 Save
               </Button>
-              <Tooltip>Save general information changes</Tooltip>
-            </TooltipTrigger>
+              <Tooltip.Content>Save general information changes</Tooltip.Content>
+            </Tooltip.Root>
           </Stack>
         </Accordion.HeaderRightContent>
       </Accordion.Header>

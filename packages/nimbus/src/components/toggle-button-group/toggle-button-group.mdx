@@ -126,24 +126,24 @@ Messages potential problems or situations that require user attention to prevent
 ```jsx-live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Just icons example" selectedKeys={["icon-copy"]} tone="primary">
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="icon-edit" aria-label="Edit view">
         <Icons.Edit />
       </ToggleButtonGroup.Button>
-      <Tooltip>Edit</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>Edit</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="icon-copy" aria-label="Copy view">
         <Icons.ContentCopy />
       </ToggleButtonGroup.Button>
-      <Tooltip>Copy</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>Copy</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="icon-delete" aria-label="Delete view">
         <Icons.Delete />
       </ToggleButtonGroup.Button>
-      <Tooltip>Delete</Tooltip>
-    </TooltipTrigger>
+      <Tooltip.Content>Delete</Tooltip.Content>
+    </Tooltip.Root>
   </ToggleButtonGroup.Root>
 );
 ```
@@ -194,24 +194,24 @@ To allow users to switch between different display views (e.g., grid view, list 
 ```jsx-live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Select view" selectedKeys={["view-list"]} tone="primary">
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="view-grid" aria-label="Grid View">
         <Icons.Apps />
       </ToggleButtonGroup.Button>
-      <Tooltip>Grid View</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>Grid View</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="view-list" aria-label="List View">
         <Icons.List />
       </ToggleButtonGroup.Button>
-      <Tooltip>List View</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>List View</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="view-map" aria-label="Map View">
         <Icons.ViewWeek />
       </ToggleButtonGroup.Button>
-      <Tooltip>Week View</Tooltip>
-    </TooltipTrigger>
+      <Tooltip.Content>Week View</Tooltip.Content>
+    </Tooltip.Root>
   </ToggleButtonGroup.Root>
 );
 ```
@@ -299,30 +299,30 @@ Accessibility ensures that digital content and functionality are usable by every
 ```jsx-live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} tone="primary">
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="li-processing">
         <Icons.RotateRight /> Processing
       </ToggleButtonGroup.Button>
-      <Tooltip>Processing Status</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>Processing Status</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="li-shipped">
         <Icons.LocalShipping /> Shipped
       </ToggleButtonGroup.Button>
-      <Tooltip>Shipped Status</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>Shipped Status</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="li-cancelled">
         <Icons.Dangerous /> Cancelled
       </ToggleButtonGroup.Button>
-      <Tooltip>Cancelled Status</Tooltip>
-    </TooltipTrigger>
-    <TooltipTrigger delay={0} closeDelay={0}>
+      <Tooltip.Content>Cancelled Status</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="li-refunded">
         <Icons.CurrencyExchange /> Refunded
       </ToggleButtonGroup.Button>
-      <Tooltip>Refunded Status</Tooltip>
-    </TooltipTrigger>
+      <Tooltip.Content>Refunded Status</Tooltip.Content>
+    </Tooltip.Root>
   </ToggleButtonGroup.Root>
 );
 ```
