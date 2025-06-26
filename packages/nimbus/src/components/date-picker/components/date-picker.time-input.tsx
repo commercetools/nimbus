@@ -19,28 +19,20 @@ export const DatePickerTimeInput = () => {
   useEffect(() => {
     // Check if date changed
     if (dateValue && previousDateRef.current?.compare(dateValue) !== 0) {
-      // Check if this is likely a fresh date selection (time components are at default)
-      // For CalendarDateTime or ZonedDateTime, check if time is at midnight
-      const hasTimeComponent = "hour" in dateValue && "minute" in dateValue;
-      const isTimeAtDefault =
-        hasTimeComponent && dateValue.hour === 0 && dateValue.minute === 0;
+      // Small delay to ensure the DOM is ready
+      setTimeout(() => {
+        // Find the first focusable segment within the time input container
+        const container = timeInputRef.current;
+        if (container) {
+          const firstSegment = container.querySelector(
+            '[role="spinbutton"]'
+          ) as HTMLElement;
 
-      if (!hasTimeComponent || isTimeAtDefault) {
-        // Small delay to ensure the DOM is ready
-        setTimeout(() => {
-          // Find the first focusable segment within the time input container
-          const container = timeInputRef.current;
-          if (container) {
-            const firstSegment = container.querySelector(
-              '[role="spinbutton"]'
-            ) as HTMLElement;
-
-            if (firstSegment) {
-              firstSegment.focus();
-            }
+          if (firstSegment) {
+            firstSegment.focus();
           }
-        }, 50);
-      }
+        }
+      }, 50);
     }
 
     previousDateRef.current = dateValue;
