@@ -2,7 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useState, useCallback, useMemo, type FormEvent } from "react";
 import { type Key, type Selection } from "react-aria-components";
 import { useAsyncList } from "react-stately";
-import { userEvent, fireEvent, within, expect, fn } from "@storybook/test";
+import {
+  userEvent,
+  fireEvent,
+  within,
+  expect,
+  fn,
+  waitFor,
+} from "@storybook/test";
 import {
   FormField,
   Stack,
@@ -181,7 +188,7 @@ const verifyOptionsSelected = async (
 const closePopover = async () => {
   await userEvent.keyboard("{escape}");
   // Wait for preventNextFocusOpen ref to be set to false via timeout
-  await new Promise((resolve) => setTimeout(resolve, 101));
+  await new Promise((resolve) => setTimeout(resolve, 51));
 };
 
 const mockFn = fn();
@@ -265,17 +272,95 @@ export const Base: Story = {
         await userEvent.keyboard("{ArrowDown}");
         await verifyOptionsSelected(["Koala"], true);
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
+      }
+    );
+    await step(
+      "single select places cursor at beginning of input on focus when there is a previously selected value displayed",
+      async () => {
+        // Verify that cursor is at end of input while focused
+        await expect(singleSelect).toHaveFocus();
+        await expect(singleSelect.selectionStart).toBe(5);
+        await expect(singleSelect.selectionEnd).toBe(5);
+        // Click the document body to blur single select
+        await userEvent.click(document.body);
+        await expect(singleSelect).not.toHaveFocus();
+        // Focus single select
+        singleSelect.focus();
+        // Wait for render frame to complete
+        await waitFor(async () => {
+          // Check that cursor is at position 0 (start of input)
+          await expect(singleSelect.selectionStart).toBe(0);
+          await expect(singleSelect.selectionEnd).toBe(0);
+        });
+        // Check that input's value is still "Koala"
+        await expect(singleSelect.value).toBe("Koala");
+      }
+    );
+    await step(
+      "single select after focus replaces previous input value with user input, and filters options based input",
+      async () => {
+        // Check that input's value is still "Koala"
+        await expect(singleSelect.value).toBe("Koala");
+        // Type 'u'
+        await userEvent.keyboard("u");
+        // Input value is 'u'
+        await expect(singleSelect.value).toBe("u");
+        // There should be 2 options shown, 'playtypus' and 'skunk'
+        await expect(getListboxOptions().length).toBe(2);
+        await expect(findOptionByText("Platypus")).toBeInTheDocument();
+        await expect(findOptionByText("Skunk")).toBeInTheDocument();
+      }
+    );
+    await step(
+      "single select replaces input value with previously selected value if user blurs input without selecting new value",
+      async () => {
+        // Check that input's value is still "u"
+        await expect(singleSelect.value).toBe("u");
+        // Blur the input
+        await userEvent.tab();
+        // Input value should be selectedKey value: 'Koala'
+        await expect(singleSelect.value).toBe("Koala");
+      }
+    );
+    await step(
+      "single select replaces previously selected value if user selects new value after focus and typing",
+      async () => {
+        singleSelect.focus();
+        // Wait for render frame to complete
+        await waitFor(async () => {
+          // Check that cursor is at position 0 (start of input)
+          await expect(singleSelect.selectionStart).toBe(0);
+          await expect(singleSelect.selectionEnd).toBe(0);
+        });
+        // Check that input's value is still "Koala"
+        await expect(singleSelect.value).toBe("Koala");
+        // Type 'u'
+        await userEvent.keyboard("u");
+        // Input value is 'u'
+        await expect(singleSelect.value).toBe("u");
+        // Select Platypus
+        await selectOptionsByName(["Platypus"]);
+        // Blur input
+        await userEvent.tab();
+        // Input value should be selectedKey value: 'Platypus'
+        await expect(singleSelect.value).toBe("Platypus");
       }
     );
     await step(
       "single select clear button clears the combobox value",
       async () => {
+        // Input value should be selectedKey value: 'Platypus'
+        await expect(singleSelect.value).toBe("Platypus");
         const clearButton = await canvas.findByRole("button", {
           name: /clear selection/i,
         });
+        // Click clear button
         await userEvent.click(clearButton);
+        // Input value should be cleared
         await expect(singleSelect.value).toBe("");
+        // Clear button should not be in the DOM
+        await expect(clearButton).not.toBeInTheDocument();
       }
     );
     await step(
@@ -317,7 +402,7 @@ export const Base: Story = {
           singleSelect.getAttribute("aria-activedescendant")
         ).toEqual(options[options.length - 1].getAttribute("id"));
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step("multi select opens popover on first focus", async () => {
@@ -874,7 +959,7 @@ export const ControlledState: Story = {
         await userEvent.keyboard("{ArrowDown}");
         await verifyOptionsSelected(["Kangaroo"], true);
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -915,7 +1000,7 @@ export const ControlledState: Story = {
         await userEvent.keyboard("{ArrowDown}");
         await verifyOptionsSelected(["Koala", "Platypus"], true);
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -1081,7 +1166,7 @@ export const OptionGroups: Story = {
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
         await expect(groupLabels[1]).toHaveTextContent("Vegetables");
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -1109,7 +1194,7 @@ export const OptionGroups: Story = {
         const groupLabels = document.querySelectorAll('[role="presentation"]');
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step("Single Select options can be selected", async () => {
@@ -1125,7 +1210,7 @@ export const OptionGroups: Story = {
       await userEvent.keyboard("{ArrowDown}");
       await verifyOptionsSelected(["Apple"], true);
       // Close popover for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step(
       "Multi Select option groups are rendered with proper roles",
@@ -1142,7 +1227,7 @@ export const OptionGroups: Story = {
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
         await expect(groupLabels[1]).toHaveTextContent("Vegetables");
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -1174,7 +1259,7 @@ export const OptionGroups: Story = {
         // Clear input and close popover for next test
         const filterInput = getFilterInput();
         await userEvent.clear(filterInput);
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -1203,7 +1288,7 @@ export const OptionGroups: Story = {
           false
         );
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -1232,7 +1317,7 @@ export const OptionGroups: Story = {
           false
         );
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step(
@@ -1264,7 +1349,7 @@ export const OptionGroups: Story = {
           false
         );
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
   },
@@ -1380,7 +1465,7 @@ export const ComplexOptions: Story = {
         starterPlanOption?.querySelector('[slot="description"]')
       ).toHaveTextContent("Great for individuals and small projects");
       // Close popover for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step("single select displays options in popover", async () => {
       // Focus the input
@@ -1390,7 +1475,7 @@ export const ComplexOptions: Story = {
       // Check that there are the expected number of options
       await expect(getListboxOptions().length).toBe(4);
       // Close popover for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step(
       "single select filters options and allows for selection when user enters text in input",
@@ -1420,7 +1505,7 @@ export const ComplexOptions: Story = {
           false
         );
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step("multi select displays options in popover", async () => {
@@ -1431,7 +1516,7 @@ export const ComplexOptions: Story = {
       // Check that there are the expected number of options
       await expect(getListboxOptions().length).toBe(4);
       // Close popover for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step(
       "multi select filters options and allows for selection when user enters text in input",
@@ -1465,7 +1550,7 @@ export const ComplexOptions: Story = {
         // Premium plan option should not be selected
         await verifyOptionsSelected(["Premium Plan"], false);
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
     await step("multi select tags can be removed", async () => {
@@ -1484,7 +1569,7 @@ export const ComplexOptions: Story = {
       // Premium plan and Enterprise plan should not be selected
       await verifyOptionsSelected(["Premium Plan", "Enterprise Plan"], false);
       // Close popover for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
   },
 };
@@ -1591,7 +1676,7 @@ export const AsyncLoading: Story = {
         await userEvent.keyboard("{ArrowDown}");
         await verifyOptionsSelected(["Koala"], true);
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
 
@@ -1616,7 +1701,7 @@ export const AsyncLoading: Story = {
         // Koala option is selected
         await verifyOptionsSelected(["Koala"], true);
         // Close popover for next test
-        await userEvent.keyboard("{Escape}");
+        await closePopover();
       }
     );
   },
@@ -2164,7 +2249,7 @@ export const DisabledOptions: Story = {
       await selectOptionsByName(disabledOptions);
       await expect(singleSelect.value).toBe("Koala");
       // Close for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step("Disabled options cannot be selected via keyboard", async () => {
       singleSelect.focus();
@@ -2185,7 +2270,7 @@ export const DisabledOptions: Story = {
         singleSelect.getAttribute("aria-activedescendant")
       );
       // Close for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step("Multi select can be opened", async () => {
       multiSelect.focus();
@@ -2208,7 +2293,7 @@ export const DisabledOptions: Story = {
       await selectOptionsByName(disabledOptions);
       await verifyOptionsSelected(disabledOptions, false);
       // Close for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step("Disabled options cannot be selected via keyboard", async () => {
       multiSelect.focus();
@@ -2373,7 +2458,7 @@ export const FormValidation: Story = {
       await userEvent.keyboard("{Enter}");
       await expect(singleSelect.value).toBe("Koala");
       // Close for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step(
       "Invalid single select updates state when isInvalid is updated",
@@ -2392,7 +2477,7 @@ export const FormValidation: Story = {
       await userEvent.keyboard("{Enter}");
       await verifyTagsExist(multiSelect, ["Koala"]);
       // Close for next test
-      await userEvent.keyboard("{Escape}");
+      await closePopover();
     });
     await step(
       "Invalid multi select updates state when isInvalid is updated",
