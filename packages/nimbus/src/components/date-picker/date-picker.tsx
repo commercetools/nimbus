@@ -37,10 +37,10 @@ export const DatePicker = (props: DatePickerProps) => {
   // the size of the buttons overlaying the input
   const overlayButtonSize = size === "md" ? "xs" : "2xs";
 
-  // Determine if popover should close on select based on granularity
-  // If time selection is needed, keep popover open
+  // When granularity is "day", use the prop value (defaults to true if not provided)
+  // For other granularities (time-based), force to false so users can set both date and time
   const shouldCloseOnSelect =
-    props.shouldCloseOnSelect || granularity === "day";
+    granularity === "day" ? props.shouldCloseOnSelect : false;
 
   return (
     <DatePickerRootSlot {...recipeProps} {...styleProps} asChild>
