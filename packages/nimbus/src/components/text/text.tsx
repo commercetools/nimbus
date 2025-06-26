@@ -4,8 +4,9 @@ import {
 } from "@chakra-ui/react";
 import { TextContext, useContextProps } from "react-aria-components";
 
-export interface TextProps extends ChakraTextProps {
+export interface TextProps extends Omit<ChakraTextProps, "slot"> {
   ref?: React.Ref<HTMLElement>;
+  slot?: string | null | undefined;
 }
 
 /**
@@ -23,6 +24,7 @@ export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {
     <ChakraText
       ref={ref as React.Ref<HTMLParagraphElement>}
       {...contextProps}
+      slot={props.slot ?? undefined}
     />
   );
 };
