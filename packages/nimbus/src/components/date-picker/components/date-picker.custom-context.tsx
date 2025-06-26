@@ -5,6 +5,7 @@ import {
   TextContext,
   DatePickerStateContext,
   TimeFieldContext,
+  useSlottedContext,
 } from "react-aria-components";
 import type { TimeValue } from "react-aria";
 
@@ -13,7 +14,7 @@ export const DatePickerCustomContext = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const buttonContext = useContext(ButtonContext)!;
+  const buttonContext = useSlottedContext(ButtonContext) || {};
   const textContext = useContext(TextContext)!;
   const datePickerState = useContext(DatePickerStateContext);
   const noInputValue = datePickerState?.dateValue === null;
@@ -21,18 +22,21 @@ export const DatePickerCustomContext = ({
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { timeValue, setTimeValue, granularity } = datePickerState!;
 
+  // Try to get disabled state from the button context
+  const isDatePickerDisabled = buttonContext?.isDisabled;
+
   /**
    * Button slots
    * ================================
    */
   const buttonSlots = {
     /** toggles the calendar popover */
-    calendarToggle: buttonContext as Record<string, unknown>,
+    calendarToggle: buttonContext,
     /** clears the input value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
       "aria-label": "Clear input value",
-      isDisabled: noInputValue,
+      isDisabled: noInputValue || isDatePickerDisabled,
     },
   };
 
