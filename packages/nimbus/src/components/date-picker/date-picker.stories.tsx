@@ -962,6 +962,58 @@ export const VariantsSizesAndStates: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Clear button is disabled when DatePicker is disabled",
+      async () => {
+        // Find a disabled DatePicker (should have defaultValue but be disabled)
+        const disabledDatePickers = canvas
+          .getAllByRole("group")
+          .filter((group) => {
+            const ariaLabel = group.getAttribute("aria-label");
+            return ariaLabel && ariaLabel.includes("Disabled");
+          });
+
+        // Test at least one disabled DatePicker
+        if (disabledDatePickers.length > 0) {
+          const disabledPicker = disabledDatePickers[0];
+          const clearButton = within(disabledPicker).getByRole("button", {
+            name: /clear/i,
+          });
+
+          // Clear button should be disabled even though there's a value (defaultValue was set)
+          // because the entire DatePicker is disabled
+          await expect(clearButton).toBeDisabled();
+        }
+      }
+    );
+
+    await step(
+      "Clear button works normally in enabled DatePicker",
+      async () => {
+        // Find a default (enabled) DatePicker
+        const defaultDatePickers = canvas
+          .getAllByRole("group")
+          .filter((group) => {
+            const ariaLabel = group.getAttribute("aria-label");
+            return ariaLabel && ariaLabel.includes("Default");
+          });
+
+        // Test at least one enabled DatePicker
+        if (defaultDatePickers.length > 0) {
+          const enabledPicker = defaultDatePickers[0];
+          const clearButton = within(enabledPicker).getByRole("button", {
+            name: /clear/i,
+          });
+
+          // Clear button should be enabled since there's a defaultValue and DatePicker is enabled
+          await expect(clearButton).not.toBeDisabled();
+        }
+      }
+    );
+  },
 };
 
 /**
