@@ -11,6 +11,8 @@ import path from "path";
 export default mergeConfig(
   baseConfig,
   defineConfig({
+    // cache directory for better performance
+    cacheDir: ".vitest-cache",
     plugins: [
       storybookTest({
         // The location of your Storybook config, main.js|ts
@@ -24,6 +26,9 @@ export default mergeConfig(
       setupFiles: ["./.storybook/vitest.setup.ts"],
       // make vitest fn's available globally (no need to import them)
       globals: true,
+      // Increase timeouts for browser stability
+      testTimeout: 30000,
+      hookTimeout: 30000,
       // config for running tests in one or multiple *real* browsers
       browser: {
         enabled: true,
@@ -42,6 +47,13 @@ export default mergeConfig(
         headless: true,
         // ... do not capture screenshots on failure
         screenshotFailures: false,
+        // This 'helps with resource usage' according to claude
+        isolate: false,
+        api: {
+          // Port from failing test error output
+          // https://github.com/commercetools/nimbus/actions/runs/15910355075/job/44875855480#step:8:92
+          port: 63315,
+        },
       },
       coverage: {
         exclude: [
