@@ -25,6 +25,20 @@ export const DatePickerCustomContext = ({
   // Try to get disabled state from the button context
   const isDatePickerDisabled = buttonContext?.isDisabled;
 
+  // Generate default aria-label based on granularity if not provided
+  const getDefaultTimeInputAriaLabel = () => {
+    switch (granularity) {
+      case "hour":
+        return "Enter time (hour)";
+      case "minute":
+        return "Enter time (hour and minute)";
+      case "second":
+        return "Enter time (hour, minute, and second)";
+      default:
+        return "Enter time";
+    }
+  };
+
   /**
    * Button slots
    * ================================
@@ -59,6 +73,7 @@ export const DatePickerCustomContext = ({
         }
       },
       granularity: granularity === "day" ? undefined : granularity,
+      "aria-label": getDefaultTimeInputAriaLabel(),
     },
   };
 
