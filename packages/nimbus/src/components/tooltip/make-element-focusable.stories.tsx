@@ -1,6 +1,6 @@
 import { createRef } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
-import { within, expect } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { within, expect } from "storybook/test";
 import { Tooltip, MakeElementFocusable } from "@/components";
 
 const meta: Meta<typeof MakeElementFocusable> = {

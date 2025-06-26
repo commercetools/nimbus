@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { VisuallyHidden } from "./visually-hidden";
 import { Button } from "@/components";
-import { expect, userEvent, within } from "@storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 
 // CSS property combination, that makes content invisible to the viewer
 const invisibleCssProps = {

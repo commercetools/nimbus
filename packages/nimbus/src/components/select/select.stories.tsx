@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Select } from "./select";
 import { Text, Stack, Box } from "@/components";
 import type { Key } from "react-aria";
 import { useState } from "react";
 import { type SelectRootProps } from "./select.types";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 
 import { useAsyncList } from "react-stately";
 
@@ -154,7 +154,9 @@ export const ControlledState: Story = {
         <Select.Root
           defaultSelectedKey={animal}
           selectedKey={animal}
-          onSelectionChange={onChangeRequest}
+          onSelectionChange={
+            onChangeRequest as SelectRootProps["onSelectionChange"]
+          }
           aria-label="Select your new pet"
           data-testid="select"
         >
@@ -235,7 +237,7 @@ export const AsyncLoading: Story = {
         <Select.Root
           isLoading={isLoading}
           selectedKey={animal}
-          onSelectionChange={setAnimal}
+          onSelectionChange={setAnimal as SelectRootProps["onSelectionChange"]}
           aria-label="Select your new pet"
           data-testid="select"
         >

@@ -6,7 +6,7 @@ import {
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import type { RadioInputOptionProps } from "../radio-input.types";
 import { RadioInputOptionSlot } from "../radio-input.slots";
-import { useFocusRing } from "react-aria";
+import { useFocusRing, mergeProps } from "react-aria";
 
 export const RadioInputOption = ({
   children,
@@ -19,10 +19,11 @@ export const RadioInputOption = ({
   return (
     <RadioInputOptionSlot
       {...styleProps}
+      {...focusProps}
       data-focus={isFocused || undefined}
       asChild
     >
-      <RaRadio value={value} {...restProps} {...focusProps}>
+      <RaRadio value={value} {...restProps}>
         {(renderProps) => {
           const content =
             typeof children === "function"

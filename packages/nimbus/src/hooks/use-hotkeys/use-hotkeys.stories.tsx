@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useHotkeys } from "./use-hotkeys";
-import { userEvent, expect, fn } from "@storybook/test";
+import { userEvent, expect, fn } from "storybook/test";
 import { useState } from "react";
 
 const UseHotkeysDemo = ({

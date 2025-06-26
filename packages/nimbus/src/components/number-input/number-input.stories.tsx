@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberInput } from "./number-input";
-import { userEvent, within, expect } from "@storybook/test";
+import { userEvent, within, expect } from "storybook/test";
 import { Box, Stack, Text, FormField } from "@/components";
 
 const meta: Meta<typeof NumberInput> = {

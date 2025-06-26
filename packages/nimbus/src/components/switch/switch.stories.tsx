@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Switch } from "./switch";
 import { Stack, Box } from "@/components";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef, useState } from "react";
 
 const meta: Meta<typeof Switch> = {

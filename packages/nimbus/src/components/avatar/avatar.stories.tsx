@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Avatar } from "./avatar";
 import type { AvatarProps } from "./avatar.types";
-import { within, expect, waitFor } from "@storybook/test";
+import { within, expect, waitFor } from "storybook/test";
 import { Button, Stack } from "@/components";
 
 /**

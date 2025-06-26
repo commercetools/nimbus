@@ -21,7 +21,10 @@ interface ButtonRecipeProps extends RecipeProps<"button">, UnstyledProp {}
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
 export interface ButtonRootProps
-  extends HTMLChakraProps<"button", ButtonRecipeProps> {}
+  extends Omit<HTMLChakraProps<"button", ButtonRecipeProps>, "slot"> {
+  // insure that the `ButtonRoot` component doesn't give a type error
+  slot?: string | null | undefined;
+}
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,

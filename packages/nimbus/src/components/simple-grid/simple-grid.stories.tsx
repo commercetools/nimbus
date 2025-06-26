@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "../box";
 import { SimpleGrid } from "./simple-grid";
-import { within, expect } from "@storybook/test";
+import { within, expect } from "storybook/test";
 
 /**
  * Storybook metadata configuration

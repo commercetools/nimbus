@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox } from "./checkbox";
 import { Stack } from "@/components";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 
 const meta: Meta<typeof Checkbox> = {
   title: "components/Checkbox",
