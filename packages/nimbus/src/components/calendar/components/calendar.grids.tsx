@@ -28,14 +28,13 @@ export const CalendarGrids = () => {
   const { locale } = useLocale();
   const context = useSlottedContext(CalendarContext);
   const calendarState = useContext(CalendarStateContext)!;
-  const visibleMonths = context?.visibleDuration?.months || 1;
-  const arr = new Array(visibleMonths).fill("");
+  const visibleMonthsCount = context?.visibleDuration?.months || 1;
   const todayDate = today(getLocalTimeZone());
-  const showMonthTitles = visibleMonths > 1;
+  const showMonthTitles = visibleMonthsCount > 1;
 
   return (
     <CalendarGridsSlot>
-      {arr.map((_, index) => {
+      {Array.from({ length: visibleMonthsCount }, (_, index) => {
         const gridDate = calendarState.visibleRange.start.add({
           months: index,
         });
@@ -44,7 +43,10 @@ export const CalendarGrids = () => {
         }).format(gridDate.toDate(getLocalTimeZone()));
 
         return (
-          <Box key={monthName} width={visibleMonths == 1 ? "full" : "auto"}>
+          <Box
+            key={monthName}
+            width={visibleMonthsCount == 1 ? "full" : "auto"}
+          >
             {showMonthTitles && (
               <CalendarMonthTitleSlot>{monthName}</CalendarMonthTitleSlot>
             )}
