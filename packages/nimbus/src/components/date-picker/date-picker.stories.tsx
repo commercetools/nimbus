@@ -51,7 +51,9 @@ export const Base: Story = {
       "Renders with proper DatePicker structure and accessibility",
       async () => {
         // DatePicker should have a group container with proper aria-label
-        const dateGroup = canvas.getByRole("group", { name: "Select a date" });
+        const dateGroup = await canvas.findByRole("group", {
+          name: "Select a date",
+        });
         await expect(dateGroup).toBeInTheDocument();
         await expect(dateGroup).toHaveAttribute("aria-label", "Select a date");
 
@@ -62,7 +64,7 @@ export const Base: Story = {
         await expect(dateSegments.length).toBeGreaterThanOrEqual(3);
 
         // Should have calendar toggle button
-        const calendarButton = canvas.getByRole("button", {
+        const calendarButton = await canvas.findByRole("button", {
           name: /calendar/i,
         });
         await expect(calendarButton).toBeInTheDocument();
@@ -74,23 +76,31 @@ export const Base: Story = {
 
       // First segment should be focusable with Tab
       await userEvent.tab();
-      await expect(dateSegments[0]).toHaveFocus();
+      await waitFor(async () => {
+        await expect(dateSegments[0]).toHaveFocus();
+      });
 
       // Should be able to navigate between segments with arrow keys
       await userEvent.keyboard("{ArrowRight}");
       if (dateSegments.length > 1) {
-        await expect(dateSegments[1]).toHaveFocus();
+        await waitFor(async () => {
+          await expect(dateSegments[1]).toHaveFocus();
+        });
       }
 
       // Should be able to navigate to calendar button eventually
       await userEvent.tab();
       await userEvent.tab(); // May need multiple tabs depending on segments
-      const calendarButton = canvas.getByRole("button", { name: /calendar/i });
+      const calendarButton = await canvas.findByRole("button", {
+        name: /calendar/i,
+      });
       // Check if calendar button has focus or if we need more tabs
       if (!calendarButton.matches(":focus")) {
         await userEvent.tab();
       }
-      await expect(calendarButton).toHaveFocus();
+      await waitFor(async () => {
+        await expect(calendarButton).toHaveFocus();
+      });
     });
 
     await step("Date segments accept keyboard input", async () => {
@@ -102,7 +112,9 @@ export const Base: Story = {
       await userEvent.keyboard("12");
 
       // Segment should have the typed value
-      await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
+      await waitFor(async () => {
+        await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
+      });
 
       // Clear segments for next tests by selecting all and deleting
       for (const segment of dateSegments) {
@@ -113,7 +125,9 @@ export const Base: Story = {
     });
 
     await step("Calendar popover opens and closes correctly", async () => {
-      const calendarButton = canvas.getByRole("button", { name: /calendar/i });
+      const calendarButton = await canvas.findByRole("button", {
+        name: /calendar/i,
+      });
 
       // Initially, calendar should not be visible (check in entire document since popover is portaled)
       let calendar = within(document.body).queryByRole("application");
@@ -142,8 +156,10 @@ export const Base: Story = {
       const dateSegments = canvas.getAllByRole("spinbutton");
 
       // Initially, clear button should be disabled (no value selected)
-      const clearButton = canvas.getByRole("button", { name: /clear/i });
-      await expect(clearButton).toBeDisabled();
+      const clearButton = await canvas.findByRole("button", { name: /clear/i });
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
 
       // Set a date value first by changing from placeholder values
       await userEvent.click(dateSegments[0]); // month
@@ -158,7 +174,9 @@ export const Base: Story = {
       }
 
       // Clear button should now be enabled (actual date was entered)
-      await expect(clearButton).not.toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
 
       // Click clear button to remove values
       await userEvent.click(clearButton);
@@ -166,11 +184,15 @@ export const Base: Story = {
       // After clearing, segments return to placeholder state (showing current date)
       // The segments will still have values (current date placeholders) but DatePicker considers it "empty"
       // Clear button should be disabled again indicating no actual value is selected
-      await expect(clearButton).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
     });
 
     await step("Date selection from calendar works", async () => {
-      const calendarButton = canvas.getByRole("button", { name: /calendar/i });
+      const calendarButton = await canvas.findByRole("button", {
+        name: /calendar/i,
+      });
 
       // Open calendar
       await userEvent.click(calendarButton);
@@ -182,7 +204,7 @@ export const Base: Story = {
       });
 
       // Find calendar grid and selectable date cells (search in document body)
-      const calendarGrid = within(document.body).getByRole("grid");
+      const calendarGrid = await within(document.body).findByRole("grid");
       await expect(calendarGrid).toBeInTheDocument();
 
       // Find available date buttons (gridcell role with button inside)
@@ -206,14 +228,20 @@ export const Base: Story = {
           });
 
           // After selecting a date, clear button should be enabled indicating a value is selected
-          const clearButton = canvas.getByRole("button", { name: /clear/i });
-          await expect(clearButton).not.toBeDisabled();
+          const clearButton = await canvas.findByRole("button", {
+            name: /clear/i,
+          });
+          await waitFor(async () => {
+            await expect(clearButton).not.toBeDisabled();
+          });
         }
       }
     });
 
     await step("DatePicker has proper ARIA attributes", async () => {
-      const dateGroup = canvas.getByRole("group", { name: "Select a date" });
+      const dateGroup = await canvas.findByRole("group", {
+        name: "Select a date",
+      });
 
       // Group should have proper role and label
       await expect(dateGroup).toHaveAttribute("role", "group");
@@ -269,13 +297,13 @@ export const Uncontrolled: Story = {
       await expect(dateGroups).toHaveLength(3);
 
       // Verify each has proper aria-labels
-      const defaultValuePicker = canvas.getByRole("group", {
+      const defaultValuePicker = await canvas.findByRole("group", {
         name: "With default value",
       });
-      const differentDefaultValuePicker = canvas.getByRole("group", {
+      const differentDefaultValuePicker = await canvas.findByRole("group", {
         name: "With different default value",
       });
-      const emptyPicker = canvas.getByRole("group", {
+      const emptyPicker = await canvas.findByRole("group", {
         name: "Without default value",
       });
 
@@ -287,28 +315,35 @@ export const Uncontrolled: Story = {
     await step(
       "First DatePicker shows correct default value (2025-01-15)",
       async () => {
-        const defaultValuePicker = canvas.getByRole("group", {
+        const defaultValuePicker = await canvas.findByRole("group", {
           name: "With default value",
         });
         const segments = within(defaultValuePicker).getAllByRole("spinbutton");
 
         // Should have month=1, day=15, year=2025
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "1"); // January
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15"); // 15th day
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "1"); // January
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "15"); // 15th day
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+        });
 
         // Clear button should be enabled since there's a default value
-        const clearButton = within(defaultValuePicker).getByRole("button", {
-          name: /clear/i,
+        const clearButton = await within(defaultValuePicker).findByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
         });
-        await expect(clearButton).not.toBeDisabled();
       }
     );
 
     await step(
       "Second DatePicker shows correct default value (2025-12-25)",
       async () => {
-        const differentDefaultValuePicker = canvas.getByRole("group", {
+        const differentDefaultValuePicker = await canvas.findByRole("group", {
           name: "With different default value",
         });
         const segments = within(differentDefaultValuePicker).getAllByRole(
@@ -316,29 +351,34 @@ export const Uncontrolled: Story = {
         );
 
         // Should have month=12, day=25, year=2025
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "12"); // December
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "25"); // 25th day
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "12"); // December
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "25"); // 25th day
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+        });
 
         // Clear button should be enabled since there's a default value
-        const clearButton = within(differentDefaultValuePicker).getByRole(
-          "button",
-          { name: /clear/i }
-        );
-        await expect(clearButton).not.toBeDisabled();
+        const clearButton = await within(
+          differentDefaultValuePicker
+        ).findByRole("button", { name: /clear/i });
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
+        });
       }
     );
 
     await step("Third DatePicker is empty (no defaultValue)", async () => {
-      const emptyPicker = canvas.getByRole("group", {
+      const emptyPicker = await canvas.findByRole("group", {
         name: "Without default value",
       });
 
       // Clear button should be disabled since no value is set
-      const clearButton = within(emptyPicker).getByRole("button", {
+      const clearButton = await within(emptyPicker).findByRole("button", {
         name: /clear/i,
       });
-      await expect(clearButton).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
 
       // Segments should show placeholder values (current date typically)
       const segments = within(emptyPicker).getAllByRole("spinbutton");
@@ -357,7 +397,7 @@ export const Uncontrolled: Story = {
 
       for (let i = 0; i < dateGroups.length; i++) {
         const group = dateGroups[i];
-        const calendarButton = within(group).getByRole("button", {
+        const calendarButton = await within(group).findByRole("button", {
           name: /calendar/i,
         });
 
@@ -388,52 +428,65 @@ export const Uncontrolled: Story = {
 
     await step("DatePickers with defaultValue can be cleared", async () => {
       // Test clearing the first DatePicker
-      const defaultValuePicker = canvas.getByRole("group", {
+      const defaultValuePicker = await canvas.findByRole("group", {
         name: "With default value",
       });
-      const clearButton = within(defaultValuePicker).getByRole("button", {
-        name: /clear/i,
-      });
+      const clearButton = await within(defaultValuePicker).findByRole(
+        "button",
+        {
+          name: /clear/i,
+        }
+      );
 
       // Initially enabled
-      await expect(clearButton).not.toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
 
       // Click to clear
       await userEvent.click(clearButton);
 
       // Should now be disabled (indicating no value)
-      await expect(clearButton).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
 
       // Test clearing the second DatePicker
-      const differentDefaultValuePicker = canvas.getByRole("group", {
+      const differentDefaultValuePicker = await canvas.findByRole("group", {
         name: "With different default value",
       });
-      const clearButton2 = within(differentDefaultValuePicker).getByRole(
+      const clearButton2 = await within(differentDefaultValuePicker).findByRole(
         "button",
         { name: /clear/i }
       );
 
       // Initially enabled
-      await expect(clearButton2).not.toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton2).not.toBeDisabled();
+      });
 
       // Click to clear
       await userEvent.click(clearButton2);
 
       // Should now be disabled (indicating no value)
-      await expect(clearButton2).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton2).toBeDisabled();
+      });
     });
 
     await step("Empty DatePicker can receive input", async () => {
-      const emptyPicker = canvas.getByRole("group", {
+      const emptyPicker = await canvas.findByRole("group", {
         name: "Without default value",
       });
       const segments = within(emptyPicker).getAllByRole("spinbutton");
-      const clearButton = within(emptyPicker).getByRole("button", {
+      const clearButton = await within(emptyPicker).findByRole("button", {
         name: /clear/i,
       });
 
       // Initially disabled (no value)
-      await expect(clearButton).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
 
       // Add a date by typing in segments
       await userEvent.click(segments[0]); // month
@@ -446,12 +499,16 @@ export const Uncontrolled: Story = {
       await userEvent.keyboard("2025");
 
       // Clear button should now be enabled
-      await expect(clearButton).not.toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
 
       // Verify the values were set
-      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
-      await expect(segments[1]).toHaveAttribute("aria-valuenow", "30");
-      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "30");
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+      });
     });
   },
 };
@@ -494,36 +551,40 @@ export const Controlled: Story = {
 
     await step("Initial controlled state displays correctly", async () => {
       // Should render the controlled DatePicker with initial value
-      const dateGroup = canvas.getByRole("group", {
+      const dateGroup = await canvas.findByRole("group", {
         name: "Controlled date picker",
       });
       await expect(dateGroup).toBeInTheDocument();
 
       // Should display the current value in the text
-      const valueText = canvas.getByText(/current value: 2025-06-15/);
+      const valueText = await canvas.findByText(/current value: 2025-06-15/);
       await expect(valueText).toBeInTheDocument();
 
       // Date segments should show the controlled value (2025-06-15)
       const segments = within(dateGroup).getAllByRole("spinbutton");
-      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
-      await expect(segments[1]).toHaveAttribute("aria-valuenow", "15"); // 15th day
-      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15"); // 15th day
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+      });
 
       // Clear button should be enabled since there's a value
-      const clearButton = within(dateGroup).getByRole("button", {
+      const clearButton = await within(dateGroup).findByRole("button", {
         name: /clear/i,
       });
-      await expect(clearButton).not.toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
 
       // Reset button should be present
-      const resetButton = canvas.getByRole("button", { name: "Reset" });
+      const resetButton = await canvas.findByRole("button", { name: "Reset" });
       await expect(resetButton).toBeInTheDocument();
     });
 
     await step(
       "Changing date via segments updates controlled state",
       async () => {
-        const dateGroup = canvas.getByRole("group", {
+        const dateGroup = await canvas.findByRole("group", {
           name: "Controlled date picker",
         });
         const segments = within(dateGroup).getAllByRole("spinbutton");
@@ -535,12 +596,16 @@ export const Controlled: Story = {
 
         // The displayed value should update to reflect the change
         await waitFor(async () => {
-          const valueText = canvas.getByText(/current value: 2025-08-15/);
+          const valueText = await canvas.findByText(
+            /current value: 2025-08-15/
+          );
           await expect(valueText).toBeInTheDocument();
         });
 
         // Segment should show the new value
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "8");
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "8");
+        });
 
         // Change the day from 15 to 25
         await userEvent.click(segments[1]);
@@ -549,22 +614,26 @@ export const Controlled: Story = {
 
         // The displayed value should update again
         await waitFor(async () => {
-          const valueText = canvas.getByText(/current value: 2025-08-25/);
+          const valueText = await canvas.findByText(
+            /current value: 2025-08-25/
+          );
           await expect(valueText).toBeInTheDocument();
         });
 
         // Segment should show the new value
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
+        });
       }
     );
 
     await step(
       "Changing date via calendar updates controlled state",
       async () => {
-        const dateGroup = canvas.getByRole("group", {
+        const dateGroup = await canvas.findByRole("group", {
           name: "Controlled date picker",
         });
-        const calendarButton = within(dateGroup).getByRole("button", {
+        const calendarButton = await within(dateGroup).findByRole("button", {
           name: /calendar/i,
         });
 
@@ -578,7 +647,7 @@ export const Controlled: Story = {
         });
 
         // Find an available date button in the calendar and click it
-        const calendarGrid = within(document.body).getByRole("grid");
+        const calendarGrid = await within(document.body).findByRole("grid");
         const dateCells = within(calendarGrid).getAllByRole("gridcell");
         const availableDates = dateCells.filter((cell) => {
           const button = cell.querySelector("button");
@@ -605,7 +674,7 @@ export const Controlled: Story = {
             });
 
             // Value should be some valid date string
-            const valueDisplay = canvas.getByText(/current value: /);
+            const valueDisplay = await canvas.findByText(/current value: /);
             await expect(valueDisplay).toBeInTheDocument();
             await expect(valueDisplay.textContent).not.toContain("null");
           }
@@ -614,32 +683,36 @@ export const Controlled: Story = {
     );
 
     await step("Clear button clears controlled state", async () => {
-      const dateGroup = canvas.getByRole("group", {
+      const dateGroup = await canvas.findByRole("group", {
         name: "Controlled date picker",
       });
-      const clearButton = within(dateGroup).getByRole("button", {
+      const clearButton = await within(dateGroup).findByRole("button", {
         name: /clear/i,
       });
 
       // Clear button should be enabled (we have a date from previous test)
-      await expect(clearButton).not.toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
 
       // Click clear button
       await userEvent.click(clearButton);
 
       // The displayed value should update to null
       await waitFor(async () => {
-        const valueText = canvas.getByText(/current value: null/);
+        const valueText = await canvas.findByText(/current value: null/);
         await expect(valueText).toBeInTheDocument();
       });
 
       // Clear button should now be disabled
-      await expect(clearButton).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
     });
 
     await step("Reset button resets controlled state to null", async () => {
-      const resetButton = canvas.getByRole("button", { name: "Reset" });
-      const dateGroup = canvas.getByRole("group", {
+      const resetButton = await canvas.findByRole("button", { name: "Reset" });
+      const dateGroup = await canvas.findByRole("group", {
         name: "Controlled date picker",
       });
 
@@ -654,7 +727,7 @@ export const Controlled: Story = {
 
       // Wait for value to update
       await waitFor(async () => {
-        const valueText = canvas.getByText(/current value: 2025-12-31/);
+        const valueText = await canvas.findByText(/current value: 2025-12-31/);
         await expect(valueText).toBeInTheDocument();
       });
 
@@ -663,25 +736,29 @@ export const Controlled: Story = {
 
       // The displayed value should reset to null
       await waitFor(async () => {
-        const valueText = canvas.getByText(/current value: null/);
+        const valueText = await canvas.findByText(/current value: null/);
         await expect(valueText).toBeInTheDocument();
       });
 
       // Clear button should be disabled
-      const clearButton = within(dateGroup).getByRole("button", {
+      const clearButton = await within(dateGroup).findByRole("button", {
         name: /clear/i,
       });
-      await expect(clearButton).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
     });
 
     await step(
       "Controlled DatePicker maintains proper state synchronization",
       async () => {
-        const dateGroup = canvas.getByRole("group", {
+        const dateGroup = await canvas.findByRole("group", {
           name: "Controlled date picker",
         });
         const segments = within(dateGroup).getAllByRole("spinbutton");
-        const resetButton = canvas.getByRole("button", { name: "Reset" });
+        const resetButton = await canvas.findByRole("button", {
+          name: "Reset",
+        });
 
         // Set a specific date
         await userEvent.click(segments[0]); // month
@@ -698,35 +775,41 @@ export const Controlled: Story = {
 
         // Verify state is synchronized
         await waitFor(async () => {
-          const valueText = canvas.getByText(/current value: 2026-03-10/);
+          const valueText = await canvas.findByText(
+            /current value: 2026-03-10/
+          );
           await expect(valueText).toBeInTheDocument();
         });
 
         // Verify segments show correct values
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "3");
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "10");
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026");
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "3");
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "10");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026");
+        });
 
         // Reset and verify everything is cleared
         await userEvent.click(resetButton);
 
         await waitFor(async () => {
-          const valueText = canvas.getByText(/current value: null/);
+          const valueText = await canvas.findByText(/current value: null/);
           await expect(valueText).toBeInTheDocument();
         });
 
         // Clear button should be disabled when value is null
-        const clearButton = within(dateGroup).getByRole("button", {
+        const clearButton = await within(dateGroup).findByRole("button", {
           name: /clear/i,
         });
-        await expect(clearButton).toBeDisabled();
+        await waitFor(async () => {
+          await expect(clearButton).toBeDisabled();
+        });
       }
     );
 
     await step(
       "Controlled DatePicker handles invalid input gracefully",
       async () => {
-        const dateGroup = canvas.getByRole("group", {
+        const dateGroup = await canvas.findByRole("group", {
           name: "Controlled date picker",
         });
         const segments = within(dateGroup).getAllByRole("spinbutton");
@@ -741,13 +824,15 @@ export const Controlled: Story = {
         await userEvent.click(segments[2]); // year
         await userEvent.keyboard("2025");
 
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "2");
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "3");
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "5");
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "2");
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "3");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "5");
+        });
 
         // The actual controlled value might not update if the date is invalid
         // This depends on the implementation - we just verify the component doesn't crash
-        const valueDisplay = canvas.getByText(/current value: /);
+        const valueDisplay = await canvas.findByText(/current value: /);
         await expect(valueDisplay).toBeInTheDocument();
       }
     );
@@ -781,29 +866,34 @@ export const PlaceholderValue: Story = {
     const canvas = within(canvasElement);
 
     await step("Both DatePickers start empty (no selected value)", async () => {
-      const withPlaceholder = canvas.getByRole("group", {
+      const withPlaceholder = await canvas.findByRole("group", {
         name: "Date picker with placeholder",
       });
-      const withoutPlaceholder = canvas.getByRole("group", {
+      const withoutPlaceholder = await canvas.findByRole("group", {
         name: "Date picker without placeholder",
       });
 
       // Clear buttons should be disabled since no value is selected initially
-      const clearButton1 = within(withPlaceholder).getByRole("button", {
+      const clearButton1 = await within(withPlaceholder).findByRole("button", {
         name: /clear/i,
       });
-      const clearButton2 = within(withoutPlaceholder).getByRole("button", {
-        name: /clear/i,
-      });
+      const clearButton2 = await within(withoutPlaceholder).findByRole(
+        "button",
+        {
+          name: /clear/i,
+        }
+      );
 
-      await expect(clearButton1).toBeDisabled();
-      await expect(clearButton2).toBeDisabled();
+      await waitFor(async () => {
+        await expect(clearButton1).toBeDisabled();
+        await expect(clearButton2).toBeDisabled();
+      });
     });
 
     await step(
       "DatePicker with placeholder value uses placeholder when navigating with keyboard",
       async () => {
-        const withPlaceholder = canvas.getByRole("group", {
+        const withPlaceholder = await canvas.findByRole("group", {
           name: "Date picker with placeholder",
         });
         const segments = within(withPlaceholder).getAllByRole("spinbutton");
@@ -812,32 +902,46 @@ export const PlaceholderValue: Story = {
         await userEvent.click(segments[0]);
 
         // Invisible
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        });
         await userEvent.keyboard("{ArrowUp}");
         // Now visible
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        });
 
         // Continue editing to create a complete date
         await userEvent.tab(); // Move to day segment
         // Invisible
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        });
         await userEvent.keyboard("{ArrowDown}");
         // Now visible
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        });
 
         // Move to year and modify
         await userEvent.tab(); // Move to year segment
         // Invisible
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        await waitFor(async () => {
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        });
         await userEvent.keyboard("{ArrowUp}");
         // Now visible
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        await waitFor(async () => {
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        });
 
         // Now that we have a complete date, clear button should be enabled
-        const clearButton = within(withPlaceholder).getByRole("button", {
+        const clearButton = await within(withPlaceholder).findByRole("button", {
           name: /clear/i,
         });
-        await expect(clearButton).not.toBeDisabled();
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
+        });
       }
     );
 
@@ -845,10 +949,10 @@ export const PlaceholderValue: Story = {
       "Placeholder value doesn't affect typing input directly",
       async () => {
         // Clear the first DatePicker to reset it
-        const withPlaceholder = canvas.getByRole("group", {
+        const withPlaceholder = await canvas.findByRole("group", {
           name: "Date picker with placeholder",
         });
-        const clearButton = within(withPlaceholder).getByRole("button", {
+        const clearButton = await within(withPlaceholder).findByRole("button", {
           name: /clear/i,
         });
 
@@ -870,18 +974,22 @@ export const PlaceholderValue: Story = {
         await userEvent.keyboard("2024"); // 2024
 
         // Values should be exactly what was typed, not influenced by placeholder
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2024");
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2024");
+        });
 
         // Clear button should be enabled since we have a value
-        const clearButtonAfterTyping = within(withPlaceholder).getByRole(
+        const clearButtonAfterTyping = await within(withPlaceholder).findByRole(
           "button",
           {
             name: /clear/i,
           }
         );
-        await expect(clearButtonAfterTyping).not.toBeDisabled();
+        await waitFor(async () => {
+          await expect(clearButtonAfterTyping).not.toBeDisabled();
+        });
       }
     );
   },
@@ -979,9 +1087,12 @@ export const VariantsSizesAndStates: Story = {
         // Test at least one disabled DatePicker
         if (disabledDatePickers.length > 0) {
           const disabledPicker = disabledDatePickers[0];
-          const clearButton = within(disabledPicker).getByRole("button", {
-            name: /clear/i,
-          });
+          const clearButton = await within(disabledPicker).findByRole(
+            "button",
+            {
+              name: /clear/i,
+            }
+          );
 
           // Clear button should be disabled even though there's a value (defaultValue was set)
           // because the entire DatePicker is disabled
@@ -1004,7 +1115,7 @@ export const VariantsSizesAndStates: Story = {
         // Test at least one enabled DatePicker
         if (defaultDatePickers.length > 0) {
           const enabledPicker = defaultDatePickers[0];
-          const clearButton = within(enabledPicker).getByRole("button", {
+          const clearButton = await within(enabledPicker).findByRole("button", {
             name: /clear/i,
           });
 
@@ -1085,7 +1196,7 @@ export const TimeSupport: Story = {
     await step(
       "Date-only picker has correct number of segments (3: month, day, year)",
       async () => {
-        const dateOnlyPicker = canvas.getByRole("group", {
+        const dateOnlyPicker = await canvas.findByRole("group", {
           name: "Date only picker",
         });
         const segments = within(dateOnlyPicker).getAllByRole("spinbutton");
@@ -1096,7 +1207,7 @@ export const TimeSupport: Story = {
     );
 
     await step("Hour picker has correct segments and values", async () => {
-      const hourPicker = canvas.getByRole("group", {
+      const hourPicker = await canvas.findByRole("group", {
         name: "Date and time picker (hour)",
       });
       const segments = within(hourPicker).getAllByRole("spinbutton");
@@ -1106,7 +1217,7 @@ export const TimeSupport: Story = {
     });
 
     await step("Minute picker has correct segments and values", async () => {
-      const minutePicker = canvas.getByRole("group", {
+      const minutePicker = await canvas.findByRole("group", {
         name: "Date and time picker (minute)",
       });
       const segments = within(minutePicker).getAllByRole("spinbutton");
@@ -1116,7 +1227,7 @@ export const TimeSupport: Story = {
     });
 
     await step("Second picker has correct segments and values", async () => {
-      const secondPicker = canvas.getByRole("group", {
+      const secondPicker = await canvas.findByRole("group", {
         name: "Date and time picker (second)",
       });
       const segments = within(secondPicker).getAllByRole("spinbutton");
@@ -1128,7 +1239,7 @@ export const TimeSupport: Story = {
     await step(
       "Timezone picker has correct segments and timezone",
       async () => {
-        const timezonePicker = canvas.getByRole("group", {
+        const timezonePicker = await canvas.findByRole("group", {
           name: "Date and time picker with timezone",
         });
         const segments = within(timezonePicker).getAllByRole("spinbutton");
@@ -1146,10 +1257,10 @@ export const TimeSupport: Story = {
     await step(
       "Calendar functionality works with time granularities",
       async () => {
-        const hourPicker = canvas.getByRole("group", {
+        const hourPicker = await canvas.findByRole("group", {
           name: "Date and time picker (hour)",
         });
-        const calendarButton = within(hourPicker).getByRole("button", {
+        const calendarButton = await within(hourPicker).findByRole("button", {
           name: /calendar/i,
         });
 
@@ -1185,10 +1296,10 @@ export const TimeSupport: Story = {
         ];
 
         for (const picker of pickers) {
-          const pickerElement = canvas.getByRole("group", {
+          const pickerElement = await canvas.findByRole("group", {
             name: picker.name,
           });
-          const clearButton = within(pickerElement).getByRole("button", {
+          const clearButton = await within(pickerElement).findByRole("button", {
             name: /clear/i,
           });
 
@@ -1266,7 +1377,7 @@ export const HourCycle: Story = {
     const canvas = within(canvasElement);
 
     await step("12-hour format displays PM and has AM/PM segment", async () => {
-      const twelveHourPicker = canvas.getByRole("group", {
+      const twelveHourPicker = await canvas.findByRole("group", {
         name: "12-hour format picker",
       });
       const segments = within(twelveHourPicker).getAllByRole("spinbutton");
@@ -1285,7 +1396,7 @@ export const HourCycle: Story = {
     await step(
       "24-hour format displays 14 and has no AM/PM segment",
       async () => {
-        const twentyFourHourPicker = canvas.getByRole("group", {
+        const twentyFourHourPicker = await canvas.findByRole("group", {
           name: "24-hour format picker",
         });
         const segments =
@@ -1295,17 +1406,21 @@ export const HourCycle: Story = {
         await expect(segments).toHaveLength(5);
 
         // Hour should show as 14 (14:30 in 24-hour format)
-        await expect(segments[3]).toHaveAttribute("aria-valuenow", "14");
+        await waitFor(async () => {
+          await expect(segments[3]).toHaveAttribute("aria-valuenow", "14");
+        });
 
         // Minute should be the last segment (index 4)
-        await expect(segments[4]).toHaveAttribute("aria-valuenow", "30");
+        await waitFor(async () => {
+          await expect(segments[4]).toHaveAttribute("aria-valuenow", "30");
+        });
       }
     );
 
     await step(
       "12-hour format AM/PM segment can be toggled with keyboard",
       async () => {
-        const twelveHourPicker = canvas.getByRole("group", {
+        const twelveHourPicker = await canvas.findByRole("group", {
           name: "12-hour format picker",
         });
         const segments = within(twelveHourPicker).getAllByRole("spinbutton");
@@ -1315,22 +1430,28 @@ export const HourCycle: Story = {
         await userEvent.click(amPmSegment);
 
         // Initially should be PM (value 1)
-        await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+        await waitFor(async () => {
+          await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+        });
 
         // Arrow up should toggle to AM
         await userEvent.keyboard("{ArrowUp}");
-        await expect(amPmSegment).toHaveAttribute("aria-valuetext", "AM");
+        await waitFor(async () => {
+          await expect(amPmSegment).toHaveAttribute("aria-valuetext", "AM");
+        });
 
         // Arrow down should toggle back to PM
         await userEvent.keyboard("{ArrowDown}");
-        await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+        await waitFor(async () => {
+          await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+        });
       }
     );
 
     await step(
       "12-hour format hour values are constrained to 1-12",
       async () => {
-        const twelveHourPicker = canvas.getByRole("group", {
+        const twelveHourPicker = await canvas.findByRole("group", {
           name: "12-hour format picker",
         });
         const segments = within(twelveHourPicker).getAllByRole("spinbutton");
@@ -1341,25 +1462,31 @@ export const HourCycle: Story = {
 
         // Clear current value and type 12
         await userEvent.keyboard("12");
-        await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+        });
 
         // back to hour segment
         await userEvent.tab({ shift: true });
 
         // Arrow up from 12 should wrap to 1
         await userEvent.keyboard("{ArrowUp}");
-        await expect(hourSegment).toHaveAttribute("aria-valuetext", "1 PM");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuetext", "1 PM");
+        });
 
         // Arrow down from 1 should wrap to 12
         await userEvent.keyboard("{ArrowDown}");
-        await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+        });
       }
     );
 
     await step(
       "24-hour format hour values are constrained to 0-23",
       async () => {
-        const twentyFourHourPicker = canvas.getByRole("group", {
+        const twentyFourHourPicker = await canvas.findByRole("group", {
           name: "24-hour format picker",
         });
         const segments =
@@ -1371,18 +1498,24 @@ export const HourCycle: Story = {
 
         // Clear current value and type 23
         await userEvent.keyboard("23");
-        await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+        });
 
         // back to hour segment
         await userEvent.tab({ shift: true });
 
         // Arrow up from 23 should wrap to 0
         await userEvent.keyboard("{ArrowUp}");
-        await expect(hourSegment).toHaveAttribute("aria-valuenow", "0");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow", "0");
+        });
 
         // Arrow down from 0 should wrap to 23
         await userEvent.keyboard("{ArrowDown}");
-        await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+        });
       }
     );
   },
@@ -1434,7 +1567,7 @@ export const HideTimeZone: Story = {
     await step(
       "DatePicker with timezone shown displays timezone information",
       async () => {
-        const timezoneShownPicker = canvas.getByRole("group", {
+        const timezoneShownPicker = await canvas.findByRole("group", {
           name: "With timezone shown",
         });
 
@@ -1448,7 +1581,7 @@ export const HideTimeZone: Story = {
     await step(
       "DatePicker with timezone hidden does not display timezone information",
       async () => {
-        const timezoneHiddenPicker = canvas.getByRole("group", {
+        const timezoneHiddenPicker = await canvas.findByRole("group", {
           name: "With timezone hidden",
         });
 
@@ -1460,10 +1593,10 @@ export const HideTimeZone: Story = {
     );
 
     await step("Both DatePickers have identical input segments", async () => {
-      const timezoneShownPicker = canvas.getByRole("group", {
+      const timezoneShownPicker = await canvas.findByRole("group", {
         name: "With timezone shown",
       });
-      const timezoneHiddenPicker = canvas.getByRole("group", {
+      const timezoneHiddenPicker = await canvas.findByRole("group", {
         name: "With timezone hidden",
       });
 
@@ -1487,13 +1620,16 @@ export const HideTimeZone: Story = {
     await step(
       "Both DatePickers maintain identical functionality",
       async () => {
-        const timezoneHiddenPicker = canvas.getByRole("group", {
+        const timezoneHiddenPicker = await canvas.findByRole("group", {
           name: "With timezone hidden",
         });
-        const clearButton = within(timezoneHiddenPicker).getByRole("button", {
-          name: /clear/i,
-        });
-        const calendarButton = within(timezoneHiddenPicker).getByRole(
+        const clearButton = await within(timezoneHiddenPicker).findByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
+        const calendarButton = await within(timezoneHiddenPicker).findByRole(
           "button",
           { name: /calendar/i }
         );
@@ -1557,18 +1693,20 @@ export const MinMaxValues: Story = {
     const canvas = within(canvasElement);
 
     await step("DatePicker starts with valid date within range", async () => {
-      const datePicker = canvas.getByRole("group", {
+      const datePicker = await canvas.findByRole("group", {
         name: "Date picker with min/max values",
       });
       const segments = within(datePicker).getAllByRole("spinbutton");
-      const clearButton = within(datePicker).getByRole("button", {
+      const clearButton = await within(datePicker).findByRole("button", {
         name: /clear/i,
       });
 
       // Should have default value of 2025-06-22 (7 days from base date)
-      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
-      await expect(segments[1]).toHaveAttribute("aria-valuenow", "22"); // 22nd
-      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "22"); // 22nd
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+      });
 
       // Clear button should be enabled
       await expect(clearButton).not.toBeDisabled();
@@ -1577,10 +1715,10 @@ export const MinMaxValues: Story = {
     await step(
       "Calendar shows correct available/disabled dates within range",
       async () => {
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: "Date picker with min/max values",
         });
-        const calendarButton = within(datePicker).getByRole("button", {
+        const calendarButton = await within(datePicker).findByRole("button", {
           name: /calendar/i,
         });
 
@@ -1596,7 +1734,7 @@ export const MinMaxValues: Story = {
         });
 
         // Find the calendar grid
-        const calendarGrid = within(document.body).getByRole("grid");
+        const calendarGrid = await within(document.body).findByRole("grid");
         await expect(calendarGrid).toBeInTheDocument();
 
         const dateCells = within(calendarGrid).getAllByRole("gridcell");
@@ -1641,7 +1779,7 @@ export const MinMaxValues: Story = {
     await step(
       "Typing date outside min/max range handles gracefully",
       async () => {
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: "Date picker with min/max values",
         });
         const segments = within(datePicker).getAllByRole("spinbutton");
@@ -1663,15 +1801,17 @@ export const MinMaxValues: Story = {
         await userEvent.click(segments[1]);
         await userEvent.keyboard("{Control>}a{/Control}");
         await userEvent.keyboard("20"); // 20th (within range)
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "20");
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "20");
+        });
       }
     );
 
     await step("Can select valid date from calendar within range", async () => {
-      const datePicker = canvas.getByRole("group", {
+      const datePicker = await canvas.findByRole("group", {
         name: "Date picker with min/max values",
       });
-      const calendarButton = within(datePicker).getByRole("button", {
+      const calendarButton = await within(datePicker).findByRole("button", {
         name: /calendar/i,
       });
 
@@ -1684,7 +1824,7 @@ export const MinMaxValues: Story = {
       });
 
       // Find an available (non-disabled) date and click it
-      const calendarGrid = within(document.body).getByRole("grid");
+      const calendarGrid = await within(document.body).findByRole("grid");
       const dateCells = within(calendarGrid).getAllByRole("gridcell");
       const availableDates = dateCells.filter((cell) => {
         const button = cell.querySelector("button");
@@ -1703,7 +1843,7 @@ export const MinMaxValues: Story = {
           });
 
           // Clear button should be enabled after selection
-          const clearButton = within(datePicker).getByRole("button", {
+          const clearButton = await within(datePicker).findByRole("button", {
             name: /clear/i,
           });
           await expect(clearButton).not.toBeDisabled();
@@ -1714,16 +1854,18 @@ export const MinMaxValues: Story = {
     await step(
       "Clear and re-select functionality works within constraints",
       async () => {
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: "Date picker with min/max values",
         });
-        const clearButton = within(datePicker).getByRole("button", {
+        const clearButton = await within(datePicker).findByRole("button", {
           name: /clear/i,
         });
 
         // Clear the current value
         await userEvent.click(clearButton);
-        await expect(clearButton).toBeDisabled();
+        await waitFor(async () => {
+          await expect(clearButton).toBeDisabled();
+        });
 
         // Set a new valid date within range by typing
         const segments = within(datePicker).getAllByRole("spinbutton");
@@ -1740,9 +1882,11 @@ export const MinMaxValues: Story = {
         await expect(clearButton).not.toBeDisabled();
 
         // Verify the valid date was set
-        await expect(segments[0]).toHaveAttribute("aria-valuenow", "7"); // July
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", "1"); // 1st
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "7"); // July
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "1"); // 1st
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+        });
       }
     );
   },
@@ -1780,18 +1924,20 @@ export const UnavailableDates: Story = {
     const canvas = within(canvasElement);
 
     await step("DatePicker starts with valid even day", async () => {
-      const datePicker = canvas.getByRole("group", {
+      const datePicker = await canvas.findByRole("group", {
         name: "Even days only picker",
       });
       const segments = within(datePicker).getAllByRole("spinbutton");
-      const clearButton = within(datePicker).getByRole("button", {
+      const clearButton = await within(datePicker).findByRole("button", {
         name: /clear/i,
       });
 
       // Should have default value of 2025-06-16 (even day)
-      await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
-      await expect(segments[1]).toHaveAttribute("aria-valuenow", "16"); // 16th (even)
-      await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
+        await expect(segments[1]).toHaveAttribute("aria-valuenow", "16"); // 16th (even)
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+      });
 
       // Clear button should be enabled since there's a valid default value
       await expect(clearButton).not.toBeDisabled();
@@ -1800,10 +1946,10 @@ export const UnavailableDates: Story = {
     await step(
       "Calendar shows odd days as disabled and even days as available",
       async () => {
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: "Even days only picker",
         });
-        const calendarButton = within(datePicker).getByRole("button", {
+        const calendarButton = await within(datePicker).findByRole("button", {
           name: /calendar/i,
         });
 
@@ -1817,7 +1963,7 @@ export const UnavailableDates: Story = {
         });
 
         // Find the calendar grid
-        const calendarGrid = within(document.body).getByRole("grid");
+        const calendarGrid = await within(document.body).findByRole("grid");
         const dateCells = within(calendarGrid).getAllByRole("gridcell");
 
         // Check for odd and even day buttons
@@ -1825,7 +1971,7 @@ export const UnavailableDates: Story = {
         const evenDayButtons = [];
 
         for (const cell of dateCells) {
-          const button = within(cell).getByRole("button");
+          const button = await within(cell).findByRole("button");
           if (!button) continue;
 
           const ariaLabel = button.getAttribute("aria-label");
@@ -1874,10 +2020,10 @@ export const UnavailableDates: Story = {
     await step(
       "Cannot select odd days from calendar (clicking disabled dates)",
       async () => {
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: "Even days only picker",
         });
-        const calendarButton = within(datePicker).getByRole("button", {
+        const calendarButton = await within(datePicker).findByRole("button", {
           name: /calendar/i,
         });
 
@@ -1890,7 +2036,7 @@ export const UnavailableDates: Story = {
         });
 
         // Find an odd day button that's disabled
-        const calendarGrid = within(document.body).getByRole("grid");
+        const calendarGrid = await within(document.body).findByRole("grid");
         const dateCells = within(calendarGrid).getAllByRole("gridcell");
 
         let disabledOddButton = null;
@@ -1942,10 +2088,10 @@ export const UnavailableDates: Story = {
     );
 
     await step("Can successfully select even days from calendar", async () => {
-      const datePicker = canvas.getByRole("group", {
+      const datePicker = await canvas.findByRole("group", {
         name: "Even days only picker",
       });
-      const calendarButton = within(datePicker).getByRole("button", {
+      const calendarButton = await within(datePicker).findByRole("button", {
         name: /calendar/i,
       });
 
@@ -1958,7 +2104,7 @@ export const UnavailableDates: Story = {
       });
 
       // Find an enabled even day button
-      const calendarGrid = within(document.body).getByRole("grid");
+      const calendarGrid = await within(document.body).findByRole("grid");
       const dateCells = within(calendarGrid).getAllByRole("gridcell");
 
       let availableEvenButton = null;
@@ -1998,10 +2144,15 @@ export const UnavailableDates: Story = {
 
         // Verify the even day was selected
         const segments = within(datePicker).getAllByRole("spinbutton");
-        await expect(segments[1]).toHaveAttribute("aria-valuenow", expectedDay);
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute(
+            "aria-valuenow",
+            expectedDay
+          );
+        });
 
         // Clear button should still be enabled
-        const clearButton = within(datePicker).getByRole("button", {
+        const clearButton = await within(datePicker).findByRole("button", {
           name: /clear/i,
         });
         await expect(clearButton).not.toBeDisabled();
@@ -2030,7 +2181,7 @@ export const UnavailableDates: Story = {
           // Calendar might not be open, ignore timeout
         });
 
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: "Even days only picker",
         });
 
@@ -2042,20 +2193,26 @@ export const UnavailableDates: Story = {
         await userEvent.keyboard("{Control>}a{/Control}");
         await userEvent.keyboard("2"); // Set to 2nd (even day)
 
-        await expect(daySegment).toHaveAttribute("aria-valuenow", "2");
+        await waitFor(async () => {
+          await expect(daySegment).toHaveAttribute("aria-valuenow", "2");
+        });
 
         // Arrow up should skip odd day 3 and go to even day 4
         await userEvent.keyboard("{ArrowUp}");
         await userEvent.click(document.body);
-        await expect(daySegment).toHaveAttribute("aria-valuenow", "3");
-        await expect(daySegment).toHaveAttribute("aria-invalid", "true");
+        await waitFor(async () => {
+          await expect(daySegment).toHaveAttribute("aria-valuenow", "3");
+          await expect(daySegment).toHaveAttribute("aria-invalid", "true");
+        });
 
         // Arrow up again should go to 6
         await userEvent.click(daySegment);
         await userEvent.keyboard("{ArrowUp}");
         await userEvent.click(document.body);
-        await expect(daySegment).toHaveAttribute("aria-valuenow", "4");
-        await expect(daySegment).not.toHaveAttribute("aria-invalid", "true");
+        await waitFor(async () => {
+          await expect(daySegment).toHaveAttribute("aria-valuenow", "4");
+          await expect(daySegment).not.toHaveAttribute("aria-invalid", "true");
+        });
       }
     );
   },
@@ -2138,13 +2295,13 @@ export const MultipleLocales: Story = {
     const canvas = within(canvasElement);
 
     await step("All locale variants render correctly", async () => {
-      const usEnglishPicker = canvas.getByRole("group", {
+      const usEnglishPicker = await canvas.findByRole("group", {
         name: "US English picker",
       });
-      const germanPicker = canvas.getByRole("group", {
+      const germanPicker = await canvas.findByRole("group", {
         name: "German picker",
       });
-      const spanishPicker = canvas.getByRole("group", {
+      const spanishPicker = await canvas.findByRole("group", {
         name: "Spanish picker",
       });
 
@@ -2154,7 +2311,7 @@ export const MultipleLocales: Story = {
     });
 
     await step("US English uses 12-hour format with AM/PM", async () => {
-      const usEnglishPicker = canvas.getByRole("group", {
+      const usEnglishPicker = await canvas.findByRole("group", {
         name: "US English picker",
       });
       const segments = within(usEnglishPicker).getAllByRole("spinbutton");
@@ -2172,7 +2329,7 @@ export const MultipleLocales: Story = {
     });
 
     await step("German uses 24-hour format without AM/PM", async () => {
-      const germanPicker = canvas.getByRole("group", {
+      const germanPicker = await canvas.findByRole("group", {
         name: "German picker",
       });
       const segments = within(germanPicker).getAllByRole("spinbutton");
@@ -2186,7 +2343,7 @@ export const MultipleLocales: Story = {
     });
 
     await step("Spanish locale adapts date structure", async () => {
-      const spanishPicker = canvas.getByRole("group", {
+      const spanishPicker = await canvas.findByRole("group", {
         name: "Spanish picker",
       });
       const segments = within(spanishPicker).getAllByRole("spinbutton");
@@ -2203,10 +2360,10 @@ export const MultipleLocales: Story = {
     });
 
     await step("Locale-specific differences are observable", async () => {
-      const usEnglishPicker = canvas.getByRole("group", {
+      const usEnglishPicker = await canvas.findByRole("group", {
         name: "US English picker",
       });
-      const germanPicker = canvas.getByRole("group", {
+      const germanPicker = await canvas.findByRole("group", {
         name: "German picker",
       });
 
@@ -2218,8 +2375,10 @@ export const MultipleLocales: Story = {
 
       // Both should display the same date/time but formatted differently
       // US: 6/15/2025, 2:30 PM vs German: 15.6.2025, 14:30
-      await expect(usSegments[0]).toHaveAttribute("aria-valuenow", "6"); // US month first
-      await expect(germanSegments[0]).toHaveAttribute("aria-valuenow", "15"); // German day first
+      await waitFor(async () => {
+        await expect(usSegments[0]).toHaveAttribute("aria-valuenow", "6"); // US month first
+        await expect(germanSegments[0]).toHaveAttribute("aria-valuenow", "15"); // German day first
+      });
     });
   },
 };
@@ -2282,9 +2441,9 @@ export const InFormFieldContext: Story = {
 
     await step("All FormField contexts render with DatePickers", async () => {
       // Find all FormField labels to identify the different contexts
-      const eventDateLabel = canvas.getByText("Event Date");
-      const deadlineDateLabel = canvas.getByText("Deadline Date");
-      const meetingTimeLabel = canvas.getByText("Meeting Time");
+      const eventDateLabel = await canvas.findByText("Event Date");
+      const deadlineDateLabel = await canvas.findByText("Deadline Date");
+      const meetingTimeLabel = await canvas.findByText("Meeting Time");
 
       await expect(eventDateLabel).toBeInTheDocument();
       await expect(deadlineDateLabel).toBeInTheDocument();
@@ -2299,7 +2458,9 @@ export const InFormFieldContext: Story = {
       "Required FormField integrates properly with DatePicker",
       async () => {
         // Locate the DatePicker by its accessible name derived from the label
-        const datePicker = canvas.getByRole("group", { name: /event date/i });
+        const datePicker = await canvas.findByRole("group", {
+          name: /event date/i,
+        });
         await expect(datePicker).toBeInTheDocument();
 
         // Ensure segments are present and tabbable
@@ -2310,7 +2471,9 @@ export const InFormFieldContext: Story = {
         }
 
         // Verify description text is present
-        const description = canvas.getByText("Select the date for your event");
+        const description = await canvas.findByText(
+          "Select the date for your event"
+        );
         await expect(description).toBeInTheDocument();
       }
     );
@@ -2319,13 +2482,13 @@ export const InFormFieldContext: Story = {
       "Invalid FormField integrates properly with DatePicker",
       async () => {
         // Locate the invalid DatePicker by accessible name
-        const datePicker = canvas.getByRole("group", {
+        const datePicker = await canvas.findByRole("group", {
           name: /deadline date/i,
         });
         await expect(datePicker).toBeInTheDocument();
 
         // Verify error message is present and accessible
-        const errorMessage = canvas.getByText(
+        const errorMessage = await canvas.findByText(
           "Please select a valid date in the future"
         );
         await expect(errorMessage).toBeInTheDocument();
@@ -2339,7 +2502,7 @@ export const InFormFieldContext: Story = {
         }
 
         // Verify description text is present
-        const description = canvas.getByText(
+        const description = await canvas.findByText(
           "Choose a deadline for the project"
         );
         await expect(description).toBeInTheDocument();
@@ -2350,7 +2513,9 @@ export const InFormFieldContext: Story = {
       "DatePicker with granularity works in FormField with InfoBox",
       async () => {
         // Locate the Meeting Time DatePicker by accessible name
-        const datePicker = canvas.getByRole("group", { name: /meeting time/i });
+        const datePicker = await canvas.findByRole("group", {
+          name: /meeting time/i,
+        });
         await expect(datePicker).toBeInTheDocument();
 
         // Verify granularity="minute" results in more segments (including time)
@@ -2368,8 +2533,10 @@ export const InFormFieldContext: Story = {
         await userEvent.click(minuteSegment);
         await userEvent.keyboard("30");
 
-        await expect(hourSegment).toHaveAttribute("aria-valuenow");
-        await expect(minuteSegment).toHaveAttribute("aria-valuenow");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow");
+          await expect(minuteSegment).toHaveAttribute("aria-valuenow");
+        });
       }
     );
 
@@ -2410,12 +2577,14 @@ export const InFormFieldContext: Story = {
 
         for (const context of formFieldContexts) {
           // Verify label and description are present
-          await expect(canvas.getByText(context.label)).toBeInTheDocument();
           await expect(
-            canvas.getByText(context.description)
+            await canvas.findByText(context.label)
+          ).toBeInTheDocument();
+          await expect(
+            await canvas.findByText(context.description)
           ).toBeInTheDocument();
 
-          const datePicker = canvas.getByRole("group", {
+          const datePicker = await canvas.findByRole("group", {
             name: new RegExp(context.label, "i"),
           });
           await expect(datePicker).toBeInTheDocument();
@@ -2437,9 +2606,12 @@ export const InFormFieldContext: Story = {
         const datePickers = canvas.getAllByRole("group");
         const firstDatePicker = datePickers[0];
 
-        const calendarButton = within(firstDatePicker).getByRole("button", {
-          name: /calendar/i,
-        });
+        const calendarButton = await within(firstDatePicker).findByRole(
+          "button",
+          {
+            name: /calendar/i,
+          }
+        );
 
         await expect(calendarButton).toBeInTheDocument();
         await expect(calendarButton).not.toBeDisabled();
@@ -2468,7 +2640,7 @@ export const InFormFieldContext: Story = {
 
       for (let i = 0; i < datePickers.length; i++) {
         const datePicker = datePickers[i];
-        const clearButton = within(datePicker).getByRole("button", {
+        const clearButton = await within(datePicker).findByRole("button", {
           name: /clear/i,
         });
 
@@ -2606,7 +2778,7 @@ export const PopoverBehavior: Story = {
       await expect(calendar).toBeInTheDocument();
 
       // Verify the calendar grid is present
-      const calendarGrid = within(document.body).getByRole("grid");
+      const calendarGrid = await within(document.body).findByRole("grid");
       await expect(calendarGrid).toBeInTheDocument();
 
       // Verify we can see date cells in the calendar
@@ -2625,7 +2797,9 @@ export const PopoverBehavior: Story = {
       });
 
       // Now verify the controlled picker can open the calendar
-      const openButton = canvas.getByRole("button", { name: "Open Calendar" });
+      const openButton = await canvas.findByRole("button", {
+        name: "Open Calendar",
+      });
       await userEvent.click(openButton);
 
       await waitFor(async () => {
@@ -2644,12 +2818,15 @@ export const PopoverBehavior: Story = {
     await step(
       "Custom close behavior picker stays open after date selection",
       async () => {
-        const customClosePicker = canvas.getByRole("group", {
+        const customClosePicker = await canvas.findByRole("group", {
           name: "Custom close behavior picker",
         });
-        const calendarButton = within(customClosePicker).getByRole("button", {
-          name: /calendar/i,
-        });
+        const calendarButton = await within(customClosePicker).findByRole(
+          "button",
+          {
+            name: /calendar/i,
+          }
+        );
 
         // Open the calendar
         await userEvent.click(calendarButton);
@@ -2660,7 +2837,7 @@ export const PopoverBehavior: Story = {
         });
 
         // Select the first available date
-        const calendarGrid = within(document.body).getByRole("grid");
+        const calendarGrid = await within(document.body).findByRole("grid");
         const dateCells = within(calendarGrid).getAllByRole("gridcell");
         const firstAvailableDate = dateCells.find((cell) => {
           const button = cell.querySelector("button");
