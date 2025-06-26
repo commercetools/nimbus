@@ -247,11 +247,10 @@ export const EmptyState: Story = {
       >
         <TagGroup.TagList
           items={animalList.items}
-          renderEmptyState={() => <Text>No Animals</Text>}
+          renderEmptyState={() => <Text slot={null}>No Animals</Text>}
         >
           {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
         </TagGroup.TagList>
-        <Text slot="description">Remove the item to see the empty state</Text>
       </TagGroup.Root>
     );
   },
@@ -282,7 +281,9 @@ export const Sizes: Story = {
       <Stack direction="column" gap="400" alignItems="flex-start">
         {sizes.map((size) => (
           <TagGroup.Root key={size as string} size={size} aria-label="animals">
-            <Text as="label">size {size as string}</Text>
+            <Text slot={null} as="label">
+              size {size as string}
+            </Text>
             <TagGroup.TagList items={animalList.items}>
               {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
             </TagGroup.TagList>
