@@ -15,6 +15,7 @@ const config: StorybookConfig = {
     getAbsolutePackagePath("@storybook/addon-a11y"),
     getAbsolutePackagePath("@vueless/storybook-dark-mode"),
     getAbsolutePackagePath("@storybook/addon-vitest"),
+    getAbsolutePackagePath("@storybook/addon-docs"),
   ],
   framework: {
     name: getAbsolutePackagePath("@storybook/react-vite"),

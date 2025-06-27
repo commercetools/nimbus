@@ -54,6 +54,7 @@
     "@pandacss/types": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
+    "@storybook/addon-docs": "catalog:tooling",
     "@storybook/addon-vitest": "catalog:tooling",
     "@storybook/react-vite": "catalog:tooling",
     "@testing-library/react": "catalog:tooling",

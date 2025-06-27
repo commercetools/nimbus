@@ -58,6 +58,9 @@ catalogs:
     '@storybook/addon-a11y':
       specifier: ^9.0.13
       version: 9.0.13
+    '@storybook/addon-docs':
+      specifier: ^9.0.13
+      version: 9.0.13
     '@storybook/addon-vitest':
       specifier: ^9.0.13
       version: 9.0.13
@@ -510,6 +513,9 @@ importers:
       '@storybook/addon-a11y':
         specifier: catalog:tooling
         version: 9.0.13(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))
+      '@storybook/addon-docs':
+        specifier: catalog:tooling
+        version: 9.0.13(@types/react@19.1.6)(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))
       '@storybook/addon-vitest':
         specifier: catalog:tooling
         version: 9.0.13(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))(vitest@3.2.4)
@@ -2686,6 +2692,11 @@ packages:
 
   '@storybook/addon-a11y@9.0.13':
     resolution: {integrity: sha512-MVkfZx7ZeAOMGzeRLH6Rf2NMMA5ubTRR8EzW0x0kGXIfYhZxRj+hDEZl3ggMUo+A30w+hOi4d8OGFfWm45DTeg==}
+    peerDependencies:
+      storybook: ^9.0.13
+
+  '@storybook/addon-docs@9.0.13':
+    resolution: {integrity: sha512-e9mCzgxsSz/FIHz08Gex71jF2tz5WNPgSxEg6Lb8jMWbfdgb2lEFyby/RV5qj8ajTXhheiGKZ3K9JESfLWm0ng==}
     peerDependencies:
       storybook: ^9.0.13
 
@@ -10225,6 +10236,19 @@ snapshots:
       '@storybook/global': 5.0.0
       axe-core: 4.10.2
       storybook: 9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3)
+
+  '@storybook/addon-docs@9.0.13(@types/react@19.1.6)(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))':
+    dependencies:
+      '@mdx-js/react': 3.1.0(@types/react@19.1.6)(react@19.1.0)
+      '@storybook/csf-plugin': 9.0.13(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))
+      '@storybook/icons': 1.4.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@storybook/react-dom-shim': 9.0.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      storybook: 9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3)
+      ts-dedent: 2.2.0
+    transitivePeerDependencies:
+      - '@types/react'
 
   '@storybook/addon-vitest@9.0.13(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))(vitest@3.2.4)':
     dependencies:

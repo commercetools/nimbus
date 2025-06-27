@@ -24,6 +24,7 @@ catalogs:
     "@preconstruct/cli": ^2.8.12
     hygen: ^6.2.11
     "@storybook/addon-a11y": ^9.0.13
+    "@storybook/addon-docs": ^9.0.13
     "@storybook/addon-vitest": ^9.0.13
     "@storybook/react-vite": ^9.0.13
     storybook: ^9.0.13
