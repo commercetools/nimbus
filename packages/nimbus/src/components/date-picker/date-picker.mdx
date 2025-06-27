@@ -1,7 +1,7 @@
 ---
 id: Components-DatePicker
 title: DatePicker
-description: allows entering a date
+description: a UI component for users to enter or select a specific calendar date.
 lifecycleState: Alpha
 order: 999
 menu:
@@ -12,18 +12,158 @@ tags:
   - component
   - date
   - calendar
-
+figma: https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2923-4379&m=dev
 ---
 
 # DatePicker
 
-## Basic Usage
+A date field is a UI component for users to input or select a specific calendar date.
 
-Use the DatePicker to pick a date (and time):
+## Overview
+
+Date input can be simple or complex, allowing users to select a single date, range or particular times. There are two offered sizes, the default being medium for most use cases. 
+
+### Resources
+
+Deep dive on details and access design library
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2923-4379&m=dev)
+
+## Variables
+
+Get familiar with the features. 
+
+### Visual options
+
+#### Medium
+
+```jsx-live
+ const App = () => <DatePicker size="md" aria-label="Enter a date" />
+```
+
+#### Small
+
+```jsx-live
+ const App = () => <DatePicker size="sm" aria-label="Enter a date" />
+```
+
+## Guidelines
+
+### Best practices
+
+- **Clear labeling:** Use explicit and descriptive labels that clearly indicate what date information is needed (e.g., "Date of Birth," "Event Date").  
+- **Provide format hints:** Clearly display the expected date format (e.g., MM/DD/YYYY, YYYY-MM-DD) using placeholder text or helper text.  
+- **Offer multiple input methods:** Allow users to both manually type in the date and select it from a visual calendar picker.  
+- **Use input masks:** Consider using input masks to guide formatting as the user types, but ensure they don't hinder accessibility or flexibility.  
+- **Validate input:** Provide real-time validation and clear error messages for incorrect date formats or invalid dates.
+- **Show current date:** In a calendar picker, clearly highlight the current date for easy reference.
+- **Enable easy navigation:** Make it simple to navigate months and years within the calendar picker (e.g., using forward/backward buttons and year dropdown).
+- **Indicate selected date:** Clearly visually distinguish the selected date in the calendar.
+- **Handle unavailable dates:** If certain dates are unavailable (e.g., past dates for future events), clearly indicate them as disabled.
+- **Ensure keyboard accessibility:** Make all parts of the date field (input, calendar) navigable and operable using the keyboard.  
+- **Provide sufficient contrast:** Ensure adequate color contrast between text, icons, and background elements for accessibility.
+- **Localization:** Adapt the date format and calendar display to the user's locale.
+- **Offer preset ranges:** For date range selections, provide common presets like "Last week," "This month," etc.  
+
+### Usage
+
+Date field standardizes the creation of intuitive and accessible date inputs, ensuring consistent formatting, clear affordances for selection (like calendars), and robust accessibility for seamless user interaction across all date-related data capture. All uses should follow accessibility guides, ensuring color contrast, keyboard navigation, and clear messaging for invalid messages. 
+
+> [!TIP]\
+> When to use
+
+- **Specific date selection required:** When users need to choose a particular date, such as a birthdate, appointment date, or event date.
+- **Date-related tasks:** For features involving scheduling, filtering by date, setting deadlines, or defining date ranges.
+- **Standardized input format:** To ensure users enter dates in a consistent and predictable format, reducing data entry errors.
+- **Visual calendar navigation:** When users benefit from a visual representation of a calendar to navigate and select dates, especially for date ranges or when the day of the week is relevant.
+- **Accessibility needs:** To provide an accessible alternative to manual text input for users with disabilities, including keyboard navigation and screen reader support.
+- **Clear date context:** When the date is a primary piece of information and needs to be explicitly chosen.
+
+> [!CAUTION]\
+> When not to use
+
+- **Approximate or vague dates:** When the exact date is not critical, and users might only know a month or year (consider a select dropdown or a less specific input).
+- **Dates far in the past or future:** For dates like birthdates, consider a direct text input with clear formatting hints or segmented inputs (month/day/year) to avoid excessive calendar navigation. However, a date picker can still be suitable if well-implemented with year selection.
+- **Simple "today" or "now" selection:** For actions that simply require the current date or time, a button or automated function might be more efficient.
+- **Limited screen real estate:** On very constrained interfaces, a compact text input with a clear format might be preferred over an expanded calendar, though accessibility should still be a priority.
+- **High frequency of typing known dates:** If users frequently know the exact date they need to enter and typing is faster for them, a well-formatted text input with validation might be sufficient alongside (or instead of) a date picker. (e.g. birthdays)
+- **Binary "yes/no" for date-related options:** For simple choices like "Remind me?" (implying the current date/time), a checkbox or switch might be more appropriate.
+
+### Labels and messaging
+
+Clear labels and concise messaging are crucial for a date input to ensure users understand what date information is required and how to provide it correctly.
+
+> [!TIP]\
+> **Do**
+> - Do use a clear and descriptive label (e.g., "Date of Birth," "Event Date").
+> - Do provide clear formatting hints (e.g., MM/DD/YYYY) as placeholder text or helper text.
+> - Do validate the input and provide clear error messages for incorrect formats or invalid dates.
+
+![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png) 
+
+> [!CAUTION]\
+> **Don't**
+> - Don't rely solely on placeholder text for the label.
+> - Don't use ambiguous date formats without clear guidance.
+> - Don't fail to provide feedback on invalid input.
+
+![labels and messaging - don'ts](/images/date-picker/labels-and-messaging-dont.png)
+
+### Interaction and selection
+
+The ideal date picker interaction offers a seamless experience through intuitive calendar navigation, clear visual feedback on selection, and the flexibility of both direct typing and visual selection to accommodate user preferences and accessibility needs.
+
+
+> [!TIP]\
+> **Do**
+> - Do highlight the current date in the calendar picker for reference.
+> - Do provide a visual calendar picker for easy selection, especially for non-familiar dates or date ranges.
+> - Do allow manual text input as an alternative for users who prefer it or know the date.
+> - Do clearly indicate the selected date(s) in the calendar.
+> - Do enable easy navigation between months and years in the calendar.
+> - Do consider providing preset date ranges (e.g., "Last Week," "Next Month") when relevant.
+
+![interaction and selection - do's](/images/date-picker/interaction-and-selection-do.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Don't use it for selecting vague or non-specific timeframes (e.g., "sometime next year").
+> - Don't force users to only use the calendar picker if they prefer typing.
+> - Don't use it for simple "today" selections where a button might suffice.
+> - Don't auto-advance between date segments (day/month/year) in text input, as it can hinder error correction.
+> - Don't make calendar navigation cumbersome.
+
+![interaction and selection - don'ts](/images/date-picker/interaction-and-selection-dont.png)
+
+
+## Specs
+
+<PropsTable id="DatePicker"/> 
+
+### Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => <DatePicker aria-label="Enter a date" />
 ```
-## Props
 
-<PropsTable id="DatePicker"/> 
+### Accessibility Standards
+
+- Always provide a visible label for the input.
+- Clearly associate the label with the input using the for attribute on the `<label>` and a matching id on the input element.
+- Ensure sufficient color contrast for all elements (text, borders, icons, focus indicators).
+- Clearly indicate the focused state.
+- Support keyboard navigation:
+  - Use Tab to navigate to and from the date input.
+  - Use Enter or Space to open/close the date picker (if applicable).
+  - Use arrow keys to navigate within the calendar grid (if a date picker is provided).
+  - Allow users to select dates using Enter or Space.
+- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
+- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).
+- Ensure screen readers announce the selected date and any navigation changes within a date picker.
+- Provide an accessible way to clear the date input.
+
+#### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/datepicker/) (Search for "Date Picker" or "Date Input" patterns)

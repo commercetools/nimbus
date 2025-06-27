@@ -158,6 +158,7 @@ export const Blockquote = (props: BlockquoteProps) => {
                   position="relative"
                   top="-50"
                   mr="100"
+                  verticalAlign="middle"
                   display="inline-block"
                   fontSize="500"
                   asChild
