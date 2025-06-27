@@ -30,6 +30,7 @@ export * from "./card";
 export * from "./form-field";
 export * from "./icon";
 export * from "./loading-spinner";
+export * from "./menu";
 export * from "./password-input";
 export * from "./time-input";
 export * from "./multiline-text-input";
