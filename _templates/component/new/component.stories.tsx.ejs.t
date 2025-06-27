@@ -2,7 +2,7 @@
 to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.stories.tsx
 ---
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { <%= h.changeCase.pascalCase(name) %> } from "./<%= h.changeCase.paramCase(name) %>";
 import { Stack } from "./../stack";
 

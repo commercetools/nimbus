@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback, useMemo, type FormEvent } from "react";
 import { type Key, type Selection } from "react-aria-components";
 import { useAsyncList } from "react-stately";
@@ -9,7 +9,7 @@ import {
   expect,
   fn,
   waitFor,
-} from "@storybook/test";
+} from "storybook/test";
 import {
   FormField,
   Stack,
@@ -552,6 +552,11 @@ export const Base: Story = {
         await expect(options.length).toBe(6);
         // Select another option using Enter key (navigate to Kangaroo and select it)
         await userEvent.keyboard("{ArrowDown}{ArrowDown}"); // Navigate to Kangaroo (second option)
+        /**
+         * Apparently this is what is causing the `act` warning in the storybook test
+         * storybook has 3-4 issues about this, which they keep closing, but never seem to fix
+         * most recent issue: https://github.com/storybookjs/storybook/issues/25304
+         */
         await userEvent.keyboard("{enter}");
         // Verify we now have 2 tags
         tagList = await getTagList(multiSelect);
@@ -1745,7 +1750,6 @@ export const CreateCustomValue: Story = {
     };
     const handleSingleCustomValue = (value: string) => {
       mockFn();
-      console.log("single custom value called");
       // Add custom item
       const newItem = { id: `single-custom-${Date.now()}`, name: value };
       setSingleCustomItems((prev) => [...prev, newItem]);
@@ -1753,7 +1757,6 @@ export const CreateCustomValue: Story = {
     };
     const handleMultiCustomValue = (value: string) => {
       mockFn();
-      console.log("multi custom value called");
       // Add custom item
       const newItem = { id: `multi-custom-${Date.now()}`, name: value };
       setMultiCustomItems((prev) => [...prev, newItem]);

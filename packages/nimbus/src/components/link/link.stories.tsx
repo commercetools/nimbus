@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Link } from "./link";
 import { Box, Stack, Text } from "@/components";
 import type { LinkProps } from "./link.types";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef } from "react";
 
 const sizes: LinkProps["size"][] = ["xs", "sm", "md"];

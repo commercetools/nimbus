@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Icon } from "./icon";
 import { Stack } from "./../stack";
 import { Bathtub } from "@commercetools/nimbus-icons";
 import type { IconProps } from "./icon.types";
-import { within, expect } from "@storybook/test";
+import { within, expect } from "storybook/test";
 
 /**
  * Storybook metadata configuration

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MultilineTextInput } from "./multiline-text-input";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { Box, Stack, Text, FormField } from "@/components";
 
 const meta: Meta<typeof MultilineTextInput> = {

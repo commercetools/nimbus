@@ -7,6 +7,10 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    container:
+      # Make sure to grab the latest version of the Playwright image
+      # https://playwright.dev/docs/docker#pull-the-image
+      image: mcr.microsoft.com/playwright:v1.52.0-noble
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -33,10 +37,6 @@ jobs:
       # - name: Lint # this takes surprisingly long and why bother if we're going to continue if it fails?
       #   run: pnpm lint
       #   continue-on-error: true # continue even if linting fails (for now) TODO: typechecking once we feel ok failing on lint
-
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps chromium
-
       - name: Run tests
         run: pnpm test
         timeout-minutes: 5 # Cancel this job after 5 minutes

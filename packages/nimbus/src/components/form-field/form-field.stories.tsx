@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FormField, type FormFieldProps } from "./index";
 import { Box, TextInput, Select, Stack } from "@/components";
-import { userEvent, within, expect } from "@storybook/test";
+import { userEvent, within, expect } from "storybook/test";
 
 const meta: Meta<typeof FormField.Root> = {
   title: "components/FormField",

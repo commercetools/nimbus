@@ -24,9 +24,10 @@
     "start": "pnpm run start:docs & pnpm run start:storybook",
     "start:docs": "pnpm --filter './apps/docs' run dev",
     "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:storybook": "vitest --project=storybook"
   },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+  "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
   "pnpm": {
     "overrides": {
       "rollup": "catalog:tooling",

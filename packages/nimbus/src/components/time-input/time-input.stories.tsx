@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TimeInput } from "./time-input";
 import { Button, FormField, Stack, Text } from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"

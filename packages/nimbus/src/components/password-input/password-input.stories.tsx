@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Stack } from "@/components";
 import { PasswordInput } from "./password-input";
 import { useState } from "react";
-import { within, expect, userEvent } from "@storybook/test";
+import { within, expect, userEvent } from "storybook/test";
 import { Text } from "@/components";
 
 export default {

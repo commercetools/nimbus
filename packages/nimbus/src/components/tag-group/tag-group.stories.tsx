@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { useListData } from "react-stately";
 import type { Selection as RsSelection } from "react-stately";
 import { Stack, Text } from "@/components";

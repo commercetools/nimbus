@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Accordion } from "./accordion";
 import type { AccordionProps } from "./accordion.types";
 import { Avatar, Button, Checkbox, Flex } from "@/components";
-import { expect, userEvent, waitFor } from "@storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 
 const meta: Meta<typeof Accordion.Root> = {
   title: "components/Accordion",

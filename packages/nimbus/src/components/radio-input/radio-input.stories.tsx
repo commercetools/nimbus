@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { RadioInput } from "./radio-input";
 import { Stack } from "@/components";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 
 import { FormField } from "@/components/form-field";
 
@@ -33,10 +33,10 @@ export const Base: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
-        name="storybook-radio-base"
+        aria-label="storybook-radio-base"
         onChange={onChange}
         data-testid="test-radio-input"
-        aria-label="test-label"
+        name="storybook-radio-base"
       >
         <RadioInput.Option value="no">No</RadioInput.Option>
         <RadioInput.Option value="yes">Yes</RadioInput.Option>
@@ -57,7 +57,10 @@ export const Base: Story = {
           "data-testid",
           "test-radio-input"
         );
-        await expect(htmlInput).toHaveAttribute("aria-label", "test-label");
+        await expect(htmlInput).toHaveAttribute(
+          "aria-label",
+          "storybook-radio-base"
+        );
       }
     );
 
@@ -98,6 +101,7 @@ export const Disabled: Story = {
     <Stack gap="1000">
       <RadioInput.Root
         data-testid="test-radio-input"
+        aria-label="storybook-radio-disabled"
         name="storybook-radio-disabled"
         onChange={onChange}
         isDisabled
@@ -140,6 +144,7 @@ export const DisabledAndSelected: Story = {
     <Stack gap="1000">
       <RadioInput.Root
         data-testid="test-radio-input-disabled-selected"
+        aria-label="storybook-radio-disabled-selected"
         name="storybook-radio-disabled-selected"
         isDisabled
         defaultValue="yes"
@@ -180,9 +185,9 @@ export const Invalid: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
-        name="storybook-radio-invalid"
+        aria-label="storybook-radio-invalid"
         data-testid="test-radio-input"
-        aria-label="test-label"
+        name="storybook-radio-invalid"
         isInvalid
         onChange={onChange}
       >
@@ -213,9 +218,9 @@ export const InvalidAndSelected: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
-        name="storybook-radio-invalid-selected"
+        aria-label="storybook-radio-invalid-selected"
         data-testid="test-radio-input-invalid-selected"
-        aria-label="test-label"
+        name="test-radio-input-invalid-selected"
         isInvalid
         defaultValue="yes"
         onChange={onChange}
@@ -262,9 +267,9 @@ export const InvalidAndDisabled: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
-        name="storybook-radio-invalid-disabled"
+        aria-label="storybook-radio-invalid-disabled"
         data-testid="test-radio-input-invalid-disabled"
-        aria-label="test-label"
+        name="test-radio-input-invalid-disabled"
         isInvalid
         isDisabled
         defaultValue="yes"
@@ -304,9 +309,9 @@ export const InvisibleLabel: Story = {
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
-        name="storybook-radio-no-label"
+        aria-label="storybook-radio-aria-label"
         data-testid="test-radio-input"
-        aria-label="test-label"
+        name="storybook-radio-no-label"
       >
         <RadioInput.Option value="no" aria-label="No"></RadioInput.Option>
       </RadioInput.Root>
@@ -316,7 +321,10 @@ export const InvisibleLabel: Story = {
     const canvas = within(canvasElement);
     const htmlInput = canvas.getByTestId("test-radio-input");
     await step("Has alternative label", async () => {
-      await expect(htmlInput).toHaveAttribute("aria-label", "test-label");
+      await expect(htmlInput).toHaveAttribute(
+        "aria-label",
+        "storybook-radio-aria-label"
+      );
     });
   },
 };
@@ -325,7 +333,7 @@ export const Orientation: Story = {
   render: () => (
     <Stack gap="1000">
       {/* Vertical (default) */}
-      <RadioInput.Root name="storybook-radio-grouping-direction-vertical">
+      <RadioInput.Root aria-label="storybook-radio-grouping-direction-vertical">
         <RadioInput.Option value="yes" key="input5">
           Yes
         </RadioInput.Option>
@@ -343,7 +351,7 @@ export const Orientation: Story = {
       <hr />
       {/* Horizontal */}
       <RadioInput.Root
-        name="storybook-radio-grouping-direction-horizontal"
+        aria-label="storybook-radio-grouping-direction-horizontal"
         orientation="horizontal"
       >
         <RadioInput.Option value="ja" key="input1-horizontal">
@@ -389,7 +397,7 @@ export const WithFormField: StoryObj = {
     <FormField.Root>
       <FormField.Label>Favorite Artist</FormField.Label>
       <FormField.Input>
-        <RadioInput.Root name="artist">
+        <RadioInput.Root aria-label="artist">
           <RadioInput.Option value="raphael">Raphael</RadioInput.Option>
           <RadioInput.Option value="donatello">Donatello</RadioInput.Option>
           <RadioInput.Option value="leonardo">Leonardo</RadioInput.Option>

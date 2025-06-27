@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Card } from "./card";
 import { Stack } from "./../stack";
 import type { CardProps } from "./card.types";
-import { within, expect, userEvent } from "@storybook/test";
+import { within, expect, userEvent } from "storybook/test";
 
 const cardPaddings: CardProps["cardPadding"][] = ["sm", "md", "lg"];
 const elevations: CardProps["elevation"][] = ["none", "elevated"];

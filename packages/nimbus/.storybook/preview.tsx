@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import type { Preview } from "@storybook/react";
+import type { Preview } from "@storybook/react-vite";
 import { NimbusProvider } from "../src";
-import { DARK_MODE_EVENT_NAME } from "storybook-dark-mode";
-import { addons } from "@storybook/preview-api";
+import { DARK_MODE_EVENT_NAME } from "@vueless/storybook-dark-mode";
+import { addons } from "storybook/preview-api";
 
 import APCACheck from "./apca-check";
 
@@ -19,7 +19,7 @@ const apca = APCACheck("custom", (fontSize: string) => {
 // get channel to listen to event emitter
 const channel = addons.getChannel();
 
-const ThemeDecorator = ({ children }) => {
+const ThemeDecorator = ({ children }: { children: React.ReactNode }) => {
   const [isDark, setDark] = useState(false);
   const theme = isDark ? "dark" : "light";
 
