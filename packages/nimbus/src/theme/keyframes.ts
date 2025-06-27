@@ -174,19 +174,37 @@ export const keyframes = {
     },
   },
   "scale-in": {
-    from: {
-      scale: "0.95",
+    "0%": {
+      opacity: 0,
+      transform: "scale(0.95)",
     },
     to: {
-      scale: "1",
+      opacity: 1,
+      transform: "scale(1)",
     },
   },
   "scale-out": {
     from: {
-      scale: "1",
+      opacity: 1,
+      transform: "scale(1)",
     },
     to: {
-      scale: "0.95",
+      opacity: 0,
+      transform: "scale(0.95)",
+    },
+  },
+
+  // Focus ring animations for subtle attention-drawing effects
+  "focus-ring-appear": {
+    "0%": {
+      outlineColor: "transparent",
+      outlineWidth: "16px",
+      outlineOffset: "0px",
+    },
+    "100%": {
+      outlineColor: "var(--focus-ring-color)",
+      outlineWidth: "var(--focus-ring-width)",
+      outlineOffset: "var(--focus-ring-offset)",
     },
   },
 };

@@ -16,11 +16,13 @@ export const globalCss = defineGlobalStyles({
     "--ring-color": "rgba(66, 153, 225, 0.6)",
     "--ring-offset-shadow": "0 0 #0000",
     "--ring-shadow": "0 0 #0000",
-    // Set default chakra-variables for focus ring
+    // Set default chakra-variables for focus ring with animation support
     "--focus-ring-color": "colors.primary.7",
     "--focus-ring-width": "sizes.50",
     "--focus-ring-offset": "spacing.50",
     "--focus-ring-style": "solid",
+    "--focus-ring-transition-duration": "durations.fast",
+    "--focus-ring-animation-duration": "durations.slow",
     "--brightness": "var(--chakra-empty,/*!*/ /*!*/)",
     "--contrast": "var(--chakra-empty,/*!*/ /*!*/)",
     "--grayscale": "var(--chakra-empty,/*!*/ /*!*/)",
@@ -63,6 +65,33 @@ export const globalCss = defineGlobalStyles({
   "*::selection": {
     bg: "colorPalette.9",
     color: "colorPalette.contrast",
+  },
+  /**
+   * Enhanced focus ring styles with subtle animations
+   * These styles apply to elements that use Chakra's focusRing system
+   */
+  "*:is(:focus-visible, [data-focus-visible])": {
+    // Smooth transition for focus ring appearance
+    transition: `
+      outline-width var(--focus-ring-transition-duration) ease-out,
+      outline-offset var(--focus-ring-transition-duration) ease-out,
+      box-shadow var(--focus-ring-transition-duration) ease-out
+    `,
+    // Initial focus ring appearance animation
+    animation: `focus-ring-appear var(--focus-ring-animation-duration) ease-out`,
+    // Subtle continuous pulse animation
+    "&:focus-visible": {
+      animation: `
+        focus-ring-appear var(--focus-ring-animation-duration) ease-out
+      `,
+    },
+    // Respect reduced motion preference
+    "@media (prefers-reduced-motion: reduce)": {
+      animation: "none",
+      "&:focus-visible": {
+        animation: "none",
+      },
+    },
   },
   /** overrides for styling in the chakra theme's preflight @reset layer
    * overview of preflight config:
