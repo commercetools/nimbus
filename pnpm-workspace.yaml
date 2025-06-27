@@ -61,5 +61,5 @@ catalogs:
     "@internationalized/date": ^3.8.0
   utils:
     lodash: ^4.17.21
-    "@types/lodash": ^4.17.16
+    "@types/lodash": ^4.17.19
     "@types/node": ^24.0.3
