@@ -67,7 +67,7 @@ export const WithSizes: Story = {
 export const WithVariants: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu onAction={(key) => alert(`Solid: ${key}`)}>
+      <Menu variant="solid" onAction={(key) => alert(`Solid: ${key}`)}>
         <Menu.Trigger>Solid</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="copy">Copy</Menu.Item>
@@ -76,7 +76,7 @@ export const WithVariants: Story = {
         </Menu.Content>
       </Menu>
 
-      <Menu onAction={(key) => alert(`Outline: ${key}`)}>
+      <Menu variant="outline" onAction={(key) => alert(`Outline: ${key}`)}>
         <Menu.Trigger>Outline</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="copy">Copy</Menu.Item>
@@ -85,7 +85,16 @@ export const WithVariants: Story = {
         </Menu.Content>
       </Menu>
 
-      <Menu onAction={(key) => alert(`Ghost: ${key}`)}>
+      <Menu variant="ghost" onAction={(key) => alert(`Ghost: ${key}`)}>
+        <Menu.Trigger>Ghost</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu variant="ghost" onAction={(key) => alert(`Ghost: ${key}`)}>
         <Menu.Trigger>Ghost</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="copy">Copy</Menu.Item>
@@ -460,4 +469,243 @@ export const ControlledMenu: Story = {
       </div>
     );
   },
+};
+
+// New stories showcasing all variants
+
+export const AllSizes: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "flex",
+        gap: "1rem",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
+      <Menu size="xs" onAction={(key) => alert(`XS: ${key}`)}>
+        <Menu.Trigger>Extra Small</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu size="sm" onAction={(key) => alert(`Small: ${key}`)}>
+        <Menu.Trigger>Small</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu size="md" onAction={(key) => alert(`Medium: ${key}`)}>
+        <Menu.Trigger>Medium</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu size="lg" onAction={(key) => alert(`Large: ${key}`)}>
+        <Menu.Trigger>Large</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu size="xl" onAction={(key) => alert(`XL: ${key}`)}>
+        <Menu.Trigger>Extra Large</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+    </div>
+  ),
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "flex",
+        gap: "1rem",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
+      <Menu variant="solid" onAction={(key) => alert(`Solid: ${key}`)}>
+        <Menu.Trigger>Solid</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu variant="outline" onAction={(key) => alert(`Outline: ${key}`)}>
+        <Menu.Trigger>Outline</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu variant="ghost" onAction={(key) => alert(`Ghost: ${key}`)}>
+        <Menu.Trigger>Ghost</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu variant="subtle" onAction={(key) => alert(`Subtle: ${key}`)}>
+        <Menu.Trigger>Subtle</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu variant="link" onAction={(key) => alert(`Link: ${key}`)}>
+        <Menu.Trigger>Link</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+    </div>
+  ),
+};
+
+export const AllTones: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "flex",
+        gap: "1rem",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
+      <Menu
+        tone="primary"
+        variant="solid"
+        onAction={(key) => alert(`Primary: ${key}`)}
+      >
+        <Menu.Trigger>Primary</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu
+        tone="critical"
+        variant="solid"
+        onAction={(key) => alert(`Critical: ${key}`)}
+      >
+        <Menu.Trigger>Critical</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu
+        tone="neutral"
+        variant="solid"
+        onAction={(key) => alert(`Neutral: ${key}`)}
+      >
+        <Menu.Trigger>Neutral</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu
+        tone="info"
+        variant="solid"
+        onAction={(key) => alert(`Info: ${key}`)}
+      >
+        <Menu.Trigger>Info</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu
+        tone="positive"
+        variant="solid"
+        onAction={(key) => alert(`Positive: ${key}`)}
+      >
+        <Menu.Trigger>Positive</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+
+      <Menu
+        tone="warning"
+        variant="solid"
+        onAction={(key) => alert(`Warning: ${key}`)}
+      >
+        <Menu.Trigger>Warning</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="copy">Copy</Menu.Item>
+          <Menu.Item id="cut">Cut</Menu.Item>
+          <Menu.Item id="paste">Paste</Menu.Item>
+        </Menu.Content>
+      </Menu>
+    </div>
+  ),
+};
+
+export const ToneVariantCombinations: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+        gap: "1rem",
+      }}
+    >
+      {["primary", "critical", "info", "positive", "warning"].map((tone) =>
+        ["solid", "outline", "ghost", "subtle"].map((variant) => (
+          <Menu
+            key={`${tone}-${variant}`}
+            tone={tone as any}
+            variant={variant as any}
+            onAction={(key) => alert(`${tone} ${variant}: ${key}`)}
+          >
+            <Menu.Trigger>{`${tone} ${variant}`}</Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="copy">Copy</Menu.Item>
+              <Menu.Item id="cut">Cut</Menu.Item>
+              <Menu.Item id="paste">Paste</Menu.Item>
+            </Menu.Content>
+          </Menu>
+        ))
+      )}
+    </div>
+  ),
 };

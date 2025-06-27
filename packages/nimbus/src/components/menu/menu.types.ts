@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import type { Key } from "react-aria-components";
+import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { menuSlotRecipe } from "./menu.recipe";
 
 export interface MenuTriggerProps {
   children: ReactNode;
@@ -62,7 +64,8 @@ export interface MenuItemKeyboardProps {
   children: ReactNode;
 }
 
-export interface MenuRootProps {
+export interface MenuRootProps
+  extends RecipeVariantProps<typeof menuSlotRecipe> {
   children: ReactNode;
   onAction?: (key: Key) => void;
   onOpenChange?: (isOpen: boolean) => void;

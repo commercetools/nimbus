@@ -33,6 +33,7 @@ export const menuSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyContent: "space-between",
       gap: "200",
+      px: "200",
       borderRadius: "200",
       color: "neutral.12",
       userSelect: "none",
@@ -145,6 +146,28 @@ export const menuSlotRecipe = defineSlotRecipe({
   variants: {
     // Size variants
     size: {
+      xs: {
+        trigger: {
+          minHeight: "700",
+          padding: "0 250",
+          fontSize: "300",
+          gap: "100",
+        },
+        content: {
+          padding: "100",
+          minWidth: "140px",
+        },
+        item: {
+          minHeight: "600",
+          padding: "100 150",
+          fontSize: "300",
+          gap: "150",
+        },
+        groupLabel: {
+          padding: "100 150",
+          fontSize: "200",
+        },
+      },
       sm: {
         trigger: {
           minHeight: "800",
@@ -211,42 +234,147 @@ export const menuSlotRecipe = defineSlotRecipe({
           fontSize: "350",
         },
       },
+      xl: {
+        trigger: {
+          minHeight: "1400",
+          padding: "0 600",
+          fontSize: "600",
+          gap: "400",
+        },
+        content: {
+          padding: "400",
+          minWidth: "280px",
+        },
+        item: {
+          minHeight: "1300",
+          padding: "400 500",
+          fontSize: "600",
+          gap: "500",
+        },
+        groupLabel: {
+          padding: "400 500",
+          fontSize: "400",
+        },
+      },
     },
 
     // Visual style variants
     variant: {
       solid: {
         trigger: {
-          backgroundColor: "neutral.3",
+          backgroundColor: "colorPalette.9",
+          color: "colorPalette.contrast",
           border: "solid-25",
-          borderColor: "neutral.6",
+          borderColor: "colorPalette.9",
 
           "&:hover": {
-            backgroundColor: "neutral.4",
-            borderColor: "neutral.7",
+            backgroundColor: "colorPalette.10",
+            borderColor: "colorPalette.10",
+          },
+
+          "&[data-state=open]": {
+            backgroundColor: "colorPalette.10",
+            borderColor: "colorPalette.10",
           },
         },
       },
       outline: {
         trigger: {
           backgroundColor: "transparent",
+          color: "colorPalette.11",
           border: "solid-25",
-          borderColor: "neutral.7",
+          borderColor: "colorPalette.7",
 
           "&:hover": {
-            backgroundColor: "neutral.2",
-            borderColor: "neutral.8",
+            backgroundColor: "colorPalette.2",
+            borderColor: "colorPalette.8",
+          },
+
+          "&[data-state=open]": {
+            backgroundColor: "colorPalette.3",
+            borderColor: "colorPalette.8",
           },
         },
       },
       ghost: {
         trigger: {
           backgroundColor: "transparent",
+          color: "colorPalette.11",
           border: "none",
 
           "&:hover": {
-            backgroundColor: "neutral.3",
+            backgroundColor: "colorPalette.3",
           },
+
+          "&[data-state=open]": {
+            backgroundColor: "colorPalette.4",
+          },
+        },
+      },
+      subtle: {
+        trigger: {
+          backgroundColor: "colorPalette.3",
+          color: "colorPalette.11",
+          border: "none",
+
+          "&:hover": {
+            backgroundColor: "colorPalette.4",
+          },
+
+          "&[data-state=open]": {
+            backgroundColor: "colorPalette.5",
+          },
+        },
+      },
+      link: {
+        trigger: {
+          backgroundColor: "transparent",
+          color: "colorPalette.11",
+          border: "none",
+          textDecoration: "underline",
+          textDecorationColor: "transparent",
+
+          "&:hover": {
+            textDecorationColor: "currentColor",
+          },
+
+          "&[data-state=open]": {
+            textDecorationColor: "currentColor",
+          },
+        },
+      },
+    },
+
+    // Color/tone variants
+    tone: {
+      primary: {
+        root: {
+          colorPalette: "primary",
+        },
+      },
+      critical: {
+        root: {
+          colorPalette: "critical",
+        },
+      },
+      neutral: {
+        root: {
+          colorPalette: "neutral",
+        },
+      },
+      info: {
+        root: {
+          colorPalette: "info",
+        },
+      },
+      positive: {
+        root: {
+          colorPalette: "positive",
+        },
+      },
+      warning: {
+        root: {
+          colorPalette: "warning",
         },
       },
     },
@@ -255,5 +383,6 @@ export const menuSlotRecipe = defineSlotRecipe({
   defaultVariants: {
     size: "md",
     variant: "outline",
+    tone: "neutral",
   },
 });

@@ -9,6 +9,7 @@ import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
+import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -34,4 +35,5 @@ export const slotRecipes = {
   numberInput: numberInputRecipe,
   radioInput: radioInputSlotRecipe,
   combobox: comboBoxSlotRecipe,
+  menu: menuSlotRecipe,
 };

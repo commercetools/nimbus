@@ -10,8 +10,11 @@ allows displaying menus in many different looks and configurations.
 - **Flexible Styling**: Uses Chakra UI's slot recipe pattern for comprehensive
   theming
 - **Multiple Variants**: Supports different visual styles (solid, outline,
-  ghost)
-- **Size Options**: Available in small, medium, and large sizes
+  ghost, subtle, link)
+- **Size Options**: Available in extra small, small, medium, large, and extra
+  large sizes
+- **Color Themes**: Supports semantic color tones (primary, critical, neutral,
+  info, positive, warning)
 - **Rich Content**: Support for labels, descriptions, keyboard shortcuts,
   groups, and separators
 - **Keyboard Navigation**: Full keyboard support with arrow keys, Enter, Escape,
@@ -80,11 +83,39 @@ function MyComponent() {
 </Menu>
 ```
 
-### Different Sizes and Variants
+### Different Sizes, Variants, and Tones
 
 ```tsx
-<Menu size="lg" variant="outline" onAction={handleAction}>
-  <Menu.Trigger>Large Outline Menu</Menu.Trigger>
+// Size variants
+<Menu size="xs" onAction={handleAction}>
+  <Menu.Trigger>Extra Small Menu</Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item id="item1">Item 1</Menu.Item>
+    <Menu.Item id="item2">Item 2</Menu.Item>
+  </Menu.Content>
+</Menu>
+
+// Visual variants
+<Menu variant="subtle" onAction={handleAction}>
+  <Menu.Trigger>Subtle Menu</Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item id="item1">Item 1</Menu.Item>
+    <Menu.Item id="item2">Item 2</Menu.Item>
+  </Menu.Content>
+</Menu>
+
+// Color tones
+<Menu tone="primary" variant="solid" onAction={handleAction}>
+  <Menu.Trigger>Primary Menu</Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item id="item1">Item 1</Menu.Item>
+    <Menu.Item id="item2">Item 2</Menu.Item>
+  </Menu.Content>
+</Menu>
+
+// Combining variants
+<Menu size="lg" variant="outline" tone="critical" onAction={handleAction}>
+  <Menu.Trigger>Large Critical Outline Menu</Menu.Trigger>
   <Menu.Content>
     <Menu.Item id="item1">Item 1</Menu.Item>
     <Menu.Item id="item2">Item 2</Menu.Item>
@@ -96,15 +127,16 @@ function MyComponent() {
 
 ### Menu (Root)
 
-| Prop            | Type                              | Default   | Description                                        |
-| --------------- | --------------------------------- | --------- | -------------------------------------------------- |
-| `size`          | `"sm" \| "md" \| "lg"`            | `"md"`    | Size of the menu                                   |
-| `variant`       | `"solid" \| "outline" \| "ghost"` | `"solid"` | Visual variant                                     |
-| `onAction`      | `(key: Key) => void`              | -         | Handler called when an item is selected            |
-| `onOpenChange`  | `(isOpen: boolean) => void`       | -         | Handler called when menu open state changes        |
-| `isOpen`        | `boolean`                         | -         | Whether the menu is open (controlled)              |
-| `defaultOpen`   | `boolean`                         | -         | Whether the menu is open by default (uncontrolled) |
-| `closeOnSelect` | `boolean`                         | `true`    | Whether to close menu when an item is selected     |
+| Prop            | Type                                                                        | Default     | Description                                        |
+| --------------- | --------------------------------------------------------------------------- | ----------- | -------------------------------------------------- |
+| `size`          | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`                                      | `"md"`      | Size of the menu                                   |
+| `variant`       | `"solid" \| "outline" \| "ghost" \| "subtle" \| "link"`                     | `"outline"` | Visual variant                                     |
+| `tone`          | `"primary" \| "critical" \| "neutral" \| "info" \| "positive" \| "warning"` | `"neutral"` | Color theme/semantic tone                          |
+| `onAction`      | `(key: Key) => void`                                                        | -           | Handler called when an item is selected            |
+| `onOpenChange`  | `(isOpen: boolean) => void`                                                 | -           | Handler called when menu open state changes        |
+| `isOpen`        | `boolean`                                                                   | -           | Whether the menu is open (controlled)              |
+| `defaultOpen`   | `boolean`                                                                   | -           | Whether the menu is open by default (uncontrolled) |
+| `closeOnSelect` | `boolean`                                                                   | `true`      | Whether to close menu when an item is selected     |
 
 ### Menu.Trigger
 
