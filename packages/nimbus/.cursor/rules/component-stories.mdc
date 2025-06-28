@@ -1,0 +1,496 @@
+---
+description: 
+globs: *.stories.tsx
+alwaysApply: false
+---
+# Nimbus Component Stories Blueprint
+
+This guide provides a comprehensive blueprint for creating and maintaining Storybook stories for components in the Nimbus design system. It covers patterns, conventions, and best practices derived from existing component stories.
+
+## File Structure & Naming
+
+### File Location
+```
+packages/nimbus/src/components/{component-name}/{component-name}.stories.tsx
+```
+
+### Basic File Template
+```typescript
+import type { Meta, StoryObj } from "@storybook/react";
+import { ComponentName } from "./component-name";
+import type { ComponentNameProps } from "./component-name.types";
+import { userEvent, within, expect, fn } from "@storybook/test";
+import { Stack, Box, Text } from "@/components"; // Helper components as needed
+
+/**
+ * Storybook metadata configuration
+ * - title: determines the location in the sidebar
+ * - component: references the component being documented
+ */
+const meta: Meta<typeof ComponentName> = {
+  title: "components/ComponentName",
+  component: ComponentName,
+  // Optional: Add argTypes for better control panel experience
+  argTypes: {
+    variant: {
+      options: ["solid", "outline", "ghost"],
+      control: { type: "radio" },
+    },
+  },
+};
+
+export default meta;
+
+/**
+ * Story type for TypeScript support
+ * StoryObj provides type checking for our story configurations
+ */
+type Story = StoryObj<typeof ComponentName>;
+```
+
+## Core Story Patterns
+
+### 1. Base Story (Required)
+Every component must have a `Base` story demonstrating the most basic implementation:
+
+```typescript
+export const Base: Story = {
+  args: {
+    children: "Button Text",
+    onPress: fn(),
+    ["data-testid"]: "test-component",
+    ["aria-label"]: "descriptive-label",
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const element = canvas.getByTestId("test-component");
+
+    await step("Element renders correctly", async () => {
+      await expect(element).toBeInTheDocument();
+      await expect(element.tagName).toBe("BUTTON"); // Verify semantic HTML
+    });
+
+    await step("Forwards data- & aria-attributes", async () => {
+      await expect(element).toHaveAttribute("data-testid", "test-component");
+      await expect(element).toHaveAttribute("aria-label", "descriptive-label");
+    });
+
+    // Add interaction tests
+    await step("Is clickable", async () => {
+      await userEvent.click(element);
+      await expect(args.onPress).toHaveBeenCalledTimes(1);
+    });
+
+    await step("Is keyboard accessible", async () => {
+      await userEvent.tab();
+      await expect(element).toHaveFocus();
+      await userEvent.keyboard("{enter}");
+      await expect(args.onPress).toHaveBeenCalledTimes(2);
+    });
+  },
+};
+```
+
+### 2. Variant Stories
+For components with visual variants (size, color, style):
+
+```typescript
+const sizes: ComponentNameProps["size"][] = ["sm", "md", "lg"];
+const variants: ComponentNameProps["variant"][] = ["solid", "outline", "ghost"];
+const tones: ComponentNameProps["tone"][] = ["primary", "neutral", "critical"];
+
+export const Sizes: Story = {
+  args: {
+    children: "Demo Content",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {sizes.map((size) => (
+          <ComponentName key={size} {...args} size={size} />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const Variants: Story = {
+  args: {
+    children: "Demo Content",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {variants.map((variant) => (
+          <ComponentName key={variant} {...args} variant={variant} />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const Tones: Story = {
+  args: {
+    children: "Demo Content",
+  },
+  render: (args) => {
+    return (
+      <Stack>
+        {tones.map((tone) => (
+          <Stack key={tone} direction="row" gap="400" alignItems="center">
+            {variants.map((variant) => (
+              <ComponentName
+                key={variant}
+                {...args}
+                variant={variant}
+                tone={tone}
+              />
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+```
+
+### 3. State Stories
+For components with different states:
+
+```typescript
+export const Disabled: Story = {
+  args: {
+    children: "Disabled Component",
+    isDisabled: true,
+    onPress: fn(),
+    ["data-testid"]: "disabled-test",
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const element = canvas.getByTestId("disabled-test");
+
+    await step("Cannot be clicked when disabled", async () => {
+      await userEvent.click(element);
+      await expect(args.onPress).toHaveBeenCalledTimes(0);
+    });
+
+    await step("Cannot be focused when disabled", async () => {
+      await userEvent.tab();
+      await expect(element).not.toHaveFocus();
+    });
+  },
+};
+
+export const Invalid: Story = {
+  args: {
+    isInvalid: true,
+    ["data-testid"]: "invalid-test",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const element = canvas.getByTestId("invalid-test");
+
+    await step("Shows invalid state styling", async () => {
+      await expect(element).toHaveAttribute("aria-invalid", "true");
+    });
+  },
+};
+```
+
+### 4. Controlled State Stories
+For components that can be controlled:
+
+```typescript
+export const ControlledState: Story = {
+  render: () => {
+    const [value, setValue] = useState("initial-value");
+    const mockFn = fn();
+
+    const handleChange = (newValue: string) => {
+      setValue(newValue);
+      mockFn(newValue);
+    };
+
+    return (
+      <Box>
+        <Box bg="blueAlpha.2" p="400" my="400" data-testid="value-display">
+          Current value: <mark>{value}</mark>
+        </Box>
+        <ComponentName
+          value={value}
+          onChange={handleChange}
+          data-testid="controlled-component"
+        />
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const component = canvas.getByTestId("controlled-component");
+    const valueDisplay = canvas.getByTestId("value-display");
+
+    await step("Displays initial value", async () => {
+      await expect(valueDisplay).toHaveTextContent("initial-value");
+    });
+
+    await step("Updates external state on change", async () => {
+      // Simulate user interaction
+      await userEvent.click(component);
+      // Verify state update
+      await expect(valueDisplay).toHaveTextContent("new-value");
+    });
+  },
+};
+```
+
+### 5. Complex Usage Stories
+For components with advanced use cases:
+
+```typescript
+export const WithFormField: Story = {
+  render: () => {
+    return (
+      <FormField.Root>
+        <FormField.Label>Component Label</FormField.Label>
+        <FormField.Input>
+          <ComponentName placeholder="Enter value" />
+        </FormField.Input>
+        <FormField.Description>
+          Helpful description text
+        </FormField.Description>
+        <FormField.Error>
+          Error message when invalid
+        </FormField.Error>
+      </FormField.Root>
+    );
+  },
+};
+
+export const AsChild: Story = {
+  args: {
+    asChild: true,
+    children: (
+      <a href="#" onClick={() => alert("Clicked!")}>
+        I look like a component but am using an a-tag
+      </a>
+    ),
+    ["data-testid"]: "as-child-test",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const element = canvas.getByTestId("as-child-test");
+
+    await step("Uses the child element type", async () => {
+      await expect(element.tagName).toBe("A");
+    });
+  },
+};
+```
+
+## Compound Components
+
+For components with multiple sub-components (like Select, ComboBox, FormField):
+
+```typescript
+// Use the Root component for the main Meta
+const meta: Meta<typeof ComponentName.Root> = {
+  title: "components/ComponentName",
+  component: ComponentName.Root,
+};
+
+type Story = StoryObj<typeof ComponentName.Root>;
+
+export const Base: Story = {
+  render: () => (
+    <ComponentName.Root aria-label="descriptive label">
+      <ComponentName.Trigger>Open Menu</ComponentName.Trigger>
+      <ComponentName.Content>
+        <ComponentName.Item>Option 1</ComponentName.Item>
+        <ComponentName.Item>Option 2</ComponentName.Item>
+        <ComponentName.Item>Option 3</ComponentName.Item>
+      </ComponentName.Content>
+    </ComponentName.Root>
+  ),
+};
+```
+
+## Testing Patterns
+
+### Common Test Imports
+```typescript
+import { userEvent, within, expect, fn, waitFor } from "@storybook/test";
+```
+
+### Accessibility Testing
+Always include tests for:
+- Semantic HTML elements
+- ARIA attributes
+- Keyboard navigation
+- Focus management
+- Screen reader support
+
+### Interaction Testing
+```typescript
+// Mock functions for callbacks
+const mockFn = fn();
+
+// Test user interactions
+await step("Can be triggered with keyboard", async () => {
+  await userEvent.keyboard("{enter}");
+  await expect(mockFn).toHaveBeenCalled();
+});
+
+// Test focus management
+await step("Manages focus correctly", async () => {
+  await userEvent.tab();
+  await expect(element).toHaveFocus();
+});
+
+// Test async operations
+await step("Handles async operations", async () => {
+  await waitFor(
+    async () => {
+      await expect(element).toHaveTextContent("loaded content");
+    },
+    { timeout: 3000 }
+  );
+});
+```
+
+### Error Handling Tests
+```typescript
+export const ErrorFallback: Story = {
+  args: {
+    src: "https://invalid-url-that-will-404.com/image.jpg",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    
+    await step("Falls back gracefully on error", async () => {
+      await waitFor(
+        async () => {
+          await expect(canvas.getByText("Fallback Content")).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
+    });
+  },
+};
+```
+
+## Data Patterns
+
+### Static Data
+```typescript
+const options = [
+  { id: 1, name: "Option 1" },
+  { id: 2, name: "Option 2" },
+  { id: 3, name: "Option 3" },
+];
+
+const groupedOptions = [
+  {
+    name: "Group 1",
+    id: "group1",
+    children: [
+      { id: 1, name: "Item 1" },
+      { id: 2, name: "Item 2" },
+    ],
+  },
+  {
+    name: "Group 2", 
+    id: "group2",
+    children: [
+      { id: 3, name: "Item 3" },
+      { id: 4, name: "Item 4" },
+    ],
+  },
+];
+```
+
+### Dynamic Data
+```typescript
+export const AsyncData: Story = {
+  render: () => {
+    const list = useAsyncList({
+      async load({ signal }) {
+        const response = await fetch("/api/data", { signal });
+        const data = await response.json();
+        return { items: data };
+      },
+    });
+
+    return (
+      <ComponentName.Root items={list.items} isLoading={list.isLoading}>
+        {(item) => <ComponentName.Item key={item.id}>{item.name}</ComponentName.Item>}
+      </ComponentName.Root>
+    );
+  },
+};
+```
+
+## Best Practices
+
+### Story Organization
+1. **Base** - Basic implementation (required)
+2. **Sizes** - Size variants showcase
+3. **Variants** - Style variants showcase  
+4. **Tones** - Color/tone variants showcase
+5. **States** - Different component states (disabled, invalid, loading)
+6. **ControlledState** - Controlled component example
+7. **Complex usage** - Advanced use cases
+8. **Accessibility** - A11y focused examples
+9. **Error handling** - Error states and fallbacks
+
+### Naming Conventions
+- Use PascalCase for story names
+- Be descriptive: `WithFormField`, `AsyncData`, `ErrorFallback`
+- Group related stories: `SingleSelection`, `MultipleSelection`
+
+### Args Best Practices
+- Always include `data-testid` for testing
+- Include relevant `aria-*` attributes
+- Use `fn()` for callback props to enable interaction tracking
+- Provide sensible defaults
+
+### Documentation
+- Add JSDoc comments for complex stories
+- Explain the purpose and use case
+- Document any special setup or requirements
+
+### Performance
+- Use `render` function for dynamic content
+- Avoid heavy computations in story definitions
+- Lazy load large datasets when needed
+
+## Common Helper Functions
+
+```typescript
+// Test utilities
+const getElement = (canvas: any, testId: string) => 
+  canvas.getByTestId(testId);
+
+const getListboxOptions = () => 
+  document.querySelectorAll('[role="option"]');
+
+const findOptionByText = (text: string) =>
+  Array.from(getListboxOptions()).find((option) =>
+    option.textContent?.includes(text)
+  );
+
+const selectOptionsByName = async (optionNames: string[]) => {
+  for (const optionName of optionNames) {
+    const option = findOptionByText(optionName);
+    if (option) {
+      await userEvent.click(option);
+    }
+  }
+};
+
+const closePopover = async () => {
+  await userEvent.keyboard("{escape}");
+  await new Promise((resolve) => setTimeout(resolve, 51));
+};
+```
+
+This blueprint ensures consistent, comprehensive, and maintainable stories across all Nimbus components while providing excellent documentation and testing coverage. 

@@ -1,0 +1,513 @@
+---
+description: Create or maintain a react component
+globs: 
+alwaysApply: false
+---
+# Nimbus Component Blueprint
+
+This MDC file provides guidance for creating and maintaining components in the
+Nimbus design system. Use this as a blueprint when creating new components or
+maintaining existing ones.
+
+## Component Architecture Overview
+
+Nimbus components follow a consistent architecture pattern with the following
+key files:
+
+### Core Files Structure
+
+```
+packages/nimbus/src/components/{component-name}/
+├── {component-name}.tsx                # Main component implementation
+├── {component-name}.types.ts           # TypeScript interfaces and types
+├── {component-name}.slots.tsx          # Chakra UI slots and styling context
+├── {component-name}.recipe.tsx         # Styling recipe with variants
+├── {component-name}.stories.tsx        # Storybook stories for testing
+├── {component-name}.mdx                # Component documentation
+├── index.ts                           # Exports
+└── components/                        # Sub-components (for complex components)
+    ├── {sub-component-1}.tsx
+    └── {sub-component-2}.tsx
+```
+
+## Step-by-Step Component Creation Guide
+
+### 1. Component Planning
+
+**Input Required:**
+
+- `componentName`: PascalCase name (e.g., "CustomButton")
+- `purpose`: Clear description of component functionality
+- `element`: HTML element type (e.g., "button", "div", "input")
+- `complexity`: Simple (single element) or Complex (compound component / multiple sub-components)
+
+### 2. File Creation Pattern
+
+#### A. Main Component File (`{component-name}.tsx`)
+
+**Pattern for Simple Components:**
+
+```typescript
+import { forwardRef } from "react";
+import { {ComponentName}Root } from "./{component-name}.slots";
+import type { {ComponentName}Props } from "./{component-name}.types";
+
+/**
+ * {ComponentName}
+ * ============================================================
+ * {purpose}
+ *
+ * Features:
+ * - Allows forwarding refs to the underlying DOM element
+ * - Accepts all native HTML '{element}' attributes (including aria- & data-attributes)
+ * - Supports 'variants', 'sizes', etc. configured in the recipe
+ * - Allows overriding styles by using style-props
+ * - Supports 'asChild' and 'as' to modify the underlying HTML element (polymorphic)
+ */
+export const {ComponentName} = forwardRef<{ElementType}, {ComponentName}Props>(
+  ({ children, ...props }, ref) => {
+    return (
+      <{ComponentName}Root ref={ref} {...props}>
+        {children}
+      </{ComponentName}Root>
+    );
+  }
+);
+
+{ComponentName}.displayName = "{ComponentName}";
+```
+
+**Pattern for Complex Components (with sub-components):**
+
+```typescript
+import { {ComponentName}Root } from "./components/{component-name}.root";
+import { {ComponentName}Item } from "./components/{component-name}.item";
+// ... other sub-components
+
+// Create the namespace object
+export const {ComponentName} = {
+  Root: {ComponentName}Root,
+  Item: {ComponentName}Item,
+  // ... other sub-components
+};
+
+// Export individual components with underscore prefix for direct access
+export {
+  {ComponentName}Root as _{ComponentName}Root,
+  {ComponentName}Item as _{ComponentName}Item,
+  // ... other sub-components
+};
+```
+
+#### B. Types File (`{component-name}.types.ts`)
+
+```typescript
+import type { {ComponentName}RootProps } from "./{component-name}.slots";
+import type { RecipeVariantProps } from "@chakra-ui/react";
+import { {componentName}Recipe } from "./{component-name}.recipe";
+
+/**
+ * Combines the root props with Chakra UI's recipe variant props.
+ * This allows the component to accept both structural props from Root
+ * and styling variants from the recipe.
+ */
+type {ComponentName}VariantProps = {ComponentName}RootProps & RecipeVariantProps<typeof {componentName}Recipe>;
+
+/**
+ * Main props interface for the {ComponentName} component.
+ * Extends {ComponentName}VariantProps to include both root props and variant props,
+ * while adding support for React children.
+ */
+export interface {ComponentName}Props extends {ComponentName}VariantProps {
+  children?: React.ReactNode;
+  ref?: React.Ref<{ElementType}>;
+}
+```
+
+#### C. Slots File (`{component-name}.slots.tsx`)
+
+```typescript
+import {
+  type HTMLChakraProps,
+  type RecipeProps,
+  type UnstyledProp,
+  createRecipeContext,
+} from "@chakra-ui/react";
+import { {componentName}Recipe } from "./{component-name}.recipe";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the {element} element.
+ */
+interface {ComponentName}RecipeProps extends RecipeProps<"{element}">, UnstyledProp {}
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+export interface {ComponentName}RootProps
+  extends HTMLChakraProps<"{element}", {ComponentName}RecipeProps> {}
+
+const { withContext } = createRecipeContext({ recipe: {componentName}Recipe });
+
+/**
+ * Root component that provides the styling context for the {ComponentName} component.
+ * Uses Chakra UI's recipe context system for consistent styling across instances.
+ */
+export const {ComponentName}Root = withContext<{ElementType}, {ComponentName}RootProps>(
+  "{element}"
+);
+```
+
+#### D. Recipe File (`{component-name}.recipe.tsx`)
+
+```typescript
+import { defineRecipe } from "@chakra-ui/react";
+
+/**
+ * Recipe configuration for the {ComponentName} component.
+ * Defines the styling variants and base styles using Chakra UI's recipe system.
+ */
+export const {componentName}Recipe = defineRecipe({
+  // Unique class name prefix for the component
+  className: "nimbus-{component-name}",
+
+  // Base styles applied to all instances of the component
+  base: {
+    display: "block",
+    // Add appropriate base styles
+  },
+
+  // Available variants for customizing the component's appearance
+  variants: {
+    // Size variants from smallest to largest
+    size: {
+      "2xs": {},  // Extra extra small
+      xs: {},     // Extra small
+      sm: {},     // Small
+      md: {},     // Medium
+      lg: {},     // Large
+      xl: {},     // Extra large
+      "2xl": {},  // Extra extra large
+    },
+
+    // Visual style variants
+    variant: {
+      solid: {},   // Filled background
+      subtle: {},  // Lighter background
+      outline: {}, // Bordered style
+      ghost: {},   // Background only on interaction
+      plain: {},   // No background or border
+    },
+
+    // Semantic tone variants
+    tone: {
+      primary: {},   // Primary brand color
+      neutral: {},   // Neutral/default color
+      critical: {},  // Error/danger color
+      success: {},   // Success color
+      warning: {},   // Warning color
+    },
+  },
+
+  // Default variant values when not explicitly specified
+  defaultVariants: {
+    size: "md",
+    variant: "subtle",
+    tone: "neutral",
+  },
+});
+```
+
+#### E. Index File (`index.ts`)
+
+```typescript
+export * from "./{component-name}";
+export * from "./{component-name}.types";
+```
+
+#### F. Stories File (`{component-name}.stories.tsx`)
+
+```typescript
+import type { Meta, StoryObj } from "@storybook/react";
+import { {ComponentName} } from "./{component-name}";
+import { Stack } from "@/components";
+import type { {ComponentName}Props } from "./{component-name}.types";
+import { userEvent, within, expect, fn } from "@storybook/test";
+
+const meta: Meta<typeof {ComponentName}> = {
+  title: "components/{ComponentName}",
+  component: {ComponentName},
+};
+
+export default meta;
+
+type Story = StoryObj<typeof {ComponentName}>;
+
+export const Base: Story = {
+  args: {
+    children: "{ComponentName} content",
+    onPress: fn(), // If interactive
+    ["data-testid"]: "test",
+    ["aria-label"]: "test-{component-name}",
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const element = canvas.getByTestId("test");
+
+    await step("Uses correct HTML element", async () => {
+      await expect(element.tagName).toBe("{ELEMENT}");
+    });
+
+    await step("Forwards data- & aria-attributes", async () => {
+      await expect(element).toHaveAttribute("data-testid", "test");
+      await expect(element).toHaveAttribute("aria-label", "test-{component-name}");
+    });
+
+    // Add interaction tests if component is interactive
+  },
+};
+
+// Add variant stories
+export const Variants: Story = {
+  args: {
+    children: "Demo {ComponentName}",
+  },
+  render: (args) => {
+    const variants: {ComponentName}Props["variant"][] = ["solid", "subtle", "outline", "ghost", "plain"];
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {variants.map((variant) => (
+          <{ComponentName} key={variant} {...args} variant={variant} />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+// Add size stories
+export const Sizes: Story = {
+  args: {
+    children: "Demo {ComponentName}",
+  },
+  render: (args) => {
+    const sizes: {ComponentName}Props["size"][] = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"];
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {sizes.map((size) => (
+          <{ComponentName} key={size} {...args} size={size} />
+        ))}
+      </Stack>
+    );
+  },
+};
+```
+
+#### G. Documentation File (`{component-name}.mdx`)
+
+````markdown
+---
+id: Components-{ComponentName}
+title: { ComponentName }
+description: { purpose }
+documentState: Draft
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - { Category }
+  - { ComponentName }
+tags:
+  - document
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX
+---
+
+# {ComponentName}
+
+---
+
+{Detailed description of the component and its purpose}
+
+## Overview
+
+{High-level description of what the component does and when to use it}
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](mdc:https:/www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX)
+
+## Usage
+
+### Basic Usage
+
+```jsx-live
+const App = () => (
+  <{ComponentName}>
+    Basic {ComponentName} example
+  </{ComponentName}>
+)
+```
+````
+
+### Variants
+
+{Document each variant with examples}
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal">
+    <{ComponentName} variant="solid">Solid</{ComponentName}>
+    <{ComponentName} variant="outline">Outline</{ComponentName}>
+    <{ComponentName} variant="ghost">Ghost</{ComponentName}>
+  </Stack>
+)
+```
+
+### Sizes
+
+{Document size options}
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center">
+    <{ComponentName} size="sm">Small</{ComponentName}>
+    <{ComponentName} size="md">Medium</{ComponentName}>
+    <{ComponentName} size="lg">Large</{ComponentName}>
+  </Stack>
+)
+```
+
+## API Reference
+
+### Props
+
+{Document all props with descriptions}
+
+## Accessibility
+
+{Document accessibility features and requirements}
+
+## Guidelines
+
+### Do
+
+- {List of best practices}
+
+### Don't
+
+- {List of things to avoid}
+
+````
+
+### 3. Integration Steps
+
+#### A. Update Main Components Index
+Add export to `packages/nimbus/src/components/index.ts`:
+```typescript
+export * from "./{component-name}";
+````
+
+#### B. Update Package Exports (if needed)
+
+Ensure the component is exported from the main package index.
+
+### 4. Testing Checklist
+
+- [ ] Component renders without errors
+- [ ] All variants work correctly
+- [ ] Props are properly typed
+- [ ] Accessibility attributes are forwarded
+- [ ] Ref forwarding works
+- [ ] Storybook stories render and pass tests
+- [ ] Documentation is complete and accurate
+
+### 5. Common Patterns
+
+#### For Interactive Components
+
+- Use React Aria hooks for accessibility
+- Implement proper keyboard navigation
+- Add focus management
+- Include ARIA attributes
+
+#### For Form Components
+
+- Integrate with form libraries
+- Provide validation states
+- Include proper labeling
+- Support controlled/uncontrolled modes
+
+#### For Layout Components
+
+- Use Chakra UI's layout primitives
+- Support responsive props
+- Include proper spacing tokens
+
+### 6. HTML Element Mapping
+
+Common element types and their TypeScript interfaces:
+
+```typescript
+const elementMapping = {
+  div: "HTMLDivElement",
+  button: "HTMLButtonElement",
+  input: "HTMLInputElement",
+  textarea: "HTMLTextAreaElement",
+  select: "HTMLSelectElement",
+  a: "HTMLAnchorElement",
+  p: "HTMLParagraphElement",
+  span: "HTMLSpanElement",
+  section: "HTMLElement",
+  header: "HTMLElement",
+  footer: "HTMLElement",
+  main: "HTMLElement",
+  nav: "HTMLElement",
+  ul: "HTMLUListElement",
+  ol: "HTMLOListElement",
+  li: "HTMLLIElement",
+  form: "HTMLFormElement",
+  label: "HTMLLabelElement",
+  svg: "SVGSVGElement",
+};
+```
+
+### 7. Code Generation Helper
+
+You can use the existing Hygen templates in `_templates/component/new/` to
+generate the basic structure:
+
+```bash
+npx hygen component new
+```
+
+This will prompt for:
+
+- Component name (PascalCase)
+- Purpose description
+- HTML element type
+- Element TypeScript type
+
+### 8. Maintenance Guidelines
+
+#### When updating existing components:
+
+1. Maintain backward compatibility
+2. Update documentation and examples
+3. Add new stories for new features
+4. Update TypeScript types
+5. Run full test suite
+6. Update changelog
+
+#### Performance considerations:
+
+- always forward the ref of a component
+- Minimize re-renders with proper prop handling
+- use Chakra's recipe system for styling
+- avoid inline styles where possible
+
+This blueprint ensures consistency across all Nimbus components while providing
+flexibility for different component types and complexities.

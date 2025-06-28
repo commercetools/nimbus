@@ -1,0 +1,320 @@
+---
+description: 
+globs: *.recipe.tsx
+alwaysApply: false
+---
+# Nimbus Recipe Variants Blueprint
+
+This document serves as a comprehensive guide for creating and maintaining recipe variants across all components in the Nimbus design system. It's based on analysis of existing patterns and best practices observed across the component library.
+
+## Overview
+
+Recipe variants in Nimbus use Chakra UI's recipe system (`defineRecipe` for single-part components, `defineSlotRecipe` for multi-part components) to provide consistent, themeable styling variations.
+
+## Recipe Structure Patterns
+
+### 1. Single-Part Components
+Use `defineRecipe` from `@chakra-ui/react` for components with a single DOM element.
+
+```typescript
+import { defineRecipe } from "@chakra-ui/react";
+
+export const componentRecipe = defineRecipe({
+  className: "nimbus-component-name",
+  base: {
+    // Base styles applied to all variants
+  },
+  variants: {
+    // Variant definitions
+  },
+  defaultVariants: {
+    // Default variant values
+  },
+});
+```
+
+**Examples:** Button, Badge, Icon, Code, Avatar, Heading, Link, Tooltip
+
+### 2. Multi-Part Components (Slot Recipes)
+Use `defineSlotRecipe` for components with multiple related DOM elements.
+
+```typescript
+import { defineSlotRecipe } from "@chakra-ui/react";
+
+export const componentSlotRecipe = defineSlotRecipe({
+  slots: ["root", "element1", "element2"], // Define all component parts
+  className: "nimbus-component-name",
+  base: {
+    root: {
+      // Root element styles
+    },
+    element1: {
+      // First child element styles
+    },
+    element2: {
+      // Second child element styles
+    },
+  },
+  variants: {
+    // Variant definitions affecting multiple slots
+  },
+  defaultVariants: {
+    // Default variant values
+  },
+});
+```
+
+**Examples:** Menu, Select, Card, Alert, FormField, Switch, Checkbox, RadioInput
+
+## Common Variant Categories
+
+### 1. Size Variants
+**Purpose:** Control component dimensions and spacing
+**Standard sizes:** `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`
+**Most common:** `sm`, `md`, `lg`
+
+```typescript
+variants: {
+  size: {
+    sm: {
+      // Smaller dimensions, padding, font sizes
+      h: "800",
+      px: "300",
+      fontSize: "350",
+    },
+    md: {
+      // Medium dimensions (often default)
+      h: "1000", 
+      px: "400",
+      fontSize: "400",
+    },
+    lg: {
+      // Larger dimensions
+      h: "1200",
+      px: "500", 
+      fontSize: "500",
+    },
+  },
+}
+```
+
+**Size Variant Patterns:**
+- Heights: Use design token values (600, 800, 1000, 1200, etc.)
+- Padding: Scale proportionally with size (200, 300, 400, 500)
+- Font sizes: Use `textStyle`property  (xs, sm, md, etc.) to set fontSize and line-height
+- Icons: Scale icon dimensions with component size
+- Gaps: Adjust spacing between elements
+
+### 2. Visual Style Variants
+**Purpose:** Control visual appearance and interaction states
+**Common variants:** `solid`, `outline`, `ghost`, `subtle`, `link`
+
+```typescript
+variants: {
+  variant: {
+    solid: {
+      // Filled background, high contrast
+      bg: "colorPalette.9",
+      color: "colorPalette.contrast",
+      _hover: {
+        bg: "colorPalette.10",
+      },
+    },
+    outline: {
+      // Border only, transparent background
+      borderWidth: "1px",
+      borderColor: "colorPalette.7",
+      color: "colorPalette.11",
+      _hover: {
+        bg: "colorPalette.3",
+      },
+    },
+    ghost: {
+      // Transparent, minimal styling
+      color: "colorPalette.11",
+      _hover: {
+        bg: "colorPalette.4",
+      },
+    },
+    subtle: {
+      // Light background, medium contrast
+      bg: "colorPalette.3",
+      color: "colorPalette.11",
+      _hover: {
+        bg: "colorPalette.4",
+      },
+    },
+  },
+}
+```
+
+### 3. Color/Tone Variants
+**Purpose:** Apply semantic or brand colors
+**Common tones:** `primary`, `critical`, `neutral`, `info`, `positive`, `warning`
+
+```typescript
+variants: {
+  tone: {
+    primary: {
+      colorPalette: "primary",
+    },
+    critical: {
+      colorPalette: "critical", 
+    },
+    neutral: {
+      colorPalette: "neutral",
+    },
+    info: {
+      colorPalette: "info",
+    },
+  },
+}
+```
+
+### 4. Layout/Orientation Variants
+**Purpose:** Control component layout and arrangement
+
+```typescript
+variants: {
+  orientation: {
+    horizontal: {
+      root: {
+        flexDirection: "row",
+        gap: "600",
+      },
+    },
+    vertical: {
+      root: {
+        flexDirection: "column", 
+        gap: "400",
+      },
+    },
+  },
+  direction: {
+    column: {
+      root: {
+        gridTemplateAreas: columnLayout,
+      },
+    },
+    row: {
+      root: {
+        gridTemplateAreas: rowLayout,
+        gridTemplateColumns: "auto 1fr",
+      },
+    },
+  },
+}
+```
+
+## Component-Specific Variant Patterns
+
+### Form Components
+Common variants for inputs, selects, etc.:
+- `size`: `sm`, `md` (control height and padding)
+- `variant`: `solid`, `ghost` (background and border styles)
+- State handling: `data-invalid`, `data-disabled` attributes
+
+### Interactive Components  
+Common variants for buttons, links, etc.:
+- `size`: Multiple size options with consistent scaling
+- `variant`: Visual style options
+- `tone`: Color palette options
+- Interaction states: `_hover`, `_active`, `_disabled`, `_focus`
+
+### Layout Components
+Common variants for containers, grids, etc.:
+- `cardPadding`: `sm`, `md`, `lg` (internal spacing)
+- `borderStyle`: `none`, `outlined` (border appearance)
+- `elevation`: `none`, `elevated` (shadow effects)
+- `backgroundStyle`: `default`, `muted` (background variants)
+
+## Best Practices
+
+### 1. Naming Conventions
+- **Recipe exports:** `componentRecipe` or `componentSlotRecipe`
+- **Class names:** `nimbus-component-name` (kebab-case)
+- **Variant names:** Use semantic names (`primary`, `critical`) over descriptive (`red`, `blue`)
+
+### 2. Base Styles
+- Include all common styles that apply regardless of variant
+- Set up CSS custom properties for dynamic values
+- Include focus ring styles: `focusVisibleRing: "outside"`
+- Handle disabled states: `_disabled: { layerStyle: "disabled" }`
+
+### 3. Color Palette Integration
+- Use `colorPalette` system for theming: `colorPalette.9`, `colorPalette.contrast`
+- Set color palette in base or tone variants: `colorPalette: "primary"`
+- Provide appropriate contrast ratios for accessibility
+
+### 4. Responsive Design
+- Use design tokens for consistent spacing and sizing
+- Scale proportionally across size variants
+- Consider mobile-first responsive patterns
+
+### 5. State Management
+- Use data attributes for state: `data-invalid`, `data-disabled`, `data-selected`
+- Provide hover, focus, and active states
+- Ensure keyboard navigation support
+
+### 6. Default Variants
+- Always specify `defaultVariants` for required variant properties
+- Choose sensible defaults (usually `md` for size, primary style variant)
+- Ensure defaults work well across different contexts
+
+```typescript
+defaultVariants: {
+  size: "md",
+  variant: "solid", // or most commonly used variant
+  tone: "primary", // if applicable
+},
+```
+
+### 7. Inheritance and Composition
+- Reuse styles from other components when appropriate (see ToggleButtonGroup extending Button)
+- Use spread operators to inherit base styles: `...buttonRecipe.base`
+- Maintain consistency across related components
+
+### 8. Documentation
+- Include JSDoc comments explaining the recipe's purpose
+- Document each variant's intended use case
+- Provide examples of common variant combinations
+
+## Component Creation Checklist
+
+When creating a new component recipe:
+
+- [ ] Choose appropriate recipe type (`defineRecipe` vs `defineSlotRecipe`)
+- [ ] Define meaningful slot names for multi-part components
+- [ ] Set unique `className` with `nimbus-` prefix
+- [ ] Implement comprehensive base styles
+- [ ] Add size variants with consistent scaling
+- [ ] Include appropriate visual style variants
+- [ ] Add color/tone variants if semantically relevant
+- [ ] Handle all interaction states (`_hover`, `_focus`, `_disabled`)
+- [ ] Set sensible default variants
+- [ ] Ensure accessibility compliance
+- [ ] Test across different color modes (if applicable)
+- [ ] Document variant usage and combinations
+
+## Maintenance Guidelines
+
+### Adding New Variants
+1. Assess if the variant fits existing categories or needs a new category
+2. Ensure naming consistency with existing patterns
+3. Test variant combinations for conflicts
+4. Update default variants if necessary
+5. Document the new variant's purpose and usage
+
+### Modifying Existing Variants
+1. Consider backward compatibility implications
+2. Test existing component instances for visual regressions
+3. Update documentation to reflect changes
+4. Coordinate with design team for design system consistency
+
+### Deprecating Variants
+1. Mark as deprecated with clear migration path
+2. Provide console warnings in development
+3. Plan removal timeline with adequate notice
+4. Update all internal usages before removal
+
+This blueprint ensures consistency, maintainability, and scalability across the entire Nimbus component library while providing clear guidance for both creating new components and maintaining existing ones. 
