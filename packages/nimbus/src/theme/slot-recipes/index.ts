@@ -6,8 +6,11 @@ import { selectSlotRecipe } from "@/components/select/select.recipe";
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
+import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
+import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
+import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
 
 /**
@@ -31,6 +34,9 @@ export const slotRecipes = {
   accordion: accordionSlotRecipe,
   taggroup: tagGroupSlotRecipe,
   switch: switchSlotRecipe,
+  calendar: calendarSlotRecipe,
+  dateInput: dateInputSlotRecipe,
+  datePicker: datePickerSlotRecipe,
   numberInput: numberInputRecipe,
   radioInput: radioInputSlotRecipe,
   combobox: comboBoxSlotRecipe,
