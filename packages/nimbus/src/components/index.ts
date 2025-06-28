@@ -32,6 +32,7 @@ export * from "./icon";
 export * from "./loading-spinner";
 export * from "./menu";
 export * from "./password-input";
+export * from "./popover";
 export * from "./time-input";
 export * from "./multiline-text-input";
 export * from "./radio-input";

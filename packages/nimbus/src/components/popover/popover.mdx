@@ -1,0 +1,375 @@
+---
+id: Components-Popover
+title: Popover
+description: A contextual popup that displays rich content when triggered by user interaction.
+documentState: Draft
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - Overlay
+  - Popover
+tags:
+  - document
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX
+---
+
+# Popover
+
+---
+
+A contextual popup that displays rich content when triggered by user interaction such as clicking or focusing on a trigger element.
+
+## Overview
+
+Popovers provide a way to display additional information, actions, or controls without navigating away from the current context. They are more robust than tooltips and can contain interactive elements like buttons, forms, or complex layouts.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX)
+
+## Usage
+
+### Basic Usage
+
+The Popover component is structured as a compound component with three main parts: Root, Trigger, and Content.
+
+```jsx-live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>
+      <Button>Open Popover</Button>
+    </Popover.Trigger>
+    <Popover.Content>
+      This is the popover content!
+    </Popover.Content>
+  </Popover.Root>
+)
+```
+
+### Variants
+
+Popovers support different visual styles to match your design needs.
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="outline">Solid</Button>
+      </Popover.Trigger>
+      <Popover.Content variant="solid">
+        Solid popover content
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="outline">Subtle</Button>
+      </Popover.Trigger>
+      <Popover.Content variant="subtle">
+        Subtle popover content
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="outline">Outline</Button>
+      </Popover.Trigger>
+      <Popover.Content variant="outline">
+        Outline popover content
+      </Popover.Content>
+    </Popover.Root>
+  </Stack>
+)
+```
+
+### Sizes
+
+Control the size of the popover content area.
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400" alignItems="center">
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="outline">Small</Button>
+      </Popover.Trigger>
+      <Popover.Content size="sm">
+        Small popover
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="outline">Medium</Button>
+      </Popover.Trigger>
+      <Popover.Content size="md">
+        Medium popover with more content
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="outline">Large</Button>
+      </Popover.Trigger>
+      <Popover.Content size="lg">
+        Large popover with even more content that can span multiple lines
+      </Popover.Content>
+    </Popover.Root>
+  </Stack>
+)
+```
+
+### Semantic Tones
+
+Use semantic tones to communicate the purpose or state of the popover.
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button tone="primary" variant="outline">Primary</Button>
+      </Popover.Trigger>
+      <Popover.Content tone="primary">
+        Primary information
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button tone="success" variant="outline">Success</Button>
+      </Popover.Trigger>
+      <Popover.Content tone="success">
+        Success message
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button tone="warning" variant="outline">Warning</Button>
+      </Popover.Trigger>
+      <Popover.Content tone="warning">
+        Warning information
+      </Popover.Content>
+    </Popover.Root>
+    
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button tone="critical" variant="outline">Critical</Button>
+      </Popover.Trigger>
+      <Popover.Content tone="critical">
+        Critical alert
+      </Popover.Content>
+    </Popover.Root>
+  </Stack>
+)
+```
+
+### Positioning
+
+Control where the popover appears relative to its trigger.
+
+```jsx-live
+const App = () => (
+  <Box p="800">
+    <Stack direction="horizontal" gap="400" justifyContent="center">
+      <Popover.Root>
+        <Popover.Trigger>
+          <Button variant="outline">Top</Button>
+        </Popover.Trigger>
+        <Popover.Content placement="top">
+          Positioned above
+        </Popover.Content>
+      </Popover.Root>
+      
+      <Popover.Root>
+        <Popover.Trigger>
+          <Button variant="outline">Bottom</Button>
+        </Popover.Trigger>
+        <Popover.Content placement="bottom">
+          Positioned below
+        </Popover.Content>
+      </Popover.Root>
+      
+      <Popover.Root>
+        <Popover.Trigger>
+          <Button variant="outline">Left</Button>
+        </Popover.Trigger>
+        <Popover.Content placement="left">
+          Positioned left
+        </Popover.Content>
+      </Popover.Root>
+      
+      <Popover.Root>
+        <Popover.Trigger>
+          <Button variant="outline">Right</Button>
+        </Popover.Trigger>
+        <Popover.Content placement="right">
+          Positioned right
+        </Popover.Content>
+      </Popover.Root>
+    </Stack>
+  </Box>
+)
+```
+
+### Rich Content
+
+Popovers can contain complex content including multiple elements, forms, and interactive components.
+
+```jsx-live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>
+      <Button>User Profile</Button>
+    </Popover.Trigger>
+    <Popover.Content size="lg">
+      <Stack gap="400">
+        <Heading size="sm">John Doe</Heading>
+        <Text color="neutral.11">Software Engineer</Text>
+        <Text fontSize="sm">
+          Joined the team in 2023 and has been working on the design system components.
+        </Text>
+        <Stack direction="horizontal" gap="200">
+          <Button size="sm" variant="solid">
+            View Profile
+          </Button>
+          <Button size="sm" variant="outline">
+            Send Message
+          </Button>
+        </Stack>
+      </Stack>
+    </Popover.Content>
+  </Popover.Root>
+)
+```
+
+### Custom Trigger
+
+Use the `asChild` prop to render custom trigger elements.
+
+```jsx-live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger asChild>
+      <Text 
+        color="primary.11" 
+        textDecoration="underline" 
+        cursor="pointer"
+        _hover={{ color: "primary.9" }}
+      >
+        Click for more info
+      </Text>
+    </Popover.Trigger>
+    <Popover.Content>
+      This popover was triggered by a custom text element.
+    </Popover.Content>
+  </Popover.Root>
+)
+```
+
+### Controlled State
+
+You can control the popover's open state programmatically.
+
+```jsx-live
+const App = () => {
+  const [isOpen, setOpen] = React.useState(false);
+  
+  return (
+    <Stack gap="400">
+      <Text>Popover is {isOpen ? "open" : "closed"}</Text>
+      <Popover.Root isOpen={isOpen} onOpenChange={setOpen}>
+        <Popover.Trigger>
+          <Button>Toggle Popover</Button>
+        </Popover.Trigger>
+        <Popover.Content>
+          <Stack gap="300">
+            <Text>This is a controlled popover.</Text>
+            <Button size="sm" onPress={() => setOpen(false)}>
+              Close Popover
+            </Button>
+          </Stack>
+        </Popover.Content>
+      </Popover.Root>
+    </Stack>
+  );
+}
+```
+
+## API Reference
+
+### Popover.Root
+
+The root component that manages the popover state and provides context.
+
+**Props:**
+- `isOpen?: boolean` - Controls the open state of the popover
+- `defaultOpen?: boolean` - Sets the initial open state of the popover
+- `onOpenChange?: (isOpen: boolean) => void` - Callback when the popover open state changes
+- Plus all standard React Aria `DialogTrigger` props
+
+### Popover.Trigger
+
+The trigger element that opens the popover when interacted with.
+
+**Props:**
+- `asChild?: boolean` - Render as a custom element instead of a button
+- Plus all standard HTML button attributes when not using `asChild`
+
+### Popover.Content
+
+The content area of the popover with styling and positioning.
+
+**Props:**
+- `variant?: "solid" | "subtle" | "outline" | "ghost" | "plain"` - Visual style variant (default: "solid")
+- `size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl"` - Size of the popover (default: "md")
+- `tone?: "primary" | "neutral" | "critical" | "success" | "warning"` - Semantic tone (default: "neutral")
+- `placement?: string` - Position relative to trigger (default: "bottom")
+- `offset?: number` - Distance from trigger (default: 4)
+- `shouldFlip?: boolean` - Whether to flip when overflowing (default: true)
+- Plus all standard HTML div attributes and Chakra UI style props
+
+## Accessibility
+
+The Popover component follows WAI-ARIA guidelines for accessible popup content:
+
+- **Keyboard Navigation**: Supports keyboard interaction including Escape to close
+- **Focus Management**: Proper focus handling when opening and closing
+- **ARIA Attributes**: Includes appropriate ARIA labels and relationships
+- **Screen Reader Support**: Content is properly announced to assistive technologies
+
+### Keyboard Shortcuts
+
+- `Space/Enter` - Opens the popover when trigger is focused
+- `Escape` - Closes the popover
+- `Tab` - Moves focus through interactive elements within the popover
+
+## Guidelines
+
+### Do
+
+- Use popovers for contextual information that doesn't require navigation
+- Keep content concise and focused on a single topic or action
+- Position popovers to avoid covering important content
+- Use appropriate semantic tones to communicate purpose
+- Provide clear trigger elements that indicate they will open a popover
+
+### Don't
+
+- Don't use popovers for critical information that must always be visible
+- Don't nest popovers within other popovers
+- Don't use popovers for primary navigation
+- Don't make popover content too complex or overwhelming
+- Don't position popovers where they might be cut off by viewport edges
+
+## Related Components
+
+- **Tooltip**: For simple text-only contextual information
+- **Dialog**: For modal interactions that require user attention
+- **Menu**: For lists of actions or navigation options 
