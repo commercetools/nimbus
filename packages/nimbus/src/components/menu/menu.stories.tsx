@@ -1,13 +1,13 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Menu } from "./index";
+import { Button, IconButton } from "@/components";
+import { MoreVert, KeyboardArrowDown } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof Menu> = {
-  title: "Components/Menu",
+  title: "Experimental/Menu",
   component: Menu,
-  parameters: {
-    layout: "centered",
-  },
+  parameters: {},
   tags: ["autodocs"],
   argTypes: {
     onAction: { action: "onAction" },
@@ -31,11 +31,16 @@ export const Basic: Story = {
   ),
 };
 
-export const WithSizes: Story = {
+export const WithAsChildButton: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu onAction={(key) => alert(`Small: ${key}`)}>
-        <Menu.Trigger>Small</Menu.Trigger>
+      <Menu onAction={(key) => alert(`Primary Button: ${key}`)}>
+        <Menu.Trigger asChild>
+          <Button variant="solid" tone="primary">
+            <KeyboardArrowDown />
+            Primary Actions
+          </Button>
+        </Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="copy">Copy</Menu.Item>
           <Menu.Item id="cut">Cut</Menu.Item>
@@ -43,8 +48,13 @@ export const WithSizes: Story = {
         </Menu.Content>
       </Menu>
 
-      <Menu onAction={(key) => alert(`Medium: ${key}`)}>
-        <Menu.Trigger>Medium</Menu.Trigger>
+      <Menu onAction={(key) => alert(`Secondary Button: ${key}`)}>
+        <Menu.Trigger asChild>
+          <Button variant="outline" tone="primary">
+            <KeyboardArrowDown />
+            Secondary Actions
+          </Button>
+        </Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="copy">Copy</Menu.Item>
           <Menu.Item id="cut">Cut</Menu.Item>
@@ -52,8 +62,13 @@ export const WithSizes: Story = {
         </Menu.Content>
       </Menu>
 
-      <Menu onAction={(key) => alert(`Large: ${key}`)}>
-        <Menu.Trigger>Large</Menu.Trigger>
+      <Menu onAction={(key) => alert(`Ghost Button: ${key}`)}>
+        <Menu.Trigger asChild>
+          <Button variant="ghost" tone="primary">
+            <KeyboardArrowDown />
+            Ghost Actions
+          </Button>
+        </Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="copy">Copy</Menu.Item>
           <Menu.Item id="cut">Cut</Menu.Item>
@@ -64,42 +79,40 @@ export const WithSizes: Story = {
   ),
 };
 
-export const WithVariants: Story = {
+export const WithAsChildIconButton: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu variant="solid" onAction={(key) => alert(`Solid: ${key}`)}>
-        <Menu.Trigger>Solid</Menu.Trigger>
+      <Menu onAction={(key) => alert(`More Options: ${key}`)}>
+        <Menu.Trigger asChild>
+          <IconButton variant="ghost" tone="neutral" aria-label="More options">
+            <MoreVert />
+          </IconButton>
+        </Menu.Trigger>
         <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
+          <Menu.Item id="edit">Edit</Menu.Item>
+          <Menu.Item id="duplicate">Duplicate</Menu.Item>
+          <Menu.Item id="archive">Archive</Menu.Item>
+          <Menu.Separator />
+          <Menu.Item id="delete" isDanger>
+            Delete
+          </Menu.Item>
         </Menu.Content>
       </Menu>
 
-      <Menu variant="outline" onAction={(key) => alert(`Outline: ${key}`)}>
-        <Menu.Trigger>Outline</Menu.Trigger>
+      <Menu onAction={(key) => alert(`Solid Icon: ${key}`)}>
+        <Menu.Trigger asChild>
+          <IconButton
+            variant="solid"
+            tone="primary"
+            aria-label="Primary actions"
+          >
+            <MoreVert />
+          </IconButton>
+        </Menu.Trigger>
         <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu variant="ghost" onAction={(key) => alert(`Ghost: ${key}`)}>
-        <Menu.Trigger>Ghost</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu variant="ghost" onAction={(key) => alert(`Ghost: ${key}`)}>
-        <Menu.Trigger>Ghost</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
+          <Menu.Item id="share">Share</Menu.Item>
+          <Menu.Item id="export">Export</Menu.Item>
+          <Menu.Item id="print">Print</Menu.Item>
         </Menu.Content>
       </Menu>
     </div>
@@ -151,7 +164,7 @@ export const WithKeyboardShortcuts: Story = {
         </Menu.Item>
         <Menu.Item id="redo">
           <Menu.ItemLabel>Redo</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘⇧Z</Menu.ItemKeyboard>
+          <Menu.ItemKeyboard>⌘+Y</Menu.ItemKeyboard>
         </Menu.Item>
 
         <Menu.Separator />
@@ -182,45 +195,37 @@ export const WithKeyboardShortcuts: Story = {
 
 export const WithDescriptions: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu isOpen onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Account Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="profile">
-          <div>
-            <Menu.ItemLabel>View Profile</Menu.ItemLabel>
-            <Menu.ItemDescription>
-              See your public profile information
-            </Menu.ItemDescription>
-          </div>
+          <Menu.ItemLabel>View Profile</Menu.ItemLabel>
+          <Menu.ItemDescription>
+            See your public profile information
+          </Menu.ItemDescription>
         </Menu.Item>
 
         <Menu.Item id="settings">
-          <div>
-            <Menu.ItemLabel>Account Settings</Menu.ItemLabel>
-            <Menu.ItemDescription>
-              Manage your account preferences and security
-            </Menu.ItemDescription>
-          </div>
+          <Menu.ItemLabel>Account Settings</Menu.ItemLabel>
+          <Menu.ItemDescription>
+            Manage your account preferences and security
+          </Menu.ItemDescription>
         </Menu.Item>
 
         <Menu.Item id="billing">
-          <div>
-            <Menu.ItemLabel>Billing & Usage</Menu.ItemLabel>
-            <Menu.ItemDescription>
-              View your subscription and usage details
-            </Menu.ItemDescription>
-          </div>
+          <Menu.ItemLabel>Billing & Usage</Menu.ItemLabel>
+          <Menu.ItemDescription>
+            View your subscription and usage details
+          </Menu.ItemDescription>
         </Menu.Item>
 
         <Menu.Separator />
 
         <Menu.Item id="logout">
-          <div>
-            <Menu.ItemLabel>Sign Out</Menu.ItemLabel>
-            <Menu.ItemDescription>
-              Sign out of your account on this device
-            </Menu.ItemDescription>
-          </div>
+          <Menu.ItemLabel>Sign Out</Menu.ItemLabel>
+          <Menu.ItemDescription>
+            Sign out of your account on this device
+          </Menu.ItemDescription>
         </Menu.Item>
       </Menu.Content>
     </Menu>
@@ -357,7 +362,7 @@ export const WithLinks: Story = {
 
 export const ComplexExample: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu isOpen onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -397,10 +402,8 @@ export const ComplexExample: Story = {
             <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
           </Menu.Item>
           <Menu.Item id="paste" isDisabled>
-            <div>
-              <Menu.ItemLabel>Paste</Menu.ItemLabel>
-              <Menu.ItemDescription>Clipboard is empty</Menu.ItemDescription>
-            </div>
+            <Menu.ItemLabel>Paste</Menu.ItemLabel>
+            <Menu.ItemDescription>Clipboard is empty</Menu.ItemDescription>
             <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
           </Menu.Item>
         </Menu.Group>
@@ -418,10 +421,9 @@ export const ComplexExample: Story = {
             <Menu.ItemKeyboard>⌘-</Menu.ItemKeyboard>
           </Menu.Item>
           <Menu.Item id="fullscreen">
-            <div>
-              <Menu.ItemLabel>Enter Fullscreen</Menu.ItemLabel>
-              <Menu.ItemDescription>Hide all UI elements</Menu.ItemDescription>
-            </div>
+            <Menu.ItemLabel>Enter Fullscreen</Menu.ItemLabel>
+            <Menu.ItemDescription>Hide all UI elements</Menu.ItemDescription>
+
             <Menu.ItemKeyboard>F11</Menu.ItemKeyboard>
           </Menu.Item>
         </Menu.Group>
@@ -429,10 +431,13 @@ export const ComplexExample: Story = {
         <Menu.Separator />
 
         <Menu.Item href="/help" target="_blank" rel="noopener">
-          <div>
-            <Menu.ItemLabel>Help & Support</Menu.ItemLabel>
-            <Menu.ItemDescription>Open help documentation</Menu.ItemDescription>
-          </div>
+          <Menu.ItemLabel>Help & Support</Menu.ItemLabel>
+          <Menu.ItemDescription>Open help documentation</Menu.ItemDescription>
+        </Menu.Item>
+
+        <Menu.Item id="logout">
+          <Menu.ItemLabel>Logout</Menu.ItemLabel>
+          <Menu.ItemDescription>Sign out of your account</Menu.ItemDescription>
         </Menu.Item>
       </Menu.Content>
     </Menu>
@@ -471,241 +476,97 @@ export const ControlledMenu: Story = {
   },
 };
 
-// New stories showcasing all variants
-
-export const AllSizes: Story = {
+export const WithInteractiveStates: Story = {
   render: () => (
-    <div
-      style={{
-        display: "flex",
-        gap: "1rem",
-        alignItems: "center",
-        flexWrap: "wrap",
-      }}
-    >
-      <Menu size="xs" onAction={(key) => alert(`XS: ${key}`)}>
-        <Menu.Trigger>Extra Small</Menu.Trigger>
+    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+      <Menu onAction={(key) => alert(`Action: ${key}`)}>
+        <Menu.Trigger>Interactive States</Menu.Trigger>
         <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
+          <Menu.Item id="normal">Normal Item</Menu.Item>
+          <Menu.Item id="selected" isSelected>
+            Selected Item
+          </Menu.Item>
+          <Menu.Item id="disabled" isDisabled>
+            Disabled Item
+          </Menu.Item>
+          <Menu.Item id="danger" isDanger>
+            Danger Item
+          </Menu.Item>
+          <Menu.Item id="loading" isLoading>
+            Loading Item
+          </Menu.Item>
         </Menu.Content>
       </Menu>
 
-      <Menu size="sm" onAction={(key) => alert(`Small: ${key}`)}>
-        <Menu.Trigger>Small</Menu.Trigger>
+      <Menu onAction={(key) => alert(`Loading: ${key}`)}>
+        <Menu.Trigger isLoading>Loading Trigger</Menu.Trigger>
         <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
+          <Menu.Item id="item1">Item 1</Menu.Item>
+          <Menu.Item id="item2">Item 2</Menu.Item>
         </Menu.Content>
       </Menu>
 
-      <Menu size="md" onAction={(key) => alert(`Medium: ${key}`)}>
-        <Menu.Trigger>Medium</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu size="lg" onAction={(key) => alert(`Large: ${key}`)}>
-        <Menu.Trigger>Large</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu size="xl" onAction={(key) => alert(`XL: ${key}`)}>
-        <Menu.Trigger>Extra Large</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
+      <Menu onAction={(key) => alert(`Loading Content: ${key}`)}>
+        <Menu.Trigger>Loading Content</Menu.Trigger>
+        <Menu.Content isLoading>
+          <Menu.Item id="item1">Item 1</Menu.Item>
+          <Menu.Item id="item2">Item 2</Menu.Item>
         </Menu.Content>
       </Menu>
     </div>
   ),
 };
 
-export const AllVariants: Story = {
+export const WithComplexStates: Story = {
   render: () => (
-    <div
-      style={{
-        display: "flex",
-        gap: "1rem",
-        alignItems: "center",
-        flexWrap: "wrap",
-      }}
-    >
-      <Menu variant="solid" onAction={(key) => alert(`Solid: ${key}`)}>
-        <Menu.Trigger>Solid</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
+    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+      <Menu.Trigger>Complex Menu</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Group>
+          <Menu.GroupLabel>File Operations</Menu.GroupLabel>
+          <Menu.Item id="new">
+            <Menu.ItemLabel>New File</Menu.ItemLabel>
+            <Menu.ItemKeyboard>⌘N</Menu.ItemKeyboard>
+          </Menu.Item>
+          <Menu.Item id="open" isSelected>
+            <Menu.ItemLabel>Open File</Menu.ItemLabel>
+            <Menu.ItemKeyboard>⌘O</Menu.ItemKeyboard>
+          </Menu.Item>
+          <Menu.Item id="save">
+            <Menu.ItemLabel>Save File</Menu.ItemLabel>
+            <Menu.ItemKeyboard>⌘S</Menu.ItemKeyboard>
+          </Menu.Item>
+          <Menu.Item id="save-as" isDisabled>
+            <Menu.ItemLabel>Save As...</Menu.ItemLabel>
+            <Menu.ItemKeyboard>⌘⇧S</Menu.ItemKeyboard>
+          </Menu.Item>
+        </Menu.Group>
 
-      <Menu variant="outline" onAction={(key) => alert(`Outline: ${key}`)}>
-        <Menu.Trigger>Outline</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
+        <Menu.Separator />
 
-      <Menu variant="ghost" onAction={(key) => alert(`Ghost: ${key}`)}>
-        <Menu.Trigger>Ghost</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
+        <Menu.Group>
+          <Menu.GroupLabel>Dangerous Actions</Menu.GroupLabel>
+          <Menu.Item id="delete" isDanger>
+            <Menu.ItemLabel>Delete File</Menu.ItemLabel>
+            <Menu.ItemKeyboard>⌘⌫</Menu.ItemKeyboard>
+          </Menu.Item>
+          <Menu.Item id="reset" isDanger>
+            <Menu.ItemLabel>Reset All Settings</Menu.ItemLabel>
+          </Menu.Item>
+        </Menu.Group>
 
-      <Menu variant="subtle" onAction={(key) => alert(`Subtle: ${key}`)}>
-        <Menu.Trigger>Subtle</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
+        <Menu.Separator />
 
-      <Menu variant="link" onAction={(key) => alert(`Link: ${key}`)}>
-        <Menu.Trigger>Link</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-    </div>
-  ),
-};
-
-export const AllTones: Story = {
-  render: () => (
-    <div
-      style={{
-        display: "flex",
-        gap: "1rem",
-        alignItems: "center",
-        flexWrap: "wrap",
-      }}
-    >
-      <Menu
-        tone="primary"
-        variant="solid"
-        onAction={(key) => alert(`Primary: ${key}`)}
-      >
-        <Menu.Trigger>Primary</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu
-        tone="critical"
-        variant="solid"
-        onAction={(key) => alert(`Critical: ${key}`)}
-      >
-        <Menu.Trigger>Critical</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu
-        tone="neutral"
-        variant="solid"
-        onAction={(key) => alert(`Neutral: ${key}`)}
-      >
-        <Menu.Trigger>Neutral</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu
-        tone="info"
-        variant="solid"
-        onAction={(key) => alert(`Info: ${key}`)}
-      >
-        <Menu.Trigger>Info</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu
-        tone="positive"
-        variant="solid"
-        onAction={(key) => alert(`Positive: ${key}`)}
-      >
-        <Menu.Trigger>Positive</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-
-      <Menu
-        tone="warning"
-        variant="solid"
-        onAction={(key) => alert(`Warning: ${key}`)}
-      >
-        <Menu.Trigger>Warning</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu>
-    </div>
-  ),
-};
-
-export const ToneVariantCombinations: Story = {
-  render: () => (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-        gap: "1rem",
-      }}
-    >
-      {["primary", "critical", "info", "positive", "warning"].map((tone) =>
-        ["solid", "outline", "ghost", "subtle"].map((variant) => (
-          <Menu
-            key={`${tone}-${variant}`}
-            tone={tone as any}
-            variant={variant as any}
-            onAction={(key) => alert(`${tone} ${variant}: ${key}`)}
-          >
-            <Menu.Trigger>{`${tone} ${variant}`}</Menu.Trigger>
-            <Menu.Content>
-              <Menu.Item id="copy">Copy</Menu.Item>
-              <Menu.Item id="cut">Cut</Menu.Item>
-              <Menu.Item id="paste">Paste</Menu.Item>
-            </Menu.Content>
-          </Menu>
-        ))
-      )}
-    </div>
+        <Menu.Group>
+          <Menu.GroupLabel>Background Tasks</Menu.GroupLabel>
+          <Menu.Item id="sync" isLoading>
+            <Menu.ItemLabel>Synchronizing...</Menu.ItemLabel>
+          </Menu.Item>
+          <Menu.Item id="backup">
+            <Menu.ItemLabel>Create Backup</Menu.ItemLabel>
+          </Menu.Item>
+        </Menu.Group>
+      </Menu.Content>
+    </Menu>
   ),
 };

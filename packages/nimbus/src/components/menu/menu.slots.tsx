@@ -1,7 +1,6 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-  type RecipeVariantProps,
 } from "@chakra-ui/react";
 import { menuSlotRecipe } from "./menu.recipe";
 
@@ -10,10 +9,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
 });
 
 // Menu Root
-export type MenuRootSlotProps = HTMLChakraProps<
-  "div",
-  RecipeVariantProps<typeof menuSlotRecipe>
->;
+export type MenuRootSlotProps = HTMLChakraProps<"div">;
 export const MenuRootSlot = withProvider<HTMLDivElement, MenuRootSlotProps>(
   "div",
   "root"

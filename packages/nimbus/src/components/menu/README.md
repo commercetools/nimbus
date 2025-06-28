@@ -1,7 +1,7 @@
 # Menu Component
 
 A flexible and accessible menu component for the Nimbus design system that
-allows displaying menus in many different looks and configurations.
+allows displaying menus with custom trigger elements.
 
 ## Features
 
@@ -9,12 +9,7 @@ allows displaying menus in many different looks and configurations.
   navigation and screen reader support
 - **Flexible Styling**: Uses Chakra UI's slot recipe pattern for comprehensive
   theming
-- **Multiple Variants**: Supports different visual styles (solid, outline,
-  ghost, subtle, link)
-- **Size Options**: Available in extra small, small, medium, large, and extra
-  large sizes
-- **Color Themes**: Supports semantic color tones (primary, critical, neutral,
-  info, positive, warning)
+- **Custom Triggers**: Support for custom trigger elements via `asChild` prop
 - **Rich Content**: Support for labels, descriptions, keyboard shortcuts,
   groups, and separators
 - **Keyboard Navigation**: Full keyboard support with arrow keys, Enter, Escape,
@@ -40,13 +35,74 @@ function MyComponent() {
 }
 ```
 
+## Using Custom Trigger Elements
+
+The Menu component supports using custom trigger elements via the `asChild`
+prop. This allows you to use any Button or IconButton as the trigger while
+maintaining menu functionality.
+
+### With Button Components
+
+```tsx
+import { Menu, Button, IconButton } from "@commercetools/nimbus";
+import { KeyboardArrowDown, MoreVert } from "@commercetools/nimbus-icons";
+
+function CustomTriggerExample() {
+  return (
+    <Menu onAction={(key) => handleAction(key)}>
+      <Menu.Trigger asChild>
+        <Button variant="solid" tone="primary">
+          <KeyboardArrowDown />
+          Primary Actions
+        </Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="copy">Copy</Menu.Item>
+        <Menu.Item id="cut">Cut</Menu.Item>
+        <Menu.Item id="paste">Paste</Menu.Item>
+      </Menu.Content>
+    </Menu>
+  );
+}
+```
+
+### With IconButton Components
+
+```tsx
+function IconButtonTriggerExample() {
+  return (
+    <Menu onAction={(key) => handleAction(key)}>
+      <Menu.Trigger asChild>
+        <IconButton variant="ghost" tone="neutral" aria-label="More options">
+          <MoreVert />
+        </IconButton>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="edit">Edit</Menu.Item>
+        <Menu.Item id="duplicate">Duplicate</Menu.Item>
+        <Menu.Item id="archive">Archive</Menu.Item>
+        <Menu.Separator />
+        <Menu.Item id="delete" isDanger>
+          Delete
+        </Menu.Item>
+      </Menu.Content>
+    </Menu>
+  );
+}
+```
+
 ## Advanced Usage
 
 ### With Rich Content
 
 ```tsx
 <Menu onAction={(key) => handleAction(key)}>
-  <Menu.Trigger>Edit</Menu.Trigger>
+  <Menu.Trigger asChild>
+    <Button variant="outline">
+      <KeyboardArrowDown />
+      Edit Menu
+    </Button>
+  </Menu.Trigger>
   <Menu.Content>
     <Menu.Item id="copy">
       <Menu.ItemLabel>Copy</Menu.ItemLabel>
@@ -66,7 +122,12 @@ function MyComponent() {
 
 ```tsx
 <Menu onAction={(key) => handleAction(key)}>
-  <Menu.Trigger>Format</Menu.Trigger>
+  <Menu.Trigger asChild>
+    <Button variant="ghost">
+      Format Options
+      <KeyboardArrowDown />
+    </Button>
+  </Menu.Trigger>
   <Menu.Content>
     <Menu.Group>
       <Menu.GroupLabel>Text Style</Menu.GroupLabel>
@@ -83,42 +144,49 @@ function MyComponent() {
 </Menu>
 ```
 
-### Different Sizes, Variants, and Tones
+### Interactive States
 
 ```tsx
-// Size variants
-<Menu size="xs" onAction={handleAction}>
-  <Menu.Trigger>Extra Small Menu</Menu.Trigger>
+// Menu items with different states
+<Menu onAction={handleAction}>
+  <Menu.Trigger asChild>
+    <Button variant="outline">Interactive States</Button>
+  </Menu.Trigger>
   <Menu.Content>
-    <Menu.Item id="item1">Item 1</Menu.Item>
-    <Menu.Item id="item2">Item 2</Menu.Item>
+    <Menu.Item id="normal">Normal Item</Menu.Item>
+    <Menu.Item id="selected" isSelected>
+      Selected Item
+    </Menu.Item>
+    <Menu.Item id="disabled" isDisabled>
+      Disabled Item
+    </Menu.Item>
+    <Menu.Item id="danger" isDanger>
+      Delete Account
+    </Menu.Item>
+    <Menu.Item id="loading" isLoading>
+      Saving...
+    </Menu.Item>
   </Menu.Content>
 </Menu>
 
-// Visual variants
-<Menu variant="subtle" onAction={handleAction}>
-  <Menu.Trigger>Subtle Menu</Menu.Trigger>
+// Loading states for trigger and content
+<Menu onAction={handleAction}>
+  <Menu.Trigger asChild>
+    <Button variant="ghost" isLoading>
+      Loading...
+    </Button>
+  </Menu.Trigger>
   <Menu.Content>
     <Menu.Item id="item1">Item 1</Menu.Item>
-    <Menu.Item id="item2">Item 2</Menu.Item>
   </Menu.Content>
 </Menu>
 
-// Color tones
-<Menu tone="primary" variant="solid" onAction={handleAction}>
-  <Menu.Trigger>Primary Menu</Menu.Trigger>
-  <Menu.Content>
+<Menu onAction={handleAction}>
+  <Menu.Trigger asChild>
+    <Button variant="solid">Actions</Button>
+  </Menu.Trigger>
+  <Menu.Content isLoading>
     <Menu.Item id="item1">Item 1</Menu.Item>
-    <Menu.Item id="item2">Item 2</Menu.Item>
-  </Menu.Content>
-</Menu>
-
-// Combining variants
-<Menu size="lg" variant="outline" tone="critical" onAction={handleAction}>
-  <Menu.Trigger>Large Critical Outline Menu</Menu.Trigger>
-  <Menu.Content>
-    <Menu.Item id="item1">Item 1</Menu.Item>
-    <Menu.Item id="item2">Item 2</Menu.Item>
   </Menu.Content>
 </Menu>
 ```
@@ -127,20 +195,25 @@ function MyComponent() {
 
 ### Menu (Root)
 
-| Prop            | Type                                                                        | Default     | Description                                        |
-| --------------- | --------------------------------------------------------------------------- | ----------- | -------------------------------------------------- |
-| `size`          | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`                                      | `"md"`      | Size of the menu                                   |
-| `variant`       | `"solid" \| "outline" \| "ghost" \| "subtle" \| "link"`                     | `"outline"` | Visual variant                                     |
-| `tone`          | `"primary" \| "critical" \| "neutral" \| "info" \| "positive" \| "warning"` | `"neutral"` | Color theme/semantic tone                          |
-| `onAction`      | `(key: Key) => void`                                                        | -           | Handler called when an item is selected            |
-| `onOpenChange`  | `(isOpen: boolean) => void`                                                 | -           | Handler called when menu open state changes        |
-| `isOpen`        | `boolean`                                                                   | -           | Whether the menu is open (controlled)              |
-| `defaultOpen`   | `boolean`                                                                   | -           | Whether the menu is open by default (uncontrolled) |
-| `closeOnSelect` | `boolean`                                                                   | `true`      | Whether to close menu when an item is selected     |
+| Prop            | Type                        | Default | Description                                        |
+| --------------- | --------------------------- | ------- | -------------------------------------------------- |
+| `onAction`      | `(key: Key) => void`        | -       | Handler called when an item is selected            |
+| `onOpenChange`  | `(isOpen: boolean) => void` | -       | Handler called when menu open state changes        |
+| `isOpen`        | `boolean`                   | -       | Whether the menu is open (controlled)              |
+| `defaultOpen`   | `boolean`                   | -       | Whether the menu is open by default (uncontrolled) |
+| `closeOnSelect` | `boolean`                   | `true`  | Whether to close menu when an item is selected     |
 
 ### Menu.Trigger
 
-The trigger button that opens the menu. Accepts all standard button props.
+| Prop         | Type      | Default | Description                                                             |
+| ------------ | --------- | ------- | ----------------------------------------------------------------------- |
+| `asChild`    | `boolean` | `false` | Whether to use the child element as the trigger instead of a button     |
+| `isDisabled` | `boolean` | `false` | Whether the trigger is disabled (only when not using asChild)           |
+| `isLoading`  | `boolean` | `false` | Whether the trigger is in a loading state (only when not using asChild) |
+
+When `asChild` is `false`, renders a default button trigger. When `asChild` is
+`true`, applies menu trigger functionality to the child element (typically a
+Button or IconButton).
 
 ### Menu.Content
 
@@ -149,16 +222,20 @@ The trigger button that opens the menu. Accepts all standard button props.
 | `placement`  | `"bottom" \| "bottom start" \| "top" \| ...` | `"bottom start"` | Where to position the menu relative to trigger |
 | `offset`     | `number`                                     | `4`              | Distance between trigger and menu              |
 | `shouldFlip` | `boolean`                                    | `true`           | Whether to flip position when there's no space |
+| `isLoading`  | `boolean`                                    | `false`          | Whether the content is in a loading state      |
 
 ### Menu.Item
 
-| Prop         | Type      | Default | Description                            |
-| ------------ | --------- | ------- | -------------------------------------- |
-| `id`         | `Key`     | -       | Unique identifier for the item         |
-| `isDisabled` | `boolean` | `false` | Whether the item is disabled           |
-| `href`       | `string`  | -       | URL to navigate to (makes item a link) |
-| `target`     | `string`  | -       | Link target                            |
-| `textValue`  | `string`  | -       | Text value for accessibility           |
+| Prop         | Type      | Default | Description                                      |
+| ------------ | --------- | ------- | ------------------------------------------------ |
+| `id`         | `Key`     | -       | Unique identifier for the item                   |
+| `isDisabled` | `boolean` | `false` | Whether the item is disabled                     |
+| `isSelected` | `boolean` | `false` | Whether the item is currently selected           |
+| `isDanger`   | `boolean` | `false` | Whether the item represents a destructive action |
+| `isLoading`  | `boolean` | `false` | Whether the item is in a loading state           |
+| `href`       | `string`  | -       | URL to navigate to (makes item a link)           |
+| `target`     | `string`  | -       | Link target                                      |
+| `textValue`  | `string`  | -       | Text value for accessibility                     |
 
 ### Other Components
 

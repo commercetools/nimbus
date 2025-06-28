@@ -207,4 +207,26 @@ export const keyframes = {
       outlineOffset: "var(--focus-ring-offset)",
     },
   },
+
+  // Menu-specific animations for enhanced UX
+  slideInAndFade: {
+    "0%": {
+      opacity: 0,
+      transform: "translateY(-8px) scale(0.96)",
+    },
+    "100%": {
+      opacity: 1,
+      transform: "translateY(0px) scale(1)",
+    },
+  },
+  slideOutAndFade: {
+    "0%": {
+      opacity: 1,
+      transform: "translateY(0px) scale(1)",
+    },
+    "100%": {
+      opacity: 0,
+      transform: "translateY(-8px) scale(0.96)",
+    },
+  },
 };

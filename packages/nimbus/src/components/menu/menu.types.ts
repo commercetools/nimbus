@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import type { Key } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react";
-import type { menuSlotRecipe } from "./menu.recipe";
 
 export interface MenuTriggerProps {
   children: ReactNode;
   isDisabled?: boolean;
+  isLoading?: boolean;
+  asChild?: boolean;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 }
@@ -25,6 +25,7 @@ export interface MenuContentProps {
     | "right";
   offset?: number;
   shouldFlip?: boolean;
+  isLoading?: boolean;
 }
 
 export interface MenuItemProps {
@@ -36,6 +37,9 @@ export interface MenuItemProps {
   target?: string;
   rel?: string;
   textValue?: string;
+  isSelected?: boolean;
+  isDanger?: boolean;
+  isLoading?: boolean;
 }
 
 export interface MenuSeparatorProps {
@@ -64,8 +68,7 @@ export interface MenuItemKeyboardProps {
   children: ReactNode;
 }
 
-export interface MenuRootProps
-  extends RecipeVariantProps<typeof menuSlotRecipe> {
+export interface MenuRootProps {
   children: ReactNode;
   onAction?: (key: Key) => void;
   onOpenChange?: (isOpen: boolean) => void;

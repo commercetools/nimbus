@@ -12,6 +12,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(
       placement = "bottom start",
       offset = 4,
       shouldFlip = true,
+      isLoading,
       ...props
     },
     ref
@@ -21,7 +22,11 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(
 
     return (
       <Popover placement={placement} offset={offset} shouldFlip={shouldFlip}>
-        <MenuContentSlot asChild {...styleProps}>
+        <MenuContentSlot
+          asChild
+          {...styleProps}
+          data-loading={isLoading ? "" : undefined}
+        >
           <Menu
             ref={ref}
             onAction={onAction}
