@@ -1,8 +1,8 @@
 import React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Popover } from "./popover";
 import { Stack, Button, Text, Box, Heading } from "@/components";
-import { userEvent, within, expect } from "@storybook/test";
+import { userEvent, within, expect } from "storybook/test";
 
 const meta: Meta<typeof Popover.Content> = {
   title: "experimental/Popover",

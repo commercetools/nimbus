@@ -10,6 +10,7 @@ export * from "./icon-button";
 export * from "./image";
 export * from "./kbd";
 export * from "./link";
+export * from "./list-box";
 export * from "./list";
 export * from "./simple-grid";
 export * from "./table";

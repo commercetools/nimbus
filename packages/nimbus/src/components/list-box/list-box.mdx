@@ -1,0 +1,238 @@
+---
+id: Components-ListBox
+title: ListBox
+description: A selectable list component that allows users to choose one or more options from a list of items
+documentState: Draft
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - Lists
+  - ListBox
+tags:
+  - document
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX
+---
+
+# ListBox
+
+---
+
+A selectable list component that allows users to choose one or more options from a list of items. Built with React Aria for accessibility and keyboard navigation support.
+
+## Overview
+
+The ListBox component provides an accessible and interactive list interface that supports single or multiple selection modes. It's commonly used in forms, filters, and other scenarios where users need to select from a predefined set of options.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](mdc:https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX)
+
+## Usage
+
+### Basic Usage
+
+```jsx-live
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set());
+
+  return (
+    <ListBox.Root 
+      selectionMode="single" 
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+    >
+      <ListBox.Item value="apple">Apple</ListBox.Item>
+      <ListBox.Item value="banana">Banana</ListBox.Item>
+      <ListBox.Item value="orange">Orange</ListBox.Item>
+    </ListBox.Root>
+  );
+};
+```
+
+### Multiple Selection
+
+```jsx-live
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set());
+
+  return (
+    <ListBox.Root 
+      selectionMode="multiple" 
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+    >
+      <ListBox.Item value="red">Red</ListBox.Item>
+      <ListBox.Item value="green">Green</ListBox.Item>
+      <ListBox.Item value="blue">Blue</ListBox.Item>
+      <ListBox.Item value="yellow">Yellow</ListBox.Item>
+    </ListBox.Root>
+  );
+};
+```
+
+### With Sections
+
+```jsx-live
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set());
+
+  return (
+    <ListBox.Root 
+      selectionMode="single" 
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+    >
+      <ListBox.Section title="Fruits">
+        <ListBox.Item value="apple">Apple</ListBox.Item>
+        <ListBox.Item value="banana">Banana</ListBox.Item>
+        <ListBox.Item value="orange">Orange</ListBox.Item>
+      </ListBox.Section>
+      <ListBox.Section title="Vegetables">
+        <ListBox.Item value="carrot">Carrot</ListBox.Item>
+        <ListBox.Item value="broccoli">Broccoli</ListBox.Item>
+        <ListBox.Item value="spinach">Spinach</ListBox.Item>
+      </ListBox.Section>
+    </ListBox.Root>
+  );
+};
+```
+
+### Disabled Items
+
+```jsx-live
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set());
+
+  return (
+    <ListBox.Root 
+      selectionMode="single" 
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+    >
+      <ListBox.Item value="available">Available Option</ListBox.Item>
+      <ListBox.Item value="disabled" isDisabled>
+        Disabled Option
+      </ListBox.Item>
+      <ListBox.Item value="another">Another Option</ListBox.Item>
+    </ListBox.Root>
+  );
+};
+```
+
+### Sizes
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <ListBox.Root size="sm" selectionMode="single">
+      <ListBox.Item value="small1">Small Item 1</ListBox.Item>
+      <ListBox.Item value="small2">Small Item 2</ListBox.Item>
+    </ListBox.Root>
+    
+    <ListBox.Root size="md" selectionMode="single">
+      <ListBox.Item value="medium1">Medium Item 1</ListBox.Item>
+      <ListBox.Item value="medium2">Medium Item 2</ListBox.Item>
+    </ListBox.Root>
+    
+    <ListBox.Root size="lg" selectionMode="single">
+      <ListBox.Item value="large1">Large Item 1</ListBox.Item>
+      <ListBox.Item value="large2">Large Item 2</ListBox.Item>
+    </ListBox.Root>
+  </Stack>
+);
+```
+
+### Variants
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <ListBox.Root variant="outline" selectionMode="single">
+      <ListBox.Item value="outline1">Outline Item 1</ListBox.Item>
+      <ListBox.Item value="outline2">Outline Item 2</ListBox.Item>
+    </ListBox.Root>
+    
+    <ListBox.Root variant="filled" selectionMode="single">
+      <ListBox.Item value="filled1">Filled Item 1</ListBox.Item>
+      <ListBox.Item value="filled2">Filled Item 2</ListBox.Item>
+    </ListBox.Root>
+    
+    <ListBox.Root variant="elevated" selectionMode="single">
+      <ListBox.Item value="elevated1">Elevated Item 1</ListBox.Item>
+      <ListBox.Item value="elevated2">Elevated Item 2</ListBox.Item>
+    </ListBox.Root>
+  </Stack>
+);
+```
+
+## API Reference
+
+### ListBox.Root Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `selectionMode` | `"single" \| "multiple" \| "none"` | `"none"` | Selection mode for the list |
+| `selectedKeys` | `Set<Key>` | - | Currently selected keys |
+| `defaultSelectedKeys` | `Set<Key>` | - | Default selected keys (uncontrolled) |
+| `onSelectionChange` | `(keys: Set<Key>) => void` | - | Callback when selection changes |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size variant |
+| `variant` | `"outline" \| "filled" \| "elevated"` | `"outline"` | Visual variant |
+| `isDisabled` | `boolean` | `false` | Whether the entire list is disabled |
+
+### ListBox.Item Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Unique value for the item |
+| `isDisabled` | `boolean` | `false` | Whether this item is disabled |
+| `children` | `ReactNode` | - | Item content |
+
+### ListBox.Section Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | Section header title |
+| `children` | `ReactNode` | - | Section items |
+
+## Accessibility
+
+The ListBox component is built with React Aria and provides comprehensive accessibility features:
+
+- **Keyboard Navigation**: Arrow keys navigate between items, Space/Enter select items
+- **Screen Reader Support**: Proper ARIA roles and properties for list semantics
+- **Focus Management**: Focus is properly managed during keyboard navigation
+- **Selection Announcement**: Selection changes are announced to screen readers
+- **Disabled States**: Properly handles and announces disabled items
+
+### Keyboard Interactions
+
+| Key | Action |
+|-----|--------|
+| `↓` | Move focus to next item |
+| `↑` | Move focus to previous item |
+| `Home` | Move focus to first item |
+| `End` | Move focus to last item |
+| `Space/Enter` | Select/deselect focused item |
+| `Shift + ↓/↑` | Extend selection (multiple mode) |
+
+## Guidelines
+
+### Do
+
+- Use clear, descriptive text for list items
+- Group related items using sections when appropriate
+- Provide feedback when selection changes in forms
+- Use appropriate size variants based on available space
+- Consider the selection mode based on use case
+
+### Don't
+
+- Don't use ListBox for navigation (use Menu instead)
+- Don't nest ListBox components
+- Don't make all items disabled (disable the entire component instead)
+- Don't use overly long text that breaks the layout
+- Don't forget to handle selection changes in controlled mode 
