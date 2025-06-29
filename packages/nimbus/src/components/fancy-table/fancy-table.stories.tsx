@@ -87,6 +87,7 @@ export const WithSelection: Story = {
     items: sampleData,
     columns: sampleColumns,
     selectionMode: "multiple",
+    selectionBehavior: "toggle",
     "aria-label": "File explorer table with selection",
   },
 };
@@ -114,6 +115,7 @@ export const WithDragAndDrop: Story = {
     columns: sampleColumns,
     allowsDragging: true,
     selectionMode: "multiple",
+    selectionBehavior: "toggle",
     "aria-label": "Draggable file explorer table",
     onReorder: fn(),
   },
@@ -180,6 +182,7 @@ export const WithSingleSelection: Story = {
     items: sampleData,
     columns: sampleColumns,
     selectionMode: "single",
+    selectionBehavior: "toggle",
     "aria-label": "Single selection file explorer",
   },
 };
@@ -250,6 +253,7 @@ export const LargeDataset: Story = {
     items: largeDataset,
     columns: sampleColumns,
     selectionMode: "multiple",
+    selectionBehavior: "toggle",
     allowsResizing: true,
     "aria-label": "Large dataset table",
   },
@@ -260,6 +264,7 @@ export const FullFeatured: Story = {
     items: sampleData,
     columns: sampleColumns,
     selectionMode: "multiple",
+    selectionBehavior: "toggle",
     allowsResizing: true,
     allowsDragging: true,
     interactive: true,
@@ -292,6 +297,7 @@ export const CustomDragPreview: Story = {
     columns: sampleColumns,
     allowsDragging: true,
     selectionMode: "multiple",
+    selectionBehavior: "toggle",
     renderDragPreview: (items) => (
       <div
         style={{

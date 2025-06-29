@@ -3,8 +3,8 @@ import {
   TableHeader,
   Collection,
   useTableOptions,
-  Checkbox,
 } from "react-aria-components";
+import { Checkbox } from "@/components";
 import {
   FancyTableHeaderSlot,
   FancyTableCheckboxSlot,

@@ -5,8 +5,8 @@ import {
   Collection,
   useTableOptions,
   Button,
-  Checkbox,
 } from "react-aria-components";
+import { Checkbox } from "@/components";
 // Using simple text indicator instead of icon for now
 // import { DragHandleIcon } from "@chakra-ui/icons";
 import {
