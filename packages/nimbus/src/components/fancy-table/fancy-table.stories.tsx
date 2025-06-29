@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FancyTable } from "./fancy-table";
-import { Stack } from "@/components";
+import { Heading, Stack } from "@/components";
 import type {
   FancyTableComponentProps,
   FancyTableItem,
@@ -156,18 +156,11 @@ export const Sizes: Story = {
   },
   render: (args) => (
     <Stack direction="column" gap="600">
-      <div>
-        <h3>Small</h3>
-        <FancyTable.Root {...args} size="sm" />
-      </div>
-      <div>
-        <h3>Medium (default)</h3>
-        <FancyTable.Root {...args} size="md" />
-      </div>
-      <div>
-        <h3>Large</h3>
-        <FancyTable.Root {...args} size="lg" />
-      </div>
+      <Heading>sm</Heading>
+      <FancyTable.Root {...args} size="sm" />
+
+      <Heading>md</Heading>
+      <FancyTable.Root {...args} size="md" />
     </Stack>
   ),
 };
@@ -195,6 +188,7 @@ export const Striped: Story = {
   args: {
     items: sampleData,
     columns: sampleColumns,
+    interactive: true,
     striped: true,
     "aria-label": "Striped table",
   },

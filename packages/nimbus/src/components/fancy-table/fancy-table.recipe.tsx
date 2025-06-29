@@ -46,9 +46,9 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       maxWidth: "100%",
       overflow: "auto",
       position: "relative",
-      border: "1px solid",
+      border: "solid-25",
       borderColor: "border",
-      borderRadius: "200",
+
       bg: "bg",
     },
     header: {
@@ -59,16 +59,17 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         height: "2px",
       },
       "& tr:last-child .react-aria-Column": {
-        borderBottomWidth: "1px",
+        borderBottomWidth: "solid-25",
         borderBottomColor: "border",
         cursor: "default",
       },
     },
     column: {
-      padding: "200 300",
-      textAlign: "start",
+      px: "300",
+      py: "200",
+      textAlign: "left",
       outline: "none",
-      fontWeight: "medium",
+      fontWeight: "500",
       color: "fg",
 
       "&[data-focus-visible]": {
@@ -81,7 +82,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         userSelect: "none",
 
         "&:hover": {
-          bg: "bg.muted",
+          bg: "neutral.4",
         },
       },
     },
@@ -126,7 +127,6 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       },
     },
     row: {
-      borderRadius: "200",
       outline: "none",
       cursor: "default",
       color: "fg",
@@ -139,13 +139,9 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         outlineOffset: "-2px",
       },
 
-      "&[data-pressed]": {
-        bg: "bg.muted",
-      },
-
       "&[data-selected]": {
-        bg: "accent.bg",
-        color: "accent.fg",
+        bg: "primary.9",
+        color: "primary.contrast",
 
         "&[data-focus-visible], & [data-focus-visible]": {
           outlineOffset: "-4px",
@@ -153,18 +149,18 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       },
 
       "&[data-disabled]": {
-        color: "fg.muted",
-        cursor: "not-allowed",
+        layerStyle: "disabled",
       },
 
       "&[data-drop-target]": {
         outline: "2px solid var(--colors-accent-solid)",
-        bg: "accent.subtle",
+        bg: "primary.3",
       },
     },
     cell: {
-      padding: "200 300",
-      textAlign: "start",
+      px: "300",
+      py: "200",
+      textAlign: "left",
       outline: "none",
       transform: "translateZ(0)",
       alignItems: "center",
@@ -172,14 +168,6 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       "&[data-focus-visible]": {
         outline: "2px solid var(--focus-ring-color)",
         outlineOffset: "-2px",
-      },
-
-      "&:first-child": {
-        borderRadius: "200 0 0 200",
-      },
-
-      "&:last-child": {
-        borderRadius: "0 200 200 0",
       },
     },
     checkbox: {
@@ -202,7 +190,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
     emptyState: {
       textAlign: "center",
       fontStyle: "italic",
-      color: "fg.muted",
+      color: "neutral.3",
       padding: "400",
     },
     sortIndicator: {
@@ -210,7 +198,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       ml: "200",
       fontSize: "xs",
-      color: "fg.muted",
+      color: "neutral.3",
     },
   },
   variants: {
@@ -252,7 +240,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          fontSize: "sm",
+          textStyle: "sm",
         },
         column: {
           px: "200",
@@ -265,7 +253,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       },
       md: {
         root: {
-          fontSize: "sm",
+          textStyle: "md",
         },
         column: {
           px: "300",
@@ -273,19 +261,6 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         },
         cell: {
           px: "300",
-          py: "300",
-        },
-      },
-      lg: {
-        root: {
-          fontSize: "base",
-        },
-        column: {
-          px: "400",
-          py: "300",
-        },
-        cell: {
-          px: "400",
           py: "300",
         },
       },
@@ -293,10 +268,14 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
     interactive: {
       true: {
         body: {
-          "& tr": {
-            _hover: {
-              bg: "bg.subtle",
-            },
+          "& tr": {},
+        },
+        row: {
+          "&[data-hovered='true']": {
+            bg: "neutral.4/75",
+          },
+          "&[data-pressed]": {
+            bg: "primary.5!",
           },
         },
       },
@@ -304,8 +283,8 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
     striped: {
       true: {
         row: {
-          "&:nth-of-type(odd)": {
-            bg: "bg.muted",
+          "&:nth-of-type(even)": {
+            bg: "neutral.3/75",
           },
         },
       },
