@@ -14,9 +14,9 @@ interface ExampleItem extends FancyTableItem {
   modified: string;
 }
 
-const meta: Meta<typeof FancyTable> = {
+const meta: Meta<typeof FancyTable.Root> = {
   title: "experimental/FancyTable",
-  component: FancyTable,
+  component: FancyTable.Root,
   args: {
     onSelectionChange: fn(),
     onSortChange: fn(),
@@ -26,7 +26,7 @@ const meta: Meta<typeof FancyTable> = {
 
 export default meta;
 
-type Story = StoryObj<typeof FancyTable<ExampleItem>>;
+type Story = StoryObj<typeof FancyTable.Root<ExampleItem>>;
 
 const sampleData: ExampleItem[] = [
   { id: 1, name: "Documents", type: "Folder", size: "—", modified: "Today" },
@@ -138,11 +138,11 @@ export const Variants: Story = {
     <Stack direction="column" gap="600">
       <div>
         <h3>Line variant (default)</h3>
-        <FancyTable {...args} variant="line" />
+        <FancyTable.Root {...args} variant="line" />
       </div>
       <div>
         <h3>Outline variant</h3>
-        <FancyTable {...args} variant="outline" />
+        <FancyTable.Root {...args} variant="outline" />
       </div>
     </Stack>
   ),
@@ -158,15 +158,15 @@ export const Sizes: Story = {
     <Stack direction="column" gap="600">
       <div>
         <h3>Small</h3>
-        <FancyTable {...args} size="sm" />
+        <FancyTable.Root {...args} size="sm" />
       </div>
       <div>
         <h3>Medium (default)</h3>
-        <FancyTable {...args} size="md" />
+        <FancyTable.Root {...args} size="md" />
       </div>
       <div>
         <h3>Large</h3>
-        <FancyTable {...args} size="lg" />
+        <FancyTable.Root {...args} size="lg" />
       </div>
     </Stack>
   ),
