@@ -54,7 +54,7 @@ export const Checkbox = (props: CheckboxProps) => {
 
   const [styleProps] = extractStyleProps(contextProps);
 
-  const { inputProps } = useCheckbox(contextProps, state, ref);
+  const { inputProps, labelProps } = useCheckbox(contextProps, state, ref);
 
   const { isFocused, focusProps } = useFocusRing();
   const isSelected = state.isSelected && !props.isIndeterminate;
@@ -74,6 +74,7 @@ export const Checkbox = (props: CheckboxProps) => {
       {...recipeProps}
       {...stateProps}
       {...styleProps}
+      {...labelProps}
     >
       <CheckboxIndicator data-slot="indicator" {...stateProps}>
         {isSelected && <Check />}
