@@ -14,6 +14,7 @@ export * from "./list-box";
 export * from "./list";
 export * from "./simple-grid";
 export * from "./table";
+export * from "./fancy-table";
 export * from "./text";
 export * from "./tooltip";
 export * from "./nimbus-provider";

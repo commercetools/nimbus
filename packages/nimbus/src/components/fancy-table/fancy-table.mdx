@@ -1,0 +1,359 @@
+---
+id: Components-FancyTable
+title: FancyTable
+description: An advanced table component built on React Aria Components for complex data display scenarios
+documentState: Draft
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - Data Display
+  - FancyTable
+tags:
+  - table
+  - data
+  - selection
+  - sorting
+  - drag-drop
+  - resizable
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX
+---
+
+# FancyTable
+
+---
+
+An advanced table component built on React Aria Components, designed for complex data display scenarios requiring features like selection, sorting, drag-and-drop, and resizable columns.
+
+## Overview
+
+FancyTable extends the basic Table component with advanced functionality:
+
+- **Selection**: Single or multiple row selection with checkboxes
+- **Sorting**: Sortable columns with visual indicators
+- **Drag & Drop**: Reorder rows and move items between tables
+- **Resizable Columns**: User-adjustable column widths
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **Empty States**: Customizable empty state rendering
+- **Styling**: Consistent with Nimbus design system
+
+### Resources
+
+Design specifications and usage guidelines.
+
+[Figma library](mdc:https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX)
+
+## Usage
+
+### Basic Usage
+
+```jsx-live
+const App = () => {
+  const data = [
+    { id: 1, name: "Documents", type: "Folder", size: "—" },
+    { id: 2, name: "report.pdf", type: "PDF", size: "2.4 MB" },
+    { id: 3, name: "image.jpg", type: "Image", size: "1.2 MB" },
+  ];
+
+  const columns = [
+    { id: "name", name: "Name", isRowHeader: true },
+    { id: "type", name: "Type" },
+    { id: "size", name: "Size" },
+  ];
+
+  return (
+    <FancyTable
+      items={data}
+      columns={columns}
+      aria-label="File list"
+    />
+  );
+};
+```
+
+### With Selection
+
+Enable single or multiple row selection:
+
+```jsx-live
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set());
+
+  return (
+    <FancyTable
+      items={data}
+      columns={columns}
+      selectionMode="multiple"
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+      aria-label="Selectable file list"
+    />
+  );
+};
+```
+
+### With Sorting
+
+Enable sortable columns:
+
+```jsx-live
+const App = () => {
+  const [sortDescriptor, setSortDescriptor] = React.useState({
+    column: "name",
+    direction: "ascending"
+  });
+
+  const sortedData = React.useMemo(() => {
+    return data.sort((a, b) => {
+      const aValue = a[sortDescriptor.column];
+      const bValue = b[sortDescriptor.column];
+      const result = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      return sortDescriptor.direction === "descending" ? -result : result;
+    });
+  }, [data, sortDescriptor]);
+
+  const sortableColumns = columns.map(col => ({
+    ...col,
+    allowsSorting: true
+  }));
+
+  return (
+    <FancyTable
+      items={sortedData}
+      columns={sortableColumns}
+      sortDescriptor={sortDescriptor}
+      onSortChange={setSortDescriptor}
+      aria-label="Sortable file list"
+    />
+  );
+};
+```
+
+### With Resizable Columns
+
+Enable column resizing:
+
+```jsx-live
+const App = () => (
+  <FancyTable
+    items={data}
+    columns={columns}
+    allowsResizing={true}
+    aria-label="Resizable file list"
+  />
+);
+```
+
+### With Drag and Drop
+
+Enable row reordering:
+
+```jsx-live
+const App = () => {
+  const [items, setItems] = React.useState(data);
+
+  const handleReorder = (keys, target) => {
+    // Handle reordering logic
+    console.log("Reorder:", keys, target);
+  };
+
+  return (
+    <FancyTable
+      items={items}
+      columns={columns}
+      allowsDragging={true}
+      selectionMode="multiple"
+      onReorder={handleReorder}
+      aria-label="Draggable file list"
+    />
+  );
+};
+```
+
+### Custom Cell Rendering
+
+Customize how cells are rendered:
+
+```jsx-live
+const App = () => {
+  const renderCell = (item, column) => {
+    switch (column.id) {
+      case "name":
+        return <strong>{item.name}</strong>;
+      case "size":
+        return item.size === "—" ? 
+          <em style={{ color: "gray" }}>Empty</em> : 
+          item.size;
+      default:
+        return item[column.id];
+    }
+  };
+
+  return (
+    <FancyTable
+      items={data}
+      columns={columns}
+      renderCell={renderCell}
+      aria-label="Custom rendered file list"
+    />
+  );
+};
+```
+
+### Empty State
+
+Handle empty data with custom messaging:
+
+```jsx-live
+const App = () => (
+  <FancyTable
+    items={[]}
+    columns={columns}
+    renderEmptyState={() => (
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <p>No files found</p>
+        <button>Upload files</button>
+      </div>
+    )}
+    aria-label="Empty file list"
+  />
+);
+```
+
+## Variants
+
+### Visual Variants
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <div>
+      <h4>Line (Default)</h4>
+      <FancyTable
+        items={data}
+        columns={columns}
+        variant="line"
+        aria-label="Line variant"
+      />
+    </div>
+    <div>
+      <h4>Outline</h4>
+      <FancyTable
+        items={data}
+        columns={columns}
+        variant="outline"
+        aria-label="Outline variant"
+      />
+    </div>
+  </Stack>
+);
+```
+
+### Sizes
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <div>
+      <h4>Small</h4>
+      <FancyTable
+        items={data}
+        columns={columns}
+        size="sm"
+        aria-label="Small table"
+      />
+    </div>
+    <div>
+      <h4>Medium (Default)</h4>
+      <FancyTable
+        items={data}
+        columns={columns}
+        size="md"
+        aria-label="Medium table"
+      />
+    </div>
+    <div>
+      <h4>Large</h4>
+      <FancyTable
+        items={data}
+        columns={columns}
+        size="lg"
+        aria-label="Large table"
+      />
+    </div>
+  </Stack>
+);
+```
+
+## API Reference
+
+### FancyTable Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `items` | `T[]` | `[]` | Array of data items to display |
+| `columns` | `FancyTableColumn[]` | `[]` | Column definitions |
+| `selectionMode` | `'none' \| 'single' \| 'multiple'` | `'none'` | Selection behavior |
+| `allowsDragging` | `boolean` | `false` | Enable drag and drop |
+| `allowsResizing` | `boolean` | `false` | Enable column resizing |
+| `variant` | `'line' \| 'outline'` | `'line'` | Visual style variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+| `interactive` | `boolean` | `false` | Enable hover effects |
+| `renderCell` | `(item, column) => ReactNode` | — | Custom cell renderer |
+| `renderEmptyState` | `() => ReactNode` | — | Custom empty state |
+| `onSelectionChange` | `(keys: Selection) => void` | — | Selection change handler |
+| `onSortChange` | `(descriptor: SortDescriptor) => void` | — | Sort change handler |
+| `onRowAction` | `(key: Key) => void` | — | Row action handler |
+| `onReorder` | `(keys, target) => void` | — | Reorder handler |
+
+### FancyTableColumn Interface
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `string` | Unique column identifier |
+| `name` | `string` | Display name |
+| `isRowHeader` | `boolean` | Whether this is the row header column |
+| `allowsSorting` | `boolean` | Enable sorting for this column |
+| `width` | `number` | Fixed width in pixels |
+| `minWidth` | `number` | Minimum width in pixels |
+| `maxWidth` | `number` | Maximum width in pixels |
+
+## Accessibility
+
+FancyTable is built on React Aria Components and includes comprehensive accessibility features:
+
+- **Keyboard Navigation**: Full keyboard support with arrow keys, Enter, Space
+- **Screen Reader Support**: Proper ARIA labels, roles, and announcements
+- **Focus Management**: Logical focus order and visible focus indicators
+- **Selection Announcements**: Clear feedback for selection changes
+- **Sort Indicators**: Audible sort state announcements
+
+### Required Props
+
+- `aria-label` or `aria-labelledby` - Provide an accessible name for the table
+
+## Guidelines
+
+### Do
+
+- Use meaningful column names and data
+- Provide clear empty states when no data is available
+- Use selection appropriately for batch operations
+- Consider performance with large datasets
+- Test keyboard navigation thoroughly
+
+### Don't
+
+- Don't use for simple data display (use basic Table instead)
+- Don't make every column sortable if not meaningful
+- Don't use drag and drop without clear visual feedback
+- Don't forget to handle loading and error states
+- Don't make columns too narrow to read
+
+## Performance Considerations
+
+- For large datasets (>1000 rows), consider virtualization
+- Implement server-side sorting and filtering when possible
+- Use `React.memo` for custom cell renderers
+- Debounce resize operations for better performance 
