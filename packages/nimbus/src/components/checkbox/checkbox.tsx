@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { useToggleState } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { VisuallyHidden } from "@/components";
@@ -19,6 +18,12 @@ import {
   CheckboxRoot,
   CheckboxLabel,
 } from "./checkbox.slots";
+import {
+  CheckboxContext,
+  useContextProps,
+  type ContextValue,
+} from "react-aria-components";
+import type { Context, ForwardedRef } from "react";
 
 /**
  * Checkbox
@@ -35,16 +40,21 @@ import {
  */
 export const Checkbox = (props: CheckboxProps) => {
   const { ref: forwardedRef } = props;
-  const localRef = useRef<HTMLInputElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  const [contextProps, ref] = useContextProps(
+    props,
+    forwardedRef as ForwardedRef<HTMLInputElement>,
+    CheckboxContext as Context<ContextValue<CheckboxProps, HTMLInputElement>>
+  );
+
+  const state = useToggleState(contextProps);
 
   const recipe = useSlotRecipe({ key: "checkbox" });
-  const [recipeProps] = recipe.splitVariantProps(props);
+  const [recipeProps] = recipe.splitVariantProps(contextProps);
 
-  const [styleProps] = extractStyleProps(props);
+  const [styleProps] = extractStyleProps(contextProps);
 
-  const state = useToggleState(props);
-  const { inputProps } = useCheckbox(props, state, ref);
+  const { inputProps } = useCheckbox(contextProps, state, ref);
 
   const { isFocused, focusProps } = useFocusRing();
   const isSelected = state.isSelected && !props.isIndeterminate;
