@@ -40,11 +40,6 @@ export const FancyTableRootSlot = withProvider<
 // FancyTable Container (for resizable tables)
 export interface FancyTableContainerSlotProps extends HTMLChakraProps<"div"> {}
 
-export const FancyTableContainerSlot = withContext<
-  HTMLDivElement,
-  FancyTableContainerSlotProps
->("div", "container");
-
 // FancyTable Header
 export interface FancyTableHeaderSlotProps
   extends HTMLChakraProps<"thead", TableHeaderProps<object>> {}

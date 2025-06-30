@@ -198,7 +198,6 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       ml: "200",
       fontSize: "xs",
-      color: "neutral.3",
     },
   },
   variants: {

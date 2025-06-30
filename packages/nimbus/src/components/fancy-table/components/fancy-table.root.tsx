@@ -9,10 +9,7 @@ import {
 } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { useListData } from "react-stately";
-import {
-  FancyTableRootSlot,
-  FancyTableContainerSlot,
-} from "../fancy-table.slots";
+import { FancyTableRootSlot } from "../fancy-table.slots";
 import { FancyTableHeader, FancyTableBody, FancyTableColumn } from "./";
 import { fancyTableSlotRecipe } from "../fancy-table.recipe";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -183,7 +180,7 @@ export const FancyTableRoot = <T extends FancyTableItem = FancyTableItem>({
 
   // Wrap in ResizableTableContainer if resizing is enabled
   if (allowsResizing) {
-    return <FancyTableContainerSlot>{tableContent}</FancyTableContainerSlot>;
+    return <ResizableTableContainer>{tableContent}</ResizableTableContainer>;
   }
 
   return tableContent;

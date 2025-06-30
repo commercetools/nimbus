@@ -10,6 +10,8 @@ import {
 } from "../fancy-table.slots";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import type { FancyTableColumnProps } from "../fancy-table.types";
+import { Flex } from "@/components";
+import { ArrowDownward, ArrowUpward } from "@commercetools/nimbus-icons";
 
 export const FancyTableColumn = React.forwardRef<
   HTMLTableCellElement,
@@ -21,12 +23,17 @@ export const FancyTableColumn = React.forwardRef<
     <FancyTableColumnSlot asChild {...styleProps}>
       <Column ref={ref} {...restProps}>
         {({ allowsSorting, sortDirection }) => (
-          <>
+          <Flex>
             <FancyTableColumnHeaderSlot>
               {children}
               {allowsSorting && (
                 <FancyTableSortIndicatorSlot>
-                  {sortDirection && (sortDirection === "ascending" ? "▲" : "▼")}
+                  {sortDirection &&
+                    (sortDirection === "ascending" ? (
+                      <ArrowUpward />
+                    ) : (
+                      <ArrowDownward />
+                    ))}
                 </FancyTableSortIndicatorSlot>
               )}
             </FancyTableColumnHeaderSlot>
@@ -35,7 +42,7 @@ export const FancyTableColumn = React.forwardRef<
                 <ColumnResizer />
               </FancyTableColumnResizerSlot>
             )}
-          </>
+          </Flex>
         )}
       </Column>
     </FancyTableColumnSlot>
