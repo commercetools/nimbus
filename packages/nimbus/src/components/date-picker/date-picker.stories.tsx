@@ -10,15 +10,6 @@ import {
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
 import { userEvent, within, expect, waitFor } from "storybook/test";
-import { configure as configureTestingLibrary } from "@testing-library/react";
-
-// In modal popover scenarios React-Aria sets `aria-hidden="true"` on every
-// element outside the popover. When running the story tests in a real browser
-// this temporarily hides the Storybook preview root, so queries that rely on
-// ARIA roles cannot find their targets unless we explicitly opt-in to include
-// hidden nodes. Setting `defaultHidden: true` makes all Testing-Library
-// queries behave as if the `{ hidden: true }` option was passed.
-configureTestingLibrary({ defaultHidden: true });
 
 /**
  * Storybook metadata configuration
@@ -248,6 +239,8 @@ export const Base: Story = {
     });
 
     await step("DatePicker has proper ARIA attributes", async () => {
+      await userEvent.keyboard("{Escape}");
+
       const dateGroup = await canvas.findByRole("group", {
         name: "Select a date",
       });
@@ -692,6 +685,8 @@ export const Controlled: Story = {
     );
 
     await step("Clear button clears controlled state", async () => {
+      await userEvent.keyboard("{Escape}");
+
       const dateGroup = await canvas.findByRole("group", {
         name: "Controlled date picker",
       });
@@ -1863,6 +1858,8 @@ export const MinMaxValues: Story = {
     await step(
       "Clear and re-select functionality works within constraints",
       async () => {
+        await userEvent.keyboard("{Escape}");
+
         const datePicker = await canvas.findByRole("group", {
           name: "Date picker with min/max values",
         });
