@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DatePicker } from "./date-picker";
 import { I18nProvider } from "react-aria";
 import { Button, Stack, FormField, Text } from "@/components";
@@ -9,7 +9,7 @@ import {
   ZonedDateTime,
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
-import { userEvent, within, expect, waitFor } from "@storybook/test";
+import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**
  * Storybook metadata configuration

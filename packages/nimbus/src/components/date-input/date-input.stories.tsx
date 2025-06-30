@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DateInput } from "./date-input";
 import type { DateInputProps } from "./date-input.types";
 import { Button, FormField, Stack, Text } from "@/components";
