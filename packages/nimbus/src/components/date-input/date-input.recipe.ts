@@ -21,7 +21,7 @@ export const dateInputSlotRecipe = defineSlotRecipe({
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       width: "full",
       alignItems: "center",
-
+      userSelect: "none",
       "&[data-focus-within='true']": {
         // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
         outlineWidth: "var(--focus-ring-width)",
