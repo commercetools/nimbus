@@ -1,4 +1,4 @@
-export function setupJsdomPolyfills() {
+function setupJsdomPolyfills() {
   // implementation of structuredClone polyfill to satisfy the Nimbus (Chakra UI) provider
   if (typeof global.structuredClone !== "function") {
     global.structuredClone = function structuredClone(value) {
@@ -37,3 +37,7 @@ export function setupJsdomPolyfills() {
     }),
   });
 }
+
+module.exports = {
+  setupJsdomPolyfills,
+};
