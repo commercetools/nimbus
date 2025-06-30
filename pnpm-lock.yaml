@@ -25,8 +25,8 @@ catalogs:
       specifier: ^0.53.6
       version: 0.53.7
     '@react-aria/optimize-locales-plugin':
-      specifier: 1.1.4
-      version: 1.1.4
+      specifier: 1.1.5
+      version: 1.1.5
     '@types/react':
       specifier: ^19.0.0
       version: 19.1.6
@@ -509,7 +509,7 @@ importers:
         version: 0.53.7
       '@react-aria/optimize-locales-plugin':
         specifier: catalog:react
-        version: 1.1.4
+        version: 1.1.5
       '@storybook/addon-a11y':
         specifier: catalog:tooling
         version: 9.0.13(storybook@9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3))
@@ -2077,8 +2077,8 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@react-aria/optimize-locales-plugin@1.1.4':
-    resolution: {integrity: sha512-BBQNA1dO97SRdhLy/CHyD7+QLFx7ICiFTOtyrgwpYcZg654wstOYMQMI+YjRvslUeX22C19jOe7bvh7tMz4fPQ==}
+  '@react-aria/optimize-locales-plugin@1.1.5':
+    resolution: {integrity: sha512-X8Y2Jm8pxNGQ3yBtiSZ8u3tn7YKg+xKUNZZWEFXiNR0Cd2Hu25NMEIUs2xoX+6gP6UbFBhwl3erEbnJRSIaHcw==}
 
   '@react-aria/overlays@3.27.3':
     resolution: {integrity: sha512-1hawsRI+QiM0TkPNwApNJ2+N49NQTP+48xq0JG8hdEUPChQLDoJ39cvT1sxdg0mnLDzLaAYkZrgfokq9sX6FLA==}
@@ -9376,7 +9376,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@react-aria/optimize-locales-plugin@1.1.4':
+  '@react-aria/optimize-locales-plugin@1.1.5':
     dependencies:
       unplugin: 1.16.1
 
