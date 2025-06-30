@@ -7,7 +7,7 @@ import {
   TimeFieldContext,
   useSlottedContext,
 } from "react-aria-components";
-import type { TimeValue } from "react-aria";
+import type { PressEvent, TimeValue } from "react-aria";
 
 export const DatePickerCustomContext = ({
   children,
@@ -45,7 +45,20 @@ export const DatePickerCustomContext = ({
    */
   const buttonSlots = {
     /** toggles the calendar popover */
-    calendarToggle: buttonContext,
+    calendarToggle: {
+      ...buttonContext,
+      onPress: (event: PressEvent) => {
+        // Ensure any active input (e.g., date picker segment) loses focus
+        // because blurring the input will close the popover if it's open (or was just opened)
+        const activeElement = document?.activeElement as HTMLElement | null;
+
+        if (activeElement) {
+          activeElement.blur();
+        }
+
+        buttonContext.onPress?.(event);
+      },
+    },
     /** clears the input value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
