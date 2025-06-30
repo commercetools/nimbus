@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.9-rc2",
+  "version": "0.0.9-rc3",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -9,7 +9,7 @@
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "default": "./dist/index.es.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
@@ -20,7 +20,7 @@
     "./setupJsdomPolyfills": {
       "require": {
         "types": "./dist/setup-jsdom-polyfills.d.ts",
-        "default": "./dist/setup-jsdom-polyfills.cjs.js"
+        "default": "./dist/setup-jsdom-polyfills.cjs"
       }
     }
   },

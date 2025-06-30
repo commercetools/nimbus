@@ -52,7 +52,12 @@ export const baseConfig = {
       ],
       name: "nimbus",
       fileName: (format: string, entryName: string) =>
-        `${entryName}.${format}.js`,
+        // `cjs` files need to end in `.cjs` when `type: module` is set in package.json,
+        // otherwise you get an error when you `require` them
+        format === "cjs"
+          ? `${entryName}.${format}`
+          : `${entryName}.${format}.js`,
+
       formats: ["es", "cjs"] satisfies LibraryFormats[],
     },
     rollupOptions: {
