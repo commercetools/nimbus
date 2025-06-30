@@ -12,17 +12,6 @@ import {
 import * as Icons from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
-// necessary to pull in all icons?
-// tighten up documentation around Box...find the fine line b/w hand holding and proper guidance
-//cheat sheet for nimbus?
-//really hung up on tokens/ proper values
-// {/* <Icon as={Icons.FavoriteBorder} */} wuuuut
-//icon names popup/displayed somehow
-//import order/ prettier that bidniss
-//worked w/o card.content, but put it in to match docs? Card Header??
-//onPress vs onClick....whyyyyy?
-// icon search
-
 export const Hero = () => {
   const [isPopover, setIsPopover] = useState(false);
   return (
@@ -109,3 +98,5 @@ export const Hero = () => {
     </>
   );
 };
+
+Hero.displayName = "Hero";

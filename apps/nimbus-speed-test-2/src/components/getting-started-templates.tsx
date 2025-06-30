@@ -13,7 +13,6 @@ import DiscountCodes from "../../public/discount-codes.svg";
 import AllDiscountTemplates from "../../public/all-discount-templates.svg";
 import * as Icons from "@commercetools/nimbus-icons";
 
-
 export const GettingStartedTemplates = () => {
   const gettingStartedCards = [
     {
@@ -59,7 +58,7 @@ export const GettingStartedTemplates = () => {
               elevation="elevated"
               height="100%"
               {...(index > 0 && {
-                onClick: () =>
+                onPress: () =>
                   window.open(
                     "https://www.youtube.com/watch?v=xvFZjo5PgG0",
                     "_blank"

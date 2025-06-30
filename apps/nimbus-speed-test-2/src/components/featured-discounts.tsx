@@ -9,10 +9,6 @@ import {
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 
-//Struggled a bit with the icons..let's review to see if this was done correctly
-//color palette..
-//template size TS
-
 export const FeaturedDiscounts = () => {
   const discountTemplates = [
     {
@@ -31,7 +27,7 @@ export const FeaturedDiscounts = () => {
       icon: Icons.AddLocation,
       bgColor: "primary.3",
       color: "primary.11",
-      size: "sm",
+      size: "md",
     },
     {
       heading: "A/B discount strategies",
@@ -40,7 +36,7 @@ export const FeaturedDiscounts = () => {
       icon: Icons.CallSplit,
       bgColor: "tomato.3",
       color: "tomato.11",
-      size: "sm",
+      size: "md",
     },
     {
       heading: "Seasonal promotions",
@@ -49,7 +45,7 @@ export const FeaturedDiscounts = () => {
       icon: Icons.AcUnit,
       bgColor: "teal.3",
       color: "teal.11",
-      size: "sm",
+      size: "md",
     },
   ];
 
