@@ -17,6 +17,7 @@ import {
 } from "../fancy-table.slots";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import type { FancyTableRowProps } from "../fancy-table.types";
+import { DragIndicator } from "@commercetools/nimbus-icons";
 
 export const FancyTableRow = React.forwardRef<
   HTMLTableRowElement,
@@ -34,7 +35,7 @@ export const FancyTableRow = React.forwardRef<
             <Cell>
               <FancyTableDragButtonSlot asChild>
                 <Button slot="drag" aria-label="Drag to reorder">
-                  ⋮⋮
+                  <DragIndicator />
                 </Button>
               </FancyTableDragButtonSlot>
             </Cell>
