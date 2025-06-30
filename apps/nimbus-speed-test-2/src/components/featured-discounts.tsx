@@ -7,7 +7,13 @@ import {
   Card,
   SimpleGrid,
 } from "@commercetools/nimbus";
-import * as Icons from "@commercetools/nimbus-icons";
+import {
+  FavoriteBorder as FavoriteBorderIcon,
+  AddLocation as AddLocationIcon,
+  CallSplit as CallSplitIcon,
+  AcUnit as AcUnitIcon,
+  Celebration as CelebrationIcon,
+} from "@commercetools/nimbus-icons";
 
 export const FeaturedDiscounts = () => {
   const discountTemplates = [
@@ -15,7 +21,7 @@ export const FeaturedDiscounts = () => {
       heading: "Behavior-triggered discounts",
       description:
         "Automatically trigger discounts based on specific customer actions, such as abandoning a cart.",
-      icon: Icons.FavoriteBorder,
+      icon: FavoriteBorderIcon,
       bgColor: "amber.3",
       color: "amber.8",
       size: "md",
@@ -24,7 +30,7 @@ export const FeaturedDiscounts = () => {
       heading: "Location-based offer",
       description:
         "Geographically targeted discounts to attract local customers or respond to regional market conditions",
-      icon: Icons.AddLocation,
+      icon: AddLocationIcon,
       bgColor: "primary.3",
       color: "primary.11",
       size: "md",
@@ -33,7 +39,7 @@ export const FeaturedDiscounts = () => {
       heading: "A/B discount strategies",
       description:
         "Generate offer variations, and automatically analyze performance to identify the most effective conversion.",
-      icon: Icons.CallSplit,
+      icon: CallSplitIcon,
       bgColor: "tomato.3",
       color: "tomato.11",
       size: "md",
@@ -42,7 +48,7 @@ export const FeaturedDiscounts = () => {
       heading: "Seasonal promotions",
       description:
         "Generate relevant discounts for holidays, special events, or specific times of the year.",
-      icon: Icons.AcUnit,
+      icon: AcUnitIcon,
       bgColor: "teal.3",
       color: "teal.11",
       size: "md",
@@ -59,7 +65,7 @@ export const FeaturedDiscounts = () => {
         // height="5vh"
       >
         <Badge colorPalette="primary">
-          <Icons.Celebration />
+          <CelebrationIcon />
           New
         </Badge>
         <Heading fontWeight="500">Featured discounts</Heading>

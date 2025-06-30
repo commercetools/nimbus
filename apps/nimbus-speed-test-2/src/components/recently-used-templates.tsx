@@ -7,7 +7,10 @@ import {
   Text,
   IconButton,
 } from "@commercetools/nimbus";
-import * as Icons from "@commercetools/nimbus-icons";
+import {
+  LocalOffer as LocalOfferIcon,
+  Close as CloseIcon,
+} from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
 const recentlyUsedTemplates = [
@@ -73,7 +76,7 @@ export const RecentlyUsedTemplates = () => {
           >
             <Stack direction="column" justifyContent="center" height="100%">
               <Icon
-                as={Icons.LocalOffer}
+                as={LocalOfferIcon}
                 borderRadius="100"
                 bgColor="purple.3"
                 color="purple.11"
@@ -99,7 +102,7 @@ export const RecentlyUsedTemplates = () => {
                     variant="plain"
                     onPress={() => handleRemoveTemplate(template.id)}
                   >
-                    <Icons.Close />
+                    <CloseIcon />
                   </IconButton>
                 </Stack>
                 <Heading fontWeight="500">{template.title}</Heading>

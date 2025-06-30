@@ -11,7 +11,7 @@ import ProductDiscounts from "../../public/product-discounts.svg";
 import CartDiscounts from "../../public/cart-discounts.svg";
 import DiscountCodes from "../../public/discount-codes.svg";
 import AllDiscountTemplates from "../../public/all-discount-templates.svg";
-import * as Icons from "@commercetools/nimbus-icons";
+import { ArrowForward as ArrowForwardIcon } from "@commercetools/nimbus-icons";
 
 export const GettingStartedTemplates = () => {
   const gettingStartedCards = [
@@ -102,7 +102,7 @@ export const GettingStartedTemplates = () => {
                           variant="solid"
                           tone="primary"
                         >
-                          <Icons.ArrowForward />
+                          <ArrowForwardIcon />
                         </IconButton>
                       </Stack>
                     </Stack>

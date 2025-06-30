@@ -9,7 +9,12 @@ import {
   TextInput,
   Tooltip,
 } from "@commercetools/nimbus";
-import * as Icons from "@commercetools/nimbus-icons";
+import {
+  ArrowForward as ArrowForwardIcon,
+  AttachFile as AttachFileIcon,
+  FileUpload as FileUploadIcon,
+  Add as AddIcon,
+} from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
 export const Hero = () => {
@@ -47,7 +52,7 @@ export const Hero = () => {
                   aria-label="Attach"
                   onPress={() => setIsPopover(!isPopover)}
                 >
-                  <Icons.Add />
+                  <AddIcon />
                 </IconButton>
                 {isPopover && (
                   <Box
@@ -67,14 +72,14 @@ export const Hero = () => {
                         <Box display="flex" flexDirection="column" gap="300">
                           <Box display="flex" alignItems="center" gap="300">
                             <IconButton aria-label="CSV" size="sm">
-                              <Icons.AttachFile />
+                              <AttachFileIcon />
                             </IconButton>
                             <Text>CSV</Text>
                           </Box>
 
                           <Box display="flex" alignItems="center" gap="300">
                             <IconButton aria-label="Browse for file" size="sm">
-                              <Icons.FileUpload />
+                              <FileUploadIcon />
                             </IconButton>
                             <Text>Browse for file</Text>
                           </Box>
@@ -91,7 +96,7 @@ export const Hero = () => {
           </Stack>
           <Button colorPalette="primary" variant="solid" alignSelf="center">
             Generate Discount
-            <Icons.ArrowForward />
+            <ArrowForwardIcon />
           </Button>
         </Stack>
       </Box>
