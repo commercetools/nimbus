@@ -41,6 +41,12 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         outline: "2px solid var(--focus-ring-color)",
         outlineOffset: "-1px",
       },
+
+      "& .react-aria-DropIndicator": {
+        position: "relative",
+        zIndex: "2",
+        outline: "2px solid {colors.primary.9}",
+      },
     },
     container: {
       maxWidth: "100%",
@@ -122,7 +128,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         bg: "accent.solid",
       },
       "&[data-resizing]": {
-        borderColor: "accent.solid",
+        borderColor: "primary.11",
         bg: "transparent",
       },
     },
@@ -140,7 +146,7 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
       },
 
       "&[data-selected]": {
-        bg: "primary.9",
+        bg: "primary.9!",
         color: "primary.contrast",
 
         "&[data-focus-visible], & [data-focus-visible]": {
@@ -284,6 +290,10 @@ export const fancyTableSlotRecipe = defineSlotRecipe({
         row: {
           "&:nth-of-type(even)": {
             bg: "neutral.3/75",
+
+            "&[data-hovered='true']": {
+              bg: "neutral.4/75",
+            },
           },
         },
       },
