@@ -1,8 +1,9 @@
 ---
 description: Create or maintain a react component
-globs: 
+globs:
 alwaysApply: false
 ---
+
 # Nimbus Component Blueprint
 
 This MDC file provides guidance for creating and maintaining components in the
@@ -11,21 +12,34 @@ maintaining existing ones.
 
 ## Component Architecture Overview
 
-Nimbus components follow a consistent architecture pattern with the following
-key files:
+Nimbus components follow one of three primary structural patterns, each serving
+a different purpose.
+
+1.  **Single-Part Components**: Simple components that render a single element.
+    They are styled using `defineRecipe` and exported as a single component.
+    (e.g., `Button`, `Link`).
+2.  **Multi-Part Components (Single Export)**: Components with multiple distinct
+    parts (slots) that are composed internally and exported as a single React
+    component. They are styled using `defineSlotRecipe`. This provides a simpler
+    consumer API while managing internal complexity. (e.g., `Switch`).
+3.  **Multi-Part Components (Compound Export)**: Complex components composed of
+    several sub-components that are exported together as a single object (e.g.,
+    `Accordion.Root`, `Accordion.Item`). This pattern uses `defineSlotRecipe`
+    and offers maximum composition flexibility to the consumer. (e.g., `Alert`,
+    `Accordion`).
 
 ### Core Files Structure
 
 ```
 packages/nimbus/src/components/{component-name}/
-├── {component-name}.tsx                # Main component implementation
-├── {component-name}.types.ts           # TypeScript interfaces and types
-├── {component-name}.slots.tsx          # Chakra UI slots and styling context
+├── {component-name}.tsx                # Main component implementation or compound component export
+├── {component-name}.types.ts           # Consumer TypeScript interfaces and types
+├── {component-name}.slots.tsx          # Chakra UI slot components and styling context
 ├── {component-name}.recipe.tsx         # Styling recipe with variants
-├── {component-name}.stories.tsx        # Storybook stories for testing
+├── {component-name}.stories.tsx        # Storybook stories for testing [component-stories.mdc](mdc:packages/nimbus/.cursor/rules/component-stories.mdc)
 ├── {component-name}.mdx                # Component documentation
 ├── index.ts                           # Exports
-└── components/                        # Sub-components (for complex components)
+└── components/                        # Sub-components (for compound components)
     ├── {sub-component-1}.tsx
     └── {sub-component-2}.tsx
 ```
@@ -36,34 +50,92 @@ packages/nimbus/src/components/{component-name}/
 
 **Input Required:**
 
-- `componentName`: PascalCase name (e.g., "CustomButton")
-- `purpose`: Clear description of component functionality
-- `element`: HTML element type (e.g., "button", "div", "input")
-- `complexity`: Simple (single element) or Complex (compound component / multiple sub-components)
+- `componentName`: PascalCase name (e.g., "CustomButton").
+- `purpose`: Clear description of component functionality.
+- `element`: The primary HTML element type (e.g., "button", "div").
+- `structuralType`: One of `Single-Part`, `Multi-Part (Single Export)`, or
+  `Multi-Part (Compound Export)`.
 
-### 2. File Creation Pattern
+### 2. File Creation Patterns
 
-#### A. Main Component File (`{component-name}.tsx`)
+---
 
-**Pattern for Simple Components:**
+### Pattern 1: Single-Part Component
+
+Used for simple components wrapping a single element.
+
+#### A. Recipe File (`{component-name}.recipe.tsx`)
+
+Uses `defineRecipe` for single-element styling.
+
+```typescript
+import { defineRecipe } from "@chakra-ui/react";
+
+export const {componentName}Recipe = defineRecipe({
+  className: "nimbus-{component-name}",
+  base: {
+    // Base styles for the component
+  },
+  variants: {
+    // Styling variants
+  },
+  defaultVariants: {
+    // Default variants
+  },
+});
+```
+
+#### B. Slots File (`{component-name}.slots.tsx`)
+
+Uses `createRecipeContext` to create a single styled component.
+
+```typescript
+import {
+  type HTMLChakraProps,
+  type RecipeProps,
+  type UnstyledProp,
+  createRecipeContext,
+} from "@chakra-ui/react";
+import { {componentName}Recipe } from "./{component-name}.recipe";
+
+interface {ComponentName}RecipeProps extends RecipeProps<"{element}">, UnstyledProp {}
+
+export interface {ComponentName}RootProps
+  extends HTMLChakraProps<"{element}", {ComponentName}RecipeProps> {}
+
+const { withContext } = createRecipeContext({ recipe: {componentName}Recipe });
+
+export const {ComponentName}Root = withContext<{ElementType}, {ComponentName}RootProps>(
+  "{element}"
+);
+```
+
+#### C. Types File (`{component-name}.types.ts`)
+
+Exports consumer-facing props.
+
+```typescript
+import type { {ComponentName}RootProps } from "./{component-name}.slots";
+import type { RecipeVariantProps } from "@chakra-ui/react";
+import { {componentName}Recipe } from "./{component-name}.recipe";
+
+type {ComponentName}VariantProps = {ComponentName}RootProps & RecipeVariantProps<typeof {componentName}Recipe>;
+
+export interface {ComponentName}Props extends {ComponentName}VariantProps {
+  children?: React.ReactNode;
+  ref?: React.Ref<{ElementType}>;
+}
+```
+
+#### D. Component File (`{component-name}.tsx`)
+
+The final component, exported directly.
 
 ```typescript
 import { forwardRef } from "react";
 import { {ComponentName}Root } from "./{component-name}.slots";
 import type { {ComponentName}Props } from "./{component-name}.types";
 
-/**
- * {ComponentName}
- * ============================================================
- * {purpose}
- *
- * Features:
- * - Allows forwarding refs to the underlying DOM element
- * - Accepts all native HTML '{element}' attributes (including aria- & data-attributes)
- * - Supports 'variants', 'sizes', etc. configured in the recipe
- * - Allows overriding styles by using style-props
- * - Supports 'asChild' and 'as' to modify the underlying HTML element (polymorphic)
- */
 export const {ComponentName} = forwardRef<{ElementType}, {ComponentName}Props>(
   ({ children, ...props }, ref) => {
     return (
@@ -77,339 +149,215 @@ export const {ComponentName} = forwardRef<{ElementType}, {ComponentName}Props>(
 {ComponentName}.displayName = "{ComponentName}";
 ```
 
-**Pattern for Complex Components (with sub-components):**
+---
+
+### Pattern 2: Multi-Part Component (Single Export)
+
+Used for components with multiple slots that are composed internally and exposed
+as a single component.
+
+#### A. Recipe File (`{component-name}.recipe.tsx`)
+
+Uses `defineSlotRecipe` to style multiple parts. List the slots in the `slots`
+array.
 
 ```typescript
-import { {ComponentName}Root } from "./components/{component-name}.root";
-import { {ComponentName}Item } from "./components/{component-name}.item";
-// ... other sub-components
+import { defineSlotRecipe } from "@chakra-ui/react";
 
-// Create the namespace object
-export const {ComponentName} = {
-  Root: {ComponentName}Root,
-  Item: {ComponentName}Item,
-  // ... other sub-components
-};
-
-// Export individual components with underscore prefix for direct access
-export {
-  {ComponentName}Root as _{ComponentName}Root,
-  {ComponentName}Item as _{ComponentName}Item,
-  // ... other sub-components
-};
-```
-
-#### B. Types File (`{component-name}.types.ts`)
-
-```typescript
-import type { {ComponentName}RootProps } from "./{component-name}.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
-import { {componentName}Recipe } from "./{component-name}.recipe";
-
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type {ComponentName}VariantProps = {ComponentName}RootProps & RecipeVariantProps<typeof {componentName}Recipe>;
-
-/**
- * Main props interface for the {ComponentName} component.
- * Extends {ComponentName}VariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface {ComponentName}Props extends {ComponentName}VariantProps {
-  children?: React.ReactNode;
-  ref?: React.Ref<{ElementType}>;
-}
-```
-
-#### C. Slots File (`{component-name}.slots.tsx`)
-
-```typescript
-import {
-  type HTMLChakraProps,
-  type RecipeProps,
-  type UnstyledProp,
-  createRecipeContext,
-} from "@chakra-ui/react";
-import { {componentName}Recipe } from "./{component-name}.recipe";
-
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the {element} element.
- */
-interface {ComponentName}RecipeProps extends RecipeProps<"{element}">, UnstyledProp {}
-
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export interface {ComponentName}RootProps
-  extends HTMLChakraProps<"{element}", {ComponentName}RecipeProps> {}
-
-const { withContext } = createRecipeContext({ recipe: {componentName}Recipe });
-
-/**
- * Root component that provides the styling context for the {ComponentName} component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const {ComponentName}Root = withContext<{ElementType}, {ComponentName}RootProps>(
-  "{element}"
-);
-```
-
-#### D. Recipe File (`{component-name}.recipe.tsx`)
-
-```typescript
-import { defineRecipe } from "@chakra-ui/react";
-
-/**
- * Recipe configuration for the {ComponentName} component.
- * Defines the styling variants and base styles using Chakra UI's recipe system.
- */
-export const {componentName}Recipe = defineRecipe({
-  // Unique class name prefix for the component
+export const {componentName}SlotRecipe = defineSlotRecipe({
+  slots: ["root", "slotA", "slotB"], // e.g., "root", "label", "track", "thumb"
   className: "nimbus-{component-name}",
-
-  // Base styles applied to all instances of the component
   base: {
-    display: "block",
-    // Add appropriate base styles
+    root: {
+      // Base styles for the root container
+    },
+    slotA: {
+      // Base styles for the first slot
+    },
+    slotB: {
+      // Base styles for the second slot
+    },
   },
-
-  // Available variants for customizing the component's appearance
   variants: {
-    // Size variants from smallest to largest
-    size: {
-      "2xs": {},  // Extra extra small
-      xs: {},     // Extra small
-      sm: {},     // Small
-      md: {},     // Medium
-      lg: {},     // Large
-      xl: {},     // Extra large
-      "2xl": {},  // Extra extra large
-    },
-
-    // Visual style variants
-    variant: {
-      solid: {},   // Filled background
-      subtle: {},  // Lighter background
-      outline: {}, // Bordered style
-      ghost: {},   // Background only on interaction
-      plain: {},   // No background or border
-    },
-
-    // Semantic tone variants
-    tone: {
-      primary: {},   // Primary brand color
-      neutral: {},   // Neutral/default color
-      critical: {},  // Error/danger color
-      success: {},   // Success color
-      warning: {},   // Warning color
-    },
-  },
-
-  // Default variant values when not explicitly specified
-  defaultVariants: {
-    size: "md",
-    variant: "subtle",
-    tone: "neutral",
+    // Variants affecting any of the slots
   },
 });
 ```
 
-#### E. Index File (`index.ts`)
+#### B. Slots File (`{component-name}.slots.tsx`)
+
+Uses `createSlotRecipeContext` to create components for each slot.
 
 ```typescript
-export * from "./{component-name}";
-export * from "./{component-name}.types";
+import { createSlotRecipeContext, type HTMLChakraProps, type RecipeVariantProps } from "@chakra-ui/react";
+import { {componentName}SlotRecipe } from "./{component-name}.recipe";
+
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: {componentName}SlotRecipe,
+});
+
+export const {ComponentName}RootSlot = withProvider<HTMLElement, HTMLChakraProps<"div">>
+  ("div", "root");
+
+export const {ComponentName}SlotA = withContext<HTMLElement, HTMLChakraProps<"div">>
+  ("div", "slotA");
+
+export const {ComponentName}SlotB = withContext<HTMLElement, HTMLChakraProps<"div">>
+  ("div", "slotB");
 ```
 
-#### F. Stories File (`{component-name}.stories.tsx`)
+#### C. Types File (`{component-name}.types.ts`)
+
+Props for the single exported component.
 
 ```typescript
-import type { Meta, StoryObj } from "@storybook/react";
-import { {ComponentName} } from "./{component-name}";
-import { Stack } from "@/components";
+import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { {componentName}SlotRecipe } from "./{component-name}.recipe";
+
+export interface {ComponentName}Props
+  extends RecipeVariantProps<typeof {componentName}SlotRecipe> {
+  children?: React.ReactNode;
+  // Other specific props...
+}
+```
+
+#### D. Component File (`{component-name}.tsx`)
+
+Internally composes the slots and exports a single component. Example based on
+`Switch`.
+
+```typescript
+import { useSlotRecipe } from "@chakra-ui/react";
 import type { {ComponentName}Props } from "./{component-name}.types";
-import { userEvent, within, expect, fn } from "@storybook/test";
+import {
+  {ComponentName}RootSlot,
+  {ComponentName}SlotA,
+  {ComponentName}SlotB,
+} from "./{component-name}.slots";
+import { {componentName}SlotRecipe } from "./{component-name}.recipe";
 
-const meta: Meta<typeof {ComponentName}> = {
-  title: "components/{ComponentName}",
-  component: {ComponentName},
+export const {ComponentName} = (props: {ComponentName}Props) => {
+  const recipe = useSlotRecipe({ recipe: {componentName}SlotRecipe });
+  const [variantProps, otherProps] = recipe.splitVariantProps(props);
+
+  const classes = recipe(variantProps);
+
+  return (
+    <{ComponentName}RootSlot className={classes.root} {...otherProps}>
+      <{ComponentName}SlotA className={classes.slotA}>
+        {/* Content for Slot A */}
+      </{ComponentName}SlotA>
+      <{ComponentName}SlotB className={classes.slotB}>
+        {/* Content for Slot B */}
+      </{ComponentName}SlotB>
+      {props.children}
+    </{ComponentName}RootSlot>
+  );
 };
 
-export default meta;
-
-type Story = StoryObj<typeof {ComponentName}>;
-
-export const Base: Story = {
-  args: {
-    children: "{ComponentName} content",
-    onPress: fn(), // If interactive
-    ["data-testid"]: "test",
-    ["aria-label"]: "test-{component-name}",
-  },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
-    const element = canvas.getByTestId("test");
-
-    await step("Uses correct HTML element", async () => {
-      await expect(element.tagName).toBe("{ELEMENT}");
-    });
-
-    await step("Forwards data- & aria-attributes", async () => {
-      await expect(element).toHaveAttribute("data-testid", "test");
-      await expect(element).toHaveAttribute("aria-label", "test-{component-name}");
-    });
-
-    // Add interaction tests if component is interactive
-  },
-};
-
-// Add variant stories
-export const Variants: Story = {
-  args: {
-    children: "Demo {ComponentName}",
-  },
-  render: (args) => {
-    const variants: {ComponentName}Props["variant"][] = ["solid", "subtle", "outline", "ghost", "plain"];
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {variants.map((variant) => (
-          <{ComponentName} key={variant} {...args} variant={variant} />
-        ))}
-      </Stack>
-    );
-  },
-};
-
-// Add size stories
-export const Sizes: Story = {
-  args: {
-    children: "Demo {ComponentName}",
-  },
-  render: (args) => {
-    const sizes: {ComponentName}Props["size"][] = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"];
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {sizes.map((size) => (
-          <{ComponentName} key={size} {...args} size={size} />
-        ))}
-      </Stack>
-    );
-  },
-};
+{ComponentName}.displayName = "{ComponentName}";
 ```
-
-#### G. Documentation File (`{component-name}.mdx`)
-
-````markdown
----
-id: Components-{ComponentName}
-title: { ComponentName }
-description: { purpose }
-documentState: Draft
-documentAudiences: []
-order: 999
-menu:
-  - Components
-  - { Category }
-  - { ComponentName }
-tags:
-  - document
-figmaLink: >-
-  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX
----
-
-# {ComponentName}
 
 ---
 
-{Detailed description of the component and its purpose}
+### Pattern 3: Multi-Part Component (Compound Export)
 
-## Overview
+Used for complex components where sub-components are exposed to the consumer for
+flexible composition.
 
-{High-level description of what the component does and when to use it}
+#### A. Recipe File (`{component-name}.recipe.tsx`)
 
-### Resources
+Uses `defineSlotRecipe`, identical to the single-export pattern.
 
-Deep dive on details and access design library.
+```typescript
+import { defineSlotRecipe } from "@chakra-ui/react";
 
-[Figma library](mdc:https:/www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=XXX)
-
-## Usage
-
-### Basic Usage
-
-```jsx-live
-const App = () => (
-  <{ComponentName}>
-    Basic {ComponentName} example
-  </{ComponentName}>
-)
-```
-````
-
-### Variants
-
-{Document each variant with examples}
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal">
-    <{ComponentName} variant="solid">Solid</{ComponentName}>
-    <{ComponentName} variant="outline">Outline</{ComponentName}>
-    <{ComponentName} variant="ghost">Ghost</{ComponentName}>
-  </Stack>
-)
+export const {componentName}SlotRecipe = defineSlotRecipe({
+  slots: ["root", "item", "trigger"], // Example slots
+  className: "nimbus-{component-name}",
+  base: {
+    root: { /* ... */ },
+    item: { /* ... */ },
+    trigger: { /* ... */ },
+  },
+  // ... variants
+});
 ```
 
-### Sizes
+#### B. Slots File (`{component-name}.slots.tsx`)
 
-{Document size options}
+Uses `createSlotRecipeContext`. The resulting provider (`{ComponentName}Root`)
+wraps the entire component structure.
 
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" alignItems="center">
-    <{ComponentName} size="sm">Small</{ComponentName}>
-    <{ComponentName} size="md">Medium</{ComponentName}>
-    <{ComponentName} size="lg">Large</{ComponentName}>
-  </Stack>
-)
+```typescript
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import { {componentName}SlotRecipe } from "./{component-name}.recipe";
+import type {
+  {ComponentName}RootProps,
+  {ComponentName}ItemProps,
+  {ComponentName}TriggerProps
+} from './{component-name}.types'
+
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: {componentName}SlotRecipe,
+});
+
+export const {ComponentName}Root = withProvider<HTMLDivElement, {ComponentName}RootProps>("div", "root");
+export const {ComponentName}Item = withContext<HTMLDivElement, {ComponentName}ItemProps>("div", "item");
+export const {ComponentName}Trigger = withContext<HTMLButtonElement, {ComponentName}TriggerProps>("button", "trigger");
 ```
 
-## API Reference
+#### C. Types File (`{component-name}.types.ts`)
 
-### Props
+Defines and exports props for each sub-component.
 
-{Document all props with descriptions}
+```typescript
+import type { HTMLChakraProps, RecipeVariantProps } from "@chakra-ui/react";
+import { {componentName}SlotRecipe } from "./{component-name}.recipe";
 
-## Accessibility
+// Props for the Root component, including variants
+export interface {ComponentName}RootProps extends HTMLChakraProps<"div", RecipeVariantProps<typeof {componentName}SlotRecipe>> {}
 
-{Document accessibility features and requirements}
+// Props for other sub-components
+export interface {ComponentName}ItemProps extends HTMLChakraProps<"div"> {}
+export interface {ComponentName}TriggerProps extends HTMLChakraProps<"button"> {}
+```
 
-## Guidelines
+#### D. Component File (`{component-name}.tsx`)
 
-### Do
+Exports a namespace object containing all the sub-components. Sub-components are
+typically defined in the `components/` directory.
 
-- {List of best practices}
+```typescript
+import { {ComponentName}Root } from "./components/{component-name}.root";
+import { {ComponentName}Item } from "./components/{component-name}.item";
+import { {ComponentName}Trigger } from "./components/{component-name}.trigger";
 
-### Don't
+// Create the namespace object for compound export
+export const {ComponentName} = {
+  Root: {ComponentName}Root,
+  Item: {ComponentName}Item,
+  Trigger: {ComponentName}Trigger,
+};
 
-- {List of things to avoid}
-
-````
+// Optional: Export individual components with an underscore prefix
+// for internal use or special cases like react-docgen.
+export {
+  {ComponentName}Root as _{ComponentName}Root,
+  {ComponentName}Item as _{ComponentName}Item,
+  {ComponentName}Trigger as _{ComponentName}Trigger,
+};
+```
 
 ### 3. Integration Steps
 
 #### A. Update Main Components Index
+
 Add export to `packages/nimbus/src/components/index.ts`:
+
 ```typescript
 export * from "./{component-name}";
-````
+```
 
 #### B. Update Package Exports (if needed)
 
