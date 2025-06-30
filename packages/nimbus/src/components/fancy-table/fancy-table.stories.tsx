@@ -4,8 +4,11 @@ import { Heading, Stack } from "@/components";
 import type {
   FancyTableComponentProps,
   FancyTableItem,
+  FancyTableColumn,
 } from "./fancy-table.types";
 import { fn } from "storybook/test";
+import React from "react";
+import { type SortDescriptor } from "react-aria-components";
 
 interface ExampleItem extends FancyTableItem {
   name: string;
@@ -26,7 +29,7 @@ const meta: Meta<typeof FancyTable.Root> = {
 
 export default meta;
 
-type Story = StoryObj<typeof FancyTable.Root<ExampleItem>>;
+type Story = StoryObj<FancyTableComponentProps<ExampleItem>>;
 
 const sampleData: ExampleItem[] = [
   { id: 1, name: "Documents", type: "Folder", size: "—", modified: "Today" },
@@ -54,14 +57,14 @@ const sampleData: ExampleItem[] = [
   },
 ];
 
-const sampleColumns = [
+const sampleColumns: FancyTableColumn[] = [
   { id: "name", name: "Name", isRowHeader: true, allowsSorting: true },
   { id: "type", name: "Type", allowsSorting: true },
   { id: "size", name: "Size", allowsSorting: true },
   { id: "modified", name: "Modified", allowsSorting: true },
 ];
 
-const mixedColumns = [
+const mixedColumns: FancyTableColumn[] = [
   {
     id: "name",
     name: "Name",
@@ -84,8 +87,7 @@ export const Basic: Story = {
 
 export const WithSelection: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     selectionMode: "multiple",
     selectionBehavior: "toggle",
     "aria-label": "File explorer table with selection",
@@ -94,16 +96,34 @@ export const WithSelection: Story = {
 
 export const WithSorting: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     "aria-label": "Sortable file explorer table",
+    onSortChange: fn(),
+  },
+  render: (args) => {
+    const [sortDescriptor, setSortDescriptor] = React.useState<
+      SortDescriptor | undefined
+    >({
+      column: "name",
+      direction: "ascending",
+    });
+
+    return (
+      <FancyTable.Root
+        {...args}
+        sortDescriptor={sortDescriptor}
+        onSortChange={(descriptor) => {
+          args.onSortChange?.(descriptor);
+          setSortDescriptor(descriptor);
+        }}
+      />
+    );
   },
 };
 
 export const WithResizing: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     allowsResizing: true,
     "aria-label": "Resizable file explorer table",
   },
@@ -111,8 +131,7 @@ export const WithResizing: Story = {
 
 export const WithDragAndDrop: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     allowsDragging: true,
     selectionMode: "multiple",
     selectionBehavior: "toggle",
@@ -123,8 +142,8 @@ export const WithDragAndDrop: Story = {
 
 export const Empty: Story = {
   args: {
+    ...Basic.args,
     items: [],
-    columns: sampleColumns,
     "aria-label": "Empty file explorer table",
     renderEmptyState: () => "No files found",
   },
@@ -169,8 +188,7 @@ export const Sizes: Story = {
 
 export const Interactive: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     interactive: true,
     onRowAction: fn(),
     "aria-label": "Interactive file explorer table",
@@ -179,8 +197,7 @@ export const Interactive: Story = {
 
 export const WithSingleSelection: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     selectionMode: "single",
     selectionBehavior: "toggle",
     "aria-label": "Single selection file explorer",
@@ -189,8 +206,7 @@ export const WithSingleSelection: Story = {
 
 export const Striped: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     interactive: true,
     striped: true,
     "aria-label": "Striped table",
@@ -199,8 +215,7 @@ export const Striped: Story = {
 
 export const WithColumnBorders: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     showColumnBorder: true,
     "aria-label": "Table with column borders",
   },
@@ -208,8 +223,7 @@ export const WithColumnBorders: Story = {
 
 export const CustomCellRendering: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     renderCell: (item, column) => {
       switch (column.id) {
         case "name":
@@ -232,8 +246,7 @@ export const CustomCellRendering: Story = {
 
 export const WithRowActions: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
+    ...Basic.args,
     interactive: true,
     onRowAction: fn(),
     "aria-label": "Interactive rows table",
@@ -248,99 +261,64 @@ const largeDataset = Array.from({ length: 1000 }, (_, i) => ({
   modified: `${Math.floor(Math.random() * 30)} days ago`,
 }));
 
-export const LargeDataset: Story = {
+export const LargeDataSet: Story = {
   args: {
+    ...Basic.args,
     items: largeDataset,
-    columns: sampleColumns,
-    selectionMode: "multiple",
-    selectionBehavior: "toggle",
-    allowsResizing: true,
-    "aria-label": "Large dataset table",
+    "aria-label": "Table with large dataset",
   },
 };
 
 export const FullFeatured: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
-    selectionMode: "multiple",
-    selectionBehavior: "toggle",
-    allowsResizing: true,
-    allowsDragging: true,
-    interactive: true,
-    striped: true,
-    showColumnBorder: true,
-    onSelectionChange: fn(),
-    onSortChange: fn(),
-    onRowAction: fn(),
-    onReorder: fn(),
-    "aria-label": "Full featured table",
-  },
-};
-
-export const LoadingState: Story = {
-  args: {
-    items: [],
-    columns: sampleColumns,
-    renderEmptyState: () => (
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <div>Loading...</div>
-      </div>
-    ),
-    "aria-label": "Loading state table",
+    ...WithSelection.args,
+    ...WithSorting.args,
+    ...WithResizing.args,
+    ...WithDragAndDrop.args,
+    ...WithRowActions.args,
+    ...Striped.args,
+    ...WithColumnBorders.args,
   },
 };
 
 export const CustomDragPreview: Story = {
   args: {
-    items: sampleData,
-    columns: sampleColumns,
-    allowsDragging: true,
-    selectionMode: "multiple",
-    selectionBehavior: "toggle",
+    ...WithDragAndDrop.args,
     renderDragPreview: (items) => (
       <div
         style={{
+          backgroundColor: "white",
           padding: "8px",
-          background: "white",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          borderRadius: "8px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
         }}
       >
-        Dragging {items.length} item(s)
+        Dragging {items.length} items
       </div>
     ),
-    onReorder: fn(),
-    "aria-label": "Custom drag preview table",
   },
 };
 
-const longContentData = [
-  {
-    id: 1,
-    name: "This is a very long file name that should test text wrapping and overflow behavior in table cells",
-    type: "Document with a very long type description",
-    size: "999.99 GB",
-    modified: "A very long time ago in a galaxy far, far away",
-  },
-  // ... more items with long content
-];
-
 export const LongContent: Story = {
   args: {
-    items: longContentData,
-    columns: sampleColumns,
-    allowsResizing: true,
-    "aria-label": "Long content table",
+    ...Basic.args,
+    items: [
+      {
+        id: 1,
+        name: "Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong name",
+        type: "Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong type",
+        size: "Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong size",
+        modified:
+          "Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong modified",
+      },
+      ...sampleData,
+    ],
   },
 };
 
 export const MixedColumnConfiguration: Story = {
   args: {
-    items: sampleData,
+    ...Basic.args,
     columns: mixedColumns,
-    allowsResizing: true,
-    "aria-label": "Mixed column configuration table",
   },
 };
