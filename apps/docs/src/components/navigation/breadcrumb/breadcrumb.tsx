@@ -19,7 +19,7 @@ export const BreadcrumbNav = () => {
 
     return menu.map((item, idx) => ({
       label: item,
-      href: "/" + menuToPath(menu.slice(0, idx + 1)),
+      href: menuToPath(menu.slice(0, idx + 1)),
     }));
   }, [activeDoc]);
 
@@ -30,7 +30,7 @@ export const BreadcrumbNav = () => {
       <Box as="ul" display="inline-flex">
         {!firstIsHome && (
           <Box as="li" _after={{ content: "'»'", mx: "200" }}>
-            <Link href={"/home"}>Home</Link>
+            <Link href={"home"}>Home</Link>
           </Box>
         )}
         {parts.map((item, idx) => {
