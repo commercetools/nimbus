@@ -2,22 +2,31 @@ import {
   Text as ChakraText,
   type TextProps as ChakraTextProps,
 } from "@chakra-ui/react";
+import { TextContext, useContextProps } from "react-aria-components";
 
-export interface TextProps extends ChakraTextProps {
-  ref?: React.Ref<HTMLParagraphElement>;
+export interface TextProps extends Omit<ChakraTextProps, "slot"> {
+  ref?: React.Ref<HTMLElement>;
+  slot?: string | null | undefined;
 }
 
 /**
- * Render Text
+ * Text
  *
- * Use this component to render text. Various props can be passed to customize the text.
- * Check the documentation for more information.
- *
- * @see https://DOMAIN/components/typography/text
+ * Use this component to display text.
  */
-export const Text = (props: TextProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraText ref={ref} {...restProps} />;
+export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {
+  const [contextProps, ref] = useContextProps(
+    props,
+    forwardedRef ?? null,
+    TextContext
+  );
+  return (
+    <ChakraText
+      ref={ref as React.Ref<HTMLParagraphElement>}
+      {...contextProps}
+      slot={props.slot ?? undefined}
+    />
+  );
 };
 
 Text.displayName = "Text";

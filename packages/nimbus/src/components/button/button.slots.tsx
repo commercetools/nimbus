@@ -31,7 +31,7 @@ const { withContext } = createRecipeContext({
 });
 
 /**
- * Root component that provides the styling context for the Battn component.
+ * Root component that provides the styling context for the Button component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
 export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
