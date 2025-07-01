@@ -29,7 +29,7 @@ day or a range, and include start and end times.
 
 Deep dive on details and access design library
 
-[Figma Link](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=2470-15358&m=dev)
+[Figma Link](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=4292-15537&m=dev)
 
 ## Variables
 
@@ -41,13 +41,17 @@ Get familiar with the features.
 
 An option is available to choose start time for single date selection.
 
-{/* TODO: replace with component */}
+```jsx-live
+const App = () => <Calendar aria-label="Enter a date" />
+```
 
 **Date range**
 
 A start and end time is available for date range selection.
 
-{/* TODO: replace with component */}
+```jsx-live
+const App = () => <Calendar aria-label="Enter a date range" />
+```
 
 ## Guidelines
 
@@ -136,8 +140,10 @@ primary function.
 >   triggering actions immediately after a date is selected.
 
 ![](/images/calendar/calendar-interactions-dont.png)
-{/* TODO: verify this after component is added */}
-{/* <PropsTable id="Calendar" /> */}
+
+### Properties
+
+<PropsTable id="Calendar" />
 
 ### Accessibility
 
@@ -174,5 +180,5 @@ cognitive, and physical limitations.
 #### Resources
 
 - [React Aria Calendar](https://react-spectrum.adobe.com/react-aria/Calendar.html)
-- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/)
-  (Search for "Date Picker" or "Calendar" patterns)
+- [W3C ARIA Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/#accessibilityfeatures)(Date
+  Picker)
