@@ -46,9 +46,18 @@ export const baseConfig = {
   build: {
     sourcemap: true,
     lib: {
-      entry: resolve(__dirname, "./src/index.ts"),
+      entry: [
+        resolve(__dirname, "./src/index.ts"),
+        resolve(__dirname, "./src/test/setup-jsdom-polyfills.ts"),
+      ],
       name: "nimbus",
-      fileName: "index",
+      fileName: (format: string, entryName: string) =>
+        // `cjs` files need to end in `.cjs` when `type: module` is set in package.json,
+        // otherwise you get an error when you `require` them
+        format === "cjs"
+          ? `${entryName}.${format}`
+          : `${entryName}.${format}.js`,
+
       formats: ["es", "cjs"] satisfies LibraryFormats[],
     },
     rollupOptions: {
