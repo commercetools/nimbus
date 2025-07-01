@@ -5,6 +5,8 @@ import {
   Stack,
   SimpleGrid,
   useCopyToClipboard,
+  Tooltip,
+  MakeElementFocusable,
 } from "@commercetools/nimbus";
 import { useEffect, useState } from "react";
 import take from "lodash/take";
@@ -57,22 +59,27 @@ export const IconSearch = () => {
         {take(filteredIcons ?? [], q.length ? 128 : 256).map((iconId) => {
           const Component = icons[iconId as keyof typeof icons];
           return (
-            <Flex
-              p="400"
-              border="solid-25"
-              borderColor="neutral.5"
-              ml="-1px"
-              mb="-1px"
-              aspectRatio={1}
-              cursor={"pointer"}
-              _hover={{ bg: "neutral.2" }}
-              onClick={() => onCopyRequest(iconId)}
-              key={iconId}
-            >
-              <Text m="auto" textStyle="3xl" color="neutral.12">
-                <Component />
-              </Text>
-            </Flex>
+            <Tooltip.Root>
+              <MakeElementFocusable>
+                <Flex
+                  p="400"
+                  border="solid-25"
+                  borderColor="neutral.5"
+                  ml="-1px"
+                  mb="-1px"
+                  aspectRatio={1}
+                  cursor={"pointer"}
+                  _hover={{ bg: "neutral.2" }}
+                  onClick={() => onCopyRequest(iconId)}
+                  key={iconId}
+                >
+                  <Text m="auto" textStyle="3xl" color="neutral.12">
+                    <Component />
+                  </Text>
+                </Flex>
+              </MakeElementFocusable>
+              <Tooltip.Content>{iconId}</Tooltip.Content>
+            </Tooltip.Root>
           );
         })}
       </SimpleGrid>
