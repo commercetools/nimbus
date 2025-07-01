@@ -1,7 +1,6 @@
 "use client";
-import { ThemeProvider, useTheme, type ThemeProviderProps } from "next-themes";
-
-export interface ColorModeProviderProps extends ThemeProviderProps {}
+import { ThemeProvider, useTheme } from "next-themes";
+import type { ColorModeProviderProps } from "./nimbus-provider.types";
 
 export function ColorModeProvider(props: ColorModeProviderProps) {
   return (

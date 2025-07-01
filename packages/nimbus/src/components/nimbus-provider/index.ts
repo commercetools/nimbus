@@ -1,7 +1,9 @@
 export * from "./nimbus-provider.tsx";
 export { useColorMode, useColorModeValue } from "./color-mode";
 export type {
+  ColorModeProviderProps,
   NimbusRouterConfig,
   NimbusProviderProps,
-} from "./nimbus-provider.tsx";
-export type { TypedNimbusRouterConfig, RouterOptions } from "./router-types";
+  RouterOptions,
+  TypedNimbusRouterConfig,
+} from "./nimbus-provider.types";
