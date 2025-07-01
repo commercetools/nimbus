@@ -2,7 +2,7 @@
 id: NimbusProvider
 title: NimbusProvider
 description: provides an environment for the rest of the components to work in
-documentState: InitialDraft
+lifecycleState: Beta
 order: 999
 menu:
   - Components
@@ -12,10 +12,121 @@ tags:
   - system
   - required
   - setup
+
 ---
 
 # NimbusProvider
 
-Provides the necesseary context for the rest of the components to work in.
+The `NimbusProvider` component provides the foundational context for all Nimbus components, including theming, internationalization, and optional client-side routing configuration.
+
+## Basic Usage
+
+Without configuration, the `NimbusProvider` will provide the default theme and color mode (light)
+and infer the locale from the browser.
+
+```tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+
+function App() {
+  return (
+    <NimbusProvider>
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+## Set up Locale
+
+The `NimbusProvider` supports internationalization through the `locale` prop. You can specify a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to set the locale for all Nimbus components.
+
+```tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+
+function App() {
+  return (
+    <NimbusProvider locale="de-DE">
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+If no locale is provided, it defaults to the user's browser locale.
+
+
+## Set up Router
+
+The `NimbusProvider` can be configured with client-side routing to enable seamless navigation for all Nimbus components that support links (like `Link`, `Button` with href, etc.).
+
+### React Router
+
+```tsx
+import { useNavigate, useHref } from 'react-router-dom';
+import { NimbusProvider } from "@commercetools/nimbus";
+
+function App() {
+  const navigate = useNavigate();
+
+  return (
+    <NimbusProvider 
+      router={{ 
+        navigate,
+        useHref 
+      }}
+    >
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+### Next.js App Router
+
+```tsx
+'use client';
+import { useRouter } from 'next/navigation';
+import { NimbusProvider } from "@commercetools/nimbus";
+
+function ClientProviders({ children }) {
+  const router = useRouter();
+
+  return (
+    <NimbusProvider 
+      router={{ 
+        navigate: router.push 
+      }}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+```
+
+### Next.js with Base Path
+
+```tsx
+'use client';
+import { useRouter } from 'next/navigation';
+import { NimbusProvider } from "@commercetools/nimbus";
+
+function ClientProviders({ children }) {
+  const router = useRouter();
+  const useHref = (href: string) => process.env.BASE_PATH + href;
+
+  return (
+    <NimbusProvider 
+      router={{ 
+        navigate: router.push,
+        useHref 
+      }}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+```
+
+## Props
 
 <PropsTable id="NimbusProvider" />
