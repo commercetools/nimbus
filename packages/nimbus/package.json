@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.9-rc5",
+  "version": "0.0.9-rc6",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -17,7 +17,7 @@
       }
     },
     "./package.json": "./package.json",
-    "./setupJsdomPolyfills": {
+    "./setup-jsdom-polyfills": {
       "require": {
         "default": "./dist/setup-jsdom-polyfills.cjs"
       }

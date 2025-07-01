@@ -5,7 +5,7 @@
  * config = {
  *   ...
  *   setupFiles: [
- *     '@commercetools/nimbus/setupJsdomPolyfills`,
+ *     '@commercetools/nimbus/setup-jsdom-polyfills`,
  *     ...
  *  ]
  * }
