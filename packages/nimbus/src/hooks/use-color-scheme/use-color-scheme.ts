@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 /**
  * Hook that provides access to the current color scheme value.
  *
+ * @experimental This hook is experimental and may change in future versions.
+ *
  * This hook monitors the color-scheme CSS property on the document's HTML element
  * and returns the current value. It automatically updates when the color scheme changes,
  * either through direct style changes or theme updates stored in localStorage.

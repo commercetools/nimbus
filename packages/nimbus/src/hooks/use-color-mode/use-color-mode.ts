@@ -4,6 +4,8 @@ import { useTheme } from "next-themes";
 /**
  * Hook for managing color mode (light/dark theme) state.
  *
+ * @experimental This hook is experimental and may change in future versions.
+ *
  * This hook provides access to the current color mode and functions to change it.
  * It integrates with the next-themes library to handle theme persistence and system preference detection.
  *
