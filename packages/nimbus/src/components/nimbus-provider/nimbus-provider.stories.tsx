@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NimbusProvider } from "./nimbus-provider";
-import { useColorMode, useColorModeValue } from "./color-mode";
-import { Button, Text, Stack, Box, Link, DateInput } from "../";
-import { useState, useEffect } from "react";
+import { useColorMode, useColorModeValue } from "@/hooks";
+import { Button, Text, Stack, Box, Link, DateInput } from "@/components";
+import { useState } from "react";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { CalendarDate } from "@internationalized/date";
 import type { DateValue } from "react-aria";
-import type { NimbusRouterConfig } from "./nimbus-provider";
+import type { NimbusRouterConfig } from "./nimbus-provider.types";
 
 const meta: Meta<typeof NimbusProvider> = {
   title: "components/NimbusProvider",
