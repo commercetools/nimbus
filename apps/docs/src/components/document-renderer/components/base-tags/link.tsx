@@ -1,7 +1,6 @@
 import { Box, Link as NimbusLink } from "@commercetools/nimbus";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import { OpenInNew } from "@commercetools/nimbus-icons";
-import { DocLink } from "@/components/navigation/doc-link";
 
 type LinkProps = DetailedHTMLProps<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -21,9 +20,9 @@ export const Link = ({ children, ...rest }: LinkProps) => {
 
   if (isDocsLink) {
     return (
-      <DocLink docRoute={rest.href} {...rest}>
+      <NimbusLink href={rest.href.substring(1)} {...rest}>
         {children}
-      </DocLink>
+      </NimbusLink>
     );
   }
   return (

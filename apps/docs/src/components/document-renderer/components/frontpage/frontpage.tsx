@@ -1,9 +1,9 @@
-import { DocLink } from "@/components/navigation/doc-link";
 import {
   Box,
   Card,
   Flex,
   Heading,
+  Link,
   SimpleGrid,
   Stack,
   Text,
@@ -57,7 +57,7 @@ export const Frontpage = () => {
 
       <SimpleGrid columns={2} gap="400">
         {links.map((link) => (
-          <DocLink key={link.href} docRoute={link.href} unstyled>
+          <Link key={link.href} href={link.href} unstyled>
             <Card.Root borderStyle="outlined" cardPadding="lg" width="full">
               <Card.Content>
                 <Flex gap="600" direction="row" height="80px">
@@ -73,7 +73,7 @@ export const Frontpage = () => {
                 </Flex>
               </Card.Content>
             </Card.Root>
-          </DocLink>
+          </Link>
         ))}
       </SimpleGrid>
     </Stack>

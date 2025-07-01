@@ -1,8 +1,15 @@
 import { useAtomValue } from "jotai";
 import { activeDocAtom } from "@/atoms/active-doc";
 import { documentationAtom } from "@/atoms/documentation";
-import { Box, Card, Flex, Heading, Stack, Text } from "@commercetools/nimbus";
-import { DocLink } from "@/components/navigation/doc-link";
+import {
+  Box,
+  Card,
+  Flex,
+  Heading,
+  Link,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { FC } from "react";
 import * as Icons from "@commercetools/nimbus-icons";
 
@@ -71,7 +78,7 @@ export const CategoryOverview: FC = ({ variant }) => {
         <Stack as="ul" gap="0" direction="row" wrap="wrap">
           {sortedDocs.map((doc) => (
             <Box as="li" width="full" pr="200" pb="200">
-              <DocLink unstyled docRoute={doc.meta.route}>
+              <Link unstyled href={doc.meta.route}>
                 <Card.Root
                   key={doc.meta.route}
                   cardPadding="md"
@@ -99,7 +106,7 @@ export const CategoryOverview: FC = ({ variant }) => {
                     </Flex>
                   </Card.Content>
                 </Card.Root>
-              </DocLink>
+              </Link>
             </Box>
           ))}
         </Stack>
@@ -112,7 +119,7 @@ export const CategoryOverview: FC = ({ variant }) => {
       <Stack gap="0" direction="row" wrap="wrap">
         {sortedDocs.map((doc) => (
           <Box width="1/4" pr="200" pb="200">
-            <DocLink unstyled docRoute={doc.meta.route}>
+            <Link unstyled href={doc.meta.route}>
               <Card.Root
                 key={doc.meta.route}
                 cardPadding="md"
@@ -139,7 +146,7 @@ export const CategoryOverview: FC = ({ variant }) => {
                   </Stack>
                 </Card.Content>
               </Card.Root>
-            </DocLink>
+            </Link>
           </Box>
         ))}
       </Stack>

@@ -7,11 +7,15 @@ import { DevOnly } from "./components/utils/dev-only.tsx";
 import { DocumentMetaSettings } from "./components/document-meta-settings/document-meta-settings.tsx";
 import { StickySidebar } from "./components/navigation/sticky-sidebar.tsx";
 import { RouterProvider } from "./components/router";
+import { useAtom } from "jotai";
+import { activeRouteAtom } from "./atoms/route";
 
 function App() {
+  const [, setActiveRoute] = useAtom(activeRouteAtom);
+
   return (
     <RouterProvider>
-      <NimbusProvider>
+      <NimbusProvider router={{ navigate: setActiveRoute }}>
         <>
           <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
             <Box position="sticky" top="0" zIndex="1" bg="neutral.1">
