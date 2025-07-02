@@ -197,4 +197,12 @@ export const keyframes = {
       transform: "translateX(300%)",
     },
   },
+  "gradient-shimmer": {
+    "0%": {
+      backgroundPosition: "200% 0",
+    },
+    "100%": {
+      backgroundPosition: "-200% 0",
+    },
+  },
 };

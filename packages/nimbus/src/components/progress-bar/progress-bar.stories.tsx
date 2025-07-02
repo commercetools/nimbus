@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState, useEffect } from "react";
 import { ProgressBar } from "./progress-bar";
 import { Stack } from "./../stack";
 import type { ProgressBarProps } from "./progress-bar.types";
 import { within, expect } from "storybook/test";
 import { Box } from "@/components";
+import { Button } from "../button";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
 const variants: ProgressBarProps["variant"][] = ["solid", "contrast"];
@@ -285,6 +287,121 @@ export const CustomFormatting: Story = {
           formatOptions={{ style: "unit", unit: "percent" }}
           label="Unit format"
         />
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Progress Simulation
+ * Demonstrates simulated progress using useState and useEffect
+ */
+export const ProgressSimulation: Story = {
+  render: () => {
+    const [progress, setProgress] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
+
+    useEffect(() => {
+      let interval: NodeJS.Timeout;
+
+      if (isRunning && progress < 100) {
+        interval = setInterval(() => {
+          setProgress((prev) => {
+            const newProgress = prev + Math.random() * 3 + 0.5; // Random increment between 0.5-3.5
+            if (newProgress >= 100) {
+              setIsRunning(false);
+              setIsCompleted(true);
+              return 100;
+            }
+            return newProgress;
+          });
+        }, 100);
+      }
+
+      return () => {
+        if (interval) {
+          clearInterval(interval);
+        }
+      };
+    }, [isRunning, progress]);
+
+    const startProgress = () => {
+      setIsRunning(true);
+      setIsCompleted(false);
+    };
+
+    const resetProgress = () => {
+      setProgress(0);
+      setIsRunning(false);
+      setIsCompleted(false);
+    };
+
+    const pauseProgress = () => {
+      setIsRunning(false);
+    };
+
+    return (
+      <Stack direction="column" gap="600" alignItems="stretch">
+        <Stack direction="row" gap="400">
+          <Button
+            onClick={startProgress}
+            disabled={isRunning || isCompleted}
+            variant="solid"
+          >
+            {isCompleted ? "Completed!" : "Start Progress"}
+          </Button>
+          <Button
+            onClick={pauseProgress}
+            disabled={!isRunning}
+            variant="outline"
+          >
+            Pause
+          </Button>
+          <Button onClick={resetProgress} variant="ghost">
+            Reset
+          </Button>
+        </Stack>
+
+        <Stack direction="column" gap="400">
+          <ProgressBar
+            value={progress}
+            label="File Upload Progress"
+            layout="stacked"
+            size="md"
+            colorPalette="primary"
+          />
+
+          <ProgressBar
+            value={progress}
+            label="Download Progress"
+            layout="inline"
+            size="md"
+            colorPalette="grass"
+          />
+
+          <ProgressBar
+            value={progress}
+            label="Installation Progress"
+            layout="stacked"
+            size="2xs"
+            colorPalette="blue"
+          />
+        </Stack>
+
+        <Box p="400" bg="neutral.2" borderRadius="200">
+          <Stack direction="column" gap="200">
+            <span style={{ fontSize: "14px", fontWeight: "500" }}>
+              Current Progress: {Math.round(progress)}%
+            </span>
+            <span
+              style={{ fontSize: "12px", color: "var(--colors-neutral-11)" }}
+            >
+              Status:{" "}
+              {isCompleted ? "Complete" : isRunning ? "Running" : "Paused"}
+            </span>
+          </Stack>
+        </Box>
       </Stack>
     );
   },

@@ -29,13 +29,15 @@ export const progressBarSlotRecipe = defineSlotRecipe({
 
     fill: {
       bgImage:
-        "linear-gradient(to right, {colors.colorPalette.6}, {colors.colorPalette.9})",
+        "linear-gradient(90deg, {colors.colorPalette.6}, {colors.colorPalette.9}, {colors.colorPalette.6})",
+      backgroundSize: "200% 100%",
       height: "100%",
       borderRadius: "200",
       transition: "width 0.3s ease-in-out",
+      animation: "gradient-shimmer 4s ease-in-out infinite",
 
       "&[data-indeterminate='true']": {
-        animation: "progress-indeterminate 1.5s ease-in-out infinite",
+        animation: "progress-indeterminate 2s ease-in-out infinite",
         width: "40% !important",
       },
     },
