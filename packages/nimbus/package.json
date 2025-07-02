@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.9-rc6",
+  "version": "0.0.9-rc7",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -72,6 +72,7 @@
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.10.2",
+    "glob": "catalog:",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
