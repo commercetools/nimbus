@@ -7,6 +7,7 @@ import type { LibraryFormats } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
+import treeShakeable from "rollup-plugin-tree-shakeable";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -96,6 +97,7 @@ export default defineConfig(async () => {
         formats: ["es", "cjs"] satisfies LibraryFormats[],
       },
       rollupOptions: {
+        plugins: [treeShakeable()],
         external,
         output: {
           // Organize chunk files into chunks subfolder

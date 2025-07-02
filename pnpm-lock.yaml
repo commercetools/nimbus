@@ -9,6 +9,9 @@ catalogs:
     glob:
       specifier: ^11.0.3
       version: 11.0.3
+    rollup-plugin-tree-shakeable:
+      specifier: ^1.0.3
+      version: 1.0.3
   react:
     '@chakra-ui/cli':
       specifier: ^3.17.0
@@ -568,6 +571,9 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 19.1.0(react@19.1.0)
+      rollup-plugin-tree-shakeable:
+        specifier: 'catalog:'
+        version: 1.0.3
       storybook:
         specifier: catalog:tooling
         version: 9.0.13(@testing-library/dom@10.4.0)(prettier@3.5.3)
@@ -3131,6 +3137,9 @@ packages:
 
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+
+  '@types/node@22.16.0':
+    resolution: {integrity: sha512-B2egV9wALML1JCpv3VQoQ+yesQKAmNMBIAY7OteVrikcOcAkWm+dGL6qpeCktPjAv6N1JLnhbNiqS35UpFyBsQ==}
 
   '@types/node@24.0.3':
     resolution: {integrity: sha512-R4I/kzCYAdRLzfiCabn9hxWfbuHS573x+r0dJMkkzThEa7pbrcDWK+9zu3e7aBOouf+rQAciqPFMnxwr0aWgKg==}
@@ -6325,6 +6334,10 @@ packages:
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
+  rollup-plugin-tree-shakeable@1.0.3:
+    resolution: {integrity: sha512-A4c06mvUYIuYMN2NJnnPNh5AZlW3KzisCXSENBABUFK4HDgLycuKRsDMRFT21P5CfijoHIo7FDdrVrOGFce4vg==}
+    engines: {node: '>= 18'}
+
   rollup@4.34.6:
     resolution: {integrity: sha512-wc2cBWqJgkU3Iz5oztRkQbfVkbxoz5EhnCGOrnJvnLnQ7O0WhQUYyv18qQI79O8L7DdHrrlJNeCHd4VGpnaXKQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -6851,6 +6864,9 @@ packages:
 
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
+
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   undici-types@7.8.0:
     resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
@@ -10803,6 +10819,10 @@ snapshots:
   '@types/ms@2.1.0': {}
 
   '@types/node@17.0.45': {}
+
+  '@types/node@22.16.0':
+    dependencies:
+      undici-types: 6.21.0
 
   '@types/node@24.0.3':
     dependencies:
@@ -15020,6 +15040,12 @@ snapshots:
     dependencies:
       glob: 7.2.3
 
+  rollup-plugin-tree-shakeable@1.0.3:
+    dependencies:
+      '@types/node': 22.16.0
+      estree-walker: 3.0.3
+      magic-string: 0.30.17
+
   rollup@4.34.6:
     dependencies:
       '@types/estree': 1.0.6
@@ -15600,6 +15626,8 @@ snapshots:
   uc.micro@1.0.6: {}
 
   ufo@1.5.4: {}
+
+  undici-types@6.21.0: {}
 
   undici-types@7.8.0: {}
 

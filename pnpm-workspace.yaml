@@ -4,6 +4,7 @@ packages:
 
 catalog:
   glob: ^11.0.3
+  rollup-plugin-tree-shakeable: ^1.0.3
 
 catalogMode: strict
 

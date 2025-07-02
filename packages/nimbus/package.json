@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.9-rc7",
+  "version": "0.0.9-rc8",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -76,6 +76,7 @@
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "rollup-plugin-tree-shakeable": "catalog:",
     "storybook": "catalog:tooling",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
