@@ -39,6 +39,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
     value,
     minValue = 0,
     maxValue = 100,
+    isDynamic = true,
     isIndeterminate,
     label,
     formatOptions = { style: "percent" },
@@ -60,6 +61,8 @@ export const ProgressBar = (props: ProgressBarProps) => {
       {...recipeProps}
       {...styleProps}
       {...recipeProps}
+      isDynamic={isDynamic}
+      isIndeterminate={isIndeterminate}
       asChild
     >
       <RaProgressBar

@@ -29,11 +29,7 @@ export interface ProgressBarRootProps
  * This allows the component to accept both structural props from Root,
  * styling variants from the recipe, and accessibility props from react-aria.
  */
-type ProgressBarVariantProps = ProgressBarRootProps &
-  RecipeVariantProps<typeof progressBarSlotRecipe> &
-  AriaProgressBarProps & {
-    [key: `data-${string}`]: string;
-  };
+type ProgressBarVariantProps = ProgressBarRootProps & AriaProgressBarProps;
 
 /**
  * Main props interface for the ProgressBar component.
@@ -42,59 +38,15 @@ type ProgressBarVariantProps = ProgressBarRootProps &
  */
 export interface ProgressBarProps extends ProgressBarVariantProps {
   /**
-   * The progress value (0-100 for determinate progress).
-   * If undefined, the progress bar will be in indeterminate state.
-   */
-  value?: number;
-
-  /**
-   * The minimum value (default: 0)
-   */
-  minValue?: number;
-
-  /**
-   * The maximum value (default: 100)
-   */
-  maxValue?: number;
-
-  /**
-   * Whether the progress is indeterminate (loading state)
-   */
-  isIndeterminate?: boolean;
-
-  /**
-   * The label text to display
-   */
-  label?: string;
-
-  /**
-   * Custom formatter for the value display
-   * Defaults to percentage format (e.g., "75%")
-   */
-  formatOptions?: Intl.NumberFormatOptions;
-
-  /**
-   * Visual variant: solid or contrast
-   */
-  variant?: "solid" | "contrast";
-
-  /**
-   * Text display layout: plain, inline, or stacked
-   */
-  layout?: "plain" | "inline" | "stacked";
-
-  /**
-   * Color palette for the progress bar
-   */
-  colorPalette?: string;
-
-  /**
-   * Size variant
-   */
-  size?: "2xs" | "md";
-
-  /**
    * Ref forwarding to the root element
    */
   ref?: React.Ref<HTMLDivElement>;
+
+  /**
+   * Whether the progress bar represents an active, ongoing process that is being updated in real-time.
+   * Set to true for dynamic progress (e.g., file uploads, downloads, loading operations).
+   * Set to false for static progress indicators (e.g., showing step 3 of 5 in a wizard, completion percentage that won't change).
+   * @default true
+   */
+  isDynamic?: boolean;
 }
