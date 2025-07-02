@@ -68,7 +68,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
         minValue={minValue}
         maxValue={maxValue}
         isIndeterminate={isIndeterminate}
-        aria-label={label}
+        label={label}
         {...rest}
       >
         {({ percentage, valueText }) => (
@@ -83,7 +83,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
                   </Box>
                 )}
                 <Box flexGrow="1" />
-                {value && (
+                {label && value && (
                   <Box>
                     <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
                   </Box>

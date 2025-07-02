@@ -93,7 +93,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       },
       contrast: {
         track: {
-          backgroundColor: "colorPalette.contrast/25",
+          backgroundColor: "colorPalette.contrast/15",
         },
         fill: {
           //bgImage: "none",
