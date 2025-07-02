@@ -1,0 +1,104 @@
+---
+title: "Menu"
+---
+
+import { Menu } from '@commercetools/nimbus'
+import { Preview } from 'storybook-addon-preview'
+
+# Menu
+
+The `Menu` component displays a list of actions in an overlay that can be triggered from any element.
+
+## Installation
+
+```bash
+pnpm add @commercetools/nimbus
+```
+
+## Usage
+
+### Basic menu
+
+```tsx preview
+function Example() {
+  return (
+    <Menu.Root>
+      <Menu.Trigger>Open menu</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="new">New file</Menu.Item>
+        <Menu.Item id="duplicate">Duplicate</Menu.Item>
+        <Menu.Separator />
+        <Menu.Item id="delete" isDanger>
+          Delete
+        </Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  );
+}
+```
+
+### With groups and labels
+
+```tsx preview
+function Grouped() {
+  return (
+    <Menu.Root defaultOpen>
+      <Menu.Trigger>Actions</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Group>
+          <Menu.GroupLabel>File</Menu.GroupLabel>
+          <Menu.Item id="save">Save</Menu.Item>
+          <Menu.Item id="print">Print…</Menu.Item>
+        </Menu.Group>
+        <Menu.Separator />
+        <Menu.Group>
+          <Menu.GroupLabel>Edit</Menu.GroupLabel>
+          <Menu.Item id="undo" shortcut="⌘ Z">
+            Undo
+          </Menu.Item>
+          <Menu.Item id="redo" shortcut="⌘ ⇧ Z">
+            Redo
+          </Menu.Item>
+        </Menu.Group>
+      </Menu.Content>
+    </Menu.Root>
+  );
+}
+```
+
+## Props
+
+All sub-components accept Chakra style props so you can theme them inline or via the `sx` prop.
+
+| Component | Important props |
+|-----------|-----------------|
+| `Menu.Root` | `onAction`, `onOpenChange`, `isOpen`, `defaultOpen`, `closeOnSelect` |
+| `Menu.Trigger` | `isDisabled`, `isLoading`, `asChild` |
+| `Menu.Content` | `placement`, `offset`, `shouldFlip`, `isLoading` |
+| `Menu.Item` | `id`, `isDisabled`, `isSelected`, `isDanger`, `isLoading` |
+
+## Accessibility
+
+Nimbus `Menu` is built on top of **React-Aria Components**, giving it the following out-of-the-box accessibility features:
+
+* Correct ARIA roles (`menu`, `menuitem`, `separator`, `group`, etc.).
+* Automatic keyboard navigation with roving focus, type-ahead search and focus-wrap.
+* Screen-reader announcements of open/close state.
+* Dismiss behaviour bound to <kbd>Esc</kbd> and outside clicks.
+* Focus is trapped inside the menu while it is open and returns to the trigger when closed.
+
+### Colour contrast
+
+All default colour tokens conform to WCAG 2.2 AA contrast requirements. If you supply custom colours, verify contrast with the integrated Storybook **A11y** addon or Lighthouse.
+
+### RTL
+
+Placement and arrow keys automatically adapt in Right-to-Left layouts.
+
+## Theming
+
+Use Chakra style props or override the [slot recipe](./menu.recipe.tsx) through the `extendTheme` API.
+
+## Design tokens
+
+The component consumes colour and spacing tokens from Nimbus Tokens. See the [Tokens documentation](../tokens) for details.

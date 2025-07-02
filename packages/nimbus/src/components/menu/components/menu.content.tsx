@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Menu, Popover } from "react-aria-components";
+import { Menu, Popover, type Key } from "react-aria-components";
 import { MenuContentSlot } from "../menu.slots";
 import { useMenuContext } from "../menu.context";
 import type { MenuContentProps } from "../menu.types";
@@ -17,7 +17,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(
     },
     ref
   ) => {
-    const { onAction } = useMenuContext();
+    const { onAction, closeOnSelect, state } = useMenuContext();
     const [styleProps, restProps] = extractStyleProps(props);
 
     return (
@@ -29,7 +29,14 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(
         >
           <Menu
             ref={ref}
-            onAction={onAction}
+            onAction={(key: Key) => {
+              onAction?.(key);
+              if (closeOnSelect) {
+                state?.close();
+              } else {
+                setTimeout(() => state?.open(), 0);
+              }
+            }}
             shouldFocusWrap
             autoFocus="first"
             {...restProps}
