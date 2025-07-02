@@ -1,10 +1,11 @@
+import * as React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Menu } from '../..';
 
-function renderWithProviders(ui: React.ReactElement) {
+function renderWithProviders(ui: any) {
   return render(<ChakraProvider>{ui}</ChakraProvider>);
 }
 
