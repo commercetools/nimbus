@@ -60,17 +60,17 @@ const App = () => (
 )
 ```
 
-### Text Display Variants
+### Text Display Layouts
 
 #### Stacked
-The default variant displays the label and value above the progress bar.
+The default layout displays the label and value above the progress bar.
 
 ```jsx-live
 const App = () => (
   <ProgressBar 
     value={60} 
     label="Upload Progress"
-    variant="stacked"
+    layout="stacked"
     colorPalette="primary"
   />
 )
@@ -84,7 +84,7 @@ const App = () => (
   <ProgressBar 
     value={80} 
     label="Sync Progress"
-    variant="inline"
+    layout="inline"
     colorPalette="grass"
   />
 )
@@ -98,7 +98,7 @@ const App = () => (
   <ProgressBar 
     value={30} 
     label="Background Process"
-    variant="plain"
+    layout="plain"
     colorPalette="blue"
   />
 )
@@ -244,7 +244,7 @@ The ProgressBar component includes comprehensive accessibility features:
 - **ARIA attributes**: Proper `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` attributes
 - **Screen reader support**: Descriptive labels and value announcements
 - **Keyboard navigation**: Standard focus management for interactive elements
-- **High contrast**: Sufficient color contrast ratios for all variants
+- **High contrast**: Sufficient color contrast ratios for all layouts
 
 ### Implementation Notes
 

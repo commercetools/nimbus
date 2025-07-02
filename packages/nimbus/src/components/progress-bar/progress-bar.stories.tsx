@@ -5,7 +5,7 @@ import type { ProgressBarProps } from "./progress-bar.types";
 import { within, expect } from "storybook/test";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
-const variants: ProgressBarProps["variant"][] = ["plain", "inline", "stacked"];
+const layouts: ProgressBarProps["layout"][] = ["plain", "inline", "stacked"];
 const colors: Array<
   "amber" | "blue" | "grass" | "slate" | "tomato" | "primary"
 > = ["primary", "tomato", "grass", "amber", "blue", "slate"];
@@ -76,7 +76,7 @@ export const Sizes: Story = {
   args: {
     value: 60,
     label: "Progress",
-    variant: "stacked",
+    layout: "stacked",
   },
   render: (args) => {
     return (
@@ -95,9 +95,9 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Variants
+ * Showcase Layouts
  */
-export const Variants: Story = {
+export const Layouts: Story = {
   args: {
     value: 45,
     label: "Loading",
@@ -106,12 +106,12 @@ export const Variants: Story = {
   render: (args) => {
     return (
       <Stack direction="column" gap="600" alignItems="stretch">
-        {variants.map((variant) => (
-          <Stack key={variant as string} direction="column" gap="200">
+        {layouts.map((layout) => (
+          <Stack key={layout as string} direction="column" gap="200">
             <span style={{ fontSize: "12px", fontWeight: "500" }}>
-              Variant: {variant}
+              Layout: {layout}
             </span>
-            <ProgressBar {...args} variant={variant} />
+            <ProgressBar {...args} layout={layout} />
           </Stack>
         ))}
       </Stack>
@@ -126,7 +126,7 @@ export const Colors: Story = {
   args: {
     value: 70,
     label: "Progress",
-    variant: "stacked",
+    layout: "stacked",
     size: "md",
   },
   render: (args) => {
@@ -147,19 +147,19 @@ export const Indeterminate: Story = {
   args: {
     isIndeterminate: true,
     label: "Loading...",
-    variant: "stacked",
+    layout: "stacked",
     size: "md",
     colorPalette: "primary",
   },
   render: (args) => {
     return (
       <Stack direction="column" gap="600" alignItems="stretch">
-        {variants.map((variant) => (
-          <Stack key={variant as string} direction="column" gap="200">
+        {layouts.map((layout) => (
+          <Stack key={layout as string} direction="column" gap="200">
             <span style={{ fontSize: "12px", fontWeight: "500" }}>
-              Variant: {variant}
+              Layout: {layout}
             </span>
-            <ProgressBar {...args} variant={variant} />
+            <ProgressBar {...args} layout={layout} />
           </Stack>
         ))}
       </Stack>
@@ -173,7 +173,7 @@ export const Indeterminate: Story = {
 export const ValueRanges: Story = {
   args: {
     label: "Progress",
-    variant: "stacked",
+    layout: "stacked",
     size: "md",
     colorPalette: "primary",
   },
@@ -205,7 +205,7 @@ export const CustomFormatting: Story = {
     minValue: 0,
     maxValue: 1000,
     label: "Progress",
-    variant: "stacked",
+    layout: "stacked",
     size: "md",
     colorPalette: "primary",
   },

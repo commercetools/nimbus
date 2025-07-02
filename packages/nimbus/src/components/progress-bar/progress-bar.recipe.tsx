@@ -80,7 +80,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       },
     },
 
-    variant: {
+    layout: {
       plain: {
         label: {
           display: "none",
@@ -118,6 +118,6 @@ export const progressBarSlotRecipe = defineSlotRecipe({
   defaultVariants: {
     size: "md",
     colorPalette: "primary",
-    variant: "stacked",
+    layout: "stacked",
   },
 });

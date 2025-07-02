@@ -42,7 +42,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
     isIndeterminate,
     label,
     formatOptions = { style: "percent" },
-    variant = "stacked",
+    layout = "stacked",
     colorPalette = "primary",
     ...rest
   } = props;
@@ -72,7 +72,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
       >
         {({ percentage, valueText }) => (
           <>
-            {variant === "stacked" && (
+            {layout === "stacked" && (
               <Flex>
                 {label && (
                   <Box>
@@ -90,7 +90,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
               </Flex>
             )}
 
-            {variant === "inline" && label && (
+            {layout === "inline" && label && (
               <Box>
                 <ProgressBarLabelSlot asChild>
                   <RaLabel>{label}</RaLabel>
@@ -105,7 +105,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
               />
             </ProgressBarTrackSlot>
 
-            {variant === "inline" && value && (
+            {layout === "inline" && value && (
               <Box>
                 <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
               </Box>
