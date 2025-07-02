@@ -38,7 +38,15 @@
       "react-aria-components": "catalog:react",
       "react-stately": "catalog:react",
       "@react-aria/interactions": "catalog:react"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@bundled-es-modules/glob",
+      "@swc/core",
+      "es5-ext",
+      "esbuild",
+      "msw",
+      "style-dictionary"
+    ]
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
