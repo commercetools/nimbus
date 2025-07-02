@@ -34,13 +34,14 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       height: "100%",
       borderRadius: "200",
       transition: "width 0.3s ease-in-out",
-      animation: "gradient-shimmer 4s ease-in-out infinite",
 
       "&[data-indeterminate='true']": {
         animation: "progress-indeterminate 2s ease-in-out infinite",
         width: "40% !important",
       },
-
+      "&[data-complete='false']": {
+        animation: "gradient-shimmer 4s ease-in-out infinite",
+      },
       "&[data-complete='true']": {
         animation: "none",
       },
@@ -95,8 +96,10 @@ export const progressBarSlotRecipe = defineSlotRecipe({
           backgroundColor: "colorPalette.contrast/25",
         },
         fill: {
-          bgImage: "none",
-          backgroundColor: "colorPalette.contrast",
+          //bgImage: "none",
+          //backgroundColor: "colorPalette.contrast",
+          bgImage:
+            "linear-gradient(90deg, {colors.colorPalette.contrast/25}, {colors.colorPalette.contrast}, {colors.colorPalette.contrast/25})",
         },
         label: {
           color: "colorPalette.contrast",

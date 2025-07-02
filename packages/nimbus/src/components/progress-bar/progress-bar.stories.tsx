@@ -363,7 +363,7 @@ export const ProgressSimulation: Story = {
           </Button>
         </Stack>
 
-        <Stack direction="column" gap="400">
+        <Stack direction="column" gap="1200" divideY="1px">
           <ProgressBar
             value={progress}
             label="File Upload Progress"
@@ -388,20 +388,6 @@ export const ProgressSimulation: Story = {
             colorPalette="blue"
           />
         </Stack>
-
-        <Box p="400" bg="neutral.2" borderRadius="200">
-          <Stack direction="column" gap="200">
-            <span style={{ fontSize: "14px", fontWeight: "500" }}>
-              Current Progress: {Math.round(progress)}%
-            </span>
-            <span
-              style={{ fontSize: "12px", color: "var(--colors-neutral-11)" }}
-            >
-              Status:{" "}
-              {isCompleted ? "Complete" : isRunning ? "Running" : "Paused"}
-            </span>
-          </Stack>
-        </Box>
       </Stack>
     );
   },
