@@ -57,7 +57,7 @@ export const Frontpage = () => {
 
       <SimpleGrid columns={2} gap="400">
         {links.map((link) => (
-          <Link key={link.href} href={link.href} unstyled>
+          <Link key={link.href} href={link.href?.substring(1)} unstyled>
             <Card.Root borderStyle="outlined" cardPadding="lg" width="full">
               <Card.Content>
                 <Flex gap="600" direction="row" height="80px">
