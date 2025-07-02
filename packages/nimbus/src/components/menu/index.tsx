@@ -1,13 +1,14 @@
 export { MenuRoot } from "./components/menu.root";
 export { MenuTrigger } from "./components/menu.trigger";
 export { MenuContent } from "./components/menu.content";
-export { MenuItemComponent } from "./components/menu.item";
+export { MenuItemComponent as MenuItem } from "./components/menu.item";
 export { MenuItemLabel } from "./components/menu.item-label";
 export { MenuItemDescription } from "./components/menu.item-description";
 export { MenuItemKeyboard } from "./components/menu.item-keyboard";
 export { MenuSeparator } from "./components/menu.separator";
 export { MenuGroup } from "./components/menu.group";
 export { MenuGroupLabel } from "./components/menu.group-label";
+export { MenuItemComponent } from "./components/menu.item";
 
 // Re-export types
 export type * from "./menu.types";
