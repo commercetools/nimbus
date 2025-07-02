@@ -3,8 +3,10 @@ import { ProgressBar } from "./progress-bar";
 import { Stack } from "./../stack";
 import type { ProgressBarProps } from "./progress-bar.types";
 import { within, expect } from "storybook/test";
+import { Box } from "@/components";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
+const variants: ProgressBarProps["variant"][] = ["solid", "contrast"];
 const layouts: ProgressBarProps["layout"][] = ["plain", "inline", "stacked"];
 const colors: Array<
   "amber" | "blue" | "grass" | "slate" | "tomato" | "primary"
@@ -95,6 +97,39 @@ export const Sizes: Story = {
 };
 
 /**
+ * Showcase Variants
+ */
+export const Variants: Story = {
+  args: {
+    value: 45,
+    label: "Loading",
+    size: "md",
+    layout: "stacked",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="600" alignItems="stretch">
+        {variants.map((variant) => (
+          <Box
+            key={variant as string}
+            bg={variant === "contrast" ? "primary" : undefined}
+            p="400"
+          >
+            <Stack direction="column" gap="200">
+              <ProgressBar
+                {...args}
+                variant={variant}
+                label={`"${variant}" variant`}
+              />
+            </Stack>
+          </Box>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
  * Showcase Layouts
  */
 export const Layouts: Story = {
@@ -133,7 +168,28 @@ export const Colors: Story = {
     return (
       <Stack direction="column" gap="400" alignItems="stretch">
         {colors.map((color) => (
-          <ProgressBar key={color as string} {...args} colorPalette={color} />
+          <Stack>
+            <Box
+              p="400"
+              outline="1px solid"
+              outlineOffset="-1px"
+              outlineColor={color}
+            >
+              <ProgressBar
+                key={color as string}
+                {...args}
+                colorPalette={color}
+              />
+            </Box>
+            <Box bg={color} p="400">
+              <ProgressBar
+                variant="contrast"
+                key={color as string}
+                {...args}
+                colorPalette={color}
+              />
+            </Box>
+          </Stack>
         ))}
       </Stack>
     );

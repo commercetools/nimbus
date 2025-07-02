@@ -80,6 +80,27 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       },
     },
 
+    variant: {
+      solid: {
+        // Uses the current default styling (gradient fill)
+      },
+      contrast: {
+        track: {
+          backgroundColor: "colorPalette.contrast/25",
+        },
+        fill: {
+          bgImage: "none",
+          backgroundColor: "colorPalette.contrast",
+        },
+        label: {
+          color: "colorPalette.contrast",
+        },
+        value: {
+          color: "colorPalette.contrast",
+        },
+      },
+    },
+
     layout: {
       plain: {
         label: {
@@ -118,6 +139,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
   defaultVariants: {
     size: "md",
     colorPalette: "primary",
+    variant: "solid",
     layout: "stacked",
   },
 });

@@ -25,7 +25,8 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  * Features:
  *
  * - Supports both determinate (with value) and indeterminate (loading) states
- * - Three text display variants: plain, inline, and stacked
+ * - Two visual variants: solid (gradient) and contrast (monochromatic)
+ * - Three text display layouts: plain, inline, and stacked
  * - Configurable value formatting with internationalization support
  * - Full accessibility support with ARIA attributes
  * - Allows forwarding refs to the underlying DOM element
@@ -42,6 +43,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
     isIndeterminate,
     label,
     formatOptions = { style: "percent" },
+    variant = "solid",
     layout = "stacked",
     colorPalette = "primary",
     ...rest

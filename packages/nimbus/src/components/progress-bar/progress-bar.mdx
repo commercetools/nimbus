@@ -133,7 +133,72 @@ const App = () => (
 )
 ```
 
-### Visual Options
+### Visual Variants
+
+Progress bars come in two visual variants that affect how the color palette is applied.
+
+#### Solid Variant
+The default variant that uses a gradient fill from lighter to darker tones of the selected color palette.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={70} 
+    label="Solid Progress"
+    variant="solid"
+    colorPalette="primary"
+  />
+)
+```
+
+#### Contrast Variant
+Uses the contrast color from the palette for both the progress bar and text, creating a monochromatic appearance.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={70} 
+    label="Contrast Progress"
+    variant="contrast"
+    colorPalette="primary"
+  />
+)
+```
+
+#### Comparing Variants
+Both variants work with all color palettes, offering different visual aesthetics.
+
+```jsx-live
+const App = () => {
+  const palettes = ['primary', 'grass', 'tomato'];
+  const progressVariants = ['solid', 'contrast'];
+  
+  return (
+    <Stack direction="column" gap="600" alignItems="stretch">
+      {progressVariants.map(variant => (
+        <Stack key={variant} direction="column" gap="300">
+          <Text fontSize="14px" fontWeight="600">
+            {variant.charAt(0).toUpperCase() + variant.slice(1)} Variant
+          </Text>
+          <Stack direction="column" gap="200">
+            {palettes.map(palette => (
+              <ProgressBar
+                key={`${variant}-${palette}`}
+                value={65}
+                label={`${palette} palette`}
+                variant={variant}
+                colorPalette={palette}
+              />
+            ))}
+          </Stack>
+        </Stack>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Color Options
 
 Progress bars can use semantic colors or any color from the design system palette.
 
