@@ -29,7 +29,10 @@ export interface ProgressBarRootProps
  * This allows the component to accept both structural props from Root,
  * styling variants from the recipe, and accessibility props from react-aria.
  */
-type ProgressBarVariantProps = ProgressBarRootProps & AriaProgressBarProps;
+type ProgressBarVariantProps = ProgressBarRootProps &
+  AriaProgressBarProps & {
+    [key: `data-${string}`]: string;
+  };
 
 /**
  * Main props interface for the ProgressBar component.
@@ -44,8 +47,8 @@ export interface ProgressBarProps extends ProgressBarVariantProps {
 
   /**
    * Whether the progress bar represents an active, ongoing process that is being updated in real-time.
-   * Set to true for dynamic progress (e.g., file uploads, downloads, loading operations).
-   * Set to false for static progress indicators (e.g., showing step 3 of 5 in a wizard, completion percentage that won't change).
+   * Set to `true` for dynamic progress (e.g., file uploads, downloads, loading operations).
+   * Set to `false` for static progress indicators (e.g., showing step 3 of 5 in a wizard, completion percentage that won't change).
    * @default true
    */
   isDynamic?: boolean;

@@ -90,7 +90,7 @@ const App = () => (
 )
 ```
 
-#### Plain
+#### Minimal
 Hides the label and value text, showing only the progress bar.
 
 ```jsx-live
@@ -98,7 +98,7 @@ const App = () => (
   <ProgressBar 
     value={30} 
     label="Background Process"
-    layout="plain"
+    layout="minimal"
     colorPalette="blue"
   />
 )
@@ -153,15 +153,18 @@ const App = () => (
 
 #### Contrast Variant
 Uses the contrast color from the palette for both the progress bar and text, creating a monochromatic appearance.
+Works only on step 9 + 10 background-colors.
 
 ```jsx-live
 const App = () => (
-  <ProgressBar 
-    value={70} 
-    label="Contrast Progress"
-    variant="contrast"
-    colorPalette="primary"
-  />
+  <Box bg="primary.9" p="400">
+    <ProgressBar 
+      value={70} 
+      label="Contrast Progress"
+      variant="contrast"
+      colorPalette="primary"
+    />
+  </Box>
 )
 ```
 

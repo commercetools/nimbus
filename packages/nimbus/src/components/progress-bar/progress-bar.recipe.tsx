@@ -33,7 +33,9 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       backgroundSize: "200% 100%",
       height: "100%",
       borderRadius: "200",
-      transition: "width 0.3s ease-in-out",
+      transitionProperty: "width",
+      transitionDuration: ".3s",
+      transitionTimingFunction: "ease-in-smooth",
     },
 
     label: {
@@ -80,6 +82,9 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       true: {
         fill: {
           animation: "gradient-shimmer 4s ease-in-out infinite",
+          "&[data-complete='true']": {
+            animation: "none",
+          },
         },
       },
     },
@@ -117,7 +122,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     },
 
     layout: {
-      plain: {
+      minimal: {
         label: {
           display: "none",
         },

@@ -4,12 +4,12 @@ import { ProgressBar } from "./progress-bar";
 import { Stack } from "./../stack";
 import type { ProgressBarProps } from "./progress-bar.types";
 import { within, expect } from "storybook/test";
-import { Box } from "@/components";
+import { Box, Flex, Text } from "@/components";
 import { Button } from "../button";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
 const variants: ProgressBarProps["variant"][] = ["solid", "contrast"];
-const layouts: ProgressBarProps["layout"][] = ["plain", "inline", "stacked"];
+const layouts: ProgressBarProps["layout"][] = ["minimal", "inline", "stacked"];
 const colors: Array<
   "amber" | "blue" | "grass" | "slate" | "tomato" | "primary"
 > = ["primary", "tomato", "grass", "amber", "blue", "slate"];
@@ -84,14 +84,18 @@ export const Sizes: Story = {
   },
   render: (args) => {
     return (
-      <Stack direction="column" gap="600" alignItems="stretch">
+      <Stack direction="column" alignItems="stretch" width="100%">
         {sizes.map((size) => (
-          <Stack key={size as string} direction="column" gap="200">
-            <span style={{ fontSize: "12px", fontWeight: "500" }}>
-              Size: {size}
-            </span>
-            <ProgressBar {...args} size={size} />
-          </Stack>
+          <Flex gap="400">
+            <Text textStyle="md" fontWeight="500" minWidth="20ch">
+              {size as string}
+            </Text>
+            <Box flexGrow="1">
+              <Stack key={size as string} direction="column" gap="200">
+                <ProgressBar {...args} size={size} />
+              </Stack>
+            </Box>
+          </Flex>
         ))}
       </Stack>
     );
@@ -142,14 +146,22 @@ export const Layouts: Story = {
   },
   render: (args) => {
     return (
-      <Stack direction="column" gap="600" alignItems="stretch">
+      <Stack direction="column" alignItems="stretch" width="100%" gap="800">
         {layouts.map((layout) => (
-          <Stack key={layout as string} direction="column" gap="200">
-            <span style={{ fontSize: "12px", fontWeight: "500" }}>
-              Layout: {layout}
-            </span>
-            <ProgressBar {...args} layout={layout} />
-          </Stack>
+          <Flex gap="400">
+            <Text textStyle="md" fontWeight="500" minWidth="20ch">
+              {layout as string}
+            </Text>
+            <Box flexGrow="1">
+              <Stack key={layout as string} direction="column" gap="200">
+                <ProgressBar
+                  {...args}
+                  label={args.label + " - " + layout}
+                  layout={layout}
+                />
+              </Stack>
+            </Box>
+          </Flex>
         ))}
       </Stack>
     );
@@ -211,44 +223,23 @@ export const Indeterminate: Story = {
   },
   render: (args) => {
     return (
-      <Stack direction="column" gap="600" alignItems="stretch">
+      <Stack direction="column" alignItems="stretch" width="100%" gap="800">
         {layouts.map((layout) => (
-          <Stack key={layout as string} direction="column" gap="200">
-            <span style={{ fontSize: "12px", fontWeight: "500" }}>
-              Layout: {layout}
-            </span>
-            <ProgressBar {...args} layout={layout} />
-          </Stack>
+          <Flex gap="400">
+            <Text textStyle="md" fontWeight="500" minWidth="20ch">
+              {layout as string}
+            </Text>
+            <Box flexGrow="1">
+              <Stack key={layout as string} direction="column" gap="200">
+                <ProgressBar
+                  {...args}
+                  label={args.label + " - " + layout}
+                  layout={layout}
+                />
+              </Stack>
+            </Box>
+          </Flex>
         ))}
-      </Stack>
-    );
-  },
-};
-
-/**
- * Different Value Ranges
- */
-export const ValueRanges: Story = {
-  args: {
-    label: "Progress",
-    layout: "stacked",
-    size: "md",
-    colorPalette: "primary",
-  },
-  render: (args) => {
-    return (
-      <Stack direction="column" gap="400" alignItems="stretch">
-        <ProgressBar {...args} value={25} />
-        <ProgressBar {...args} value={50} />
-        <ProgressBar {...args} value={75} />
-        <ProgressBar {...args} value={100} />
-        <ProgressBar
-          {...args}
-          value={15}
-          minValue={0}
-          maxValue={20}
-          label="Custom range (15/20)"
-        />
       </Stack>
     );
   },
@@ -308,7 +299,7 @@ export const ProgressSimulation: Story = {
       if (isRunning && progress < 100) {
         interval = setInterval(() => {
           setProgress((prev) => {
-            const newProgress = prev + Math.random() * 3 + 0.5; // Random increment between 0.5-3.5
+            const newProgress = prev + Math.random() * 10 + 0.5; // Random increment between 0.5-3.5
             if (newProgress >= 100) {
               setIsRunning(false);
               setIsCompleted(true);
@@ -316,7 +307,7 @@ export const ProgressSimulation: Story = {
             }
             return newProgress;
           });
-        }, 100);
+        }, 1000);
       }
 
       return () => {
@@ -363,8 +354,9 @@ export const ProgressSimulation: Story = {
           </Button>
         </Stack>
 
-        <Stack direction="column" gap="1200" divideY="1px">
+        <Stack direction="column">
           <ProgressBar
+            my="800"
             value={progress}
             label="File Upload Progress"
             layout="stacked"
@@ -373,6 +365,7 @@ export const ProgressSimulation: Story = {
           />
 
           <ProgressBar
+            my="800"
             value={progress}
             label="Download Progress"
             layout="inline"
@@ -382,6 +375,7 @@ export const ProgressSimulation: Story = {
 
           <ProgressBar
             value={progress}
+            my="800"
             label="Installation Progress"
             layout="stacked"
             size="2xs"

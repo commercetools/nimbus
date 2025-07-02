@@ -25,7 +25,7 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  *
  * - Supports both determinate (with value) and indeterminate (loading) states
  * - Two visual variants: solid (gradient) and contrast (monochromatic)
- * - Three text display layouts: plain, inline, and stacked
+ * - Three layouts: minimal, inline, and stacked
  * - Configurable value formatting with internationalization support
  * - Full accessibility support with ARIA attributes
  * - Allows forwarding refs to the underlying DOM element
@@ -71,7 +71,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
         minValue={minValue}
         maxValue={maxValue}
         isIndeterminate={isIndeterminate}
-        label={label}
+        aria-label={label}
         {...rest}
       >
         {({ percentage, valueText }) => (
