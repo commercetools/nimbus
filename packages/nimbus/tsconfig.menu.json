@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/components/menu/**/*",
+    "src/utils/extractStyleProps.ts"
+  ],
+  "exclude": ["**/*.stories.*", "**/__tests__/**", "**/__e2e__/**"],
+  "compilerOptions": {
+    "typeRoots": ["./types", "../../node_modules/@types"],
+    "types": [],
+    "paths": {
+      "@chakra-ui/react": ["./types/empty.d.ts"],
+      "react-aria-components": ["./types/empty.d.ts"],
+      "react-stately": ["./types/empty.d.ts"]
+    }
+  }
+}
