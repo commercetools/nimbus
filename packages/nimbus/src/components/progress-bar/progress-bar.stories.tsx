@@ -5,7 +5,7 @@ import type { ProgressBarProps } from "./progress-bar.types";
 import { within, expect } from "storybook/test";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
-const variants: ProgressBarProps["variant"][] = ["hidden", "inline", "stacked"];
+const variants: ProgressBarProps["variant"][] = ["plain", "inline", "stacked"];
 const colors: Array<
   "amber" | "blue" | "grass" | "slate" | "tomato" | "primary"
 > = ["primary", "tomato", "grass", "amber", "blue", "slate"];
@@ -37,9 +37,6 @@ export const Base: Story = {
   args: {
     value: 75,
     label: "Progress",
-    variant: "stacked",
-    size: "md",
-    colorPalette: "primary",
     ["data-testid"]: "progress-bar-test",
     ["aria-label"]: "Loading progress",
   },

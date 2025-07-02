@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import {
-  ProgressBar as AriaProgressBar,
-  Label as AriaLabel,
+  ProgressBar as RaProgressBar,
+  Label as RaLabel,
 } from "react-aria-components";
 import { useNumberFormatter, useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
+import { Flex, Box } from "@commercetools/nimbus";
 import {
   ProgressBarRootSlot,
   ProgressBarTrackSlot,
@@ -14,6 +15,7 @@ import {
   ProgressBarValueSlot,
 } from "./progress-bar.slots";
 import type { ProgressBarProps } from "./progress-bar.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * ProgressBar
@@ -23,7 +25,7 @@ import type { ProgressBarProps } from "./progress-bar.types";
  * Features:
  *
  * - Supports both determinate (with value) and indeterminate (loading) states
- * - Three text display variants: hidden, inline, and stacked
+ * - Three text display variants: plain, inline, and stacked
  * - Configurable value formatting with internationalization support
  * - Full accessibility support with ARIA attributes
  * - Allows forwarding refs to the underlying DOM element
@@ -45,64 +47,73 @@ export const ProgressBar = (props: ProgressBarProps) => {
     ...rest
   } = props;
 
+  const recipe = useSlotRecipe({ key: "progressBar" });
+  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
+  const [styleProps, otherProps] = extractStyleProps(remainingProps);
+
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  // Format the value for display
-  const formatter = useNumberFormatter(formatOptions);
-
-  const renderTextContent = (
-    percentage: number = 0,
-    valueText: string = ""
-  ) => {
-    if (variant === "hidden") return null;
-
-    // Use our custom formatter if formatOptions were provided, otherwise use valueText
-    const displayValue =
-      formatOptions && value !== undefined
-        ? formatter.format((value - minValue) / (maxValue - minValue))
-        : valueText;
-
-    return (
-      <ProgressBarTextSlot>
-        {label && <ProgressBarLabelSlot>{label}</ProgressBarLabelSlot>}
-        {value !== undefined && (
-          <ProgressBarValueSlot>{displayValue}</ProgressBarValueSlot>
-        )}
-      </ProgressBarTextSlot>
-    );
-  };
-
   return (
-    <AriaProgressBar
-      value={value}
-      minValue={minValue}
-      maxValue={maxValue}
-      isIndeterminate={isIndeterminate}
-      aria-label={label}
-      {...rest}
+    <ProgressBarRootSlot
+      {...recipeProps}
+      {...styleProps}
+      {...recipeProps}
+      asChild
     >
-      {({ percentage, valueText }) => (
-        <ProgressBarRootSlot
-          ref={ref}
-          colorPalette={colorPalette}
-          variant={variant}
-        >
-          {variant === "stacked" && renderTextContent(percentage, valueText)}
+      <RaProgressBar
+        ref={ref}
+        value={value}
+        minValue={minValue}
+        maxValue={maxValue}
+        isIndeterminate={isIndeterminate}
+        aria-label={label}
+        {...rest}
+      >
+        {({ percentage, valueText }) => (
+          <>
+            {variant === "stacked" && (
+              <Flex>
+                {label && (
+                  <Box>
+                    <ProgressBarLabelSlot asChild>
+                      <RaLabel>{label}</RaLabel>
+                    </ProgressBarLabelSlot>
+                  </Box>
+                )}
+                <Box flexGrow="1" />
+                {value && (
+                  <Box>
+                    <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
+                  </Box>
+                )}
+              </Flex>
+            )}
 
-          {variant === "inline" && renderTextContent(percentage, valueText)}
+            {variant === "inline" && label && (
+              <Box>
+                <ProgressBarLabelSlot asChild>
+                  <RaLabel>{label}</RaLabel>
+                </ProgressBarLabelSlot>
+              </Box>
+            )}
 
-          <ProgressBarTrackSlot>
-            <ProgressBarFillSlot
-              style={{ width: isIndeterminate ? "40%" : `${percentage}%` }}
-              data-indeterminate={isIndeterminate}
-            />
-          </ProgressBarTrackSlot>
+            <ProgressBarTrackSlot>
+              <ProgressBarFillSlot
+                style={{ width: isIndeterminate ? "40%" : `${percentage}%` }}
+                data-indeterminate={isIndeterminate}
+              />
+            </ProgressBarTrackSlot>
 
-          {variant === "hidden" && renderTextContent(percentage, valueText)}
-        </ProgressBarRootSlot>
-      )}
-    </AriaProgressBar>
+            {variant === "inline" && value && (
+              <Box>
+                <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
+              </Box>
+            )}
+          </>
+        )}
+      </RaProgressBar>
+    </ProgressBarRootSlot>
   );
 };
 

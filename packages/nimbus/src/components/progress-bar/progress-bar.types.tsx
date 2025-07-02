@@ -74,9 +74,9 @@ export interface ProgressBarProps extends ProgressBarVariantProps {
   formatOptions?: Intl.NumberFormatOptions;
 
   /**
-   * Text display variant: hidden, inline, or stacked
+   * Text display variant: plain, inline, or stacked
    */
-  variant?: "hidden" | "inline" | "stacked";
+  variant?: "plain" | "inline" | "stacked";
 
   /**
    * Color palette for the progress bar

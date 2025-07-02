@@ -28,7 +28,8 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     },
 
     fill: {
-      backgroundColor: "colorPalette.9",
+      bgImage:
+        "linear-gradient(to right, {colors.colorPalette.6}, {colors.colorPalette.9})",
       height: "100%",
       borderRadius: "200",
       transition: "width 0.3s ease-in-out",
@@ -39,24 +40,16 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       },
     },
 
-    text: {
-      colorPalette: "neutral",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-    },
-
     label: {
       fontSize: "350",
       fontWeight: "500",
-      color: "colorPalette.12",
+      color: "neutral.12",
     },
 
     value: {
       fontSize: "350",
       fontWeight: "500",
-      color: "colorPalette.12",
+      color: "neutral.12",
     },
   },
 
@@ -66,9 +59,6 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       "2xs": {
         track: {
           height: "200",
-        },
-        text: {
-          fontSize: "300",
         },
         label: {
           fontSize: "300",
@@ -81,9 +71,6 @@ export const progressBarSlotRecipe = defineSlotRecipe({
         track: {
           height: "400",
         },
-        text: {
-          fontSize: "350",
-        },
         label: {
           fontSize: "350",
         },
@@ -94,10 +81,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     },
 
     variant: {
-      hidden: {
-        text: {
-          display: "none",
-        },
+      plain: {
         label: {
           display: "none",
         },
@@ -113,12 +97,6 @@ export const progressBarSlotRecipe = defineSlotRecipe({
         },
         track: {
           flex: 1,
-        },
-        text: {
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          minWidth: "max-content",
         },
       },
       stacked: {
@@ -139,6 +117,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
   // Default variant values when not explicitly specified
   defaultVariants: {
     size: "md",
+    colorPalette: "primary",
     variant: "stacked",
   },
 });
