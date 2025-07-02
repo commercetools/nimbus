@@ -35,4 +35,50 @@ describe('Menu keyboard navigation', () => {
     await user.keyboard('[Enter]');
     expect(handleAction).toHaveBeenCalledWith('two');
   });
+
+  it('cycles focus with Tab and Shift+Tab', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Menu.Root defaultOpen>
+        <Menu.Trigger>Open</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="first">First</Menu.Item>
+          <Menu.Item id="second">Second</Menu.Item>
+          <Menu.Item id="third">Third</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    // Tab should move out of menu and to document body (nothing focusable), so focus will blur
+    await user.keyboard('[Tab]');
+    expect(screen.getByRole('menuitem', { name: 'First' })).not.toHaveAttribute('data-highlighted');
+
+    // Shift+Tab brings focus back into trigger (button)
+    await user.keyboard('[Shift+Tab]');
+    expect(screen.getByRole('button')).toHaveFocus();
+  });
+
+  it('Home and End move to first and last items', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Menu.Root defaultOpen>
+        <Menu.Trigger>Open</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="alpha">Alpha</Menu.Item>
+          <Menu.Item id="beta">Beta</Menu.Item>
+          <Menu.Item id="gamma">Gamma</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    // Move highlight away
+    await user.keyboard('[ArrowDown]'); // now beta highlighted
+    await user.keyboard('[End]');
+    expect(screen.getByRole('menuitem', { name: 'Gamma' })).toHaveAttribute('data-highlighted');
+
+    await user.keyboard('[Home]');
+    expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveAttribute('data-highlighted');
+  });
 });
