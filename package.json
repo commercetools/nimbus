@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
+    "@chakra-ui/react": "catalog:",
     "@eslint/js": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",
     "@testing-library/jest-dom": "catalog:",
@@ -56,6 +57,9 @@
     "jest-axe": "catalog:",
     "playwright": "catalog:tooling",
     "prettier": "catalog:tooling",
+    "react-aria": "catalog:",
+    "react-aria-components": "catalog:",
+    "react-stately": "catalog:",
     "tsx": "catalog:tooling",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:tooling",

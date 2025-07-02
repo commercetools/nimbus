@@ -9,6 +9,10 @@ catalog:
   '@testing-library/jest-dom': ^6.6.3
   jest-axe: ^10.0.0
   '@types/testing-library__jest-dom': ^6.0.0
+  '@chakra-ui/react': ^3.21.1
+  react-aria-components: ^1.10.1
+  react-aria: ^3.41.1
+  react-stately: ^3.39.0
 
 catalogMode: strict
 

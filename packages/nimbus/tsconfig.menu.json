@@ -9,9 +9,6 @@
     "typeRoots": ["./types", "../../node_modules/@types"],
     "types": [],
     "paths": {
-      "@chakra-ui/react": ["./types/empty.d.ts"],
-      "react-aria-components": ["./types/empty.d.ts"],
-      "react-stately": ["./types/empty.d.ts"]
     }
   }
 }
