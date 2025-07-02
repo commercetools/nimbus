@@ -42,7 +42,6 @@ export const MenuRoot = forwardRef<HTMLDivElement, MenuRootProps>(
           isOpen={isOpen}
           defaultOpen={defaultOpen}
           onOpenChange={onOpenChange}
-          state={triggerState}
         >
           <MenuProvider value={contextValue}>{children}</MenuProvider>
         </MenuTrigger>

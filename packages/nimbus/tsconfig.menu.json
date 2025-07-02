@@ -7,8 +7,10 @@
   "exclude": ["**/*.stories.*", "**/__tests__/**", "**/__e2e__/**"],
   "compilerOptions": {
     "typeRoots": ["./types", "../../node_modules/@types"],
-    "types": [],
+    "baseUrl": ".",
     "paths": {
-    }
+      "@/*": ["src/*"]
+    },
+    "types": ["node"]
   }
 }

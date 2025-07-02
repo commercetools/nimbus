@@ -14,7 +14,7 @@ export interface MenuTriggerProps
 }
 
 export interface MenuContentProps
-  extends Omit<HTMLChakraProps<"div">, "slot"> {
+  extends Omit<HTMLChakraProps<"div">, "slot" | "id"> {
   children: ReactNode;
   placement?:
     | "bottom"
@@ -34,7 +34,7 @@ export interface MenuContentProps
 }
 
 export interface MenuItemProps
-  extends Omit<HTMLChakraProps<"div">, "slot"> {
+  extends Omit<HTMLChakraProps<"div">, "slot" | "id"> {
   children: ReactNode;
   id?: Key;
   isDisabled?: boolean;
