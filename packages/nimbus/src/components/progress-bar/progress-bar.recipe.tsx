@@ -35,15 +35,15 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       borderRadius: "200",
       transition: "width 0.3s ease-in-out",
 
-      "&[data-indeterminate='true']": {
-        animation: "progress-indeterminate 2s ease-in-out infinite",
-        width: "40% !important",
-      },
       "&[data-complete='false']": {
         animation: "gradient-shimmer 4s ease-in-out infinite",
       },
       "&[data-complete='true']": {
         animation: "none",
+      },
+      "&[data-indeterminate='true']": {
+        animation: "progress-indeterminate 2s ease-in-out infinite",
+        width: "40% !important",
       },
     },
 
