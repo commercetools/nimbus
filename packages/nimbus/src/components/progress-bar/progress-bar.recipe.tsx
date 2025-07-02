@@ -7,7 +7,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 export const progressBarSlotRecipe = defineSlotRecipe({
   className: "nimbus-progress-bar",
 
-  slots: ["root", "track", "fill", "text", "label", "value"],
+  slots: ["root", "track", "fill", "label", "value"],
 
   // Base styles applied to all instances of the component
   base: {

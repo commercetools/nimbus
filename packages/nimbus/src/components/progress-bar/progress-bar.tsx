@@ -5,12 +5,11 @@ import {
 } from "react-aria-components";
 import { useNumberFormatter, useObjectRef } from "react-aria";
 import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
-import { Flex, Box } from "@commercetools/nimbus";
+import { Flex, Box } from "@/components";
 import {
   ProgressBarRootSlot,
   ProgressBarTrackSlot,
   ProgressBarFillSlot,
-  ProgressBarTextSlot,
   ProgressBarLabelSlot,
   ProgressBarValueSlot,
 } from "./progress-bar.slots";

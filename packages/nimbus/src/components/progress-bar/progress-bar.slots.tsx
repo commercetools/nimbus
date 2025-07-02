@@ -47,13 +47,6 @@ export const ProgressBarFillSlot = withContext<
   HTMLDivElement,
   ProgressBarFillSlotProps
 >("div", "fill");
-
-// ProgressBar Text - Container for label and value
-export const ProgressBarTextSlot = withContext<
-  HTMLDivElement,
-  ProgressBarTextSlotProps
->("div", "text");
-
 // ProgressBar Label - Label text
 export const ProgressBarLabelSlot = withContext<
   HTMLSpanElement,
