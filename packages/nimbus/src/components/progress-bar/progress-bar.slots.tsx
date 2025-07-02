@@ -1,0 +1,67 @@
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { ProgressBarRootProps } from "./progress-bar.types";
+
+/**
+ * Props for the progress bar track (background bar)
+ */
+export interface ProgressBarTrackSlotProps extends ProgressBarRootProps {}
+
+/**
+ * Props for the progress bar fill (progress indicator)
+ */
+export interface ProgressBarFillSlotProps extends ProgressBarRootProps {}
+
+/**
+ * Props for the text container (holds label and value)
+ */
+export interface ProgressBarTextSlotProps extends ProgressBarRootProps {}
+
+/**
+ * Props for the label text
+ */
+export interface ProgressBarLabelSlotProps extends ProgressBarRootProps {}
+
+/**
+ * Props for the value text
+ */
+export interface ProgressBarValueSlotProps extends ProgressBarRootProps {}
+
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "progressBar",
+});
+
+// ProgressBar Root - Main container
+export const ProgressBarRootSlot = withProvider<
+  HTMLDivElement,
+  ProgressBarRootProps
+>("div", "root");
+
+// ProgressBar Track - Background bar
+export const ProgressBarTrackSlot = withContext<
+  HTMLDivElement,
+  ProgressBarTrackSlotProps
+>("div", "track");
+
+// ProgressBar Fill - Progress indicator
+export const ProgressBarFillSlot = withContext<
+  HTMLDivElement,
+  ProgressBarFillSlotProps
+>("div", "fill");
+
+// ProgressBar Text - Container for label and value
+export const ProgressBarTextSlot = withContext<
+  HTMLDivElement,
+  ProgressBarTextSlotProps
+>("div", "text");
+
+// ProgressBar Label - Label text
+export const ProgressBarLabelSlot = withContext<
+  HTMLSpanElement,
+  ProgressBarLabelSlotProps
+>("span", "label");
+
+// ProgressBar Value - Value text
+export const ProgressBarValueSlot = withContext<
+  HTMLSpanElement,
+  ProgressBarValueSlotProps
+>("span", "value");

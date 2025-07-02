@@ -189,4 +189,12 @@ export const keyframes = {
       scale: "0.95",
     },
   },
+  "progress-indeterminate": {
+    "0%": {
+      transform: "translateX(-100%)",
+    },
+    "100%": {
+      transform: "translateX(300%)",
+    },
+  },
 };

@@ -40,3 +40,4 @@ export * from "./toggle-button-group";
 export * from "./date-input";
 export * from "./calendar";
 export * from "./date-picker";
+export * from "./progress-bar";
