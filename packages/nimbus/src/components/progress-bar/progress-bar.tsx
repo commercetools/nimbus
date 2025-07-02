@@ -104,6 +104,11 @@ export const ProgressBar = (props: ProgressBarProps) => {
               <ProgressBarFillSlot
                 style={{ width: isIndeterminate ? "40%" : `${percentage}%` }}
                 data-indeterminate={isIndeterminate}
+                data-complete={
+                  !isIndeterminate &&
+                  percentage !== undefined &&
+                  percentage >= 100
+                }
               />
             </ProgressBarTrackSlot>
 

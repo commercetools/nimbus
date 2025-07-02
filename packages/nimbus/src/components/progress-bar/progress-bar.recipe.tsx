@@ -40,6 +40,10 @@ export const progressBarSlotRecipe = defineSlotRecipe({
         animation: "progress-indeterminate 2s ease-in-out infinite",
         width: "40% !important",
       },
+
+      "&[data-complete='true']": {
+        animation: "none",
+      },
     },
 
     label: {
