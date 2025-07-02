@@ -3,9 +3,9 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Menu } from '../..';
-import { configureAxe } from 'axe-core';
+import { axe, toHaveNoViolations } from 'jest-axe';
 
-const axe = configureAxe({ rules: { region: { enabled: false } } });
+expect.extend(toHaveNoViolations);
 
 function renderWithProviders(ui: any) {
   return render(<ChakraProvider>{ui}</ChakraProvider>);
@@ -22,7 +22,7 @@ describe('Menu accessibility', () => {
       </Menu.Root>
     );
 
-    const results = await axe.run(container);
+    const results = await axe(container);
     expect(results.violations.length).toBe(0);
   });
 
@@ -39,7 +39,7 @@ describe('Menu accessibility', () => {
     // menu closed: should not render menu in DOM
     expect(container.querySelector('[role="menu"]')).toBeNull();
 
-    const results = await axe.run(container);
+    const results = await axe(container);
     expect(results.violations.length).toBe(0);
   });
 });

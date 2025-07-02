@@ -4,3 +4,4 @@ declare module '@testing-library/user-event';
 declare module 'vitest';
 declare module 'axe-core';
 declare module '@playwright/test';
+declare module 'jest-axe';
