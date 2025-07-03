@@ -157,6 +157,9 @@ export const Layouts: Story = {
                 <ProgressBar
                   {...args}
                   label={args.label + " - " + layout}
+                  aria-label={
+                    layout === "minimal" ? "Loading - minimal" : undefined
+                  }
                   layout={layout}
                 />
               </Stack>
@@ -211,15 +214,67 @@ export const Colors: Story = {
 };
 
 /**
+ * Dynamic vs Static Progress
+ */
+export const IsDynamic: Story = {
+  args: {
+    value: 65,
+    label: "Progress",
+    layout: "stacked",
+    size: "md",
+    colorPalette: "primary",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" alignItems="stretch" width="100%" gap="800">
+        <Flex gap="400">
+          <Text textStyle="md" fontWeight="500" minWidth="20ch">
+            Dynamic (default)
+          </Text>
+          <Box flexGrow="1">
+            <Stack direction="column" gap="200">
+              <ProgressBar
+                {...args}
+                isDynamic={true}
+                label="Dynamic progress - File upload"
+              />
+              <Text textStyle="sm" color="gray.600">
+                Represents an active, ongoing process that updates in real-time
+                (e.g., file uploads, downloads, loading operations)
+              </Text>
+            </Stack>
+          </Box>
+        </Flex>
+        <Flex gap="400">
+          <Text textStyle="md" fontWeight="500" minWidth="20ch">
+            Static
+          </Text>
+          <Box flexGrow="1">
+            <Stack direction="column" gap="200">
+              <ProgressBar
+                {...args}
+                isDynamic={false}
+                label="Static progress - Step 3 of 5"
+              />
+              <Text textStyle="sm" color="gray.600">
+                Represents a static progress indicator (e.g., step 3 of 5 in a
+                wizard, completion percentage that won't change)
+              </Text>
+            </Stack>
+          </Box>
+        </Flex>
+      </Stack>
+    );
+  },
+};
+
+/**
  * Indeterminate State
  */
 export const Indeterminate: Story = {
   args: {
     isIndeterminate: true,
-    label: "Loading...",
-    layout: "stacked",
     size: "md",
-    colorPalette: "primary",
   },
   render: (args) => {
     return (
@@ -234,6 +289,9 @@ export const Indeterminate: Story = {
                 <ProgressBar
                   {...args}
                   label={args.label + " - " + layout}
+                  aria-label={
+                    layout === "minimal" ? "Loading - minimal" : undefined
+                  }
                   layout={layout}
                 />
               </Stack>
@@ -250,7 +308,7 @@ export const Indeterminate: Story = {
  */
 export const CustomFormatting: Story = {
   args: {
-    value: 750,
+    value: 755,
     minValue: 0,
     maxValue: 1000,
     label: "Progress",
@@ -263,20 +321,20 @@ export const CustomFormatting: Story = {
       <Stack direction="column" gap="400" alignItems="stretch">
         <ProgressBar
           {...args}
-          formatOptions={{ style: "decimal" }}
+          formatOptions={{ style: "decimal", minimumFractionDigits: 0 }}
           label="Decimal format"
         />
         <ProgressBar
           {...args}
-          formatOptions={{ style: "percent", minimumFractionDigits: 1 }}
-          label="Percent with decimals"
+          formatOptions={{ style: "percent", minimumFractionDigits: 2 }}
+          label="Percent with 2 decimals"
         />
         <ProgressBar
           {...args}
-          value={42}
+          label="Hard Disk Space"
+          value={42.55}
           maxValue={100}
-          formatOptions={{ style: "unit", unit: "percent" }}
-          label="Unit format"
+          formatOptions={{ style: "unit", unit: "terabyte" }}
         />
       </Stack>
     );
@@ -297,17 +355,21 @@ export const ProgressSimulation: Story = {
       let interval: NodeJS.Timeout;
 
       if (isRunning && progress < 100) {
-        interval = setInterval(() => {
-          setProgress((prev) => {
-            const newProgress = prev + Math.random() * 10 + 0.5; // Random increment between 0.5-3.5
-            if (newProgress >= 100) {
-              setIsRunning(false);
-              setIsCompleted(true);
-              return 100;
-            }
-            return newProgress;
-          });
-        }, 1000);
+        interval = setInterval(
+          () => {
+            setProgress((prev) => {
+              // Random increment between 0.5-3.5
+              const newProgress = prev + Math.random() * 3 + 0.5;
+              if (newProgress >= 100) {
+                setIsRunning(false);
+                setIsCompleted(true);
+                return 100;
+              }
+              return newProgress;
+            });
+          },
+          Math.random() * 1000 + 500
+        );
       }
 
       return () => {

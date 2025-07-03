@@ -3,7 +3,7 @@ import {
   ProgressBar as RaProgressBar,
   Label as RaLabel,
 } from "react-aria-components";
-import { useNumberFormatter, useObjectRef } from "react-aria";
+import { useObjectRef } from "react-aria";
 import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
 import { Flex, Box } from "@/components";
 import {
@@ -71,7 +71,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
         minValue={minValue}
         maxValue={maxValue}
         isIndeterminate={isIndeterminate}
-        aria-label={label}
+        formatOptions={formatOptions}
         {...rest}
       >
         {({ percentage, valueText }) => (
@@ -79,27 +79,21 @@ export const ProgressBar = (props: ProgressBarProps) => {
             {layout === "stacked" && (
               <Flex>
                 {label && (
-                  <Box>
-                    <ProgressBarLabelSlot asChild>
-                      <RaLabel>{label}</RaLabel>
-                    </ProgressBarLabelSlot>
-                  </Box>
+                  <ProgressBarLabelSlot asChild>
+                    <RaLabel>{label}</RaLabel>
+                  </ProgressBarLabelSlot>
                 )}
                 <Box flexGrow="1" />
                 {label && value && (
-                  <Box>
-                    <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
-                  </Box>
+                  <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
                 )}
               </Flex>
             )}
 
             {layout === "inline" && label && (
-              <Box>
-                <ProgressBarLabelSlot asChild>
-                  <RaLabel>{label}</RaLabel>
-                </ProgressBarLabelSlot>
-              </Box>
+              <ProgressBarLabelSlot lineHeight="1" asChild>
+                <RaLabel>{label}</RaLabel>
+              </ProgressBarLabelSlot>
             )}
 
             <ProgressBarTrackSlot>
@@ -115,9 +109,9 @@ export const ProgressBar = (props: ProgressBarProps) => {
             </ProgressBarTrackSlot>
 
             {layout === "inline" && value && (
-              <Box>
-                <ProgressBarValueSlot>{valueText}</ProgressBarValueSlot>
-              </Box>
+              <ProgressBarValueSlot lineHeight="1">
+                {valueText}
+              </ProgressBarValueSlot>
             )}
           </>
         )}

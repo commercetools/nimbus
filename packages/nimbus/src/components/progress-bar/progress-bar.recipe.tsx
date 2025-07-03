@@ -20,34 +20,36 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     },
 
     track: {
-      backgroundColor: "neutralAlpha.3",
-      borderRadius: "200",
+      backgroundColor: "var(--progress-bar-track-bg)",
+      borderRadius: "var(--progress-bar-radius)",
       overflow: "hidden",
       position: "relative",
       width: "100%",
+      height: "var(--progress-bar-height)",
     },
 
     fill: {
+      animation: "var(--progress-bar-animation)",
       bgImage:
         "linear-gradient(90deg, {colors.colorPalette.6}, {colors.colorPalette.9}, {colors.colorPalette.6})",
       backgroundSize: "200% 100%",
       height: "100%",
-      borderRadius: "200",
+      borderRadius: "var(--progress-bar-radius)",
       transitionProperty: "width",
       transitionDuration: ".3s",
       transitionTimingFunction: "ease-in-smooth",
     },
 
     label: {
-      fontSize: "350",
-      fontWeight: "500",
-      color: "neutral.12",
+      color: "var(--progress-bar-text-color)",
+      fontSize: "var(--progress-bar-font-size)",
+      lineHeight: "var(--progress-bar-line-height)",
     },
 
     value: {
-      fontSize: "350",
-      fontWeight: "500",
-      color: "neutral.12",
+      color: "var(--progress-bar-text-color)",
+      fontSize: "var(--progress-bar-font-size)",
+      lineHeight: "var(--progress-bar-line-height)",
     },
   },
 
@@ -55,25 +57,19 @@ export const progressBarSlotRecipe = defineSlotRecipe({
   variants: {
     size: {
       "2xs": {
-        track: {
-          height: "200",
-        },
-        label: {
-          fontSize: "300",
-        },
-        value: {
-          fontSize: "300",
+        root: {
+          "--progress-bar-radius": "{radii.300}",
+          "--progress-bar-font-size": "{fontSizes.350}",
+          "--progress-bar-height": "{sizes.300}",
+          "--progress-bar-line-height": "{fontSizes.500}",
         },
       },
       md: {
-        track: {
-          height: "400",
-        },
-        label: {
-          fontSize: "350",
-        },
-        value: {
-          fontSize: "350",
+        root: {
+          "--progress-bar-radius": "{radii.600}",
+          "--progress-bar-font-size": "{fontSizes.400}",
+          "--progress-bar-height": "{sizes.600}",
+          "--progress-bar-line-height": "{fontSizes.600}",
         },
       },
     },
@@ -81,9 +77,10 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     isDynamic: {
       true: {
         fill: {
-          animation: "gradient-shimmer 4s ease-in-out infinite",
+          "--progress-bar-animation":
+            "gradient-shimmer 4s ease-in-out infinite",
           "&[data-complete='true']": {
-            animation: "none",
+            "--progress-bar-animation": "none",
           },
         },
       },
@@ -92,7 +89,8 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     isIndeterminate: {
       true: {
         fill: {
-          animation: "progress-indeterminate 2s ease-in-out infinite",
+          "--progress-bar-animation":
+            "progress-indeterminate 2s ease-in-out infinite",
           width: "40% !important",
         },
       },
@@ -100,23 +98,20 @@ export const progressBarSlotRecipe = defineSlotRecipe({
 
     variant: {
       solid: {
+        root: {
+          "--progress-bar-text-color": "{colors.neutral.12}",
+          "--progress-bar-track-bg": "{colors.neutralAlpha.3}",
+        },
         // Uses the current default styling (gradient fill)
       },
       contrast: {
-        track: {
-          backgroundColor: "colorPalette.contrast/15",
+        root: {
+          "--progress-bar-text-color": "{colors.colorPalette.contrast}",
+          "--progress-bar-track-bg": "{colors.colorPalette.contrast/15}",
         },
         fill: {
-          //bgImage: "none",
-          //backgroundColor: "colorPalette.contrast",
           bgImage:
             "linear-gradient(90deg, {colors.colorPalette.contrast/25}, {colors.colorPalette.contrast}, {colors.colorPalette.contrast/25})",
-        },
-        label: {
-          color: "colorPalette.contrast",
-        },
-        value: {
-          color: "colorPalette.contrast",
         },
       },
     },
@@ -162,4 +157,16 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     variant: "solid",
     layout: "stacked",
   },
+  compoundVariants: [
+    {
+      isDynamic: true,
+      isIndeterminate: true,
+      css: {
+        fill: {
+          "--progress-bar-animation":
+            "progress-indeterminate 2s ease-in-out infinite",
+        },
+      },
+    },
+  ],
 });
