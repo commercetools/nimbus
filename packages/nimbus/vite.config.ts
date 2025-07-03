@@ -6,6 +6,7 @@ import type { LibraryFormats } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
+import { analyzer } from "vite-bundle-analyzer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -71,12 +72,15 @@ export const baseConfig = {
 
 export default defineConfig((/* config */) => {
   const isWatchMode = process.argv.includes("--watch");
+  const isAnalyzeMode = !!process.env.ANALYZE_BUNDLE;
 
   const config = baseConfig;
 
   if (!isWatchMode) {
     config.plugins.push(dts({ rollupTypes: true }));
   }
-
+  if (isAnalyzeMode) {
+    config.plugins.push(analyzer());
+  }
   return config;
 });

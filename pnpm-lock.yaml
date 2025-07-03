@@ -127,6 +127,9 @@ catalogs:
     vite:
       specifier: ^6.3.5
       version: 6.3.5
+    vite-bundle-analyzer:
+      specifier: ^1.0.0
+      version: 1.0.0
     vite-plugin-dts:
       specifier: ^4.5.4
       version: 4.5.4
@@ -200,6 +203,9 @@ importers:
       typescript-eslint:
         specifier: catalog:tooling
         version: 8.32.0(eslint@9.26.0)(typescript@5.8.3)
+      vite-bundle-analyzer:
+        specifier: catalog:tooling
+        version: 1.0.0
       vitest:
         specifier: catalog:tooling
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.3)(@vitest/browser@3.2.4)(msw@2.7.0(@types/node@24.0.3)(typescript@5.8.3))(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.0)
@@ -6985,6 +6991,10 @@ packages:
 
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
+
+  vite-bundle-analyzer@1.0.0:
+    resolution: {integrity: sha512-Y9u467LqvDyvvd7+6BVm9drgIUGrRbZHcV//GUsziTvIKm+cQcREDrZFBiLzShvUokmUCA9BVeLGuIiNhkxGUQ==}
+    hasBin: true
 
   vite-node@3.2.4:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
@@ -15833,6 +15843,8 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
+
+  vite-bundle-analyzer@1.0.0: {}
 
   vite-node@3.2.4(@types/node@24.0.3)(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.0):
     dependencies:
