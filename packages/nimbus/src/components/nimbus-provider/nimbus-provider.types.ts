@@ -5,6 +5,8 @@ import type { ThemeProviderProps } from "next-themes";
  *
  * This allows consumers to extend the router configuration types
  * to match their specific router framework, providing better type safety.
+ * 
+ * TODO: Document this in an mdx-file, available to consumers via the docs-app
  *
  * @example
  * // For React Router
