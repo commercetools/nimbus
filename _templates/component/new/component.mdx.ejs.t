@@ -92,4 +92,4 @@ const App = () => {
 
 ## Props
 
-<PropTable id="<%= h.changeCase.pascalCase(name) %>" />
+<PropsTable id="<%= h.changeCase.pascalCase(name) %>" />
