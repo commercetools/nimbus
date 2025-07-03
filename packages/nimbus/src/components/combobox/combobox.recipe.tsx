@@ -35,7 +35,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       _hover: {
         bg: "primary.2",
       },
-      "&[data-disabled]": {
+      '&[data-disabled="true]': {
         layerStyle: "disabled",
         focusRing: "none",
         "& input, & button": {
