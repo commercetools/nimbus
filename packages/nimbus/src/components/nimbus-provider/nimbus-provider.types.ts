@@ -5,7 +5,7 @@ import type { ThemeProviderProps } from "next-themes";
  *
  * This allows consumers to extend the router configuration types
  * to match their specific router framework, providing better type safety.
- * 
+ *
  * TODO: Document this in an mdx-file, available to consumers via the docs-app
  *
  * @example
@@ -13,7 +13,7 @@ import type { ThemeProviderProps } from "next-themes";
  * import type { NavigateOptions } from 'react-router-dom';
  *
  * declare module '@commercetools/nimbus' {
- *   interface NimbusRouterConfig {
+ *   interface NimbusRouterOptionsBase {
  *     routerOptions?: NavigateOptions;
  *   }
  * }
@@ -23,23 +23,22 @@ import type { ThemeProviderProps } from "next-themes";
  * import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
  *
  * declare module '@commercetools/nimbus' {
- *   interface NimbusRouterConfig {
+ *   interface NimbusRouterOptionsBase {
  *     routerOptions?: Parameters<AppRouterInstance['push']>[1];
  *   }
  * }
  */
 
-declare global {
-  namespace Nimbus {
-    interface RouterConfig {
-      // This can be augmented by consumers
-    }
-  }
+// Base interface for router options that can be extended via module augmentation
+export interface NimbusRouterOptionsBase {
+  // This can be augmented by consumers via module augmentation
 }
 
 // Default router options type (can be overridden via module augmentation)
-export type RouterOptions = Nimbus.RouterConfig extends { routerOptions: any }
-  ? Nimbus.RouterConfig["routerOptions"]
+export type RouterOptions = NimbusRouterOptionsBase extends {
+  routerOptions: any;
+}
+  ? NimbusRouterOptionsBase["routerOptions"]
   : any;
 
 // Enhanced router configuration with proper typing

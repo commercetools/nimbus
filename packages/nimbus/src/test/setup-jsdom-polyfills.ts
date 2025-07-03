@@ -14,8 +14,8 @@
 // TODO: document this somewhere besides this file
 
 // implementation of structuredClone polyfill to satisfy the Nimbus (Chakra UI) provider
-if (typeof global.structuredClone !== "function") {
-  global.structuredClone = function structuredClone(value) {
+if (typeof globalThis.structuredClone !== "function") {
+  globalThis.structuredClone = function structuredClone(value: any) {
     if (value === null || value === undefined) {
       return value;
     }
