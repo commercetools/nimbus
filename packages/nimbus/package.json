@@ -93,6 +93,7 @@
     "dev": "vite build --watch",
     "test": "vitest",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
+    "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   }
