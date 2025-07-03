@@ -42,3 +42,4 @@ export * from "./date-input";
 export * from "./calendar";
 export * from "./date-picker";
 export * from "./progress-bar";
+export * from "./range-calendar";
