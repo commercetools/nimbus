@@ -8,6 +8,7 @@ import {
   Icon,
   Badge,
   Text,
+  Link,
 } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
@@ -15,7 +16,6 @@ import React from "react";
 import { nimbusExportsAtom, NimbusExportItem } from "./atom";
 import { PropsTable } from "@/components/document-renderer/components/props-table";
 import { documentationAtom } from "@/atoms/documentation";
-import { DocLink } from "@/components/navigation/doc-link";
 import { CheckCircle, HighlightOff } from "@commercetools/nimbus-icons";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 
@@ -113,9 +113,9 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                     <Table.Row>
                       <Table.Cell>
                         {doc ? (
-                          <DocLink docRoute={doc.meta.route}>
+                          <Link href={doc.meta.route}>
                             <code>{item.name}</code>
-                          </DocLink>
+                          </Link>
                         ) : (
                           <code>{item.name}</code>
                         )}

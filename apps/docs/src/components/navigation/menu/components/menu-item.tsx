@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { type MenuItemProps } from "../menu.types";
 import { activeRouteAtom } from "@/atoms/route";
 import { useEffect, useState } from "react";
-import { Box, Text } from "@commercetools/nimbus";
+import { Box, Link, Text } from "@commercetools/nimbus";
 import { MenuIcon } from "./menu-icon";
 import { MenuList } from "./menu-list";
 
@@ -11,7 +11,7 @@ import { MenuList } from "./menu-list";
  * @param {MenuItemProps} props - The props for the MenuItem component
  */
 export const MenuItem = ({ item, level }: MenuItemProps) => {
-  const [activeRoute, setActiveRoute] = useAtom(activeRouteAtom);
+  const [activeRoute] = useAtom(activeRouteAtom);
   const isParentItem = activeRoute.includes(item.slug);
   const isActiveRoute = activeRoute === item.slug;
   const [isOpen, setIsOpen] = useState(
@@ -23,22 +23,6 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
       setIsOpen(isParentItem);
     }
   }, [isActiveRoute, isParentItem]);
-
-  /**
-   * Handles link click event
-   * @param {React.MouseEvent<HTMLAnchorElement>} e - The click event
-   * @param {string} path - The path to set as active route
-   */
-  const handleLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    path: string
-  ) => {
-    e.preventDefault();
-    if (level > 0) {
-      setIsOpen(!isOpen);
-    }
-    setActiveRoute(path);
-  };
 
   const marginLeft = level > 2 ? `400` : undefined;
 
@@ -62,10 +46,7 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
         transitionDuration="slow"
         ml={marginLeft}
       >
-        <a
-          href={`/${item.slug}`}
-          onClick={(e) => handleLinkClick(e, item.slug)}
-        >
+        <Link unstyled href={item.slug}>
           {level > 1 && (
             <Text display="inline" mr="200" position="relative">
               └
@@ -73,7 +54,7 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
           )}
           {item.icon && <MenuIcon id={item.icon} />}
           {item.label}
-        </a>
+        </Link>
       </Text>
       {item.children &&
         item.children.length > 0 &&
