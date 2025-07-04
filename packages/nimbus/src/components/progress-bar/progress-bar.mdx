@@ -1,0 +1,286 @@
+---
+id: Components-ProgressBar
+title: ProgressBar
+description: Displays progress towards completion of a task or process with visual indicators and optional text labels.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Feedback
+  - ProgressBar
+tags:
+  - component
+---
+
+# ProgressBar
+
+Displays progress towards completion of a task or process with visual indicators and optional text labels.
+
+## Overview
+
+Progress bars provide visual feedback about the status of ongoing operations. They can show determinate progress (with a specific value) or indeterminate progress (loading state) and offer flexible text display options for enhanced user experience.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=progress-bar&m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+### Size
+
+#### Medium
+This is the default size, suitable for most use cases.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={75} 
+    label="Loading data"
+    size="md"
+    colorPalette="primary"
+  />
+)
+```
+
+#### 2X-small
+For compact layouts or when multiple progress bars are displayed.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={45} 
+    label="Processing"
+    size="2xs"
+    colorPalette="primary"
+  />
+)
+```
+
+### Text Display Layouts
+
+#### Stacked
+The default layout displays the label and value above the progress bar.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={60} 
+    label="Upload Progress"
+    layout="stacked"
+    colorPalette="primary"
+  />
+)
+```
+
+#### Inline
+Displays the label and value on the same line as the progress bar.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={80} 
+    label="Sync Progress"
+    layout="inline"
+    colorPalette="grass"
+  />
+)
+```
+
+#### Minimal
+Hides the label and value text, showing only the progress bar.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={30} 
+    label="Background Process"
+    layout="minimal"
+    colorPalette="blue"
+  />
+)
+```
+
+### Progress States
+
+#### Determinate Progress
+Shows specific progress with a value between min and max.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <ProgressBar value={25} label="25% Complete" colorPalette="primary" />
+    <ProgressBar value={50} label="50% Complete" colorPalette="grass" />
+    <ProgressBar value={75} label="75% Complete" colorPalette="amber" />
+    <ProgressBar value={100} label="100% Complete" colorPalette="tomato" />
+  </Stack>
+)
+```
+
+#### Indeterminate Progress
+Shows ongoing activity without a specific completion percentage.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    isIndeterminate={true}
+    label="Loading..."
+    colorPalette="primary"
+  />
+)
+```
+
+### Visual Variants
+
+Progress bars come in two visual variants that affect how the color palette is applied.
+
+#### Solid Variant
+The default variant that uses a gradient fill from lighter to darker tones of the selected color palette.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={70} 
+    label="Solid Progress"
+    variant="solid"
+    colorPalette="primary"
+  />
+)
+```
+
+#### Contrast Variant
+Uses the contrast color from the palette for both the progress bar and text, creating a monochromatic appearance.
+Works only on step 9 + 10 background-colors.
+
+```jsx-live
+const App = () => (
+  <Box bg="primary.9" p="400">
+    <ProgressBar 
+      value={70} 
+      label="Contrast Progress"
+      variant="contrast"
+      colorPalette="primary"
+    />
+  </Box>
+)
+```
+
+#### Comparing Variants
+Both variants work with all color palettes, offering different visual aesthetics.
+
+### Color Options
+
+Progress bars can use semantic colors or any color from the design system palette.
+
+#### Semantic Colors
+Use these for consistent meaning across your application.
+
+```jsx-live
+const App = () => {
+  const semanticColors = ['primary', 'positive', 'critical', 'warning', 'neutral'];
+  
+  return (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      {semanticColors.map(color => (
+        <ProgressBar 
+          key={color} 
+          value={65} 
+          label={color}
+          colorPalette={color}
+        />
+      ))}
+    </Stack>
+  )
+}
+```
+
+#### Custom Colors
+For aesthetic purposes or when semantic colors don't provide enough options.
+
+```jsx-live
+const App = () => {
+  const customColors = ['teal', 'pink', 'mint', 'blue', 'slate'];
+  
+  return (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      {customColors.map(color => (
+        <ProgressBar 
+          key={color} 
+          value={55} 
+          label={color}
+          colorPalette={color}
+        />
+      ))}
+    </Stack>
+  )
+}
+```
+
+## Guidelines
+
+Progress bar guidelines ensure clear communication of process status and completion.
+
+### Best Practices
+
+- **Provide context**: Always include descriptive labels to explain what's being processed.
+- **Use appropriate states**: Choose determinate for known durations, indeterminate for unknown durations.
+- **Maintain consistency**: Use the same color meanings across your application.
+- **Consider placement**: Position progress bars near the content they're indicating.
+- **Provide feedback**: Update progress values in real-time when possible.
+- **Handle completion**: Clearly indicate when a process is complete or has failed.
+
+### Usage
+
+Progress bars communicate the status of ongoing operations to users, reducing uncertainty and improving perceived performance. They're commonly used during file uploads, data processing, form submissions, and page loading states.
+
+#### When to use progress bars vs loading spinners
+
+- **Progress bars**: When you can provide specific completion information or when the process has measurable steps.
+- **Loading spinners**: For quick operations or when progress cannot be measured.
+
+> [!TIP]\
+> When to use
+- **Long-running operations:** Show progress for tasks that take more than a few seconds.
+- **File operations:** Display progress during uploads, downloads, or processing.
+- **Multi-step processes:** Indicate completion of workflow steps.
+- **Data loading:** Show progress when loading large datasets.
+- **Batch operations:** Display progress for operations on multiple items.
+
+> [!CAUTION]\
+> When not to use
+- **Quick operations:** Don't use for tasks that complete in under 2 seconds.
+- **Unknown durations:** Use loading spinners instead for truly indeterminate operations.
+- **Static content:** Don't use progress bars for content that isn't actually loading.
+- **Decorative purposes:** Progress bars should always represent actual progress.
+
+### Accessibility
+
+Progress bars are accessible by default with proper ARIA attributes and screen reader support.
+
+```jsx-live
+const App = () => (
+  <ProgressBar 
+    value={65}
+    label="File upload"
+    aria-label="Uploading document.pdf"
+    colorPalette="primary"
+  />
+)
+```
+
+## Properties
+
+<PropsTable id="ProgressBar" />
+
+## Accessibility
+
+The ProgressBar component includes comprehensive accessibility features:
+
+- **ARIA attributes**: Proper `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` attributes
+- **Screen reader support**: Descriptive labels and value announcements
+- **Keyboard navigation**: Standard focus management for interactive elements
+- **High contrast**: Sufficient color contrast ratios for all layouts
+
