@@ -1,5 +1,31 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
-import type { ProgressBarRootProps } from "./progress-bar.types";
+import type {
+  RecipeProps,
+  UnstyledProp,
+  HTMLChakraProps,
+  RecipeVariantProps,
+} from "@chakra-ui/react";
+import type { AriaProgressBarProps } from "react-aria";
+import { progressBarSlotRecipe } from "./progress-bar.recipe.tsx";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+export interface ProgressBarRecipeProps
+  extends RecipeProps<"div">,
+    UnstyledProp {}
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props,
+ * aria props, and data attributes.
+ */
+export interface ProgressBarRootProps
+  extends HTMLChakraProps<"div", ProgressBarRecipeProps>,
+    Omit<RecipeVariantProps<typeof progressBarSlotRecipe>, "isIndeterminate">,
+    AriaProgressBarProps {
+  [key: `data-${string}`]: string;
+}
 
 /**
  * Props for the progress bar track (background bar)
