@@ -4,7 +4,7 @@ import type { ProgressBarRootProps } from "./progress-bar.slots.tsx";
  * Additional properties we want to exclude from the ProgressBar component.
  * These are chakra-ui props we don't want exposed.
  */
-type ExcludedProps = "css" | "recipe" | "unstyled" | "as" | "asChild";
+type ExcludedProps = "css" | "unstyled" | "as" | "asChild";
 
 /**
  * Main props interface for the ProgressBar component.

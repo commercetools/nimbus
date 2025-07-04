@@ -27,31 +27,6 @@ export interface ProgressBarRootProps
   [key: `data-${string}`]: string;
 }
 
-/**
- * Props for the progress bar track (background bar)
- */
-export interface ProgressBarTrackSlotProps extends ProgressBarRootProps {}
-
-/**
- * Props for the progress bar fill (progress indicator)
- */
-export interface ProgressBarFillSlotProps extends ProgressBarRootProps {}
-
-/**
- * Props for the text container (holds label and value)
- */
-export interface ProgressBarTextSlotProps extends ProgressBarRootProps {}
-
-/**
- * Props for the label text
- */
-export interface ProgressBarLabelSlotProps extends ProgressBarRootProps {}
-
-/**
- * Props for the value text
- */
-export interface ProgressBarValueSlotProps extends ProgressBarRootProps {}
-
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "progressBar",
 });
@@ -63,23 +38,27 @@ export const ProgressBarRootSlot = withProvider<
 >("div", "root");
 
 // ProgressBar Track - Background bar
+export interface ProgressBarTrackSlotProps extends HTMLChakraProps<"div"> {}
 export const ProgressBarTrackSlot = withContext<
   HTMLDivElement,
   ProgressBarTrackSlotProps
 >("div", "track");
 
 // ProgressBar Fill - Progress indicator
+export interface ProgressBarFillSlotProps extends HTMLChakraProps<"div"> {}
 export const ProgressBarFillSlot = withContext<
   HTMLDivElement,
   ProgressBarFillSlotProps
 >("div", "fill");
 // ProgressBar Label - Label text
+export interface ProgressBarLabelSlotProps extends HTMLChakraProps<"span"> {}
 export const ProgressBarLabelSlot = withContext<
   HTMLSpanElement,
   ProgressBarLabelSlotProps
 >("span", "label");
 
 // ProgressBar Value - Value text
+export interface ProgressBarValueSlotProps extends HTMLChakraProps<"span"> {}
 export const ProgressBarValueSlot = withContext<
   HTMLSpanElement,
   ProgressBarValueSlotProps

@@ -171,36 +171,6 @@ const App = () => (
 #### Comparing Variants
 Both variants work with all color palettes, offering different visual aesthetics.
 
-```jsx-live
-const App = () => {
-  const palettes = ['primary', 'grass', 'tomato'];
-  const progressVariants = ['solid', 'contrast'];
-  
-  return (
-    <Stack direction="column" gap="600" alignItems="stretch">
-      {progressVariants.map(variant => (
-        <Stack key={variant} direction="column" gap="300">
-          <Text fontSize="14px" fontWeight="600">
-            {variant.charAt(0).toUpperCase() + variant.slice(1)} Variant
-          </Text>
-          <Stack direction="column" gap="200">
-            {palettes.map(palette => (
-              <ProgressBar
-                key={`${variant}-${palette}`}
-                value={65}
-                label={`${palette} palette`}
-                variant={variant}
-                colorPalette={palette}
-              />
-            ))}
-          </Stack>
-        </Stack>
-      ))}
-    </Stack>
-  )
-}
-```
-
 ### Color Options
 
 Progress bars can use semantic colors or any color from the design system palette.
@@ -314,20 +284,3 @@ The ProgressBar component includes comprehensive accessibility features:
 - **Keyboard navigation**: Standard focus management for interactive elements
 - **High contrast**: Sufficient color contrast ratios for all layouts
 
-### Implementation Notes
-
-- Labels are automatically associated with progress bars using ARIA attributes
-- Progress values are announced to screen readers when they change
-- The component respects user preferences for reduced motion
-- Color information is supplemented with text labels for accessibility
-
-```jsx-live
-const App = () => (
-  <ProgressBar 
-    value={75}
-    label="Processing payment"
-    aria-label="Payment processing is 75% complete"
-    colorPalette="grass"
-  />
-)
-``` 
