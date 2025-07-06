@@ -49,12 +49,12 @@ export type DataTableProps<T> = {
   showColumnVisibilityDropdown?: boolean;
 };
 
-function flattenRows<T>(rows: DataTableRow<T>[], expanded: Set<string>): DataTableRow<T>[] {
-  let result: DataTableRow<T>[] = [];
+function flattenRows<T>(rows: DataTableRow<T>[], expanded: Set<string>, depth = 0): { row: DataTableRow<T>, depth: number }[] {
+  let result: { row: DataTableRow<T>, depth: number }[] = [];
   for (const row of rows) {
-    result.push(row);
+    result.push({ row, depth });
     if (row.children && expanded.has(row.key)) {
-      result.push(...flattenRows(row.children, expanded));
+      result.push(...flattenRows(row.children, expanded, depth + 1));
     }
   }
   return result;
@@ -112,7 +112,7 @@ export function DataTable<T extends object>({
   }, [data, sortDescriptor]);
 
   // Flatten for rendering
-  const flatRows = useMemo(() => flattenRows(sortedData, expanded), [sortedData, expanded]);
+  const flatRows = useMemo(() => flattenRows(sortedData, expanded, 0), [sortedData, expanded]);
 
   // Handle expand/collapse
   const toggleExpand = (key: string) => {
@@ -173,13 +173,14 @@ export function DataTable<T extends object>({
       <TableRowSlot
         key={item.key}
         onClick={onRowClick ? () => onRowClick(item) : undefined}
-        style={isSelected(item.key) ? { background: '#e0e7ef' } : {}}
+        data-selected={isSelected(item.key) ? 'true' : undefined}
+        data-child={isChild ? 'true' : undefined}
         onMouseEnter={() => setHoveredRow(item.key)}
         onMouseLeave={() => setHoveredRow(null)}
       >
         {/* Selection cell */}
         {selectionMode !== "none" && (
-          <TableCellSlot style={{ width: 40, minWidth: 40, maxWidth: 40, textAlign: "center" }}>
+          <TableCellSlot slot="cell" variant="selection">
             {selectionMode === "multiple" ? (
               <input
                 type="checkbox"
@@ -200,12 +201,13 @@ export function DataTable<T extends object>({
         )}
         {/* Expand/collapse cell if nested */}
         {item.children ? (
-          <TableCellSlot style={{ ...(visibleColumns[0]?.width ? { width: visibleColumns[0].width, minWidth: visibleColumns[0].width, maxWidth: visibleColumns[0].width } : {}) }}>
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', cursor: onRowClick ? 'pointer' : undefined }} onClick={onRowClick ? () => onRowClick(item) : undefined}>
+          <TableCellSlot slot="cell" variant={isChild ? 'child' : undefined}>
+            <div className="nimbus-table-expand-cell" onClick={onRowClick ? () => onRowClick(item) : undefined}>
               <button
                 aria-label={expanded.has(item.key) ? "Collapse" : "Expand"}
                 onClick={() => toggleExpand(item.key)}
-                style={{ marginRight: 8 }}
+                className="nimbus-table-expand-btn"
+                style={{ marginRight: 12 }}
               >
                 {expanded.has(item.key) ? "-" : "+"}
               </button>
@@ -213,33 +215,27 @@ export function DataTable<T extends object>({
             </div>
           </TableCellSlot>
         ) : (
-          <TableCellSlot style={{ ...(visibleColumns[0]?.width ? { width: visibleColumns[0].width, minWidth: visibleColumns[0].width, maxWidth: visibleColumns[0].width } : {}) }}>
-            <div style={{ width: '100%', cursor: onRowClick ? 'pointer' : undefined, display: 'flex', alignItems: 'center' }} onClick={onRowClick ? () => onRowClick(item) : undefined}>
-              {isChild && <span style={{ marginRight: 8, color: '#888' }}>↳</span>}
+          <TableCellSlot slot="cell" variant={isChild ? 'child' : undefined}>
+            <div className="nimbus-table-child-cell" onClick={onRowClick ? () => onRowClick(item) : undefined}>
+              {isChild && <span className="nimbus-table-child-arrow">↳</span>}
               {visibleColumns[0]?.render ? visibleColumns[0].render(item) : (item as any)[visibleColumns[0]?.id]}
             </div>
           </TableCellSlot>
         )}
         {/* Other cells */}
         {visibleColumns.slice(1).map((col, colIdx) => (
-          <TableCellSlot key={col.id} style={{ ...(col.width ? { width: col.width, minWidth: col.width, maxWidth: col.width } : {}) }}>
+          <TableCellSlot key={col.id} slot="cell">
             {editableCell ? editableCell(item, col) : (col.render ? col.render(item) : (item as any)[col.id])}
           </TableCellSlot>
         ))}
         {/* Row actions */}
-        {renderRowActions && <TableCellSlot>{renderRowActions(item)}</TableCellSlot>}
+        {renderRowActions && <TableCellSlot slot="cell">{renderRowActions(item)}</TableCellSlot>}
         {/* Clipboard button on row hover */}
         {copyableRow && hoveredRow === item.key && (
-          <TableCellSlot style={{ width: 40, minWidth: 40, maxWidth: 40, textAlign: "center", background: 'transparent', border: 'none' }}>
+          <TableCellSlot slot="clipboardCell">
             <button
               onClick={e => { e.stopPropagation(); handleCopy(item); }}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#888',
-                fontSize: 16,
-              }}
+              className="nimbus-table-clipboard-btn"
               title="Copy row"
             >
               {clipboardFeedback === item.key ? '✔️' : '📋'}
@@ -385,12 +381,7 @@ export function DataTable<T extends object>({
           </TableRowSlot>
         </TableHeaderSlot>
         <TableBodySlot>
-          {flatRows.map((item: DataTableRow<T>) => (
-            <React.Fragment key={item.key}>
-              {renderRow(item)}
-              {item.children && expanded.has(item.key) && item.children.map(child => renderRow(child, 1))}
-            </React.Fragment>
-          ))}
+          {flatRows.map(({ row, depth }) => renderRow(row, depth))}
         </TableBodySlot>
       </TableRoot>
     </div>

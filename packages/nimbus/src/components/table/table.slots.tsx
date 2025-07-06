@@ -9,14 +9,14 @@ import { tableSlotRecipe } from "./table.recipe";
 // Base recipe props for the table
 interface TableRecipeProps extends RecipeProps<"table">, UnstyledProp {}
 
-export interface TableRootProps extends HTMLChakraProps<"table", TableRecipeProps> {}
-export interface TableHeaderSlotProps extends HTMLChakraProps<"thead", TableRecipeProps> {}
-export interface TableBodySlotProps extends HTMLChakraProps<"tbody", TableRecipeProps> {}
-export interface TableRowSlotProps extends HTMLChakraProps<"tr", TableRecipeProps> {}
-export interface TableColumnHeaderSlotProps extends HTMLChakraProps<"th", TableRecipeProps> {}
-export interface TableCellSlotProps extends HTMLChakraProps<"td", TableRecipeProps> {}
-export interface TableFooterSlotProps extends HTMLChakraProps<"tfoot", TableRecipeProps> {}
-export interface TableCaptionSlotProps extends HTMLChakraProps<"caption", TableRecipeProps> {}
+export interface TableRootProps extends HTMLChakraProps<"table", TableRecipeProps> { variant?: string; }
+export interface TableHeaderSlotProps extends HTMLChakraProps<"thead", TableRecipeProps> { variant?: string; }
+export interface TableBodySlotProps extends HTMLChakraProps<"tbody", TableRecipeProps> { variant?: string; }
+export interface TableRowSlotProps extends HTMLChakraProps<"tr", TableRecipeProps> { variant?: string; }
+export interface TableColumnHeaderSlotProps extends HTMLChakraProps<"th", TableRecipeProps> { variant?: string; }
+export interface TableCellSlotProps extends HTMLChakraProps<"td", TableRecipeProps> { variant?: string; }
+export interface TableFooterSlotProps extends HTMLChakraProps<"tfoot", TableRecipeProps> { variant?: string; }
+export interface TableCaptionSlotProps extends HTMLChakraProps<"caption", TableRecipeProps> { variant?: string; }
 
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: tableSlotRecipe,
