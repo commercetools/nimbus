@@ -165,22 +165,6 @@ export const WithResizableColumns: Story = {
   },
 };
 
-export const WithStickyHeader: Story = {
-  render: () => {
-    const [sticky, setSticky] = useState(true);
-    return (
-      <div>
-        <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <input type="checkbox" checked={sticky} onChange={e => setSticky(e.target.checked)} /> Sticky Header
-          </label>
-        </div>
-        <DataTable columns={columns} data={nestedData} stickyHeader={sticky} />
-      </div>
-    );
-  },
-};
-
 export const DataTableManager: Story = {
   render: () => {
     // State for sticky header

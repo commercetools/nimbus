@@ -7,15 +7,17 @@ import {
   Column,
   Button,
 } from "react-aria-components";
+// import {
+//   TableRoot,
+//   TableHeaderSlot,
+//   TableBodySlot,
+//   TableRowSlot,
+//   TableColumnHeaderSlot,
+//   TableCellSlot,
+// } from "./table.slots";
+
 import { useState, useMemo } from "react";
-import {
-  TableRoot,
-  TableHeaderSlot,
-  TableBodySlot,
-  TableRowSlot,
-  TableColumnHeaderSlot,
-  TableCellSlot,
-} from "./table.slots";
+
 import React from "react";
 
 export type DataTableColumn<T> = {
@@ -203,22 +205,21 @@ export function DataTable<T extends object>({
   // Helper to render a row (handles recursion for children)
   function renderRow(item: DataTableRow<T>, depth = 0) {
     const isChild = depth > 0;
+    const selected = isSelected(item.key);
     return (
-      <TableRowSlot
+      <Row
         key={item.key}
-        onClick={onRowClick ? () => onRowClick(item) : undefined}
-        data-selected={isSelected(item.key) ? 'true' : undefined}
+        data-selected={selected ? 'true' : undefined}
         data-child={isChild ? 'true' : undefined}
-        onMouseEnter={() => setHoveredRow(item.key)}
-        onMouseLeave={() => setHoveredRow(null)}
+        style={selected ? { background: '#e0e7ff' } : {}}
       >
         {/* Selection cell */}
         {selectionMode !== "none" && (
-          <TableCellSlot slot="cell" variant="selection">
+          <Cell>
             {selectionMode === "multiple" ? (
               <input
                 type="checkbox"
-                checked={isSelected(item.key)}
+                checked={selected}
                 onChange={() => handleSelect(item.key)}
                 onClick={e => e.stopPropagation()}
               />
@@ -226,17 +227,22 @@ export function DataTable<T extends object>({
               <input
                 type="radio"
                 name="datatable-selection"
-                checked={isSelected(item.key)}
+                checked={selected}
                 onChange={() => handleSelect(item.key)}
                 onClick={e => e.stopPropagation()}
               />
             )}
-          </TableCellSlot>
+          </Cell>
         )}
         {/* Expand/collapse cell if nested */}
         {item.children ? (
-          <TableCellSlot slot="cell" variant={isChild ? 'child' : undefined}>
-            <div className="nimbus-table-expand-cell" onClick={onRowClick ? () => onRowClick(item) : undefined}>
+          <Cell>
+            <div
+              className="nimbus-table-expand-cell"
+              onClick={onRowClick ? () => onRowClick(item) : undefined}
+              onMouseEnter={() => setHoveredRow(item.key)}
+              onMouseLeave={() => setHoveredRow(null)}
+            >
               <button
                 aria-label={expanded.has(item.key) ? "Collapse" : "Expand"}
                 onClick={() => toggleExpand(item.key)}
@@ -247,26 +253,31 @@ export function DataTable<T extends object>({
               </button>
               {visibleColumns[0]?.render ? visibleColumns[0].render(item) : (item as any)[visibleColumns[0]?.id]}
             </div>
-          </TableCellSlot>
+          </Cell>
         ) : (
-          <TableCellSlot slot="cell" variant={isChild ? 'child' : undefined}>
-            <div className="nimbus-table-child-cell" onClick={onRowClick ? () => onRowClick(item) : undefined}>
+          <Cell>
+            <div
+              className="nimbus-table-child-cell"
+              onClick={onRowClick ? () => onRowClick(item) : undefined}
+              onMouseEnter={() => setHoveredRow(item.key)}
+              onMouseLeave={() => setHoveredRow(null)}
+            >
               {isChild && <span className="nimbus-table-child-arrow">↳</span>}
               {visibleColumns[0]?.render ? visibleColumns[0].render(item) : (item as any)[visibleColumns[0]?.id]}
             </div>
-          </TableCellSlot>
+          </Cell>
         )}
         {/* Other cells */}
         {visibleColumns.slice(1).map((col, colIdx) => (
-          <TableCellSlot key={col.id} slot="cell">
+          <Cell key={col.id}>
             {editableCell ? editableCell(item, col) : (col.render ? col.render(item) : (item as any)[col.id])}
-          </TableCellSlot>
+          </Cell>
         ))}
         {/* Row actions */}
-        {renderRowActions && <TableCellSlot slot="cell">{renderRowActions(item)}</TableCellSlot>}
+        {renderRowActions && <Cell>{renderRowActions(item)}</Cell>}
         {/* Clipboard button on row hover */}
         {copyableRow && hoveredRow === item.key && (
-          <TableCellSlot slot="clipboardCell">
+          <Cell>
             <button
               onClick={e => { e.stopPropagation(); handleCopy(item); }}
               className="nimbus-table-clipboard-btn"
@@ -274,11 +285,20 @@ export function DataTable<T extends object>({
             >
               {clipboardFeedback === item.key ? '✔️' : '📋'}
             </button>
-          </TableCellSlot>
+          </Cell>
         )}
-      </TableRowSlot>
+      </Row>
     );
   }
+
+  const selectAllRef = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
+    if (selectionMode === 'multiple' && selectAllRef.current) {
+      const allSelected = flatRows.length > 0 && flatRows.every(({ row }) => isSelected(row.key));
+      const someSelected = flatRows.some(({ row }) => isSelected(row.key));
+      selectAllRef.current.indeterminate = someSelected && !allSelected;
+    }
+  }, [selectionMode, flatRows, selectedKeys]);
 
   return (
     <div>
@@ -334,18 +354,34 @@ export function DataTable<T extends object>({
           )}
         </div>
       )}
-      <TableRoot>
-        <TableHeaderSlot>
-          <TableRowSlot>
+      <Table>
+        <TableHeader>
+          <Row>
             {/* Selection column header */}
             {selectionMode !== "none" && (
-              <TableColumnHeaderSlot style={{ width: 40, minWidth: 40, maxWidth: 40, textAlign: "center" }} />
+              <Column style={{ width: 40, minWidth: 40, maxWidth: 40, textAlign: "center" }}>
+                {selectionMode === "multiple" && (
+                  <input
+                    type="checkbox"
+                    aria-label="Select all rows"
+                    ref={selectAllRef}
+                    checked={flatRows.length > 0 && flatRows.every(({ row }) => isSelected(row.key))}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedKeys(new Set(flatRows.map(({ row }) => row.key)));
+                      } else {
+                        setSelectedKeys(new Set());
+                      }
+                    }}
+                  />
+                )}
+              </Column>
             )}
             {visibleColumns.map((col, colIdx) => {
               const isSorted = sortDescriptor?.column === col.id;
               const isSortable = !!col.allowsSorting;
               return (
-                <TableColumnHeaderSlot
+                <Column
                   key={col.id}
                   style={{
                     ...(col.width ? { width: col.width, minWidth: col.width, maxWidth: col.width } : {}),
@@ -354,18 +390,18 @@ export function DataTable<T extends object>({
                     zIndex: stickyHeader ? 10 : undefined,
                     background: stickyHeader ? '#f1f5f9' : '#e2e8f0',
                     padding: 0,
-                    cursor: isSortable ? 'pointer' : undefined,
-                    userSelect: isSortable ? 'none' : undefined,
                   }}
-                  onClick={isSortable ? () => {
-                    let direction: 'ascending' | 'descending' = 'ascending';
-                    if (isSorted) {
-                      direction = sortDescriptor.direction === 'ascending' ? 'descending' : 'ascending';
-                    }
-                    handleSortChange({ column: col.id, direction });
-                  } : undefined}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', width: '100%', height: '100%', position: 'relative' }}>
+                  <div
+                    style={{ display: 'flex', alignItems: 'center', width: '100%', height: '100%', position: 'relative', cursor: isSortable ? 'pointer' : undefined, userSelect: isSortable ? 'none' : undefined }}
+                    onClick={isSortable ? () => {
+                      let direction: 'ascending' | 'descending' = 'ascending';
+                      if (isSorted) {
+                        direction = sortDescriptor.direction === 'ascending' ? 'descending' : 'ascending';
+                      }
+                      handleSortChange({ column: col.id, direction });
+                    } : undefined}
+                  >
                     <span style={{ flex: 1, padding: '0 12px', display: 'flex', alignItems: 'center', gap: 4 }}>
                       {col.label}
                       {isSortable && (
@@ -396,11 +432,11 @@ export function DataTable<T extends object>({
                       </span>
                     )}
                   </div>
-                </TableColumnHeaderSlot>
+                </Column>
               );
             })}
             {renderRowActions && (
-              <TableColumnHeaderSlot
+              <Column
                 key="actions"
                 style={{
                   position: stickyHeader ? 'sticky' : undefined,
@@ -410,14 +446,14 @@ export function DataTable<T extends object>({
                 }}
               >
                 Actions
-              </TableColumnHeaderSlot>
+              </Column>
             )}
-          </TableRowSlot>
-        </TableHeaderSlot>
-        <TableBodySlot>
+          </Row>
+        </TableHeader>
+        <TableBody>
           {flatRows.map(({ row, depth }) => renderRow(row, depth))}
-        </TableBodySlot>
-      </TableRoot>
+        </TableBody>
+      </Table>
     </div>
   );
 } 
