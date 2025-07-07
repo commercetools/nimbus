@@ -274,19 +274,21 @@ export function DataTable<T extends object>({
           </Cell>
         ))}
         {/* Row actions */}
-        {renderRowActions && <Cell>{renderRowActions(item)}</Cell>}
+        {renderRowActions ? <Cell>{renderRowActions(item)}</Cell> : null}
         {/* Clipboard button on row hover */}
-        {copyableRow && hoveredRow === item.key && (
+        {copyableRow ? (
           <Cell>
-            <button
-              onClick={e => { e.stopPropagation(); handleCopy(item); }}
-              className="nimbus-table-clipboard-btn"
-              title="Copy row"
-            >
-              {clipboardFeedback === item.key ? '✔️' : '📋'}
-            </button>
+            {hoveredRow === item.key ? (
+              <button
+                onClick={e => { e.stopPropagation(); handleCopy(item); }}
+                className="nimbus-table-clipboard-btn"
+                title="Copy row"
+              >
+                {clipboardFeedback === item.key ? '✔️' : '📋'}
+              </button>
+            ) : null}
           </Cell>
-        )}
+        ) : null}
       </Row>
     );
   }
@@ -446,6 +448,14 @@ export function DataTable<T extends object>({
                 }}
               >
                 Actions
+              </Column>
+            )}
+            {copyableRow && (
+              <Column
+                key="clipboard"
+                style={{ width: 40, minWidth: 40, maxWidth: 40, textAlign: 'center', background: stickyHeader ? '#f1f5f9' : '#e2e8f0' }}
+              >
+                {/* Clipboard */}
               </Column>
             )}
           </Row>
