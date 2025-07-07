@@ -217,20 +217,24 @@ export function DataTable<T extends object>({
         {selectionMode !== "none" && (
           <Cell>
             {selectionMode === "multiple" ? (
-              <input
-                type="checkbox"
-                checked={selected}
-                onChange={() => handleSelect(item.key)}
-                onClick={e => e.stopPropagation()}
-              />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <input
+                  type="checkbox"
+                  checked={selected}
+                  onChange={() => handleSelect(item.key)}
+                  onClick={e => e.stopPropagation()}
+                />
+              </div>
             ) : (
-              <input
-                type="radio"
-                name="datatable-selection"
-                checked={selected}
-                onChange={() => handleSelect(item.key)}
-                onClick={e => e.stopPropagation()}
-              />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <input
+                  type="radio"
+                  name="datatable-selection"
+                  checked={selected}
+                  onChange={() => handleSelect(item.key)}
+                  onClick={e => e.stopPropagation()}
+                />
+              </div>
             )}
           </Cell>
         )}
@@ -303,7 +307,7 @@ export function DataTable<T extends object>({
   }, [selectionMode, flatRows, selectedKeys]);
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       {showColumnVisibilityDropdown && (
         <div style={{ marginBottom: 16, position: 'relative', display: 'inline-block' }}>
           <button
@@ -356,26 +360,29 @@ export function DataTable<T extends object>({
           )}
         </div>
       )}
-      <Table>
+      <Table style={{ width: '100%' }}>
         <TableHeader>
           <Row>
             {/* Selection column header */}
             {selectionMode !== "none" && (
               <Column style={{ width: 40, minWidth: 40, maxWidth: 40, textAlign: "center" }}>
                 {selectionMode === "multiple" && (
-                  <input
-                    type="checkbox"
-                    aria-label="Select all rows"
-                    ref={selectAllRef}
-                    checked={flatRows.length > 0 && flatRows.every(({ row }) => isSelected(row.key))}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setSelectedKeys(new Set(flatRows.map(({ row }) => row.key)));
-                      } else {
-                        setSelectedKeys(new Set());
-                      }
-                    }}
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                    <input
+                      type="checkbox"
+                      aria-label="Select all rows"
+                      ref={selectAllRef}
+                      checked={flatRows.length > 0 && flatRows.every(({ row }) => isSelected(row.key))}
+                      onChange={e => {
+                        const allSelected = flatRows.length > 0 && flatRows.every(({ row }) => isSelected(row.key));
+                        if (allSelected) {
+                          setSelectedKeys(new Set());
+                        } else {
+                          setSelectedKeys(new Set(flatRows.map(({ row }) => row.key)));
+                        }
+                      }}
+                    />
+                  </div>
                 )}
               </Column>
             )}
