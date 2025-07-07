@@ -80,7 +80,7 @@ export const Vertical: Story = {
 
 export const Orientations: Story = {
   render: () => (
-    <Stack gap="8">
+    <Stack gap="400">
       <Box>
         <Box p="100">Content above horizontal divider</Box>
         <Divider orientation="horizontal" />
