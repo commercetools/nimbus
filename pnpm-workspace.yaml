@@ -8,7 +8,7 @@ catalogs:
   tooling:
     globals: ^16.0.0
     typescript: ~5.8.3
-    typescript-eslint: ^8.32.0
+    typescript-eslint: ^8.35.1
     tsx: ^4.20.3
     "@babel/core": ^7.28.0
     "@babel/runtime": ^7.27.6
