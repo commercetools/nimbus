@@ -47,6 +47,7 @@ export type DataTableProps<T> = {
   copyableRow?: boolean;
   onRowCopy?: (row: DataTableRow<T>) => void;
   showColumnVisibilityDropdown?: boolean;
+  resizableColumns?: boolean;
 };
 
 function flattenRows<T>(rows: DataTableRow<T>[], expanded: Set<string>, depth = 0): { row: DataTableRow<T>, depth: number }[] {
@@ -74,6 +75,7 @@ export function DataTable<T extends object>({
   copyableRow,
   onRowCopy,
   showColumnVisibilityDropdown = false,
+  resizableColumns = false,
 }: DataTableProps<T>) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [sortDescriptor, setSortDescriptor] = useState<{ column: string; direction: "ascending" | "descending" }>(
@@ -130,6 +132,38 @@ export function DataTable<T extends object>({
     onSortChange?.(desc);
   };
 
+  // Column resizing state and handlers
+  const [widths, setWidths] = React.useState<Record<string, string>>(() =>
+    Object.fromEntries(columns.map(col => [col.id, col.width || "160px"]))
+  );
+  const resizingCol = React.useRef<{ colId: string; startX: number; startWidth: number } | null>(null);
+  const handleMouseDown = (colId: string) => (e: React.MouseEvent<HTMLSpanElement>) => {
+    resizingCol.current = { colId, startX: e.clientX, startWidth: parseInt(widths[colId]) };
+    document.addEventListener("mousemove", onMouseMove as any);
+    document.addEventListener("mouseup", onMouseUp as any);
+  };
+  const onMouseMove = (e: MouseEvent) => {
+    if (!resizingCol.current) return;
+    const { colId, startX, startWidth } = resizingCol.current;
+    const delta = e.clientX - startX;
+    setWidths(w => ({ ...w, [colId]: Math.max(60, startWidth + delta) + "px" }));
+  };
+  const onMouseUp = () => {
+    resizingCol.current = null;
+    document.removeEventListener("mousemove", onMouseMove as any);
+    document.removeEventListener("mouseup", onMouseUp as any);
+  };
+
+  // Compose columns with resize handles if enabled
+  const computedColumns = React.useMemo(() => {
+    if (!resizableColumns) return columns.map(col => ({ ...col, width: widths[col.id] }));
+    return columns.map((col, idx) => ({
+      ...col,
+      width: widths[col.id],
+      onResizeStart: idx < columns.length - 1 ? handleMouseDown(col.id) : undefined,
+    }));
+  }, [columns, widths, resizableColumns]);
+
   // Find if any column has a resize handler (for storybook integration)
   const hasResize = columns.some((col: any) => typeof col.onResizeStart === 'function');
 
@@ -152,7 +186,7 @@ export function DataTable<T extends object>({
       v.includes(id) ? v.filter((x) => x !== id) : [...v, id]
     );
   };
-  const visibleColumns = columns.filter((col) => visible.includes(col.id));
+  const visibleColumns = computedColumns.filter((col) => visible.includes(col.id));
 
   // Close dropdown on outside click
   React.useEffect(() => {

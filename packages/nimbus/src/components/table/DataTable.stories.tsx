@@ -151,38 +151,17 @@ export const WithColumnVisibility: Story = {
 
 export const WithResizableColumns: Story = {
   render: () => {
-    const [widths, setWidths] = React.useState<Record<string, string>>(() =>
-      Object.fromEntries(columns.map(col => [col.id, "160px"]))
+    const [resizable, setResizable] = React.useState(true);
+    return (
+      <div>
+        <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <input type="checkbox" checked={resizable} onChange={e => setResizable(e.target.checked)} /> Resizable Columns
+          </label>
+        </div>
+        <DataTable columns={columns} data={nestedData} resizableColumns={resizable} />
+      </div>
     );
-    const resizingCol = React.useRef<{ colId: string; startX: number; startWidth: number } | null>(null);
-
-    const handleMouseDown = (colId: string) => (e: React.MouseEvent<HTMLSpanElement>) => {
-      resizingCol.current = { colId, startX: e.clientX, startWidth: parseInt(widths[colId]) };
-      document.addEventListener("mousemove", onMouseMove as any);
-      document.addEventListener("mouseup", onMouseUp as any);
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      if (!resizingCol.current) return;
-      const { colId, startX, startWidth } = resizingCol.current;
-      const delta = e.clientX - startX;
-      setWidths(w => ({ ...w, [colId]: Math.max(60, startWidth + delta) + "px" }));
-    };
-
-    const onMouseUp = () => {
-      resizingCol.current = null;
-      document.removeEventListener("mousemove", onMouseMove as any);
-      document.removeEventListener("mouseup", onMouseUp as any);
-    };
-
-    // Add a resize handler to each column except the last one
-    const resizableColumns = columns.map((col, idx) => ({
-      ...col,
-      width: widths[col.id],
-      onResizeStart: idx < columns.length - 1 ? handleMouseDown(col.id) : undefined,
-    }));
-
-    return <DataTable columns={resizableColumns} data={nestedData} />;
   },
 };
 
@@ -204,30 +183,9 @@ export const WithStickyHeader: Story = {
 
 export const DataTableManager: Story = {
   render: () => {
-    // State for column widths
-    const [widths, setWidths] = React.useState<Record<string, string>>(() =>
-      Object.fromEntries(columns.map(col => [col.id, "160px"]))
-    );
-    const resizingCol = React.useRef<{ colId: string; startX: number; startWidth: number } | null>(null);
-    const handleMouseDown = (colId: string) => (e: React.MouseEvent<HTMLSpanElement>) => {
-      resizingCol.current = { colId, startX: e.clientX, startWidth: parseInt(widths[colId]) };
-      document.addEventListener("mousemove", onMouseMove as any);
-      document.addEventListener("mouseup", onMouseUp as any);
-    };
-    const onMouseMove = (e: MouseEvent) => {
-      if (!resizingCol.current) return;
-      const { colId, startX, startWidth } = resizingCol.current;
-      const delta = e.clientX - startX;
-      setWidths(w => ({ ...w, [colId]: Math.max(60, startWidth + delta) + "px" }));
-    };
-    const onMouseUp = () => {
-      resizingCol.current = null;
-      document.removeEventListener("mousemove", onMouseMove as any);
-      document.removeEventListener("mouseup", onMouseUp as any);
-    };
-
     // State for sticky header
     const [sticky, setSticky] = React.useState<boolean>(true);
+    const [resizable, setResizable] = React.useState(true);
 
     // State for editable cells
     const [editData, setEditData] = React.useState<Record<string, Stock>>(() =>
@@ -258,27 +216,19 @@ export const DataTableManager: Story = {
       alert(`Row clicked: ${row.key}`);
     };
 
-    // Compose columns with resize handles
-    const resizableColumns = columns.map((col, idx) => ({
-      ...col,
-      width: widths[col.id],
-      onResizeStart: idx < columns.length - 1 ? handleMouseDown(col.id) : undefined,
-    }));
-
-    // Compose data with edits
-    const getData = (data: DataTableRow<Stock>[]): DataTableRow<Stock>[] =>
-      data.map(row => ({ ...row, ...editData[row.key], children: row.children ? getData(row.children) : undefined }));
-
     return (
       <div>
         <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16 }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <input type="checkbox" checked={sticky} onChange={e => setSticky(e.target.checked)} /> Sticky Header
           </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <input type="checkbox" checked={resizable} onChange={e => setResizable(e.target.checked)} /> Resizable Columns
+          </label>
         </div>
         <DataTable
-          columns={resizableColumns}
-          data={getData(nestedData)}
+          columns={columns}
+          data={nestedData}
           stickyHeader={sticky}
           editableCell={editableCell}
           onCellEdit={handleCellEdit}
@@ -291,6 +241,7 @@ export const DataTableManager: Story = {
             </button>
           )}
           showColumnVisibilityDropdown
+          resizableColumns={resizable}
         />
       </div>
     );
