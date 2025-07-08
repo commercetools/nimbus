@@ -26,11 +26,7 @@ import {
   RangeCalendarHeaderCellSlot,
   RangeCalendarMonthTitleSlot,
 } from "../range-calendar.slots";
-
-export type RangeValue<T> = {
-  start: T;
-  end: T;
-};
+import type { RangeValue } from "../range-calendar.types";
 
 export const RangeCalendarGrids = () => {
   const { locale } = useLocale();
@@ -40,6 +36,8 @@ export const RangeCalendarGrids = () => {
   const visibleMonthsCount = context?.visibleDuration?.months || 1;
   const todayDate = today(getLocalTimeZone());
   const showMonthTitles = visibleMonthsCount > 1;
+
+  // RangeCalendar-specific: Get the selected date range from calendar state
   const selectedRange = calendarState.value;
 
   return (
@@ -78,13 +76,24 @@ export const RangeCalendarGrids = () => {
                     {(date) => {
                       const isToday = date.compare(todayDate) === 0;
 
+                      // RangeCalendar-specific: Calculate range-specific states
+                      const isStartDate =
+                        selectedRange?.start &&
+                        date.compare(selectedRange.start) === 0;
+                      const isEndDate =
+                        selectedRange?.end &&
+                        date.compare(selectedRange.end) === 0;
                       const isInRange = isDateInRange(date, selectedRange);
 
                       return (
                         <RangeCalendarCellSlot
                           asChild
                           data-today={isToday}
+                          // RangeCalendar-specific: Add range-specific data attributes for styling
+                          data-selected={isStartDate || isEndDate}
                           data-in-range={isInRange}
+                          data-range-start={isStartDate}
+                          data-range-end={isEndDate}
                         >
                           <RaCalendarCell date={date} />
                         </RangeCalendarCellSlot>
@@ -101,11 +110,12 @@ export const RangeCalendarGrids = () => {
   );
 };
 
+// RangeCalendar-specific: Helper function to determine if a date is within the selected range
 const isDateInRange = (
   date: DateValue,
   range: RangeValue<DateValue> | null
 ) => {
   if (!range || !range.start || !range.end) return false;
-  // Exclude the endpoints
+  // Exclude the endpoints (they are data-selected instead)
   return date.compare(range.start) > 0 && date.compare(range.end) < 0;
 };

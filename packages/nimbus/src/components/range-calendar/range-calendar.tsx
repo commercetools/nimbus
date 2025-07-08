@@ -1,5 +1,5 @@
 import type { RangeCalendarProps } from "./range-calendar.types";
-import type { DateValue } from "react-aria";
+import type { DateValue } from "@internationalized/date";
 
 import { RangeCalendar as RaRangeCalendar } from "react-aria-components";
 

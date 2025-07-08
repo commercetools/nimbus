@@ -98,10 +98,22 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
         bg: "primary.9",
         color: "primary.contrast",
       },
+      /* RangeCalendar-specific selectors */
+      // In-range dates
       "&[data-in-range=true]": {
         bg: "primary.3",
-        color: "slate.12",
+        color: "neutral.12",
         borderRadius: "0",
+      },
+      // Remove right border radius for start date
+      "&[data-selected=true][data-range-start=true]": {
+        borderTopRightRadius: "0",
+        borderBottomRightRadius: "0",
+      },
+      // Remove left border radius for end date
+      "&[data-selected=true][data-range-end=true]": {
+        borderTopLeftRadius: "0",
+        borderBottomLeftRadius: "0",
       },
     },
   },
