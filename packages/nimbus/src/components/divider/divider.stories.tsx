@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Divider } from "./divider";
 import { Box, Stack } from "@/components";
 import { within, expect } from "storybook/test";
+import { Alert } from "@/components/alert";
 
 const meta: Meta<typeof Divider> = {
   title: "components/Divider",
@@ -97,53 +98,51 @@ export const Orientations: Story = {
 
 export const MultipleBackgrounds: Story = {
   render: () => (
-    <Box position="relative" width="100%" height="300px">
-      {/* Background sections */}
-      <Stack direction="row" height="100%" gap="0">
-        <Box flex="1" bg="white" />
-        <Box flex="1" bg="slateAlpha.3" />
-        <Box flex="1" bg="positive.3" />
-      </Stack>
-
-      {/* Divider overlaying the backgrounds */}
+    <Stack direction="row" height="300px" gap="0">
       <Box
-        position="absolute"
-        top="50%"
-        left="0"
-        right="0"
-        transform="translateY(-50%)"
+        flex="1"
+        bg="white"
+        p="100"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
       >
+        <Box fontSize="sm" color="neutral.12" mb="100">
+          White background
+        </Box>
+        <Divider colorPalette="neutral" />
+      </Box>
+      <Box
+        flex="1"
+        colorPalette="slate"
+        bg="colorPalette.3"
+        p="100"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Box fontSize="sm" color="neutral.12" mb="100">
+          Slate background
+        </Box>
         <Divider />
       </Box>
-
-      {/* Content to show the sections */}
       <Box
-        position="absolute"
-        top="20px"
-        left="20px"
-        fontSize="sm"
-        color="neutral.12"
+        flex="1"
+        colorPalette="positive"
+        bg="colorPalette.3"
+        p="100"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
       >
-        White background
+        <Box fontSize="sm" color="neutral.12" mb="100">
+          Positive background
+        </Box>
+        <Divider />
       </Box>
-      <Box
-        position="absolute"
-        top="20px"
-        left="calc(33.33% + 20px)"
-        fontSize="sm"
-        color="neutral.12"
-      >
-        Divider color background
-      </Box>
-      <Box
-        position="absolute"
-        top="20px"
-        left="calc(66.66% + 20px)"
-        fontSize="sm"
-        color="neutral.12"
-      >
-        Positive background
-      </Box>
-    </Box>
+    </Stack>
   ),
 };

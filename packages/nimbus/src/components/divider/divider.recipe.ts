@@ -11,8 +11,8 @@ export const dividerRecipe = defineRecipe({
   base: {
     border: "none",
     flexShrink: "0",
-    opacity: "1",
-    borderColor: "slateAlpha.3",
+    color: "neutral",
+    borderColor: "colorPalette.6",
   },
 
   // Available variants for customizing the component's appearance
