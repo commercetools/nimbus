@@ -15,9 +15,9 @@ export const DateRangePickerTimeInput = () => {
     return null;
   }
 
-  // Focus the time input when date range changes (user selects dates from calendar)
+  // DateRangePicker-specific: Focus the time input when date range changes (user selects dates from calendar)
   useEffect(() => {
-    // Check if date range changed
+    // DateRangePicker-specific: Check if date range changed by comparing start and end dates
     const hasValueChanged =
       (value?.start &&
         previousValueRef.current?.start?.compare(value.start) !== 0) ||
@@ -40,6 +40,7 @@ export const DateRangePickerTimeInput = () => {
       }, 50);
     }
 
+    // DateRangePicker-specific: Update previous value reference for range comparison
     previousValueRef.current = value;
   }, [value]);
 
@@ -52,10 +53,11 @@ export const DateRangePickerTimeInput = () => {
       px="400"
       alignItems="center"
       justifyContent="center"
+      // DateRangePicker-specific: Uses column direction and larger gap for two time inputs
       gap="600"
       direction="column"
     >
-      {/* Start DateInput */}
+      {/* DateRangePicker-specific: Start DateInput with separate label */}
       <Flex alignItems="center" gap="200" width="full">
         <Text
           slot="startTime"
@@ -64,10 +66,15 @@ export const DateRangePickerTimeInput = () => {
           color="neutral.12"
           minWidth="fit-content"
         />
-        <TimeInput locale={locale} />
+        <TimeInput
+          slot="startTimeInput"
+          locale={locale}
+          variant="ghost"
+          size="sm"
+        />
       </Flex>
 
-      {/* End DateInput */}
+      {/* DateRangePicker-specific: End DateInput with separate label */}
       <Flex alignItems="center" gap="200" width="full">
         <Text
           slot="endTime"
@@ -76,7 +83,12 @@ export const DateRangePickerTimeInput = () => {
           color="neutral.12"
           minWidth="fit-content"
         />
-        <TimeInput locale={locale} />
+        <TimeInput
+          slot="endTimeInput"
+          locale={locale}
+          variant="ghost"
+          size="sm"
+        />
       </Flex>
     </Flex>
   );
