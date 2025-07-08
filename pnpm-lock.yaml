@@ -104,8 +104,8 @@ catalogs:
       specifier: ^0.4.20
       version: 0.4.20
     globals:
-      specifier: ^16.0.0
-      version: 16.0.0
+      specifier: ^16.3.0
+      version: 16.3.0
     hygen:
       specifier: ^6.2.11
       version: 6.2.11
@@ -184,7 +184,7 @@ importers:
         version: 5.4.0(eslint-config-prettier@10.1.2(eslint@9.26.0))(eslint@9.26.0)(prettier@3.5.3)
       globals:
         specifier: catalog:tooling
-        version: 16.0.0
+        version: 16.3.0
       hygen:
         specifier: catalog:tooling
         version: 6.2.11
@@ -248,7 +248,7 @@ importers:
         version: 0.4.20(eslint@9.26.0)
       globals:
         specifier: catalog:tooling
-        version: 16.0.0
+        version: 16.3.0
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -432,7 +432,7 @@ importers:
         version: 0.4.20(eslint@9.26.0)
       globals:
         specifier: catalog:tooling
-        version: 16.0.0
+        version: 16.3.0
       refractor:
         specifier: ^4.8.1
         version: 4.8.1
@@ -4827,8 +4827,8 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globals@16.0.0:
-    resolution: {integrity: sha512-iInW14XItCXET01CQFqudPOWP2jYMl7T+QRQT+UNcR/iQncN/F0UNpgd76iFkBPgNQb4+X3LV9tLJYzwh+Gl3A==}
+  globals@16.3.0:
+    resolution: {integrity: sha512-bqWEnJ1Nt3neqx2q5SFfGS8r/ahumIakg3HcwtNlrVlwXIeNumWn/c7Pn/wKzGhf6SaW6H6uWXLqC30STCMchQ==}
     engines: {node: '>=18'}
 
   globby@14.1.0:
@@ -13122,7 +13122,7 @@ snapshots:
 
   globals@14.0.0: {}
 
-  globals@16.0.0: {}
+  globals@16.3.0: {}
 
   globby@14.1.0:
     dependencies:
