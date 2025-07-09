@@ -14,7 +14,6 @@ export default defineConfig({
           vendor: [
             "lodash",
             "prism-react-renderer",
-            "refractor",
             "jotai",
             "react-json-tree",
             "react-live",

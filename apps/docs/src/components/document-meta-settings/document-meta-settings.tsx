@@ -14,20 +14,21 @@ export const DocumentMetaSettings = () => {
       <DocumentActionButtons />
       <hr />
       <DocumentStringField
-        fieldName="title"
         label="Title"
         placeholder="Enter document title"
+        metaProperty="title"
       />
       <DocumentStringField
-        fieldName="description"
         label="Description"
         placeholder="Enter document description"
+        metaProperty="description"
+        isMultiline={true}
       />
       <LifecycleStateSelector />
       <DocumentStringField
-        fieldName="figmaLink"
         label="Figma Link"
         placeholder="http://www.figma.com/..."
+        metaProperty="figmaLink"
       />
     </Stack>
   );

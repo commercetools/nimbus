@@ -1,11 +1,9 @@
 import { Figma } from "@commercetools/nimbus-icons";
 import { IconButton } from "@commercetools/nimbus";
-import { activeDocAtom } from "@/atoms/active-doc.ts";
-import { useAtomValue } from "jotai";
+import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const FigmaLink = () => {
-  const activeDoc = useAtomValue(activeDocAtom);
-  const meta = activeDoc?.meta;
+  const { meta } = useUpdateDocument();
 
   if (!meta?.figmaLink) return null;
 
