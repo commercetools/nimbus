@@ -1,12 +1,12 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./index";
-import { Button, IconButton } from "@/components";
+import { Button, IconButton, Text } from "@/components";
 import { MoreVert, KeyboardArrowDown } from "@commercetools/nimbus-icons";
 
-const meta: Meta<typeof Menu> = {
+const meta: Meta<typeof Menu.Root> = {
   title: "Experimental/Menu",
-  component: Menu,
+  component: Menu.Root,
   parameters: {},
   tags: ["autodocs"],
   argTypes: {
@@ -458,11 +458,11 @@ export const ControlledMenu: Story = {
           </Menu.Content>
         </Menu.Root>
 
-        <button onClick={() => setIsOpen(!isOpen)}>
+        <Button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? "Close" : "Open"} Menu
-        </button>
+        </Button>
 
-        <span>Menu is {isOpen ? "open" : "closed"}</span>
+        <Text>Menu is {isOpen ? "open" : "closed"}</Text>
       </div>
     );
   },
@@ -491,7 +491,7 @@ export const WithInteractiveStates: Story = {
       </Menu.Root>
 
       <Menu.Root>
-        <Menu.Trigger isLoading>Loading Trigger</Menu.Trigger>
+        <Menu.Trigger>Loading Trigger</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="item1">Item 1</Menu.Item>
           <Menu.Item id="item2">Item 2</Menu.Item>
