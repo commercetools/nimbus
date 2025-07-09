@@ -27,13 +27,7 @@ export const menuSlotRecipe = defineSlotRecipe({
       position: "relative",
     },
     trigger: {
-      // Minimal styles - the trigger will be provided by the user via asChild
-      // Only essential menu-specific states are defined here
-      "&[data-loading]": {
-        opacity: "0.7",
-        cursor: "wait",
-        pointerEvents: "none",
-      },
+      focusRing: "outside",
     },
     content: {
       display: "flex",

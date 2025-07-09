@@ -6,35 +6,31 @@ import type { ReactNode } from "react";
 
 export const MenuTrigger = ({
   children,
-  isDisabled,
-  isLoading,
   asChild,
   ref,
   ...props
 }: MenuTriggerProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
 
+  /**
+   * The user supplied a Button as the trigger
+   */
   if (asChild) {
     // When asChild is true, apply styles to the child element
     return (
-      <MenuTriggerSlot
-        asChild
-        {...styleProps}
-        data-loading={isLoading ? "" : undefined}
-      >
+      <MenuTriggerSlot ref={ref} asChild {...styleProps}>
         {children as ReactNode}
       </MenuTriggerSlot>
     );
   }
 
-  // Default behavior: render a button
+  /**
+   * The user did not supply a Button as trigger, use an unstyled button
+   * to wrap which ever element the user supplied and make it a trigger
+   */
   return (
-    <MenuTriggerSlot
-      asChild
-      {...styleProps}
-      data-loading={isLoading ? "" : undefined}
-    >
-      <Button ref={ref} isDisabled={isDisabled || isLoading} {...restProps}>
+    <MenuTriggerSlot asChild {...styleProps}>
+      <Button ref={ref} {...restProps}>
         {children}
       </Button>
     </MenuTriggerSlot>
