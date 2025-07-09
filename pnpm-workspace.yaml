@@ -28,7 +28,7 @@ catalogs:
     "@storybook/addon-vitest": ^9.0.13
     "@storybook/react-vite": ^9.0.13
     storybook: ^9.0.13
-    "@vueless/storybook-dark-mode": ^9.0.5
+    "@vueless/storybook-dark-mode": ^9.0.6
     "@vitejs/plugin-react": ^4.4.1
     "@vitejs/plugin-react-swc": ^3.10.2
     vite: ^6.3.5
