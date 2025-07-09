@@ -56,10 +56,19 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/js": "catalog:tooling",
+    "@types/body-parser": "^1.19.5",
+    "@types/lodash": "catalog:utils",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react-swc": "catalog:tooling",
+    "body-parser": "^1.20.3",
+    "eslint": "catalog:tooling",
+    "eslint-plugin-react-hooks": "catalog:tooling",
+    "eslint-plugin-react-refresh": "catalog:tooling",
+    "globals": "catalog:tooling",
     "typescript": "catalog:tooling",
+    "typescript-eslint": "catalog:tooling",
     "vite": "catalog:tooling"
   }
 }
