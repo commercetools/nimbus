@@ -1,29 +1,15 @@
-import { useMemo } from "react";
 import { MenuTrigger } from "react-aria-components";
 import { MenuRootSlot } from "../menu.slots";
 import type { MenuRootProps } from "../menu.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { useSlotRecipe } from "@chakra-ui/react";
 
-export const MenuRoot = ({
-  children,
-  onOpenChange,
-  isOpen,
-  defaultOpen,
-  onAction,
-  ref,
-  ...props
-}: MenuRootProps) => {
-  const [styleProps, restProps] = extractStyleProps(props);
+export const MenuRoot = (props: MenuRootProps) => {
+  const recipe = useSlotRecipe({ key: "menu" });
+  const [recipeProps, functionalProps] = recipe.splitVariantProps(props);
 
   return (
-    <MenuRootSlot ref={ref} {...styleProps} {...restProps}>
-      <MenuTrigger
-        isOpen={isOpen}
-        defaultOpen={defaultOpen}
-        onOpenChange={onOpenChange}
-      >
-        {children}
-      </MenuTrigger>
+    <MenuRootSlot {...recipeProps} asChild>
+      <MenuTrigger {...functionalProps}>{props.children}</MenuTrigger>
     </MenuRootSlot>
   );
 };

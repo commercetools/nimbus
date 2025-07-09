@@ -9,12 +9,17 @@ import type {
   SeparatorProps as RaSeparatorProps,
   SectionProps as RaSectionProps,
 } from "react-aria-components";
+import type { MenuRootSlotProps } from "./menu.slots";
 
 // Root component that wraps MenuTrigger
-export interface MenuRootProps extends Omit<RaMenuTriggerProps, "children"> {
-  children: ReactNode;
-  ref?: Ref<HTMLDivElement>;
-  onAction?: (key: Key) => void;
+export interface MenuRootProps
+  extends Omit<MenuRootSlotProps, "children" | "css" | "asChild" | "as">,
+    Omit<RaMenuTriggerProps, "trigger"> {
+  /**
+   * The trigger event to use for the menu.
+   * @default "press"
+   */
+  trigger?: "press" | "longPress";
 }
 
 // Trigger button component - inherit children from ButtonProps to support render props
