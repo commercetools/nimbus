@@ -7,6 +7,7 @@ catalogMode: strict
 catalogs:
   tooling:
     globals: ^16.3.0
+    glob: ^11.0.3
     typescript: ~5.8.3
     typescript-eslint: ^8.36.0
     tsx: ^4.20.3
@@ -36,6 +37,7 @@ catalogs:
     vite-plugin-dts: ^4.5.4
     vite-tsconfig-paths: ^5.1.4
     rollup: ^4.44.1
+    rollup-plugin-tree-shakeable: ^1.0.3
     "@vitest/browser": ^3.2.4
     "@vitest/coverage-v8": ^3.2.4
     "@testing-library/dom": 10.4.0

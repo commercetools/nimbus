@@ -41,14 +41,18 @@ export type AlertIconProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 // ============================================================
 
 /** Props for the `Alert.Title` sub-component (inherits from Text). */
-export type AlertTitleProps = TextProps;
+export type AlertTitleProps = Omit<TextProps, "ref"> & {
+  ref?: React.Ref<HTMLDivElement>;
+};
 
 // ============================================================
 // Description Sub-Component (`<Alert.Description>`)
 // ============================================================
 
 /** Props for the `Alert.Description` sub-component (inherits from Text). */
-export type AlertDescriptionProps = TextProps;
+export type AlertDescriptionProps = Omit<TextProps, "ref"> & {
+  ref?: React.Ref<HTMLDivElement>;
+};
 
 // ============================================================
 // Actions Sub-Component (`<Alert.Actions>`)

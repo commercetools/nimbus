@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.9-rc6",
+  "version": "0.0.9-rc8",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -72,9 +72,11 @@
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.10.2",
+    "glob": "catalog:tooling",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "rollup-plugin-tree-shakeable": "catalog:tooling",
     "storybook": "catalog:tooling",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
@@ -88,8 +90,8 @@
     "react": "catalog:react"
   },
   "scripts": {
-    "build": "pnpm run build-theme-typings && pnpm run build-lib",
-    "build-lib": "vite build",
+    "build": "pnpm run build-theme-typings && pnpm run build:lib",
+    "build:lib": "vite build",
     "dev": "vite build --watch",
     "test": "vitest",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
