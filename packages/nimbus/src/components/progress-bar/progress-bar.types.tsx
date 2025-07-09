@@ -25,4 +25,10 @@ export interface ProgressBarProps
    * @default true
    */
   isDynamic?: boolean;
+
+  /**
+   * Format options for the progress bar.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
+   */
+  formatOptions: ProgressBarRootProps["formatOptions"];
 }
