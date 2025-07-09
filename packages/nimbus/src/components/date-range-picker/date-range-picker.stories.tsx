@@ -32,36 +32,90 @@ const meta: Meta<typeof DateRangePicker> = {
 export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
 
+// Shared helper functions that work for both single and multiple DateRangePicker components scenarios.
+
+const createDateRangePickerHelpers = (canvas: any, target?: HTMLElement) => {
+  const context = target ? within(target) : canvas;
+
+  return {
+    getDateSegments: () => context.getAllByRole("spinbutton"),
+    getCalendarButton: () =>
+      context.findByRole("button", { name: /calendar/i }),
+    getClearButton: () => context.findByRole("button", { name: /clear/i }),
+
+    openCalendar: async () => {
+      const calendarButton = await context.findByRole("button", {
+        name: /calendar/i,
+      });
+      await userEvent.click(calendarButton);
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+    },
+
+    closeCalendar: async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).not.toBeInTheDocument();
+      });
+    },
+
+    setDateRangeValues: async (
+      segments: HTMLElement[],
+      startDate: string[],
+      endDate: string[]
+    ) => {
+      // Set start date (segments 0-2)
+      await userEvent.click(segments[0]);
+      await userEvent.keyboard(startDate[0]);
+      await userEvent.click(segments[1]);
+      await userEvent.keyboard(startDate[1]);
+      await userEvent.click(segments[2]);
+      await userEvent.keyboard(startDate[2]);
+      // Set end date (segments 3-5)
+      await userEvent.click(segments[3]);
+      await userEvent.keyboard(endDate[0]);
+      await userEvent.click(segments[4]);
+      await userEvent.keyboard(endDate[1]);
+      await userEvent.click(segments[5]);
+      await userEvent.keyboard(endDate[2]);
+    },
+
+    verifyDateRangeValues: async (
+      segments: HTMLElement[],
+      startDate: string[],
+      endDate: string[]
+    ) => {
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute(
+          "aria-valuenow",
+          startDate[0]
+        );
+        await expect(segments[1]).toHaveAttribute(
+          "aria-valuenow",
+          startDate[1]
+        );
+        await expect(segments[2]).toHaveAttribute(
+          "aria-valuenow",
+          startDate[2]
+        );
+        await expect(segments[3]).toHaveAttribute("aria-valuenow", endDate[0]);
+        await expect(segments[4]).toHaveAttribute("aria-valuenow", endDate[1]);
+        await expect(segments[5]).toHaveAttribute("aria-valuenow", endDate[2]);
+      });
+    },
+  };
+};
+
 export const Base: Story = {
   args: {
     ["aria-label"]: "Select a date range",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-
-    // Base helper functions
-    const getDateSegments = () => canvas.getAllByRole("spinbutton");
-    const getCalendarButton = () =>
-      canvas.findByRole("button", { name: /calendar/i });
-    const getClearButton = () =>
-      canvas.findByRole("button", { name: /clear/i });
-
-    const openCalendar = async () => {
-      const calendarButton = await getCalendarButton();
-      await userEvent.click(calendarButton);
-      await waitFor(async () => {
-        const calendar = within(document.body).queryByRole("application");
-        await expect(calendar).toBeInTheDocument();
-      });
-    };
-
-    const closeCalendar = async () => {
-      await userEvent.keyboard("{Escape}");
-      await waitFor(async () => {
-        const calendar = within(document.body).queryByRole("application");
-        await expect(calendar).not.toBeInTheDocument();
-      });
-    };
+    const helpers = createDateRangePickerHelpers(canvas);
 
     await step(
       "Renders with proper DateRangePicker structure and ARIA attributes",
@@ -76,17 +130,17 @@ export const Base: Story = {
         );
 
         // Should contain 6 segments total (2 DateInputs × 3 segments each: start month/day/year + end month/day/year)
-        const dateSegments = getDateSegments();
+        const dateSegments = helpers.getDateSegments();
         await expect(dateSegments.length).toBeGreaterThanOrEqual(6);
 
         // Should have a calendar toggle button
-        const calendarButton = await getCalendarButton();
+        const calendarButton = await helpers.getCalendarButton();
         await expect(calendarButton).toBeInTheDocument();
       }
     );
 
     await step("Date segments are focusable and navigable", async () => {
-      const dateSegments = getDateSegments();
+      const dateSegments = helpers.getDateSegments();
 
       // First segment should be focusable with Tab
       await userEvent.tab();
@@ -103,7 +157,7 @@ export const Base: Story = {
       }
 
       // Should be able to navigate to calendar button
-      const calendarButton = await getCalendarButton();
+      const calendarButton = await helpers.getCalendarButton();
 
       // Tab through remaining segments to reach calendar button
       for (let i = 0; i < 4; i++) {
@@ -120,7 +174,7 @@ export const Base: Story = {
     });
 
     await step("Date segments accept keyboard input", async () => {
-      const dateSegments = getDateSegments();
+      const dateSegments = helpers.getDateSegments();
       const firstSegment = dateSegments[0];
 
       // Focus first segment and type a value
@@ -150,16 +204,15 @@ export const Base: Story = {
       let calendar = within(document.body).queryByRole("application");
       await expect(calendar).not.toBeInTheDocument();
 
-      await openCalendar();
-
-      await closeCalendar();
+      await helpers.openCalendar();
+      await helpers.closeCalendar();
     });
 
     await step("Clear button functionality works correctly", async () => {
-      const dateSegments = getDateSegments();
+      const dateSegments = helpers.getDateSegments();
 
       // Initially, clear button should be disabled (no value selected)
-      const clearButton = await getClearButton();
+      const clearButton = await helpers.getClearButton();
       await waitFor(async () => {
         await expect(clearButton).toBeDisabled();
       });
@@ -185,7 +238,6 @@ export const Base: Story = {
       await userEvent.click(clearButton);
 
       // After clearing, segments return to placeholder state (showing current date)
-      // The segments will still have values (current date placeholders) but DatePicker considers it "empty"
       // Clear button should be disabled again indicating no actual value is selected
       await waitFor(async () => {
         await expect(clearButton).toBeDisabled();
@@ -193,7 +245,7 @@ export const Base: Story = {
     });
 
     await step("Date selection from calendar works", async () => {
-      await openCalendar();
+      await helpers.openCalendar();
 
       // Find calendar grid and selectable date cells (search in document body)
       const calendarGrid = await within(document.body).findByRole("grid");
@@ -220,7 +272,7 @@ export const Base: Story = {
           });
 
           // After selecting a date, clear button should be enabled indicating a value is selected
-          const clearButton = await getClearButton();
+          const clearButton = await helpers.getClearButton();
           await waitFor(async () => {
             await expect(clearButton).not.toBeDisabled();
           });
@@ -229,11 +281,11 @@ export const Base: Story = {
     });
 
     await step("Start and end date inputs work independently", async () => {
-      await closeCalendar();
+      await helpers.closeCalendar();
 
-      const dateSegments = getDateSegments();
+      const dateSegments = helpers.getDateSegments();
 
-      // Test start date only - set May 28, 2025
+      // Test start date only
       await userEvent.click(dateSegments[0]);
       await userEvent.keyboard("5");
       await userEvent.click(dateSegments[1]);
@@ -264,29 +316,22 @@ export const Base: Story = {
         );
       });
 
-      // Test end date only - set December 25, 2025
-      await userEvent.click(dateSegments[3]); // end month
-      await userEvent.keyboard("12");
-      await userEvent.click(dateSegments[4]); // end day
-      await userEvent.keyboard("25");
-      await userEvent.click(dateSegments[5]); // end year
-      await userEvent.keyboard("2025");
+      // Test end date only - set December 25, 2025 using helper function
+      await helpers.setDateRangeValues(
+        dateSegments,
+        ["5", "28", "2025"], // start date (already set)
+        ["12", "25", "2025"] // end date (new values)
+      );
 
-      // Verify both start and end dates are set correctly
-      await waitFor(async () => {
-        // Start date should remain unchanged
-        await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", "5");
-        await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "28");
-        await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", "2025");
-
-        // End date should be set to new values
-        await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", "12");
-        await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "25");
-        await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", "2025");
-      });
+      // Verify both start and end dates are set correctly using helper function
+      await helpers.verifyDateRangeValues(
+        dateSegments,
+        ["5", "28", "2025"],
+        ["12", "25", "2025"]
+      );
 
       // Verify clear button is enabled since we have a complete range
-      const clearButton = await getClearButton();
+      const clearButton = await helpers.getClearButton();
       await waitFor(async () => {
         await expect(clearButton).not.toBeDisabled();
       });
@@ -294,28 +339,166 @@ export const Base: Story = {
   },
 };
 
-// export const Uncontrolled: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>With defaultValue (2025-01-15 to 2025-01-20)</Text>
-//         <DateRangePicker
-//           {...args}
-//           defaultValue={{
-//             start: new CalendarDate(2025, 1, 15),
-//             end: new CalendarDate(2025, 1, 20),
-//           }}
-//           aria-label="With default value"
-//         />
-//         <Text>No defaultValue (empty)</Text>
-//         <DateRangePicker {...args} aria-label="Without default value" />
-//       </Stack>
-//     );
-//   },
-// };
+/**
+ * Uncontrolled Usage
+ * Demonstrates defaultValue behavior with different initial dates
+ */
+export const Uncontrolled: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With defaultValue (1/15/2025-01/20/2025)</Text>
+        <DateRangePicker
+          {...args}
+          defaultValue={{
+            start: new CalendarDate(2025, 1, 15),
+            end: new CalendarDate(2025, 1, 20),
+          }}
+          aria-label="With default value"
+        />
+        <Text>No defaultValue (empty)</Text>
+        <DateRangePicker {...args} aria-label="Without default value" />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // Helper function for finding DateRangePicker groups by name
+    const getDateRangePicker = (name: string) =>
+      canvas.findByRole("group", { name });
+
+    await step("All DateRangePicker instances render correctly", async () => {
+      const dateGroups = canvas.getAllByRole("group");
+      await expect(dateGroups).toHaveLength(2);
+
+      const defaultValuePicker = await getDateRangePicker("With default value");
+      const emptyPicker = await getDateRangePicker("Without default value");
+
+      await expect(defaultValuePicker).toBeInTheDocument();
+      await expect(emptyPicker).toBeInTheDocument();
+    });
+
+    await step(
+      "Both DateInputs in DateRangePicker shows correct default value (2025-01-15 to 2025-01-20)",
+      async () => {
+        const defaultValuePicker =
+          await getDateRangePicker("With default value");
+        const helpers = createDateRangePickerHelpers(
+          canvas,
+          defaultValuePicker
+        );
+        const segments = helpers.getDateSegments();
+
+        await helpers.verifyDateRangeValues(
+          segments,
+          ["1", "15", "2025"],
+          ["1", "20", "2025"]
+        );
+
+        const clearButton = await helpers.getClearButton();
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
+        });
+      }
+    );
+
+    await step(
+      "Second DateRangePicker is empty (no defaultValue)",
+      async () => {
+        const emptyPicker = await getDateRangePicker("Without default value");
+        const helpers = createDateRangePickerHelpers(canvas, emptyPicker);
+        const clearButton = await helpers.getClearButton();
+
+        await waitFor(async () => {
+          await expect(clearButton).toBeDisabled();
+        });
+
+        const segments = helpers.getDateSegments();
+        await expect(segments).toHaveLength(6);
+
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("tabindex", "0");
+        }
+      }
+    );
+
+    await step(
+      "All DateRangePickers have functional calendar buttons",
+      async () => {
+        const dateGroups = canvas.getAllByRole("group");
+
+        for (let i = 0; i < dateGroups.length; i++) {
+          const group = dateGroups[i];
+          const helpers = createDateRangePickerHelpers(canvas, group);
+          const calendarButton = await helpers.getCalendarButton();
+
+          await expect(calendarButton).toBeInTheDocument();
+          await expect(calendarButton).not.toBeDisabled();
+
+          // Test opening calendar for first DateRangePicker
+          if (i === 0) {
+            await helpers.openCalendar();
+            await helpers.closeCalendar();
+          }
+        }
+      }
+    );
+
+    await step(
+      "DateRangePickers with defaultValue can be cleared",
+      async () => {
+        const defaultValuePicker =
+          await getDateRangePicker("With default value");
+        const helpers = createDateRangePickerHelpers(
+          canvas,
+          defaultValuePicker
+        );
+        const clearButton = await helpers.getClearButton();
+
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
+        });
+
+        await userEvent.click(clearButton);
+
+        await waitFor(async () => {
+          await expect(clearButton).toBeDisabled();
+        });
+      }
+    );
+
+    await step("Empty DateRangePicker can receive input", async () => {
+      const emptyPicker = await getDateRangePicker("Without default value");
+      const helpers = createDateRangePickerHelpers(canvas, emptyPicker);
+      const segments = helpers.getDateSegments();
+      const clearButton = await helpers.getClearButton();
+
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
+
+      await helpers.setDateRangeValues(
+        segments,
+        ["6", "30", "2025"],
+        ["7", "30", "2025"]
+      );
+
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
+
+      await helpers.verifyDateRangeValues(
+        segments,
+        ["6", "30", "2025"],
+        ["7", "30", "2025"]
+      );
+    });
+  },
+};
 
 // export const Controlled: Story = {
 //   args: {
