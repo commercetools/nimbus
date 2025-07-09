@@ -59,7 +59,6 @@
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react-swc": "catalog:tooling",
-    "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
     "vite": "catalog:tooling"
   }
