@@ -4,6 +4,7 @@ export * from "./button";
 export * from "./code";
 export * from "./combobox";
 export * from "./dialog";
+export * from "./divider";
 export * from "./flex";
 export * from "./heading";
 export * from "./icon-button";
