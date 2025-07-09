@@ -1,17 +1,24 @@
 import { Figma } from "@commercetools/nimbus-icons";
-import { Button } from "@commercetools/nimbus";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { IconButton } from "@commercetools/nimbus";
+import { activeDocAtom } from "@/atoms/active-doc.ts";
+import { useAtomValue } from "jotai";
 
 export const FigmaLink = () => {
-  const { meta } = useUpdateDocument();
+  const activeDoc = useAtomValue(activeDocAtom);
+  const meta = activeDoc?.meta;
 
   if (!meta?.figmaLink) return null;
 
   return (
-    <Button size="xs" variant="ghost" asChild>
-      <a href={meta.figmaLink} target="_blank">
+    <IconButton
+      asChild
+      size="xs"
+      variant="ghost"
+      aria-label="Open Figma Design"
+    >
+      <a href={meta.figmaLink} target="_blank" rel="noopener noreferrer">
         <Figma />
       </a>
-    </Button>
+    </IconButton>
   );
 };

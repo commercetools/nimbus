@@ -1,42 +1,23 @@
-import {
-  LifecycleState,
-  lifecycleStateDescriptions,
-} from "@/schemas/lifecycle-states";
-import { useCallback, useMemo } from "react";
-import { Box, Stack, Text, Select, Badge, Flex } from "@commercetools/nimbus";
-import { useUpdateDocument } from "@/hooks/useUpdateDocument";
+import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
+import { Select, Stack, Text, Badge, Flex } from "@commercetools/nimbus";
+import { activeDocAtom } from "@/atoms/active-doc.ts";
+import { useAtomValue } from "jotai";
 
 export const LifecycleStateSelector = () => {
-  const { meta, updateMeta } = useUpdateDocument();
+  const activeDoc = useAtomValue(activeDocAtom);
+  const meta = activeDoc?.meta;
 
-  const options = useMemo(() => {
-    const arr = Object.keys(lifecycleStateDescriptions).map((key) => {
-      const item = lifecycleStateDescriptions[key as LifecycleState];
-      return {
-        id: key as LifecycleState,
-        value: key,
-        ...item,
-      };
-    });
-    return arr;
-  }, []);
+  if (!meta) return null;
 
-  const onSaveRequest = useCallback(
-    (value: LifecycleState | "") => {
-      if (!meta) return;
-      const payload = {
-        ...meta,
-        lifecycleState: value === "" ? undefined : value,
-      };
-      void updateMeta(payload);
-    },
-    [meta, updateMeta]
+  const lifecycleState = meta.lifecycleState;
+  const options = Object.entries(lifecycleStateDescriptions).map(
+    ([key, { label, description, colorPalette }]) => ({
+      key,
+      label,
+      description,
+      colorPalette,
+    })
   );
-
-  const currentState = meta?.lifecycleState;
-  const currentStateInfo = currentState
-    ? lifecycleStateDescriptions[currentState]
-    : null;
 
   return (
     <Stack>
@@ -44,19 +25,17 @@ export const LifecycleStateSelector = () => {
         <label htmlFor="lifecycleState">Lifecycle State</label>
       </Text>
       <Select.Root
-        selectedKey={meta?.lifecycleState || ""}
-        onSelectionChange={(key: string | number) =>
-          onSaveRequest(key as LifecycleState | "")
-        }
+        selectedKey={lifecycleState || ""}
         aria-label="Lifecycle state"
+        isDisabled={true}
       >
         <Select.Options>
           <Select.Option key="" id="">
             <Text slot="label">None</Text>
             <Text slot="description">No lifecycle state assigned</Text>
           </Select.Option>
-          {options.map(({ id, label, description, colorPalette }) => (
-            <Select.Option key={id} id={id} textValue={label}>
+          {options.map(({ key, label, description, colorPalette }) => (
+            <Select.Option key={key} id={key} textValue={label}>
               <Flex slot="label" display="flex" alignItems="center" gap="200">
                 <Flex width="2800" textAlign="right">
                   <Badge width="full" size="xs" colorPalette={colorPalette}>
