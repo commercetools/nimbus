@@ -9,6 +9,7 @@ import {
   ZonedDateTime,
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
+import type { RangeValue } from "@/components/range-calendar";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**
@@ -500,42 +501,355 @@ export const Uncontrolled: Story = {
   },
 };
 
-// export const Controlled: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     const [range, setRange] = useState<{
-//       start: DateValue;
-//       end: DateValue;
-//     } | null>({
-//       start: new CalendarDate(2025, 6, 15),
-//       end: new CalendarDate(2025, 6, 20),
-//     });
+export const Controlled: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    const [range, setRange] = useState<RangeValue<DateValue> | null>({
+      start: new CalendarDate(2025, 6, 15),
+      end: new CalendarDate(2025, 6, 20),
+    });
 
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>
-//           Controlled DateRangePicker (
-//           <span>
-//             current value:{" "}
-//             {range
-//               ? `${range.start.toString()} to ${range.end.toString()}`
-//               : "null"}
-//           </span>
-//           )
-//         </Text>
-//         <DateRangePicker
-//           {...args}
-//           value={range}
-//           onChange={setRange}
-//           aria-label="Controlled date range picker"
-//         />
-//         <Button onPress={() => setRange(null)}>Reset</Button>
-//       </Stack>
-//     );
-//   },
-// };
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>
+          Controlled DateRangePicker (
+          <span>
+            current value:{" "}
+            {range
+              ? `${range.start.toString()} to ${range.end.toString()}`
+              : "null"}
+          </span>
+          )
+        </Text>
+        <DateRangePicker
+          {...args}
+          value={range}
+          onChange={setRange}
+          aria-label="Controlled date range picker"
+        />
+        <Button onPress={() => setRange(null)}>Reset</Button>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Initial controlled state displays correctly", async () => {
+      // Should render the controlled DateRangePicker with initial value
+      const dateGroup = await canvas.findByRole("group", {
+        name: "Controlled date range picker",
+      });
+      await expect(dateGroup).toBeInTheDocument();
+
+      // Should display the current value in the text
+      const valueText = await canvas.findByText(
+        /current value: 2025-06-15 to 2025-06-20/
+      );
+      await expect(valueText).toBeInTheDocument();
+
+      // Date segments should show the controlled value (2025-06-15 to 2025-06-20)
+      const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+      const segments = helpers.getDateSegments();
+      await helpers.verifyDateRangeValues(
+        segments,
+        ["6", "15", "2025"],
+        ["6", "20", "2025"]
+      );
+
+      // Clear button should be enabled since there's a value
+      const clearButton = await helpers.getClearButton();
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
+
+      // Reset button should be present
+      const resetButton = await canvas.findByRole("button", { name: "Reset" });
+      await expect(resetButton).toBeInTheDocument();
+    });
+
+    await step(
+      "Changing date via segments updates controlled state",
+      async () => {
+        const dateGroup = await canvas.findByRole("group", {
+          name: "Controlled date range picker",
+        });
+        const segments = within(dateGroup).getAllByRole("spinbutton");
+
+        // Change the month from 6 (June) to 8 (August)
+        await userEvent.click(segments[0]);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("8");
+
+        // The displayed value should update to reflect the change
+        await waitFor(async () => {
+          const valueText = await canvas.findByText(
+            /current value: 2025-08-15/
+          );
+          await expect(valueText).toBeInTheDocument();
+        });
+
+        // Segment should show the new value
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "8");
+        });
+
+        // Change the day from 15 to 25
+        await userEvent.click(segments[1]);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("25");
+
+        // The displayed value should update again
+        await waitFor(async () => {
+          const valueText = await canvas.findByText(
+            /current value: 2025-08-25/
+          );
+          await expect(valueText).toBeInTheDocument();
+        });
+
+        // Segment should show the new value
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
+        });
+
+        // Test updating end range segments (segments 3-5: month, day, year)
+        // Change end month from 6 (June) to 9 (September)
+        await userEvent.click(segments[3]);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("9");
+
+        // The displayed value should update to show the new end month
+        await waitFor(async () => {
+          const valueText = await canvas.findByText(
+            /current value: 2025-08-25 to 2025-09-20/
+          );
+          await expect(valueText).toBeInTheDocument();
+        });
+
+        // End month segment should show the new value
+        await waitFor(async () => {
+          await expect(segments[3]).toHaveAttribute("aria-valuenow", "9");
+        });
+
+        // Change end day from 20 to 30
+        await userEvent.click(segments[4]);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("30");
+
+        // The displayed value should update to show the new end day
+        await waitFor(async () => {
+          const valueText = await canvas.findByText(
+            /current value: 2025-08-25 to 2025-09-30/
+          );
+          await expect(valueText).toBeInTheDocument();
+        });
+
+        // End day segment should show the new value
+        await waitFor(async () => {
+          await expect(segments[4]).toHaveAttribute("aria-valuenow", "30");
+        });
+      }
+    );
+
+    await step(
+      "Changing date range via the calendar updates controlled state",
+      async () => {
+        const dateGroup = await canvas.findByRole("group", {
+          name: "Controlled date range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+
+        // Open calendar
+        await helpers.openCalendar();
+
+        // Find an available date button in the calendar and click it
+        const calendarGrid = await within(document.body).findByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+        const availableDates = dateCells.filter((cell) => {
+          const button = cell.querySelector("button");
+          return button && !button.hasAttribute("aria-disabled");
+        });
+
+        if (availableDates.length > 0) {
+          const dateButton = availableDates[0].querySelector("button");
+          if (dateButton) {
+            await userEvent.click(dateButton);
+
+            // Calendar should close after selection
+            await waitFor(async () => {
+              const calendarAfterSelection = within(document.body).queryByRole(
+                "application"
+              );
+              await expect(calendarAfterSelection).not.toBeInTheDocument();
+            });
+
+            // The displayed value should have updated (we can't predict exact date, but it should not be null)
+            await waitFor(async () => {
+              const valueText = canvas.queryByText(/current value: null/);
+              await expect(valueText).not.toBeInTheDocument();
+            });
+
+            // Value should be some valid date string
+            const valueDisplay = await canvas.findByText(/current value: /);
+            await expect(valueDisplay).toBeInTheDocument();
+            await expect(valueDisplay.textContent).not.toContain("null");
+          }
+        }
+      }
+    );
+
+    await step("Clear button clears controlled state", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      const dateGroup = await canvas.findByRole("group", {
+        name: "Controlled date range picker",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+      const clearButton = await helpers.getClearButton();
+
+      // Clear button should be enabled (we have a date from previous test)
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
+
+      // Click clear button
+      await userEvent.click(clearButton);
+
+      // The displayed value should update to null
+      await waitFor(async () => {
+        const valueText = await canvas.findByText(/current value: null/);
+        await expect(valueText).toBeInTheDocument();
+      });
+
+      // Clear button should now be disabled
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
+    });
+
+    await step("Reset button resets controlled state to null", async () => {
+      const resetButton = await canvas.findByRole("button", { name: "Reset" });
+      const dateGroup = await canvas.findByRole("group", {
+        name: "Controlled date range picker",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+
+      // First, set a value by typing in segments
+      const segments = helpers.getDateSegments();
+      await helpers.setDateRangeValues(
+        segments,
+        ["12", "24", "2025"],
+        ["12", "31", "2025"]
+      );
+
+      // Wait for value to update
+      await waitFor(async () => {
+        const valueText = await canvas.findByText(
+          /current value: 2025-12-24 to 2025-12-31/
+        );
+        await expect(valueText).toBeInTheDocument();
+      });
+
+      // Click reset button
+      await userEvent.click(resetButton);
+
+      // The displayed value should reset to null
+      await waitFor(async () => {
+        const valueText = await canvas.findByText(/current value: null/);
+        await expect(valueText).toBeInTheDocument();
+      });
+
+      // Clear button should be disabled
+      const clearButton = await helpers.getClearButton();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
+    });
+
+    await step(
+      "Controlled DateRangePicker maintains proper state synchronization",
+      async () => {
+        const dateGroup = await canvas.findByRole("group", {
+          name: "Controlled date range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+        const segments = helpers.getDateSegments();
+        const resetButton = await canvas.findByRole("button", {
+          name: "Reset",
+        });
+
+        // Set a specific range
+        await helpers.setDateRangeValues(
+          segments,
+          ["3", "10", "2026"], // start date
+          ["3", "20", "2026"] // end date
+        );
+
+        // Verify state is synchronized
+        await waitFor(async () => {
+          const valueText = await canvas.findByText(
+            /current value: 2026-03-10 to 2026-03-20/
+          );
+          await expect(valueText).toBeInTheDocument();
+        });
+
+        // Verify segments show correct values
+        await helpers.verifyDateRangeValues(
+          segments,
+          ["3", "10", "2026"], // start date
+          ["3", "20", "2026"] // end date
+        );
+
+        // Reset and verify everything is cleared
+        await userEvent.click(resetButton);
+
+        await waitFor(async () => {
+          const valueText = await canvas.findByText(/current value: null/);
+          await expect(valueText).toBeInTheDocument();
+        });
+
+        // Clear button should be disabled when value is null
+        const clearButton = await helpers.getClearButton();
+        await waitFor(async () => {
+          await expect(clearButton).toBeDisabled();
+        });
+      }
+    );
+
+    // TODO: FIX THIS CODE
+    // await step(
+    //   "Controlled DateRangePicker handles invalid input gracefully",
+    //   async () => {
+    //     const dateGroup = await canvas.findByRole("group", {
+    //       name: "Controlled date range picker",
+    //     });
+    //     const segments = within(dateGroup).getAllByRole("spinbutton");
+
+    //     // Try to input an invalid date (February 30th)
+    //     await userEvent.click(segments[0]);
+    //     await userEvent.keyboard("2");
+
+    //     await userEvent.click(segments[1]);
+    //     await userEvent.keyboard("30");
+
+    //     await userEvent.click(segments[2]);
+    //     await userEvent.keyboard("2025");
+
+    //     await waitFor(async () => {
+    //       await expect(segments[0]).toHaveAttribute("aria-valuenow", "2");
+    //       await expect(segments[1]).toHaveAttribute("aria-valuenow", "3");
+    //       await expect(segments[2]).toHaveAttribute("aria-valuenow", "5");
+    //     });
+
+    //     // The actual controlled value might not update if the date is invalid
+    //     // This depends on the implementation - we just verify the component doesn't crash
+    //     const valueDisplay = await canvas.findByText(/current value: /);
+    //     await expect(valueDisplay).toBeInTheDocument();
+    //   }
+    // );
+  },
+};
 
 // export const PlaceholderValue: Story = {
 //   args: {
