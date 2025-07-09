@@ -1,91 +1,73 @@
-import type { ReactNode } from "react";
-import type { Key } from "react-aria-components";
+import type { ReactNode, Ref } from "react";
+import type {
+  Key,
+  MenuTriggerProps as RaMenuTriggerProps,
+  MenuProps as RaMenuProps,
+  MenuItemProps as RaMenuItemProps,
+  ButtonProps as RaButtonProps,
+  PopoverProps as RaPopoverProps,
+  SeparatorProps as RaSeparatorProps,
+  SectionProps as RaSectionProps,
+} from "react-aria-components";
 
-export interface MenuTriggerProps {
+// Root component that wraps MenuTrigger
+export interface MenuRootProps extends Omit<RaMenuTriggerProps, "children"> {
   children: ReactNode;
-  isDisabled?: boolean;
+  ref?: Ref<HTMLDivElement>;
+  onAction?: (key: Key) => void;
+}
+
+// Trigger button component - inherit children from ButtonProps to support render props
+export interface MenuTriggerProps extends Omit<RaButtonProps, "children"> {
+  children?: RaButtonProps["children"];
   isLoading?: boolean;
   asChild?: boolean;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
+  ref?: Ref<HTMLButtonElement>;
 }
 
-export interface MenuContentProps {
-  children: ReactNode;
-  placement?:
-    | "bottom"
-    | "bottom start"
-    | "bottom end"
-    | "top"
-    | "top start"
-    | "top end"
-    | "start"
-    | "end"
-    | "left"
-    | "right";
-  offset?: number;
-  shouldFlip?: boolean;
+// Menu content/popover component
+export interface MenuContentProps extends RaPopoverProps {
   isLoading?: boolean;
+  ref?: Ref<HTMLDivElement>;
+  onAction?: (key: Key) => void;
 }
 
-export interface MenuItemProps {
-  children: ReactNode;
-  id?: Key;
-  isDisabled?: boolean;
-  onAction?: () => void;
-  href?: string;
-  target?: string;
-  rel?: string;
-  textValue?: string;
+// Menu item component
+export interface MenuItemProps extends RaMenuItemProps {
   isSelected?: boolean;
   isDanger?: boolean;
   isLoading?: boolean;
+  ref?: Ref<HTMLDivElement>;
 }
 
-export interface MenuSeparatorProps {
-  className?: string;
+// Menu separator component
+export interface MenuSeparatorProps extends RaSeparatorProps {
+  ref?: Ref<HTMLDivElement>;
 }
 
-export interface MenuGroupProps {
-  children: ReactNode;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
+// Menu group component
+export interface MenuGroupProps extends RaSectionProps<object> {
+  ref?: Ref<HTMLDivElement>;
 }
 
+// Menu group label component - Header doesn't have props type, so we'll use basic props
 export interface MenuGroupLabelProps {
   children: ReactNode;
+  ref?: Ref<HTMLDivElement>;
 }
 
+// Menu item sub-components
 export interface MenuItemLabelProps {
   children: ReactNode;
+  ref?: Ref<HTMLSpanElement>;
 }
 
 export interface MenuItemDescriptionProps {
   children: ReactNode;
+  ref?: Ref<HTMLSpanElement>;
 }
 
 export interface MenuItemKeyboardProps {
   children: ReactNode;
+  ref?: Ref<HTMLSpanElement>;
 }
-
-export interface MenuRootProps {
-  children: ReactNode;
-  onAction?: (key: Key) => void;
-  onOpenChange?: (isOpen: boolean) => void;
-  isOpen?: boolean;
-  defaultOpen?: boolean;
-  closeOnSelect?: boolean;
-}
-
-export type MenuTriggerState = {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
-  toggle: () => void;
-};
-
-export type MenuContextValue = {
-  state?: MenuTriggerState | null;
-  onAction?: (key: Key) => void;
-  closeOnSelect: boolean;
-};

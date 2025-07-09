@@ -1,12 +1,12 @@
-import { forwardRef } from "react";
 import { MenuItemKeyboardSlot } from "../menu.slots";
 import type { MenuItemKeyboardProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
-export const MenuItemKeyboard = forwardRef<
-  HTMLSpanElement,
-  MenuItemKeyboardProps
->(({ children, ...props }, ref) => {
+export const MenuItemKeyboard = ({
+  children,
+  ref,
+  ...props
+}: MenuItemKeyboardProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
 
   return (
@@ -14,6 +14,6 @@ export const MenuItemKeyboard = forwardRef<
       {children}
     </MenuItemKeyboardSlot>
   );
-});
+};
 
 MenuItemKeyboard.displayName = "MenuItemKeyboard";

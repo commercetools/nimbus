@@ -1,12 +1,12 @@
-import { forwardRef } from "react";
 import { MenuItemDescriptionSlot } from "../menu.slots";
 import type { MenuItemDescriptionProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
-export const MenuItemDescription = forwardRef<
-  HTMLSpanElement,
-  MenuItemDescriptionProps
->(({ children, ...props }, ref) => {
+export const MenuItemDescription = ({
+  children,
+  ref,
+  ...props
+}: MenuItemDescriptionProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
 
   return (
@@ -14,6 +14,6 @@ export const MenuItemDescription = forwardRef<
       {children}
     </MenuItemDescriptionSlot>
   );
-});
+};
 
 MenuItemDescription.displayName = "MenuItemDescription";
