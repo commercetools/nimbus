@@ -1,5 +1,5 @@
 import React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./index";
 import { Button, IconButton } from "@/components";
 import { MoreVert, KeyboardArrowDown } from "@commercetools/nimbus-icons";
@@ -20,21 +20,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Actions</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="copy">Copy</Menu.Item>
         <Menu.Item id="cut">Cut</Menu.Item>
         <Menu.Item id="paste">Paste</Menu.Item>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
 export const WithAsChildButton: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu onAction={(key) => alert(`Primary Button: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Primary Button: ${key}`)}>
         <Menu.Trigger asChild>
           <Button variant="solid" tone="primary">
             <KeyboardArrowDown />
@@ -46,9 +46,9 @@ export const WithAsChildButton: Story = {
           <Menu.Item id="cut">Cut</Menu.Item>
           <Menu.Item id="paste">Paste</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Secondary Button: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Secondary Button: ${key}`)}>
         <Menu.Trigger asChild>
           <Button variant="outline" tone="primary">
             <KeyboardArrowDown />
@@ -60,9 +60,9 @@ export const WithAsChildButton: Story = {
           <Menu.Item id="cut">Cut</Menu.Item>
           <Menu.Item id="paste">Paste</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Ghost Button: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Ghost Button: ${key}`)}>
         <Menu.Trigger asChild>
           <Button variant="ghost" tone="primary">
             <KeyboardArrowDown />
@@ -74,7 +74,7 @@ export const WithAsChildButton: Story = {
           <Menu.Item id="cut">Cut</Menu.Item>
           <Menu.Item id="paste">Paste</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
     </div>
   ),
 };
@@ -82,7 +82,7 @@ export const WithAsChildButton: Story = {
 export const WithAsChildIconButton: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu onAction={(key) => alert(`More Options: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`More Options: ${key}`)}>
         <Menu.Trigger asChild>
           <IconButton variant="ghost" tone="neutral" aria-label="More options">
             <MoreVert />
@@ -97,9 +97,9 @@ export const WithAsChildIconButton: Story = {
             Delete
           </Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Solid Icon: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Solid Icon: ${key}`)}>
         <Menu.Trigger asChild>
           <IconButton
             variant="solid"
@@ -114,14 +114,14 @@ export const WithAsChildIconButton: Story = {
           <Menu.Item id="export">Export</Menu.Item>
           <Menu.Item id="print">Print</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
     </div>
   ),
 };
 
 export const WithGroups: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>File Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -149,13 +149,13 @@ export const WithGroups: Story = {
           <Menu.Item id="fullscreen">Toggle Fullscreen</Menu.Item>
         </Menu.Group>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
 export const WithKeyboardShortcuts: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Edit Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="undo">
@@ -189,13 +189,13 @@ export const WithKeyboardShortcuts: Story = {
           <Menu.ItemKeyboard>⌘A</Menu.ItemKeyboard>
         </Menu.Item>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
 export const WithDescriptions: Story = {
   render: () => (
-    <Menu isOpen onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root isOpen onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Account Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="profile">
@@ -228,13 +228,13 @@ export const WithDescriptions: Story = {
           </Menu.ItemDescription>
         </Menu.Item>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
 export const WithDisabledItems: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Edit Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="undo">Undo</Menu.Item>
@@ -256,7 +256,7 @@ export const WithDisabledItems: Story = {
           Delete (no selection)
         </Menu.Item>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
@@ -271,66 +271,66 @@ export const WithDifferentPlacements: Story = {
         minHeight: "300px",
       }}
     >
-      <Menu onAction={(key) => alert(`Top Start: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Top Start: ${key}`)}>
         <Menu.Trigger>Top Start</Menu.Trigger>
         <Menu.Content placement="top start">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Top: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Top: ${key}`)}>
         <Menu.Trigger>Top</Menu.Trigger>
         <Menu.Content placement="top">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Top End: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Top End: ${key}`)}>
         <Menu.Trigger>Top End</Menu.Trigger>
         <Menu.Content placement="top end">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Bottom Start: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Bottom Start: ${key}`)}>
         <Menu.Trigger>Bottom Start</Menu.Trigger>
         <Menu.Content placement="bottom start">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Bottom: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Bottom: ${key}`)}>
         <Menu.Trigger>Bottom</Menu.Trigger>
         <Menu.Content placement="bottom">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Bottom End: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Bottom End: ${key}`)}>
         <Menu.Trigger>Bottom End</Menu.Trigger>
         <Menu.Content placement="bottom end">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
     </div>
   ),
 };
 
 export const WithLinks: Story = {
   render: () => (
-    <Menu>
+    <Menu.Root>
       <Menu.Trigger>Navigation</Menu.Trigger>
       <Menu.Content>
         <Menu.Item href="/" target="_blank" rel="noopener">
@@ -356,13 +356,13 @@ export const WithLinks: Story = {
           Documentation
         </Menu.Item>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
 export const ComplexExample: Story = {
   render: () => (
-    <Menu isOpen onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root isOpen onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -440,7 +440,7 @@ export const ComplexExample: Story = {
           <Menu.ItemDescription>Sign out of your account</Menu.ItemDescription>
         </Menu.Item>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
 
@@ -450,7 +450,7 @@ export const ControlledMenu: Story = {
 
     return (
       <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <Menu
+        <Menu.Root
           isOpen={isOpen}
           onOpenChange={setIsOpen}
           onAction={(key) => {
@@ -464,7 +464,7 @@ export const ControlledMenu: Story = {
             <Menu.Item id="item2">Item 2</Menu.Item>
             <Menu.Item id="item3">Item 3</Menu.Item>
           </Menu.Content>
-        </Menu>
+        </Menu.Root>
 
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? "Close" : "Open"} Menu
@@ -479,7 +479,7 @@ export const ControlledMenu: Story = {
 export const WithInteractiveStates: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu onAction={(key) => alert(`Action: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
         <Menu.Trigger>Interactive States</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="normal">Normal Item</Menu.Item>
@@ -496,30 +496,30 @@ export const WithInteractiveStates: Story = {
             Loading Item
           </Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Loading: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Loading: ${key}`)}>
         <Menu.Trigger isLoading>Loading Trigger</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="item1">Item 1</Menu.Item>
           <Menu.Item id="item2">Item 2</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
 
-      <Menu onAction={(key) => alert(`Loading Content: ${key}`)}>
+      <Menu.Root onAction={(key) => alert(`Loading Content: ${key}`)}>
         <Menu.Trigger>Loading Content</Menu.Trigger>
         <Menu.Content isLoading>
           <Menu.Item id="item1">Item 1</Menu.Item>
           <Menu.Item id="item2">Item 2</Menu.Item>
         </Menu.Content>
-      </Menu>
+      </Menu.Root>
     </div>
   ),
 };
 
 export const WithComplexStates: Story = {
   render: () => (
-    <Menu onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
       <Menu.Trigger>Complex Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -567,6 +567,6 @@ export const WithComplexStates: Story = {
           </Menu.Item>
         </Menu.Group>
       </Menu.Content>
-    </Menu>
+    </Menu.Root>
   ),
 };
