@@ -77,3 +77,10 @@ export const MenuGroupLabelSlot = withContext<
   HTMLDivElement,
   MenuGroupLabelSlotProps
 >("div", "groupLabel");
+
+// Menu Group Label
+export type MenuSubmenuSlotProps = HTMLChakraProps<"div">;
+export const MenuSubmenuSlot = withContext<
+  HTMLDivElement,
+  MenuSubmenuSlotProps
+>("div", "submenu");

@@ -23,6 +23,8 @@ import { MenuItemKeyboard } from "./components/menu.item-keyboard";
 import { MenuSeparator } from "./components/menu.separator";
 import { MenuGroup } from "./components/menu.group";
 import { MenuGroupLabel } from "./components/menu.group-label";
+import { MenuSubmenuTrigger } from "./components/menu.submenu-trigger";
+import { MenuSubmenu } from "./components/menu.submenu";
 
 export const Menu = {
   Root: MenuRoot,
@@ -35,6 +37,8 @@ export const Menu = {
   Separator: MenuSeparator,
   Group: MenuGroup,
   GroupLabel: MenuGroupLabel,
+  Submenu: MenuSubmenu,
+  SubmenuTrigger: MenuSubmenuTrigger,
 };
 
 export {
@@ -48,4 +52,5 @@ export {
   MenuSeparator as _MenuSeparator,
   MenuGroup as _MenuGroup,
   MenuGroupLabel as _MenuGroupLabel,
+  MenuSubmenuTrigger as _MenuSubmenu,
 };

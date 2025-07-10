@@ -2,6 +2,8 @@ import { MenuItem } from "react-aria-components";
 import { MenuItemSlot } from "../menu.slots";
 import type { MenuItemProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { ChevronRight } from "@commercetools/nimbus-icons";
+import { Icon } from "@/components/icon";
 
 export const MenuItemComponent = ({
   children,
@@ -22,7 +24,16 @@ export const MenuItemComponent = ({
       data-loading={isLoading ? "" : undefined}
     >
       <MenuItem ref={ref} {...restProps}>
-        {children}
+        {({ hasSubmenu }) => (
+          <>
+            {children}
+            {hasSubmenu && (
+              <Icon slot="caretIcon">
+                <ChevronRight />
+              </Icon>
+            )}
+          </>
+        )}
       </MenuItem>
     </MenuItemSlot>
   );

@@ -1,8 +1,12 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./index";
-import { Button, IconButton, Text } from "@/components";
-import { MoreVert, KeyboardArrowDown } from "@commercetools/nimbus-icons";
+import { Button, Icon, IconButton, Text } from "@/components";
+import {
+  MoreVert,
+  KeyboardArrowDown,
+  CopyAll,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof Menu.Root> = {
   title: "Experimental/Menu",
@@ -19,12 +23,53 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   render: () => (
-    <Menu.Root>
+    <Menu.Root defaultOpen>
+      <Menu.Trigger>Actions</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="copy">
+          <Menu.ItemLabel>Copy</Menu.ItemLabel>
+          <Menu.ItemDescription>Copy the selected text</Menu.ItemDescription>
+          <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
+        </Menu.Item>
+        <Menu.Item id="cut">
+          <Menu.ItemLabel>Cut</Menu.ItemLabel>
+          <Menu.ItemDescription>Cut the selected text</Menu.ItemDescription>
+          <Menu.ItemKeyboard>⌘X</Menu.ItemKeyboard>
+        </Menu.Item>
+        <Menu.Item id="paste">
+          <Menu.ItemLabel>Paste</Menu.ItemLabel>
+          <Menu.ItemDescription>Paste the copied text</Menu.ItemDescription>
+          <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
+        </Menu.Item>
+        <Menu.Item id="delete">
+          <Menu.ItemLabel>Delete</Menu.ItemLabel>
+          <Menu.ItemDescription>Delete the selected text</Menu.ItemDescription>
+          <Menu.ItemKeyboard>⌫</Menu.ItemKeyboard>
+        </Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  ),
+};
+
+export const WithSubmenu: Story = {
+  render: () => (
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Actions</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="copy">Copy</Menu.Item>
         <Menu.Item id="cut">Cut</Menu.Item>
         <Menu.Item id="paste">Paste</Menu.Item>
+        <Menu.Separator />
+        <Menu.SubmenuTrigger>
+          <Menu.Item>
+            <Menu.ItemLabel>Submenu</Menu.ItemLabel>
+            <Menu.ItemDescription>Submenu description</Menu.ItemDescription>
+            <Menu.ItemKeyboard>⌘⇧S</Menu.ItemKeyboard>
+          </Menu.Item>
+          <Menu.Submenu>
+            <Menu.Item id="copy">Copy</Menu.Item>
+          </Menu.Submenu>
+        </Menu.SubmenuTrigger>
       </Menu.Content>
     </Menu.Root>
   ),
@@ -33,7 +78,7 @@ export const Basic: Story = {
 export const WithAsChildButton: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
           <Button variant="solid" tone="primary">
             <KeyboardArrowDown />
@@ -47,7 +92,7 @@ export const WithAsChildButton: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
           <Button variant="outline" tone="primary">
             <KeyboardArrowDown />
@@ -61,7 +106,7 @@ export const WithAsChildButton: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
           <Button variant="ghost" tone="primary">
             <KeyboardArrowDown />
@@ -81,7 +126,7 @@ export const WithAsChildButton: Story = {
 export const WithAsChildIconButton: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
           <IconButton variant="ghost" tone="neutral" aria-label="More options">
             <MoreVert />
@@ -98,7 +143,7 @@ export const WithAsChildIconButton: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
           <IconButton
             variant="solid"
@@ -120,7 +165,7 @@ export const WithAsChildIconButton: Story = {
 
 export const WithGroups: Story = {
   render: () => (
-    <Menu.Root>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>File Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -154,7 +199,7 @@ export const WithGroups: Story = {
 
 export const WithKeyboardShortcuts: Story = {
   render: () => (
-    <Menu.Root>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Edit Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="undo">
@@ -194,7 +239,7 @@ export const WithKeyboardShortcuts: Story = {
 
 export const WithDescriptions: Story = {
   render: () => (
-    <Menu.Root isOpen>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Account Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="profile">
@@ -233,7 +278,7 @@ export const WithDescriptions: Story = {
 
 export const WithDisabledItems: Story = {
   render: () => (
-    <Menu.Root>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Edit Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="undo">Undo</Menu.Item>
@@ -270,7 +315,7 @@ export const WithDifferentPlacements: Story = {
         minHeight: "300px",
       }}
     >
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Top Start</Menu.Trigger>
         <Menu.Content placement="top start">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
@@ -279,7 +324,7 @@ export const WithDifferentPlacements: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Top</Menu.Trigger>
         <Menu.Content placement="top">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
@@ -288,7 +333,7 @@ export const WithDifferentPlacements: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Top End</Menu.Trigger>
         <Menu.Content placement="top end">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
@@ -297,7 +342,7 @@ export const WithDifferentPlacements: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Bottom Start</Menu.Trigger>
         <Menu.Content placement="bottom start">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
@@ -306,7 +351,7 @@ export const WithDifferentPlacements: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Bottom</Menu.Trigger>
         <Menu.Content placement="bottom">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
@@ -315,7 +360,7 @@ export const WithDifferentPlacements: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Bottom End</Menu.Trigger>
         <Menu.Content placement="bottom end">
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
@@ -329,7 +374,7 @@ export const WithDifferentPlacements: Story = {
 
 export const WithLinks: Story = {
   render: () => (
-    <Menu.Root>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Navigation</Menu.Trigger>
       <Menu.Content>
         <Menu.Item href="/" target="_blank" rel="noopener">
@@ -361,7 +406,7 @@ export const WithLinks: Story = {
 
 export const ComplexExample: Story = {
   render: () => (
-    <Menu.Root isOpen>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -471,7 +516,7 @@ export const ControlledMenu: Story = {
 export const WithInteractiveStates: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Interactive States</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="normal">Normal Item</Menu.Item>
@@ -490,7 +535,7 @@ export const WithInteractiveStates: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Loading Trigger</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="item1">Item 1</Menu.Item>
@@ -498,7 +543,7 @@ export const WithInteractiveStates: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root>
+      <Menu.Root defaultOpen>
         <Menu.Trigger>Loading Content</Menu.Trigger>
         <Menu.Content isLoading>
           <Menu.Item id="item1">Item 1</Menu.Item>
@@ -511,7 +556,7 @@ export const WithInteractiveStates: Story = {
 
 export const WithComplexStates: Story = {
   render: () => (
-    <Menu.Root>
+    <Menu.Root defaultOpen>
       <Menu.Trigger>Complex Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -566,7 +611,7 @@ export const WithComplexStates: Story = {
 export const WithTriggerProps: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem" }}>
-      <Menu.Root trigger="press">
+      <Menu.Root defaultOpen trigger="press">
         <Menu.Trigger>Press Trigger</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="press-copy">Copy (Press)</Menu.Item>
@@ -574,7 +619,7 @@ export const WithTriggerProps: Story = {
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root trigger="longPress">
+      <Menu.Root defaultOpen trigger="longPress">
         <Menu.Trigger>Long Press Trigger</Menu.Trigger>
         <Menu.Content>
           <Menu.Item id="longpress-copy">Copy (Long Press)</Menu.Item>

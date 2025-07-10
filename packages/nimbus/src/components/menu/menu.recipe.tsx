@@ -16,6 +16,7 @@ export const menuSlotRecipe = defineSlotRecipe({
     "separator",
     "group",
     "groupLabel",
+    "submenu",
   ],
   // Unique class name prefix for the component
   className: "nimbus-menu",
@@ -48,52 +49,24 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&:focus": {
         outline: "none",
       },
-
-      // Enhanced animation support
-      "&[data-state=open]": {
-        animationName: "slideInAndFade",
-        animationDuration: "200ms",
-        animationTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-        animationFillMode: "forwards",
-      },
-
-      "&[data-state=closed]": {
-        animationName: "slideOutAndFade",
-        animationDuration: "150ms",
-        animationTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-        animationFillMode: "forwards",
-      },
-
-      // Loading state for content
-      "&[data-loading]": {
-        opacity: "0.6",
-        pointerEvents: "none",
-
-        "&::after": {
-          content: '""',
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          width: "20px",
-          height: "20px",
-          marginTop: "-10px",
-          marginLeft: "-10px",
-          border: "2px solid {colors.neutral.6}",
-          borderTop: "2px solid {colors.neutral.11}",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite",
-        },
-      },
-
-      // Reduced motion support
-      "@media (prefers-reduced-motion: reduce)": {
-        "&[data-state=open], &[data-state=closed]": {
-          animationDuration: "0ms",
-        },
-      },
     },
     item: {
-      display: "flex",
+      display: "grid",
+      /*
+       * Define a 4-column grid:
+       * 1. icon      – size to its content (usually 0 when no icon)
+       * 2. label/description – takes up all remaining space
+       * 3. keyboard  – size to its content (or 0 when missing)
+       * 4. flyout    – size to its content (or 0 when missing)
+       *
+       * Using `1fr` for the second column ensures that, when columns 3 or 4
+       * are absent for a particular row, the label/description column expands
+       * to fill the available width instead of leaving empty reserved space.
+       */
+      gridTemplateColumns: "auto 1fr auto auto",
+      gridTemplateAreas: `
+        'icon label keyboard flyoutCaret'
+        'icon description keyboard flyoutCaret'`,
       flexDirection: "column",
       alignItems: "start",
       px: "300",
@@ -106,6 +79,16 @@ export const menuSlotRecipe = defineSlotRecipe({
       lineHeight: "500",
       position: "relative",
       transition: "all 150ms ease-out",
+      textStyle: "sm",
+
+      "& [slot='caretIcon']": {
+        gridArea: "flyoutCaret",
+        textAlign: "right",
+        my: "auto",
+        marginInlineStart: "400",
+        boxSize: "500",
+        color: "neutral.11",
+      },
 
       // Hover state
       "&:hover:not([data-disabled])": {
@@ -181,25 +164,19 @@ export const menuSlotRecipe = defineSlotRecipe({
       },
     },
     itemLabel: {
-      display: "block",
-      flexGrow: 1,
+      gridArea: "label",
       fontWeight: "500",
-      textStyle: "sm",
-      paddingRight: "1200",
     },
     itemDescription: {
-      display: "block",
-      textStyle: "sm",
+      gridArea: "description",
       color: "neutral.10",
     },
     itemKeyboard: {
-      position: "absolute",
-      right: "300",
-      top: "200",
-      color: "neutral.10",
+      gridArea: "keyboard",
+      color: "colorPalette.11/75",
       fontFamily: "mono",
-      marginLeft: "auto",
-      textStyle: "sm",
+      marginInlineStart: "400",
+      my: "auto",
     },
     separator: {
       height: "25",
