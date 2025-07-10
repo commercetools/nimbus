@@ -34,8 +34,11 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
+  // Extract size and variant from recipe props to pass to DateInputs
+  const { size = "md", variant } = recipeProps;
+
   // the size of the buttons overlaying the input
-  const overlayButtonSize = "xs"; // Default to xs since we don't have size prop
+  const overlayButtonSize = size === "md" ? "xs" : "2xs";
 
   // When granularity is "day", use the prop value (defaults to true if not provided)
   // For other granularities (time-based), force to false so users can set both date and time
@@ -51,19 +54,29 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
         <DateRangePickerCustomContext>
           <DateRangePickerGroupSlot asChild>
             <Group>
-              <DateInput slot="start" />
+              <DateInput
+                slot="start"
+                size={size}
+                variant={variant}
+                width="auto"
+              />
 
               {/* TODO: find a more elegant way to do this */}
               <span
                 aria-hidden="true"
                 style={{
-                  padding: "0 0.5em",
+                  padding: "0 5px",
                   userSelect: "none",
                 }}
               >
                 –
               </span>
-              <DateInput slot="end" />
+              <DateInput
+                slot="end"
+                size={size}
+                variant={variant}
+                width="auto"
+              />
               <DateRangePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton

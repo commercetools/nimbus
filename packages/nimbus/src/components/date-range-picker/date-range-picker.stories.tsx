@@ -782,8 +782,8 @@ export const Controlled: Story = {
         // Set a specific range
         await helpers.setDateRangeValues(
           segments,
-          ["3", "10", "2026"], // start date
-          ["3", "20", "2026"] // end date
+          ["3", "10", "2026"],
+          ["3", "20", "2026"]
         );
 
         // Verify state is synchronized
@@ -797,8 +797,8 @@ export const Controlled: Story = {
         // Verify segments show correct values
         await helpers.verifyDateRangeValues(
           segments,
-          ["3", "10", "2026"], // start date
-          ["3", "20", "2026"] // end date
+          ["3", "10", "2026"],
+          ["3", "20", "2026"]
         );
 
         // Reset and verify everything is cleared
@@ -817,7 +817,7 @@ export const Controlled: Story = {
       }
     );
 
-    // TODO: FIX THIS CODE
+    // TODO: FIX THIS CODE!!!!!!
     // await step(
     //   "Controlled DateRangePicker handles invalid input gracefully",
     //   async () => {
@@ -851,151 +851,524 @@ export const Controlled: Story = {
   },
 };
 
-// export const PlaceholderValue: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>With placeholder value (2025-06-15 to 2025-06-20)</Text>
-//         <DateRangePicker
-//           {...args}
-//           placeholderValue={{
-//             start: new CalendarDate(2025, 6, 15),
-//             end: new CalendarDate(2025, 6, 20),
-//           }}
-//           aria-label="Date range picker with placeholder"
-//         />
-//         <Text>Without placeholder value</Text>
-//         <DateRangePicker
-//           {...args}
-//           aria-label="Date range picker without placeholder"
-//         />
-//       </Stack>
-//     );
-//   },
-// };
+//TODO: INCOMPLETE. THE 2ND DATEINPUT NO WORKIE, FIX, THEN REFACTOR
+export const PlaceholderValue: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With placeholder value (2025-06-15 to 2025-06-20)</Text>
+        <DateRangePicker
+          {...args}
+          placeholderValue={new CalendarDate(2025, 6, 15)}
+          granularity="day"
+          aria-label="Date range picker with placeholder"
+        />
+        <Text>Without placeholder value</Text>
+        <DateRangePicker
+          {...args}
+          aria-label="Date range picker without placeholder"
+        />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-// export const VariantsSizesAndStates: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     const states = [
-//       { label: "Default", props: {} },
-//       { label: "Disabled", props: { isDisabled: true } },
-//       { label: "Read Only", props: { isReadOnly: true } },
-//       { label: "Required", props: { isRequired: true } },
-//       { label: "Invalid", props: { isInvalid: true } },
-//     ];
+    await step(
+      "Both DateRangePickers start empty (no selected value)",
+      async () => {
+        const withPlaceholder = await canvas.findByRole("group", {
+          name: "Date range picker with placeholder",
+        });
+        const withoutPlaceholder = await canvas.findByRole("group", {
+          name: "Date range picker without placeholder",
+        });
 
-//     const variants = ["solid", "ghost"] as const;
+        // Clear buttons should be disabled since no value is selected initially
+        const clearButton1 = await within(withPlaceholder).findByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
+        const clearButton2 = await within(withoutPlaceholder).findByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
 
-//     return (
-//       <Stack direction="column" gap="600" alignItems="start">
-//         {states.map((state) => (
-//           <Stack
-//             key={state.label}
-//             direction="column"
-//             gap="200"
-//             alignItems="start"
-//           >
-//             <Stack direction="column" gap="400" alignItems="start">
-//               <Text fontWeight="700">{state.label}</Text>
-//               {variants.map((variant) => (
-//                 <Stack
-//                   key={variant}
-//                   direction="column"
-//                   gap="200"
-//                   alignItems="start"
-//                 >
-//                   <Text
-//                     fontSize="sm"
-//                     color="neutral.11"
-//                     textTransform="capitalize"
-//                   >
-//                     {variant}
-//                   </Text>
-//                   <DateRangePicker
-//                     {...args}
-//                     {...state.props}
-//                     variant={variant}
-//                     defaultValue={{
-//                       start: new CalendarDate(2025, 6, 15),
-//                       end: new CalendarDate(2025, 6, 20),
-//                     }}
-//                     aria-label={`${state.label} ${variant} date range picker`}
-//                   />
-//                 </Stack>
-//               ))}
-//             </Stack>
-//           </Stack>
-//         ))}
-//       </Stack>
-//     );
-//   },
-// };
+        await waitFor(async () => {
+          await expect(clearButton1).toBeDisabled();
+          await expect(clearButton2).toBeDisabled();
+        });
+      }
+    );
 
-// export const TimeSupport: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date and time range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>Date only (day granularity)</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="day"
-//           defaultValue={{
-//             start: new CalendarDate(2025, 6, 15),
-//             end: new CalendarDate(2025, 6, 20),
-//           }}
-//           aria-label="Date only range picker"
-//         />
+    await step(
+      "DateRangePicker with placeholder value uses placeholder when navigating with keyboard",
+      async () => {
+        const withPlaceholder = await canvas.findByRole("group", {
+          name: "Date range picker with placeholder",
+        });
+        const segments = within(withPlaceholder).getAllByRole("spinbutton");
 
-//         <Text>Date and time to minute</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="minute"
-//           defaultValue={{
-//             start: new CalendarDateTime(2025, 6, 15, 14, 30),
-//             end: new CalendarDateTime(2025, 6, 20, 16, 45),
-//           }}
-//           aria-label="Date and time range picker (minute)"
-//         />
+        // Focus the first segment
+        await userEvent.click(segments[0]);
 
-//         <Text>With time zone</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="minute"
-//           defaultValue={{
-//             start: new ZonedDateTime(
-//               2025,
-//               6,
-//               15,
-//               "America/New_York",
-//               -4 * 60 * 60 * 1000,
-//               14,
-//               30
-//             ),
-//             end: new ZonedDateTime(
-//               2025,
-//               6,
-//               20,
-//               "America/New_York",
-//               -4 * 60 * 60 * 1000,
-//               16,
-//               45
-//             ),
-//           }}
-//           aria-label="Date and time range picker with timezone"
-//         />
-//       </Stack>
-//     );
-//   },
-// };
+        // Invisible
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        });
+        await userEvent.keyboard("{ArrowUp}");
+        // Now visible
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
+        });
+
+        // Continue editing to create a complete date
+        await userEvent.tab(); // Move to day segment
+        // Invisible
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        });
+        await userEvent.keyboard("{ArrowDown}");
+        // Now visible
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
+        });
+
+        // Move to year and modify
+        await userEvent.tab(); // Move to year segment
+        // Invisible
+        await waitFor(async () => {
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        });
+        await userEvent.keyboard("{ArrowUp}");
+        // Now visible
+        await waitFor(async () => {
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+        });
+
+        // Now that we have a complete date, clear button should be enabled
+        const clearButton = await within(withPlaceholder).findByRole("button", {
+          name: /clear/i,
+        });
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
+        });
+      }
+    );
+    await step(
+      "Placeholder value doesn't affect typing input directly",
+      async () => {
+        // Clear the first DateRangePicker to reset it
+        const withPlaceholder = await canvas.findByRole("group", {
+          name: "Date range picker with placeholder",
+        });
+        const clearButton = await within(withPlaceholder).findByRole("button", {
+          name: /clear/i,
+        });
+
+        // Only click clear if it's enabled
+        if (!clearButton.hasAttribute("disabled")) {
+          await userEvent.click(clearButton);
+        }
+
+        const segments = within(withPlaceholder).getAllByRole("spinbutton");
+
+        // Type directly into segments - this should work independently of placeholder value
+        await userEvent.click(segments[0]);
+        await userEvent.keyboard("12");
+
+        await userEvent.click(segments[1]);
+        await userEvent.keyboard("25");
+
+        await userEvent.click(segments[2]);
+        await userEvent.keyboard("2024");
+
+        // Values should be exactly what was typed, not influenced by placeholder
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "25");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2024");
+        });
+
+        // Clear button should be enabled since we have a value
+        const clearButtonAfterTyping = await within(withPlaceholder).findByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
+        await waitFor(async () => {
+          await expect(clearButtonAfterTyping).not.toBeDisabled();
+        });
+      }
+    );
+  },
+};
+
+export const VariantsSizesAndStates: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    const states = [
+      { label: "Default", props: {} },
+      { label: "Disabled", props: { isDisabled: true } },
+      { label: "Read Only", props: { isReadOnly: true } },
+      { label: "Required", props: { isRequired: true } },
+      { label: "Invalid", props: { isInvalid: true } },
+    ];
+
+    const variants = ["solid", "ghost"] as const;
+    const sizes = ["sm", "md"] as const;
+
+    return (
+      <Stack direction="column" gap="600" alignItems="start">
+        {states.map((state) => (
+          <Stack
+            key={state.label}
+            direction="column"
+            gap="200"
+            alignItems="start"
+          >
+            <Stack direction="column" gap="400" alignItems="start">
+              <Text fontWeight="700">{state.label}</Text>
+              {variants.map((variant) => (
+                <Stack
+                  key={variant}
+                  direction="column"
+                  gap="200"
+                  alignItems="start"
+                >
+                  <Text
+                    fontSize="sm"
+                    color="neutral.11"
+                    textTransform="capitalize"
+                  >
+                    {variant}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="start">
+                    {sizes.map((size) => (
+                      <Stack
+                        key={size}
+                        direction="column"
+                        gap="100"
+                        alignItems="start"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {size}
+                        </Text>
+                        <DateRangePicker
+                          {...args}
+                          {...state.props}
+                          variant={variant}
+                          size={size}
+                          defaultValue={{
+                            start: new CalendarDate(2025, 6, 15),
+                            end: new CalendarDate(2025, 6, 20),
+                          }}
+                          aria-label={`${state.label} ${variant} ${size} date range picker`}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Clear button is disabled when DateRangePicker is disabled",
+      async () => {
+        // Find a disabled DateRangePicker (should have defaultValue but be disabled)
+        const disabledDateRangePickers = canvas
+          .getAllByRole("group")
+          .filter((group) => {
+            const ariaLabel = group.getAttribute("aria-label");
+            return ariaLabel && ariaLabel.includes("Disabled");
+          });
+
+        // Test at least one disabled DateRangePicker
+        if (disabledDateRangePickers.length > 0) {
+          const disabledPicker = disabledDateRangePickers[0];
+          const helpers = createDateRangePickerHelpers(canvas, disabledPicker);
+          const clearButton = await helpers.getClearButton();
+
+          // Clear button should be disabled even though there's a value (defaultValue was set)
+          // because the entire DateRangePicker is disabled
+          await expect(clearButton).toBeDisabled();
+        }
+      }
+    );
+
+    await step(
+      "Clear button works normally in enabled DateRangePicker",
+      async () => {
+        // Find a default (enabled) DateRangePicker
+        const defaultDateRangePickers = canvas
+          .getAllByRole("group")
+          .filter((group) => {
+            const ariaLabel = group.getAttribute("aria-label");
+            return ariaLabel && ariaLabel.includes("Default");
+          });
+
+        // Test at least one enabled DateRangePicker
+        if (defaultDateRangePickers.length > 0) {
+          const enabledPicker = defaultDateRangePickers[0];
+          const helpers = createDateRangePickerHelpers(canvas, enabledPicker);
+          const clearButton = await helpers.getClearButton();
+
+          // Clear button should be enabled since there's a defaultValue and DateRangePicker is enabled
+          await expect(clearButton).not.toBeDisabled();
+        }
+      }
+    );
+  },
+};
+
+export const TimeSupport: Story = {
+  args: {
+    ["aria-label"]: "Select a date and time range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Date only (day granularity)</Text>
+        <DateRangePicker
+          {...args}
+          granularity="day"
+          defaultValue={{
+            start: new CalendarDate(2025, 6, 15),
+            end: new CalendarDate(2025, 6, 20),
+          }}
+          aria-label="Date only range picker"
+        />
+        <Text>Date and hour</Text>
+        <DateRangePicker
+          {...args}
+          granularity="hour"
+          defaultValue={{
+            start: new CalendarDateTime(2025, 6, 15, 14),
+            end: new CalendarDateTime(2025, 6, 20, 16),
+          }}
+          aria-label="Date and time range picker (hour)"
+        />
+
+        <Text>Date and time to minute</Text>
+        <DateRangePicker
+          {...args}
+          granularity="minute"
+          defaultValue={{
+            start: new CalendarDateTime(2025, 6, 15, 14, 30),
+            end: new CalendarDateTime(2025, 6, 20, 16, 45),
+          }}
+          aria-label="Date and time range picker (minute)"
+        />
+
+        <Text>Date and time to second</Text>
+        <DateRangePicker
+          {...args}
+          granularity="second"
+          defaultValue={{
+            start: new CalendarDateTime(2025, 6, 15, 14, 30, 45),
+            end: new CalendarDateTime(2025, 6, 20, 16, 45, 30),
+          }}
+          aria-label="Date and time range picker (second)"
+        />
+
+        <Text>With time zone</Text>
+        <DateRangePicker
+          {...args}
+          granularity="minute"
+          defaultValue={{
+            start: new ZonedDateTime(
+              2025,
+              6,
+              15,
+              "America/New_York",
+              -4 * 60 * 60 * 1000,
+              14,
+              30
+            ),
+            end: new ZonedDateTime(
+              2025,
+              6,
+              20,
+              "America/New_York",
+              -4 * 60 * 60 * 1000,
+              16,
+              45
+            ),
+          }}
+          aria-label="Date and time range picker with timezone"
+        />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Date-only picker has correct number of segments (6: month, day, year)",
+      async () => {
+        const dateOnlyPicker = await canvas.findByRole("group", {
+          name: "Date only range picker",
+        });
+        const segments = within(dateOnlyPicker).getAllByRole("spinbutton");
+
+        // Should have exactly 6 segments: month, day, year
+        await expect(segments).toHaveLength(6);
+      }
+    );
+
+    await step("Hour picker has correct segments and values", async () => {
+      const hourPicker = await canvas.findByRole("group", {
+        name: "Date and time range picker (hour)",
+      });
+      const segments = within(hourPicker).getAllByRole("spinbutton");
+
+      // Should have 5 segments: month, day, year, hour, AM/PM
+      await expect(segments).toHaveLength(10);
+    });
+
+    await step("Minute picker has correct segments and values", async () => {
+      const minutePicker = await canvas.findByRole("group", {
+        name: "Date and time range picker (minute)",
+      });
+      const segments = within(minutePicker).getAllByRole("spinbutton");
+
+      // Should have 12 segments: month, day, year, hour, minute, AM/PM
+      await expect(segments).toHaveLength(12);
+    });
+
+    await step("Second picker has correct segments and values", async () => {
+      const secondPicker = await canvas.findByRole("group", {
+        name: "Date and time range picker (second)",
+      });
+      const segments = within(secondPicker).getAllByRole("spinbutton");
+
+      // Should have 14 segments: month, day, year, hour, minute, second
+      await expect(segments).toHaveLength(14);
+    });
+
+    await step(
+      "Timezone picker has correct segments and timezone",
+      async () => {
+        const timezonePicker = await canvas.findByRole("group", {
+          name: "Date and time range picker with timezone",
+        });
+        const segments = within(timezonePicker).getAllByRole("spinbutton");
+
+        // Should have 12 segments: month, day, year, hour, minute, second, timezone
+        await expect(segments).toHaveLength(12);
+
+        // Check for timezone display (should contain timezone information)
+        const timezoneElement =
+          within(timezonePicker).getAllByText(/EDT|EST|America/i);
+        await expect(timezoneElement).toHaveLength(2);
+      }
+    );
+
+    await step(
+      "Calendar functionality works with time granularities",
+      async () => {
+        const hourPicker = await canvas.findByRole("group", {
+          name: "Date and time range picker (hour)",
+        });
+        const calendarButton = await within(hourPicker).findByRole("button", {
+          name: /calendar/i,
+        });
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Calendar should be functional - close it with Escape
+        await userEvent.keyboard("{Escape}");
+
+        // Wait for calendar to disappear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    // await step(
+    //   "Clear functionality works across all time granularities",
+    //   async () => {
+    //     const pickers = [
+    //       { name: "Date only range picker", hasTime: false },
+    //       { name: "Date and time range picker (hour)", hasTime: true },
+    //       { name: "Date and time range picker (minute)", hasTime: true },
+    //       { name: "Date and time range picker (second)", hasTime: true },
+    //       { name: "Date and time range picker with timezone", hasTime: true },
+    //     ];
+
+    //     for (const picker of pickers) {
+    //       const pickerElement = await canvas.findByRole("group", {
+    //         name: picker.name,
+    //       });
+    //       const clearButton = await within(pickerElement).findByRole("button", {
+    //         name: /clear/i,
+    //       });
+
+    //       // Clear button should be enabled (has default value)
+    //       await expect(clearButton).not.toBeDisabled();
+
+    //       // Click clear button
+    //       await userEvent.click(clearButton);
+
+    //       // Clear button should now be disabled
+    //       await expect(clearButton).toBeDisabled();
+
+    //       // Reset by adding a date back for next test
+    //       const segments = within(pickerElement).getAllByRole("spinbutton");
+    //       await userEvent.click(segments[0]); // month
+    //       await userEvent.keyboard("1");
+    //       await userEvent.click(segments[1]); // day
+    //       await userEvent.keyboard("1");
+    //       await userEvent.click(segments[2]); // year
+    //       await userEvent.keyboard("2025");
+
+    //       if (picker.hasTime && segments.length > 3) {
+    //         // Set time values for time-enabled pickers
+    //         await userEvent.click(segments[3]); // hour
+    //         await userEvent.keyboard("12");
+
+    //         if (segments.length > 4) {
+    //           await userEvent.click(segments[4]); // minute
+    //           await userEvent.keyboard("30");
+    //         }
+
+    //         if (segments.length > 5) {
+    //           await userEvent.click(segments[5]); // second
+    //           await userEvent.keyboard("0");
+    //         }
+    //       }
+    //     }
+    //   }
+    // );
+  },
+};
 
 // export const HourCycle: Story = {
 //   args: {
