@@ -57,6 +57,13 @@ export const MenuItemKeyboardSlot = withContext<
   MenuItemKeyboardSlotProps
 >("span", "itemKeyboard");
 
+// Menu Item Icon
+export type MenuItemIconSlotProps = HTMLChakraProps<"span">;
+export const MenuItemIconSlot = withContext<
+  HTMLSpanElement,
+  MenuItemIconSlotProps
+>("span", "itemIcon");
+
 // Menu Separator
 export type MenuSeparatorSlotProps = HTMLChakraProps<"div">;
 export const MenuSeparatorSlot = withContext<

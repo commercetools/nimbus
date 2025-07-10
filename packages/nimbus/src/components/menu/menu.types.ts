@@ -75,3 +75,8 @@ export interface MenuItemKeyboardProps {
   children: ReactNode;
   ref?: Ref<HTMLSpanElement>;
 }
+
+export interface MenuItemIconProps {
+  children: ReactNode;
+  ref?: Ref<HTMLSpanElement>;
+}

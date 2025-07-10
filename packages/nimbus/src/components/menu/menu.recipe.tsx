@@ -13,6 +13,7 @@ export const menuSlotRecipe = defineSlotRecipe({
     "itemLabel",
     "itemDescription",
     "itemKeyboard",
+    "itemIcon",
     "separator",
     "group",
     "groupLabel",
@@ -177,6 +178,20 @@ export const menuSlotRecipe = defineSlotRecipe({
       fontFamily: "mono",
       marginInlineStart: "400",
       my: "auto",
+    },
+    itemIcon: {
+      gridArea: "icon",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginInlineEnd: "300",
+      my: "auto",
+      flexShrink: 0,
+      color: "neutral.11",
+
+      "& svg": {
+        boxSize: "500",
+      },
     },
     separator: {
       height: "25",

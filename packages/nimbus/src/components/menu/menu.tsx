@@ -5,6 +5,7 @@ export { MenuItemComponent } from "./components/menu.item";
 export { MenuItemLabel } from "./components/menu.item-label";
 export { MenuItemDescription } from "./components/menu.item-description";
 export { MenuItemKeyboard } from "./components/menu.item-keyboard";
+export { MenuItemIcon } from "./components/menu.item-icon";
 export { MenuSeparator } from "./components/menu.separator";
 export { MenuGroup } from "./components/menu.group";
 export { MenuGroupLabel } from "./components/menu.group-label";
@@ -20,6 +21,7 @@ import { MenuItemComponent } from "./components/menu.item";
 import { MenuItemLabel } from "./components/menu.item-label";
 import { MenuItemDescription } from "./components/menu.item-description";
 import { MenuItemKeyboard } from "./components/menu.item-keyboard";
+import { MenuItemIcon } from "./components/menu.item-icon";
 import { MenuSeparator } from "./components/menu.separator";
 import { MenuGroup } from "./components/menu.group";
 import { MenuGroupLabel } from "./components/menu.group-label";
@@ -34,6 +36,7 @@ export const Menu = {
   ItemLabel: MenuItemLabel,
   ItemDescription: MenuItemDescription,
   ItemKeyboard: MenuItemKeyboard,
+  ItemIcon: MenuItemIcon,
   Separator: MenuSeparator,
   Group: MenuGroup,
   GroupLabel: MenuGroupLabel,
@@ -49,6 +52,7 @@ export {
   MenuItemLabel as _MenuItemLabel,
   MenuItemDescription as _MenuItemDescription,
   MenuItemKeyboard as _MenuItemKeyboard,
+  MenuItemIcon as _MenuItemIcon,
   MenuSeparator as _MenuSeparator,
   MenuGroup as _MenuGroup,
   MenuGroupLabel as _MenuGroupLabel,
