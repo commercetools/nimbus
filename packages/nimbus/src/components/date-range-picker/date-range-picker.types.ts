@@ -25,7 +25,9 @@ type ExcludedProps =
 
 /**
  * Main props interface for the DateRangePicker component.
- * Extends React Aria DateRangePicker props and adds recipe variants.
+ *
+ * We extend React Aria's DateRangePickerProps and add the size/variant props
+ * that we want to pass through to the DateInput components.
  */
 export interface DateRangePickerProps
   extends Omit<ReactAriaDateRangePickerProps<DateValue>, ExcludedProps>,
