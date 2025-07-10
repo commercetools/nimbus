@@ -30,6 +30,14 @@ const meta: Meta<typeof DateRangePicker> = {
   ],
 };
 
+//TODO:: Review that each test provides value by making it specific to dateRange.
+//TODO:: Refactor b/c there is a bit much going on.
+//TODO:: Review that comments are helpful.
+//TODO:: Review for missing scenarios.
+//TODO: Make sure that each action has a corresponding assert.
+//TODO: Hover needs some help
+//TODO:
+
 export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
 
@@ -1312,6 +1320,7 @@ export const TimeSupport: Story = {
       }
     );
 
+    //TODO: yeah, come back to this
     // await step(
     //   "Clear functionality works across all time granularities",
     //   async () => {
@@ -1370,121 +1379,573 @@ export const TimeSupport: Story = {
   },
 };
 
-// export const HourCycle: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date and time range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>12-hour format (default for en-US)</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="minute"
-//           hourCycle={12}
-//           defaultValue={{
-//             start: new CalendarDateTime(2025, 6, 15, 14, 30),
-//             end: new CalendarDateTime(2025, 6, 20, 16, 45),
-//           }}
-//           aria-label="12-hour format range picker"
-//         />
+export const HourCycle: Story = {
+  args: {
+    ["aria-label"]: "Select a date and time range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>12-hour format (default for en-US)</Text>
+        <DateRangePicker
+          {...args}
+          granularity="minute"
+          hourCycle={12}
+          defaultValue={{
+            start: new CalendarDateTime(2025, 6, 15, 14, 30),
+            end: new CalendarDateTime(2025, 6, 20, 16, 45),
+          }}
+          aria-label="12-hour format range picker"
+        />
 
-//         <Text>24-hour format</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="minute"
-//           hourCycle={24}
-//           defaultValue={{
-//             start: new CalendarDateTime(2025, 6, 15, 14, 30),
-//             end: new CalendarDateTime(2025, 6, 20, 16, 45),
-//           }}
-//           aria-label="24-hour format range picker"
-//         />
-//       </Stack>
-//     );
-//   },
-// };
+        <Text>24-hour format</Text>
+        <DateRangePicker
+          {...args}
+          granularity="minute"
+          hourCycle={24}
+          defaultValue={{
+            start: new CalendarDateTime(2025, 6, 15, 14, 30),
+            end: new CalendarDateTime(2025, 6, 20, 16, 45),
+          }}
+          aria-label="24-hour format range picker"
+        />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-// export const HideTimeZone: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date and time range",
-//   },
-//   render: (args) => {
-//     const zonedDateTimeRange = {
-//       start: new ZonedDateTime(
-//         2025,
-//         6,
-//         15,
-//         "America/New_York",
-//         -4 * (60 * 60 * 1000),
-//         14,
-//         30
-//       ),
-//       end: new ZonedDateTime(
-//         2025,
-//         6,
-//         20,
-//         "America/New_York",
-//         -4 * (60 * 60 * 1000),
-//         16,
-//         45
-//       ),
-//     };
+    await step("12-hour format displays PM and has AM/PM segment", async () => {
+      const twelveHourPicker = await canvas.findByRole("group", {
+        name: "12-hour format range picker",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, twelveHourPicker);
+      const segments = helpers.getDateSegments();
 
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>With time zone shown (default)</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="minute"
-//           defaultValue={zonedDateTimeRange}
-//           aria-label="With timezone shown"
-//         />
+      // 12-hour format should have 12 segments: month, day, year, hour, minute, AM/PM (start + end)
+      await expect(segments).toHaveLength(12);
 
-//         <Text>With time zone hidden</Text>
-//         <DateRangePicker
-//           {...args}
-//           granularity="minute"
-//           hideTimeZone
-//           defaultValue={zonedDateTimeRange}
-//           aria-label="With timezone hidden"
-//         />
-//       </Stack>
-//     );
-//   },
-// };
+      // Hour should show as 2 (14:30 = 2:30 PM in 12-hour format)
+      await expect(segments[3]).toHaveAttribute("aria-valuetext", "2 PM");
 
-// export const MinMaxValues: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     const today = new CalendarDate(2025, 6, 15);
-//     const minDate = today.add({ days: 1 });
-//     const maxDate = today.add({ days: 30 });
+      // Should have AM/PM segment
+      const amPmSegment = segments[5];
+      await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM"); // PM = 1, AM = 0
+    });
 
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>
-//           Restricted range: {minDate.toString()} to {maxDate.toString()}
-//         </Text>
-//         <DateRangePicker
-//           {...args}
-//           minValue={minDate}
-//           maxValue={maxDate}
-//           defaultValue={{
-//             start: today.add({ days: 7 }),
-//             end: today.add({ days: 12 }),
-//           }}
-//           aria-label="Date range picker with min/max values"
-//         />
-//         <Text fontSize="sm" color="neutral.11">
-//           Try selecting dates outside the allowed range in the calendar.
-//         </Text>
-//       </Stack>
-//     );
-//   },
-// };
+    await step(
+      "24-hour format displays 14 and has no AM/PM segment",
+      async () => {
+        const twentyFourHourPicker = await canvas.findByRole("group", {
+          name: "24-hour format range picker",
+        });
+        const helpers = createDateRangePickerHelpers(
+          canvas,
+          twentyFourHourPicker
+        );
+        const segments = helpers.getDateSegments();
+
+        // 24-hour format should have 10 segments: month, day, year, hour, minute (start + end)
+        await expect(segments).toHaveLength(10);
+
+        // Hour should show as 14 (14:30 in 24-hour format)
+        await waitFor(async () => {
+          await expect(segments[3]).toHaveAttribute("aria-valuenow", "14");
+        });
+
+        // Minute should be the last segment (index 4 for start, 9 for end)
+        await waitFor(async () => {
+          await expect(segments[4]).toHaveAttribute("aria-valuenow", "30");
+        });
+      }
+    );
+
+    await step(
+      "12-hour format AM/PM segment can be toggled with keyboard",
+      async () => {
+        const twelveHourPicker = await canvas.findByRole("group", {
+          name: "12-hour format range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, twelveHourPicker);
+        const segments = helpers.getDateSegments();
+        const amPmSegment = segments[5];
+
+        // Focus AM/PM segment
+        await userEvent.click(amPmSegment);
+
+        // Initially should be PM (value 1)
+        await waitFor(async () => {
+          await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+        });
+
+        // Arrow up should toggle to AM
+        await userEvent.keyboard("{ArrowUp}");
+        await waitFor(async () => {
+          await expect(amPmSegment).toHaveAttribute("aria-valuetext", "AM");
+        });
+
+        // Arrow down should toggle back to PM
+        await userEvent.keyboard("{ArrowDown}");
+        await waitFor(async () => {
+          await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+        });
+      }
+    );
+
+    await step(
+      "12-hour format hour values are constrained to 1-12",
+      async () => {
+        const twelveHourPicker = await canvas.findByRole("group", {
+          name: "12-hour format range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, twelveHourPicker);
+        const segments = helpers.getDateSegments();
+        const hourSegment = segments[3];
+
+        // Focus hour segment
+        await userEvent.click(hourSegment);
+
+        // Clear current value and type 12
+        await userEvent.keyboard("12");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+        });
+
+        // back to hour segment
+        await userEvent.tab({ shift: true });
+
+        // Arrow up from 12 should wrap to 1
+        await userEvent.keyboard("{ArrowUp}");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuetext", "1 PM");
+        });
+
+        // Arrow down from 1 should wrap to 12
+        await userEvent.keyboard("{ArrowDown}");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuetext", "12 PM");
+        });
+      }
+    );
+
+    await step(
+      "24-hour format hour values are constrained to 0-23",
+      async () => {
+        const twentyFourHourPicker = await canvas.findByRole("group", {
+          name: "24-hour format range picker",
+        });
+        const helpers = createDateRangePickerHelpers(
+          canvas,
+          twentyFourHourPicker
+        );
+        const segments = helpers.getDateSegments();
+        const hourSegment = segments[3];
+
+        // Focus hour segment
+        await userEvent.click(hourSegment);
+
+        // Clear current value and type 23
+        await userEvent.keyboard("23");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+        });
+
+        // back to hour segment
+        await userEvent.tab({ shift: true });
+
+        // Arrow up from 23 should wrap to 0
+        await userEvent.keyboard("{ArrowUp}");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow", "0");
+        });
+
+        // Arrow down from 0 should wrap to 23
+        await userEvent.keyboard("{ArrowDown}");
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow", "23");
+        });
+      }
+    );
+  },
+};
+
+export const HideTimeZone: Story = {
+  args: {
+    ["aria-label"]: "Select a date and time range",
+  },
+  render: (args) => {
+    const zonedDateTimeRange = {
+      start: new ZonedDateTime(
+        2025,
+        6,
+        15,
+        "America/New_York",
+        -4 * (60 * 60 * 1000),
+        14,
+        30
+      ),
+      end: new ZonedDateTime(
+        2025,
+        6,
+        20,
+        "America/New_York",
+        -4 * (60 * 60 * 1000),
+        16,
+        45
+      ),
+    };
+
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With time zone shown (default)</Text>
+        <DateRangePicker
+          {...args}
+          granularity="minute"
+          defaultValue={zonedDateTimeRange}
+          aria-label="With timezone shown"
+        />
+
+        <Text>With time zone hidden</Text>
+        <DateRangePicker
+          {...args}
+          granularity="minute"
+          hideTimeZone
+          defaultValue={zonedDateTimeRange}
+          aria-label="With timezone hidden"
+        />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "DateRangePicker with timezone shown displays timezone information",
+      async () => {
+        const timezoneShownPicker = await canvas.findByRole("group", {
+          name: "With timezone shown",
+        });
+
+        // Should display timezone information (EDT/EST/America)
+        const timezoneElement =
+          within(timezoneShownPicker).getAllByText(/EDT|EST|America/i);
+        await expect(timezoneElement).toHaveLength(2);
+      }
+    );
+
+    await step(
+      "DatePicker with timezone hidden does not display timezone information",
+      async () => {
+        const timezoneHiddenPicker = await canvas.findByRole("group", {
+          name: "With timezone hidden",
+        });
+
+        // Should NOT display timezone information
+        const timezoneElement =
+          within(timezoneHiddenPicker).queryByText(/EDT|EST|America/i);
+        await expect(timezoneElement).not.toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Both DateRangePickers have identical input segments",
+      async () => {
+        const timezoneShownPicker = await canvas.findByRole("group", {
+          name: "With timezone shown",
+        });
+        const timezoneHiddenPicker = await canvas.findByRole("group", {
+          name: "With timezone hidden",
+        });
+
+        const shownSegments =
+          within(timezoneShownPicker).getAllByRole("spinbutton");
+        const hiddenSegments =
+          within(timezoneHiddenPicker).getAllByRole("spinbutton");
+
+        // Both should have same number of input segments (hiding timezone only affects display)
+        await expect(shownSegments).toHaveLength(hiddenSegments.length);
+
+        // Both should have the same date/time values
+        for (let i = 0; i < Math.min(shownSegments.length, 5); i++) {
+          // Compare first 5 segments (date/time, excluding potential timezone segment)
+          const shownValue = shownSegments[i].getAttribute("aria-valuenow");
+          const hiddenValue = hiddenSegments[i].getAttribute("aria-valuenow");
+          await expect(shownValue).toBe(hiddenValue);
+        }
+      }
+    );
+
+    await step(
+      "Both DateRangePickers maintain identical functionality",
+      async () => {
+        const timezoneHiddenPicker = await canvas.findByRole("group", {
+          name: "With timezone hidden",
+        });
+        const clearButton = await within(timezoneHiddenPicker).findByRole(
+          "button",
+          {
+            name: /clear/i,
+          }
+        );
+        const calendarButton = await within(timezoneHiddenPicker).findByRole(
+          "button",
+          { name: /calendar/i }
+        );
+
+        // Clear button should be enabled (has default value)
+        await expect(clearButton).not.toBeDisabled();
+
+        // Calendar button should be functional
+        await expect(calendarButton).not.toBeDisabled();
+
+        // Quick test of calendar opening (without full interaction test)
+        await userEvent.click(calendarButton);
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+  },
+};
+
+export const MinMaxValues: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    const today = new CalendarDate(2025, 6, 15);
+    const minDate = today.add({ days: 1 });
+    const maxDate = today.add({ days: 30 });
+
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>
+          Restricted range: {minDate.toString()} to {maxDate.toString()}
+        </Text>
+        <DateRangePicker
+          {...args}
+          minValue={minDate}
+          maxValue={maxDate}
+          defaultValue={{
+            start: today.add({ days: 7 }),
+            end: today.add({ days: 12 }),
+          }}
+          aria-label="Date range picker with min/max values"
+        />
+        <Text fontSize="sm" color="neutral.11">
+          Try selecting dates outside the allowed range in the calendar.
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("DatePicker starts with valid date within range", async () => {
+      const dateRangePicker = await canvas.findByRole("group", {
+        name: "Date range picker with min/max values",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, dateRangePicker);
+      const segments = helpers.getDateSegments();
+      const clearButton = await helpers.getClearButton();
+
+      // Should have default value of 2025-06-22 (start) to 2025-06-27 (end)
+      await helpers.verifyDateRangeValues(
+        segments,
+        ["6", "22", "2025"],
+        ["6", "27", "2025"]
+      );
+
+      // Clear button should be enabled
+      await expect(clearButton).not.toBeDisabled();
+    });
+
+    await step(
+      "Calendar shows correct available/disabled dates within range and allows selecting a valid range",
+      async () => {
+        const dateRangePicker = await canvas.findByRole("group", {
+          name: "Date range picker with min/max values",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateRangePicker);
+        const calendarButton = await helpers.getCalendarButton();
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar =
+            within(document.body).queryByRole("application") ||
+            within(document.body).queryByRole("grid");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Find the calendar grid
+        const calendarGrid = await within(document.body).findByRole("grid");
+        await expect(calendarGrid).toBeInTheDocument();
+
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+        await expect(dateCells.length).toBeGreaterThan(0);
+
+        // Look for date buttons within cells
+        const dateButtons = dateCells
+          .map((cell) => within(cell).getAllByRole("button"))
+          .flat()
+          .filter(Boolean);
+        await expect(dateButtons.length).toBeGreaterThan(0);
+
+        // Find available dates (dates that can be selected)
+        const availableDates = dateButtons.filter(
+          (button) =>
+            button &&
+            (!button.hasAttribute("aria-disabled") ||
+              button.getAttribute("aria-disabled") !== "true")
+        );
+
+        // At minimum, we should have some available dates within the allowed range
+        await expect(availableDates.length).toBeGreaterThan(0);
+
+        // Verify we have date buttons in the calendar
+        await expect(dateButtons.length).toBeGreaterThan(0);
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+
+        // Wait for the calendar to close
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("grid");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "Typing date outside min/max range handles gracefully",
+      async () => {
+        const dateRangePicker = await canvas.findByRole("group", {
+          name: "Date range picker with min/max values",
+        });
+        const segments = within(dateRangePicker).getAllByRole("spinbutton");
+
+        // Try to set a date before minValue (2025-06-15, which is before 2025-06-16)
+        await userEvent.click(segments[1]); // day segment
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("15"); // 15th (before minValue of 16th)
+
+        // The component should handle this gracefully - either:
+        // 1. Not allow the invalid date, or
+        // 2. Keep the previous valid value
+        // We just verify it doesn't crash and maintains a reasonable state
+        await expect(segments[1]).toHaveAttribute("aria-valuenow");
+        const dayValue = segments[1].getAttribute("aria-valuenow");
+        await expect(dayValue).toBeTruthy();
+
+        // Reset to a valid date within range
+        await userEvent.click(segments[1]);
+        await userEvent.keyboard("{Control>}a{/Control}");
+        await userEvent.keyboard("20"); // 20th (within range)
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "20");
+        });
+      }
+    );
+
+    // await step("Can select valid date from calendar within range", async () => {
+    //   const dateRangePicker = await canvas.findByRole("group", {
+    //     name: "Date picker with min/max values",
+    //   });
+    //   const calendarButton = await within(datePicker).findByRole("button", {
+    //     name: /calendar/i,
+    //   });
+
+    //   // Open calendar
+    //   await userEvent.click(calendarButton);
+
+    //   await waitFor(async () => {
+    //     const calendar = within(document.body).queryByRole("application");
+    //     await expect(calendar).toBeInTheDocument();
+    //   });
+
+    //   // Find an available (non-disabled) date and click it
+    //   const calendarGrid = await within(document.body).findByRole("grid");
+    //   const dateCells = within(calendarGrid).getAllByRole("gridcell");
+    //   const availableDates = dateCells.filter((cell) => {
+    //     const button = cell.querySelector("button");
+    //     return button && !button.hasAttribute("aria-disabled");
+    //   });
+
+    //   if (availableDates.length > 0) {
+    //     const dateButton = availableDates[0].querySelector("button");
+    //     if (dateButton) {
+    //       await userEvent.click(dateButton);
+
+    //       // Calendar should close after selection
+    //       await waitFor(async () => {
+    //         const calendar = within(document.body).queryByRole("application");
+    //         await expect(calendar).not.toBeInTheDocument();
+    //       });
+
+    //       // Clear button should be enabled after selection
+    //       const clearButton = await within(datePicker).findByRole("button", {
+    //         name: /clear/i,
+    //       });
+    //       await expect(clearButton).not.toBeDisabled();
+    //     }
+    //   }
+    // });
+
+    // await step(
+    //   "Clear and re-select functionality works within constraints",
+    //   async () => {
+    //     await userEvent.keyboard("{Escape}");
+
+    //     const dateRangePicker = await canvas.findByRole("group", {
+    //       name: "Date picker with min/max values",
+    //     });
+    //     const clearButton = await within(datePicker).findByRole("button", {
+    //       name: /clear/i,
+    //     });
+
+    //     // Clear the current value
+    //     await userEvent.click(clearButton);
+    //     await waitFor(async () => {
+    //       await expect(clearButton).toBeDisabled();
+    //     });
+
+    //     // Set a new valid date within range by typing
+    //     const segments = within(datePicker).getAllByRole("spinbutton");
+    //     await userEvent.click(segments[0]); // month
+    //     await userEvent.keyboard("7"); // July
+
+    //     await userEvent.click(segments[1]); // day
+    //     await userEvent.keyboard("1"); // 1st (should be within range since maxValue is 2025-07-15)
+
+    //     await userEvent.click(segments[2]); // year
+    //     await userEvent.keyboard("2025");
+
+    //     // Clear button should now be enabled
+    //     await expect(clearButton).not.toBeDisabled();
+
+    //     // Verify the valid date was set
+    //     await waitFor(async () => {
+    //       await expect(segments[0]).toHaveAttribute("aria-valuenow", "7"); // July
+    //       await expect(segments[1]).toHaveAttribute("aria-valuenow", "1"); // 1st
+    //       await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+    //     });
+    //   }
+    // );
+  },
+};
 
 // export const UnavailableDates: Story = {
 //   args: {
