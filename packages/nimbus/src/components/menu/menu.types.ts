@@ -34,6 +34,12 @@ export interface MenuContentProps extends RaPopoverProps {
   isLoading?: boolean;
   ref?: Ref<HTMLDivElement>;
   onAction?: (key: Key) => void;
+  // Selection props from RaMenuProps
+  selectionMode?: "none" | "single" | "multiple";
+  selectedKeys?: Iterable<Key>;
+  defaultSelectedKeys?: Iterable<Key>;
+  onSelectionChange?: (keys: "all" | Set<Key>) => void;
+  disallowEmptySelection?: boolean;
 }
 
 // Menu item component

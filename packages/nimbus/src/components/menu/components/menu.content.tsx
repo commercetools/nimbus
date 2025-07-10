@@ -10,6 +10,11 @@ export const MenuContent = ({
   shouldFlip = true,
   isLoading,
   onAction,
+  selectionMode,
+  selectedKeys,
+  defaultSelectedKeys,
+  onSelectionChange,
+  disallowEmptySelection,
   ref,
   ...props
 }: MenuContentProps) => {
@@ -27,6 +32,11 @@ export const MenuContent = ({
           shouldFocusWrap
           autoFocus="first"
           onAction={onAction}
+          selectionMode={selectionMode}
+          selectedKeys={selectedKeys}
+          defaultSelectedKeys={defaultSelectedKeys}
+          onSelectionChange={onSelectionChange}
+          disallowEmptySelection={disallowEmptySelection}
           {...restProps}
         >
           {children}

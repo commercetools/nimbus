@@ -125,7 +125,7 @@ export const WithAsChildButton: Story = {
 
       <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
-          <Button variant="outline" tone="primary">
+          <Button variant="outline" colorPalette="primary">
             <KeyboardArrowDown />
             Secondary Actions
           </Button>
@@ -139,7 +139,7 @@ export const WithAsChildButton: Story = {
 
       <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
-          <Button variant="ghost" tone="primary">
+          <Button variant="ghost" colorPalette="primary">
             <KeyboardArrowDown />
             Ghost Actions
           </Button>
@@ -159,7 +159,11 @@ export const WithAsChildIconButton: Story = {
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
       <Menu.Root defaultOpen>
         <Menu.Trigger asChild>
-          <IconButton variant="ghost" tone="neutral" aria-label="More options">
+          <IconButton
+            variant="ghost"
+            colorPalette="neutral"
+            aria-label="More options"
+          >
             <MoreVert />
           </IconButton>
         </Menu.Trigger>
@@ -178,7 +182,7 @@ export const WithAsChildIconButton: Story = {
         <Menu.Trigger asChild>
           <IconButton
             variant="solid"
-            tone="primary"
+            colorPalette="primary"
             aria-label="Primary actions"
           >
             <MoreVert />
@@ -1060,4 +1064,170 @@ export const WithTriggerProps: Story = {
       </Menu.Root>
     </div>
   ),
+};
+
+export const SingleSelection: Story = {
+  render: () => {
+    const [selectedKey, setSelectedKey] = React.useState<string>("medium");
+
+    return (
+      <Menu.Root defaultOpen>
+        <Menu.Trigger>View Options</Menu.Trigger>
+        <Menu.Content
+          selectionMode="single"
+          selectedKeys={new Set([selectedKey])}
+          onSelectionChange={(keys) => {
+            if (keys !== "all") {
+              const newKey = Array.from(keys)[0] as string;
+              setSelectedKey(newKey);
+            }
+          }}
+        >
+          <Menu.Group>
+            <Menu.GroupLabel>Text Size</Menu.GroupLabel>
+            <Menu.Item id="small" isSelected={selectedKey === "small"}>
+              <Menu.ItemLabel>Small</Menu.ItemLabel>
+              <Menu.ItemDescription>Compact text display</Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="medium" isSelected={selectedKey === "medium"}>
+              <Menu.ItemLabel>Medium</Menu.ItemLabel>
+              <Menu.ItemDescription>Default text size</Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="large" isSelected={selectedKey === "large"}>
+              <Menu.ItemLabel>Large</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Larger text for better readability
+              </Menu.ItemDescription>
+            </Menu.Item>
+          </Menu.Group>
+
+          <Menu.Separator />
+
+          <Menu.Group>
+            <Menu.GroupLabel>Theme</Menu.GroupLabel>
+            <Menu.Item id="light">
+              <Menu.ItemLabel>Light Mode</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Light background with dark text
+              </Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="dark">
+              <Menu.ItemLabel>Dark Mode</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Dark background with light text
+              </Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="auto">
+              <Menu.ItemLabel>Auto</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Follow system preference
+              </Menu.ItemDescription>
+            </Menu.Item>
+          </Menu.Group>
+        </Menu.Content>
+      </Menu.Root>
+    );
+  },
+};
+
+export const MultiSelection: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(
+      new Set(["notifications", "updates"])
+    );
+
+    return (
+      <Menu.Root defaultOpen>
+        <Menu.Trigger>
+          <Menu.ItemLabel>Email Settings</Menu.ItemLabel>
+          <Menu.ItemDescription>
+            {selectedKeys.size} option{selectedKeys.size !== 1 ? "s" : ""}{" "}
+            selected
+          </Menu.ItemDescription>
+        </Menu.Trigger>
+        <Menu.Content
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={(keys) => {
+            if (keys !== "all") {
+              setSelectedKeys(new Set(Array.from(keys) as string[]));
+            }
+          }}
+        >
+          <Menu.Group>
+            <Menu.GroupLabel>Email Preferences</Menu.GroupLabel>
+            <Menu.Item
+              id="notifications"
+              isSelected={selectedKeys.has("notifications")}
+            >
+              <Menu.ItemIcon>
+                <Notifications />
+              </Menu.ItemIcon>
+              <Menu.ItemLabel>Notifications</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Receive notifications about important events
+              </Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="updates" isSelected={selectedKeys.has("updates")}>
+              <Menu.ItemIcon>
+                <Sync />
+              </Menu.ItemIcon>
+              <Menu.ItemLabel>Product Updates</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Get notified about new features and improvements
+              </Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item
+              id="marketing"
+              isSelected={selectedKeys.has("marketing")}
+            >
+              <Menu.ItemIcon>
+                <Analytics />
+              </Menu.ItemIcon>
+              <Menu.ItemLabel>Marketing</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Receive promotional emails and offers
+              </Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="security" isSelected={selectedKeys.has("security")}>
+              <Menu.ItemIcon>
+                <Security />
+              </Menu.ItemIcon>
+              <Menu.ItemLabel>Security Alerts</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Important security notifications
+              </Menu.ItemDescription>
+            </Menu.Item>
+          </Menu.Group>
+
+          <Menu.Separator />
+
+          <Menu.Group>
+            <Menu.GroupLabel>Content Preferences</Menu.GroupLabel>
+            <Menu.Item
+              id="newsletters"
+              isSelected={selectedKeys.has("newsletters")}
+            >
+              <Menu.ItemIcon>
+                <Report />
+              </Menu.ItemIcon>
+              <Menu.ItemLabel>Newsletters</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Weekly digest of articles and insights
+              </Menu.ItemDescription>
+            </Menu.Item>
+            <Menu.Item id="tips" isSelected={selectedKeys.has("tips")}>
+              <Menu.ItemIcon>
+                <Help />
+              </Menu.ItemIcon>
+              <Menu.ItemLabel>Tips & Tricks</Menu.ItemLabel>
+              <Menu.ItemDescription>
+                Helpful tips to get the most out of the platform
+              </Menu.ItemDescription>
+            </Menu.Item>
+          </Menu.Group>
+        </Menu.Content>
+      </Menu.Root>
+    );
+  },
 };
