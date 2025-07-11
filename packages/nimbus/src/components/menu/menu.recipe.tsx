@@ -34,7 +34,7 @@ export const menuSlotRecipe = defineSlotRecipe({
     content: {
       display: "flex",
       flexDirection: "column",
-      backgroundColor: "neutral.1",
+      bg: "bg",
       borderRadius: "300",
       border: "solid-25",
       borderColor: "neutral.6",
@@ -118,11 +118,13 @@ export const menuSlotRecipe = defineSlotRecipe({
     },
     itemDescription: {
       gridArea: "description",
-      color: "neutral.10",
+      color: "neutral.11",
     },
     itemKeyboard: {
       gridArea: "keyboard",
-      color: "colorPalette.9",
+      // step 9 leads to a11y issues, so I added as much transparency as possible
+      // to step 9 as possible
+      color: "colorPalette.11/80",
       fontFamily: "mono",
       marginInlineStart: "400",
       my: "auto",
