@@ -29,10 +29,25 @@ import { DateRangePickerCustomContext } from "./components/date-range-picker.cus
  * Users can either type a date range directly or select from the calendar.
  */
 export const DateRangePicker = (props: DateRangePickerProps) => {
-  const { granularity = "day" } = props;
+  const { granularity = "day", placeholderValue } = props;
   const recipe = useSlotRecipe({ recipe: dateRangePickerSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
-  const [styleProps, otherProps] = extractStyleProps(remainingProps);
+
+  // --- Nimbus placeholderValue API explanation ---
+  // Nimbus's placeholderValue prop is an object: { start, end }
+  // This allows consumers to specify separate placeholder values for the start and end date inputs,
+  // matching the defaultValue API shape and making the API more ergonomic for date ranges.
+  //
+  // The underlying React Aria DateRangePicker expects a single DateValue for its placeholderValue prop,
+  // NOT an object. Passing our object directly would cause errors.
+  //
+  // Therefore, we intercept and remove placeholderValue from the props passed to ReactAriaDateRangePicker.
+  // We only use placeholderValue for our own child DateInput components.
+  //
+  // This pattern allows us to provide a better API for Nimbus users while still leveraging React Aria under the hood.
+  // ------------------------------------------------
+  const { placeholderValue: _ignore, ...restProps } = remainingProps;
+  const [styleProps, otherProps] = extractStyleProps(restProps);
 
   // Extract size and variant from recipe props to pass to DateInputs
   const { size = "md", variant } = recipeProps;
@@ -50,6 +65,9 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
       <ReactAriaDateRangePicker
         {...otherProps}
         shouldCloseOnSelect={shouldCloseOnSelect}
+        // Nimbus's placeholderValue is an object ({ start, end }) and is NOT compatible with
+        // ReactAriaDateRangePicker's placeholderValue prop (which expects a single DateValue).
+        // We intentionally do NOT pass it down; it is only used for the child DateInputs.
       >
         <DateRangePickerCustomContext>
           <DateRangePickerGroupSlot asChild>
@@ -59,6 +77,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 size={size}
                 variant={variant}
                 width="auto"
+                placeholderValue={placeholderValue?.start}
               />
 
               {/* TODO: find a more elegant way to do this */}
@@ -76,6 +95,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 size={size}
                 variant={variant}
                 width="auto"
+                placeholderValue={placeholderValue?.end}
               />
               <DateRangePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
