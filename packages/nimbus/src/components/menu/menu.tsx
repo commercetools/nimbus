@@ -1,7 +1,7 @@
 export { MenuRoot } from "./components/menu.root";
 export { MenuTrigger } from "./components/menu.trigger";
 export { MenuContent } from "./components/menu.content";
-export { MenuItemComponent } from "./components/menu.item";
+export { MenuItem as MenuItemComponent } from "./components/menu.item";
 export { MenuItemLabel } from "./components/menu.item-label";
 export { MenuItemDescription } from "./components/menu.item-description";
 export { MenuItemKeyboard } from "./components/menu.item-keyboard";
@@ -17,7 +17,7 @@ export type * from "./menu.types";
 import { MenuRoot } from "./components/menu.root";
 import { MenuTrigger } from "./components/menu.trigger";
 import { MenuContent } from "./components/menu.content";
-import { MenuItemComponent } from "./components/menu.item";
+import { MenuItem } from "./components/menu.item";
 import { MenuItemLabel } from "./components/menu.item-label";
 import { MenuItemDescription } from "./components/menu.item-description";
 import { MenuItemKeyboard } from "./components/menu.item-keyboard";
@@ -32,7 +32,7 @@ export const Menu = {
   Root: MenuRoot,
   Trigger: MenuTrigger,
   Content: MenuContent,
-  Item: MenuItemComponent,
+  Item: MenuItem,
   ItemLabel: MenuItemLabel,
   ItemDescription: MenuItemDescription,
   ItemKeyboard: MenuItemKeyboard,
@@ -48,7 +48,7 @@ export {
   MenuRoot as _MenuRoot,
   MenuTrigger as _MenuTrigger,
   MenuContent as _MenuContent,
-  MenuItemComponent as _MenuItemComponent,
+  MenuItem as _MenuItemComponent,
   MenuItemLabel as _MenuItemLabel,
   MenuItemDescription as _MenuItemDescription,
   MenuItemKeyboard as _MenuItemKeyboard,

@@ -1,11 +1,11 @@
-import { MenuItem } from "react-aria-components";
+import { MenuItem as RaMenuItem } from "react-aria-components";
 import { MenuItemSlot } from "../menu.slots";
 import type { MenuItemProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { ChevronRight } from "@commercetools/nimbus-icons";
 import { Icon } from "@/components/icon";
 
-export const MenuItemComponent = ({
+export const MenuItem = ({
   children,
   isSelected,
   isDanger,
@@ -23,7 +23,7 @@ export const MenuItemComponent = ({
       data-danger={isDanger ? "" : undefined}
       data-loading={isLoading ? "" : undefined}
     >
-      <MenuItem ref={ref} {...restProps}>
+      <RaMenuItem ref={ref} {...restProps}>
         {({ hasSubmenu }) => (
           <>
             {children}
@@ -34,9 +34,9 @@ export const MenuItemComponent = ({
             )}
           </>
         )}
-      </MenuItem>
+      </RaMenuItem>
     </MenuItemSlot>
   );
 };
 
-MenuItemComponent.displayName = "MenuItem";
+MenuItem.displayName = "MenuItem";
