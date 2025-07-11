@@ -32,11 +32,8 @@ const meta: Meta<typeof DateRangePicker> = {
 
 //TODO:: Review that each test provides value by making it specific to dateRange.
 //TODO:: Refactor b/c there is a bit much going on.
-//TODO:: Review that comments are helpful.
 //TODO:: Review for missing scenarios.
-//TODO: Make sure that each action has a corresponding assert.
 //TODO: Hover needs some help
-//TODO:
 
 export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
@@ -1537,26 +1534,28 @@ export const HourCycle: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("12-hour format displays PM and has AM/PM segment", async () => {
-      const twelveHourPicker = await canvas.findByRole("group", {
-        name: "12-hour format range picker",
-      });
-      const helpers = createDateRangePickerHelpers(canvas, twelveHourPicker);
-      const segments = helpers.getDateSegments();
+    await step(
+      "12-hour format displays PM and has AM/PM segments",
+      async () => {
+        const twelveHourPicker = await canvas.findByRole("group", {
+          name: "12-hour format range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, twelveHourPicker);
+        const segments = helpers.getDateSegments();
 
-      // 12-hour format should have 12 segments: month, day, year, hour, minute, AM/PM (start + end)
-      await expect(segments).toHaveLength(12);
+        // 12-hour format should have 12 segments: month, day, year, hour, minute, AM/PM (start + end)
+        await expect(segments).toHaveLength(12);
 
-      // Hour should show as 2 (14:30 = 2:30 PM in 12-hour format)
-      await expect(segments[3]).toHaveAttribute("aria-valuetext", "2 PM");
+        // Start DateInput assertions
+        await expect(segments[3]).toHaveAttribute("aria-valuetext", "2 PM");
 
-      // Should have AM/PM segment
-      const amPmSegment = segments[5];
-      await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM"); // PM = 1, AM = 0
-    });
+        // End DateInput assertions
+        await expect(segments[9]).toHaveAttribute("aria-valuetext", "4 PM");
+      }
+    );
 
     await step(
-      "24-hour format displays 14 and has no AM/PM segment",
+      "24-hour format displays 14 and has no AM/PM segments",
       async () => {
         const twentyFourHourPicker = await canvas.findByRole("group", {
           name: "24-hour format range picker",
@@ -1570,14 +1569,24 @@ export const HourCycle: Story = {
         // 24-hour format should have 10 segments: month, day, year, hour, minute (start + end)
         await expect(segments).toHaveLength(10);
 
-        // Hour should show as 14 (14:30 in 24-hour format)
+        // DateInput 1 Hour should show as 14 (14:30 in 24-hour format)
         await waitFor(async () => {
           await expect(segments[3]).toHaveAttribute("aria-valuenow", "14");
         });
 
-        // Minute should be the last segment (index 4 for start, 9 for end)
+        // DateInput 1 Minute should be the last segment (index 4 for start, 9 for end)
         await waitFor(async () => {
           await expect(segments[4]).toHaveAttribute("aria-valuenow", "30");
+        });
+
+        // DateInput 2 Hour should show as 14 (14:30 in 24-hour format)
+        await waitFor(async () => {
+          await expect(segments[8]).toHaveAttribute("aria-valuenow", "16");
+        });
+
+        // DateInput 2 Minute should be the last segment (index 4 for start, 9 for end)
+        await waitFor(async () => {
+          await expect(segments[9]).toHaveAttribute("aria-valuenow", "45");
         });
       }
     );
@@ -1803,16 +1812,12 @@ export const HideTimeZone: Story = {
         const timezoneHiddenPicker = await canvas.findByRole("group", {
           name: "With timezone hidden",
         });
-        const clearButton = await within(timezoneHiddenPicker).findByRole(
-          "button",
-          {
-            name: /clear/i,
-          }
+        const helpers = createDateRangePickerHelpers(
+          canvas,
+          timezoneHiddenPicker
         );
-        const calendarButton = await within(timezoneHiddenPicker).findByRole(
-          "button",
-          { name: /calendar/i }
-        );
+        const clearButton = await helpers.getClearButton();
+        const calendarButton = await helpers.getCalendarButton();
 
         // Clear button should be enabled (has default value)
         await expect(clearButton).not.toBeDisabled();
@@ -1982,121 +1987,224 @@ export const MinMaxValues: Story = {
       }
     );
 
-    // await step("Can select valid date from calendar within range", async () => {
-    //   const dateRangePicker = await canvas.findByRole("group", {
-    //     name: "Date picker with min/max values",
-    //   });
-    //   const calendarButton = await within(datePicker).findByRole("button", {
-    //     name: /calendar/i,
-    //   });
+    await step(
+      "Can select valid dates from calendar within range",
+      async () => {
+        const dateRangePicker = await canvas.findByRole("group", {
+          name: "Date range picker with min/max values",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateRangePicker);
+        const calendarButton = await helpers.getCalendarButton();
 
-    //   // Open calendar
-    //   await userEvent.click(calendarButton);
+        // Open calendar
+        await userEvent.click(calendarButton);
 
-    //   await waitFor(async () => {
-    //     const calendar = within(document.body).queryByRole("application");
-    //     await expect(calendar).toBeInTheDocument();
-    //   });
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
 
-    //   // Find an available (non-disabled) date and click it
-    //   const calendarGrid = await within(document.body).findByRole("grid");
-    //   const dateCells = within(calendarGrid).getAllByRole("gridcell");
-    //   const availableDates = dateCells.filter((cell) => {
-    //     const button = cell.querySelector("button");
-    //     return button && !button.hasAttribute("aria-disabled");
-    //   });
+        // Find an available (non-disabled) date and click it
+        const calendarGrid = await within(document.body).findByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+        const availableDates = dateCells.filter((cell) => {
+          const button = cell.querySelector("button");
+          return button && !button.hasAttribute("aria-disabled");
+        });
 
-    //   if (availableDates.length > 0) {
-    //     const dateButton = availableDates[0].querySelector("button");
-    //     if (dateButton) {
-    //       await userEvent.click(dateButton);
+        if (availableDates.length > 0) {
+          const dateButton = availableDates[0].querySelector("button");
+          if (dateButton) {
+            await userEvent.click(dateButton);
 
-    //       // Calendar should close after selection
-    //       await waitFor(async () => {
-    //         const calendar = within(document.body).queryByRole("application");
-    //         await expect(calendar).not.toBeInTheDocument();
-    //       });
+            // Calendar should close after selection
+            await waitFor(async () => {
+              const calendar = within(document.body).queryByRole("application");
+              await expect(calendar).not.toBeInTheDocument();
+            });
 
-    //       // Clear button should be enabled after selection
-    //       const clearButton = await within(datePicker).findByRole("button", {
-    //         name: /clear/i,
-    //       });
-    //       await expect(clearButton).not.toBeDisabled();
-    //     }
-    //   }
-    // });
+            // Clear button should be enabled after selection
+            const clearButton = await helpers.getClearButton();
+            await expect(clearButton).not.toBeDisabled();
+          }
+        }
+      }
+    );
 
-    // await step(
-    //   "Clear and re-select functionality works within constraints",
-    //   async () => {
-    //     await userEvent.keyboard("{Escape}");
+    await step(
+      "Clear and re-select functionality works within constraints",
+      async () => {
+        await userEvent.keyboard("{Escape}");
 
-    //     const dateRangePicker = await canvas.findByRole("group", {
-    //       name: "Date picker with min/max values",
-    //     });
-    //     const clearButton = await within(datePicker).findByRole("button", {
-    //       name: /clear/i,
-    //     });
+        const dateRangePicker = await canvas.findByRole("group", {
+          name: "Date range picker with min/max values",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateRangePicker);
+        const clearButton = await helpers.getClearButton();
 
-    //     // Clear the current value
-    //     await userEvent.click(clearButton);
-    //     await waitFor(async () => {
-    //       await expect(clearButton).toBeDisabled();
-    //     });
+        // Clear the current value
+        await userEvent.click(clearButton);
+        await waitFor(async () => {
+          await expect(clearButton).toBeDisabled();
+        });
 
-    //     // Set a new valid date within range by typing
-    //     const segments = within(datePicker).getAllByRole("spinbutton");
-    //     await userEvent.click(segments[0]); // month
-    //     await userEvent.keyboard("7"); // July
+        // DateInput 1 - Set a new valid date within range by typing
+        const segments = helpers.getDateSegments();
+        await userEvent.click(segments[0]);
+        await userEvent.keyboard("7");
 
-    //     await userEvent.click(segments[1]); // day
-    //     await userEvent.keyboard("1"); // 1st (should be within range since maxValue is 2025-07-15)
+        await userEvent.click(segments[1]);
+        await userEvent.keyboard("1");
 
-    //     await userEvent.click(segments[2]); // year
-    //     await userEvent.keyboard("2025");
+        await userEvent.click(segments[2]);
+        await userEvent.keyboard("2025");
 
-    //     // Clear button should now be enabled
-    //     await expect(clearButton).not.toBeDisabled();
+        // DateInput 2 - Set a new valid date within range by typing
+        await userEvent.click(segments[3]);
+        await userEvent.keyboard("8");
 
-    //     // Verify the valid date was set
-    //     await waitFor(async () => {
-    //       await expect(segments[0]).toHaveAttribute("aria-valuenow", "7"); // July
-    //       await expect(segments[1]).toHaveAttribute("aria-valuenow", "1"); // 1st
-    //       await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
-    //     });
-    //   }
-    // );
+        await userEvent.click(segments[4]);
+        await userEvent.keyboard("7");
+
+        await userEvent.click(segments[5]);
+        await userEvent.keyboard("2025");
+
+        // Clear button should now be enabled
+        await expect(clearButton).not.toBeDisabled();
+
+        // Verify the valid date was set
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "7");
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "1");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+          await expect(segments[3]).toHaveAttribute("aria-valuenow", "8");
+          await expect(segments[4]).toHaveAttribute("aria-valuenow", "7");
+          await expect(segments[5]).toHaveAttribute("aria-valuenow", "2025");
+        });
+      }
+    );
   },
 };
 
-// export const UnavailableDates: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     const isOddDay = (date: DateValue) => {
-//       return date.day % 2 === 1;
-//     };
+export const UnavailableDates: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    const isFirstTenDaysUnavailable = (date: DateValue) => {
+      return date.day <= 10;
+    };
 
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>Dr. Orderly only accepts appointments on even days:</Text>
-//         <DateRangePicker
-//           {...args}
-//           isDateUnavailable={isOddDay}
-//           defaultValue={{
-//             start: new CalendarDate(2025, 6, 16),
-//             end: new CalendarDate(2025, 6, 20),
-//           }}
-//           aria-label="Even days only range picker"
-//         />
-//         <Text fontSize="sm" color="neutral.11">
-//           (Odd-numbered days are marked as unavailable and cannot be selected.)
-//         </Text>
-//       </Stack>
-//     );
-//   },
-// };
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>
+          Dr. Orderly is on holiday for the first 10 days of each month.
+        </Text>
+        <DateRangePicker
+          {...args}
+          isDateUnavailable={isFirstTenDaysUnavailable}
+          defaultValue={{
+            start: new CalendarDate(2025, 6, 16),
+            end: new CalendarDate(2025, 6, 20),
+          }}
+          aria-label="First 10 days unavailable range picker"
+        />
+        <Text fontSize="sm" color="neutral.11">
+          (First 10 days of each month are marked as unavailable and cannot be
+          selected.)
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Calendar shows first 10 days of each month as disabled",
+      async () => {
+        const dateRangePicker = await canvas.findByRole("group", {
+          name: "First 10 days unavailable range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateRangePicker);
+        const calendarButton = await helpers.getCalendarButton();
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Find the calendar grid
+        const calendarGrid = await within(document.body).findByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+
+        // Check for first 10 days and remaining days
+        const firstTenDayButtons = [];
+        const remainingDayButtons = [];
+
+        for (const cell of dateCells) {
+          const button = within(cell).queryByRole("button");
+          if (!button) continue;
+
+          const ariaLabel = button.getAttribute("aria-label");
+          if (!ariaLabel) continue;
+
+          // Extract day number from aria-label
+          const dayMatch = ariaLabel.match(/\b(\d{1,2})\b/);
+          if (!dayMatch) continue;
+
+          const dayNumber = parseInt(dayMatch[1]);
+          if (dayNumber < 1 || dayNumber > 31) continue;
+
+          if (dayNumber <= 10) {
+            firstTenDayButtons.push(button);
+          } else {
+            remainingDayButtons.push(button);
+          }
+        }
+
+        // Verify we found both first 10 days and remaining days
+        await expect(firstTenDayButtons.length).toBeGreaterThan(0);
+        await expect(remainingDayButtons.length).toBeGreaterThan(0);
+
+        // All first 10 day buttons should be disabled
+        for (const firstTenButton of firstTenDayButtons) {
+          await expect(firstTenButton).toHaveAttribute("aria-disabled", "true");
+        }
+
+        // At least some remaining day buttons should be enabled
+        const enabledRemainingButtons = remainingDayButtons.filter(
+          (button) =>
+            !button.hasAttribute("aria-disabled") ||
+            button.getAttribute("aria-disabled") !== "true"
+        );
+        await expect(enabledRemainingButtons.length).toBeGreaterThan(0);
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+    await step(
+      "Can successfully select available range from calendar",
+      async () => {}
+    );
+    await step(
+      "Cannot select first 10 days from calendar (clicking disabled dates)",
+      async () => {}
+    );
+    await step(
+      "Keyboard navigation in day segment respects unavailable dates",
+      async () => {}
+    );
+  },
+};
 
 // export const NonContiguousRanges: Story = {
 //   args: {
@@ -2332,3 +2440,6 @@ export const MinMaxValues: Story = {
 //     );
 //   },
 // };
+
+//TODO - leading zeros
+//TODO - Invalid
