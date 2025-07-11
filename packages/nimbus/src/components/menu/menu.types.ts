@@ -1,6 +1,5 @@
 import type { ReactNode, Ref } from "react";
 import type {
-  Key,
   MenuTriggerProps as RaMenuTriggerProps,
   MenuProps as RaMenuProps,
   MenuItemProps as RaMenuItemProps,
@@ -30,16 +29,18 @@ export interface MenuTriggerProps
 }
 
 // Menu content/popover component
-export interface MenuContentProps extends RaPopoverProps {
-  isLoading?: boolean;
+export interface MenuContentProps
+  extends RaPopoverProps,
+    Pick<
+      RaMenuProps<object>,
+      | "onAction"
+      | "selectionMode"
+      | "selectedKeys"
+      | "defaultSelectedKeys"
+      | "onSelectionChange"
+      | "disallowEmptySelection"
+    > {
   ref?: Ref<HTMLDivElement>;
-  onAction?: (key: Key) => void;
-  // Selection props from RaMenuProps
-  selectionMode?: "none" | "single" | "multiple";
-  selectedKeys?: Iterable<Key>;
-  defaultSelectedKeys?: Iterable<Key>;
-  onSelectionChange?: (keys: "all" | Set<Key>) => void;
-  disallowEmptySelection?: boolean;
 }
 
 // Menu item component

@@ -981,7 +981,7 @@ export const WithInteractiveStates: Story = {
 
       <Menu.Root defaultOpen>
         <Menu.Trigger>Loading Content</Menu.Trigger>
-        <Menu.Content isLoading>
+        <Menu.Content>
           <Menu.Item id="item1">Item 1</Menu.Item>
           <Menu.Item id="item2">Item 2</Menu.Item>
         </Menu.Content>

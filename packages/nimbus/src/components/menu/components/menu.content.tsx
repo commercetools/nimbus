@@ -8,7 +8,6 @@ export const MenuContent = ({
   placement = "bottom start",
   offset = 4,
   shouldFlip = true,
-  isLoading,
   onAction,
   selectionMode,
   selectedKeys,
@@ -22,11 +21,7 @@ export const MenuContent = ({
 
   return (
     <Popover placement={placement} offset={offset} shouldFlip={shouldFlip}>
-      <MenuContentSlot
-        asChild
-        {...styleProps}
-        data-loading={isLoading ? "" : undefined}
-      >
+      <MenuContentSlot asChild {...styleProps}>
         <Menu
           ref={ref}
           shouldFocusWrap
