@@ -1,5 +1,5 @@
 import { Figma } from "@commercetools/nimbus-icons";
-import { Button } from "@commercetools/nimbus";
+import { IconButton } from "@commercetools/nimbus";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const FigmaLink = () => {
@@ -8,10 +8,15 @@ export const FigmaLink = () => {
   if (!meta?.figmaLink) return null;
 
   return (
-    <Button size="xs" variant="ghost" asChild>
-      <a href={meta.figmaLink} target="_blank">
+    <IconButton
+      asChild
+      size="xs"
+      variant="ghost"
+      aria-label="Open Figma Design"
+    >
+      <a href={meta.figmaLink} target="_blank" rel="noopener noreferrer">
         <Figma />
       </a>
-    </Button>
+    </IconButton>
   );
 };

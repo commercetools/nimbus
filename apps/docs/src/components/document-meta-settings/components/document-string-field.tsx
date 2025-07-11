@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+
 import {
   IconButton,
   TextInput,
@@ -7,6 +8,7 @@ import {
   Flex,
   Box,
   LoadingSpinner,
+  MultilineTextInput,
 } from "@commercetools/nimbus";
 
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
@@ -26,12 +28,15 @@ type DocumentStringFieldEditProps = {
   placeholder: string;
   /** the document property you want to edit */
   metaProperty: AllowedMetaProps;
+  /** whether the field should be multiline */
+  isMultiline?: boolean;
 };
 
-export const DocumentStringFieldEdit = ({
+export const DocumentStringField = ({
   label,
   placeholder,
   metaProperty,
+  isMultiline = false,
 }: DocumentStringFieldEditProps) => {
   const { meta, updateMeta } = useUpdateDocument();
   const [value, setValue] = useState<string>(meta?.[metaProperty] || "");
@@ -67,18 +72,30 @@ export const DocumentStringFieldEdit = ({
       </Text>
       <Flex alignItems="center" width="full" gap="200">
         <Box flexGrow={1} marginRight="spacing.4">
-          <TextInput
-            size="md"
-            value={value}
-            onChange={(value) => setValue(value)}
-            placeholder={placeholder}
-            width="full"
-            aria-label={`${label} input`}
-          />
+          {isMultiline ? (
+            <MultilineTextInput
+              size="md"
+              value={value}
+              onChange={(value) => setValue(value)}
+              placeholder={placeholder}
+              width="full"
+              aria-label={`${label} input`}
+              minHeight="20"
+            />
+          ) : (
+            <TextInput
+              size="md"
+              value={value}
+              onChange={(value) => setValue(value)}
+              placeholder={placeholder}
+              width="full"
+              aria-label={`${label} input`}
+            />
+          )}
         </Box>
         <IconButton
           variant={unsaved ? "solid" : undefined}
-          tone={unsaved ? "primary" : "neutral"}
+          colorPalette={unsaved ? "primary" : "neutral"}
           size="md"
           onPress={() => {
             void handlePress();
