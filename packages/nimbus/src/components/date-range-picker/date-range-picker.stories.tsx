@@ -11,7 +11,6 @@ import {
 import type { DateValue } from "react-aria";
 import type { RangeValue } from "@/components/range-calendar";
 import { userEvent, within, expect, waitFor } from "storybook/test";
-import { fireEvent } from "@testing-library/react";
 
 /**
  * Storybook metadata configuration
