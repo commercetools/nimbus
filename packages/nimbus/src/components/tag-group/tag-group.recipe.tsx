@@ -29,16 +29,16 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
       fontSize: "400",
       lineHeight: "500",
       focusVisibleRing: "outside",
-      "&[data-disabled] &": {
+      '&[data-disabled="true"] &': {
         layerStyle: "disabled",
         pointerEvents: "none",
       },
-      "&[data-selected]": {
+      '&[data-selected="true"]': {
         background: "colorPalette.9",
         color: "colorPalette.contrast",
         cursor: "button",
       },
-      "&[aria-selected]": {
+      '&[aria-selected="true"]': {
         cursor: "button",
       },
       "& [role='gridcell']": {
