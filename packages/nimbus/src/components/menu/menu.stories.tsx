@@ -441,7 +441,10 @@ export const WithLinks: Story = {
 
 export const ComplexExample: Story = {
   render: () => (
-    <Menu.Root defaultOpen>
+    <Menu.Root
+      defaultOpen
+      onAction={(key) => console.log("Action triggered", key)}
+    >
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Group>
@@ -1071,18 +1074,19 @@ export const SingleSelection: Story = {
     const [selectedKey, setSelectedKey] = React.useState<string>("medium");
 
     return (
-      <Menu.Root defaultOpen>
+      <Menu.Root
+        defaultOpen
+        selectionMode="single"
+        selectedKeys={new Set([selectedKey])}
+        onSelectionChange={(keys) => {
+          if (keys !== "all") {
+            const newKey = Array.from(keys)[0] as string;
+            setSelectedKey(newKey);
+          }
+        }}
+      >
         <Menu.Trigger>View Options</Menu.Trigger>
-        <Menu.Content
-          selectionMode="single"
-          selectedKeys={new Set([selectedKey])}
-          onSelectionChange={(keys) => {
-            if (keys !== "all") {
-              const newKey = Array.from(keys)[0] as string;
-              setSelectedKey(newKey);
-            }
-          }}
-        >
+        <Menu.Content>
           <Menu.Group>
             <Menu.GroupLabel>Text Size</Menu.GroupLabel>
             <Menu.Item id="small" isSelected={selectedKey === "small"}>
@@ -1128,6 +1132,123 @@ export const SingleSelection: Story = {
       </Menu.Root>
     );
   },
+};
+
+export const WithClickLogging: Story = {
+  render: () => (
+    <Menu.Root
+      defaultOpen
+      onAction={(key) => console.log("Menu action triggered:", key)}
+    >
+      <Menu.Trigger>Actions Menu</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="copy">
+          <Menu.ItemIcon>
+            <ContentCopy />
+          </Menu.ItemIcon>
+          <Menu.ItemLabel>Copy</Menu.ItemLabel>
+          <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
+        </Menu.Item>
+        <Menu.Item id="cut">
+          <Menu.ItemLabel>Cut</Menu.ItemLabel>
+          <Menu.ItemKeyboard>⌘X</Menu.ItemKeyboard>
+        </Menu.Item>
+        <Menu.Item id="paste">
+          <Menu.ItemIcon>
+            <ContentPaste />
+          </Menu.ItemIcon>
+          <Menu.ItemLabel>Paste</Menu.ItemLabel>
+          <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
+        </Menu.Item>
+
+        <Menu.Separator />
+
+        <Menu.Item id="delete" isDanger>
+          <Menu.ItemIcon>
+            <Delete />
+          </Menu.ItemIcon>
+          <Menu.ItemLabel>Delete</Menu.ItemLabel>
+          <Menu.ItemKeyboard>⌫</Menu.ItemKeyboard>
+        </Menu.Item>
+
+        <Menu.Separator />
+
+        <Menu.SubmenuTrigger>
+          <Menu.Item>
+            <Menu.ItemIcon>
+              <FolderOpen />
+            </Menu.ItemIcon>
+            <Menu.ItemLabel>More Options</Menu.ItemLabel>
+          </Menu.Item>
+          <Menu.Submenu>
+            <Menu.Item id="option1">Option 1</Menu.Item>
+            <Menu.Item id="option2">Option 2</Menu.Item>
+            <Menu.SubmenuTrigger>
+              <Menu.Item>Even More</Menu.Item>
+              <Menu.Submenu>
+                <Menu.Item id="deep1">Deep Option 1</Menu.Item>
+                <Menu.Item id="deep2">Deep Option 2</Menu.Item>
+              </Menu.Submenu>
+            </Menu.SubmenuTrigger>
+          </Menu.Submenu>
+        </Menu.SubmenuTrigger>
+      </Menu.Content>
+    </Menu.Root>
+  ),
+};
+
+export const WithCentralizedPropsAndOverride: Story = {
+  render: () => (
+    <Menu.Root
+      defaultOpen
+      onAction={(key) => console.log("Root handler:", key)}
+      selectionMode="single"
+      defaultSelectedKeys={["view-list"]}
+    >
+      <Menu.Trigger>Settings Menu</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Group>
+          <Menu.GroupLabel>View Options (inherits root props)</Menu.GroupLabel>
+          <Menu.Item id="view-list">List View</Menu.Item>
+          <Menu.Item id="view-grid">Grid View</Menu.Item>
+          <Menu.Item id="view-detail">Detail View</Menu.Item>
+        </Menu.Group>
+
+        <Menu.Separator />
+
+        <Menu.SubmenuTrigger>
+          <Menu.Item>
+            <Menu.ItemIcon>
+              <Settings />
+            </Menu.ItemIcon>
+            <Menu.ItemLabel>Advanced Settings</Menu.ItemLabel>
+          </Menu.Item>
+          <Menu.Submenu
+            onAction={(key) => console.log("Submenu override handler:", key)}
+          >
+            <Menu.Item id="advanced-1">Advanced Option 1</Menu.Item>
+            <Menu.Item id="advanced-2">Advanced Option 2</Menu.Item>
+
+            <Menu.SubmenuTrigger>
+              <Menu.Item>More Settings</Menu.Item>
+              <Menu.Submenu>
+                <Menu.Item id="deep-1">
+                  Deep Setting 1 (uses submenu handler)
+                </Menu.Item>
+                <Menu.Item id="deep-2">
+                  Deep Setting 2 (uses submenu handler)
+                </Menu.Item>
+              </Menu.Submenu>
+            </Menu.SubmenuTrigger>
+          </Menu.Submenu>
+        </Menu.SubmenuTrigger>
+
+        <Menu.Separator />
+
+        <Menu.Item id="logout">Logout (uses root handler)</Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  ),
 };
 
 export const MultiSelection: Story = {

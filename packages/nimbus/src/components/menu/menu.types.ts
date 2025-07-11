@@ -13,7 +13,16 @@ import type { MenuRootSlotProps, MenuTriggerSlotProps } from "./menu.slots";
 // Root component that wraps MenuTrigger
 export interface MenuRootProps
   extends Omit<MenuRootSlotProps, "children" | "css" | "asChild" | "as">,
-    Omit<RaMenuTriggerProps, "trigger"> {
+    Omit<RaMenuTriggerProps, "trigger">,
+    Pick<
+      RaMenuProps<object>,
+      | "onAction"
+      | "selectionMode"
+      | "selectedKeys"
+      | "defaultSelectedKeys"
+      | "onSelectionChange"
+      | "disallowEmptySelection"
+    > {
   /**
    * The trigger event to use for the menu.
    * @default "press"
