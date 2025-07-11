@@ -42,4 +42,4 @@ export const MenuContent = ({ children, ref }: MenuContentProps) => {
   );
 };
 
-MenuContent.displayName = "MenuContent";
+MenuContent.displayName = "Menu.Content";

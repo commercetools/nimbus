@@ -16,4 +16,4 @@ export const MenuItemDescription = ({
   );
 };
 
-MenuItemDescription.displayName = "MenuItemDescription";
+MenuItemDescription.displayName = "Menu.ItemDescription";

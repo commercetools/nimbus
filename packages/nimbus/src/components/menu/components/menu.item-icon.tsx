@@ -16,4 +16,4 @@ export const MenuItemIcon = ({
   );
 };
 
-MenuItemIcon.displayName = "MenuItemIcon";
+MenuItemIcon.displayName = "Menu.ItemIcon";

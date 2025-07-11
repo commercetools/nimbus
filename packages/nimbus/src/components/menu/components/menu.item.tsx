@@ -39,4 +39,4 @@ export const MenuItem = ({
   );
 };
 
-MenuItem.displayName = "MenuItem";
+MenuItem.displayName = "Menu.Item";

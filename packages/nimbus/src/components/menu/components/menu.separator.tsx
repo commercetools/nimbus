@@ -13,4 +13,4 @@ export const MenuSeparator = ({ ref, ...props }: MenuSeparatorProps) => {
   );
 };
 
-MenuSeparator.displayName = "MenuSeparator";
+MenuSeparator.displayName = "Menu.Separator";

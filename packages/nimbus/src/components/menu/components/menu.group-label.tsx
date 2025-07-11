@@ -19,4 +19,4 @@ export const MenuGroupLabel = ({
   );
 };
 
-MenuGroupLabel.displayName = "MenuGroupLabel";
+MenuGroupLabel.displayName = "Menu.GroupLabel";

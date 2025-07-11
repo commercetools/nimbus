@@ -16,4 +16,4 @@ export const MenuItemLabel = ({
   );
 };
 
-MenuItemLabel.displayName = "MenuItemLabel";
+MenuItemLabel.displayName = "Menu.ItemLabel";

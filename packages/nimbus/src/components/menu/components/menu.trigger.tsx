@@ -37,4 +37,4 @@ export const MenuTrigger = ({
   );
 };
 
-MenuTrigger.displayName = "MenuTrigger";
+MenuTrigger.displayName = "Menu.Trigger";

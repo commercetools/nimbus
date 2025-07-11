@@ -17,4 +17,4 @@ export const MenuItemKeyboard = ({
   );
 };
 
-MenuItemKeyboard.displayName = "MenuItemKeyboard";
+MenuItemKeyboard.displayName = "Menu.ItemKeyboard";

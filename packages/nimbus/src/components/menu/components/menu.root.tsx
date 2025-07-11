@@ -39,4 +39,4 @@ export const MenuRoot = (props: MenuRootProps) => {
   );
 };
 
-MenuRoot.displayName = "MenuRoot";
+MenuRoot.displayName = "Menu.Root";

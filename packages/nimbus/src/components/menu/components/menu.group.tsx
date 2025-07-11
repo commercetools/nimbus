@@ -15,4 +15,4 @@ export const MenuGroup = ({ children, ref, ...props }: MenuGroupProps) => {
   );
 };
 
-MenuGroup.displayName = "MenuGroup";
+MenuGroup.displayName = "Menu.Group";

@@ -1,11 +1,13 @@
-import { SubmenuTrigger } from "react-aria-components";
-import type { MenuContentProps } from "../menu.types";
+import {
+  SubmenuTrigger as RaSubmenuTrigger,
+  type SubmenuTriggerProps,
+} from "react-aria-components";
 
 export const MenuSubmenuTrigger = ({
   children,
   ...props
-}: MenuContentProps) => {
-  return <SubmenuTrigger {...props}>{children}</SubmenuTrigger>;
+}: SubmenuTriggerProps) => {
+  return <RaSubmenuTrigger {...props}>{children}</RaSubmenuTrigger>;
 };
 
-MenuSubmenuTrigger.displayName = "MenuSubmenuTrigger";
+MenuSubmenuTrigger.displayName = "Menu.SubmenuTrigger";
