@@ -38,17 +38,7 @@ export interface MenuTriggerProps
 }
 
 // Menu content/popover component
-export interface MenuContentProps
-  extends RaPopoverProps,
-    Pick<
-      RaMenuProps<object>,
-      | "onAction"
-      | "selectionMode"
-      | "selectedKeys"
-      | "defaultSelectedKeys"
-      | "onSelectionChange"
-      | "disallowEmptySelection"
-    > {
+export interface MenuContentProps extends RaPopoverProps {
   ref?: Ref<HTMLDivElement>;
 }
 

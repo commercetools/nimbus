@@ -9,25 +9,25 @@ export const MenuContent = ({
   placement = "bottom start",
   offset = 4,
   shouldFlip = true,
-  onAction: localOnAction,
-  selectionMode: localSelectionMode,
-  selectedKeys: localSelectedKeys,
-  defaultSelectedKeys: localDefaultSelectedKeys,
-  onSelectionChange: localOnSelectionChange,
-  disallowEmptySelection: localDisallowEmptySelection,
   ref,
   ...props
 }: MenuContentProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
   const contextProps = useMenuContext();
 
-  // Local props override context props
-  const onAction = localOnAction ?? contextProps?.onAction;
-  const selectionMode = localSelectionMode ?? contextProps?.selectionMode;
-  const selectedKeys = localSelectedKeys ?? contextProps?.selectedKeys;
-  const defaultSelectedKeys = localDefaultSelectedKeys ?? contextProps?.defaultSelectedKeys;
-  const onSelectionChange = localOnSelectionChange ?? contextProps?.onSelectionChange;
-  const disallowEmptySelection = localDisallowEmptySelection ?? contextProps?.disallowEmptySelection;
+  if (!contextProps) {
+    throw new Error("Menu.Content must be used within Menu.Root");
+  }
+
+  // Use context props only
+  const {
+    onAction,
+    selectionMode,
+    selectedKeys,
+    defaultSelectedKeys,
+    onSelectionChange,
+    disallowEmptySelection,
+  } = contextProps;
 
   return (
     <Popover placement={placement} offset={offset} shouldFlip={shouldFlip}>
