@@ -28,6 +28,11 @@ export interface MenuRootProps
    * @default "press"
    */
   trigger?: "press" | "longPress";
+  /**
+   * The placement of the menu relative to the trigger.
+   * @default "bottom start"
+   */
+  placement?: RaPopoverProps["placement"];
 }
 
 // Trigger button component - inherit children from ButtonProps to support render props
@@ -38,7 +43,8 @@ export interface MenuTriggerProps
 }
 
 // Menu content/popover component
-export interface MenuContentProps extends RaPopoverProps {
+export interface MenuContentProps {
+  children?: ReactNode;
   ref?: Ref<HTMLDivElement>;
 }
 

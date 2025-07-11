@@ -1,18 +1,9 @@
 import { Menu, Popover } from "react-aria-components";
 import { MenuContentSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useMenuContext } from "./menu.context";
 
-export const MenuContent = ({
-  children,
-  placement = "bottom start",
-  offset = 4,
-  shouldFlip = true,
-  ref,
-  ...props
-}: MenuContentProps) => {
-  const [styleProps, restProps] = extractStyleProps(props);
+export const MenuContent = ({ children, ref }: MenuContentProps) => {
   const contextProps = useMenuContext();
 
   if (!contextProps) {
@@ -27,11 +18,12 @@ export const MenuContent = ({
     defaultSelectedKeys,
     onSelectionChange,
     disallowEmptySelection,
+    placement = "bottom start",
   } = contextProps;
 
   return (
-    <Popover placement={placement} offset={offset} shouldFlip={shouldFlip}>
-      <MenuContentSlot asChild {...styleProps}>
+    <Popover placement={placement} offset={4} shouldFlip>
+      <MenuContentSlot asChild>
         <Menu
           ref={ref}
           shouldFocusWrap
@@ -42,7 +34,6 @@ export const MenuContent = ({
           defaultSelectedKeys={defaultSelectedKeys}
           onSelectionChange={onSelectionChange}
           disallowEmptySelection={disallowEmptySelection}
-          {...restProps}
         >
           {children}
         </Menu>

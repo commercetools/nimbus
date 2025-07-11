@@ -9,6 +9,7 @@ export type MenuContextValue = Pick<
   | "defaultSelectedKeys"
   | "onSelectionChange"
   | "disallowEmptySelection"
+  | "placement"
 >;
 
 const MenuContext = createContext<MenuContextValue | undefined>(undefined);

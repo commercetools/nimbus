@@ -16,6 +16,7 @@ export const MenuRoot = (props: MenuRootProps) => {
     defaultSelectedKeys,
     onSelectionChange,
     disallowEmptySelection,
+    placement,
     ...menuTriggerProps
   } = functionalProps;
 
@@ -26,6 +27,7 @@ export const MenuRoot = (props: MenuRootProps) => {
     defaultSelectedKeys,
     onSelectionChange,
     disallowEmptySelection,
+    placement,
   };
 
   return (

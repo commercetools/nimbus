@@ -343,66 +343,214 @@ export const WithDifferentPlacements: Story = {
   render: () => (
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "2rem",
-        padding: "4rem",
-        minHeight: "300px",
+        position: "relative",
+        height: "600px",
+        width: "100%",
+        border: "1px dashed #ccc",
+        background: "#f5f5f5",
       }}
     >
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Top Start</Menu.Trigger>
-        <Menu.Content placement="top start">
+      {/* Top placements */}
+      <Menu.Root defaultOpen placement="top start">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              top: "150px",
+              left: "20%",
+            }}
+          >
+            Top Start
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Top</Menu.Trigger>
-        <Menu.Content placement="top">
+      <Menu.Root defaultOpen placement="top">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              top: "150px",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          >
+            Top
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Top End</Menu.Trigger>
-        <Menu.Content placement="top end">
+      <Menu.Root defaultOpen placement="top end">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              top: "150px",
+              right: "20%",
+            }}
+          >
+            Top End
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Bottom Start</Menu.Trigger>
-        <Menu.Content placement="bottom start">
+      {/* Middle placements (left and right) */}
+      <Menu.Root defaultOpen placement="left">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "150px",
+              transform: "translateY(-50%)",
+            }}
+          >
+            Left
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Bottom</Menu.Trigger>
-        <Menu.Content placement="bottom">
+      <Menu.Root defaultOpen placement="right">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              top: "50%",
+              right: "150px",
+              transform: "translateY(-50%)",
+            }}
+          >
+            Right
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
       </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Bottom End</Menu.Trigger>
-        <Menu.Content placement="bottom end">
+      {/* Bottom placements */}
+      <Menu.Root defaultOpen placement="bottom start">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              bottom: "150px",
+              left: "20%",
+            }}
+          >
+            Bottom Start
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
           <Menu.Item id="item1">Menu Item 1</Menu.Item>
           <Menu.Item id="item2">Menu Item 2</Menu.Item>
           <Menu.Item id="item3">Menu Item 3</Menu.Item>
         </Menu.Content>
       </Menu.Root>
+
+      <Menu.Root defaultOpen placement="bottom">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="sm"
+            style={{
+              position: "absolute",
+              bottom: "150px",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          >
+            Bottom
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="item1">Menu Item 1</Menu.Item>
+          <Menu.Item id="item2">Menu Item 2</Menu.Item>
+          <Menu.Item id="item3">Menu Item 3</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+
+      <Menu.Root defaultOpen placement="bottom end">
+        <Menu.Trigger asChild>
+          <Button
+            variant="solid"
+            size="xs"
+            style={{
+              position: "absolute",
+              bottom: "150px",
+              right: "20%",
+            }}
+          >
+            Bottom End
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="item1">Menu Item 1</Menu.Item>
+          <Menu.Item id="item2">Menu Item 2</Menu.Item>
+          <Menu.Item id="item3">Menu Item 3</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+
+      {/* Labels to show placement names */}
+      <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          fontSize: "14px",
+          color: "#666",
+          fontWeight: "600",
+        }}
+      >
+        Menu Placement Examples
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          fontSize: "12px",
+          color: "#999",
+        }}
+      >
+        Buttons are positioned to demonstrate different menu placements
+      </div>
     </div>
   ),
 };
