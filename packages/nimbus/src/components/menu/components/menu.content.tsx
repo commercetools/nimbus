@@ -2,7 +2,7 @@ import { Menu, Popover } from "react-aria-components";
 import { MenuContentSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { useMenuContext } from "../menu.context";
+import { useMenuContext } from "./menu.context";
 
 export const MenuContent = ({
   children,

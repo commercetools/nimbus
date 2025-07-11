@@ -2,7 +2,7 @@ import { MenuTrigger } from "react-aria-components";
 import { MenuRootSlot } from "../menu.slots";
 import type { MenuRootProps } from "../menu.types";
 import { useSlotRecipe } from "@chakra-ui/react";
-import { MenuProvider } from "../menu.context";
+import { MenuProvider } from "./menu.context";
 
 export const MenuRoot = (props: MenuRootProps) => {
   const recipe = useSlotRecipe({ key: "menu" });

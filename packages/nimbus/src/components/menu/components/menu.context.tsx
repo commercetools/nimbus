@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { MenuContentProps } from "./menu.types";
+import type { MenuContentProps } from "./../menu.types";
 
 export type MenuContextValue = Pick<
   MenuContentProps,
