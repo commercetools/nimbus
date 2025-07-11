@@ -75,12 +75,27 @@ export const menuSlotRecipe = defineSlotRecipe({
       borderRadius: "200",
       cursor: "pointer",
       userSelect: "none",
-      color: "neutral.12",
+      color: "fg",
       fontSize: "400",
       lineHeight: "500",
       position: "relative",
-      transition: "all 150ms ease-out",
       textStyle: "sm",
+      outline: 0,
+
+      // Hover state
+      "&[data-hovered='true'], &[data-focused='true']": {
+        bg: "primary.2",
+        outline: "none",
+      },
+
+      // keyboard focused
+      "&[data-focus-visible]": {
+        focusRing: "outside",
+      },
+
+      "&[data-selected]": {
+        bg: "primary.3",
+      },
 
       "& [slot='caretIcon']": {
         gridArea: "flyoutCaret",
@@ -91,77 +106,10 @@ export const menuSlotRecipe = defineSlotRecipe({
         color: "neutral.11",
       },
 
-      // Hover state
-      "&:hover:not([data-disabled])": {
-        backgroundColor: "neutral.3",
-        color: "neutral.12",
-      },
-
-      // Highlighted state (keyboard navigation)
-      "&[data-highlighted]": {
-        backgroundColor: "neutral.4",
-        outline: "none",
-        color: "neutral.12",
-      },
-
-      // Active/pressed state
-      "&:active:not([data-disabled])": {
-        backgroundColor: "neutral.5",
-        transform: "scale(0.98)",
-      },
-
-      // Focus-visible state for keyboard navigation
-      "&:focus-visible": {
-        outline: "2px solid",
-        outlineColor: "colorPalette.7",
-        outlineOffset: "2px",
-        backgroundColor: "neutral.4",
-      },
-
-      // Selected state
-      "&[data-selected]": {
-        backgroundColor: "colorPalette.3",
-        color: "colorPalette.11",
-
-        "&:hover": {
-          backgroundColor: "colorPalette.4",
-        },
-      },
-
       // Disabled state
       "&[data-disabled]": {
         layerStyle: "disabled",
         pointerEvents: "none",
-      },
-
-      // Danger/destructive state
-      "&[data-danger]": {
-        color: "critical.11",
-
-        "&:hover:not([data-disabled])": {
-          backgroundColor: "critical.3",
-          color: "critical.12",
-        },
-
-        "&[data-highlighted]": {
-          backgroundColor: "critical.4",
-          color: "critical.12",
-        },
-
-        "&:active:not([data-disabled])": {
-          backgroundColor: "critical.5",
-        },
-      },
-
-      // Loading state
-      "&[data-loading]": {
-        opacity: "0.7",
-        cursor: "wait",
-        pointerEvents: "none",
-      },
-
-      "&:focus": {
-        outline: "none",
       },
     },
     itemLabel: {
@@ -174,7 +122,7 @@ export const menuSlotRecipe = defineSlotRecipe({
     },
     itemKeyboard: {
       gridArea: "keyboard",
-      color: "colorPalette.11/75",
+      color: "colorPalette.9",
       fontFamily: "mono",
       marginInlineStart: "400",
       my: "auto",
@@ -205,14 +153,14 @@ export const menuSlotRecipe = defineSlotRecipe({
       flexDirection: "column",
     },
     groupLabel: {
-      fontSize: "300",
+      textStyle: "xs",
       fontWeight: "600",
       color: "neutral.11",
       px: "300",
       py: "200",
       marginBottom: "100",
       textTransform: "uppercase",
-      letterSpacing: "0.05em",
+      letterSpacing: "{spacing.25}",
     },
   },
 });
