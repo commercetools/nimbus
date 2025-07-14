@@ -52,7 +52,6 @@ export interface MenuContentProps {
 export interface MenuItemProps extends RaMenuItemProps {
   isSelected?: boolean;
   isCritical?: boolean;
-  isLoading?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
 

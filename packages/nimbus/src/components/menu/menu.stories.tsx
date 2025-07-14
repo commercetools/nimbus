@@ -642,7 +642,7 @@ export const ComplexExample: Story = {
             <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
 
-          <Menu.Item id="loading" isLoading>
+          <Menu.Item id="loading">
             <Icon slot="icon">
               <Sync />
             </Icon>
@@ -849,7 +849,7 @@ export const ComplexExample: Story = {
                     <Text slot="label">Export as CSV</Text>
                     <Kbd slot="keyboard">⌘⇧C</Kbd>
                   </Menu.Item>
-                  <Menu.Item id="export-json" isLoading>
+                  <Menu.Item id="export-json">
                     <Icon slot="icon">
                       <Download />
                     </Icon>
@@ -971,9 +971,7 @@ export const WithInteractiveStates: Story = {
           <Menu.Item id="critical" isCritical>
             Critical Item
           </Menu.Item>
-          <Menu.Item id="loading" isLoading>
-            Loading Item
-          </Menu.Item>
+          <Menu.Item id="loading">Loading Item</Menu.Item>
         </Menu.Content>
       </Menu.Root>
 
@@ -1038,7 +1036,7 @@ export const WithComplexStates: Story = {
 
         <Menu.Group>
           <Menu.GroupLabel>Background Tasks</Menu.GroupLabel>
-          <Menu.Item id="sync" isLoading>
+          <Menu.Item id="sync">
             <Text slot="label">Synchronizing...</Text>
           </Menu.Item>
           <Menu.Item id="backup">
@@ -1088,7 +1086,9 @@ export const SingleSelection: Story = {
           }
         }}
       >
-        <Menu.Trigger>View Options (Single Selection with Checkbox)</Menu.Trigger>
+        <Menu.Trigger>
+          View Options (Single Selection with Checkbox)
+        </Menu.Trigger>
         <Menu.Content>
           <Menu.Group>
             <Menu.GroupLabel>Text Size</Menu.GroupLabel>
@@ -1275,7 +1275,10 @@ export const CheckboxSelection: Story = {
               </Icon>
               Italic
             </Menu.Item>
-            <Menu.Item id="underline" isSelected={selectedKeys.has("underline")}>
+            <Menu.Item
+              id="underline"
+              isSelected={selectedKeys.has("underline")}
+            >
               <Icon slot="icon">
                 <Edit />
               </Icon>
@@ -1310,7 +1313,9 @@ export const MultiSelection: Story = {
         }}
       >
         <Menu.Trigger>
-          <Text slot="label">Email Settings (Multi-Selection with Checkboxes)</Text>
+          <Text slot="label">
+            Email Settings (Multi-Selection with Checkboxes)
+          </Text>
           <Text slot="description">
             {selectedKeys.size} option{selectedKeys.size !== 1 ? "s" : ""}{" "}
             selected

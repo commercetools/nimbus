@@ -20,7 +20,6 @@ export const MenuItem = ({
   children,
   isSelected,
   isCritical,
-  isLoading,
   ref,
   ...props
 }: MenuItemProps) => {
@@ -34,7 +33,6 @@ export const MenuItem = ({
       {...styleProps}
       data-selected={isSelected ? "" : undefined}
       data-critical={isCritical ? "" : undefined}
-      data-loading={isLoading ? "" : undefined}
       data-selection-mode={selectionMode}
     >
       <RaMenuItem ref={ref} {...restProps}>
