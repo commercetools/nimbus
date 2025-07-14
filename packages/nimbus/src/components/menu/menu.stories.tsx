@@ -4,6 +4,7 @@ import { Menu } from "./index";
 import {
   Box,
   Button,
+  Divider,
   Heading,
   Icon,
   IconButton,
@@ -48,7 +49,7 @@ import {
 } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof Menu.Root> = {
-  title: "Experimental/Menu",
+  title: "components/Menu",
   component: Menu.Root,
   parameters: {},
   tags: ["autodocs"],
@@ -349,14 +350,12 @@ export const SelectionModes: Story = {
     );
 
     return (
-      <Stack>
+      <Stack gap="600">
         {/* Single Selection */}
         <Stack>
           <Heading>Single Selection Mode</Heading>
-          <Text fontSize="sm" color="gray.600" marginBottom="16px">
-            Only one item can be selected at a time
-          </Text>
-          <Box display="flex" gap="16px">
+          <Text>Only one item can be selected at a time</Text>
+          <Stack direction="row">
             <Menu.Root
               selectionMode="single"
               selectedKeys={new Set([singleSelection])}
@@ -400,19 +399,17 @@ export const SelectionModes: Story = {
               </Menu.Content>
             </Menu.Root>
 
-            <Box padding="8px" background="gray.100" borderRadius="md">
+            <Box padding="200" background="neutral.3" borderRadius="md">
               <Text fontSize="sm">Selected: {singleSelection}</Text>
             </Box>
-          </Box>
+          </Stack>
         </Stack>
-
+        <Divider />
         {/* Multiple Selection */}
         <Stack>
           <Heading>Multiple Selection Mode</Heading>
-          <Text fontSize="sm" color="gray.600" marginBottom="16px">
-            Multiple items can be selected with checkboxes
-          </Text>
-          <Box display="flex" gap="16px">
+          <Text>Multiple items can be selected with checkboxes</Text>
+          <Stack direction="row">
             <Menu.Root
               selectionMode="multiple"
               selectedKeys={multiSelection}
@@ -471,32 +468,36 @@ export const SelectionModes: Story = {
               </Menu.Content>
             </Menu.Root>
 
-            <Box padding="8px" background="gray.100" borderRadius="md">
+            <Box padding="200" background="neutral.3" borderRadius="md">
               <Text fontSize="sm">
                 Selected: {Array.from(multiSelection).join(", ") || "None"}
               </Text>
             </Box>
-          </Box>
+          </Stack>
         </Stack>
-
+        <Divider />
         {/* No Selection Mode (Default) */}
         <Stack>
           <Heading>No Selection Mode (Default)</Heading>
-          <Text fontSize="sm" color="gray.600" marginBottom="16px">
-            Standard menu without selection state
-          </Text>
-          <Menu.Root>
-            <Menu.Trigger>Standard Actions</Menu.Trigger>
-            <Menu.Content>
-              <Menu.Item id="save">Save</Menu.Item>
-              <Menu.Item id="save-as">Save As...</Menu.Item>
-              <Menu.Item id="export">Export</Menu.Item>
-              <Menu.Separator />
-              <Menu.Item id="delete" isCritical>
-                Delete
-              </Menu.Item>
-            </Menu.Content>
-          </Menu.Root>
+          <Text>Standard menu without selection state</Text>
+          <Box>
+            <Menu.Root>
+              <Menu.Trigger asChild>
+                <Button variant="solid" colorPalette="primary">
+                  Standard Menu
+                </Button>
+              </Menu.Trigger>
+              <Menu.Content>
+                <Menu.Item id="save">Save</Menu.Item>
+                <Menu.Item id="save-as">Save As...</Menu.Item>
+                <Menu.Item id="export">Export</Menu.Item>
+                <Menu.Separator />
+                <Menu.Item id="delete" isCritical>
+                  Delete
+                </Menu.Item>
+              </Menu.Content>
+            </Menu.Root>
+          </Box>
         </Stack>
       </Stack>
     );
