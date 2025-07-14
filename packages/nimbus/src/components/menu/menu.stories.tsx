@@ -1,7 +1,16 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./index";
-import { Box, Button, Icon, IconButton, Kbd, Text } from "@/components";
+import {
+  Box,
+  Button,
+  Heading,
+  Icon,
+  IconButton,
+  Kbd,
+  Stack,
+  Text,
+} from "@/components";
 import {
   MoreVert,
   KeyboardArrowDown,
@@ -340,12 +349,10 @@ export const SelectionModes: Story = {
     );
 
     return (
-      <Box display="flex" flexDirection="column" gap="32px">
+      <Stack>
         {/* Single Selection */}
-        <Box>
-          <Text fontWeight="semibold" marginBottom="8px">
-            Single Selection Mode
-          </Text>
+        <Stack>
+          <Heading>Single Selection Mode</Heading>
           <Text fontSize="sm" color="gray.600" marginBottom="16px">
             Only one item can be selected at a time
           </Text>
@@ -360,9 +367,10 @@ export const SelectionModes: Story = {
                 }
               }}
             >
-              <Menu.Trigger>
-                <Text slot="label">Text Size</Text>
-                <Text slot="description">Currently: {singleSelection}</Text>
+              <Menu.Trigger asChild>
+                <Button variant="solid" colorPalette="primary">
+                  Single Selection Menu
+                </Button>
               </Menu.Trigger>
               <Menu.Content>
                 <Menu.Group>
@@ -396,13 +404,11 @@ export const SelectionModes: Story = {
               <Text fontSize="sm">Selected: {singleSelection}</Text>
             </Box>
           </Box>
-        </Box>
+        </Stack>
 
         {/* Multiple Selection */}
-        <Box>
-          <Text fontWeight="semibold" marginBottom="8px">
-            Multiple Selection Mode
-          </Text>
+        <Stack>
+          <Heading>Multiple Selection Mode</Heading>
           <Text fontSize="sm" color="gray.600" marginBottom="16px">
             Multiple items can be selected with checkboxes
           </Text>
@@ -416,12 +422,10 @@ export const SelectionModes: Story = {
                 }
               }}
             >
-              <Menu.Trigger>
-                <Text slot="label">Text Formatting</Text>
-                <Text slot="description">
-                  {multiSelection.size} option
-                  {multiSelection.size !== 1 ? "s" : ""} selected
-                </Text>
+              <Menu.Trigger asChild>
+                <Button variant="solid" colorPalette="primary">
+                  Multi Selection Menu
+                </Button>
               </Menu.Trigger>
               <Menu.Content>
                 <Menu.Group>
@@ -473,13 +477,11 @@ export const SelectionModes: Story = {
               </Text>
             </Box>
           </Box>
-        </Box>
+        </Stack>
 
         {/* No Selection Mode (Default) */}
-        <Box>
-          <Text fontWeight="semibold" marginBottom="8px">
-            No Selection Mode (Default)
-          </Text>
+        <Stack>
+          <Heading>No Selection Mode (Default)</Heading>
           <Text fontSize="sm" color="gray.600" marginBottom="16px">
             Standard menu without selection state
           </Text>
@@ -495,8 +497,8 @@ export const SelectionModes: Story = {
               </Menu.Item>
             </Menu.Content>
           </Menu.Root>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
     );
   },
 };

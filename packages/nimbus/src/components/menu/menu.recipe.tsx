@@ -93,6 +93,10 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&[data-selected]": {
         bg: "primary.3",
         boxShadow: "inset 0 0 0 1px white",
+
+        "& [slot='selection']": {
+          color: "primary.9",
+        },
       },
 
       // Critical state
