@@ -50,20 +50,21 @@ export const menuSlotRecipe = defineSlotRecipe({
     item: {
       display: "grid",
       /*
-       * Define a 4-column grid:
-       * 1. icon      – size to its content (usually 0 when no icon)
-       * 2. label/description – takes up all remaining space
-       * 3. keyboard  – size to its content (or 0 when missing)
-       * 4. flyout    – size to its content (or 0 when missing)
+       * Define a 5-column grid:
+       * 1. selection – checkbox (size to content, 0 when no selection mode)
+       * 2. icon      – size to its content (usually 0 when no icon)
+       * 3. label/description – takes up all remaining space
+       * 4. keyboard  – size to its content (or 0 when missing)
+       * 5. flyout    – size to its content (or 0 when missing)
        *
-       * Using `1fr` for the second column ensures that, when columns 3 or 4
+       * Using `1fr` for the third column ensures that, when columns 4 or 5
        * are absent for a particular row, the label/description column expands
        * to fill the available width instead of leaving empty reserved space.
        */
-      gridTemplateColumns: "auto 1fr auto auto",
+      gridTemplateColumns: "auto auto 1fr auto auto",
       gridTemplateAreas: `
-        'icon label keyboard flyoutCaret'
-        'icon description keyboard flyoutCaret'`,
+        'selection icon label keyboard flyoutCaret'
+        'selection icon description keyboard flyoutCaret'`,
       flexDirection: "column",
       alignItems: "start",
       px: "300",
@@ -91,6 +92,7 @@ export const menuSlotRecipe = defineSlotRecipe({
 
       "&[data-selected]": {
         bg: "primary.3",
+        boxShadow: "inset 0 0 0 1px white",
       },
 
       // Critical state
@@ -157,10 +159,27 @@ export const menuSlotRecipe = defineSlotRecipe({
         my: "auto",
         flexShrink: 0,
         color: "neutral.11",
+        boxSize: "500",
+      },
 
+      // Styles for Checkbox[slot="selection"]
+      "& [slot='selection']": {
+        gridArea: "selection",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        ml: "200",
+        mr: "300",
+        my: "auto",
+        color: "neutral.11",
         "& svg": {
           boxSize: "500",
         },
+      },
+
+      // Adjust padding when selection mode is active
+      "&[data-selection-mode]": {
+        paddingInlineStart: "200",
       },
 
       // Disabled state

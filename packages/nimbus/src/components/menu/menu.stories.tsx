@@ -1088,7 +1088,7 @@ export const SingleSelection: Story = {
           }
         }}
       >
-        <Menu.Trigger>View Options</Menu.Trigger>
+        <Menu.Trigger>View Options (Single Selection with Checkbox)</Menu.Trigger>
         <Menu.Content>
           <Menu.Group>
             <Menu.GroupLabel>Text Size</Menu.GroupLabel>
@@ -1244,6 +1244,54 @@ export const WithCentralizedPropsAndOverride: Story = {
   ),
 };
 
+export const CheckboxSelection: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(
+      new Set(["bold"])
+    );
+    return (
+      <Box display="flex" gap="400">
+        <Menu.Root
+          defaultOpen
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={(keys) => {
+            if (keys !== "all") {
+              setSelectedKeys(new Set(Array.from(keys) as string[]));
+            }
+          }}
+        >
+          <Menu.Trigger>Text Formatting</Menu.Trigger>
+          <Menu.Content>
+            <Menu.Item id="bold" isSelected={selectedKeys.has("bold")}>
+              <Icon slot="icon">
+                <Edit />
+              </Icon>
+              Bold
+            </Menu.Item>
+            <Menu.Item id="italic" isSelected={selectedKeys.has("italic")}>
+              <Icon slot="icon">
+                <Edit />
+              </Icon>
+              Italic
+            </Menu.Item>
+            <Menu.Item id="underline" isSelected={selectedKeys.has("underline")}>
+              <Icon slot="icon">
+                <Edit />
+              </Icon>
+              Underline
+            </Menu.Item>
+          </Menu.Content>
+        </Menu.Root>
+        <Box>
+          <Text fontWeight="semibold">Selected:</Text>
+          <Text>{Array.from(selectedKeys).join(", ") || "None"}</Text>
+        </Box>
+      </Box>
+    );
+  },
+};
+
 export const MultiSelection: Story = {
   render: () => {
     const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(
@@ -1262,7 +1310,7 @@ export const MultiSelection: Story = {
         }}
       >
         <Menu.Trigger>
-          <Text slot="label">Email Settings</Text>
+          <Text slot="label">Email Settings (Multi-Selection with Checkboxes)</Text>
           <Text slot="description">
             {selectedKeys.size} option{selectedKeys.size !== 1 ? "s" : ""}{" "}
             selected
