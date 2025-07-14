@@ -71,24 +71,3 @@ export interface MenuGroupLabelProps {
   children: ReactNode;
   ref?: Ref<HTMLDivElement>;
 }
-
-// Menu item sub-components
-export interface MenuItemLabelProps {
-  children: ReactNode;
-  ref?: Ref<HTMLSpanElement>;
-}
-
-export interface MenuItemDescriptionProps {
-  children: ReactNode;
-  ref?: Ref<HTMLSpanElement>;
-}
-
-export interface MenuItemKeyboardProps {
-  children: ReactNode;
-  ref?: Ref<HTMLSpanElement>;
-}
-
-export interface MenuItemIconProps {
-  children: ReactNode;
-  ref?: Ref<HTMLSpanElement>;
-}

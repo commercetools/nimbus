@@ -10,10 +10,6 @@ export const menuSlotRecipe = defineSlotRecipe({
     "trigger",
     "content",
     "item",
-    "itemLabel",
-    "itemDescription",
-    "itemKeyboard",
-    "itemIcon",
     "separator",
     "group",
     "groupLabel",
@@ -106,41 +102,49 @@ export const menuSlotRecipe = defineSlotRecipe({
         color: "neutral.11",
       },
 
+      // Styles for Text[slot="label"]
+      "& [slot='label']": {
+        gridArea: "label",
+        fontWeight: "500",
+      },
+
+      // Styles for Text[slot="description"]
+      "& [slot='description']": {
+        gridArea: "description",
+        color: "neutral.11",
+      },
+
+      // Styles for Kbd[slot="keyboard"]
+      "& [slot='keyboard']": {
+        gridArea: "keyboard",
+        // step 9 leads to a11y issues, so I added as much transparency as possible
+        // to step 11 as possible
+        color: "colorPalette.11/80",
+        fontFamily: "mono",
+        marginInlineStart: "400",
+        my: "auto",
+      },
+
+      // Styles for Icon[slot="icon"]
+      "& [slot='icon']": {
+        gridArea: "icon",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginInlineEnd: "300",
+        my: "auto",
+        flexShrink: 0,
+        color: "neutral.11",
+
+        "& svg": {
+          boxSize: "500",
+        },
+      },
+
       // Disabled state
       "&[data-disabled]": {
         layerStyle: "disabled",
         pointerEvents: "none",
-      },
-    },
-    itemLabel: {
-      gridArea: "label",
-      fontWeight: "500",
-    },
-    itemDescription: {
-      gridArea: "description",
-      color: "neutral.11",
-    },
-    itemKeyboard: {
-      gridArea: "keyboard",
-      // step 9 leads to a11y issues, so I added as much transparency as possible
-      // to step 9 as possible
-      color: "colorPalette.11/80",
-      fontFamily: "mono",
-      marginInlineStart: "400",
-      my: "auto",
-    },
-    itemIcon: {
-      gridArea: "icon",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      marginInlineEnd: "300",
-      my: "auto",
-      flexShrink: 0,
-      color: "neutral.11",
-
-      "& svg": {
-        boxSize: "500",
       },
     },
     separator: {

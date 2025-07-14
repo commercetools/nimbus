@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./index";
-import { Button, Icon, IconButton, Text } from "@/components";
+import { Button, Icon, IconButton, Kbd, Text } from "@/components";
 import {
   MoreVert,
   KeyboardArrowDown,
@@ -58,24 +58,24 @@ export const Basic: Story = {
       <Menu.Trigger>Actions</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="copy">
-          <Menu.ItemLabel>Copy</Menu.ItemLabel>
-          <Menu.ItemDescription>Copy the selected text</Menu.ItemDescription>
-          <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
+          <Text slot="label">Copy</Text>
+          <Text slot="description">Copy the selected text</Text>
+          <Kbd slot="keyboard">⌘C</Kbd>
         </Menu.Item>
         <Menu.Item id="cut">
-          <Menu.ItemLabel>Cut</Menu.ItemLabel>
-          <Menu.ItemDescription>Cut the selected text</Menu.ItemDescription>
-          <Menu.ItemKeyboard>⌘X</Menu.ItemKeyboard>
+          <Text slot="label">Cut</Text>
+          <Text slot="description">Cut the selected text</Text>
+          <Kbd slot="keyboard">⌘X</Kbd>
         </Menu.Item>
         <Menu.Item id="paste">
-          <Menu.ItemLabel>Paste</Menu.ItemLabel>
-          <Menu.ItemDescription>Paste the copied text</Menu.ItemDescription>
-          <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
+          <Text slot="label">Paste</Text>
+          <Text slot="description">Paste the copied text</Text>
+          <Kbd slot="keyboard">⌘V</Kbd>
         </Menu.Item>
         <Menu.Item id="delete">
-          <Menu.ItemLabel>Delete</Menu.ItemLabel>
-          <Menu.ItemDescription>Delete the selected text</Menu.ItemDescription>
-          <Menu.ItemKeyboard>⌫</Menu.ItemKeyboard>
+          <Text slot="label">Delete</Text>
+          <Text slot="description">Delete the selected text</Text>
+          <Kbd slot="keyboard">⌫</Kbd>
         </Menu.Item>
       </Menu.Content>
     </Menu.Root>
@@ -93,9 +93,9 @@ export const WithSubmenu: Story = {
         <Menu.Separator />
         <Menu.SubmenuTrigger>
           <Menu.Item>
-            <Menu.ItemLabel>Submenu</Menu.ItemLabel>
-            <Menu.ItemDescription>Submenu description</Menu.ItemDescription>
-            <Menu.ItemKeyboard>⌘⇧S</Menu.ItemKeyboard>
+            <Text slot="label">Submenu</Text>
+            <Text slot="description">Submenu description</Text>
+            <Kbd slot="keyboard">⌘⇧S</Kbd>
           </Menu.Item>
           <Menu.Submenu>
             <Menu.Item id="copy">Copy</Menu.Item>
@@ -238,34 +238,34 @@ export const WithKeyboardShortcuts: Story = {
       <Menu.Trigger>Edit Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="undo">
-          <Menu.ItemLabel>Undo</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘Z</Menu.ItemKeyboard>
+          <Text slot="label">Undo</Text>
+          <Kbd slot="keyboard">⌘Z</Kbd>
         </Menu.Item>
         <Menu.Item id="redo">
-          <Menu.ItemLabel>Redo</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘+Y</Menu.ItemKeyboard>
+          <Text slot="label">Redo</Text>
+          <Kbd slot="keyboard">⌘+Y</Kbd>
         </Menu.Item>
 
         <Menu.Separator />
 
         <Menu.Item id="copy">
-          <Menu.ItemLabel>Copy</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
+          <Text slot="label">Copy</Text>
+          <Kbd slot="keyboard">⌘C</Kbd>
         </Menu.Item>
         <Menu.Item id="cut">
-          <Menu.ItemLabel>Cut</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘X</Menu.ItemKeyboard>
+          <Text slot="label">Cut</Text>
+          <Kbd slot="keyboard">⌘X</Kbd>
         </Menu.Item>
         <Menu.Item id="paste">
-          <Menu.ItemLabel>Paste</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
+          <Text slot="label">Paste</Text>
+          <Kbd slot="keyboard">⌘V</Kbd>
         </Menu.Item>
 
         <Menu.Separator />
 
         <Menu.Item id="select-all">
-          <Menu.ItemLabel>Select All</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘A</Menu.ItemKeyboard>
+          <Text slot="label">Select All</Text>
+          <Kbd slot="keyboard">⌘A</Kbd>
         </Menu.Item>
       </Menu.Content>
     </Menu.Root>
@@ -278,33 +278,33 @@ export const WithDescriptions: Story = {
       <Menu.Trigger>Account Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="profile">
-          <Menu.ItemLabel>View Profile</Menu.ItemLabel>
-          <Menu.ItemDescription>
+          <Text slot="label">View Profile</Text>
+          <Text slot="description">
             See your public profile information
-          </Menu.ItemDescription>
+          </Text>
         </Menu.Item>
 
         <Menu.Item id="settings">
-          <Menu.ItemLabel>Account Settings</Menu.ItemLabel>
-          <Menu.ItemDescription>
+          <Text slot="label">Account Settings</Text>
+          <Text slot="description">
             Manage your account preferences and security
-          </Menu.ItemDescription>
+          </Text>
         </Menu.Item>
 
         <Menu.Item id="billing">
-          <Menu.ItemLabel>Billing & Usage</Menu.ItemLabel>
-          <Menu.ItemDescription>
+          <Text slot="label">Billing & Usage</Text>
+          <Text slot="description">
             View your subscription and usage details
-          </Menu.ItemDescription>
+          </Text>
         </Menu.Item>
 
         <Menu.Separator />
 
         <Menu.Item id="logout">
-          <Menu.ItemLabel>Sign Out</Menu.ItemLabel>
-          <Menu.ItemDescription>
+          <Text slot="label">Sign Out</Text>
+          <Text slot="description">
             Sign out of your account on this device
-          </Menu.ItemDescription>
+          </Text>
         </Menu.Item>
       </Menu.Content>
     </Menu.Root>
@@ -598,35 +598,35 @@ export const ComplexExample: Story = {
         <Menu.Group>
           <Menu.GroupLabel>File Operations</Menu.GroupLabel>
           <Menu.Item id="new">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <InsertDriveFile />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>New Document</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘N</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">New Document</Text>
+            <Kbd slot="keyboard">⌘N</Kbd>
           </Menu.Item>
           <Menu.Item id="open">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <FolderOpen />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Open</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘O</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Open</Text>
+            <Kbd slot="keyboard">⌘O</Kbd>
           </Menu.Item>
           <Menu.Item id="save">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Save />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Save</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘S</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Save</Text>
+            <Kbd slot="keyboard">⌘S</Kbd>
           </Menu.Item>
           <Menu.Item id="save-as" isDisabled>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <SaveAs />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Save As...</Menu.ItemLabel>
-            <Menu.ItemDescription>
+            </Icon>
+            <Text slot="label">Save As...</Text>
+            <Text slot="description">
               Save document with a new name
-            </Menu.ItemDescription>
-            <Menu.ItemKeyboard>⌘⇧S</Menu.ItemKeyboard>
+            </Text>
+            <Kbd slot="keyboard">⌘⇧S</Kbd>
           </Menu.Item>
         </Menu.Group>
 
@@ -635,33 +635,33 @@ export const ComplexExample: Story = {
         <Menu.Group>
           <Menu.GroupLabel>Edit Operations</Menu.GroupLabel>
           <Menu.Item id="undo">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Undo />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Undo</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘Z</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Undo</Text>
+            <Kbd slot="keyboard">⌘Z</Kbd>
           </Menu.Item>
           <Menu.Item id="redo">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Redo />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Redo</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘⇧Z</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Redo</Text>
+            <Kbd slot="keyboard">⌘⇧Z</Kbd>
           </Menu.Item>
           <Menu.Item id="copy">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <ContentCopy />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Copy</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Copy</Text>
+            <Kbd slot="keyboard">⌘C</Kbd>
           </Menu.Item>
           <Menu.Item id="paste" isDisabled>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <ContentPaste />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Paste</Menu.ItemLabel>
-            <Menu.ItemDescription>Clipboard is empty</Menu.ItemDescription>
-            <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Paste</Text>
+            <Text slot="description">Clipboard is empty</Text>
+            <Kbd slot="keyboard">⌘V</Kbd>
           </Menu.Item>
         </Menu.Group>
 
@@ -670,26 +670,26 @@ export const ComplexExample: Story = {
         <Menu.Group>
           <Menu.GroupLabel>View Options</Menu.GroupLabel>
           <Menu.Item id="zoom-in">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <ZoomIn />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Zoom In</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘+</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Zoom In</Text>
+            <Kbd slot="keyboard">⌘+</Kbd>
           </Menu.Item>
           <Menu.Item id="zoom-out">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <ZoomOut />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Zoom Out</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘-</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Zoom Out</Text>
+            <Kbd slot="keyboard">⌘-</Kbd>
           </Menu.Item>
           <Menu.Item id="fullscreen">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Fullscreen />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Enter Fullscreen</Menu.ItemLabel>
-            <Menu.ItemDescription>Hide all UI elements</Menu.ItemDescription>
-            <Menu.ItemKeyboard>F11</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Enter Fullscreen</Text>
+            <Text slot="description">Hide all UI elements</Text>
+            <Kbd slot="keyboard">F11</Kbd>
           </Menu.Item>
         </Menu.Group>
 
@@ -699,49 +699,49 @@ export const ComplexExample: Story = {
           <Menu.GroupLabel>Item Variations</Menu.GroupLabel>
           {/* Item with icon only */}
           <Menu.Item id="icon-only">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Edit />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Icon + Label</Menu.ItemLabel>
+            </Icon>
+            <Text slot="label">Icon + Label</Text>
           </Menu.Item>
 
           {/* Item with label only (no icon) */}
           <Menu.Item id="label-only">
-            <Menu.ItemLabel>Label Only</Menu.ItemLabel>
+            <Text slot="label">Label Only</Text>
           </Menu.Item>
 
           {/* Item with label + description (no icon) */}
           <Menu.Item id="label-desc">
-            <Menu.ItemLabel>Label + Description</Menu.ItemLabel>
-            <Menu.ItemDescription>
+            <Text slot="label">Label + Description</Text>
+            <Text slot="description">
               This item has a description but no icon
-            </Menu.ItemDescription>
+            </Text>
           </Menu.Item>
 
           {/* Item with label + keyboard (no icon) */}
           <Menu.Item id="label-kbd">
-            <Menu.ItemLabel>Label + Keyboard</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘K</Menu.ItemKeyboard>
+            <Text slot="label">Label + Keyboard</Text>
+            <Kbd slot="keyboard">⌘K</Kbd>
           </Menu.Item>
 
           {/* Item with icon + label + description (no keyboard) */}
           <Menu.Item id="icon-label-desc">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Help />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Icon + Label + Description</Menu.ItemLabel>
-            <Menu.ItemDescription>
+            </Icon>
+            <Text slot="label">Icon + Label + Description</Text>
+            <Text slot="description">
               This item has everything except keyboard shortcut
-            </Menu.ItemDescription>
+            </Text>
           </Menu.Item>
 
           {/* Item with icon + label + keyboard (no description) */}
           <Menu.Item id="icon-label-kbd">
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Delete />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Icon + Label + Keyboard</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘⌫</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Icon + Label + Keyboard</Text>
+            <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
         </Menu.Group>
 
@@ -750,44 +750,44 @@ export const ComplexExample: Story = {
         <Menu.Group>
           <Menu.GroupLabel>States & Behaviors</Menu.GroupLabel>
           <Menu.Item id="selected" isSelected>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Edit />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Selected Item</Menu.ItemLabel>
-            <Menu.ItemDescription>
+            </Icon>
+            <Text slot="label">Selected Item</Text>
+            <Text slot="description">
               This item is currently selected
-            </Menu.ItemDescription>
-            <Menu.ItemKeyboard>⌘E</Menu.ItemKeyboard>
+            </Text>
+            <Kbd slot="keyboard">⌘E</Kbd>
           </Menu.Item>
 
           <Menu.Item id="danger" isDanger>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Delete />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Danger Item</Menu.ItemLabel>
-            <Menu.ItemDescription>
+            </Icon>
+            <Text slot="label">Danger Item</Text>
+            <Text slot="description">
               This is a destructive action
-            </Menu.ItemDescription>
-            <Menu.ItemKeyboard>⌘⌫</Menu.ItemKeyboard>
+            </Text>
+            <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
 
           <Menu.Item id="loading" isLoading>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Sync />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Loading Item</Menu.ItemLabel>
-            <Menu.ItemDescription>
+            </Icon>
+            <Text slot="label">Loading Item</Text>
+            <Text slot="description">
               This item is currently loading
-            </Menu.ItemDescription>
+            </Text>
           </Menu.Item>
 
           <Menu.Item id="disabled" isDisabled>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Backup />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Disabled Item</Menu.ItemLabel>
-            <Menu.ItemDescription>This item is disabled</Menu.ItemDescription>
-            <Menu.ItemKeyboard>⌘B</Menu.ItemKeyboard>
+            </Icon>
+            <Text slot="label">Disabled Item</Text>
+            <Text slot="description">This item is disabled</Text>
+            <Kbd slot="keyboard">⌘B</Kbd>
           </Menu.Item>
         </Menu.Group>
 
@@ -798,23 +798,23 @@ export const ComplexExample: Story = {
           {/* Single level submenu */}
           <Menu.SubmenuTrigger>
             <Menu.Item>
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <FolderOpen />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Submenu with Icon</Menu.ItemLabel>
-              <Menu.ItemDescription>This opens a submenu</Menu.ItemDescription>
-              <Menu.ItemKeyboard>⌘⇧M</Menu.ItemKeyboard>
+              </Icon>
+              <Text slot="label">Submenu with Icon</Text>
+              <Text slot="description">This opens a submenu</Text>
+              <Kbd slot="keyboard">⌘⇧M</Kbd>
             </Menu.Item>
             <Menu.Submenu>
               <Menu.Item id="sub1">
-                <Menu.ItemIcon>
+                <Icon slot="icon">
                   <Edit />
-                </Menu.ItemIcon>
-                <Menu.ItemLabel>Submenu Item 1</Menu.ItemLabel>
+                </Icon>
+                <Text slot="label">Submenu Item 1</Text>
               </Menu.Item>
               <Menu.Item id="sub2">
-                <Menu.ItemLabel>Submenu Item 2</Menu.ItemLabel>
-                <Menu.ItemDescription>No icon here</Menu.ItemDescription>
+                <Text slot="label">Submenu Item 2</Text>
+                <Text slot="description">No icon here</Text>
               </Menu.Item>
             </Menu.Submenu>
           </Menu.SubmenuTrigger>
@@ -822,52 +822,52 @@ export const ComplexExample: Story = {
           {/* Multi-level submenu - Settings */}
           <Menu.SubmenuTrigger>
             <Menu.Item>
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Settings />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Settings</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Settings</Text>
+              <Text slot="description">
                 Application settings and preferences
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Submenu>
               <Menu.Item id="general">
-                <Menu.ItemIcon>
+                <Icon slot="icon">
                   <Settings />
-                </Menu.ItemIcon>
-                <Menu.ItemLabel>General</Menu.ItemLabel>
+                </Icon>
+                <Text slot="label">General</Text>
               </Menu.Item>
 
               {/* Nested submenu - Account */}
               <Menu.SubmenuTrigger>
                 <Menu.Item>
-                  <Menu.ItemIcon>
+                  <Icon slot="icon">
                     <AccountCircle />
-                  </Menu.ItemIcon>
-                  <Menu.ItemLabel>Account</Menu.ItemLabel>
-                  <Menu.ItemDescription>
+                  </Icon>
+                  <Text slot="label">Account</Text>
+                  <Text slot="description">
                     User account settings
-                  </Menu.ItemDescription>
+                  </Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="profile">
-                    <Menu.ItemLabel>Profile</Menu.ItemLabel>
-                    <Menu.ItemKeyboard>⌘P</Menu.ItemKeyboard>
+                    <Text slot="label">Profile</Text>
+                    <Kbd slot="keyboard">⌘P</Kbd>
                   </Menu.Item>
                   <Menu.Item id="notifications">
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Notifications />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Notifications</Menu.ItemLabel>
+                    </Icon>
+                    <Text slot="label">Notifications</Text>
                   </Menu.Item>
                   <Menu.Item id="security" isSelected>
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Security />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Security</Menu.ItemLabel>
-                    <Menu.ItemDescription>
+                    </Icon>
+                    <Text slot="label">Security</Text>
+                    <Text slot="description">
                       Password and security settings
-                    </Menu.ItemDescription>
+                    </Text>
                   </Menu.Item>
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
@@ -875,58 +875,58 @@ export const ComplexExample: Story = {
               {/* Nested submenu - Appearance */}
               <Menu.SubmenuTrigger>
                 <Menu.Item>
-                  <Menu.ItemIcon>
+                  <Icon slot="icon">
                     <Palette />
-                  </Menu.ItemIcon>
-                  <Menu.ItemLabel>Appearance</Menu.ItemLabel>
-                  <Menu.ItemDescription>
+                  </Icon>
+                  <Text slot="label">Appearance</Text>
+                  <Text slot="description">
                     Theme and display options
-                  </Menu.ItemDescription>
+                  </Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="theme">
-                    <Menu.ItemLabel>Theme</Menu.ItemLabel>
-                    <Menu.ItemKeyboard>⌘T</Menu.ItemKeyboard>
+                    <Text slot="label">Theme</Text>
+                    <Kbd slot="keyboard">⌘T</Kbd>
                   </Menu.Item>
                   <Menu.Item id="language">
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Language />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Language</Menu.ItemLabel>
+                    </Icon>
+                    <Text slot="label">Language</Text>
                   </Menu.Item>
 
                   {/* Third level submenu - View Options */}
                   <Menu.SubmenuTrigger>
                     <Menu.Item>
-                      <Menu.ItemIcon>
+                      <Icon slot="icon">
                         <ViewList />
-                      </Menu.ItemIcon>
-                      <Menu.ItemLabel>View Options</Menu.ItemLabel>
-                      <Menu.ItemDescription>
+                      </Icon>
+                      <Text slot="label">View Options</Text>
+                      <Text slot="description">
                         Layout and display preferences
-                      </Menu.ItemDescription>
+                      </Text>
                     </Menu.Item>
                     <Menu.Submenu>
                       <Menu.Item id="list-view">
-                        <Menu.ItemIcon>
+                        <Icon slot="icon">
                           <ViewList />
-                        </Menu.ItemIcon>
-                        <Menu.ItemLabel>List View</Menu.ItemLabel>
-                        <Menu.ItemKeyboard>⌘1</Menu.ItemKeyboard>
+                        </Icon>
+                        <Text slot="label">List View</Text>
+                        <Kbd slot="keyboard">⌘1</Kbd>
                       </Menu.Item>
                       <Menu.Item id="grid-view" isSelected>
-                        <Menu.ItemIcon>
+                        <Icon slot="icon">
                           <ViewModule />
-                        </Menu.ItemIcon>
-                        <Menu.ItemLabel>Grid View</Menu.ItemLabel>
-                        <Menu.ItemKeyboard>⌘2</Menu.ItemKeyboard>
+                        </Icon>
+                        <Text slot="label">Grid View</Text>
+                        <Kbd slot="keyboard">⌘2</Kbd>
                       </Menu.Item>
                       <Menu.Item id="dashboard-view">
-                        <Menu.ItemIcon>
+                        <Icon slot="icon">
                           <Dashboard />
-                        </Menu.ItemIcon>
-                        <Menu.ItemLabel>Dashboard View</Menu.ItemLabel>
-                        <Menu.ItemKeyboard>⌘3</Menu.ItemKeyboard>
+                        </Icon>
+                        <Text slot="label">Dashboard View</Text>
+                        <Kbd slot="keyboard">⌘3</Kbd>
                       </Menu.Item>
                     </Menu.Submenu>
                   </Menu.SubmenuTrigger>
@@ -936,10 +936,10 @@ export const ComplexExample: Story = {
               <Menu.Separator />
 
               <Menu.Item id="advanced" isDisabled>
-                <Menu.ItemLabel>Advanced Settings</Menu.ItemLabel>
-                <Menu.ItemDescription>
+                <Text slot="label">Advanced Settings</Text>
+                <Text slot="description">
                   Advanced configuration options
-                </Menu.ItemDescription>
+                </Text>
               </Menu.Item>
             </Menu.Submenu>
           </Menu.SubmenuTrigger>
@@ -947,57 +947,57 @@ export const ComplexExample: Story = {
           {/* Multi-level submenu - Reports */}
           <Menu.SubmenuTrigger>
             <Menu.Item>
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Analytics />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Reports</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Reports</Text>
+              <Text slot="description">
                 Analytics and reporting tools
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Submenu>
               <Menu.Item id="dashboard">
-                <Menu.ItemIcon>
+                <Icon slot="icon">
                   <Dashboard />
-                </Menu.ItemIcon>
-                <Menu.ItemLabel>Dashboard</Menu.ItemLabel>
-                <Menu.ItemKeyboard>⌘D</Menu.ItemKeyboard>
+                </Icon>
+                <Text slot="label">Dashboard</Text>
+                <Kbd slot="keyboard">⌘D</Kbd>
               </Menu.Item>
 
               {/* Nested submenu - Export Options */}
               <Menu.SubmenuTrigger>
                 <Menu.Item>
-                  <Menu.ItemIcon>
+                  <Icon slot="icon">
                     <Share />
-                  </Menu.ItemIcon>
-                  <Menu.ItemLabel>Export</Menu.ItemLabel>
-                  <Menu.ItemDescription>
+                  </Icon>
+                  <Text slot="label">Export</Text>
+                  <Text slot="description">
                     Export data in various formats
-                  </Menu.ItemDescription>
+                  </Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="export-pdf">
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Download />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Export as PDF</Menu.ItemLabel>
-                    <Menu.ItemKeyboard>⌘⇧P</Menu.ItemKeyboard>
+                    </Icon>
+                    <Text slot="label">Export as PDF</Text>
+                    <Kbd slot="keyboard">⌘⇧P</Kbd>
                   </Menu.Item>
                   <Menu.Item id="export-csv">
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Download />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Export as CSV</Menu.ItemLabel>
-                    <Menu.ItemKeyboard>⌘⇧C</Menu.ItemKeyboard>
+                    </Icon>
+                    <Text slot="label">Export as CSV</Text>
+                    <Kbd slot="keyboard">⌘⇧C</Kbd>
                   </Menu.Item>
                   <Menu.Item id="export-json" isLoading>
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Download />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Export as JSON</Menu.ItemLabel>
-                    <Menu.ItemDescription>
+                    </Icon>
+                    <Text slot="label">Export as JSON</Text>
+                    <Text slot="description">
                       Preparing export...
-                    </Menu.ItemDescription>
+                    </Text>
                   </Menu.Item>
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
@@ -1005,35 +1005,35 @@ export const ComplexExample: Story = {
               {/* Nested submenu - Import Options */}
               <Menu.SubmenuTrigger>
                 <Menu.Item>
-                  <Menu.ItemIcon>
+                  <Icon slot="icon">
                     <Upload />
-                  </Menu.ItemIcon>
-                  <Menu.ItemLabel>Import</Menu.ItemLabel>
-                  <Menu.ItemDescription>
+                  </Icon>
+                  <Text slot="label">Import</Text>
+                  <Text slot="description">
                     Import data from external sources
-                  </Menu.ItemDescription>
+                  </Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="import-csv">
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Upload />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Import CSV</Menu.ItemLabel>
+                    </Icon>
+                    <Text slot="label">Import CSV</Text>
                   </Menu.Item>
                   <Menu.Item id="import-json">
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Upload />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Import JSON</Menu.ItemLabel>
+                    </Icon>
+                    <Text slot="label">Import JSON</Text>
                   </Menu.Item>
                   <Menu.Item id="import-xml" isDisabled>
-                    <Menu.ItemIcon>
+                    <Icon slot="icon">
                       <Upload />
-                    </Menu.ItemIcon>
-                    <Menu.ItemLabel>Import XML</Menu.ItemLabel>
-                    <Menu.ItemDescription>
+                    </Icon>
+                    <Text slot="label">Import XML</Text>
+                    <Text slot="description">
                       Feature not available
-                    </Menu.ItemDescription>
+                    </Text>
                   </Menu.Item>
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
@@ -1041,13 +1041,13 @@ export const ComplexExample: Story = {
               <Menu.Separator />
 
               <Menu.Item id="custom-report" isDanger>
-                <Menu.ItemIcon>
+                <Icon slot="icon">
                   <Report />
-                </Menu.ItemIcon>
-                <Menu.ItemLabel>Delete Custom Reports</Menu.ItemLabel>
-                <Menu.ItemDescription>
+                </Icon>
+                <Text slot="label">Delete Custom Reports</Text>
+                <Text slot="description">
                   Remove all custom report configurations
-                </Menu.ItemDescription>
+                </Text>
               </Menu.Item>
             </Menu.Submenu>
           </Menu.SubmenuTrigger>
@@ -1056,19 +1056,19 @@ export const ComplexExample: Story = {
         <Menu.Separator />
 
         <Menu.Item href="/help" target="_blank" rel="noopener">
-          <Menu.ItemIcon>
+          <Icon slot="icon">
             <Help />
-          </Menu.ItemIcon>
-          <Menu.ItemLabel>Help & Support</Menu.ItemLabel>
-          <Menu.ItemDescription>Open help documentation</Menu.ItemDescription>
+          </Icon>
+          <Text slot="label">Help & Support</Text>
+          <Text slot="description">Open help documentation</Text>
         </Menu.Item>
 
         <Menu.Item id="logout">
-          <Menu.ItemIcon>
+          <Icon slot="icon">
             <Logout />
-          </Menu.ItemIcon>
-          <Menu.ItemLabel>Logout</Menu.ItemLabel>
-          <Menu.ItemDescription>Sign out of your account</Menu.ItemDescription>
+          </Icon>
+          <Text slot="label">Logout</Text>
+          <Text slot="description">Sign out of your account</Text>
         </Menu.Item>
       </Menu.Content>
     </Menu.Root>
@@ -1149,20 +1149,20 @@ export const WithComplexStates: Story = {
         <Menu.Group>
           <Menu.GroupLabel>File Operations</Menu.GroupLabel>
           <Menu.Item id="new">
-            <Menu.ItemLabel>New File</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘N</Menu.ItemKeyboard>
+            <Text slot="label">New File</Text>
+            <Kbd slot="keyboard">⌘N</Kbd>
           </Menu.Item>
           <Menu.Item id="open" isSelected>
-            <Menu.ItemLabel>Open File</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘O</Menu.ItemKeyboard>
+            <Text slot="label">Open File</Text>
+            <Kbd slot="keyboard">⌘O</Kbd>
           </Menu.Item>
           <Menu.Item id="save">
-            <Menu.ItemLabel>Save File</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘S</Menu.ItemKeyboard>
+            <Text slot="label">Save File</Text>
+            <Kbd slot="keyboard">⌘S</Kbd>
           </Menu.Item>
           <Menu.Item id="save-as" isDisabled>
-            <Menu.ItemLabel>Save As...</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘⇧S</Menu.ItemKeyboard>
+            <Text slot="label">Save As...</Text>
+            <Kbd slot="keyboard">⌘⇧S</Kbd>
           </Menu.Item>
         </Menu.Group>
 
@@ -1171,11 +1171,11 @@ export const WithComplexStates: Story = {
         <Menu.Group>
           <Menu.GroupLabel>Dangerous Actions</Menu.GroupLabel>
           <Menu.Item id="delete" isDanger>
-            <Menu.ItemLabel>Delete File</Menu.ItemLabel>
-            <Menu.ItemKeyboard>⌘⌫</Menu.ItemKeyboard>
+            <Text slot="label">Delete File</Text>
+            <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
           <Menu.Item id="reset" isDanger>
-            <Menu.ItemLabel>Reset All Settings</Menu.ItemLabel>
+            <Text slot="label">Reset All Settings</Text>
           </Menu.Item>
         </Menu.Group>
 
@@ -1184,10 +1184,10 @@ export const WithComplexStates: Story = {
         <Menu.Group>
           <Menu.GroupLabel>Background Tasks</Menu.GroupLabel>
           <Menu.Item id="sync" isLoading>
-            <Menu.ItemLabel>Synchronizing...</Menu.ItemLabel>
+            <Text slot="label">Synchronizing...</Text>
           </Menu.Item>
           <Menu.Item id="backup">
-            <Menu.ItemLabel>Create Backup</Menu.ItemLabel>
+            <Text slot="label">Create Backup</Text>
           </Menu.Item>
         </Menu.Group>
       </Menu.Content>
@@ -1238,18 +1238,18 @@ export const SingleSelection: Story = {
           <Menu.Group>
             <Menu.GroupLabel>Text Size</Menu.GroupLabel>
             <Menu.Item id="small" isSelected={selectedKey === "small"}>
-              <Menu.ItemLabel>Small</Menu.ItemLabel>
-              <Menu.ItemDescription>Compact text display</Menu.ItemDescription>
+              <Text slot="label">Small</Text>
+              <Text slot="description">Compact text display</Text>
             </Menu.Item>
             <Menu.Item id="medium" isSelected={selectedKey === "medium"}>
-              <Menu.ItemLabel>Medium</Menu.ItemLabel>
-              <Menu.ItemDescription>Default text size</Menu.ItemDescription>
+              <Text slot="label">Medium</Text>
+              <Text slot="description">Default text size</Text>
             </Menu.Item>
             <Menu.Item id="large" isSelected={selectedKey === "large"}>
-              <Menu.ItemLabel>Large</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              <Text slot="label">Large</Text>
+              <Text slot="description">
                 Larger text for better readability
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
           </Menu.Group>
 
@@ -1258,22 +1258,22 @@ export const SingleSelection: Story = {
           <Menu.Group>
             <Menu.GroupLabel>Theme</Menu.GroupLabel>
             <Menu.Item id="light">
-              <Menu.ItemLabel>Light Mode</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              <Text slot="label">Light Mode</Text>
+              <Text slot="description">
                 Light background with dark text
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Item id="dark">
-              <Menu.ItemLabel>Dark Mode</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              <Text slot="label">Dark Mode</Text>
+              <Text slot="description">
                 Dark background with light text
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Item id="auto">
-              <Menu.ItemLabel>Auto</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              <Text slot="label">Auto</Text>
+              <Text slot="description">
                 Follow system preference
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
           </Menu.Group>
         </Menu.Content>
@@ -1291,42 +1291,42 @@ export const WithClickLogging: Story = {
       <Menu.Trigger>Actions Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Item id="copy">
-          <Menu.ItemIcon>
+          <Icon slot="icon">
             <ContentCopy />
-          </Menu.ItemIcon>
-          <Menu.ItemLabel>Copy</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘C</Menu.ItemKeyboard>
+          </Icon>
+          <Text slot="label">Copy</Text>
+          <Kbd slot="keyboard">⌘C</Kbd>
         </Menu.Item>
         <Menu.Item id="cut">
-          <Menu.ItemLabel>Cut</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘X</Menu.ItemKeyboard>
+          <Text slot="label">Cut</Text>
+          <Kbd slot="keyboard">⌘X</Kbd>
         </Menu.Item>
         <Menu.Item id="paste">
-          <Menu.ItemIcon>
+          <Icon slot="icon">
             <ContentPaste />
-          </Menu.ItemIcon>
-          <Menu.ItemLabel>Paste</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌘V</Menu.ItemKeyboard>
+          </Icon>
+          <Text slot="label">Paste</Text>
+          <Kbd slot="keyboard">⌘V</Kbd>
         </Menu.Item>
 
         <Menu.Separator />
 
         <Menu.Item id="delete" isDanger>
-          <Menu.ItemIcon>
+          <Icon slot="icon">
             <Delete />
-          </Menu.ItemIcon>
-          <Menu.ItemLabel>Delete</Menu.ItemLabel>
-          <Menu.ItemKeyboard>⌫</Menu.ItemKeyboard>
+          </Icon>
+          <Text slot="label">Delete</Text>
+          <Kbd slot="keyboard">⌫</Kbd>
         </Menu.Item>
 
         <Menu.Separator />
 
         <Menu.SubmenuTrigger>
           <Menu.Item>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <FolderOpen />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>More Options</Menu.ItemLabel>
+            </Icon>
+            <Text slot="label">More Options</Text>
           </Menu.Item>
           <Menu.Submenu>
             <Menu.Item id="option1">Option 1</Menu.Item>
@@ -1366,10 +1366,10 @@ export const WithCentralizedPropsAndOverride: Story = {
 
         <Menu.SubmenuTrigger>
           <Menu.Item>
-            <Menu.ItemIcon>
+            <Icon slot="icon">
               <Settings />
-            </Menu.ItemIcon>
-            <Menu.ItemLabel>Advanced Settings</Menu.ItemLabel>
+            </Icon>
+            <Text slot="label">Advanced Settings</Text>
           </Menu.Item>
           <Menu.Submenu
             onAction={(key) => console.log("Submenu override handler:", key)}
@@ -1408,11 +1408,11 @@ export const MultiSelection: Story = {
     return (
       <Menu.Root defaultOpen>
         <Menu.Trigger>
-          <Menu.ItemLabel>Email Settings</Menu.ItemLabel>
-          <Menu.ItemDescription>
+          <Text slot="label">Email Settings</Text>
+          <Text slot="description">
             {selectedKeys.size} option{selectedKeys.size !== 1 ? "s" : ""}{" "}
             selected
-          </Menu.ItemDescription>
+          </Text>
         </Menu.Trigger>
         <Menu.Content
           selectionMode="multiple"
@@ -1429,43 +1429,43 @@ export const MultiSelection: Story = {
               id="notifications"
               isSelected={selectedKeys.has("notifications")}
             >
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Notifications />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Notifications</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Notifications</Text>
+              <Text slot="description">
                 Receive notifications about important events
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Item id="updates" isSelected={selectedKeys.has("updates")}>
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Sync />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Product Updates</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Product Updates</Text>
+              <Text slot="description">
                 Get notified about new features and improvements
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Item
               id="marketing"
               isSelected={selectedKeys.has("marketing")}
             >
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Analytics />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Marketing</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Marketing</Text>
+              <Text slot="description">
                 Receive promotional emails and offers
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Item id="security" isSelected={selectedKeys.has("security")}>
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Security />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Security Alerts</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Security Alerts</Text>
+              <Text slot="description">
                 Important security notifications
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
           </Menu.Group>
 
@@ -1477,22 +1477,22 @@ export const MultiSelection: Story = {
               id="newsletters"
               isSelected={selectedKeys.has("newsletters")}
             >
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Report />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Newsletters</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Newsletters</Text>
+              <Text slot="description">
                 Weekly digest of articles and insights
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
             <Menu.Item id="tips" isSelected={selectedKeys.has("tips")}>
-              <Menu.ItemIcon>
+              <Icon slot="icon">
                 <Help />
-              </Menu.ItemIcon>
-              <Menu.ItemLabel>Tips & Tricks</Menu.ItemLabel>
-              <Menu.ItemDescription>
+              </Icon>
+              <Text slot="label">Tips & Tricks</Text>
+              <Text slot="description">
                 Helpful tips to get the most out of the platform
-              </Menu.ItemDescription>
+              </Text>
             </Menu.Item>
           </Menu.Group>
         </Menu.Content>

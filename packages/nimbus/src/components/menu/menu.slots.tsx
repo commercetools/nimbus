@@ -36,34 +36,6 @@ export const MenuItemSlot = withContext<HTMLDivElement, MenuItemSlotProps>(
   "item"
 );
 
-// Menu Item Label
-export type MenuItemLabelSlotProps = HTMLChakraProps<"span">;
-export const MenuItemLabelSlot = withContext<
-  HTMLSpanElement,
-  MenuItemLabelSlotProps
->("span", "itemLabel");
-
-// Menu Item Description
-export type MenuItemDescriptionSlotProps = HTMLChakraProps<"span">;
-export const MenuItemDescriptionSlot = withContext<
-  HTMLSpanElement,
-  MenuItemDescriptionSlotProps
->("span", "itemDescription");
-
-// Menu Item Keyboard Shortcut
-export type MenuItemKeyboardSlotProps = HTMLChakraProps<"span">;
-export const MenuItemKeyboardSlot = withContext<
-  HTMLSpanElement,
-  MenuItemKeyboardSlotProps
->("span", "itemKeyboard");
-
-// Menu Item Icon
-export type MenuItemIconSlotProps = HTMLChakraProps<"span">;
-export const MenuItemIconSlot = withContext<
-  HTMLSpanElement,
-  MenuItemIconSlotProps
->("span", "itemIcon");
-
 // Menu Separator
 export type MenuSeparatorSlotProps = HTMLChakraProps<"div">;
 export const MenuSeparatorSlot = withContext<
