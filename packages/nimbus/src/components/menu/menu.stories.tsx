@@ -72,7 +72,7 @@ export const Basic: Story = {
           <Text slot="description">Paste the copied text</Text>
           <Kbd slot="keyboard">⌘V</Kbd>
         </Menu.Item>
-        <Menu.Item id="delete">
+        <Menu.Item id="delete" isCritical>
           <Text slot="label">Delete</Text>
           <Text slot="description">Delete the selected text</Text>
           <Kbd slot="keyboard">⌫</Kbd>
@@ -172,7 +172,7 @@ export const WithAsChildIconButton: Story = {
           <Menu.Item id="duplicate">Duplicate</Menu.Item>
           <Menu.Item id="archive">Archive</Menu.Item>
           <Menu.Separator />
-          <Menu.Item id="delete" isDanger>
+          <Menu.Item id="delete" isCritical>
             Delete
           </Menu.Item>
         </Menu.Content>
@@ -396,9 +396,17 @@ export const WithDifferentPlacements: Story = {
           ))}
 
           {/* Center reference */}
-          <Box gridColumn="2" gridRow="2" display="flex" alignItems="center" justifyContent="center">
+          <Box
+            gridColumn="2"
+            gridRow="2"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
             <Box border="2px dashed #ccc" padding="20px" borderRadius="8px">
-              <Text color="#666" fontSize="14px" textAlign="center">Center Reference</Text>
+              <Text color="#666" fontSize="14px" textAlign="center">
+                Center Reference
+              </Text>
             </Box>
           </Box>
         </Box>
@@ -415,7 +423,8 @@ export const WithDifferentPlacements: Story = {
             Menu Placement Examples
           </Text>
           <Text fontSize="14px" color="#666" marginTop="8px">
-            Click each button to see the menu placement. The layout provides enough space to prevent fallback positions.
+            Click each button to see the menu placement. The layout provides
+            enough space to prevent fallback positions.
           </Text>
         </Box>
       </Box>
@@ -624,11 +633,11 @@ export const ComplexExample: Story = {
             <Kbd slot="keyboard">⌘E</Kbd>
           </Menu.Item>
 
-          <Menu.Item id="danger" isDanger>
+          <Menu.Item id="critical" isCritical>
             <Icon slot="icon">
               <Delete />
             </Icon>
-            <Text slot="label">Danger Item</Text>
+            <Text slot="label">Critical Item</Text>
             <Text slot="description">This is a destructive action</Text>
             <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
@@ -886,7 +895,7 @@ export const ComplexExample: Story = {
 
               <Menu.Separator />
 
-              <Menu.Item id="custom-report" isDanger>
+              <Menu.Item id="custom-report" isCritical>
                 <Icon slot="icon">
                   <Report />
                 </Icon>
@@ -959,8 +968,8 @@ export const WithInteractiveStates: Story = {
           <Menu.Item id="disabled" isDisabled>
             Disabled Item
           </Menu.Item>
-          <Menu.Item id="danger" isDanger>
-            Danger Item
+          <Menu.Item id="critical" isCritical>
+            Critical Item
           </Menu.Item>
           <Menu.Item id="loading" isLoading>
             Loading Item
@@ -1015,12 +1024,12 @@ export const WithComplexStates: Story = {
         <Menu.Separator />
 
         <Menu.Group>
-          <Menu.GroupLabel>Dangerous Actions</Menu.GroupLabel>
-          <Menu.Item id="delete" isDanger>
+          <Menu.GroupLabel>Critical Actions</Menu.GroupLabel>
+          <Menu.Item id="delete" isCritical>
             <Text slot="label">Delete File</Text>
             <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
-          <Menu.Item id="reset" isDanger>
+          <Menu.Item id="reset" isCritical>
             <Text slot="label">Reset All Settings</Text>
           </Menu.Item>
         </Menu.Group>
@@ -1149,7 +1158,7 @@ export const WithClickLogging: Story = {
 
         <Menu.Separator />
 
-        <Menu.Item id="delete" isDanger>
+        <Menu.Item id="delete" isCritical>
           <Icon slot="icon">
             <Delete />
           </Icon>
@@ -1242,7 +1251,7 @@ export const MultiSelection: Story = {
     );
 
     return (
-      <Menu.Root 
+      <Menu.Root
         defaultOpen
         selectionMode="multiple"
         selectedKeys={selectedKeys}

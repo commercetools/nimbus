@@ -93,6 +93,28 @@ export const menuSlotRecipe = defineSlotRecipe({
         bg: "primary.3",
       },
 
+      // Critical state
+      "&[data-critical]": {
+        color: "critical.11",
+
+        "&[data-hovered='true'], &[data-focused='true']": {
+          bg: "critical.2",
+        },
+
+        "& [slot='label']": {
+          fontWeight: "600",
+          color: "critical.11",
+        },
+
+        "& [slot='icon']": {
+          color: "critical.11",
+        },
+        "& [slot='description']": {
+          color: "critical.11",
+          fontWeight: "300",
+        },
+      },
+
       "& [slot='caretIcon']": {
         gridArea: "flyoutCaret",
         textAlign: "right",

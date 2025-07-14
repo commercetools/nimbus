@@ -8,7 +8,7 @@ import { Icon } from "@/components/icon";
 export const MenuItem = ({
   children,
   isSelected,
-  isDanger,
+  isCritical,
   isLoading,
   ref,
   ...props
@@ -20,7 +20,7 @@ export const MenuItem = ({
       asChild
       {...styleProps}
       data-selected={isSelected ? "" : undefined}
-      data-danger={isDanger ? "" : undefined}
+      data-critical={isCritical ? "" : undefined}
       data-loading={isLoading ? "" : undefined}
     >
       <RaMenuItem ref={ref} {...restProps}>
