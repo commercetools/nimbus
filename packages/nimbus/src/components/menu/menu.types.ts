@@ -46,6 +46,10 @@ export interface MenuTriggerProps
 export interface MenuContentProps {
   children?: ReactNode;
   ref?: Ref<HTMLDivElement>;
+  /**
+   * The placement of the menu relative to the trigger.
+   */
+  placement?: RaPopoverProps["placement"];
 }
 
 // Menu item component

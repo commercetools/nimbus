@@ -3,7 +3,11 @@ import { MenuContentSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
 import { useMenuContext } from "./menu.context";
 
-export const MenuContent = ({ children, ref }: MenuContentProps) => {
+export const MenuContent = ({
+  children,
+  placement: placementOverride,
+  ref,
+}: MenuContentProps) => {
   const contextProps = useMenuContext();
 
   if (!contextProps) {
@@ -18,7 +22,7 @@ export const MenuContent = ({ children, ref }: MenuContentProps) => {
     defaultSelectedKeys,
     onSelectionChange,
     disallowEmptySelection,
-    placement = "bottom start",
+    placement = placementOverride || "bottom start",
   } = contextProps;
 
   return (

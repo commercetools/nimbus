@@ -5,7 +5,6 @@ import { Box, Button, Icon, IconButton, Kbd, Text } from "@/components";
 import {
   MoreVert,
   KeyboardArrowDown,
-  CopyAll,
   InsertDriveFile,
   FolderOpen,
   Save,
@@ -55,8 +54,21 @@ type Story = StoryObj<typeof meta>;
 export const Basic: Story = {
   render: () => (
     <Menu.Root defaultOpen>
-      <Menu.Trigger>Actions</Menu.Trigger>
+      <Menu.Trigger>Edit Menu</Menu.Trigger>
       <Menu.Content>
+        <Menu.Item id="undo">
+          <Text slot="label">Undo</Text>
+          <Text slot="description">Undo the last action</Text>
+          <Kbd slot="keyboard">⌘Z</Kbd>
+        </Menu.Item>
+        <Menu.Item id="redo">
+          <Text slot="label">Redo</Text>
+          <Text slot="description">Redo the last undone action</Text>
+          <Kbd slot="keyboard">⌘Y</Kbd>
+        </Menu.Item>
+
+        <Menu.Separator />
+
         <Menu.Item id="copy">
           <Text slot="label">Copy</Text>
           <Text slot="description">Copy the selected text</Text>
@@ -69,8 +81,16 @@ export const Basic: Story = {
         </Menu.Item>
         <Menu.Item id="paste">
           <Text slot="label">Paste</Text>
-          <Text slot="description">Paste the copied text</Text>
+          <Text slot="description">Paste from clipboard</Text>
           <Kbd slot="keyboard">⌘V</Kbd>
+        </Menu.Item>
+
+        <Menu.Separator />
+
+        <Menu.Item id="select-all">
+          <Text slot="label">Select All</Text>
+          <Text slot="description">Select all content</Text>
+          <Kbd slot="keyboard">⌘A</Kbd>
         </Menu.Item>
         <Menu.Item id="delete" isCritical>
           <Text slot="label">Delete</Text>
@@ -82,258 +102,137 @@ export const Basic: Story = {
   ),
 };
 
-export const WithSubmenu: Story = {
+export const TriggerVariations: Story = {
   render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>Actions</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="copy">Copy</Menu.Item>
-        <Menu.Item id="cut">Cut</Menu.Item>
-        <Menu.Item id="paste">Paste</Menu.Item>
-        <Menu.Separator />
-        <Menu.SubmenuTrigger>
-          <Menu.Item>
-            <Text slot="label">Submenu</Text>
-            <Text slot="description">Submenu description</Text>
-            <Kbd slot="keyboard">⌘⇧S</Kbd>
-          </Menu.Item>
-          <Menu.Submenu>
-            <Menu.Item id="copy">Copy</Menu.Item>
-          </Menu.Submenu>
-        </Menu.SubmenuTrigger>
-      </Menu.Content>
-    </Menu.Root>
-  ),
-};
+    <Box display="flex" flexDirection="column" gap="24px">
+      {/* Button Triggers */}
+      <Box>
+        <Text fontWeight="semibold" marginBottom="8px">
+          Button Triggers
+        </Text>
+        <Box display="flex" gap="16px" alignItems="center">
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <Button variant="solid" tone="primary">
+                <KeyboardArrowDown />
+                Primary
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="action1">Action 1</Menu.Item>
+              <Menu.Item id="action2">Action 2</Menu.Item>
+              <Menu.Item id="action3">Action 3</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
 
-export const WithAsChildButton: Story = {
-  render: () => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu.Root defaultOpen>
-        <Menu.Trigger asChild>
-          <Button variant="solid" tone="primary">
-            <KeyboardArrowDown />
-            Primary Actions
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <Button variant="outline" colorPalette="primary">
+                <KeyboardArrowDown />
+                Outline
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="action1">Action 1</Menu.Item>
+              <Menu.Item id="action2">Action 2</Menu.Item>
+              <Menu.Item id="action3">Action 3</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger asChild>
-          <Button variant="outline" colorPalette="primary">
-            <KeyboardArrowDown />
-            Secondary Actions
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <Button variant="ghost" colorPalette="primary">
+                <KeyboardArrowDown />
+                Ghost
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="action1">Action 1</Menu.Item>
+              <Menu.Item id="action2">Action 2</Menu.Item>
+              <Menu.Item id="action3">Action 3</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
+        </Box>
+      </Box>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger asChild>
-          <Button variant="ghost" colorPalette="primary">
-            <KeyboardArrowDown />
-            Ghost Actions
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-    </div>
-  ),
-};
+      {/* IconButton Triggers */}
+      <Box>
+        <Text fontWeight="semibold" marginBottom="8px">
+          IconButton Triggers
+        </Text>
+        <Box display="flex" gap="16px" alignItems="center">
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <IconButton
+                variant="ghost"
+                colorPalette="neutral"
+                aria-label="More options"
+              >
+                <MoreVert />
+              </IconButton>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="edit">Edit</Menu.Item>
+              <Menu.Item id="duplicate">Duplicate</Menu.Item>
+              <Menu.Item id="archive">Archive</Menu.Item>
+              <Menu.Separator />
+              <Menu.Item id="delete" isCritical>
+                Delete
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
 
-export const WithAsChildIconButton: Story = {
-  render: () => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu.Root defaultOpen>
-        <Menu.Trigger asChild>
-          <IconButton
-            variant="ghost"
-            colorPalette="neutral"
-            aria-label="More options"
-          >
-            <MoreVert />
-          </IconButton>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="edit">Edit</Menu.Item>
-          <Menu.Item id="duplicate">Duplicate</Menu.Item>
-          <Menu.Item id="archive">Archive</Menu.Item>
-          <Menu.Separator />
-          <Menu.Item id="delete" isCritical>
-            Delete
-          </Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <IconButton
+                variant="solid"
+                colorPalette="primary"
+                aria-label="Primary actions"
+              >
+                <MoreVert />
+              </IconButton>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="share">Share</Menu.Item>
+              <Menu.Item id="export">Export</Menu.Item>
+              <Menu.Item id="print">Print</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
 
-      <Menu.Root defaultOpen>
-        <Menu.Trigger asChild>
-          <IconButton
-            variant="solid"
-            colorPalette="primary"
-            aria-label="Primary actions"
-          >
-            <MoreVert />
-          </IconButton>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="share">Share</Menu.Item>
-          <Menu.Item id="export">Export</Menu.Item>
-          <Menu.Item id="print">Print</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-    </div>
-  ),
-};
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <IconButton
+                variant="outline"
+                colorPalette="primary"
+                aria-label="Outline actions"
+              >
+                <MoreVert />
+              </IconButton>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="settings">Settings</Menu.Item>
+              <Menu.Item id="help">Help</Menu.Item>
+              <Menu.Item id="about">About</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
+        </Box>
+      </Box>
 
-export const WithGroups: Story = {
-  render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>File Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Group>
-          <Menu.GroupLabel>File Operations</Menu.GroupLabel>
-          <Menu.Item id="new">New File</Menu.Item>
-          <Menu.Item id="open">Open File</Menu.Item>
-          <Menu.Item id="save">Save File</Menu.Item>
-        </Menu.Group>
-
-        <Menu.Separator />
-
-        <Menu.Group>
-          <Menu.GroupLabel>Edit Operations</Menu.GroupLabel>
-          <Menu.Item id="copy">Copy</Menu.Item>
-          <Menu.Item id="cut">Cut</Menu.Item>
-          <Menu.Item id="paste">Paste</Menu.Item>
-        </Menu.Group>
-
-        <Menu.Separator />
-
-        <Menu.Group>
-          <Menu.GroupLabel>View Options</Menu.GroupLabel>
-          <Menu.Item id="zoom-in">Zoom In</Menu.Item>
-          <Menu.Item id="zoom-out">Zoom Out</Menu.Item>
-          <Menu.Item id="fullscreen">Toggle Fullscreen</Menu.Item>
-        </Menu.Group>
-      </Menu.Content>
-    </Menu.Root>
-  ),
-};
-
-export const WithKeyboardShortcuts: Story = {
-  render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>Edit Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="undo">
-          <Text slot="label">Undo</Text>
-          <Kbd slot="keyboard">⌘Z</Kbd>
-        </Menu.Item>
-        <Menu.Item id="redo">
-          <Text slot="label">Redo</Text>
-          <Kbd slot="keyboard">⌘+Y</Kbd>
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.Item id="copy">
-          <Text slot="label">Copy</Text>
-          <Kbd slot="keyboard">⌘C</Kbd>
-        </Menu.Item>
-        <Menu.Item id="cut">
-          <Text slot="label">Cut</Text>
-          <Kbd slot="keyboard">⌘X</Kbd>
-        </Menu.Item>
-        <Menu.Item id="paste">
-          <Text slot="label">Paste</Text>
-          <Kbd slot="keyboard">⌘V</Kbd>
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.Item id="select-all">
-          <Text slot="label">Select All</Text>
-          <Kbd slot="keyboard">⌘A</Kbd>
-        </Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-  ),
-};
-
-export const WithDescriptions: Story = {
-  render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>Account Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="profile">
-          <Text slot="label">View Profile</Text>
-          <Text slot="description">See your public profile information</Text>
-        </Menu.Item>
-
-        <Menu.Item id="settings">
-          <Text slot="label">Account Settings</Text>
-          <Text slot="description">
-            Manage your account preferences and security
-          </Text>
-        </Menu.Item>
-
-        <Menu.Item id="billing">
-          <Text slot="label">Billing & Usage</Text>
-          <Text slot="description">
-            View your subscription and usage details
-          </Text>
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.Item id="logout">
-          <Text slot="label">Sign Out</Text>
-          <Text slot="description">
-            Sign out of your account on this device
-          </Text>
-        </Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-  ),
-};
-
-export const WithDisabledItems: Story = {
-  render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>Edit Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="undo">Undo</Menu.Item>
-        <Menu.Item id="redo" isDisabled>
-          Redo (unavailable)
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.Item id="copy">Copy</Menu.Item>
-        <Menu.Item id="cut">Cut</Menu.Item>
-        <Menu.Item id="paste" isDisabled>
-          Paste (clipboard empty)
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.Item id="delete" isDisabled>
-          Delete (no selection)
-        </Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
+      {/* Default Trigger */}
+      <Box>
+        <Text fontWeight="semibold" marginBottom="8px">
+          Default Trigger
+        </Text>
+        <Menu.Root>
+          <Menu.Trigger>Default Menu Trigger</Menu.Trigger>
+          <Menu.Content>
+            <Menu.Item id="item1">Item 1</Menu.Item>
+            <Menu.Item id="item2">Item 2</Menu.Item>
+            <Menu.Item id="item3">Item 3</Menu.Item>
+          </Menu.Content>
+        </Menu.Root>
+      </Box>
+    </Box>
   ),
 };
 
@@ -432,36 +331,174 @@ export const WithDifferentPlacements: Story = {
   },
 };
 
-export const WithLinks: Story = {
-  render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>Navigation</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item href="/" target="_blank" rel="noopener">
-          Home Page
-        </Menu.Item>
-        <Menu.Item href="/about" target="_blank" rel="noopener">
-          About Us
-        </Menu.Item>
-        <Menu.Item href="/contact" target="_blank" rel="noopener">
-          Contact
-        </Menu.Item>
+export const SelectionModes: Story = {
+  render: () => {
+    const [singleSelection, setSingleSelection] =
+      React.useState<string>("medium");
+    const [multiSelection, setMultiSelection] = React.useState<Set<string>>(
+      new Set(["bold", "italic"])
+    );
 
-        <Menu.Separator />
+    return (
+      <Box display="flex" flexDirection="column" gap="32px">
+        {/* Single Selection */}
+        <Box>
+          <Text fontWeight="semibold" marginBottom="8px">
+            Single Selection Mode
+          </Text>
+          <Text fontSize="sm" color="gray.600" marginBottom="16px">
+            Only one item can be selected at a time
+          </Text>
+          <Box display="flex" gap="16px">
+            <Menu.Root
+              selectionMode="single"
+              selectedKeys={new Set([singleSelection])}
+              onSelectionChange={(keys) => {
+                if (keys !== "all") {
+                  const newKey = Array.from(keys)[0] as string;
+                  setSingleSelection(newKey);
+                }
+              }}
+            >
+              <Menu.Trigger>
+                <Text slot="label">Text Size</Text>
+                <Text slot="description">Currently: {singleSelection}</Text>
+              </Menu.Trigger>
+              <Menu.Content>
+                <Menu.Group>
+                  <Menu.GroupLabel>Choose text size</Menu.GroupLabel>
+                  <Menu.Item
+                    id="small"
+                    isSelected={singleSelection === "small"}
+                  >
+                    <Text slot="label">Small</Text>
+                    <Text slot="description">Compact text display</Text>
+                  </Menu.Item>
+                  <Menu.Item
+                    id="medium"
+                    isSelected={singleSelection === "medium"}
+                  >
+                    <Text slot="label">Medium</Text>
+                    <Text slot="description">Default text size</Text>
+                  </Menu.Item>
+                  <Menu.Item
+                    id="large"
+                    isSelected={singleSelection === "large"}
+                  >
+                    <Text slot="label">Large</Text>
+                    <Text slot="description">Larger text for readability</Text>
+                  </Menu.Item>
+                </Menu.Group>
+              </Menu.Content>
+            </Menu.Root>
 
-        <Menu.Item href="https://github.com" target="_blank" rel="noopener">
-          GitHub
-        </Menu.Item>
-        <Menu.Item
-          href="https://docs.example.com"
-          target="_blank"
-          rel="noopener"
-        >
-          Documentation
-        </Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-  ),
+            <Box padding="8px" background="gray.100" borderRadius="md">
+              <Text fontSize="sm">Selected: {singleSelection}</Text>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Multiple Selection */}
+        <Box>
+          <Text fontWeight="semibold" marginBottom="8px">
+            Multiple Selection Mode
+          </Text>
+          <Text fontSize="sm" color="gray.600" marginBottom="16px">
+            Multiple items can be selected with checkboxes
+          </Text>
+          <Box display="flex" gap="16px">
+            <Menu.Root
+              selectionMode="multiple"
+              selectedKeys={multiSelection}
+              onSelectionChange={(keys) => {
+                if (keys !== "all") {
+                  setMultiSelection(new Set(Array.from(keys) as string[]));
+                }
+              }}
+            >
+              <Menu.Trigger>
+                <Text slot="label">Text Formatting</Text>
+                <Text slot="description">
+                  {multiSelection.size} option
+                  {multiSelection.size !== 1 ? "s" : ""} selected
+                </Text>
+              </Menu.Trigger>
+              <Menu.Content>
+                <Menu.Group>
+                  <Menu.GroupLabel>Formatting Options</Menu.GroupLabel>
+                  <Menu.Item id="bold" isSelected={multiSelection.has("bold")}>
+                    <Icon slot="icon">
+                      <Edit />
+                    </Icon>
+                    <Text slot="label">Bold</Text>
+                    <Text slot="description">Make text bold</Text>
+                  </Menu.Item>
+                  <Menu.Item
+                    id="italic"
+                    isSelected={multiSelection.has("italic")}
+                  >
+                    <Icon slot="icon">
+                      <Edit />
+                    </Icon>
+                    <Text slot="label">Italic</Text>
+                    <Text slot="description">Make text italic</Text>
+                  </Menu.Item>
+                  <Menu.Item
+                    id="underline"
+                    isSelected={multiSelection.has("underline")}
+                  >
+                    <Icon slot="icon">
+                      <Edit />
+                    </Icon>
+                    <Text slot="label">Underline</Text>
+                    <Text slot="description">Underline text</Text>
+                  </Menu.Item>
+                  <Menu.Item
+                    id="strikethrough"
+                    isSelected={multiSelection.has("strikethrough")}
+                  >
+                    <Icon slot="icon">
+                      <Edit />
+                    </Icon>
+                    <Text slot="label">Strikethrough</Text>
+                    <Text slot="description">Strike through text</Text>
+                  </Menu.Item>
+                </Menu.Group>
+              </Menu.Content>
+            </Menu.Root>
+
+            <Box padding="8px" background="gray.100" borderRadius="md">
+              <Text fontSize="sm">
+                Selected: {Array.from(multiSelection).join(", ") || "None"}
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* No Selection Mode (Default) */}
+        <Box>
+          <Text fontWeight="semibold" marginBottom="8px">
+            No Selection Mode (Default)
+          </Text>
+          <Text fontSize="sm" color="gray.600" marginBottom="16px">
+            Standard menu without selection state
+          </Text>
+          <Menu.Root>
+            <Menu.Trigger>Standard Actions</Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="save">Save</Menu.Item>
+              <Menu.Item id="save-as">Save As...</Menu.Item>
+              <Menu.Item id="export">Export</Menu.Item>
+              <Menu.Separator />
+              <Menu.Item id="delete" isCritical>
+                Delete
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
+        </Box>
+      </Box>
+    );
+  },
 };
 
 export const ComplexExample: Story = {
@@ -640,14 +677,6 @@ export const ComplexExample: Story = {
             <Text slot="label">Critical Item</Text>
             <Text slot="description">This is a destructive action</Text>
             <Kbd slot="keyboard">⌘⌫</Kbd>
-          </Menu.Item>
-
-          <Menu.Item id="loading">
-            <Icon slot="icon">
-              <Sync />
-            </Icon>
-            <Text slot="label">Loading Item</Text>
-            <Text slot="description">This item is currently loading</Text>
           </Menu.Item>
 
           <Menu.Item id="disabled" isDisabled>
@@ -910,6 +939,34 @@ export const ComplexExample: Story = {
 
         <Menu.Separator />
 
+        <Menu.Group>
+          <Menu.GroupLabel>Trigger Props Examples</Menu.GroupLabel>
+          {/* Nested submenu for trigger props */}
+          <Menu.SubmenuTrigger>
+            <Menu.Item>
+              <Icon slot="icon">
+                <Settings />
+              </Icon>
+              <Text slot="label">Trigger Types</Text>
+              <Text slot="description">Different trigger behaviors</Text>
+            </Menu.Item>
+            <Menu.Submenu>
+              <Menu.Item id="press-trigger">
+                <Text slot="label">Press Trigger</Text>
+                <Text slot="description">Opens on press (default)</Text>
+              </Menu.Item>
+              <Menu.Item id="longpress-info">
+                <Text slot="label">Long Press Info</Text>
+                <Text slot="description">
+                  Root menu can use trigger="longPress"
+                </Text>
+              </Menu.Item>
+            </Menu.Submenu>
+          </Menu.SubmenuTrigger>
+        </Menu.Group>
+
+        <Menu.Separator />
+
         <Menu.Item href="/help" target="_blank" rel="noopener">
           <Icon slot="icon">
             <Help />
@@ -953,243 +1010,6 @@ export const ControlledMenu: Story = {
       </div>
     );
   },
-};
-
-export const WithInteractiveStates: Story = {
-  render: () => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Interactive States</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="normal">Normal Item</Menu.Item>
-          <Menu.Item id="selected" isSelected>
-            Selected Item
-          </Menu.Item>
-          <Menu.Item id="disabled" isDisabled>
-            Disabled Item
-          </Menu.Item>
-          <Menu.Item id="critical" isCritical>
-            Critical Item
-          </Menu.Item>
-          <Menu.Item id="loading">Loading Item</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Loading Trigger</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Item 1</Menu.Item>
-          <Menu.Item id="item2">Item 2</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Loading Content</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Item 1</Menu.Item>
-          <Menu.Item id="item2">Item 2</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-    </div>
-  ),
-};
-
-export const WithComplexStates: Story = {
-  render: () => (
-    <Menu.Root defaultOpen>
-      <Menu.Trigger>Complex Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Group>
-          <Menu.GroupLabel>File Operations</Menu.GroupLabel>
-          <Menu.Item id="new">
-            <Text slot="label">New File</Text>
-            <Kbd slot="keyboard">⌘N</Kbd>
-          </Menu.Item>
-          <Menu.Item id="open" isSelected>
-            <Text slot="label">Open File</Text>
-            <Kbd slot="keyboard">⌘O</Kbd>
-          </Menu.Item>
-          <Menu.Item id="save">
-            <Text slot="label">Save File</Text>
-            <Kbd slot="keyboard">⌘S</Kbd>
-          </Menu.Item>
-          <Menu.Item id="save-as" isDisabled>
-            <Text slot="label">Save As...</Text>
-            <Kbd slot="keyboard">⌘⇧S</Kbd>
-          </Menu.Item>
-        </Menu.Group>
-
-        <Menu.Separator />
-
-        <Menu.Group>
-          <Menu.GroupLabel>Critical Actions</Menu.GroupLabel>
-          <Menu.Item id="delete" isCritical>
-            <Text slot="label">Delete File</Text>
-            <Kbd slot="keyboard">⌘⌫</Kbd>
-          </Menu.Item>
-          <Menu.Item id="reset" isCritical>
-            <Text slot="label">Reset All Settings</Text>
-          </Menu.Item>
-        </Menu.Group>
-
-        <Menu.Separator />
-
-        <Menu.Group>
-          <Menu.GroupLabel>Background Tasks</Menu.GroupLabel>
-          <Menu.Item id="sync">
-            <Text slot="label">Synchronizing...</Text>
-          </Menu.Item>
-          <Menu.Item id="backup">
-            <Text slot="label">Create Backup</Text>
-          </Menu.Item>
-        </Menu.Group>
-      </Menu.Content>
-    </Menu.Root>
-  ),
-};
-
-export const WithTriggerProps: Story = {
-  render: () => (
-    <div style={{ display: "flex", gap: "1rem" }}>
-      <Menu.Root defaultOpen trigger="press">
-        <Menu.Trigger>Press Trigger</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="press-copy">Copy (Press)</Menu.Item>
-          <Menu.Item id="press-cut">Cut (Press)</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen trigger="longPress">
-        <Menu.Trigger>Long Press Trigger</Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="longpress-copy">Copy (Long Press)</Menu.Item>
-          <Menu.Item id="longpress-cut">Cut (Long Press)</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-    </div>
-  ),
-};
-
-export const SingleSelection: Story = {
-  render: () => {
-    const [selectedKey, setSelectedKey] = React.useState<string>("medium");
-
-    return (
-      <Menu.Root
-        defaultOpen
-        selectionMode="single"
-        selectedKeys={new Set([selectedKey])}
-        onSelectionChange={(keys) => {
-          if (keys !== "all") {
-            const newKey = Array.from(keys)[0] as string;
-            setSelectedKey(newKey);
-          }
-        }}
-      >
-        <Menu.Trigger>
-          View Options (Single Selection with Checkbox)
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Group>
-            <Menu.GroupLabel>Text Size</Menu.GroupLabel>
-            <Menu.Item id="small" isSelected={selectedKey === "small"}>
-              <Text slot="label">Small</Text>
-              <Text slot="description">Compact text display</Text>
-            </Menu.Item>
-            <Menu.Item id="medium" isSelected={selectedKey === "medium"}>
-              <Text slot="label">Medium</Text>
-              <Text slot="description">Default text size</Text>
-            </Menu.Item>
-            <Menu.Item id="large" isSelected={selectedKey === "large"}>
-              <Text slot="label">Large</Text>
-              <Text slot="description">Larger text for better readability</Text>
-            </Menu.Item>
-          </Menu.Group>
-
-          <Menu.Separator />
-
-          <Menu.Group>
-            <Menu.GroupLabel>Theme</Menu.GroupLabel>
-            <Menu.Item id="light">
-              <Text slot="label">Light Mode</Text>
-              <Text slot="description">Light background with dark text</Text>
-            </Menu.Item>
-            <Menu.Item id="dark">
-              <Text slot="label">Dark Mode</Text>
-              <Text slot="description">Dark background with light text</Text>
-            </Menu.Item>
-            <Menu.Item id="auto">
-              <Text slot="label">Auto</Text>
-              <Text slot="description">Follow system preference</Text>
-            </Menu.Item>
-          </Menu.Group>
-        </Menu.Content>
-      </Menu.Root>
-    );
-  },
-};
-
-export const WithClickLogging: Story = {
-  render: () => (
-    <Menu.Root
-      defaultOpen
-      onAction={(key) => console.log("Menu action triggered:", key)}
-    >
-      <Menu.Trigger>Actions Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="copy">
-          <Icon slot="icon">
-            <ContentCopy />
-          </Icon>
-          <Text slot="label">Copy</Text>
-          <Kbd slot="keyboard">⌘C</Kbd>
-        </Menu.Item>
-        <Menu.Item id="cut">
-          <Text slot="label">Cut</Text>
-          <Kbd slot="keyboard">⌘X</Kbd>
-        </Menu.Item>
-        <Menu.Item id="paste">
-          <Icon slot="icon">
-            <ContentPaste />
-          </Icon>
-          <Text slot="label">Paste</Text>
-          <Kbd slot="keyboard">⌘V</Kbd>
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.Item id="delete" isCritical>
-          <Icon slot="icon">
-            <Delete />
-          </Icon>
-          <Text slot="label">Delete</Text>
-          <Kbd slot="keyboard">⌫</Kbd>
-        </Menu.Item>
-
-        <Menu.Separator />
-
-        <Menu.SubmenuTrigger>
-          <Menu.Item>
-            <Icon slot="icon">
-              <FolderOpen />
-            </Icon>
-            <Text slot="label">More Options</Text>
-          </Menu.Item>
-          <Menu.Submenu>
-            <Menu.Item id="option1">Option 1</Menu.Item>
-            <Menu.Item id="option2">Option 2</Menu.Item>
-            <Menu.SubmenuTrigger>
-              <Menu.Item>Even More</Menu.Item>
-              <Menu.Submenu>
-                <Menu.Item id="deep1">Deep Option 1</Menu.Item>
-                <Menu.Item id="deep2">Deep Option 2</Menu.Item>
-              </Menu.Submenu>
-            </Menu.SubmenuTrigger>
-          </Menu.Submenu>
-        </Menu.SubmenuTrigger>
-      </Menu.Content>
-    </Menu.Root>
-  ),
 };
 
 export const WithCentralizedPropsAndOverride: Story = {
@@ -1242,158 +1062,4 @@ export const WithCentralizedPropsAndOverride: Story = {
       </Menu.Content>
     </Menu.Root>
   ),
-};
-
-export const CheckboxSelection: Story = {
-  render: () => {
-    const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(
-      new Set(["bold"])
-    );
-    return (
-      <Box display="flex" gap="400">
-        <Menu.Root
-          defaultOpen
-          selectionMode="multiple"
-          selectedKeys={selectedKeys}
-          onSelectionChange={(keys) => {
-            if (keys !== "all") {
-              setSelectedKeys(new Set(Array.from(keys) as string[]));
-            }
-          }}
-        >
-          <Menu.Trigger>Text Formatting</Menu.Trigger>
-          <Menu.Content>
-            <Menu.Item id="bold" isSelected={selectedKeys.has("bold")}>
-              <Icon slot="icon">
-                <Edit />
-              </Icon>
-              Bold
-            </Menu.Item>
-            <Menu.Item id="italic" isSelected={selectedKeys.has("italic")}>
-              <Icon slot="icon">
-                <Edit />
-              </Icon>
-              Italic
-            </Menu.Item>
-            <Menu.Item
-              id="underline"
-              isSelected={selectedKeys.has("underline")}
-            >
-              <Icon slot="icon">
-                <Edit />
-              </Icon>
-              Underline
-            </Menu.Item>
-          </Menu.Content>
-        </Menu.Root>
-        <Box>
-          <Text fontWeight="semibold">Selected:</Text>
-          <Text>{Array.from(selectedKeys).join(", ") || "None"}</Text>
-        </Box>
-      </Box>
-    );
-  },
-};
-
-export const MultiSelection: Story = {
-  render: () => {
-    const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(
-      new Set(["notifications", "updates"])
-    );
-
-    return (
-      <Menu.Root
-        defaultOpen
-        selectionMode="multiple"
-        selectedKeys={selectedKeys}
-        onSelectionChange={(keys) => {
-          if (keys !== "all") {
-            setSelectedKeys(new Set(Array.from(keys) as string[]));
-          }
-        }}
-      >
-        <Menu.Trigger>
-          <Text slot="label">
-            Email Settings (Multi-Selection with Checkboxes)
-          </Text>
-          <Text slot="description">
-            {selectedKeys.size} option{selectedKeys.size !== 1 ? "s" : ""}{" "}
-            selected
-          </Text>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Group>
-            <Menu.GroupLabel>Email Preferences</Menu.GroupLabel>
-            <Menu.Item
-              id="notifications"
-              isSelected={selectedKeys.has("notifications")}
-            >
-              <Icon slot="icon">
-                <Notifications />
-              </Icon>
-              <Text slot="label">Notifications</Text>
-              <Text slot="description">
-                Receive notifications about important events
-              </Text>
-            </Menu.Item>
-            <Menu.Item id="updates" isSelected={selectedKeys.has("updates")}>
-              <Icon slot="icon">
-                <Sync />
-              </Icon>
-              <Text slot="label">Product Updates</Text>
-              <Text slot="description">
-                Get notified about new features and improvements
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              id="marketing"
-              isSelected={selectedKeys.has("marketing")}
-            >
-              <Icon slot="icon">
-                <Analytics />
-              </Icon>
-              <Text slot="label">Marketing</Text>
-              <Text slot="description">
-                Receive promotional emails and offers
-              </Text>
-            </Menu.Item>
-            <Menu.Item id="security" isSelected={selectedKeys.has("security")}>
-              <Icon slot="icon">
-                <Security />
-              </Icon>
-              <Text slot="label">Security Alerts</Text>
-              <Text slot="description">Important security notifications</Text>
-            </Menu.Item>
-          </Menu.Group>
-
-          <Menu.Separator />
-
-          <Menu.Group>
-            <Menu.GroupLabel>Content Preferences</Menu.GroupLabel>
-            <Menu.Item
-              id="newsletters"
-              isSelected={selectedKeys.has("newsletters")}
-            >
-              <Icon slot="icon">
-                <Report />
-              </Icon>
-              <Text slot="label">Newsletters</Text>
-              <Text slot="description">
-                Weekly digest of articles and insights
-              </Text>
-            </Menu.Item>
-            <Menu.Item id="tips" isSelected={selectedKeys.has("tips")}>
-              <Icon slot="icon">
-                <Help />
-              </Icon>
-              <Text slot="label">Tips & Tricks</Text>
-              <Text slot="description">
-                Helpful tips to get the most out of the platform
-              </Text>
-            </Menu.Item>
-          </Menu.Group>
-        </Menu.Content>
-      </Menu.Root>
-    );
-  },
 };
