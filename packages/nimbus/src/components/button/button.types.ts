@@ -1,5 +1,6 @@
 import type { ButtonRootProps } from "./button.slots.tsx";
 import type { AriaButtonProps } from "react-aria";
+import type { WithDeprecatedOnClick } from "@/utils/deprecate-on-click.ts";
 
 /** combine chakra-button props with aria-button props */
 type FunctionalButtonProps = AriaButtonProps &
@@ -7,7 +8,8 @@ type FunctionalButtonProps = AriaButtonProps &
     [key: `data-${string}`]: unknown;
   };
 
-export interface ButtonProps extends FunctionalButtonProps {
+export interface ButtonProps
+  extends WithDeprecatedOnClick<FunctionalButtonProps> {
   // TODO: evaluate if we should require setting a tone
   // tone: FunctionalButtonProps["tone"];
   // we need 'null' as a valid slot value for use with components from react-aria-components,

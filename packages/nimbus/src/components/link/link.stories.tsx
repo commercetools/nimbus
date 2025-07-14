@@ -32,7 +32,7 @@ type Story = StoryObj<typeof Link>;
 export const Base: Story = {
   args: {
     children: "Demo Link",
-    onClick: fn(),
+    onPress: fn(),
     ["data-testid"]: "link-test",
     ["aria-label"]: "link-to-somewhere",
     ["href"]: "#",

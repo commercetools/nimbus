@@ -2,6 +2,7 @@ import type { LinkRootProps } from "./link.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import type { AriaLinkOptions } from "react-aria";
 import { linkRecipe } from "./link.recipe";
+import type { WithDeprecatedOnClick } from "@/utils/deprecate-on-click";
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.
@@ -21,7 +22,7 @@ type LinkVariantProps = Omit<LinkRootProps, "onFocus" | "onBlur" | "onClick"> &
  * Extends LinkVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface LinkProps extends LinkVariantProps {
+export interface LinkProps extends WithDeprecatedOnClick<LinkVariantProps> {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLAnchorElement>;
 }

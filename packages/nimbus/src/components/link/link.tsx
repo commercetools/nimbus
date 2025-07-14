@@ -21,10 +21,13 @@ export const Link = (props: LinkProps) => {
   const { as, asChild, children, ref: forwardedRef, ...rest } = props;
 
   const localRef = useRef<HTMLAnchorElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(
+    mergeRefs(localRef, forwardedRef)
+  ) as React.RefObject<HTMLAnchorElement>;
 
   const elementType = (as as string) || (asChild ? "span" : "a") || "a";
-  const { linkProps } = useLink({ ...rest, elementType }, ref);
+  const { onClick, ...restWithoutOnClick } = rest;
+  const { linkProps } = useLink({ ...restWithoutOnClick, elementType }, ref);
 
   return (
     <LinkRoot {...mergeProps(rest, linkProps, { as, asChild, ref })}>

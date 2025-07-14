@@ -411,7 +411,7 @@ export const ProgressSimulation: Story = {
           >
             Pause
           </Button>
-          <Button onClick={resetProgress} variant="ghost">
+          <Button onPress={resetProgress} variant="ghost">
             Reset
           </Button>
         </Stack>
