@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./index";
-import { Button, Icon, IconButton, Kbd, Text } from "@/components";
+import { Box, Button, Icon, IconButton, Kbd, Text } from "@/components";
 import {
   MoreVert,
   KeyboardArrowDown,
@@ -279,9 +279,7 @@ export const WithDescriptions: Story = {
       <Menu.Content>
         <Menu.Item id="profile">
           <Text slot="label">View Profile</Text>
-          <Text slot="description">
-            See your public profile information
-          </Text>
+          <Text slot="description">See your public profile information</Text>
         </Menu.Item>
 
         <Menu.Item id="settings">
@@ -340,219 +338,89 @@ export const WithDisabledItems: Story = {
 };
 
 export const WithDifferentPlacements: Story = {
-  render: () => (
-    <div
-      style={{
-        position: "relative",
-        height: "600px",
-        width: "100%",
-        border: "1px dashed #ccc",
-        background: "#f5f5f5",
-      }}
-    >
-      {/* Top placements */}
-      <Menu.Root defaultOpen placement="top start">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              top: "150px",
-              left: "20%",
-            }}
-          >
-            Top Start
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
+  render: () => {
+    const placements = [
+      { placement: "top start", col: "1", row: "1" },
+      { placement: "top", col: "2", row: "1" },
+      { placement: "top end", col: "3", row: "1" },
+      { placement: "left", col: "1", row: "2" },
+      { placement: "right", col: "3", row: "2" },
+      { placement: "bottom start", col: "1", row: "3" },
+      { placement: "bottom", col: "2", row: "3" },
+      { placement: "bottom end", col: "3", row: "3" },
+    ];
 
-      <Menu.Root defaultOpen placement="top">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              top: "150px",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          >
-            Top
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen placement="top end">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              top: "150px",
-              right: "20%",
-            }}
-          >
-            Top End
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      {/* Middle placements (left and right) */}
-      <Menu.Root defaultOpen placement="left">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "150px",
-              transform: "translateY(-50%)",
-            }}
-          >
-            Left
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen placement="right">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "150px",
-              transform: "translateY(-50%)",
-            }}
-          >
-            Right
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      {/* Bottom placements */}
-      <Menu.Root defaultOpen placement="bottom start">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              bottom: "150px",
-              left: "20%",
-            }}
-          >
-            Bottom Start
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen placement="bottom">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="sm"
-            style={{
-              position: "absolute",
-              bottom: "150px",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          >
-            Bottom
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Menu.Root defaultOpen placement="bottom end">
-        <Menu.Trigger asChild>
-          <Button
-            variant="solid"
-            size="xs"
-            style={{
-              position: "absolute",
-              bottom: "150px",
-              right: "20%",
-            }}
-          >
-            Bottom End
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Item id="item1">Menu Item 1</Menu.Item>
-          <Menu.Item id="item2">Menu Item 2</Menu.Item>
-          <Menu.Item id="item3">Menu Item 3</Menu.Item>
-        </Menu.Content>
-      </Menu.Root>
-
-      {/* Labels to show placement names */}
-      <div
-        style={{
-          position: "absolute",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontSize: "14px",
-          color: "#666",
-          fontWeight: "600",
-        }}
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="800px"
+        width="100%"
+        padding="200px"
+        background="#f5f5f5"
+        position="relative"
+        overflow="auto"
       >
-        Menu Placement Examples
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontSize: "12px",
-          color: "#999",
-        }}
-      >
-        Buttons are positioned to demonstrate different menu placements
-      </div>
-    </div>
-  ),
+        {/* Central grid layout for better placement visualization */}
+        <Box
+          display="grid"
+          gridTemplateColumns="200px 200px 200px"
+          gridTemplateRows="100px 100px 100px"
+          gap="40px"
+          position="relative"
+        >
+          {placements.map(({ placement, col, row }) => (
+            <Box
+              key={placement}
+              gridColumn={col}
+              gridRow={row}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Menu.Root placement={placement as any}>
+                <Menu.Trigger asChild>
+                  <Button variant="solid" tone="primary" size="xs">
+                    {placement}
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content>
+                  <Menu.Item id="item1">Menu Item 1</Menu.Item>
+                  <Menu.Item id="item2">Menu Item 2</Menu.Item>
+                  <Menu.Item id="item3">Menu Item 3</Menu.Item>
+                </Menu.Content>
+              </Menu.Root>
+            </Box>
+          ))}
+
+          {/* Center reference */}
+          <Box gridColumn="2" gridRow="2" display="flex" alignItems="center" justifyContent="center">
+            <Box border="2px dashed #ccc" padding="20px" borderRadius="8px">
+              <Text color="#666" fontSize="14px" textAlign="center">Center Reference</Text>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Instructions */}
+        <Box
+          position="absolute"
+          top="20px"
+          left="50%"
+          transform="translateX(-50%)"
+          textAlign="center"
+        >
+          <Text fontSize="16px" fontWeight="600" color="#333">
+            Menu Placement Examples
+          </Text>
+          <Text fontSize="14px" color="#666" marginTop="8px">
+            Click each button to see the menu placement. The layout provides enough space to prevent fallback positions.
+          </Text>
+        </Box>
+      </Box>
+    );
+  },
 };
 
 export const WithLinks: Story = {
@@ -623,9 +491,7 @@ export const ComplexExample: Story = {
               <SaveAs />
             </Icon>
             <Text slot="label">Save As...</Text>
-            <Text slot="description">
-              Save document with a new name
-            </Text>
+            <Text slot="description">Save document with a new name</Text>
             <Kbd slot="keyboard">⌘⇧S</Kbd>
           </Menu.Item>
         </Menu.Group>
@@ -754,9 +620,7 @@ export const ComplexExample: Story = {
               <Edit />
             </Icon>
             <Text slot="label">Selected Item</Text>
-            <Text slot="description">
-              This item is currently selected
-            </Text>
+            <Text slot="description">This item is currently selected</Text>
             <Kbd slot="keyboard">⌘E</Kbd>
           </Menu.Item>
 
@@ -765,9 +629,7 @@ export const ComplexExample: Story = {
               <Delete />
             </Icon>
             <Text slot="label">Danger Item</Text>
-            <Text slot="description">
-              This is a destructive action
-            </Text>
+            <Text slot="description">This is a destructive action</Text>
             <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
 
@@ -776,9 +638,7 @@ export const ComplexExample: Story = {
               <Sync />
             </Icon>
             <Text slot="label">Loading Item</Text>
-            <Text slot="description">
-              This item is currently loading
-            </Text>
+            <Text slot="description">This item is currently loading</Text>
           </Menu.Item>
 
           <Menu.Item id="disabled" isDisabled>
@@ -845,9 +705,7 @@ export const ComplexExample: Story = {
                     <AccountCircle />
                   </Icon>
                   <Text slot="label">Account</Text>
-                  <Text slot="description">
-                    User account settings
-                  </Text>
+                  <Text slot="description">User account settings</Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="profile">
@@ -879,9 +737,7 @@ export const ComplexExample: Story = {
                     <Palette />
                   </Icon>
                   <Text slot="label">Appearance</Text>
-                  <Text slot="description">
-                    Theme and display options
-                  </Text>
+                  <Text slot="description">Theme and display options</Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="theme">
@@ -937,9 +793,7 @@ export const ComplexExample: Story = {
 
               <Menu.Item id="advanced" isDisabled>
                 <Text slot="label">Advanced Settings</Text>
-                <Text slot="description">
-                  Advanced configuration options
-                </Text>
+                <Text slot="description">Advanced configuration options</Text>
               </Menu.Item>
             </Menu.Submenu>
           </Menu.SubmenuTrigger>
@@ -951,9 +805,7 @@ export const ComplexExample: Story = {
                 <Analytics />
               </Icon>
               <Text slot="label">Reports</Text>
-              <Text slot="description">
-                Analytics and reporting tools
-              </Text>
+              <Text slot="description">Analytics and reporting tools</Text>
             </Menu.Item>
             <Menu.Submenu>
               <Menu.Item id="dashboard">
@@ -971,9 +823,7 @@ export const ComplexExample: Story = {
                     <Share />
                   </Icon>
                   <Text slot="label">Export</Text>
-                  <Text slot="description">
-                    Export data in various formats
-                  </Text>
+                  <Text slot="description">Export data in various formats</Text>
                 </Menu.Item>
                 <Menu.Submenu>
                   <Menu.Item id="export-pdf">
@@ -995,9 +845,7 @@ export const ComplexExample: Story = {
                       <Download />
                     </Icon>
                     <Text slot="label">Export as JSON</Text>
-                    <Text slot="description">
-                      Preparing export...
-                    </Text>
+                    <Text slot="description">Preparing export...</Text>
                   </Menu.Item>
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
@@ -1031,9 +879,7 @@ export const ComplexExample: Story = {
                       <Upload />
                     </Icon>
                     <Text slot="label">Import XML</Text>
-                    <Text slot="description">
-                      Feature not available
-                    </Text>
+                    <Text slot="description">Feature not available</Text>
                   </Menu.Item>
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
@@ -1247,9 +1093,7 @@ export const SingleSelection: Story = {
             </Menu.Item>
             <Menu.Item id="large" isSelected={selectedKey === "large"}>
               <Text slot="label">Large</Text>
-              <Text slot="description">
-                Larger text for better readability
-              </Text>
+              <Text slot="description">Larger text for better readability</Text>
             </Menu.Item>
           </Menu.Group>
 
@@ -1259,21 +1103,15 @@ export const SingleSelection: Story = {
             <Menu.GroupLabel>Theme</Menu.GroupLabel>
             <Menu.Item id="light">
               <Text slot="label">Light Mode</Text>
-              <Text slot="description">
-                Light background with dark text
-              </Text>
+              <Text slot="description">Light background with dark text</Text>
             </Menu.Item>
             <Menu.Item id="dark">
               <Text slot="label">Dark Mode</Text>
-              <Text slot="description">
-                Dark background with light text
-              </Text>
+              <Text slot="description">Dark background with light text</Text>
             </Menu.Item>
             <Menu.Item id="auto">
               <Text slot="label">Auto</Text>
-              <Text slot="description">
-                Follow system preference
-              </Text>
+              <Text slot="description">Follow system preference</Text>
             </Menu.Item>
           </Menu.Group>
         </Menu.Content>
@@ -1371,9 +1209,7 @@ export const WithCentralizedPropsAndOverride: Story = {
             </Icon>
             <Text slot="label">Advanced Settings</Text>
           </Menu.Item>
-          <Menu.Submenu
-            onAction={(key) => console.log("Submenu override handler:", key)}
-          >
+          <Menu.Submenu>
             <Menu.Item id="advanced-1">Advanced Option 1</Menu.Item>
             <Menu.Item id="advanced-2">Advanced Option 2</Menu.Item>
 
@@ -1381,10 +1217,10 @@ export const WithCentralizedPropsAndOverride: Story = {
               <Menu.Item>More Settings</Menu.Item>
               <Menu.Submenu>
                 <Menu.Item id="deep-1">
-                  Deep Setting 1 (uses submenu handler)
+                  Deep Setting 1 (uses root handler)
                 </Menu.Item>
                 <Menu.Item id="deep-2">
-                  Deep Setting 2 (uses submenu handler)
+                  Deep Setting 2 (uses root handler)
                 </Menu.Item>
               </Menu.Submenu>
             </Menu.SubmenuTrigger>
@@ -1406,7 +1242,16 @@ export const MultiSelection: Story = {
     );
 
     return (
-      <Menu.Root defaultOpen>
+      <Menu.Root 
+        defaultOpen
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={(keys) => {
+          if (keys !== "all") {
+            setSelectedKeys(new Set(Array.from(keys) as string[]));
+          }
+        }}
+      >
         <Menu.Trigger>
           <Text slot="label">Email Settings</Text>
           <Text slot="description">
@@ -1414,15 +1259,7 @@ export const MultiSelection: Story = {
             selected
           </Text>
         </Menu.Trigger>
-        <Menu.Content
-          selectionMode="multiple"
-          selectedKeys={selectedKeys}
-          onSelectionChange={(keys) => {
-            if (keys !== "all") {
-              setSelectedKeys(new Set(Array.from(keys) as string[]));
-            }
-          }}
-        >
+        <Menu.Content>
           <Menu.Group>
             <Menu.GroupLabel>Email Preferences</Menu.GroupLabel>
             <Menu.Item
@@ -1463,9 +1300,7 @@ export const MultiSelection: Story = {
                 <Security />
               </Icon>
               <Text slot="label">Security Alerts</Text>
-              <Text slot="description">
-                Important security notifications
-              </Text>
+              <Text slot="description">Important security notifications</Text>
             </Menu.Item>
           </Menu.Group>
 
