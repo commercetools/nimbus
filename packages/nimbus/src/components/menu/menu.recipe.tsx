@@ -84,6 +84,7 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&[data-hovered='true'], &[data-focused='true']": {
         bg: "primary.2",
         outline: "none",
+        zIndex: "1",
       },
 
       // keyboard focused
