@@ -82,3 +82,12 @@ export interface MenuSectionLabelProps {
   children: ReactNode;
   ref?: Ref<HTMLDivElement>;
 }
+
+// Menu submenu component - extends MenuContentProps
+export interface MenuSubmenuProps extends MenuContentProps {}
+
+// Menu submenu trigger component
+export interface MenuSubmenuTriggerProps {
+  children?: ReactNode;
+  ref?: Ref<HTMLDivElement>;
+}
