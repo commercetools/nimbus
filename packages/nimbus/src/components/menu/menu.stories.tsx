@@ -375,24 +375,15 @@ export const SelectionModes: Story = {
               <Menu.Content>
                 <Menu.Section>
                   <Menu.SectionLabel>Choose text size</Menu.SectionLabel>
-                  <Menu.Item
-                    id="small"
-                    isSelected={singleSelection === "small"}
-                  >
+                  <Menu.Item id="small">
                     <Text slot="label">Small</Text>
                     <Text slot="description">Compact text display</Text>
                   </Menu.Item>
-                  <Menu.Item
-                    id="medium"
-                    isSelected={singleSelection === "medium"}
-                  >
+                  <Menu.Item id="medium">
                     <Text slot="label">Medium</Text>
                     <Text slot="description">Default text size</Text>
                   </Menu.Item>
-                  <Menu.Item
-                    id="large"
-                    isSelected={singleSelection === "large"}
-                  >
+                  <Menu.Item id="large">
                     <Text slot="label">Large</Text>
                     <Text slot="description">Larger text for readability</Text>
                   </Menu.Item>
@@ -428,37 +419,28 @@ export const SelectionModes: Story = {
               <Menu.Content>
                 <Menu.Section>
                   <Menu.SectionLabel>Formatting Options</Menu.SectionLabel>
-                  <Menu.Item id="bold" isSelected={multiSelection.has("bold")}>
+                  <Menu.Item id="bold">
                     <Icon slot="icon">
                       <Edit />
                     </Icon>
                     <Text slot="label">Bold</Text>
                     <Text slot="description">Make text bold</Text>
                   </Menu.Item>
-                  <Menu.Item
-                    id="italic"
-                    isSelected={multiSelection.has("italic")}
-                  >
+                  <Menu.Item id="italic">
                     <Icon slot="icon">
                       <Edit />
                     </Icon>
                     <Text slot="label">Italic</Text>
                     <Text slot="description">Make text italic</Text>
                   </Menu.Item>
-                  <Menu.Item
-                    id="underline"
-                    isSelected={multiSelection.has("underline")}
-                  >
+                  <Menu.Item id="underline">
                     <Icon slot="icon">
                       <Edit />
                     </Icon>
                     <Text slot="label">Underline</Text>
                     <Text slot="description">Underline text</Text>
                   </Menu.Item>
-                  <Menu.Item
-                    id="strikethrough"
-                    isSelected={multiSelection.has("strikethrough")}
-                  >
+                  <Menu.Item id="strikethrough">
                     <Icon slot="icon">
                       <Edit />
                     </Icon>
@@ -514,13 +496,14 @@ export const MixedSelectionModes: Story = {
     const [view, setView] = React.useState<string>("list");
 
     return (
-      <Stack direction="column" spacing="600">
-        <Heading size="500">Mixed Selection Modes Example</Heading>
+      <Stack direction="column" gap="600">
+        <Heading size="lg">Mixed Selection Modes Example</Heading>
         <Text textStyle="lg">
-          This example demonstrates different selection modes within a single menu.
+          This example demonstrates different selection modes within a single
+          menu.
         </Text>
-        
-        <Stack direction="row" spacing="600">
+
+        <Stack direction="row" gap="600">
           <Menu.Root defaultOpen>
             <Menu.Trigger>
               <Button>
@@ -570,15 +553,15 @@ export const MixedSelectionModes: Story = {
                 }}
               >
                 <Menu.SectionLabel>Text Style</Menu.SectionLabel>
-                <Menu.Item id="bold" isSelected={textStyle.has("bold")}>
+                <Menu.Item id="bold">
                   <Text slot="label">Bold</Text>
                   <Kbd slot="keyboard">⌘B</Kbd>
                 </Menu.Item>
-                <Menu.Item id="italic" isSelected={textStyle.has("italic")}>
+                <Menu.Item id="italic">
                   <Text slot="label">Italic</Text>
                   <Kbd slot="keyboard">⌘I</Kbd>
                 </Menu.Item>
-                <Menu.Item id="underline" isSelected={textStyle.has("underline")}>
+                <Menu.Item id="underline">
                   <Text slot="label">Underline</Text>
                   <Kbd slot="keyboard">⌘U</Kbd>
                 </Menu.Item>
@@ -598,13 +581,13 @@ export const MixedSelectionModes: Story = {
                 }}
               >
                 <Menu.SectionLabel>Text Alignment</Menu.SectionLabel>
-                <Menu.Item id="left" isSelected={alignment === "left"}>
+                <Menu.Item id="left">
                   <Text slot="label">Left</Text>
                 </Menu.Item>
-                <Menu.Item id="center" isSelected={alignment === "center"}>
+                <Menu.Item id="center">
                   <Text slot="label">Center</Text>
                 </Menu.Item>
-                <Menu.Item id="right" isSelected={alignment === "right"}>
+                <Menu.Item id="right">
                   <Text slot="label">Right</Text>
                 </Menu.Item>
               </Menu.Section>
@@ -612,21 +595,21 @@ export const MixedSelectionModes: Story = {
           </Menu.Root>
 
           <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
-            <Stack spacing="300">
-              <Text fontSize="sm" fontWeight="600">Current Selection:</Text>
+            <Stack gap="300">
+              <Text fontSize="sm" fontWeight="600">
+                Current Selection:
+              </Text>
               <Text fontSize="sm">
                 Text Style: {Array.from(textStyle).join(", ") || "None"}
               </Text>
-              <Text fontSize="sm">
-                Alignment: {alignment}
-              </Text>
+              <Text fontSize="sm">Alignment: {alignment}</Text>
             </Stack>
           </Box>
         </Stack>
 
         {/* Example with root defaults and section overrides */}
-        <Stack direction="row" spacing="600">
-          <Menu.Root 
+        <Stack direction="row" gap="600">
+          <Menu.Root
             defaultOpen
             selectionMode="single"
             selectedKeys={new Set([view])}
@@ -649,13 +632,13 @@ export const MixedSelectionModes: Story = {
               {/* This section inherits single selection from root */}
               <Menu.Section>
                 <Menu.SectionLabel>View Mode</Menu.SectionLabel>
-                <Menu.Item id="list" isSelected={view === "list"}>
+                <Menu.Item id="list">
                   <Icon slot="icon">
                     <ViewList />
                   </Icon>
                   <Text slot="label">List View</Text>
                 </Menu.Item>
-                <Menu.Item id="grid" isSelected={view === "grid"}>
+                <Menu.Item id="grid">
                   <Icon slot="icon">
                     <ViewModule />
                   </Icon>
@@ -676,10 +659,10 @@ export const MixedSelectionModes: Story = {
                 }}
               >
                 <Menu.SectionLabel>Override to Multiple</Menu.SectionLabel>
-                <Menu.Item id="bold" isSelected={textStyle.has("bold")}>
+                <Menu.Item id="bold">
                   <Text slot="label">Show Bold</Text>
                 </Menu.Item>
-                <Menu.Item id="italic" isSelected={textStyle.has("italic")}>
+                <Menu.Item id="italic">
                   <Text slot="label">Show Italic</Text>
                 </Menu.Item>
               </Menu.Section>
@@ -687,13 +670,14 @@ export const MixedSelectionModes: Story = {
           </Menu.Root>
 
           <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
-            <Stack spacing="300">
-              <Text fontSize="sm" fontWeight="600">Root Default Applied:</Text>
-              <Text fontSize="sm">
-                View (inherited single): {view}
+            <Stack gap="300">
+              <Text fontSize="sm" fontWeight="600">
+                Root Default Applied:
               </Text>
+              <Text fontSize="sm">View (inherited single): {view}</Text>
               <Text fontSize="sm">
-                Formatting (override multiple): {Array.from(textStyle).join(", ") || "None"}
+                Formatting (override multiple):{" "}
+                {Array.from(textStyle).join(", ") || "None"}
               </Text>
             </Stack>
           </Box>
@@ -863,7 +847,7 @@ export const ComplexExample: Story = {
 
         <Menu.Section>
           <Menu.SectionLabel>States & Behaviors</Menu.SectionLabel>
-          <Menu.Item id="selected" isSelected>
+          <Menu.Item id="selected">
             <Icon slot="icon">
               <Edit />
             </Icon>
@@ -958,7 +942,7 @@ export const ComplexExample: Story = {
                     </Icon>
                     <Text slot="label">Notifications</Text>
                   </Menu.Item>
-                  <Menu.Item id="security" isSelected>
+                  <Menu.Item id="security">
                     <Icon slot="icon">
                       <Security />
                     </Icon>
@@ -1010,7 +994,7 @@ export const ComplexExample: Story = {
                         <Text slot="label">List View</Text>
                         <Kbd slot="keyboard">⌘1</Kbd>
                       </Menu.Item>
-                      <Menu.Item id="grid-view" isSelected>
+                      <Menu.Item id="grid-view">
                         <Icon slot="icon">
                           <ViewModule />
                         </Icon>
@@ -1219,7 +1203,7 @@ export const WithCentralizedPropsAndOverride: Story = {
     const [selectedKey, setSelectedKey] = React.useState<string>("view-list");
 
     return (
-      <Stack spacing="600">
+      <Stack gap="600">
         <Stack>
           <Heading>Controlled Selection (persists when menu reopens)</Heading>
           <Text>Selected view: {selectedKey}</Text>
@@ -1289,7 +1273,9 @@ export const WithCentralizedPropsAndOverride: Story = {
             <Menu.Trigger>Uncontrolled Settings Menu</Menu.Trigger>
             <Menu.Content>
               <Menu.Section>
-                <Menu.SectionLabel>View Options (uncontrolled)</Menu.SectionLabel>
+                <Menu.SectionLabel>
+                  View Options (uncontrolled)
+                </Menu.SectionLabel>
                 <Menu.Item id="view-list">List View</Menu.Item>
                 <Menu.Item id="view-grid">Grid View</Menu.Item>
                 <Menu.Item id="view-detail">Detail View</Menu.Item>

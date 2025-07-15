@@ -6,18 +6,19 @@ import { useMenuContext } from "./menu.context";
 import { MenuSectionProvider } from "./menu.section-context";
 
 export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
-  const [styleProps, restProps] = extractStyleProps(props);
   const contextProps = useMenuContext();
 
-  // Merge context defaults with section-specific props
+  // Extract selection-related props before extracting style props
   const {
     selectionMode = contextProps?.selectionMode,
     selectedKeys = contextProps?.selectedKeys,
     defaultSelectedKeys = contextProps?.defaultSelectedKeys,
     onSelectionChange = contextProps?.onSelectionChange,
     disallowEmptySelection = contextProps?.disallowEmptySelection,
-    ...otherProps
-  } = restProps;
+    ...restProps
+  } = props;
+
+  const [styleProps, otherProps] = extractStyleProps(restProps);
 
   return (
     <MenuSectionSlot asChild {...styleProps}>
@@ -31,7 +32,7 @@ export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
         {...otherProps}
       >
         <MenuSectionProvider value={{ selectionMode }}>
-          {children}
+          {children as React.ReactNode}
         </MenuSectionProvider>
       </RaMenuSection>
     </MenuSectionSlot>

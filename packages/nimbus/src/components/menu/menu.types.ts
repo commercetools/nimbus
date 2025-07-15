@@ -35,7 +35,7 @@ export interface MenuRootProps
   placement?: RaPopoverProps["placement"];
 }
 
-// Trigger button component - inherit children from ButtonProps to support render props
+// Menu trigger component
 export interface MenuTriggerProps
   extends Omit<MenuTriggerSlotProps, keyof RaButtonProps>,
     RaButtonProps {
@@ -54,7 +54,6 @@ export interface MenuContentProps {
 
 // Menu item component
 export interface MenuItemProps extends RaMenuItemProps {
-  isSelected?: boolean;
   isCritical?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
@@ -65,7 +64,16 @@ export interface MenuSeparatorProps extends RaSeparatorProps {
 }
 
 // Menu section component
-export interface MenuSectionProps extends RaSectionProps<object> {
+export interface MenuSectionProps
+  extends RaSectionProps<object>,
+    Pick<
+      RaMenuProps<object>,
+      | "selectionMode"
+      | "selectedKeys"
+      | "defaultSelectedKeys"
+      | "onSelectionChange"
+      | "disallowEmptySelection"
+    > {
   ref?: Ref<HTMLDivElement>;
 }
 

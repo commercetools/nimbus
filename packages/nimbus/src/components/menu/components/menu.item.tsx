@@ -16,7 +16,6 @@ import { Box } from "@/components/box";
 
 export const MenuItem = ({
   children,
-  isSelected,
   isCritical,
   ref,
   ...props
@@ -25,27 +24,21 @@ export const MenuItem = ({
   const sectionContext = useMenuSectionContext();
   const menuContext = useMenuContext();
   // Use section context if available, otherwise fall back to menu context
-  const selectionMode = sectionContext?.selectionMode ?? menuContext?.selectionMode;
+  const selectionMode =
+    sectionContext?.selectionMode ?? menuContext?.selectionMode;
 
   return (
     <MenuItemSlot
       asChild
       {...styleProps}
-      data-selected={isSelected ? "" : undefined}
       data-critical={isCritical ? "" : undefined}
       data-selection-mode={selectionMode}
     >
       <RaMenuItem ref={ref} {...restProps}>
-        {({ hasSubmenu }) => (
+        {({ hasSubmenu, isSelected }) => (
           <>
             {selectionMode && (
               <Box slot="selection" role="presentation" aria-hidden="true">
-                {/* <Checkbox
-                  role="presentation"
-                  aria-hidden="true"
-                  isSelected={isSelected}
-                  isDisabled={props.isDisabled}
-                /> */}
                 {selectionMode === "single" && (
                   <>
                     {isSelected && <RadioButtonChecked />}
