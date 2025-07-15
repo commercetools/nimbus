@@ -78,6 +78,7 @@ export const menuSlotRecipe = defineSlotRecipe({
       position: "relative",
       textStyle: "sm",
       outline: 0,
+      boxShadow: "inset 0 0 0 {sizes.50} {colors.bg}",
 
       // Hover state
       "&[data-hovered='true'], &[data-focused='true']": {
@@ -92,7 +93,6 @@ export const menuSlotRecipe = defineSlotRecipe({
 
       "&[data-selected]": {
         bg: "primary.3",
-        boxShadow: "inset 0 0 0 1px white",
 
         "& [slot='selection']": {
           color: "primary.9",
