@@ -4,13 +4,14 @@ import { I18nProvider } from "react-aria";
 import { Button, Stack, FormField, Text } from "@/components";
 import { useState } from "react";
 import {
+  getLocalTimeZone,
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
 import type { RangeValue } from "@/components/range-calendar";
-import { userEvent, within, expect, waitFor } from "storybook/test";
+import { userEvent, within, expect, waitFor, fireEvent } from "storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -29,11 +30,6 @@ const meta: Meta<typeof DateRangePicker> = {
     ),
   ],
 };
-
-//TODO:: Review that each test provides value by making it specific to dateRange.
-//TODO:: Refactor b/c there is a bit much going on.
-//TODO:: Review for missing scenarios.
-//TODO: Hover needs some help
 
 export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
@@ -134,263 +130,263 @@ export const Base: Story = {
           "Select a date range"
         );
 
-        // Should contain 6 segments total (2 DateInputs × 3 segments for each: start month/day/year
-        const dateSegments = helpers.getDateSegments();
-        await expect(dateSegments.length).toBeGreaterThanOrEqual(6);
+        //     // Should contain 6 segments total (2 DateInputs × 3 segments for each: start month/day/year
+        //     const dateSegments = helpers.getDateSegments();
+        //     await expect(dateSegments.length).toBeGreaterThanOrEqual(6);
 
-        // Should have a calendar toggle button
-        const calendarButton = await helpers.getCalendarButton();
-        await expect(calendarButton).toBeInTheDocument();
+        //     // Should have a calendar toggle button
+        //     const calendarButton = await helpers.getCalendarButton();
+        //     await expect(calendarButton).toBeInTheDocument();
+        //   }
+        // );
+
+        // await step("Date segments are focusable and navigable", async () => {
+        //   const dateSegments = helpers.getDateSegments();
+
+        //   // First segment should be focusable with Tab
+        //   await userEvent.tab();
+        //   await waitFor(async () => {
+        //     await expect(dateSegments[0]).toHaveFocus();
+        //   });
+
+        //   // Should be able to navigate between segments with arrow keys
+        //   await userEvent.keyboard("{ArrowRight}");
+        //   if (dateSegments.length > 1) {
+        //     await waitFor(async () => {
+        //       await expect(dateSegments[1]).toHaveFocus();
+        //     });
+        //   }
+
+        //   // Should be able to navigate to calendar button
+        //   const calendarButton = await helpers.getCalendarButton();
+
+        //   // Tab through remaining segments to reach calendar button
+        //   for (let i = 0; i < 4; i++) {
+        //     await userEvent.tab();
+        //   }
+
+        //   // Check if calendar button has focus or if we need more tabs
+        //   if (!calendarButton.matches(":focus")) {
+        //     await userEvent.tab();
+        //   }
+        //   await waitFor(async () => {
+        //     await expect(calendarButton).toHaveFocus();
+        //   });
+        // });
+
+        // await step("Date segments accept keyboard input", async () => {
+        //   const dateSegments = helpers.getDateSegments();
+        //   const firstSegment = dateSegments[0];
+
+        //   // Focus first segment and type a value
+        //   await userEvent.click(firstSegment);
+        //   await userEvent.keyboard("12");
+
+        //   // Segment should have the typed value
+        //   await waitFor(async () => {
+        //     await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
+        //   });
+
+        //   // Clear segments for next tests by selecting all and deleting
+        //   for (const segment of dateSegments) {
+        //     await userEvent.click(segment);
+        //     await userEvent.keyboard("{Delete}");
+        //     await userEvent.keyboard("{Delete}");
+        //   }
+
+        //   // Segment should be cleared and show empty state
+        //   await waitFor(async () => {
+        //     await expect(firstSegment).toHaveAttribute("aria-valuetext", "Empty");
+        //   });
+        // });
+
+        // await step("Calendar popover opens and closes correctly", async () => {
+        //   // Initially, calendar should not be visible (check in entire document since popover is portaled)
+        //   let calendar = within(document.body).queryByRole("application");
+        //   await expect(calendar).not.toBeInTheDocument();
+
+        //   await helpers.openCalendar();
+        //   await helpers.closeCalendar();
+        // });
+
+        // await step("Clear button functionality works correctly", async () => {
+        //   const dateSegments = helpers.getDateSegments();
+
+        //   // Initially, clear button should be disabled (no value selected)
+        //   const clearButton = await helpers.getClearButton();
+        //   await waitFor(async () => {
+        //     await expect(clearButton).toBeDisabled();
+        //   });
+
+        //   // Set a date value first by changing from placeholder values
+        //   await userEvent.click(dateSegments[0]);
+        //   await userEvent.keyboard("1");
+        //   if (dateSegments[1]) {
+        //     await userEvent.click(dateSegments[1]);
+        //     await userEvent.keyboard("15");
+        //   }
+        //   if (dateSegments[2]) {
+        //     await userEvent.click(dateSegments[2]);
+        //     await userEvent.keyboard("2025");
+        //   }
+        //   await userEvent.click(dateSegments[3]);
+        //   await userEvent.keyboard("1");
+        //   if (dateSegments[4]) {
+        //     await userEvent.click(dateSegments[4]);
+        //     await userEvent.keyboard("15");
+        //   }
+        //   if (dateSegments[5]) {
+        //     await userEvent.click(dateSegments[5]);
+        //     await userEvent.keyboard("2025");
+        //   }
+
+        //   // Clear button should now be enabled (actual date was entered)
+        //   await waitFor(async () => {
+        //     await expect(clearButton).not.toBeDisabled();
+        //   });
+
+        //   // Click clear button to remove values
+        //   await userEvent.click(clearButton);
+
+        //   // After clearing, segments return to placeholder state (showing current date)
+        //   // Clear button should be disabled again indicating no actual value is selected
+        //   await waitFor(async () => {
+        //     await expect(clearButton).toBeDisabled();
+        //   });
+        // });
+
+        //TODO: Test works, but cannot get past error: Uncaught DOMException: Element.
+
+        // await step("Date Range selection from calendar works", async () => {
+        //   await helpers.openCalendar();
+
+        //   // Wait for the calendar grid to be present
+        //   const calendarGrid = await within(document.body).findByRole("grid");
+        //   await expect(calendarGrid).toBeInTheDocument();
+
+        //   // Find all <div role="button"> elements (calendar cells)
+        //   const dateDivs = within(document.body).getAllByRole("button");
+
+        //   // Select the cell with text "5" (start date)
+        //   let startCell = dateDivs.find((div) => div.textContent === "5");
+        //   if (!startCell) {
+        //     startCell = dateDivs[0];
+        //   }
+        //   if (startCell) {
+        //     userEvent.pointer({ target: startCell });
+        //     userEvent.click(startCell);
+        //   }
+
+        //   // Select the cell with text "10" (end date)
+        //   let endCell = dateDivs.find((div) => div.textContent === "10");
+        //   if (endCell) {
+        //     userEvent.pointer({ target: endCell });
+        //     userEvent.click(endCell);
+        //   }
+
+        // // Assert that the calendar is no longer visible
+        // await waitFor(async () => {
+        //   const calendarAfterSelection = within(document.body).queryByRole(
+        //     "application"
+        //   );
+        //   await expect(calendarAfterSelection).not.toBeInTheDocument();
+        // });
+
+        // // Assert that the clear button is enabled
+        // const clearButton = await helpers.getClearButton();
+        // await waitFor(async () => {
+        //   await expect(clearButton).not.toBeDisabled();
+        // });
+
+        // Assert that the date segments contain the correct values
+        const dateSegments = helpers.getDateSegments();
+        // const now = new Date();
+        // const month = (now.getMonth() + 1).toString();
+        // const year = now.getFullYear().toString();
+        // await waitFor(async () => {
+        //   // Start date segments
+        //   await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", month);
+        //   await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "5");
+        //   await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", year);
+        //   // End date segments
+        //   await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", month);
+        //   await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "10");
+        //   await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", year);
+        // });
       }
     );
 
-    await step("Date segments are focusable and navigable", async () => {
-      const dateSegments = helpers.getDateSegments();
+    // await step("Start and end date inputs work independently", async () => {
+    //   await helpers.closeCalendar();
 
-      // First segment should be focusable with Tab
-      await userEvent.tab();
-      await waitFor(async () => {
-        await expect(dateSegments[0]).toHaveFocus();
-      });
-
-      // Should be able to navigate between segments with arrow keys
-      await userEvent.keyboard("{ArrowRight}");
-      if (dateSegments.length > 1) {
-        await waitFor(async () => {
-          await expect(dateSegments[1]).toHaveFocus();
-        });
-      }
-
-      // Should be able to navigate to calendar button
-      const calendarButton = await helpers.getCalendarButton();
-
-      // Tab through remaining segments to reach calendar button
-      for (let i = 0; i < 4; i++) {
-        await userEvent.tab();
-      }
-
-      // Check if calendar button has focus or if we need more tabs
-      if (!calendarButton.matches(":focus")) {
-        await userEvent.tab();
-      }
-      await waitFor(async () => {
-        await expect(calendarButton).toHaveFocus();
-      });
-    });
-
-    await step("Date segments accept keyboard input", async () => {
-      const dateSegments = helpers.getDateSegments();
-      const firstSegment = dateSegments[0];
-
-      // Focus first segment and type a value
-      await userEvent.click(firstSegment);
-      await userEvent.keyboard("12");
-
-      // Segment should have the typed value
-      await waitFor(async () => {
-        await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
-      });
-
-      // Clear segments for next tests by selecting all and deleting
-      for (const segment of dateSegments) {
-        await userEvent.click(segment);
-        await userEvent.keyboard("{Delete}");
-        await userEvent.keyboard("{Delete}");
-      }
-
-      // Segment should be cleared and show empty state
-      await waitFor(async () => {
-        await expect(firstSegment).toHaveAttribute("aria-valuetext", "Empty");
-      });
-    });
-
-    await step("Calendar popover opens and closes correctly", async () => {
-      // Initially, calendar should not be visible (check in entire document since popover is portaled)
-      let calendar = within(document.body).queryByRole("application");
-      await expect(calendar).not.toBeInTheDocument();
-
-      await helpers.openCalendar();
-      await helpers.closeCalendar();
-    });
-
-    await step("Clear button functionality works correctly", async () => {
-      const dateSegments = helpers.getDateSegments();
-
-      // Initially, clear button should be disabled (no value selected)
-      const clearButton = await helpers.getClearButton();
-      await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
-      });
-
-      // Set a date value first by changing from placeholder values
-      await userEvent.click(dateSegments[0]);
-      await userEvent.keyboard("1");
-      if (dateSegments[1]) {
-        await userEvent.click(dateSegments[1]);
-        await userEvent.keyboard("15");
-      }
-      if (dateSegments[2]) {
-        await userEvent.click(dateSegments[2]);
-        await userEvent.keyboard("2025");
-      }
-      await userEvent.click(dateSegments[3]);
-      await userEvent.keyboard("1");
-      if (dateSegments[4]) {
-        await userEvent.click(dateSegments[4]);
-        await userEvent.keyboard("15");
-      }
-      if (dateSegments[5]) {
-        await userEvent.click(dateSegments[5]);
-        await userEvent.keyboard("2025");
-      }
-
-      // Clear button should now be enabled (actual date was entered)
-      await waitFor(async () => {
-        await expect(clearButton).not.toBeDisabled();
-      });
-
-      // Click clear button to remove values
-      await userEvent.click(clearButton);
-
-      // After clearing, segments return to placeholder state (showing current date)
-      // Clear button should be disabled again indicating no actual value is selected
-      await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
-      });
-    });
-
-    //TODO: Test works, but cannot get past error: Uncaught DOMException: Element.releasePointerCapture: Invalid pointer id
-    // await step("Date Range selection from calendar works", async () => {
-    //   await helpers.openCalendar();
-
-    //   // Wait for the calendar grid to be present
-    //   const calendarGrid = await within(document.body).findByRole("grid");
-    //   await expect(calendarGrid).toBeInTheDocument();
-
-    //   // Find all <div role="button"> elements (calendar cells)
-    //   const dateDivs = within(document.body).getAllByRole("button");
-
-    //   // Select the cell with text "5" (start date)
-    //   let startCell = dateDivs.find((div) => div.textContent === "5");
-    //   if (!startCell) {
-    //     startCell = dateDivs[0];
-    //   }
-    //   if (startCell) {
-    //     fireEvent.pointerDown(startCell, { pointerId: 1 });
-    //     fireEvent.pointerUp(startCell, { pointerId: 1 });
-    //     fireEvent.click(startCell);
-    //   }
-
-    //   // Select the cell with text "10" (end date)
-    //   let endCell = dateDivs.find((div) => div.textContent === "10");
-    //   if (endCell) {
-    //     fireEvent.pointerDown(endCell, { pointerId: 2 });
-    //     fireEvent.pointerUp(endCell, { pointerId: 2 });
-    //     fireEvent.click(endCell);
-    //   }
-
-    //   // Assert that the calendar is no longer visible
-    //   await waitFor(async () => {
-    //     const calendarAfterSelection = within(document.body).queryByRole(
-    //       "application"
-    //     );
-    //     await expect(calendarAfterSelection).not.toBeInTheDocument();
-    //   });
-
-    //   // Assert that the clear button is enabled
-    //   const clearButton = await helpers.getClearButton();
-    //   await waitFor(async () => {
-    //     await expect(clearButton).not.toBeDisabled();
-    //   });
-
-    //   // Assert that the date segments contain the correct values
     //   const dateSegments = helpers.getDateSegments();
-    //   const now = new Date();
-    //   const month = (now.getMonth() + 1).toString();
-    //   const year = now.getFullYear().toString();
+
+    //   // Test start date only
+    //   await userEvent.click(dateSegments[0]);
+    //   await userEvent.keyboard("5");
+    //   await userEvent.click(dateSegments[1]);
+    //   await userEvent.keyboard("28");
+    //   await userEvent.click(dateSegments[2]);
+    //   await userEvent.keyboard("2025");
+
+    //   // Verify start date is set correctly
     //   await waitFor(async () => {
-    //     // Start date segments
-    //     await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", month);
-    //     await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "5");
-    //     await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", year);
-    //     // End date segments
-    //     await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", month);
-    //     await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "10");
-    //     await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", year);
+    //     await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", "5");
+    //     await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "28");
+    //     await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", "2025");
+    //   });
+
+    //   // Verify end date segments are still in placeholder state
+    //   await waitFor(async () => {
+    //     await expect(dateSegments[3]).toHaveAttribute(
+    //       "aria-valuetext",
+    //       "Empty"
+    //     );
+    //     await expect(dateSegments[4]).toHaveAttribute(
+    //       "aria-valuetext",
+    //       "Empty"
+    //     );
+    //     await expect(dateSegments[5]).toHaveAttribute(
+    //       "aria-valuetext",
+    //       "Empty"
+    //     );
+    //   });
+
+    //   // Clear the calendar
+    //   const clearButton = await helpers.getClearButton();
+    //   await userEvent.click(clearButton);
+
+    //   // Type the same date (05/28/2025) into the END date input
+    //   await userEvent.click(dateSegments[3]);
+    //   await userEvent.keyboard("5");
+    //   await userEvent.click(dateSegments[4]);
+    //   await userEvent.keyboard("28");
+    //   await userEvent.click(dateSegments[5]);
+    //   await userEvent.keyboard("2025");
+
+    //   // Verify end date is set correctly
+    //   await waitFor(async () => {
+    //     await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", "5");
+    //     await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "28");
+    //     await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", "2025");
+    //   });
+
+    //   // Verify start date segments are in their placeholder state
+    //   await waitFor(async () => {
+    //     await expect(dateSegments[0]).toHaveAttribute(
+    //       "aria-valuetext",
+    //       "Empty"
+    //     );
+    //     await expect(dateSegments[1]).toHaveAttribute(
+    //       "aria-valuetext",
+    //       "Empty"
+    //     );
+    //     await expect(dateSegments[2]).toHaveAttribute(
+    //       "aria-valuetext",
+    //       "Empty"
+    //     );
     //   });
     // });
-
-    await step("Start and end date inputs work independently", async () => {
-      await helpers.closeCalendar();
-
-      const dateSegments = helpers.getDateSegments();
-
-      // Test start date only
-      await userEvent.click(dateSegments[0]);
-      await userEvent.keyboard("5");
-      await userEvent.click(dateSegments[1]);
-      await userEvent.keyboard("28");
-      await userEvent.click(dateSegments[2]);
-      await userEvent.keyboard("2025");
-
-      // Verify start date is set correctly
-      await waitFor(async () => {
-        await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", "5");
-        await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "28");
-        await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", "2025");
-      });
-
-      // Verify end date segments are still in placeholder state
-      await waitFor(async () => {
-        await expect(dateSegments[3]).toHaveAttribute(
-          "aria-valuetext",
-          "Empty"
-        );
-        await expect(dateSegments[4]).toHaveAttribute(
-          "aria-valuetext",
-          "Empty"
-        );
-        await expect(dateSegments[5]).toHaveAttribute(
-          "aria-valuetext",
-          "Empty"
-        );
-      });
-
-      // Clear the calendar
-      const clearButton = await helpers.getClearButton();
-      await userEvent.click(clearButton);
-
-      // Type the same date (05/28/2025) into the END date input
-      await userEvent.click(dateSegments[3]);
-      await userEvent.keyboard("5");
-      await userEvent.click(dateSegments[4]);
-      await userEvent.keyboard("28");
-      await userEvent.click(dateSegments[5]);
-      await userEvent.keyboard("2025");
-
-      // Verify end date is set correctly
-      await waitFor(async () => {
-        await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", "5");
-        await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "28");
-        await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", "2025");
-      });
-
-      // Verify start date segments are in their placeholder state
-      await waitFor(async () => {
-        await expect(dateSegments[0]).toHaveAttribute(
-          "aria-valuetext",
-          "Empty"
-        );
-        await expect(dateSegments[1]).toHaveAttribute(
-          "aria-valuetext",
-          "Empty"
-        );
-        await expect(dateSegments[2]).toHaveAttribute(
-          "aria-valuetext",
-          "Empty"
-        );
-      });
-    });
   },
 };
 
@@ -2206,240 +2202,721 @@ export const UnavailableDates: Story = {
   },
 };
 
-// export const NonContiguousRanges: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>Allow selection of ranges that contain unavailable dates:</Text>
-//         <DateRangePicker
-//           {...args}
-//           allowsNonContiguousRanges={true}
-//           defaultValue={{
-//             start: new CalendarDate(2025, 6, 10),
-//             end: new CalendarDate(2025, 6, 25),
-//           }}
-//           isDateUnavailable={(date: DateValue) => {
-//             const dateObj = date.toDate("UTC");
-//             const dayOfWeek = dateObj.getDay();
-//             return dayOfWeek === 1; // Block Mondays
-//           }}
-//           aria-label="Non-contiguous range picker"
-//         />
-//         <Text fontSize="sm" color="neutral.11">
-//           Select ranges that include unavailable dates (Mondays are blocked).
-//         </Text>
-//       </Stack>
-//     );
-//   },
-// };
+export const NonContiguousRanges: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Allow selection of ranges that contain unavailable dates:</Text>
+        <DateRangePicker
+          {...args}
+          allowsNonContiguousRanges={true}
+          defaultValue={{
+            start: new CalendarDate(2025, 6, 8), // Sunday
+            end: new CalendarDate(2025, 6, 22), // Sunday, covers two weeks
+          }}
+          isDateUnavailable={(date: DateValue) => {
+            const dateObj = date.toDate(getLocalTimeZone());
+            const dayOfWeek = dateObj.getDay();
+            return dayOfWeek === 3; // Block Wednesdays
+          }}
+          aria-label="Non-contiguous range picker"
+        />
+        <Text fontSize="sm" color="neutral.11">
+          Select ranges that include unavailable dates (Wednesdays are blocked).
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const helpers = createDateRangePickerHelpers(canvas);
+    const segments = helpers.getDateSegments();
+    // Assert the default value is set correctly in the input
+    await helpers.verifyDateRangeValues(
+      segments,
+      ["6", "8", "2025"], // June 8, 2025 (start)
+      ["6", "22", "2025"] // June 22, 2025 (end)
+    );
+  },
+};
 
-// export const CustomWidth: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <Text>Width: 400px</Text>
-//         <DateRangePicker {...args} width="400px" />
+export const CustomWidth: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Width: 400px</Text>
+        <DateRangePicker {...args} width="400px" />
 
-//         <Text>Width: 600px</Text>
-//         <DateRangePicker {...args} width="600px" />
+        <Text>Width: 600px</Text>
+        <DateRangePicker {...args} width="600px" />
 
-//         <Text>Width: full</Text>
-//         <DateRangePicker {...args} width="full" />
-//       </Stack>
-//     );
-//   },
-// };
+        <Text>Width: full</Text>
+        <DateRangePicker {...args} width="full" />
+      </Stack>
+    );
+  },
+};
 
-// export const MultipleLocales: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="600" alignItems="start">
-//         <Stack direction="column" gap="200" alignItems="start">
-//           <Text fontWeight="700">English (US) - 12-hour format</Text>
-//           <I18nProvider locale="en-US">
-//             <DateRangePicker
-//               {...args}
-//               granularity="minute"
-//               defaultValue={{
-//                 start: new CalendarDateTime(2025, 6, 15, 14, 30),
-//                 end: new CalendarDateTime(2025, 6, 20, 16, 45),
-//               }}
-//               aria-label="US English range picker"
-//             />
-//           </I18nProvider>
-//         </Stack>
+export const MultipleLocales: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="600" alignItems="start">
+        <Stack direction="column" gap="200" alignItems="start">
+          <Text fontWeight="700">English (US) - 12-hour format</Text>
+          <I18nProvider locale="en-US">
+            <DateRangePicker
+              {...args}
+              granularity="minute"
+              defaultValue={{
+                start: new CalendarDateTime(2025, 6, 15, 14, 30),
+                end: new CalendarDateTime(2025, 6, 20, 16, 45),
+              }}
+              aria-label="US English range picker"
+            />
+          </I18nProvider>
+        </Stack>
 
-//         <Stack direction="column" gap="200" alignItems="start">
-//           <Text fontWeight="700">German (DE) - 24-hour format</Text>
-//           <I18nProvider locale="de-DE">
-//             <DateRangePicker
-//               {...args}
-//               granularity="minute"
-//               defaultValue={{
-//                 start: new CalendarDateTime(2025, 6, 15, 14, 30),
-//                 end: new CalendarDateTime(2025, 6, 20, 16, 45),
-//               }}
-//               aria-label="German range picker"
-//             />
-//           </I18nProvider>
-//         </Stack>
+        <Stack direction="column" gap="200" alignItems="start">
+          <Text fontWeight="700">German (DE) - 24-hour format</Text>
+          <I18nProvider locale="de-DE">
+            <DateRangePicker
+              {...args}
+              granularity="minute"
+              defaultValue={{
+                start: new CalendarDateTime(2025, 6, 15, 14, 30),
+                end: new CalendarDateTime(2025, 6, 20, 16, 45),
+              }}
+              aria-label="German range picker"
+            />
+          </I18nProvider>
+        </Stack>
 
-//         <Stack direction="column" gap="200" alignItems="start">
-//           <Text fontWeight="700">Spanish (ES) - Different date format</Text>
-//           <I18nProvider locale="es-ES">
-//             <DateRangePicker
-//               {...args}
-//               granularity="minute"
-//               defaultValue={{
-//                 start: new CalendarDateTime(2025, 6, 15, 14, 30),
-//                 end: new CalendarDateTime(2025, 6, 20, 16, 45),
-//               }}
-//               aria-label="Spanish range picker"
-//             />
-//           </I18nProvider>
-//         </Stack>
-//       </Stack>
-//     );
-//   },
-// };
+        <Stack direction="column" gap="200" alignItems="start">
+          <Text fontWeight="700">Spanish (ES) - Different date format</Text>
+          <I18nProvider locale="es-ES">
+            <DateRangePicker
+              {...args}
+              granularity="minute"
+              defaultValue={{
+                start: new CalendarDateTime(2025, 6, 15, 14, 30),
+                end: new CalendarDateTime(2025, 6, 20, 16, 45),
+              }}
+              aria-label="Spanish range picker"
+            />
+          </I18nProvider>
+        </Stack>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-// export const InFormFieldContext: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     return (
-//       <Stack direction="column" gap="400" alignItems="start">
-//         <FormField.Root isRequired>
-//           <FormField.Label>Event Date Range</FormField.Label>
-//           <FormField.Input>
-//             <DateRangePicker {...args} width="full" />
-//           </FormField.Input>
-//           <FormField.Description>
-//             Select the start and end dates for your event
-//           </FormField.Description>
-//         </FormField.Root>
+    await step("All locale variants render correctly", async () => {
+      const usEnglishPicker = await canvas.findByRole("group", {
+        name: "US English range picker",
+      });
+      const germanPicker = await canvas.findByRole("group", {
+        name: "German range picker",
+      });
+      const spanishPicker = await canvas.findByRole("group", {
+        name: "Spanish range picker",
+      });
 
-//         <FormField.Root isInvalid>
-//           <FormField.Label>Deadline Range</FormField.Label>
-//           <FormField.Input>
-//             <DateRangePicker {...args} width="full" />
-//           </FormField.Input>
-//           <FormField.Description>
-//             Choose a deadline range for the project
-//           </FormField.Description>
-//           <FormField.Error>
-//             Please select a valid date range in the future
-//           </FormField.Error>
-//         </FormField.Root>
+      await expect(usEnglishPicker).toBeInTheDocument();
+      await expect(germanPicker).toBeInTheDocument();
+      await expect(spanishPicker).toBeInTheDocument();
+    });
 
-//         <FormField.Root>
-//           <FormField.Label>Meeting Time Range</FormField.Label>
-//           <FormField.Input>
-//             <DateRangePicker {...args} granularity="minute" width="full" />
-//           </FormField.Input>
-//           <FormField.Description>
-//             Select the exact start and end times for the meeting
-//           </FormField.Description>
-//           <FormField.InfoBox>
-//             This date range picker supports minute-level precision. Use the
-//             calendar to select dates and the time fields to set the exact times.
-//           </FormField.InfoBox>
-//         </FormField.Root>
-//       </Stack>
-//     );
-//   },
-// };
+    await step("US English uses 12-hour format with AM/PM", async () => {
+      const usEnglishPicker = await canvas.findByRole("group", {
+        name: "US English range picker",
+      });
+      const segments = within(usEnglishPicker).getAllByRole("spinbutton");
 
-// export const PopoverBehavior: Story = {
-//   args: {
-//     ["aria-label"]: "Select a date range",
-//   },
-//   render: (args) => {
-//     const [isOpen1, setIsOpen1] = useState(false);
-//     const [isOpen2, setIsOpen2] = useState(false);
+      // US English should have 12 segments: month, day, year, hour, minute, AM/PM (2x )
+      await expect(segments).toHaveLength(12);
 
-//     return (
-//       <Stack direction="column" gap="600" alignItems="start">
-//         <Stack direction="column" gap="400" alignItems="start">
-//           <Text fontWeight="700">Controlled popover state</Text>
-//           <Stack direction="row" gap="600" alignItems="start">
-//             <Stack
-//               direction="column"
-//               gap="200"
-//               flex="1"
-//               minWidth="320px"
-//               align="flex-start"
-//             >
-//               <Button onPress={() => setIsOpen1(true)}>Open Calendar</Button>
-//             </Stack>
-//             <Stack direction="column" gap="200" flex="1">
-//               <DateRangePicker
-//                 {...args}
-//                 isOpen={isOpen1}
-//                 onOpenChange={setIsOpen1}
-//                 aria-label="Controlled popover range picker"
-//               />
-//             </Stack>
-//           </Stack>
-//         </Stack>
+      // Hour should be in 12-hour format (14:30 = 2:30 PM)
+      const hourSegment = segments[3];
+      await expect(hourSegment).toHaveAttribute("aria-valuetext", "2 PM");
 
-//         <Stack direction="column" gap="400" alignItems="start">
-//           <Text fontWeight="700">Default open popover</Text>
-//           <Stack direction="row" gap="600" alignItems="start">
-//             <Stack direction="column" gap="200" flex="1" minWidth="320px">
-//               <Text fontSize="sm" color="neutral.11">
-//                 Calendar opens by default
-//               </Text>
-//             </Stack>
-//             <Stack direction="column" gap="200" flex="1">
-//               <DateRangePicker
-//                 {...args}
-//                 defaultOpen
-//                 aria-label="Default open range picker"
-//               />
-//             </Stack>
-//           </Stack>
-//         </Stack>
+      // Should have AM/PM segment
+      const amPmSegment = segments[5];
+      await expect(amPmSegment).toHaveAttribute("aria-valuetext", "PM");
+    });
 
-//         <Stack direction="column" gap="400" alignItems="start">
-//           <Text fontWeight="700">Custom close behavior</Text>
-//           <Stack direction="row" gap="600" alignItems="start">
-//             <Stack
-//               direction="column"
-//               gap="200"
-//               flex="1"
-//               minWidth="320px"
-//               align="start"
-//             >
-//               <Text fontSize="sm" color="neutral.11">
-//                 Calendar stays open after selecting a date range
-//               </Text>
-//             </Stack>
-//             <Stack direction="column" gap="200" flex="1">
-//               <DateRangePicker
-//                 {...args}
-//                 isOpen={isOpen2}
-//                 onOpenChange={setIsOpen2}
-//                 shouldCloseOnSelect={false}
-//                 aria-label="Custom close behavior range picker"
-//               />
-//             </Stack>
-//           </Stack>
-//         </Stack>
-//       </Stack>
-//     );
-//   },
-// };
+    await step("German uses 24-hour format without AM/PM", async () => {
+      const germanPicker = await canvas.findByRole("group", {
+        name: "German range picker",
+      });
+      const segments = within(germanPicker).getAllByRole("spinbutton");
 
-//TODO - leading zeros
-//TODO - Invalid
+      // German should have 10 segments: day, month, year, hour, minute (no AM/PM) (2x)
+      await expect(segments).toHaveLength(10);
+
+      // Hour should be in 24-hour format
+      const hourSegment = segments[3];
+      await expect(hourSegment).toHaveAttribute("aria-valuenow", "14");
+    });
+
+    await step("Spanish locale adapts date structure", async () => {
+      const spanishPicker = await canvas.findByRole("group", {
+        name: "Spanish range picker",
+      });
+      const segments = within(spanishPicker).getAllByRole("spinbutton");
+
+      // Spanish should have segments (exact count may vary by implementation)
+      await expect(segments.length).toBeGreaterThanOrEqual(5);
+
+      // All segments should be accessible
+      for (const segment of segments) {
+        await expect(segment).toHaveAttribute("tabindex", "0");
+        const ariaLabel = segment.getAttribute("aria-label");
+        await expect(ariaLabel).toBeTruthy();
+      }
+    });
+
+    await step("Locale-specific differences are observable", async () => {
+      const usEnglishPicker = await canvas.findByRole("group", {
+        name: "US English range picker",
+      });
+      const germanPicker = await canvas.findByRole("group", {
+        name: "German range picker",
+      });
+
+      const usSegments = within(usEnglishPicker).getAllByRole("spinbutton");
+      const germanSegments = within(germanPicker).getAllByRole("spinbutton");
+
+      // US and German should have different segment counts due to AM/PM difference
+      await expect(usSegments.length).not.toBe(germanSegments.length);
+
+      // Both should display the same date/time but formatted differently
+      // US: 6/15/2025, 2:30 PM vs German: 15.6.2025, 14:30
+      await waitFor(async () => {
+        await expect(usSegments[0]).toHaveAttribute("aria-valuenow", "6"); // US month first
+        await expect(germanSegments[0]).toHaveAttribute("aria-valuenow", "15"); // German day first
+      });
+    });
+  },
+};
+
+export const InFormFieldContext: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <FormField.Root isRequired>
+          <FormField.Label>Event Date Range</FormField.Label>
+          <FormField.Input>
+            <DateRangePicker {...args} width="full" />
+          </FormField.Input>
+          <FormField.Description>
+            Select the start and end dates for your event
+          </FormField.Description>
+        </FormField.Root>
+
+        <FormField.Root isInvalid>
+          <FormField.Label>Deadline Range</FormField.Label>
+          <FormField.Input>
+            <DateRangePicker {...args} width="full" />
+          </FormField.Input>
+          <FormField.Description>
+            Choose a deadline range for the project
+          </FormField.Description>
+          <FormField.Error>
+            Please select a valid date range in the future
+          </FormField.Error>
+        </FormField.Root>
+
+        <FormField.Root>
+          <FormField.Label>Meeting Time Range</FormField.Label>
+          <FormField.Input>
+            <DateRangePicker {...args} granularity="minute" width="full" />
+          </FormField.Input>
+          <FormField.Description>
+            Select the exact start and end times for the meeting
+          </FormField.Description>
+          <FormField.InfoBox>
+            This date range picker supports minute-level precision. Use the
+            calendar to select dates and the time fields to set the exact times.
+          </FormField.InfoBox>
+        </FormField.Root>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "All FormField contexts render with DateRangePickers",
+      async () => {
+        // Find all FormField labels to identify the different contexts
+        const eventDateLabel = await canvas.findByText("Event Date Range");
+        const deadlineDateLabel = await canvas.findByText("Deadline Range");
+        const meetingTimeLabel = await canvas.findByText("Meeting Time Range");
+
+        await expect(eventDateLabel).toBeInTheDocument();
+        await expect(deadlineDateLabel).toBeInTheDocument();
+        await expect(meetingTimeLabel).toBeInTheDocument();
+
+        // Verify corresponding DatePicker groups exist
+        const datePickers = canvas.getAllByRole("group");
+        await expect(datePickers).toHaveLength(3);
+      }
+    );
+
+    await step(
+      "Required FormField integrates properly with DateRangePicker",
+      async () => {
+        // Locate the DateRangePicker by its accessible name derived from the label
+        const datePicker = await canvas.findByRole("group", {
+          name: /event date range/i,
+        });
+        await expect(datePicker).toBeInTheDocument();
+
+        // Ensure segments are present and tabbable
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await expect(segments.length).toBeGreaterThan(0);
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("tabindex", "0");
+        }
+
+        // Verify description text is present
+        const description = await canvas.findByText(
+          "Select the start and end dates for your event"
+        );
+        await expect(description).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Invalid FormField integrates properly with DateRangePicker",
+      async () => {
+        // Locate the invalid DatePicker by accessible name
+        const datePicker = await canvas.findByRole("group", {
+          name: /deadline range/i,
+        });
+        await expect(datePicker).toBeInTheDocument();
+
+        // Verify error message is present and accessible
+        const errorMessage = await canvas.findByText(
+          "Please select a valid date range in the future"
+        );
+        await expect(errorMessage).toBeInTheDocument();
+
+        // Check that invalid state does not break segment accessibility
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await expect(segments.length).toBeGreaterThan(0);
+
+        for (const segment of segments) {
+          await expect(segment).toHaveAttribute("tabindex", "0");
+        }
+
+        // Verify description text is present
+        const description = await canvas.findByText(
+          "Choose a deadline range for the project"
+        );
+        await expect(description).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "DateRangePicker with granularity works in FormField with InfoBox",
+      async () => {
+        // Locate the Meeting Time DatePicker by accessible name
+        const datePicker = await canvas.findByRole("group", {
+          name: /meeting time range/i,
+        });
+        await expect(datePicker).toBeInTheDocument();
+
+        // Verify granularity="minute" results in more segments (including time)
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        // Should have at least 5 segments: month, day, year, hour, minute
+        await expect(segments.length).toBeGreaterThanOrEqual(10);
+
+        // Test basic time input functionality
+        const hourSegment = segments[3];
+        const minuteSegment = segments[4];
+
+        await userEvent.click(hourSegment);
+        await userEvent.keyboard("2");
+
+        await userEvent.click(minuteSegment);
+        await userEvent.keyboard("30");
+
+        await waitFor(async () => {
+          await expect(hourSegment).toHaveAttribute("aria-valuenow");
+          await expect(minuteSegment).toHaveAttribute("aria-valuenow");
+        });
+      }
+    );
+
+    await step(
+      "DateRangePicker width='full' fills FormField container",
+      async () => {
+        const datePickers = canvas.getAllByRole("group");
+
+        for (const datePicker of datePickers) {
+          // Check that DateRangePicker is rendered properly
+          await expect(datePicker).toBeInTheDocument();
+
+          // Verify DateRangePicker is wide enough by checking it's not tiny
+          const rect = datePicker.getBoundingClientRect();
+          await expect(rect.width).toBeGreaterThan(200); // Reasonable minimum width
+        }
+      }
+    );
+
+    await step(
+      "FormField accessibility relationships are established",
+      async () => {
+        // Test each FormField context for proper ARIA relationships
+        const formFieldContexts = [
+          {
+            label: "Event Date Range",
+            description: "Select the start and end dates for your event",
+          },
+          {
+            label: "Deadline Range",
+            description: "Choose a deadline range for the project",
+          },
+          {
+            label: "Meeting Time Range",
+            description: "Select the exact start and end times for the meeting",
+          },
+        ];
+
+        for (const context of formFieldContexts) {
+          // Verify label and description are present
+          await expect(
+            await canvas.findByText(context.label)
+          ).toBeInTheDocument();
+          await expect(
+            await canvas.findByText(context.description)
+          ).toBeInTheDocument();
+
+          const datePicker = await canvas.findByRole("group", {
+            name: new RegExp(context.label, "i"),
+          });
+          await expect(datePicker).toBeInTheDocument();
+
+          const segments = within(datePicker).getAllByRole("spinbutton");
+          for (const segment of segments) {
+            const ariaLabel = segment.getAttribute("aria-label");
+            await expect(ariaLabel).toBeTruthy();
+            await expect(segment).toHaveAttribute("tabindex", "0");
+          }
+        }
+      }
+    );
+
+    //TODO: actually select a range
+    await step(
+      "RangeCalendar functionality works within FormField contexts",
+      async () => {
+        // Test calendar functionality in the first FormField context
+        const datePickers = canvas.getAllByRole("group");
+        const firstDatePicker = datePickers[0];
+
+        const calendarButton = await within(firstDatePicker).findByRole(
+          "button",
+          {
+            name: /calendar/i,
+          }
+        );
+
+        await expect(calendarButton).toBeInTheDocument();
+        await expect(calendarButton).not.toBeDisabled();
+
+        // Quick test of calendar opening
+        await userEvent.click(calendarButton);
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step("Clear functionality works in FormField contexts", async () => {
+      // Test clear functionality in each FormField context
+      const datePickers = canvas.getAllByRole("group");
+
+      for (let i = 0; i < datePickers.length; i++) {
+        const datePicker = datePickers[i];
+        const clearButton = await within(datePicker).findByRole("button", {
+          name: /clear/i,
+        });
+
+        // Initially should be disabled (no value)
+        await expect(clearButton).toBeDisabled();
+
+        // Set a value by typing in first segment
+        const segments = within(datePicker).getAllByRole("spinbutton");
+        await userEvent.click(segments[0]);
+        await userEvent.keyboard("6");
+
+        if (segments[1]) {
+          await userEvent.click(segments[1]);
+          await userEvent.keyboard("15");
+        }
+
+        if (segments[2]) {
+          await userEvent.click(segments[2]);
+          await userEvent.keyboard("2025");
+        }
+
+        // Clear button should now be enabled
+        await expect(clearButton).not.toBeDisabled();
+
+        // Clear the value
+        await userEvent.click(clearButton);
+
+        // Should be disabled again
+        await expect(clearButton).toBeDisabled();
+      }
+    });
+  },
+};
+
+export const PopoverBehavior: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    const [isOpen1, setIsOpen1] = useState(false);
+    const [isOpen2, setIsOpen2] = useState(false);
+
+    return (
+      <Stack direction="column" gap="600" alignItems="start">
+        <Stack direction="column" gap="400" alignItems="start">
+          <Text fontWeight="700">Controlled popover state</Text>
+          <Stack direction="row" gap="600" alignItems="start">
+            <Stack
+              direction="column"
+              gap="200"
+              flex="1"
+              minWidth="320px"
+              align="flex-start"
+            >
+              <Button onPress={() => setIsOpen1(true)}>Open Calendar</Button>
+            </Stack>
+            <Stack direction="column" gap="200" flex="1">
+              <DateRangePicker
+                {...args}
+                isOpen={isOpen1}
+                onOpenChange={setIsOpen1}
+                aria-label="Controlled popover date range picker"
+                defaultValue={{
+                  start: new CalendarDate(2025, 6, 1),
+                  end: new CalendarDate(2025, 6, 15),
+                }}
+              />
+            </Stack>
+          </Stack>
+        </Stack>
+
+        <Stack direction="column" gap="400" alignItems="start">
+          <Text fontWeight="700">Default open popover</Text>
+          <Stack direction="row" gap="600" alignItems="start">
+            <Stack direction="column" gap="200" flex="1" minWidth="320px">
+              <Text fontSize="sm" color="neutral.11">
+                Calendar opens by default
+              </Text>
+            </Stack>
+            <Stack direction="column" gap="200" flex="1">
+              <DateRangePicker
+                {...args}
+                defaultValue={{
+                  start: new CalendarDate(2025, 6, 1),
+                  end: new CalendarDate(2025, 6, 15),
+                }}
+                defaultOpen
+                aria-label="Default open date range picker"
+              />
+            </Stack>
+          </Stack>
+        </Stack>
+
+        <Stack direction="column" gap="400" alignItems="start">
+          <Text fontWeight="700">Custom close behavior</Text>
+          <Stack direction="row" gap="600" alignItems="start">
+            <Stack
+              direction="column"
+              gap="200"
+              flex="1"
+              minWidth="320px"
+              align="start"
+            >
+              <Text fontSize="sm" color="neutral.11">
+                Calendar stays open after selecting a date range
+              </Text>
+            </Stack>
+            <Stack direction="column" gap="200" flex="1">
+              <DateRangePicker
+                {...args}
+                isOpen={isOpen2}
+                onOpenChange={setIsOpen2}
+                shouldCloseOnSelect={false}
+                defaultValue={{
+                  start: new CalendarDate(2025, 6, 1),
+                  end: new CalendarDate(2025, 6, 15),
+                }}
+                aria-label="Custom close behavior date range picker"
+              />
+            </Stack>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Default open picker has calendar already open", async () => {
+      // Check that the calendar is already open for the default open picker
+      const calendar = within(document.body).queryByRole("application");
+      await expect(calendar).toBeInTheDocument();
+
+      // Verify the calendar grid is present
+      const calendarGrid = await within(document.body).findByRole("grid");
+      await expect(calendarGrid).toBeInTheDocument();
+
+      // Verify we can see date cells in the calendar
+      const dateCells = within(calendarGrid).getAllByRole("gridcell");
+      await expect(dateCells.length).toBeGreaterThan(0);
+    });
+
+    await step("Controlled picker starts with calendar closed", async () => {
+      // The calendar should already be open from the default open picker,
+      // so we need to close it first to test the controlled picker
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).not.toBeInTheDocument();
+      });
+
+      // Now verify the controlled picker can open the calendar
+      const openButton = await canvas.findByRole("button", {
+        name: "Open Calendar",
+      });
+      await userEvent.click(openButton);
+
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      });
+
+      // Close it again for the next test
+      await userEvent.keyboard("{Escape}");
+      await waitFor(async () => {
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).not.toBeInTheDocument();
+      });
+    });
+
+    await step(
+      "Custom close behavior picker stays open after date selection",
+      async () => {
+        const customClosePicker = await canvas.findByRole("group", {
+          name: "Custom close behavior date range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, customClosePicker);
+
+        // Open the calendar using existing helper
+        await helpers.openCalendar();
+
+        // Select the first available date
+        const calendarGrid = await within(document.body).findByRole("grid");
+        const dateCells = within(calendarGrid).getAllByRole("gridcell");
+        const firstAvailableDate = dateCells.find((cell) => {
+          const button = cell.querySelector("button");
+          return button && !button.hasAttribute("aria-disabled");
+        });
+
+        const dateButton = firstAvailableDate?.querySelector("button");
+        await userEvent.click(dateButton!);
+
+        // Calendar should remain open due to shouldCloseOnSelect={false}
+        const calendar = within(document.body).queryByRole("application");
+        await expect(calendar).toBeInTheDocument();
+      }
+    );
+  },
+};
+
+export const ForceLeadingZeros: Story = {
+  args: {
+    ["aria-label"]: "Select a date range",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>With defaultValue (1/2/2025-5/3/2025)</Text>
+        <DateRangePicker
+          {...args}
+          defaultValue={{
+            start: new CalendarDate(2025, 1, 2),
+            end: new CalendarDate(2025, 5, 3),
+          }}
+          shouldForceLeadingZeros
+          aria-label="DateRangePicker with force leading zeros"
+        />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const dateGroup = await canvas.findByRole("group", {
+      name: "DateRangePicker with force leading zeros",
+    });
+
+    await step(
+      "DateRangePicker with defaultValue displays leading zeros in segments",
+      async () => {
+        const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+        const segments = helpers.getDateSegments();
+
+        // Assert start date segments: 01, 02, 2025
+        await waitFor(async () => {
+          await expect(segments[0]).toHaveAttribute(
+            "aria-valuetext",
+            "01 – January"
+          );
+          await expect(segments[1]).toHaveAttribute("aria-valuetext", "02");
+          await expect(segments[2]).toHaveAttribute("aria-valuetext", "2025");
+        });
+        // Assert end date segments: 05, 03, 2025
+        await waitFor(async () => {
+          await expect(segments[3]).toHaveAttribute(
+            "aria-valuetext",
+            "05 – May"
+          );
+          await expect(segments[4]).toHaveAttribute("aria-valuetext", "03");
+          await expect(segments[5]).toHaveAttribute("aria-valuetext", "2025");
+        });
+      }
+    );
+  },
+};

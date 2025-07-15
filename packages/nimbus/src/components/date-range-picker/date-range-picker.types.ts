@@ -34,6 +34,10 @@ export interface DateRangePickerProps
       ReactAriaDateRangePickerProps<DateValue>,
       ExcludedProps | "placeholderValue"
     >,
+    Omit<
+      DateRangePickerRootProps,
+      keyof ReactAriaDateRangePickerProps<DateValue> | ExcludedProps
+    >,
     RecipeVariantProps<typeof dateRangePickerSlotRecipe> {
   /**
    * Whether the calendar popover should be open by default (uncontrolled).
