@@ -4,7 +4,6 @@ import { Menu } from "./index";
 import {
   Box,
   Button,
-  Divider,
   Heading,
   Icon,
   IconButton,
@@ -31,7 +30,6 @@ import {
   Logout,
   Edit,
   Delete,
-  Sync,
   Backup,
   Settings,
   AccountCircle,
@@ -342,17 +340,13 @@ export const WithDifferentPlacements: Story = {
   },
 };
 
-export const SelectionModes: Story = {
+export const SingleSelection: Story = {
   render: () => {
     const [singleSelection, setSingleSelection] =
       React.useState<string>("medium");
-    const [multiSelection, setMultiSelection] = React.useState<Set<string>>(
-      new Set(["bold", "italic"])
-    );
 
     return (
       <Stack gap="600">
-        {/* Single Selection */}
         <Stack>
           <Heading>Single Selection Mode</Heading>
           <Text>Only one item can be selected at a time</Text>
@@ -396,8 +390,19 @@ export const SelectionModes: Story = {
             </Box>
           </Stack>
         </Stack>
-        <Divider />
-        {/* Multiple Selection */}
+      </Stack>
+    );
+  },
+};
+
+export const MultiSelection: Story = {
+  render: () => {
+    const [multiSelection, setMultiSelection] = React.useState<Set<string>>(
+      new Set(["bold", "italic"])
+    );
+
+    return (
+      <Stack gap="600">
         <Stack>
           <Heading>Multiple Selection Mode</Heading>
           <Text>Multiple items can be selected with checkboxes</Text>
@@ -458,36 +463,12 @@ export const SelectionModes: Story = {
             </Box>
           </Stack>
         </Stack>
-        <Divider />
-        {/* No Selection Mode (Default) */}
-        <Stack>
-          <Heading>No Selection Mode (Default)</Heading>
-          <Text>Standard menu without selection state</Text>
-          <Box>
-            <Menu.Root>
-              <Menu.Trigger asChild>
-                <Button variant="solid" colorPalette="primary">
-                  Standard Menu
-                </Button>
-              </Menu.Trigger>
-              <Menu.Content>
-                <Menu.Item id="save">Save</Menu.Item>
-                <Menu.Item id="save-as">Save As...</Menu.Item>
-                <Menu.Item id="export">Export</Menu.Item>
-                <Menu.Separator />
-                <Menu.Item id="delete" isCritical>
-                  Delete
-                </Menu.Item>
-              </Menu.Content>
-            </Menu.Root>
-          </Box>
-        </Stack>
       </Stack>
     );
   },
 };
 
-export const MixedSelectionModes: Story = {
+export const MixedSelection: Story = {
   render: () => {
     const [textStyle, setTextStyle] = React.useState<Set<string>>(
       new Set(["bold"])
@@ -496,196 +477,196 @@ export const MixedSelectionModes: Story = {
     const [view, setView] = React.useState<string>("list");
 
     return (
-      <Stack direction="column" gap="600">
-        <Heading size="lg">Mixed Selection Modes Example</Heading>
-        <Text textStyle="lg">
-          This example demonstrates different selection modes within a single
-          menu.
-        </Text>
-
-        <Stack direction="row" gap="600">
-          <Menu.Root defaultOpen>
-            <Menu.Trigger>
-              <Button>
-                Editor Settings
-                <Icon slot="suffix">
-                  <KeyboardArrowDown />
-                </Icon>
-              </Button>
-            </Menu.Trigger>
-            <Menu.Content>
-              {/* Section with no selection mode - regular actions */}
-              <Menu.Section>
-                <Menu.SectionLabel>Actions</Menu.SectionLabel>
-                <Menu.Item id="cut">
-                  <Icon slot="icon">
-                    <ContentCut />
+      <Stack gap="600">
+        <Stack>
+          <Heading>Mixed Selection Modes</Heading>
+          <Text>Different selection modes within a single menu</Text>
+          
+          <Stack direction="row" gap="600">
+            <Menu.Root defaultOpen>
+              <Menu.Trigger asChild>
+                <Button variant="solid" colorPalette="primary">
+                  Editor Settings
+                  <Icon slot="suffix">
+                    <KeyboardArrowDown />
                   </Icon>
-                  <Text slot="label">Cut</Text>
-                  <Kbd slot="keyboard">⌘X</Kbd>
-                </Menu.Item>
-                <Menu.Item id="copy">
-                  <Icon slot="icon">
-                    <ContentCopy />
+                </Button>
+              </Menu.Trigger>
+              <Menu.Content>
+                {/* Section with no selection mode - regular actions */}
+                <Menu.Section>
+                  <Menu.SectionLabel>Actions</Menu.SectionLabel>
+                  <Menu.Item id="cut">
+                    <Icon slot="icon">
+                      <ContentCut />
+                    </Icon>
+                    <Text slot="label">Cut</Text>
+                    <Kbd slot="keyboard">⌘X</Kbd>
+                  </Menu.Item>
+                  <Menu.Item id="copy">
+                    <Icon slot="icon">
+                      <ContentCopy />
+                    </Icon>
+                    <Text slot="label">Copy</Text>
+                    <Kbd slot="keyboard">⌘C</Kbd>
+                  </Menu.Item>
+                  <Menu.Item id="paste">
+                    <Icon slot="icon">
+                      <ContentPaste />
+                    </Icon>
+                    <Text slot="label">Paste</Text>
+                    <Kbd slot="keyboard">⌘V</Kbd>
+                  </Menu.Item>
+                </Menu.Section>
+
+                <Menu.Separator />
+
+                {/* Section with multiple selection */}
+                <Menu.Section
+                  selectionMode="multiple"
+                  selectedKeys={textStyle}
+                  onSelectionChange={(keys) => {
+                    if (keys !== "all") {
+                      setTextStyle(new Set(Array.from(keys) as string[]));
+                    }
+                  }}
+                >
+                  <Menu.SectionLabel>Text Style</Menu.SectionLabel>
+                  <Menu.Item id="bold">
+                    <Text slot="label">Bold</Text>
+                    <Kbd slot="keyboard">⌘B</Kbd>
+                  </Menu.Item>
+                  <Menu.Item id="italic">
+                    <Text slot="label">Italic</Text>
+                    <Kbd slot="keyboard">⌘I</Kbd>
+                  </Menu.Item>
+                  <Menu.Item id="underline">
+                    <Text slot="label">Underline</Text>
+                    <Kbd slot="keyboard">⌘U</Kbd>
+                  </Menu.Item>
+                </Menu.Section>
+
+                <Menu.Separator />
+
+                {/* Section with single selection */}
+                <Menu.Section
+                  selectionMode="single"
+                  selectedKeys={new Set([alignment])}
+                  onSelectionChange={(keys) => {
+                    if (keys !== "all") {
+                      const newKey = Array.from(keys)[0] as string;
+                      setAlignment(newKey);
+                    }
+                  }}
+                >
+                  <Menu.SectionLabel>Text Alignment</Menu.SectionLabel>
+                  <Menu.Item id="left">
+                    <Text slot="label">Left</Text>
+                  </Menu.Item>
+                  <Menu.Item id="center">
+                    <Text slot="label">Center</Text>
+                  </Menu.Item>
+                  <Menu.Item id="right">
+                    <Text slot="label">Right</Text>
+                  </Menu.Item>
+                </Menu.Section>
+              </Menu.Content>
+            </Menu.Root>
+
+            <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
+              <Stack gap="300">
+                <Text fontSize="sm" fontWeight="600">
+                  Current Selection:
+                </Text>
+                <Text fontSize="sm">
+                  Text Style: {Array.from(textStyle).join(", ") || "None"}
+                </Text>
+                <Text fontSize="sm">Alignment: {alignment}</Text>
+              </Stack>
+            </Box>
+          </Stack>
+
+          {/* Example with root defaults and section overrides */}
+          <Stack direction="row" gap="600">
+            <Menu.Root
+              defaultOpen
+              selectionMode="single"
+              selectedKeys={new Set([view])}
+              onSelectionChange={(keys) => {
+                if (keys !== "all") {
+                  const newKey = Array.from(keys)[0] as string;
+                  setView(newKey);
+                }
+              }}
+            >
+              <Menu.Trigger asChild>
+                <Button variant="solid" colorPalette="primary">
+                  View Settings (Root Default: Single)
+                  <Icon slot="suffix">
+                    <KeyboardArrowDown />
                   </Icon>
-                  <Text slot="label">Copy</Text>
-                  <Kbd slot="keyboard">⌘C</Kbd>
-                </Menu.Item>
-                <Menu.Item id="paste">
-                  <Icon slot="icon">
-                    <ContentPaste />
-                  </Icon>
-                  <Text slot="label">Paste</Text>
-                  <Kbd slot="keyboard">⌘V</Kbd>
-                </Menu.Item>
-              </Menu.Section>
+                </Button>
+              </Menu.Trigger>
+              <Menu.Content>
+                {/* This section inherits single selection from root */}
+                <Menu.Section>
+                  <Menu.SectionLabel>View Mode</Menu.SectionLabel>
+                  <Menu.Item id="list">
+                    <Icon slot="icon">
+                      <ViewList />
+                    </Icon>
+                    <Text slot="label">List View</Text>
+                  </Menu.Item>
+                  <Menu.Item id="grid">
+                    <Icon slot="icon">
+                      <ViewModule />
+                    </Icon>
+                    <Text slot="label">Grid View</Text>
+                  </Menu.Item>
+                </Menu.Section>
 
-              <Menu.Separator />
+                <Menu.Separator />
 
-              {/* Section with multiple selection */}
-              <Menu.Section
-                selectionMode="multiple"
-                selectedKeys={textStyle}
-                onSelectionChange={(keys) => {
-                  if (keys !== "all") {
-                    setTextStyle(new Set(Array.from(keys) as string[]));
-                  }
-                }}
-              >
-                <Menu.SectionLabel>Text Style</Menu.SectionLabel>
-                <Menu.Item id="bold">
-                  <Text slot="label">Bold</Text>
-                  <Kbd slot="keyboard">⌘B</Kbd>
-                </Menu.Item>
-                <Menu.Item id="italic">
-                  <Text slot="label">Italic</Text>
-                  <Kbd slot="keyboard">⌘I</Kbd>
-                </Menu.Item>
-                <Menu.Item id="underline">
-                  <Text slot="label">Underline</Text>
-                  <Kbd slot="keyboard">⌘U</Kbd>
-                </Menu.Item>
-              </Menu.Section>
+                {/* This section overrides with multiple selection */}
+                <Menu.Section
+                  selectionMode="multiple"
+                  selectedKeys={textStyle}
+                  onSelectionChange={(keys) => {
+                    if (keys !== "all") {
+                      setTextStyle(new Set(Array.from(keys) as string[]));
+                    }
+                  }}
+                >
+                  <Menu.SectionLabel>Override to Multiple</Menu.SectionLabel>
+                  <Menu.Item id="bold">
+                    <Text slot="label">Show Bold</Text>
+                  </Menu.Item>
+                  <Menu.Item id="italic">
+                    <Text slot="label">Show Italic</Text>
+                  </Menu.Item>
+                </Menu.Section>
+              </Menu.Content>
+            </Menu.Root>
 
-              <Menu.Separator />
-
-              {/* Section with single selection */}
-              <Menu.Section
-                selectionMode="single"
-                selectedKeys={new Set([alignment])}
-                onSelectionChange={(keys) => {
-                  if (keys !== "all") {
-                    const newKey = Array.from(keys)[0] as string;
-                    setAlignment(newKey);
-                  }
-                }}
-              >
-                <Menu.SectionLabel>Text Alignment</Menu.SectionLabel>
-                <Menu.Item id="left">
-                  <Text slot="label">Left</Text>
-                </Menu.Item>
-                <Menu.Item id="center">
-                  <Text slot="label">Center</Text>
-                </Menu.Item>
-                <Menu.Item id="right">
-                  <Text slot="label">Right</Text>
-                </Menu.Item>
-              </Menu.Section>
-            </Menu.Content>
-          </Menu.Root>
-
-          <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
-            <Stack gap="300">
-              <Text fontSize="sm" fontWeight="600">
-                Current Selection:
-              </Text>
-              <Text fontSize="sm">
-                Text Style: {Array.from(textStyle).join(", ") || "None"}
-              </Text>
-              <Text fontSize="sm">Alignment: {alignment}</Text>
-            </Stack>
-          </Box>
-        </Stack>
-
-        {/* Example with root defaults and section overrides */}
-        <Stack direction="row" gap="600">
-          <Menu.Root
-            defaultOpen
-            selectionMode="single"
-            selectedKeys={new Set([view])}
-            onSelectionChange={(keys) => {
-              if (keys !== "all") {
-                const newKey = Array.from(keys)[0] as string;
-                setView(newKey);
-              }
-            }}
-          >
-            <Menu.Trigger>
-              <Button>
-                View Settings (Root Default: Single)
-                <Icon slot="suffix">
-                  <KeyboardArrowDown />
-                </Icon>
-              </Button>
-            </Menu.Trigger>
-            <Menu.Content>
-              {/* This section inherits single selection from root */}
-              <Menu.Section>
-                <Menu.SectionLabel>View Mode</Menu.SectionLabel>
-                <Menu.Item id="list">
-                  <Icon slot="icon">
-                    <ViewList />
-                  </Icon>
-                  <Text slot="label">List View</Text>
-                </Menu.Item>
-                <Menu.Item id="grid">
-                  <Icon slot="icon">
-                    <ViewModule />
-                  </Icon>
-                  <Text slot="label">Grid View</Text>
-                </Menu.Item>
-              </Menu.Section>
-
-              <Menu.Separator />
-
-              {/* This section overrides with multiple selection */}
-              <Menu.Section
-                selectionMode="multiple"
-                selectedKeys={textStyle}
-                onSelectionChange={(keys) => {
-                  if (keys !== "all") {
-                    setTextStyle(new Set(Array.from(keys) as string[]));
-                  }
-                }}
-              >
-                <Menu.SectionLabel>Override to Multiple</Menu.SectionLabel>
-                <Menu.Item id="bold">
-                  <Text slot="label">Show Bold</Text>
-                </Menu.Item>
-                <Menu.Item id="italic">
-                  <Text slot="label">Show Italic</Text>
-                </Menu.Item>
-              </Menu.Section>
-            </Menu.Content>
-          </Menu.Root>
-
-          <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
-            <Stack gap="300">
-              <Text fontSize="sm" fontWeight="600">
-                Root Default Applied:
-              </Text>
-              <Text fontSize="sm">View (inherited single): {view}</Text>
-              <Text fontSize="sm">
-                Formatting (override multiple):{" "}
-                {Array.from(textStyle).join(", ") || "None"}
-              </Text>
-            </Stack>
-          </Box>
+            <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
+              <Stack gap="300">
+                <Text fontSize="sm" fontWeight="600">
+                  Root Default Applied:
+                </Text>
+                <Text fontSize="sm">View (inherited single): {view}</Text>
+                <Text fontSize="sm">
+                  Formatting (override multiple):{" "}
+                  {Array.from(textStyle).join(", ") || "None"}
+                </Text>
+              </Stack>
+            </Box>
+          </Stack>
         </Stack>
       </Stack>
     );
   },
 };
+
 
 export const ComplexExample: Story = {
   render: () => (
@@ -1194,101 +1175,6 @@ export const ControlledMenu: Story = {
 
         <Text>Menu is {isOpen ? "open" : "closed"}</Text>
       </div>
-    );
-  },
-};
-
-export const WithCentralizedPropsAndOverride: Story = {
-  render: () => {
-    const [selectedKey, setSelectedKey] = React.useState<string>("view-list");
-
-    return (
-      <Stack gap="600">
-        <Stack>
-          <Heading>Controlled Selection (persists when menu reopens)</Heading>
-          <Text>Selected view: {selectedKey}</Text>
-          <Menu.Root
-            onAction={(key) => console.log("Root handler:", key)}
-            selectionMode="single"
-            selectedKeys={new Set([selectedKey])}
-            onSelectionChange={(keys) => {
-              if (keys !== "all") {
-                const newKey = Array.from(keys)[0] as string;
-                setSelectedKey(newKey);
-              }
-            }}
-          >
-            <Menu.Trigger>Controlled Settings Menu</Menu.Trigger>
-            <Menu.Content>
-              <Menu.Section>
-                <Menu.SectionLabel>View Options (controlled)</Menu.SectionLabel>
-                <Menu.Item id="view-list">List View</Menu.Item>
-                <Menu.Item id="view-grid">Grid View</Menu.Item>
-                <Menu.Item id="view-detail">Detail View</Menu.Item>
-              </Menu.Section>
-
-              <Menu.Separator />
-
-              <Menu.SubmenuTrigger>
-                <Menu.Item>
-                  <Icon slot="icon">
-                    <Settings />
-                  </Icon>
-                  <Text slot="label">Advanced Settings</Text>
-                </Menu.Item>
-                <Menu.Submenu>
-                  <Menu.Item id="advanced-1">Advanced Option 1</Menu.Item>
-                  <Menu.Item id="advanced-2">Advanced Option 2</Menu.Item>
-
-                  <Menu.SubmenuTrigger>
-                    <Menu.Item>More Settings</Menu.Item>
-                    <Menu.Submenu>
-                      <Menu.Item id="deep-1">
-                        Deep Setting 1 (uses root handler)
-                      </Menu.Item>
-                      <Menu.Item id="deep-2">
-                        Deep Setting 2 (uses root handler)
-                      </Menu.Item>
-                    </Menu.Submenu>
-                  </Menu.SubmenuTrigger>
-                </Menu.Submenu>
-              </Menu.SubmenuTrigger>
-
-              <Menu.Separator />
-
-              <Menu.Item id="logout">Logout (uses root handler)</Menu.Item>
-            </Menu.Content>
-          </Menu.Root>
-        </Stack>
-
-        <Divider />
-
-        <Stack>
-          <Heading>Uncontrolled Selection (also persists)</Heading>
-          <Menu.Root
-            onAction={(key) => console.log("Root handler:", key)}
-            selectionMode="single"
-            defaultSelectedKeys={new Set(["view-list"])}
-          >
-            <Menu.Trigger>Uncontrolled Settings Menu</Menu.Trigger>
-            <Menu.Content>
-              <Menu.Section>
-                <Menu.SectionLabel>
-                  View Options (uncontrolled)
-                </Menu.SectionLabel>
-                <Menu.Item id="view-list">List View</Menu.Item>
-                <Menu.Item id="view-grid">Grid View</Menu.Item>
-                <Menu.Item id="view-detail">Detail View</Menu.Item>
-              </Menu.Section>
-
-              <Menu.Separator />
-
-              <Menu.Item id="save">Save</Menu.Item>
-              <Menu.Item id="save-as">Save As...</Menu.Item>
-            </Menu.Content>
-          </Menu.Root>
-        </Stack>
-      </Stack>
     );
   },
 };
