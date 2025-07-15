@@ -1,9 +1,10 @@
+import { memo } from "react";
 import { Header } from "react-aria-components";
 import { MenuSectionLabelSlot } from "../menu.slots";
 import type { MenuSectionLabelProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
-export const MenuSectionLabel = ({
+export const MenuSectionLabel = memo(({
   children,
   ref,
   ...props
@@ -17,6 +18,6 @@ export const MenuSectionLabel = ({
       </Header>
     </MenuSectionLabelSlot>
   );
-};
+});
 
 MenuSectionLabel.displayName = "Menu.SectionLabel";

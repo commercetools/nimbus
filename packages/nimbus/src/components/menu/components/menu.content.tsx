@@ -2,7 +2,6 @@ import { Menu, Popover } from "react-aria-components";
 import { MenuContentSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
 import { useMenuContext } from "./menu.context";
-import { MenuSectionProvider } from "./menu.section-context";
 
 export const MenuContent = ({
   children,
@@ -39,10 +38,9 @@ export const MenuContent = ({
           defaultSelectedKeys={defaultSelectedKeys}
           onSelectionChange={onSelectionChange}
           disallowEmptySelection={disallowEmptySelection}
+          data-selection-mode={selectionMode}
         >
-          <MenuSectionProvider value={{ selectionMode }}>
-            {children}
-          </MenuSectionProvider>
+          {children}
         </Menu>
       </MenuContentSlot>
     </Popover>

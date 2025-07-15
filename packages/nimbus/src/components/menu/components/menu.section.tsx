@@ -3,7 +3,6 @@ import { MenuSectionSlot } from "../menu.slots";
 import type { MenuSectionProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useMenuContext } from "./menu.context";
-import { MenuSectionProvider } from "./menu.section-context";
 
 export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
   const contextProps = useMenuContext();
@@ -29,11 +28,10 @@ export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
         defaultSelectedKeys={defaultSelectedKeys}
         onSelectionChange={onSelectionChange}
         disallowEmptySelection={disallowEmptySelection}
+        data-selection-mode={selectionMode}
         {...otherProps}
       >
-        <MenuSectionProvider value={{ selectionMode }}>
-          {children as React.ReactNode}
-        </MenuSectionProvider>
+        {children as React.ReactNode}
       </RaMenuSection>
     </MenuSectionSlot>
   );
