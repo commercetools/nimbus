@@ -145,9 +145,7 @@ export const menuSlotRecipe = defineSlotRecipe({
       // Styles for Kbd[slot="keyboard"]
       "& [slot='keyboard']": {
         gridArea: "keyboard",
-        // step 9 leads to a11y issues, so I added as much transparency as possible
-        // to step 11 as possible
-        color: "colorPalette.11/80",
+        color: "colorPalette.11",
         fontFamily: "mono",
         marginInlineStart: "400",
         my: "auto",

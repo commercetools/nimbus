@@ -316,7 +316,9 @@ export const TriggerVariations: Story = {
 
     await step("Test Button trigger variations", async () => {
       // Test primary button trigger
-      const primaryTrigger = canvas.getAllByRole("button", { name: /Primary/ })[0];
+      const primaryTrigger = canvas.getAllByRole("button", {
+        name: /Primary/,
+      })[0];
       await userEvent.click(primaryTrigger);
 
       // Menu should open
@@ -330,7 +332,9 @@ export const TriggerVariations: Story = {
       await expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
 
       // Test outline button trigger
-      const outlineTrigger = canvas.getAllByRole("button", { name: /Outline/ })[0];
+      const outlineTrigger = canvas.getAllByRole("button", {
+        name: /Outline/,
+      })[0];
       await userEvent.click(outlineTrigger);
 
       await waitFor(() => {
@@ -627,16 +631,16 @@ export const SingleSelection: Story = {
 
       // Navigate to large item (medium is currently selected, so ArrowDown twice)
       await userEvent.keyboard("{ArrowDown}{ArrowDown}");
-      
+
       // Wait a moment for focus to settle
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       // Press space to select large
       await userEvent.keyboard(" ");
-      
+
       // In single selection mode, selecting a new item should trigger onChange
       await expect(args.onSelectionChange).toHaveBeenCalled();
-      
+
       // Space key behavior might differ from click/enter
       // Just verify that we have some selection displayed
       await waitFor(() => {
@@ -798,7 +802,7 @@ export const MultiSelection: Story = {
       // Starting from wherever focus is, navigate and press space
       await userEvent.keyboard("{ArrowDown}");
       await userEvent.keyboard(" ");
-      
+
       // Space should toggle selection in multiple mode
       await expect(args.onSelectionChange).toHaveBeenCalled();
 
@@ -1078,12 +1082,12 @@ export const MixedSelection: Story = {
       // Open first menu
       const trigger1 = canvas.getByRole("button", { name: "Editor Settings" });
       await userEvent.click(trigger1);
-      
+
       // Wait for first menu to be open
       await waitFor(() => {
         expect(canvas.getByRole("menu")).toBeInTheDocument();
       });
-      
+
       // Verify menu has different sections with different selection modes
       const sections = canvas.getAllByRole("group");
       expect(sections.length).toBeGreaterThan(2);
@@ -1146,12 +1150,12 @@ export const MixedSelection: Story = {
       // Open second menu
       const trigger = canvas.getByRole("button", { name: /View Settings/ });
       await userEvent.click(trigger);
-      
+
       // Wait for menu to open
       await waitFor(() => {
         expect(canvas.getByRole("menu")).toBeInTheDocument();
       });
-      
+
       // Test single selection mode (inherited from root)
       const gridViewItem = canvas.getByRole("menuitemradio", {
         name: "Grid View",
@@ -1175,7 +1179,7 @@ export const MixedSelection: Story = {
       // Reopen second menu
       const trigger = canvas.getByRole("button", { name: /View Settings/ });
       await userEvent.click(trigger);
-      
+
       // Wait for menu to open
       await waitFor(() => {
         expect(canvas.getByRole("menu")).toBeInTheDocument();
@@ -1192,10 +1196,10 @@ export const MixedSelection: Story = {
 
       // Menu should stay open for multiple selection override
       await expect(canvas.getByRole("menu")).toBeInTheDocument();
-      
+
       // Close menu
       await userEvent.keyboard("{Escape}");
-      
+
       // Verify display updated
       await waitFor(() => {
         const text = canvas.getByText(/Formatting \(override multiple\):/);
@@ -1209,7 +1213,7 @@ export const MixedSelection: Story = {
         name: "Editor Settings",
       });
       await userEvent.click(firstTrigger);
-      
+
       // Wait for menu to open
       await waitFor(() => {
         expect(canvas.getByRole("menu")).toBeInTheDocument();
@@ -1218,10 +1222,10 @@ export const MixedSelection: Story = {
       // Navigate from action section to multiple selection section
       await userEvent.keyboard("{Home}"); // Go to first item
       await userEvent.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}"); // Navigate through sections
-      
+
       // Continue navigating
       await userEvent.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}");
-      
+
       // Close the menu
       await userEvent.keyboard("{Escape}");
     });
@@ -1231,16 +1235,17 @@ export const MixedSelection: Story = {
 export const ComplexExample: Story = {
   parameters: {
     a11y: {
-      // Disable a11y check for this story due to React Aria's scrollable menu implementation
-      // The menu has tabindex="-1" but a11y addon expects different focus management for scrollable regions
-      disable: true,
+      // Disable only the "scrollable-region-focusable" a11y rule for this story
+      // due to React Aria's scrollable menu implementation. The menu has
+      // tabindex="-1" but a11y addon expects different focus management for
+      // scrollable regions
+      config: {
+        rules: [{ id: "scrollable-region-focusable", enabled: false }],
+      },
     },
   },
   render: (args) => (
-    <Menu.Root
-      onAction={args.onAction}
-      onOpenChange={args.onOpenChange}
-    >
+    <Menu.Root onAction={args.onAction} onOpenChange={args.onOpenChange}>
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
         <Menu.Section>
@@ -1701,7 +1706,7 @@ export const ComplexExample: Story = {
       // Open the menu
       const trigger = canvas.getByRole("button", { name: "Application Menu" });
       await userEvent.click(trigger);
-      
+
       // Wait for menu to be open
       await waitFor(() => {
         expect(canvas.getByRole("menu")).toBeInTheDocument();
@@ -1729,13 +1734,13 @@ export const ComplexExample: Story = {
       // Open Reports submenu to find the critical item
       const reportsTrigger = canvas.getByRole("menuitem", { name: /^Reports/ });
       await userEvent.hover(reportsTrigger);
-      
+
       // Wait for submenu to open
       await waitFor(() => {
         const menus = canvas.getAllByRole("menu");
         expect(menus).toHaveLength(2);
       });
-      
+
       // Find critical item in submenu
       const deleteItem = canvas.getByRole("menuitem", {
         name: /Delete Custom Reports/,
@@ -1750,13 +1755,13 @@ export const ComplexExample: Story = {
     await step("Test separators are not focusable", async () => {
       // Close any open submenus first
       await userEvent.keyboard("{Escape}");
-      
+
       // Ensure we're at the main menu
       await waitFor(() => {
         const menus = canvas.getAllByRole("menu");
         expect(menus).toHaveLength(1);
       });
-      
+
       // Navigate to first item
       await userEvent.keyboard("{Home}");
 
@@ -1795,7 +1800,7 @@ export const ComplexExample: Story = {
     await step("Close menu and verify", async () => {
       // Press Escape to close main menu
       await userEvent.keyboard("{Escape}");
-      
+
       // Verify menu is closed
       await waitFor(() => {
         expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
@@ -1819,10 +1824,10 @@ export const ComplexExample: Story = {
     await step("Test item variations section exists", async () => {
       // Just verify the section exists with various item types
       const allItems = canvas.getAllByRole("menuitem");
-      
+
       // Should have many items in this complex menu
       await expect(allItems.length).toBeGreaterThan(20);
-      
+
       // Check that "Label Only" item exists (this should be unique)
       const labelOnlyItem = canvas.getByRole("menuitem", {
         name: /^Label Only$/,
@@ -1893,15 +1898,17 @@ export const ControlledMenu: Story = {
       await waitFor(() => {
         expect(canvas.getByText("Menu is closed")).toBeInTheDocument();
       });
-      
+
       // Click external button to open
       const buttons = await waitFor(() => {
         const allButtons = canvas.getAllByRole("button", { hidden: true });
         expect(allButtons.length).toBeGreaterThan(0);
         return allButtons;
       });
-      
-      const openButton = buttons.find(btn => btn.textContent?.includes("Open"));
+
+      const openButton = buttons.find((btn) =>
+        btn.textContent?.includes("Open")
+      );
       expect(openButton).toBeDefined();
       await userEvent.click(openButton!);
 
@@ -1914,24 +1921,26 @@ export const ControlledMenu: Story = {
     await step("Test menu trigger toggles controlled state", async () => {
       // Find and click the menu trigger (this should close the menu)
       const buttons = canvas.getAllByRole("button", { hidden: true });
-      const trigger = buttons.find(btn => btn.textContent === "Controlled Menu");
+      const trigger = buttons.find(
+        (btn) => btn.textContent === "Controlled Menu"
+      );
       expect(trigger).toBeDefined();
       await userEvent.click(trigger!);
 
       // onOpenChange should be called with false
       await expect(args.onOpenChange).toHaveBeenLastCalledWith(false);
-      
+
       // Menu should now be closed
       await waitFor(() => {
         expect(canvas.getByText("Menu is closed")).toBeInTheDocument();
       });
-      
+
       // Click trigger again to open
       await userEvent.click(trigger!);
-      
+
       // onOpenChange should be called with true
       await expect(args.onOpenChange).toHaveBeenLastCalledWith(true);
-      
+
       // Menu should be open again
       await waitFor(() => {
         expect(canvas.getByText("Menu is open")).toBeInTheDocument();
@@ -1941,7 +1950,9 @@ export const ControlledMenu: Story = {
     await step("Close menu with external button", async () => {
       // Click close button
       const buttons = canvas.getAllByRole("button", { hidden: true });
-      const closeButton = buttons.find(btn => btn.textContent?.includes("Close"));
+      const closeButton = buttons.find((btn) =>
+        btn.textContent?.includes("Close")
+      );
       expect(closeButton).toBeDefined();
       await userEvent.click(closeButton!);
 
