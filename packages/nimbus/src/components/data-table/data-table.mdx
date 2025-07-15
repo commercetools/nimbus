@@ -1,0 +1,92 @@
+---
+id: Components-DataTable
+title: DataTable
+description: A component that renders data sets in a tabular format
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - DataTable
+tags:
+  - component
+---
+
+# DataTable
+
+A component that renders data sets in a tabular format
+
+## Basic Usage
+
+[Explain the basic usage / usecase of the component].
+
+```jsx-live
+const App = () => <DataTable>I am DataTable!</DataTable>
+```
+
+
+### Sizes
+
+Available sizes.
+
+```jsx-live
+const App = () => {
+
+  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
+
+  return (
+    <Stack direction="horizontal" alignItems="center">
+      {sizes.map(size => (
+        <DataTable key={size} size={size}>'{size}' DataTable</DataTable>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Variants
+
+Available variants.
+
+```jsx-live
+const App = () => {
+
+  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
+
+  return (
+    <Stack direction="horizontal">
+      {variants.map(variant => (
+        <DataTable key={variant} variant={variant}>'{variant}' DataTable</DataTable>
+      ))}
+    </Stack>
+  )
+}
+```
+
+### Colors
+
+[Explain usage with different colors/semantics.]
+
+```jsx-live
+const App = () => {
+  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
+  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
+
+  return (
+    <Stack>
+      {colors.map((color) => (
+        <Stack key={color} direction="horizontal">
+          {variants.map((variant) => (
+            <DataTable colorPalette={color} key={variant} variant={variant}>
+              '{variant}' DataTable
+            </DataTable>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Props
+
+<PropTable id="DataTable" />
