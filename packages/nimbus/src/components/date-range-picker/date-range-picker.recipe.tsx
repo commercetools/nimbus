@@ -76,6 +76,11 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
         boxSizing: "border-box",
         height: "calc(100% - 1px)", // Prevent covering group border
         justifyContent: "flex-start", // Ensure content aligns to the start
+        // Remove individual DateInput focus rings - only show DateRangePicker's unified focus ring
+        "&[data-focus-within='true']": {
+          outline: "none",
+          boxShadow: "none",
+        },
       },
       // Style the separator
       '& > span[aria-hidden="true"]': {
