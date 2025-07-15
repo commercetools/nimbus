@@ -42,5 +42,9 @@ export interface IconProps extends IconVariantProps {
    */
   ref?: React.Ref<SVGSVGElement>;
 
-  slot: string | null | undefined;
+  /**
+   * The slot to render the icon in.
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/slot
+   */
+  slot?: string | null | undefined;
 }
