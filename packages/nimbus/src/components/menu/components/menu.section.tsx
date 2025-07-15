@@ -3,6 +3,7 @@ import { MenuSectionSlot } from "../menu.slots";
 import type { MenuSectionProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useMenuContext } from "./menu.context";
+import { MenuSectionProvider } from "./menu.section-context";
 
 export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
@@ -29,7 +30,9 @@ export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
         disallowEmptySelection={disallowEmptySelection}
         {...otherProps}
       >
-        {children}
+        <MenuSectionProvider value={{ selectionMode }}>
+          {children}
+        </MenuSectionProvider>
       </RaMenuSection>
     </MenuSectionSlot>
   );

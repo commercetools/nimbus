@@ -3,17 +3,15 @@ import { MenuItemSlot } from "../menu.slots";
 import type { MenuItemProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
-  CheckBox,
+  CheckBox as CheckboxCheckedIcon,
+  CheckBoxOutlineBlank as CheckboxUncheckedIcon,
   ChevronRight,
   RadioButtonChecked,
   RadioButtonUnchecked,
 } from "@commercetools/nimbus-icons";
 import { Icon } from "@/components/icon";
-import {
-  CheckBox as CheckboxCheckedIcon,
-  CheckBoxOutlineBlank as CheckboxUncheckedIcon,
-} from "@commercetools/nimbus-icons";
 import { useMenuContext } from "./menu.context";
+import { useMenuSectionContext } from "./menu.section-context";
 import { Box } from "@/components/box";
 
 export const MenuItem = ({
@@ -24,8 +22,10 @@ export const MenuItem = ({
   ...props
 }: MenuItemProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
+  const sectionContext = useMenuSectionContext();
   const menuContext = useMenuContext();
-  const selectionMode = menuContext?.selectionMode;
+  // Use section context if available, otherwise fall back to menu context
+  const selectionMode = sectionContext?.selectionMode ?? menuContext?.selectionMode;
 
   return (
     <MenuItemSlot

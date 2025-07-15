@@ -2,6 +2,7 @@ import { Menu, Popover } from "react-aria-components";
 import { MenuContentSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
 import { useMenuContext } from "./menu.context";
+import { MenuSectionProvider } from "./menu.section-context";
 
 export const MenuContent = ({
   children,
@@ -18,6 +19,7 @@ export const MenuContent = ({
   const {
     onAction,
     placement = placementOverride || "bottom start",
+    selectionMode,
   } = contextProps;
 
   return (
@@ -29,7 +31,9 @@ export const MenuContent = ({
           autoFocus="first"
           onAction={onAction}
         >
-          {children}
+          <MenuSectionProvider value={{ selectionMode }}>
+            {children}
+          </MenuSectionProvider>
         </Menu>
       </MenuContentSlot>
     </Popover>
