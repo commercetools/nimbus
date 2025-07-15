@@ -22,6 +22,7 @@ import {
   Undo,
   Redo,
   ContentCopy,
+  ContentCut,
   ContentPaste,
   ZoomIn,
   ZoomOut,
@@ -372,8 +373,8 @@ export const SelectionModes: Story = {
                 </Button>
               </Menu.Trigger>
               <Menu.Content>
-                <Menu.Group>
-                  <Menu.GroupLabel>Choose text size</Menu.GroupLabel>
+                <Menu.Section>
+                  <Menu.SectionLabel>Choose text size</Menu.SectionLabel>
                   <Menu.Item
                     id="small"
                     isSelected={singleSelection === "small"}
@@ -395,7 +396,7 @@ export const SelectionModes: Story = {
                     <Text slot="label">Large</Text>
                     <Text slot="description">Larger text for readability</Text>
                   </Menu.Item>
-                </Menu.Group>
+                </Menu.Section>
               </Menu.Content>
             </Menu.Root>
 
@@ -425,8 +426,8 @@ export const SelectionModes: Story = {
                 </Button>
               </Menu.Trigger>
               <Menu.Content>
-                <Menu.Group>
-                  <Menu.GroupLabel>Formatting Options</Menu.GroupLabel>
+                <Menu.Section>
+                  <Menu.SectionLabel>Formatting Options</Menu.SectionLabel>
                   <Menu.Item id="bold" isSelected={multiSelection.has("bold")}>
                     <Icon slot="icon">
                       <Edit />
@@ -464,7 +465,7 @@ export const SelectionModes: Story = {
                     <Text slot="label">Strikethrough</Text>
                     <Text slot="description">Strike through text</Text>
                   </Menu.Item>
-                </Menu.Group>
+                </Menu.Section>
               </Menu.Content>
             </Menu.Root>
 
@@ -504,6 +505,204 @@ export const SelectionModes: Story = {
   },
 };
 
+export const MixedSelectionModes: Story = {
+  render: () => {
+    const [textStyle, setTextStyle] = React.useState<Set<string>>(
+      new Set(["bold"])
+    );
+    const [alignment, setAlignment] = React.useState<string>("left");
+    const [view, setView] = React.useState<string>("list");
+
+    return (
+      <Stack direction="column" spacing="600">
+        <Heading size="500">Mixed Selection Modes Example</Heading>
+        <Text textStyle="lg">
+          This example demonstrates different selection modes within a single menu.
+        </Text>
+        
+        <Stack direction="row" spacing="600">
+          <Menu.Root defaultOpen>
+            <Menu.Trigger>
+              <Button>
+                Editor Settings
+                <Icon slot="suffix">
+                  <KeyboardArrowDown />
+                </Icon>
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content>
+              {/* Section with no selection mode - regular actions */}
+              <Menu.Section>
+                <Menu.SectionLabel>Actions</Menu.SectionLabel>
+                <Menu.Item id="cut">
+                  <Icon slot="icon">
+                    <ContentCut />
+                  </Icon>
+                  <Text slot="label">Cut</Text>
+                  <Kbd slot="keyboard">⌘X</Kbd>
+                </Menu.Item>
+                <Menu.Item id="copy">
+                  <Icon slot="icon">
+                    <ContentCopy />
+                  </Icon>
+                  <Text slot="label">Copy</Text>
+                  <Kbd slot="keyboard">⌘C</Kbd>
+                </Menu.Item>
+                <Menu.Item id="paste">
+                  <Icon slot="icon">
+                    <ContentPaste />
+                  </Icon>
+                  <Text slot="label">Paste</Text>
+                  <Kbd slot="keyboard">⌘V</Kbd>
+                </Menu.Item>
+              </Menu.Section>
+
+              <Menu.Separator />
+
+              {/* Section with multiple selection */}
+              <Menu.Section
+                selectionMode="multiple"
+                selectedKeys={textStyle}
+                onSelectionChange={(keys) => {
+                  if (keys !== "all") {
+                    setTextStyle(new Set(Array.from(keys) as string[]));
+                  }
+                }}
+              >
+                <Menu.SectionLabel>Text Style</Menu.SectionLabel>
+                <Menu.Item id="bold" isSelected={textStyle.has("bold")}>
+                  <Text slot="label">Bold</Text>
+                  <Kbd slot="keyboard">⌘B</Kbd>
+                </Menu.Item>
+                <Menu.Item id="italic" isSelected={textStyle.has("italic")}>
+                  <Text slot="label">Italic</Text>
+                  <Kbd slot="keyboard">⌘I</Kbd>
+                </Menu.Item>
+                <Menu.Item id="underline" isSelected={textStyle.has("underline")}>
+                  <Text slot="label">Underline</Text>
+                  <Kbd slot="keyboard">⌘U</Kbd>
+                </Menu.Item>
+              </Menu.Section>
+
+              <Menu.Separator />
+
+              {/* Section with single selection */}
+              <Menu.Section
+                selectionMode="single"
+                selectedKeys={new Set([alignment])}
+                onSelectionChange={(keys) => {
+                  if (keys !== "all") {
+                    const newKey = Array.from(keys)[0] as string;
+                    setAlignment(newKey);
+                  }
+                }}
+              >
+                <Menu.SectionLabel>Text Alignment</Menu.SectionLabel>
+                <Menu.Item id="left" isSelected={alignment === "left"}>
+                  <Text slot="label">Left</Text>
+                </Menu.Item>
+                <Menu.Item id="center" isSelected={alignment === "center"}>
+                  <Text slot="label">Center</Text>
+                </Menu.Item>
+                <Menu.Item id="right" isSelected={alignment === "right"}>
+                  <Text slot="label">Right</Text>
+                </Menu.Item>
+              </Menu.Section>
+            </Menu.Content>
+          </Menu.Root>
+
+          <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
+            <Stack spacing="300">
+              <Text fontSize="sm" fontWeight="600">Current Selection:</Text>
+              <Text fontSize="sm">
+                Text Style: {Array.from(textStyle).join(", ") || "None"}
+              </Text>
+              <Text fontSize="sm">
+                Alignment: {alignment}
+              </Text>
+            </Stack>
+          </Box>
+        </Stack>
+
+        {/* Example with root defaults and section overrides */}
+        <Stack direction="row" spacing="600">
+          <Menu.Root 
+            defaultOpen
+            selectionMode="single"
+            selectedKeys={new Set([view])}
+            onSelectionChange={(keys) => {
+              if (keys !== "all") {
+                const newKey = Array.from(keys)[0] as string;
+                setView(newKey);
+              }
+            }}
+          >
+            <Menu.Trigger>
+              <Button>
+                View Settings (Root Default: Single)
+                <Icon slot="suffix">
+                  <KeyboardArrowDown />
+                </Icon>
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content>
+              {/* This section inherits single selection from root */}
+              <Menu.Section>
+                <Menu.SectionLabel>View Mode</Menu.SectionLabel>
+                <Menu.Item id="list" isSelected={view === "list"}>
+                  <Icon slot="icon">
+                    <ViewList />
+                  </Icon>
+                  <Text slot="label">List View</Text>
+                </Menu.Item>
+                <Menu.Item id="grid" isSelected={view === "grid"}>
+                  <Icon slot="icon">
+                    <ViewModule />
+                  </Icon>
+                  <Text slot="label">Grid View</Text>
+                </Menu.Item>
+              </Menu.Section>
+
+              <Menu.Separator />
+
+              {/* This section overrides with multiple selection */}
+              <Menu.Section
+                selectionMode="multiple"
+                selectedKeys={textStyle}
+                onSelectionChange={(keys) => {
+                  if (keys !== "all") {
+                    setTextStyle(new Set(Array.from(keys) as string[]));
+                  }
+                }}
+              >
+                <Menu.SectionLabel>Override to Multiple</Menu.SectionLabel>
+                <Menu.Item id="bold" isSelected={textStyle.has("bold")}>
+                  <Text slot="label">Show Bold</Text>
+                </Menu.Item>
+                <Menu.Item id="italic" isSelected={textStyle.has("italic")}>
+                  <Text slot="label">Show Italic</Text>
+                </Menu.Item>
+              </Menu.Section>
+            </Menu.Content>
+          </Menu.Root>
+
+          <Box padding="400" background="neutral.3" borderRadius="md" flex="1">
+            <Stack spacing="300">
+              <Text fontSize="sm" fontWeight="600">Root Default Applied:</Text>
+              <Text fontSize="sm">
+                View (inherited single): {view}
+              </Text>
+              <Text fontSize="sm">
+                Formatting (override multiple): {Array.from(textStyle).join(", ") || "None"}
+              </Text>
+            </Stack>
+          </Box>
+        </Stack>
+      </Stack>
+    );
+  },
+};
+
 export const ComplexExample: Story = {
   render: () => (
     <Menu.Root
@@ -512,8 +711,8 @@ export const ComplexExample: Story = {
     >
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
-        <Menu.Group>
-          <Menu.GroupLabel>File Operations</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>File Operations</Menu.SectionLabel>
           <Menu.Item id="new">
             <Icon slot="icon">
               <InsertDriveFile />
@@ -543,12 +742,12 @@ export const ComplexExample: Story = {
             <Text slot="description">Save document with a new name</Text>
             <Kbd slot="keyboard">⌘⇧S</Kbd>
           </Menu.Item>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
-        <Menu.Group>
-          <Menu.GroupLabel>Edit Operations</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>Edit Operations</Menu.SectionLabel>
           <Menu.Item id="undo">
             <Icon slot="icon">
               <Undo />
@@ -578,12 +777,12 @@ export const ComplexExample: Story = {
             <Text slot="description">Clipboard is empty</Text>
             <Kbd slot="keyboard">⌘V</Kbd>
           </Menu.Item>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
-        <Menu.Group>
-          <Menu.GroupLabel>View Options</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>View Options</Menu.SectionLabel>
           <Menu.Item id="zoom-in">
             <Icon slot="icon">
               <ZoomIn />
@@ -606,12 +805,12 @@ export const ComplexExample: Story = {
             <Text slot="description">Hide all UI elements</Text>
             <Kbd slot="keyboard">F11</Kbd>
           </Menu.Item>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
-        <Menu.Group>
-          <Menu.GroupLabel>Item Variations</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>Item Variations</Menu.SectionLabel>
           {/* Item with icon only */}
           <Menu.Item id="icon-only">
             <Icon slot="icon">
@@ -658,12 +857,12 @@ export const ComplexExample: Story = {
             <Text slot="label">Icon + Label + Keyboard</Text>
             <Kbd slot="keyboard">⌘⌫</Kbd>
           </Menu.Item>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
-        <Menu.Group>
-          <Menu.GroupLabel>States & Behaviors</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>States & Behaviors</Menu.SectionLabel>
           <Menu.Item id="selected" isSelected>
             <Icon slot="icon">
               <Edit />
@@ -690,12 +889,12 @@ export const ComplexExample: Story = {
             <Text slot="description">This item is disabled</Text>
             <Kbd slot="keyboard">⌘B</Kbd>
           </Menu.Item>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
-        <Menu.Group>
-          <Menu.GroupLabel>Submenu Examples</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>Submenu Examples</Menu.SectionLabel>
           {/* Single level submenu */}
           <Menu.SubmenuTrigger>
             <Menu.Item>
@@ -938,12 +1137,12 @@ export const ComplexExample: Story = {
               </Menu.Item>
             </Menu.Submenu>
           </Menu.SubmenuTrigger>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
-        <Menu.Group>
-          <Menu.GroupLabel>Trigger Props Examples</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>Trigger Props Examples</Menu.SectionLabel>
           {/* Nested submenu for trigger props */}
           <Menu.SubmenuTrigger>
             <Menu.Item>
@@ -966,7 +1165,7 @@ export const ComplexExample: Story = {
               </Menu.Item>
             </Menu.Submenu>
           </Menu.SubmenuTrigger>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 
@@ -1025,12 +1224,12 @@ export const WithCentralizedPropsAndOverride: Story = {
     >
       <Menu.Trigger>Settings Menu</Menu.Trigger>
       <Menu.Content>
-        <Menu.Group>
-          <Menu.GroupLabel>View Options (inherits root props)</Menu.GroupLabel>
+        <Menu.Section>
+          <Menu.SectionLabel>View Options (inherits root props)</Menu.SectionLabel>
           <Menu.Item id="view-list">List View</Menu.Item>
           <Menu.Item id="view-grid">Grid View</Menu.Item>
           <Menu.Item id="view-detail">Detail View</Menu.Item>
-        </Menu.Group>
+        </Menu.Section>
 
         <Menu.Separator />
 

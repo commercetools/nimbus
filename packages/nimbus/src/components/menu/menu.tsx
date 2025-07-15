@@ -3,8 +3,8 @@ import { MenuTrigger } from "./components/menu.trigger";
 import { MenuContent } from "./components/menu.content";
 import { MenuItem } from "./components/menu.item";
 import { MenuSeparator } from "./components/menu.separator";
-import { MenuGroup } from "./components/menu.group";
-import { MenuGroupLabel } from "./components/menu.group-label";
+import { MenuSection } from "./components/menu.section";
+import { MenuSectionLabel } from "./components/menu.section-label";
 import { MenuSubmenuTrigger } from "./components/menu.submenu-trigger";
 import { MenuSubmenu } from "./components/menu.submenu";
 
@@ -17,8 +17,8 @@ export const Menu = {
   Content: MenuContent,
   Item: MenuItem,
   Separator: MenuSeparator,
-  Group: MenuGroup,
-  GroupLabel: MenuGroupLabel,
+  Section: MenuSection,
+  SectionLabel: MenuSectionLabel,
   Submenu: MenuSubmenu,
   SubmenuTrigger: MenuSubmenuTrigger,
 };
@@ -30,8 +30,8 @@ export {
   MenuContent as _MenuContent,
   MenuItem as _MenuItem,
   MenuSeparator as _MenuSeparator,
-  MenuGroup as _MenuGroup,
-  MenuGroupLabel as _MenuGroupLabel,
+  MenuSection as _MenuSection,
+  MenuSectionLabel as _MenuSectionLabel,
   MenuSubmenuTrigger as _MenuSubmenuTrigger,
   MenuSubmenu as _MenuSubmenu,
 };

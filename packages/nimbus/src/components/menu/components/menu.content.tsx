@@ -14,14 +14,9 @@ export const MenuContent = ({
     throw new Error("Menu.Content must be used within Menu.Root");
   }
 
-  // Use context props only
+  // Use only non-selection context props
   const {
     onAction,
-    selectionMode,
-    selectedKeys,
-    defaultSelectedKeys,
-    onSelectionChange,
-    disallowEmptySelection,
     placement = placementOverride || "bottom start",
   } = contextProps;
 
@@ -33,11 +28,6 @@ export const MenuContent = ({
           shouldFocusWrap
           autoFocus="first"
           onAction={onAction}
-          selectionMode={selectionMode}
-          selectedKeys={selectedKeys}
-          defaultSelectedKeys={defaultSelectedKeys}
-          onSelectionChange={onSelectionChange}
-          disallowEmptySelection={disallowEmptySelection}
         >
           {children}
         </Menu>

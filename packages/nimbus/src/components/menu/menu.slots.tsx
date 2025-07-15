@@ -43,19 +43,19 @@ export const MenuSeparatorSlot = withContext<
   MenuSeparatorSlotProps
 >("div", "separator");
 
-// Menu Group
-export type MenuGroupSlotProps = HTMLChakraProps<"div">;
-export const MenuGroupSlot = withContext<HTMLDivElement, MenuGroupSlotProps>(
+// Menu Section
+export type MenuSectionSlotProps = HTMLChakraProps<"div">;
+export const MenuSectionSlot = withContext<HTMLDivElement, MenuSectionSlotProps>(
   "div",
-  "group"
+  "section"
 );
 
-// Menu Group Label
-export type MenuGroupLabelSlotProps = HTMLChakraProps<"div">;
-export const MenuGroupLabelSlot = withContext<
+// Menu Section Label
+export type MenuSectionLabelSlotProps = HTMLChakraProps<"div">;
+export const MenuSectionLabelSlot = withContext<
   HTMLDivElement,
-  MenuGroupLabelSlotProps
->("div", "groupLabel");
+  MenuSectionLabelSlotProps
+>("div", "sectionLabel");
 
 // Menu Group Label
 export type MenuSubmenuSlotProps = HTMLChakraProps<"div">;

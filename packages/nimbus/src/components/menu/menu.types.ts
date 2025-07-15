@@ -64,13 +64,13 @@ export interface MenuSeparatorProps extends RaSeparatorProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-// Menu group component
-export interface MenuGroupProps extends RaSectionProps<object> {
+// Menu section component
+export interface MenuSectionProps extends RaSectionProps<object> {
   ref?: Ref<HTMLDivElement>;
 }
 
-// Menu group label component - Header doesn't have props type, so we'll use basic props
-export interface MenuGroupLabelProps {
+// Menu section label component - Header doesn't have props type, so we'll use basic props
+export interface MenuSectionLabelProps {
   children: ReactNode;
   ref?: Ref<HTMLDivElement>;
 }

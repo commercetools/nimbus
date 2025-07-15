@@ -11,8 +11,8 @@ export const menuSlotRecipe = defineSlotRecipe({
     "content",
     "item",
     "separator",
-    "group",
-    "groupLabel",
+    "section",
+    "sectionLabel",
     "submenu",
   ],
   // Unique class name prefix for the component
@@ -199,11 +199,11 @@ export const menuSlotRecipe = defineSlotRecipe({
       my: "200",
       mx: "-200",
     },
-    group: {
+    section: {
       display: "flex",
       flexDirection: "column",
     },
-    groupLabel: {
+    sectionLabel: {
       textStyle: "xs",
       fontWeight: "600",
       color: "neutral.11",
