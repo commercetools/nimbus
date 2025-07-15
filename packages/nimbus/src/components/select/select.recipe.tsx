@@ -30,7 +30,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       // [data-open]
       // [data-invalid]
       // [data-required]
-      '&[data-disabled="true"]': {
+      "&[data-disabled='true']": {
         layerStyle: "disabled",
         pointerEvents: "none",
       },
@@ -149,7 +149,7 @@ export const selectSlotRecipe = defineSlotRecipe({
         textStyle: "xs",
       },
 
-      '&[data-disabled="true"]': {
+      "&[data-disabled='true']": {
         layerStyle: "disabled",
       },
     },
