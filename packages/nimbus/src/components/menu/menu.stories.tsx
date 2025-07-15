@@ -1215,53 +1215,94 @@ export const ControlledMenu: Story = {
 };
 
 export const WithCentralizedPropsAndOverride: Story = {
-  render: () => (
-    <Menu.Root
-      defaultOpen
-      onAction={(key) => console.log("Root handler:", key)}
-      selectionMode="single"
-      defaultSelectedKeys={["view-list"]}
-    >
-      <Menu.Trigger>Settings Menu</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Section>
-          <Menu.SectionLabel>View Options (inherits root props)</Menu.SectionLabel>
-          <Menu.Item id="view-list">List View</Menu.Item>
-          <Menu.Item id="view-grid">Grid View</Menu.Item>
-          <Menu.Item id="view-detail">Detail View</Menu.Item>
-        </Menu.Section>
+  render: () => {
+    const [selectedKey, setSelectedKey] = React.useState<string>("view-list");
 
-        <Menu.Separator />
+    return (
+      <Stack spacing="600">
+        <Stack>
+          <Heading>Controlled Selection (persists when menu reopens)</Heading>
+          <Text>Selected view: {selectedKey}</Text>
+          <Menu.Root
+            onAction={(key) => console.log("Root handler:", key)}
+            selectionMode="single"
+            selectedKeys={new Set([selectedKey])}
+            onSelectionChange={(keys) => {
+              if (keys !== "all") {
+                const newKey = Array.from(keys)[0] as string;
+                setSelectedKey(newKey);
+              }
+            }}
+          >
+            <Menu.Trigger>Controlled Settings Menu</Menu.Trigger>
+            <Menu.Content>
+              <Menu.Section>
+                <Menu.SectionLabel>View Options (controlled)</Menu.SectionLabel>
+                <Menu.Item id="view-list">List View</Menu.Item>
+                <Menu.Item id="view-grid">Grid View</Menu.Item>
+                <Menu.Item id="view-detail">Detail View</Menu.Item>
+              </Menu.Section>
 
-        <Menu.SubmenuTrigger>
-          <Menu.Item>
-            <Icon slot="icon">
-              <Settings />
-            </Icon>
-            <Text slot="label">Advanced Settings</Text>
-          </Menu.Item>
-          <Menu.Submenu>
-            <Menu.Item id="advanced-1">Advanced Option 1</Menu.Item>
-            <Menu.Item id="advanced-2">Advanced Option 2</Menu.Item>
+              <Menu.Separator />
 
-            <Menu.SubmenuTrigger>
-              <Menu.Item>More Settings</Menu.Item>
-              <Menu.Submenu>
-                <Menu.Item id="deep-1">
-                  Deep Setting 1 (uses root handler)
+              <Menu.SubmenuTrigger>
+                <Menu.Item>
+                  <Icon slot="icon">
+                    <Settings />
+                  </Icon>
+                  <Text slot="label">Advanced Settings</Text>
                 </Menu.Item>
-                <Menu.Item id="deep-2">
-                  Deep Setting 2 (uses root handler)
-                </Menu.Item>
-              </Menu.Submenu>
-            </Menu.SubmenuTrigger>
-          </Menu.Submenu>
-        </Menu.SubmenuTrigger>
+                <Menu.Submenu>
+                  <Menu.Item id="advanced-1">Advanced Option 1</Menu.Item>
+                  <Menu.Item id="advanced-2">Advanced Option 2</Menu.Item>
 
-        <Menu.Separator />
+                  <Menu.SubmenuTrigger>
+                    <Menu.Item>More Settings</Menu.Item>
+                    <Menu.Submenu>
+                      <Menu.Item id="deep-1">
+                        Deep Setting 1 (uses root handler)
+                      </Menu.Item>
+                      <Menu.Item id="deep-2">
+                        Deep Setting 2 (uses root handler)
+                      </Menu.Item>
+                    </Menu.Submenu>
+                  </Menu.SubmenuTrigger>
+                </Menu.Submenu>
+              </Menu.SubmenuTrigger>
 
-        <Menu.Item id="logout">Logout (uses root handler)</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-  ),
+              <Menu.Separator />
+
+              <Menu.Item id="logout">Logout (uses root handler)</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
+        </Stack>
+
+        <Divider />
+
+        <Stack>
+          <Heading>Uncontrolled Selection (also persists)</Heading>
+          <Menu.Root
+            onAction={(key) => console.log("Root handler:", key)}
+            selectionMode="single"
+            defaultSelectedKeys={new Set(["view-list"])}
+          >
+            <Menu.Trigger>Uncontrolled Settings Menu</Menu.Trigger>
+            <Menu.Content>
+              <Menu.Section>
+                <Menu.SectionLabel>View Options (uncontrolled)</Menu.SectionLabel>
+                <Menu.Item id="view-list">List View</Menu.Item>
+                <Menu.Item id="view-grid">Grid View</Menu.Item>
+                <Menu.Item id="view-detail">Detail View</Menu.Item>
+              </Menu.Section>
+
+              <Menu.Separator />
+
+              <Menu.Item id="save">Save</Menu.Item>
+              <Menu.Item id="save-as">Save As...</Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
+        </Stack>
+      </Stack>
+    );
+  },
 };
