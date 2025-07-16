@@ -9,12 +9,13 @@ import type {
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { MenuRootSlotProps, MenuTriggerSlotProps } from "./menu.slots";
+import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { MenuTriggerSlotProps } from "./menu.slots";
+import { menuSlotRecipe } from "./menu.recipe";
 
 // Root component that wraps MenuTrigger
 export interface MenuRootProps
-  extends Omit<MenuRootSlotProps, "children" | "css" | "asChild" | "as">,
-    Omit<RaMenuTriggerProps, "trigger">,
+  extends Omit<RaMenuTriggerProps, "trigger">,
     Pick<
       RaMenuProps<object>,
       | "onAction"
@@ -23,7 +24,8 @@ export interface MenuRootProps
       | "defaultSelectedKeys"
       | "onSelectionChange"
       | "disallowEmptySelection"
-    > {
+    >,
+    RecipeVariantProps<typeof menuSlotRecipe> {
   /**
    * The trigger event to use for the menu.
    * @default "press"
