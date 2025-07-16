@@ -1,7 +1,6 @@
 import {
   MenuSection as RaMenuSection,
   Collection,
-  Header,
 } from "react-aria-components";
 import { MenuSectionSlot } from "../menu.slots";
 import type { MenuSectionProps } from "../menu.types";

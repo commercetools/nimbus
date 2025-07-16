@@ -6,7 +6,8 @@ import type {
   ButtonProps as RaButtonProps,
   PopoverProps as RaPopoverProps,
   SeparatorProps as RaSeparatorProps,
-  SectionProps as RaSectionProps,
+  MenuSectionProps as RaMenuSectionProps,
+  SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
 import type { MenuRootSlotProps, MenuTriggerSlotProps } from "./menu.slots";
 
@@ -64,29 +65,12 @@ export interface MenuSeparatorProps extends RaSeparatorProps {
 }
 
 // Menu section component
-export interface MenuSectionProps<T = object>
-  extends Omit<RaSectionProps<T>, "children">,
-    Pick<
-      RaMenuProps<T>,
-      | "selectionMode"
-      | "selectedKeys"
-      | "defaultSelectedKeys"
-      | "onSelectionChange"
-      | "disallowEmptySelection"
-    > {
+export interface MenuSectionProps<T = object> extends RaMenuSectionProps<T> {
   ref?: Ref<HTMLDivElement>;
   /**
    * Label for the section header
    */
   label: ReactNode;
-  /**
-   * Item objects in the section for collection pattern
-   */
-  items?: Iterable<T>;
-  /**
-   * Children can be static items or a function to render items from collection
-   */
-  children?: ReactNode | ((item: T) => ReactNode);
 }
 
 // Menu section label component - Header doesn't have props type, so we'll use basic props
@@ -99,7 +83,6 @@ export interface MenuSectionLabelProps {
 export interface MenuSubmenuProps extends MenuContentProps {}
 
 // Menu submenu trigger component
-export interface MenuSubmenuTriggerProps {
-  children?: ReactNode;
+export interface MenuSubmenuTriggerProps extends RaSubmenuTriggerProps {
   ref?: Ref<HTMLDivElement>;
 }

@@ -161,8 +161,7 @@ const App = () => (
       </Button>
     </Menu.Trigger>
     <Menu.Content>
-      <Menu.Section>
-        <Menu.SectionLabel>Account</Menu.SectionLabel>
+      <Menu.Section label="Account">
         <Menu.Item id="profile">
           <Icon slot="icon"><Icons.AccountCircle /></Icon>
           <Text slot="label">Profile</Text>
@@ -175,8 +174,7 @@ const App = () => (
       
       <Menu.Separator />
       
-      <Menu.Section>
-        <Menu.SectionLabel>Support</Menu.SectionLabel>
+      <Menu.Section label="Support">
         <Menu.Item id="help">
           <Icon slot="icon"><Icons.Help /></Icon>
           <Text slot="label">Help & Feedback</Text>
@@ -224,8 +222,7 @@ const App = () => {
           </Button>
         </Menu.Trigger>
         <Menu.Content>
-          <Menu.Section>
-            <Menu.SectionLabel>View Options</Menu.SectionLabel>
+          <Menu.Section label="View Options">
             <Menu.Item id="list">
               <Icon slot="icon"><Icons.ViewList /></Icon>
               <Text slot="label">List View</Text>
@@ -279,8 +276,7 @@ const App = () => {
           </Button>
         </Menu.Trigger>
         <Menu.Content>
-          <Menu.Section>
-            <Menu.SectionLabel>Email Notifications</Menu.SectionLabel>
+          <Menu.Section label="Email Notifications">
             <Menu.Item id="notifications">
               <Text slot="label">General Notifications</Text>
               <Text slot="description">Receive general updates</Text>
@@ -332,8 +328,7 @@ const App = () => {
         </Menu.Trigger>
         <Menu.Content>
           {/* Section with no selection - regular actions */}
-          <Menu.Section>
-            <Menu.SectionLabel>Actions</Menu.SectionLabel>
+          <Menu.Section label="Actions">
             <Menu.Item id="cut">
               <Text slot="label">Cut</Text>
               <Kbd slot="keyboard">⌘X</Kbd>
@@ -359,8 +354,8 @@ const App = () => {
                 setTextStyles(new Set(Array.from(keys)));
               }
             }}
+            label="Text Style"
           >
-            <Menu.SectionLabel>Text Style</Menu.SectionLabel>
             <Menu.Item id="bold">
               <Text slot="label">Bold</Text>
               <Kbd slot="keyboard">⌘B</Kbd>
@@ -386,8 +381,8 @@ const App = () => {
                 setAlignment(Array.from(keys)[0]);
               }
             }}
+            label="Text Alignment"
           >
-            <Menu.SectionLabel>Text Alignment</Menu.SectionLabel>
             <Menu.Item id="left">
               <Text slot="label">Left</Text>
             </Menu.Item>
