@@ -1,6 +1,6 @@
 import type { ButtonRootProps } from "./button.slots.tsx";
 import type { AriaButtonProps } from "react-aria";
-import type { WithDeprecatedOnClick } from "@/utils/deprecate-on-click.ts";
+import type { WithDeprecatedOnClick } from "../../utils/deprecate-on-click.ts";
 
 /** combine chakra-button props with aria-button props */
 type FunctionalButtonProps = AriaButtonProps &
