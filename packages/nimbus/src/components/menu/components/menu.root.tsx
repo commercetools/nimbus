@@ -8,32 +8,27 @@ export const MenuRoot = (props: MenuRootProps) => {
   const recipe = useSlotRecipe({ key: "menu" });
   const [recipeProps, functionalProps] = recipe.splitVariantProps(props);
 
-  // Extract menu-specific props for context
+  // Separate MenuTrigger props from Menu props
   const {
-    onAction,
-    selectionMode,
-    selectedKeys,
-    defaultSelectedKeys,
-    onSelectionChange,
-    disallowEmptySelection,
-    placement,
-    ...menuTriggerProps
+    children,
+    trigger,
+    isOpen,
+    defaultOpen,
+    onOpenChange,
+    ...menuContextProps
   } = functionalProps;
 
-  const contextValue = {
-    onAction,
-    selectionMode,
-    selectedKeys,
-    defaultSelectedKeys,
-    onSelectionChange,
-    disallowEmptySelection,
-    placement,
+  const menuTriggerProps = {
+    trigger,
+    isOpen,
+    defaultOpen,
+    onOpenChange,
   };
 
   return (
     <MenuRootSlot {...recipeProps} asChild>
       <RaMenuTrigger {...menuTriggerProps}>
-        <MenuProvider value={contextValue}>{props.children}</MenuProvider>
+        <MenuProvider value={menuContextProps}>{children}</MenuProvider>
       </RaMenuTrigger>
     </MenuRootSlot>
   );

@@ -15,32 +15,15 @@ export const MenuContent = ({
     throw new Error("Menu.Content must be used within Menu.Root");
   }
 
-  // Extract all props from context
-  const {
-    onAction,
-    placement = placementOverride || "bottom start",
-    selectionMode,
-    selectedKeys,
-    defaultSelectedKeys,
-    onSelectionChange,
-    disallowEmptySelection,
-  } = contextProps;
+  // Separate placement from other props since it's handled by Popover
+  const { placement, ...menuProps } = contextProps;
+  const finalPlacement = placementOverride || placement || "bottom start";
 
   return (
-    <MenuSectionProvider value={{ selectionMode }}>
-      <Popover placement={placement} offset={4} shouldFlip>
+    <MenuSectionProvider value={{ selectionMode: menuProps.selectionMode }}>
+      <Popover placement={finalPlacement} offset={4} shouldFlip>
         <MenuContentSlot asChild>
-          <Menu
-            ref={ref}
-            shouldFocusWrap
-            autoFocus="first"
-            onAction={onAction}
-            selectionMode={selectionMode}
-            selectedKeys={selectedKeys}
-            defaultSelectedKeys={defaultSelectedKeys}
-            onSelectionChange={onSelectionChange}
-            disallowEmptySelection={disallowEmptySelection}
-          >
+          <Menu ref={ref} shouldFocusWrap autoFocus="first" {...menuProps}>
             {children}
           </Menu>
         </MenuContentSlot>

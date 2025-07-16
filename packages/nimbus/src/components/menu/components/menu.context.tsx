@@ -1,15 +1,11 @@
 import { createContext, useContext } from "react";
 import type { MenuRootProps } from "./../menu.types";
+import type { MenuTriggerProps as RaMenuTriggerProps } from "react-aria-components";
 
-export type MenuContextValue = Pick<
+// Context should contain all Menu props (excluding MenuTrigger-specific props)
+export type MenuContextValue = Omit<
   MenuRootProps,
-  | "onAction"
-  | "selectionMode"
-  | "selectedKeys"
-  | "defaultSelectedKeys"
-  | "onSelectionChange"
-  | "disallowEmptySelection"
-  | "placement"
+  keyof RaMenuTriggerProps | "children" | "trigger"
 >;
 
 const MenuContext = createContext<MenuContextValue | undefined>(undefined);
