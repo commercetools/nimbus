@@ -16,6 +16,7 @@ import type {
   DataTableProps,
   DataTableColumn,
   DataTableRow as DataTableRowType,
+  SortDescriptor,
 } from "./data-table.types";
 
 import {
@@ -57,6 +58,53 @@ function filterRows<T>(
     .filter(Boolean) as DataTableRowType<T>[];
 }
 
+function sortRows<T>(
+  rows: DataTableRowType<T>[],
+  sortDescriptor: SortDescriptor | undefined,
+  columns: DataTableColumn<T>[]
+): DataTableRowType<T>[] {
+  if (!sortDescriptor) return rows;
+
+  const column = columns.find((col) => col.id === sortDescriptor.column);
+  if (!column) return rows;
+
+  const sortedRows = [...rows].sort((a, b) => {
+    const aValue = column.accessor(a);
+    const bValue = column.accessor(b);
+
+    // Handle null/undefined values
+    if (aValue == null && bValue == null) return 0;
+    if (aValue == null) return 1;
+    if (bValue == null) return -1;
+
+    // Convert to strings for comparison if they're not numbers
+    let aComp = aValue;
+    let bComp = bValue;
+
+    if (typeof aValue === "number" && typeof bValue === "number") {
+      // Numeric comparison
+      aComp = aValue;
+      bComp = bValue;
+    } else {
+      // String comparison
+      aComp = String(aValue).toLowerCase();
+      bComp = String(bValue).toLowerCase();
+    }
+
+    if (aComp < bComp) return sortDescriptor.direction === "ascending" ? -1 : 1;
+    if (aComp > bComp) return sortDescriptor.direction === "ascending" ? 1 : -1;
+    return 0;
+  });
+
+  // Recursively sort children
+  return sortedRows.map((row) => ({
+    ...row,
+    children: row.children
+      ? sortRows(row.children, sortDescriptor, columns)
+      : undefined,
+  }));
+}
+
 export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
   function DataTable<T = any>(
     props: DataTableProps<T>,
@@ -71,10 +119,20 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       allowsSorting,
       search,
       stickyHeader,
+      sortDescriptor: controlledSortDescriptor,
+      onSortChange,
       onRowClick,
       renderDetails,
       ...rest
     } = props;
+
+    // Internal sorting state (used when not controlled)
+    const [internalSortDescriptor, setInternalSortDescriptor] = useState<
+      SortDescriptor | undefined
+    >();
+
+    // Use controlled sort descriptor if provided, otherwise use internal state
+    const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
 
     // Only show visible columns
     const visibleCols = useMemo(
@@ -91,6 +149,12 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     const filteredRows = useMemo(
       () => (search ? filterRows(data, search, visibleCols) : data),
       [data, search, visibleCols]
+    );
+
+    // Sort the filtered rows
+    const sortedRows = useMemo(
+      () => sortRows(filteredRows, sortDescriptor, visibleCols),
+      [filteredRows, sortDescriptor, visibleCols]
     );
 
     // Expanded rows state for nested rows
@@ -122,7 +186,37 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
           (row.children && hasExpandableRows(row.children))
       );
     }
-    const showExpandColumn = hasExpandableRows(filteredRows);
+    const showExpandColumn = hasExpandableRows(sortedRows);
+
+    // Render sort indicator
+    const renderSortIndicator = (columnId: string) => {
+      if (!allowsSorting) return null;
+      
+      const column = visibleCols.find((col) => col.id === columnId);
+      if (column?.isSortable === false) return null;
+
+      const isActive = sortDescriptor?.column === columnId;
+      const direction = sortDescriptor?.direction;
+
+      return (
+        <span 
+          style={{ 
+            opacity: isActive ? 1 : 0.4,
+            fontSize: '10px',
+            transition: 'opacity 0.2s ease, color 0.2s ease',
+            display: 'inline-flex',
+            alignItems: 'center',
+            width: '12px',
+            height: '12px',
+            justifyContent: 'center',
+            color: isActive ? '#2563eb' : '#6b7280',
+            fontWeight: 'bold'
+          }}
+        >
+          {!isActive ? '⇅' : direction === 'ascending' ? '↑' : '↓'}
+        </span>
+      );
+    };
 
     // Render a row (recursive for nested rows)
     const renderRow = (
@@ -131,6 +225,13 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     ): React.ReactNode => {
       const hasChildren = row.children && row.children.length > 0;
       const isExpanded = expanded[row.id];
+
+      const handleRowClick = () => {
+        if (isRowClickable && onRowClick) {
+          onRowClick(row);
+        }
+      };
+
       return (
         <>
           <AriaRow
@@ -159,13 +260,22 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             )}
             {visibleCols.map((col) => (
               <AriaCell key={col.id} style={{ padding: cellPadding }}>
-                {col.render
-                  ? col.render({
-                      value: highlightCell(col.accessor(row)),
-                      row,
-                      column: col,
-                    })
-                  : highlightCell(col.accessor(row))}
+                <div
+                  onClick={isRowClickable ? handleRowClick : undefined}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    cursor: isRowClickable ? "inherit" : undefined,
+                  }}
+                >
+                  {col.render
+                    ? col.render({
+                        value: highlightCell(col.accessor(row)),
+                        row,
+                        column: col,
+                      })
+                    : highlightCell(col.accessor(row))}
+                </div>
               </AriaCell>
             ))}
           </AriaRow>
@@ -188,6 +298,30 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
 
     const [isHeaderHovered, setIsHeaderHovered] = useState(false);
 
+    // Convert our sort descriptor to react-aria format
+    const ariaSortDescriptor = sortDescriptor
+      ? {
+          column: sortDescriptor.column,
+          direction: sortDescriptor.direction,
+        }
+      : undefined;
+
+    // Handle sort change from react-aria
+    const handleSortChange = (descriptor: any) => {
+      if (descriptor) {
+        const newDescriptor = {
+          column: descriptor.column,
+          direction: descriptor.direction,
+        };
+
+        if (onSortChange) {
+          onSortChange(newDescriptor);
+        } else {
+          setInternalSortDescriptor(newDescriptor);
+        }
+      }
+    };
+
     return (
       <DataTableRoot ref={ref as React.Ref<HTMLTableElement>}>
         <style>
@@ -196,12 +330,36 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               background-color: #F8F9FA !important;
               transition: background-color 0.15s ease;
             }
+            .react-aria-Column {
+              cursor: pointer;
+              user-select: none;
+              transition: background-color 0.15s ease;
+            }
+            .react-aria-Column:hover {
+              background-color: #E8E8E8 !important;
+            }
+            .react-aria-Column[aria-sort] {
+              font-weight: 600;
+            }
+            .react-aria-Column[aria-sort="none"]:hover {
+              background-color: #F0F0F0 !important;
+            }
+            .react-aria-Column[aria-sort="ascending"],
+            .react-aria-Column[aria-sort="descending"] {
+              background-color: #F0F8FF !important;
+            }
+            .react-aria-Column[aria-sort="ascending"]:hover,
+            .react-aria-Column[aria-sort="descending"]:hover {
+              background-color: #E6F3FF !important;
+            }
           `}
         </style>
         <ResizableTableContainer>
           <Table
             ref={ref as React.Ref<HTMLTableElement>}
             {...rest}
+            sortDescriptor={ariaSortDescriptor}
+            onSortChange={handleSortChange}
             style={{
               width: "100%",
               tableLayout: "auto",
@@ -213,6 +371,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             <AriaTableHeader
               style={{
                 background: "#F7F7F7",
+                borderBottom: "1px solid #E0E0E0",
                 ...(stickyHeader && {
                   position: "sticky",
                   top: 0,
@@ -230,63 +389,80 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 <AriaColumn
                   id="expand"
                   style={{ width: 32 }}
-                  allowsSorting={allowsSorting}
+                  allowsSorting={false}
                 />
               )}
-              {visibleCols.map((col) => (
-                <AriaColumn
-                  allowsSorting={allowsSorting}
-                  key={col.id}
-                  id={col.id}
-                  {...(isAdjustable && col.isAdjustable !== false
-                    ? { allowsResizing: true }
-                    : {})}
-                  width={col.width}
-                  defaultWidth={col.defaultWidth}
-                  minWidth={col.minWidth}
-                  maxWidth={col.maxWidth}
-                  style={{
-                    padding: cellPadding,
-                    textAlign: "left",
-                    position: "relative",
-                    borderRight: isHeaderHovered ? "1px solid #E0E0E0" : "none",
-                  }}
-                >
-                  {col.header}
-                  {isAdjustable && col.isAdjustable !== false && (
-                    <ColumnResizer>
-                      {({ isResizing }) => (
-                        <div
-                          style={{
-                            width: 4,
-                            height: "100%",
-                            position: "absolute",
-                            right: 0,
-                            top: 0,
-                            cursor: "col-resize",
-                            background: isResizing ? "#3182ce" : "transparent",
-                            transition: "background 0.2s",
-                            zIndex: 2,
-                          }}
-                        />
-                      )}
-                    </ColumnResizer>
-                  )}
-                </AriaColumn>
-              ))}
+              {visibleCols.map((col) => {
+                const isSortable = allowsSorting && col.isSortable !== false;
+                return (
+                  <AriaColumn
+                    allowsSorting={isSortable}
+                    key={col.id}
+                    id={col.id}
+                    {...(isAdjustable && col.isAdjustable !== false
+                      ? { allowsResizing: true }
+                      : {})}
+                    width={col.width}
+                    defaultWidth={col.defaultWidth}
+                    minWidth={col.minWidth}
+                    maxWidth={col.maxWidth}
+                    style={{
+                      padding: cellPadding,
+                      textAlign: "left",
+                      position: "relative",
+                      borderRight: isHeaderHovered
+                        ? "1px solid #E0E0E0"
+                        : "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                      }}
+                    >
+                      <span>{col.header}</span>
+                      {renderSortIndicator(col.id)}
+                    </div>
+                    {isAdjustable && col.isAdjustable !== false && (
+                      <ColumnResizer>
+                        {({ isResizing }) => (
+                          <div
+                            style={{
+                              width: 4,
+                              height: "100%",
+                              position: "absolute",
+                              right: 0,
+                              top: 0,
+                              cursor: "col-resize",
+                              background: isResizing
+                                ? "#3182ce"
+                                : "transparent",
+                              transition: "background 0.2s",
+                              zIndex: 2,
+                            }}
+                          />
+                        )}
+                      </ColumnResizer>
+                    )}
+                  </AriaColumn>
+                );
+              })}
             </AriaTableHeader>
             <AriaTableBody>
-              {filteredRows.length === 0 ? (
+              {sortedRows.length === 0 ? (
                 <AriaRow style={rowBorderStyle}>
                   <AriaCell
-                    colSpan={visibleCols.length}
+                    colSpan={visibleCols.length + (showExpandColumn ? 1 : 0)}
                     style={{ padding: cellPadding }}
                   >
                     No data
                   </AriaCell>
                 </AriaRow>
               ) : (
-                filteredRows.map((row) => renderRow(row))
+                sortedRows.map((row) => renderRow(row))
               )}
             </AriaTableBody>
           </Table>
