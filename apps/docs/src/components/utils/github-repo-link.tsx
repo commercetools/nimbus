@@ -2,7 +2,7 @@ import { IconButton } from "@commercetools/nimbus";
 import { Github } from "@commercetools/nimbus-icons";
 
 // TODO: put this in some config file
-const prefix = "https://github.com/commercetools/nimbus-docs-poc/blob/main/";
+const prefix = "https://github.com/commercetools/nimbus/blob/main/";
 
 type Props = {
   /** text to display next to the icon */

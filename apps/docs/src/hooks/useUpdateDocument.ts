@@ -57,14 +57,6 @@ export const useUpdateDocument = () => {
   };
 
   /**
-   * Updates the MDX content of the document.
-   * @param {string} mdxStr - The new MDX content.
-   */
-  const updateMdx = async (mdxStr: HandleSubmitPayload["mdxPayload"]) => {
-    handleSubmit({ mdxPayload: mdxStr });
-  };
-
-  /**
    * Updates the metadata of the document.
    * @param {Partial<MdxFileFrontmatterPayload["meta"]>} metaObj - The new metadata.
    */
@@ -75,7 +67,6 @@ export const useUpdateDocument = () => {
   return {
     isLoading,
     updateMeta,
-    updateMdx,
     meta: activeDoc?.meta,
     mdx: activeDoc?.mdx,
   };

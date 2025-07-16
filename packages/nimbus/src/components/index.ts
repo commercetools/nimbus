@@ -4,6 +4,7 @@ export * from "./button";
 export * from "./code";
 export * from "./combobox";
 export * from "./dialog";
+export * from "./divider";
 export * from "./flex";
 export * from "./heading";
 export * from "./icon-button";
@@ -41,4 +42,4 @@ export * from "./date-input";
 export * from "./calendar";
 export * from "./date-picker";
 export * from "./data-table";
-
+export * from "./progress-bar";

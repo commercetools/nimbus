@@ -4,7 +4,7 @@ import { LifecycleStateSelector } from "./components/lifecycle-state-selector";
 import { useAtomValue } from "jotai";
 import { activeDocAtom } from "@/atoms/active-doc";
 
-import { DocumentStringFieldEdit } from "./components/document-string-field";
+import { DocumentStringField } from "./components/document-string-field";
 
 export const DocumentMetaSettings = () => {
   const activeDocument = useAtomValue(activeDocAtom);
@@ -13,18 +13,19 @@ export const DocumentMetaSettings = () => {
     <Stack>
       <DocumentActionButtons />
       <hr />
-      <DocumentStringFieldEdit
+      <DocumentStringField
         label="Title"
-        placeholder="http://www.figma.com/..."
+        placeholder="Enter document title"
         metaProperty="title"
       />
-      <DocumentStringFieldEdit
+      <DocumentStringField
         label="Description"
-        placeholder="http://www.figma.com/..."
+        placeholder="Enter document description"
         metaProperty="description"
+        isMultiline={true}
       />
       <LifecycleStateSelector />
-      <DocumentStringFieldEdit
+      <DocumentStringField
         label="Figma Link"
         placeholder="http://www.figma.com/..."
         metaProperty="figmaLink"
