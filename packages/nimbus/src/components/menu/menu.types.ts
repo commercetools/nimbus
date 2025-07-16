@@ -64,10 +64,10 @@ export interface MenuSeparatorProps extends RaSeparatorProps {
 }
 
 // Menu section component
-export interface MenuSectionProps
-  extends RaSectionProps<object>,
+export interface MenuSectionProps<T = object>
+  extends Omit<RaSectionProps<T>, "children">,
     Pick<
-      RaMenuProps<object>,
+      RaMenuProps<T>,
       | "selectionMode"
       | "selectedKeys"
       | "defaultSelectedKeys"
@@ -75,6 +75,18 @@ export interface MenuSectionProps
       | "disallowEmptySelection"
     > {
   ref?: Ref<HTMLDivElement>;
+  /**
+   * Label for the section header
+   */
+  label: ReactNode;
+  /**
+   * Item objects in the section for collection pattern
+   */
+  items?: Iterable<T>;
+  /**
+   * Children can be static items or a function to render items from collection
+   */
+  children?: ReactNode | ((item: T) => ReactNode);
 }
 
 // Menu section label component - Header doesn't have props type, so we'll use basic props

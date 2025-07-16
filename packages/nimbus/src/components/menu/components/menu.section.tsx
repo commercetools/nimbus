@@ -1,11 +1,23 @@
-import { MenuSection as RaMenuSection } from "react-aria-components";
+import {
+  MenuSection as RaMenuSection,
+  Collection,
+  Header,
+} from "react-aria-components";
 import { MenuSectionSlot } from "../menu.slots";
 import type { MenuSectionProps } from "../menu.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useMenuContext } from "./menu.context";
 import { MenuSectionProvider } from "./menu.section-context";
+import { MenuSectionLabel } from "./menu.section-label";
+import type { ReactNode } from "react";
 
-export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
+export const MenuSection = <T extends object = object>({
+  children,
+  ref,
+  label,
+  items,
+  ...props
+}: MenuSectionProps<T>) => {
   const contextProps = useMenuContext();
 
   // Extract selection-related props before extracting style props
@@ -32,7 +44,12 @@ export const MenuSection = ({ children, ref, ...props }: MenuSectionProps) => {
           disallowEmptySelection={disallowEmptySelection}
           {...otherProps}
         >
-          {children as React.ReactNode}
+          <MenuSectionLabel>{label}</MenuSectionLabel>
+          {items ? (
+            <Collection items={items}>{children}</Collection>
+          ) : (
+            (children as ReactNode)
+          )}
         </RaMenuSection>
       </MenuSectionSlot>
     </MenuSectionProvider>

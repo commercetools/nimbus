@@ -4,7 +4,6 @@ import { MenuContent } from "./components/menu.content";
 import { MenuItem } from "./components/menu.item";
 import { MenuSeparator } from "./components/menu.separator";
 import { MenuSection } from "./components/menu.section";
-import { MenuSectionLabel } from "./components/menu.section-label";
 import { MenuSubmenuTrigger } from "./components/menu.submenu-trigger";
 import { MenuSubmenu } from "./components/menu.submenu";
 
@@ -18,7 +17,6 @@ export const Menu = {
   Item: MenuItem,
   Separator: MenuSeparator,
   Section: MenuSection,
-  SectionLabel: MenuSectionLabel,
   Submenu: MenuSubmenu,
   SubmenuTrigger: MenuSubmenuTrigger,
 };
@@ -31,7 +29,6 @@ export {
   MenuItem as _MenuItem,
   MenuSeparator as _MenuSeparator,
   MenuSection as _MenuSection,
-  MenuSectionLabel as _MenuSectionLabel,
   MenuSubmenuTrigger as _MenuSubmenuTrigger,
   MenuSubmenu as _MenuSubmenu,
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { Menu } from "./index";
@@ -516,8 +516,7 @@ export const SingleSelection: Story = {
                 </Button>
               </Menu.Trigger>
               <Menu.Content>
-                <Menu.Section>
-                  <Menu.SectionLabel>Choose text size</Menu.SectionLabel>
+                <Menu.Section label="Choose text size">
                   <Menu.Item id="small">
                     <Text slot="label">Small</Text>
                     <Text slot="description">Compact text display</Text>
@@ -680,8 +679,7 @@ export const MultiSelection: Story = {
                 </Button>
               </Menu.Trigger>
               <Menu.Content>
-                <Menu.Section>
-                  <Menu.SectionLabel>Formatting Options</Menu.SectionLabel>
+                <Menu.Section label="Formatting Options">
                   <Menu.Item id="bold">
                     <Icon slot="icon">
                       <Edit />
@@ -860,11 +858,9 @@ export const MultiSelection: Story = {
 
 export const MixedSelection: Story = {
   render: (args) => {
-    const [textStyle, setTextStyle] = React.useState<Set<string>>(
-      new Set(["bold"])
-    );
-    const [alignment, setAlignment] = React.useState<string>("left");
-    const [view, setView] = React.useState<string>("list");
+    const [textStyle, setTextStyle] = useState<Set<string>>(new Set(["bold"]));
+    const [alignment, setAlignment] = useState<string>("left");
+    const [view, setView] = useState<string>("list");
 
     return (
       <Stack gap="600">
@@ -887,8 +883,7 @@ export const MixedSelection: Story = {
               </Menu.Trigger>
               <Menu.Content>
                 {/* Section with no selection mode - regular actions */}
-                <Menu.Section>
-                  <Menu.SectionLabel>Actions</Menu.SectionLabel>
+                <Menu.Section label="Actions">
                   <Menu.Item id="cut">
                     <Icon slot="icon">
                       <ContentCut />
@@ -924,8 +919,8 @@ export const MixedSelection: Story = {
                     }
                     args.onSelectionChange?.(keys);
                   }}
+                  label="Text Style"
                 >
-                  <Menu.SectionLabel>Text Style</Menu.SectionLabel>
                   <Menu.Item id="bold">
                     <Text slot="label">Bold</Text>
                     <Kbd slot="keyboard">⌘B</Kbd>
@@ -953,8 +948,8 @@ export const MixedSelection: Story = {
                     }
                     args.onSelectionChange?.(keys);
                   }}
+                  label="Text Alignment"
                 >
-                  <Menu.SectionLabel>Text Alignment</Menu.SectionLabel>
                   <Menu.Item id="left">
                     <Text slot="label">Left</Text>
                   </Menu.Item>
@@ -1010,8 +1005,7 @@ export const MixedSelection: Story = {
               </Menu.Trigger>
               <Menu.Content>
                 {/* This section inherits single selection from root */}
-                <Menu.Section>
-                  <Menu.SectionLabel>View Mode</Menu.SectionLabel>
+                <Menu.Section label="View Mode">
                   <Menu.Item id="list">
                     <Icon slot="icon">
                       <ViewList />
@@ -1038,8 +1032,8 @@ export const MixedSelection: Story = {
                     }
                     args.onSelectionChange?.(keys);
                   }}
+                  label="Override to Multiple"
                 >
-                  <Menu.SectionLabel>Override to Multiple</Menu.SectionLabel>
                   <Menu.Item id="bold">
                     <Text slot="label">Show Bold</Text>
                   </Menu.Item>
@@ -1248,8 +1242,7 @@ export const ComplexExample: Story = {
     <Menu.Root onAction={args.onAction} onOpenChange={args.onOpenChange}>
       <Menu.Trigger>Application Menu</Menu.Trigger>
       <Menu.Content>
-        <Menu.Section>
-          <Menu.SectionLabel>File Operations</Menu.SectionLabel>
+        <Menu.Section label="File Operations">
           <Menu.Item id="new">
             <Icon slot="icon">
               <InsertDriveFile />
@@ -1283,8 +1276,7 @@ export const ComplexExample: Story = {
 
         <Menu.Separator />
 
-        <Menu.Section>
-          <Menu.SectionLabel>Edit Operations</Menu.SectionLabel>
+        <Menu.Section label="Edit Operations">
           <Menu.Item id="undo">
             <Icon slot="icon">
               <Undo />
@@ -1318,8 +1310,7 @@ export const ComplexExample: Story = {
 
         <Menu.Separator />
 
-        <Menu.Section>
-          <Menu.SectionLabel>View Options</Menu.SectionLabel>
+        <Menu.Section label="View Options">
           <Menu.Item id="zoom-in">
             <Icon slot="icon">
               <ZoomIn />
@@ -1346,8 +1337,7 @@ export const ComplexExample: Story = {
 
         <Menu.Separator />
 
-        <Menu.Section>
-          <Menu.SectionLabel>Item Variations</Menu.SectionLabel>
+        <Menu.Section label="Item Variations">
           {/* Item with icon only */}
           <Menu.Item id="icon-only">
             <Icon slot="icon">
@@ -1398,8 +1388,7 @@ export const ComplexExample: Story = {
 
         <Menu.Separator />
 
-        <Menu.Section>
-          <Menu.SectionLabel>States & Behaviors</Menu.SectionLabel>
+        <Menu.Section label="States & Behaviors">
           <Menu.Item id="selected">
             <Icon slot="icon">
               <Edit />
@@ -1430,8 +1419,7 @@ export const ComplexExample: Story = {
 
         <Menu.Separator />
 
-        <Menu.Section>
-          <Menu.SectionLabel>Submenu Examples</Menu.SectionLabel>
+        <Menu.Section label="Submenu Examples">
           {/* Single level submenu */}
           <Menu.SubmenuTrigger>
             <Menu.Item>
@@ -1961,5 +1949,57 @@ export const ControlledMenu: Story = {
         expect(canvas.getByText("Menu is closed")).toBeInTheDocument();
       });
     });
+  },
+};
+
+export const CollectionPatternDemo: Story = {
+  render: () => {
+    const textSizes = [
+      { id: "small", name: "Small", description: "Compact text display" },
+      { id: "medium", name: "Medium", description: "Default text size" },
+      {
+        id: "large",
+        name: "Large",
+        description: "Larger text for readability",
+      },
+    ];
+
+    const [selectedSize, setSelectedSize] = React.useState<string>("medium");
+
+    return (
+      <Box padding="400">
+        <Menu.Root
+          selectionMode="single"
+          selectedKeys={new Set([selectedSize])}
+          onSelectionChange={(keys) => {
+            const key = Array.from(keys)[0] as string;
+            setSelectedSize(key);
+          }}
+        >
+          <Menu.Trigger>
+            <Button>
+              Text Size Menu (Collection Pattern)
+              <Icon slot="endIcon">
+                <KeyboardArrowDown />
+              </Icon>
+            </Button>
+          </Menu.Trigger>
+          <Menu.Content>
+            <Menu.Section label="Text Size Options" items={textSizes}>
+              {(item) => (
+                <Menu.Item id={item.id}>
+                  <Text slot="label">{item.name}</Text>
+                  <Text slot="description">{item.description}</Text>
+                </Menu.Item>
+              )}
+            </Menu.Section>
+          </Menu.Content>
+        </Menu.Root>
+
+        <Box marginTop="300">
+          <Text>Selected size: {selectedSize}</Text>
+        </Box>
+      </Box>
+    );
   },
 };

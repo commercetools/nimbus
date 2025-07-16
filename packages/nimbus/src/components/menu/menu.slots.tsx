@@ -45,10 +45,10 @@ export const MenuSeparatorSlot = withContext<
 
 // Menu Section
 export type MenuSectionSlotProps = HTMLChakraProps<"div">;
-export const MenuSectionSlot = withContext<HTMLDivElement, MenuSectionSlotProps>(
-  "div",
-  "section"
-);
+export const MenuSectionSlot = withContext<
+  HTMLDivElement,
+  MenuSectionSlotProps
+>("div", "section");
 
 // Menu Section Label
 export type MenuSectionLabelSlotProps = HTMLChakraProps<"div">;
