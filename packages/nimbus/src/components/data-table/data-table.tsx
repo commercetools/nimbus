@@ -78,21 +78,21 @@ function sortRows<T>(
     if (bValue == null) return -1;
 
     // Convert to strings for comparison if they're not numbers
-    let aComp = aValue;
-    let bComp = bValue;
+    let aSortValue = aValue;
+    let bSortValue = bValue;
 
     if (typeof aValue === "number" && typeof bValue === "number") {
       // Numeric comparison
-      aComp = aValue;
-      bComp = bValue;
+      aSortValue = aValue;
+      bSortValue = bValue;
     } else {
       // String comparison
-      aComp = String(aValue).toLowerCase();
-      bComp = String(bValue).toLowerCase();
+      aSortValue = String(aValue).toLowerCase();
+      bSortValue = String(bValue).toLowerCase();
     }
 
-    if (aComp < bComp) return sortDescriptor.direction === "ascending" ? -1 : 1;
-    if (aComp > bComp) return sortDescriptor.direction === "ascending" ? 1 : -1;
+    if (aSortValue < bSortValue) return sortDescriptor.direction === "ascending" ? -1 : 1;
+    if (aSortValue > bSortValue) return sortDescriptor.direction === "ascending" ? 1 : -1;
     return 0;
   });
 
