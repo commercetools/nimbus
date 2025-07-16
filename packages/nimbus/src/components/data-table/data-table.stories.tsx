@@ -882,6 +882,175 @@ export const TextTruncation: Story = {
   },
 };
 
+export const SingleRowSelection: Story = {
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Single Row Selection</h3>
+          <p>
+            Select one row at a time. Click on checkboxes or rows to select.
+          </p>
+          <p>
+            <strong>Selected:</strong>{" "}
+            {Array.from(selectedKeys).join(", ") || "None"}
+          </p>
+        </div>
+        <DataTable
+          {...args}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    selectionMode: "single",
+    allowsSorting: true,
+  },
+};
+
+export const MultipleRowSelection: Story = {
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Multiple Row Selection</h3>
+          <p>
+            Select multiple rows using checkboxes. Use the header checkbox to
+            select/deselect all.
+          </p>
+          <p>
+            <strong>Selected count:</strong> {Array.from(selectedKeys).length}
+          </p>
+          <p>
+            <strong>Selected IDs:</strong>{" "}
+            {Array.from(selectedKeys).join(", ") || "None"}
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+          <button
+            onClick={() => setSelectedKeys(new Set())}
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Clear Selection
+          </button>
+          <button
+            onClick={() => setSelectedKeys(new Set(["1", "3", "5"]))}
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Select Odd Rows
+          </button>
+          <button
+            onClick={() => setSelectedKeys("all")}
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Select All
+          </button>
+        </div>
+        <DataTable
+          {...args}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    selectionMode: "multiple",
+    allowsSorting: true,
+  },
+};
+
+export const SelectionWithSortingAndSearch: Story = {
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    const [search, setSearch] = useState("");
+
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Selection + Sorting + Search</h3>
+          <p>Combine all features: search, sort, and select multiple rows.</p>
+          <p>
+            <strong>Selected:</strong> {Array.from(selectedKeys).length} row(s)
+          </p>
+        </div>
+        <TextInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search..."
+          width="1/3"
+        />
+        <DataTable
+          {...args}
+          search={search}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    selectionMode: "multiple",
+    allowsSorting: true,
+  },
+};
+
+export const DisallowEmptySelection: Story = {
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
+
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Disallow Empty Selection</h3>
+          <p>
+            At least one row must always be selected. Try to deselect all rows.
+          </p>
+          <p>
+            <strong>Selected:</strong> {Array.from(selectedKeys).join(", ")}
+          </p>
+        </div>
+        <DataTable
+          {...args}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    selectionMode: "multiple",
+    disallowEmptySelection: true,
+    allowsSorting: true,
+  },
+};
+
 export const MultilineHeaders: Story = {
   args: {
     columns: multilineHeadersColumns,
