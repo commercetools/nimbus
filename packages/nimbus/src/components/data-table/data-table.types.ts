@@ -45,6 +45,7 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
+  stickyHeader?: boolean;
   onRowClick?: (row: DataTableRow<T>) => void;
   onDetailsClick?: (row: DataTableRow<T>) => void;
   renderDetails?: (row: DataTableRow<T>) => ReactNode;
