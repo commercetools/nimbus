@@ -115,6 +115,21 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
         borderTopLeftRadius: "0",
         borderBottomLeftRadius: "0",
       },
+      // Remove border radius from middle cells in highlighted range during drag (exclude start/end)
+      "&[data-in-highlighted-range=true]:not([data-drag-start=true]):not([data-drag-end=true])":
+        {
+          borderRadius: "0",
+        },
+      // Remove right border radius from start cell during drag
+      "&[data-drag-start=true]": {
+        borderTopRightRadius: "0",
+        borderBottomRightRadius: "0",
+      },
+      // Remove left border radius from end cell during drag
+      "&[data-drag-end=true]": {
+        borderTopLeftRadius: "0",
+        borderBottomLeftRadius: "0",
+      },
     },
   },
 });
