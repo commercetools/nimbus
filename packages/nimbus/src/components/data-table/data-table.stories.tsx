@@ -4,6 +4,7 @@ import { Stack } from "./../stack";
 import type { DataTableColumn, DataTableRow } from "./data-table.types";
 import { useState } from "react";
 import { TextInput } from "./../text-input";
+import { Slider } from "@chakra-ui/react";
 
 /**
  * Storybook metadata configuration
@@ -25,13 +26,13 @@ type Story = StoryObj<typeof DataTable>;
 
 // Sample data and columns
 const columns: DataTableColumn[] = [
-  { id: "name", header: "Name", accessor: row => row.name },
-  { id: "age", header: "Age", accessor: row => row.age },
-  { id: "role", header: "Role", accessor: row => row.role },
+  { id: "name", header: "Name", accessor: (row) => row.name },
+  { id: "age", header: "Age", accessor: (row) => row.age },
+  { id: "role", header: "Role", accessor: (row) => row.role },
   {
     id: "custom",
     header: "Custom",
-    accessor: row => row.class,
+    accessor: (row) => row.class,
     render: ({ value }) => <span style={{ color: "tomato" }}>{value}</span>,
   },
 ];
@@ -50,24 +51,29 @@ export const Base: Story = {
   args: {
     columns,
     data,
+    allowsSorting: true,
+    width: 200,
+    minWidth: 200,
+    isAdjustable: true,
+    isRowClickable: true,
   },
 };
 
 export const ColumnManager: Story = {
   render: (args) => {
     const [visible, setVisible] = useState(["name", "age"]);
-    const allColumns = args.columns.map(col => col.id);
+    const allColumns = args.columns.map((col) => col.id);
     const handleCheckboxChange = (colId: string) => {
-      setVisible(prev =>
+      setVisible((prev) =>
         prev.includes(colId)
-          ? prev.filter(id => id !== colId)
+          ? prev.filter((id) => id !== colId)
           : [...prev, colId]
       );
     };
     return (
       <>
         <div style={{ marginBottom: 12 }}>
-          {allColumns.map(colId => (
+          {allColumns.map((colId) => (
             <label key={colId} style={{ marginRight: 12 }}>
               <input
                 type="checkbox"
@@ -94,7 +100,12 @@ export const SearchAndHighlight: Story = {
     const [search, setSearch] = useState("");
     return (
       <Stack gap={16}>
-        <TextInput value={search} onChange={setSearch} placeholder="Search..." width="1/3" />
+        <TextInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search..."
+          width="1/3"
+        />
         <DataTable {...args} search={search} />
       </Stack>
     );
@@ -103,7 +114,29 @@ export const SearchAndHighlight: Story = {
 };
 
 export const AdjustableColumns: Story = {
-  args: { columns, data, isAdjustable: true },
+  render: (args) => {
+    const [isAdjustable, setIsAdjustable] = useState(false);
+    return (
+      <Stack gap={16}>
+         <label style={{ display: "block", marginBottom: 12 }}>
+          <input
+            type="checkbox"
+            checked={isAdjustable}
+            onChange={(e) => setIsAdjustable(e.target.checked)}
+            style={{ marginRight: 12 }}
+          />
+          Resizable Column
+        </label>
+        <DataTable {...args} isAdjustable={isAdjustable} />
+      </Stack>
+    );
+  },
+  args: {
+    columns,
+    data,
+    width: 180,
+    minWidth: 150,
+  },
 };
 
 export const Condensed: Story = {
@@ -111,15 +144,16 @@ export const Condensed: Story = {
     const [condensed, setCondensed] = useState(false);
     return (
       <>
-        <label style={{ display: 'block', marginBottom: 12 }}>
+        <label style={{ display: "block", marginBottom: 12 }}>
           <input
             type="checkbox"
             checked={condensed}
-            onChange={e => setCondensed(e.target.checked)}
+            onChange={(e) => setCondensed(e.target.checked)}
+            style={{ marginRight: 12 }}
           />
           Condensed
         </label>
-        <DataTable {...args} density={condensed ? 'condensed' : 'default'} />
+        <DataTable {...args} density={condensed ? "condensed" : "default"} />
       </>
     );
   },
@@ -135,18 +169,7 @@ export const ClickableRows: Story = {
     <DataTable
       {...args}
       isRowClickable
-      onRowClick={row => alert(`Clicked row: ${row.name}`)}
-    />
-  ),
-  args: { columns, data },
-};
-
-export const MoreDetails: Story = {
-  render: (args) => (
-    <DataTable
-      {...args}
-      onDetailsClick={row => alert(`Details for: ${row.name}`)}
-      renderDetails={row => <div>More info about {row.name}</div>}
+      onRowClick={(row) => alert(`Clicked row: ${row.name}`)}
     />
   ),
   args: { columns, data },
@@ -163,7 +186,13 @@ export const NestedRows: Story = {
         role: "Admin",
         class: "special",
         children: [
-          { id: "1-1", name: "Alice Jr.", age: 5, role: "Child", class: "junior" },
+          {
+            id: "1-1",
+            name: "Alice Jr.",
+            age: 5,
+            role: "Child",
+            class: "junior",
+          },
         ],
       },
       { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
