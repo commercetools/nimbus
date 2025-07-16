@@ -15,17 +15,13 @@ import { menuSlotRecipe } from "./menu.recipe";
 
 // Root component that wraps MenuTrigger
 export interface MenuRootProps
-  extends Omit<RaMenuTriggerProps, "trigger">,
-    Pick<
-      RaMenuProps<object>,
-      | "onAction"
-      | "selectionMode"
-      | "selectedKeys"
-      | "defaultSelectedKeys"
-      | "onSelectionChange"
-      | "disallowEmptySelection"
-    >,
+  extends Omit<RaMenuTriggerProps, "trigger" | "children">,
+    Omit<RaMenuProps<object>, "children">,
     RecipeVariantProps<typeof menuSlotRecipe> {
+  /**
+   * The trigger element and menu content
+   */
+  children: ReactNode;
   /**
    * The trigger event to use for the menu.
    * @default "press"
