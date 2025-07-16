@@ -85,6 +85,15 @@ export const RangeCalendarGrids = () => {
                         date.compare(selectedRange.end) === 0;
                       const isInRange = isDateInRange(date, selectedRange);
 
+                      // During drag, use highlightedRange to determine start/end
+                      const isDragStart =
+                        calendarState.highlightedRange &&
+                        date.compare(calendarState.highlightedRange.start) ===
+                          0;
+                      const isDragEnd =
+                        calendarState.highlightedRange &&
+                        date.compare(calendarState.highlightedRange.end) === 0;
+
                       return (
                         <RangeCalendarCellSlot
                           asChild
@@ -94,6 +103,16 @@ export const RangeCalendarGrids = () => {
                           data-in-range={isInRange}
                           data-range-start={isStartDate}
                           data-range-end={isEndDate}
+                          data-drag-start={isDragStart}
+                          data-drag-end={isDragEnd}
+                          data-in-highlighted-range={
+                            calendarState.highlightedRange &&
+                            date.compare(
+                              calendarState.highlightedRange.start
+                            ) >= 0 &&
+                            date.compare(calendarState.highlightedRange.end) <=
+                              0
+                          }
                         >
                           <RaCalendarCell date={date} />
                         </RangeCalendarCellSlot>

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { RangeCalendar } from "./index";
-import type { RangeCalendarProps } from "./range-calendar.types";
+import type { RangeCalendarProps, RangeValue } from "./range-calendar.types";
 import {
   today,
   getLocalTimeZone,
@@ -10,7 +10,6 @@ import {
 import { I18nProvider } from "react-aria";
 import { Box, Stack, Text } from "@/components";
 import { useState } from "react";
-import type { RangeValue } from "./components/range-calendar.grids";
 
 const meta: Meta<typeof RangeCalendar> = {
   title: "Components/Date/RangeCalendar",
