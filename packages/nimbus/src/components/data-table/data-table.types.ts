@@ -2,6 +2,14 @@ import type { DataTableRootProps } from "./data-table.slots"
 import type { RecipeVariantProps } from "@chakra-ui/react"
 import { dataTableRecipe } from "./data-table.recipe"
 import type { ReactNode } from "react";
+import type { SortDirection as AriaSortDirection } from "react-aria-components";
+
+export type SortDirection = AriaSortDirection;
+
+export type SortDescriptor = {
+  column: string;
+  direction: SortDirection;
+};
 
 export type DataTableColumn<T = any> = {
   id: string;
@@ -15,6 +23,7 @@ export type DataTableColumn<T = any> = {
   minWidth?: number | null;
   maxWidth?: number | null;
   sticky?: boolean;
+  isSortable?: boolean;
   // ...other column options
 };
 
@@ -46,6 +55,8 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   allowsSorting?: boolean;
   search?: string;
   stickyHeader?: boolean;
+  sortDescriptor?: SortDescriptor;
+  onSortChange?: (descriptor: SortDescriptor) => void;
   onRowClick?: (row: DataTableRow<T>) => void;
   onDetailsClick?: (row: DataTableRow<T>) => void;
   renderDetails?: (row: DataTableRow<T>) => ReactNode;
