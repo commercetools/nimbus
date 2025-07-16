@@ -26,7 +26,9 @@ export const dataTableRecipe = defineSlotRecipe({
   base: {
     root: { display: "block" },
     table: {},
-    header: {},
+    header: {
+      backgroundColor: "#F7F7F7",
+    },
     body: {},
     row: {},
     cell: {},
@@ -37,4 +39,6 @@ export const dataTableRecipe = defineSlotRecipe({
     expandButton: {},
     nestedIcon: {},
   },
+  // Variants for different states
+  variants: {},
 });

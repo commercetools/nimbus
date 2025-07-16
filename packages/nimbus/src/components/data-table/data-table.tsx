@@ -70,6 +70,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       isRowClickable,
       allowsSorting,
       search,
+      stickyHeader,
       onRowClick,
       renderDetails,
       ...rest
@@ -97,8 +98,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     const toggleExpand = (id: string) =>
       setExpanded((e) => ({ ...e, [id]: !e[id] }));
 
-
-
     // Highlight helper
     const highlightCell = (value: any) =>
       search && typeof value === "string" ? (
@@ -114,9 +113,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
 
     // Row border style
     const rowBorderStyle = { borderBottom: "1px solid #E0E0E0" };
-
-    // Header background style
-    const headerBgStyle = { background: "#F7F7F7" };
 
     // Check if any row (or its children) is expandable
     function hasExpandableRows(rows: DataTableRowType<T>[]): boolean {
@@ -179,10 +175,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
           {renderDetails && isExpanded && (
             <AriaRow style={rowBorderStyle}>
               <AriaCell
-                colSpan={
-                  visibleCols.length +
-                  (showExpandColumn ? 1 : 0)
-                }
+                colSpan={visibleCols.length + (showExpandColumn ? 1 : 0)}
                 style={{ padding: cellPadding }}
               >
                 {renderDetails(row)}
@@ -218,7 +211,17 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             }}
           >
             <AriaTableHeader
-              style={{ ...headerBgStyle }}
+              style={{
+                background: "#F7F7F7",
+                ...(stickyHeader && {
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 10,
+                  boxShadow: stickyHeader
+                    ? "0 2px 4px rgba(0,0,0,0.1)"
+                    : undefined,
+                }),
+              }}
               onHoverStart={() => setIsHeaderHovered(true)}
               onHoverEnd={() => setIsHeaderHovered(false)}
             >
