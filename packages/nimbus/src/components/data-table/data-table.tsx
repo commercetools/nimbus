@@ -17,6 +17,7 @@ import type {
   DataTableColumn,
   DataTableRow as DataTableRowType,
   SortDescriptor,
+  SortDirection,
 } from "./data-table.types";
 
 import {
@@ -28,6 +29,7 @@ import {
   Column as AriaColumn,
   ResizableTableContainer,
   ColumnResizer,
+  Checkbox,
 } from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 
@@ -121,6 +123,14 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       stickyHeader,
       sortDescriptor: controlledSortDescriptor,
       onSortChange,
+      // Selection props
+      selectionMode = "none",
+      selectionBehavior = "toggle",
+      disallowEmptySelection,
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+      // Other props
       onRowClick,
       renderDetails,
       ...rest
@@ -188,6 +198,9 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     }
     const showExpandColumn = hasExpandableRows(sortedRows);
 
+    // Show selection column when selection mode is not "none"
+    const showSelectionColumn = selectionMode !== "none";
+
     // Render sort indicator
     const renderSortIndicator = (columnId: string) => {
       if (!allowsSorting) return null;
@@ -225,7 +238,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     ): React.ReactNode => {
       const hasChildren = row.children && row.children.length > 0;
       const isExpanded = expanded[row.id];
-
+      
       const handleRowClick = () => {
         if (isRowClickable && onRowClick) {
           onRowClick(row);
@@ -236,15 +249,33 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
         <>
           <AriaRow
             key={row.id}
+            id={row.id}
             className="data-table-row"
             style={{
               cursor: isRowClickable ? "pointer" : undefined,
               ...rowBorderStyle,
             }}
           >
+            {/* Selection checkbox cell if selection is enabled */}
+            {showSelectionColumn && (
+              <AriaCell style={{ 
+                padding: cellPadding, 
+                width: 60,
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                <Checkbox slot="selection" />
+              </AriaCell>
+            )}
             {/* Expand/collapse cell if expand column is shown */}
             {showExpandColumn && (
-              <AriaCell style={{ padding: cellPadding, width: 32 }}>
+              <AriaCell style={{ 
+                padding: cellPadding, 
+                width: 40,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
                 {hasChildren ? (
                   <DataTableExpandButton
                     aria-label={isExpanded ? "Collapse" : "Expand"}
@@ -285,7 +316,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
           {renderDetails && isExpanded && (
             <AriaRow style={rowBorderStyle}>
               <AriaCell
-                colSpan={visibleCols.length + (showExpandColumn ? 1 : 0)}
+                colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
                 style={{ padding: cellPadding }}
               >
                 {renderDetails(row)}
@@ -338,6 +369,15 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             .react-aria-Column:hover {
               background-color: #E8E8E8 !important;
             }
+            /* Disable hover effects for selection and expand columns */
+            .react-aria-Column.selection-column-header,
+            .react-aria-Column#expand {
+              cursor: default !important;
+            }
+            .react-aria-Column.selection-column-header:hover,
+            .react-aria-Column#expand:hover {
+              background-color: transparent !important;
+            }
             .react-aria-Column[aria-sort] {
               font-weight: 600;
             }
@@ -352,6 +392,56 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             .react-aria-Column[aria-sort="descending"]:hover {
               background-color: #E6F3FF !important;
             }
+            .react-aria-Row[aria-selected="true"] {
+              background-color: #EBF8FF !important;
+            }
+            .react-aria-Row[aria-selected="true"]:hover {
+              background-color: #DBEAFE !important;
+            }
+            /* Style react-aria checkboxes to be visible */
+            .react-aria-Checkbox {
+              width: 16px;
+              height: 16px;
+              min-width: 16px;
+              min-height: 16px;
+              appearance: none;
+              border: 2px solid #d1d5db;
+              border-radius: 4px;
+              background: white;
+              cursor: pointer;
+              position: relative;
+              transition: all 0.2s;
+              flex-shrink: 0;
+            }
+            .react-aria-Checkbox[data-selected="true"] {
+              background: #2563eb;
+              border-color: #2563eb;
+            }
+            .react-aria-Checkbox[data-selected="true"]::after {
+              content: '';
+              position: absolute;
+              left: 3px;
+              top: 0px;
+              width: 6px;
+              height: 10px;
+              border: solid white;
+              border-width: 0 2px 2px 0;
+              transform: rotate(45deg);
+            }
+            .react-aria-Checkbox[data-indeterminate="true"] {
+              background: #2563eb;
+              border-color: #2563eb;
+            }
+            .react-aria-Checkbox[data-indeterminate="true"]::after {
+              content: '';
+              position: absolute;
+              left: 2px;
+              top: 6px;
+              width: 8px;
+              height: 2px;
+              background: white;
+              transform: none;
+            }
           `}
         </style>
         <ResizableTableContainer>
@@ -360,6 +450,12 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {...rest}
             sortDescriptor={ariaSortDescriptor}
             onSortChange={handleSortChange}
+            selectionMode={selectionMode}
+            selectionBehavior={selectionBehavior}
+            disallowEmptySelection={disallowEmptySelection}
+            selectedKeys={selectedKeys}
+            defaultSelectedKeys={defaultSelectedKeys}
+            onSelectionChange={onSelectionChange}
             style={{
               width: "100%",
               tableLayout: "auto",
@@ -384,11 +480,29 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               onHoverStart={() => setIsHeaderHovered(true)}
               onHoverEnd={() => setIsHeaderHovered(false)}
             >
+              {/* Selection column header if selection is enabled */}
+              {showSelectionColumn && (
+                <AriaColumn
+                  id="selection"
+                  className="selection-column-header"
+                  style={{ 
+                    width: 60, 
+                    textAlign: "left",
+                    padding: cellPadding,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'left'
+                  }}
+                  allowsSorting={false}
+                >
+                  {selectionMode === "multiple" && <Checkbox slot="selection" />}
+                </AriaColumn>
+              )}
               {/* Expand/collapse column header if needed */}
               {showExpandColumn && (
                 <AriaColumn
                   id="expand"
-                  style={{ width: 32 }}
+                  style={{ width: 40 }}
                   allowsSorting={false}
                 />
               )}
@@ -455,7 +569,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               {sortedRows.length === 0 ? (
                 <AriaRow style={rowBorderStyle}>
                   <AriaCell
-                    colSpan={visibleCols.length + (showExpandColumn ? 1 : 0)}
+                    colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
                     style={{ padding: cellPadding }}
                   >
                     No data
