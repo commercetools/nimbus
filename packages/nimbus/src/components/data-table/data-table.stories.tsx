@@ -40,6 +40,13 @@ const data: DataTableRow[] = [
   { id: "1", name: "Alice", age: 30, role: "Admin", class: "special" },
   { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
   { id: "3", name: "Carol", age: 28, role: "User", class: "common" },
+  { id: "4", name: "David", age: 32, role: "Manager", class: "premium" },
+  { id: "5", name: "Emma", age: 27, role: "Developer", class: "special" },
+  { id: "6", name: "Frank", age: 29, role: "Designer", class: "rare" },
+  { id: "7", name: "Grace", age: 31, role: "Analyst", class: "common" },
+  { id: "8", name: "Henry", age: 26, role: "Developer", class: "special" },
+  { id: "9", name: "Ivy", age: 33, role: "Manager", class: "premium" },
+  { id: "10", name: "Jack", age: 24, role: "Intern", class: "junior" },
 ];
 
 /**
@@ -161,7 +168,30 @@ export const Condensed: Story = {
 };
 
 export const StickyHeader: Story = {
-  args: { columns, data },
+  render: (args) => {
+    const [sticky, setSticky] = useState(false);
+    return (
+      <>
+        <label style={{ display: "block", marginBottom: 12 }}>
+          {/* This is supposed to set the sticky header from the top to the bottom of the table. */}
+          <input
+            type="checkbox"
+            checked={sticky}
+            onChange={(e) => setSticky(e.target.checked)}
+            style={{ marginRight: 12 }}
+          />
+          Sticky header
+        </label>
+        <DataTable {...args} stickyHeader={sticky} />
+      </>
+    );
+  },
+  args: { 
+    columns, 
+    data: [
+      ...data,
+    ],
+  },
 };
 
 export const ClickableRows: Story = {
