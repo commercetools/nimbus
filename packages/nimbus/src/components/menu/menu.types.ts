@@ -55,6 +55,9 @@ export interface MenuContentProps {
 
 // Menu item component
 export interface MenuItemProps extends RaMenuItemProps {
+  /**
+   * if set to `true`, highlights the item as critical (red)
+   * */
   isCritical?: boolean;
   ref?: Ref<HTMLDivElement>;
 }

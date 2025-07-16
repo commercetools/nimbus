@@ -1,7 +1,7 @@
-import { MenuTrigger } from "react-aria-components";
-import { MenuRootSlot } from "../menu.slots";
-import type { MenuRootProps } from "../menu.types";
 import { useSlotRecipe } from "@chakra-ui/react";
+import { MenuTrigger as RaMenuTrigger } from "react-aria-components";
+import type { MenuRootProps } from "../menu.types";
+import { MenuRootSlot } from "../menu.slots";
 import { MenuProvider } from "./menu.context";
 
 export const MenuRoot = (props: MenuRootProps) => {
@@ -32,9 +32,9 @@ export const MenuRoot = (props: MenuRootProps) => {
 
   return (
     <MenuRootSlot {...recipeProps} asChild>
-      <MenuTrigger {...menuTriggerProps}>
+      <RaMenuTrigger {...menuTriggerProps}>
         <MenuProvider value={contextValue}>{props.children}</MenuProvider>
-      </MenuTrigger>
+      </RaMenuTrigger>
     </MenuRootSlot>
   );
 };
