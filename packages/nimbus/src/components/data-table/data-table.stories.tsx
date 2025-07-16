@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable } from "./data-table";
 import { Stack } from "./../stack";
-import type { DataTableColumn, DataTableRow } from "./data-table.types";
+import type { DataTableColumn, DataTableRow, SortDescriptor } from "./data-table.types";
 import { useState } from "react";
 import { TextInput } from "./../text-input";
 import { Slider } from "@chakra-ui/react";
@@ -36,6 +36,21 @@ const columns: DataTableColumn[] = [
     render: ({ value }) => <span style={{ color: "tomato" }}>{value}</span>,
   },
 ];
+
+// Sortable columns - same as above but with explicit sortable configuration
+const sortableColumns: DataTableColumn[] = [
+  { id: "name", header: "Name", accessor: (row) => row.name, isSortable: true },
+  { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true },
+  { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true },
+  {
+    id: "custom",
+    header: "Custom (Not Sortable)",
+    accessor: (row) => row.class,
+    render: ({ value }) => <span style={{ color: "tomato" }}>{value}</span>,
+    isSortable: false, // This column is not sortable
+  },
+];
+
 const data: DataTableRow[] = [
   { id: "1", name: "Alice", age: 30, role: "Admin", class: "special" },
   { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
@@ -227,5 +242,133 @@ export const NestedRows: Story = {
       },
       { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
     ],
+  },
+};
+
+export const WithSorting: Story = {
+  render: (args) => {
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Sorting Example</h3>
+          <p>Click on column headers to sort. The "Custom" column is not sortable.</p>
+        </div>
+        <DataTable {...args} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    allowsSorting: true,
+  },
+};
+
+export const ControlledSorting: Story = {
+  render: (args) => {
+    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({ 
+      column: "name", 
+      direction: "ascending" 
+    });
+
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Controlled Sorting Example</h3>
+          <p>
+            Current sort: <strong>{sortDescriptor.column}</strong> ({sortDescriptor.direction})
+          </p>
+          <p>The sorting state is controlled externally and can be programmatically changed.</p>
+        </div>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <button 
+            onClick={() => setSortDescriptor({ column: "name", direction: "ascending" })}
+            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          >
+            Sort by Name (A-Z)
+          </button>
+          <button 
+            onClick={() => setSortDescriptor({ column: "age", direction: "descending" })}
+            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          >
+            Sort by Age (High-Low)
+          </button>
+          <button 
+            onClick={() => setSortDescriptor({ column: "role", direction: "ascending" })}
+            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          >
+            Sort by Role (A-Z)
+          </button>
+        </div>
+        <DataTable 
+          {...args} 
+          sortDescriptor={sortDescriptor}
+          onSortChange={setSortDescriptor}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    allowsSorting: true,
+  },
+};
+
+export const SortingWithSearch: Story = {
+  render: (args) => {
+    const [search, setSearch] = useState("");
+
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Sorting + Search Example</h3>
+          <p>Combine search functionality with sorting. Search results are also sortable.</p>
+        </div>
+        <TextInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search and then sort..."
+          width="1/3"
+        />
+        <DataTable {...args} search={search} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    allowsSorting: true,
+  },
+};
+
+export const SortingShowcase: Story = {
+  render: (args) => {
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Complete Sorting Showcase</h3>
+          <p><strong>Features demonstrated:</strong></p>
+          <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+            <li>• Visual sort indicators (arrows show current sort direction)</li>
+            <li>• Mixed sortable and non-sortable columns</li>
+            <li>• String sorting (Name, Role) - case insensitive</li>
+            <li>• Numeric sorting (Age) - proper number comparison</li>
+            <li>• Active column highlighting</li>
+            <li>• Hover effects on sortable headers</li>
+          </ul>
+          <p style={{ marginTop: '12px' }}>
+            <strong>Try it:</strong> Click on "Name", "Age", or "Role" column headers to sort. 
+            Notice the "Custom" column is not sortable and doesn't show indicators.
+          </p>
+        </div>
+        <DataTable {...args} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: sortableColumns,
+    data,
+    allowsSorting: true,
   },
 };
