@@ -2,6 +2,7 @@ import { Menu, Popover } from "react-aria-components";
 import { MenuContentSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
 import { useMenuContext } from "./menu.context";
+import { MenuSectionProvider } from "./menu.section-context";
 
 export const MenuContent = ({
   children,
@@ -26,24 +27,25 @@ export const MenuContent = ({
   } = contextProps;
 
   return (
-    <Popover placement={placement} offset={4} shouldFlip>
-      <MenuContentSlot asChild>
-        <Menu
-          ref={ref}
-          shouldFocusWrap
-          autoFocus="first"
-          onAction={onAction}
-          selectionMode={selectionMode}
-          selectedKeys={selectedKeys}
-          defaultSelectedKeys={defaultSelectedKeys}
-          onSelectionChange={onSelectionChange}
-          disallowEmptySelection={disallowEmptySelection}
-          data-selection-mode={selectionMode}
-        >
-          {children}
-        </Menu>
-      </MenuContentSlot>
-    </Popover>
+    <MenuSectionProvider value={{ selectionMode }}>
+      <Popover placement={placement} offset={4} shouldFlip>
+        <MenuContentSlot asChild>
+          <Menu
+            ref={ref}
+            shouldFocusWrap
+            autoFocus="first"
+            onAction={onAction}
+            selectionMode={selectionMode}
+            selectedKeys={selectedKeys}
+            defaultSelectedKeys={defaultSelectedKeys}
+            onSelectionChange={onSelectionChange}
+            disallowEmptySelection={disallowEmptySelection}
+          >
+            {children}
+          </Menu>
+        </MenuContentSlot>
+      </Popover>
+    </MenuSectionProvider>
   );
 };
 
