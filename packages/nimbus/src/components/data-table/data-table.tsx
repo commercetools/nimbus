@@ -25,6 +25,8 @@ import {
   Row as AriaRow,
   Cell as AriaCell,
   Column as AriaColumn,
+  ResizableTableContainer,
+  ColumnResizer,
 } from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 
@@ -66,9 +68,9 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       visibleColumns,
       isAdjustable,
       isRowClickable,
+      allowsSorting,
       search,
       onRowClick,
-      onDetailsClick,
       renderDetails,
       ...rest
     } = props;
@@ -94,6 +96,8 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
     const toggleExpand = (id: string) =>
       setExpanded((e) => ({ ...e, [id]: !e[id] }));
+
+
 
     // Highlight helper
     const highlightCell = (value: any) =>
@@ -135,7 +139,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
         <>
           <AriaRow
             key={row.id}
-            // onClick removed, not supported by AriaRow
+            className="data-table-row"
             style={{
               cursor: isRowClickable ? "pointer" : undefined,
               ...rowBorderStyle,
@@ -160,22 +164,14 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {visibleCols.map((col) => (
               <AriaCell key={col.id} style={{ padding: cellPadding }}>
                 {col.render
-                  ? col.render({ value: highlightCell(col.accessor(row)), row, column: col })
+                  ? col.render({
+                      value: highlightCell(col.accessor(row)),
+                      row,
+                      column: col,
+                    })
                   : highlightCell(col.accessor(row))}
               </AriaCell>
             ))}
-            {onDetailsClick && (
-              <AriaCell style={{ padding: cellPadding }}>
-                <DataTableDetailsButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDetailsClick(row);
-                  }}
-                >
-                  More details
-                </DataTableDetailsButton>
-              </AriaCell>
-            )}
           </AriaRow>
           {hasChildren &&
             isExpanded &&
@@ -185,7 +181,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               <AriaCell
                 colSpan={
                   visibleCols.length +
-                  (onDetailsClick ? 1 : 0) +
                   (showExpandColumn ? 1 : 0)
                 }
                 style={{ padding: cellPadding }}
@@ -198,60 +193,101 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       );
     };
 
+    const [isHeaderHovered, setIsHeaderHovered] = useState(false);
+
     return (
-      <DataTableRoot
-        ref={ref}
-        {...rest}
-        style={{
-          boxShadow: "0 0 0 1px var(--global-color-border, #E0E0E0)",
-          borderRadius: "2px",
-          ...(rest.style || {}),
-        }}
-      >
-        <Table style={{ width: "100%", tableLayout: "auto" }}>
-          <AriaTableHeader style={{ ...headerBgStyle }}>
-            {/* Expand/collapse column header if needed */}
-            {showExpandColumn && (
-              <AriaColumn id="expand" style={{ width: 32 }} />
-            )}
-            {visibleCols.map((col) => (
-              <AriaColumn
-                key={col.id}
-                id={col.id}
-                {...(isAdjustable && col.isAdjustable !== false
-                  ? { allowsResizing: true }
-                  : {})}
-                style={{ padding: cellPadding, textAlign: "left" }}
-              >
-                {col.header}
-              </AriaColumn>
-            ))}
-            {onDetailsClick && (
-              <AriaColumn
-                id="details"
-                style={{
-                  padding: cellPadding,
-                  textAlign: "left",
-                  ...headerBgStyle,
-                }}
-              />
-            )}
-          </AriaTableHeader>
-          <AriaTableBody>
-            {filteredRows.length === 0 ? (
-              <AriaRow style={rowBorderStyle}>
-                <AriaCell
-                  colSpan={visibleCols.length + (onDetailsClick ? 1 : 0)}
-                  style={{ padding: cellPadding }}
+      <DataTableRoot ref={ref as React.Ref<HTMLTableElement>}>
+        <style>
+          {`
+            .data-table-row:hover {
+              background-color: #F8F9FA !important;
+              transition: background-color 0.15s ease;
+            }
+          `}
+        </style>
+        <ResizableTableContainer>
+          <Table
+            ref={ref as React.Ref<HTMLTableElement>}
+            {...rest}
+            style={{
+              width: "100%",
+              tableLayout: "auto",
+              boxShadow: "0 0 0 1px var(--global-color-border, #E0E0E0)",
+              borderRadius: "2px",
+              ...(rest.style || {}),
+            }}
+          >
+            <AriaTableHeader
+              style={{ ...headerBgStyle }}
+              onHoverStart={() => setIsHeaderHovered(true)}
+              onHoverEnd={() => setIsHeaderHovered(false)}
+            >
+              {/* Expand/collapse column header if needed */}
+              {showExpandColumn && (
+                <AriaColumn
+                  id="expand"
+                  style={{ width: 32 }}
+                  allowsSorting={allowsSorting}
+                />
+              )}
+              {visibleCols.map((col) => (
+                <AriaColumn
+                  allowsSorting={allowsSorting}
+                  key={col.id}
+                  id={col.id}
+                  {...(isAdjustable && col.isAdjustable !== false
+                    ? { allowsResizing: true }
+                    : {})}
+                  width={col.width}
+                  defaultWidth={col.defaultWidth}
+                  minWidth={col.minWidth}
+                  maxWidth={col.maxWidth}
+                  style={{
+                    padding: cellPadding,
+                    textAlign: "left",
+                    position: "relative",
+                    borderRight: isHeaderHovered ? "1px solid #E0E0E0" : "none",
+                  }}
                 >
-                  No data
-                </AriaCell>
-              </AriaRow>
-            ) : (
-              filteredRows.map((row) => renderRow(row))
-            )}
-          </AriaTableBody>
-        </Table>
+                  {col.header}
+                  {isAdjustable && col.isAdjustable !== false && (
+                    <ColumnResizer>
+                      {({ isResizing }) => (
+                        <div
+                          style={{
+                            width: 4,
+                            height: "100%",
+                            position: "absolute",
+                            right: 0,
+                            top: 0,
+                            cursor: "col-resize",
+                            background: isResizing ? "#3182ce" : "transparent",
+                            transition: "background 0.2s",
+                            zIndex: 2,
+                          }}
+                        />
+                      )}
+                    </ColumnResizer>
+                  )}
+                </AriaColumn>
+              ))}
+            </AriaTableHeader>
+            <AriaTableBody>
+              {filteredRows.length === 0 ? (
+                <AriaRow style={rowBorderStyle}>
+                  <AriaCell
+                    colSpan={visibleCols.length}
+                    style={{ padding: cellPadding }}
+                  >
+                    No data
+                  </AriaCell>
+                </AriaRow>
+              ) : (
+                filteredRows.map((row) => renderRow(row))
+              )}
+            </AriaTableBody>
+          </Table>
+        </ResizableTableContainer>
       </DataTableRoot>
     );
   }

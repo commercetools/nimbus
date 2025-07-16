@@ -10,9 +10,10 @@ export type DataTableColumn<T = any> = {
   render?: (cell: { value: any; row: T; column: DataTableColumn<T> }) => ReactNode;
   isVisible?: boolean;
   isAdjustable?: boolean;
-  width?: number | string;
-  minWidth?: number;
-  maxWidth?: number;
+  width?: number | null;
+  defaultWidth?: number | null;
+  minWidth?: number | null;
+  maxWidth?: number | null;
   sticky?: boolean;
   // ...other column options
 };
@@ -42,6 +43,7 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   visibleColumns?: string[];
   isAdjustable?: boolean;
   isRowClickable?: boolean;
+  allowsSorting?: boolean;
   search?: string;
   onRowClick?: (row: DataTableRow<T>) => void;
   onDetailsClick?: (row: DataTableRow<T>) => void;
