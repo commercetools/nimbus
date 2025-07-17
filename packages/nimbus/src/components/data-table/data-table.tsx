@@ -323,7 +323,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {showSelectionColumn && (
               <AriaCell style={{ 
                 padding: cellPadding, 
-                width: 60,
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
@@ -346,7 +345,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {showExpandColumn && (
               <AriaCell style={{ 
                 padding: cellPadding, 
-                width: 40,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -560,8 +558,10 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 <AriaColumn
                   id="selection"
                   className="selection-column-header"
+                  width={60}
+                  minWidth={60}
+                  maxWidth={60}
                   style={{ 
-                    width: 60, 
                     textAlign: "left",
                     padding: cellPadding,
                     display: 'flex',
@@ -593,7 +593,9 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               {showExpandColumn && (
                 <AriaColumn
                   id="expand"
-                  style={{ width: 40 }}
+                  width={20}
+                  minWidth={20}
+                  maxWidth={20}
                   allowsSorting={false}
                 />
               )}
