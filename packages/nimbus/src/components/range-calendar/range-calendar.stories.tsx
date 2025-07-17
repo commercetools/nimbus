@@ -214,13 +214,13 @@ export const MaxValue: Story = {
  */
 export const MinAndMaxValue: Story = {
   args: {
-    minValue: today(getLocalTimeZone()).subtract({ weeks: 3 }),
-    maxValue: today(getLocalTimeZone()).add({ weeks: 3 }),
+    minValue: today(getLocalTimeZone()).subtract({ weeks: 1 }),
+    maxValue: today(getLocalTimeZone()).add({ weeks: 1 }),
   },
   render: (args: RangeCalendarProps<DateValue>) => (
     <Stack alignItems="start">
       <Text fontSize="sm" color="gray.600">
-        Selection is limited to dates from 1 week ago to 4 weeks from today.
+        Selection is limited to dates from 1 week ago to 1 week from today.
       </Text>
       <RangeCalendar {...args} />
     </Stack>
@@ -234,6 +234,14 @@ export const CustomWeekStartDay: Story = {
   args: {
     firstDayOfWeek: "fri",
   },
+  render: (args: RangeCalendarProps<DateValue>) => (
+    <Stack alignItems="start">
+      <Text fontSize="sm" color="gray.600">
+        All weeks should legally begin on a Friday.
+      </Text>
+      <RangeCalendar {...args} />
+    </Stack>
+  ),
 };
 
 /**
@@ -242,10 +250,6 @@ export const CustomWeekStartDay: Story = {
  */
 export const UnavailableDates: Story = {
   args: {
-    defaultValue: {
-      start: today(getLocalTimeZone()).add({ days: 3 }),
-      end: today(getLocalTimeZone()).add({ days: 5 }),
-    },
     isDateUnavailable: (date: DateValue) => {
       const dateObj = date.toDate(getLocalTimeZone());
       const dayOfMonth = dateObj.getDate();
@@ -271,10 +275,6 @@ export const UnavailableDates: Story = {
 export const NonContiguousRanges: Story = {
   args: {
     allowsNonContiguousRanges: true,
-    defaultValue: {
-      start: today(getLocalTimeZone()).add({ days: 10 }),
-      end: today(getLocalTimeZone()).add({ days: 25 }),
-    },
     isDateUnavailable: (date: DateValue) => {
       const dateObj = date.toDate(getLocalTimeZone());
       const dayOfWeek = dateObj.getDay();
