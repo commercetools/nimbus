@@ -86,8 +86,27 @@ export const Autofocus: Story = {
  * Demonstrates internationalization with Spanish locale.
  */
 export const SpanishCalendar: Story = {
+  args: {
+    // firstDayOfWeek: "sun",
+  },
+
   render: (args: RangeCalendarProps<DateValue>) => (
     <I18nProvider locale="es-MX">
+      <RangeCalendar {...args} />
+    </I18nProvider>
+  ),
+};
+
+/**
+ * Demonstrates internationalization with German locale.
+ */
+export const GermanCalendar: Story = {
+  args: {
+    firstDayOfWeek: "sun",
+  },
+
+  render: (args: RangeCalendarProps<DateValue>) => (
+    <I18nProvider locale="de-DE">
       <RangeCalendar {...args} />
     </I18nProvider>
   ),

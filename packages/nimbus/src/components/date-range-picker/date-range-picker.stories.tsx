@@ -2266,6 +2266,7 @@ export const CustomWidth: Story = {
 export const MultipleLocales: Story = {
   args: {
     ["aria-label"]: "Select a date range",
+    firstDayOfWeek: "sun",
   },
   render: (args) => {
     return (

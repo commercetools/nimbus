@@ -105,16 +105,17 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
         color: "neutral.12",
         borderRadius: "0",
       },
-      // Remove right border radius for start date
+      // Remove right border radius for start date (to connect to range)
       "&[data-selected=true][data-range-start=true]": {
         borderTopRightRadius: "0",
         borderBottomRightRadius: "0",
       },
-      // Remove left border radius for end date
+      // Remove left border radius for end date (to connect to range)
       "&[data-selected=true][data-range-end=true]": {
         borderTopLeftRadius: "0",
         borderBottomLeftRadius: "0",
       },
+
       // Remove border radius from middle cells in highlighted range during drag (exclude start/end)
       "&[data-in-highlighted-range=true]:not([data-drag-start=true]):not([data-drag-end=true])":
         {
@@ -129,6 +130,21 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
       "&[data-drag-end=true]": {
         borderTopLeftRadius: "0",
         borderBottomLeftRadius: "0",
+      },
+
+      // Preserve left border radius for range dates in first column
+      "&[data-first-column]": {
+        "&[data-selected=true], &[data-in-range=true]": {
+          borderTopLeftRadius: "200 !important",
+          borderBottomLeftRadius: "200 !important",
+        },
+      },
+      // Preserve right border radius for range dates in last column
+      "&[data-last-column]": {
+        "&[data-selected=true], &[data-in-range=true]": {
+          borderTopRightRadius: "200 !important",
+          borderBottomRightRadius: "200 !important",
+        },
       },
     },
   },
