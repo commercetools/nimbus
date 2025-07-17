@@ -65,4 +65,4 @@ catalogs:
   utils:
     lodash: ^4.17.21
     "@types/lodash": ^4.17.20
-    "@types/node": ^24.0.3
+    "@types/node": ^24.0.14
