@@ -133,6 +133,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       // Other props
       onRowClick,
       renderDetails,
+      isTruncated,
       ...rest
     } = props;
 
@@ -171,6 +172,68 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
     const toggleExpand = (id: string) =>
       setExpanded((e) => ({ ...e, [id]: !e[id] }));
+
+    // Manual selection state management
+    const isSelected = (rowId: string) => {
+      if (!selectedKeys) return false;
+      if (selectedKeys === "all") return true;
+      return selectedKeys.has(rowId);
+    };
+
+    const isIndeterminate = () => {
+      if (!selectedKeys || selectedKeys === "all" || selectionMode !== "multiple") return false;
+      const selectedCount = selectedKeys.size;
+      const totalCount = sortedRows.length;
+      return selectedCount > 0 && selectedCount < totalCount;
+    };
+
+    const isAllSelected = () => {
+      if (!selectedKeys || selectionMode !== "multiple") return false;
+      if (selectedKeys === "all") return true;
+      return selectedKeys.size === sortedRows.length && sortedRows.length > 0;
+    };
+
+    const handleRowSelection = (rowId: string, checked: boolean) => {
+      if (!onSelectionChange) return;
+      
+      let newSelection: typeof selectedKeys;
+      
+      if (selectionMode === "single") {
+        newSelection = checked ? new Set([rowId]) : new Set();
+      } else if (selectionMode === "multiple") {
+        const currentSelection = selectedKeys === "all" 
+          ? new Set(sortedRows.map(row => row.id))
+          : new Set(selectedKeys || []);
+        
+        if (checked) {
+          currentSelection.add(rowId);
+        } else {
+          currentSelection.delete(rowId);
+        }
+        
+        // Check if we need to prevent empty selection
+        if (disallowEmptySelection && currentSelection.size === 0) {
+          return; // Don't allow deselecting if it would result in empty selection
+        }
+        
+        newSelection = currentSelection;
+      } else {
+        return;
+      }
+      
+      onSelectionChange(newSelection);
+    };
+
+    const handleSelectAll = (checked: boolean) => {
+      if (!onSelectionChange || selectionMode !== "multiple") return;
+      
+      if (checked) {
+        onSelectionChange(new Set(sortedRows.map(row => row.id)));
+      } else {
+        if (disallowEmptySelection) return; // Don't allow deselecting all if empty selection is disallowed
+        onSelectionChange(new Set());
+      }
+    };
 
     // Highlight helper
     const highlightCell = (value: any) =>
@@ -261,10 +324,22 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               <AriaCell style={{ 
                 padding: cellPadding, 
                 width: 60,
-                display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                justifyContent: 'center'
               }}>
-                <Checkbox slot="selection" />
+                <input
+                  type="checkbox"
+                  checked={isSelected(row.id)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleRowSelection(row.id, e.target.checked);
+                  }}
+                  style={{
+                    width: 16,
+                    height: 16,
+                    cursor: 'pointer'
+                  }}
+                />
               </AriaCell>
             )}
             {/* Expand/collapse cell if expand column is shown */}
@@ -293,6 +368,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               <AriaCell key={col.id} style={{ padding: cellPadding }}>
                 <div
                   onClick={isRowClickable ? handleRowClick : undefined}
+                  className={isTruncated ? "truncated-cell" : ""}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -398,13 +474,11 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             .react-aria-Row[aria-selected="true"]:hover {
               background-color: #DBEAFE !important;
             }
-            /* Style react-aria checkboxes to be visible */
-            .react-aria-Checkbox {
+            /* Style native checkboxes */
+            input[type="checkbox"] {
+              appearance: none;
               width: 16px;
               height: 16px;
-              min-width: 16px;
-              min-height: 16px;
-              appearance: none;
               border: 2px solid #d1d5db;
               border-radius: 4px;
               background: white;
@@ -413,11 +487,11 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               transition: all 0.2s;
               flex-shrink: 0;
             }
-            .react-aria-Checkbox[data-selected="true"] {
+            input[type="checkbox"]:checked {
               background: #2563eb;
               border-color: #2563eb;
             }
-            .react-aria-Checkbox[data-selected="true"]::after {
+            input[type="checkbox"]:checked::after {
               content: '';
               position: absolute;
               left: 3px;
@@ -428,11 +502,11 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               border-width: 0 2px 2px 0;
               transform: rotate(45deg);
             }
-            .react-aria-Checkbox[data-indeterminate="true"] {
+            input[type="checkbox"]:indeterminate {
               background: #2563eb;
               border-color: #2563eb;
             }
-            .react-aria-Checkbox[data-indeterminate="true"]::after {
+            input[type="checkbox"]:indeterminate::after {
               content: '';
               position: absolute;
               left: 2px;
@@ -442,6 +516,13 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               background: white;
               transform: none;
             }
+            /* Truncation styles */
+            .truncated-cell {
+              max-width: 200px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
           `}
         </style>
         <ResizableTableContainer>
@@ -450,12 +531,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {...rest}
             sortDescriptor={ariaSortDescriptor}
             onSortChange={handleSortChange}
-            selectionMode={selectionMode}
-            selectionBehavior={selectionBehavior}
-            disallowEmptySelection={disallowEmptySelection}
-            selectedKeys={selectedKeys}
-            defaultSelectedKeys={defaultSelectedKeys}
-            onSelectionChange={onSelectionChange}
             style={{
               width: "100%",
               tableLayout: "auto",
@@ -495,7 +570,23 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                   }}
                   allowsSorting={false}
                 >
-                  {selectionMode === "multiple" && <Checkbox slot="selection" />}
+                  {selectionMode === "multiple" && (
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected()}
+                      ref={(el) => {
+                        if (el) {
+                          el.indeterminate = isIndeterminate();
+                        }
+                      }}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      style={{
+                        width: 16,
+                        height: 16,
+                        cursor: 'pointer'
+                      }}
+                    />
+                  )}
                 </AriaColumn>
               )}
               {/* Expand/collapse column header if needed */}

@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable } from "./data-table";
 import { Stack } from "./../stack";
-import type { DataTableColumn, DataTableRow, SortDescriptor } from "./data-table.types";
+import type {
+  DataTableColumn,
+  DataTableRow,
+  SortDescriptor,
+} from "./data-table.types";
 import { useState } from "react";
 import { TextInput } from "./../text-input";
 import { Slider } from "@chakra-ui/react";
@@ -141,7 +145,7 @@ export const AdjustableColumns: Story = {
     const [isAdjustable, setIsAdjustable] = useState(false);
     return (
       <Stack gap={16}>
-         <label style={{ display: "block", marginBottom: 12 }}>
+        <label style={{ display: "block", marginBottom: 12 }}>
           <input
             type="checkbox"
             checked={isAdjustable}
@@ -202,11 +206,9 @@ export const StickyHeader: Story = {
       </>
     );
   },
-  args: { 
-    columns, 
-    data: [
-      ...data,
-    ],
+  args: {
+    columns,
+    data: [...data],
   },
 };
 
@@ -252,7 +254,10 @@ export const WithSorting: Story = {
       <Stack gap={16}>
         <div>
           <h3>Sorting Example</h3>
-          <p>Click on column headers to sort. The "Custom" column is not sortable.</p>
+          <p>
+            Click on column headers to sort. The "Custom" column is not
+            sortable.
+          </p>
         </div>
         <DataTable {...args} />
       </Stack>
@@ -267,9 +272,9 @@ export const WithSorting: Story = {
 
 export const ControlledSorting: Story = {
   render: (args) => {
-    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({ 
-      column: "name", 
-      direction: "ascending" 
+    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+      column: "name",
+      direction: "ascending",
     });
 
     return (
@@ -277,32 +282,54 @@ export const ControlledSorting: Story = {
         <div>
           <h3>Controlled Sorting Example</h3>
           <p>
-            Current sort: <strong>{sortDescriptor.column}</strong> ({sortDescriptor.direction})
+            Current sort: <strong>{sortDescriptor.column}</strong> (
+            {sortDescriptor.direction})
           </p>
-          <p>The sorting state is controlled externally and can be programmatically changed.</p>
+          <p>
+            The sorting state is controlled externally and can be
+            programmatically changed.
+          </p>
         </div>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <button 
-            onClick={() => setSortDescriptor({ column: "name", direction: "ascending" })}
-            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          <button
+            onClick={() =>
+              setSortDescriptor({ column: "name", direction: "ascending" })
+            }
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
           >
             Sort by Name (A-Z)
           </button>
-          <button 
-            onClick={() => setSortDescriptor({ column: "age", direction: "descending" })}
-            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          <button
+            onClick={() =>
+              setSortDescriptor({ column: "age", direction: "descending" })
+            }
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
           >
             Sort by Age (High-Low)
           </button>
-          <button 
-            onClick={() => setSortDescriptor({ column: "role", direction: "ascending" })}
-            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          <button
+            onClick={() =>
+              setSortDescriptor({ column: "role", direction: "ascending" })
+            }
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
           >
             Sort by Role (A-Z)
           </button>
         </div>
-        <DataTable 
-          {...args} 
+        <DataTable
+          {...args}
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
         />
@@ -324,7 +351,10 @@ export const SortingWithSearch: Story = {
       <Stack gap={16}>
         <div>
           <h3>Sorting + Search Example</h3>
-          <p>Combine search functionality with sorting. Search results are also sortable.</p>
+          <p>
+            Combine search functionality with sorting. Search results are also
+            sortable.
+          </p>
         </div>
         <TextInput
           value={search}
@@ -349,18 +379,23 @@ export const SortingShowcase: Story = {
       <Stack gap={16}>
         <div>
           <h3>Complete Sorting Showcase</h3>
-          <p><strong>Features demonstrated:</strong></p>
-          <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
-            <li>• Visual sort indicators (arrows show current sort direction)</li>
+          <p>
+            <strong>Features demonstrated:</strong>
+          </p>
+          <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
+            <li>
+              • Visual sort indicators (arrows show current sort direction)
+            </li>
             <li>• Mixed sortable and non-sortable columns</li>
             <li>• String sorting (Name, Role) - case insensitive</li>
             <li>• Numeric sorting (Age) - proper number comparison</li>
             <li>• Active column highlighting</li>
             <li>• Hover effects on sortable headers</li>
           </ul>
-          <p style={{ marginTop: '12px' }}>
-            <strong>Try it:</strong> Click on "Name", "Age", or "Role" column headers to sort. 
-            Notice the "Custom" column is not sortable and doesn't show indicators.
+          <p style={{ marginTop: "12px" }}>
+            <strong>Try it:</strong> Click on "Name", "Age", or "Role" column
+            headers to sort. Notice the "Custom" column is not sortable and
+            doesn't show indicators.
           </p>
         </div>
         <DataTable {...args} />
@@ -383,11 +418,16 @@ export const SingleRowSelection: Story = {
       <Stack gap={16}>
         <div>
           <h3>Single Row Selection</h3>
-          <p>Select one row at a time. Click on checkboxes or rows to select.</p>
-          <p><strong>Selected:</strong> {Array.from(selectedKeys).join(', ') || 'None'}</p>
+          <p>
+            Select one row at a time. Click on checkboxes or rows to select.
+          </p>
+          <p>
+            <strong>Selected:</strong>{" "}
+            {Array.from(selectedKeys).join(", ") || "None"}
+          </p>
         </div>
-        <DataTable 
-          {...args} 
+        <DataTable
+          {...args}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
         />
@@ -410,32 +450,52 @@ export const MultipleRowSelection: Story = {
       <Stack gap={16}>
         <div>
           <h3>Multiple Row Selection</h3>
-          <p>Select multiple rows using checkboxes. Use the header checkbox to select/deselect all.</p>
-          <p><strong>Selected count:</strong> {Array.from(selectedKeys).length}</p>
-          <p><strong>Selected IDs:</strong> {Array.from(selectedKeys).join(', ') || 'None'}</p>
+          <p>
+            Select multiple rows using checkboxes. Use the header checkbox to
+            select/deselect all.
+          </p>
+          <p>
+            <strong>Selected count:</strong> {Array.from(selectedKeys).length}
+          </p>
+          <p>
+            <strong>Selected IDs:</strong>{" "}
+            {Array.from(selectedKeys).join(", ") || "None"}
+          </p>
         </div>
         <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
-          <button 
+          <button
             onClick={() => setSelectedKeys(new Set())}
-            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
           >
             Clear Selection
           </button>
-          <button 
-            onClick={() => setSelectedKeys(new Set(['1', '3', '5']))}
-            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+          <button
+            onClick={() => setSelectedKeys(new Set(["1", "3", "5"]))}
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
           >
             Select Odd Rows
           </button>
-          <button 
+          <button
             onClick={() => setSelectedKeys("all")}
-            style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }}
+            style={{
+              padding: "8px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
           >
             Select All
           </button>
         </div>
-        <DataTable 
-          {...args} 
+        <DataTable
+          {...args}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
         />
@@ -460,7 +520,9 @@ export const SelectionWithSortingAndSearch: Story = {
         <div>
           <h3>Selection + Sorting + Search</h3>
           <p>Combine all features: search, sort, and select multiple rows.</p>
-          <p><strong>Selected:</strong> {Array.from(selectedKeys).length} row(s)</p>
+          <p>
+            <strong>Selected:</strong> {Array.from(selectedKeys).length} row(s)
+          </p>
         </div>
         <TextInput
           value={search}
@@ -468,8 +530,8 @@ export const SelectionWithSortingAndSearch: Story = {
           placeholder="Search..."
           width="1/3"
         />
-        <DataTable 
-          {...args} 
+        <DataTable
+          {...args}
           search={search}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
@@ -487,17 +549,23 @@ export const SelectionWithSortingAndSearch: Story = {
 
 export const DisallowEmptySelection: Story = {
   render: (args) => {
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(['1']));
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
 
     return (
       <Stack gap={16}>
         <div>
           <h3>Disallow Empty Selection</h3>
-          <p>At least one row must always be selected. Try to deselect all rows.</p>
-          <p><strong>Selected:</strong> {Array.from(selectedKeys).join(', ')}</p>
+          <p>
+            At least one row must always be selected. Try to deselect all rows.
+          </p>
+          <p>
+            <strong>Selected:</strong> {Array.from(selectedKeys).join(", ")}
+          </p>
         </div>
-        <DataTable 
-          {...args} 
+        <DataTable
+          {...args}
+          isRowClickable
+          onRowClick={(row) => alert(`Clicked row: ${row.name}`)}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
         />
@@ -509,6 +577,94 @@ export const DisallowEmptySelection: Story = {
     data,
     selectionMode: "multiple",
     disallowEmptySelection: true,
+    allowsSorting: true,
+  },
+};
+
+// Sample data with longer text for truncation demonstration
+const longTextData: DataTableRow[] = [
+  {
+    id: "1",
+    name: "Alice Johnson",
+    age: 30,
+    role: "Senior Software Engineer",
+    class:
+      "This is a very long description that should be truncated when the truncation feature is enabled. It contains multiple words and should demonstrate how the truncation works with ellipsis and hover to show full content.",
+    email: "alice.johnson@company.com",
+  },
+  {
+    id: "2",
+    name: "Bob Smith",
+    age: 25,
+    role: "Frontend Developer",
+    class:
+      "Another lengthy description that will showcase the truncation functionality. This text is intentionally long to demonstrate how the component handles overflow text with truncation enabled.",
+    email: "bob.smith@company.com",
+  },
+  {
+    id: "3",
+    name: "Carol Williams",
+    age: 28,
+    role: "UX Designer",
+    class:
+      "A comprehensive description that exceeds the normal cell width and needs truncation. When truncated, users can hover to see the full content in a tooltip-like display.",
+    email: "carol.williams@company.com",
+  },
+  {
+    id: "4",
+    name: "David Brown",
+    age: 32,
+    role: "Product Manager",
+    class:
+      "Extended text content that demonstrates the importance of truncation in data tables where space is limited but full content access is still needed via hover interaction.",
+    email: "david.brown@company.com",
+  },
+];
+
+// Columns for truncation demo with longer content
+const truncationColumns: DataTableColumn[] = [
+  { id: "name", header: "Name", accessor: (row) => row.name },
+  { id: "age", header: "Age", accessor: (row) => row.age },
+  { id: "role", header: "Role", accessor: (row) => row.role },
+  { id: "email", header: "Email", accessor: (row) => row.email },
+  {
+    id: "description",
+    header: "Description",
+    accessor: (row) => row.class,
+  },
+];
+
+export const TextTruncation: Story = {
+  render: (args) => {
+    const [isTruncated, setIsTruncated] = useState(false);
+
+    return (
+      <Stack gap={16}>
+        <label style={{ display: "block", marginBottom: 12, alignContent: 'center' }}>
+          <input
+            type="checkbox"
+            checked={isTruncated}
+            onChange={(e) => setIsTruncated(e.target.checked)}
+            style={{ marginRight: 12 }}
+          />
+          Enable text truncation
+        </label>
+        <div
+          style={{
+            border: "1px solid #e0e0e0",
+            borderRadius: "4px",
+            overflow: "hidden",
+            maxWidth: "100%",
+          }}
+        >
+          <DataTable {...args} isTruncated={isTruncated} />
+        </div>
+      </Stack>
+    );
+  },
+  args: {
+    columns: truncationColumns,
+    data: longTextData,
     allowsSorting: true,
   },
 };
