@@ -1953,53 +1953,128 @@ export const ControlledMenu: Story = {
 };
 
 export const CollectionPatternDemo: Story = {
-  render: () => {
-    const textSizes = [
-      { id: "small", name: "Small", description: "Compact text display" },
-      { id: "medium", name: "Medium", description: "Default text size" },
-      {
-        id: "large",
-        name: "Large",
-        description: "Larger text for readability",
-      },
+  render: (args) => {
+    // Simple data structure for a file context menu
+    const fileMenuItems = [
+      { id: "new", label: "New File", icon: InsertDriveFile, kbd: "⌘N" },
+      { id: "open", label: "Open", icon: FolderOpen, kbd: "⌘O" },
+      { id: "save", label: "Save", icon: Save, kbd: "⌘S" },
+      { id: "save-as", label: "Save As...", icon: SaveAs, kbd: "⌘⇧S" },
+      { id: "divider" },
+      { id: "copy", label: "Copy", icon: ContentCopy, kbd: "⌘C" },
+      { id: "paste", label: "Paste", icon: ContentPaste, kbd: "⌘V" },
+      { id: "divider" },
+      { id: "delete", label: "Delete", icon: Delete, critical: true },
     ];
 
-    const [selectedSize, setSelectedSize] = React.useState<string>("medium");
+    const [lastAction, setLastAction] = React.useState<string>("");
 
     return (
       <Box padding="400">
-        <Menu.Root
-          selectionMode="single"
-          selectedKeys={new Set([selectedSize])}
-          onSelectionChange={(keys) => {
-            const key = Array.from(keys)[0] as string;
-            setSelectedSize(key);
-          }}
-        >
-          <Menu.Trigger>
-            <Button>
-              Text Size Menu (Collection Pattern)
-              <Icon slot="endIcon">
-                <KeyboardArrowDown />
-              </Icon>
-            </Button>
-          </Menu.Trigger>
-          <Menu.Content>
-            <Menu.Section label="Text Size Options" items={textSizes}>
-              {(item) => (
-                <Menu.Item id={item.id}>
-                  <Text slot="label">{item.name}</Text>
-                  <Text slot="description">{item.description}</Text>
-                </Menu.Item>
-              )}
-            </Menu.Section>
-          </Menu.Content>
-        </Menu.Root>
+        <Stack gap="400">
+          <Text fontSize="lg" fontWeight="600">
+            Collection Pattern Demo
+          </Text>
+          <Text color="neutral.11">
+            This demonstrates how to build a menu from a simple data structure
+            using the Collection pattern.
+          </Text>
 
-        <Box marginTop="300">
-          <Text>Selected size: {selectedSize}</Text>
-        </Box>
+          <Menu.Root
+            onAction={(key) => {
+              setLastAction(key as string);
+              args.onAction?.(key);
+            }}
+            onOpenChange={args.onOpenChange}
+          >
+            <Menu.Trigger asChild>
+              <Button variant="outline">
+                <Icon slot="prefix">
+                  <MoreVert />
+                </Icon>
+                File Menu
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content>
+              {fileMenuItems.map((item) => {
+                // Render separator
+                if (item.id === "divider") {
+                  return <Menu.Separator key={Math.random()} />;
+                }
+
+                // Render menu item
+                return (
+                  <Menu.Item
+                    key={item.id}
+                    id={item.id}
+                    isCritical={item.critical}
+                  >
+                    {item.icon && (
+                      <Icon slot="icon">
+                        <item.icon />
+                      </Icon>
+                    )}
+                    <Text slot="label">{item.label}</Text>
+                    {item.kbd && <Kbd slot="keyboard">{item.kbd}</Kbd>}
+                  </Menu.Item>
+                );
+              })}
+            </Menu.Content>
+          </Menu.Root>
+
+          <Box padding="300" background="neutral.3" borderRadius="md">
+            <Stack gap="200">
+              <Text fontSize="sm" fontWeight="600">
+                Last Action:
+              </Text>
+              <Text fontSize="sm" fontFamily="mono">
+                {lastAction || "None"}
+              </Text>
+            </Stack>
+          </Box>
+        </Stack>
       </Box>
     );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open menu and test actions", async () => {
+      const trigger = canvas.getByRole("button", { name: "File Menu" });
+      await userEvent.click(trigger);
+
+      await waitFor(() => {
+        expect(canvas.getByRole("menu")).toBeInTheDocument();
+      });
+
+      // Test regular action
+      const newFileItem = canvas.getByRole("menuitem", { name: /New File/ });
+      await userEvent.click(newFileItem);
+
+      await expect(args.onAction).toHaveBeenCalledWith("new");
+      await waitFor(() => {
+        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Test critical action", async () => {
+      const trigger = canvas.getByRole("button", { name: "File Menu" });
+      await userEvent.click(trigger);
+
+      await waitFor(() => {
+        expect(canvas.getByRole("menu")).toBeInTheDocument();
+      });
+
+      // Test critical action
+      const deleteItem = canvas.getByRole("menuitem", { name: /Delete/ });
+      await userEvent.click(deleteItem);
+
+      await expect(args.onAction).toHaveBeenCalledWith("delete");
+      await waitFor(() => {
+        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      });
+    });
   },
 };

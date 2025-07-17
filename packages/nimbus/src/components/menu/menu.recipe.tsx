@@ -175,6 +175,13 @@ export const menuSlotRecipe = defineSlotRecipe({
         mr: "300",
         my: "auto",
         color: "neutral.11",
+
+        /** has-submenu + selectable = impossible = hide checkbox*/
+        "[data-has-submenu='true']&": {
+          opacity: ".0",
+          ml: "-600",
+        },
+
         "& svg": {
           boxSize: "500",
         },
@@ -207,7 +214,8 @@ export const menuSlotRecipe = defineSlotRecipe({
       fontWeight: "600",
       color: "neutral.11",
       px: "300",
-      py: "200",
+      pt: "300",
+      pb: "200",
       marginBottom: "100",
       textTransform: "uppercase",
       letterSpacing: "{spacing.25}",
