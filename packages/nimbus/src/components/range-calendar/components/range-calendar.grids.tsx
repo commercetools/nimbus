@@ -94,6 +94,37 @@ export const RangeCalendarGrids = () => {
                         calendarState.highlightedRange &&
                         date.compare(calendarState.highlightedRange.end) === 0;
 
+                      /* Calculate column position (0-6) based on day of week and firstDayOfWeek setting
+                       This IS locale-agnostic because we convert TS day numbers to column positions
+                      relative to the firstDayOfWeek setting from React Aria
+                      Examples:
+                      - US locale (firstDayOfWeek="sun"): Sun=col0, Mon=col1, ..., Sat=col6
+                      - German locale (firstDayOfWeek="mon"): Mon=col0, Tue=col1, ..., Sun=col6 
+                      */
+                      const dayOfWeek = date
+                        .toDate(getLocalTimeZone())
+                        .getDay();
+                      const firstDayOfWeek = context?.firstDayOfWeek || "sun";
+                      const firstDayNum =
+                        firstDayOfWeek === "sun"
+                          ? 0
+                          : firstDayOfWeek === "mon"
+                            ? 1
+                            : firstDayOfWeek === "tue"
+                              ? 2
+                              : firstDayOfWeek === "wed"
+                                ? 3
+                                : firstDayOfWeek === "thu"
+                                  ? 4
+                                  : firstDayOfWeek === "fri"
+                                    ? 5
+                                    : 6;
+                      // Convert TS day number to column position (0=leftmost, 6=rightmost)
+                      const columnPosition = (dayOfWeek - firstDayNum + 7) % 7;
+
+                      const isFirstColumn = columnPosition === 0;
+                      const isLastColumn = columnPosition === 6;
+
                       return (
                         <RangeCalendarCellSlot
                           asChild
@@ -113,6 +144,9 @@ export const RangeCalendarGrids = () => {
                             date.compare(calendarState.highlightedRange.end) <=
                               0
                           }
+                          // Add column position data attributes
+                          {...(isFirstColumn && { "data-first-column": "" })}
+                          {...(isLastColumn && { "data-last-column": "" })}
                         >
                           <RaCalendarCell date={date} />
                         </RangeCalendarCellSlot>
