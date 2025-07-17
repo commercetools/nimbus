@@ -119,6 +119,8 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
       // Remove border radius from middle cells in highlighted range during drag (exclude start/end)
       "&[data-in-highlighted-range=true]:not([data-drag-start=true]):not([data-drag-end=true])":
         {
+          bg: "primary.3",
+          color: "neutral.12",
           borderRadius: "0",
         },
       // Remove right border radius from start cell during drag
