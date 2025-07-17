@@ -13,6 +13,7 @@ import {
   ToggleButtonGroup as RacToggleButtonGroup,
 } from "react-aria-components";
 import type { PropsWithChildren } from "react";
+import type { WithDeprecatedOnClick } from "@/utils/deprecate-on-click";
 
 // ============================================================
 // Root Component (`<ToggleButtonGroup>`)
@@ -49,10 +50,11 @@ type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<
 >;
 
 /** Combined props for the button element (Chakra styles + Aria behavior). */
-export type ToggleButtonGroupButtonProps = ToggleButtonGroupButtonSlotProps &
-  AriaToggleButtonProps & {
-    ref?: React.Ref<typeof RacToggleButton>;
-  };
+export type ToggleButtonGroupButtonProps = WithDeprecatedOnClick<
+  ToggleButtonGroupButtonSlotProps & AriaToggleButtonProps
+> & {
+  ref?: React.Ref<typeof RacToggleButton>;
+};
 
 /** Type signature for the `ToggleButtonGroup.Button` sub-component. */
 export type ToggleButtonGroupButtonComponent =
