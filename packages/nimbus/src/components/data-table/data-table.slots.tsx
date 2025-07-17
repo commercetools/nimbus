@@ -11,7 +11,9 @@ import { dataTableRecipe } from "./data-table.recipe";
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {}
+interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {
+  truncated?: boolean;
+}
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
