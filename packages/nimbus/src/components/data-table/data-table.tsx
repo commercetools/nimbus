@@ -17,7 +17,6 @@ import type {
   DataTableColumn,
   DataTableRow as DataTableRowType,
   SortDescriptor,
-  SortDirection,
 } from "./data-table.types";
 
 import {
@@ -29,7 +28,6 @@ import {
   Column as AriaColumn,
   ResizableTableContainer,
   ColumnResizer,
-  Checkbox,
 } from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 
@@ -428,101 +426,10 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     };
 
     return (
-      <DataTableRoot ref={ref as React.Ref<HTMLTableElement>}>
-        <style>
-          {`
-            .data-table-row:hover {
-              background-color: #F8F9FA !important;
-              transition: background-color 0.15s ease;
-            }
-            .react-aria-Column {
-              cursor: pointer;
-              user-select: none;
-              transition: background-color 0.15s ease;
-            }
-            .react-aria-Column:hover {
-              background-color: #E8E8E8 !important;
-            }
-            /* Disable hover effects for selection and expand columns */
-            .react-aria-Column.selection-column-header,
-            .react-aria-Column#expand {
-              cursor: default !important;
-            }
-            .react-aria-Column.selection-column-header:hover,
-            .react-aria-Column#expand:hover {
-              background-color: transparent !important;
-            }
-            .react-aria-Column[aria-sort] {
-              font-weight: 600;
-            }
-            .react-aria-Column[aria-sort="none"]:hover {
-              background-color: #F0F0F0 !important;
-            }
-            .react-aria-Column[aria-sort="ascending"],
-            .react-aria-Column[aria-sort="descending"] {
-              background-color: #F0F8FF !important;
-            }
-            .react-aria-Column[aria-sort="ascending"]:hover,
-            .react-aria-Column[aria-sort="descending"]:hover {
-              background-color: #E6F3FF !important;
-            }
-            .react-aria-Row[aria-selected="true"] {
-              background-color: #EBF8FF !important;
-            }
-            .react-aria-Row[aria-selected="true"]:hover {
-              background-color: #DBEAFE !important;
-            }
-            /* Style native checkboxes */
-            input[type="checkbox"] {
-              appearance: none;
-              width: 16px;
-              height: 16px;
-              border: 2px solid #d1d5db;
-              border-radius: 4px;
-              background: white;
-              cursor: pointer;
-              position: relative;
-              transition: all 0.2s;
-              flex-shrink: 0;
-            }
-            input[type="checkbox"]:checked {
-              background: #2563eb;
-              border-color: #2563eb;
-            }
-            input[type="checkbox"]:checked::after {
-              content: '';
-              position: absolute;
-              left: 3px;
-              top: 0px;
-              width: 6px;
-              height: 10px;
-              border: solid white;
-              border-width: 0 2px 2px 0;
-              transform: rotate(45deg);
-            }
-            input[type="checkbox"]:indeterminate {
-              background: #2563eb;
-              border-color: #2563eb;
-            }
-            input[type="checkbox"]:indeterminate::after {
-              content: '';
-              position: absolute;
-              left: 2px;
-              top: 6px;
-              width: 8px;
-              height: 2px;
-              background: white;
-              transform: none;
-            }
-            /* Truncation styles */
-            .truncated-cell {
-              max-width: 200px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-          `}
-        </style>
+      <DataTableRoot 
+        ref={ref as React.Ref<HTMLTableElement>}
+        truncated={isTruncated}
+      >
         <ResizableTableContainer>
           <Table
             ref={ref as React.Ref<HTMLTableElement>}
