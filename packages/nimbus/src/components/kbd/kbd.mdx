@@ -2,8 +2,7 @@
 id: Kbd
 title: Kbd
 description: marks a string as keyboard input
-documentState: InitialDraft
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 999
 menu:
   - Components
@@ -17,4 +16,27 @@ tags:
 
 # Kbd
 
-Add description later.
+The Kbd component renders keyboard shortcuts or key combinations with proper
+styling to visually represent keyboard keys. It uses a monospace font and
+keyboard-like appearance to make it clear that the text represents a key or key
+combination.
+
+## Usage
+
+
+### Basic
+```jsx-live
+const App = () => <Kbd>Ctrl</Kbd>
+```
+
+### Key combinations
+```jsx-live
+const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
+```
+
+## Common Use Cases
+
+- Displaying keyboard shortcuts in help text or tooltips
+- Showing key combinations in documentation
+- Representing individual keys in user interfaces
+- Highlighting keyboard navigation instructions

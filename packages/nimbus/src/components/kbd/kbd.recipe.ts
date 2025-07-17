@@ -4,54 +4,20 @@ export const kbdRecipe = defineRecipe({
   className: "nimbus-kbd",
   base: {
     display: "inline-flex",
+    color: "inherit",
+    fontSize: ".875em",
+    lineHeight: "1",
     alignItems: "center",
-    fontWeight: "medium",
+    fontWeight: "500",
     fontFamily: "mono",
     flexShrink: "0",
     whiteSpace: "nowrap",
-    wordSpacing: "-0.5em",
     userSelect: "none",
-    px: "100",
+    px: "150",
+    py: "100",
     borderRadius: "100",
-  },
-  variants: {
-    variant: {
-      raised: {
-        bg: "colorPalette.subtle",
-        color: "colorPalette.fg",
-        borderWidth: "1px",
-        borderBottomWidth: "2px",
-        borderColor: "colorPalette.muted",
-      },
-      outline: {
-        borderWidth: "1px",
-        color: "colorPalette.fg",
-      },
-      subtle: {
-        bg: "colorPalette.muted",
-        color: "colorPalette.fg",
-      },
-      plain: {
-        color: "colorPalette.fg",
-      },
-    },
-    size: {
-      sm: {
-        textStyle: "xs",
-        height: "450",
-      },
-      md: {
-        textStyle: "sm",
-        height: "500",
-      },
-      lg: {
-        textStyle: "md",
-        height: "600",
-      },
-    },
-  },
-  defaultVariants: {
-    size: "md",
-    variant: "raised",
+    border: "solid-25",
+    borderBottom: "solid-50",
+    borderColor: "currentColor",
   },
 });

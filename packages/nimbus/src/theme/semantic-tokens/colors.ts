@@ -5,16 +5,16 @@ export const colors = defineSemanticTokens.colors({
   bg: {
     DEFAULT: {
       value: {
-        _light: "{colors.neutral.1}",
-        _dark: "{colors.neutral.1}",
+        _light: "white",
+        _dark: "black",
       },
     },
   },
   fg: {
     DEFAULT: {
       value: {
-        _light: "{colors.neutral.12}",
-        _dark: "{colors.neutral.12}",
+        _light: "black",
+        _dark: "white",
       },
     },
   },
