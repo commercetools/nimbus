@@ -70,4 +70,5 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   renderDetails?: (row: DataTableRow<T>) => ReactNode;
   children?: React.ReactNode;
   density?: DataTableDensity;
+  isTruncated?: boolean;
 }
