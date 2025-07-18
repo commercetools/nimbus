@@ -8,6 +8,7 @@ export const dataTableRecipe = defineSlotRecipe({
   // Available slots for the DataTable component
   slots: [
     "root",
+    "footer",
     "selectionCell",
     "detailsButton",
     "expandButton",
@@ -102,15 +103,10 @@ export const dataTableRecipe = defineSlotRecipe({
         },
       },
     },
-    table: {},
-    header: {
-      backgroundColor: "#F7F7F7",
+    footer: {
+      width: "100%",
+      borderTop: "1px solid #E0E0E0",
     },
-    body: {},
-    row: {},
-    cell: {},
-    columnHeader: {},
-    columnResizer: {},
     selectionCell: {},
     detailsButton: {},
     expandButton: {},
