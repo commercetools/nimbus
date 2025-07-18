@@ -5,13 +5,11 @@ import {
 } from "@chakra-ui/react";
 
 /**
- * SimpleGrid
- * ============================================================
- * The SimpleGrid Layout Component provides a flexible and responsive way to structure content.
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
+ * # SimpleGrid
+ * 
+ * displays a simple grid / matrix
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/layout/simplegrid}
  */
 export interface SimpleGridProps extends ChakraSimpleGridProps {
   children?: React.ReactNode;

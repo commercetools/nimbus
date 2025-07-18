@@ -5,10 +5,11 @@ import type { IconButtonProps } from "./icon-button.types";
 import { Button } from "@/components";
 
 /**
- * IconButton
- * ============================================================
- * displays a button with only an icon as child. It is based
- * on the regular `Button` component, but with a few adjustments.
+ * # IconButton
+ * 
+ * displays a button with an icon only as child
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/iconbutton}
  */
 export const IconButton = (props: IconButtonProps) => {
   const { children, ref: forwardedRef, ...restProps } = props;

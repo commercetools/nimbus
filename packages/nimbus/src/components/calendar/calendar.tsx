@@ -11,6 +11,13 @@ import { useRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { CalendarCustomContext } from "./components/calendar.custom-context";
 
+/**
+ * # Calendar
+ * 
+ * Calendars display a grid of days in one or more months and allow users to select a single date.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/calendar}
+ */
 export const Calendar = (props: CalendarProps<DateValue>) => {
   const recipe = useRecipe({ recipe: calendarSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);

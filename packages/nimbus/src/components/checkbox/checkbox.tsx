@@ -21,17 +21,11 @@ import {
 } from "./checkbox.slots";
 
 /**
- * Checkbox
- * ============================================================
- * displays a checkbox and an associated label
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
+ * # Checkbox
+ * 
+ * Displays a checkbox.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/checkbox}
  */
 export const Checkbox = (props: CheckboxProps) => {
   const { ref: forwardedRef } = props;

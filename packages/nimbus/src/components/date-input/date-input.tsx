@@ -15,9 +15,11 @@ import type { DateInputProps } from "./date-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
- * DateInput
- * ============================================================
- * allows entering a date in the currently selected locale
+ * # DateInput
+ * 
+ * allows entering a date
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dateinput}
  */
 export const DateInput = (props: DateInputProps) => {
   const recipe = useRecipe({ recipe: dateInputSlotRecipe });

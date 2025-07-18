@@ -17,18 +17,11 @@ import {
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
 /**
- * NumberInput
- * ============================================================
- * An input component that accepts only numbers with increment/decrement buttons
- *
- * Features:
- *
- * - supports ref forwarding to the underlying DOM element
- * - supports number-specific props like min, max, step
- * - includes increment/decrement buttons for easy number adjustment
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - provides full accessibility support
+ * # NumberInput
+ * 
+ * A number input allows users to enter numerical values and adjust them incrementally.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
  */
 export const NumberInput = (props: NumberInputProps) => {
   const { size, ref: forwardedRef, ...restProps } = props;

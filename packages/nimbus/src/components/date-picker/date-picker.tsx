@@ -23,10 +23,11 @@ import { DatePickerTimeInput } from "./components/date-picker.time-input";
 import { DatePickerCustomContext } from "./components/date-picker.custom-context";
 
 /**
- * DatePicker
- * ============================================================
- * Combines a DateInput with a Calendar popover for date selection.
- * Users can either type a date directly or select from the calendar.
+ * # DatePicker
+ * 
+ * a UI component for users to enter or select a specific calendar date.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/datepicker}
  */
 export const DatePicker = (props: DatePickerProps) => {
   const { size = "md", variant, granularity = "day" } = props;
