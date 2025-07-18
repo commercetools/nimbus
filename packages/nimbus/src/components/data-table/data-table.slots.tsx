@@ -32,38 +32,11 @@ const { withProvider, withContext } = createSlotRecipeContext({
  * Root component that provides the styling context for the DataTable component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
+
 export const DataTableRoot = withProvider<HTMLDivElement, DataTableRootProps>(
   "div",
   "root"
 );
-export const DataTableTable = withContext<
-  HTMLTableElement,
-  HTMLChakraProps<"table">
->("table", "table");
-export const DataTableHeader = withContext<
-  HTMLTableSectionElement,
-  HTMLChakraProps<"thead">
->("thead", "header");
-export const DataTableBody = withContext<
-  HTMLTableSectionElement,
-  HTMLChakraProps<"tbody">
->("tbody", "body");
-export const DataTableRow = withContext<
-  HTMLTableRowElement,
-  HTMLChakraProps<"tr">
->("tr", "row");
-export const DataTableCell = withContext<
-  HTMLTableCellElement,
-  HTMLChakraProps<"td">
->("td", "cell");
-export const DataTableColumnHeader = withContext<
-  HTMLTableCellElement,
-  HTMLChakraProps<"th">
->("th", "columnHeader");
-export const DataTableColumnResizer = withContext<
-  HTMLDivElement,
-  HTMLChakraProps<"div">
->("div", "columnResizer");
 export const DataTableSelectionCell = withContext<
   HTMLTableCellElement,
   HTMLChakraProps<"td">
