@@ -940,7 +940,6 @@ export const HorizontalScrolling: Story = {
             isAdjustable={true}
             allowsSorting={true}
             stickyHeader={true}
-            selectionMode="multiple"
             defaultSelectedKeys={new Set(["1", "3"])}
             footer={
               <div style={{ 
