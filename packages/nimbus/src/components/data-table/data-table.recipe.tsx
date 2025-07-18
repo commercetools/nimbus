@@ -8,13 +8,6 @@ export const dataTableRecipe = defineSlotRecipe({
   // Available slots for the DataTable component
   slots: [
     "root",
-    "table",
-    "header",
-    "body",
-    "row",
-    "cell",
-    "columnHeader",
-    "columnResizer",
     "selectionCell",
     "detailsButton",
     "expandButton",
@@ -25,10 +18,12 @@ export const dataTableRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: { 
+      overflowX: "auto",
       display: "block",
+      // position: "relative",
       // Global CSS for data table interactions
       "& .data-table-row:hover": {
-        backgroundColor: "#F8F9FA !important",
+        backgroundColor: "#F8F9FA",
         transition: "background-color 0.15s ease",
       },
       "& .react-aria-Column": {
@@ -36,32 +31,32 @@ export const dataTableRecipe = defineSlotRecipe({
         userSelect: "none",
         transition: "background-color 0.15s ease",
         "&:hover": {
-          backgroundColor: "#E8E8E8 !important",
+          backgroundColor: "#E8E8E8",
         },
         // Disable hover effects for selection and expand columns
         "&.selection-column-header, &#expand": {
           cursor: "default !important",
           "&:hover": {
-            backgroundColor: "transparent !important",
+            backgroundColor: "transparent",
           },
         },
         "&[aria-sort]": {
           fontWeight: 600,
           "&[aria-sort='none']:hover": {
-            backgroundColor: "#F0F0F0 !important",
+            backgroundColor: "#F0F0F0",
           },
           "&[aria-sort='ascending'], &[aria-sort='descending']": {
-            backgroundColor: "#F0F8FF !important",
+            backgroundColor: "#F0F8FF",
             "&:hover": {
-              backgroundColor: "#E6F3FF !important",
+              backgroundColor: "#E6F3FF",
             },
           },
         },
       },
       "& .react-aria-Row[aria-selected='true']": {
-        backgroundColor: "#EBF8FF !important",
+        backgroundColor: "#EBF8FF",
         "&:hover": {
-          backgroundColor: "#DBEAFE !important",
+          backgroundColor: "#DBEAFE",
         },
       },
       // Native checkbox styling
@@ -131,20 +126,6 @@ export const dataTableRecipe = defineSlotRecipe({
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            "&:hover": {
-              position: "relative",
-              overflow: "visible",
-              whiteSpace: "normal",
-              zIndex: 1000,
-              background: "white",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              borderRadius: "4px",
-              padding: "8px",
-              margin: "-8px",
-              minWidth: "max-content",
-              maxWidth: "300px",
-              wordWrap: "break-word",
-            },
           },
         },
       },
