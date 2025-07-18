@@ -1,16 +1,10 @@
 import { forwardRef, useMemo, useState } from "react";
 import {
   DataTableRoot,
-  DataTableTable,
-  DataTableHeader,
-  DataTableBody,
-  DataTableRow,
-  DataTableCell,
-  DataTableColumnHeader,
-  DataTableColumnResizer,
-  DataTableDetailsButton,
+  DataTableFooter,
   DataTableExpandButton,
-  DataTableNestedIcon,
+  // DataTableDetailsButton,
+  // DataTableNestedIcon,
 } from "./data-table.slots";
 import type {
   DataTableProps,
@@ -132,6 +126,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       onRowClick,
       renderDetails,
       isTruncated,
+      footer,
       ...rest
     } = props;
 
@@ -427,7 +422,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
 
     return (
       <DataTableRoot 
-        ref={ref as React.Ref<HTMLTableElement>}
+        ref={ref as React.Ref<HTMLDivElement>}
         truncated={isTruncated}
       >
         <ResizableTableContainer>
@@ -580,6 +575,11 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               )}
             </AriaTableBody>
           </Table>
+          {footer && (
+            <DataTableFooter>
+              {footer}
+            </DataTableFooter>
+          )}
         </ResizableTableContainer>
       </DataTableRoot>
     );
