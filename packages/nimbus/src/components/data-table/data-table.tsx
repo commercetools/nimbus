@@ -434,8 +434,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             style={{
               width: "100%",
               tableLayout: "auto",
-              boxShadow: "0 0 0 1px var(--global-color-border, #E0E0E0)",
-              borderRadius: "2px",
+              border: "1px solid #E0E0E0",
               ...(rest.style || {}),
             }}
           >

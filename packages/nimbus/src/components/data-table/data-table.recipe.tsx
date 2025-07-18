@@ -105,7 +105,6 @@ export const dataTableRecipe = defineSlotRecipe({
     },
     footer: {
       width: "100%",
-      borderTop: "1px solid #E0E0E0",
     },
     selectionCell: {},
     detailsButton: {},
