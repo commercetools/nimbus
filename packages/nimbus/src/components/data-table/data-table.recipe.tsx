@@ -21,8 +21,9 @@ export const dataTableRecipe = defineSlotRecipe({
     root: { 
       overflowX: "auto",
       display: "block",
-      // position: "relative",
-      // Global CSS for data table interactions
+      "& .data-table-row": {
+        borderBottom: "1px solid #E0E0E0"
+      },
       "& .data-table-row:hover": {
         backgroundColor: "#F8F9FA",
         transition: "background-color 0.15s ease",

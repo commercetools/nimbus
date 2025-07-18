@@ -231,7 +231,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     // Highlight helper
     const highlightCell = (value: any) =>
       search && typeof value === "string" ? (
-        <Highlight query={search} styles={{ bg: "yellow.200" }}>
+        <Highlight query={search} >
           {value}
         </Highlight>
       ) : (
@@ -240,9 +240,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
 
     // Padding values for density
     const cellPadding = props.density === "condensed" ? "8px" : "16px";
-
-    // Row border style
-    const rowBorderStyle = { borderBottom: "1px solid #E0E0E0" };
 
     // Check if any row (or its children) is expandable
     function hasExpandableRows(rows: DataTableRowType<T>[]): boolean {
@@ -309,7 +306,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             className="data-table-row"
             style={{
               cursor: isRowClickable ? "pointer" : undefined,
-              ...rowBorderStyle,
             }}
           >
             {/* Selection checkbox cell if selection is enabled */}
@@ -381,7 +377,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             isExpanded &&
             row.children!.map((child) => renderRow(child, depth + 1))}
           {renderDetails && isExpanded && (
-            <AriaRow style={rowBorderStyle}>
+            <AriaRow>
               <AriaCell
                 colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
                 style={{ padding: cellPadding }}
@@ -441,13 +437,13 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             <AriaTableHeader
               style={{
                 background: "#F7F7F7",
-                borderBottom: "1px solid #E0E0E0",
+                borderBottom: "1px solid primary.3",
                 ...(stickyHeader && {
                   position: "sticky",
                   top: 0,
                   zIndex: 10,
                   boxShadow: stickyHeader
-                    ? "0 2px 4px rgba(0,0,0,0.1)"
+                    ? "0 2px 4px primary-3"
                     : undefined,
                 }),
               }}
@@ -561,7 +557,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             </AriaTableHeader>
             <AriaTableBody>
               {sortedRows.length === 0 ? (
-                <AriaRow style={rowBorderStyle}>
+                <AriaRow>
                   <AriaCell
                     colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
                     style={{ padding: cellPadding }}
