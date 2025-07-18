@@ -9,16 +9,11 @@ import type { TextInputProps } from "./text-input.types";
 import { textInputRecipe } from "./text-input.recipe";
 
 /**
- * TextInput
- * ============================================================
- * An input component that takes in text as input
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLInputElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
+ * # TextInput
+ * 
+ * An input component that takes in a text as input
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/textinput}
  */
 export const TextInput = (props: TextInputProps) => {
   const { ref: forwardedRef, ...restProps } = props;

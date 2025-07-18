@@ -5,16 +5,11 @@ import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
 
 /**
- * PasswordInput
- * ============================================================
- * An input component that takes in password as input with toggleable visibility
- *
- * Features:
- *
- * - Based on TextInput with added password visibility toggle
- * - Allows toggling between type="password" and type="text"
- * - Positions the toggle button at the right edge of the input
- * - Inherits all TextInput features and props
+ * # PasswordInput
+ * 
+ * A password input is a text field that hides entered characters for secure password entry.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/passwordinput}
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, forwardedRef) => {

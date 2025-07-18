@@ -4,17 +4,11 @@ import type { BadgeProps } from "./badge.types";
 import { mergeRefs } from "@chakra-ui/react";
 import { useObjectRef, mergeProps } from "react-aria";
 /**
- * Badge
- * ============================================================
- * badge
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLSpanElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
+ * # Badge
+ * 
+ * Briefly highlights or categorizes associated UI elements with concise visual cues for status or metadata.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/data-display/badge}
  */
 
 export const Badge = (props: BadgeProps) => {

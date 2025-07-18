@@ -9,17 +9,11 @@ import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
 
 /**
- * MultilineTextInput
- * ============================================================
- * A textarea component that takes in multiline text as input
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLTextAreaElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports auto-growing height based on content when `autoGrow` is enabled
+ * # Multiline Text Input
+ * 
+ * A multiline text input component for capturing longer text content.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/forms/multiline-text-input}
  */
 export const MultilineTextInput = (props: MultilineTextInputProps) => {
   const { ref: forwardedRef, rows = 1, autoGrow = false, ...restProps } = props; // The default `rows` attribute for a textarea is 2, so we need to override it

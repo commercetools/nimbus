@@ -5,6 +5,13 @@ import { useSlotRecipe } from "@chakra-ui/react";
 import type { DisclosureGroupProps } from "../accordion.types";
 import { DisclosureGroupStateContext } from "../accordion-context";
 
+/**
+ * # Accordion
+ * 
+ * Displays an Accordion.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/navigation/accordion}
+ */
 export const AccordionRoot = forwardRef<HTMLDivElement, DisclosureGroupProps>(
   ({ children, onExpandedChange, ...props }, forwardedRef) => {
     const state = useDisclosureGroupState({

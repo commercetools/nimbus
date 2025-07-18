@@ -4,6 +4,13 @@ import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
 
+/**
+ * # NimbusProvider
+ * 
+ * provides an environment for the rest of the components to work in
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/utilities/nimbusprovider}
+ */
 export function NimbusProvider({
   children,
   locale,
