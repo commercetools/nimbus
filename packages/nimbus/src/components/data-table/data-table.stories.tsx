@@ -810,6 +810,167 @@ const comprehensiveColumns: DataTableColumn[] = [
   },
 ];
 
+export const WithFooter: Story = {
+  render: (args) => {
+    const footerContent = (
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        gap: "16px",
+        marginTop: "16px"
+      }}>
+        <div>
+          <strong>Total: {data.length} items</strong>
+        </div>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button style={{
+            padding: "8px 16px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            backgroundColor: "#fff",
+            cursor: "pointer"
+          }}>
+            Previous
+          </button>
+          <span style={{ padding: "8px 12px" }}>Page 1 of 1</span>
+          <button style={{
+            padding: "8px 16px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            backgroundColor: "#fff",
+            cursor: "pointer"
+          }}>
+            Next
+          </button>
+        </div>
+      </div>
+    );
+
+    return (
+      <Stack gap={20}>
+        <div>
+          <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "16px" }}>
+            📄 DataTable with Custom Footer
+          </h2>
+          <p style={{ marginBottom: "16px", color: "#666" }}>
+            This example shows how to add custom footer content like pagination, totals, or action buttons.
+          </p>
+        </div>
+
+        <DataTable
+          columns={columns}
+          data={data}
+          allowsSorting={true}
+          selectionMode="multiple"
+          footer={footerContent}
+        />
+
+        <div style={{ marginTop: "16px", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>Footer Features:</h3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            <li>Custom content via the `footer` prop</li>
+            <li>Consistent styling with table theme</li>
+            <li>Perfect for pagination controls</li>
+            <li>Works with horizontal scrolling</li>
+            <li>Can contain any React component</li>
+          </ul>
+        </div>
+      </Stack>
+    );
+  },
+};
+
+export const HorizontalScrolling: Story = {
+  render: (args) => {
+    // Create many columns to force horizontal scrolling
+    const manyColumns: DataTableColumn[] = [
+      { id: "name", header: "Full Name", accessor: (row) => row.name, minWidth: 150 },
+      { id: "age", header: "Age", accessor: (row) => row.age, minWidth: 80 },
+      { id: "role", header: "Role/Position", accessor: (row) => row.role, minWidth: 120 },
+      { id: "email", header: "Email Address", accessor: (row) => row.email || "user@example.com", minWidth: 200 },
+      { id: "department", header: "Department", accessor: (row) => row.department || "Engineering", minWidth: 150 },
+      { id: "location", header: "Office Location", accessor: (row) => row.location || "San Francisco, CA", minWidth: 180 },
+      { id: "phone", header: "Phone Number", accessor: (row) => row.phone || "+1 (555) 123-4567", minWidth: 150 },
+      { id: "salary", header: "Annual Salary", accessor: (row) => row.salary || "$95,000", minWidth: 120 },
+      { id: "startDate", header: "Start Date", accessor: (row) => row.startDate || "2023-01-15", minWidth: 120 },
+      { id: "manager", header: "Reporting Manager", accessor: (row) => row.manager || "John Smith", minWidth: 150 },
+      { id: "projects", header: "Active Projects", accessor: (row) => row.projects || "Project Alpha, Beta", minWidth: 200 },
+      { id: "skills", header: "Technical Skills", accessor: (row) => row.skills || "React, TypeScript, Node.js", minWidth: 250 },
+    ];
+
+    // Create data with wide content
+    const wideData: DataTableRow[] = Array.from({ length: 10 }, (_, i) => ({
+      id: `${i + 1}`,
+      name: `Employee Name ${i + 1}`,
+      age: 25 + (i % 15),
+      role: `Senior ${['Developer', 'Designer', 'Manager', 'Analyst'][i % 4]}`,
+      email: `employee${i + 1}@company.com`,
+      department: ['Engineering', 'Design', 'Marketing', 'Sales'][i % 4],
+      location: ['San Francisco, CA', 'New York, NY', 'London, UK', 'Berlin, Germany'][i % 4],
+      phone: `+1 (555) ${String(123 + i).padStart(3, '0')}-${String(4567 + i).padStart(4, '0')}`,
+      salary: `$${(80000 + i * 5000).toLocaleString()}`,
+      startDate: `202${2 + (i % 2)}-${String((i % 12) + 1).padStart(2, '0')}-15`,
+      manager: ['Alice Johnson', 'Bob Smith', 'Carol Williams', 'David Brown'][i % 4],
+      projects: [`Project ${String.fromCharCode(65 + (i % 3))}`, `Initiative ${String.fromCharCode(88 + (i % 3))}`].join(', '),
+      skills: [
+        'React, TypeScript, Node.js',
+        'Figma, Sketch, Adobe Creative Suite',
+        'Python, Django, PostgreSQL',
+        'Salesforce, HubSpot, Analytics'
+      ][i % 4],
+    }));
+
+    return (
+      <Stack gap={20}>
+        <div>
+          <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "16px" }}>
+            📊 Horizontal Scrolling DataTable
+          </h2>
+          <p style={{ marginBottom: "16px", color: "#666" }}>
+            This table has many columns with wide content to demonstrate horizontal scrolling. 
+            The header remains sticky during horizontal scrolling.
+          </p>
+        </div>
+
+        {/* Container with fixed width to force horizontal scrolling */}
+          <DataTable
+            columns={manyColumns}
+            data={wideData}
+            isAdjustable={true}
+            allowsSorting={true}
+            stickyHeader={true}
+            selectionMode="multiple"
+            defaultSelectedKeys={new Set(["1", "3"])}
+            footer={
+              <div style={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center",
+                fontSize: "14px" 
+              }}>
+                <span>Showing {wideData.length} employees</span>
+                <span>Scroll horizontally to see all columns →</span>
+              </div>
+            }
+          />
+
+        <div style={{ marginTop: "16px", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>Features Demonstrated:</h3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            <li>Horizontal scrolling when columns exceed container width</li>
+            <li>Sticky header that remains visible during horizontal scroll</li>
+            <li>Column resizing with maintained scroll position</li>
+            <li>Row selection maintained during scrolling</li>
+            <li>Sorting functionality with horizontal scroll</li>
+            <li>Custom footer that scrolls horizontally with the table</li>
+          </ul>
+        </div>
+      </Stack>
+    );
+  },
+};
+
 export const AllFeatures: Story = {
   render: (args) => {
     // Feature toggles

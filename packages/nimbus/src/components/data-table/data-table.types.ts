@@ -71,4 +71,5 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   children?: React.ReactNode;
   density?: DataTableDensity;
   isTruncated?: boolean;
+  footer?: React.ReactNode;
 }
