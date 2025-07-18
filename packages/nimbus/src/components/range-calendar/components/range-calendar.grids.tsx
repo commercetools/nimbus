@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import {
   today,
   getLocalTimeZone,
@@ -39,6 +39,37 @@ export const RangeCalendarGrids = () => {
 
   // RangeCalendar-specific: Get the selected date range from calendar state
   const selectedRange = calendarState.value;
+
+  // Track previous anchor date to detect immediate clicks
+  const previousAnchorRef = useRef<DateValue | null>(null);
+
+  // Custom range clearing logic - detect when anchorDate changes outside current range
+  useEffect(() => {
+    const currentAnchor = calendarState.anchorDate;
+    const previousAnchor = previousAnchorRef.current;
+
+    // Only process if anchorDate actually changed
+    if (
+      currentAnchor &&
+      (!previousAnchor || currentAnchor.compare(previousAnchor) !== 0)
+    ) {
+      // If we have a complete range, any click should clear it and start fresh
+      if (selectedRange?.start && selectedRange?.end) {
+        // Clear the existing range by setting null, then setting new start date only
+        calendarState.setValue(null);
+        // Small delay to ensure the null state is processed, then set new start date
+        setTimeout(() => {
+          calendarState.setValue({
+            start: currentAnchor,
+            end: currentAnchor,
+          });
+        }, 0);
+      }
+    }
+
+    // Update previous anchor reference
+    previousAnchorRef.current = currentAnchor;
+  }, [calendarState.anchorDate, selectedRange, calendarState]);
 
   return (
     <RangeCalendarGridsSlot>

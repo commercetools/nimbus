@@ -105,16 +105,18 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
         color: "neutral.12",
         borderRadius: "0",
       },
-      // Remove right border radius for start date (to connect to range)
-      "&[data-selected=true][data-range-start=true]": {
-        borderTopRightRadius: "0",
-        borderBottomRightRadius: "0",
-      },
-      // Remove left border radius for end date (to connect to range)
-      "&[data-selected=true][data-range-end=true]": {
-        borderTopLeftRadius: "0",
-        borderBottomLeftRadius: "0",
-      },
+      // Range start: remove right radius to connect visually to the rest of the range
+      "&[data-selected=true][data-range-start=true]:not([data-range-end=true])":
+        {
+          borderTopRightRadius: "0",
+          borderBottomRightRadius: "0",
+        },
+      // Range end: remove left radius to connect visually to the rest of the range
+      "&[data-selected=true][data-range-end=true]:not([data-range-start=true])":
+        {
+          borderTopLeftRadius: "0",
+          borderBottomLeftRadius: "0",
+        },
 
       // Remove border radius from middle cells in highlighted range during drag (exclude start/end)
       "&[data-in-highlighted-range=true]:not([data-drag-start=true]):not([data-drag-end=true])":
