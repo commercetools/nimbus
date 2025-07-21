@@ -27,14 +27,13 @@ export const menuSlotRecipe = defineSlotRecipe({
     trigger: {
       focusRing: "outside",
     },
+    /** popover */
     content: {
       display: "flex",
       flexDirection: "column",
       bg: "bg",
-      borderRadius: "300",
-      border: "solid-25",
-      borderColor: "neutral.6",
-      boxShadow: "lg",
+      borderRadius: "200",
+      boxShadow: "5",
       minWidth: "200px",
       maxHeight: "400px",
       overflowY: "auto",
