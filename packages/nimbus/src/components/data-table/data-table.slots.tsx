@@ -13,6 +13,7 @@ import { dataTableRecipe } from "./data-table.recipe";
  */
 interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {
   truncated?: boolean;
+  density?: "default" | "condensed";
 }
 
 /**
