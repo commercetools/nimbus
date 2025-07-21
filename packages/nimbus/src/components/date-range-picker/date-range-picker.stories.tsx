@@ -2296,7 +2296,7 @@ export const MultipleLocales: Story = {
                 start: new CalendarDateTime(2025, 6, 15, 14, 30),
                 end: new CalendarDateTime(2025, 6, 20, 16, 45),
               }}
-              aria-label="German range picker"
+              aria-label="DE German range picker"
             />
           </I18nProvider>
         </Stack>
@@ -2311,7 +2311,7 @@ export const MultipleLocales: Story = {
                 start: new CalendarDateTime(2025, 6, 15, 14, 30),
                 end: new CalendarDateTime(2025, 6, 20, 16, 45),
               }}
-              aria-label="Spanish range picker"
+              aria-label="ES Spanish range picker"
             />
           </I18nProvider>
         </Stack>
@@ -2326,10 +2326,10 @@ export const MultipleLocales: Story = {
         name: "US English range picker",
       });
       const germanPicker = await canvas.findByRole("group", {
-        name: "German range picker",
+        name: "DE German range picker",
       });
       const spanishPicker = await canvas.findByRole("group", {
-        name: "Spanish range picker",
+        name: "ES Spanish range picker",
       });
 
       await expect(usEnglishPicker).toBeInTheDocument();
@@ -2357,7 +2357,7 @@ export const MultipleLocales: Story = {
 
     await step("German uses 24-hour format without AM/PM", async () => {
       const germanPicker = await canvas.findByRole("group", {
-        name: "German range picker",
+        name: "DE German range picker",
       });
       const segments = within(germanPicker).getAllByRole("spinbutton");
 
@@ -2371,7 +2371,7 @@ export const MultipleLocales: Story = {
 
     await step("Spanish locale adapts date structure", async () => {
       const spanishPicker = await canvas.findByRole("group", {
-        name: "Spanish range picker",
+        name: "ES Spanish range picker",
       });
       const segments = within(spanishPicker).getAllByRole("spinbutton");
 
@@ -2391,7 +2391,7 @@ export const MultipleLocales: Story = {
         name: "US English range picker",
       });
       const germanPicker = await canvas.findByRole("group", {
-        name: "German range picker",
+        name: "DE German range picker",
       });
 
       const usSegments = within(usEnglishPicker).getAllByRole("spinbutton");

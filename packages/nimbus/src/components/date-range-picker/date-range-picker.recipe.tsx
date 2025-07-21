@@ -15,9 +15,12 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "inline-block",
-      // overflow: "hidden", // Removed to allow focus ring to be visible
+      // overflow: "hidden", // allows focus ring to be visible
     },
     group: {
+      // ========================================
+      // BASE LAYOUT & VISUAL PROPERTIES
+      // ========================================
       display: "flex",
       alignItems: "center",
       justifyContent: "flex-start",
@@ -27,62 +30,44 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       background: "neutral.1",
       px: "300",
       gap: 0,
-      height: "1000", // Default to md size height
-      boxSizing: "border-box",
       position: "relative", // Ensure stacking context for border
+
+      // ========================================
+      // INTERACTIVE STATES
+      // ========================================
       _hover: {
         background: "primary.2",
       },
-      // 3-layer box-shadow for focus ring: border (2px), white gap (5px), and primary color ring (8px)
+      // Focus ring with transparent gap
       _focusWithin: {
-        boxShadow: `0 0 0 2px {colors.neutral.7}, 0 0 0 5px #fff, 0 0 0 8px {colors.primary.7}`,
+        boxShadow: `0 0 0 1px {colors.neutral.7}`,
+        outline: `3px solid {colors.primary.7}`,
+        outlineOffset: "3px",
       },
 
-      // Remove border/background/margin from individual DateInputs
-      '& [class*="nimbus-date-input__root"]': {
-        border: "none",
-        boxShadow: "none",
-        borderRadius: 0,
-        px: 0,
-        width: "auto",
-        minWidth: 0,
-        flex: "0 0 auto",
-        margin: 0,
-        background: "none",
-      },
-      // Ensure the Group component aligns content to the start
-      '& > [role="group"]': {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        width: "full",
-      },
-      // Prevent segmentGroup from covering the group's border:
-      // - boxSizing: 'border-box' ensures padding/margins are included in height calculation
-      // - height: 'calc(100% - 1px)' makes segmentGroup slightly shorter so the group's border remains visible
-      // - background: 'transparent' ensures no background covers the border
+      // ========================================
+      // DATE SEGMENT GROUP STYLING
+      // ========================================
       '& [class*="nimbus-date-input__segmentGroup"]': {
-        border: "none",
         boxShadow: "none",
-        borderRadius: 0,
         px: 0,
-        width: "auto",
-        minWidth: 0,
-        flex: "0 0 auto",
         margin: 0,
         background: "transparent",
-        position: "relative",
-        zIndex: 1,
-        boxSizing: "border-box",
-        height: "calc(100% - 1px)", // Prevent covering group border
-        justifyContent: "flex-start", // Ensure content aligns to the start
-        // Remove individual DateInput focus rings - only show DateRangePicker's unified focus ring
+
+        // Prevent covering group border (slightly shorter height)
+        height: "calc(100% - 1px)",
+
+        // Remove individual DateInput focus rings, we only show unified group focus ring
         "&[data-focus-within='true']": {
           outline: "none",
           boxShadow: "none",
         },
       },
-      // Style the separator
+
+      // ========================================
+      // UI ELEMENT STYLING
+      // ========================================
+      // Style the date range separator (i.e. "–" between dates)
       '& > span[aria-hidden="true"]': {
         color: "neutral.8",
         px: 0,
@@ -91,20 +76,11 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
         fontWeight: 400,
         fontSize: "md",
       },
-      // Style the icon buttons
-      "& .nimbus-icon-button": {
-        ml: 0,
-        color: "primary.7",
-        alignSelf: "center",
-      },
     },
     trigger: {
       position: "absolute",
       right: "400",
       top: "100",
-      display: "flex",
-      alignItems: "center",
-      gap: "100",
     },
     popover: {
       bg: "neutral.1",
@@ -124,7 +100,6 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
-    // Size variants from smallest to largest
     size: {
       sm: {
         group: {
@@ -156,12 +131,13 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
           px: "300",
           _hover: {
             background: "primary.2",
+            borderRadius: "200",
           },
-        },
-        root: {
-          background: "transparent",
-          boxShadow: "none",
-          border: "none",
+          _focusWithin: {
+            borderRadius: "200",
+            outline: `3px solid {colors.primary.7}`,
+            outlineOffset: "3px",
+          },
         },
       },
     },
