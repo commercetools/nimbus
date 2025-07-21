@@ -238,9 +238,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
         value
       );
 
-    // Padding values for density
-    const cellPadding = props.density === "condensed" ? "8px" : "16px";
-
     // Check if any row (or its children) is expandable
     function hasExpandableRows(rows: DataTableRowType<T>[]): boolean {
       return rows.some(
@@ -311,7 +308,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {/* Selection checkbox cell if selection is enabled */}
             {showSelectionColumn && (
               <AriaCell style={{ 
-                padding: cellPadding, 
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
@@ -333,7 +329,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             {/* Expand/collapse cell if expand column is shown */}
             {showExpandColumn && (
               <AriaCell style={{ 
-                padding: cellPadding, 
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -352,7 +347,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               </AriaCell>
             )}
             {visibleCols.map((col) => (
-              <AriaCell key={col.id} style={{ padding: cellPadding }}>
+              <AriaCell key={col.id}>
                 <div
                   onClick={isRowClickable ? handleRowClick : undefined}
                   className={isTruncated ? "truncated-cell" : ""}
@@ -380,7 +375,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             <AriaRow>
               <AriaCell
                 colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
-                style={{ padding: cellPadding }}
               >
                 {renderDetails(row)}
               </AriaCell>
@@ -420,6 +414,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       <DataTableRoot 
         ref={ref as React.Ref<HTMLDivElement>}
         truncated={isTruncated}
+        density={props.density}
       >
         <ResizableTableContainer>
           <Table
@@ -437,13 +432,13 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             <AriaTableHeader
               style={{
                 background: "#F7F7F7",
-                borderBottom: "1px solid primary.3",
+                borderBottom: "1px solid #E0E0E0",
                 ...(stickyHeader && {
                   position: "sticky",
                   top: 0,
                   zIndex: 10,
                   boxShadow: stickyHeader
-                    ? "0 2px 4px primary-3"
+                    ? "0 2px 4px #E0E0E0"
                     : undefined,
                 }),
               }}
@@ -460,7 +455,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                   maxWidth={60}
                   style={{ 
                     textAlign: "left",
-                    padding: cellPadding,
+                    padding: "16px",
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'left'
@@ -511,9 +506,9 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                     minWidth={col.minWidth}
                     maxWidth={col.maxWidth}
                     style={{
-                      padding: cellPadding,
                       textAlign: "left",
                       position: "relative",
+                      padding: "16px",
                       borderRight: isHeaderHovered
                         ? "1px solid #E0E0E0"
                         : "none",
@@ -560,7 +555,6 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 <AriaRow>
                   <AriaCell
                     colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
-                    style={{ padding: cellPadding }}
                   >
                     No data
                   </AriaCell>

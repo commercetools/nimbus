@@ -18,11 +18,14 @@ export const dataTableRecipe = defineSlotRecipe({
   className: "nimbus-data-table",
   // Base styles applied to all instances of the component
   base: {
-    root: { 
+    root: {
       overflowX: "auto",
       display: "block",
+      "& .react-aria-Cell": {
+        padding: "16px",
+      },
       "& .data-table-row": {
-        borderBottom: "1px solid #E0E0E0"
+        borderBottom: "1px solid #E0E0E0",
       },
       "& .data-table-row:hover": {
         backgroundColor: "#F8F9FA",
@@ -122,6 +125,22 @@ export const dataTableRecipe = defineSlotRecipe({
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+          },
+        },
+      },
+    },
+    density: {
+      default: {
+        root: {
+          "& .react-aria-Cell": {
+            padding: "16px",
+          },
+        },
+      },
+      condensed: {
+        root: {
+          "& .react-aria-Cell": {
+            padding: "8px 16px",
           },
         },
       },
