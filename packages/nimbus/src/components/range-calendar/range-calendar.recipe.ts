@@ -68,12 +68,9 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
       cursor: "pointer",
       p: "200",
       minW: "1400",
-      borderRadius: "200",
       fontSize: "350",
       lineHeight: "500",
       fontWeight: "400",
-      transitionProperty: "all",
-      transitionDuration: "fastest",
       textAlign: "center",
       color: "neutral.12",
       display: "flex",
@@ -82,73 +79,49 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
       mb: "200",
       focusRing: "outside",
 
-      "&[aria-disabled=true]": {
-        layerStyle: "disabled",
-      },
-
-      "&[data-hovered=true]": {
-        bg: "primary.3",
-      },
-
+      /** today cell (lowest priority, styling-wise) */
       "&[data-today=true]": {
         bg: "neutral.3",
+        borderRadius: "200",
       },
-
-      "&[data-selected=true]": {
+      /** hovered or keyboard-focused cell */
+      "&[data-hovered='true'], &[data-focused='true']": {
+        bg: "primary.3",
+        borderRadius: "200",
+      },
+      /** selected cell (any cell in the range) */
+      "&[data-selected='true']": {
+        bg: "primary.3",
+        borderRadius: "0",
+      },
+      /** bodyCell within first column */
+      "[role='gridcell']:first-child &": {
+        borderLeftRadius: "200",
+      },
+      /** bodyCell within last column */
+      "[role='gridcell']:last-child &": {
+        borderRightRadius: "200",
+      },
+      /** start- & end-cell (shared styling) */
+      "&[data-selection-start='true'], &[data-selection-end=true]": {
         bg: "primary.9",
         color: "primary.contrast",
       },
-      /* RangeCalendar-specific selectors */
-      // In-range dates
-      "&[data-in-range=true]": {
-        bg: "primary.3",
-        color: "neutral.12",
-        borderRadius: "0",
+      /** start selection cell (only gets a border-radius on the left) */
+      "&[data-selection-start='true']": {
+        borderLeftRadius: "200",
       },
-      // Range start: remove right radius to connect visually to the rest of the range
-      "&[data-selected=true][data-range-start=true]:not([data-range-end=true])":
-        {
-          borderTopRightRadius: "0",
-          borderBottomRightRadius: "0",
-        },
-      // Range end: remove left radius to connect visually to the rest of the range
-      "&[data-selected=true][data-range-end=true]:not([data-range-start=true])":
-        {
-          borderTopLeftRadius: "0",
-          borderBottomLeftRadius: "0",
-        },
-
-      // Remove border radius from middle cells in highlighted range during drag (exclude start/end)
-      "&[data-in-highlighted-range=true]:not([data-drag-start=true]):not([data-drag-end=true])":
-        {
-          bg: "primary.3",
-          color: "neutral.12",
-          borderRadius: "0",
-        },
-      // Remove right border radius from start cell during drag
-      "&[data-drag-start=true]": {
-        borderTopRightRadius: "0",
-        borderBottomRightRadius: "0",
+      /** end selection cell (only gets a border-radius on the right)*/
+      "&[data-selection-end=true]": {
+        borderRightRadius: "200",
       },
-      // Remove left border radius from end cell during drag
-      "&[data-drag-end=true]": {
-        borderTopLeftRadius: "0",
-        borderBottomLeftRadius: "0",
+      /** BUT: if start = end cell, border-radius on all sides */
+      "&[data-selection-end=true]&[data-selection-start='true']": {
+        borderRadius: "200",
       },
-
-      // Preserve left border radius for range dates in first column
-      "&[data-first-column]": {
-        "&[data-selected=true], &[data-in-range=true]": {
-          borderTopLeftRadius: "200 !important",
-          borderBottomLeftRadius: "200 !important",
-        },
-      },
-      // Preserve right border radius for range dates in last column
-      "&[data-last-column]": {
-        "&[data-selected=true], &[data-in-range=true]": {
-          borderTopRightRadius: "200 !important",
-          borderBottomRightRadius: "200 !important",
-        },
+      /** disabled cell (must still be focusable) */
+      "&[aria-disabled=true]": {
+        layerStyle: "disabled",
       },
     },
   },
