@@ -1,5 +1,5 @@
 import { Menu, Popover } from "react-aria-components";
-import { MenuContentSlot } from "../menu.slots";
+import { MenuContentSlot, MenuPopoverSlot } from "../menu.slots";
 import type { MenuContentProps } from "../menu.types";
 import { useMenuContext } from "./menu.context";
 import { MenuSectionProvider } from "./menu.section-context";
@@ -21,13 +21,15 @@ export const MenuContent = ({
 
   return (
     <MenuSectionProvider value={{ selectionMode: menuProps.selectionMode }}>
-      <Popover placement={finalPlacement} offset={4} shouldFlip>
-        <MenuContentSlot asChild>
-          <Menu ref={ref} shouldFocusWrap autoFocus="first" {...menuProps}>
-            {children}
-          </Menu>
-        </MenuContentSlot>
-      </Popover>
+      <MenuPopoverSlot asChild>
+        <Popover placement={finalPlacement} offset={4} shouldFlip>
+          <MenuContentSlot asChild>
+            <Menu ref={ref} shouldFocusWrap autoFocus="first" {...menuProps}>
+              {children}
+            </Menu>
+          </MenuContentSlot>
+        </Popover>
+      </MenuPopoverSlot>
     </MenuSectionProvider>
   );
 };

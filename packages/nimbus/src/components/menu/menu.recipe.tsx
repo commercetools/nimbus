@@ -8,6 +8,7 @@ export const menuSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "trigger",
+    "popover",
     "content",
     "item",
     "separator",
@@ -27,18 +28,31 @@ export const menuSlotRecipe = defineSlotRecipe({
     trigger: {
       focusRing: "outside",
     },
-    /** popover */
-    content: {
-      display: "flex",
-      flexDirection: "column",
+    popover: {
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
+      overflow: "auto",
+
+      // Entry animation
+      "&[data-entering]": {
+        animationName: "fade-in, scale-in",
+        animationDuration: "fast",
+      },
+
+      // Exit animation
+      "&[data-exiting]": {
+        animationName: "fade-out, scale-out",
+        animationDuration: "faster",
+      },
+    },
+    content: {
+      display: "flex",
+      flexDirection: "column",
       minWidth: "200px",
       maxHeight: "400px",
       overflowY: "auto",
       p: "200",
-      zIndex: "dropdown",
       position: "relative",
 
       // Focus styles for keyboard navigation

@@ -329,7 +329,9 @@ export const TriggerVariations: Story = {
 
       // Close menu
       await userEvent.keyboard("{Escape}");
-      await expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      });
 
       // Test outline button trigger
       const outlineTrigger = canvas.getAllByRole("button", {
@@ -387,7 +389,10 @@ export const TriggerVariations: Story = {
       await userEvent.click(item2);
 
       // Menu should close
-      await expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      await waitFor(() => {
+        const menus = canvas.queryAllByRole("menu");
+        expect(menus).toHaveLength(0);
+      });
     });
   },
 };
@@ -615,7 +620,9 @@ export const SingleSelection: Story = {
       // Select with Enter
       await userEvent.keyboard("{Enter}");
       await expect(args.onSelectionChange).toHaveBeenCalled();
-      await expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      });
 
       // Verify display updated
       await expect(canvas.getByText("Selected: medium")).toBeInTheDocument();
@@ -781,7 +788,9 @@ export const MultiSelection: Story = {
     await step("Close and verify display updated", async () => {
       // Press Escape to close
       await userEvent.keyboard("{Escape}");
-      await expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      });
 
       // Verify display updated
       await expect(
@@ -814,7 +823,9 @@ export const MultiSelection: Story = {
 
       // Press Enter - should close menu without toggling
       await userEvent.keyboard("{Enter}");
-      await expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      });
 
       // The display should show current selections
       // We don't know exact state, just verify it exists

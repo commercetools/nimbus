@@ -22,6 +22,13 @@ export const MenuTriggerSlot = withContext<
   MenuTriggerSlotProps
 >("button", "trigger");
 
+// Menu Popover
+export type MenuPopoverSlotProps = HTMLChakraProps<"div">;
+export const MenuPopoverSlot = withContext<
+  HTMLDivElement,
+  MenuPopoverSlotProps
+>("div", "popover");
+
 // Menu Content
 export type MenuContentSlotProps = HTMLChakraProps<"div">;
 export const MenuContentSlot = withContext<
