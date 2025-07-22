@@ -15,8 +15,9 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "inline-block",
-      // overflow: "hidden", // allows focus ring to be visible
+      // overflow: "hidden", // comment out to allow focus ring to be visible
     },
+
     group: {
       // ========================================
       // BASE LAYOUT & VISUAL PROPERTIES
@@ -27,7 +28,7 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       border: "solid-25",
       borderColor: "neutral.7",
       borderRadius: "200",
-      background: "neutral.1",
+      bg: "neutral.1",
       px: "300",
       gap: 0,
       position: "relative", // Ensure stacking context for border
@@ -36,7 +37,7 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       // INTERACTIVE STATES
       // ========================================
       _hover: {
-        background: "primary.2",
+        bg: "primary.2",
       },
       // Focus ring with transparent gap
       _focusWithin: {
@@ -46,13 +47,25 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       },
 
       // ========================================
+      // DATA STATES
+      // ========================================
+      // Invalid state styling
+      "&[data-invalid='true']": {
+        border: "solid-50",
+        borderColor: "tomato.7",
+        color: "critical.11",
+        borderRadius: "200",
+        alignItems: "center",
+      },
+
+      // ========================================
       // DATE SEGMENT GROUP STYLING
       // ========================================
       '& [class*="nimbus-date-input__segmentGroup"]': {
         boxShadow: "none",
         px: 0,
         margin: 0,
-        background: "transparent",
+        bg: "transparent",
 
         // Prevent covering group border (slightly shorter height)
         height: "calc(100% - 1px)",
@@ -124,19 +137,23 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       solid: {},
       ghost: {
         group: {
-          background: "transparent",
+          bg: "transparent",
           border: "none",
-          borderRadius: 0,
-          boxShadow: "none",
           px: "300",
           _hover: {
-            background: "primary.2",
+            bg: "primary.2",
             borderRadius: "200",
           },
           _focusWithin: {
             borderRadius: "200",
             outline: `3px solid {colors.primary.7}`,
             outlineOffset: "3px",
+          },
+          // Invalid state styling for ghost variant
+          "&[data-invalid='true']": {
+            border: "solid-50",
+            borderColor: "tomato.7",
+            borderRadius: "200",
           },
         },
       },

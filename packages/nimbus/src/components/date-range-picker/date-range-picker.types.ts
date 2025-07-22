@@ -30,10 +30,7 @@ type ExcludedProps =
  * that we want to pass through to the DateInput components.
  */
 export interface DateRangePickerProps
-  extends Omit<
-      ReactAriaDateRangePickerProps<DateValue>,
-      ExcludedProps | "placeholderValue"
-    >,
+  extends Omit<ReactAriaDateRangePickerProps<DateValue>, ExcludedProps>,
     Omit<
       DateRangePickerRootProps,
       keyof ReactAriaDateRangePickerProps<DateValue> | ExcludedProps
@@ -53,16 +50,4 @@ export interface DateRangePickerProps
    * Handler that is called when the calendar popover's open state changes.
    */
   onOpenChange?: (isOpen: boolean) => void;
-
-  /**
-   * Placeholder value for the date range input. Accepts an object with optional start and end DateValue.
-   *
-   * Note: This is a Nimbus-only extension and is intentionally omitted from the props passed to the underlying
-   * React Aria DateRangePicker, which expects a single DateValue. This prop allows you to specify separate
-   * placeholder values for the start and end inputs, matching the defaultValue API shape.
-   */
-  placeholderValue?: {
-    start?: DateValue;
-    end?: DateValue;
-  };
 }

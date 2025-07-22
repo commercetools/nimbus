@@ -909,22 +909,17 @@ export const PlaceholderValue: Story = {
   render: (args) => {
     return (
       <Stack direction="column" gap="400" alignItems="start">
-        <Text>
-          With placeholder values (start: 2025-06-15, end: 2025-06-20)
-        </Text>
+        <Text>With placeholder values</Text>
         <DateRangePicker
           {...args}
-          placeholderValue={{
-            start: new CalendarDate(2025, 6, 15),
-            end: new CalendarDate(2025, 6, 20),
-          }}
+          placeholderValue={new CalendarDate(2025, 6, 15)}
           granularity="day"
           aria-label="Date range picker with placeholder values"
         />
-        <Text>Without placeholder value</Text>
+        <Text>Without placeholder values </Text>
         <DateRangePicker
           {...args}
-          aria-label="Date range picker without placeholder"
+          aria-label="Date range picker without placeholder values"
         />
       </Stack>
     );
@@ -939,7 +934,7 @@ export const PlaceholderValue: Story = {
           name: "Date range picker with placeholder values",
         });
         const withoutPlaceholder = await canvas.findByRole("group", {
-          name: "Date range picker without placeholder",
+          name: "Date range picker without placeholder values",
         });
 
         // Use helper functions to get clear buttons
@@ -1021,14 +1016,14 @@ export const PlaceholderValue: Story = {
 
         // Continue editing end date
         await userEvent.tab(); // Move to end date day segment
-        // Invisible - end date day should show placeholder value (20)
+        // Invisible - end date day should show placeholder value (15)
         await waitFor(async () => {
-          await expect(segments[4]).toHaveAttribute("aria-valuenow", "20");
+          await expect(segments[4]).toHaveAttribute("aria-valuenow", "15");
         });
         await userEvent.keyboard("{ArrowDown}");
         // Now visible
         await waitFor(async () => {
-          await expect(segments[4]).toHaveAttribute("aria-valuenow", "20");
+          await expect(segments[4]).toHaveAttribute("aria-valuenow", "15");
         });
 
         // Move to end date year segment
@@ -1307,7 +1302,6 @@ export const TimeSupport: Story = {
             ),
           }}
           aria-label="Date and time range picker with timezone"
-          hideTimeZone
         />
       </Stack>
     );
