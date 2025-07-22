@@ -50,4 +50,17 @@ export interface DateRangePickerProps
    * Handler that is called when the calendar popover's open state changes.
    */
   onOpenChange?: (isOpen: boolean) => void;
+
+  /**
+   * Whether to hide the time zone information when using ZonedDateTime values.
+   * This prop is forwarded to both the main date inputs and footer time inputs.
+   */
+  hideTimeZone?: boolean;
+}
+
+/**
+ * Props for the DateRangePickerTimeInput component.
+ */
+export interface DateRangePickerTimeInputProps {
+  hideTimeZone?: boolean;
 }

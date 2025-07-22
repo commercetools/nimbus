@@ -1796,6 +1796,49 @@ export const HideTimeZone: Story = {
       }
     );
 
+    await step("Footer time inputs respect hideTimeZone prop", async () => {
+      const timezoneShownPicker = await canvas.findByRole("group", {
+        name: "With timezone shown",
+      });
+      const timezoneHiddenPicker = await canvas.findByRole("group", {
+        name: "With timezone hidden",
+      });
+
+      const helpersShown = createDateRangePickerHelpers(
+        canvas,
+        timezoneShownPicker
+      );
+
+      await helpersShown.openCalendar();
+
+      // Check that footer time inputs show timezone when hideTimeZone is false
+      const footerTimeInputsShown = within(document.body).getAllByRole("group");
+      const timezoneInFooterShown = footerTimeInputsShown.some((input) =>
+        within(input).queryByText(/EDT/i)
+      );
+      await expect(timezoneInFooterShown).toBe(true);
+
+      await helpersShown.closeCalendar();
+
+      // Open calendar for timezone hidden picker
+      const helpersHidden = createDateRangePickerHelpers(
+        canvas,
+        timezoneHiddenPicker
+      );
+      await helpersHidden.openCalendar();
+
+      // Check that footer time inputs don't show timezone when hideTimeZone is true
+      const footerTimeInputsHidden = within(document.body).getAllByRole(
+        "group"
+      );
+      const timezoneInFooterHidden = footerTimeInputsHidden.some((input) =>
+        within(input).queryByText(/EDT/i)
+      );
+      await expect(timezoneInFooterHidden).toBe(false);
+
+      await helpersHidden.closeCalendar();
+    });
+
     await step(
       "Both DateRangePickers maintain identical functionality",
       async () => {

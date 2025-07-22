@@ -2,8 +2,11 @@ import { Flex, Text, TimeInput } from "@/components";
 import { useContext, useRef, useEffect } from "react";
 import { useLocale } from "react-aria";
 import { DateRangePickerStateContext } from "react-aria-components";
+import type { DateRangePickerTimeInputProps } from "../date-range-picker.types";
 
-export const DateRangePickerTimeInput = () => {
+export const DateRangePickerTimeInput = ({
+  hideTimeZone,
+}: DateRangePickerTimeInputProps) => {
   const { locale } = useLocale();
   const dateRangePickerState = useContext(DateRangePickerStateContext);
   const { granularity, value } = dateRangePickerState!;
@@ -69,6 +72,7 @@ export const DateRangePickerTimeInput = () => {
           locale={locale}
           variant="ghost"
           size="sm"
+          hideTimeZone={hideTimeZone}
         />
       </Flex>
 
@@ -86,6 +90,7 @@ export const DateRangePickerTimeInput = () => {
           locale={locale}
           variant="ghost"
           size="sm"
+          hideTimeZone={hideTimeZone}
         />
       </Flex>
     </Flex>
