@@ -13,6 +13,8 @@ import {
   Group,
   Popover,
   Dialog,
+  Provider,
+  TextContext,
 } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
@@ -46,6 +48,16 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
   // For other granularities (time-based), force to false so users can set both date and time
   const shouldCloseOnSelect =
     granularity === "day" ? props.shouldCloseOnSelect : false;
+
+  // Text slots for the time input labels
+  const timeTextSlots = {
+    startTime: {
+      children: "Start time",
+    },
+    endTime: {
+      children: "End time",
+    },
+  };
 
   return (
     <DateRangePickerRootSlot {...recipeProps} {...styleProps} asChild>
@@ -106,10 +118,21 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
           <DateRangePickerPopoverSlot asChild>
             <Popover placement="bottom end">
               <Dialog>
-                <DateRangePickerCalendarSlot>
-                  <RangeCalendar />
-                </DateRangePickerCalendarSlot>
-                <DateRangePickerTimeInput hideTimeZone={hideTimeZone} />
+                <Provider
+                  values={[
+                    [
+                      TextContext,
+                      {
+                        slots: timeTextSlots,
+                      },
+                    ],
+                  ]}
+                >
+                  <DateRangePickerCalendarSlot>
+                    <RangeCalendar />
+                  </DateRangePickerCalendarSlot>
+                  <DateRangePickerTimeInput hideTimeZone={hideTimeZone} />
+                </Provider>
               </Dialog>
             </Popover>
           </DateRangePickerPopoverSlot>

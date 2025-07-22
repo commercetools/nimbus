@@ -89,12 +89,7 @@ export const DateRangePickerCustomContext = ({
    * ================================
    */
   const textSlots = {
-    startTime: {
-      children: "Start time",
-    },
-    endTime: {
-      children: "End time",
-    },
+    // startTime and endTime slots are now provided directly in the popover
   };
 
   // DateRangePicker-specific: Separate time input slots for start and end times
