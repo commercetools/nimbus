@@ -53,12 +53,10 @@ export const DateRangePickerTimeInput = () => {
       px="400"
       alignItems="center"
       justifyContent="center"
-      // DateRangePicker-specific: Uses column direction and larger gap for two time inputs
-      gap="600"
-      direction="column"
+      gap="200"
     >
       {/* DateRangePicker-specific: Start DateInput with separate label */}
-      <Flex alignItems="center" gap="200" width="full">
+      <Flex alignItems="center" gap="200">
         <Text
           slot="startTime"
           textStyle="xs"
@@ -75,7 +73,7 @@ export const DateRangePickerTimeInput = () => {
       </Flex>
 
       {/* DateRangePicker-specific: End DateInput with separate label */}
-      <Flex alignItems="center" gap="200" width="full">
+      <Flex alignItems="center" gap="200">
         <Text
           slot="endTime"
           textStyle="xs"
