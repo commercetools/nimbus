@@ -51,11 +51,9 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       // ========================================
       // Invalid state styling
       "&[data-invalid='true']": {
-        border: "solid-50",
-        borderColor: "tomato.7",
         color: "critical.11",
-        borderRadius: "200",
         alignItems: "center",
+        boxShadow: "0 0 0 {sizes.50} {colors.critical.7}",
       },
 
       // ========================================
@@ -148,12 +146,6 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
             borderRadius: "200",
             outline: `3px solid {colors.primary.7}`,
             outlineOffset: "3px",
-          },
-          // Invalid state styling for ghost variant
-          "&[data-invalid='true']": {
-            border: "solid-50",
-            borderColor: "tomato.7",
-            borderRadius: "200",
           },
         },
       },
