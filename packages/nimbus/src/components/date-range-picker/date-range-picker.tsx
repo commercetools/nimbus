@@ -68,6 +68,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 style={{
                   padding: "0 5px",
                   userSelect: "none",
+                  color: "hsla(0, 0%, 39%, 0.5)", // neutral.8
                 }}
               >
                 –
