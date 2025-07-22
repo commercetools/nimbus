@@ -1002,6 +1002,13 @@ export const AllFeatures: Story = {
     };
 
     const selectedCount = Array.from(selectedKeys).length;
+    const buttonStyle = {
+      padding: "6px 12px",
+      fontSize: "12px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      backgroundColor: "#fff",
+    };
 
     return (
       <Stack gap={20}>
@@ -1179,11 +1186,7 @@ export const AllFeatures: Story = {
               <button
                 onClick={() => setVisibleColumns(allColumns)}
                 style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor: "#fff",
+                  ...buttonStyle,
                   cursor: "pointer",
                 }}
               >
@@ -1192,11 +1195,7 @@ export const AllFeatures: Story = {
               <button
                 onClick={() => setVisibleColumns(["name", "role", "status"])}
                 style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor: "#fff",
+                  ...buttonStyle,
                   cursor: "pointer",
                 }}
               >
@@ -1205,11 +1204,7 @@ export const AllFeatures: Story = {
               <button
                 onClick={() => setSearch("Engineer")}
                 style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor: "#fff",
+                  ...buttonStyle,
                   cursor: "pointer",
                 }}
               >
