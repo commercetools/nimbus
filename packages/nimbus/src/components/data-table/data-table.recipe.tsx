@@ -19,7 +19,7 @@ export const dataTableRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
-      overflowX: "auto",
+      // overflowX: "auto",
       display: "block",
       "& .react-aria-Cell": {
         padding: "16px",
@@ -40,7 +40,7 @@ export const dataTableRecipe = defineSlotRecipe({
         },
         // Disable hover effects for selection and expand columns
         "&.selection-column-header, &#expand": {
-          cursor: "default !important",
+          cursor: "default",
           "&:hover": {
             backgroundColor: "transparent",
           },
