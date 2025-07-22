@@ -29,7 +29,8 @@ import { DateRangePickerCustomContext } from "./components/date-range-picker.cus
  * Users can either type a date range directly or select from the calendar.
  */
 export const DateRangePicker = (props: DateRangePickerProps) => {
-  const { granularity = "day" } = props;
+  // Forward hideTimeZone to child components (footer time inputs)
+  const { granularity = "day", hideTimeZone } = props;
   const recipe = useSlotRecipe({ recipe: dateRangePickerSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
 
@@ -60,6 +61,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 size={size}
                 variant="plain"
                 width="auto"
+                hideTimeZone={hideTimeZone}
               />
 
               {/* TODO: find a more elegant way to do this */}
@@ -72,7 +74,13 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
               >
                 –
               </span>
-              <DateInput slot="end" size={size} variant="plain" width="auto" />
+              <DateInput
+                slot="end"
+                size={size}
+                variant="plain"
+                width="auto"
+                hideTimeZone={hideTimeZone}
+              />
               <DateRangePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
@@ -101,7 +109,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 <DateRangePickerCalendarSlot>
                   <RangeCalendar />
                 </DateRangePickerCalendarSlot>
-                <DateRangePickerTimeInput />
+                <DateRangePickerTimeInput hideTimeZone={hideTimeZone} />
               </Dialog>
             </Popover>
           </DateRangePickerPopoverSlot>
