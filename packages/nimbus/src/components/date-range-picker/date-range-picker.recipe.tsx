@@ -15,18 +15,18 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "inline-block",
-      // overflow: "hidden", // comment out to allow focus ring to be visible
     },
 
     group: {
+      "--border-width": "{sizes.25}",
+      "--border-color": "{colors.neutral.7}",
       // ========================================
       // BASE LAYOUT & VISUAL PROPERTIES
       // ========================================
       display: "flex",
       alignItems: "center",
       justifyContent: "flex-start",
-      border: "solid-25",
-      borderColor: "neutral.7",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       borderRadius: "200",
       bg: "neutral.1",
       px: "300",
@@ -41,9 +41,10 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       },
       // Focus ring with transparent gap
       _focusWithin: {
-        boxShadow: `0 0 0 1px {colors.neutral.7}`,
-        outline: `3px solid {colors.primary.7}`,
-        outlineOffset: "3px",
+        outlineWidth: "var(--focus-ring-width)",
+        outlineColor: "var(--focus-ring-color)",
+        outlineStyle: "var(--focus-ring-style)",
+        outlineOffset: "var(--focus-ring-offset)",
       },
 
       // ========================================
@@ -51,41 +52,10 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       // ========================================
       // Invalid state styling
       "&[data-invalid='true']": {
+        "--border-width": "{sizes.50}",
+        "--border-color": "{colors.critical.7}",
         color: "critical.11",
         alignItems: "center",
-        boxShadow: "0 0 0 {sizes.50} {colors.critical.7}",
-      },
-
-      // ========================================
-      // DATE SEGMENT GROUP STYLING
-      // ========================================
-      '& [class*="nimbus-date-input__segmentGroup"]': {
-        boxShadow: "none",
-        px: 0,
-        margin: 0,
-        bg: "transparent",
-
-        // Prevent covering group border (slightly shorter height)
-        height: "calc(100% - 1px)",
-
-        // Remove individual DateInput focus rings, we only show unified group focus ring
-        "&[data-focus-within='true']": {
-          outline: "none",
-          boxShadow: "none",
-        },
-      },
-
-      // ========================================
-      // UI ELEMENT STYLING
-      // ========================================
-      // Style the date range separator (i.e. "–" between dates)
-      '& > span[aria-hidden="true"]': {
-        color: "neutral.8",
-        px: 0,
-        mx: 0,
-        userSelect: "none",
-        fontWeight: 400,
-        fontSize: "md",
       },
     },
     trigger: {
@@ -136,16 +106,9 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       ghost: {
         group: {
           bg: "transparent",
-          border: "none",
           px: "300",
           _hover: {
             bg: "primary.2",
-            borderRadius: "200",
-          },
-          _focusWithin: {
-            borderRadius: "200",
-            outline: `3px solid {colors.primary.7}`,
-            outlineOffset: "3px",
           },
         },
       },

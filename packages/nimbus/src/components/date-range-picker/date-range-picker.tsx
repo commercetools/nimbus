@@ -58,7 +58,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
               <DateInput
                 slot="start"
                 size={size}
-                variant={variant}
+                variant="plain"
                 width="auto"
               />
 
@@ -72,12 +72,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
               >
                 –
               </span>
-              <DateInput
-                slot="end"
-                size={size}
-                variant={variant}
-                width="auto"
-              />
+              <DateInput slot="end" size={size} variant="plain" width="auto" />
               <DateRangePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton

@@ -120,6 +120,13 @@ export const dateInputSlotRecipe = defineSlotRecipe({
           },
         },
       },
+      plain: {
+        segmentGroup: {
+          px: "0",
+          outline: "none!",
+          boxShadow: "none!",
+        },
+      },
     },
   },
   defaultVariants: {
