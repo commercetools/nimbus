@@ -245,6 +245,7 @@ export const NestedRows: Story = {
       },
       { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
     ],
+    nestedKey: "children",
   },
 };
 
@@ -373,212 +374,253 @@ export const SortingWithSearch: Story = {
   },
 };
 
-export const SortingShowcase: Story = {
-  render: (args) => {
-    return (
-      <Stack gap={16}>
-        <div>
-          <h3>Complete Sorting Showcase</h3>
-          <p>
-            <strong>Features demonstrated:</strong>
-          </p>
-          <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
-            <li>
-              • Visual sort indicators (arrows show current sort direction)
-            </li>
-            <li>• Mixed sortable and non-sortable columns</li>
-            <li>• String sorting (Name, Role) - case insensitive</li>
-            <li>• Numeric sorting (Age) - proper number comparison</li>
-            <li>• Active column highlighting</li>
-            <li>• Hover effects on sortable headers</li>
-          </ul>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Try it:</strong> Click on "Name", "Age", or "Role" column
-            headers to sort. Notice the "Custom" column is not sortable and
-            doesn't show indicators.
-          </p>
-        </div>
-        <DataTable {...args} />
-      </Stack>
-    );
-  },
-  args: {
-    columns: sortableColumns,
-    data,
-    allowsSorting: true,
-    isAdjustable: true,
-  },
-};
-
-export const SingleRowSelection: Story = {
-  render: (args) => {
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
-
-    return (
-      <Stack gap={16}>
-        <div>
-          <h3>Single Row Selection</h3>
-          <p>
-            Select one row at a time. Click on checkboxes or rows to select.
-          </p>
-          <p>
-            <strong>Selected:</strong>{" "}
-            {Array.from(selectedKeys).join(", ") || "None"}
-          </p>
-        </div>
-        <DataTable
-          {...args}
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-        />
-      </Stack>
-    );
-  },
-  args: {
-    columns: sortableColumns,
-    data,
-    selectionMode: "single",
-    allowsSorting: true,
-  },
-};
-
-export const MultipleRowSelection: Story = {
-  render: (args) => {
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
-
-    return (
-      <Stack gap={16}>
-        <div>
-          <h3>Multiple Row Selection</h3>
-          <p>
-            Select multiple rows using checkboxes. Use the header checkbox to
-            select/deselect all.
-          </p>
-          <p>
-            <strong>Selected count:</strong> {Array.from(selectedKeys).length}
-          </p>
-          <p>
-            <strong>Selected IDs:</strong>{" "}
-            {Array.from(selectedKeys).join(", ") || "None"}
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
-          <button
-            onClick={() => setSelectedKeys(new Set())}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
-          >
-            Clear Selection
-          </button>
-          <button
-            onClick={() => setSelectedKeys(new Set(["1", "3", "5"]))}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
-          >
-            Select Odd Rows
-          </button>
-          <button
-            onClick={() => setSelectedKeys("all")}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
-          >
-            Select All
-          </button>
-        </div>
-        <DataTable
-          {...args}
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-        />
-      </Stack>
-    );
-  },
-  args: {
-    columns: sortableColumns,
-    data,
-    selectionMode: "multiple",
-    allowsSorting: true,
-  },
-};
-
-export const SelectionWithSortingAndSearch: Story = {
+export const SelectionShowcase: Story = {
   render: (args) => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
     const [search, setSearch] = useState("");
+    const [selectionMode, setSelectionMode] = useState<"none" | "single" | "multiple">("multiple");
+    const [disallowEmptySelection, setDisallowEmptySelection] = useState(false);
+    const [isRowClickable, setIsRowClickable] = useState(false);
+
+    const selectedCount = Array.from(selectedKeys).length;
+
+    // Reset selection when mode changes
+    const handleSelectionModeChange = (newMode: "none" | "single" | "multiple") => {
+      setSelectionMode(newMode);
+      if (newMode === "none") {
+        setSelectedKeys(new Set());
+      } else if (newMode === "single" && selectedCount > 1) {
+        // Keep only first selected item when switching to single mode
+        const firstSelected = Array.from(selectedKeys)[0];
+        setSelectedKeys(firstSelected ? new Set([firstSelected]) : new Set());
+      }
+    };
 
     return (
-      <Stack gap={16}>
+      <Stack gap={20}>
         <div>
-          <h3>Selection + Sorting + Search</h3>
-          <p>Combine all features: search, sort, and select multiple rows.</p>
+          <h3>Row Selection Showcase</h3>
           <p>
-            <strong>Selected:</strong> {Array.from(selectedKeys).length} row(s)
+            Comprehensive demonstration of all row selection capabilities. Use the controls below 
+            to test different selection modes, behaviors, and interactions.
           </p>
         </div>
-        <TextInput
-          value={search}
-          onChange={setSearch}
-          placeholder="Search..."
-          width="1/3"
-        />
+
+        {/* Controls Section */}
+        <div
+          style={{
+            padding: "16px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "8px",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          {/* Search */}
+          <div style={{ marginBottom: "16px" }}>
+            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+              🔍 Search & Filter
+            </h4>
+            <TextInput
+              value={search}
+              onChange={setSearch}
+              placeholder="Search to filter rows..."
+              width="300px"
+            />
+          </div>
+
+          {/* Selection Settings */}
+          <div style={{ marginBottom: "16px" }}>
+            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+              ✅ Selection Mode
+            </h4>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "8px" }}>
+              <label style={{ fontSize: "14px" }}>Mode:</label>
+              <select
+                value={selectionMode}
+                onChange={(e) => handleSelectionModeChange(e.target.value as any)}
+                style={{ 
+                  padding: "6px 12px", 
+                  borderRadius: "4px", 
+                  border: "1px solid #ccc",
+                  fontSize: "14px"
+                }}
+              >
+                <option value="none">None (No Selection)</option>
+                <option value="single">Single Row</option>
+                <option value="multiple">Multiple Rows</option>
+              </select>
+              
+              {selectionMode !== "none" && (
+                <>
+                  <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+                    <input
+                      type="checkbox"
+                      checked={disallowEmptySelection}
+                      onChange={(e) => setDisallowEmptySelection(e.target.checked)}
+                      style={{ marginRight: "6px" }}
+                    />
+                    Require Selection
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+                    <input
+                      type="checkbox"
+                      checked={isRowClickable}
+                      onChange={(e) => setIsRowClickable(e.target.checked)}
+                      style={{ marginRight: "6px" }}
+                    />
+                    Clickable Rows
+                  </label>
+                </>
+              )}
+            </div>
+            
+            {selectionMode !== "none" && (
+              <div style={{ fontSize: "14px", color: "#666", marginBottom: "12px" }}>
+                <strong>Selected:</strong> {selectedCount} row(s) | 
+                <strong> IDs:</strong> {Array.from(selectedKeys).join(", ") || "None"}
+              </div>
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          {selectionMode !== "none" && (
+            <div>
+              <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+                🎯 Quick Actions
+              </h4>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <button
+                  onClick={() => setSelectedKeys(new Set())}
+                  disabled={disallowEmptySelection && selectedCount <= 1}
+                  style={{
+                    padding: "6px 12px",
+                    fontSize: "12px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    backgroundColor: "#fff",
+                    cursor: (disallowEmptySelection && selectedCount <= 1) ? "not-allowed" : "pointer",
+                    opacity: (disallowEmptySelection && selectedCount <= 1) ? 0.5 : 1,
+                  }}
+                >
+                  Clear Selection
+                </button>
+                
+                {selectionMode === "multiple" && (
+                  <>
+                    <button
+                      onClick={() => setSelectedKeys(new Set(["1", "3", "5"]))}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Select Odd Rows
+                    </button>
+                    <button
+                      onClick={() => setSelectedKeys(new Set(["2", "4", "6"]))}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Select Even Rows
+                    </button>
+                    <button
+                      onClick={() => setSelectedKeys("all")}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Select All
+                    </button>
+                  </>
+                )}
+                
+                {selectionMode === "single" && (
+                  <button
+                    onClick={() => setSelectedKeys(new Set(["1"]))}
+                    style={{
+                      padding: "6px 12px",
+                      fontSize: "12px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      backgroundColor: "#fff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Select First Row
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Feature Explanation */}
+        <div
+          style={{
+            padding: "12px",
+            backgroundColor: "#eff6ff",
+            border: "1px solid #93c5fd",
+            borderRadius: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <strong>Features Demonstrated:</strong>
+          <ul style={{ margin: "8px 0 0 20px", lineHeight: "1.5" }}>
+            <li><strong>None Mode:</strong> No selection checkboxes or functionality</li>
+            <li><strong>Single Mode:</strong> Radio-button behavior, one row at a time</li>
+            <li><strong>Multiple Mode:</strong> Checkboxes with select all/none in header</li>
+            <li><strong>Search Integration:</strong> Selection works with filtered results</li>
+            <li><strong>Required Selection:</strong> Prevent deselecting when enabled</li>
+            <li><strong>Row Clicking:</strong> Click entire row to select (optional)</li>
+            <li><strong>Programmatic Control:</strong> Buttons to demonstrate selection API</li>
+          </ul>
+        </div>
+
         <DataTable
-          {...args}
+          columns={sortableColumns}
+          data={data}
           search={search}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
+          selectionMode={selectionMode}
+          disallowEmptySelection={disallowEmptySelection}
+          allowsSorting={true}
+          isRowClickable={isRowClickable}
+          onRowClick={isRowClickable ? (row) => {
+            if (selectionMode === "single") {
+              setSelectedKeys(new Set([row.id]));
+            } else if (selectionMode === "multiple") {
+              const newSelection = new Set(selectedKeys);
+              if (newSelection.has(row.id)) {
+                if (!disallowEmptySelection || newSelection.size > 1) {
+                  newSelection.delete(row.id);
+                }
+              } else {
+                newSelection.add(row.id);
+              }
+              setSelectedKeys(newSelection);
+            }
+          } : undefined}
         />
       </Stack>
     );
   },
-  args: {
-    columns: sortableColumns,
-    data,
-    selectionMode: "multiple",
-    allowsSorting: true,
-  },
-};
-
-export const DisallowEmptySelection: Story = {
-  render: (args) => {
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
-
-    return (
-      <Stack gap={16}>
-        <div>
-          <h3>Disallow Empty Selection</h3>
-          <p>
-            At least one row must always be selected. Try to deselect all rows.
-          </p>
-          <p>
-            <strong>Selected:</strong> {Array.from(selectedKeys).join(", ")}
-          </p>
-        </div>
-        <DataTable
-          {...args}
-          isRowClickable
-          onRowClick={(row) => alert(`Clicked row: ${row.name}`)}
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-        />
-      </Stack>
-    );
-  },
-  args: {
-    columns: sortableColumns,
-    data,
-    selectionMode: "multiple",
-    disallowEmptySelection: true,
-    allowsSorting: true,
-  },
+  args: {},
 };
 
 // Sample data with longer text for truncation demonstration
@@ -1241,6 +1283,7 @@ export const AllFeatures: Story = {
             stickyHeader={stickyHeader}
             isTruncated={isTruncated}
             density={density}
+            nestedKey="children"
             onRowClick={(row) => {
               if (isRowClickable) {
                 alert(`Clicked row: ${row.name} (${row.role})`);
@@ -1298,3 +1341,489 @@ export const AllFeatures: Story = {
   },
   args: {},
 };
+
+// Data with flexible nested children - mix of table rows and React content
+const flexibleNestedData: DataTableRow[] = [
+  {
+    id: "user-1",
+    name: "Alice Johnson",
+    age: 30,
+    role: "Team Lead",
+    class: "senior",
+    // Traditional nested table rows
+    children: [
+      {
+        id: "user-1-project-1",
+        name: "Project Alpha",
+        age: 6,
+        role: "Web App",
+        class: "active",
+      },
+      {
+        id: "user-1-project-2", 
+        name: "Project Beta",
+        age: 3,
+        role: "Mobile App",
+        class: "planning",
+      },
+    ],
+  },
+  {
+    id: "user-2",
+    name: "Bob Smith",
+    age: 28,
+    role: "Developer",
+    class: "mid-level",
+    // React content as children - a detailed profile card
+    children: (
+      <div style={{ 
+        padding: "20px", 
+        backgroundColor: "#f8fafc", 
+        borderRadius: "8px",
+        border: "1px solid #e2e8f0",
+        margin: "8px 0"
+      }}>
+        <div style={{ display: "flex", gap: "16px", marginBottom: "12px" }}>
+          <div style={{
+            width: "48px",
+            height: "48px", 
+            backgroundColor: "#3b82f6",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontWeight: "bold"
+          }}>
+            BS
+          </div>
+          <div>
+            <h4 style={{ margin: "0 0 4px 0", color: "#1e293b" }}>Bob Smith - Developer Profile</h4>
+            <p style={{ margin: "0", color: "#64748b", fontSize: "14px" }}>
+              Specializes in React, TypeScript, and Node.js development
+            </p>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" }}>
+          <div>
+            <strong style={{ color: "#374151" }}>Skills:</strong>
+            <div style={{ marginTop: "4px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
+              {["React", "TypeScript", "Node.js", "GraphQL"].map(skill => (
+                <span key={skill} style={{
+                  padding: "2px 8px",
+                  backgroundColor: "#dbeafe", 
+                  color: "#1e40af",
+                  borderRadius: "12px",
+                  fontSize: "12px"
+                }}>
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <strong style={{ color: "#374151" }}>Contact:</strong>
+            <p style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#6b7280" }}>
+              📧 bob.smith@company.com<br/>
+              📱 +1 (555) 123-4567
+            </p>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "user-3",
+    name: "Carol Williams", 
+    age: 35,
+    role: "Designer",
+    class: "senior",
+    // Interactive form as children
+    children: (
+      <div style={{
+        padding: "20px",
+        backgroundColor: "#fefefe", 
+        border: "1px solid #e5e7eb",
+        borderRadius: "8px",
+        margin: "8px 0"
+      }}>
+        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>Update Designer Settings</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "16px" }}>
+          <div>
+            <label style={{ display: "block", marginBottom: "4px", fontWeight: "500", color: "#374151" }}>
+              Design Tool Preference:
+            </label>
+            <select style={{
+              width: "100%",
+              padding: "8px 12px",
+              border: "1px solid #d1d5db",
+              borderRadius: "6px",
+              backgroundColor: "white"
+            }}>
+              <option>Figma</option>
+              <option>Sketch</option> 
+              <option>Adobe XD</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ display: "block", marginBottom: "4px", fontWeight: "500", color: "#374151" }}>
+              Availability:
+            </label>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "14px" }}>
+                <input type="radio" name="availability" value="full-time" defaultChecked />
+                Full-time
+              </label>
+              <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "14px" }}>
+                <input type="radio" name="availability" value="part-time" />
+                Part-time
+              </label>
+            </div>
+          </div>
+        </div>
+        <div style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
+          <button style={{
+            padding: "8px 16px",
+            backgroundColor: "#3b82f6",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "14px"
+          }}>
+            Save Changes
+          </button>
+          <button style={{
+            padding: "8px 16px", 
+            backgroundColor: "transparent",
+            color: "#6b7280",
+            border: "1px solid #d1d5db",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "14px"
+          }}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "user-4",
+    name: "David Chen",
+    age: 29,
+    role: "Data Analyst", 
+    class: "mid-level",
+    // Chart/visualization as children
+    children: (
+      <div style={{
+        padding: "20px",
+        backgroundColor: "#f9fafb",
+        border: "1px solid #e5e7eb", 
+        borderRadius: "8px",
+        margin: "8px 0"
+      }}>
+        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>Data Analytics Dashboard</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
+          <div style={{
+            padding: "16px",
+            backgroundColor: "white",
+            borderRadius: "6px",
+            border: "1px solid #e5e7eb",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#059669" }}>847</div>
+            <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>Reports Generated</div>
+          </div>
+          <div style={{
+            padding: "16px",
+            backgroundColor: "white", 
+            borderRadius: "6px",
+            border: "1px solid #e5e7eb",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#dc2626" }}>23</div>
+            <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>Data Issues Found</div>
+          </div>
+          <div style={{
+            padding: "16px",
+            backgroundColor: "white",
+            borderRadius: "6px", 
+            border: "1px solid #e5e7eb",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#2563eb" }}>156</div>
+            <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>Active Datasets</div>
+          </div>
+        </div>
+        <div style={{ marginTop: "16px" }}>
+          <div style={{ fontSize: "14px", fontWeight: "500", marginBottom: "8px", color: "#374151" }}>
+            Recent Activity:
+          </div>
+          <div style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.5" }}>
+            • Completed quarterly sales analysis<br/>
+            • Updated customer segmentation model<br/>
+            • Fixed data pipeline for user metrics<br/>
+            • Created executive dashboard for Q4 review
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "user-5",
+    name: "Emma Rodriguez",
+    age: 26,
+    role: "QA Engineer",
+    class: "junior",
+    // Simple text content
+    children: (
+      <div style={{
+        padding: "16px",
+        backgroundColor: "#fff7ed",
+        border: "1px solid #fed7aa",
+        borderRadius: "6px",
+        margin: "8px 0"
+      }}>
+        <p style={{ margin: "0", color: "#9a3412", fontSize: "14px" }}>
+          🧪 <strong>Testing Focus:</strong> Currently working on automated testing for the new checkout flow. 
+          Planning to implement end-to-end tests using Playwright and enhance unit test coverage for payment components.
+        </p>
+      </div>
+    ),
+  },
+];
+
+export const FlexibleNestedChildren: Story = {
+  render: (args) => {
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Flexible Nested Children</h3>
+          <p>
+            Demonstrates the new flexible children system where nested content can be either:
+          </p>
+          <ul style={{ marginLeft: "20px", lineHeight: "1.6" }}>
+            <li><strong>Table rows</strong> - Traditional nested table structure (Alice's projects)</li>
+            <li><strong>React components</strong> - Rich interactive content like profile cards, forms, charts</li>
+            <li><strong>Simple content</strong> - Text, alerts, or any other React elements</li>
+          </ul>
+          <p>Click the expand buttons to see different types of nested content.</p>
+        </div>
+        <DataTable {...args} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: [
+      { id: "name", header: "Name", accessor: (row) => row.name },
+      { id: "age", header: "Age", accessor: (row) => row.age },
+      { id: "role", header: "Role", accessor: (row) => row.role },
+      { id: "class", header: "Level", accessor: (row) => row.class },
+    ],
+    data: flexibleNestedData,
+    allowsSorting: true,
+    isAdjustable: true,
+    stickyHeader: true,
+    nestedKey: "children",
+  },
+};
+
+export const NoNestedContent: Story = {
+  render: (args) => {
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>No Nested Content (Default Behavior)</h3>
+          <p>
+            When no <code>nestedKey</code> is provided, the component ignores any nested properties 
+            and only renders parent rows. This is the new default behavior.
+          </p>
+          <div style={{
+            padding: "12px",
+            backgroundColor: "#fef3c7",
+            border: "1px solid #fbbf24",
+            borderRadius: "6px",
+            fontSize: "14px"
+          }}>
+            <strong>Note:</strong> The data below contains "children" properties, but they won't be rendered 
+            without explicitly setting <code>nestedKey="children"</code>.
+          </div>
+        </div>
+        <DataTable {...args} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: [
+      { id: "name", header: "Name", accessor: (row) => row.name },
+      { id: "type", header: "Type", accessor: (row) => row.type },
+      { id: "status", header: "Status", accessor: (row) => row.status },
+    ],
+    data: [
+      {
+        id: "parent-1",
+        name: "Parent Item 1",
+        type: "Parent",
+        status: "Active",
+        // This children property will be ignored without nestedKey
+        children: [
+          { id: "child-1", name: "Child Item 1", type: "Child", status: "Hidden" },
+          { id: "child-2", name: "Child Item 2", type: "Child", status: "Hidden" },
+        ],
+      },
+      {
+        id: "parent-2",
+        name: "Parent Item 2", 
+        type: "Parent",
+        status: "Active",
+        // This children property will also be ignored
+        children: (
+          <div>This React content won't be shown without nestedKey</div>
+        ),
+      },
+      {
+        id: "parent-3",
+        name: "Parent Item 3",
+        type: "Parent",
+        status: "Active",
+        // No children property at all
+      },
+    ],
+    allowsSorting: true,
+    isAdjustable: true,
+    // Notice: no nestedKey prop, so no nested content will be rendered
+  },
+};
+
+// Data demonstrating flexible nestedKey usage
+const fetchData = [
+  {
+    id: "galaxy-1",
+    name: "Milky Way",
+    type: "Spiral Galaxy",
+    distance: "0 ly",
+    // Using "sky" as the nested key
+    sky: [
+      { id: "star-1", species: "Alpha Centauri", genus: "Star System", distance: "4.37 ly", area: 12.5 },
+      { id: "star-2", species: "Proxima Centauri", genus: "Red Dwarf", distance: "4.24 ly", area: 240 },
+      { id: "star-3", species: "Barnard's Star", genus: "Red Dwarf", distance: "5.96 ly", area: 17.5 },
+    ],
+  },
+  {
+    id: "galaxy-2",
+    name: "Andromeda",
+    type: "Spiral Galaxy", 
+    distance: "2.537M ly",
+    // Using "sky" as the nested key with React content
+    sky: [
+      { id: "star-1", species: "Alpha Centauri", genus: "Star System", distance: "4.37 ly", area: 20.45 },
+      { id: "star-2", species: "Proxima Centauri", genus: "Red Dwarf", distance: "4.24 ly", area: 400.05 },
+      { id: "star-3", species: "Barnard's Star", genus: "Red Dwarf", distance: "5.96 ly", area: 102.00 },
+    ],
+  },
+];
+
+
+const fundamentalData = [
+  {
+    id: "physics-1",
+    name: "Quantum Mechanics",
+    field: "Physics",
+    complexity: "High",
+    // Using "fundamental" as the nested key
+    fundamental: [
+      { id: "principle-1", name: "Wave-Particle Duality", field: "Principle", complexity: "Medium" },
+      { id: "principle-2", name: "Uncertainty Principle", field: "Principle", complexity: "Medium" },
+      { id: "principle-3", name: "Quantum Entanglement", field: "Phenomenon", complexity: "High" },
+    ],
+  },
+  {
+    id: "math-1",
+    name: "Calculus",
+    field: "Mathematics",
+    complexity: "Medium",
+    // Using "fundamental" as the nested key with custom content
+    fundamental: (
+      <div style={{
+        padding: "16px",
+        backgroundColor: "#f0f9ff",
+        border: "1px solid #7dd3fc",
+        borderRadius: "8px",
+        margin: "8px 0"
+      }}>
+        <h4 style={{ margin: "0 0 12px 0", color: "#0c4a6e" }}>📐 Calculus Applications</h4>
+        <div style={{ fontSize: "14px", lineHeight: "1.6", color: "#075985" }}>
+          <strong>Differential Calculus:</strong> rates of change, slopes, optimization<br/>
+          <strong>Integral Calculus:</strong> areas, volumes, accumulation<br/>
+          <strong>Real-world uses:</strong> physics, engineering, economics, biology
+        </div>
+      </div>
+    ),
+  },
+];
+
+// Define columns for the nested table
+const nestedTableColumns: DataTableColumn[] = [
+  { id: "species", header: "Species", accessor: (row: any) => row.species },
+  { id: "genus", header: "Genus", accessor: (row: any) => row.genus },
+  { id: "distance", header: "Distance", accessor: (row: any) => row.distance },
+  { id: "area", header: "Area", accessor: (row: any) => row.area },
+];
+
+// Create nested table data with proper React components
+const customNestedKeyData = fetchData.map((item) => ({
+  ...item,
+  sky: (
+    <div style={{ padding: "16px" }}>
+      <h4 style={{ margin: "0 0 12px 0", color: "#374151" }}>
+        {item.name} Details
+      </h4>
+      <DataTable
+        columns={nestedTableColumns}
+        data={item.sky}
+        allowsSorting={true}
+        isAdjustable={true}
+        // No nestedKey needed for this inner table since sky data doesn't have further nesting
+      />
+    </div>
+  )
+}));
+
+export const TableInATable: Story = {
+  render: (args) => {
+    return (
+      <Stack gap={16}>
+        <div>
+          <h3>Tables Within Tables</h3>
+          <p>
+            This example demonstrates nested DataTable components where each parent row can expand 
+            to show a complete DataTable with its own data, columns, and functionality.
+          </p>
+          <div style={{
+            padding: "12px",
+            backgroundColor: "#eff6ff",
+            border: "1px solid #93c5fd",
+            borderRadius: "6px",
+            fontSize: "14px"
+          }}>
+            <strong>Usage:</strong> Nest DataTable components as React content using custom nestedKey
+          </div>
+        </div>
+        <DataTable {...args} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: [
+      { id: "name", header: "Galaxy/Object", accessor: (row) => row.name },
+      { id: "type", header: "Type", accessor: (row) => row.type },
+      { id: "distance", header: "Distance", accessor: (row) => row.distance },
+    ],
+    data: customNestedKeyData,
+    nestedKey: "sky", // Custom nested key
+    allowsSorting: true,
+    isAdjustable: true,
+  },
+};
+
