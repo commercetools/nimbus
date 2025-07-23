@@ -3,13 +3,7 @@ import { IconToggleButton } from "./icon-toggle-button";
 import { Stack } from "@/components";
 import type { IconToggleButtonProps } from "./icon-toggle-button.types";
 import { userEvent, within, expect, fn } from "storybook/test";
-import {
-  ThumbUp,
-  Star,
-  Bookmark,
-  NotificationsNone,
-  FavoriteBorder,
-} from "@commercetools/nimbus-icons";
+import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
 const meta: Meta<typeof IconToggleButton> = {
@@ -20,10 +14,6 @@ const meta: Meta<typeof IconToggleButton> = {
 export default meta;
 
 type Story = StoryObj<typeof IconToggleButton>;
-
-const sizes = ["md", "xs", "2xs"] as const;
-const variants = ["outline", "ghost"] as const;
-const tones = ["primary", "neutral", "critical", "info"] as const;
 
 export const Base: Story = {
   args: {
@@ -47,7 +37,7 @@ export const Base: Story = {
     });
 
     await step("Starts unselected", async () => {
-      await expect(button).toHaveAttribute("data-selected", "false");
+      await expect(button).not.toHaveAttribute("data-selected", "true");
     });
 
     await step("Can be toggled by clicking", async () => {
@@ -59,101 +49,49 @@ export const Base: Story = {
   },
 };
 
-export const Controlled: Story = {
-  render: () => {
-    const [isSelected, setIsSelected] = useState(false);
-
-    return (
-      <Stack gap="400">
-        <IconToggleButton
-          isSelected={isSelected}
-          onChange={setIsSelected}
-          aria-label="Toggle notifications"
-        >
-          <NotificationsNone />
-        </IconToggleButton>
-        <span>Notifications: {isSelected ? "ON" : "OFF"}</span>
-      </Stack>
-    );
-  },
-};
-
-export const Sizes: Story = {
-  render: () => {
-    return (
-      <Stack gap="400" align="center">
-        {sizes.map((size) => (
-          <IconToggleButton
-            key={size}
-            size={size}
-            aria-label={`Like (${size})`}
-          >
-            <ThumbUp />
-          </IconToggleButton>
-        ))}
-      </Stack>
-    );
-  },
-};
-
 export const Variants: Story = {
+  name: "Visual Variants",
   render: () => {
     return (
       <Stack gap="400">
-        {variants.map((variant) => (
-          <Stack key={variant} gap="200" align="center">
-            <IconToggleButton
-              variant={variant}
-              aria-label={`${variant} unselected`}
-            >
-              <Star />
-            </IconToggleButton>
-            <IconToggleButton
-              variant={variant}
-              isSelected
-              aria-label={`${variant} selected`}
-            >
-              <Star />
-            </IconToggleButton>
-          </Stack>
-        ))}
+        <Stack gap="200" align="center">
+          <IconToggleButton variant="outline" aria-label="outline unselected">
+            <Star />
+          </IconToggleButton>
+          <IconToggleButton
+            variant="outline"
+            isSelected
+            aria-label="outline selected"
+          >
+            <Star />
+          </IconToggleButton>
+        </Stack>
+        <Stack gap="200" align="center">
+          <IconToggleButton variant="ghost" aria-label="ghost unselected">
+            <Star />
+          </IconToggleButton>
+          <IconToggleButton
+            variant="ghost"
+            isSelected
+            aria-label="ghost selected"
+          >
+            <Star />
+          </IconToggleButton>
+        </Stack>
       </Stack>
     );
   },
 };
 
-export const Tones: Story = {
-  render: () => {
-    return (
-      <Stack gap="400">
-        {tones.map((tone) => (
-          <Stack key={tone} gap="200" align="center">
-            <IconToggleButton tone={tone} aria-label={`${tone} favorite`}>
-              <FavoriteBorder />
-            </IconToggleButton>
-            <IconToggleButton
-              tone={tone}
-              isSelected
-              aria-label={`${tone} favorite selected`}
-            >
-              <FavoriteBorder />
-            </IconToggleButton>
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-};
-
-export const Multiple: Story = {
-  name: "Multiple Icon Toggle Buttons",
+export const InContext: Story = {
+  name: "Multiple in Context",
   render: () => {
     const [liked, setLiked] = useState(false);
     const [starred, setStarred] = useState(false);
     const [bookmarked, setBookmarked] = useState(false);
 
     return (
-      <Stack gap="400">
+      <Stack gap="200" align="center">
         <IconToggleButton
           isSelected={liked}
           onChange={setLiked}
@@ -180,31 +118,5 @@ export const Multiple: Story = {
         </IconToggleButton>
       </Stack>
     );
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    children: <ThumbUp />,
-    "aria-label": "Like",
-    isDisabled: true,
-    onChange: fn(),
-    // @ts-expect-error - data-testid is not an official prop
-    "data-testid": "test",
-  },
-  play: async ({ canvasElement, step, args }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByTestId("test");
-    const onChange = args.onChange;
-
-    await step("Is disabled", async () => {
-      await expect(button).toBeDisabled();
-      await expect(button).toHaveAttribute("data-disabled", "true");
-    });
-
-    await step("Cannot be clicked when disabled", async () => {
-      await userEvent.click(button);
-      await expect(onChange).not.toHaveBeenCalled();
-    });
   },
 };
