@@ -1652,10 +1652,27 @@ export const HourCycle: Story = {
 
         helpers.openCalendar();
 
+        // Wait for the calendar popover to be fully rendered
+        await waitFor(async () => {
+          const popover = await within(document.body).findByRole("dialog");
+          await expect(popover).toBeInTheDocument();
+        });
+
+        // Wait for the time input footer to be rendered
+        await waitFor(async () => {
+          const startTimeFooterInput = await within(document.body).findByRole(
+            "group",
+            {
+              name: "Start time (hour and minute)",
+            }
+          );
+          await expect(startTimeFooterInput).toBeInTheDocument();
+        });
+
         // Check start time label & segments in footer
-        const startTimeLabel = await within(document.body).findByText(
-          "Start time"
-        );
+        const startTimeLabel = await waitFor(async () => {
+          return await within(document.body).findByText("Start time");
+        });
         await expect(startTimeLabel).toBeInTheDocument();
 
         const startTimeFooterInput = within(document.body).getByRole("group", {
@@ -1675,14 +1692,19 @@ export const HourCycle: Story = {
         await expect(startTimeMinuteSegment).toBeInTheDocument();
 
         // Check end time label & segments in footer
-        const endTimeFooterInput = within(document.body).getByRole("group", {
-          name: "End time (hour and minute)",
+        const endTimeFooterInput = await waitFor(async () => {
+          return await within(document.body).findByRole("group", {
+            name: "End time (hour and minute)",
+          });
         });
 
         const endTimeFooterSegments =
           within(endTimeFooterInput).getAllByRole("spinbutton");
 
-        const endTimeLabel = await within(document.body).findByText("End time");
+        // Wait for end time label to be rendered
+        const endTimeLabel = await waitFor(async () => {
+          return await within(document.body).findByText("End time");
+        });
 
         const endTimeHourSegment = endTimeFooterSegments.find(
           (segment) => segment.getAttribute("aria-valuenow") === "16"
