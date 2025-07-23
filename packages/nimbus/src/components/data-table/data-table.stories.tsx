@@ -378,14 +378,18 @@ export const SelectionShowcase: Story = {
   render: (args) => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
     const [search, setSearch] = useState("");
-    const [selectionMode, setSelectionMode] = useState<"none" | "single" | "multiple">("multiple");
+    const [selectionMode, setSelectionMode] = useState<
+      "none" | "single" | "multiple"
+    >("multiple");
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(false);
     const [isRowClickable, setIsRowClickable] = useState(false);
 
     const selectedCount = Array.from(selectedKeys).length;
 
     // Reset selection when mode changes
-    const handleSelectionModeChange = (newMode: "none" | "single" | "multiple") => {
+    const handleSelectionModeChange = (
+      newMode: "none" | "single" | "multiple"
+    ) => {
       setSelectionMode(newMode);
       if (newMode === "none") {
         setSelectedKeys(new Set());
@@ -401,8 +405,9 @@ export const SelectionShowcase: Story = {
         <div>
           <h3>Row Selection Showcase</h3>
           <p>
-            Comprehensive demonstration of all row selection capabilities. Use the controls below 
-            to test different selection modes, behaviors, and interactions.
+            Comprehensive demonstration of all row selection capabilities. Use
+            the controls below to test different selection modes, behaviors, and
+            interactions.
           </p>
         </div>
 
@@ -417,7 +422,13 @@ export const SelectionShowcase: Story = {
         >
           {/* Search */}
           <div style={{ marginBottom: "16px" }}>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               🔍 Search & Filter
             </h4>
             <TextInput
@@ -430,38 +441,67 @@ export const SelectionShowcase: Story = {
 
           {/* Selection Settings */}
           <div style={{ marginBottom: "16px" }}>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               ✅ Selection Mode
             </h4>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                marginBottom: "8px",
+              }}
+            >
               <label style={{ fontSize: "14px" }}>Mode:</label>
               <select
                 value={selectionMode}
-                onChange={(e) => handleSelectionModeChange(e.target.value as any)}
-                style={{ 
-                  padding: "6px 12px", 
-                  borderRadius: "4px", 
+                onChange={(e) =>
+                  handleSelectionModeChange(e.target.value as any)
+                }
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "4px",
                   border: "1px solid #ccc",
-                  fontSize: "14px"
+                  fontSize: "14px",
                 }}
               >
                 <option value="none">None (No Selection)</option>
                 <option value="single">Single Row</option>
                 <option value="multiple">Multiple Rows</option>
               </select>
-              
+
               {selectionMode !== "none" && (
                 <>
-                  <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "14px",
+                    }}
+                  >
                     <input
                       type="checkbox"
                       checked={disallowEmptySelection}
-                      onChange={(e) => setDisallowEmptySelection(e.target.checked)}
+                      onChange={(e) =>
+                        setDisallowEmptySelection(e.target.checked)
+                      }
                       style={{ marginRight: "6px" }}
                     />
                     Require Selection
                   </label>
-                  <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "14px",
+                    }}
+                  >
                     <input
                       type="checkbox"
                       checked={isRowClickable}
@@ -473,11 +513,18 @@ export const SelectionShowcase: Story = {
                 </>
               )}
             </div>
-            
+
             {selectionMode !== "none" && (
-              <div style={{ fontSize: "14px", color: "#666", marginBottom: "12px" }}>
-                <strong>Selected:</strong> {selectedCount} row(s) | 
-                <strong> IDs:</strong> {Array.from(selectedKeys).join(", ") || "None"}
+              <div
+                style={{
+                  fontSize: "14px",
+                  color: "#666",
+                  marginBottom: "12px",
+                }}
+              >
+                <strong>Selected:</strong> {selectedCount} row(s) |
+                <strong> IDs:</strong>{" "}
+                {Array.from(selectedKeys).join(", ") || "None"}
               </div>
             )}
           </div>
@@ -485,7 +532,13 @@ export const SelectionShowcase: Story = {
           {/* Quick Actions */}
           {selectionMode !== "none" && (
             <div>
-              <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+              <h4
+                style={{
+                  margin: "0 0 8px 0",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                }}
+              >
                 🎯 Quick Actions
               </h4>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -498,13 +551,17 @@ export const SelectionShowcase: Story = {
                     border: "1px solid #ccc",
                     borderRadius: "4px",
                     backgroundColor: "#fff",
-                    cursor: (disallowEmptySelection && selectedCount <= 1) ? "not-allowed" : "pointer",
-                    opacity: (disallowEmptySelection && selectedCount <= 1) ? 0.5 : 1,
+                    cursor:
+                      disallowEmptySelection && selectedCount <= 1
+                        ? "not-allowed"
+                        : "pointer",
+                    opacity:
+                      disallowEmptySelection && selectedCount <= 1 ? 0.5 : 1,
                   }}
                 >
                   Clear Selection
                 </button>
-                
+
                 {selectionMode === "multiple" && (
                   <>
                     <button
@@ -548,7 +605,7 @@ export const SelectionShowcase: Story = {
                     </button>
                   </>
                 )}
-                
+
                 {selectionMode === "single" && (
                   <button
                     onClick={() => setSelectedKeys(new Set(["1"]))}
@@ -581,13 +638,34 @@ export const SelectionShowcase: Story = {
         >
           <strong>Features Demonstrated:</strong>
           <ul style={{ margin: "8px 0 0 20px", lineHeight: "1.5" }}>
-            <li><strong>None Mode:</strong> No selection checkboxes or functionality</li>
-            <li><strong>Single Mode:</strong> Radio-button behavior, one row at a time</li>
-            <li><strong>Multiple Mode:</strong> Checkboxes with select all/none in header</li>
-            <li><strong>Search Integration:</strong> Selection works with filtered results</li>
-            <li><strong>Required Selection:</strong> Prevent deselecting when enabled</li>
-            <li><strong>Row Clicking:</strong> Click entire row to select (optional)</li>
-            <li><strong>Programmatic Control:</strong> Buttons to demonstrate selection API</li>
+            <li>
+              <strong>None Mode:</strong> No selection checkboxes or
+              functionality
+            </li>
+            <li>
+              <strong>Single Mode:</strong> Radio-button behavior, one row at a
+              time
+            </li>
+            <li>
+              <strong>Multiple Mode:</strong> Checkboxes with select all/none in
+              header
+            </li>
+            <li>
+              <strong>Search Integration:</strong> Selection works with filtered
+              results
+            </li>
+            <li>
+              <strong>Required Selection:</strong> Prevent deselecting when
+              enabled
+            </li>
+            <li>
+              <strong>Row Clicking:</strong> Click entire row to select
+              (optional)
+            </li>
+            <li>
+              <strong>Programmatic Control:</strong> Buttons to demonstrate
+              selection API
+            </li>
           </ul>
         </div>
 
@@ -601,21 +679,25 @@ export const SelectionShowcase: Story = {
           disallowEmptySelection={disallowEmptySelection}
           allowsSorting={true}
           isRowClickable={isRowClickable}
-          onRowClick={isRowClickable ? (row) => {
-            if (selectionMode === "single") {
-              setSelectedKeys(new Set([row.id]));
-            } else if (selectionMode === "multiple") {
-              const newSelection = new Set(selectedKeys);
-              if (newSelection.has(row.id)) {
-                if (!disallowEmptySelection || newSelection.size > 1) {
-                  newSelection.delete(row.id);
+          onRowClick={
+            isRowClickable
+              ? (row) => {
+                  if (selectionMode === "single") {
+                    setSelectedKeys(new Set([row.id]));
+                  } else if (selectionMode === "multiple") {
+                    const newSelection = new Set(selectedKeys);
+                    if (newSelection.has(row.id)) {
+                      if (!disallowEmptySelection || newSelection.size > 1) {
+                        newSelection.delete(row.id);
+                      }
+                    } else {
+                      newSelection.add(row.id);
+                    }
+                    setSelectedKeys(newSelection);
+                  }
                 }
-              } else {
-                newSelection.add(row.id);
-              }
-              setSelectedKeys(newSelection);
-            }
-          } : undefined}
+              : undefined
+          }
         />
       </Stack>
     );
@@ -682,7 +764,9 @@ export const TextTruncation: Story = {
 
     return (
       <Stack gap={16}>
-        <label style={{ display: "block", marginBottom: 12, alignContent: 'center' }}>
+        <label
+          style={{ display: "block", marginBottom: 12, alignContent: "center" }}
+        >
           <input
             type="checkbox"
             checked={isTruncated}
@@ -718,7 +802,8 @@ const comprehensiveData: DataTableRow[] = [
     name: "Alice Johnson",
     age: 30,
     role: "Senior Software Engineer",
-    class: "This is a very long description that should be truncated when the truncation feature is enabled. It contains multiple words and should demonstrate how the truncation works with ellipsis and hover to show full content.",
+    class:
+      "This is a very long description that should be truncated when the truncation feature is enabled. It contains multiple words and should demonstrate how the truncation works with ellipsis and hover to show full content.",
     email: "alice.johnson@company.com",
     department: "Engineering",
     status: "Active",
@@ -737,7 +822,7 @@ const comprehensiveData: DataTableRow[] = [
         id: "1-2",
         name: "Project Beta",
         age: 1,
-        role: "Backend Project", 
+        role: "Backend Project",
         class: "Node.js API service",
         email: "project.beta@company.com",
         department: "Engineering",
@@ -750,7 +835,8 @@ const comprehensiveData: DataTableRow[] = [
     name: "Bob Smith",
     age: 25,
     role: "Frontend Developer",
-    class: "Another lengthy description that will showcase the truncation functionality. This text is intentionally long to demonstrate how the component handles overflow text with truncation enabled.",
+    class:
+      "Another lengthy description that will showcase the truncation functionality. This text is intentionally long to demonstrate how the component handles overflow text with truncation enabled.",
     email: "bob.smith@company.com",
     department: "Engineering",
     status: "Active",
@@ -760,7 +846,8 @@ const comprehensiveData: DataTableRow[] = [
     name: "Carol Williams",
     age: 28,
     role: "UX Designer",
-    class: "A comprehensive description that exceeds the normal cell width and needs truncation. When truncated, users can hover to see the full content in a tooltip-like display.",
+    class:
+      "A comprehensive description that exceeds the normal cell width and needs truncation. When truncated, users can hover to see the full content in a tooltip-like display.",
     email: "carol.williams@company.com",
     department: "Design",
     status: "Active",
@@ -782,7 +869,8 @@ const comprehensiveData: DataTableRow[] = [
     name: "David Brown",
     age: 32,
     role: "Product Manager",
-    class: "Extended text content that demonstrates the importance of truncation in data tables where space is limited but full content access is still needed via hover interaction.",
+    class:
+      "Extended text content that demonstrates the importance of truncation in data tables where space is limited but full content access is still needed via hover interaction.",
     email: "david.brown@company.com",
     department: "Product",
     status: "Active",
@@ -814,8 +902,18 @@ const comprehensiveColumns: DataTableColumn[] = [
   { id: "name", header: "Name", accessor: (row) => row.name, isSortable: true },
   { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true },
   { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true },
-  { id: "email", header: "Email", accessor: (row) => row.email, isSortable: true },
-  { id: "department", header: "Department", accessor: (row) => row.department, isSortable: true },
+  {
+    id: "email",
+    header: "Email",
+    accessor: (row) => row.email,
+    isSortable: true,
+  },
+  {
+    id: "department",
+    header: "Department",
+    accessor: (row) => row.department,
+    isSortable: true,
+  },
   {
     id: "status",
     header: "Status",
@@ -828,16 +926,22 @@ const comprehensiveColumns: DataTableColumn[] = [
           borderRadius: "12px",
           fontSize: "12px",
           fontWeight: "500",
-          backgroundColor: 
-            value === "Active" ? "#e6f7ff" :
-            value === "In Progress" ? "#fff7e6" :
-            value === "Planning" ? "#f6ffed" :
-            "#f5f5f5",
+          backgroundColor:
+            value === "Active"
+              ? "#e6f7ff"
+              : value === "In Progress"
+                ? "#fff7e6"
+                : value === "Planning"
+                  ? "#f6ffed"
+                  : "#f5f5f5",
           color:
-            value === "Active" ? "#1890ff" :
-            value === "In Progress" ? "#fa8c16" :
-            value === "Planning" ? "#52c41a" :
-            "#8c8c8c",
+            value === "Active"
+              ? "#1890ff"
+              : value === "In Progress"
+                ? "#fa8c16"
+                : value === "Planning"
+                  ? "#52c41a"
+                  : "#8c8c8c",
         }}
       >
         {value}
@@ -855,34 +959,40 @@ const comprehensiveColumns: DataTableColumn[] = [
 export const WithFooter: Story = {
   render: (args) => {
     const footerContent = (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        gap: "16px",
-        marginTop: "16px"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "16px",
+          marginTop: "16px",
+        }}
+      >
         <div>
           <strong>Total: {data.length} items</strong>
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
-          <button style={{
-            padding: "8px 16px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            backgroundColor: "#fff",
-            cursor: "pointer"
-          }}>
+          <button
+            style={{
+              padding: "8px 16px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+            }}
+          >
             Previous
           </button>
           <span style={{ padding: "8px 12px" }}>Page 1 of 1</span>
-          <button style={{
-            padding: "8px 16px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            backgroundColor: "#fff",
-            cursor: "pointer"
-          }}>
+          <button
+            style={{
+              padding: "8px 16px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+            }}
+          >
             Next
           </button>
         </div>
@@ -892,11 +1002,18 @@ export const WithFooter: Story = {
     return (
       <Stack gap={20}>
         <div>
-          <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "16px" }}>
+          <h2
+            style={{
+              fontSize: "24px",
+              fontWeight: "600",
+              marginBottom: "16px",
+            }}
+          >
             📄 DataTable with Custom Footer
           </h2>
           <p style={{ marginBottom: "16px", color: "#666" }}>
-            This example shows how to add custom footer content like pagination, totals, or action buttons.
+            This example shows how to add custom footer content like pagination,
+            totals, or action buttons.
           </p>
         </div>
 
@@ -908,8 +1025,19 @@ export const WithFooter: Story = {
           footer={footerContent}
         />
 
-        <div style={{ marginTop: "16px", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>Footer Features:</h3>
+        <div
+          style={{
+            marginTop: "16px",
+            padding: "16px",
+            backgroundColor: "#f5f5f5",
+            borderRadius: "8px",
+          }}
+        >
+          <h3
+            style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}
+          >
+            Footer Features:
+          </h3>
           <ul style={{ margin: 0, paddingLeft: "20px" }}>
             <li>Custom content via the `footer` prop</li>
             <li>Consistent styling with table theme</li>
@@ -927,18 +1055,73 @@ export const HorizontalScrolling: Story = {
   render: (args) => {
     // Create many columns to force horizontal scrolling
     const manyColumns: DataTableColumn[] = [
-      { id: "name", header: "Full Name", accessor: (row) => row.name, minWidth: 150 },
+      {
+        id: "name",
+        header: "Full Name",
+        accessor: (row) => row.name,
+        minWidth: 150,
+      },
       { id: "age", header: "Age", accessor: (row) => row.age, minWidth: 80 },
-      { id: "role", header: "Role/Position", accessor: (row) => row.role, minWidth: 120 },
-      { id: "email", header: "Email Address", accessor: (row) => row.email || "user@example.com", minWidth: 200 },
-      { id: "department", header: "Department", accessor: (row) => row.department || "Engineering", minWidth: 150 },
-      { id: "location", header: "Office Location", accessor: (row) => row.location || "San Francisco, CA", minWidth: 180 },
-      { id: "phone", header: "Phone Number", accessor: (row) => row.phone || "+1 (555) 123-4567", minWidth: 150 },
-      { id: "salary", header: "Annual Salary", accessor: (row) => row.salary || "$95,000", minWidth: 120 },
-      { id: "startDate", header: "Start Date", accessor: (row) => row.startDate || "2023-01-15", minWidth: 120 },
-      { id: "manager", header: "Reporting Manager", accessor: (row) => row.manager || "John Smith", minWidth: 150 },
-      { id: "projects", header: "Active Projects", accessor: (row) => row.projects || "Project Alpha, Beta", minWidth: 200 },
-      { id: "skills", header: "Technical Skills", accessor: (row) => row.skills || "React, TypeScript, Node.js", minWidth: 250 },
+      {
+        id: "role",
+        header: "Role/Position",
+        accessor: (row) => row.role,
+        minWidth: 120,
+      },
+      {
+        id: "email",
+        header: "Email Address",
+        accessor: (row) => row.email || "user@example.com",
+        minWidth: 200,
+      },
+      {
+        id: "department",
+        header: "Department",
+        accessor: (row) => row.department || "Engineering",
+        minWidth: 150,
+      },
+      {
+        id: "location",
+        header: "Office Location",
+        accessor: (row) => row.location || "San Francisco, CA",
+        minWidth: 180,
+      },
+      {
+        id: "phone",
+        header: "Phone Number",
+        accessor: (row) => row.phone || "+1 (555) 123-4567",
+        minWidth: 150,
+      },
+      {
+        id: "salary",
+        header: "Annual Salary",
+        accessor: (row) => row.salary || "$95,000",
+        minWidth: 120,
+      },
+      {
+        id: "startDate",
+        header: "Start Date",
+        accessor: (row) => row.startDate || "2023-01-15",
+        minWidth: 120,
+      },
+      {
+        id: "manager",
+        header: "Reporting Manager",
+        accessor: (row) => row.manager || "John Smith",
+        minWidth: 150,
+      },
+      {
+        id: "projects",
+        header: "Active Projects",
+        accessor: (row) => row.projects || "Project Alpha, Beta",
+        minWidth: 200,
+      },
+      {
+        id: "skills",
+        header: "Technical Skills",
+        accessor: (row) => row.skills || "React, TypeScript, Node.js",
+        minWidth: 250,
+      },
     ];
 
     // Create data with wide content
@@ -946,58 +1129,88 @@ export const HorizontalScrolling: Story = {
       id: `${i + 1}`,
       name: `Employee Name ${i + 1}`,
       age: 25 + (i % 15),
-      role: `Senior ${['Developer', 'Designer', 'Manager', 'Analyst'][i % 4]}`,
+      role: `Senior ${["Developer", "Designer", "Manager", "Analyst"][i % 4]}`,
       email: `employee${i + 1}@company.com`,
-      department: ['Engineering', 'Design', 'Marketing', 'Sales'][i % 4],
-      location: ['San Francisco, CA', 'New York, NY', 'London, UK', 'Berlin, Germany'][i % 4],
-      phone: `+1 (555) ${String(123 + i).padStart(3, '0')}-${String(4567 + i).padStart(4, '0')}`,
+      department: ["Engineering", "Design", "Marketing", "Sales"][i % 4],
+      location: [
+        "San Francisco, CA",
+        "New York, NY",
+        "London, UK",
+        "Berlin, Germany",
+      ][i % 4],
+      phone: `+1 (555) ${String(123 + i).padStart(3, "0")}-${String(4567 + i).padStart(4, "0")}`,
       salary: `$${(80000 + i * 5000).toLocaleString()}`,
-      startDate: `202${2 + (i % 2)}-${String((i % 12) + 1).padStart(2, '0')}-15`,
-      manager: ['Alice Johnson', 'Bob Smith', 'Carol Williams', 'David Brown'][i % 4],
-      projects: [`Project ${String.fromCharCode(65 + (i % 3))}`, `Initiative ${String.fromCharCode(88 + (i % 3))}`].join(', '),
+      startDate: `202${2 + (i % 2)}-${String((i % 12) + 1).padStart(2, "0")}-15`,
+      manager: ["Alice Johnson", "Bob Smith", "Carol Williams", "David Brown"][
+        i % 4
+      ],
+      projects: [
+        `Project ${String.fromCharCode(65 + (i % 3))}`,
+        `Initiative ${String.fromCharCode(88 + (i % 3))}`,
+      ].join(", "),
       skills: [
-        'React, TypeScript, Node.js',
-        'Figma, Sketch, Adobe Creative Suite',
-        'Python, Django, PostgreSQL',
-        'Salesforce, HubSpot, Analytics'
+        "React, TypeScript, Node.js",
+        "Figma, Sketch, Adobe Creative Suite",
+        "Python, Django, PostgreSQL",
+        "Salesforce, HubSpot, Analytics",
       ][i % 4],
     }));
 
     return (
       <Stack gap={20}>
         <div>
-          <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "16px" }}>
+          <h2
+            style={{
+              fontSize: "24px",
+              fontWeight: "600",
+              marginBottom: "16px",
+            }}
+          >
             📊 Horizontal Scrolling DataTable
           </h2>
           <p style={{ marginBottom: "16px", color: "#666" }}>
-            This table has many columns with wide content to demonstrate horizontal scrolling. 
-            The header remains sticky during horizontal scrolling.
+            This table has many columns with wide content to demonstrate
+            horizontal scrolling. The header remains sticky during horizontal
+            scrolling.
           </p>
         </div>
 
         {/* Container with fixed width to force horizontal scrolling */}
-          <DataTable
-            columns={manyColumns}
-            data={wideData}
-            isAdjustable={true}
-            allowsSorting={true}
-            stickyHeader={true}
-            defaultSelectedKeys={new Set(["1", "3"])}
-            footer={
-              <div style={{ 
-                display: "flex", 
-                justifyContent: "space-between", 
+        <DataTable
+          columns={manyColumns}
+          data={wideData}
+          isAdjustable={true}
+          allowsSorting={true}
+          stickyHeader={true}
+          defaultSelectedKeys={new Set(["1", "3"])}
+          footer={
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
-                fontSize: "14px" 
-              }}>
-                <span>Showing {wideData.length} employees</span>
-                <span>Scroll horizontally to see all columns →</span>
-              </div>
-            }
-          />
+                fontSize: "14px",
+              }}
+            >
+              <span>Showing {wideData.length} employees</span>
+              <span>Scroll horizontally to see all columns →</span>
+            </div>
+          }
+        />
 
-        <div style={{ marginTop: "16px", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>Features Demonstrated:</h3>
+        <div
+          style={{
+            marginTop: "16px",
+            padding: "16px",
+            backgroundColor: "#f5f5f5",
+            borderRadius: "8px",
+          }}
+        >
+          <h3
+            style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}
+          >
+            Features Demonstrated:
+          </h3>
           <ul style={{ margin: 0, paddingLeft: "20px" }}>
             <li>Horizontal scrolling when columns exceed container width</li>
             <li>Sticky header that remains visible during horizontal scroll</li>
@@ -1017,12 +1230,18 @@ export const AllFeatures: Story = {
     // Feature toggles
     const [search, setSearch] = useState("");
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
-    const [visibleColumns, setVisibleColumns] = useState(["name", "age", "role", "email", "status"]);
+    const [visibleColumns, setVisibleColumns] = useState([
+      "name",
+      "age",
+      "role",
+      "email",
+      "status",
+    ]);
     const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
       column: "name",
       direction: "ascending",
     });
-    
+
     // Settings
     const [isAdjustable, setIsAdjustable] = useState(true);
     const [allowsSorting, setAllowsSorting] = useState(true);
@@ -1030,7 +1249,9 @@ export const AllFeatures: Story = {
     const [stickyHeader, setStickyHeader] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
     const [density, setDensity] = useState<"default" | "condensed">("default");
-    const [selectionMode, setSelectionMode] = useState<"none" | "single" | "multiple">("multiple");
+    const [selectionMode, setSelectionMode] = useState<
+      "none" | "single" | "multiple"
+    >("multiple");
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
 
     const allColumns = comprehensiveColumns.map((col) => col.id);
@@ -1055,11 +1276,14 @@ export const AllFeatures: Story = {
     return (
       <Stack gap={20}>
         <div>
-          <h2 style={{ margin: "0 0 8px 0", fontSize: "24px", fontWeight: "600" }}>
+          <h2
+            style={{ margin: "0 0 8px 0", fontSize: "24px", fontWeight: "600" }}
+          >
             🚀 DataTable - All Features Showcase
           </h2>
           <p style={{ margin: "0 0 16px 0", color: "#666", fontSize: "16px" }}>
-            Comprehensive demo showcasing all DataTable capabilities. Toggle features below to see how they work together.
+            Comprehensive demo showcasing all DataTable capabilities. Toggle
+            features below to see how they work together.
           </p>
         </div>
 
@@ -1074,7 +1298,13 @@ export const AllFeatures: Story = {
         >
           {/* Search */}
           <div style={{ marginBottom: "20px" }}>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               🔍 Search & Filter
             </h4>
             <TextInput
@@ -1087,12 +1317,25 @@ export const AllFeatures: Story = {
 
           {/* Column Visibility */}
           <div style={{ marginBottom: "20px" }}>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               👁️ Column Visibility
             </h4>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
               {allColumns.map((colId) => (
-                <label key={colId} style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+                <label
+                  key={colId}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "14px",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={visibleColumns.includes(colId)}
@@ -1107,11 +1350,23 @@ export const AllFeatures: Story = {
 
           {/* Table Settings */}
           <div style={{ marginBottom: "20px" }}>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               ⚙️ Table Settings
             </h4>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-              <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={isAdjustable}
@@ -1120,7 +1375,13 @@ export const AllFeatures: Story = {
                 />
                 Resizable Columns
               </label>
-              <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={allowsSorting}
@@ -1129,7 +1390,13 @@ export const AllFeatures: Story = {
                 />
                 Sorting
               </label>
-              <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={isRowClickable}
@@ -1138,7 +1405,13 @@ export const AllFeatures: Story = {
                 />
                 Clickable Rows
               </label>
-              <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={stickyHeader}
@@ -1147,7 +1420,13 @@ export const AllFeatures: Story = {
                 />
                 Sticky Header
               </label>
-              <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={isTruncated}
@@ -1156,11 +1435,19 @@ export const AllFeatures: Story = {
                 />
                 Text Truncation
               </label>
-              <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={density === "condensed"}
-                  onChange={(e) => setDensity(e.target.checked ? "condensed" : "default")}
+                  onChange={(e) =>
+                    setDensity(e.target.checked ? "condensed" : "default")
+                  }
                   style={{ marginRight: "6px" }}
                 />
                 Condensed Mode
@@ -1170,26 +1457,51 @@ export const AllFeatures: Story = {
 
           {/* Selection Settings */}
           <div style={{ marginBottom: "20px" }}>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               ✅ Selection Settings
             </h4>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                marginBottom: "8px",
+              }}
+            >
               <label style={{ fontSize: "14px" }}>Selection Mode:</label>
               <select
                 value={selectionMode}
                 onChange={(e) => setSelectionMode(e.target.value as any)}
-                style={{ padding: "4px 8px", borderRadius: "4px", border: "1px solid #ccc" }}
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                }}
               >
                 <option value="none">None</option>
                 <option value="single">Single</option>
                 <option value="multiple">Multiple</option>
               </select>
               {selectionMode !== "none" && (
-                <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "14px",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={disallowEmptySelection}
-                    onChange={(e) => setDisallowEmptySelection(e.target.checked)}
+                    onChange={(e) =>
+                      setDisallowEmptySelection(e.target.checked)
+                    }
                     style={{ marginRight: "6px" }}
                   />
                   Require Selection
@@ -1198,15 +1510,22 @@ export const AllFeatures: Story = {
             </div>
             {selectionMode !== "none" && (
               <div style={{ fontSize: "14px", color: "#666" }}>
-                <strong>Selected:</strong> {selectedCount} row(s) | 
-                <strong> IDs:</strong> {Array.from(selectedKeys).join(", ") || "None"}
+                <strong>Selected:</strong> {selectedCount} row(s) |
+                <strong> IDs:</strong>{" "}
+                {Array.from(selectedKeys).join(", ") || "None"}
               </div>
             )}
           </div>
 
           {/* Quick Actions */}
           <div>
-            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
               🎯 Quick Actions
             </h4>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -1302,10 +1621,22 @@ export const AllFeatures: Story = {
             fontSize: "14px",
           }}
         >
-          <h4 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600" }}>
+          <h4
+            style={{
+              margin: "0 0 12px 0",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}
+          >
             💡 Features Demonstrated
           </h4>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "12px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "12px",
+            }}
+          >
             <div>
               <strong>✨ Core Features:</strong>
               <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
@@ -1360,7 +1691,7 @@ const flexibleNestedData: DataTableRow[] = [
         class: "active",
       },
       {
-        id: "user-1-project-2", 
+        id: "user-1-project-2",
         name: "Project Beta",
         age: 3,
         role: "Mobile App",
@@ -1376,46 +1707,68 @@ const flexibleNestedData: DataTableRow[] = [
     class: "mid-level",
     // React content as children - a detailed profile card
     children: (
-      <div style={{ 
-        padding: "20px", 
-        backgroundColor: "#f8fafc", 
-        borderRadius: "8px",
-        border: "1px solid #e2e8f0",
-        margin: "8px 0"
-      }}>
+      <div
+        style={{
+          padding: "20px",
+          backgroundColor: "#f8fafc",
+          borderRadius: "8px",
+          border: "1px solid #e2e8f0",
+          margin: "8px 0",
+        }}
+      >
         <div style={{ display: "flex", gap: "16px", marginBottom: "12px" }}>
-          <div style={{
-            width: "48px",
-            height: "48px", 
-            backgroundColor: "#3b82f6",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontWeight: "bold"
-          }}>
+          <div
+            style={{
+              width: "48px",
+              height: "48px",
+              backgroundColor: "#3b82f6",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
             BS
           </div>
           <div>
-            <h4 style={{ margin: "0 0 4px 0", color: "#1e293b" }}>Bob Smith - Developer Profile</h4>
+            <h4 style={{ margin: "0 0 4px 0", color: "#1e293b" }}>
+              Bob Smith - Developer Profile
+            </h4>
             <p style={{ margin: "0", color: "#64748b", fontSize: "14px" }}>
               Specializes in React, TypeScript, and Node.js development
             </p>
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "12px",
+          }}
+        >
           <div>
             <strong style={{ color: "#374151" }}>Skills:</strong>
-            <div style={{ marginTop: "4px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
-              {["React", "TypeScript", "Node.js", "GraphQL"].map(skill => (
-                <span key={skill} style={{
-                  padding: "2px 8px",
-                  backgroundColor: "#dbeafe", 
-                  color: "#1e40af",
-                  borderRadius: "12px",
-                  fontSize: "12px"
-                }}>
+            <div
+              style={{
+                marginTop: "4px",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "4px",
+              }}
+            >
+              {["React", "TypeScript", "Node.js", "GraphQL"].map((skill) => (
+                <span
+                  key={skill}
+                  style={{
+                    padding: "2px 8px",
+                    backgroundColor: "#dbeafe",
+                    color: "#1e40af",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                  }}
+                >
                   {skill}
                 </span>
               ))}
@@ -1423,8 +1776,15 @@ const flexibleNestedData: DataTableRow[] = [
           </div>
           <div>
             <strong style={{ color: "#374151" }}>Contact:</strong>
-            <p style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#6b7280" }}>
-              📧 bob.smith@company.com<br/>
+            <p
+              style={{
+                margin: "4px 0 0 0",
+                fontSize: "14px",
+                color: "#6b7280",
+              }}
+            >
+              📧 bob.smith@company.com
+              <br />
               📱 +1 (555) 123-4567
             </p>
           </div>
@@ -1434,47 +1794,92 @@ const flexibleNestedData: DataTableRow[] = [
   },
   {
     id: "user-3",
-    name: "Carol Williams", 
+    name: "Carol Williams",
     age: 35,
     role: "Designer",
     class: "senior",
     // Interactive form as children
     children: (
-      <div style={{
-        padding: "20px",
-        backgroundColor: "#fefefe", 
-        border: "1px solid #e5e7eb",
-        borderRadius: "8px",
-        margin: "8px 0"
-      }}>
-        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>Update Designer Settings</h4>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "16px" }}>
+      <div
+        style={{
+          padding: "20px",
+          backgroundColor: "#fefefe",
+          border: "1px solid #e5e7eb",
+          borderRadius: "8px",
+          margin: "8px 0",
+        }}
+      >
+        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>
+          Update Designer Settings
+        </h4>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "16px",
+          }}
+        >
           <div>
-            <label style={{ display: "block", marginBottom: "4px", fontWeight: "500", color: "#374151" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "4px",
+                fontWeight: "500",
+                color: "#374151",
+              }}
+            >
               Design Tool Preference:
             </label>
-            <select style={{
-              width: "100%",
-              padding: "8px 12px",
-              border: "1px solid #d1d5db",
-              borderRadius: "6px",
-              backgroundColor: "white"
-            }}>
+            <select
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                backgroundColor: "white",
+              }}
+            >
               <option>Figma</option>
-              <option>Sketch</option> 
+              <option>Sketch</option>
               <option>Adobe XD</option>
             </select>
           </div>
           <div>
-            <label style={{ display: "block", marginBottom: "4px", fontWeight: "500", color: "#374151" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "4px",
+                fontWeight: "500",
+                color: "#374151",
+              }}
+            >
               Availability:
             </label>
             <div style={{ display: "flex", gap: "8px" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "14px" }}>
-                <input type="radio" name="availability" value="full-time" defaultChecked />
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="availability"
+                  value="full-time"
+                  defaultChecked
+                />
                 Full-time
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "14px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontSize: "14px",
+                }}
+              >
                 <input type="radio" name="availability" value="part-time" />
                 Part-time
               </label>
@@ -1482,26 +1887,30 @@ const flexibleNestedData: DataTableRow[] = [
           </div>
         </div>
         <div style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
-          <button style={{
-            padding: "8px 16px",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "14px"
-          }}>
+          <button
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#3b82f6",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+          >
             Save Changes
           </button>
-          <button style={{
-            padding: "8px 16px", 
-            backgroundColor: "transparent",
-            color: "#6b7280",
-            border: "1px solid #d1d5db",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "14px"
-          }}>
+          <button
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "transparent",
+              color: "#6b7280",
+              border: "1px solid #d1d5db",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+          >
             Cancel
           </button>
         </div>
@@ -1512,59 +1921,110 @@ const flexibleNestedData: DataTableRow[] = [
     id: "user-4",
     name: "David Chen",
     age: 29,
-    role: "Data Analyst", 
+    role: "Data Analyst",
     class: "mid-level",
     // Chart/visualization as children
     children: (
-      <div style={{
-        padding: "20px",
-        backgroundColor: "#f9fafb",
-        border: "1px solid #e5e7eb", 
-        borderRadius: "8px",
-        margin: "8px 0"
-      }}>
-        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>Data Analytics Dashboard</h4>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
-          <div style={{
-            padding: "16px",
-            backgroundColor: "white",
-            borderRadius: "6px",
-            border: "1px solid #e5e7eb",
-            textAlign: "center"
-          }}>
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#059669" }}>847</div>
-            <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>Reports Generated</div>
+      <div
+        style={{
+          padding: "20px",
+          backgroundColor: "#f9fafb",
+          border: "1px solid #e5e7eb",
+          borderRadius: "8px",
+          margin: "8px 0",
+        }}
+      >
+        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>
+          Data Analytics Dashboard
+        </h4>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          <div
+            style={{
+              padding: "16px",
+              backgroundColor: "white",
+              borderRadius: "6px",
+              border: "1px solid #e5e7eb",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{ fontSize: "24px", fontWeight: "bold", color: "#059669" }}
+            >
+              847
+            </div>
+            <div
+              style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
+            >
+              Reports Generated
+            </div>
           </div>
-          <div style={{
-            padding: "16px",
-            backgroundColor: "white", 
-            borderRadius: "6px",
-            border: "1px solid #e5e7eb",
-            textAlign: "center"
-          }}>
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#dc2626" }}>23</div>
-            <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>Data Issues Found</div>
+          <div
+            style={{
+              padding: "16px",
+              backgroundColor: "white",
+              borderRadius: "6px",
+              border: "1px solid #e5e7eb",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{ fontSize: "24px", fontWeight: "bold", color: "#dc2626" }}
+            >
+              23
+            </div>
+            <div
+              style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
+            >
+              Data Issues Found
+            </div>
           </div>
-          <div style={{
-            padding: "16px",
-            backgroundColor: "white",
-            borderRadius: "6px", 
-            border: "1px solid #e5e7eb",
-            textAlign: "center"
-          }}>
-            <div style={{ fontSize: "24px", fontWeight: "bold", color: "#2563eb" }}>156</div>
-            <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>Active Datasets</div>
+          <div
+            style={{
+              padding: "16px",
+              backgroundColor: "white",
+              borderRadius: "6px",
+              border: "1px solid #e5e7eb",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{ fontSize: "24px", fontWeight: "bold", color: "#2563eb" }}
+            >
+              156
+            </div>
+            <div
+              style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
+            >
+              Active Datasets
+            </div>
           </div>
         </div>
         <div style={{ marginTop: "16px" }}>
-          <div style={{ fontSize: "14px", fontWeight: "500", marginBottom: "8px", color: "#374151" }}>
+          <div
+            style={{
+              fontSize: "14px",
+              fontWeight: "500",
+              marginBottom: "8px",
+              color: "#374151",
+            }}
+          >
             Recent Activity:
           </div>
-          <div style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.5" }}>
-            • Completed quarterly sales analysis<br/>
-            • Updated customer segmentation model<br/>
-            • Fixed data pipeline for user metrics<br/>
-            • Created executive dashboard for Q4 review
+          <div
+            style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.5" }}
+          >
+            • Completed quarterly sales analysis
+            <br />
+            • Updated customer segmentation model
+            <br />
+            • Fixed data pipeline for user metrics
+            <br />• Created executive dashboard for Q4 review
           </div>
         </div>
       </div>
@@ -1578,16 +2038,20 @@ const flexibleNestedData: DataTableRow[] = [
     class: "junior",
     // Simple text content
     children: (
-      <div style={{
-        padding: "16px",
-        backgroundColor: "#fff7ed",
-        border: "1px solid #fed7aa",
-        borderRadius: "6px",
-        margin: "8px 0"
-      }}>
+      <div
+        style={{
+          padding: "16px",
+          backgroundColor: "#fff7ed",
+          border: "1px solid #fed7aa",
+          borderRadius: "6px",
+          margin: "8px 0",
+        }}
+      >
         <p style={{ margin: "0", color: "#9a3412", fontSize: "14px" }}>
-          🧪 <strong>Testing Focus:</strong> Currently working on automated testing for the new checkout flow. 
-          Planning to implement end-to-end tests using Playwright and enhance unit test coverage for payment components.
+          🧪 <strong>Testing Focus:</strong> Currently working on automated
+          testing for the new checkout flow. Planning to implement end-to-end
+          tests using Playwright and enhance unit test coverage for payment
+          components.
         </p>
       </div>
     ),
@@ -1601,14 +2065,26 @@ export const FlexibleNestedChildren: Story = {
         <div>
           <h3>Flexible Nested Children</h3>
           <p>
-            Demonstrates the new flexible children system where nested content can be either:
+            Demonstrates the new flexible children system where nested content
+            can be either:
           </p>
           <ul style={{ marginLeft: "20px", lineHeight: "1.6" }}>
-            <li><strong>Table rows</strong> - Traditional nested table structure (Alice's projects)</li>
-            <li><strong>React components</strong> - Rich interactive content like profile cards, forms, charts</li>
-            <li><strong>Simple content</strong> - Text, alerts, or any other React elements</li>
+            <li>
+              <strong>Table rows</strong> - Traditional nested table structure
+              (Alice's projects)
+            </li>
+            <li>
+              <strong>React components</strong> - Rich interactive content like
+              profile cards, forms, charts
+            </li>
+            <li>
+              <strong>Simple content</strong> - Text, alerts, or any other React
+              elements
+            </li>
           </ul>
-          <p>Click the expand buttons to see different types of nested content.</p>
+          <p>
+            Click the expand buttons to see different types of nested content.
+          </p>
         </div>
         <DataTable {...args} />
       </Stack>
@@ -1636,18 +2112,22 @@ export const NoNestedContent: Story = {
         <div>
           <h3>No Nested Content (Default Behavior)</h3>
           <p>
-            When no <code>nestedKey</code> is provided, the component ignores any nested properties 
-            and only renders parent rows. This is the new default behavior.
+            When no <code>nestedKey</code> is provided, the component ignores
+            any nested properties and only renders parent rows. This is the new
+            default behavior.
           </p>
-          <div style={{
-            padding: "12px",
-            backgroundColor: "#fef3c7",
-            border: "1px solid #fbbf24",
-            borderRadius: "6px",
-            fontSize: "14px"
-          }}>
-            <strong>Note:</strong> The data below contains "children" properties, but they won't be rendered 
-            without explicitly setting <code>nestedKey="children"</code>.
+          <div
+            style={{
+              padding: "12px",
+              backgroundColor: "#fef3c7",
+              border: "1px solid #fbbf24",
+              borderRadius: "6px",
+              fontSize: "14px",
+            }}
+          >
+            <strong>Note:</strong> The data below contains "children"
+            properties, but they won't be rendered without explicitly setting{" "}
+            <code>nestedKey="children"</code>.
           </div>
         </div>
         <DataTable {...args} />
@@ -1668,13 +2148,23 @@ export const NoNestedContent: Story = {
         status: "Active",
         // This children property will be ignored without nestedKey
         children: [
-          { id: "child-1", name: "Child Item 1", type: "Child", status: "Hidden" },
-          { id: "child-2", name: "Child Item 2", type: "Child", status: "Hidden" },
+          {
+            id: "child-1",
+            name: "Child Item 1",
+            type: "Child",
+            status: "Hidden",
+          },
+          {
+            id: "child-2",
+            name: "Child Item 2",
+            type: "Child",
+            status: "Hidden",
+          },
         ],
       },
       {
         id: "parent-2",
-        name: "Parent Item 2", 
+        name: "Parent Item 2",
         type: "Parent",
         status: "Active",
         // This children property will also be ignored
@@ -1705,25 +2195,60 @@ const fetchData = [
     distance: "0 ly",
     // Using "sky" as the nested key
     sky: [
-      { id: "star-1", species: "Alpha Centauri", genus: "Star System", distance: "4.37 ly", area: 12.5 },
-      { id: "star-2", species: "Proxima Centauri", genus: "Red Dwarf", distance: "4.24 ly", area: 240 },
-      { id: "star-3", species: "Barnard's Star", genus: "Red Dwarf", distance: "5.96 ly", area: 17.5 },
+      {
+        id: "star-1",
+        species: "Alpha Centauri",
+        genus: "Star System",
+        distance: "4.37 ly",
+        area: 12.5,
+      },
+      {
+        id: "star-2",
+        species: "Proxima Centauri",
+        genus: "Red Dwarf",
+        distance: "4.24 ly",
+        area: 240,
+      },
+      {
+        id: "star-3",
+        species: "Barnard's Star",
+        genus: "Red Dwarf",
+        distance: "5.96 ly",
+        area: 17.5,
+      },
     ],
   },
   {
     id: "galaxy-2",
     name: "Andromeda",
-    type: "Spiral Galaxy", 
+    type: "Spiral Galaxy",
     distance: "2.537M ly",
     // Using "sky" as the nested key with React content
     sky: [
-      { id: "star-1", species: "Alpha Centauri", genus: "Star System", distance: "4.37 ly", area: 20.45 },
-      { id: "star-2", species: "Proxima Centauri", genus: "Red Dwarf", distance: "4.24 ly", area: 400.05 },
-      { id: "star-3", species: "Barnard's Star", genus: "Red Dwarf", distance: "5.96 ly", area: 102.00 },
+      {
+        id: "star-1",
+        species: "Alpha Centauri",
+        genus: "Star System",
+        distance: "4.37 ly",
+        area: 20.45,
+      },
+      {
+        id: "star-2",
+        species: "Proxima Centauri",
+        genus: "Red Dwarf",
+        distance: "4.24 ly",
+        area: 400.05,
+      },
+      {
+        id: "star-3",
+        species: "Barnard's Star",
+        genus: "Red Dwarf",
+        distance: "5.96 ly",
+        area: 102.0,
+      },
     ],
   },
 ];
-
 
 const fundamentalData = [
   {
@@ -1733,9 +2258,24 @@ const fundamentalData = [
     complexity: "High",
     // Using "fundamental" as the nested key
     fundamental: [
-      { id: "principle-1", name: "Wave-Particle Duality", field: "Principle", complexity: "Medium" },
-      { id: "principle-2", name: "Uncertainty Principle", field: "Principle", complexity: "Medium" },
-      { id: "principle-3", name: "Quantum Entanglement", field: "Phenomenon", complexity: "High" },
+      {
+        id: "principle-1",
+        name: "Wave-Particle Duality",
+        field: "Principle",
+        complexity: "Medium",
+      },
+      {
+        id: "principle-2",
+        name: "Uncertainty Principle",
+        field: "Principle",
+        complexity: "Medium",
+      },
+      {
+        id: "principle-3",
+        name: "Quantum Entanglement",
+        field: "Phenomenon",
+        complexity: "High",
+      },
     ],
   },
   {
@@ -1745,18 +2285,26 @@ const fundamentalData = [
     complexity: "Medium",
     // Using "fundamental" as the nested key with custom content
     fundamental: (
-      <div style={{
-        padding: "16px",
-        backgroundColor: "#f0f9ff",
-        border: "1px solid #7dd3fc",
-        borderRadius: "8px",
-        margin: "8px 0"
-      }}>
-        <h4 style={{ margin: "0 0 12px 0", color: "#0c4a6e" }}>📐 Calculus Applications</h4>
+      <div
+        style={{
+          padding: "16px",
+          backgroundColor: "#f0f9ff",
+          border: "1px solid #7dd3fc",
+          borderRadius: "8px",
+          margin: "8px 0",
+        }}
+      >
+        <h4 style={{ margin: "0 0 12px 0", color: "#0c4a6e" }}>
+          📐 Calculus Applications
+        </h4>
         <div style={{ fontSize: "14px", lineHeight: "1.6", color: "#075985" }}>
-          <strong>Differential Calculus:</strong> rates of change, slopes, optimization<br/>
-          <strong>Integral Calculus:</strong> areas, volumes, accumulation<br/>
-          <strong>Real-world uses:</strong> physics, engineering, economics, biology
+          <strong>Differential Calculus:</strong> rates of change, slopes,
+          optimization
+          <br />
+          <strong>Integral Calculus:</strong> areas, volumes, accumulation
+          <br />
+          <strong>Real-world uses:</strong> physics, engineering, economics,
+          biology
         </div>
       </div>
     ),
@@ -1787,7 +2335,7 @@ const customNestedKeyData = fetchData.map((item) => ({
         // No nestedKey needed for this inner table since sky data doesn't have further nesting
       />
     </div>
-  )
+  ),
 }));
 
 export const TableInATable: Story = {
@@ -1797,17 +2345,21 @@ export const TableInATable: Story = {
         <div>
           <h3>Tables Within Tables</h3>
           <p>
-            This example demonstrates nested DataTable components where each parent row can expand 
-            to show a complete DataTable with its own data, columns, and functionality.
+            This example demonstrates nested DataTable components where each
+            parent row can expand to show a complete DataTable with its own
+            data, columns, and functionality.
           </p>
-          <div style={{
-            padding: "12px",
-            backgroundColor: "#eff6ff",
-            border: "1px solid #93c5fd",
-            borderRadius: "6px",
-            fontSize: "14px"
-          }}>
-            <strong>Usage:</strong> Nest DataTable components as React content using custom nestedKey
+          <div
+            style={{
+              padding: "12px",
+              backgroundColor: "#eff6ff",
+              border: "1px solid #93c5fd",
+              borderRadius: "6px",
+              fontSize: "14px",
+            }}
+          >
+            <strong>Usage:</strong> Nest DataTable components as React content
+            using custom nestedKey
           </div>
         </div>
         <DataTable {...args} />
@@ -1816,9 +2368,17 @@ export const TableInATable: Story = {
   },
   args: {
     columns: [
-      { id: "name", header: "Galaxy/Object", accessor: (row) => row.name },
-      { id: "type", header: "Type", accessor: (row) => row.type },
-      { id: "distance", header: "Distance", accessor: (row) => row.distance },
+      {
+        id: "name",
+        header: "Galaxy/Object",
+        accessor: (row: any) => row.name,
+      },
+      { id: "type", header: "Type", accessor: (row: any) => row.type },
+      {
+        id: "distance",
+        header: "Distance",
+        accessor: (row: any) => row.distance,
+      },
     ],
     data: customNestedKeyData,
     nestedKey: "sky", // Custom nested key
@@ -1826,4 +2386,3 @@ export const TableInATable: Story = {
     isAdjustable: true,
   },
 };
-

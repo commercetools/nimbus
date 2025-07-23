@@ -24,7 +24,7 @@ export type DataTableColumn<T = any> = {
   maxWidth?: number | null;
   sticky?: boolean;
   isSortable?: boolean;
-  // ...other column options
+  isRowHeader?: boolean;
 };
 
 export type DataTableRow<T = any> = T & {
