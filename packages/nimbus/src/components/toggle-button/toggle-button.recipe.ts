@@ -38,7 +38,6 @@ export const toggleButtonRecipe = defineRecipe({
         },
       },
       ghost: {
-        ...buttonRecipe.variants?.variant?.ghost,
         color: "neutral.11",
         "&[data-hovered='true']": {
           bg: "colorPalette.2",
@@ -47,7 +46,6 @@ export const toggleButtonRecipe = defineRecipe({
         ["&[data-selected='true']"]: {
           bg: "colorPalette.3",
           color: "colorPalette.11",
-
           "&[data-hovered='true']": {
             bg: "colorPalette.4",
           },
