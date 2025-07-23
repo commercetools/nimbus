@@ -546,6 +546,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                     allowsSorting={isSortable}
                     key={col.id}
                     id={col.id}
+                    isRowHeader
                     {...(isAdjustable && col.isAdjustable !== false
                       ? { allowsResizing: true }
                       : {})}
