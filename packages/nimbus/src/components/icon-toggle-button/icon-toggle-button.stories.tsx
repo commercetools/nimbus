@@ -30,6 +30,7 @@ export const Base: Story = {
     children: <ThumbUp />,
     "aria-label": "Like",
     onChange: fn(),
+    // @ts-expect-error - data-testid is not an official prop
     "data-testid": "test",
   },
   play: async ({ canvasElement, args, step }) => {
@@ -188,6 +189,7 @@ export const Disabled: Story = {
     "aria-label": "Like",
     isDisabled: true,
     onChange: fn(),
+    // @ts-expect-error - data-testid is not an official prop
     "data-testid": "test",
   },
   play: async ({ canvasElement, step, args }) => {

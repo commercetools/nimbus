@@ -1,0 +1,74 @@
+---
+id: Components-IconToggleButton
+title: IconToggleButton
+description: >-
+  A convenience component that renders a ToggleButton optimized for icon-only 
+  usage with proper accessibility requirements and square proportions.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Inputs
+  - IconToggleButton
+tags:
+  - component
+  - toggle
+  - icon
+  - button
+---
+{/* TODO: Needs designer review */}
+# IconToggleButton
+
+A convenience wrapper around the [ToggleButton](/components/toggle-button) 
+component designed for icon-only usage. It provides the same toggle 
+functionality with optimizations for icon-based interactions.
+
+## Overview
+
+IconToggleButton maintains all the functionality of ToggleButton while 
+enforcing accessibility best practices and providing appropriate styling for 
+icon-only toggle buttons.
+
+### Key Differences from ToggleButton
+
+- **Required `aria-label`:** Ensures screen reader compatibility for icon-only 
+  content
+- **Icon Optimized Styling:** Square aspect ratio with zero padding for clean 
+  icon presentation
+- **Identical API:** All ToggleButton props are supported except 
+  `aria-labelledby`
+
+### When to Use
+
+Use IconToggleButton for toggle actions that only contain an icon:
+- Favorite/unfavorite actions
+- Bookmark/unbookmark functions  
+- Show/hide content toggles
+- Feature enable/disable controls
+
+For toggle buttons with text content, use the standard
+[ToggleButton](/components/toggle-button) component.
+
+## Example
+
+```jsx-live
+const App = () => (
+  <IconToggleButton aria-label="Add to favorites">
+    <Icons.Star />
+  </IconToggleButton>
+);
+```
+
+## API Reference
+
+IconToggleButton accepts all props from ToggleButton but requires an
+`aria-label` for accessibility.
+
+<PropsTable id="ToggleButton" />
+
+## Related Components
+
+- **[ToggleButton](/components/toggle-button):** The base component for text 
+  and mixed-content toggles
+- **[IconButton](/components/icon-button):** For non-toggle icon-only buttons
+- **[Button](/components/button):** For general button actions 
