@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ToggleButton } from "./toggle-button";
 import { Box, Stack, Text } from "@/components";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { ThumbUp as Heart, Star, Bookmark } from "@commercetools/nimbus-icons";
-import { useState } from "react";
+import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
+import { useState, useRef, useEffect, createRef } from "react";
 
 const meta: Meta<typeof ToggleButton> = {
   title: "components/Buttons/ToggleButton",
@@ -116,7 +116,7 @@ export const WithIcons: Story = {
     return (
       <Stack gap="400" align="start">
         <ToggleButton>
-          <Heart />
+          <ThumbUp />
           Like
         </ToggleButton>
         <ToggleButton>
@@ -213,6 +213,7 @@ export const Disabled: Story = {
     children: "Disabled Toggle",
     isDisabled: true,
     onChange: fn(),
+    /** @ts-expect-error */
     "data-testid": "test",
   },
   play: async ({ canvasElement, step, args }) => {
@@ -233,6 +234,28 @@ export const Disabled: Story = {
     await step("Cannot receive focus when disabled", async () => {
       await userEvent.tab();
       await expect(button).not.toHaveFocus();
+    });
+  },
+};
+
+const toggleButtonRef = createRef<HTMLButtonElement>();
+export const WithRef: Story = {
+  args: {
+    children: "Demo ToggleButton",
+  },
+  render: (args) => {
+    return (
+      <ToggleButton ref={toggleButtonRef} {...args}>
+        {args.children}
+      </ToggleButton>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button");
+
+    await step("Does accept ref's", async () => {
+      await expect(toggleButtonRef.current).toBe(button);
     });
   },
 };
