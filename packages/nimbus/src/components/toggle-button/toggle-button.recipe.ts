@@ -5,18 +5,6 @@ export const toggleButtonRecipe = defineRecipe({
   className: "nimbus-toggle-button",
   base: {
     ...buttonRecipe.base,
-    /* ["&[data-hovered=true]"]: {
-      _hover: {},
-    },
-    ["&[data-pressed=true]"]: {
-      transform: "scale(0.97)",
-    },
-    ["&[data-focused=true]"]: {
-      // Focus styles are handled by focusVisibleRing in base
-    },
-    ["&[data-disabled=true]"]: {
-      layerStyle: "disabled",
-    }, */
   },
   variants: {
     size: {
@@ -24,30 +12,47 @@ export const toggleButtonRecipe = defineRecipe({
     },
     variant: {
       outline: {
-        ...buttonRecipe.variants?.variant?.outline,
-        // Selected state styles
+        "--button-bg": "transparent",
+        "--button-text": "{colors.colorPalette.11}",
+        "--border-width": "{sizes.25}",
+        "--border-color": "{colors.colorPalette.7}",
+
+        bg: "var(--button-bg)",
+        boxShadow: "0 0 0 var(--border-width) var(--border-color)",
+        color: "var(--button-text)",
+
+        "&[data-hovered='true']": {
+          "--button-bg": "{colors.colorPalette.2}",
+          "--border-color": "{colors.colorPalette.8}",
+        },
 
         ["&[data-selected=true]"]: {
-          bg: "colorPalette.3",
-          borderColor: "colorPalette.8",
-          color: "colorPalette.11",
+          "--button-bg": "{colors.colorPalette.3}",
+          "--border-color": "{colors.colorPalette.8}",
+
           _hover: {
-            bg: "colorPalette.4",
-            borderColor: "colorPalette.9",
+            "--button-bg": "{colors.colorPalette.4}",
+            "--border-color": "{colors.colorPalette.9}",
           },
         },
       },
       ghost: {
-        color: "neutral.11",
+        "--button-text": "{colors.neutral.11}",
+        "--button-bg": "transparent",
+
+        color: "var(--button-text)",
+        bg: "var(--button-bg)",
+
         "&[data-hovered='true']": {
-          bg: "colorPalette.2",
+          "--button-bg": "{colors.colorPalette.2}",
         },
-        // Selected state styles
+
         ["&[data-selected='true']"]: {
-          bg: "colorPalette.3",
-          color: "colorPalette.11",
+          "--button-bg": "{colors.colorPalette.3}",
+          "--button-text": "{colors.colorPalette.11}",
+
           "&[data-hovered='true']": {
-            bg: "colorPalette.4",
+            "--button-bg": "{colors.colorPalette.4}",
           },
         },
       },

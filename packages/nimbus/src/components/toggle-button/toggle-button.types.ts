@@ -12,5 +12,8 @@ type ExcludedProps =
 export interface ToggleButtonProps
   extends AriaToggleButtonProps,
     Omit<ToggleButtonRootProps, keyof AriaToggleButtonProps | ExcludedProps> {
+  /**
+   * Ref to the underlying button element
+   */
   ref?: React.Ref<HTMLButtonElement>;
 }

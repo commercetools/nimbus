@@ -8,6 +8,7 @@ import { linkRecipe } from "@/components/link/link.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
 import { textInputRecipe } from "@/components/text-input/text-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
+import { toggleButtonRecipe } from "@/components/toggle-button/toggle-button.recipe";
 
 export const recipes = {
   avatar: avatarRecipe,
@@ -19,4 +20,5 @@ export const recipes = {
   tooltip: tooltipRecipe,
   textInput: textInputRecipe,
   radioInput: radioInputSlotRecipe,
+  toggleButton: toggleButtonRecipe,
 };

@@ -4,30 +4,26 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 
 import { ToggleButtonRoot } from "./toggle-button.slots";
 import type { ToggleButtonProps } from "./toggle-button.types";
-import { toggleButtonRecipe } from "./toggle-button.recipe";
 
 /**
- * ToggleButton
- * ============================================================
- * A button that can be toggled between selected and not selected states
+ * # ToggleButton
  *
- * Features:
+ * A toggleable button component that can be pressed to switch between
+ * selected and unselected states.
  *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all react-aria ToggleButton props
- * - supports controlled and uncontrolled modes
- * - integrates with ToggleButtonContext for use in groups
- * - supports 'variants', 'sizes', 'tones' configured in the recipe
- * - allows overriding styles by using style-props
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/togglebutton}
  */
-export const ToggleButton = (props: ToggleButtonProps) => {
-  const recipe = useRecipe({ recipe: toggleButtonRecipe });
+export const ToggleButton = ({
+  ref: forwardedRef,
+  ...props
+}: ToggleButtonProps) => {
+  const recipe = useRecipe({ key: "toggleButton" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
   return (
     <ToggleButtonRoot {...recipeProps} {...styleProps} asChild>
-      <RaToggleButton {...functionalProps}>{props.children}</RaToggleButton>
+      <RaToggleButton ref={forwardedRef} {...functionalProps} />
     </ToggleButtonRoot>
   );
 };
