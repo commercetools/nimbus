@@ -5,6 +5,7 @@ import type {
   DataTableColumn,
   DataTableRow,
   SortDescriptor,
+  DataTableProps,
 } from "./data-table.types";
 import { useState } from "react";
 import { TextInput } from "./../text-input";
@@ -16,7 +17,7 @@ import type { Selection } from "react-aria-components";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<typeof DataTable> = {
+const meta: Meta<DataTableProps> = {
   title: "components/DataTable",
   component: DataTable,
 };
@@ -27,7 +28,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof DataTable>;
+type Story = StoryObj<DataTableProps>;
 
 // Sample data and columns
 const columns: DataTableColumn[] = [
