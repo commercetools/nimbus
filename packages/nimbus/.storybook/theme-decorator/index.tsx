@@ -8,6 +8,19 @@ import { NimbusProvider } from "../../src";
 // get channel to listen to event emitter
 const channel = addons.getChannel();
 
+/**
+ * Theme decorator that synchronizes the Storybook UI theme with the
+ * dark-mode toggle and provides locale context from Storybook globals.
+ * This ensures that all component stories are rendered within the correct
+ * theme context, providing a consistent visual experience across the
+ * entire Storybook interface.
+ *
+ * The decorator listens for theme changes via the Storybook event channel
+ * and wraps all stories with the NimbusProvider configured with the current
+ * theme and locale. This approach ensures that components always render
+ * with the correct theme applied, even when toggled at runtime or persisted
+ * across browser sessions.
+ */
 export const ThemeDecorator = ({
   children,
   context,
@@ -21,7 +34,6 @@ export const ThemeDecorator = ({
 
   useEffect(() => {
     const { current } = JSON.parse(
-      // TODO: find out if there is a more elegant solution
       localStorage.getItem("sb-addon-themes-3") || "{}"
     );
 
