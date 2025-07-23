@@ -19,13 +19,6 @@ const inventionOfTheInternet = parseZonedDateTime(
 const meta: Meta<typeof TimeInput> = {
   title: "components/TimeInput",
   component: TimeInput,
-  decorators: [
-    (Story) => (
-      <I18nProvider locale="en-US">
-        <Story />
-      </I18nProvider>
-    ),
-  ],
 };
 
 export default meta;

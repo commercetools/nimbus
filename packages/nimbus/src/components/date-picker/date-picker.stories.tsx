@@ -19,13 +19,6 @@ import { userEvent, within, expect, waitFor } from "storybook/test";
 const meta: Meta<typeof DatePicker> = {
   title: "Components/Date/DatePicker",
   component: DatePicker,
-  decorators: [
-    (Story) => (
-      <I18nProvider locale="en-US">
-        <Story />
-      </I18nProvider>
-    ),
-  ],
 };
 
 export default meta;

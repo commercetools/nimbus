@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { Preview } from "@storybook/react-vite";
+import type { Preview, StoryContext } from "@storybook/react-vite";
 import { NimbusProvider } from "../src";
 import { DARK_MODE_EVENT_NAME } from "@vueless/storybook-dark-mode";
 import { addons } from "storybook/preview-api";
@@ -19,9 +19,16 @@ const apca = APCACheck("custom", (fontSize: string) => {
 // get channel to listen to event emitter
 const channel = addons.getChannel();
 
-const ThemeDecorator = ({ children }: { children: React.ReactNode }) => {
+const ThemeDecorator = ({
+  children,
+  context,
+}: {
+  children: React.ReactNode;
+  context: StoryContext;
+}) => {
   const [isDark, setDark] = useState(false);
   const theme = isDark ? "dark" : "light";
+  const { locale } = context.globals;
 
   useEffect(() => {
     const { current } = JSON.parse(
@@ -43,7 +50,11 @@ const ThemeDecorator = ({ children }: { children: React.ReactNode }) => {
     document.documentElement.classList.add(theme);
   }, [theme]);
 
-  return <NimbusProvider defaultTheme={theme}>{children}</NimbusProvider>;
+  return (
+    <NimbusProvider locale={locale} defaultTheme={theme}>
+      {children}
+    </NimbusProvider>
+  );
 };
 
 const preview: Preview = {
@@ -81,9 +92,9 @@ const preview: Preview = {
   },
   tags: ["autodocs", "a11y-test"],
   decorators: [
-    (Story) => {
+    (Story, context) => {
       return (
-        <ThemeDecorator>
+        <ThemeDecorator context={context}>
           <Story />
         </ThemeDecorator>
       );
@@ -92,3 +103,23 @@ const preview: Preview = {
 };
 
 export default preview;
+
+export const globalTypes = {
+  locale: {
+    name: "Locale",
+    description: "Internationalization locale",
+    defaultValue: "en",
+    toolbar: {
+      title: "Locale",
+      icon: "globe",
+      items: [
+        { value: "en", right: "🇺🇸", title: "English (en)" },
+        { value: "de", right: "🇩🇪", title: "German (de)" },
+        { value: "es", right: "🇪🇸", title: "Spanish (es)" },
+        { value: "fr-FR", right: "🇫🇷", title: "French (fr-FR)" },
+        { value: "pt-BR", right: "🇵🇹", title: "Portuguese (pt-PT)" },
+      ],
+      dynamicTitle: true,
+    },
+  },
+};
