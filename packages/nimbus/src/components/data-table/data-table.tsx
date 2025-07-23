@@ -28,7 +28,8 @@ import { Highlight } from "@chakra-ui/react";
 function filterRows<T>(
   rows: DataTableRowType<T>[],
   search: string,
-  columns: DataTableColumn<T>[]
+  columns: DataTableColumn<T>[],
+  nestedKey?: string
 ): DataTableRowType<T>[] {
   if (!search) return rows;
   const lowerCaseSearch = search.toLowerCase();
@@ -41,13 +42,26 @@ function filterRows<T>(
           value.toLowerCase().includes(lowerCaseSearch)
         );
       });
-      let children = row.children
-        ? filterRows(row.children, search, columns)
-        : undefined;
-      if (match || (children && children.length > 0)) {
-        return { ...row, children };
+      
+      // Only filter nested content if nestedKey is provided and exists
+      if (nestedKey && row[nestedKey]) {
+        let nestedContent = row[nestedKey];
+        if (Array.isArray(row[nestedKey])) {
+          nestedContent = filterRows(row[nestedKey], search, columns, nestedKey);
+          if (match || (nestedContent && nestedContent.length > 0)) {
+            return { ...row, [nestedKey]: nestedContent };
+          }
+        } else {
+          // For React node nested content, just include them if parent matches
+          if (match) {
+            return { ...row, [nestedKey]: nestedContent };
+          }
+        }
+        return null;
+      } else {
+        // No nested key or nested content, just return if parent matches
+        return match ? row : null;
       }
-      return null;
     })
     .filter(Boolean) as DataTableRowType<T>[];
 }
@@ -55,7 +69,8 @@ function filterRows<T>(
 function sortRows<T>(
   rows: DataTableRowType<T>[],
   sortDescriptor: SortDescriptor | undefined,
-  columns: DataTableColumn<T>[]
+  columns: DataTableColumn<T>[],
+  nestedKey?: string
 ): DataTableRowType<T>[] {
   if (!sortDescriptor) return rows;
 
@@ -90,13 +105,18 @@ function sortRows<T>(
     return 0;
   });
 
-  // Recursively sort children
-  return sortedRows.map((row) => ({
-    ...row,
-    children: row.children
-      ? sortRows(row.children, sortDescriptor, columns)
-      : undefined,
-  }));
+  // Recursively sort nested content only if nestedKey is provided and they are an array of DataTableRow
+  return sortedRows.map((row) => {
+    if (!nestedKey || !row[nestedKey]) {
+      return row;
+    }
+    return {
+      ...row,
+      [nestedKey]: Array.isArray(row[nestedKey])
+        ? sortRows(row[nestedKey], sortDescriptor, columns, nestedKey)
+        : row[nestedKey],
+    };
+  });
 }
 
 export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
@@ -127,6 +147,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       renderDetails,
       isTruncated,
       footer,
+      nestedKey,
       ...rest
     } = props;
 
@@ -151,14 +172,14 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
 
     // Filter rows by search
     const filteredRows = useMemo(
-      () => (search ? filterRows(data, search, visibleCols) : data),
-      [data, search, visibleCols]
+      () => (search ? filterRows(data, search, visibleCols, nestedKey) : data),
+      [data, search, visibleCols, nestedKey]
     );
 
     // Sort the filtered rows
     const sortedRows = useMemo(
-      () => sortRows(filteredRows, sortDescriptor, visibleCols),
-      [filteredRows, sortDescriptor, visibleCols]
+      () => sortRows(filteredRows, sortDescriptor, visibleCols, nestedKey),
+      [filteredRows, sortDescriptor, visibleCols, nestedKey]
     );
 
     // Expanded rows state for nested rows
@@ -238,15 +259,18 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
         value
       );
 
-    // Check if any row (or its children) is expandable
-    function hasExpandableRows(rows: DataTableRowType<T>[]): boolean {
+    // Check if any row (or its nested content) is expandable
+    function hasExpandableRows(rows: DataTableRowType<T>[], nestedKey?: string): boolean {
+      if (!nestedKey) return false;
       return rows.some(
         (row) =>
-          (row.children && row.children.length > 0) ||
-          (row.children && hasExpandableRows(row.children))
+          (row[nestedKey] && (
+            Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true
+          )) ||
+          (Array.isArray(row[nestedKey]) && hasExpandableRows(row[nestedKey], nestedKey))
       );
     }
-    const showExpandColumn = hasExpandableRows(sortedRows);
+    const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
 
     // Show selection column when selection mode is not "none"
     const showSelectionColumn = selectionMode !== "none";
@@ -286,7 +310,9 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
       row: DataTableRowType<T>,
       depth = 0
     ): React.ReactNode => {
-      const hasChildren = row.children && row.children.length > 0;
+      const hasNestedContent = nestedKey && row[nestedKey] && (
+        Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true
+      );
       const isExpanded = expanded[row.id];
       
       const handleRowClick = () => {
@@ -303,6 +329,11 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
             className="data-table-row"
             style={{
               cursor: isRowClickable ? "pointer" : undefined,
+              // Add visual indication for nested rows
+              ...(depth > 0 && {
+                borderLeft: "2px solid blue",
+                backgroundColor: "#f8fafc",
+              }),
             }}
           >
             {/* Selection checkbox cell if selection is enabled */}
@@ -333,7 +364,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                {hasChildren ? (
+                {hasNestedContent ? (
                   <DataTableExpandButton
                     aria-label={isExpanded ? "Collapse" : "Expand"}
                     onClick={(e) => {
@@ -346,7 +377,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 ) : null}
               </AriaCell>
             )}
-            {visibleCols.map((col) => (
+            {visibleCols.map((col, index) => (
               <AriaCell key={col.id}>
                 <div
                   onClick={isRowClickable ? handleRowClick : undefined}
@@ -355,6 +386,10 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                     width: "100%",
                     height: "100%",
                     cursor: isRowClickable ? "inherit" : undefined,
+                    // Add indentation for the first column of nested rows
+                    ...(depth > 0 && index === 0 && {
+                      paddingLeft: `${16 + (depth * 16)}px`,
+                    }),
                   }}
                 >
                   {col.render
@@ -368,9 +403,22 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               </AriaCell>
             ))}
           </AriaRow>
-          {hasChildren &&
+          {hasNestedContent &&
             isExpanded &&
-            row.children!.map((child) => renderRow(child, depth + 1))}
+            nestedKey &&
+            (Array.isArray(row[nestedKey]) 
+              ? row[nestedKey].map((child) => renderRow(child, depth + 1))
+              : <AriaRow>
+                  <AriaCell
+                    colSpan={visibleCols.length + (showExpandColumn ? 1 : 0) + (showSelectionColumn ? 1 : 0)}
+                    style={{
+                      borderLeft: "2px solid blue",
+                    }}
+                  >
+                    {row[nestedKey]}
+                  </AriaCell>
+                </AriaRow>
+            )}
           {renderDetails && isExpanded && (
             <AriaRow>
               <AriaCell

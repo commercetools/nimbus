@@ -29,7 +29,9 @@ export type DataTableColumn<T = any> = {
 
 export type DataTableRow<T = any> = T & {
   id: string;
-  children?: DataTableRow<T>[];
+  // Children can now be either nested table rows OR arbitrary React content
+  // Note: The actual nested key is flexible and specified via nestedKey prop
+  [key: string]: any;
 };
 
 export type DataTableDensity = "default" | "condensed";
@@ -72,4 +74,6 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   density?: DataTableDensity;
   isTruncated?: boolean;
   footer?: React.ReactNode;
+  // Flexible nested key - no default, must be explicitly provided for nested content
+  nestedKey?: string;
 }
