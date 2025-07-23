@@ -986,27 +986,326 @@ export const SelectionWithSortingAndSearch: Story = {
   render: (args) => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
     const [search, setSearch] = useState("");
+    const [selectionMode, setSelectionMode] = useState<
+      "none" | "single" | "multiple"
+    >("multiple");
+    const [disallowEmptySelection, setDisallowEmptySelection] = useState(false);
+    const [isRowClickable, setIsRowClickable] = useState(false);
+
+    const selectedCount = Array.from(selectedKeys).length;
+
+    // Reset selection when mode changes
+    const handleSelectionModeChange = (
+      newMode: "none" | "single" | "multiple"
+    ) => {
+      setSelectionMode(newMode);
+      if (newMode === "none") {
+        setSelectedKeys(new Set());
+      } else if (newMode === "single" && selectedCount > 1) {
+        // Keep only first selected item when switching to single mode
+        const firstSelected = Array.from(selectedKeys)[0];
+        setSelectedKeys(firstSelected ? new Set([firstSelected]) : new Set());
+      }
+    };
 
     return (
-      <Stack gap={16}>
+      <Stack gap={20}>
         <div>
-          <h3>Selection + Sorting + Search</h3>
-          <p>Combine all features: search, sort, and select multiple rows.</p>
+          <h3>Row Selection Showcase</h3>
           <p>
-            <strong>Selected:</strong> {Array.from(selectedKeys).length} row(s)
+            Comprehensive demonstration of all row selection capabilities. Use
+            the controls below to test different selection modes, behaviors, and
+            interactions.
           </p>
         </div>
-        <TextInput
-          value={search}
-          onChange={setSearch}
-          placeholder="Search..."
-          width="1/3"
-        />
+
+        {/* Controls Section */}
+        <div
+          style={{
+            padding: "16px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "8px",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          {/* Search */}
+          <div style={{ marginBottom: "16px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              🔍 Search & Filter
+            </h4>
+            <TextInput
+              value={search}
+              onChange={setSearch}
+              placeholder="Search to filter rows..."
+              width="300px"
+            />
+          </div>
+
+          {/* Selection Settings */}
+          <div style={{ marginBottom: "16px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              ✅ Selection Mode
+            </h4>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                marginBottom: "8px",
+              }}
+            >
+              <label style={{ fontSize: "14px" }}>Mode:</label>
+              <select
+                value={selectionMode}
+                onChange={(e) =>
+                  handleSelectionModeChange(e.target.value as any)
+                }
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  fontSize: "14px",
+                }}
+              >
+                <option value="none">None (No Selection)</option>
+                <option value="single">Single Row</option>
+                <option value="multiple">Multiple Rows</option>
+              </select>
+
+              {selectionMode !== "none" && (
+                <>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={disallowEmptySelection}
+                      onChange={(e) =>
+                        setDisallowEmptySelection(e.target.checked)
+                      }
+                      style={{ marginRight: "6px" }}
+                    />
+                    Require Selection
+                  </label>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isRowClickable}
+                      onChange={(e) => setIsRowClickable(e.target.checked)}
+                      style={{ marginRight: "6px" }}
+                    />
+                    Clickable Rows
+                  </label>
+                </>
+              )}
+            </div>
+
+            {selectionMode !== "none" && (
+              <div
+                style={{
+                  fontSize: "14px",
+                  color: "#666",
+                  marginBottom: "12px",
+                }}
+              >
+                <strong>Selected:</strong> {selectedCount} row(s) |
+                <strong> IDs:</strong>{" "}
+                {Array.from(selectedKeys).join(", ") || "None"}
+              </div>
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          {selectionMode !== "none" && (
+            <div>
+              <h4
+                style={{
+                  margin: "0 0 8px 0",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                }}
+              >
+                🎯 Quick Actions
+              </h4>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <button
+                  onClick={() => setSelectedKeys(new Set())}
+                  disabled={disallowEmptySelection && selectedCount <= 1}
+                  style={{
+                    padding: "6px 12px",
+                    fontSize: "12px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    backgroundColor: "#fff",
+                    cursor:
+                      disallowEmptySelection && selectedCount <= 1
+                        ? "not-allowed"
+                        : "pointer",
+                    opacity:
+                      disallowEmptySelection && selectedCount <= 1 ? 0.5 : 1,
+                  }}
+                >
+                  Clear Selection
+                </button>
+
+                {selectionMode === "multiple" && (
+                  <>
+                    <button
+                      onClick={() => setSelectedKeys(new Set(["1", "3", "5"]))}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Select Odd Rows
+                    </button>
+                    <button
+                      onClick={() => setSelectedKeys(new Set(["2", "4", "6"]))}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Select Even Rows
+                    </button>
+                    <button
+                      onClick={() => setSelectedKeys("all")}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Select All
+                    </button>
+                  </>
+                )}
+
+                {selectionMode === "single" && (
+                  <button
+                    onClick={() => setSelectedKeys(new Set(["1"]))}
+                    style={{
+                      padding: "6px 12px",
+                      fontSize: "12px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      backgroundColor: "#fff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Select First Row
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Feature Explanation */}
+        <div
+          style={{
+            padding: "12px",
+            backgroundColor: "#eff6ff",
+            border: "1px solid #93c5fd",
+            borderRadius: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <strong>Features Demonstrated:</strong>
+          <ul style={{ margin: "8px 0 0 20px", lineHeight: "1.5" }}>
+            <li>
+              <strong>None Mode:</strong> No selection checkboxes or
+              functionality
+            </li>
+            <li>
+              <strong>Single Mode:</strong> Radio-button behavior, one row at a
+              time
+            </li>
+            <li>
+              <strong>Multiple Mode:</strong> Checkboxes with select all/none in
+              header
+            </li>
+            <li>
+              <strong>Search Integration:</strong> Selection works with filtered
+              results
+            </li>
+            <li>
+              <strong>Required Selection:</strong> Prevent deselecting when
+              enabled
+            </li>
+            <li>
+              <strong>Row Clicking:</strong> Click entire row to select
+              (optional)
+            </li>
+            <li>
+              <strong>Programmatic Control:</strong> Buttons to demonstrate
+              selection API
+            </li>
+          </ul>
+        </div>
+
         <DataTable
-          {...args}
+          columns={sortableColumns}
+          data={data}
           search={search}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
+          selectionMode={selectionMode}
+          disallowEmptySelection={disallowEmptySelection}
+          allowsSorting={true}
+          isRowClickable={isRowClickable}
+          onRowClick={
+            isRowClickable
+              ? (row) => {
+                  if (selectionMode === "single") {
+                    setSelectedKeys(new Set([row.id]));
+                  } else if (selectionMode === "multiple") {
+                    const newSelection = new Set(selectedKeys);
+                    if (newSelection.has(row.id)) {
+                      if (!disallowEmptySelection || newSelection.size > 1) {
+                        newSelection.delete(row.id);
+                      }
+                    } else {
+                      newSelection.add(row.id);
+                    }
+                    setSelectedKeys(newSelection);
+                  }
+                }
+              : undefined
+          }
         />
       </Stack>
     );
