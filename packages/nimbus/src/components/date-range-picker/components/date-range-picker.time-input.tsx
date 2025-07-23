@@ -6,6 +6,7 @@ import type { DateRangePickerTimeInputProps } from "../date-range-picker.types";
 
 export const DateRangePickerTimeInput = ({
   hideTimeZone,
+  hourCycle,
 }: DateRangePickerTimeInputProps) => {
   const { locale } = useLocale();
   const dateRangePickerState = useContext(DateRangePickerStateContext);
@@ -67,12 +68,14 @@ export const DateRangePickerTimeInput = ({
           color="neutral.12"
           minWidth="fit-content"
         />
+        <Text>Start time</Text>
         <TimeInput
           slot="startTimeInput"
           locale={locale}
           variant="ghost"
           size="sm"
           hideTimeZone={hideTimeZone}
+          hourCycle={hourCycle}
         />
       </Flex>
 
@@ -85,12 +88,14 @@ export const DateRangePickerTimeInput = ({
           color="neutral.12"
           minWidth="fit-content"
         />
+        <Text>End time</Text>
         <TimeInput
           slot="endTimeInput"
           locale={locale}
           variant="ghost"
           size="sm"
           hideTimeZone={hideTimeZone}
+          hourCycle={hourCycle}
         />
       </Flex>
     </Flex>

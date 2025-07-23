@@ -63,4 +63,5 @@ export interface DateRangePickerProps
  */
 export interface DateRangePickerTimeInputProps {
   hideTimeZone?: boolean;
+  hourCycle?: 12 | 24;
 }

@@ -49,6 +49,7 @@ export const DatePickerTimeInput = () => {
       justifyContent="center"
       gap="200"
     >
+      <Text>Start time</Text>
       <Text
         slot="startTime"
         textStyle="xs"

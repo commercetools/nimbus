@@ -29,8 +29,8 @@ import { DateRangePickerCustomContext } from "./components/date-range-picker.cus
  * Users can either type a date range directly or select from the calendar.
  */
 export const DateRangePicker = (props: DateRangePickerProps) => {
-  // Forward hideTimeZone to child components (footer time inputs)
-  const { granularity = "day", hideTimeZone } = props;
+  // Forward hideTimeZone and hourCycle to child components (footer time inputs)
+  const { granularity = "day", hideTimeZone, hourCycle } = props;
   const recipe = useSlotRecipe({ recipe: dateRangePickerSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
 
@@ -62,6 +62,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 variant="plain"
                 width="auto"
                 hideTimeZone={hideTimeZone}
+                hourCycle={hourCycle}
               />
 
               {/* TODO: find a more elegant way to do this */}
@@ -70,6 +71,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 style={{
                   padding: "0 5px",
                   userSelect: "none",
+                  color: "hsla(0, 0%, 39%, 0.5)",
                 }}
               >
                 –
@@ -80,6 +82,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 variant="plain"
                 width="auto"
                 hideTimeZone={hideTimeZone}
+                hourCycle={hourCycle}
               />
               <DateRangePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
@@ -109,7 +112,10 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 <DateRangePickerCalendarSlot>
                   <RangeCalendar />
                 </DateRangePickerCalendarSlot>
-                <DateRangePickerTimeInput hideTimeZone={hideTimeZone} />
+                <DateRangePickerTimeInput
+                  hideTimeZone={hideTimeZone}
+                  hourCycle={hourCycle}
+                />
               </Dialog>
             </Popover>
           </DateRangePickerPopoverSlot>
