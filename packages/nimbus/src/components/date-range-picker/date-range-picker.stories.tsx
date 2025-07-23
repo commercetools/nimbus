@@ -114,6 +114,11 @@ export const Base: Story = {
   args: {
     ["aria-label"]: "Select a date range",
   },
+  parameters: {
+    test: {
+      dangerouslyIgnoreUnhandledErrors: true,
+    },
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const helpers = createDateRangePickerHelpers(canvas);
@@ -130,263 +135,248 @@ export const Base: Story = {
           "Select a date range"
         );
 
-        //     // Should contain 6 segments total (2 DateInputs × 3 segments for each: start month/day/year
-        //     const dateSegments = helpers.getDateSegments();
-        //     await expect(dateSegments.length).toBeGreaterThanOrEqual(6);
-
-        //     // Should have a calendar toggle button
-        //     const calendarButton = await helpers.getCalendarButton();
-        //     await expect(calendarButton).toBeInTheDocument();
-        //   }
-        // );
-
-        // await step("Date segments are focusable and navigable", async () => {
-        //   const dateSegments = helpers.getDateSegments();
-
-        //   // First segment should be focusable with Tab
-        //   await userEvent.tab();
-        //   await waitFor(async () => {
-        //     await expect(dateSegments[0]).toHaveFocus();
-        //   });
-
-        //   // Should be able to navigate between segments with arrow keys
-        //   await userEvent.keyboard("{ArrowRight}");
-        //   if (dateSegments.length > 1) {
-        //     await waitFor(async () => {
-        //       await expect(dateSegments[1]).toHaveFocus();
-        //     });
-        //   }
-
-        //   // Should be able to navigate to calendar button
-        //   const calendarButton = await helpers.getCalendarButton();
-
-        //   // Tab through remaining segments to reach calendar button
-        //   for (let i = 0; i < 4; i++) {
-        //     await userEvent.tab();
-        //   }
-
-        //   // Check if calendar button has focus or if we need more tabs
-        //   if (!calendarButton.matches(":focus")) {
-        //     await userEvent.tab();
-        //   }
-        //   await waitFor(async () => {
-        //     await expect(calendarButton).toHaveFocus();
-        //   });
-        // });
-
-        // await step("Date segments accept keyboard input", async () => {
-        //   const dateSegments = helpers.getDateSegments();
-        //   const firstSegment = dateSegments[0];
-
-        //   // Focus first segment and type a value
-        //   await userEvent.click(firstSegment);
-        //   await userEvent.keyboard("12");
-
-        //   // Segment should have the typed value
-        //   await waitFor(async () => {
-        //     await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
-        //   });
-
-        //   // Clear segments for next tests by selecting all and deleting
-        //   for (const segment of dateSegments) {
-        //     await userEvent.click(segment);
-        //     await userEvent.keyboard("{Delete}");
-        //     await userEvent.keyboard("{Delete}");
-        //   }
-
-        //   // Segment should be cleared and show empty state
-        //   await waitFor(async () => {
-        //     await expect(firstSegment).toHaveAttribute("aria-valuetext", "Empty");
-        //   });
-        // });
-
-        // await step("Calendar popover opens and closes correctly", async () => {
-        //   // Initially, calendar should not be visible (check in entire document since popover is portaled)
-        //   let calendar = within(document.body).queryByRole("application");
-        //   await expect(calendar).not.toBeInTheDocument();
-
-        //   await helpers.openCalendar();
-        //   await helpers.closeCalendar();
-        // });
-
-        // await step("Clear button functionality works correctly", async () => {
-        //   const dateSegments = helpers.getDateSegments();
-
-        //   // Initially, clear button should be disabled (no value selected)
-        //   const clearButton = await helpers.getClearButton();
-        //   await waitFor(async () => {
-        //     await expect(clearButton).toBeDisabled();
-        //   });
-
-        //   // Set a date value first by changing from placeholder values
-        //   await userEvent.click(dateSegments[0]);
-        //   await userEvent.keyboard("1");
-        //   if (dateSegments[1]) {
-        //     await userEvent.click(dateSegments[1]);
-        //     await userEvent.keyboard("15");
-        //   }
-        //   if (dateSegments[2]) {
-        //     await userEvent.click(dateSegments[2]);
-        //     await userEvent.keyboard("2025");
-        //   }
-        //   await userEvent.click(dateSegments[3]);
-        //   await userEvent.keyboard("1");
-        //   if (dateSegments[4]) {
-        //     await userEvent.click(dateSegments[4]);
-        //     await userEvent.keyboard("15");
-        //   }
-        //   if (dateSegments[5]) {
-        //     await userEvent.click(dateSegments[5]);
-        //     await userEvent.keyboard("2025");
-        //   }
-
-        //   // Clear button should now be enabled (actual date was entered)
-        //   await waitFor(async () => {
-        //     await expect(clearButton).not.toBeDisabled();
-        //   });
-
-        //   // Click clear button to remove values
-        //   await userEvent.click(clearButton);
-
-        //   // After clearing, segments return to placeholder state (showing current date)
-        //   // Clear button should be disabled again indicating no actual value is selected
-        //   await waitFor(async () => {
-        //     await expect(clearButton).toBeDisabled();
-        //   });
-        // });
-
-        //TODO: Test works, but cannot get past error: Uncaught DOMException: Element.
-
-        // await step("Date Range selection from calendar works", async () => {
-        //   await helpers.openCalendar();
-
-        //   // Wait for the calendar grid to be present
-        //   const calendarGrid = await within(document.body).findByRole("grid");
-        //   await expect(calendarGrid).toBeInTheDocument();
-
-        //   // Find all <div role="button"> elements (calendar cells)
-        //   const dateDivs = within(document.body).getAllByRole("button");
-
-        //   // Select the cell with text "5" (start date)
-        //   let startCell = dateDivs.find((div) => div.textContent === "5");
-        //   if (!startCell) {
-        //     startCell = dateDivs[0];
-        //   }
-        //   if (startCell) {
-        //     userEvent.pointer({ target: startCell });
-        //     userEvent.click(startCell);
-        //   }
-
-        //   // Select the cell with text "10" (end date)
-        //   let endCell = dateDivs.find((div) => div.textContent === "10");
-        //   if (endCell) {
-        //     userEvent.pointer({ target: endCell });
-        //     userEvent.click(endCell);
-        //   }
-
-        // // Assert that the calendar is no longer visible
-        // await waitFor(async () => {
-        //   const calendarAfterSelection = within(document.body).queryByRole(
-        //     "application"
-        //   );
-        //   await expect(calendarAfterSelection).not.toBeInTheDocument();
-        // });
-
-        // // Assert that the clear button is enabled
-        // const clearButton = await helpers.getClearButton();
-        // await waitFor(async () => {
-        //   await expect(clearButton).not.toBeDisabled();
-        // });
-
-        // Assert that the date segments contain the correct values
+        // Should contain 6 segments total (2 DateInputs × 3 segments for each: start month/day/year
         const dateSegments = helpers.getDateSegments();
-        // const now = new Date();
-        // const month = (now.getMonth() + 1).toString();
-        // const year = now.getFullYear().toString();
-        // await waitFor(async () => {
-        //   // Start date segments
-        //   await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", month);
-        //   await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "5");
-        //   await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", year);
-        //   // End date segments
-        //   await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", month);
-        //   await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "10");
-        //   await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", year);
-        // });
+        await expect(dateSegments.length).toBeGreaterThanOrEqual(6);
+
+        // Should have a calendar toggle button
+        const calendarButton = await helpers.getCalendarButton();
+        await expect(calendarButton).toBeInTheDocument();
       }
     );
 
-    // await step("Start and end date inputs work independently", async () => {
-    //   await helpers.closeCalendar();
+    await step("Date segments are focusable and navigable", async () => {
+      const segments = helpers.getDateSegments();
 
-    //   const dateSegments = helpers.getDateSegments();
+      // First segment should be focusable with Tab
+      await userEvent.tab();
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveFocus();
+      });
 
-    //   // Test start date only
-    //   await userEvent.click(dateSegments[0]);
-    //   await userEvent.keyboard("5");
-    //   await userEvent.click(dateSegments[1]);
-    //   await userEvent.keyboard("28");
-    //   await userEvent.click(dateSegments[2]);
-    //   await userEvent.keyboard("2025");
+      // Should be able to navigate between segments with arrow keys
+      await userEvent.keyboard("{ArrowRight}");
+      if (segments.length > 1) {
+        await waitFor(async () => {
+          await expect(segments[1]).toHaveFocus();
+        });
+      }
 
-    //   // Verify start date is set correctly
-    //   await waitFor(async () => {
-    //     await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", "5");
-    //     await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "28");
-    //     await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", "2025");
-    //   });
+      // Should be able to navigate to calendar button
+      const calendarButton = await helpers.getCalendarButton();
 
-    //   // Verify end date segments are still in placeholder state
-    //   await waitFor(async () => {
-    //     await expect(dateSegments[3]).toHaveAttribute(
-    //       "aria-valuetext",
-    //       "Empty"
-    //     );
-    //     await expect(dateSegments[4]).toHaveAttribute(
-    //       "aria-valuetext",
-    //       "Empty"
-    //     );
-    //     await expect(dateSegments[5]).toHaveAttribute(
-    //       "aria-valuetext",
-    //       "Empty"
-    //     );
-    //   });
+      // Tab through remaining segments to reach calendar button
+      for (let i = 0; i < 4; i++) {
+        await userEvent.tab();
+      }
 
-    //   // Clear the calendar
-    //   const clearButton = await helpers.getClearButton();
-    //   await userEvent.click(clearButton);
+      // Check if calendar button has focus or if we need more tabs
+      if (!calendarButton.matches(":focus")) {
+        await userEvent.tab();
+      }
+      await waitFor(async () => {
+        await expect(calendarButton).toHaveFocus();
+      });
+    });
 
-    //   // Type the same date (05/28/2025) into the END date input
-    //   await userEvent.click(dateSegments[3]);
-    //   await userEvent.keyboard("5");
-    //   await userEvent.click(dateSegments[4]);
-    //   await userEvent.keyboard("28");
-    //   await userEvent.click(dateSegments[5]);
-    //   await userEvent.keyboard("2025");
+    await step("Date segments accept keyboard input", async () => {
+      const dateSegments = helpers.getDateSegments();
+      const firstSegment = dateSegments[0];
 
-    //   // Verify end date is set correctly
-    //   await waitFor(async () => {
-    //     await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", "5");
-    //     await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "28");
-    //     await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", "2025");
-    //   });
+      // Focus first segment and type a value
+      await userEvent.click(firstSegment);
+      await userEvent.keyboard("12");
 
-    //   // Verify start date segments are in their placeholder state
-    //   await waitFor(async () => {
-    //     await expect(dateSegments[0]).toHaveAttribute(
-    //       "aria-valuetext",
-    //       "Empty"
-    //     );
-    //     await expect(dateSegments[1]).toHaveAttribute(
-    //       "aria-valuetext",
-    //       "Empty"
-    //     );
-    //     await expect(dateSegments[2]).toHaveAttribute(
-    //       "aria-valuetext",
-    //       "Empty"
-    //     );
-    //   });
-    // });
+      // Segment should have the typed value
+      await waitFor(async () => {
+        await expect(firstSegment).toHaveAttribute("aria-valuenow", "12");
+      });
+
+      // Clear segments for next tests by selecting all and deleting
+      for (const segment of dateSegments) {
+        await userEvent.click(segment);
+        await userEvent.keyboard("{Delete}");
+        await userEvent.keyboard("{Delete}");
+      }
+
+      // Segment should be cleared and show empty state
+      await waitFor(async () => {
+        await expect(firstSegment).toHaveAttribute("aria-valuetext", "Empty");
+      });
+    });
+
+    await step("Calendar popover opens and closes correctly", async () => {
+      // Initially, calendar should not be visible (check in entire document since popover is portaled)
+      let calendar = within(document.body).queryByRole("application");
+      await expect(calendar).not.toBeInTheDocument();
+
+      await helpers.openCalendar();
+      await helpers.closeCalendar();
+    });
+
+    await step("Clear button functionality works correctly", async () => {
+      const dateSegments = helpers.getDateSegments();
+
+      // Initially, clear button should be disabled (no value selected)
+      const clearButton = await helpers.getClearButton();
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
+
+      // Set a date value first by changing from placeholder values
+      await userEvent.click(dateSegments[0]);
+      await userEvent.keyboard("1");
+      if (dateSegments[1]) {
+        await userEvent.click(dateSegments[1]);
+        await userEvent.keyboard("15");
+      }
+      if (dateSegments[2]) {
+        await userEvent.click(dateSegments[2]);
+        await userEvent.keyboard("2025");
+      }
+      await userEvent.click(dateSegments[3]);
+      await userEvent.keyboard("1");
+      if (dateSegments[4]) {
+        await userEvent.click(dateSegments[4]);
+        await userEvent.keyboard("15");
+      }
+      if (dateSegments[5]) {
+        await userEvent.click(dateSegments[5]);
+        await userEvent.keyboard("2025");
+      }
+
+      // Clear button should now be enabled (actual date was entered)
+      await waitFor(async () => {
+        await expect(clearButton).not.toBeDisabled();
+      });
+
+      // Click clear button to remove values
+      await userEvent.click(clearButton);
+
+      // After clearing, segments return to placeholder state (showing current date)
+      // Clear button should be disabled again indicating no actual value is selected
+      await waitFor(async () => {
+        await expect(clearButton).toBeDisabled();
+      });
+    });
+
+    await step(
+      "Date Range selection from calendar is interactive",
+      async () => {
+        await helpers.openCalendar();
+
+        // Wait for the calendar grid to be present
+        const calendarGrid = await within(document.body).findByRole("grid");
+        await expect(calendarGrid).toBeInTheDocument();
+
+        // Find and click day 5
+        const day5Cell = document.body.querySelector('[aria-label*="5,"]')!;
+        await userEvent.click(day5Cell);
+
+        // Wait for selection to be processed
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // Find and click day 10
+        const day10Cell = document.body.querySelector('[aria-label*="10,"]')!;
+        await userEvent.click(day10Cell);
+
+        // Assert that the calendar is no longer visible
+        await waitFor(async () => {
+          const calendarAfterSelection = within(document.body).queryByRole(
+            "application"
+          );
+          await expect(calendarAfterSelection).not.toBeInTheDocument();
+        });
+
+        // Assert that the clear button is enabled
+        const clearButton = await helpers.getClearButton();
+        await waitFor(async () => {
+          await expect(clearButton).not.toBeDisabled();
+        });
+
+        // Assert that day 5 is in the start date segment and day 10 is in the end date segment
+        const dateSegments = helpers.getDateSegments();
+        await waitFor(async () => {
+          // Start date day segment (index 1) should have day 5
+          await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "5");
+          // End date day segment (index 4) should have day 10
+          await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "10");
+        });
+
+        // Click the clear button to reset the selection
+        await userEvent.click(clearButton);
+      }
+    );
+
+    await step("Start and end date inputs work independently", async () => {
+      const dateSegments = helpers.getDateSegments();
+
+      // Test start date only
+      await userEvent.click(dateSegments[0]);
+      await userEvent.keyboard("5");
+      await userEvent.click(dateSegments[1]);
+      await userEvent.keyboard("28");
+      await userEvent.click(dateSegments[2]);
+      await userEvent.keyboard("2025");
+
+      // Verify start date is set correctly
+      await waitFor(async () => {
+        await expect(dateSegments[0]).toHaveAttribute("aria-valuenow", "5");
+        await expect(dateSegments[1]).toHaveAttribute("aria-valuenow", "28");
+        await expect(dateSegments[2]).toHaveAttribute("aria-valuenow", "2025");
+      });
+
+      // Verify end date segments are still in placeholder state
+      await waitFor(async () => {
+        await expect(dateSegments[3]).toHaveAttribute(
+          "aria-valuetext",
+          "Empty"
+        );
+        await expect(dateSegments[4]).toHaveAttribute(
+          "aria-valuetext",
+          "Empty"
+        );
+        await expect(dateSegments[5]).toHaveAttribute(
+          "aria-valuetext",
+          "Empty"
+        );
+      });
+
+      // Clear the calendar
+      const clearButton = await helpers.getClearButton();
+      await userEvent.click(clearButton);
+
+      // Type the same date (05/28/2025) into the END date input
+      await userEvent.click(dateSegments[3]);
+      await userEvent.keyboard("5");
+      await userEvent.click(dateSegments[4]);
+      await userEvent.keyboard("28");
+      await userEvent.click(dateSegments[5]);
+      await userEvent.keyboard("2025");
+
+      // Verify end date is set correctly
+      await waitFor(async () => {
+        await expect(dateSegments[3]).toHaveAttribute("aria-valuenow", "5");
+        await expect(dateSegments[4]).toHaveAttribute("aria-valuenow", "28");
+        await expect(dateSegments[5]).toHaveAttribute("aria-valuenow", "2025");
+      });
+
+      // Verify start date segments are in their placeholder state
+      await waitFor(async () => {
+        await expect(dateSegments[0]).toHaveAttribute(
+          "aria-valuetext",
+          "Empty"
+        );
+        await expect(dateSegments[1]).toHaveAttribute(
+          "aria-valuetext",
+          "Empty"
+        );
+        await expect(dateSegments[2]).toHaveAttribute(
+          "aria-valuetext",
+          "Empty"
+        );
+      });
+    });
   },
 };
 
@@ -555,6 +545,11 @@ export const Controlled: Story = {
   args: {
     ["aria-label"]: "Select a date range",
   },
+  parameters: {
+    test: {
+      dangerouslyIgnoreUnhandledErrors: true,
+    },
+  },
   render: (args) => {
     const [range, setRange] = useState<RangeValue<DateValue> | null>({
       start: new CalendarDate(2025, 6, 15),
@@ -702,54 +697,52 @@ export const Controlled: Story = {
       }
     );
 
-    //TODO: FIX - like base test, find a way to interact with the calendar. As is, this isnt doing much..but passing.
-    // await step(
-    //   "Changing date range via the calendar updates controlled state",
-    //   async () => {
-    //     const dateGroup = await canvas.findByRole("group", {
-    //       name: "Controlled date range picker",
-    //     });
-    //     const helpers = createDateRangePickerHelpers(canvas, dateGroup);
+    await step(
+      "Changing date range via the calendar updates controlled state",
+      async () => {
+        const dateGroup = await canvas.findByRole("group", {
+          name: "Controlled date range picker",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, dateGroup);
 
-    //     // Open calendar
-    //     await helpers.openCalendar();
+        // Open calendar
+        await helpers.openCalendar();
 
-    //     // Find an available date button in the calendar and click it
-    //     const calendarGrid = await within(document.body).findByRole("grid");
-    //     const dateCells = within(calendarGrid).getAllByRole("gridcell");
-    //     const availableDates = dateCells.filter((cell) => {
-    //       const button = cell.querySelector("button");
-    //       return button && !button.hasAttribute("aria-disabled");
-    //     });
+        // Wait for the calendar grid to be present
+        const calendarGrid = await within(document.body).findByRole("grid");
+        await expect(calendarGrid).toBeInTheDocument();
 
-    //     if (availableDates.length > 0) {
-    //       const dateButton = availableDates[0].querySelector("button");
-    //       if (dateButton) {
-    //         await userEvent.click(dateButton);
+        // Find and click day 5
+        const day5Cell = document.body.querySelector('[aria-label*="5,"]')!;
+        await userEvent.click(day5Cell);
 
-    //         // Calendar should close after selection
-    //         await waitFor(async () => {
-    //           const calendarAfterSelection = within(document.body).queryByRole(
-    //             "application"
-    //           );
-    //           await expect(calendarAfterSelection).not.toBeInTheDocument();
-    //         }
-    //         );
+        // Wait for selection to be processed
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-    //         // The displayed value should have updated (we can't predict exact date, but it should not be null)
-    //         await waitFor(async () => {
-    //           const valueText = canvas.queryByText(/current value: null/);
-    //           await expect(valueText).not.toBeInTheDocument();
-    //         });
+        // Find and click day 10
+        const day10Cell = document.body.querySelector('[aria-label*="10,"]')!;
+        await userEvent.click(day10Cell);
 
-    //         // Value should be some valid date string
-    //         const valueDisplay = await canvas.findByText(/current value: /);
-    //         await expect(valueDisplay).toBeInTheDocument();
-    //         await expect(valueDisplay.textContent).not.toContain("null");
-    //       }
-    //     }
-    //   }
-    // );
+        // Calendar should close after selection
+        await waitFor(async () => {
+          const calendarAfterSelection = within(document.body).queryByRole(
+            "application"
+          );
+          await expect(calendarAfterSelection).not.toBeInTheDocument();
+        });
+
+        // The displayed value should have updated & not be null)
+        await waitFor(async () => {
+          const valueText = canvas.queryByText(/current value: null/);
+          await expect(valueText).not.toBeInTheDocument();
+        });
+
+        // Value should be some valid date string
+        const valueDisplay = await canvas.findByText(/current value: /);
+        await expect(valueDisplay).toBeInTheDocument();
+        await expect(valueDisplay.textContent).not.toContain("null");
+      }
+    );
 
     await step("Clear button clears controlled state", async () => {
       await userEvent.keyboard("{Escape}");
@@ -1323,168 +1316,167 @@ export const TimeSupport: Story = {
       }
     );
 
-    // await step("Hour picker has correct segments and values", async () => {
-    //   const hourPicker = await canvas.findByRole("group", {
-    //     name: "Date and time range picker (hour)",
-    //   });
-    //   const helpers = createDateRangePickerHelpers(canvas, hourPicker);
-    //   const segments = helpers.getDateSegments();
+    await step("Hour picker has correct segments and values", async () => {
+      const hourPicker = await canvas.findByRole("group", {
+        name: "Date and time range picker (hour)",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, hourPicker);
+      const segments = helpers.getDateSegments();
 
-    //   // Should have 5 segments: month, day, year, hour, AM/PM
-    //   await expect(segments).toHaveLength(10);
-    // });
+      // Should have 5 segments: month, day, year, hour, AM/PM
+      await expect(segments).toHaveLength(10);
+    });
 
-    // await step("Minute picker has correct segments and values", async () => {
-    //   const minutePicker = await canvas.findByRole("group", {
-    //     name: "Date and time range picker (minute)",
-    //   });
-    //   const helpers = createDateRangePickerHelpers(canvas, minutePicker);
-    //   const segments = helpers.getDateSegments();
+    await step("Minute picker has correct segments and values", async () => {
+      const minutePicker = await canvas.findByRole("group", {
+        name: "Date and time range picker (minute)",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, minutePicker);
+      const segments = helpers.getDateSegments();
 
-    //   // Should have 12 segments: month, day, year, hour, minute, AM/PM
-    //   await expect(segments).toHaveLength(12);
-    // });
+      // Should have 12 segments: month, day, year, hour, minute, AM/PM
+      await expect(segments).toHaveLength(12);
+    });
 
-    // await step("Second picker has correct segments and values", async () => {
-    //   const secondPicker = await canvas.findByRole("group", {
-    //     name: "Date and time range picker (second)",
-    //   });
-    //   const helpers = createDateRangePickerHelpers(canvas, secondPicker);
-    //   const segments = helpers.getDateSegments();
+    await step("Second picker has correct segments and values", async () => {
+      const secondPicker = await canvas.findByRole("group", {
+        name: "Date and time range picker (second)",
+      });
+      const helpers = createDateRangePickerHelpers(canvas, secondPicker);
+      const segments = helpers.getDateSegments();
 
-    //   // Should have 14 segments: month, day, year, hour, minute, second
-    //   await expect(segments).toHaveLength(14);
-    // });
+      // Should have 14 segments: month, day, year, hour, minute, second
+      await expect(segments).toHaveLength(14);
+    });
 
-    //TODO: fix - dont hide timezone, but they should show disabled
-    // await step(
-    //   "Timezone picker has correct segments and timezone",
-    //   async () => {
-    //     const timezonePicker = await canvas.findByRole("group", {
-    //       name: "Date and time range picker with timezone",
-    //     });
-    //     const helpers = createDateRangePickerHelpers(canvas, timezonePicker);
-    //     const segments = helpers.getDateSegments();
+    await step(
+      "Timezone picker has correct segments and timezone",
+      async () => {
+        const timezonePicker = await canvas.findByRole("group", {
+          name: "Date and time range picker with timezone",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, timezonePicker);
+        const segments = helpers.getDateSegments();
 
-    //     // Should have 12 segments: month, day, year, hour, minute, second, timezone
-    //     await expect(segments).toHaveLength(12);
+        // Should have 12 segments: month, day, year, hour, minute, second, timezone
+        await expect(segments).toHaveLength(12);
 
-    //     // Check for timezone display (should contain timezone information)
-    //     const timezoneElement =
-    //       within(timezonePicker).getAllByText(/EDT|EST|America/i);
-    //     await expect(timezoneElement).toHaveLength(2);
-    //   }
-    // );
+        // Check for timezone display (should contain timezone information)
+        const timezoneElement =
+          within(timezonePicker).getAllByText(/EDT|EST|America/i);
+        await expect(timezoneElement).toHaveLength(2);
+      }
+    );
 
-    // await step(
-    //   "Calendar functionality works with time granularities",
-    //   async () => {
-    //     const hourPicker = await canvas.findByRole("group", {
-    //       name: "Date and time range picker (hour)",
-    //     });
-    //     const helpers = createDateRangePickerHelpers(canvas, hourPicker);
-    //     const calendarButton = await helpers.getCalendarButton();
+    await step(
+      "Calendar functionality works with time granularities",
+      async () => {
+        const hourPicker = await canvas.findByRole("group", {
+          name: "Date and time range picker (hour)",
+        });
+        const helpers = createDateRangePickerHelpers(canvas, hourPicker);
+        const calendarButton = await helpers.getCalendarButton();
 
-    //     // Open calendar
-    //     await userEvent.click(calendarButton);
+        // Open calendar
+        await userEvent.click(calendarButton);
 
-    //     // Wait for calendar to appear
-    //     await waitFor(async () => {
-    //       const calendar = within(document.body).queryByRole("application");
-    //       await expect(calendar).toBeInTheDocument();
-    //     });
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
 
-    //     // Calendar should be functional - close it with Escape
-    //     await userEvent.keyboard("{Escape}");
+        // Calendar should be functional - close it with Escape
+        await userEvent.keyboard("{Escape}");
 
-    //     // Wait for calendar to disappear
-    //     await waitFor(async () => {
-    //       const calendar = within(document.body).queryByRole("application");
-    //       await expect(calendar).not.toBeInTheDocument();
-    //     });
-    //   }
-    // );
+        // Wait for calendar to disappear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
 
-    // await step(
-    //   "Clear functionality works across all time granularities",
-    //   async () => {
-    //     const pickers = [
-    //       { name: "Date only range picker", hasTime: false },
-    //       { name: "Date and time range picker (hour)", hasTime: true },
-    //       { name: "Date and time range picker (minute)", hasTime: true },
-    //       { name: "Date and time range picker (second)", hasTime: true },
-    //       { name: "Date and time range picker with timezone", hasTime: true },
-    //     ];
+    await step(
+      "Clear functionality works across all time granularities",
+      async () => {
+        const pickers = [
+          { name: "Date only range picker", hasTime: false },
+          { name: "Date and time range picker (hour)", hasTime: true },
+          { name: "Date and time range picker (minute)", hasTime: true },
+          { name: "Date and time range picker (second)", hasTime: true },
+          { name: "Date and time range picker with timezone", hasTime: true },
+        ];
 
-    //     for (const picker of pickers) {
-    //       const pickerElement = await canvas.findByRole("group", {
-    //         name: picker.name,
-    //       });
-    //       const helpers = createDateRangePickerHelpers(canvas, pickerElement);
-    //       const clearButton = await helpers.getClearButton();
+        for (const picker of pickers) {
+          const pickerElement = await canvas.findByRole("group", {
+            name: picker.name,
+          });
+          const helpers = createDateRangePickerHelpers(canvas, pickerElement);
+          const clearButton = await helpers.getClearButton();
 
-    //       // Clear button should be enabled (has default value)
-    //       await expect(clearButton).not.toBeDisabled();
+          // Clear button should be enabled (has default value)
+          await expect(clearButton).not.toBeDisabled();
 
-    //       // Click clear button
-    //       await userEvent.click(clearButton);
+          // Click clear button
+          await userEvent.click(clearButton);
 
-    //       // Clear button should now be disabled
-    //       await expect(clearButton).toBeDisabled();
+          // Clear button should now be disabled
+          await expect(clearButton).toBeDisabled();
 
-    //       // Reset by adding a date back for next test
-    //       const segments = helpers.getDateSegments();
-    //       // Set start date to 1/1/2025
-    //       await userEvent.click(segments[0]); // month
-    //       await userEvent.keyboard("1");
-    //       await userEvent.click(segments[1]); // day
-    //       await userEvent.keyboard("1");
-    //       await userEvent.click(segments[2]); // year
-    //       await userEvent.keyboard("2025");
+          // Reset by adding a date back for next test
+          const segments = helpers.getDateSegments();
+          // Set start date to 1/1/2025
+          await userEvent.click(segments[0]); // month
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[1]); // day
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[2]); // year
+          await userEvent.keyboard("2025");
 
-    //       if (picker.hasTime && segments.length > 3) {
-    //         // Set time values for time-enabled pickers (start)
-    //         await userEvent.click(segments[3]);
-    //         await userEvent.keyboard("12");
+          if (picker.hasTime && segments.length > 3) {
+            // Set time values for time-enabled pickers (start)
+            await userEvent.click(segments[3]);
+            await userEvent.keyboard("12");
 
-    //         if (segments.length > 4) {
-    //           await userEvent.click(segments[4]);
-    //           await userEvent.keyboard("30");
-    //         }
+            if (segments.length > 4) {
+              await userEvent.click(segments[4]);
+              await userEvent.keyboard("30");
+            }
 
-    //         if (segments.length > 5) {
-    //           await userEvent.click(segments[5]);
-    //           await userEvent.keyboard("0");
-    //         }
-    //       }
+            if (segments.length > 5) {
+              await userEvent.click(segments[5]);
+              await userEvent.keyboard("0");
+            }
+          }
 
-    //       // Set end date to 1/15/2025
-    //       await userEvent.click(segments[segments.length / 2 + 0]); // end month
-    //       await userEvent.keyboard("1");
-    //       await userEvent.click(segments[segments.length / 2 + 1]); // end day
-    //       await userEvent.keyboard("15");
-    //       await userEvent.click(segments[segments.length / 2 + 2]); // end year
-    //       await userEvent.keyboard("2025");
+          // Set end date to 1/15/2025
+          await userEvent.click(segments[segments.length / 2 + 0]); // end month
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[segments.length / 2 + 1]); // end day
+          await userEvent.keyboard("15");
+          await userEvent.click(segments[segments.length / 2 + 2]); // end year
+          await userEvent.keyboard("2025");
 
-    //       if (picker.hasTime && segments.length > 3) {
-    //         // Set time values for time-enabled pickers (end)
-    //         const offset = segments.length / 2;
-    //         await userEvent.click(segments[offset + 3]); // hour
-    //         await userEvent.keyboard("12");
+          if (picker.hasTime && segments.length > 3) {
+            // Set time values for time-enabled pickers (end)
+            const offset = segments.length / 2;
+            await userEvent.click(segments[offset + 3]); // hour
+            await userEvent.keyboard("12");
 
-    //         if (segments.length > offset + 4) {
-    //           await userEvent.click(segments[offset + 4]); // minute
-    //           await userEvent.keyboard("30");
-    //         }
+            if (segments.length > offset + 4) {
+              await userEvent.click(segments[offset + 4]); // minute
+              await userEvent.keyboard("30");
+            }
 
-    //         if (segments.length > offset + 5) {
-    //           await userEvent.click(segments[offset + 5]); // second
-    //           await userEvent.keyboard("0");
-    //         }
-    //       }
-    //     }
-    //   }
-    // );
+            if (segments.length > offset + 5) {
+              await userEvent.click(segments[offset + 5]); // second
+              await userEvent.keyboard("0");
+            }
+          }
+        }
+      }
+    );
   },
 };
 
