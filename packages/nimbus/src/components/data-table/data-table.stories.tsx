@@ -11,6 +11,8 @@ import { useState } from "react";
 import { TextInput } from "./../text-input";
 import { Slider } from "@chakra-ui/react";
 import type { Selection } from "react-aria-components";
+import { Info } from "@commercetools/nimbus-icons";
+import { IconButton } from "../icon-button";
 
 /**
  * Storybook metadata configuration
@@ -45,7 +47,29 @@ const columns: DataTableColumn[] = [
 
 // Sortable columns - same as above but with explicit sortable configuration
 const sortableColumns: DataTableColumn[] = [
-  { id: "name", header: "Name", accessor: (row) => row.name, isSortable: true },
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row) => row.name,
+    isSortable: true,
+    headerIcon: (
+      <IconButton
+        aria-label="Custom Column Information"
+        size="sm"
+        colorPalette="primary"
+        style={{
+          boxShadow: "none",
+        }}
+        onPress={(e) => {
+          alert(
+            "Check how the `headerIcon` property was used to display this info button."
+          );
+        }}
+      >
+        <Info />
+      </IconButton>
+    ),
+  },
   { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true },
   { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true },
   {
@@ -201,9 +225,9 @@ export const StickyHeader: Story = {
             onChange={(e) => setSticky(e.target.checked)}
             style={{ marginRight: 12 }}
           />
-          Sticky header
+          Sticky header (with max height)
         </label>
-        <DataTable {...args} stickyHeader={sticky} />
+        <DataTable {...args} maxHeight={sticky ? "400px" : undefined} />
       </>
     );
   },
@@ -1182,7 +1206,7 @@ export const HorizontalScrolling: Story = {
           data={wideData}
           isAdjustable={true}
           allowsSorting={true}
-          stickyHeader={true}
+          maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
           footer={
             <div
@@ -1600,7 +1624,7 @@ export const AllFeatures: Story = {
             isAdjustable={isAdjustable}
             allowsSorting={allowsSorting}
             isRowClickable={isRowClickable}
-            stickyHeader={stickyHeader}
+            maxHeight={stickyHeader ? "400px" : undefined}
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
@@ -2101,7 +2125,7 @@ export const FlexibleNestedChildren: Story = {
     data: flexibleNestedData,
     allowsSorting: true,
     isAdjustable: true,
-    stickyHeader: true,
+    maxHeight: "400px",
     nestedKey: "children",
   },
 };
