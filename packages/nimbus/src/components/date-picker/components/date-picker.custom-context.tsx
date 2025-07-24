@@ -2,7 +2,6 @@ import { useContext } from "react";
 import {
   Provider,
   ButtonContext,
-  TextContext,
   DatePickerStateContext,
   TimeFieldContext,
   useSlottedContext,
@@ -15,7 +14,6 @@ export const DatePickerCustomContext = ({
   children: React.ReactNode;
 }) => {
   const buttonContext = useSlottedContext(ButtonContext) || {};
-  const textContext = useContext(TextContext)!;
   const datePickerState = useContext(DatePickerStateContext);
   const noInputValue = datePickerState?.dateValue === null;
 
@@ -68,14 +66,9 @@ export const DatePickerCustomContext = ({
   };
 
   /**
-   * Text slots
+   * TimeInput slots
    * ================================
    */
-  const textSlots = {
-    startTime: {
-      children: "Start time",
-    },
-  };
 
   const timeInputSlots = {
     timeInput: {
@@ -97,20 +90,6 @@ export const DatePickerCustomContext = ({
           ButtonContext,
           {
             slots: buttonSlots,
-          },
-        ],
-        [
-          TextContext,
-          {
-            ...textContext,
-            slots: {
-              ...(textContext &&
-              typeof textContext === "object" &&
-              "slots" in textContext
-                ? textContext.slots
-                : {}),
-              ...textSlots,
-            },
           },
         ],
         [TimeFieldContext, { slots: timeInputSlots }],

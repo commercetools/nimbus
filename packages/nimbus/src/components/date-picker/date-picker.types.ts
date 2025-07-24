@@ -28,7 +28,9 @@ type ExcludedProps =
   | "unstyled"
   | "recipe"
   | "as"
-  | "asChild";
+  | "asChild"
+  // exclude variant to avoid conflict with recipe variant
+  | "variant";
 
 /**
  * Main props interface for the DatePicker component.
@@ -55,4 +57,18 @@ export interface DatePickerProps
    * Handler that is called when the calendar popover's open state changes.
    */
   onOpenChange?: (isOpen: boolean) => void;
+
+  /**
+   * Whether to hide the time zone information when using ZonedDateTime values.
+   * This prop is forwarded to both the main date input and footer time input.
+   */
+  hideTimeZone?: boolean;
+}
+
+/**
+ * Props for the DatePickerTimeInput component.
+ */
+export interface DatePickerTimeInputProps {
+  hideTimeZone?: boolean;
+  hourCycle?: 12 | 24;
 }

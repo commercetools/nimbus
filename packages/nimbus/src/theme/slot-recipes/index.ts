@@ -9,6 +9,11 @@ import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
+import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
+import { rangeCalendarSlotRecipe } from "@/components/range-calendar/range-calendar.recipe";
+import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
+import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
+import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -20,10 +25,7 @@ import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
  * due to some truly awful interplay between `@chakra-ui/cli` and `prettier`
  *
  * Silent failure results in there being no generated types for slot recipes, and causes all kinds of
- * false typescript errors that are really hard to debug.
- */ import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
-import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
-import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
+ * false typescript errors that are really hard to debug. */
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 
@@ -38,7 +40,9 @@ export const slotRecipes = {
   switch: switchSlotRecipe,
   numberInput: numberInputRecipe,
   calendar: calendarSlotRecipe,
+  rangeCalendar: rangeCalendarSlotRecipe,
   dateInput: dateInputSlotRecipe,
+  dateRangePicker: dateRangePickerSlotRecipe,
   datePicker: datePickerSlotRecipe,
   radioInput: radioInputSlotRecipe,
   combobox: comboBoxSlotRecipe,
