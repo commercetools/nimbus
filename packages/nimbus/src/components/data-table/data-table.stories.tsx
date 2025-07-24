@@ -2337,7 +2337,7 @@ const customNestedKeyData = fetchData.map((item) => ({
   ),
 }));
 
-export const TableInATable: Story = {
+export const NestedTable: Story = {
   render: (args) => {
     return (
       <Stack gap={16}>
