@@ -61,14 +61,15 @@ export const DateRangePickerTimeInput = ({
     >
       {/* DateRangePicker-specific: Start DateInput with separate label */}
       <Flex alignItems="center" gap="200">
+        {/* TODO: translate hardcoded string */}
         <Text
-          slot="startTime"
           textStyle="xs"
           fontWeight="500"
           color="neutral.12"
           minWidth="fit-content"
-        />
-        <Text>Start time</Text>
+        >
+          Start time
+        </Text>
         <TimeInput
           slot="startTimeInput"
           locale={locale}
@@ -81,14 +82,15 @@ export const DateRangePickerTimeInput = ({
 
       {/* DateRangePicker-specific: End DateInput with separate label */}
       <Flex alignItems="center" gap="200">
+        {/* TODO: translate hardcoded string */}
         <Text
-          slot="endTime"
           textStyle="xs"
           fontWeight="500"
           color="neutral.12"
           minWidth="fit-content"
-        />
-        <Text>End time</Text>
+        >
+          End time
+        </Text>
         <TimeInput
           slot="endTimeInput"
           locale={locale}

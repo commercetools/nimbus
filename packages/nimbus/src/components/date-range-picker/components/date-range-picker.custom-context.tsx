@@ -84,19 +84,6 @@ export const DateRangePickerCustomContext = ({
     },
   };
 
-  /**
-   * Text slots
-   * ================================
-   */
-  const textSlots = {
-    startTime: {
-      children: "Start time",
-    },
-    endTime: {
-      children: "End time",
-    },
-  };
-
   // DateRangePicker-specific: Separate time input slots for start and end times
   const timeInputSlots = {
     startTimeInput: {
@@ -160,20 +147,6 @@ export const DateRangePickerCustomContext = ({
           ButtonContext,
           {
             slots: buttonSlots,
-          },
-        ],
-        [
-          TextContext,
-          {
-            ...textContext,
-            slots: {
-              ...(textContext &&
-              typeof textContext === "object" &&
-              "slots" in textContext
-                ? textContext.slots
-                : {}),
-              ...textSlots,
-            },
           },
         ],
         [TimeFieldContext, { slots: timeInputSlots }],

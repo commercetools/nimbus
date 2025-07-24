@@ -18,7 +18,7 @@ import { useSlotRecipe } from "@chakra-ui/react";
 import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
 import type { DateRangePickerProps } from "./date-range-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { DateInput, RangeCalendar, IconButton } from "@/components";
+import { DateInput, RangeCalendar, IconButton, Text } from "@/components";
 import { DateRangePickerTimeInput } from "./components/date-range-picker.time-input";
 import { DateRangePickerCustomContext } from "./components/date-range-picker.custom-context";
 
@@ -64,18 +64,16 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 hideTimeZone={hideTimeZone}
                 hourCycle={hourCycle}
               />
-
-              {/* TODO: find a more elegant way to do this */}
-              <span
+              <Text
+                as="span"
+                px="150"
+                color="neutral.11"
+                userSelect="none"
                 aria-hidden="true"
-                style={{
-                  padding: "0 5px",
-                  userSelect: "none",
-                  color: "hsla(0, 0%, 39%, 0.5)",
-                }}
+                slot={null}
               >
                 –
-              </span>
+              </Text>
               <DateInput
                 slot="end"
                 size={size}
