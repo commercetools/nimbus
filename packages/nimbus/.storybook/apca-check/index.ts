@@ -147,4 +147,4 @@ const registerAPCACheck = (
 };
 
 export type { ConformanceLevel, ConformanceThresholdFn };
-export default registerAPCACheck;
+export { registerAPCACheck as APCACheck };
