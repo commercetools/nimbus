@@ -104,8 +104,6 @@ export const Base: Story = {
     columns,
     data,
     allowsSorting: true,
-    width: 200,
-    minWidth: 200,
     isAdjustable: true,
     isRowClickable: true,
   },
