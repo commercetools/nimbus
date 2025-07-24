@@ -13,6 +13,7 @@ export const dataTableRecipe = defineSlotRecipe({
     "detailsButton",
     "expandButton",
     "nestedIcon",
+    "headerSortIcon",
   ],
   // Unique class name prefix for the component
   className: "nimbus-data-table",
@@ -21,23 +22,31 @@ export const dataTableRecipe = defineSlotRecipe({
     root: {
       // overflowX: "auto",
       display: "block",
+      borderRadius: "8px",
+      border: "1px solid hsl(232, 18%, 95%)",
+      boxShadow: "0 1px 5px 0 rgba(0, 0, 0, 0.05)",
+      overflow: "hidden", // Ensure border-radius is respected
+      contain: "layout style", // Prevent layout recalculations from affecting parents
       "& .react-aria-Cell": {
-        padding: "16px",
+        padding: "16px 24px",
+        color: "#6b7280", // Slightly grey text color
       },
       "& .data-table-row": {
-        borderBottom: "1px solid #E0E0E0",
+        borderBottom: "1px solid hsl(232, 18%, 95%)",
+        "&:last-child": {
+          borderBottom: "none", // Remove border from last row
+        },
       },
       "& .data-table-row:hover": {
         backgroundColor: "#F8F9FA",
         transition: "background-color 0.15s ease",
+        transform: "translate3d(0, 0, 0)", // Force hardware acceleration
       },
       "& .react-aria-Column": {
         cursor: "pointer",
         userSelect: "none",
-        transition: "background-color 0.15s ease",
-        "&:hover": {
-          backgroundColor: "#E8E8E8",
-        },
+        padding: "4px 24px",
+        color: "#4b5563", // Slightly grey color for column headers
         // Disable hover effects for selection and expand columns
         "&.selection-column-header, &#expand": {
           cursor: "default",
@@ -48,12 +57,12 @@ export const dataTableRecipe = defineSlotRecipe({
         "&[aria-sort]": {
           fontWeight: 600,
           "&[aria-sort='none']:hover": {
-            backgroundColor: "#F0F0F0",
+            // backgroundColor: "#F0F0F0",
           },
           "&[aria-sort='ascending'], &[aria-sort='descending']": {
-            backgroundColor: "#F0F8FF",
+            // backgroundColor: "#F0F8FF",
             "&:hover": {
-              backgroundColor: "#E6F3FF",
+              // backgroundColor: "#E6F3FF",
             },
           },
         },
@@ -114,6 +123,15 @@ export const dataTableRecipe = defineSlotRecipe({
     detailsButton: {},
     expandButton: {},
     nestedIcon: {},
+    headerSortIcon: {
+      transition: "opacity 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      opacity: 0.4,
+      marginLeft: "6px",
+      willChange: "opacity, color, transform", // Optimize transitions
+    },
   },
   // Variants for different states
   variants: {

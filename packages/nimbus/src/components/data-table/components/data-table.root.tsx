@@ -27,7 +27,7 @@ interface DataTableContextValue<T = any> {
   selectionMode?: "none" | "single" | "multiple";
   disallowEmptySelection?: boolean;
   isRowClickable?: boolean;
-  stickyHeader?: boolean;
+  maxHeight?: string | number;
   isTruncated?: boolean;
   density?: "default" | "condensed";
   nestedKey?: string;
@@ -180,7 +180,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       disallowEmptySelection,
       allowsSorting,
       isRowClickable,
-      stickyHeader,
+      maxHeight,
       isTruncated,
       density,
       nestedKey,
@@ -212,12 +212,12 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
 
     const filteredRows = useMemo(
       () => (search ? filterRows(data, search, visibleCols, nestedKey) : data),
-      [data, search, visibleCols, nestedKey]
+      [data, search, columns, visibleColumns, nestedKey]
     );
 
     const sortedRows = useMemo(
       () => sortRows(filteredRows, sortDescriptor, visibleCols, nestedKey),
-      [filteredRows, sortDescriptor, visibleCols, nestedKey]
+      [filteredRows, sortDescriptor, columns, visibleColumns, nestedKey]
     );
 
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
@@ -313,7 +313,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       selectionMode,
       disallowEmptySelection,
       isRowClickable,
-      stickyHeader,
+      maxHeight,
       isTruncated,
       density,
       nestedKey,
@@ -345,6 +345,12 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
           ref={ref}
           truncated={isTruncated}
           density={density}
+          style={{
+            ...(maxHeight && {
+              maxHeight,
+              overflowY: "auto",
+            }),
+          }}
           {...rest}
         >
           <ResizableTableContainer>
