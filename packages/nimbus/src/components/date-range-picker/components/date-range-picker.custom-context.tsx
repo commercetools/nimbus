@@ -2,7 +2,6 @@ import { useContext, type ReactNode } from "react";
 import {
   Provider,
   ButtonContext,
-  TextContext,
   DateRangePickerStateContext,
   TimeFieldContext,
   useSlottedContext,
@@ -15,7 +14,6 @@ export const DateRangePickerCustomContext = ({
   children: ReactNode;
 }) => {
   const buttonContext = useSlottedContext(ButtonContext) || {};
-  const textContext = useContext(TextContext)!;
   const dateRangePickerState = useContext(DateRangePickerStateContext);
 
   // DateRangePicker-specific: Check if both start and end values are empty for clear button state
@@ -83,6 +81,11 @@ export const DateRangePickerCustomContext = ({
       isDisabled: noInputValue || isDateRangePickerDisabled,
     },
   };
+
+  /**
+   * TimeInput slots
+   * ================================
+   */
 
   // DateRangePicker-specific: Separate time input slots for start and end times
   const timeInputSlots = {

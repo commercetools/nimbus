@@ -2,8 +2,12 @@ import { Flex, Text, TimeInput } from "@/components";
 import { useContext, useRef, useEffect } from "react";
 import { useLocale } from "react-aria";
 import { DatePickerStateContext } from "react-aria-components";
+import type { DatePickerTimeInputProps } from "../date-picker.types";
 
-export const DatePickerTimeInput = () => {
+export const DatePickerTimeInput = ({
+  hideTimeZone,
+  hourCycle,
+}: DatePickerTimeInputProps) => {
   const { locale } = useLocale();
   const datePickerState = useContext(DatePickerStateContext);
   const { granularity, dateValue } = datePickerState!;
@@ -49,15 +53,18 @@ export const DatePickerTimeInput = () => {
       justifyContent="center"
       gap="200"
     >
-      <Text>Start time</Text>
-      <Text
-        slot="startTime"
-        textStyle="xs"
-        fontWeight="500"
-        color="neutral.12"
+      {/* TODO: translate hardcoded string */}
+      <Text textStyle="xs" fontWeight="500" color="neutral.12">
+        Start time
+      </Text>
+      <TimeInput
+        slot="timeInput"
+        locale={locale}
+        variant="ghost"
+        size="sm"
+        hideTimeZone={hideTimeZone}
+        hourCycle={hourCycle}
       />
-
-      <TimeInput slot="timeInput" locale={locale} variant="ghost" size="sm" />
     </Flex>
   );
 };

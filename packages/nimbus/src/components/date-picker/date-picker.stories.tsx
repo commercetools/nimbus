@@ -1398,6 +1398,127 @@ export const HourCycle: Story = {
     });
 
     await step(
+      "12 hour calendar footer contains correct start time values with labels",
+      async () => {
+        const twelveHourPicker = await canvas.findByRole("group", {
+          name: "12-hour format picker",
+        });
+        const calendarButton = await within(twelveHourPicker).findByRole(
+          "button",
+          { name: /calendar/i }
+        );
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Check start time label & values display correctly
+        const startTimeLabel = await within(document.body).findByText(
+          "Start time"
+        );
+        await expect(startTimeLabel).toBeInTheDocument();
+
+        const startTimeFooterInput = within(document.body).getByRole("group", {
+          name: "Enter time (hour and minute)",
+        });
+
+        const startTimeFooterSegments =
+          within(startTimeFooterInput).getAllByRole("spinbutton");
+        const startTimeHourSegment = startTimeFooterSegments.find(
+          (segment) => segment.getAttribute("aria-valuetext") === "2 PM"
+        );
+        const startTimeMinuteSegment = startTimeFooterSegments.find(
+          (segment) => segment.getAttribute("aria-valuetext") === "30"
+        );
+        const startTimeAmPmSegment = startTimeFooterSegments.find(
+          (segment) =>
+            segment.getAttribute("aria-valuetext") === "AM" ||
+            segment.getAttribute("aria-valuetext") === "PM"
+        );
+        await expect(startTimeHourSegment).toBeInTheDocument();
+        await expect(startTimeMinuteSegment).toBeInTheDocument();
+        await expect(startTimeAmPmSegment).toBeInTheDocument();
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "24 hour calendar footer contains correct start time values with labels",
+      async () => {
+        // First close any open calendar
+        await userEvent.keyboard("{Escape}");
+
+        const twentyFourHourPicker = await canvas.findByRole("group", {
+          name: "24-hour format picker",
+        });
+        const calendarButton = await within(twentyFourHourPicker).findByRole(
+          "button",
+          { name: /calendar/i }
+        );
+
+        // Open calendar
+        await userEvent.click(calendarButton);
+
+        // Wait for the calendar popover to be fully rendered
+        await waitFor(async () => {
+          const popover = await within(document.body).findByRole("dialog");
+          await expect(popover).toBeInTheDocument();
+        });
+
+        // Wait for the time input footer to be rendered
+        await waitFor(async () => {
+          const startTimeFooterInput = await within(document.body).findByRole(
+            "group",
+            {
+              name: "Enter time (hour and minute)",
+            }
+          );
+          await expect(startTimeFooterInput).toBeInTheDocument();
+        });
+
+        // Check start time label & segments in footer
+        const startTimeLabel = await waitFor(async () => {
+          return await within(document.body).findByText("Start time");
+        });
+        await expect(startTimeLabel).toBeInTheDocument();
+
+        const startTimeFooterInput = within(document.body).getByRole("group", {
+          name: "Enter time (hour and minute)",
+        });
+
+        const startTimeFooterSegments =
+          within(startTimeFooterInput).getAllByRole("spinbutton");
+        const startTimeHourSegment = startTimeFooterSegments.find(
+          (segment) => segment.getAttribute("aria-valuenow") === "14"
+        );
+        const startTimeMinuteSegment = startTimeFooterSegments.find(
+          (segment) => segment.getAttribute("aria-valuenow") === "30"
+        );
+
+        await expect(startTimeHourSegment).toBeInTheDocument();
+        await expect(startTimeMinuteSegment).toBeInTheDocument();
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
       "24-hour format displays 14 and has no AM/PM segment",
       async () => {
         const twentyFourHourPicker = await canvas.findByRole("group", {
@@ -1650,6 +1771,74 @@ export const HideTimeZone: Story = {
           const calendar = within(document.body).queryByRole("application");
           await expect(calendar).toBeInTheDocument();
         });
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "Footer time input properly receives the hideTimeZone prop",
+      async () => {
+        const timezoneShownPicker = await canvas.findByRole("group", {
+          name: "With timezone shown",
+        });
+        const timezoneHiddenPicker = await canvas.findByRole("group", {
+          name: "With timezone hidden",
+        });
+
+        // Open calendar for timezone shown picker
+        const calendarButtonShown = await within(
+          timezoneShownPicker
+        ).findByRole("button", { name: /calendar/i });
+        await userEvent.click(calendarButtonShown);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Check that footer time inputs show timezone when hideTimeZone is false
+        const footerTimeInputsShown = within(document.body).getAllByRole(
+          "group"
+        );
+        const timezoneInFooterShown = footerTimeInputsShown.some((input) =>
+          within(input).queryByText(/EDT/i)
+        );
+        await expect(timezoneInFooterShown).toBe(true);
+
+        // Close calendar
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+
+        // Open calendar for timezone hidden picker
+        const calendarButtonHidden = await within(
+          timezoneHiddenPicker
+        ).findByRole("button", { name: /calendar/i });
+        await userEvent.click(calendarButtonHidden);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Check that footer time inputs don't show timezone when hideTimeZone is true
+        const footerTimeInputsHidden = within(document.body).getAllByRole(
+          "group"
+        );
+        const timezoneInFooterHidden = footerTimeInputsHidden.some((input) =>
+          within(input).queryByText(/EDT/i)
+        );
+        await expect(timezoneInFooterHidden).toBe(false);
 
         // Close calendar
         await userEvent.keyboard("{Escape}");
