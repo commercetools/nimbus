@@ -1,0 +1,408 @@
+---
+id: Forms-ToggleButton
+title: ToggleButton
+description: >-
+  A toggleable button component that can be pressed to switch between selected
+  and unselected states.
+lifecycleState: Alpha
+order: 999
+menu:
+  - Components
+  - Inputs
+  - ToggleButton
+tags:
+  - button
+  - toggle
+
+---
+{/* TODO: Needs designer review */}
+# ToggleButton
+
+A toggle button allows users to switch between two states (selected/unselected) by clicking. It's particularly useful for binary choices like favorites, bookmarks, or feature toggles.
+
+## Overview
+
+Toggle buttons provide clear visual feedback about their current state and allow users to easily switch between on/off states. They combine the familiar interaction patterns of buttons with the state persistence of toggles.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)
+
+### Basic Usage
+
+#### Controlled Toggle Button
+
+When you need to control the toggle state externally, use the `isSelected` and `onChange` props.
+
+```jsx-live
+const App = () => {
+  const [isSelected, setIsSelected] = React.useState(false);
+
+  return (
+    <Stack direction="column" align="start" gap="400">
+      <ToggleButton isSelected={isSelected} onChange={setIsSelected}>
+        Controlled Toggle (selected: {isSelected.toString()})
+      </ToggleButton>
+      <Button onClick={() => setIsSelected(!isSelected)}>
+        Toggle externally
+      </Button>
+    </Stack>
+  );
+};
+```
+
+#### Uncontrolled Toggle Button
+
+For simple cases where you don't need to control the state, use `defaultSelected` to set the initial state.
+
+```jsx-live
+const App = () => (
+  <ToggleButton defaultSelected={true}>
+    Uncontrolled Toggle (starts selected)
+  </ToggleButton>
+);
+```
+
+### With Icons
+
+Toggle buttons work well with icons to provide clear visual context for the action.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="start">
+    <ToggleButton>
+      <Icons.ThumbUp />
+      Like
+    </ToggleButton>
+    <ToggleButton>
+      <Icons.Star />
+      Favorite
+    </ToggleButton>
+    <ToggleButton>
+      <Icons.Bookmark />
+      Save
+    </ToggleButton>
+  </Stack>
+);
+```
+
+## Variables
+
+### Size
+
+Toggle buttons support three sizes to fit different interface contexts.
+
+#### Medium (Default)
+
+The default and preferred size for most use cases.
+
+```jsx-live
+const App = () => (
+  <ToggleButton size="md">
+    Medium Toggle
+  </ToggleButton>
+);
+```
+
+#### X-Small
+
+Use for space-constrained areas or secondary interfaces.
+
+```jsx-live
+const App = () => (
+  <ToggleButton size="xs">
+    Small Toggle
+  </ToggleButton>
+);
+```
+
+#### 2X-Small
+
+Use for very compact interfaces where space is at a premium.
+
+```jsx-live
+const App = () => (
+  <ToggleButton size="2xs">
+    Tiny Toggle
+  </ToggleButton>
+);
+```
+
+### Variant
+
+#### Outline (Default)
+
+The default variant with a clear border that changes when selected.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton variant="outline">
+      Default
+    </ToggleButton>
+    <ToggleButton variant="outline" isSelected>
+      Selected
+    </ToggleButton>
+    <ToggleButton variant="outline" isDisabled>
+      Disabled
+    </ToggleButton>
+  </Stack>
+);
+```
+
+#### Ghost
+
+A more subtle variant that only shows background when hovered or selected.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton variant="ghost">
+      Default
+    </ToggleButton>
+    <ToggleButton variant="ghost" isSelected>
+      Selected
+    </ToggleButton>
+    <ToggleButton variant="ghost" isDisabled>
+      Disabled
+    </ToggleButton>
+  </Stack>
+);
+```
+
+### Tone
+
+#### Primary (Default)
+
+The default tone for most toggle buttons.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton tone="primary">
+      Primary
+    </ToggleButton>
+    <ToggleButton tone="primary" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+#### Neutral
+
+Use for secondary or less prominent toggles.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton tone="neutral">
+      Neutral
+    </ToggleButton>
+    <ToggleButton tone="neutral" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+#### Critical
+
+Use for toggles that represent destructive or warning states.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton tone="critical">
+      Critical
+    </ToggleButton>
+    <ToggleButton tone="critical" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+#### Info
+
+Use for informational or help-related toggles.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton tone="info">
+      Info
+    </ToggleButton>
+    <ToggleButton tone="info" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+## Guidelines
+
+Toggle buttons should be used when you need to represent a binary state that users can control. They provide immediate visual feedback and are particularly effective for actions like favorites, bookmarks, or feature toggles.
+
+### Writing Guidelines
+
+- Use clear, action-oriented labels that describe what will be toggled
+- Keep labels concise and descriptive
+- Use sentence case (capitalize the first word, lowercase for the rest)
+- Consider how the label reads in both selected and unselected states
+
+### Preferred Usage Patterns
+
+| **Use Case** | **Example** | **Description** |
+| --- | --- | --- |
+| **Favorites** | "Favorite", "Like", "Star" | Actions that add/remove items from a collection |
+| **Bookmarks** | "Save", "Bookmark", "Remember" | Actions that save content for later |
+| **Features** | "Dark Mode", "Notifications", "Auto-save" | Settings that can be enabled/disabled |
+| **Visibility** | "Show Details", "Hide Advanced", "Collapse" | Controls that show/hide content |
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Binary states:** When users need to switch between two clear states
+- **Persistent actions:** When the state should be remembered (favorites, settings)
+- **Feature toggles:** For enabling/disabling features or options
+- **Collections:** Adding/removing items from lists or collections
+- **Visibility controls:** Showing/hiding content or details
+
+> [!CAUTION]\
+> When not to use
+
+- **Navigation:** Use links or navigation components instead
+- **Form submission:** Use regular buttons for submitting forms
+- **Multiple options:** Use radio buttons or select components for multiple choices
+- **Temporary actions:** Use regular buttons for one-time actions
+- **Complex workflows:** Use multi-step processes or wizards
+
+### Icons in Toggle Buttons
+
+Icons help users quickly understand the toggle action and provide visual context.
+
+> [!TIP]\
+> **Do**
+
+- Use icons that clearly represent the action being toggled
+- Place icons to the left of text for better readability
+- Use consistent icons for similar actions across your application
+- Choose icons that work well in both selected and unselected states
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <ToggleButton>
+      <Icons.ThumbUp />
+      Like
+    </ToggleButton>
+    <ToggleButton>
+      <Icons.Bookmark />
+      Save
+    </ToggleButton>
+    <ToggleButton>
+      <Icons.Star />
+      Favorite
+    </ToggleButton>
+  </Stack>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+
+- Don't use misleading icons that don't match the action
+- Avoid placing icons after text unless there's a specific reason
+- Don't use multiple icons for a single toggle action
+- Avoid icons that are unclear in their selected state
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <ToggleButton>
+      <Icons.Delete />
+      Like
+    </ToggleButton>
+    <ToggleButton>
+      Save
+      <Icons.Bookmark />
+    </ToggleButton>
+    <ToggleButton>
+      <Icons.Add />
+      Favorite
+      <Icons.Remove />
+    </ToggleButton>
+  </Stack>
+);
+```
+
+### Disabled State
+
+Toggle buttons can be disabled when the action is not available.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton isDisabled>
+      Disabled Unselected
+    </ToggleButton>
+    <ToggleButton isDisabled isSelected>
+      Disabled Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+### Specs
+
+<PropsTable id="ToggleButton" />
+
+### Accessibility
+
+The ToggleButton component is built on React Aria Components and provides comprehensive keyboard and screen reader support. It uses proper ARIA attributes to communicate the toggle state to assistive technologies.
+
+#### Keyboard Interaction
+
+- **Tab:** Moves focus to the toggle button
+- **Enter/Space:** Toggles the button state
+- **Escape:** Moves focus away from the button (when focused)
+
+```jsx-live
+const App = () => (
+  <ToggleButton onPress={() => alert("Toggled! Try using Enter or Space keys.")}>
+    <Icons.Star />
+    Keyboard Accessible Toggle
+  </ToggleButton>
+);
+```
+
+### Accessibility Standards
+
+#### 1. Perceivable:
+
+- **Clear State Indication:** The selected state is clearly visible through color, typography, and background changes
+- **Sufficient Color Contrast:** All text maintains proper contrast ratios in both selected and unselected states
+- **Focus Indicator:** A clear focus ring appears when the toggle button is focused via keyboard
+
+#### 2. Operable:
+
+- **Keyboard Accessible:** Full keyboard support with Tab, Enter, and Space key interactions
+- **Target Size:** Minimum 24x24 pixel target size for easy clicking/tapping
+- **Touch-Friendly:** Appropriate sizing and spacing for touch interfaces
+
+#### 3. Understandable:
+
+- **Clear Labels:** Labels clearly describe what will be toggled
+- **Consistent Behavior:** Toggle behavior is consistent across the application
+- **State Communication:** The current state is clearly communicated visually and to screen readers
+
+#### 4. Robust:
+
+- **Screen Reader Support:** Proper ARIA attributes communicate the toggle state and changes
+- **Cross-Platform:** Works consistently across different browsers and assistive technologies
+- **Semantic HTML:** Uses proper button semantics with toggle state information 
