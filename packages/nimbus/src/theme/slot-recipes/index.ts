@@ -25,6 +25,7 @@ import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
 import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
+import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -42,4 +43,5 @@ export const slotRecipes = {
   radioInput: radioInputSlotRecipe,
   combobox: comboBoxSlotRecipe,
   progressBar: progressBarSlotRecipe,
+  menu: menuSlotRecipe,
 };
