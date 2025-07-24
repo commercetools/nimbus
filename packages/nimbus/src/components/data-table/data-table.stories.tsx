@@ -9,7 +9,6 @@ import type {
 } from "./data-table.types";
 import { useState } from "react";
 import { TextInput } from "./../text-input";
-import { Slider } from "@chakra-ui/react";
 import type { Selection } from "react-aria-components";
 import { Info } from "@commercetools/nimbus-icons";
 import { IconButton } from "../icon-button";
@@ -55,7 +54,7 @@ const sortableColumns: DataTableColumn[] = [
     headerIcon: (
       <IconButton
         aria-label="Custom Column Information"
-        size="sm"
+        size="2xs"
         colorPalette="primary"
         style={{
           boxShadow: "none",
