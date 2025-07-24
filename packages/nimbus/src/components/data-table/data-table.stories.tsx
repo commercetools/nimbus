@@ -1224,453 +1224,6 @@ export const HorizontalScrolling: Story = {
   },
 };
 
-export const AllFeatures: Story = {
-  render: (args) => {
-    // Feature toggles
-    const [search, setSearch] = useState("");
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
-    const [visibleColumns, setVisibleColumns] = useState([
-      "name",
-      "age",
-      "role",
-      "email",
-      "status",
-    ]);
-    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-      column: "name",
-      direction: "ascending",
-    });
-
-    // Settings
-    const [isAdjustable, setIsAdjustable] = useState(true);
-    const [allowsSorting, setAllowsSorting] = useState(true);
-    const [isRowClickable, setIsRowClickable] = useState(true);
-    const [stickyHeader, setStickyHeader] = useState(false);
-    const [isTruncated, setIsTruncated] = useState(false);
-    const [density, setDensity] = useState<"default" | "condensed">("default");
-    const [selectionMode, setSelectionMode] = useState<
-      "none" | "single" | "multiple"
-    >("multiple");
-    const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
-
-    const allColumns = comprehensiveColumns.map((col) => col.id);
-
-    const handleColumnToggle = (colId: string) => {
-      setVisibleColumns((prev) =>
-        prev.includes(colId)
-          ? prev.filter((id) => id !== colId)
-          : [...prev, colId]
-      );
-    };
-
-    const selectedCount = Array.from(selectedKeys).length;
-    const buttonStyle = {
-      padding: "6px 12px",
-      fontSize: "12px",
-      border: "1px solid #ccc",
-      borderRadius: "4px",
-      backgroundColor: "#fff",
-    };
-
-    return (
-      <Stack gap={20}>
-        <div>
-          <h2
-            style={{ margin: "0 0 8px 0", fontSize: "24px", fontWeight: "600" }}
-          >
-            🚀 DataTable - All Features Showcase
-          </h2>
-          <p style={{ margin: "0 0 16px 0", color: "#666", fontSize: "16px" }}>
-            Comprehensive demo showcasing all DataTable capabilities. Toggle
-            features below to see how they work together.
-          </p>
-        </div>
-
-        {/* Controls Section */}
-        <div
-          style={{
-            padding: "20px",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "8px",
-            border: "1px solid #e9ecef",
-          }}
-        >
-          {/* Search */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              🔍 Search & Filter
-            </h4>
-            <TextInput
-              value={search}
-              onChange={setSearch}
-              placeholder="Search across all columns..."
-              width="300px"
-            />
-          </div>
-
-          {/* Column Visibility */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              👁️ Column Visibility
-            </h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-              {allColumns.map((colId) => (
-                <label
-                  key={colId}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "14px",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={visibleColumns.includes(colId)}
-                    onChange={() => handleColumnToggle(colId)}
-                    style={{ marginRight: "6px" }}
-                  />
-                  {colId.charAt(0).toUpperCase() + colId.slice(1)}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Table Settings */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              ⚙️ Table Settings
-            </h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={isAdjustable}
-                  onChange={(e) => setIsAdjustable(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
-                Resizable Columns
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={allowsSorting}
-                  onChange={(e) => setAllowsSorting(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
-                Sorting
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={isRowClickable}
-                  onChange={(e) => setIsRowClickable(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
-                Clickable Rows
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={stickyHeader}
-                  onChange={(e) => setStickyHeader(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
-                Sticky Header
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={isTruncated}
-                  onChange={(e) => setIsTruncated(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
-                Text Truncation
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={density === "condensed"}
-                  onChange={(e) =>
-                    setDensity(e.target.checked ? "condensed" : "default")
-                  }
-                  style={{ marginRight: "6px" }}
-                />
-                Condensed Mode
-              </label>
-            </div>
-          </div>
-
-          {/* Selection Settings */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              ✅ Selection Settings
-            </h4>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                marginBottom: "8px",
-              }}
-            >
-              <label style={{ fontSize: "14px" }}>Selection Mode:</label>
-              <select
-                value={selectionMode}
-                onChange={(e) => setSelectionMode(e.target.value as any)}
-                style={{
-                  padding: "4px 8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                }}
-              >
-                <option value="none">None</option>
-                <option value="single">Single</option>
-                <option value="multiple">Multiple</option>
-              </select>
-              {selectionMode !== "none" && (
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "14px",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={disallowEmptySelection}
-                    onChange={(e) =>
-                      setDisallowEmptySelection(e.target.checked)
-                    }
-                    style={{ marginRight: "6px" }}
-                  />
-                  Require Selection
-                </label>
-              )}
-            </div>
-            {selectionMode !== "none" && (
-              <div style={{ fontSize: "14px", color: "#666" }}>
-                <strong>Selected:</strong> {selectedCount} row(s) |
-                <strong> IDs:</strong>{" "}
-                {Array.from(selectedKeys).join(", ") || "None"}
-              </div>
-            )}
-          </div>
-
-          {/* Quick Actions */}
-          <div>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              🎯 Quick Actions
-            </h4>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              <button
-                onClick={() => setSelectedKeys(new Set())}
-                disabled={selectionMode === "none"}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor: "#fff",
-                  cursor: selectionMode === "none" ? "not-allowed" : "pointer",
-                  opacity: selectionMode === "none" ? 0.5 : 1,
-                }}
-              >
-                Clear Selection
-              </button>
-              <button
-                onClick={() => setVisibleColumns(allColumns)}
-                style={{
-                  ...buttonStyle,
-                  cursor: "pointer",
-                }}
-              >
-                Show All Columns
-              </button>
-              <button
-                onClick={() => setVisibleColumns(["name", "role", "status"])}
-                style={{
-                  ...buttonStyle,
-                  cursor: "pointer",
-                }}
-              >
-                Minimal View
-              </button>
-              <button
-                onClick={() => setSearch("Engineer")}
-                style={{
-                  ...buttonStyle,
-                  cursor: "pointer",
-                }}
-              >
-                Search "Engineer"
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Data Table */}
-        <div
-          style={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            overflow: "hidden",
-            maxHeight: stickyHeader ? "400px" : "none",
-            overflowY: stickyHeader ? "auto" : "visible",
-          }}
-        >
-          <DataTable
-            columns={comprehensiveColumns}
-            data={comprehensiveData}
-            visibleColumns={visibleColumns}
-            search={search}
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
-            selectionMode={selectionMode}
-            disallowEmptySelection={disallowEmptySelection}
-            isAdjustable={isAdjustable}
-            allowsSorting={allowsSorting}
-            isRowClickable={isRowClickable}
-            maxHeight={stickyHeader ? "400px" : undefined}
-            isTruncated={isTruncated}
-            density={density}
-            nestedKey="children"
-            onRowClick={(row) => {
-              if (isRowClickable) {
-                alert(`Clicked row: ${row.name} (${row.role})`);
-              }
-            }}
-          />
-        </div>
-
-        {/* Feature Information */}
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f0f8ff",
-            borderRadius: "8px",
-            border: "1px solid #b3d9ff",
-            fontSize: "14px",
-          }}
-        >
-          <h4
-            style={{
-              margin: "0 0 12px 0",
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
-          >
-            💡 Features Demonstrated
-          </h4>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "12px",
-            }}
-          >
-            <div>
-              <strong>✨ Core Features:</strong>
-              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-                <li>Column visibility management</li>
-                <li>Resizable columns</li>
-                <li>Search with highlighting</li>
-                <li>Sorting (controlled)</li>
-              </ul>
-            </div>
-            <div>
-              <strong>🎯 Selection:</strong>
-              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-                <li>Single/Multiple selection modes</li>
-                <li>Required selection option</li>
-                <li>Programmatic selection control</li>
-              </ul>
-            </div>
-            <div>
-              <strong>🚀 Advanced:</strong>
-              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-                <li>Nested rows with expand/collapse</li>
-                <li>Custom cell rendering (Status badges)</li>
-                <li>Text truncation with hover</li>
-                <li>Sticky headers</li>
-                <li>Density options</li>
-                <li>Clickable rows</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </Stack>
-    );
-  },
-  args: {},
-};
 
 // Data with flexible nested children - mix of table rows and React content
 const flexibleNestedData: DataTableRow[] = [
@@ -2249,67 +1802,6 @@ const fetchData = [
   },
 ];
 
-const fundamentalData = [
-  {
-    id: "physics-1",
-    name: "Quantum Mechanics",
-    field: "Physics",
-    complexity: "High",
-    // Using "fundamental" as the nested key
-    fundamental: [
-      {
-        id: "principle-1",
-        name: "Wave-Particle Duality",
-        field: "Principle",
-        complexity: "Medium",
-      },
-      {
-        id: "principle-2",
-        name: "Uncertainty Principle",
-        field: "Principle",
-        complexity: "Medium",
-      },
-      {
-        id: "principle-3",
-        name: "Quantum Entanglement",
-        field: "Phenomenon",
-        complexity: "High",
-      },
-    ],
-  },
-  {
-    id: "math-1",
-    name: "Calculus",
-    field: "Mathematics",
-    complexity: "Medium",
-    // Using "fundamental" as the nested key with custom content
-    fundamental: (
-      <div
-        style={{
-          padding: "16px",
-          backgroundColor: "#f0f9ff",
-          border: "1px solid #7dd3fc",
-          borderRadius: "8px",
-          margin: "8px 0",
-        }}
-      >
-        <h4 style={{ margin: "0 0 12px 0", color: "#0c4a6e" }}>
-          📐 Calculus Applications
-        </h4>
-        <div style={{ fontSize: "14px", lineHeight: "1.6", color: "#075985" }}>
-          <strong>Differential Calculus:</strong> rates of change, slopes,
-          optimization
-          <br />
-          <strong>Integral Calculus:</strong> areas, volumes, accumulation
-          <br />
-          <strong>Real-world uses:</strong> physics, engineering, economics,
-          biology
-        </div>
-      </div>
-    ),
-  },
-];
-
 // Define columns for the nested table
 const nestedTableColumns: DataTableColumn[] = [
   { id: "species", header: "Species", accessor: (row: any) => row.species },
@@ -2384,4 +1876,452 @@ export const NestedTable: Story = {
     allowsSorting: true,
     isAdjustable: true,
   },
+};
+
+export const AllFeatures: Story = {
+  render: () => {
+    // Feature toggles
+    const [search, setSearch] = useState("");
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
+    const [visibleColumns, setVisibleColumns] = useState([
+      "name",
+      "age",
+      "role",
+      "email",
+      "status",
+    ]);
+    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+      column: "name",
+      direction: "ascending",
+    });
+
+    // Settings
+    const [isAdjustable, setIsAdjustable] = useState(true);
+    const [allowsSorting, setAllowsSorting] = useState(true);
+    const [isRowClickable, setIsRowClickable] = useState(true);
+    const [stickyHeader, setStickyHeader] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(false);
+    const [density, setDensity] = useState<"default" | "condensed">("default");
+    const [selectionMode, setSelectionMode] = useState<
+      "none" | "single" | "multiple"
+    >("multiple");
+    const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
+
+    const allColumns = comprehensiveColumns.map((col) => col.id);
+
+    const handleColumnToggle = (colId: string) => {
+      setVisibleColumns((prev) =>
+        prev.includes(colId)
+          ? prev.filter((id) => id !== colId)
+          : [...prev, colId]
+      );
+    };
+
+    const selectedCount = Array.from(selectedKeys).length;
+    const buttonStyle = {
+      padding: "6px 12px",
+      fontSize: "12px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      backgroundColor: "#fff",
+    };
+
+    return (
+      <Stack gap={20}>
+        <div>
+          <h2
+            style={{ margin: "0 0 8px 0", fontSize: "24px", fontWeight: "600" }}
+          >
+            🚀 DataTable - All Features Showcase
+          </h2>
+          <p style={{ margin: "0 0 16px 0", color: "#666", fontSize: "16px" }}>
+            Comprehensive demo showcasing all DataTable capabilities. Toggle
+            features below to see how they work together.
+          </p>
+        </div>
+
+        {/* Controls Section */}
+        <div
+          style={{
+            padding: "20px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "8px",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          {/* Search */}
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              🔍 Search & Filter
+            </h4>
+            <TextInput
+              value={search}
+              onChange={setSearch}
+              placeholder="Search across all columns..."
+              width="300px"
+            />
+          </div>
+
+          {/* Column Visibility */}
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              👁️ Column Visibility
+            </h4>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+              {allColumns.map((colId) => (
+                <label
+                  key={colId}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "14px",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={visibleColumns.includes(colId)}
+                    onChange={() => handleColumnToggle(colId)}
+                    style={{ marginRight: "6px" }}
+                  />
+                  {colId.charAt(0).toUpperCase() + colId.slice(1)}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Table Settings */}
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              ⚙️ Table Settings
+            </h4>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isAdjustable}
+                  onChange={(e) => setIsAdjustable(e.target.checked)}
+                  style={{ marginRight: "6px" }}
+                />
+                Resizable Columns
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={allowsSorting}
+                  onChange={(e) => setAllowsSorting(e.target.checked)}
+                  style={{ marginRight: "6px" }}
+                />
+                Sorting
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isRowClickable}
+                  onChange={(e) => setIsRowClickable(e.target.checked)}
+                  style={{ marginRight: "6px" }}
+                />
+                Clickable Rows
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={stickyHeader}
+                  onChange={(e) => setStickyHeader(e.target.checked)}
+                  style={{ marginRight: "6px" }}
+                />
+                Sticky Header
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isTruncated}
+                  onChange={(e) => setIsTruncated(e.target.checked)}
+                  style={{ marginRight: "6px" }}
+                />
+                Text Truncation
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "14px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={density === "condensed"}
+                  onChange={(e) =>
+                    setDensity(e.target.checked ? "condensed" : "default")
+                  }
+                  style={{ marginRight: "6px" }}
+                />
+                Condensed Mode
+              </label>
+            </div>
+          </div>
+
+          {/* Selection Settings */}
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              ✅ Selection Settings
+            </h4>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                marginBottom: "8px",
+              }}
+            >
+              <label style={{ fontSize: "14px" }}>Selection Mode:</label>
+              <select
+                value={selectionMode}
+                onChange={(e) => setSelectionMode(e.target.value as any)}
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                }}
+              >
+                <option value="none">None</option>
+                <option value="single">Single</option>
+                <option value="multiple">Multiple</option>
+              </select>
+              {selectionMode !== "none" && (
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "14px",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={disallowEmptySelection}
+                    onChange={(e) =>
+                      setDisallowEmptySelection(e.target.checked)
+                    }
+                    style={{ marginRight: "6px" }}
+                  />
+                  Require Selection
+                </label>
+              )}
+            </div>
+            {selectionMode !== "none" && (
+              <div style={{ fontSize: "14px", color: "#666" }}>
+                <strong>Selected:</strong> {selectedCount} row(s) |
+                <strong> IDs:</strong>{" "}
+                {Array.from(selectedKeys).join(", ") || "None"}
+              </div>
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          <div>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              🎯 Quick Actions
+            </h4>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <button
+                onClick={() => setSelectedKeys(new Set())}
+                disabled={selectionMode === "none"}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "12px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  backgroundColor: "#fff",
+                  cursor: selectionMode === "none" ? "not-allowed" : "pointer",
+                  opacity: selectionMode === "none" ? 0.5 : 1,
+                }}
+              >
+                Clear Selection
+              </button>
+              <button
+                onClick={() => setVisibleColumns(allColumns)}
+                style={{
+                  ...buttonStyle,
+                  cursor: "pointer",
+                }}
+              >
+                Show All Columns
+              </button>
+              <button
+                onClick={() => setVisibleColumns(["name", "role", "status"])}
+                style={{
+                  ...buttonStyle,
+                  cursor: "pointer",
+                }}
+              >
+                Minimal View
+              </button>
+              <button
+                onClick={() => setSearch("Engineer")}
+                style={{
+                  ...buttonStyle,
+                  cursor: "pointer",
+                }}
+              >
+                Search "Engineer"
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Data Table */}
+        <div
+          style={{
+            border: "1px solid #e0e0e0",
+            borderRadius: "8px",
+            overflow: "hidden",
+            maxHeight: stickyHeader ? "400px" : "none",
+            overflowY: stickyHeader ? "auto" : "visible",
+          }}
+        >
+          <DataTable
+            columns={comprehensiveColumns}
+            data={comprehensiveData}
+            visibleColumns={visibleColumns}
+            search={search}
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            sortDescriptor={sortDescriptor}
+            onSortChange={setSortDescriptor}
+            selectionMode={selectionMode}
+            disallowEmptySelection={disallowEmptySelection}
+            isAdjustable={isAdjustable}
+            allowsSorting={allowsSorting}
+            isRowClickable={isRowClickable}
+            maxHeight={stickyHeader ? "400px" : undefined}
+            isTruncated={isTruncated}
+            density={density}
+            nestedKey="children"
+            onRowClick={(row) => {
+              if (isRowClickable) {
+                alert(`Clicked row: ${row.name} (${row.role})`);
+              }
+            }}
+          />
+        </div>
+
+        {/* Feature Information */}
+        <div
+          style={{
+            padding: "16px",
+            backgroundColor: "#f0f8ff",
+            borderRadius: "8px",
+            border: "1px solid #b3d9ff",
+            fontSize: "14px",
+          }}
+        >
+          <h4
+            style={{
+              margin: "0 0 12px 0",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}
+          >
+            💡 Features Demonstrated
+          </h4>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "12px",
+            }}
+          >
+            <div>
+              <strong>✨ Core Features:</strong>
+              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
+                <li>Column visibility management</li>
+                <li>Resizable columns</li>
+                <li>Search with highlighting</li>
+                <li>Sorting (controlled)</li>
+              </ul>
+            </div>
+            <div>
+              <strong>🎯 Selection:</strong>
+              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
+                <li>Single/Multiple selection modes</li>
+                <li>Required selection option</li>
+                <li>Programmatic selection control</li>
+              </ul>
+            </div>
+            <div>
+              <strong>🚀 Advanced:</strong>
+              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
+                <li>Nested rows with expand/collapse</li>
+                <li>Custom cell rendering (Status badges)</li>
+                <li>Text truncation with hover</li>
+                <li>Sticky headers</li>
+                <li>Density options</li>
+                <li>Clickable rows</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Stack>
+    );
+  },
+  args: {},
 };
