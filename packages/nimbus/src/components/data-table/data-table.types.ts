@@ -25,6 +25,7 @@ export type DataTableColumn<T = any> = {
   sticky?: boolean;
   isSortable?: boolean;
   isRowHeader?: boolean;
+  headerIcon?: ReactNode;
 };
 
 export type DataTableRow<T = any> = T & {
@@ -56,7 +57,7 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
-  stickyHeader?: boolean;
+  maxHeight?: string | number;
   sortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
   // Selection props

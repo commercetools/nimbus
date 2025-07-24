@@ -58,3 +58,7 @@ export const DataTableNestedIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">
 >("span", "nestedIcon");
+export const DataTableHeaderSortIcon = withContext<
+  HTMLSpanElement,
+  HTMLChakraProps<"span">
+>("span", "headerSortIcon");
