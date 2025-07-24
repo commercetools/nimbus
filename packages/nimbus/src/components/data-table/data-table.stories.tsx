@@ -183,8 +183,6 @@ export const AdjustableColumns: Story = {
   args: {
     columns,
     data,
-    width: 180,
-    minWidth: 150,
   },
 };
 
