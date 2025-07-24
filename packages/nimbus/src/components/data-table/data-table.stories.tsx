@@ -248,32 +248,6 @@ export const ClickableRows: Story = {
   args: { columns, data },
 };
 
-export const NestedRows: Story = {
-  args: {
-    columns,
-    data: [
-      {
-        id: "1",
-        name: "Alice",
-        age: 30,
-        role: "Admin",
-        class: "special",
-        children: [
-          {
-            id: "1-1",
-            name: "Alice Jr.",
-            age: 5,
-            role: "Child",
-            class: "junior",
-          },
-        ],
-      },
-      { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
-    ],
-    nestedKey: "children",
-  },
-};
-
 export const WithSorting: Story = {
   render: (args) => {
     return (
