@@ -47,6 +47,19 @@ export const dataTableRecipe = defineSlotRecipe({
         userSelect: "none",
         padding: "4px 24px",
         color: "#4b5563", // Slightly grey color for column headers
+        // Ensure header text truncates when columns are resized
+        "& > div": {
+          display: "flex",
+          alignItems: "center",
+          "& > span:first-of-type": {
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          },
+          "& > span:not(:first-of-type)": {
+            flexShrink: 0, // Prevent icons and sort indicators from shrinking
+          },
+        },
         // Disable hover effects for selection and expand columns
         "&.selection-column-header, &#expand": {
           cursor: "default",

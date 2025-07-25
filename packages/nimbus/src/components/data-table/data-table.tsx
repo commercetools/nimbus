@@ -18,9 +18,9 @@ const DataTableBase = forwardRef<HTMLDivElement, DataTableProps & { footer?: Rea
   function DataTable({ footer, ...props }, ref) {
     return (
       <DataTableRoot ref={ref} {...props}>
-        <DataTableTable>
-          <DataTableHeader />
-          <DataTableBody />
+        <DataTableTable aria-label="Data Table">
+          <DataTableHeader aria-label="Data Table Header" />
+          <DataTableBody aria-label="Data Table Body" />
         </DataTableTable>
         {footer && <DataTableFooter>{footer}</DataTableFooter>}
       </DataTableRoot>

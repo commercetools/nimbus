@@ -60,14 +60,12 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   maxHeight?: string | number;
   sortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
-  // Selection props
   selectionMode?: "none" | "single" | "multiple";
   selectionBehavior?: "toggle" | "replace";
   disallowEmptySelection?: boolean;
   selectedKeys?: Selection;
   defaultSelectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
-  // Other props
   onRowClick?: (row: DataTableRow<T>) => void;
   onDetailsClick?: (row: DataTableRow<T>) => void;
   renderDetails?: (row: DataTableRow<T>) => ReactNode;
@@ -75,6 +73,5 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   density?: DataTableDensity;
   isTruncated?: boolean;
   footer?: React.ReactNode;
-  // Flexible nested key - no default, must be explicitly provided for nested content
   nestedKey?: string;
 }

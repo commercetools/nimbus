@@ -51,6 +51,7 @@ const sortableColumns: DataTableColumn[] = [
     header: "Name",
     accessor: (row) => row.name,
     isSortable: true,
+    isAdjustable: true,
     headerIcon: (
       <IconButton
         aria-label="Custom Column Information"
@@ -69,8 +70,8 @@ const sortableColumns: DataTableColumn[] = [
       </IconButton>
     ),
   },
-  { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true },
-  { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true },
+  { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true, isAdjustable: true },
+  { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true, isAdjustable: true },
   {
     id: "custom",
     header: "Custom (Not Sortable)",
@@ -262,6 +263,7 @@ export const WithSorting: Story = {
     columns: sortableColumns,
     data,
     allowsSorting: true,
+    ['aria-label']: 'Sorting Example',
   },
 };
 

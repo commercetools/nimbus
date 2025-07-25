@@ -9,20 +9,14 @@ import type {
 } from "../data-table.types";
 import type { Selection } from "react-aria-components";
 
-// Context for sharing state between DataTable components
 interface DataTableContextValue<T = any> {
-  // Data & Columns
   columns: DataTableColumn<T>[];
   data: DataTableRowType<T>[];
   visibleColumns?: string[];
-  
-  // State
   search?: string;
   sortDescriptor?: SortDescriptor;
   selectedKeys?: Selection;
   expanded: Record<string, boolean>;
-  
-  // Configuration
   allowsSorting?: boolean;
   selectionMode?: "none" | "single" | "multiple";
   disallowEmptySelection?: boolean;
@@ -31,21 +25,15 @@ interface DataTableContextValue<T = any> {
   isTruncated?: boolean;
   density?: "default" | "condensed";
   nestedKey?: string;
-  
-  // Event handlers
   onSortChange?: (descriptor: SortDescriptor) => void;
   onSelectionChange?: (keys: Selection) => void;
   onRowClick?: (row: DataTableRowType<T>) => void;
   toggleExpand: (id: string) => void;
-  
-  // Computed values
   visibleCols: DataTableColumn<T>[];
   filteredRows: DataTableRowType<T>[];
   sortedRows: DataTableRowType<T>[];
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
-  
-  // Selection helpers
   isSelected: (rowId: string) => boolean;
   isIndeterminate: () => boolean;
   isAllSelected: () => boolean;
@@ -55,7 +43,9 @@ interface DataTableContextValue<T = any> {
 
 const DataTableContext = createContext<DataTableContextValue | null>(null);
 
-export const useDataTableContext = <T = any>() => {
+DataTableContext.displayName = "DataTableContext";
+
+export const useDataTableContext = <T = any>(): DataTableContextValue<T> => {
   const context = useContext(DataTableContext) as DataTableContextValue<T> | null;
   if (!context) {
     throw new Error("DataTable components must be used within DataTable.Root");
@@ -189,17 +179,14 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       ...rest
     } = props;
 
-    // Internal sorting state
     const [internalSortDescriptor, setInternalSortDescriptor] = useState<
       SortDescriptor | undefined
     >();
     
-    // Expanded rows state
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
 
-    // Computed values
     const visibleCols = useMemo(
       () =>
         columns.filter(
@@ -223,7 +210,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
     const showSelectionColumn = selectionMode !== "none";
 
-    // Event handlers
     const toggleExpand = (id: string) =>
       setExpanded((e) => ({ ...e, [id]: !e[id] }));
 
@@ -235,7 +221,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       }
     };
 
-    // Selection helpers
     const isSelected = (rowId: string) => {
       if (!selectedKeys) return false;
       if (selectedKeys === "all") return true;
@@ -297,18 +282,13 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     };
 
     const contextValue: DataTableContextValue<T> = {
-      // Data & Columns
       columns,
       data,
       visibleColumns,
-      
-      // State
       search,
       sortDescriptor,
       selectedKeys,
       expanded,
-      
-      // Configuration
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -317,21 +297,15 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       isTruncated,
       density,
       nestedKey,
-      
-      // Event handlers
       onSortChange: handleSortChange,
       onSelectionChange,
       onRowClick,
       toggleExpand,
-      
-      // Computed values
       visibleCols,
       filteredRows,
       sortedRows,
       showExpandColumn,
       showSelectionColumn,
-      
-      // Selection helpers
       isSelected,
       isIndeterminate,
       isAllSelected,
@@ -362,4 +336,4 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
   }
 );
 
-DataTableRoot.displayName = "DataTable.Root"; 
+DataTableRoot.displayName = "DataTableRoot"; 
