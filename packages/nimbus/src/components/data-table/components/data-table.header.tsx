@@ -7,6 +7,7 @@ import {
 import { DataTableHeaderSortIcon } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
 import { South, SwapVert, Info } from "@commercetools/nimbus-icons";
+import { Divider } from "@/components";
 
 export interface DataTableHeaderProps {}
 
@@ -29,9 +30,11 @@ export const DataTableHeader = forwardRef<
   } = useDataTableContext();
 
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
+  const [focusedColumn, setFocusedColumn] = useState<string | null>(null);
 
   const handleHoverStart = useCallback(() => setIsHeaderHovered(true), []);
   const handleHoverEnd = useCallback(() => setIsHeaderHovered(false), []);
+  const handleBlur = useCallback(() => setFocusedColumn(null), []);
 
   // Render sort indicator
   const renderSortIndicator = (columnId: string) => {
@@ -128,8 +131,9 @@ export const DataTableHeader = forwardRef<
       )}
 
       {/* Data columns */}
-      {visibleCols.map((col) => {
+      {visibleCols.map((col, index) => {
         const isSortable = allowsSorting && col.isSortable !== false;
+        const isLastColumn = index === visibleCols.length - 1;
         return (
           <AriaColumn
             allowsSorting={isSortable}
@@ -147,35 +151,38 @@ export const DataTableHeader = forwardRef<
             }}
           >
             {/* Inset border divider */}
-            {isHeaderHovered && (
-              <div
+            {isHeaderHovered && !isLastColumn && (
+              <Divider
+                orientation="vertical"
+                color="gray.200"
                 style={{
                   position: "absolute",
                   right: 0,
-                  top: "20%",
-                  bottom: "20%",
+                  top: "10%",
+                  bottom: "10%",
+                  height: "80%",
                   width: "1px",
-                  backgroundColor: "#E0E0E0",
                   pointerEvents: "none",
                 }}
               />
             )}
             <div
+              tabIndex={0}
+              onFocus={() => setFocusedColumn(col.id)}
+              onBlur={handleBlur}
               style={{
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
+                cursor: isSortable ? "pointer" : "default",
               }}
             >
-              <span>{col.header}</span>
+              <span style={{}}>{col.header}</span>
               {col.headerIcon && (
                 <span style={{ marginLeft: "8px" }}>{col.headerIcon}</span>
               )}
               {renderSortIndicator(col.id)}
             </div>
-            {col.isAdjustable !== false && (
-              <ColumnResizer>
-                {({ isResizing }) => (
+            {col.isAdjustable !== false && !isLastColumn && (
+              <ColumnResizer aria-label="Resize column">
+                {({ isResizing, isFocused }) => (
                   <div
                     style={{
                       width: 4,
@@ -186,6 +193,7 @@ export const DataTableHeader = forwardRef<
                       cursor: "col-resize",
                       background: isResizing ? "#3182ce" : "transparent",
                       transition: "background 0.2s",
+                      outline: isFocused ? "1px solid #3182ce" : "none",
                       zIndex: 2,
                     }}
                   />
