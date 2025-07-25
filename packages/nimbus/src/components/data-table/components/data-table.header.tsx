@@ -7,7 +7,6 @@ import {
 } from "react-aria-components";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
-
 import { Box, Checkbox } from "@/components";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

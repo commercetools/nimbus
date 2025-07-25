@@ -158,7 +158,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const [internalSortDescriptor, setInternalSortDescriptor] = useState<
       SortDescriptor | undefined
     >();
-
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
