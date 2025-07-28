@@ -2,9 +2,9 @@ import type { DataTableRootProps } from "./data-table.slots"
 import type { RecipeVariantProps } from "@chakra-ui/react"
 import { dataTableRecipe } from "./data-table.recipe"
 import type { ReactNode } from "react";
-import type { SortDirection as AriaSortDirection, Selection } from "react-aria-components";
+import type { SortDirection as RaSortDirection, Selection } from "react-aria-components";
 
-export type SortDirection = AriaSortDirection;
+export type SortDirection = RaSortDirection;
 
 export type SortDescriptor = {
   column: string;
