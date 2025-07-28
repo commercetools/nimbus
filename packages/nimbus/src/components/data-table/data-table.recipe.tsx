@@ -20,7 +20,7 @@ export const dataTableRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
-      // overflowX: "auto",
+      colorPalette: "slate",
       display: "block",
       borderRadius: "8px",
       border: "1px solid hsl(232, 18%, 95%)",
@@ -42,12 +42,22 @@ export const dataTableRecipe = defineSlotRecipe({
         transition: "background-color 0.15s ease",
         transform: "translate3d(0, 0, 0)", // Force hardware acceleration
       },
+      "& .data-table-header": {
+        background: "colorPalette.2",
+        color: "colorPalette.11",
+        borderBottom: "1px solid hsl(232, 18%, 95%)",
+        lineHeight: "400",
+        height: "40px",
+        fontWeight: "500",
+        textStyle: "sm",
+        fontSize: "300",
+      },
       "& .react-aria-Column": {
+        textAlign: "right",
+        position: "relative",
         cursor: "pointer",
         userSelect: "none",
         padding: "4px 24px",
-        color: "#4b5563", // Slightly grey color for column headers
-        // Ensure header text truncates when columns are resized
         "& > div": {
           display: "flex",
           alignItems: "center",
@@ -57,10 +67,9 @@ export const dataTableRecipe = defineSlotRecipe({
             whiteSpace: "nowrap",
           },
           "& > span:not(:first-of-type)": {
-            flexShrink: 0, // Prevent icons and sort indicators from shrinking
+            flexShrink: 0,
           },
         },
-        // Disable hover effects for selection and expand columns
         "&.selection-column-header, &#expand": {
           cursor: "default",
           "&:hover": {
@@ -79,6 +88,15 @@ export const dataTableRecipe = defineSlotRecipe({
             },
           },
         },
+      },
+      "& .data-table-header-divider": {
+        position: "absolute",
+        right: 0,
+        top: "10%",
+        bottom: "10%",
+        height: "80%",
+        width: "1px",
+        pointerEvents: "none",
       },
       "& .react-aria-Row[aria-selected='true']": {
         backgroundColor: "#EBF8FF",
@@ -137,7 +155,8 @@ export const dataTableRecipe = defineSlotRecipe({
     expandButton: {},
     nestedIcon: {},
     headerSortIcon: {
-      transition: "opacity 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)",
+      transition:
+        "opacity 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)",
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",

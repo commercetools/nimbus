@@ -31,6 +31,7 @@ export const DataTableHeader = forwardRef<
 
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
   const [focusedColumn, setFocusedColumn] = useState<string | null>(null);
+  const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
 
   const handleHoverStart = useCallback(() => setIsHeaderHovered(true), []);
   const handleHoverEnd = useCallback(() => setIsHeaderHovered(false), []);
@@ -44,25 +45,23 @@ export const DataTableHeader = forwardRef<
     if (column?.isSortable === false) return null;
 
     const isActive = sortDescriptor?.column === columnId;
+    const isHovered = hoveredColumn === columnId;
     const direction = sortDescriptor?.direction;
 
-    // For unsorted state, show SwapVert without animation
-    // For active states, use North/South with rotation animation
-    if (!isActive) {
-      return (
-        <DataTableHeaderSortIcon>
-          <SwapVert />
-        </DataTableHeaderSortIcon>
-      );
+    // If not sorted and not hovered, don't show any icon
+    if (!isActive && !isHovered) {
+      return null;
     }
 
-    // For active states, use a single arrow with rotation animation
     const rotation = direction === "ascending" ? "180deg" : "0deg";
 
     return (
       <DataTableHeaderSortIcon
+        color={isActive ? "neutral.11" : "neutral.10"}
         style={{
           transform: `rotate(${rotation})`,
+          transition: "transform 100ms",
+          opacity: 1,
         }}
       >
         <South />
@@ -73,12 +72,8 @@ export const DataTableHeader = forwardRef<
   return (
     <AriaTableHeader
       ref={ref}
+      className="data-table-header"
       style={{
-        background: "#F7F7F7",
-        height: "36px",
-        fontSize: "0.75rem",
-        color: "#4b5563", // Slightly darker grey for headers
-        borderBottom: "1px solid hsl(232, 18%, 95%)",
         ...(maxHeight && {
           position: "sticky",
           top: 0,
@@ -89,7 +84,6 @@ export const DataTableHeader = forwardRef<
       onHoverEnd={handleHoverEnd}
       {...props}
     >
-      {/* Selection column header if selection is enabled */}
       {showSelectionColumn && (
         <AriaColumn
           id="selection"
@@ -119,7 +113,6 @@ export const DataTableHeader = forwardRef<
         </AriaColumn>
       )}
 
-      {/* Expand/collapse column header if needed */}
       {showExpandColumn && (
         <AriaColumn
           id="expand"
@@ -130,7 +123,6 @@ export const DataTableHeader = forwardRef<
         />
       )}
 
-      {/* Data columns */}
       {visibleCols.map((col, index) => {
         const isSortable = allowsSorting && col.isSortable !== false;
         const isLastColumn = index === visibleCols.length - 1;
@@ -140,36 +132,23 @@ export const DataTableHeader = forwardRef<
             key={col.id}
             id={col.id}
             isRowHeader
-            // allowsResizing={col.isAdjustable !== false} // TODO: Fix prop name
             width={col.width}
             defaultWidth={col.defaultWidth}
             minWidth={col.minWidth}
             maxWidth={col.maxWidth}
-            style={{
-              textAlign: "left",
-              position: "relative",
-            }}
           >
-            {/* Inset border divider */}
             {isHeaderHovered && !isLastColumn && (
               <Divider
                 orientation="vertical"
                 color="gray.200"
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  top: "10%",
-                  bottom: "10%",
-                  height: "80%",
-                  width: "1px",
-                  pointerEvents: "none",
-                }}
+                className="data-table-header-divider"
               />
             )}
             <div
               tabIndex={0}
               onFocus={() => setFocusedColumn(col.id)}
-              onBlur={handleBlur}
+              onMouseEnter={() => setHoveredColumn(col.id)}
+              onMouseLeave={() => setHoveredColumn(null)}
               style={{
                 cursor: isSortable ? "pointer" : "default",
               }}
@@ -191,8 +170,8 @@ export const DataTableHeader = forwardRef<
                       right: 0,
                       top: 0,
                       cursor: "col-resize",
+                      transition: "background 100ms",
                       background: isResizing ? "#3182ce" : "transparent",
-                      transition: "background 0.2s",
                       outline: isFocused ? "1px solid #3182ce" : "none",
                       zIndex: 2,
                     }}
