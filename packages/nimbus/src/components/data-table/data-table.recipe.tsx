@@ -14,6 +14,7 @@ export const dataTableRecipe = defineSlotRecipe({
     "expandButton",
     "nestedIcon",
     "headerSortIcon",
+    "columnResizer",
   ],
   // Unique class name prefix for the component
   className: "nimbus-data-table",
@@ -163,6 +164,24 @@ export const dataTableRecipe = defineSlotRecipe({
       opacity: 0.4,
       marginLeft: "6px",
       willChange: "opacity, color, transform", // Optimize transitions
+    },
+    columnResizer: {
+      width: "4px",
+      height: "100%",
+      position: "absolute",
+      right: 0,
+      top: 0,
+      cursor: "col-resize",
+      transition: "background 100ms",
+      background: "transparent",
+      outline: "none",
+      zIndex: 2,
+      "&[data-resizing='true']": {
+        background: "{colors.primary}",
+      },
+      "&[data-focused='true']": {
+        outline: "1px solid {colors.primary}",
+      },
     },
   },
   // Variants for different states
