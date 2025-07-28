@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Row as AriaRow, Cell as AriaCell } from "react-aria-components";
+import { Row as RaRow, Cell as RaCell } from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableExpandButton } from "../data-table.slots";
@@ -50,7 +50,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
 
     return (
       <>
-        <AriaRow
+        <RaRow
           ref={ref}
           id={row.id}
           className="data-table-row"
@@ -65,7 +65,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
         >
           {/* Selection checkbox cell if selection is enabled */}
           {showSelectionColumn && (
-            <AriaCell
+            <RaCell
               style={{
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -84,12 +84,12 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                   cursor: 'pointer'
                 }}
               />
-            </AriaCell>
+            </RaCell>
           )}
 
           {/* Expand/collapse cell if expand column is shown */}
           {showExpandColumn && (
-            <AriaCell
+            <RaCell
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -107,12 +107,12 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                   {isExpanded ? "-" : "+"}
                 </DataTableExpandButton>
               ) : null}
-            </AriaCell>
+            </RaCell>
           )}
 
           {/* Data cells */}
           {visibleCols.map((col, index) => (
-            <AriaCell key={col.id}>
+            <RaCell key={col.id}>
               <div
                 onClick={isRowClickable ? handleRowClick : undefined}
                 className={isTruncated ? "truncated-cell" : ""}
@@ -134,16 +134,16 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                     })
                   : highlightCell(col.accessor(row))}
               </div>
-            </AriaCell>
+            </RaCell>
           ))}
-        </AriaRow>
+        </RaRow>
 
         {/* TODO: Implement nested content rows - will need to avoid recursive issues */}
         {hasNestedContent &&
           isExpanded &&
           nestedKey && (
-            <AriaRow>
-              <AriaCell
+            <RaRow>
+              <RaCell
                 colSpan={
                   visibleCols.length +
                   (showExpandColumn ? 1 : 0) +
@@ -157,8 +157,8 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                   ? `${row[nestedKey].length} nested items` 
                   : row[nestedKey]
                 }
-              </AriaCell>
-            </AriaRow>
+              </RaCell>
+            </RaRow>
           )}
       </>
     );

@@ -1,12 +1,12 @@
 import { forwardRef, useState, useCallback } from "react";
 import {
-  TableHeader as AriaTableHeader,
-  Column as AriaColumn,
+  TableHeader as RaTableHeader,
+  Column as RaColumn,
   ColumnResizer,
 } from "react-aria-components";
 import { DataTableHeaderSortIcon } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
-import { South, SwapVert, Info } from "@commercetools/nimbus-icons";
+import { South } from "@commercetools/nimbus-icons";
 import { Divider } from "@/components";
 
 export interface DataTableHeaderProps {}
@@ -70,7 +70,7 @@ export const DataTableHeader = forwardRef<
   };
 
   return (
-    <AriaTableHeader
+    <RaTableHeader
       ref={ref}
       className="data-table-header"
       style={{
@@ -85,7 +85,7 @@ export const DataTableHeader = forwardRef<
       {...props}
     >
       {showSelectionColumn && (
-        <AriaColumn
+        <RaColumn
           id="selection"
           className="selection-column-header"
           width={60}
@@ -110,11 +110,11 @@ export const DataTableHeader = forwardRef<
               }}
             />
           )}
-        </AriaColumn>
+        </RaColumn>
       )}
 
       {showExpandColumn && (
-        <AriaColumn
+        <RaColumn
           id="expand"
           width={20}
           minWidth={20}
@@ -127,7 +127,7 @@ export const DataTableHeader = forwardRef<
         const isSortable = allowsSorting && col.isSortable !== false;
         const isLastColumn = index === visibleCols.length - 1;
         return (
-          <AriaColumn
+          <RaColumn
             allowsSorting={isSortable}
             key={col.id}
             id={col.id}
@@ -179,10 +179,10 @@ export const DataTableHeader = forwardRef<
                 )}
               </ColumnResizer>
             )}
-          </AriaColumn>
+          </RaColumn>
         );
       })}
-    </AriaTableHeader>
+    </RaTableHeader>
   );
 });
 

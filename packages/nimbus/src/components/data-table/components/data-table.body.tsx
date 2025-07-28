@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { TableBody as AriaTableBody, Row as AriaRow, Cell as AriaCell } from "react-aria-components";
+import { TableBody as RaTableBody, Row as RaRow, Cell as RaCell } from "react-aria-components";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableRow } from "./data-table.row";
 
@@ -15,10 +15,10 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
     } = useDataTableContext();
 
     return (
-      <AriaTableBody ref={ref} {...props}>
+      <RaTableBody ref={ref} {...props}>
         {sortedRows.length === 0 ? (
-          <AriaRow>
-            <AriaCell
+          <RaRow>
+            <RaCell
               colSpan={
                 visibleCols.length +
                 (showExpandColumn ? 1 : 0) +
@@ -26,14 +26,14 @@ export const DataTableBody = forwardRef<HTMLTableSectionElement, DataTableBodyPr
               }
             >
               No data
-            </AriaCell>
-          </AriaRow>
+            </RaCell>
+          </RaRow>
         ) : (
           sortedRows.map((row) => (
             <DataTableRow key={row.id} row={row} />
           ))
         )}
-      </AriaTableBody>
+      </RaTableBody>
     );
   }
 );
