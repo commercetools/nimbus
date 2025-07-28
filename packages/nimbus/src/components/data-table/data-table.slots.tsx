@@ -62,3 +62,7 @@ export const DataTableHeaderSortIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">
 >("span", "headerSortIcon");
+export const DataTableColumnResizer = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "columnResizer");
