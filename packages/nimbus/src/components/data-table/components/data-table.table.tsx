@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Table as AriaTable } from "react-aria-components";
+import { Table as RaTable } from "react-aria-components";
 import { useDataTableContext } from "./data-table.root";
 
 export interface DataTableTableProps {
@@ -33,7 +33,7 @@ export const DataTableTable = forwardRef<HTMLTableElement, DataTableTableProps>(
     };
 
     return (
-      <AriaTable
+      <RaTable
         ref={ref}
         sortDescriptor={ariaSortDescriptor}
         onSortChange={handleAriaSort}
@@ -45,7 +45,7 @@ export const DataTableTable = forwardRef<HTMLTableElement, DataTableTableProps>(
         {...props}
       >
         {children}
-      </AriaTable>
+      </RaTable>
     );
   }
 );
