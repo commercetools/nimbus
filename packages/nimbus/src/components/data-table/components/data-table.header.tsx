@@ -4,7 +4,7 @@ import {
   Column as RaColumn,
   ColumnResizer,
 } from "react-aria-components";
-import { DataTableHeaderSortIcon } from "../data-table.slots";
+import { DataTableHeaderSortIcon, DataTableColumnResizer } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
 import { South } from "@commercetools/nimbus-icons";
 import { Divider } from "@/components";
@@ -153,7 +153,7 @@ export const DataTableHeader = forwardRef<
                 cursor: isSortable ? "pointer" : "default",
               }}
             >
-              <span style={{}}>{col.header}</span>
+              <span>{col.header}</span>
               {col.headerIcon && (
                 <span style={{ marginLeft: "8px" }}>{col.headerIcon}</span>
               )}
@@ -162,19 +162,9 @@ export const DataTableHeader = forwardRef<
             {col.isAdjustable !== false && !isLastColumn && (
               <ColumnResizer aria-label="Resize column">
                 {({ isResizing, isFocused }) => (
-                  <div
-                    style={{
-                      width: 4,
-                      height: "100%",
-                      position: "absolute",
-                      right: 0,
-                      top: 0,
-                      cursor: "col-resize",
-                      transition: "background 100ms",
-                      background: isResizing ? "#3182ce" : "transparent",
-                      outline: isFocused ? "1px solid #3182ce" : "none",
-                      zIndex: 2,
-                    }}
+                  <DataTableColumnResizer
+                    data-resizing={isResizing}
+                    data-focused={isFocused}
                   />
                 )}
               </ColumnResizer>
