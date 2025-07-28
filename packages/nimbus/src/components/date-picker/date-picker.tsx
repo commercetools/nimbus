@@ -29,7 +29,13 @@ import { DatePickerCustomContext } from "./components/date-picker.custom-context
  * Users can either type a date directly or select from the calendar.
  */
 export const DatePicker = (props: DatePickerProps) => {
-  const { size = "md", variant, granularity = "day" } = props;
+  const {
+    size = "md",
+    variant,
+    granularity = "day",
+    hideTimeZone,
+    hourCycle,
+  } = props;
   const recipe = useSlotRecipe({ recipe: datePickerSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
@@ -51,7 +57,13 @@ export const DatePicker = (props: DatePickerProps) => {
         <DatePickerCustomContext>
           <DatePickerGroupSlot asChild>
             <Group>
-              <DateInput size={size} variant={variant} width="full" />
+              <DateInput
+                size={size}
+                variant={variant}
+                width="full"
+                hideTimeZone={hideTimeZone}
+                hourCycle={hourCycle}
+              />
               <DatePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
@@ -80,7 +92,10 @@ export const DatePicker = (props: DatePickerProps) => {
                 <DatePickerCalendarSlot>
                   <Calendar />
                 </DatePickerCalendarSlot>
-                <DatePickerTimeInput />
+                <DatePickerTimeInput
+                  hideTimeZone={hideTimeZone}
+                  hourCycle={hourCycle}
+                />
               </Dialog>
             </Popover>
           </DatePickerPopoverSlot>

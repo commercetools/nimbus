@@ -177,7 +177,7 @@ export const VariantsSizesAndStates: Story = {
       { label: "Invalid", props: { isInvalid: true } },
     ];
 
-    const variants = ["solid", "ghost"] as const;
+    const variants = ["solid", "ghost", "plain"] as const;
     const sizes = ["sm", "md"] as const;
 
     return (

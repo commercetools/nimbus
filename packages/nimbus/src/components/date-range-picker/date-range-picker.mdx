@@ -1,31 +1,29 @@
 ---
-to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.mdx
----
----
-id: Components-<%= name %>
-title: <%= name %>
-description: <%= purpose %>
+id: Components-DateRangePicker
+title: DateRangePicker
+description: Allows users to select a start and end date from a calendar interface.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - <%= name %>
+  - Inputs
+  - DateRangePicker
 tags:
   - component
 ---
 
-# <%= name %>
+# DateRangePicker
 
-<%= purpose %>
+Allows users to select a start and end date from a calendar interface.
 
 ## Basic Usage
 
 [Explain the basic usage / usecase of the component].
 
 ```jsx-live
-const App = () => <<%= h.changeCase.pascalCase(name) %>>I am <%= h.changeCase.pascalCase(name) %>!</<%= h.changeCase.pascalCase(name) %>>
+const App = () => <DateRangePicker>I am DateRangePicker!</DateRangePicker>
 ```
-
+{/* 
 
 ### Sizes
 
@@ -39,7 +37,7 @@ const App = () => {
   return (
     <Stack direction="horizontal" alignItems="center">
       {sizes.map(size => (
-        <<%= h.changeCase.pascalCase(name) %> key={size} size={size}>'{size}' <%= h.changeCase.pascalCase(name) %></<%= h.changeCase.pascalCase(name) %>>
+        <DateRangePicker key={size} size={size}>'{size}' DateRangePicker</DateRangePicker>
       ))}
     </Stack>
   )
@@ -58,7 +56,7 @@ const App = () => {
   return (
     <Stack direction="horizontal">
       {variants.map(variant => (
-        <<%= h.changeCase.pascalCase(name) %> key={variant} variant={variant}>'{variant}' <%= h.changeCase.pascalCase(name) %></<%= h.changeCase.pascalCase(name) %>>
+        <DateRangePicker key={variant} variant={variant}>'{variant}' DateRangePicker</DateRangePicker>
       ))}
     </Stack>
   )
@@ -79,17 +77,17 @@ const App = () => {
       {colors.map((color) => (
         <Stack key={color} direction="horizontal">
           {variants.map((variant) => (
-            <<%= h.changeCase.pascalCase(name) %> colorPalette={color} key={variant} variant={variant}>
-              '{variant}' <%= h.changeCase.pascalCase(name) %>
-            </<%= h.changeCase.pascalCase(name) %>>
+            <DateRangePicker colorPalette={color} key={variant} variant={variant}>
+              '{variant}' DateRangePicker
+            </DateRangePicker>
           ))}
         </Stack>
       ))}
     </Stack>
   );
 };
-```
+``` */}
 
 ## Props
 
-<PropsTable id="<%= h.changeCase.pascalCase(name) %>" />
+<PropsTable id="DateRangePicker" />
