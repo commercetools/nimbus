@@ -2,9 +2,6 @@ import { ToolbarRoot } from "./components/toolbar.root";
 import { ToolbarGroup } from "./components/toolbar.group";
 import { ToolbarSeparator } from "./components/toolbar.separator";
 
-// Re-export types
-export type * from "./toolbar.types";
-
 export const Toolbar = {
   Root: ToolbarRoot,
   Group: ToolbarGroup,

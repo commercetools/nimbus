@@ -15,9 +15,10 @@ import { toolbarRecipe } from "./toolbar.recipe";
 
 export interface ToolbarRootSlotProps
   extends Omit<
-    HTMLChakraProps<"div", RecipeVariantProps<typeof toolbarRecipe>>,
-    "slot"
-  > {
+      HTMLChakraProps<"div", RecipeVariantProps<typeof toolbarRecipe>>,
+      "slot"
+    >,
+    RecipeVariantProps<typeof toolbarRecipe> {
   // insure that the `ToolbarRoot` component doesn't give a type error
   slot?: string | null | undefined;
   ref?: React.Ref<HTMLDivElement>;
@@ -26,15 +27,20 @@ export interface ToolbarRootSlotProps
 /**
  * Group props interface for grouping toolbar items.
  */
-export interface ToolbarGroupSlotProps {
+export interface ToolbarGroupSlotProps
+  extends Omit<HTMLChakraProps<"div">, "slot"> {
+  slot?: string | null | undefined;
   ref?: React.Ref<HTMLDivElement>;
 }
 
 /**
  * Separator props interface for toolbar separators.
  */
-export interface ToolbarSeparatorSlotProps {
+export interface ToolbarSeparatorSlotProps
+  extends Omit<HTMLChakraProps<"div">, "slot"> {
+  slot?: string | null | undefined;
   ref?: React.Ref<HTMLDivElement>;
+  orientation?: "horizontal" | "vertical";
 }
 
 const { withProvider, withContext } = createSlotRecipeContext({

@@ -1,23 +1,19 @@
 import { forwardRef } from "react";
 import { ToolbarSeparator as ToolbarSeparatorSlot } from "../toolbar.slots.tsx";
 import type { ToolbarSeparatorProps } from "../toolbar.types.ts";
+import { Separator } from "react-aria-components";
+import { useRecipe } from "@chakra-ui/react";
 
-export const ToolbarSeparator = forwardRef<
-  HTMLDivElement,
-  ToolbarSeparatorProps
->((props, forwardedRef) => {
-  const { orientation = "vertical", ...rest } = props;
-
+export const ToolbarSeparator = ({
+  ref: forwardedRef,
+  ...props
+}: ToolbarSeparatorProps) => {
   return (
-    <ToolbarSeparatorSlot
-      {...rest}
-      ref={forwardedRef}
-      role="separator"
-      aria-orientation={orientation}
-      data-orientation={orientation}
-    />
+    <ToolbarSeparatorSlot {...props} ref={forwardedRef} asChild>
+      <Separator />
+    </ToolbarSeparatorSlot>
   );
-});
+};
 
 // Manually assign a displayName for debugging purposes
 ToolbarSeparator.displayName = "Toolbar.Separator";

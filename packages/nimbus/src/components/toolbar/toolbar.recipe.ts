@@ -5,105 +5,68 @@ export const toolbarRecipe = defineSlotRecipe({
   slots: ["root", "group", "separator"],
   base: {
     root: {
-      display: "flex",
-      alignItems: "center",
-      position: "relative",
-      isolation: "isolate",
-      gap: "100",
-      padding: "200",
-      backgroundColor: "bg.default",
-      borderRadius: "100",
-      minHeight: "1000",
+      display: "inline-flex",
       borderWidth: "1px",
-      borderColor: "border.default",
+      borderColor: "neutral.6",
+      borderRadius: "200",
+      p: "var(--toolbar-spacing)",
     },
     group: {
-      display: "flex",
+      display: "inline-flex",
       alignItems: "center",
-      gap: "100",
-      position: "relative",
     },
     separator: {
-      backgroundColor: "border.default",
-      flexShrink: 0,
-      width: "1px",
-      height: "50%",
-      alignSelf: "center",
+      border: 0,
+      bg: "neutral.6",
     },
   },
   variants: {
+    size: {
+      xs: {
+        root: {
+          "--toolbar-spacing": "{spacing.100}",
+        },
+      },
+      md: {
+        root: {
+          "--toolbar-spacing": "{spacing.200}",
+        },
+      },
+    },
     orientation: {
       horizontal: {
         root: {
           flexDirection: "row",
-          alignItems: "center",
+          alignItems: "stretch",
+          gap: "var(--toolbar-spacing)",
         },
         group: {
           flexDirection: "row",
-          alignItems: "center",
+          gap: "var(--toolbar-spacing)",
         },
         separator: {
           width: "1px",
-          height: "50%",
-          alignSelf: "center",
+          height: "auto",
+          //height: "800",
+          alignSelf: "stretch",
+          mx: "var(--toolbar-spacing)",
+          my: 0,
         },
       },
       vertical: {
         root: {
           flexDirection: "column",
-          alignItems: "stretch",
-          minHeight: "auto",
-          minWidth: "1000",
+          gap: "var(--toolbar-spacing)",
         },
         group: {
           flexDirection: "column",
-          alignItems: "stretch",
+          gap: "var(--toolbar-spacing)",
         },
         separator: {
-          width: "50%",
           height: "1px",
-          alignSelf: "center",
-        },
-      },
-    },
-    size: {
-      xs: {
-        root: {
-          gap: "100",
-          padding: "150",
-          minHeight: "800",
-          _vertical: {
-            minWidth: "800",
-          },
-        },
-        group: {
-          gap: "100",
-        },
-      },
-      md: {
-        root: {
-          gap: "100",
-          padding: "200",
-          minHeight: "1000",
-          _vertical: {
-            minWidth: "1000",
-          },
-        },
-        group: {
-          gap: "100",
-        },
-      },
-      lg: {
-        root: {
-          gap: "200",
-          padding: "250",
-          minHeight: "1200",
-          _vertical: {
-            minWidth: "1200",
-          },
-        },
-        group: {
-          gap: "200",
+          width: "auto",
+          my: "var(--toolbar-spacing)",
+          mx: 0,
         },
       },
     },
