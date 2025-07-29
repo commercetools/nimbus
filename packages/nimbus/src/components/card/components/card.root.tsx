@@ -13,6 +13,13 @@ export const CardContext = createContext<CardContextValue | undefined>(
   undefined
 );
 
+/**
+ * # Card
+ * 
+ * A versatile container component presents self-contained information
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/data-display/card}
+ */
 export const CardRoot = ({ children, ref, ...props }: CardProps) => {
   const { isFocused, isFocusVisible, focusProps } = useFocusRing();
   const [headerNode, setHeader] = useState<ReactNode>(null);

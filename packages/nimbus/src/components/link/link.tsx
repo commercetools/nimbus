@@ -5,17 +5,11 @@ import { useLink, useObjectRef, mergeProps } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 
 /**
- * Link
- * ============================================================
+ * # Link
+ * 
  * To allow a user to navigate to a different page or resource
- *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLAnchorElement' attributes (including aria- & data-attributes)
- * - supports 'variants', 'sizes', etc. configured in the recipe
- * - allows overriding styles by using style-props
- * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/navigation/link}
  */
 export const Link = (props: LinkProps) => {
   const { as, asChild, children, ref: forwardedRef, ...rest } = props;

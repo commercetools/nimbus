@@ -11,10 +11,12 @@ export interface KbdProps extends Omit<ChakraKbdProps, "slot"> {
 }
 
 /**
- * Kbd component
- *
+ * # Kbd
+ * 
  * Renders a keyboard shortcut or key combination, styled for visual clarity.
- * Typically used to visually represent keyboard keys
+ * Typically used to visually represent keyboard keys.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/typography/kbd}
  */
 export const Kbd = ({ ref: forwardedRef, slot, ...props }: KbdProps) => {
   const localRef = useRef<HTMLElement>(null);

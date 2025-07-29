@@ -3,13 +3,11 @@ import { TooltipTrigger } from "react-aria-components";
 import type { TooltipTriggerComponentProps } from "react-aria-components";
 
 /**
- * TooltipRoot
- * ============================================================
- * Root component that wraps around a trigger element and Tooltip content.
- * It handles opening and closing the Tooltip when the user hovers over or focuses the trigger,
- * and positioning the Tooltip relative to the trigger.
- *
- * This acts as the context provider for the compound Tooltip component.
+ * # Tooltip
+ * 
+ * A contextual popup that displays a description for an element.
+ * 
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/tooltip}
  */
 export function TooltipRoot({
   // Match delays to current ui-kit tooltip
