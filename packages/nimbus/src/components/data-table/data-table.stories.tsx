@@ -418,7 +418,7 @@ export const SelectionShowcase: Story = {
         >
           {/* Search */}
           <div style={{ marginBottom: "16px" }}>
-            <h4
+            <h3
               style={{
                 margin: "0 0 8px 0",
                 fontSize: "14px",
@@ -426,7 +426,7 @@ export const SelectionShowcase: Story = {
               }}
             >
               🔍 Search & Filter
-            </h4>
+            </h3>
             <TextInput
               value={search}
               onChange={setSearch}
@@ -933,12 +933,12 @@ const comprehensiveColumns: DataTableColumn[] = [
                   : "#f5f5f5",
           color:
             value === "Active"
-              ? "#1890ff"
+              ? "#0958d9"
               : value === "In Progress"
-                ? "#fa8c16"
+                ? "#d46b08"
                 : value === "Planning"
-                  ? "#52c41a"
-                  : "#8c8c8c",
+                  ? "#389e0d"
+                  : "#595959",
         }}
       >
         {value}
@@ -1949,7 +1949,7 @@ export const AllFeatures: Story = {
         >
           {/* Search */}
           <div style={{ marginBottom: "20px" }}>
-            <h4
+            <h3
               style={{
                 margin: "0 0 8px 0",
                 fontSize: "14px",
@@ -1957,7 +1957,7 @@ export const AllFeatures: Story = {
               }}
             >
               🔍 Search & Filter
-            </h4>
+            </h3>
             <TextInput
               value={search}
               onChange={setSearch}
@@ -2125,8 +2125,9 @@ export const AllFeatures: Story = {
                 marginBottom: "8px",
               }}
             >
-              <label style={{ fontSize: "14px" }}>Selection Mode:</label>
+              <label htmlFor="all-features-selection-mode" style={{ fontSize: "14px" }}>Selection Mode:</label>
               <select
+                id="all-features-selection-mode"
                 value={selectionMode}
                 onChange={(e) => setSelectionMode(e.target.value as any)}
                 style={{
