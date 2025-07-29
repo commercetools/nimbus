@@ -33,7 +33,7 @@ type Story = StoryObj<DataTableProps>;
 
 // Sample data and columns
 const columns: DataTableColumn[] = [
-  { id: "name", header: "Name", accessor: (row) => row.name },
+  { id: "name", header: "Name with a long header", accessor: (row) => row.name },
   { id: "age", header: "Age", accessor: (row) => row.age },
   { id: "role", header: "Role", accessor: (row) => row.role },
   {
@@ -57,6 +57,7 @@ const sortableColumns: DataTableColumn[] = [
         aria-label="Custom Column Information"
         size="2xs"
         colorPalette="primary"
+        variant="ghost"
         style={{
           boxShadow: "none",
         }}
@@ -952,6 +953,44 @@ const comprehensiveColumns: DataTableColumn[] = [
     isSortable: false,
   },
 ];
+
+export const MultilineHeaders: Story = {
+  args: {
+    columns: [
+      { 
+        id: "name", 
+        header: "Employee Full Name", 
+        accessor: (row) => row.name,
+        isSortable: true,
+        isAdjustable: true,
+        defaultWidth: 140,
+      },
+      { 
+        id: "role", 
+        header: "Current Position and Primary Responsibilities within Organization", 
+        accessor: (row) => row.role,
+        isSortable: true,
+        isAdjustable: true,
+        defaultWidth: 180,
+      },
+      {
+        id: "department",
+        header: "Department or Business Unit Assignment",
+        accessor: (row) => row.department || "Engineering",
+        isSortable: true,
+        isAdjustable: true,
+        defaultWidth: 160,
+      },
+    ],
+    data: [
+      { id: "1", name: "Alice Johnson", role: "Senior Software Engineer", department: "Engineering" },
+      { id: "2", name: "Bob Smith", role: "Frontend Developer", department: "Engineering" },
+      { id: "3", name: "Carol Williams", role: "UX Designer", department: "Design" },
+    ],
+    allowsSorting: true,
+    isAdjustable: true,
+  },
+};
 
 export const WithFooter: Story = {
   render: (args) => {

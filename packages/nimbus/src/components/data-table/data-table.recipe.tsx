@@ -33,7 +33,7 @@ export const dataTableRecipe = defineSlotRecipe({
         color: "#6b7280", // Slightly grey text color
       },
       "& .data-table-row": {
-        borderBottom: "1px solid hsl(232, 18%, 95%)",
+        borderBottom: "1px solid {colors.neutral.3}",
         "&:last-child": {
           borderBottom: "none", // Remove border from last row
         },
@@ -46,19 +46,23 @@ export const dataTableRecipe = defineSlotRecipe({
       "& .data-table-header": {
         background: "colorPalette.2",
         color: "colorPalette.11",
-        borderBottom: "1px solid hsl(232, 18%, 95%)",
+        borderBottom: "1px solid {colors.neutral.3}",
         lineHeight: "400",
-        height: "40px",
         fontWeight: "500",
         textStyle: "sm",
         fontSize: "300",
+        height: "40px",
       },
       "& .react-aria-Column": {
         textAlign: "right",
         position: "relative",
         cursor: "pointer",
         userSelect: "none",
-        padding: "4px 24px",
+        paddingTop: "100",
+        paddingBottom: "100",
+        paddingLeft: "600",
+        paddingRight: "600",
+        lineHeight: "450",
         "& > div": {
           display: "flex",
           alignItems: "center",
@@ -66,6 +70,15 @@ export const dataTableRecipe = defineSlotRecipe({
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+          },
+          "& span[data-multiline-header]": {
+            overflow: "hidden",
+            lineHeight: "18px",
+            maxHeight: "36px", 
+            wordBreak: "break-word",
+            whiteSpace: "normal",
+            textOverflow: "ellipsis",
+            textAlign: "left",
           },
           "& > span:not(:first-of-type)": {
             flexShrink: 0,
@@ -105,6 +118,12 @@ export const dataTableRecipe = defineSlotRecipe({
           backgroundColor: "#DBEAFE",
         },
       },
+      // Multiline header truncation using webkit line clamp
+      "& span[data-multiline-header]": {
+        display: "-webkit-box !important",
+        "-webkit-box-orient": "vertical !important",
+        "-webkit-line-clamp": "2 !important",
+      } as {},
       // Native checkbox styling
       "& input[type='checkbox']": {
         appearance: "none",
