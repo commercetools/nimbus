@@ -17,13 +17,6 @@ const meta: Meta<typeof Calendar> = {
   argTypes: {
     //
   },
-  decorators: [
-    (Story) => (
-      <I18nProvider locale="en-US">
-        <Story />
-      </I18nProvider>
-    ),
-  ],
 };
 
 export default meta;

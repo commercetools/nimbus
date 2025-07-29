@@ -19,13 +19,6 @@ import { I18nProvider } from "react-aria";
 const meta: Meta<typeof DateInput> = {
   title: "Components/Date/DateInput",
   component: DateInput,
-  decorators: [
-    (Story) => (
-      <I18nProvider locale="en-US">
-        <Story />
-      </I18nProvider>
-    ),
-  ],
 };
 
 export default meta;

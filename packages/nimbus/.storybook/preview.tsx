@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import type { Preview } from "@storybook/react-vite";
-import { NimbusProvider } from "../src";
-import { DARK_MODE_EVENT_NAME } from "@vueless/storybook-dark-mode";
-import { addons } from "storybook/preview-api";
 
-import APCACheck from "./apca-check";
+import { APCACheck } from "./apca-check";
+import { CustomDocsContainer } from "./docs-container";
+import { ThemeDecorator } from "./theme-decorator";
 
 const apca = APCACheck("custom", (fontSize: string) => {
   const size = parseFloat(fontSize);
@@ -15,36 +14,6 @@ const apca = APCACheck("custom", (fontSize: string) => {
       return 60;
   }
 });
-
-// get channel to listen to event emitter
-const channel = addons.getChannel();
-
-const ThemeDecorator = ({ children }: { children: React.ReactNode }) => {
-  const [isDark, setDark] = useState(false);
-  const theme = isDark ? "dark" : "light";
-
-  useEffect(() => {
-    const { current } = JSON.parse(
-      // TODO: find out if there is a more elegant solution
-      localStorage.getItem("sb-addon-themes-3") || "{}"
-    );
-
-    setDark(current === "dark");
-
-    channel.on(DARK_MODE_EVENT_NAME, (darkMode) => {
-      setDark(darkMode);
-    });
-
-    return () => channel.off(DARK_MODE_EVENT_NAME, setDark);
-  }, [channel]);
-
-  useEffect(() => {
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(theme);
-  }, [theme]);
-
-  return <NimbusProvider defaultTheme={theme}>{children}</NimbusProvider>;
-};
 
 const preview: Preview = {
   parameters: {
@@ -78,12 +47,15 @@ const preview: Preview = {
       // fail the test runner if a11y violations are found
       test: "error",
     },
+    docs: {
+      container: CustomDocsContainer,
+    },
   },
   tags: ["autodocs", "a11y-test"],
   decorators: [
-    (Story) => {
+    (Story, context) => {
       return (
-        <ThemeDecorator>
+        <ThemeDecorator context={context}>
           <Story />
         </ThemeDecorator>
       );
@@ -92,3 +64,23 @@ const preview: Preview = {
 };
 
 export default preview;
+
+export const globalTypes = {
+  locale: {
+    name: "Locale",
+    description: "Internationalization locale",
+    defaultValue: "en",
+    toolbar: {
+      title: "Locale",
+      icon: "globe",
+      items: [
+        { value: "en", right: "🇺🇸", title: "English (en)" },
+        { value: "de", right: "🇩🇪", title: "German (de)" },
+        { value: "es", right: "🇪🇸", title: "Spanish (es)" },
+        { value: "fr-FR", right: "🇫🇷", title: "French (fr-FR)" },
+        { value: "pt-BR", right: "🇵🇹", title: "Portuguese (pt-PT)" },
+      ],
+      dynamicTitle: true,
+    },
+  },
+};
