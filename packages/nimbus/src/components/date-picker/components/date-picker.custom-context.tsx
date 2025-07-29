@@ -57,11 +57,14 @@ export const DatePickerCustomContext = ({
         buttonContext.onPress?.(event);
       },
     },
-    /** clears the input value */
+    /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
       "aria-label": "Clear input value",
-      isDisabled: noInputValue || isDatePickerDisabled,
+      isDisabled: isDatePickerDisabled,
+      // Hide the button when there's no value
+      style: noInputValue ? { display: "none" } : undefined,
+      "aria-hidden": noInputValue ? true : undefined,
     },
   };
 
