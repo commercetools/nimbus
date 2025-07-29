@@ -1030,7 +1030,7 @@ export const SelectionWithSortingAndSearch: Story = {
         >
           {/* Search */}
           <div style={{ marginBottom: "16px" }}>
-            <h4
+            <h3
               style={{
                 margin: "0 0 8px 0",
                 fontSize: "14px",
@@ -1038,7 +1038,7 @@ export const SelectionWithSortingAndSearch: Story = {
               }}
             >
               🔍 Search & Filter
-            </h4>
+            </h3>
             <TextInput
               value={search}
               onChange={setSearch}
