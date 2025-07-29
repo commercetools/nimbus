@@ -863,27 +863,27 @@ export const PlaceholderValue: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // await step("Both DatePickers start empty (no selected value)", async () => {
-    //   const withPlaceholder = await canvas.findByRole("group", {
-    //     name: "Date picker with placeholder",
-    //   });
-    //   const withoutPlaceholder = await canvas.findByRole("group", {
-    //     name: "Date picker without placeholder",
-    //   });
+    await step("Both DatePickers start empty (no selected value)", async () => {
+      const withPlaceholder = await canvas.findByRole("group", {
+        name: "Date picker with placeholder",
+      });
+      const withoutPlaceholder = await canvas.findByRole("group", {
+        name: "Date picker without placeholder",
+      });
 
-    //   // Clear buttons should be disabled since no value is selected initially
-    //   const clearButton1 = within(withPlaceholder).queryByRole("button", {
-    //     name: /clear/i,
-    //   });
-    //   const clearButton2 = within(withoutPlaceholder).queryByRole("button", {
-    //     name: /clear/i,
-    //   });
+      // Clear buttons should be disabled since no value is selected initially
+      const clearButton1 = within(withPlaceholder).queryByRole("button", {
+        name: /clear/i,
+      });
+      const clearButton2 = within(withoutPlaceholder).queryByRole("button", {
+        name: /clear/i,
+      });
 
-    //   await waitFor(async () => {
-    //     await expect(clearButton1).not.toBeInTheDocument();
-    //     await expect(clearButton2).not.toBeInTheDocument();
-    //   });
-    // });
+      await waitFor(async () => {
+        await expect(clearButton1).not.toBeInTheDocument();
+        await expect(clearButton2).not.toBeInTheDocument();
+      });
+    });
 
     await step(
       "DatePicker with placeholder value uses placeholder when navigating with keyboard",
