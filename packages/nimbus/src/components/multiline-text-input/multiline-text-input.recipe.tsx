@@ -27,7 +27,7 @@ export const multilineTextInputRecipe = defineRecipe({
     },
     _disabled: {
       layerStyle: "disabled",
-      bg: "neutral.2",
+      bg: "neutral.3",
     },
     "&[data-invalid='true']": {
       "--border-width": "sizes.50",

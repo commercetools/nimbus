@@ -23,7 +23,7 @@ export const textInputRecipe = defineRecipe({
     },
     _disabled: {
       layerStyle: "disabled",
-      bg: "neutral.2",
+      bg: "neutral.3",
     },
     "&[data-invalid='true']": {
       "--border-color": "colors.critical.7",

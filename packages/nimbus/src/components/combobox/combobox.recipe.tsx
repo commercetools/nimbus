@@ -42,6 +42,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           // if you set 'pointer-events: none' on an element, it does not display a cursor,
           // so in order to display `cursor: not-allowed`, we must set pointerEvents: none on the interactive children
           pointerEvents: "none!",
+          bg: "neutral.3",
         },
       },
       "& input": {

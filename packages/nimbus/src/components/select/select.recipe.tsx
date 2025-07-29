@@ -33,6 +33,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       "&[data-disabled='true']": {
         layerStyle: "disabled",
         pointerEvents: "none",
+        bg: "neutral.3",
       },
     },
     trigger: {
