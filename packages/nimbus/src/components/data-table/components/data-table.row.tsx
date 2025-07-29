@@ -74,6 +74,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
               <input
                 type="checkbox"
                 checked={isSelected(row.id)}
+                aria-label="Select row"
                 onChange={(e) => {
                   e.stopPropagation();
                   handleRowSelection(row.id, e.target.checked);

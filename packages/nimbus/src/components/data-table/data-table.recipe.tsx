@@ -156,14 +156,14 @@ export const dataTableRecipe = defineSlotRecipe({
     expandButton: {},
     nestedIcon: {},
     headerSortIcon: {
-      transition:
-        "opacity 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)",
+      transition: "transform 100ms cubic-bezier(0.4, 0.0, 0.2, 1)",
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      opacity: 0.4,
       marginLeft: "6px",
-      willChange: "opacity, color, transform", // Optimize transitions
+      width: "16px",
+      height: "16px",
+      willChange: "opacity, color, transform",
     },
     columnResizer: {
       width: "4px",

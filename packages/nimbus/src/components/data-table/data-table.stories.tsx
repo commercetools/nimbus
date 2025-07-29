@@ -40,7 +40,7 @@ const columns: DataTableColumn[] = [
     id: "custom",
     header: "Custom",
     accessor: (row) => row.class,
-    render: ({ value }) => <span style={{ color: "tomato" }}>{value}</span>,
+    render: ({ value }) => <span style={{ color: "#60646C" }}>{value}</span>,
   },
 ];
 
@@ -76,7 +76,7 @@ const sortableColumns: DataTableColumn[] = [
     id: "custom",
     header: "Custom (Not Sortable)",
     accessor: (row) => row.class,
-    render: ({ value }) => <span style={{ color: "tomato" }}>{value}</span>,
+    render: ({ value }) => <span style={{ color: "#60646C" }}>{value}</span>,
     isSortable: false, // This column is not sortable
   },
 ];
@@ -454,8 +454,9 @@ export const SelectionShowcase: Story = {
                 marginBottom: "8px",
               }}
             >
-              <label style={{ fontSize: "14px" }}>Mode:</label>
+              <label htmlFor="selection-mode-select" style={{ fontSize: "14px" }}>Mode:</label>
               <select
+                id="selection-mode-select"
                 value={selectionMode}
                 onChange={(e) =>
                   handleSelectionModeChange(e.target.value as any)

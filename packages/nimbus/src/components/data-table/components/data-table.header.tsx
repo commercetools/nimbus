@@ -57,11 +57,10 @@ export const DataTableHeader = forwardRef<
 
     return (
       <DataTableHeaderSortIcon
+        aria-hidden="true"
         color={isActive ? "neutral.11" : "neutral.10"}
         style={{
           transform: `rotate(${rotation})`,
-          transition: "transform 100ms",
-          opacity: 1,
         }}
       >
         <South />
@@ -92,11 +91,13 @@ export const DataTableHeader = forwardRef<
           minWidth={60}
           maxWidth={60}
           allowsSorting={false}
+          aria-label={selectionMode === "multiple" ? "Select all rows" : "Select row"}
         >
           {selectionMode === "multiple" && (
             <input
               type="checkbox"
               checked={isAllSelected()}
+              aria-label="Select all rows"
               ref={(el) => {
                 if (el) {
                   el.indeterminate = isIndeterminate();
@@ -120,7 +121,22 @@ export const DataTableHeader = forwardRef<
           minWidth={20}
           maxWidth={20}
           allowsSorting={false}
-        />
+          aria-label="Expand rows"
+        >
+          <span style={{ 
+            position: "absolute", 
+            width: "1px", 
+            height: "1px", 
+            padding: 0, 
+            margin: "-1px", 
+            overflow: "hidden", 
+            clip: "rect(0, 0, 0, 0)", 
+            whiteSpace: "nowrap", 
+            border: 0 
+          }}>
+            Expand rows
+          </span>
+        </RaColumn>
       )}
 
       {visibleCols.map((col, index) => {
