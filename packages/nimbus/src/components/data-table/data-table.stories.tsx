@@ -1066,8 +1066,14 @@ export const SelectionWithSortingAndSearch: Story = {
                 marginBottom: "8px",
               }}
             >
-              <label style={{ fontSize: "14px" }}>Mode:</label>
+              <label
+                htmlFor="selection-mode-select"
+                style={{ fontSize: "14px" }}
+              >
+                Mode:
+              </label>
               <select
+                id="selection-mode-select"
                 value={selectionMode}
                 onChange={(e) =>
                   handleSelectionModeChange(e.target.value as any)
