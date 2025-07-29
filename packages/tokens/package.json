@@ -5,7 +5,8 @@
   "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "style-dictionary build --verbose --config ./src/style-dictionary.config.js"

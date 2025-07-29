@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Installing dependencies and building packages
+        uses: ./.github/actions/ci
+
+      - name: Setting up authorization to NPM registry (.npmrc)
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            provenance=true
+            email=npmjs@commercetools.com
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Storing release version for changeset
+        id: release_version
+        run:
+          echo "VALUE=$(./scripts/print_release_version.sh)" >> $GITHUB_OUTPUT
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name:
+          Creating release pull request or publishing release to npm registry
+        id: changesets
+        uses: changesets/action@v1.4.8
+        with:
+          publish: pnpm changeset publish
+          version: pnpm changeset:version-and-format
+          commit: "ci(changesets): version packages"
+          createGithubReleases: aggregate
+          githubReleaseName: v${{ steps.release_version.outputs.VALUE }}
+          githubTagName: v${{ steps.release_version.outputs.VALUE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish canary releases only if the packages weren't published already
+      - name: Publishing canary releases to npm registry
+        if:
+          steps.changesets.outputs.published != 'true' && github.ref ==
+          'refs/heads/main'
+        run: |
+          git checkout main
+          pnpm changeset version --snapshot canary
+          pnpm changeset publish --tag canary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

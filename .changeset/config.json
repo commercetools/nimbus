@@ -1,0 +1,20 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@1.0.3/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "commercetools/ui-kit-docs-poc"
+    }
+  ],
+  "commit": false,
+  "fixed": [
+    [
+      "@commercetools/nimbus",
+      "@commercetools/nimbus-tokens",
+      "@commercetools/nimbus-icons"
+    ]
+  ],
+  "access": "public",
+  "baseBranch": "main",
+  "bumpVersionsWithWorkspaceProtocolOnly": false
+}
