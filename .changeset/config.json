@@ -14,6 +14,7 @@
       "@commercetools/nimbus-icons"
     ]
   ],
+  "ignore": ["color-tokens", "blank-app", "docs"],
   "access": "public",
   "baseBranch": "main",
   "bumpVersionsWithWorkspaceProtocolOnly": false
