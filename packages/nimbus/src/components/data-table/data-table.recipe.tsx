@@ -16,32 +16,33 @@ export const dataTableRecipe = defineSlotRecipe({
     "headerSortIcon",
     "columnResizer",
   ],
-  // Unique class name prefix for the component
   className: "nimbus-data-table",
-  // Base styles applied to all instances of the component
   base: {
     root: {
       colorPalette: "slate",
       display: "block",
       borderRadius: "8px",
-      border: "1px solid hsl(232, 18%, 95%)",
-      boxShadow: "0 1px 5px 0 rgba(0, 0, 0, 0.05)",
-      overflow: "hidden", // Ensure border-radius is respected
-      contain: "layout style", // Prevent layout recalculations from affecting parents
+      border: "1px solid {colors.neutral.3}",
+      boxShadow: "1",
+      overflow: "hidden",
+      contain: "layout style",
       "& .react-aria-Cell": {
-        padding: "16px 24px",
-        color: "#6b7280", // Slightly grey text color
+        paddingTop: "400",
+        paddingBottom: "400",
+        paddingLeft: "600",
+        paddingRight: "600",
+        color: "neutral.11",
       },
       "& .data-table-row": {
         borderBottom: "1px solid {colors.neutral.3}",
         "&:last-child": {
-          borderBottom: "none", // Remove border from last row
+          borderBottom: "none",
         },
       },
       "& .data-table-row:hover": {
-        backgroundColor: "#F8F9FA",
-        transition: "background-color 0.15s ease",
-        transform: "translate3d(0, 0, 0)", // Force hardware acceleration
+        backgroundColor: "{colors.primary.3}",
+        transition: "background-color 100ms ease",
+        transform: "translate3d(0, 0, 0)",
       },
       "& .data-table-header": {
         background: "colorPalette.2",
@@ -112,60 +113,12 @@ export const dataTableRecipe = defineSlotRecipe({
         width: "1px",
         pointerEvents: "none",
       },
-      "& .react-aria-Row[aria-selected='true']": {
-        backgroundColor: "#EBF8FF",
-        "&:hover": {
-          backgroundColor: "#DBEAFE",
-        },
-      },
       // Multiline header truncation using webkit line clamp
       "& span[data-multiline-header]": {
-        display: "-webkit-box !important",
-        "-webkit-box-orient": "vertical !important",
-        "-webkit-line-clamp": "2 !important",
+        display: "-webkit-box",
+        "-webkit-box-orient": "vertical",
+        "-webkit-line-clamp": "2",
       } as {},
-      // Native checkbox styling
-      "& input[type='checkbox']": {
-        appearance: "none",
-        width: "16px",
-        height: "16px",
-        border: "2px solid #d1d5db",
-        borderRadius: "4px",
-        background: "white",
-        cursor: "pointer",
-        position: "relative",
-        transition: "all 0.2s",
-        flexShrink: 0,
-        "&:checked": {
-          background: "#2563eb",
-          borderColor: "#2563eb",
-          "&::after": {
-            content: "''",
-            position: "absolute",
-            left: "3px",
-            top: "0px",
-            width: "6px",
-            height: "10px",
-            border: "solid white",
-            borderWidth: "0 2px 2px 0",
-            transform: "rotate(45deg)",
-          },
-        },
-        "&:indeterminate": {
-          background: "#2563eb",
-          borderColor: "#2563eb",
-          "&::after": {
-            content: "''",
-            position: "absolute",
-            left: "2px",
-            top: "6px",
-            width: "8px",
-            height: "2px",
-            background: "white",
-            transform: "none",
-          },
-        },
-      },
     },
     footer: {
       width: "100%",
@@ -221,14 +174,16 @@ export const dataTableRecipe = defineSlotRecipe({
       default: {
         root: {
           "& .react-aria-Cell": {
-            padding: "16px",
+            paddingTop: "400",
+            paddingBottom: "400",
           },
         },
       },
       condensed: {
         root: {
           "& .react-aria-Cell": {
-            padding: "8px 16px",
+            paddingTop: "300",
+            paddingBottom: "300",
           },
         },
       },
