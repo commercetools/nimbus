@@ -1,0 +1,251 @@
+---
+id: Components-Toolbar
+title: Toolbar
+description: A compound component for grouping related actions and controls in horizontal or vertical layouts.
+lifecycleState: Alpha
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Toolbar
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569
+---
+
+# Toolbar
+
+---
+{/* TODO: needs to be reviewed by a designer*/}
+A compound component that provides a way to group related actions and controls in a horizontal or vertical layout, commonly used for frequently-used actions, formatting controls, or contextual commands.
+
+## Overview
+
+Toolbars help organize secondary actions and controls in a structured layout, making them easily accessible to users. The Toolbar component consists of `Toolbar.Root`, `Toolbar.Group`, and `Toolbar.Separator` subcomponents for maximum flexibility and proper semantic structure.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)
+
+## Basic Usage
+
+The basic toolbar consists of a root container with action buttons or controls.
+
+```jsx-live
+const App = () => (
+  <Toolbar.Root>
+    <Button size="sm">Action 1</Button>
+    <Button size="sm">Action 2</Button>
+    <Button size="sm">Action 3</Button>
+  </Toolbar.Root>
+)
+```
+
+## With Groups and Separators
+
+Use `Toolbar.Group` to logically group related items and `Toolbar.Separator` for visual separation between groups.
+
+```jsx-live
+const App = () => (
+  <Toolbar.Root>
+    <Toolbar.Group>
+      <IconButton size="sm" aria-label="Bold">
+        <Icons.FormatBold />
+      </IconButton>
+      <IconButton size="sm" aria-label="Italic">
+        <Icons.FormatItalic />
+      </IconButton>
+      <IconButton size="sm" aria-label="Underline">
+        <Icons.FormatUnderlined />
+      </IconButton>
+    </Toolbar.Group>
+    <Toolbar.Separator />
+    <Toolbar.Group>
+      <IconButton size="sm" aria-label="Align Left">
+        <Icons.FormatAlignLeft />
+      </IconButton>
+      <IconButton size="sm" aria-label="Align Center">
+        <Icons.FormatAlignCenter />
+      </IconButton>
+      <IconButton size="sm" aria-label="Align Right">
+        <Icons.FormatAlignRight />
+      </IconButton>
+    </Toolbar.Group>
+  </Toolbar.Root>
+)
+```
+
+
+
+## Vertical Orientation
+
+Toolbars can be displayed vertically for sidebar-style layouts.
+
+```jsx-live
+const App = () => (
+  <Toolbar.Root orientation="vertical">
+    <IconButton size="sm" aria-label="Home">
+      <Icons.Home />
+    </IconButton>
+    <IconButton size="sm" aria-label="Search">
+      <Icons.Search />
+    </IconButton>
+    <IconButton size="sm" aria-label="Settings">
+      <Icons.Settings />
+    </IconButton>
+    <IconButton size="sm" aria-label="Profile">
+      <Icons.Person />
+    </IconButton>
+  </Toolbar.Root>
+)
+```
+
+## Vertical with Groups and Separators
+
+Vertical toolbars can also use groups and separators for better organization.
+
+```jsx-live
+const App = () => (
+  <Toolbar.Root orientation="vertical">
+    <Toolbar.Group>
+      <IconButton size="sm" aria-label="New">
+        <Icons.Add />
+      </IconButton>
+      <IconButton size="sm" aria-label="Open">
+        <Icons.FolderOpen />
+      </IconButton>
+    </Toolbar.Group>
+    <Toolbar.Separator orientation="horizontal" />
+    <Toolbar.Group>
+      <IconButton size="sm" aria-label="Save">
+        <Icons.Save />
+      </IconButton>
+      <IconButton size="sm" aria-label="Print">
+        <Icons.Print />
+      </IconButton>
+    </Toolbar.Group>
+  </Toolbar.Root>
+)
+```
+
+
+
+## Mixed Content with Layout
+
+Toolbars can contain a mix of different components and use flexbox properties for advanced layouts.
+
+```jsx-live
+const App = () => (
+  <Toolbar.Root>
+    <Toolbar.Group>
+      <IconButton size="sm" aria-label="Menu">
+        <Icons.Menu />
+      </IconButton>
+      <Button size="sm">File</Button>
+      <Button size="sm">Edit</Button>
+      <Button size="sm">View</Button>
+    </Toolbar.Group>
+    <Box marginLeft="auto">
+      <Toolbar.Group>
+        <IconButton size="sm" aria-label="Minimize">
+          <Icons.Minimize />
+        </IconButton>
+        <IconButton size="sm" aria-label="Close">
+          <Icons.Close />
+        </IconButton>
+      </Toolbar.Group>
+    </Box>
+  </Toolbar.Root>
+)
+```
+
+## Guidelines
+
+Toolbar component guidelines focus on providing clear organization of actions and controls while maintaining accessibility and visual hierarchy.
+
+### Best practices
+
+- **Action Grouping**: Use toolbars to group related actions and controls together logically
+- **Frequent Actions**: Display commonly-used actions that users need quick access to
+- **Contextual Commands**: Show actions that are relevant to the current context or selection
+- **Logical Grouping**: Use `Toolbar.Group` to group related actions together and `Toolbar.Separator` for visual distinction
+- **Consistent Sizing**: Use consistent button/control sizes within the same toolbar
+- **Priority Order**: Place the most important actions first (left-to-right, top-to-bottom)
+
+### Usage
+
+> [!TIP]\
+> When to use
+> - **Formatting Controls**: Group formatting options in text editors or design tools
+> - **Application Actions**: Primary actions in application headers or main interface areas
+> - **Contextual Actions**: Actions that appear based on current selection or context
+> - **Tool Palettes**: Collections of tools or modes that users can switch between
+> - **Quick Access**: Frequently-used actions that benefit from immediate availability
+
+> [!CAUTION]\
+> When not to use
+> - **Primary Navigation**: Don't use toolbars for main site navigation (use navigation bars instead)
+> - **Too Many Items**: Avoid overcrowding toolbars with too many actions (consider using menus)
+> - **Single Actions**: Don't use a toolbar for a single action (use a standalone button)
+> - **Long Forms**: Not suitable for form controls that require extensive input
+
+### Component Structure
+
+- **Root**: Always wrap toolbar content in `Toolbar.Root` with appropriate orientation
+- **Groups**: Use `Toolbar.Group` to logically group related actions together
+- **Separators**: Use `Toolbar.Separator` for visual separation between groups of actions
+
+
+## API Reference
+
+### Toolbar.Root
+
+The root container for the toolbar that provides the base styling and layout context.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | The orientation of the toolbar |
+| `children` | `ReactNode` | - | The content to be displayed within the toolbar |
+
+### Toolbar.Group
+
+A container for grouping related toolbar items together.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | The toolbar items to group together |
+
+### Toolbar.Separator
+
+A visual separator between toolbar items or groups.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | The orientation of the separator line |
+
+## Accessibility
+
+The Toolbar component includes built-in accessibility features:
+
+- **Role**: The toolbar root has `role="toolbar"` for proper semantic meaning
+- **Orientation**: The `aria-orientation` attribute is set based on the orientation prop
+- **Grouping**: Toolbar groups have `role="group"` for logical grouping
+- **Separation**: Toolbar separators have `role="separator"` with proper orientation
+
+### Keyboard Interactions
+
+When the toolbar contains focusable elements:
+
+- **Tab**: Moves focus to the next focusable element within the toolbar
+- **Shift + Tab**: Moves focus to the previous focusable element within the toolbar
+- **Arrow Keys**: Can be used to navigate between toolbar items (implementation depends on child components)
+
+## Related Components
+
+- **Button**: Individual actions within toolbars
+- **IconButton**: Compact action buttons, commonly used in toolbars
+- **Menu**: Alternative for grouping many actions in a dropdown
+- **NavigationBar**: For primary navigation instead of actions 
