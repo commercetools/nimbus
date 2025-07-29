@@ -39,7 +39,7 @@ export const DataTableTable = forwardRef<HTMLTableElement, DataTableTableProps>(
         onSortChange={handleAriaSort}
         style={{
           width: "100%",
-          tableLayout: "fixed", // Prevent layout recalculations
+          tableLayout: "fixed",
           ...style,
         }}
         {...props}

@@ -7,7 +7,7 @@ import {
 import { DataTableHeaderSortIcon, DataTableColumnResizer } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
-import { Divider } from "@/components";
+import { Divider, Checkbox } from "@/components";
 
 export interface DataTableHeaderProps {}
 
@@ -87,28 +87,16 @@ export const DataTableHeader = forwardRef<
         <RaColumn
           id="selection"
           className="selection-column-header"
-          width={60}
-          minWidth={60}
-          maxWidth={60}
+          width={70}
           allowsSorting={false}
           aria-label={selectionMode === "multiple" ? "Select all rows" : "Select row"}
         >
           {selectionMode === "multiple" && (
-            <input
-              type="checkbox"
-              checked={isAllSelected()}
+            <Checkbox
+              isSelected={isAllSelected()}
+              isIndeterminate={isIndeterminate()}
               aria-label="Select all rows"
-              ref={(el) => {
-                if (el) {
-                  el.indeterminate = isIndeterminate();
-                }
-              }}
-              onChange={(e) => handleSelectAll(e.target.checked)}
-              style={{
-                width: 16,
-                height: 16,
-                cursor: "pointer",
-              }}
+              onChange={(isSelected) => handleSelectAll(Boolean(isSelected))}
             />
           )}
         </RaColumn>

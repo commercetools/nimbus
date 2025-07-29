@@ -4,6 +4,7 @@ import { Highlight } from "@chakra-ui/react";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableExpandButton } from "../data-table.slots";
 import type { DataTableRow as DataTableRowType } from "../data-table.types";
+import { Checkbox } from "@/components";
 
 export interface DataTableRowProps {
   row: DataTableRowType<any>;
@@ -56,7 +57,6 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
           className="data-table-row"
           style={{
             cursor: isRowClickable ? "pointer" : undefined,
-            // Add visual indication for nested rows
             ...(depth > 0 && {
               borderLeft: "2px solid blue",
               backgroundColor: "#f8fafc",
@@ -71,18 +71,12 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                 justifyContent: 'center'
               }}
             >
-              <input
-                type="checkbox"
-                checked={isSelected(row.id)}
+              <Checkbox
+                name="select-row"
+                isSelected={isSelected(row.id)}
                 aria-label="Select row"
-                onChange={(e) => {
-                  e.stopPropagation();
-                  handleRowSelection(row.id, e.target.checked);
-                }}
-                style={{
-                  width: 16,
-                  height: 16,
-                  cursor: 'pointer'
+                onChange={(isSelected) => {
+                  handleRowSelection(row.id, Boolean(isSelected));
                 }}
               />
             </RaCell>
@@ -90,13 +84,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
 
           {/* Expand/collapse cell if expand column is shown */}
           {showExpandColumn && (
-            <RaCell
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
+            <RaCell>
               {hasNestedContent ? (
                 <DataTableExpandButton
                   aria-label={isExpanded ? "Collapse" : "Expand"}
@@ -139,7 +127,6 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
           ))}
         </RaRow>
 
-        {/* TODO: Implement nested content rows - will need to avoid recursive issues */}
         {hasNestedContent &&
           isExpanded &&
           nestedKey && (
