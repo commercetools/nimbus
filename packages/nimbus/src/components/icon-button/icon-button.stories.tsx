@@ -7,7 +7,7 @@ import { createRef } from "react";
 import { expect, fn, within, userEvent } from "storybook/test";
 
 const meta: Meta<typeof IconButton> = {
-  title: "components/IconButton",
+  title: "components/Buttons/IconButton",
   component: IconButton,
 };
 
