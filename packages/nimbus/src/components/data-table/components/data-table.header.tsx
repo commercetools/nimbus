@@ -6,7 +6,7 @@ import {
 } from "react-aria-components";
 import { DataTableHeaderSortIcon, DataTableColumnResizer } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
-import { South } from "@commercetools/nimbus-icons";
+import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Divider } from "@/components";
 
 export interface DataTableHeaderProps {}
@@ -63,7 +63,7 @@ export const DataTableHeader = forwardRef<
           transform: `rotate(${rotation})`,
         }}
       >
-        <South />
+        <ArrowDownward />
       </DataTableHeaderSortIcon>
     );
   };
@@ -169,7 +169,7 @@ export const DataTableHeader = forwardRef<
                 cursor: isSortable ? "pointer" : "default",
               }}
             >
-              <span>{col.header}</span>
+              <span data-multiline-header>{col.header}</span>
               {col.headerIcon && (
                 <span style={{ marginLeft: "8px" }}>{col.headerIcon}</span>
               )}
