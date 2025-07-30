@@ -1,7 +1,9 @@
 {
   "name": "color-tokens",
+  "version": "0.0.1",
   "module": "index.ts",
   "type": "module",
+  "private": true,
   "devDependencies": {
     "@types/chroma-js": "^3.1.0",
     "@types/node": "catalog:utils"

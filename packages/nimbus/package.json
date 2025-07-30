@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -28,7 +28,8 @@
     "package.json"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "sideEffects": [
     "*.css"

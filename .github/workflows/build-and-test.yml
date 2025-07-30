@@ -1,9 +1,11 @@
-name: Build and Test Nimbus Components
+name: Build and Test
+
 on:
   push:
     branches:
       - main
   pull_request:
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -11,34 +13,20 @@ jobs:
       # Make sure to grab the latest version of the Playwright image
       # https://playwright.dev/docs/docker#pull-the-image
       image: mcr.microsoft.com/playwright:v1.52.0-noble
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
+      - name: Installing dependencies and building packages
+        uses: ./.github/actions/ci
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build the project
-        run: pnpm build:tokens && pnpm run build:packages # no reason to build docs since they have no tests, if that changes we should build them
-        env:
-          NODE_ENV: production
-
-      # - name: Lint # this takes surprisingly long and why bother if we're going to continue if it fails?
-      #   run: pnpm lint
-      #   continue-on-error: true # continue even if linting fails (for now) TODO: typechecking once we feel ok failing on lint
       - name: Run tests
         run: pnpm test
-        timeout-minutes: 5 # Cancel this job after 5 minutes
+        timeout-minutes: 5
         env:
           NODE_ENV: production
+
+      - name: Lint (optional)
+        run: pnpm lint
+        continue-on-error: true

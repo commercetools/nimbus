@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@1.0.3/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "commercetools/nimbus"
+    }
+  ],
+  "commit": false,
+  "fixed": [
+    [
+      "@commercetools/nimbus",
+      "@commercetools/nimbus-tokens",
+      "@commercetools/nimbus-icons"
+    ]
+  ],
+  "ignore": ["color-tokens", "blank-app", "docs"],
+  "access": "public",
+  "baseBranch": "main",
+  "bumpVersionsWithWorkspaceProtocolOnly": false
+}
