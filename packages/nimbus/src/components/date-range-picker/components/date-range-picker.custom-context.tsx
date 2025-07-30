@@ -16,10 +16,14 @@ export const DateRangePickerCustomContext = ({
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const dateRangePickerState = useContext(DateRangePickerStateContext);
 
-  // DateRangePicker-specific: Check if both start and end values are empty for clear button state
-  const noInputValue =
+  // DateRangePicker-specific: Check if all 6 segments (start: day, month, year; end: day, month, year) have values
+  const hasCompleteRangeDate = (date: any) =>
+    date?.day && date?.month && date?.year;
+
+  const incompleteValue =
     !dateRangePickerState?.value ||
-    (!dateRangePickerState.value.start && !dateRangePickerState.value.end);
+    !hasCompleteRangeDate(dateRangePickerState.value.start) ||
+    !hasCompleteRangeDate(dateRangePickerState.value.end);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { granularity } = dateRangePickerState!;
@@ -73,12 +77,15 @@ export const DateRangePickerCustomContext = ({
         buttonContext.onPress?.(event);
       },
     },
-    /** clears the input value */
+    /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
       // DateRangePicker-specific: Clear both start and end values
       onPress: () => dateRangePickerState?.setValue(null),
       "aria-label": "Clear input value",
-      isDisabled: noInputValue || isDateRangePickerDisabled,
+      isDisabled: isDateRangePickerDisabled,
+      // Hide the button when there's no value
+      style: incompleteValue ? { display: "none" } : undefined,
+      "aria-hidden": incompleteValue ? true : undefined,
     },
   };
 
