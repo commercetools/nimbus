@@ -37,9 +37,9 @@ The basic toolbar consists of a root container with action buttons or controls.
 ```jsx-live
 const App = () => (
   <Toolbar.Root>
-    <Button size="sm">Action 1</Button>
-    <Button size="sm">Action 2</Button>
-    <Button size="sm">Action 3</Button>
+    <Button size="xs">Action 1</Button>
+    <Button size="xs">Action 2</Button>
+    <Button size="xs">Action 3</Button>
   </Toolbar.Root>
 )
 ```
@@ -52,25 +52,25 @@ Use `Toolbar.Group` to logically group related items and `Toolbar.Separator` for
 const App = () => (
   <Toolbar.Root>
     <Toolbar.Group>
-      <IconButton size="sm" aria-label="Bold">
+      <IconButton size="xs" aria-label="Bold">
         <Icons.FormatBold />
       </IconButton>
-      <IconButton size="sm" aria-label="Italic">
+      <IconButton size="xs" aria-label="Italic">
         <Icons.FormatItalic />
       </IconButton>
-      <IconButton size="sm" aria-label="Underline">
+      <IconButton size="xs" aria-label="Underline">
         <Icons.FormatUnderlined />
       </IconButton>
     </Toolbar.Group>
     <Toolbar.Separator />
     <Toolbar.Group>
-      <IconButton size="sm" aria-label="Align Left">
+      <IconButton size="xs" aria-label="Align Left">
         <Icons.FormatAlignLeft />
       </IconButton>
-      <IconButton size="sm" aria-label="Align Center">
+      <IconButton size="xs" aria-label="Align Center">
         <Icons.FormatAlignCenter />
       </IconButton>
-      <IconButton size="sm" aria-label="Align Right">
+      <IconButton size="xs" aria-label="Align Right">
         <Icons.FormatAlignRight />
       </IconButton>
     </Toolbar.Group>
@@ -87,16 +87,16 @@ Toolbars can be displayed vertically for sidebar-style layouts.
 ```jsx-live
 const App = () => (
   <Toolbar.Root orientation="vertical">
-    <IconButton size="sm" aria-label="Home">
+    <IconButton size="xs" aria-label="Home">
       <Icons.Home />
     </IconButton>
-    <IconButton size="sm" aria-label="Search">
+    <IconButton size="xs" aria-label="Search">
       <Icons.Search />
     </IconButton>
-    <IconButton size="sm" aria-label="Settings">
+    <IconButton size="xs" aria-label="Settings">
       <Icons.Settings />
     </IconButton>
-    <IconButton size="sm" aria-label="Profile">
+    <IconButton size="xs" aria-label="Profile">
       <Icons.Person />
     </IconButton>
   </Toolbar.Root>
@@ -111,19 +111,19 @@ Vertical toolbars can also use groups and separators for better organization.
 const App = () => (
   <Toolbar.Root orientation="vertical">
     <Toolbar.Group>
-      <IconButton size="sm" aria-label="New">
+      <IconButton size="xs" aria-label="New">
         <Icons.Add />
       </IconButton>
-      <IconButton size="sm" aria-label="Open">
+      <IconButton size="xs" aria-label="Open">
         <Icons.FolderOpen />
       </IconButton>
     </Toolbar.Group>
     <Toolbar.Separator orientation="horizontal" />
     <Toolbar.Group>
-      <IconButton size="sm" aria-label="Save">
+      <IconButton size="xs" aria-label="Save">
         <Icons.Save />
       </IconButton>
-      <IconButton size="sm" aria-label="Print">
+      <IconButton size="xs" aria-label="Print">
         <Icons.Print />
       </IconButton>
     </Toolbar.Group>
@@ -141,19 +141,19 @@ Toolbars can contain a mix of different components and use flexbox properties fo
 const App = () => (
   <Toolbar.Root>
     <Toolbar.Group>
-      <IconButton size="sm" aria-label="Menu">
+      <IconButton size="xs" aria-label="Menu">
         <Icons.Menu />
       </IconButton>
-      <Button size="sm">File</Button>
-      <Button size="sm">Edit</Button>
-      <Button size="sm">View</Button>
+      <Button size="xs">File</Button>
+      <Button size="xs">Edit</Button>
+      <Button size="xs">View</Button>
     </Toolbar.Group>
     <Box marginLeft="auto">
       <Toolbar.Group>
-        <IconButton size="sm" aria-label="Minimize">
+        <IconButton size="xs" aria-label="Minimize">
           <Icons.Minimize />
         </IconButton>
-        <IconButton size="sm" aria-label="Close">
+        <IconButton size="xs" aria-label="Close">
           <Icons.Close />
         </IconButton>
       </Toolbar.Group>
