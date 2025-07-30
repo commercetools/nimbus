@@ -1,13 +1,15 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { Row as RaRow, Cell as RaCell } from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableExpandButton } from "../data-table.slots";
 import type { DataTableRow as DataTableRowType } from "../data-table.types";
-import { Box, Checkbox } from "@/components";
+import { Box, Checkbox, IconButton } from "@/components";
+import { useCopyToClipboard } from "@/hooks";
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
+  ContentCopy,
 } from "@commercetools/nimbus-icons";
 
 export interface DataTableRowProps {
@@ -34,6 +36,10 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
       onRowAction,
     } = useDataTableContext();
 
+    // Hover state management - only for copy functionality
+    const [hoveredCell, setHoveredCell] = useState<string | null>(null);
+    const [, copyToClipboard] = useCopyToClipboard();
+
     const hasNestedContent =
       nestedKey &&
       row[nestedKey] &&
@@ -51,6 +57,12 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
       if (isRowClickable && onRowClick) {
         onRowClick(row);
       }
+    };
+
+    // Action handlers - only copy functionality
+    const handleCopy = (value: any) => {
+      const textValue = typeof value === "string" ? value : String(value);
+      copyToClipboard(textValue);
     };
 
     // Highlight helper
@@ -76,6 +88,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
               : isRowClickable
                 ? "pointer"
                 : undefined,
+            position: "relative",
             ...(!isSelected(row.id) &&
               depth > 0 && {
                 borderLeft: "2px solid var(--colors-primary-6)",
@@ -135,7 +148,11 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                       toggleExpand(row.id);
                     }}
                   >
-                    {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+                    {isExpanded ? (
+                      <KeyboardArrowDown />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
                   </DataTableExpandButton>
                 </Box>
               ) : null}
@@ -143,35 +160,64 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
           )}
 
           {/* Data cells */}
-          {visibleCols.map((col, index) => (
-            <RaCell key={col.id}>
-              <Box
-                className={isTruncated ? "truncated-cell" : ""}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  cursor: isDisabled(row.id)
-                    ? "not-allowed"
-                    : isRowClickable
-                      ? "inherit"
-                      : undefined,
-                  // Add indentation for the first column of nested rows
-                  ...(depth > 0 &&
-                    index === 0 && {
-                      paddingLeft: `${16 + depth * 16}px`,
-                    }),
-                }}
-              >
-                {col.render
-                  ? col.render({
-                      value: highlightCell(col.accessor(row)),
-                      row,
-                      column: col,
-                    })
-                  : highlightCell(col.accessor(row))}
-              </Box>
-            </RaCell>
-          ))}
+          {visibleCols.map((col, index) => {
+            const cellId = `${row.id}-${col.id}`;
+            const cellValue = col.accessor(row);
+            const isCurrentCellHovered = hoveredCell === cellId;
+
+            return (
+              <RaCell key={col.id}>
+                <Box
+                  className={isTruncated ? "truncated-cell" : ""}
+                  onMouseEnter={() => setHoveredCell(cellId)}
+                  onMouseLeave={() => setHoveredCell(null)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "relative",
+                    cursor: isDisabled(row.id)
+                      ? "not-allowed"
+                      : isRowClickable
+                        ? "inherit"
+                        : undefined,
+                    // Add indentation for the first column of nested rows
+                    ...(depth > 0 &&
+                      index === 0 && {
+                        paddingLeft: `${16 + depth * 16}px`,
+                      }),
+                  }}
+                >
+                  {col.render
+                    ? col.render({
+                        value: highlightCell(cellValue),
+                        row,
+                        column: col,
+                      })
+                    : highlightCell(cellValue)}
+
+                  {/* Cell hover buttons */}
+                  {isCurrentCellHovered && (
+                    <IconButton
+                      key="copy-btn"
+                      size="2xs"
+                      variant="ghost"
+                      aria-label="Copy to clipboard"
+                      colorPalette="primary"
+                      onPress={() => handleCopy(cellValue)}
+                      style={{
+                        marginLeft: "4px",
+                      }}
+                    >
+                      <ContentCopy
+                        key="copy-icon"
+                        onClick={() => handleCopy(cellValue)}
+                      />
+                    </IconButton>
+                  )}
+                </Box>
+              </RaCell>
+            );
+          })}
         </RaRow>
 
         {hasNestedContent && isExpanded && nestedKey && (
@@ -186,9 +232,9 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                 borderLeft: "2px solid blue",
               }}
             >
-              {Array.isArray(row[nestedKey])
+              {nestedKey && Array.isArray(row[nestedKey])
                 ? `${row[nestedKey].length} nested items`
-                : row[nestedKey]}
+                : nestedKey && row[nestedKey]}
             </RaCell>
           </RaRow>
         )}
