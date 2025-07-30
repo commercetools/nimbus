@@ -167,7 +167,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       solid: {
         root: {
           width: "7200",
-          // bg: "purple",
         },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,
