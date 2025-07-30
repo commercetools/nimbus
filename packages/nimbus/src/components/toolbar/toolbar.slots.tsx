@@ -1,61 +1,42 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
-  type SlotRecipeProps,
-  type UnstyledProp,
   createSlotRecipeContext,
   type RecipeVariantProps,
 } from "@chakra-ui/react";
-import { toolbarRecipe } from "./toolbar.recipe";
+import { toolbarSlotRecipe } from "./toolbar.recipe";
+
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: toolbarSlotRecipe,
+});
 
 /**
- * Base recipe props interface that combines Chakra UI's slot recipe variant props
- * with the unstyled prop option for the toolbar element.
+ * Toolbar.Root slot
  */
 
 export interface ToolbarRootSlotProps
-  extends Omit<
-      HTMLChakraProps<"div", RecipeVariantProps<typeof toolbarRecipe>>,
-      "slot"
-    >,
-    RecipeVariantProps<typeof toolbarRecipe> {
-  // insure that the `ToolbarRoot` component doesn't give a type error
-  slot?: string | null | undefined;
-  ref?: React.Ref<HTMLDivElement>;
-}
-
-/**
- * Group props interface for grouping toolbar items.
- */
-export interface ToolbarGroupSlotProps
-  extends Omit<HTMLChakraProps<"div">, "slot"> {
-  slot?: string | null | undefined;
-  ref?: React.Ref<HTMLDivElement>;
-}
-
-/**
- * Separator props interface for toolbar separators.
- */
-export interface ToolbarSeparatorSlotProps
-  extends Omit<HTMLChakraProps<"div">, "slot"> {
-  slot?: string | null | undefined;
-  ref?: React.Ref<HTMLDivElement>;
-  orientation?: "horizontal" | "vertical";
-}
-
-const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: toolbarRecipe,
-});
+  extends HTMLChakraProps<"div">,
+    RecipeVariantProps<typeof toolbarSlotRecipe> {}
 
 export const ToolbarRoot = withProvider<HTMLDivElement, ToolbarRootSlotProps>(
   "div",
   "root"
 );
 
+/**
+ * Toolbar.Group slot
+ */
+export interface ToolbarGroupSlotProps extends HTMLChakraProps<"div"> {}
+
 export const ToolbarGroup = withContext<HTMLDivElement, ToolbarGroupSlotProps>(
   "div",
   "group"
 );
+
+/**
+ * Toolbar.Separator slot
+ */
+export interface ToolbarSeparatorSlotProps extends HTMLChakraProps<"div"> {}
 
 export const ToolbarSeparator = withContext<
   HTMLDivElement,

@@ -2,14 +2,24 @@ import { forwardRef } from "react";
 import { ToolbarRoot as ToolbarRootSlot } from "../toolbar.slots.tsx";
 import type { ToolbarRootProps } from "../toolbar.types.ts";
 import { Toolbar } from "react-aria-components";
-import { useBreakpointValue, useChakraContext } from "@chakra-ui/react";
+import {
+  useBreakpointValue,
+  useChakraContext,
+  useSlotRecipe,
+} from "@chakra-ui/react";
+import { extractStyleProps } from "@/utils/extractStyleProps";
+import { toolbarSlotRecipe } from "../toolbar.recipe.ts";
 
 export const ToolbarRoot = ({
   ref: forwardedRef,
+  orientation = "horizontal",
   ...props
 }: ToolbarRootProps) => {
+  const recipe = useSlotRecipe({ recipe: toolbarSlotRecipe });
+  const [recipeProps, variantFreeProps] = recipe.splitVariantProps(props);
+  const [styleProps, functionalProps] = extractStyleProps(variantFreeProps);
+
   const sysCtx = useChakraContext();
-  const { children, orientation = "horizontal", ...rest } = props;
 
   // The react-aria Toolbar does not support responsive values for the
   // `orientation` prop. We normalize `orientation` to a string
@@ -21,12 +31,13 @@ export const ToolbarRoot = ({
 
   return (
     <ToolbarRootSlot
-      {...rest}
-      orientation={orientation}
       ref={forwardedRef}
+      orientation={orientation}
+      {...recipeProps}
+      {...styleProps}
       asChild
     >
-      <Toolbar orientation={computedOrientation}>{children}</Toolbar>
+      <Toolbar orientation={computedOrientation} {...functionalProps} />
     </ToolbarRootSlot>
   );
 };

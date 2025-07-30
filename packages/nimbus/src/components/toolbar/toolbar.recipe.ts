@@ -1,6 +1,6 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
-export const toolbarRecipe = defineSlotRecipe({
+export const toolbarSlotRecipe = defineSlotRecipe({
   className: "nimbus-toolbar",
   slots: ["root", "group", "separator"],
   base: {
