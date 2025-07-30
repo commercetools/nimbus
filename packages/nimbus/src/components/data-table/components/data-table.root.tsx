@@ -39,6 +39,9 @@ interface DataTableContextValue<T = any> {
   isAllSelected: () => boolean;
   handleRowSelection: (rowId: string, checked: boolean) => void;
   handleSelectAll: (checked: boolean) => void;
+  disabledKeys?: Selection;
+  isDisabled: (rowId: string) => boolean;
+  onRowAction?: (row: DataTableRowType<T>, action: 'click' | 'select') => void;
 }
 
 const DataTableContext = createContext<DataTableContextValue | null>(null);
@@ -175,6 +178,8 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       density,
       nestedKey,
       onRowClick,
+      disabledKeys,
+      onRowAction,
       children,
       ...rest
     } = props;
@@ -199,12 +204,12 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
 
     const filteredRows = useMemo(
       () => (search ? filterRows(data, search, visibleCols, nestedKey) : data),
-      [data, search, columns, visibleColumns, nestedKey]
+      [data, search, visibleCols, nestedKey]
     );
 
     const sortedRows = useMemo(
       () => sortRows(filteredRows, sortDescriptor, visibleCols, nestedKey),
-      [filteredRows, sortDescriptor, columns, visibleColumns, nestedKey]
+      [filteredRows, sortDescriptor, visibleCols, nestedKey]
     );
 
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
@@ -230,18 +235,29 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const isIndeterminate = () => {
       if (!selectedKeys || selectedKeys === "all" || selectionMode !== "multiple") return false;
       const selectedCount = selectedKeys.size;
-      const totalCount = sortedRows.length;
-      return selectedCount > 0 && selectedCount < totalCount;
+      const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
+      const totalSelectableCount = selectableRows.length;
+      return selectedCount > 0 && selectedCount < totalSelectableCount;
     };
 
     const isAllSelected = () => {
       if (!selectedKeys || selectionMode !== "multiple") return false;
       if (selectedKeys === "all") return true;
-      return selectedKeys.size === sortedRows.length && sortedRows.length > 0;
+      const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
+      return selectedKeys.size === selectableRows.length && selectableRows.length > 0;
     };
 
     const handleRowSelection = (rowId: string, checked: boolean) => {
       if (!onSelectionChange) return;
+      
+      // Prevent selection of disabled rows
+      if (isDisabled(rowId)) {
+        if (onRowAction) {
+          const row = sortedRows.find(r => r.id === rowId);
+          if (row) onRowAction(row, 'select');
+        }
+        return;
+      }
       
       let newSelection: typeof selectedKeys;
       
@@ -274,11 +290,19 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       if (!onSelectionChange || selectionMode !== "multiple") return;
       
       if (checked) {
-        onSelectionChange(new Set(sortedRows.map(row => row.id)));
+        // Only select non-disabled rows
+        const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
+        onSelectionChange(new Set(selectableRows.map(row => row.id)));
       } else {
         if (disallowEmptySelection) return;
         onSelectionChange(new Set());
       }
+    };
+
+    const isDisabled = (rowId: string) => {
+      if (!disabledKeys) return false;
+      if (disabledKeys === "all") return true;
+      return disabledKeys.has(rowId);
     };
 
     const contextValue: DataTableContextValue<T> = {
@@ -311,6 +335,9 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       isAllSelected,
       handleRowSelection,
       handleSelectAll,
+      disabledKeys,
+      isDisabled,
+      onRowAction,
     };
 
     return (

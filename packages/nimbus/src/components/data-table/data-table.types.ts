@@ -74,4 +74,6 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   isTruncated?: boolean;
   footer?: React.ReactNode;
   nestedKey?: string;
+  disabledKeys?: Selection;
+  onRowAction?: (row: DataTableRow<T>, action: 'click' | 'select') => void;
 }

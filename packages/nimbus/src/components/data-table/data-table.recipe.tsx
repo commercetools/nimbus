@@ -44,6 +44,19 @@ export const dataTableRecipe = defineSlotRecipe({
         transition: "background-color 100ms ease",
         transform: "translate3d(0, 0, 0)",
       },
+      "& .data-table-row-selected": {
+        backgroundColor: "{colors.primary.4}",
+      },
+      "& .data-table-row-disabled": {
+        opacity: 0.5,
+        cursor: "not-allowed",
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+        "& .react-aria-Cell": {
+          cursor: "not-allowed",
+        },
+      },
       "& .data-table-header": {
         background: "colorPalette.2",
         color: "colorPalette.11",

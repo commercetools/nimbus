@@ -33,7 +33,11 @@ type Story = StoryObj<DataTableProps>;
 
 // Sample data and columns
 const columns: DataTableColumn[] = [
-  { id: "name", header: "Name with a long header", accessor: (row) => row.name },
+  {
+    id: "name",
+    header: "Name with a long header",
+    accessor: (row) => row.name,
+  },
   { id: "age", header: "Age", accessor: (row) => row.age },
   { id: "role", header: "Role", accessor: (row) => row.role },
   {
@@ -71,8 +75,20 @@ const sortableColumns: DataTableColumn[] = [
       </IconButton>
     ),
   },
-  { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true, isAdjustable: true },
-  { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true, isAdjustable: true },
+  {
+    id: "age",
+    header: "Age",
+    accessor: (row) => row.age,
+    isSortable: true,
+    isAdjustable: true,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row) => row.role,
+    isSortable: true,
+    isAdjustable: true,
+  },
   {
     id: "custom",
     header: "Custom (Not Sortable)",
@@ -264,7 +280,7 @@ export const WithSorting: Story = {
     columns: sortableColumns,
     data,
     allowsSorting: true,
-    ['aria-label']: 'Sorting Example',
+    ["aria-label"]: "Sorting Example",
   },
 };
 
@@ -455,7 +471,12 @@ export const SelectionShowcase: Story = {
                 marginBottom: "8px",
               }}
             >
-              <label htmlFor="selection-mode-select" style={{ fontSize: "14px" }}>Mode:</label>
+              <label
+                htmlFor="selection-mode-select"
+                style={{ fontSize: "14px" }}
+              >
+                Mode:
+              </label>
               <select
                 id="selection-mode-select"
                 value={selectionMode}
@@ -957,17 +978,18 @@ const comprehensiveColumns: DataTableColumn[] = [
 export const MultilineHeaders: Story = {
   args: {
     columns: [
-      { 
-        id: "name", 
-        header: "Employee Full Name", 
+      {
+        id: "name",
+        header: "Employee Full Name",
         accessor: (row) => row.name,
         isSortable: true,
         isAdjustable: true,
         defaultWidth: 140,
       },
-      { 
-        id: "role", 
-        header: "Current Position and Primary Responsibilities within Organization", 
+      {
+        id: "role",
+        header:
+          "Current Position and Primary Responsibilities within Organization",
         accessor: (row) => row.role,
         isSortable: true,
         isAdjustable: true,
@@ -983,9 +1005,24 @@ export const MultilineHeaders: Story = {
       },
     ],
     data: [
-      { id: "1", name: "Alice Johnson", role: "Senior Software Engineer", department: "Engineering" },
-      { id: "2", name: "Bob Smith", role: "Frontend Developer", department: "Engineering" },
-      { id: "3", name: "Carol Williams", role: "UX Designer", department: "Design" },
+      {
+        id: "1",
+        name: "Alice Johnson",
+        role: "Senior Software Engineer",
+        department: "Engineering",
+      },
+      {
+        id: "2",
+        name: "Bob Smith",
+        role: "Frontend Developer",
+        department: "Engineering",
+      },
+      {
+        id: "3",
+        name: "Carol Williams",
+        role: "UX Designer",
+        department: "Design",
+      },
     ],
     allowsSorting: true,
     isAdjustable: true,
@@ -1260,7 +1297,6 @@ export const HorizontalScrolling: Story = {
     );
   },
 };
-
 
 // Data with flexible nested children - mix of table rows and React content
 const flexibleNestedData: DataTableRow[] = [
@@ -1837,6 +1873,12 @@ const fetchData = [
       },
     ],
   },
+  {
+    id: "sunny-2",
+    name: "Abrakadabra",
+    type: "Spiral Galaxy 2",
+    distance: "20.537M ly",
+  },
 ];
 
 // Define columns for the nested table
@@ -1848,9 +1890,9 @@ const nestedTableColumns: DataTableColumn[] = [
 ];
 
 // Create nested table data with proper React components
-const customNestedKeyData = fetchData.map((item) => ({
+const modifiedFetchedData = fetchData.map((item) => ({
   ...item,
-  sky: (
+  sky: item.sky && (
     <div style={{ padding: "16px" }}>
       <h4 style={{ margin: "0 0 12px 0", color: "#374151" }}>
         {item.name} Details
@@ -1908,7 +1950,7 @@ export const NestedTable: Story = {
         accessor: (row: any) => row.distance,
       },
     ],
-    data: customNestedKeyData,
+    data: modifiedFetchedData,
     nestedKey: "sky", // Custom nested key
     allowsSorting: true,
     isAdjustable: true,
@@ -1945,6 +1987,40 @@ export const AllFeatures: Story = {
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
 
     const allColumns = comprehensiveColumns.map((col) => col.id);
+
+    // Define columns for the nested table
+    const nestedComprehensiveTableColumns: DataTableColumn[] = [
+      { id: "id", header: "id", accessor: (row: any) => row.id },
+      { id: "name", header: "Name", accessor: (row: any) => row.name },
+      { id: "age", header: "Age", accessor: (row: any) => row.age },
+      { id: "role", header: "Role", accessor: (row: any) => row.role },
+      { id: "class", header: "Class", accessor: (row: any) => row.class },
+      { id: "email", header: "Email", accessor: (row: any) => row.email },
+      {
+        id: "department",
+        header: "Department",
+        accessor: (row: any) => row.department,
+      },
+      { id: "status", header: "Status", accessor: (row: any) => row.status },
+    ];
+
+    // Create nested table data with proper React components
+    const modifiedComprehensiveData = comprehensiveData.map((item) => ({
+      ...item,
+      children: (
+        item.children && (<div style={{ padding: "16px" }}>
+          <h4 style={{ margin: "0 0 12px 0", color: "#374151" }}>
+            {item.name} Details
+          </h4>
+          <DataTable
+            columns={nestedComprehensiveTableColumns}
+            data={item.children}
+            allowsSorting={true}
+            isAdjustable={true}
+          />
+        </div>)
+      ),
+    }));
 
     const handleColumnToggle = (colId: string) => {
       setVisibleColumns((prev) =>
@@ -2164,7 +2240,12 @@ export const AllFeatures: Story = {
                 marginBottom: "8px",
               }}
             >
-              <label htmlFor="all-features-selection-mode" style={{ fontSize: "14px" }}>Selection Mode:</label>
+              <label
+                htmlFor="all-features-selection-mode"
+                style={{ fontSize: "14px" }}
+              >
+                Selection Mode:
+              </label>
               <select
                 id="all-features-selection-mode"
                 value={selectionMode}
@@ -2278,7 +2359,7 @@ export const AllFeatures: Story = {
         >
           <DataTable
             columns={comprehensiveColumns}
-            data={comprehensiveData}
+            data={modifiedComprehensiveData}
             visibleColumns={visibleColumns}
             search={search}
             selectedKeys={selectedKeys}
@@ -2357,6 +2438,175 @@ export const AllFeatures: Story = {
               </ul>
             </div>
           </div>
+        </div>
+      </Stack>
+    );
+  },
+  args: {},
+};
+
+export const DisabledRowsShowcase: Story = {
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["2"]));
+    const [disabledKeys, setDisabledKeys] = useState<Selection>(new Set(["3", "5", "7"]));
+    const [rowActionLog, setRowActionLog] = useState<string[]>([]);
+
+    const handleRowAction = (row: any, action: 'click' | 'select') => {
+      const message = `${action.toUpperCase()} attempted on disabled row: ${row.name} (ID: ${row.id})`;
+      setRowActionLog(prev => [message, ...prev.slice(0, 4)]); // Keep last 5 messages
+    };
+
+    const toggleDisabled = (rowId: string) => {
+      setDisabledKeys(prev => {
+        if (prev === "all") return new Set([rowId]);
+        const newSet = new Set(prev);
+        if (newSet.has(rowId)) {
+          newSet.delete(rowId);
+        } else {
+          newSet.add(rowId);
+        }
+        return newSet;
+      });
+    };
+
+    return (
+      <Stack gap={20}>
+        <div>
+          <h3>Disabled Rows Showcase</h3>
+          <p>
+            Demonstration of disabled row functionality. Disabled rows cannot be selected
+            or clicked, and show visual feedback when interactions are attempted.
+          </p>
+        </div>
+
+        {/* Controls */}
+        <div
+          style={{
+            padding: "16px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "8px",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          <h4 style={{ margin: "0 0 12px 0" }}>Controls</h4>
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            {data.map((row) => (
+              <button
+                key={row.id}
+                onClick={() => toggleDisabled(row.id)}
+                style={{
+                  padding: "4px 8px",
+                  fontSize: "12px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  backgroundColor: 
+                    disabledKeys !== "all" && disabledKeys.has(row.id) 
+                      ? "#ffcccc" 
+                      : "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                {disabledKeys !== "all" && disabledKeys.has(row.id) ? "Enable" : "Disable"} {row.name}
+              </button>
+            ))}
+          </div>
+          
+          <div style={{ marginTop: "12px" }}>
+            <button
+              onClick={() => setDisabledKeys("all")}
+              style={{
+                padding: "6px 12px",
+                fontSize: "12px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                backgroundColor: disabledKeys === "all" ? "#ffcccc" : "#fff",
+                cursor: "pointer",
+                marginRight: "8px",
+              }}
+            >
+              Disable All
+            </button>
+            <button
+              onClick={() => setDisabledKeys(new Set())}
+              style={{
+                padding: "6px 12px",
+                fontSize: "12px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                backgroundColor: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              Enable All
+            </button>
+          </div>
+        </div>
+
+        {/* Action Log */}
+        {rowActionLog.length > 0 && (
+          <div
+            style={{
+              padding: "12px",
+              backgroundColor: "#fff3cd",
+              border: "1px solid #ffeaa7",
+              borderRadius: "6px",
+            }}
+          >
+            <h5 style={{ margin: "0 0 8px 0", color: "#856404" }}>
+              🚫 Disabled Row Interactions Log
+            </h5>
+            {rowActionLog.map((message, index) => (
+              <div
+                key={index}
+                style={{
+                  fontSize: "12px",
+                  color: "#856404",
+                  margin: "2px 0",
+                }}
+              >
+                {message}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* DataTable */}
+        <DataTable
+          columns={sortableColumns}
+          data={data}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          disabledKeys={disabledKeys}
+          onRowAction={handleRowAction}
+          selectionMode="multiple"
+          allowsSorting={true}
+          isRowClickable={true}
+          onRowClick={(row) => {
+            alert(`Row clicked: ${row.name} (${row.role})`);
+          }}
+        />
+
+        {/* Feature Information */}
+        <div
+          style={{
+            padding: "16px",
+            backgroundColor: "#f0f8ff",
+            borderRadius: "8px",
+            border: "1px solid #b3d9ff",
+            fontSize: "14px",
+          }}
+        >
+          <h4 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600" }}>
+            💡 Disabled Rows Features
+          </h4>
+          <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
+            <li><strong>Visual Feedback:</strong> Disabled rows have reduced opacity and not-allowed cursor</li>
+            <li><strong>Selection Prevention:</strong> Disabled rows cannot be selected via checkbox</li>
+            <li><strong>Click Prevention:</strong> Disabled rows cannot be clicked</li>
+            <li><strong>Action Callbacks:</strong> onRowAction is called when disabled rows are interacted with</li>
+            <li><strong>Select All:</strong> Only selects non-disabled rows</li>
+            <li><strong>Indeterminate State:</strong> Accounts for disabled rows in calculations</li>
+          </ul>
         </div>
       </Stack>
     );
