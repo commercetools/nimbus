@@ -7,8 +7,6 @@ on:
 
 permissions:
   id-token: write
-  contents: write
-  pull-requests: write
 
 jobs:
   release:
@@ -16,11 +14,21 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      # Get GitHub token via the CT Changesets App
+      - name: Generate GitHub token (via CT Changesets App)
+        id: generate_github_token
+        uses: tibdex/github-app-token@v2.1.0
+        with:
+          app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
+          private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
+          # Pass a personal access token (using our `ct-changesets` app) to be able to trigger other workflows
+          # https://help.github.com/en/actions/reference/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
+          # https://github.community/t/action-does-not-trigger-another-on-push-tag-action/17148/8
+          token: ${{ steps.generate_github_token.outputs.token }}
 
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
@@ -41,12 +49,12 @@ jobs:
           echo "VALUE=$(./scripts/print_release_version.sh)" >> $GITHUB_OUTPUT
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
 
       - name:
           Creating release pull request or publishing release to npm registry
         id: changesets
-        uses: changesets/action@v1.4.8
+        uses: dotansimha/changesets-action@v1.5.2
         with:
           publish: pnpm changeset publish
           version: pnpm changeset:version-and-format
@@ -55,7 +63,8 @@ jobs:
           githubReleaseName: v${{ steps.release_version.outputs.VALUE }}
           githubTagName: v${{ steps.release_version.outputs.VALUE }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
+          SKIP_POSTINSTALL_DEV_SETUP: true
 
       # Publish canary releases only if the packages weren't published already
       - name: Publishing canary releases to npm registry
@@ -67,4 +76,4 @@ jobs:
           pnpm changeset version --snapshot canary
           pnpm changeset publish --tag canary
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}

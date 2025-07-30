@@ -15,7 +15,7 @@
     ]
   ],
   "ignore": ["color-tokens", "blank-app", "docs"],
-  "access": "public",
+  "access": "restricted",
   "baseBranch": "main",
   "bumpVersionsWithWorkspaceProtocolOnly": false
 }
