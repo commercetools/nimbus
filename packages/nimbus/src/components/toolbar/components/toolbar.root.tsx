@@ -9,7 +9,7 @@ export const ToolbarRoot = ({
   ...props
 }: ToolbarRootProps) => {
   const sysCtx = useChakraContext();
-  const { children, orientation, ...rest } = props;
+  const { children, orientation = "horizontal", ...rest } = props;
 
   // The react-aria Toolbar does not support responsive values for the
   // `orientation` prop. We normalize `orientation` to a string
