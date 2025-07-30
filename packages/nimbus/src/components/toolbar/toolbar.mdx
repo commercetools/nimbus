@@ -16,7 +16,6 @@ figmaLink: >-
 
 # Toolbar
 
----
 {/* TODO: needs to be reviewed by a designer*/}
 A compound component that provides a way to group related actions and controls in a horizontal or vertical layout, commonly used for frequently-used actions, formatting controls, or contextual commands.
 
@@ -37,9 +36,9 @@ The basic toolbar consists of a root container with action buttons or controls.
 ```jsx-live
 const App = () => (
   <Toolbar.Root>
-    <Button size="xs">Action 1</Button>
-    <Button size="xs">Action 2</Button>
-    <Button size="xs">Action 3</Button>
+    <Button size="xs">File</Button>
+    <Button size="xs">Edit</Button>
+    <Button size="xs">View</Button>
   </Toolbar.Root>
 )
 ```
@@ -201,30 +200,7 @@ Toolbar component guidelines focus on providing clear organization of actions an
 
 ## API Reference
 
-### Toolbar.Root
-
-The root container for the toolbar that provides the base styling and layout context.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | The orientation of the toolbar |
-| `children` | `ReactNode` | - | The content to be displayed within the toolbar |
-
-### Toolbar.Group
-
-A container for grouping related toolbar items together.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | - | The toolbar items to group together |
-
-### Toolbar.Separator
-
-A visual separator between toolbar items or groups.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | The orientation of the separator line |
+<PropsTable id="Toolbar" />
 
 ## Accessibility
 
@@ -239,9 +215,7 @@ The Toolbar component includes built-in accessibility features:
 
 When the toolbar contains focusable elements:
 
-- **Tab**: Moves focus to the next focusable element within the toolbar
-- **Shift + Tab**: Moves focus to the previous focusable element within the toolbar
-- **Arrow Keys**: Can be used to navigate between toolbar items (implementation depends on child components)
+- **Arrow Keys**: Can be used to navigate between focusable items within the toolbar
 
 ## Related Components
 

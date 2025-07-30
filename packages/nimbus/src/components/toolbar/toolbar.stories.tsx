@@ -36,9 +36,6 @@ import { useState } from "react";
 const meta: Meta<typeof Toolbar.Root> = {
   title: "Components / Toolbar",
   component: Toolbar.Root,
-  parameters: {
-    layout: "centered",
-  },
   argTypes: {
     orientation: {
       control: { type: "radio" },
@@ -58,13 +55,13 @@ export const Default: Story = {
   render: (args: any) => (
     <Toolbar.Root {...args} data-testid="toolbar">
       <Button size="xs" variant="ghost" data-testid="action-1">
-        Action 1
+        File
       </Button>
       <Button size="xs" variant="ghost" data-testid="action-2">
-        Action 2
+        Edit
       </Button>
       <Button size="xs" variant="ghost" data-testid="action-3">
-        Action 3
+        View
       </Button>
     </Toolbar.Root>
   ),
@@ -292,6 +289,63 @@ export const WithGroups: Story = {
       await expect(verticalSeparator).toBeInTheDocument();
     });
   },
+};
+
+export const Variants: Story = {
+  args: {},
+  render: (args: any) => (
+    <Box>
+      {(["plain", "outline"] as const).map((variant) => (
+        <Box key={variant} mb="300">
+          <Text textStyle="sm" mb="200" color="neutral.11">
+            Variant: {variant}
+          </Text>
+          <Toolbar.Root
+            size="xs"
+            variant={variant}
+            orientation="horizontal"
+            {...args}
+            data-testid={`toolbar-${variant}-horizontal`}
+            aria-label={`${variant} horizontal toolbar`}
+          >
+            <IconButton
+              size="xs"
+              variant="ghost"
+              aria-label="New"
+              data-testid={`new-btn-${variant}`}
+            >
+              <Icon as={Add} />
+            </IconButton>
+            <IconButton
+              size="xs"
+              variant="ghost"
+              aria-label="Save"
+              data-testid={`save-btn-${variant}`}
+            >
+              <Icon as={Save} />
+            </IconButton>
+            <Toolbar.Separator data-testid={`separator-${variant}`} />
+            <IconButton
+              size="xs"
+              variant="ghost"
+              aria-label="Print"
+              data-testid={`print-btn-${variant}`}
+            >
+              <Icon as={Print} />
+            </IconButton>
+            <IconButton
+              size="xs"
+              variant="ghost"
+              aria-label="Settings"
+              data-testid={`settings-btn-${variant}`}
+            >
+              <Icon as={Settings} />
+            </IconButton>
+          </Toolbar.Root>
+        </Box>
+      ))}
+    </Box>
+  ),
 };
 
 export const RichTextEditor: Story = {

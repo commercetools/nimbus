@@ -6,9 +6,6 @@ export const toolbarRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "inline-flex",
-      borderWidth: "1px",
-      borderColor: "neutral.6",
-      borderRadius: "200",
       p: "var(--toolbar-spacing)",
     },
     group: {
@@ -70,8 +67,18 @@ export const toolbarRecipe = defineSlotRecipe({
         },
       },
     },
+    variant: {
+      plain: {},
+      outline: {
+        root: {
+          boxShadow: "0 0 0 1px {colors.neutral.6}",
+          borderRadius: "200",
+        },
+      },
+    },
   },
   defaultVariants: {
     size: "md",
+    variant: "plain",
   },
 });
