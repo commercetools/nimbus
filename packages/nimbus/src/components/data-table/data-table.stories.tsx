@@ -62,9 +62,6 @@ const sortableColumns: DataTableColumn[] = [
         size="2xs"
         colorPalette="primary"
         variant="ghost"
-        style={{
-          boxShadow: "none",
-        }}
         onPress={(e) => {
           alert(
             "Check how the `headerIcon` property was used to display this info button."
