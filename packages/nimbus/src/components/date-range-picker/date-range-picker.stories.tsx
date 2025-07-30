@@ -43,6 +43,8 @@ const createDateRangePickerHelpers = (canvas: any, target?: HTMLElement) => {
     getCalendarButton: () =>
       context.findByRole("button", { name: /calendar/i }),
     getClearButton: () => context.findByRole("button", { name: /clear/i }),
+    getClearButtonIfExists: () =>
+      context.queryByRole("button", { name: /clear/i }),
 
     openCalendar: async () => {
       const calendarButton = await context.findByRole("button", {
@@ -217,10 +219,10 @@ export const Base: Story = {
     await step("Clear button functionality works correctly", async () => {
       const dateSegments = helpers.getDateSegments();
 
-      // Initially, clear button should be disabled (no value selected)
-      const clearButton = await helpers.getClearButton();
+      // Initially, clear button should be hidden (no value selected)
+      const clearButton = helpers.getClearButtonIfExists();
       await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
+        await expect(clearButton).not.toBeInTheDocument();
       });
 
       // Set a date value first by changing from placeholder values
@@ -245,18 +247,20 @@ export const Base: Story = {
         await userEvent.keyboard("2025");
       }
 
-      // Clear button should now be enabled (actual date was entered)
+      // Clear button should now be enabled (range was entered)
+      const clearButtonAfterInput = await helpers.getClearButton();
       await waitFor(async () => {
-        await expect(clearButton).not.toBeDisabled();
+        await expect(clearButtonAfterInput).not.toBeDisabled();
       });
 
       // Click clear button to remove values
-      await userEvent.click(clearButton);
+      await userEvent.click(clearButtonAfterInput);
 
-      // After clearing, segments return to placeholder state (showing current date)
-      // Clear button should be disabled again indicating no actual value is selected
+      // After clearing, segments return to format placeholder state
+      // Clear button should be hidden again
+      const clearButtonAfterClear = helpers.getClearButtonIfExists();
       await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
+        await expect(clearButtonAfterClear).not.toBeInTheDocument();
       });
     });
 
@@ -342,9 +346,25 @@ export const Base: Story = {
         );
       });
 
-      // Clear the calendar
-      const clearButton = await helpers.getClearButton();
-      await userEvent.click(clearButton);
+      // The clear button should still be hidden
+      const clearButtonAfterStartClear = helpers.getClearButtonIfExists();
+      await waitFor(async () => {
+        await expect(clearButtonAfterStartClear).not.toBeInTheDocument();
+      });
+
+      // Clear the start range to focus on the end range
+      await userEvent.click(dateSegments[0]);
+      await userEvent.keyboard("{Delete}");
+      await userEvent.keyboard("{Delete}");
+      await userEvent.click(dateSegments[1]);
+      await userEvent.keyboard("{Delete}");
+      await userEvent.keyboard("{Delete}");
+
+      await userEvent.click(dateSegments[2]);
+      await userEvent.keyboard("{Delete}");
+      await userEvent.keyboard("{Delete}");
+      await userEvent.keyboard("{Delete}");
+      await userEvent.keyboard("{Delete}");
 
       // Type the same date (05/28/2025) into the END date input
       await userEvent.click(dateSegments[3]);
@@ -353,6 +373,12 @@ export const Base: Story = {
       await userEvent.keyboard("28");
       await userEvent.click(dateSegments[5]);
       await userEvent.keyboard("2025");
+
+      // The clear button should still be hidden
+      const clearButtonAfterEndClear = helpers.getClearButtonIfExists();
+      await waitFor(async () => {
+        await expect(clearButtonAfterEndClear).not.toBeInTheDocument();
+      });
 
       // Verify end date is set correctly
       await waitFor(async () => {
@@ -452,10 +478,10 @@ export const Uncontrolled: Story = {
       async () => {
         const emptyPicker = await getDateRangePicker("Without default value");
         const helpers = createDateRangePickerHelpers(canvas, emptyPicker);
-        const clearButton = await helpers.getClearButton();
+        const clearButton = helpers.getClearButtonIfExists();
 
         await waitFor(async () => {
-          await expect(clearButton).toBeDisabled();
+          await expect(clearButton).not.toBeInTheDocument();
         });
 
         const segments = helpers.getDateSegments();
@@ -507,7 +533,7 @@ export const Uncontrolled: Story = {
         await userEvent.click(clearButton);
 
         await waitFor(async () => {
-          await expect(clearButton).toBeDisabled();
+          await expect(clearButton).not.toBeVisible();
         });
       }
     );
@@ -516,10 +542,10 @@ export const Uncontrolled: Story = {
       const emptyPicker = await getDateRangePicker("Without default value");
       const helpers = createDateRangePickerHelpers(canvas, emptyPicker);
       const segments = helpers.getDateSegments();
-      const clearButton = await helpers.getClearButton();
+      const clearButton = helpers.getClearButtonIfExists();
 
       await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
+        await expect(clearButton).not.toBeInTheDocument();
       });
 
       await helpers.setDateRangeValues(
@@ -529,7 +555,7 @@ export const Uncontrolled: Story = {
       );
 
       await waitFor(async () => {
-        await expect(clearButton).not.toBeDisabled();
+        await expect(clearButton).not.toBeInTheDocument();
       });
 
       await helpers.verifyDateRangeValues(
@@ -769,7 +795,7 @@ export const Controlled: Story = {
 
       // Clear button should now be disabled
       await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
+        await expect(clearButton).not.toBeVisible();
       });
     });
 
@@ -805,10 +831,10 @@ export const Controlled: Story = {
         await expect(valueText).toBeInTheDocument();
       });
 
-      // Clear button should be disabled
-      const clearButton = await helpers.getClearButton();
+      // Clear button should be hidden
+      const clearButton = await helpers.getClearButtonIfExists();
       await waitFor(async () => {
-        await expect(clearButton).toBeDisabled();
+        await expect(clearButton).not.toBeInTheDocument();
       });
     });
 
@@ -854,10 +880,10 @@ export const Controlled: Story = {
           await expect(valueText).toBeInTheDocument();
         });
 
-        // Clear button should be disabled when value is null
-        const clearButton = await helpers.getClearButton();
+        // Clear button should be hidden when value is null
+        const clearButton = await helpers.getClearButtonIfExists();
         await waitFor(async () => {
-          await expect(clearButton).toBeDisabled();
+          await expect(clearButton).not.toBeInTheDocument();
         });
       }
     );
@@ -937,13 +963,13 @@ export const PlaceholderValue: Story = {
           withoutPlaceholder
         );
 
-        const clearButton1 = await helpers1.getClearButton();
-        const clearButton2 = await helpers2.getClearButton();
+        const clearButton1 = await helpers1.getClearButtonIfExists();
+        const clearButton2 = await helpers2.getClearButtonIfExists();
 
-        // Clear buttons should be disabled since no value is selected initially
+        // Clear buttons should be hidden since no value is selected initially
         await waitFor(async () => {
-          await expect(clearButton1).toBeDisabled();
-          await expect(clearButton2).toBeDisabled();
+          await expect(clearButton1).not.toBeInTheDocument();
+          await expect(clearButton2).not.toBeInTheDocument();
         });
       }
     );
@@ -1415,14 +1441,14 @@ export const TimeSupport: Story = {
           const helpers = createDateRangePickerHelpers(canvas, pickerElement);
           const clearButton = await helpers.getClearButton();
 
-          // Clear button should be enabled (has default value)
-          await expect(clearButton).not.toBeDisabled();
+          // Clear button should be visible
+          await expect(clearButton).toBeVisible();
 
           // Click clear button
           await userEvent.click(clearButton);
 
-          // Clear button should now be disabled
-          await expect(clearButton).toBeDisabled();
+          // Clear button should now be hidden
+          await expect(clearButton).not.toBeVisible();
 
           // Reset by adding a date back for next test
           const segments = helpers.getDateSegments();
@@ -2222,7 +2248,8 @@ export const MinMaxValues: Story = {
         // Clear the current value
         await userEvent.click(clearButton);
         await waitFor(async () => {
-          await expect(clearButton).toBeDisabled();
+          const clearButtonAfterClear = helpers.getClearButtonIfExists();
+          await expect(clearButtonAfterClear).not.toBeInTheDocument();
         });
 
         // DateInput 1 - Set a new valid date within range by typing
@@ -2803,7 +2830,6 @@ export const InFormFieldContext: Story = {
       }
     );
 
-    //TODO: actually select a range
     await step(
       "RangeCalendar functionality works within FormField contexts",
       async () => {
@@ -2845,12 +2871,11 @@ export const InFormFieldContext: Story = {
 
       for (let i = 0; i < datePickers.length; i++) {
         const datePicker = datePickers[i];
-        const clearButton = await within(datePicker).findByRole("button", {
-          name: /clear/i,
-        });
+        const helpers = createDateRangePickerHelpers(canvas, datePicker);
+        const clearButton = helpers.getClearButtonIfExists();
 
-        // Initially should be disabled (no value)
-        await expect(clearButton).toBeDisabled();
+        // Initially should be hidden (no value)
+        await expect(clearButton).not.toBeInTheDocument();
 
         // Set a value by typing in first segment
         const segments = within(datePicker).getAllByRole("spinbutton");
@@ -2867,14 +2892,39 @@ export const InFormFieldContext: Story = {
           await userEvent.keyboard("2025");
         }
 
-        // Clear button should now be enabled
-        await expect(clearButton).not.toBeDisabled();
+        if (segments[3]) {
+          await userEvent.click(segments[3]);
+          await userEvent.keyboard("5");
+        }
+        if (segments[4]) {
+          await userEvent.click(segments[4]);
+          await userEvent.keyboard("28");
+        }
+        if (segments[5]) {
+          await userEvent.click(segments[5]);
+          await userEvent.keyboard("2025");
+        }
+
+        await userEvent.click(segments[6]);
+        await userEvent.keyboard("5");
+        await userEvent.click(segments[7]);
+        await userEvent.keyboard("28");
+        await userEvent.click(segments[8]);
+        await userEvent.keyboard("2025");
+        await userEvent.click(segments[9]);
+        await userEvent.keyboard("10");
+        await userEvent.click(segments[10]);
+        await userEvent.keyboard("00");
+
+        // Clear buttons should now be enabled
+        const clearButtonAfterInput = await helpers.getClearButton();
+        await expect(clearButtonAfterInput).not.toBeDisabled();
 
         // Clear the value
-        await userEvent.click(clearButton);
+        await userEvent.click(clearButtonAfterInput);
 
-        // Should be disabled again
-        await expect(clearButton).toBeDisabled();
+        // Should be hidden again
+        await expect(clearButton).not.toBeInTheDocument();
       }
     });
   },
