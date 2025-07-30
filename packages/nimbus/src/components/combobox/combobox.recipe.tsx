@@ -38,6 +38,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       "&[data-disabled='true']": {
         layerStyle: "disabled",
         focusRing: "none",
+        bg: "neutral.3",
         "& input, & button": {
           // if you set 'pointer-events: none' on an element, it does not display a cursor,
           // so in order to display `cursor: not-allowed`, we must set pointerEvents: none on the interactive children
@@ -166,7 +167,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       solid: {
         root: {
           width: "7200",
-          bg: "primary.1",
         },
         value: {
           ...selectSlotRecipe.variants?.variant.outline.trigger,

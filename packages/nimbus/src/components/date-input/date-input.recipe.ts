@@ -36,6 +36,7 @@ export const dateInputSlotRecipe = defineSlotRecipe({
       },
       "&[data-disabled='true']": {
         layerStyle: "disabled",
+        bg: "neutral.3",
       },
     },
     segment: {
