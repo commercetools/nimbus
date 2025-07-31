@@ -39,10 +39,19 @@ export const dataTableRecipe = defineSlotRecipe({
           borderBottom: "none",
         },
       },
+      "& .data-table-row-details-button": {
+        opacity: 0,
+      },
+      "& .data-table-row-details-button:focus": {
+        opacity: 1,
+      },
       "& .data-table-row:hover": {
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 100ms ease",
         transform: "translate3d(0, 0, 0)",
+        "& .data-table-row-details-button": {
+          opacity: 1,
+        },
       },
       "& .data-table-row-selected": {
         backgroundColor: "{colors.primary.4}",
@@ -124,8 +133,8 @@ export const dataTableRecipe = defineSlotRecipe({
       // Multiline header truncation using webkit line clamp
       "& span[data-multiline-header]": {
         display: "-webkit-box",
-        "-webkit-box-orient": "vertical",
-        "-webkit-line-clamp": "2",
+        WebkitBoxOrient: "vertical",
+        WebkitLineClamp: "2",
       } as {},
     },
     footer: {
