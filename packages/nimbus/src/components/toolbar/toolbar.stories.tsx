@@ -211,7 +211,7 @@ export const WithGroups: Story = {
   args: {},
   render: (args) => (
     <Box>
-      {["horizontal", "vertical"].map((o) => (
+      {(["horizontal", "vertical"] as const).map((o) => (
         <Box key={o} mb="600">
           <Toolbar.Root orientation={o} {...args} data-testid={`toolbar-${o}`}>
             <Toolbar.Group data-testid={`file-group-${o}`}>
@@ -348,6 +348,28 @@ export const Variants: Story = {
 export const RichTextEditor: Story = {
   args: {
     orientation: "horizontal",
+  },
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          /**
+           * The ButtonToggleGroup usually has the role="toolbar", but since it
+           * is within a toolbar, RA changes the role to "group", unfortunately
+           * without removing the aria-orientation attribute (which is not allowed
+           * on a group).
+           *
+           * This rule disables the corresponding a11y check for the element
+           */
+
+          {
+            id: "aria-allowed-attr",
+            selector: '[role="group"][aria-orientation]',
+            enabled: false,
+          },
+        ],
+      },
+    },
   },
   render: (args) => {
     const [textStyle, setTextStyle] = useState("h1");
