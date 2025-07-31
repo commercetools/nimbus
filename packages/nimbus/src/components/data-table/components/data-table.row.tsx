@@ -196,7 +196,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                     : highlightCell(cellValue)}
 
                   {/* Cell hover buttons */}
-                  {isCurrentCellHovered && (
+                  {isCurrentCellHovered && !isDisabled(row.id) && (
                     <IconButton
                       key="copy-btn"
                       size="2xs"
