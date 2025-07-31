@@ -23,6 +23,7 @@ export const DataTableHeader = forwardRef<
     maxHeight,
     showSelectionColumn,
     showExpandColumn,
+    showDetailsColumn,
     selectionMode,
     isAllSelected,
     isIndeterminate,
@@ -131,49 +132,77 @@ export const DataTableHeader = forwardRef<
         const isSortable = allowsSorting && col.isSortable !== false;
         const isLastColumn = index === visibleCols.length - 1;
         return (
-          <RaColumn
-            allowsSorting={isSortable}
-            key={col.id}
-            id={col.id}
-            isRowHeader
-            width={col.width}
-            defaultWidth={col.defaultWidth}
-            minWidth={col.minWidth}
-            maxWidth={col.maxWidth}
-          >
-            {isHeaderHovered && !isLastColumn && (
-              <Divider
-                orientation="vertical"
-                color="gray.200"
-                className="data-table-header-divider"
-              />
-            )}
-            <div
-              tabIndex={0}
-              onFocus={() => setFocusedColumn(col.id)}
-              onMouseEnter={() => setHoveredColumn(col.id)}
-              onMouseLeave={() => setHoveredColumn(null)}
-              style={{
-                cursor: isSortable ? "pointer" : "default",
-              }}
+          <>
+            <RaColumn
+              allowsSorting={isSortable}
+              key={col.id}
+              id={col.id}
+              isRowHeader
+              width={col.width}
+              defaultWidth={col.defaultWidth}
+              minWidth={col.minWidth}
+              maxWidth={col.maxWidth}
             >
-              <span data-multiline-header>{col.header}</span>
-              {col.headerIcon && (
-                <span style={{ marginLeft: "8px" }}>{col.headerIcon}</span>
+              {isHeaderHovered && !isLastColumn && (
+                <Divider
+                  orientation="vertical"
+                  color="gray.200"
+                  className="data-table-header-divider"
+                />
               )}
-              {renderSortIndicator(col.id)}
-            </div>
-            {col.isAdjustable !== false && !isLastColumn && (
-              <ColumnResizer aria-label="Resize column">
-                {({ isResizing, isFocused }) => (
-                  <DataTableColumnResizer
-                    data-resizing={isResizing}
-                    data-focused={isFocused}
-                  />
+              <div
+                tabIndex={0}
+                onFocus={() => setFocusedColumn(col.id)}
+                onMouseEnter={() => setHoveredColumn(col.id)}
+                onMouseLeave={() => setHoveredColumn(null)}
+                style={{
+                  cursor: isSortable ? "pointer" : "default",
+                }}
+              >
+                <span data-multiline-header>{col.header}</span>
+                {col.headerIcon && (
+                  <span style={{ marginLeft: "8px" }}>{col.headerIcon}</span>
                 )}
-              </ColumnResizer>
+                {renderSortIndicator(col.id)}
+              </div>
+              {col.isAdjustable !== false && !isLastColumn && (
+                <ColumnResizer aria-label="Resize column">
+                  {({ isResizing, isFocused }) => (
+                    <DataTableColumnResizer
+                      data-resizing={isResizing}
+                      data-focused={isFocused}
+                    />
+                  )}
+                </ColumnResizer>
+              )}
+            </RaColumn>
+
+            {/* Details column header - shown after first data column */}
+            {showDetailsColumn && index === 0 && (
+              <RaColumn
+                key="details-header"
+                id="details"
+                className="details-column-header"
+                width={70}
+                allowsSorting={false}
+                aria-label="Row details"
+              >
+                <span style={{ 
+                  position: "absolute", 
+                  width: "1px", 
+                  height: "1px", 
+                  padding: 0, 
+                  margin: "-1px", 
+                  overflow: "hidden", 
+                  clip: "rect(0, 0, 0, 0)", 
+                  whiteSpace: "nowrap", 
+                  border: 0 
+                }}>
+                  Details
+                </span>
+              </RaColumn>
             )}
-          </RaColumn>
+          </>
         );
       })}
     </RaTableHeader>
