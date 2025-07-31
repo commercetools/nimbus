@@ -7,10 +7,16 @@ export const toolbarSlotRecipe = defineSlotRecipe({
     root: {
       display: "inline-flex",
       p: "var(--toolbar-spacing)",
+      gap: "var(--toolbar-spacing)",
+      borderRadius: "300",
+      alignItems: "stretch",
+      flexDirection: "var(--toolbar-direction)",
     },
     group: {
       display: "inline-flex",
       alignItems: "center",
+      gap: "var(--toolbar-spacing)",
+      flexDirection: "var(--toolbar-direction)",
     },
     separator: {
       border: 0,
@@ -33,37 +39,21 @@ export const toolbarSlotRecipe = defineSlotRecipe({
     orientation: {
       horizontal: {
         root: {
-          flexDirection: "row",
-          alignItems: "stretch",
-          gap: "var(--toolbar-spacing)",
+          "--toolbar-direction": "row",
         },
-        group: {
-          flexDirection: "row",
-          gap: "var(--toolbar-spacing)",
-        },
+
         separator: {
-          width: "1px",
+          width: "25",
           height: "auto",
-          //height: "800",
-          alignSelf: "stretch",
-          mx: "var(--toolbar-spacing)",
-          my: 0,
         },
       },
       vertical: {
         root: {
-          flexDirection: "column",
-          gap: "var(--toolbar-spacing)",
-        },
-        group: {
-          flexDirection: "column",
-          gap: "var(--toolbar-spacing)",
+          "--toolbar-direction": "column",
         },
         separator: {
-          height: "1px",
+          height: "25",
           width: "auto",
-          my: "var(--toolbar-spacing)",
-          mx: 0,
         },
       },
     },
@@ -71,8 +61,7 @@ export const toolbarSlotRecipe = defineSlotRecipe({
       plain: {},
       outline: {
         root: {
-          boxShadow: "0 0 0 1px {colors.neutral.6}",
-          borderRadius: "200",
+          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
         },
       },
     },
