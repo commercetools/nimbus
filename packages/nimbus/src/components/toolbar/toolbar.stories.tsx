@@ -414,43 +414,46 @@ export const RichTextEditor: Story = {
               aria-label="Text formatting"
             >
               {/* Font Style & Size */}
-              <Menu.Root onAction={(v) => setTextStyle(String(v))}>
-                <Menu.Trigger
-                  borderRadius="200"
-                  overflow="hidden"
-                  border="1px solid"
-                  borderColor="neutral.6"
-                  width="160px"
-                  data-testid={`menu-trigger-${size}`}
-                  aria-label="Text style menu"
-                >
-                  <Box display="flex" alignItems="center" gap="200" px="200">
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap="200"
-                      flexGrow="1"
-                    >
-                      <Text my="auto" {...selectedTextStyleProps}>
-                        {selectedTextStyleLabel}
-                      </Text>
-                    </Box>
+              <Toolbar.Group>
+                <Menu.Root onAction={(v) => setTextStyle(String(v))}>
+                  <Menu.Trigger
+                    borderRadius="200"
+                    overflow="hidden"
+                    border="1px solid"
+                    borderColor="neutral.6"
+                    width="4000"
+                    data-testid={`menu-trigger-${size}`}
+                    aria-label="Text style menu"
+                    alignSelf="stretch"
+                  >
+                    <Box display="flex" alignItems="center" gap="200" px="200">
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        gap="200"
+                        flexGrow="1"
+                      >
+                        <Text my="auto" {...selectedTextStyleProps}>
+                          {selectedTextStyleLabel}
+                        </Text>
+                      </Box>
 
-                    <KeyboardArrowDown />
-                  </Box>
-                </Menu.Trigger>
-                <Menu.Content data-testid={`menu-content-${size}`}>
-                  {textStyles.map((v) => (
-                    <Menu.Item
-                      key={v.id}
-                      id={v.id}
-                      data-testid={`menu-item-${v.id}-${size}`}
-                    >
-                      <Text {...v.props}>{v.label}</Text>
-                    </Menu.Item>
-                  ))}
-                </Menu.Content>
-              </Menu.Root>
+                      <KeyboardArrowDown />
+                    </Box>
+                  </Menu.Trigger>
+                  <Menu.Content data-testid={`menu-content-${size}`}>
+                    {textStyles.map((v) => (
+                      <Menu.Item
+                        key={v.id}
+                        id={v.id}
+                        data-testid={`menu-item-${v.id}-${size}`}
+                      >
+                        <Text {...v.props}>{v.label}</Text>
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content>
+                </Menu.Root>
+              </Toolbar.Group>
               <Toolbar.Separator data-testid={`separator-1-${size}`} />
 
               {/* Text Formatting Toggles */}
@@ -560,7 +563,7 @@ export const RichTextEditor: Story = {
                   aria-label="Numbered List"
                   data-testid={`numbered-list-${size}`}
                 >
-                  <FormatListBulleted />
+                  <FormatListNumbered />
                 </IconToggleButton>
               </Toolbar.ToggleButtonGroup>
               <Toolbar.Separator data-testid={`separator-4-${size}`} />
