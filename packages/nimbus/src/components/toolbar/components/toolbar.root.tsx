@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { ToolbarRootSlot as ToolbarRootSlot } from "../toolbar.slots.tsx";
 import type { ToolbarRootProps } from "../toolbar.types.ts";
 import { Toolbar } from "react-aria-components";
@@ -9,6 +8,8 @@ import {
 } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { toolbarSlotRecipe } from "../toolbar.recipe.ts";
+
+import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
 
 export const ToolbarRoot = ({
   ref: forwardedRef,
@@ -25,7 +26,8 @@ export const ToolbarRoot = ({
   // `orientation` prop. We normalize `orientation` to a string
   // ("horizontal" or "vertical") using `system.normalizeValue` and
   // `useBreakpointValue` to ensure a concrete value is passed.
-  const computedOrientation = useBreakpointValue(
+  const computedOrientation: RaToolbarProps["orientation"] = useBreakpointValue(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     sysCtx.normalizeValue(orientation)
   );
 

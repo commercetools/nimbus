@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { ToolbarGroupSlot as ToolbarGroupSlot } from "../toolbar.slots.tsx";
 import type { ToolbarGroupProps } from "../toolbar.types.ts";
 import { Group } from "react-aria-components";

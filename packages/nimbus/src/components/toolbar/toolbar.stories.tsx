@@ -49,7 +49,7 @@ export const Default: Story = {
   args: {
     orientation: "horizontal",
   },
-  render: (args: any) => (
+  render: (args) => (
     <Toolbar.Root {...args} data-testid="toolbar">
       <Button size="xs" variant="ghost" data-testid="action-1">
         File
@@ -101,7 +101,7 @@ export const Vertical: Story = {
   args: {
     orientation: "vertical",
   },
-  render: (args: any) => (
+  render: (args) => (
     <Toolbar.Root {...args} data-testid="vertical-toolbar">
       <IconButton
         size="xs"
@@ -209,7 +209,7 @@ export const Vertical: Story = {
 
 export const WithGroups: Story = {
   args: {},
-  render: (args: any) => (
+  render: (args) => (
     <Box>
       {["horizontal", "vertical"].map((o) => (
         <Box key={o} mb="600">
@@ -290,7 +290,7 @@ export const WithGroups: Story = {
 
 export const Variants: Story = {
   args: {},
-  render: (args: any) => (
+  render: (args) => (
     <Box>
       {(["plain", "outline"] as const).map((variant) => (
         <Box key={variant} mb="300">
@@ -349,7 +349,7 @@ export const RichTextEditor: Story = {
   args: {
     orientation: "horizontal",
   },
-  render: (args: any) => {
+  render: (args) => {
     const [textStyle, setTextStyle] = useState("h1");
     const textStyles = [
       {
