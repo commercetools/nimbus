@@ -31,8 +31,6 @@ export const ToolbarRoot = ({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     useBreakpointValue(normalizedOrientation) ?? "horizontal";
 
-  console.log("normalizedOrientation", normalizedOrientation);
-  console.log("computedOrientation", computedOrientation);
   return (
     <ToolbarRootSlot
       ref={forwardedRef}
