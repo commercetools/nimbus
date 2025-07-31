@@ -123,6 +123,22 @@ export const Base: Story = {
   },
 };
 
+/**
+ * Details Button Story
+ * Demonstrates the details button functionality that's always present in the second column
+ */
+export const WithDetailsButton: Story = {
+  args: {
+    columns,
+    data,
+    allowsSorting: true,
+    isAdjustable: true,
+    onDetailsClick: (row) => {
+      alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
+    },
+  },
+};
+
 export const ColumnManager: Story = {
   render: (args) => {
     const [visible, setVisible] = useState(["name", "age"]);
@@ -2014,6 +2030,9 @@ export const AllFeatures: Story = {
             data={item.children}
             allowsSorting={true}
             isAdjustable={true}
+            onDetailsClick={(row) => {
+              alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
+            }}
           />
         </div>)
       ),
@@ -2372,10 +2391,13 @@ export const AllFeatures: Story = {
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            onRowClick={(row) => {
-              if (isRowClickable) {
-                alert(`Clicked row: ${row.name} (${row.role})`);
-              }
+            // onRowClick={(row) => {
+            //   if (isRowClickable) {
+            //     alert(`Clicked row: ${row.name} (${row.role})`);
+            //   }
+            // }}
+            onDetailsClick={(row) => {
+              alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
             }}
           />
         </div>

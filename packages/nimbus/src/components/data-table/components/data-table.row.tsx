@@ -4,12 +4,13 @@ import { Highlight } from "@chakra-ui/react";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableExpandButton } from "../data-table.slots";
 import type { DataTableRow as DataTableRowType } from "../data-table.types";
-import { Box, Checkbox, IconButton } from "@/components";
+import { Box, Checkbox, Button, IconButton } from "@/components";
 import { useCopyToClipboard } from "@/hooks";
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
   ContentCopy,
+  Info,
 } from "@commercetools/nimbus-icons";
 
 export interface DataTableRowProps {
@@ -27,9 +28,11 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
       nestedKey,
       showExpandColumn,
       showSelectionColumn,
+      showDetailsColumn,
       isRowClickable,
       isTruncated,
       onRowClick,
+      onDetailsClick,
       isSelected,
       handleRowSelection,
       isDisabled,
@@ -166,56 +169,95 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
             const isCurrentCellHovered = hoveredCell === cellId;
 
             return (
-              <RaCell key={col.id}>
-                <Box
-                  className={isTruncated ? "truncated-cell" : ""}
-                  onMouseEnter={() => setHoveredCell(cellId)}
-                  onMouseLeave={() => setHoveredCell(null)}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    position: "relative",
-                    cursor: isDisabled(row.id)
-                      ? "not-allowed"
-                      : isRowClickable
-                        ? "inherit"
-                        : undefined,
-                    // Add indentation for the first column of nested rows
-                    ...(depth > 0 &&
-                      index === 0 && {
-                        paddingLeft: `${16 + depth * 16}px`,
-                      }),
-                  }}
-                >
-                  {col.render
-                    ? col.render({
-                        value: highlightCell(cellValue),
-                        row,
-                        column: col,
-                      })
-                    : highlightCell(cellValue)}
+              <>
+                <RaCell key={col.id}>
+                  <Box
+                    className={isTruncated ? "truncated-cell" : ""}
+                    onMouseEnter={() => setHoveredCell(cellId)}
+                    onMouseLeave={() => setHoveredCell(null)}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      position: "relative",
+                      cursor: isDisabled(row.id)
+                        ? "not-allowed"
+                        : isRowClickable
+                          ? "inherit"
+                          : undefined,
+                      // Add indentation for the first column of nested rows
+                      ...(depth > 0 &&
+                        index === 0 && {
+                          paddingLeft: `${16 + depth * 16}px`,
+                        }),
+                    }}
+                  >
+                    {col.render
+                      ? col.render({
+                          value: highlightCell(cellValue),
+                          row,
+                          column: col,
+                        })
+                      : highlightCell(cellValue)}
 
-                  {/* Cell hover buttons */}
-                  {isCurrentCellHovered && !isDisabled(row.id) && (
-                    <IconButton
-                      key="copy-btn"
-                      size="2xs"
-                      variant="ghost"
-                      aria-label="Copy to clipboard"
-                      colorPalette="primary"
-                      onPress={() => handleCopy(cellValue)}
+                    {/* Cell hover buttons */}
+                    {isCurrentCellHovered && !isDisabled(row.id) && (
+                      <IconButton
+                        key="copy-btn"
+                        size="2xs"
+                        variant="ghost"
+                        aria-label="Copy to clipboard"
+                        colorPalette="primary"
+                        onPress={() => handleCopy(cellValue)}
+                        style={{
+                          marginLeft: "4px",
+                        }}
+                      >
+                        <ContentCopy
+                          key="copy-icon"
+                          onClick={() => handleCopy(cellValue)}
+                        />
+                      </IconButton>
+                    )}
+                  </Box>
+                </RaCell>
+
+                {/* Details button cell - shown after first data column */}
+                {showDetailsColumn && index === 0 && (
+                  <RaCell
+                    key="details-column"
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Box
                       style={{
-                        marginLeft: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100%",
                       }}
                     >
-                      <ContentCopy
-                        key="copy-icon"
-                        onClick={() => handleCopy(cellValue)}
-                      />
-                    </IconButton>
-                  )}
-                </Box>
-              </RaCell>
+                      <Button
+                        aria-label="View row details"
+                        className="data-table-row-details-button"
+                        disabled={isDisabled(row.id)}
+                        variant="outline"
+                        colorPalette="primary"
+                        size="2xs"
+                        onPress={() => {
+                          if (onDetailsClick) {
+                            onDetailsClick(row);
+                          }
+                        }}
+                      >
+                        Open
+                      </Button>
+                    </Box>
+                  </RaCell>
+                )}
+              </>
             );
           })}
         </RaRow>
@@ -226,7 +268,8 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
               colSpan={
                 visibleCols.length +
                 (showExpandColumn ? 1 : 0) +
-                (showSelectionColumn ? 1 : 0)
+                (showSelectionColumn ? 1 : 0) +
+                (showDetailsColumn ? 1 : 0)
               }
               style={{
                 borderLeft: "2px solid blue",

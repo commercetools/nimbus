@@ -28,12 +28,14 @@ interface DataTableContextValue<T = any> {
   onSortChange?: (descriptor: SortDescriptor) => void;
   onSelectionChange?: (keys: Selection) => void;
   onRowClick?: (row: DataTableRowType<T>) => void;
+  onDetailsClick?: (row: DataTableRowType<T>) => void;
   toggleExpand: (id: string) => void;
   visibleCols: DataTableColumn<T>[];
   filteredRows: DataTableRowType<T>[];
   sortedRows: DataTableRowType<T>[];
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
+  showDetailsColumn: boolean;
   isSelected: (rowId: string) => boolean;
   isIndeterminate: () => boolean;
   isAllSelected: () => boolean;
@@ -178,6 +180,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       density,
       nestedKey,
       onRowClick,
+      onDetailsClick,
       disabledKeys,
       onRowAction,
       children,
@@ -214,6 +217,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
 
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
     const showSelectionColumn = selectionMode !== "none";
+    const showDetailsColumn = true; // Details column is always shown
 
     const toggleExpand = (id: string) =>
       setExpanded((e) => ({ ...e, [id]: !e[id] }));
@@ -324,12 +328,14 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       onSortChange: handleSortChange,
       onSelectionChange,
       onRowClick,
+      onDetailsClick,
       toggleExpand,
       visibleCols,
       filteredRows,
       sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      showDetailsColumn,
       isSelected,
       isIndeterminate,
       isAllSelected,
