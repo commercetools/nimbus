@@ -9,8 +9,6 @@ import {
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { toolbarSlotRecipe } from "../toolbar.recipe.ts";
 
-import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
-
 export const ToolbarRoot = ({
   ref: forwardedRef,
   orientation = "horizontal",
@@ -26,11 +24,15 @@ export const ToolbarRoot = ({
   // `orientation` prop. We normalize `orientation` to a string
   // ("horizontal" or "vertical") using `system.normalizeValue` and
   // `useBreakpointValue` to ensure a concrete value is passed.
-  const computedOrientation: RaToolbarProps["orientation"] = useBreakpointValue(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    sysCtx.normalizeValue(orientation)
-  );
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const normalizedOrientation = sysCtx.normalizeValue(orientation);
+  const computedOrientation: "horizontal" | "vertical" =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    useBreakpointValue(normalizedOrientation) ?? "horizontal";
+
+  console.log("normalizedOrientation", normalizedOrientation);
+  console.log("computedOrientation", computedOrientation);
   return (
     <ToolbarRootSlot
       ref={forwardedRef}
