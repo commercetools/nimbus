@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { ToolbarRoot as ToolbarRootSlot } from "../toolbar.slots.tsx";
+import { ToolbarRootSlot as ToolbarRootSlot } from "../toolbar.slots.tsx";
 import type { ToolbarRootProps } from "../toolbar.types.ts";
 import { Toolbar } from "react-aria-components";
 import {

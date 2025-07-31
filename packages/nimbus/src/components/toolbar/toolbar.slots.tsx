@@ -18,20 +18,20 @@ export interface ToolbarRootSlotProps
   extends HTMLChakraProps<"div">,
     RecipeVariantProps<typeof toolbarSlotRecipe> {}
 
-export const ToolbarRoot = withProvider<HTMLDivElement, ToolbarRootSlotProps>(
-  "div",
-  "root"
-);
+export const ToolbarRootSlot = withProvider<
+  HTMLDivElement,
+  ToolbarRootSlotProps
+>("div", "root");
 
 /**
  * Toolbar.Group slot
  */
 export interface ToolbarGroupSlotProps extends HTMLChakraProps<"div"> {}
 
-export const ToolbarGroup = withContext<HTMLDivElement, ToolbarGroupSlotProps>(
-  "div",
-  "group"
-);
+export const ToolbarGroupSlot = withContext<
+  HTMLDivElement,
+  ToolbarGroupSlotProps
+>("div", "group");
 
 /**
  * Toolbar.ToggleButtonGroup slot
@@ -39,17 +39,17 @@ export const ToolbarGroup = withContext<HTMLDivElement, ToolbarGroupSlotProps>(
 export interface ToolbarToggleButtonGroupSlotProps
   extends HTMLChakraProps<"div"> {}
 
-export const ToolbarToggleButtonGroup = withContext<
+export const ToolbarToggleButtonGroupSlot = withContext<
   HTMLDivElement,
   ToolbarToggleButtonGroupSlotProps
->("div", "group");
+>("div", "group"); // <-- reuse the same slot, as there are no styling diff's
 
 /**
  * Toolbar.Separator slot
  */
 export interface ToolbarSeparatorSlotProps extends HTMLChakraProps<"div"> {}
 
-export const ToolbarSeparator = withContext<
+export const ToolbarSeparatorSlot = withContext<
   HTMLDivElement,
   ToolbarSeparatorSlotProps
 >("div", "separator");

@@ -1,8 +1,6 @@
-import { forwardRef } from "react";
-import { ToolbarSeparator as ToolbarSeparatorSlot } from "../toolbar.slots.tsx";
+import { ToolbarSeparatorSlot as ToolbarSeparatorSlot } from "../toolbar.slots.tsx";
 import type { ToolbarSeparatorProps } from "../toolbar.types.ts";
 import { Separator } from "react-aria-components";
-import { useRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
 export const ToolbarSeparator = ({
