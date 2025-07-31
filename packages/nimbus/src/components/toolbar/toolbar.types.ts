@@ -3,6 +3,7 @@ import type {
   ToolbarProps as RaToolbarProps,
   GroupProps as RaGroupProps,
   SeparatorProps as RaSeparatorProps,
+  ToggleButtonGroupProps as RaToggleButtonGroupProps,
 } from "react-aria-components";
 import type { RecipeVariantProps } from "@chakra-ui/react";
 import type {
@@ -49,7 +50,18 @@ export interface ToolbarGroupProps
   ref?: Ref<HTMLDivElement>;
 }
 
+export interface ToolbarToggleButtonGroupProps
+  extends Omit<
+      ToolbarGroupSlotProps,
+      DefaultExcludedProps | "slot" | "children"
+    >,
+    Omit<RaToggleButtonGroupProps, "className" | "style"> {
+  ref?: Ref<HTMLDivElement>;
+}
+
 // Toolbar separator component
-export interface ToolbarSeparatorProps extends ToolbarSeparatorSlotProps {
+export interface ToolbarSeparatorProps
+  extends Omit<ToolbarSeparatorSlotProps, DefaultExcludedProps | "slot">,
+    RaSeparatorProps {
   ref?: Ref<HTMLDivElement>;
 }

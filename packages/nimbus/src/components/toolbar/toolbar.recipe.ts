@@ -41,10 +41,10 @@ export const toolbarSlotRecipe = defineSlotRecipe({
         root: {
           "--toolbar-direction": "row",
         },
-
         separator: {
           width: "25",
           height: "auto",
+          mx: "var(--toolbar-spacing)",
         },
       },
       vertical: {
@@ -54,6 +54,7 @@ export const toolbarSlotRecipe = defineSlotRecipe({
         separator: {
           height: "25",
           width: "auto",
+          my: "var(--toolbar-spacing)",
         },
       },
     },

@@ -3,10 +3,7 @@ import { expect, userEvent, within, waitFor } from "storybook/test";
 import { Button } from "../button";
 import { IconButton } from "../icon-button";
 import { IconToggleButton } from "../icon-toggle-button";
-import { ToggleButtonGroup } from "../toggle-button-group";
-import { Icon } from "../icon";
-import { Menu } from "../menu";
-import { Box, Text } from "@/components";
+import { Box, Text, Menu } from "@/components";
 import { Toolbar } from "./toolbar.tsx";
 import {
   FormatBold,
@@ -112,7 +109,7 @@ export const Vertical: Story = {
         aria-label="Home"
         data-testid="home-btn"
       >
-        <Icon as={Home} />
+        <Home />
       </IconButton>
       <Toolbar.Separator />
       <IconButton
@@ -121,7 +118,7 @@ export const Vertical: Story = {
         aria-label="Search"
         data-testid="search-btn"
       >
-        <Icon as={Search} />
+        <Search />
       </IconButton>
       <IconButton
         size="xs"
@@ -129,7 +126,7 @@ export const Vertical: Story = {
         aria-label="Settings"
         data-testid="settings-btn"
       >
-        <Icon as={Settings} />
+        <Settings />
       </IconButton>
       <IconButton
         size="xs"
@@ -137,7 +134,7 @@ export const Vertical: Story = {
         aria-label="Profile"
         data-testid="profile-btn"
       >
-        <Icon as={Person} />
+        <Person />
       </IconButton>
       <Toolbar.Separator />
       <IconButton
@@ -146,7 +143,7 @@ export const Vertical: Story = {
         aria-label="Logout"
         data-testid="logout-btn"
       >
-        <Icon as={Logout} />
+        <Logout />
       </IconButton>
     </Toolbar.Root>
   ),
@@ -224,7 +221,7 @@ export const WithGroups: Story = {
                 aria-label="New"
                 data-testid={`new-btn-${o}`}
               >
-                <Icon as={Add} />
+                <Add />
               </IconButton>
               <IconButton
                 size="xs"
@@ -232,7 +229,7 @@ export const WithGroups: Story = {
                 aria-label="Open"
                 data-testid={`open-btn-${o}`}
               >
-                <Icon as={FolderOpen} />
+                <FolderOpen />
               </IconButton>
             </Toolbar.Group>
             <Toolbar.Separator
@@ -246,7 +243,7 @@ export const WithGroups: Story = {
                 aria-label="Save"
                 data-testid={`save-btn-${o}`}
               >
-                <Icon as={Save} />
+                <Save />
               </IconButton>
               <IconButton
                 size="xs"
@@ -254,7 +251,7 @@ export const WithGroups: Story = {
                 aria-label="Print"
                 data-testid={`print-btn-${o}`}
               >
-                <Icon as={Print} />
+                <Print />
               </IconButton>
             </Toolbar.Group>
           </Toolbar.Root>
@@ -314,7 +311,7 @@ export const Variants: Story = {
               aria-label="New"
               data-testid={`new-btn-${variant}`}
             >
-              <Icon as={Add} />
+              <Add />
             </IconButton>
             <IconButton
               size="xs"
@@ -322,7 +319,7 @@ export const Variants: Story = {
               aria-label="Save"
               data-testid={`save-btn-${variant}`}
             >
-              <Icon as={Save} />
+              <Save />
             </IconButton>
             <Toolbar.Separator data-testid={`separator-${variant}`} />
             <IconButton
@@ -331,7 +328,7 @@ export const Variants: Story = {
               aria-label="Print"
               data-testid={`print-btn-${variant}`}
             >
-              <Icon as={Print} />
+              <Print />
             </IconButton>
             <IconButton
               size="xs"
@@ -339,7 +336,7 @@ export const Variants: Story = {
               aria-label="Settings"
               data-testid={`settings-btn-${variant}`}
             >
-              <Icon as={Settings} />
+              <Settings />
             </IconButton>
           </Toolbar.Root>
         </Box>
@@ -438,9 +435,8 @@ export const RichTextEditor: Story = {
                         {selectedTextStyleLabel}
                       </Text>
                     </Box>
-                    <Icon>
-                      <KeyboardArrowDown />
-                    </Icon>
+
+                    <KeyboardArrowDown />
                   </Box>
                 </Menu.Trigger>
                 <Menu.Content data-testid={`menu-content-${size}`}>
@@ -458,46 +454,53 @@ export const RichTextEditor: Story = {
               <Toolbar.Separator data-testid={`separator-1-${size}`} />
 
               {/* Text Formatting Toggles */}
-              <Toolbar.Group data-testid={`format-group-${size}`}>
+              <Toolbar.ToggleButtonGroup
+                selectionMode="multiple"
+                defaultSelectedKeys={["bold"]}
+                data-testid={`format-group-${size}`}
+              >
                 <IconToggleButton
+                  id="bold"
                   size={size}
                   variant="ghost"
                   aria-label="Bold"
                   data-testid={`bold-btn-${size}`}
                 >
-                  <Icon as={FormatBold} />
+                  <FormatBold />
                 </IconToggleButton>
                 <IconToggleButton
+                  id="italic"
                   size={size}
                   variant="ghost"
                   aria-label="Italic"
                   data-testid={`italic-btn-${size}`}
                 >
-                  <Icon as={FormatItalic} />
+                  <FormatItalic />
                 </IconToggleButton>
                 <IconToggleButton
+                  id="underline"
                   size={size}
                   variant="ghost"
                   aria-label="Underline"
                   data-testid={`underline-btn-${size}`}
                 >
-                  <Icon as={FormatUnderlined} />
+                  <FormatUnderlined />
                 </IconToggleButton>
                 <IconToggleButton
+                  id="strikethrough"
                   size={size}
                   variant="ghost"
                   aria-label="Strikethrough"
                   data-testid={`strikethrough-btn-${size}`}
                 >
-                  <Icon as={FormatStrikethrough} />
+                  <FormatStrikethrough />
                 </IconToggleButton>
-              </Toolbar.Group>
+              </Toolbar.ToggleButtonGroup>
               <Toolbar.Separator data-testid={`separator-2-${size}`} />
 
               {/* Text Alignment Toggle Group */}
               <Toolbar.Group data-testid={`alignment-group-${size}`}>
-                <ToggleButtonGroup.Root
-                  size={size}
+                <Toolbar.ToggleButtonGroup
                   selectionMode="single"
                   defaultSelectedKeys={["left"]}
                   aria-label="Text alignment"
@@ -510,7 +513,7 @@ export const RichTextEditor: Story = {
                     aria-label="Align Left"
                     data-testid={`align-left-${size}`}
                   >
-                    <Icon as={FormatAlignLeft} />
+                    <FormatAlignLeft />
                   </IconToggleButton>
                   <IconToggleButton
                     id="center"
@@ -519,7 +522,7 @@ export const RichTextEditor: Story = {
                     aria-label="Align Center"
                     data-testid={`align-center-${size}`}
                   >
-                    <Icon as={FormatAlignCenter} />
+                    <FormatAlignCenter />
                   </IconToggleButton>
                   <IconToggleButton
                     id="right"
@@ -528,17 +531,16 @@ export const RichTextEditor: Story = {
                     aria-label="Align Right"
                     data-testid={`align-right-${size}`}
                   >
-                    <Icon as={FormatAlignRight} />
+                    <FormatAlignRight />
                   </IconToggleButton>
-                </ToggleButtonGroup.Root>
+                </Toolbar.ToggleButtonGroup>
               </Toolbar.Group>
               <Toolbar.Separator data-testid={`separator-3-${size}`} />
 
               {/* Lists & Indentation */}
-              <ToggleButtonGroup.Root
+              <Toolbar.ToggleButtonGroup
                 selectionMode="single"
                 defaultSelectedKeys={[]}
-                size={size}
                 data-testid={`list-toggle-group-${size}`}
                 aria-label="List formatting"
               >
@@ -549,7 +551,7 @@ export const RichTextEditor: Story = {
                   aria-label="Bulleted List"
                   data-testid={`bulleted-list-${size}`}
                 >
-                  <Icon as={FormatListBulleted} />
+                  <FormatListBulleted />
                 </IconToggleButton>
                 <IconToggleButton
                   id="numbered-list"
@@ -558,9 +560,9 @@ export const RichTextEditor: Story = {
                   aria-label="Numbered List"
                   data-testid={`numbered-list-${size}`}
                 >
-                  <Icon as={FormatListNumbered} />
+                  <FormatListBulleted />
                 </IconToggleButton>
-              </ToggleButtonGroup.Root>
+              </Toolbar.ToggleButtonGroup>
               <Toolbar.Separator data-testid={`separator-4-${size}`} />
 
               <Toolbar.Group data-testid={`history-group-${size}`}>
@@ -571,7 +573,7 @@ export const RichTextEditor: Story = {
                   isDisabled
                   data-testid={`undo-btn-${size}`}
                 >
-                  <Icon as={Undo} />
+                  <Undo />
                 </IconButton>
                 <IconButton
                   size="xs"
@@ -579,7 +581,7 @@ export const RichTextEditor: Story = {
                   aria-label="Redo"
                   data-testid={`redo-btn-${size}`}
                 >
-                  <Icon as={Redo} />
+                  <Redo />
                 </IconButton>
               </Toolbar.Group>
             </Toolbar.Root>

@@ -34,6 +34,17 @@ export const ToolbarGroup = withContext<HTMLDivElement, ToolbarGroupSlotProps>(
 );
 
 /**
+ * Toolbar.ToggleButtonGroup slot
+ */
+export interface ToolbarToggleButtonGroupSlotProps
+  extends HTMLChakraProps<"div"> {}
+
+export const ToolbarToggleButtonGroup = withContext<
+  HTMLDivElement,
+  ToolbarToggleButtonGroupSlotProps
+>("div", "group");
+
+/**
  * Toolbar.Separator slot
  */
 export interface ToolbarSeparatorSlotProps extends HTMLChakraProps<"div"> {}
