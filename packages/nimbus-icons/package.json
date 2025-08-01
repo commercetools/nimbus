@@ -21,6 +21,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commercetools/nimbus.git"
+  },
   "dependencies": {
     "@material-design-icons/svg": "^0.14.15",
     "@svgr/cli": "^8.1.0",
