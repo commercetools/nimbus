@@ -31,6 +31,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commercetools/nimbus.git"
+  },
   "sideEffects": [
     "*.css"
   ],
