@@ -35,17 +35,17 @@ const { withContext } = createRecipeContext({
  * Root component that provides the styling context for the ToggleButton component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const ToggleButtonRoot = withContext<HTMLButtonElement, ToggleButtonRootProps>(
-  "button",
-  {
-    defaultProps: {
-      type: "button",
-    },
-    /** make sure the `onPress` properties won't end up as attribute on the rendered DOM element */
-    shouldForwardProp(prop, variantKeys) {
-      const chakraSfp =
-        !variantKeys?.includes(prop) && !defaultSystem.isValidProperty(prop);
-      return shouldForwardProp(prop) && chakraSfp && !prop.includes("onPress");
-    },
-  }
-);
+export const ToggleButtonRoot = withContext<
+  HTMLButtonElement,
+  ToggleButtonRootProps
+>("button", {
+  defaultProps: {
+    type: "button",
+  },
+  /** make sure the `onPress` properties won't end up as attribute on the rendered DOM element */
+  shouldForwardProp(prop, variantKeys) {
+    const chakraSfp =
+      !variantKeys?.includes(prop) && !defaultSystem.isValidProperty(prop);
+    return shouldForwardProp(prop) && chakraSfp && !prop.includes("onPress");
+  },
+});

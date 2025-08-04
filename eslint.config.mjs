@@ -9,7 +9,8 @@ import storybook from "eslint-plugin-storybook";
 
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginPrettier from "eslint-plugin-prettier";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 /**
  * @type {import("typescript-eslint").Config}
@@ -19,31 +20,47 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
  * 3. Includes recommended TypeScript-specific rules with type checking
  * 4. Configures TypeScript parser options
  */
-export default tseslint.config(/**
- * Global ignores for common build and dependency directories
- */
-{
-  ignores: ["**/node_modules/**", "**/dist/**"],
-}, /**
- * Base ESLint recommended rules
- */
-eslint.configs.recommended, /**
- * TypeScript-specific rules with type checking enabled
- */
-tseslint.configs.recommendedTypeChecked, /**
- * TypeScript parser configuration
- * - Enables project-wide type checking
- * - Sets the root directory for tsconfig.json
- */
-{
-  languageOptions: {
-    parserOptions: {
-      projectService: true,
-      tsconfigRootDir: import.meta.dirname,
+export default tseslint.config(
+  /**
+   * Global ignores for common build and dependency directories
+   */
+  {
+    ignores: ["**/node_modules/**", "**/dist/**"],
+  },
+  /**
+   * Base ESLint recommended rules
+   */
+  eslint.configs.recommended,
+  /**
+   * TypeScript-specific rules with type checking enabled
+   */
+  tseslint.configs.recommendedTypeChecked,
+  /**
+   * TypeScript parser configuration
+   * - Enables project-wide type checking
+   * - Sets the root directory for tsconfig.json
+   */
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
-}, /**
- * Make sure eslint is aware of prettier rules
- * to prevent any responsibility overlap or conflicts
- */
-eslintPluginPrettierRecommended, storybook.configs["flat/recommended"]);
+  /**
+   * Prettier configuration
+   * - Disables conflicting ESLint rules
+   * - Adds prettier as an ESLint rule
+   */
+  eslintConfigPrettier,
+  {
+    plugins: {
+      prettier: eslintPluginPrettier,
+    },
+    rules: {
+      "prettier/prettier": "error",
+    },
+  },
+  storybook.configs["flat/recommended"]
+);

@@ -3,7 +3,14 @@ import { expect, userEvent, within, waitFor } from "storybook/test";
 import { Button } from "../button";
 import { IconButton } from "../icon-button";
 import { IconToggleButton } from "../icon-toggle-button";
-import { Box, Text, Menu } from "@/components";
+import {
+  Box,
+  Text,
+  Menu,
+  Divider,
+  Group,
+  ToggleButtonGroup,
+} from "@/components";
 import { Toolbar } from "./toolbar.tsx";
 import {
   FormatBold,
@@ -30,9 +37,9 @@ import {
 } from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
-const meta: Meta<typeof Toolbar.Root> = {
+const meta: Meta<typeof Toolbar> = {
   title: "Components / Toolbar",
-  component: Toolbar.Root,
+  component: Toolbar,
   argTypes: {
     orientation: {
       control: { type: "radio" },
@@ -43,14 +50,14 @@ const meta: Meta<typeof Toolbar.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Toolbar.Root>;
+type Story = StoryObj<typeof Toolbar>;
 
 export const Default: Story = {
   args: {
     orientation: "horizontal",
   },
   render: (args) => (
-    <Toolbar.Root {...args} data-testid="toolbar">
+    <Toolbar {...args} data-testid="toolbar">
       <Button size="xs" variant="ghost" data-testid="action-1">
         File
       </Button>
@@ -60,7 +67,7 @@ export const Default: Story = {
       <Button size="xs" variant="ghost" data-testid="action-3">
         View
       </Button>
-    </Toolbar.Root>
+    </Toolbar>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -102,7 +109,7 @@ export const Vertical: Story = {
     orientation: "vertical",
   },
   render: (args) => (
-    <Toolbar.Root {...args} data-testid="vertical-toolbar">
+    <Toolbar {...args} data-testid="vertical-toolbar">
       <IconButton
         size="xs"
         variant="ghost"
@@ -111,7 +118,7 @@ export const Vertical: Story = {
       >
         <Home />
       </IconButton>
-      <Toolbar.Separator />
+      <Divider />
       <IconButton
         size="xs"
         variant="ghost"
@@ -136,7 +143,7 @@ export const Vertical: Story = {
       >
         <Person />
       </IconButton>
-      <Toolbar.Separator />
+      <Divider />
       <IconButton
         size="xs"
         variant="ghost"
@@ -145,7 +152,7 @@ export const Vertical: Story = {
       >
         <Logout />
       </IconButton>
-    </Toolbar.Root>
+    </Toolbar>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -213,8 +220,8 @@ export const WithGroups: Story = {
     <Box>
       {(["horizontal", "vertical"] as const).map((o) => (
         <Box key={o} mb="600">
-          <Toolbar.Root orientation={o} {...args} data-testid={`toolbar-${o}`}>
-            <Toolbar.Group data-testid={`file-group-${o}`}>
+          <Toolbar orientation={o} {...args} data-testid={`toolbar-${o}`}>
+            <Group data-testid={`file-group-${o}`}>
               <IconButton
                 size="xs"
                 variant="ghost"
@@ -231,12 +238,12 @@ export const WithGroups: Story = {
               >
                 <FolderOpen />
               </IconButton>
-            </Toolbar.Group>
-            <Toolbar.Separator
-              orientation="horizontal"
+            </Group>
+            <Divider
+              orientation={o === "horizontal" ? "vertical" : "horizontal"}
               data-testid={`separator-1-${o}`}
             />
-            <Toolbar.Group data-testid={`edit-group-${o}`}>
+            <Group data-testid={`edit-group-${o}`}>
               <IconButton
                 size="xs"
                 variant="ghost"
@@ -253,8 +260,8 @@ export const WithGroups: Story = {
               >
                 <Print />
               </IconButton>
-            </Toolbar.Group>
-          </Toolbar.Root>
+            </Group>
+          </Toolbar>
         </Box>
       ))}
     </Box>
@@ -297,7 +304,7 @@ export const Variants: Story = {
           <Text textStyle="sm" mb="200" color="neutral.11">
             Variant: {variant}
           </Text>
-          <Toolbar.Root
+          <Toolbar
             size="xs"
             variant={variant}
             orientation="horizontal"
@@ -321,7 +328,10 @@ export const Variants: Story = {
             >
               <Save />
             </IconButton>
-            <Toolbar.Separator data-testid={`separator-${variant}`} />
+            <Divider
+              orientation="vertical"
+              data-testid={`separator-${variant}`}
+            />
             <IconButton
               size="xs"
               variant="ghost"
@@ -338,7 +348,7 @@ export const Variants: Story = {
             >
               <Settings />
             </IconButton>
-          </Toolbar.Root>
+          </Toolbar>
         </Box>
       ))}
     </Box>
@@ -429,14 +439,14 @@ export const RichTextEditor: Story = {
             <Text textStyle="xl" mb="300">
               {size}
             </Text>
-            <Toolbar.Root
+            <Toolbar
               size={size}
               {...args}
               data-testid={`rich-toolbar-${size}`}
               aria-label="Text formatting"
             >
               {/* Font Style & Size */}
-              <Toolbar.Group>
+              <Group>
                 <Menu.Root onAction={(v) => setTextStyle(String(v))}>
                   <Menu.Trigger
                     borderRadius="200"
@@ -475,11 +485,14 @@ export const RichTextEditor: Story = {
                     ))}
                   </Menu.Content>
                 </Menu.Root>
-              </Toolbar.Group>
-              <Toolbar.Separator data-testid={`separator-1-${size}`} />
+              </Group>
+              <Divider
+                orientation="vertical"
+                data-testid={`separator-1-${size}`}
+              />
 
               {/* Text Formatting Toggles */}
-              <Toolbar.ToggleButtonGroup
+              <ToggleButtonGroup.Root
                 selectionMode="multiple"
                 defaultSelectedKeys={["bold"]}
                 data-testid={`format-group-${size}`}
@@ -520,12 +533,15 @@ export const RichTextEditor: Story = {
                 >
                   <FormatStrikethrough />
                 </IconToggleButton>
-              </Toolbar.ToggleButtonGroup>
-              <Toolbar.Separator data-testid={`separator-2-${size}`} />
+              </ToggleButtonGroup.Root>
+              <Divider
+                orientation="vertical"
+                data-testid={`separator-2-${size}`}
+              />
 
               {/* Text Alignment Toggle Group */}
-              <Toolbar.Group data-testid={`alignment-group-${size}`}>
-                <Toolbar.ToggleButtonGroup
+              <Group data-testid={`alignment-group-${size}`}>
+                <ToggleButtonGroup.Root
                   selectionMode="single"
                   defaultSelectedKeys={["left"]}
                   aria-label="Text alignment"
@@ -558,12 +574,15 @@ export const RichTextEditor: Story = {
                   >
                     <FormatAlignRight />
                   </IconToggleButton>
-                </Toolbar.ToggleButtonGroup>
-              </Toolbar.Group>
-              <Toolbar.Separator data-testid={`separator-3-${size}`} />
+                </ToggleButtonGroup.Root>
+              </Group>
+              <Divider
+                orientation="vertical"
+                data-testid={`separator-3-${size}`}
+              />
 
               {/* Lists & Indentation */}
-              <Toolbar.ToggleButtonGroup
+              <ToggleButtonGroup.Root
                 selectionMode="single"
                 defaultSelectedKeys={[]}
                 data-testid={`list-toggle-group-${size}`}
@@ -587,10 +606,13 @@ export const RichTextEditor: Story = {
                 >
                   <FormatListNumbered />
                 </IconToggleButton>
-              </Toolbar.ToggleButtonGroup>
-              <Toolbar.Separator data-testid={`separator-4-${size}`} />
+              </ToggleButtonGroup.Root>
+              <Divider
+                orientation="vertical"
+                data-testid={`separator-4-${size}`}
+              />
 
-              <Toolbar.Group data-testid={`history-group-${size}`}>
+              <Group data-testid={`history-group-${size}`}>
                 <IconButton
                   size="xs"
                   variant="ghost"
@@ -608,8 +630,8 @@ export const RichTextEditor: Story = {
                 >
                   <Redo />
                 </IconButton>
-              </Toolbar.Group>
-            </Toolbar.Root>
+              </Group>
+            </Toolbar>
           </Box>
         ))}
       </Box>

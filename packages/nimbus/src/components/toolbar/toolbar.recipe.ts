@@ -1,59 +1,41 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
+import { defineRecipe } from "@chakra-ui/react";
 
-export const toolbarSlotRecipe = defineSlotRecipe({
+export const toolbarRecipe = defineRecipe({
   className: "nimbus-toolbar",
-  slots: ["root", "group", "separator"],
   base: {
-    root: {
-      display: "inline-flex",
-      p: "var(--toolbar-spacing)",
-      gap: "var(--toolbar-spacing)",
-      borderRadius: "300",
-      alignItems: "stretch",
-      flexDirection: "var(--toolbar-direction)",
-    },
-    group: {
-      display: "inline-flex",
+    display: "inline-flex",
+    p: "var(--toolbar-spacing)",
+    gap: "var(--toolbar-spacing)",
+    borderRadius: "300",
+    alignItems: "stretch",
+    flexDirection: "var(--toolbar-direction)",
+
+    "& .nimbus-group, & .nimbus-toggle-button-group__root": {
       alignItems: "center",
       gap: "var(--toolbar-spacing)",
       flexDirection: "var(--toolbar-direction)",
-    },
-    separator: {
-      border: 0,
-      bg: "neutral.6",
     },
   },
   variants: {
     size: {
       xs: {
-        root: {
-          "--toolbar-spacing": "{spacing.100}",
-        },
+        "--toolbar-spacing": "{spacing.100}",
       },
       md: {
-        root: {
-          "--toolbar-spacing": "{spacing.200}",
-        },
+        "--toolbar-spacing": "{spacing.200}",
       },
     },
     orientation: {
       horizontal: {
-        root: {
-          "--toolbar-direction": "row",
-        },
-        separator: {
-          width: "25",
+        "--toolbar-direction": "row",
+        "& .nimbus-divider": {
           height: "auto",
           mx: "var(--toolbar-spacing)",
         },
       },
       vertical: {
-        root: {
-          "--toolbar-direction": "column",
-        },
-        separator: {
-          height: "25",
-          width: "auto",
+        "--toolbar-direction": "column",
+        "& .nimbus-divider": {
           my: "var(--toolbar-spacing)",
         },
       },
@@ -61,9 +43,7 @@ export const toolbarSlotRecipe = defineSlotRecipe({
     variant: {
       plain: {},
       outline: {
-        root: {
-          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
-        },
+        boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
       },
     },
   },

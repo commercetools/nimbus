@@ -1,24 +1,15 @@
-import type { Ref } from "react";
-import type {
-  ToolbarProps as RaToolbarProps,
-  GroupProps as RaGroupProps,
-  SeparatorProps as RaSeparatorProps,
-  ToggleButtonGroupProps as RaToggleButtonGroupProps,
-} from "react-aria-components";
+import type { FC, Ref } from "react";
 import type { RecipeVariantProps } from "@chakra-ui/react";
-import type {
-  ToolbarRootSlotProps,
-  ToolbarGroupSlotProps,
-  ToolbarSeparatorSlotProps,
-} from "./toolbar.slots";
-import { toolbarSlotRecipe } from "./toolbar.recipe";
+import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
+import type { ToolbarSlotProps } from "./toolbar.slots";
+import { toolbarRecipe } from "./toolbar.recipe";
 
 type DefaultExcludedProps = "css" | "asChild" | "as";
 
 // Root toolbar component
-export interface ToolbarRootProps
+export interface ToolbarProps
   extends Omit<
-      ToolbarRootSlotProps,
+      ToolbarSlotProps,
       DefaultExcludedProps | "orientation" | "children" | "slot"
     >,
     // Some RA props are incompatible / not supported
@@ -30,38 +21,9 @@ export interface ToolbarRootProps
    * Supports responsive values for different breakpoints.
    * @default "horizontal"
    */
-  orientation?: RecipeVariantProps<typeof toolbarSlotRecipe>["orientation"];
+  orientation?: RecipeVariantProps<typeof toolbarRecipe>["orientation"];
 
   ref?: Ref<HTMLDivElement>;
 }
 
-// Toolbar group component
-export interface ToolbarGroupProps
-  extends Omit<ToolbarGroupSlotProps, DefaultExcludedProps>,
-    // Manually picking all the supported props
-    Pick<
-      RaGroupProps,
-      | "isDisabled"
-      | "isInvalid"
-      | "onHoverChange"
-      | "onHoverStart"
-      | "onHoverEnd"
-    > {
-  ref?: Ref<HTMLDivElement>;
-}
-
-export interface ToolbarToggleButtonGroupProps
-  extends Omit<
-      ToolbarGroupSlotProps,
-      DefaultExcludedProps | "slot" | "children"
-    >,
-    Omit<RaToggleButtonGroupProps, "className" | "style"> {
-  ref?: Ref<HTMLDivElement>;
-}
-
-// Toolbar separator component
-export interface ToolbarSeparatorProps
-  extends Omit<ToolbarSeparatorSlotProps, DefaultExcludedProps | "slot">,
-    RaSeparatorProps {
-  ref?: Ref<HTMLDivElement>;
-}
+export type ToolbarComponent = FC<ToolbarProps>;

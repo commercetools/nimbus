@@ -6,6 +6,7 @@ export * from "./combobox";
 export * from "./dialog";
 export * from "./divider";
 export * from "./flex";
+export * from "./group";
 export * from "./heading";
 export * from "./icon-button";
 export * from "./icon-toggle-button";

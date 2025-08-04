@@ -14,7 +14,6 @@ import { rangeCalendarSlotRecipe } from "@/components/range-calendar/range-calen
 import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
-import { toolbarSlotRecipe } from "@/components/toolbar/toolbar.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -49,5 +48,4 @@ export const slotRecipes = {
   combobox: comboBoxSlotRecipe,
   progressBar: progressBarSlotRecipe,
   menu: menuSlotRecipe,
-  toolbar: toolbarSlotRecipe,
 };

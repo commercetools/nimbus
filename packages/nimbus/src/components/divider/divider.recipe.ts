@@ -9,10 +9,10 @@ export const dividerRecipe = defineRecipe({
 
   // Base styles applied to all instances of the component
   base: {
-    border: "none",
+    border: "0",
     flexShrink: "0",
-    color: "neutral",
-    borderColor: "colorPalette.6",
+    colorPalette: "neutral",
+    backgroundColor: "colorPalette.6",
   },
 
   // Available variants for customizing the component's appearance
@@ -20,17 +20,11 @@ export const dividerRecipe = defineRecipe({
     orientation: {
       horizontal: {
         width: "100%",
-        height: "1px",
-        borderTopWidth: "1px",
-        borderTopStyle: "solid",
-        borderLeftWidth: "0",
+        height: "25",
       },
       vertical: {
+        width: "25",
         height: "100%",
-        width: "1px",
-        borderLeftWidth: "1px",
-        borderLeftStyle: "solid",
-        borderTopWidth: "0",
       },
     },
   },
