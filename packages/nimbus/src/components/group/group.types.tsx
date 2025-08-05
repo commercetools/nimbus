@@ -5,7 +5,7 @@ import {
 } from "react-aria-components";
 import type { GroupSlotProps } from "./group.slots";
 
-type DefaultExcludedProps = "css" | "asChild" | "as";
+type DefaultExcludedProps = "css" | "asChild" | "as" | "colorScheme";
 
 export interface GroupProps
   extends Omit<GroupSlotProps, DefaultExcludedProps>,
