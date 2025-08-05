@@ -16,16 +16,18 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
+import { useNimbusIntl } from "@/i18n";
 /**
  * # NumberInput
- * 
+ *
  * A number input allows users to enter numerical values and adjust them incrementally.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
  */
 export const NumberInput = (props: NumberInputProps) => {
   const { size, ref: forwardedRef, ...restProps } = props;
   const { locale } = useLocale();
+  const { translate } = useNimbusIntl();
 
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
@@ -64,14 +66,14 @@ export const NumberInput = (props: NumberInputProps) => {
         height="full"
       >
         <NumberInputIncrementButtonSlot
-          aria-label="Increment"
+          aria-label={translate("numberInput.increment")}
           {...incrementButtonProps}
           {...stateProps}
         >
           <KeyboardArrowUp />
         </NumberInputIncrementButtonSlot>
         <NumberInputDecrementButtonSlot
-          aria-label="Decrement"
+          aria-label={translate("numberInput.decrement")}
           {...decrementButtonProps}
           {...stateProps}
         >
@@ -82,4 +84,4 @@ export const NumberInput = (props: NumberInputProps) => {
   );
 };
 
-NumberInput.displayName = "NumberInput";
+// NumberInput.displayName = "NumberInput";

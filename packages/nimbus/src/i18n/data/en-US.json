@@ -1,0 +1,102 @@
+{
+  "select.clearSelection": {
+    "developer_comment": "Aria label for the clear selection button in select components",
+    "string": "Clear Selection"
+  },
+  "select.noOptions": {
+    "developer_comment": "Message shown when no options are available in select components",
+    "string": "No options available"
+  },
+  "select.loading": {
+    "developer_comment": "Message shown when select options are loading",
+    "string": "Loading options..."
+  },
+  "select.empty.noResults": {
+    "developer_comment": "Message shown when no search results are found in select",
+    "string": "No results found"
+  },
+  "select.empty.noItems": {
+    "developer_comment": "Message shown when no items are available in select",
+    "string": "No items available"
+  },
+  "calendar.nextMonth": {
+    "developer_comment": "Aria label for the next month button in calendar components",
+    "string": "Next month"
+  },
+  "calendar.previousMonth": {
+    "developer_comment": "Aria label for the previous month button in calendar components",
+    "string": "Previous month"
+  },
+  "calendar.nextYear": {
+    "developer_comment": "Aria label for the next year button in calendar components",
+    "string": "Next year"
+  },
+  "calendar.previousYear": {
+    "developer_comment": "Aria label for the previous year button in calendar components",
+    "string": "Previous year"
+  },
+  "calendar.today": {
+    "developer_comment": "Aria label for the today button in calendar components",
+    "string": "Today"
+  },
+  "calendar.selectedDate": {
+    "developer_comment": "Description for selected date in calendar components",
+    "string": "Selected date"
+  },
+  "calendar.selectedDateRange": {
+    "developer_comment": "Description for selected date range in calendar components",
+    "string": "Selected date range"
+  },
+  "loadingSpinner.default": {
+    "developer_comment": "Default loading message for loading spinners",
+    "string": "Loading data"
+  },
+  "datePicker.time.hour": {
+    "developer_comment": "Label for hour input in date picker",
+    "string": "Hour"
+  },
+  "datePicker.time.minute": {
+    "developer_comment": "Label for minute input in date picker",
+    "string": "Minute"
+  },
+  "datePicker.time.second": {
+    "developer_comment": "Label for second input in date picker",
+    "string": "Second"
+  },
+  "datePicker.time.am": {
+    "developer_comment": "AM time period label in date picker",
+    "string": "AM"
+  },
+  "datePicker.time.pm": {
+    "developer_comment": "PM time period label in date picker",
+    "string": "PM"
+  },
+  "datePicker.time.enterTime": {
+    "developer_comment": "Aria label for time input field in date picker",
+    "string": "Enter time"
+  },
+  "datePicker.time.enterTimeHour": {
+    "developer_comment": "Aria label for hour-only time input in date picker",
+    "string": "Enter time (hour)"
+  },
+  "datePicker.time.enterTimeHourMinute": {
+    "developer_comment": "Aria label for hour and minute time input in date picker",
+    "string": "Enter time (hour and minute)"
+  },
+  "datePicker.time.enterTimeHourMinuteSecond": {
+    "developer_comment": "Aria label for full time input with seconds in date picker",
+    "string": "Enter time (hour, minute, and second)"
+  },
+  "datePicker.clearInput": {
+    "developer_comment": "Aria label for clear input button in date picker",
+    "string": "Clear input value"
+  },
+  "numberInput.increment": {
+    "developer_comment": "Aria label for increment button in number input",
+    "string": "Increment"
+  },
+  "numberInput.decrement": {
+    "developer_comment": "Aria label for decrement button in number input",
+    "string": "Decrement"
+  }
+}

@@ -7,6 +7,7 @@ import {
   TextContext,
   useLocale,
 } from "react-aria-components";
+import { useNimbusIntl } from "@/i18n";
 
 export const CalendarCustomContext = ({
   children,
@@ -14,6 +15,7 @@ export const CalendarCustomContext = ({
   children: React.ReactNode;
 }) => {
   const { locale } = useLocale();
+  const { translate } = useNimbusIntl();
   const buttonContext = useContext(ButtonContext)!;
   const textContext = useContext(TextContext)!;
   const calendarState = useContext(CalendarStateContext)!;
@@ -25,19 +27,19 @@ export const CalendarCustomContext = ({
   const buttonSlots = {
     "next-month": {
       onPress: () => calendarState.focusNextSection(),
-      "aria-label": "Next month",
+      "aria-label": translate("calendar.nextMonth"),
     },
     "previous-month": {
       onPress: () => calendarState.focusPreviousSection(),
-      "aria-label": "Previous month",
+      "aria-label": translate("calendar.previousMonth"),
     },
     "next-year": {
       onPress: () => calendarState.focusNextSection(true),
-      "aria-label": "Next year",
+      "aria-label": translate("calendar.nextYear"),
     },
     "previous-year": {
       onPress: () => calendarState.focusPreviousSection(true),
-      "aria-label": "Previous year",
+      "aria-label": translate("calendar.previousYear"),
     },
   };
 
