@@ -1,0 +1,341 @@
+---
+id: Component-API-Patterns
+title: "ADR: How to Design Component APIs for Consumers"
+description:
+  "Architecture decision record defining API design patterns for Nimbus
+  components and when to use each approach."
+documentState: "InitialDraft"
+order: 4
+menu:
+  - Home
+  - Contribute
+  - ADR's
+  - ADR0004 Component API Patterns
+tags:
+  - architecture
+  - api-design
+  - components
+  - patterns
+---
+
+# ADR: How to Design Component APIs for Consumers
+
+## The Problem
+
+When building a new component, we often ask: _"How should consumers use this?"_
+
+- Should it be one component like `<Button>`?
+- Multiple parts like `<Card.Header>` and `<Card.Content>`?
+- Something with slots like `<Text slot="label">`?
+
+This guide helps you choose the right approach.
+
+## Three Patterns, One Decision Tree
+
+We have **3 patterns** for consumer-facing APIs:
+
+### 1. **Single Component**
+
+```tsx
+<Button>Click me</Button>
+<DatePicker value={date} />
+```
+
+### 2. **Single Component + Slots**
+
+```tsx
+<Card>
+  <Text slot="header">Title</Text>
+  <Button slot="content">Action</Button>
+</Card>
+```
+
+### 3. **Compound Components**
+
+```tsx
+<Select.Root>
+  <Select.Options>
+    <Select.Option>Apple</Select.Option>
+  </Select.Options>
+</Select.Root>
+```
+
+Some compound components also use slots:
+
+```tsx
+<Select.Option>
+  <Text slot="label">Apple</Text>
+  <Text slot="description">Crisp and sweet</Text>
+</Select.Option>
+```
+
+## The Decision Tree
+
+Ask these questions in order:
+
+### 1️⃣ Is this one logical thing?
+
+**Examples of "one thing":**
+
+- A button
+- A date picker
+- A card
+- A text input
+
+**Examples of "multiple things":**
+
+- A select with options (select + option are different)
+- A menu with items (menu + item are different)
+- An accordion with sections (accordion + section are different)
+
+**If YES:** Go to question 2  
+**If NO:** Go to question 3
+
+---
+
+### 2️⃣ Do users put different content in different spots?
+
+Think about how consumers will use your component:
+
+**Card example:**
+
+- Header spot: titles, badges, close buttons
+- Content spot: text, forms, images, anything
+
+**Button example:**
+
+- Just one spot for content (text or icon)
+
+**DatePicker example:**
+
+- Just one conceptual input (date selection)
+
+**If YES:** Use **Single Component + Slots**  
+**If NO:** Use **Single Component**
+
+_Note: Internal complexity doesn't affect the consumer API pattern. Both simple
+components (Button, Badge) and complex ones (DatePicker with
+calendars/dropdowns) use the same Single Component pattern when they have only
+one content area._
+
+---
+
+### 3️⃣ Do the parts have different jobs?
+
+**Select example:**
+
+- Root: manages open/closed state
+- Options: manages keyboard navigation
+- Option: manages selection
+
+**Menu example:**
+
+- Root: manages focus
+- Item: handles click events
+- Separator: just visual
+
+**If YES:** Use **Compound Components** + Go to question 4  
+**If NO:** Reconsider - maybe it's really one thing
+
+---
+
+### 4️⃣ Do the parts need flexible content?
+
+**Select.Option example:**
+
+- Can have just text: `<Select.Option>Apple</Select.Option>`
+- Can have rich content:
+  `<Select.Option><Text slot="label">Apple</Text><Text slot="description">Sweet</Text></Select.Option>`
+
+**Accordion.Header example:**
+
+- Usually just text: `<Accordion.Header>Section 1</Accordion.Header>`
+- No need for structured content
+
+**If YES:** Use **Compound Components + Slots**  
+**If NO:** Use **Standard Compound Components**
+
+## Real Examples
+
+### Button → Single Component ✅
+
+**Decision path:** One thing? ✅ → Different spots? ❌
+
+**Real codebase usage:**
+
+```tsx
+<Button variant="primary">Save</Button>
+<Button variant="subtle">Cancel</Button>
+```
+
+**Why Single Component:** Only one content area (text or icon), simple internal
+implementation.
+
+### DatePicker → Single Component ✅
+
+**Decision path:** One thing? ✅ → Different spots? ❌
+
+**Real codebase usage:**
+
+```tsx
+<DatePicker
+  aria-label="Select a date"
+  value={selectedDate}
+  onChange={setSelectedDate}
+/>
+```
+
+**Why Single Component:** One conceptual input (date selection). Internal
+complexity (calendar, dropdowns, validation) is hidden from consumers.
+
+### Badge → Single Component ✅
+
+**Decision path:** One thing? ✅ → Different spots? ❌
+
+**Real codebase usage:**
+
+```tsx
+<Badge size="md" colorPalette="blue">
+  Demo Badge
+</Badge>
+```
+
+**Why Single Component:** Only one content area (text), simple internal
+implementation.
+
+### Card → Single Component + Slots ⚠️
+
+**Decision path:** One thing? ✅ → Different spots? ✅
+
+```tsx
+<!-- Current (compound pattern) -->
+<Card.Root cardPadding="md" borderStyle="outlined">
+  <Card.Header><b>Card Title</b></Card.Header>
+  <Card.Content><p>Card content here</p></Card.Content>
+</Card.Root>
+
+<!-- Should be (single component + slots) -->
+<Card cardPadding="md" borderStyle="outlined">
+  <Text slot="header">Card Title</Text>
+  <Stack slot="content">
+    <Text>Card content here</Text>
+    <Button>Action</Button>
+  </Stack>
+</Card>
+```
+
+### Select → Compound + Slots ✅
+
+**Decision path:** One thing? ❌ → Different jobs? ✅ → Flexible content? ✅
+
+```tsx
+<Select.Root>
+  <Select.Options>
+    <Select.Option>Simple</Select.Option>
+    <Select.Option>
+      <Text slot="label">Rich</Text>
+      <Text slot="description">With description</Text>
+    </Select.Option>
+  </Select.Options>
+</Select.Root>
+```
+
+### Accordion → Compound ✅
+
+**Decision path:** One thing? ❌ → Different jobs? ✅ → Flexible content? ❌
+
+```tsx
+<Accordion.Root>
+  <Accordion.Item>
+    <Accordion.Header>Section 1</Accordion.Header>
+    <Accordion.Content>Content here</Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+## Quick Reference
+
+| Pattern              | When to Use                        | Example                                         |
+| -------------------- | ---------------------------------- | ----------------------------------------------- |
+| **Single Component** | One thing, simple content          | `<Button>Save</Button>`                         |
+| **Single + Slots**   | One thing, different content spots | `<Card><Text slot="header">Title</Text></Card>` |
+| **Compound**         | Multiple things working together   | `<Select.Root><Select.Options>...`              |
+| **Compound + Slots** | Multiple things + flexible content | `<Select.Option><Text slot="label">...`         |
+
+## What About Slots Internally?
+
+**Internal slots** (like `slot="calendarToggle"` inside DatePicker) are
+implementation details. Consumers never see them.
+
+**Consumer slots** (like `<Text slot="label">`) are part of the API. Use them
+when:
+
+- Consumers need to put different types of content in specific spots
+- You want flexibility without creating many component variants
+
+## Implementation Notes
+
+### Single Component + Slots
+
+```tsx
+// Consumer writes:
+<Card>
+  <Text slot="header">Title</Text>
+  <Button slot="content">Action</Button>
+</Card>
+
+// Component handles slots internally using React Aria
+```
+
+### Compound Components
+
+```tsx
+// Export as namespace object
+export const Select = {
+  Root: SelectRoot,
+  Options: SelectOptions,
+  Option: SelectOption,
+};
+
+// Each part manages its own logic and state
+```
+
+## Common Mistakes
+
+❌ **Making everything compound**
+
+```tsx
+<!-- Overkill -->
+<Button.Root>
+  <Button.Content>Save</Button.Content>
+</Button.Root>
+```
+
+❌ **Making complex things simple**
+
+```tsx
+<!-- Missing structure -->
+<Select options={[...]} />
+<!-- Consumers can't customize individual options -->
+```
+
+❌ **Confusing internal and consumer slots**
+
+```tsx
+<!-- Internal implementation detail (wrong to document) -->
+<Button slot="calendarToggle" />
+
+<!-- Consumer API (correct to document) -->
+<Text slot="label">Apple</Text>
+```
+
+## Next Steps
+
+1. **Review existing components** against this decision tree
+2. **Fix Card API** to use Single Component + Slots pattern
+3. **Update Storybook** examples to show correct usage patterns
+
+---
+
+**Remember:** The goal is making components **easy and obvious** for consumers.
+When in doubt, pick the simpler pattern.
