@@ -157,10 +157,10 @@ Ask these questions in order:
 - Can have rich: `<Select.Option><Text slot="label">Apple</Text><Text slot="description">Sweet</Text></Select.Option>`
 - **Why slots win:** Better than `label={}` and `description={}` props for complex content
 
-**Accordion.Header example** → Simple content ❌:
-- Usually just text: `<Accordion.Header>Section 1</Accordion.Header>`
-- No need for structured content
-- **Why simple wins:** Adding slots would create complexity without benefit
+**Accordion item header example** → Flexible content ✅:
+- Can have simple text: `<Text slot="header">Section 1</Text>`
+- Can have rich content: `<Stack slot="header"><Text>Title</Text><Button>Action</Button></Stack>`
+- **Why slots win:** Headers often need buttons, badges, or complex layouts
 
 **Ask yourself:**
 - Do consumers want to put icons, badges, descriptions, or other structured content in this part?
@@ -257,15 +257,31 @@ implementation.
 </Select.Root>
 ```
 
-### Accordion → Compound ✅
+### Accordion → Compound + Slots ⚠️
 
-**Decision path:** One thing? ❌ → Different jobs? ✅ → Flexible content? ❌
+**Decision path:** One thing? ❌ → Different jobs? ✅ → Flexible content? ✅
 
 ```tsx
+<!-- Current (mixed compound + internal slots) -->
 <Accordion.Root>
   <Accordion.Item>
-    <Accordion.Header>Section 1</Accordion.Header>
+    <Accordion.Header>Simple text</Accordion.Header>
     <Accordion.Content>Content here</Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+
+<!-- Should be (true compound + slots pattern) -->
+<Accordion.Root>
+  <Accordion.Item>
+    <Text slot="header">Simple text</Text>
+    <Text slot="content">Content here</Text>
+  </Accordion.Item>
+  <Accordion.Item>
+    <Stack slot="header">
+      <Text>Complex Header</Text>
+      <Button>Edit</Button>
+    </Stack>
+    <Text slot="content">More content</Text>
   </Accordion.Item>
 </Accordion.Root>
 ```
@@ -276,8 +292,8 @@ implementation.
 | -------------------- | ---------------------------------- | ----------------------------------------------- |
 | **Single Component** | One thing, simple content          | `<Button>Save</Button>`                         |
 | **Single + Slots**   | One thing, different content spots | `<Card><Text slot="header">Title</Text></Card>` |
-| **Compound**         | Multiple things working together   | `<Select.Root><Select.Options>...`              |
-| **Compound + Slots** | Multiple things + flexible content | `<Select.Option><Text slot="label">...`         |
+| **Standard Compound** | Multiple things, simple content    | `<TagGroup.Root><TagGroup.Tag>...`              |
+| **Compound + Slots** | Multiple things, rich content      | `<Accordion.Item><Text slot="header">...`       |
 
 ## What About Slots Internally?
 
@@ -351,6 +367,7 @@ export const Select = {
 1. **Review existing components** against this decision tree
 2. **Fix existing APIs** to use correct patterns:
    - **Card**: Change from `<Card.Root><Card.Header>` to `<Card><Text slot="header">`
+   - **Accordion**: Change from `<Accordion.Header>` to `<Text slot="header">` within `<Accordion.Item>`
    - **Alert**: Change from `<Alert.Root><Alert.Title>` to `<Alert><Text slot="title">`
    - **FormField**: Change from `<FormField.Root><FormField.Label>` to `<FormField><Text slot="label">`
 3. **Update Storybook** examples to show correct usage patterns
