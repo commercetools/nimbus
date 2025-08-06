@@ -30,7 +30,3 @@ const { withContext } = createRecipeContext({ recipe: popoverRecipe });
 export const PopoverRoot = withContext<HTMLDivElement, PopoverRootProps>(
   "div"
 );
-
-// TODO Q: We should have slots for trigger? 
-// TODO Q: Should this component wrap a DialogTrigger, a trigger element, and the popover children?
-
