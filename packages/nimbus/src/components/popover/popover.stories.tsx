@@ -27,72 +27,18 @@ type Story = StoryObj<typeof Popover>;
  */
 export const Base: Story = {
   args: {
-    children: "Demo Popover",
+    children: "A Demo Popover",
   },
 };
 
-/**
- * Showcase Sizes
- */
 export const Sizes: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
-        {[].map((size) => (
-          <Popover key={size} {...args} size={size} />
-        ))}
+        <Popover {...args} >
+          {args.children}
+        </Popover>
       </Stack>
     );
-  },
-
-  args: {
-    children: "Demo Popover",
-  },
-};
-
-/**
- * Showcase Variants
- */
-export const Variants: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {[].map((variant) => (
-          <Popover key={variant} {...args} variant={variant} />
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo Popover",
-  },
-};
-
-/**
- * Showcase Colors
- */
-export const Colors: Story = {
-  render: (args) => {
-    return (
-      <Stack>
-        {[].map((colorPalette) => (
-          <Stack key={colorPalette} direction="row" gap="400" alignItems="center">
-            {[].map((variant) => (
-              <Popover
-                key={variant}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
-            ))}
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-
-  args: {
-    children: "Demo Popover",
   },
 };
