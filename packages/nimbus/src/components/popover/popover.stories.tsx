@@ -31,7 +31,7 @@ export const Base: Story = {
   },
 };
 
-export const Sizes: Story = {
+export const Basic: Story = {
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
