@@ -13,7 +13,7 @@ export interface ToolbarProps
       DefaultExcludedProps | "orientation" | "children" | "slot"
     >,
     // Some RA props are incompatible / not supported
-    // orientaiton: can change based on breakpoint
+    // orientation: can change based on breakpoint
     // className & style: RA accepts a fn (a pattern we don't want to support, yet)
     Omit<RaToolbarProps, "orientation" | "className" | "style"> {
   /**
