@@ -2,7 +2,7 @@
 to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.types.ts
 ---
 import type { <%= h.changeCase.pascalCase(name) %>RootProps } from "./<%= h.changeCase.paramCase(name) %>.slots"
-import type { RecipeVariantProps } from "@chakra-ui/react"
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system"
 import { <%= h.changeCase.camelCase(name) %>Recipe } from "./<%= h.changeCase.paramCase(name) %>.recipe"
 
 /**

@@ -4,7 +4,7 @@ import {
   type RecipeVariantProps,
   type UnstyledProp,
   createSlotRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 import { formFieldRecipe } from "./form-field.recipe";
 

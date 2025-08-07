@@ -1,4 +1,4 @@
-import { List as ChakraList } from "@chakra-ui/react";
+import { List as ChakraList } from "@chakra-ui/react/list";
 
 const ListRoot = ChakraList.Root;
 const ListItem = ChakraList.Item;

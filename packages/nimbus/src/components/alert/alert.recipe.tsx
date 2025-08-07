@@ -1,5 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
-
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 /**
  * Recipe configuration for the Alert component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.

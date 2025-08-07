@@ -3,7 +3,7 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
   type RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { selectSlotRecipe } from "./select.recipe";
 import { type SelectProps as RaSelectProps } from "react-aria-components";
 

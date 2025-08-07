@@ -6,7 +6,7 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 import { <%= h.changeCase.camel(name) %>Recipe } from "./<%= h.changeCase.paramCase(name) %>.recipe";
 

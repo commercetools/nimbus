@@ -14,7 +14,7 @@ import {
   Popover,
   Dialog,
 } from "react-aria-components";
-import { useSlotRecipe } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { datePickerSlotRecipe } from "./date-picker.recipe";
 import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";

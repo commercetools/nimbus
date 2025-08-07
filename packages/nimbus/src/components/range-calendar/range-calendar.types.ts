@@ -1,6 +1,6 @@
 import type { DateValue } from "@internationalized/date";
 import type { RangeCalendarProps as AriaRangeCalendarProps } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type { rangeCalendarSlotRecipe } from "./range-calendar.recipe";
 import type { RangeCalendarRootSlotProps } from "./range-calendar.slots";
 

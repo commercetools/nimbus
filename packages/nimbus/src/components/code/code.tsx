@@ -1,4 +1,4 @@
-import { Code as ChakraCode } from "@chakra-ui/react";
+import { Code as ChakraCode } from "@chakra-ui/react/code";
 
 /**
  * # Code

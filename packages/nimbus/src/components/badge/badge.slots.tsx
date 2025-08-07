@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 
 import { badgeRecipe } from "./badge.recipe";
 import type { BadgeRootProps } from "./badge.types";

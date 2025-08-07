@@ -2,7 +2,7 @@ import {
   SimpleGrid as ChakraSimpleGrid,
   GridItem,
   type SimpleGridProps as ChakraSimpleGridProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/grid";
 
 /**
  * # SimpleGrid

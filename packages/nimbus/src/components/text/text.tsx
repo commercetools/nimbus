@@ -1,7 +1,7 @@
 import {
   Text as ChakraText,
   type TextProps as ChakraTextProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/typography";
 import { TextContext, useContextProps } from "react-aria-components";
 
 export interface TextProps extends Omit<ChakraTextProps, "slot"> {

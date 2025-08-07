@@ -1,5 +1,5 @@
 import { buttonRecipe } from "@/components/button/button.recipe";
-import { defineRecipe } from "@chakra-ui/react";
+import { defineRecipe } from "@chakra-ui/react/styled-system";
 
 export const toggleButtonRecipe = defineRecipe({
   className: "nimbus-toggle-button",

@@ -1,4 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 export const rangeCalendarSlotRecipe = defineSlotRecipe({
   slots: [

@@ -3,7 +3,7 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
   type RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { checkboxSlotRecipe } from "./checkbox.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({

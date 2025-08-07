@@ -4,7 +4,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type {
   ComboBoxProps as RaComboBoxProps,
   AutocompleteProps as RaAutoCompleteProps,

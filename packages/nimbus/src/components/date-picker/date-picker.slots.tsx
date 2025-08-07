@@ -3,7 +3,7 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createSlotRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 import { datePickerSlotRecipe } from "./date-picker.recipe";
 

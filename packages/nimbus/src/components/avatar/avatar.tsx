@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image } from "@chakra-ui/react";
+import { Image } from "@chakra-ui/react/image";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
 

@@ -22,7 +22,7 @@ jobs:
         uses: ./.github/actions/ci
 
       - name: Run tests
-        run: pnpm test
+        run: pnpm playwright:install && pnpm test
         timeout-minutes: 5
         env:
           NODE_ENV: production

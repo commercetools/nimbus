@@ -7,7 +7,7 @@ import { RangeCalendarRootSlot } from "./range-calendar.slots";
 import { RangeCalendarGrids } from "./components/range-calendar.grids";
 import { RangeCalendarHeader } from "./components/range-calendar.header";
 import { rangeCalendarSlotRecipe } from "./range-calendar.recipe";
-import { useRecipe } from "@chakra-ui/react";
+import { useRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { RangeCalendarCustomContext } from "./components/range-calendar.custom-context";
 
