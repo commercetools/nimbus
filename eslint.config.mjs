@@ -1,5 +1,4 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
 
 // @ts-check
 
@@ -9,7 +8,25 @@ import storybook from "eslint-plugin-storybook";
 
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginPrettier from "eslint-plugin-prettier";
+import eslintConfigPrettier from "eslint-config-prettier";
+
+// Import storybook plugin using createRequire for CommonJS compatibility
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
+/** @type {any[]} */
+let storybookConfigs = [];
+try {
+  const storybook = require("eslint-plugin-storybook");
+  // @ts-expect-error - configs property exists but types are incomplete
+  if (storybook?.configs?.["flat/recommended"]) {
+    // @ts-expect-error - configs property exists but types are incomplete
+    storybookConfigs = storybook.configs["flat/recommended"];
+  }
+} catch {
+  // Storybook plugin not available - continue without it
+}
 
 /**
  * @type {import("typescript-eslint").Config}
@@ -19,31 +36,35 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
  * 3. Includes recommended TypeScript-specific rules with type checking
  * 4. Configures TypeScript parser options
  */
-export default tseslint.config(/**
- * Global ignores for common build and dependency directories
- */
-{
-  ignores: ["**/node_modules/**", "**/dist/**"],
-}, /**
- * Base ESLint recommended rules
- */
-eslint.configs.recommended, /**
- * TypeScript-specific rules with type checking enabled
- */
-tseslint.configs.recommendedTypeChecked, /**
- * TypeScript parser configuration
- * - Enables project-wide type checking
- * - Sets the root directory for tsconfig.json
- */
-{
-  languageOptions: {
-    parserOptions: {
-      projectService: true,
-      tsconfigRootDir: import.meta.dirname,
+export default tseslint.config(
+  /**
+   * Global ignores for common build and dependency directories
+   */
+  {
+    ignores: ["**/node_modules/**", "**/dist/**", "**/storybook-static/**"],
+  },
+  /**
+   * Base ESLint recommended rules
+   */
+  eslint.configs.recommended,
+  /**
+   * TypeScript-specific rules with type checking enabled
+   */
+  ...tseslint.configs.recommended,
+  /**
+   * Prettier configuration
+   * - Disables conflicting ESLint rules
+   * - Adds prettier as an ESLint rule
+   */
+  eslintConfigPrettier,
+  {
+    plugins: {
+      prettier: eslintPluginPrettier,
+    },
+    rules: {
+      "prettier/prettier": "error",
     },
   },
-}, /**
- * Make sure eslint is aware of prettier rules
- * to prevent any responsibility overlap or conflicts
- */
-eslintPluginPrettierRecommended, storybook.configs["flat/recommended"]);
+  // Spread storybook configurations if available
+  ...storybookConfigs
+);

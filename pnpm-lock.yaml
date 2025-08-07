@@ -103,6 +103,9 @@ catalogs:
     eslint-plugin-react-refresh:
       specifier: ^0.4.20
       version: 0.4.20
+    eslint-plugin-storybook:
+      specifier: ^9.0.18
+      version: 9.0.18
     glob:
       specifier: ^11.0.3
       version: 11.0.3
@@ -194,6 +197,9 @@ importers:
       eslint-plugin-prettier:
         specifier: catalog:tooling
         version: 5.5.3(eslint-config-prettier@10.1.2(eslint@9.32.0))(eslint@9.32.0)(prettier@3.6.2)
+      eslint-plugin-storybook:
+        specifier: catalog:tooling
+        version: 9.0.18(eslint@9.32.0)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))(typescript@5.8.3)
       globals:
         specifier: catalog:tooling
         version: 16.3.0
@@ -3861,6 +3867,13 @@ packages:
     resolution: {integrity: sha512-XpbHQ2q5gUF8BGOX4dHe+71qoirYMhApEPZ7sfhF/dNnOF1UXnCMGZf79SFTBO7Bz5YEIT4TMieSlJBWhP9WBA==}
     peerDependencies:
       eslint: '>=8.40'
+
+  eslint-plugin-storybook@9.0.18:
+    resolution: {integrity: sha512-f2FnWjTQkM9kYtbpChVuEo8F04QATBiuxYUdSBR58lWb3NprPKBfmRZC1dTA5NVeLY6geXduDLIPXefwXFz6Ag==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      eslint: '>=8'
+      storybook: ^9.0.18
 
   eslint-scope@8.4.0:
     resolution: {integrity: sha512-sNXOfKCn74rt8RICKMvJS7XKV/Xk9kA7DyJr8mJik3S7Cwgy3qlkkmyS2uQB3jiJg6VNdZd/pDBJu0nvG2NlTg==}
@@ -11326,6 +11339,15 @@ snapshots:
   eslint-plugin-react-refresh@0.4.20(eslint@9.32.0):
     dependencies:
       eslint: 9.32.0
+
+  eslint-plugin-storybook@9.0.18(eslint@9.32.0)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))(typescript@5.8.3):
+    dependencies:
+      '@typescript-eslint/utils': 8.38.0(eslint@9.32.0)(typescript@5.8.3)
+      eslint: 9.32.0
+      storybook: 9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   eslint-scope@8.4.0:
     dependencies:

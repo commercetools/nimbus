@@ -6,6 +6,7 @@ export * from "./combobox";
 export * from "./dialog";
 export * from "./divider";
 export * from "./flex";
+export * from "./group";
 export * from "./heading";
 export * from "./icon-button";
 export * from "./icon-toggle-button";
@@ -46,5 +47,5 @@ export * from "./date-picker";
 export * from "./progress-bar";
 export * from "./range-calendar";
 export * from "./menu";
-
 export * from "./date-range-picker";
+export * from "./toolbar";
