@@ -46,6 +46,7 @@
     }
   },
   "dependencies": {
+    "@chakra-ui/react": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "next-themes": "catalog:react",
@@ -57,7 +58,6 @@
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
-    "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
