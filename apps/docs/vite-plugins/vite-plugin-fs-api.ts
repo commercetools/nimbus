@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import express, { type Request, type Response } from "express";
+import rateLimit from "express-rate-limit";
 import { type Plugin } from "vite";
 import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Import the function
 
@@ -18,6 +19,16 @@ export function fileSystemApiPlugin(): Plugin {
     configureServer(devServer) {
       const app = express();
       app.use(express.json());
+
+      // Set up rate limiter: maximum of 1000 requests per 100ms
+      // https://github.com/commercetools/nimbus/security/code-scanning/10
+      const limiter = rateLimit({
+        windowMs: 100, // 100ms
+        max: 1000, // limit each IP to 1000 requests per windowMs
+      });
+
+      // Apply rate limiter to all /api/fs routes
+      app.use("/api/fs", limiter);
 
       // Helper to resolve file paths within the monorepo
       const resolvePath = async (repoPath: string): Promise<string> => {

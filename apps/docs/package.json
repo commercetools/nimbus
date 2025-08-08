@@ -29,6 +29,7 @@
     "chokidar": "^4.0.1",
     "express": "^4.21.1",
     "express-fileupload": "^1.5.1",
+    "express-rate-limit": "catalog:",
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
