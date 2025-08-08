@@ -1,4 +1,4 @@
-import { useSlotRecipe } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { MenuTrigger as RaMenuTrigger } from "react-aria-components";
 import type { MenuRootProps } from "../menu.types";
 import { MenuRootSlot } from "../menu.slots";

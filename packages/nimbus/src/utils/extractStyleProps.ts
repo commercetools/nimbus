@@ -1,4 +1,4 @@
-import { defaultSystem } from "@chakra-ui/react";
+import { system } from "@/theme";
 
 /**
  * Extracts chakra-ui style-props from an object, separating them from other props
@@ -15,7 +15,7 @@ export function extractStyleProps<T extends object>(
   Object.keys(props).forEach((key) => {
     if (
       Object.prototype.hasOwnProperty.call(props, key) &&
-      defaultSystem.isValidProperty(key)
+      system.isValidProperty(key)
     ) {
       styleProps[key] = props[key as keyof T];
       delete otherProps[key];

@@ -1,4 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import { buttonGroupRecipe } from "./toggle-button-group.recipe";
 import type {
   ToggleButtonGroupButtonProps,

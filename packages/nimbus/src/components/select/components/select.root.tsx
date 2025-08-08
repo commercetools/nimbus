@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { chakra, useSlotRecipe } from "@chakra-ui/react";
+import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 
 import {
   KeyboardArrowDown as DropdownIndicatorIcon,

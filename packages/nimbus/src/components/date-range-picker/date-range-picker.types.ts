@@ -1,5 +1,5 @@
 import type { DateRangePickerRootProps } from "./date-range-picker.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
 import type { DateRangePickerProps as ReactAriaDateRangePickerProps } from "react-aria-components";
 import type { DateValue } from "react-aria";

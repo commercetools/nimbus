@@ -1,7 +1,7 @@
 ---
 to: packages/nimbus/src/components/<%= h.changeCase.paramCase(name) %>/<%= h.changeCase.paramCase(name) %>.recipe.tsx
 ---
-import { defineRecipe } from "@chakra-ui/react";
+import { defineRecipe } from "@chakra-ui/react/styled-system";
 
 /**
  * Recipe configuration for the <%= h.changeCase.pascalCase(name) %> component.

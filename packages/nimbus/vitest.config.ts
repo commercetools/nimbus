@@ -19,6 +19,15 @@ export default defineConfig(async () => {
     defineConfig({
       // cache directory for better performance
       cacheDir: ".vitest-cache",
+      // Fix for CI dependency optimization issues
+      optimizeDeps: {
+        include: [
+          "@chakra-ui/react",
+          "@chakra-ui/react/kbd",
+          "@storybook/react-vite",
+          "storybook/test",
+        ],
+      },
       plugins: [
         storybookTest({
           // The location of your Storybook config, main.js|ts

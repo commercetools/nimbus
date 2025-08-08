@@ -1,4 +1,4 @@
-import { useRecipe } from "@chakra-ui/react";
+import { useRecipe } from "@chakra-ui/react/styled-system";
 import { ToggleButton as RaToggleButton } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 

@@ -2,7 +2,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { alertRecipe } from "./alert.recipe";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";

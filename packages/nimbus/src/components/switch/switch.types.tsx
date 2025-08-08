@@ -1,4 +1,7 @@
-import type { HTMLChakraProps, RecipeVariantProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  RecipeVariantProps,
+} from "@chakra-ui/react/styled-system";
 import { switchSlotRecipe } from "./switch.recipe";
 import type { AriaCheckboxProps } from "react-aria";
 

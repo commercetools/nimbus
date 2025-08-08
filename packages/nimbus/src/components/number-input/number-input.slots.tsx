@@ -3,7 +3,7 @@ import {
   type RecipeVariantProps,
   type UnstyledProp,
   createSlotRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { Button as RaButton } from "react-aria-components";
 import type { AriaButtonProps } from "react-aria";
 

@@ -2,7 +2,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { buttonGroupRecipe } from "./toggle-button-group.recipe";
 import type {
   AriaToggleButtonGroupProps,

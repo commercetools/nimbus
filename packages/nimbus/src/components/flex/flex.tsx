@@ -5,4 +5,4 @@
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/flex}
  */
-export { Flex } from "@chakra-ui/react";
+export { Flex } from "@chakra-ui/react/flex";

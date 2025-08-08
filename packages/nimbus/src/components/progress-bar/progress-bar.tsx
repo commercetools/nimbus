@@ -4,7 +4,8 @@ import {
   Label as RaLabel,
 } from "react-aria-components";
 import { useObjectRef } from "react-aria";
-import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
+import { mergeRefs } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { Flex, Box } from "@/components";
 import {
   ProgressBarRootSlot,

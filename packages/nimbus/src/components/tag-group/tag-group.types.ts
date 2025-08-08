@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import {
   TagGroup as RaTagGroup,
   type TagGroupProps as RaTagGroupProps,

@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { avatarRecipe } from "./avatar.recipe.tsx";
 import type { AvatarRootProps } from "./avatar.slots";
 export interface AvatarComponentProps

@@ -3,10 +3,10 @@ import {
   type RecipeVariantProps,
   type UnstyledProp,
   createRecipeContext,
-  defaultSystem,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { toggleButtonRecipe } from "./toggle-button.recipe";
 import shouldForwardProp from "@emotion/is-prop-valid";
+import { system } from "@/theme";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -44,7 +44,7 @@ export const ToggleButtonRoot = withContext<
   /** make sure the `onPress` properties won't end up as attribute on the rendered DOM element */
   shouldForwardProp(prop, variantKeys) {
     const chakraSfp =
-      !variantKeys?.includes(prop) && !defaultSystem.isValidProperty(prop);
+      !variantKeys?.includes(prop) && !system.isValidProperty(prop);
     return shouldForwardProp(prop) && chakraSfp && !prop.includes("onPress");
   },
 });

@@ -1,5 +1,5 @@
 import type { LinkRootProps } from "./link.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type { AriaLinkOptions } from "react-aria";
 import { linkRecipe } from "./link.recipe";
 

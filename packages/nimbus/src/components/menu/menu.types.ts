@@ -9,7 +9,7 @@ import type {
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type { MenuTriggerSlotProps } from "./menu.slots";
 import { menuSlotRecipe } from "./menu.recipe";
 

@@ -1,7 +1,7 @@
 import {
   Stack as ChakraStack,
   type StackProps as ChakraStackProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/stack";
 
 export interface StackProps extends ChakraStackProps {
   children?: React.ReactNode;

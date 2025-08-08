@@ -3,7 +3,7 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
   type RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { calendarSlotRecipe } from "./calendar.recipe";
 import type { CalendarProps } from "react-aria-components";
 import type { DateValue } from "@internationalized/date";

@@ -1,5 +1,5 @@
 import type { LoadingSpinnerRootProps } from "./loading-spinner.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { loadingSpinnerRecipe } from "./loading-spinner.recipe";
 
 /**

@@ -1,5 +1,5 @@
 import type { IconRootSlotProps } from "./icon.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { iconRecipe } from "./icon.recipe";
 import type { BoxProps } from "../box";
 

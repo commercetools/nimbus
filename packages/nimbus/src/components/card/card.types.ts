@@ -1,5 +1,5 @@
 import type { CardRootProps } from "./card.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { cardRecipe } from "./card.recipe";
 
 /**

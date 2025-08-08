@@ -3,7 +3,7 @@ import {
   type RecipeVariantProps,
   type UnstyledProp,
   createRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
 
