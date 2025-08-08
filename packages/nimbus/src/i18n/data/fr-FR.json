@@ -1,0 +1,46 @@
+{
+  "datePicker.clearInput": {
+    "developer_comment": "Aria label for clear input button in date picker",
+    "string": "FRENCH STRING"
+  },
+  "datePicker.time.enterTime": {
+    "developer_comment": "Aria label for time input field in date picker",
+    "string": "FRENCH STRING"
+  },
+  "datePicker.time.enterTimeHour": {
+    "developer_comment": "Aria label for hour-only time input in date picker",
+    "string": "FRENCH STRING"
+  },
+  "datePicker.time.enterTimeHourMinute": {
+    "developer_comment": "Aria label for hour and minute time input in date picker",
+    "string": "FRENCH STRING"
+  },
+  "datePicker.time.enterTimeHourMinuteSecond": {
+    "developer_comment": "Aria label for full time input with seconds in date picker",
+    "string": "FRENCH STRING"
+  },
+  "loadingSpinner.default": {
+    "developer_comment": "Default loading message for loading spinners",
+    "string": "FRENCH STRING"
+  },
+  "numberInput.decrement": {
+    "developer_comment": "Aria label for decrement button in number input",
+    "string": "FRENCH STRING"
+  },
+  "numberInput.increment": {
+    "developer_comment": "Aria label for increment button in number input",
+    "string": "FRENCH STRING"
+  },
+  "passwordInput.show": {
+    "developer_comment": "Aria label for show password button",
+    "string": "FRENCH STRING"
+  },
+  "passwordInput.hide": {
+    "developer_comment": "Aria label for hide password button",
+    "string": "FRENCH STRING"
+  },
+  "select.clearSelection": {
+    "developer_comment": "Aria label for select clear button",
+    "string": "FRENCH STRING"
+  }
+}

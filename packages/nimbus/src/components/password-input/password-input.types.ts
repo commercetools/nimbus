@@ -5,5 +5,10 @@ import type { TextInputProps } from "../text-input/text-input.types";
  * Extends TextInputProps but omits the type prop since it's controlled internally
  * We want to keep this as an explicit interface to allow for future additions
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PasswordInputProps extends Omit<TextInputProps, "type"> {}
+export interface PasswordInputProps extends Omit<TextInputProps, "type"> {
+  /**
+   * Tooltip content for the password visibility button.
+   * Supplied by mc-fe as a translated string.
+   */
+  tooltipContent?: string;
+}

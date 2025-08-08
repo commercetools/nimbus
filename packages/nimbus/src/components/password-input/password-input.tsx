@@ -3,6 +3,7 @@ import { Box, IconButton, Tooltip } from "@/components";
 import { TextInput } from "@/components/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
+import { useTranslations } from "../../hooks/use-translations";
 
 /**
  * # PasswordInput
@@ -13,7 +14,8 @@ import type { PasswordInputProps } from "./password-input.types";
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, forwardedRef) => {
-    const { size = "md", isDisabled } = props;
+    const { translate } = useTranslations();
+    const { size = "md", isDisabled, tooltipContent, ...restProps } = props;
     const [showPassword, setShowPassword] = useState(false);
     const toggleVisibility = () => setShowPassword(!showPassword);
 
@@ -43,7 +45,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           width="full"
           ref={forwardedRef}
           type={showPassword ? "text" : "password"}
-          {...props}
+          {...restProps}
           pr={iconButtonSafeSpace}
         />
         <Box position="absolute" {...iconPositionProps}>
@@ -52,15 +54,19 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               size={iconSize}
               variant="ghost"
               tone="primary"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={
+                showPassword
+                  ? translate("passwordInput.hide")
+                  : translate("passwordInput.show")
+              }
               onPress={toggleVisibility}
               isDisabled={isDisabled}
             >
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
-            <Tooltip.Content>
-              {showPassword ? "Hide password" : "Show Password"}
-            </Tooltip.Content>
+            {tooltipContent && (
+              <Tooltip.Content>{tooltipContent}</Tooltip.Content>
+            )}
           </Tooltip.Root>
         </Box>
       </Box>

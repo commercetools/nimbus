@@ -25,6 +25,9 @@ catalogs:
     '@internationalized/date':
       specifier: ^3.8.0
       version: 3.8.2
+    '@internationalized/string':
+      specifier: ^3.2.7
+      version: 3.2.7
     '@pandacss/types':
       specifier: ^0.53.6
       version: 0.53.7
@@ -520,6 +523,9 @@ importers:
       '@internationalized/date':
         specifier: catalog:react
         version: 3.8.2
+      '@internationalized/string':
+        specifier: catalog:react
+        version: 3.2.7
       '@pandacss/types':
         specifier: catalog:react
         version: 0.53.7

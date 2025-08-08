@@ -16,6 +16,8 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
+import { useTranslations } from "../../hooks/use-translations";
+import coreTranslations from "../../i18n/data/core.json";
 /**
  * # NumberInput
  *
@@ -26,6 +28,8 @@ import { numberInputRecipe } from "./number-input.recipe";
 export const NumberInput = (props: NumberInputProps) => {
   const { size, ref: forwardedRef, ...restProps } = props;
   const { locale } = useLocale();
+
+  const { translate } = useTranslations();
 
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
@@ -64,16 +68,16 @@ export const NumberInput = (props: NumberInputProps) => {
         height="full"
       >
         <NumberInputIncrementButtonSlot
-          aria-label="Increment"
           {...incrementButtonProps}
           {...stateProps}
+          aria-label={translate("numberInput.increment")}
         >
           <KeyboardArrowUp />
         </NumberInputIncrementButtonSlot>
         <NumberInputDecrementButtonSlot
-          aria-label="Decrement"
           {...decrementButtonProps}
           {...stateProps}
+          aria-label={translate("numberInput.decrement")}
         >
           <KeyboardArrowDown />
         </NumberInputDecrementButtonSlot>
