@@ -6,9 +6,9 @@ import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode
 
 /**
  * # NimbusProvider
- * 
+ *
  * provides an environment for the rest of the components to work in
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/utilities/nimbusprovider}
  */
 export function NimbusProvider({

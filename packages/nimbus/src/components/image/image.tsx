@@ -8,9 +8,9 @@ export interface ImageProps extends ChakraImageProps {}
 
 /**
  * # Image
- * 
+ *
  * A component to display images with support for fallback.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/image}
  */
 export const Image = (props: ImageProps) => {

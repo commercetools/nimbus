@@ -38,6 +38,7 @@ export const ProgressBarRootSlot = withProvider<
 >("div", "root");
 
 // ProgressBar Track - Background bar
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ProgressBarTrackSlotProps extends HTMLChakraProps<"div"> {}
 export const ProgressBarTrackSlot = withContext<
   HTMLDivElement,
@@ -45,12 +46,14 @@ export const ProgressBarTrackSlot = withContext<
 >("div", "track");
 
 // ProgressBar Fill - Progress indicator
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ProgressBarFillSlotProps extends HTMLChakraProps<"div"> {}
 export const ProgressBarFillSlot = withContext<
   HTMLDivElement,
   ProgressBarFillSlotProps
 >("div", "fill");
 // ProgressBar Label - Label text
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ProgressBarLabelSlotProps extends HTMLChakraProps<"span"> {}
 export const ProgressBarLabelSlot = withContext<
   HTMLSpanElement,
@@ -58,6 +61,7 @@ export const ProgressBarLabelSlot = withContext<
 >("span", "label");
 
 // ProgressBar Value - Value text
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ProgressBarValueSlotProps extends HTMLChakraProps<"span"> {}
 export const ProgressBarValueSlot = withContext<
   HTMLSpanElement,

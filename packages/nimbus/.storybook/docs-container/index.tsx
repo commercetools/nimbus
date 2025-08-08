@@ -24,6 +24,7 @@ export const CustomDocsContainer = ({
   context,
 }: {
   children: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: any;
 }) => {
   const [isDark, setDark] = useState(false);

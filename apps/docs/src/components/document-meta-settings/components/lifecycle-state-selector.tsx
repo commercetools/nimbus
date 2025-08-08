@@ -3,7 +3,7 @@ import {
   lifecycleStateDescriptions,
 } from "@/schemas/lifecycle-states";
 import { useCallback, useMemo } from "react";
-import { Box, Stack, Text, Select, Badge, Flex } from "@commercetools/nimbus";
+import { Stack, Text, Select, Badge, Flex } from "@commercetools/nimbus";
 import { useUpdateDocument } from "@/hooks/useUpdateDocument";
 
 export const LifecycleStateSelector = () => {
@@ -32,11 +32,6 @@ export const LifecycleStateSelector = () => {
     },
     [meta, updateMeta]
   );
-
-  const currentState = meta?.lifecycleState;
-  const currentStateInfo = currentState
-    ? lifecycleStateDescriptions[currentState]
-    : null;
 
   return (
     <Stack>

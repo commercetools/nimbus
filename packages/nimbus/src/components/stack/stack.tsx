@@ -10,9 +10,9 @@ export interface StackProps extends ChakraStackProps {
 
 /**
  * # Stack
- * 
+ *
  * An easily customizable Stack component, re-exported from Chakra UI, that provides a consistent layout structure across different products.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/stack}
  */
 export const Stack = (props: StackProps) => {

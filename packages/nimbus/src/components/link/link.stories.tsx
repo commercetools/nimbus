@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Link } from "./link";
-import { Box, Stack, Text } from "@/components";
+import { Stack, Text } from "@/components";
 import type { LinkProps } from "./link.types";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef } from "react";
@@ -160,7 +160,7 @@ export const WithRef: Story = {
   },
 };
 
-export const withCustomHref: Story = {
+export const WithCustomHref: Story = {
   args: {
     children: "Demo Link",
     href: "https://commercetools.com",

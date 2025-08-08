@@ -6,7 +6,7 @@ import {
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import type { RadioInputOptionProps } from "../radio-input.types";
 import { RadioInputOptionSlot } from "../radio-input.slots";
-import { useFocusRing, mergeProps } from "react-aria";
+import { useFocusRing } from "react-aria";
 
 export const RadioInputOption = ({
   children,

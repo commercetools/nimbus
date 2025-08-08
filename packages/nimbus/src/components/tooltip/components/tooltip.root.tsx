@@ -4,9 +4,9 @@ import type { TooltipTriggerComponentProps } from "react-aria-components";
 
 /**
  * # Tooltip
- * 
+ *
  * A contextual popup that displays a description for an element.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/tooltip}
  */
 export function TooltipRoot({

@@ -200,7 +200,6 @@ export const Tones: Story = {
                 key={variant as string}
                 {...args}
                 variant={variant}
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 tone={tone}
               />
             ))}
@@ -309,7 +308,6 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           <DemoIcon />
@@ -323,7 +321,6 @@ export const SmokeTest: Story = {
                           as="a"
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                           isDisabled
                         >
@@ -337,7 +334,6 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           <DemoIcon />
@@ -349,7 +345,6 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           tone={tone}
                         >
                           {JSON.stringify(variant)} {args.children}

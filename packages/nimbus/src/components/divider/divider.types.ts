@@ -18,6 +18,7 @@ export interface DividerRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DividerRootProps
   extends HTMLChakraProps<"div", DividerRecipeProps> {}
 

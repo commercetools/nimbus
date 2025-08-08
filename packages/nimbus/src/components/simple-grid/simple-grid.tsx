@@ -6,9 +6,9 @@ import {
 
 /**
  * # SimpleGrid
- * 
+ *
  * displays a simple grid / matrix
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/simplegrid}
  */
 export interface SimpleGridProps extends ChakraSimpleGridProps {

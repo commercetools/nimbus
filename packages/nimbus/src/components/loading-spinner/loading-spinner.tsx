@@ -9,9 +9,9 @@ const pointerPath =
 
 /**
  * # LoadingSpinner
- * 
+ *
  * Indicates ongoing processes or loading states
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/loadingspinner}
  */
 export const LoadingSpinner = (props: LoadingSpinnerProps) => {

@@ -30,16 +30,19 @@ import type { ThemeProviderProps } from "next-themes";
  */
 
 // Base interface for router options that can be extended via module augmentation
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NimbusRouterOptionsBase {
   // This can be augmented by consumers via module augmentation
 }
 
 // Default router options type (can be overridden via module augmentation)
 export type RouterOptions = NimbusRouterOptionsBase extends {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   routerOptions: any;
 }
   ? NimbusRouterOptionsBase["routerOptions"]
-  : any;
+  : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any;
 
 // Enhanced router configuration with proper typing
 export interface TypedNimbusRouterConfig {
@@ -63,6 +66,7 @@ export interface NimbusRouterConfig {
    * const router = useRouter();
    * <NimbusProvider router={{ navigate: router.push }} />
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigate: (href: string, routerOptions?: any) => void;
 
   /**
@@ -78,6 +82,7 @@ export interface NimbusRouterConfig {
 }
 
 // Color mode provider props
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ColorModeProviderProps extends ThemeProviderProps {}
 
 // Main provider props

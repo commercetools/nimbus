@@ -65,7 +65,7 @@ export const parseTypes = async (filePath: string) => {
     return;
   }
 
-  fs.readFile(filePath, "utf8", async (err, content) => {
+  fs.readFile(filePath, "utf8", async (err) => {
     if (err) {
       console.error(`Error reading file ${filePath}:`, err);
       return;

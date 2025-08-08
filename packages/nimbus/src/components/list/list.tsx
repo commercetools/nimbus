@@ -6,9 +6,9 @@ const ListIndicator = ChakraList.Indicator;
 
 /**
  * # List
- * 
+ *
  * displays a list
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/list}
  * @experimental This component is experimental and may change or be removed in future versions.
  */

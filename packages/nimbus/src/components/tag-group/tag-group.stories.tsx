@@ -50,7 +50,7 @@ export const Base: Story = {
       </TagGroup.TagList>
     </TagGroup.Root>
   ),
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
@@ -102,7 +102,7 @@ export const TagRemoval: Story = {
         aria-label="removable animals"
         selectionMode="none"
         onRemove={(keys) => {
-          onRemove && onRemove(keys);
+          onRemove?.(keys);
           animalList.remove(...keys);
         }}
       >
@@ -116,7 +116,7 @@ export const TagRemoval: Story = {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    const [koala, kangaroo] = tags;
     await step("Tags - keyboard removal", async () => {
       await userEvent.tab();
       expect(koala).toHaveFocus();
@@ -153,11 +153,11 @@ export const SingleSelection: Story = {
       </>
     );
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    const [koala, kangaroo] = tags;
 
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
@@ -204,11 +204,11 @@ export const MultipleSelection: Story = {
       </>
     );
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    const [koala, kangaroo] = tags;
 
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
@@ -254,11 +254,11 @@ export const EmptyState: Story = {
       </TagGroup.Root>
     );
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
+    const [koala] = tags;
     await step("Tags - empty state", async () => {
       await userEvent.tab();
       expect(koala).toHaveFocus();

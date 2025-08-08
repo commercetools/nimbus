@@ -11,6 +11,7 @@ import type {
 type RadioGroupProps = Omit<RaRadioGroupProps, "children"> & {
   children?: React.ReactNode;
 };
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface RadioInputRootSlotProps
   extends HTMLChakraProps<
     "div",
@@ -21,6 +22,7 @@ export interface RadioInputRootProps
   extends RadioGroupProps,
     Omit<RadioInputRootSlotProps, keyof RadioGroupProps> {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface RadioInputOptionSlotProps
   extends HTMLChakraProps<"span", RecipeProps<"option">> {}
 

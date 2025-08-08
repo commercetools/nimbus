@@ -17,6 +17,7 @@ export const DateRangePickerCustomContext = ({
   const dateRangePickerState = useContext(DateRangePickerStateContext);
 
   // DateRangePicker-specific: Check if all 6 segments (start: day, month, year; end: day, month, year) have values
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hasCompleteRangeDate = (date: any) =>
     date?.day && date?.month && date?.year;
 
@@ -25,7 +26,6 @@ export const DateRangePickerCustomContext = ({
     !hasCompleteRangeDate(dateRangePickerState.value.start) ||
     !hasCompleteRangeDate(dateRangePickerState.value.end);
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { granularity } = dateRangePickerState!;
 
   // DateRangePicker-specific: Extract time values from start and end dates separately

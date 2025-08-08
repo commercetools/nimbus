@@ -26,6 +26,7 @@ const mapping = {
   svg: "SVGSVGElement",
 };
 
+// eslint-disable-next-line no-undef
 module.exports = [
   {
     type: "input",

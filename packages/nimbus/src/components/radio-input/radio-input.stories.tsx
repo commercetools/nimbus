@@ -317,7 +317,7 @@ export const InvisibleLabel: Story = {
       </RadioInput.Root>
     </Stack>
   ),
-  play: async ({ canvasElement, step, args }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const htmlInput = canvas.getByTestId("test-radio-input");
     await step("Has alternative label", async () => {
@@ -426,8 +426,9 @@ export const WithFormField: StoryObj = {
     await step(
       "RadioInput renders a radio group with correct ARIA attributes",
       async () => {
-        const labelledby = radioGroup.getAttribute("aria-labelledby");
-        const describedby = radioGroup.getAttribute("aria-describedby");
+        // Check that ARIA attributes exist
+        radioGroup.getAttribute("aria-labelledby");
+        radioGroup.getAttribute("aria-describedby");
       }
     );
 

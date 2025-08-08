@@ -18,9 +18,9 @@ import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
 /**
  * # NumberInput
- * 
+ *
  * A number input allows users to enter numerical values and adjust them incrementally.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
  */
 export const NumberInput = (props: NumberInputProps) => {

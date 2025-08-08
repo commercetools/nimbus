@@ -16,7 +16,7 @@ export async function findMonorepoRoot(dir: string): Promise<string | null> {
     if (packageJson.workspaces) {
       return dir;
     }
-  } catch (error) {
+  } catch {
     // Ignore errors (e.g., file not found or invalid JSON) and continue
   }
 

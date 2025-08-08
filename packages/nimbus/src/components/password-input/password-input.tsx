@@ -6,9 +6,9 @@ import type { PasswordInputProps } from "./password-input.types";
 
 /**
  * # PasswordInput
- * 
+ *
  * A password input is a text field that hides entered characters for secure password entry.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/passwordinput}
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
