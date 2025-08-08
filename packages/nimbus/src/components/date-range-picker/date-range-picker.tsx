@@ -37,7 +37,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
   // Extract size and variant from recipe props to pass to DateInputs
-  const { size = "md", variant } = recipeProps;
+  const { size = "md" } = recipeProps;
 
   // the size of the buttons overlaying the input
   const overlayButtonSize = size === "md" ? "xs" : "2xs";

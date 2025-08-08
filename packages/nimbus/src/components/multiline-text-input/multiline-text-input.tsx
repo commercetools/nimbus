@@ -10,9 +10,9 @@ import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
 
 /**
  * # Multiline Text Input
- * 
+ *
  * A multiline text input component for capturing longer text content.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/forms/multiline-text-input}
  */
 export const MultilineTextInput = (props: MultilineTextInputProps) => {

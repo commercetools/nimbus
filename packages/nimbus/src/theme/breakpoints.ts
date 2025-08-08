@@ -2,6 +2,7 @@ import { themeTokens } from "@commercetools/nimbus-tokens";
 
 interface BreakpointValue {
   value?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 

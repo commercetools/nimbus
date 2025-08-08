@@ -7,9 +7,9 @@ import { RadioInputRootSlot } from "../radio-input.slots";
 
 /**
  * # RadioInput
- * 
+ *
  * A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/radio-input}
  */
 export const RadioInputRoot = (props: RadioInputRootProps) => {

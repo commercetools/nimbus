@@ -3,7 +3,7 @@ import { ToggleButton } from "./toggle-button";
 import { Box, Stack, Text } from "@/components";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
-import { useState, useRef, useEffect, createRef } from "react";
+import { useState, createRef } from "react";
 
 const meta: Meta<typeof ToggleButton> = {
   title: "components/Buttons/ToggleButton",
@@ -24,7 +24,7 @@ export const Base: Story = {
   args: {
     children: "Toggle Me",
     onChange: fn(),
-    /** @ts-expect-error */
+    /** @ts-expect-error - data-testid is not part of the component props but needed for testing */
     "data-testid": "test",
     "aria-label": "test-toggle-button",
   },
@@ -213,7 +213,7 @@ export const Disabled: Story = {
     children: "Disabled Toggle",
     isDisabled: true,
     onChange: fn(),
-    /** @ts-expect-error */
+    /** @ts-expect-error - data-testid is not part of the component props but needed for testing */
     "data-testid": "test",
   },
   play: async ({ canvasElement, step, args }) => {

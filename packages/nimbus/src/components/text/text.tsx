@@ -11,9 +11,9 @@ export interface TextProps extends Omit<ChakraTextProps, "slot"> {
 
 /**
  * # Text
- * 
+ *
  * the Text component is used to display text
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/text}
  */
 export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {

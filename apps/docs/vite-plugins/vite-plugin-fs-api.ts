@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
-import express, { Request, Response } from "express";
-import { Plugin } from "vite";
+import express, { type Request, type Response } from "express";
+import { type Plugin } from "vite";
 import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Import the function
 
 interface FileSystemRequestBody {
@@ -33,7 +33,10 @@ export function fileSystemApiPlugin(): Plugin {
       // CRUD API Endpoints
       app.post(
         "/api/fs",
-        async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
+        async (
+          req: Request<object, object, FileSystemRequestBody>,
+          res: Response
+        ) => {
           try {
             const { repoPath, content } = req.body;
             if (!repoPath) throw new Error("repoPath is required");
@@ -68,7 +71,10 @@ export function fileSystemApiPlugin(): Plugin {
 
       app.put(
         "/api/fs",
-        async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
+        async (
+          req: Request<object, object, FileSystemRequestBody>,
+          res: Response
+        ) => {
           try {
             const { repoPath, content } = req.body;
             if (!repoPath) throw new Error("repoPath is required");
@@ -85,7 +91,10 @@ export function fileSystemApiPlugin(): Plugin {
 
       app.delete(
         "/api/fs",
-        async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
+        async (
+          req: Request<object, object, FileSystemRequestBody>,
+          res: Response
+        ) => {
           try {
             const { repoPath } = req.body;
             if (!repoPath) throw new Error("repoPath is required");

@@ -38,9 +38,9 @@ export const AlertContext = createContext<AlertContextValue | undefined>(
 
 /**
  * # Alert
- * 
+ *
  * Provides feedback to the user about the status of an action or system event
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/alert}
  */
 export const AlertRoot: AlertRootComponent = (props) => {

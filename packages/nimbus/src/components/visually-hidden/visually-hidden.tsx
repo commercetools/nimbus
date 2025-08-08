@@ -12,9 +12,9 @@ export interface VisuallyHiddenProps
 
 /**
  * # VisuallyHidden
- * 
+ *
  * makes content accessible to screen readers but hides it visually
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/accessibility/visually-hidden}
  */
 export const VisuallyHidden = (props: VisuallyHiddenProps) => {

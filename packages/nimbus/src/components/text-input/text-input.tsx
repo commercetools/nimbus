@@ -10,9 +10,9 @@ import { textInputRecipe } from "./text-input.recipe";
 
 /**
  * # TextInput
- * 
+ *
  * An input component that takes in a text as input
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/textinput}
  */
 export const TextInput = (props: TextInputProps) => {

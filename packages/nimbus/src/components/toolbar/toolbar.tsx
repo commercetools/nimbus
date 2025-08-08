@@ -28,10 +28,8 @@ export const Toolbar: ToolbarComponent = ({
   // ("horizontal" or "vertical") using `system.normalizeValue` and
   // `useBreakpointValue` to ensure a concrete value is passed.
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const normalizedOrientation = sysCtx.normalizeValue(orientation);
   const computedOrientation: "horizontal" | "vertical" =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     useBreakpointValue(normalizedOrientation) ?? "horizontal";
 
   return (

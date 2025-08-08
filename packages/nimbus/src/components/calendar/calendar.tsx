@@ -13,9 +13,9 @@ import { CalendarCustomContext } from "./components/calendar.custom-context";
 
 /**
  * # Calendar
- * 
+ *
  * Calendars display a grid of days in one or more months and allow users to select a single date.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/calendar}
  */
 export const Calendar = (props: CalendarProps<DateValue>) => {

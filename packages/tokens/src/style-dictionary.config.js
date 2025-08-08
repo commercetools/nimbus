@@ -20,7 +20,7 @@ register(StyleDictionary);
  * https://www.chakra-ui.com/docs/theming/tokens#defining-tokens */
 StyleDictionary.registerFormat({
   name: "ts/objectLiteral",
-  format: async function ({ dictionary, platform, options, file }) {
+  format: async function ({ dictionary, options, file }) {
     const { chakraSyntax } = options;
 
     /** create header comment with timestamp

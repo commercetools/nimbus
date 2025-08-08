@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { IconToggleButton } from "./icon-toggle-button";
 import { Stack } from "@/components";
-import type { IconToggleButtonProps } from "./icon-toggle-button.types";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState } from "react";

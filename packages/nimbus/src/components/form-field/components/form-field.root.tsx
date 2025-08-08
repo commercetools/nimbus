@@ -26,9 +26,9 @@ import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
 
 /**
  * # FormField
- * 
+ *
  * displays miscellaneous inputs in a FormField context
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/formfield}
  */
 export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(

@@ -15,6 +15,7 @@
 
 // implementation of structuredClone polyfill to satisfy the Nimbus (Chakra UI) provider
 if (typeof globalThis.structuredClone !== "function") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globalThis.structuredClone = function structuredClone(value: any) {
     if (value === null || value === undefined) {
       return value;

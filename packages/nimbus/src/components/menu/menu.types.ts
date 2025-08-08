@@ -81,6 +81,7 @@ export interface MenuSectionLabelProps {
 }
 
 // Menu submenu component - extends MenuContentProps
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MenuSubmenuProps extends MenuContentProps {}
 
 // Menu submenu trigger component

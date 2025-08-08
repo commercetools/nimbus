@@ -11,7 +11,7 @@ import {
 } from "@internationalized/date";
 import type { DateValue } from "react-aria";
 import type { RangeValue } from "@/components/range-calendar";
-import { userEvent, within, expect, waitFor, fireEvent } from "storybook/test";
+import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -35,6 +35,7 @@ export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
 
 // Shared helper functions that work for both single and multiple DateRangePicker components scenarios.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createDateRangePickerHelpers = (canvas: any, target?: HTMLElement) => {
   const context = target ? within(target) : canvas;
 
@@ -209,7 +210,7 @@ export const Base: Story = {
 
     await step("Calendar popover opens and closes correctly", async () => {
       // Initially, calendar should not be visible (check in entire document since popover is portaled)
-      let calendar = within(document.body).queryByRole("application");
+      const calendar = within(document.body).queryByRole("application");
       await expect(calendar).not.toBeInTheDocument();
 
       await helpers.openCalendar();
@@ -1606,7 +1607,6 @@ export const HourCycle: Story = {
           name: "12-hour format date range picker",
         });
         const helpers = createDateRangePickerHelpers(canvas, footer);
-        const segments = helpers.getDateSegments();
 
         helpers.openCalendar();
 
@@ -1674,7 +1674,6 @@ export const HourCycle: Story = {
           name: "24-hour format date range picker",
         });
         const helpers = createDateRangePickerHelpers(canvas, footer);
-        const segments = helpers.getDateSegments();
 
         helpers.openCalendar();
 
@@ -2438,7 +2437,7 @@ export const NonContiguousRanges: Story = {
       </Stack>
     );
   },
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const helpers = createDateRangePickerHelpers(canvas);
     const segments = helpers.getDateSegments();

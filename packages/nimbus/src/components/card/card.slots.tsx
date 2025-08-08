@@ -18,12 +18,15 @@ interface CardRecipeProps extends RecipeProps<"div">, UnstyledProp {}
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CardRootProps
   extends HTMLChakraProps<"div", CardRecipeProps> {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CardHeaderProps
   extends HTMLChakraProps<"div", CardRecipeProps> {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CardContentProps
   extends HTMLChakraProps<"div", CardRecipeProps> {}
 

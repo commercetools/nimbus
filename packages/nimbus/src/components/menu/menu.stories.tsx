@@ -440,6 +440,7 @@ export const WithDifferentPlacements: Story = {
               alignItems="center"
               justifyContent="center"
             >
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               <Menu.Root placement={placement as any}>
                 <Menu.Trigger asChild>
                   <Button variant="solid" tone="primary" size="xs">

@@ -8,7 +8,7 @@ import createBaseConfig from "./vite.config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import path from "path";
 
-export default defineConfig(async (configEnv) => {
+export default defineConfig(async () => {
   const baseConfig = await createBaseConfig({
     command: "build",
     mode: "production",
