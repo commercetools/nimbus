@@ -1,19 +1,19 @@
-import type { PopoverRootProps } from "./popover.slots"
-import type { RecipeVariantProps } from "@chakra-ui/react"
-import { popoverRecipe } from "./popover.recipe"
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type PopoverVariantProps = PopoverRootProps & RecipeVariantProps<typeof popoverRecipe>;
+import type { DialogTriggerProps, PopoverProps, ButtonProps } from "react-aria-components";
 
-/**
- * Main props interface for the Popover component.
- * Extends PopoverVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface PopoverProps extends PopoverVariantProps {
-  children?: React.ReactNode;
+export interface PopoverRootSlotProps extends DialogTriggerProps {
+  children: React.ReactNode;
 }
+
+export type PopoverContentSlotProps = PopoverProps;
+
+export type PopoverComponents = {
+  Root: React.FC<PopoverRootSlotProps>;
+  Trigger: React.ForwardRefExoticComponent<ButtonProps>;
+  Content: React.FC<PopoverContentSlotProps>;
+  Dialog: React.FC<React.HTMLAttributes<HTMLDivElement>>;
+  Close: React.ForwardRefExoticComponent<ButtonProps>;
+};
+
+
+

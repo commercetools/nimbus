@@ -1,32 +1,53 @@
 import {
+  createSlotRecipeContext,
   type HTMLChakraProps,
-  type RecipeProps,
-  type UnstyledProp,
-  createRecipeContext,
 } from "@chakra-ui/react";
+import { popoverSlotRecipe } from "./popover.recipe";
+import {
+  DialogTrigger as RADialogTrigger,
+  Popover as RAPopover,
+  Dialog as RADialog,
+  Button as RAButton,
+  type ButtonProps,
+} from "react-aria-components";
+import { forwardRef } from "react";
+import {
+  type PopoverContentSlotProps,
+  type PopoverRootSlotProps,
+} from "./popover.types";
 
-import { popoverRecipe } from "./popover.recipe";
+const { withProvider, withContext } = createSlotRecipeContext({
+  recipe: popoverSlotRecipe,
+});
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
-interface PopoverRecipeProps extends RecipeProps<"div">, UnstyledProp {}
-
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export interface PopoverRootProps
-  extends HTMLChakraProps<"div", PopoverRecipeProps> {}
-
-const { withContext } = createRecipeContext({ recipe: popoverRecipe });
-
-/**
- * Root component that provides the styling context for the Popover component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const PopoverRoot = withContext<HTMLDivElement, PopoverRootProps>(
-  "div"
+export const PopoverRootSlot = (props: PopoverRootSlotProps) => (
+  <RADialogTrigger {...props} />
 );
+
+export const PopoverTriggerSlot = forwardRef<
+  HTMLButtonElement,
+  ButtonProps
+>(({ children, ...props }, ref) => (
+  <RAButton {...props} ref={ref}>
+    {children}
+  </RAButton>
+));
+
+export const PopoverContentSlot = withProvider<
+  HTMLDivElement,
+  PopoverContentSlotProps
+>(RAPopover, "content");
+
+export const PopoverDialogSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>(RADialog, "dialog");
+
+export const PopoverCloseSlot = forwardRef<
+  HTMLButtonElement,
+  ButtonProps
+>(({ children, ...props }, ref) => (
+  <RAButton {...props} ref={ref}>
+    {children}
+  </RAButton>
+));

@@ -1,44 +1,33 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Popover } from "./popover";
-import { Stack } from "./../stack";
 
-/**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
- */
-const meta: Meta<typeof Popover> = {
+const meta: Meta<typeof Popover.Content> = {
   title: "components/Popover",
-  component: Popover,
+  component: Popover.Content,
+  decorators: [
+    (Story) => (
+      <div style={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
 
-/**
- * Story type for TypeScript support
- * StoryObj provides type checking for our story configurations
- */
-type Story = StoryObj<typeof Popover>;
-
-/**
- * Base story
- * Demonstrates the most basic implementation
- * Uses the args pattern for dynamic control panel inputs
- */
-export const Base: Story = {
-  args: {
-    children: "A Demo Popover",
-  },
-};
+type Story = StoryObj<typeof Popover.Content>;
 
 export const Basic: Story = {
-  render: (args) => {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        <Popover {...args} >
-          {args.children}
-        </Popover>
-      </Stack>
-    );
-  },
+  render: (args) => (
+    <Popover.Root>
+      <Popover.Trigger>Open Popover</Popover.Trigger>
+      <Popover.Content {...args}>
+        <Popover.Dialog>
+          <p>This is a popover component built with React Aria.</p>
+          <Popover.Close>Close</Popover.Close>
+        </Popover.Dialog>
+      </Popover.Content>
+    </Popover.Root>
+  ),
+  args: {},
 };

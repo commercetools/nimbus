@@ -1,23 +1,32 @@
-import { forwardRef } from "react";
-import { PopoverRoot } from "./popover.slots";
-import type { PopoverProps } from "./popover.types";
+import {
+  PopoverRootSlot,
+  PopoverTriggerSlot,
+  PopoverContentSlot,
+  PopoverDialogSlot,
+  PopoverCloseSlot,
+} from "./popover.slots";
+import type { PopoverComponents } from "./popover.types";
 
 /**
  * Popover
  * ============================================================
  * An overlay element positioned relative to a trigger.
  *
- * Features:
- *
- * - allows forwarding refs to the underlying DOM element
- * - accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)
- * - allows overriding styles by using style-props
+ * @example
+ * <Popover.Root>
+ *  <Popover.Trigger>Open</Popover.Trigger>
+ *  <Popover.Content>
+ *    <Popover.Dialog>
+ *      <p>This is a popover component built with React Aria.</p>
+ *      <Popover.Close>Close</Popover.Close>
+ *    </Popover.Dialog>
+ *  </Popover.Content>
+ * </Popover.Root>
  */
-export const Popover = forwardRef<HTMLDivElement, PopoverProps>(
-({children, ...props}, ref) => {
-    return (
-     <PopoverRoot ref={ref} {...props}>{children}</PopoverRoot>
-    )
- }
-);
-Popover.displayName = "Popover";
+export const Popover: PopoverComponents = {
+  Root: PopoverRootSlot,
+  Trigger: PopoverTriggerSlot,
+  Content: PopoverContentSlot,
+  Dialog: PopoverDialogSlot,
+  Close: PopoverCloseSlot,
+};
