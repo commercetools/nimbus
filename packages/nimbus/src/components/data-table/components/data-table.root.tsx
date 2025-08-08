@@ -1,0 +1,372 @@
+import { forwardRef, useMemo, useState, createContext, useContext } from "react";
+import { ResizableTableContainer } from "react-aria-components";
+import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
+import type {
+  DataTableProps,
+  DataTableColumn,
+  DataTableRow as DataTableRowType,
+  SortDescriptor,
+} from "../data-table.types";
+import type { Selection } from "react-aria-components";
+
+interface DataTableContextValue<T = any> {
+  columns: DataTableColumn<T>[];
+  data: DataTableRowType<T>[];
+  visibleColumns?: string[];
+  search?: string;
+  sortDescriptor?: SortDescriptor;
+  selectedKeys?: Selection;
+  expanded: Record<string, boolean>;
+  allowsSorting?: boolean;
+  selectionMode?: "none" | "single" | "multiple";
+  disallowEmptySelection?: boolean;
+  isRowClickable?: boolean;
+  maxHeight?: string | number;
+  isTruncated?: boolean;
+  density?: "default" | "condensed";
+  nestedKey?: string;
+  onSortChange?: (descriptor: SortDescriptor) => void;
+  onSelectionChange?: (keys: Selection) => void;
+  onRowClick?: (row: DataTableRowType<T>) => void;
+  onDetailsClick?: (row: DataTableRowType<T>) => void;
+  toggleExpand: (id: string) => void;
+  visibleCols: DataTableColumn<T>[];
+  filteredRows: DataTableRowType<T>[];
+  sortedRows: DataTableRowType<T>[];
+  showExpandColumn: boolean;
+  showSelectionColumn: boolean;
+  showDetailsColumn: boolean;
+  isSelected: (rowId: string) => boolean;
+  isIndeterminate: () => boolean;
+  isAllSelected: () => boolean;
+  handleRowSelection: (rowId: string, checked: boolean) => void;
+  handleSelectAll: (checked: boolean) => void;
+  disabledKeys?: Selection;
+  isDisabled: (rowId: string) => boolean;
+  onRowAction?: (row: DataTableRowType<T>, action: 'click' | 'select') => void;
+}
+
+const DataTableContext = createContext<DataTableContextValue | null>(null);
+
+DataTableContext.displayName = "DataTableContext";
+
+export const useDataTableContext = <T = any>(): DataTableContextValue<T> => {
+  const context = useContext(DataTableContext) as DataTableContextValue<T> | null;
+  if (!context) {
+    throw new Error("DataTable components must be used within DataTable.Root");
+  }
+  return context;
+};
+
+// Utility functions
+function filterRows<T>(
+  rows: DataTableRowType<T>[],
+  search: string,
+  columns: DataTableColumn<T>[],
+  nestedKey?: string
+): DataTableRowType<T>[] {
+  if (!search) return rows;
+  const lowerCaseSearch = search.toLowerCase();
+  return rows
+    .map((row) => {
+      const match = columns.some((col) => {
+        const value = col.accessor(row);
+        return (
+          typeof value === "string" &&
+          value.toLowerCase().includes(lowerCaseSearch)
+        );
+      });
+      
+      if (nestedKey && row[nestedKey]) {
+        let nestedContent = row[nestedKey];
+        if (Array.isArray(row[nestedKey])) {
+          nestedContent = filterRows(row[nestedKey], search, columns, nestedKey);
+          if (match || (nestedContent && nestedContent.length > 0)) {
+            return { ...row, [nestedKey]: nestedContent };
+          }
+        } else {
+          if (match) {
+            return { ...row, [nestedKey]: nestedContent };
+          }
+        }
+        return null;
+      } else {
+        return match ? row : null;
+      }
+    })
+    .filter(Boolean) as DataTableRowType<T>[];
+}
+
+function sortRows<T>(
+  rows: DataTableRowType<T>[],
+  sortDescriptor: SortDescriptor | undefined,
+  columns: DataTableColumn<T>[],
+  nestedKey?: string
+): DataTableRowType<T>[] {
+  if (!sortDescriptor) return rows;
+
+  const column = columns.find((col) => col.id === sortDescriptor.column);
+  if (!column) return rows;
+
+  const sortedRows = [...rows].sort((a, b) => {
+    const aValue = column.accessor(a);
+    const bValue = column.accessor(b);
+
+    if (aValue == null && bValue == null) return 0;
+    if (aValue == null) return 1;
+    if (bValue == null) return -1;
+
+    let aSortValue = aValue;
+    let bSortValue = bValue;
+
+    if (typeof aValue === "number" && typeof bValue === "number") {
+      aSortValue = aValue;
+      bSortValue = bValue;
+    } else {
+      aSortValue = String(aValue).toLowerCase();
+      bSortValue = String(bValue).toLowerCase();
+    }
+
+    if (aSortValue < bSortValue) return sortDescriptor.direction === "ascending" ? -1 : 1;
+    if (aSortValue > bSortValue) return sortDescriptor.direction === "ascending" ? 1 : -1;
+    return 0;
+  });
+
+  return sortedRows.map((row) => {
+    if (!nestedKey || !row[nestedKey]) {
+      return row;
+    }
+    return {
+      ...row,
+      [nestedKey]: Array.isArray(row[nestedKey])
+        ? sortRows(row[nestedKey], sortDescriptor, columns, nestedKey)
+        : row[nestedKey],
+    };
+  });
+}
+
+function hasExpandableRows<T>(rows: DataTableRowType<T>[], nestedKey?: string): boolean {
+  if (!nestedKey) return false;
+  return rows.some(
+    (row) =>
+      (row[nestedKey] && (
+        Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true
+      )) ||
+      (Array.isArray(row[nestedKey]) && hasExpandableRows(row[nestedKey], nestedKey))
+  );
+}
+
+export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
+  function DataTableRoot<T = any>(
+    props: DataTableProps<T>,
+    ref: React.Ref<HTMLDivElement>
+  ) {
+    const {
+      columns,
+      data,
+      visibleColumns,
+      search,
+      sortDescriptor: controlledSortDescriptor,
+      onSortChange,
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+      selectionMode = "none",
+      disallowEmptySelection,
+      allowsSorting,
+      isRowClickable,
+      maxHeight,
+      isTruncated,
+      density,
+      nestedKey,
+      onRowClick,
+      onDetailsClick,
+      disabledKeys,
+      onRowAction,
+      children,
+      ...rest
+    } = props;
+
+    const [internalSortDescriptor, setInternalSortDescriptor] = useState<
+      SortDescriptor | undefined
+    >();
+    
+    const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+    const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
+
+    const visibleCols = useMemo(
+      () =>
+        columns.filter(
+          (col) =>
+            (visibleColumns ? visibleColumns.includes(col.id) : true) &&
+            col.isVisible !== false
+        ),
+      [columns, visibleColumns]
+    );
+
+    const filteredRows = useMemo(
+      () => (search ? filterRows(data, search, visibleCols, nestedKey) : data),
+      [data, search, visibleCols, nestedKey]
+    );
+
+    const sortedRows = useMemo(
+      () => sortRows(filteredRows, sortDescriptor, visibleCols, nestedKey),
+      [filteredRows, sortDescriptor, visibleCols, nestedKey]
+    );
+
+    const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
+    const showSelectionColumn = selectionMode !== "none";
+    const showDetailsColumn = true; // Details column is always shown
+
+    const toggleExpand = (id: string) =>
+      setExpanded((e) => ({ ...e, [id]: !e[id] }));
+
+    const handleSortChange = (descriptor: SortDescriptor) => {
+      if (onSortChange) {
+        onSortChange(descriptor);
+      } else {
+        setInternalSortDescriptor(descriptor);
+      }
+    };
+
+    const isSelected = (rowId: string) => {
+      if (!selectedKeys) return false;
+      if (selectedKeys === "all") return true;
+      return selectedKeys.has(rowId);
+    };
+
+    const isIndeterminate = () => {
+      if (!selectedKeys || selectedKeys === "all" || selectionMode !== "multiple") return false;
+      const selectedCount = selectedKeys.size;
+      const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
+      const totalSelectableCount = selectableRows.length;
+      return selectedCount > 0 && selectedCount < totalSelectableCount;
+    };
+
+    const isAllSelected = () => {
+      if (!selectedKeys || selectionMode !== "multiple") return false;
+      if (selectedKeys === "all") return true;
+      const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
+      return selectedKeys.size === selectableRows.length && selectableRows.length > 0;
+    };
+
+    const handleRowSelection = (rowId: string, checked: boolean) => {
+      if (!onSelectionChange) return;
+      
+      // Prevent selection of disabled rows
+      if (isDisabled(rowId)) {
+        if (onRowAction) {
+          const row = sortedRows.find(r => r.id === rowId);
+          if (row) onRowAction(row, 'select');
+        }
+        return;
+      }
+      
+      let newSelection: typeof selectedKeys;
+      
+      if (selectionMode === "single") {
+        newSelection = checked ? new Set([rowId]) : new Set();
+      } else if (selectionMode === "multiple") {
+        const currentSelection = selectedKeys === "all" 
+          ? new Set(sortedRows.map(row => row.id))
+          : new Set(selectedKeys || []);
+        
+        if (checked) {
+          currentSelection.add(rowId);
+        } else {
+          currentSelection.delete(rowId);
+        }
+        
+        if (disallowEmptySelection && currentSelection.size === 0) {
+          return;
+        }
+        
+        newSelection = currentSelection;
+      } else {
+        return;
+      }
+      
+      onSelectionChange(newSelection);
+    };
+
+    const handleSelectAll = (checked: boolean) => {
+      if (!onSelectionChange || selectionMode !== "multiple") return;
+      
+      if (checked) {
+        // Only select non-disabled rows
+        const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
+        onSelectionChange(new Set(selectableRows.map(row => row.id)));
+      } else {
+        if (disallowEmptySelection) return;
+        onSelectionChange(new Set());
+      }
+    };
+
+    const isDisabled = (rowId: string) => {
+      if (!disabledKeys) return false;
+      if (disabledKeys === "all") return true;
+      return disabledKeys.has(rowId);
+    };
+
+    const contextValue: DataTableContextValue<T> = {
+      columns,
+      data,
+      visibleColumns,
+      search,
+      sortDescriptor,
+      selectedKeys,
+      expanded,
+      allowsSorting,
+      selectionMode,
+      disallowEmptySelection,
+      isRowClickable,
+      maxHeight,
+      isTruncated,
+      density,
+      nestedKey,
+      onSortChange: handleSortChange,
+      onSelectionChange,
+      onRowClick,
+      onDetailsClick,
+      toggleExpand,
+      visibleCols,
+      filteredRows,
+      sortedRows,
+      showExpandColumn,
+      showSelectionColumn,
+      showDetailsColumn,
+      isSelected,
+      isIndeterminate,
+      isAllSelected,
+      handleRowSelection,
+      handleSelectAll,
+      disabledKeys,
+      isDisabled,
+      onRowAction,
+    };
+
+    return (
+      <DataTableContext.Provider value={contextValue}>
+        <DataTableRootSlot 
+          ref={ref}
+          truncated={isTruncated}
+          density={density}
+          style={{
+            ...(maxHeight && {
+              maxHeight,
+              overflowY: "auto",
+            }),
+          }}
+          {...rest}
+        >
+          <ResizableTableContainer>
+            {children}
+          </ResizableTableContainer>
+        </DataTableRootSlot>
+      </DataTableContext.Provider>
+    );
+  }
+);
+
+DataTableRoot.displayName = "DataTableRoot"; 
