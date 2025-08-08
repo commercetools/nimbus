@@ -5,6 +5,7 @@ import { DataTableHeader } from "./components/data-table.header";
 import { DataTableBody } from "./components/data-table.body";
 import { DataTableRow } from "./components/data-table.row";
 import { DataTableFooter } from "./components/data-table.footer";
+import { DataTableExample } from "./components/data-table.simple";
 import {
   DataTableExpandButton,
   DataTableDetailsButton,
@@ -14,22 +15,23 @@ import {
 import type { DataTableProps } from "./data-table.types";
 
 // Default DataTable component that provides the standard structure
-const DataTableBase = forwardRef<HTMLDivElement, DataTableProps & { footer?: React.ReactNode }>(
-  function DataTable({ footer, ...props }, ref) {
-    return (
-      <DataTableRoot ref={ref} {...props}>
-        <DataTableTable aria-label="Data Table">
-          <DataTableHeader aria-label="Data Table Header" />
-          <DataTableBody aria-label="Data Table Body" />
-        </DataTableTable>
-        {footer && <DataTableFooter>{footer}</DataTableFooter>}
-      </DataTableRoot>
-    );
-  }
-);
+const DataTableBase = forwardRef<
+  HTMLDivElement,
+  DataTableProps & { footer?: React.ReactNode }
+>(function DataTable({ footer, ...props }, ref) {
+  return (
+    <DataTableRoot ref={ref} {...props}>
+      <DataTableTable aria-label="Data Table">
+        <DataTableHeader aria-label="Data Table Header" />
+        <DataTableBody aria-label="Data Table Body" />
+      </DataTableTable>
+      {footer && <DataTableFooter>{footer}</DataTableFooter>}
+    </DataTableRoot>
+  );
+});
 
 // Create the DataTable namespace object as an object literal
-export const DataTable = Object.assign(DataTableBase, {
+export const DataTable = Object.assign(DataTableExample, {
   Root: DataTableRoot,
   Table: DataTableTable,
   Header: DataTableHeader,
@@ -58,4 +60,4 @@ export {
   DataTableDetailsButton as _DataTableDetailsButton,
   DataTableNestedIcon as _DataTableNestedIcon,
   DataTableSelectionCell as _DataTableSelectionCell,
-}; 
+};
