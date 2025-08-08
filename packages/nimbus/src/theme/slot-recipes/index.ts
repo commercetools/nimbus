@@ -28,6 +28,7 @@ import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-r
  * false typescript errors that are really hard to debug. */
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
+import { primaryActionDropDownSlotRecipe } from "@/components/primary-action-dropdown/primary-action-dropdown.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -48,4 +49,5 @@ export const slotRecipes = {
   combobox: comboBoxSlotRecipe,
   progressBar: progressBarSlotRecipe,
   menu: menuSlotRecipe,
+  primaryActionDropDown: primaryActionDropDownSlotRecipe,
 };

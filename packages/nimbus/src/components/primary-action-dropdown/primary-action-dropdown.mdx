@@ -1,0 +1,513 @@
+---
+id: Components-PrimaryActionDropDown
+title: Split button
+description: A button that allows more than one action.
+lifecycleState: Alpha
+order: 999
+menu:
+  - Components
+  - Actions
+  - Split button
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5748-39095&t=N9rn8aDkNAPrLOn4-1
+---
+
+# Split button
+
+A button that allows more than one action - combining a prominent primary action
+button with an associated dropdown menu for secondary actions, providing a
+flexible and accessible way to group related actions.
+
+## Overview
+
+The PrimaryActionDropDown component addresses the need for interfaces that
+require a dominant action with several less frequently used, but still
+important, related options. It combines a clearly visible primary button with a
+dropdown menu, improving user experience by consolidating actions and reducing
+visual clutter.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5748-39095&t=N9rn8aDkNAPrLOn4-1)
+
+### Variables
+
+Get familiar with the features.
+
+## Basic Usage
+
+The Split button shows a primary action with related actions available in the
+dropdown. When you select an action from the dropdown, it becomes the new
+primary action.
+
+```jsx-live
+const App = () => {
+  const actions = [
+    {
+      id: "save",
+      label: "Save",
+      onClick: () => alert('Saved!'),
+    },
+    {
+      id: "save-publish",
+      label: "Save and publish",
+      onClick: () => alert('Saved and published!'),
+    },
+    {
+      id: "save-next",
+      label: "Save and open next",
+      onClick: () => alert('Saved and opened next!'),
+    }
+  ];
+
+  return (
+    <PrimaryActionDropDown.Root actions={actions} />
+  );
+}
+```
+
+### Document Management Actions
+
+A typical document management scenario with various file operations. Notice how
+selecting different actions from the dropdown changes the primary button.
+
+```jsx-live
+const App = () => {
+  const actions = [
+    {
+      id: "share",
+      label: "Share Document",
+      onClick: () => alert('Document shared!'),
+    },
+    {
+      id: "copy-link",
+      label: "Copy Link",
+      onClick: () => alert('Link copied!'),
+    },
+    {
+      id: "email",
+      label: "Send via Email",
+      onClick: () => alert('Email dialog opened'),
+    },
+    {
+      id: "download",
+      label: "Download PDF",
+      onClick: () => alert('Download started'),
+    },
+    {
+      id: "print",
+      label: "Print Document",
+      onClick: () => alert('Print dialog opened'),
+    }
+  ];
+
+  return (
+    <PrimaryActionDropDown.Root actions={actions} />
+  );
+}
+```
+
+### Task Actions with Critical Action
+
+Common task management actions showing how critical (destructive) actions are
+highlighted.
+
+```jsx-live
+const App = () => {
+  const actions = [
+    {
+      id: "complete",
+      label: "Complete Task",
+      onClick: () => alert('Task completed!'),
+    },
+    {
+      id: "edit",
+      label: "Edit Task",
+      onClick: () => alert('Task edited'),
+    },
+    {
+      id: "duplicate",
+      label: "Duplicate Task",
+      onClick: () => alert('Task duplicated'),
+    },
+    {
+      id: "archive",
+      label: "Archive Task",
+      onClick: () => alert('Task archived'),
+    },
+    {
+      id: "delete",
+      label: "Delete Task",
+      isCritical: true,
+      onClick: () => alert('Task deleted'),
+    }
+  ];
+
+  return (
+    <PrimaryActionDropDown.Root actions={actions} />
+  );
+}
+```
+
+### Controlled State Management
+
+You can control which action is currently selected using the `selectedActionId`
+and `onSelectedActionChange` props.
+
+```jsx-live
+const App = () => {
+  const [selectedActionId, setSelectedActionId] = React.useState("save");
+
+  const actions = [
+    {
+      id: "save",
+      label: "Save",
+      onClick: () => alert('Saved!'),
+    },
+    {
+      id: "publish",
+      label: "Save and Publish",
+      onClick: () => alert('Published!'),
+    },
+    {
+      id: "draft",
+      label: "Save as Draft",
+      onClick: () => alert('Saved as draft'),
+    }
+  ];
+
+  return (
+    <Stack gap="400">
+      <Text>Current selected action: <strong>{selectedActionId}</strong></Text>
+      <PrimaryActionDropDown.Root
+        actions={actions}
+        selectedActionId={selectedActionId}
+        onSelectedActionChange={setSelectedActionId}
+      />
+    </Stack>
+  );
+}
+```
+
+### Import / Export Actions
+
+Import and export data with various format options, matching the Figma design
+example.
+
+```jsx-live
+const App = () => {
+  const actions = [
+    {
+      id: "import-export",
+      label: "Import / Export",
+      onClick: () => alert('Import/Export started!'),
+    },
+    {
+      id: "add-product",
+      label: "Add product",
+      onClick: () => alert('Add product'),
+    },
+    {
+      id: "add-category",
+      label: "Add category",
+      onClick: () => alert('Add category'),
+    },
+    {
+      id: "add-customer",
+      label: "Add customer",
+      onClick: () => alert('Add customer'),
+    },
+    {
+      id: "import-csv",
+      label: "Import products from csv",
+      onClick: () => alert('Import from CSV'),
+    },
+    {
+      id: "import-drive",
+      label: "Import products from drive",
+      onClick: () => alert('Import from drive'),
+    },
+    {
+      id: "export-csv",
+      label: "Export products to csv",
+      onClick: () => alert('Export to CSV'),
+    },
+    {
+      id: "export-drive",
+      label: "Export products to drive",
+      onClick: () => alert('Export to drive'),
+    }
+  ];
+
+  return (
+    <PrimaryActionDropDown.Root actions={actions} />
+  );
+}
+```
+
+### Size Variants
+
+The component supports different sizes to match your interface scale.
+
+```jsx-live
+const App = () => {
+  const actions = [
+    { id: "option1", label: "Option 1", onClick: () => {} },
+    { id: "option2", label: "Option 2", onClick: () => {} }
+  ];
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <PrimaryActionDropDown.Root size="2xs" actions={actions} />
+      <PrimaryActionDropDown.Root size="xs" actions={actions} />
+      <PrimaryActionDropDown.Root size="md" actions={actions} />
+    </Stack>
+  );
+}
+```
+
+### Style Variants
+
+Choose from different visual styles to match your design system.
+
+```jsx-live
+const App = () => {
+  const actions = [
+    { id: "action1", label: "Action 1", onClick: () => {} },
+    { id: "action2", label: "Action 2", onClick: () => {} }
+  ];
+
+  return (
+    <Stack direction="row" gap="400" wrap="wrap">
+      <PrimaryActionDropDown.Root variant="solid" tone="primary" actions={actions} />
+      <PrimaryActionDropDown.Root variant="subtle" tone="neutral" actions={actions} />
+      <PrimaryActionDropDown.Root variant="outline" tone="info" actions={actions} />
+    </Stack>
+  );
+}
+```
+
+### Disabled States
+
+You can disable the entire component or individual actions.
+
+```jsx-live
+const App = () => {
+  const enabledActions = [
+    { id: "available", label: "Available Action", onClick: () => {} },
+    { id: "disabled", label: "Disabled Item", isDisabled: true, onClick: () => {} },
+    { id: "another", label: "Another Action", onClick: () => {} }
+  ];
+
+  const disabledActions = [
+    { id: "action1", label: "Disabled Action", onClick: () => {} },
+    { id: "action2", label: "Another Action", onClick: () => {} }
+  ];
+
+  return (
+    <Stack direction="row" gap="400">
+      <PrimaryActionDropDown.Root actions={enabledActions} />
+      <PrimaryActionDropDown.Root isDisabled actions={disabledActions} />
+    </Stack>
+  );
+}
+```
+
+## How It Works
+
+The Split button follows a **default action selector** pattern:
+
+1. **Primary Button Behavior**: Clicking the primary button executes the
+   currently selected action - it does NOT open the dropdown
+2. **Dropdown Trigger**: Only the chevron arrow button opens/closes the dropdown
+   menu
+3. **Action Selection**: When you select an action from the dropdown, it becomes
+   the new primary action
+4. **Dynamic Updates**: The primary button text and functionality update to
+   reflect the selected action
+5. **State Management**: You can control which action is selected using
+   `selectedActionId` and `onSelectedActionChange`
+
+## Guidelines
+
+The Split button provides a space-efficient way to present a primary action
+alongside related secondary actions, maintaining visual hierarchy while offering
+comprehensive functionality.
+
+### Best Practices
+
+- **Default action + additional actions**: When a button offers multiple
+  actions, but there is one default action
+- **Two click areas**: There are two click areas. One for the default action and
+  one for the dropdown trigger
+- **Related Secondary Actions**: Dropdown items should be logically related to
+  the primary action
+- **Logical Grouping**: Order dropdown items by frequency of use or logical flow
+- **Consistent Labeling**: Use clear, action-oriented labels that match your
+  application's terminology
+- **Appropriate Hierarchy**: Use the critical prop for destructive actions in
+  the dropdown
+- **Accessible Labels**: Provide meaningful aria-labels for screen readers
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- When you have one dominant action with several related but less frequent
+  options
+- For document or data management interfaces with multiple export/save options
+- In task management systems where actions are contextually related
+- When you need to consolidate multiple related buttons to save space
+- For workflows where the primary action is clear but alternatives are valuable
+
+> [!CAUTION]\
+> When not to use
+
+- When actions are unrelated or serve different purposes
+- For navigation between different sections or pages
+- When all actions are equally important (use regular buttons instead)
+- For simple binary choices (use a toggle or two separate buttons)
+- When the primary action isn't clearly more important than alternatives
+
+### Writing Guidelines
+
+- Use sentence case for all button and menu item labels
+- Start with strong action verbs (e.g., "Save Document", "Export Data")
+- Keep the primary button label concise but specific
+- Use parallel structure for related dropdown items
+- Avoid redundant words between primary and dropdown actions
+- Include clarifying text for potentially destructive actions
+
+### Critical Actions
+
+Use the `isCritical` prop to highlight destructive or irreversible actions in
+the dropdown menu.
+
+```jsx-live
+const App = () => (
+  <PrimaryActionDropDown.Root>
+    <PrimaryActionDropDown.ButtonGroup>
+      <PrimaryActionDropDown.Button onClick={() => alert('Account updated!')}>
+        Update Account
+      </PrimaryActionDropDown.Button>
+      <PrimaryActionDropDown.DropdownTrigger />
+    </PrimaryActionDropDown.ButtonGroup>
+    <PrimaryActionDropDown.DropdownMenu>
+      <PrimaryActionDropDown.MenuItem onClick={() => alert('Password changed')}>
+        Change Password
+      </PrimaryActionDropDown.MenuItem>
+      <PrimaryActionDropDown.MenuItem onClick={() => alert('Data exported')}>
+        Export My Data
+      </PrimaryActionDropDown.MenuItem>
+      <PrimaryActionDropDown.MenuItem onClick={() => alert('Account deactivated')}>
+        Deactivate Account
+      </PrimaryActionDropDown.MenuItem>
+      <PrimaryActionDropDown.MenuItem
+        isCritical
+        onClick={() => alert('Account deleted!')}
+      >
+        Delete Account
+      </PrimaryActionDropDown.MenuItem>
+    </PrimaryActionDropDown.DropdownMenu>
+  </PrimaryActionDropDown.Root>
+)
+```
+
+## Specs
+
+### Features
+
+- **Compound Component Architecture**: Flexible composition with clear component
+  boundaries
+- **Keyboard Navigation**: Full keyboard support with Tab, Enter, Space, Arrow
+  keys, and Escape
+- **Flexible Primary Action**: Independent primary button that can be disabled
+  or customized
+- **Accessible Dropdown**: Built-in ARIA attributes and screen reader support
+- **Visual Variants**: Multiple size, variant, and tone options
+- **Critical Action Support**: Visual highlighting for destructive actions
+- **Focus Management**: Proper focus trapping and restoration
+- **Customizable Trigger**: Custom icons or elements for the dropdown trigger
+
+### Properties
+
+<PropsTable id="PrimaryActionDropDown" />
+
+## Accessibility
+
+The PrimaryActionDropDown component is built with accessibility in mind,
+providing full keyboard navigation and screen reader support for both the
+primary action and dropdown functionality.
+
+### Keyboard Interactions
+
+- **Tab**: Navigate to the primary button, then to the dropdown trigger
+- **Enter/Space**: Activate the focused button or open the dropdown
+- **Arrow Keys**: Navigate between dropdown menu items when open
+- **Escape**: Close the dropdown menu and return focus to trigger
+- **Home/End**: Jump to first/last dropdown item
+
+### ARIA Attributes
+
+The component automatically applies appropriate ARIA attributes:
+
+- `role="button"` on both primary button and dropdown trigger
+- `aria-expanded` on the dropdown trigger to indicate menu state
+- `aria-haspopup="menu"` on the dropdown trigger
+- `role="menu"` on the dropdown menu container
+- `role="menuitem"` on individual dropdown items
+- `aria-label` support for custom dropdown trigger labels
+
+### Focus Management
+
+- Focus moves logically from primary button to dropdown trigger
+- When dropdown opens, focus moves to the first menu item
+- Focus is trapped within the dropdown when open
+- Focus returns to the dropdown trigger when the menu closes
+- Disabled states properly prevent focus and interaction
+
+### Screen Reader Support
+
+The component provides comprehensive screen reader support:
+
+```jsx-live
+const App = () => (
+  <PrimaryActionDropDown.Root>
+    <PrimaryActionDropDown.ButtonGroup>
+      <PrimaryActionDropDown.Button
+        onClick={() => alert('Message sent!')}
+        aria-describedby="send-description"
+      >
+        Send Message
+      </PrimaryActionDropDown.Button>
+      <PrimaryActionDropDown.DropdownTrigger aria-label="More sending options" />
+    </PrimaryActionDropDown.ButtonGroup>
+    <PrimaryActionDropDown.DropdownMenu>
+      <PrimaryActionDropDown.MenuItem onClick={() => alert('Scheduled for later')}>
+        Schedule Send
+      </PrimaryActionDropDown.MenuItem>
+      <PrimaryActionDropDown.MenuItem onClick={() => alert('Draft saved')}>
+        Save as Draft
+      </PrimaryActionDropDown.MenuItem>
+      <PrimaryActionDropDown.MenuItem onClick={() => alert('Template created')}>
+        Save as Template
+      </PrimaryActionDropDown.MenuItem>
+    </PrimaryActionDropDown.DropdownMenu>
+    <div id="send-description" style={{ display: 'none' }}>
+      Send the message immediately, or choose from additional options
+    </div>
+  </PrimaryActionDropDown.Root>
+)
+```
+
+### Resources
+
+- [React Aria Menu](https://react-spectrum.adobe.com/react-aria/Menu.html)
+- [React Aria Button](https://react-spectrum.adobe.com/react-aria/Button.html)
+- [WAI-ARIA Menu Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)
+- [WAI-ARIA Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
