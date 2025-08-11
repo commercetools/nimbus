@@ -19,13 +19,10 @@ type Story = StoryObj<typeof Popover.Content>;
 
 export const Basic: Story = {
   render: (args) => (
-    <Popover.Root>
-      <Popover.Trigger>Open Popover</Popover.Trigger>
+    <Popover.Root isOpen>
       <Popover.Content {...args}>
-        <Popover.Dialog>
-          <p>This is a popover component built with React Aria.</p>
-          <Popover.Close>Close</Popover.Close>
-        </Popover.Dialog>
+        <p>This is a popover component!</p>
+        <Popover.Close onClick={() => {console.log('Popover closed');}}>Close</Popover.Close>
       </Popover.Content>
     </Popover.Root>
   ),
