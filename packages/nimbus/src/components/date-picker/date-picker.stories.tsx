@@ -1427,6 +1427,62 @@ export const TimeSupport: Story = {
         await expect(finalSecondsSegment).toHaveTextContent("46");
       }
     );
+
+    await step(
+      "Clear functionality works across all time granularities",
+      async () => {
+        const pickers = [
+          { name: "Date only picker", hasTime: false },
+          { name: "Date and time picker (hour)", hasTime: true },
+          { name: "Date and time picker (minute)", hasTime: true },
+          { name: "Date and time picker (second)", hasTime: true },
+          { name: "Date and time picker with timezone", hasTime: true },
+        ];
+
+        for (const picker of pickers) {
+          const pickerElement = await canvas.findByRole("group", {
+            name: picker.name,
+          });
+          const clearButton = await within(pickerElement).findByRole("button", {
+            name: /clear/i,
+          });
+
+          // Clear button should be enabled (has default value)
+          await expect(clearButton).not.toBeDisabled();
+
+          // Click clear button
+          await userEvent.click(clearButton);
+
+          // Clear button should now be disabled
+          await expect(clearButton).not.toBeVisible();
+
+          // Reset by adding a date back for next test
+          const segments = within(pickerElement).getAllByRole("spinbutton");
+          await userEvent.click(segments[0]); // month
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[1]); // day
+          await userEvent.keyboard("1");
+          await userEvent.click(segments[2]); // year
+          await userEvent.keyboard("2025");
+
+          if (picker.hasTime && segments.length > 3) {
+            // Set time values for time-enabled pickers
+            await userEvent.click(segments[3]); // hour
+            await userEvent.keyboard("12");
+
+            if (segments.length > 4) {
+              await userEvent.click(segments[4]); // minute
+              await userEvent.keyboard("30");
+            }
+
+            if (segments.length > 5) {
+              await userEvent.click(segments[5]); // second
+              await userEvent.keyboard("0");
+            }
+          }
+        }
+      }
+    );
   },
 };
 
