@@ -62,7 +62,6 @@
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
     "@pandacss/types": "catalog:react",
-    "@react-aria/optimize-locales-plugin": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-docs": "catalog:tooling",
     "@storybook/addon-vitest": "catalog:tooling",
@@ -81,6 +80,7 @@
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "react-intl": "^6.0.0",
     "rollup-plugin-tree-shakeable": "catalog:tooling",
     "storybook": "catalog:tooling",
     "vite": "catalog:tooling",
@@ -92,7 +92,8 @@
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
-    "react": "catalog:react"
+    "react": "catalog:react",
+    "react-intl": "6.x"
   },
   "scripts": {
     "build": "pnpm run build-theme-typings && pnpm run build:lib",

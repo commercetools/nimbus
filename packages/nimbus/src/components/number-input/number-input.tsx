@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
 import { useObjectRef, useNumberField, useLocale } from "react-aria";
 import { useNumberFieldState } from "react-stately";
+import { useIntl } from "react-intl";
 import { Box } from "@/components";
 import {
   KeyboardArrowUp,
@@ -16,6 +17,7 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
+
 /**
  * # NumberInput
  *
@@ -26,6 +28,7 @@ import { numberInputRecipe } from "./number-input.recipe";
 export const NumberInput = (props: NumberInputProps) => {
   const { size, ref: forwardedRef, ...restProps } = props;
   const { locale } = useLocale();
+  const intl = useIntl();
 
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
@@ -64,16 +67,16 @@ export const NumberInput = (props: NumberInputProps) => {
         height="full"
       >
         <NumberInputIncrementButtonSlot
-          aria-label="Increment"
           {...incrementButtonProps}
           {...stateProps}
+          aria-label={intl.formatMessage({ id: "numberInput.increment" })}
         >
           <KeyboardArrowUp />
         </NumberInputIncrementButtonSlot>
         <NumberInputDecrementButtonSlot
-          aria-label="Decrement"
           {...decrementButtonProps}
           {...stateProps}
+          aria-label={intl.formatMessage({ id: "numberInput.decrement" })}
         >
           <KeyboardArrowDown />
         </NumberInputDecrementButtonSlot>

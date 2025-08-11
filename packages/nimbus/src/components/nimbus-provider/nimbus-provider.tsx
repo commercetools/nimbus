@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { I18nProvider, RouterProvider } from "react-aria";
+import { RouterProvider } from "react-aria";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
@@ -13,7 +13,6 @@ import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode
  */
 export function NimbusProvider({
   children,
-  locale,
   router,
   ...props
 }: NimbusProviderProps) {
@@ -21,7 +20,7 @@ export function NimbusProvider({
   const content = (
     <ChakraProvider value={system}>
       <NimbusColorModeProvider enableSystem={false} {...props}>
-        <I18nProvider locale={locale}>{children}</I18nProvider>
+        {children}
       </NimbusColorModeProvider>
     </ChakraProvider>
   );

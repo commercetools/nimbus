@@ -1,0 +1,58 @@
+{
+  "datePicker.clearInput": {
+    "developer_comment": "Aria label for clear input button in date picker",
+    "string": "Eingabewert löschen"
+  },
+  "datePicker.time.enterTime": {
+    "developer_comment": "Aria label for time input field in date picker",
+    "string": "Zeit eingeben"
+  },
+  "datePicker.time.enterTimeHour": {
+    "developer_comment": "Aria label for hour-only time input in date picker",
+    "string": "Zeit eingeben (Stunde)"
+  },
+  "datePicker.time.enterTimeHourMinute": {
+    "developer_comment": "Aria label for hour and minute time input in date picker",
+    "string": "Zeit eingeben (Stunde und Minute)"
+  },
+  "datePicker.time.enterTimeHourMinuteSecond": {
+    "developer_comment": "Aria label for full time input with seconds in date picker",
+    "string": "Zeit eingeben (Stunde, Minute und Sekunde)"
+  },
+  "datePicker.time.startTime": {
+    "developer_comment": "Label for start time in date picker",
+    "string": "Startzeit"
+  },
+  "dateRangePicker.time.endTime": {
+    "developer_comment": "Label for end time in date range picker",
+    "string": "Endzeit"
+  },
+  "dateRangePicker.time.startTime": {
+    "developer_comment": "Label for start time in date range picker",
+    "string": "Startzeit"
+  },
+  "loadingSpinner.default": {
+    "developer_comment": "Default loading message for loading spinners",
+    "string": "Daten werden geladen"
+  },
+  "numberInput.decrement": {
+    "developer_comment": "Aria label for decrement button in number input",
+    "string": "Verringern"
+  },
+  "numberInput.increment": {
+    "developer_comment": "Aria label for increment button in number input",
+    "string": "Erhöhen"
+  },
+  "passwordInput.hide": {
+    "developer_comment": "Aria label for hide password button",
+    "string": "Passwort ausblenden"
+  },
+  "passwordInput.show": {
+    "developer_comment": "Aria label for show password button",
+    "string": "Passwort anzeigen"
+  },
+  "select.clearSelection": {
+    "developer_comment": "Aria label for select clear button",
+    "string": "Auswahl löschen"
+  }
+}

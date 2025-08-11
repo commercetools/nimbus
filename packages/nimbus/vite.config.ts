@@ -1,6 +1,5 @@
 import { fileURLToPath } from "node:url";
 import { glob } from "glob";
-import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig } from "vite";
 import type { LibraryFormats } from "vite";
 import react from "@vitejs/plugin-react";
@@ -49,6 +48,7 @@ const external = [
 
   // UI frameworks & styling.
   "@chakra-ui/react",
+  "react-intl",
   // TODO: evaluate whether it makes more sense for `react-aria` and related packages to be bundled w/the library as they are currently,
   //       or declared as peer deps to reduce unintentional code duplication if a consuming app already has react-aria related libraries installed (eg @internationalized/date or react-stately).
 
@@ -69,16 +69,7 @@ export default defineConfig(async () => {
   const entries = await createEntries();
 
   const config = {
-    plugins: [
-      viteTsconfigPaths(),
-      react(),
-      // Only package locale strings for locales we internationalize in our products
-      // https://github.com/commercetools/merchant-center-application-kit/blob/main/packages/i18n/README.md#supported-locales
-      // https://react-spectrum.adobe.com/react-aria/internationalization.html#vite
-      optimizeLocales.vite({
-        locales: ["en-US", "fr-FR", "pt-BR", "es-ES", "de-DE"],
-      }),
-    ],
+    plugins: [viteTsconfigPaths(), react()],
     build: {
       // sourcemaps are built into separate files and should therefore be tree-shakeable
       // TODO: confirm that sourcemaps aren't being bundled into prod builds of consuming applications

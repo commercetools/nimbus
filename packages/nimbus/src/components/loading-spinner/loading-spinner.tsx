@@ -1,4 +1,5 @@
 import { mergeProps, useProgressBar } from "react-aria";
+import { useIntl } from "react-intl";
 import { LoadingSpinnerRoot } from "./loading-spinner.slots";
 import type { LoadingSpinnerProps } from "./loading-spinner.types";
 
@@ -15,7 +16,14 @@ const pointerPath =
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/loadingspinner}
  */
 export const LoadingSpinner = (props: LoadingSpinnerProps) => {
-  const { ref, "aria-label": ariaLabel = "Loading data", ...restProps } = props;
+  const intl = useIntl();
+  const {
+    ref,
+    "aria-label": ariaLabel = intl.formatMessage({
+      id: "loadingSpinner.default",
+    }),
+    ...restProps
+  } = props;
   const { progressBarProps } = useProgressBar({
     isIndeterminate: true,
     "aria-label": ariaLabel,
