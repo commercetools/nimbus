@@ -1,6 +1,6 @@
 import {
   createSlotRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { popoverSlotRecipe } from "./popover.recipe";
 import {
   DialogTrigger as RADialogTrigger,
