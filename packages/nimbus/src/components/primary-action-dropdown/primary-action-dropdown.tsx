@@ -290,7 +290,7 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
             isOpen={isOpen}
             defaultOpen={defaultOpen}
             onOpenChange={onOpenChange}
-            placement="bottom start"
+            placement="bottom end"
             selectionMode="none"
             onAction={onAction ? (key) => onAction(String(key)) : undefined}
           >
