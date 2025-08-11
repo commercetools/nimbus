@@ -12,6 +12,12 @@ export const DataTableTable = forwardRef<HTMLTableElement, DataTableTableProps>(
     const {
       sortDescriptor,
       onSortChange,
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+      selectionMode,
+      disallowEmptySelection,
+      disabledKeys,
     } = useDataTableContext();
 
     // Convert sort descriptor to react-aria format
@@ -37,6 +43,12 @@ export const DataTableTable = forwardRef<HTMLTableElement, DataTableTableProps>(
         ref={ref}
         sortDescriptor={ariaSortDescriptor}
         onSortChange={handleAriaSort}
+        selectedKeys={selectedKeys}
+        defaultSelectedKeys={defaultSelectedKeys}
+        onSelectionChange={onSelectionChange}
+        selectionMode={selectionMode}
+        disallowEmptySelection={disallowEmptySelection}
+        disabledKeys={disabledKeys}
         style={{
           width: "100%",
           tableLayout: "fixed",

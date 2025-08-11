@@ -1,5 +1,5 @@
 import { forwardRef, useState } from "react";
-import { Row as RaRow, Cell as RaCell } from "react-aria-components";
+import { Row as RaRow, Cell as RaCell, Checkbox as RaCheckbox } from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableExpandButton } from "../data-table.slots";
@@ -33,15 +33,20 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
       isTruncated,
       onRowClick,
       onDetailsClick,
-      isSelected,
-      handleRowSelection,
-      isDisabled,
+      disabledKeys,
       onRowAction,
     } = useDataTableContext();
 
     // Hover state management - only for copy functionality
     const [hoveredCell, setHoveredCell] = useState<string | null>(null);
     const [, copyToClipboard] = useCopyToClipboard();
+
+    // Helper function to check if row is disabled
+    const isDisabled = (rowId: string) => {
+      if (!disabledKeys) return false;
+      if (disabledKeys === "all") return true;
+      return disabledKeys.has(rowId);
+    };
 
     const hasNestedContent =
       nestedKey &&
@@ -84,7 +89,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
           }
           ref={ref}
           id={row.id}
-          className={`data-table-row ${isSelected(row.id) ? "data-table-row-selected" : ""} ${isDisabled(row.id) ? "data-table-row-disabled" : ""}`}
+          className={`data-table-row ${isDisabled(row.id) ? "data-table-row-disabled" : ""}`}
           style={{
             cursor: isDisabled(row.id)
               ? "not-allowed"
@@ -92,8 +97,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                 ? "pointer"
                 : undefined,
             position: "relative",
-            ...(!isSelected(row.id) &&
-              depth > 0 && {
+            ...(depth > 0 && {
                 borderLeft: "2px solid var(--colors-primary-6)",
                 backgroundColor: "var(--colors-slate-2)",
               }),
@@ -107,26 +111,19 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                 justifyContent: "center",
               }}
             >
-              <Box
-                onClick={(e) => e.stopPropagation()} // Prevent row click when clicking checkbox area
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%",
-                  height: "100%",
-                }}
+              <RaCheckbox
+                slot="selection"
+                isDisabled={isDisabled(row.id)}
+                aria-label="Select row"
               >
-                <Checkbox
-                  name="select-row"
-                  isSelected={isSelected(row.id)}
-                  isDisabled={isDisabled(row.id)}
-                  aria-label="Select row"
-                  onChange={(isSelected) => {
-                    handleRowSelection(row.id, Boolean(isSelected));
-                  }}
-                />
-              </Box>
+                {({ isSelected }) => (
+                  <Checkbox
+                    isSelected={isSelected}
+                    isDisabled={isDisabled(row.id)}
+                    aria-label="Select row"
+                  />
+                )}
+              </RaCheckbox>
             </RaCell>
           )}
 

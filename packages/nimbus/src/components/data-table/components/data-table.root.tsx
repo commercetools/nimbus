@@ -16,6 +16,7 @@ interface DataTableContextValue<T = any> {
   search?: string;
   sortDescriptor?: SortDescriptor;
   selectedKeys?: Selection;
+  defaultSelectedKeys?: Selection;
   expanded: Record<string, boolean>;
   allowsSorting?: boolean;
   selectionMode?: "none" | "single" | "multiple";
@@ -36,13 +37,7 @@ interface DataTableContextValue<T = any> {
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
   showDetailsColumn: boolean;
-  isSelected: (rowId: string) => boolean;
-  isIndeterminate: () => boolean;
-  isAllSelected: () => boolean;
-  handleRowSelection: (rowId: string, checked: boolean) => void;
-  handleSelectAll: (checked: boolean) => void;
   disabledKeys?: Selection;
-  isDisabled: (rowId: string) => boolean;
   onRowAction?: (row: DataTableRowType<T>, action: 'click' | 'select') => void;
 }
 
@@ -230,84 +225,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       }
     };
 
-    const isSelected = (rowId: string) => {
-      if (!selectedKeys) return false;
-      if (selectedKeys === "all") return true;
-      return selectedKeys.has(rowId);
-    };
 
-    const isIndeterminate = () => {
-      if (!selectedKeys || selectedKeys === "all" || selectionMode !== "multiple") return false;
-      const selectedCount = selectedKeys.size;
-      const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
-      const totalSelectableCount = selectableRows.length;
-      return selectedCount > 0 && selectedCount < totalSelectableCount;
-    };
-
-    const isAllSelected = () => {
-      if (!selectedKeys || selectionMode !== "multiple") return false;
-      if (selectedKeys === "all") return true;
-      const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
-      return selectedKeys.size === selectableRows.length && selectableRows.length > 0;
-    };
-
-    const handleRowSelection = (rowId: string, checked: boolean) => {
-      if (!onSelectionChange) return;
-      
-      // Prevent selection of disabled rows
-      if (isDisabled(rowId)) {
-        if (onRowAction) {
-          const row = sortedRows.find(r => r.id === rowId);
-          if (row) onRowAction(row, 'select');
-        }
-        return;
-      }
-      
-      let newSelection: typeof selectedKeys;
-      
-      if (selectionMode === "single") {
-        newSelection = checked ? new Set([rowId]) : new Set();
-      } else if (selectionMode === "multiple") {
-        const currentSelection = selectedKeys === "all" 
-          ? new Set(sortedRows.map(row => row.id))
-          : new Set(selectedKeys || []);
-        
-        if (checked) {
-          currentSelection.add(rowId);
-        } else {
-          currentSelection.delete(rowId);
-        }
-        
-        if (disallowEmptySelection && currentSelection.size === 0) {
-          return;
-        }
-        
-        newSelection = currentSelection;
-      } else {
-        return;
-      }
-      
-      onSelectionChange(newSelection);
-    };
-
-    const handleSelectAll = (checked: boolean) => {
-      if (!onSelectionChange || selectionMode !== "multiple") return;
-      
-      if (checked) {
-        // Only select non-disabled rows
-        const selectableRows = sortedRows.filter(row => !isDisabled(row.id));
-        onSelectionChange(new Set(selectableRows.map(row => row.id)));
-      } else {
-        if (disallowEmptySelection) return;
-        onSelectionChange(new Set());
-      }
-    };
-
-    const isDisabled = (rowId: string) => {
-      if (!disabledKeys) return false;
-      if (disabledKeys === "all") return true;
-      return disabledKeys.has(rowId);
-    };
 
     const contextValue: DataTableContextValue<T> = {
       columns,
@@ -316,6 +234,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       search,
       sortDescriptor,
       selectedKeys,
+      defaultSelectedKeys,
       expanded,
       allowsSorting,
       selectionMode,
@@ -336,13 +255,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       showExpandColumn,
       showSelectionColumn,
       showDetailsColumn,
-      isSelected,
-      isIndeterminate,
-      isAllSelected,
-      handleRowSelection,
-      handleSelectAll,
       disabledKeys,
-      isDisabled,
       onRowAction,
     };
 

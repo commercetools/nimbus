@@ -41,7 +41,7 @@ export const DataTableRoot = withProvider<HTMLDivElement, DataTableRootProps>(
 export const DataTableFooter = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
->("div", "footer");
+>("footer", "footer");
 export const DataTableSelectionCell = withContext<
   HTMLTableCellElement,
   HTMLChakraProps<"td">

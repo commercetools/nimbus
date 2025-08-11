@@ -3,6 +3,7 @@ import {
   TableHeader as RaTableHeader,
   Column as RaColumn,
   ColumnResizer,
+  Checkbox as RaCheckbox,
 } from "react-aria-components";
 import { DataTableHeaderSortIcon, DataTableColumnResizer } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
@@ -25,9 +26,6 @@ export const DataTableHeader = forwardRef<
     showExpandColumn,
     showDetailsColumn,
     selectionMode,
-    isAllSelected,
-    isIndeterminate,
-    handleSelectAll,
   } = useDataTableContext();
 
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
@@ -93,12 +91,15 @@ export const DataTableHeader = forwardRef<
           aria-label={selectionMode === "multiple" ? "Select all rows" : "Select row"}
         >
           {selectionMode === "multiple" && (
-            <Checkbox
-              isSelected={isAllSelected()}
-              isIndeterminate={isIndeterminate()}
-              aria-label="Select all rows"
-              onChange={(isSelected) => handleSelectAll(Boolean(isSelected))}
-            />
+            <RaCheckbox slot="selection" aria-label="Select all rows">
+              {({ isSelected, isIndeterminate }) => (
+                <Checkbox
+                  isSelected={isSelected}
+                  isIndeterminate={isIndeterminate}
+                  aria-label="Select all rows"
+                />
+              )}
+            </RaCheckbox>
           )}
         </RaColumn>
       )}
@@ -111,21 +112,7 @@ export const DataTableHeader = forwardRef<
           maxWidth={20}
           allowsSorting={false}
           aria-label="Expand rows"
-        >
-          <span style={{ 
-            position: "absolute", 
-            width: "1px", 
-            height: "1px", 
-            padding: 0, 
-            margin: "-1px", 
-            overflow: "hidden", 
-            clip: "rect(0, 0, 0, 0)", 
-            whiteSpace: "nowrap", 
-            border: 0 
-          }}>
-            Expand rows
-          </span>
-        </RaColumn>
+        />
       )}
 
       {visibleCols.map((col, index) => {
