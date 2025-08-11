@@ -3,9 +3,9 @@ import {
 } from "@chakra-ui/react/styled-system";
 import { popoverSlotRecipe } from "./popover.recipe";
 import {
-  DialogTrigger as RADialogTrigger,
-  Popover as RAPopover,
-  Button as RAButton,
+  DialogTrigger as RaDialogTrigger,
+  Popover as RaPopover,
+  Button as RaButton,
   type ButtonProps,
 } from "react-aria-components";
 import { forwardRef } from "react";
@@ -14,24 +14,24 @@ import {
   type PopoverRootSlotProps,
 } from "./popover.types";
 
-const { withProvider, withContext } = createSlotRecipeContext({
+const { withProvider } = createSlotRecipeContext({
   recipe: popoverSlotRecipe,
 });
 
 export const PopoverRootSlot = (props: PopoverRootSlotProps) => (
-  <RADialogTrigger {...props} />
+  <RaDialogTrigger {...props} />
 );
 
 export const PopoverContentSlot = withProvider<
   HTMLDivElement,
   PopoverContentSlotProps
->(RAPopover, "content");
+>(RaPopover, "content");
 
 export const PopoverCloseSlot = forwardRef<
   HTMLButtonElement,
   ButtonProps
 >(({ children, ...props }, ref) => (
-  <RAButton {...props} ref={ref}>
+  <RaButton {...props} ref={ref}>
     {children}
-  </RAButton>
+  </RaButton>
 ));
