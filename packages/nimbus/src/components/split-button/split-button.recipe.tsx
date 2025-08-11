@@ -1,13 +1,13 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
- * Recipe configuration for the PrimaryActionDropDown component.
+ * Recipe configuration for the SplitButton component.
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  */
-export const primaryActionDropDownSlotRecipe = defineSlotRecipe({
+export const splitButtonSlotRecipe = defineSlotRecipe({
   slots: ["root", "buttonGroup", "primaryButton", "dropdownTrigger"],
   // Unique class name prefix for the component
-  className: "nimbus-primary-action-dropdown",
+  className: "nimbus-split-button",
 
   // Base styles applied to all instances of the component
   base: {

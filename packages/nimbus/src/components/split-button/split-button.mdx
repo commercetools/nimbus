@@ -1,5 +1,5 @@
 ---
-id: Components-PrimaryActionDropDown
+id: Components-SplitButton
 title: Split button
 description: A button that allows more than one action.
 lifecycleState: Alpha
@@ -22,7 +22,7 @@ flexible and accessible way to group related actions.
 
 ## Overview
 
-The PrimaryActionDropDown component addresses the need for interfaces that
+The SplitButton component addresses the need for interfaces that
 require a dominant action with several less frequently used, but still
 important, related options. It combines a clearly visible primary button with a
 dropdown menu, improving user experience by consolidating actions and reducing
@@ -65,7 +65,7 @@ const App = () => {
   ];
 
   return (
-    <PrimaryActionDropDown.Root actions={actions} />
+    <SplitButton.Root actions={actions} />
   );
 }
 ```
@@ -106,7 +106,7 @@ const App = () => {
   ];
 
   return (
-    <PrimaryActionDropDown.Root actions={actions} />
+    <SplitButton.Root actions={actions} />
   );
 }
 ```
@@ -148,7 +148,7 @@ const App = () => {
   ];
 
   return (
-    <PrimaryActionDropDown.Root actions={actions} />
+    <SplitButton.Root actions={actions} />
   );
 }
 ```
@@ -183,7 +183,7 @@ const App = () => {
   return (
     <Stack gap="400">
       <Text>Current selected action: <strong>{selectedActionId}</strong></Text>
-      <PrimaryActionDropDown.Root
+      <SplitButton.Root
         actions={actions}
         selectedActionId={selectedActionId}
         onSelectedActionChange={setSelectedActionId}
@@ -244,7 +244,7 @@ const App = () => {
   ];
 
   return (
-    <PrimaryActionDropDown.Root actions={actions} />
+    <SplitButton.Root actions={actions} />
   );
 }
 ```
@@ -262,9 +262,9 @@ const App = () => {
 
   return (
     <Stack direction="row" gap="400" alignItems="center">
-      <PrimaryActionDropDown.Root size="2xs" actions={actions} />
-      <PrimaryActionDropDown.Root size="xs" actions={actions} />
-      <PrimaryActionDropDown.Root size="md" actions={actions} />
+      <SplitButton.Root size="2xs" actions={actions} />
+      <SplitButton.Root size="xs" actions={actions} />
+      <SplitButton.Root size="md" actions={actions} />
     </Stack>
   );
 }
@@ -283,9 +283,9 @@ const App = () => {
 
   return (
     <Stack direction="row" gap="400" wrap="wrap">
-      <PrimaryActionDropDown.Root variant="solid" tone="primary" actions={actions} />
-      <PrimaryActionDropDown.Root variant="subtle" tone="neutral" actions={actions} />
-      <PrimaryActionDropDown.Root variant="outline" tone="info" actions={actions} />
+      <SplitButton.Root variant="solid" tone="primary" actions={actions} />
+      <SplitButton.Root variant="subtle" tone="neutral" actions={actions} />
+      <SplitButton.Root variant="outline" tone="info" actions={actions} />
     </Stack>
   );
 }
@@ -310,8 +310,8 @@ const App = () => {
 
   return (
     <Stack direction="row" gap="400">
-      <PrimaryActionDropDown.Root actions={enabledActions} />
-      <PrimaryActionDropDown.Root isDisabled actions={disabledActions} />
+      <SplitButton.Root actions={enabledActions} />
+      <SplitButton.Root isDisabled actions={disabledActions} />
     </Stack>
   );
 }
@@ -390,31 +390,31 @@ the dropdown menu.
 
 ```jsx-live
 const App = () => (
-  <PrimaryActionDropDown.Root>
-    <PrimaryActionDropDown.ButtonGroup>
-      <PrimaryActionDropDown.Button onClick={() => alert('Account updated!')}>
+  <SplitButton.Root>
+    <SplitButton.ButtonGroup>
+      <SplitButton.Button onClick={() => alert('Account updated!')}>
         Update Account
-      </PrimaryActionDropDown.Button>
-      <PrimaryActionDropDown.DropdownTrigger />
-    </PrimaryActionDropDown.ButtonGroup>
-    <PrimaryActionDropDown.DropdownMenu>
-      <PrimaryActionDropDown.MenuItem onClick={() => alert('Password changed')}>
+      </SplitButton.Button>
+      <SplitButton.DropdownTrigger />
+    </SplitButton.ButtonGroup>
+    <SplitButton.DropdownMenu>
+      <SplitButton.MenuItem onClick={() => alert('Password changed')}>
         Change Password
-      </PrimaryActionDropDown.MenuItem>
-      <PrimaryActionDropDown.MenuItem onClick={() => alert('Data exported')}>
+      </SplitButton.MenuItem>
+      <SplitButton.MenuItem onClick={() => alert('Data exported')}>
         Export My Data
-      </PrimaryActionDropDown.MenuItem>
-      <PrimaryActionDropDown.MenuItem onClick={() => alert('Account deactivated')}>
+      </SplitButton.MenuItem>
+      <SplitButton.MenuItem onClick={() => alert('Account deactivated')}>
         Deactivate Account
-      </PrimaryActionDropDown.MenuItem>
-      <PrimaryActionDropDown.MenuItem
+      </SplitButton.MenuItem>
+      <SplitButton.MenuItem
         isCritical
         onClick={() => alert('Account deleted!')}
       >
         Delete Account
-      </PrimaryActionDropDown.MenuItem>
-    </PrimaryActionDropDown.DropdownMenu>
-  </PrimaryActionDropDown.Root>
+      </SplitButton.MenuItem>
+    </SplitButton.DropdownMenu>
+  </SplitButton.Root>
 )
 ```
 
@@ -436,11 +436,11 @@ const App = () => (
 
 ### Properties
 
-<PropsTable id="PrimaryActionDropDown" />
+<PropsTable id="SplitButton" />
 
 ## Accessibility
 
-The PrimaryActionDropDown component is built with accessibility in mind,
+The SplitButton component is built with accessibility in mind,
 providing full keyboard navigation and screen reader support for both the
 primary action and dropdown functionality.
 
@@ -477,31 +477,31 @@ The component provides comprehensive screen reader support:
 
 ```jsx-live
 const App = () => (
-  <PrimaryActionDropDown.Root>
-    <PrimaryActionDropDown.ButtonGroup>
-      <PrimaryActionDropDown.Button
+  <SplitButton.Root>
+    <SplitButton.ButtonGroup>
+      <SplitButton.Button
         onClick={() => alert('Message sent!')}
         aria-describedby="send-description"
       >
         Send Message
-      </PrimaryActionDropDown.Button>
-      <PrimaryActionDropDown.DropdownTrigger aria-label="More sending options" />
-    </PrimaryActionDropDown.ButtonGroup>
-    <PrimaryActionDropDown.DropdownMenu>
-      <PrimaryActionDropDown.MenuItem onClick={() => alert('Scheduled for later')}>
+      </SplitButton.Button>
+      <SplitButton.DropdownTrigger aria-label="More sending options" />
+    </SplitButton.ButtonGroup>
+    <SplitButton.DropdownMenu>
+      <SplitButton.MenuItem onClick={() => alert('Scheduled for later')}>
         Schedule Send
-      </PrimaryActionDropDown.MenuItem>
-      <PrimaryActionDropDown.MenuItem onClick={() => alert('Draft saved')}>
+      </SplitButton.MenuItem>
+      <SplitButton.MenuItem onClick={() => alert('Draft saved')}>
         Save as Draft
-      </PrimaryActionDropDown.MenuItem>
-      <PrimaryActionDropDown.MenuItem onClick={() => alert('Template created')}>
+      </SplitButton.MenuItem>
+      <SplitButton.MenuItem onClick={() => alert('Template created')}>
         Save as Template
-      </PrimaryActionDropDown.MenuItem>
-    </PrimaryActionDropDown.DropdownMenu>
+      </SplitButton.MenuItem>
+    </SplitButton.DropdownMenu>
     <div id="send-description" style={{ display: 'none' }}>
       Send the message immediately, or choose from additional options
     </div>
-  </PrimaryActionDropDown.Root>
+  </SplitButton.Root>
 )
 ```
 

@@ -6,7 +6,7 @@ import type {
 import type { ButtonProps } from "@/components/button";
 
 // Main component props
-export interface PrimaryActionDropDownProps
+export interface SplitButtonProps
   extends Omit<RaMenuTriggerProps, "trigger" | "children">,
     Required<Pick<RaMenuProps<object>, "onAction">>,
     Pick<ButtonProps, "size" | "variant" | "tone" | "isDisabled"> {

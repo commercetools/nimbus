@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { useState } from "react";
-import { PrimaryActionDropDown } from "./index";
+import { SplitButton } from "./index";
 import { Stack, Icon, Text } from "@/components";
 import { Menu } from "@/components/menu";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
 
-const meta: Meta<typeof PrimaryActionDropDown> = {
-  title: "components/PrimaryActionDropDown",
-  component: PrimaryActionDropDown,
+const meta: Meta<typeof SplitButton> = {
+  title: "components/Buttons/SplitButton",
+  component: SplitButton,
   parameters: {},
   tags: ["autodocs"],
   args: {
@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   render: () => (
-    <PrimaryActionDropDown
+    <SplitButton
       defaultOpen={true}
       defaultAction="save"
       onAction={(id) => console.log(`Action: ${id}`)}
@@ -33,7 +33,7 @@ export const Basic: Story = {
       <Menu.Item id="save">Save</Menu.Item>
       <Menu.Item id="save-publish">Save and publish</Menu.Item>
       <Menu.Item id="save-next">Save and open next</Menu.Item>
-    </PrimaryActionDropDown>
+    </SplitButton>
   ),
   play: async ({ canvasElement, step }) => {
     // Get the canvas element directly first
@@ -146,7 +146,7 @@ export const Basic: Story = {
 
 export const DocumentManagement: Story = {
   render: () => (
-    <PrimaryActionDropDown
+    <SplitButton
       onAction={(id) => alert(`${id} clicked!`)}
       aria-label="Document actions"
     >
@@ -158,26 +158,26 @@ export const DocumentManagement: Story = {
       <Menu.Item id="email">Send via Email</Menu.Item>
       <Menu.Item id="download">Download PDF</Menu.Item>
       <Menu.Item id="print">Print Document</Menu.Item>
-    </PrimaryActionDropDown>
+    </SplitButton>
   ),
 };
 
 export const SimpleText: Story = {
   render: () => (
-    <PrimaryActionDropDown
+    <SplitButton
       onAction={(id) => alert(`${id} clicked!`)}
       aria-label="Save options"
     >
       <Menu.Item id="save">Save Document</Menu.Item>
       <Menu.Item id="save-copy">Save as Copy</Menu.Item>
       <Menu.Item id="save-template">Save as Template</Menu.Item>
-    </PrimaryActionDropDown>
+    </SplitButton>
   ),
 };
 
 export const WithComplexContent: Story = {
   render: () => (
-    <PrimaryActionDropDown
+    <SplitButton
       onAction={(id) => alert(`${id} clicked!`)}
       aria-label="Task actions"
     >
@@ -191,14 +191,14 @@ export const WithComplexContent: Story = {
       <Menu.Item id="delete" isCritical={true}>
         Delete Task
       </Menu.Item>
-    </PrimaryActionDropDown>
+    </SplitButton>
   ),
 };
 
 export const SizeVariants: Story = {
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
-      <PrimaryActionDropDown
+      <SplitButton
         size="2xs"
         onAction={fn()}
         aria-label="Size variant actions"
@@ -208,9 +208,9 @@ export const SizeVariants: Story = {
         </Icon>
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
-      </PrimaryActionDropDown>
+      </SplitButton>
 
-      <PrimaryActionDropDown
+      <SplitButton
         size="xs"
         onAction={fn()}
         aria-label="Size variant actions"
@@ -220,9 +220,9 @@ export const SizeVariants: Story = {
         </Icon>
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
-      </PrimaryActionDropDown>
+      </SplitButton>
 
-      <PrimaryActionDropDown
+      <SplitButton
         size="md"
         onAction={fn()}
         aria-label="Size variant actions"
@@ -232,7 +232,7 @@ export const SizeVariants: Story = {
         </Icon>
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
-      </PrimaryActionDropDown>
+      </SplitButton>
     </Stack>
   ),
 };
@@ -244,7 +244,7 @@ export const RegularButtonVariants: Story = {
       <Stack>
         <h3>Regular Button Sizes (data-mode='regular')</h3>
         <Stack direction="row" gap="400" alignItems="center">
-          <PrimaryActionDropDown
+          <SplitButton
             size="2xs"
             variant="solid"
             tone="primary"
@@ -254,9 +254,9 @@ export const RegularButtonVariants: Story = {
             <Text slot="label">Actions</Text>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             size="xs"
             variant="solid"
             tone="primary"
@@ -266,9 +266,9 @@ export const RegularButtonVariants: Story = {
             <Text slot="label">Actions</Text>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             size="md"
             variant="solid"
             tone="primary"
@@ -278,7 +278,7 @@ export const RegularButtonVariants: Story = {
             <Text slot="label">Actions</Text>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
         </Stack>
       </Stack>
 
@@ -286,7 +286,7 @@ export const RegularButtonVariants: Story = {
       <Stack>
         <h3>Regular Button Style Variants</h3>
         <Stack direction="row" gap="400" wrap="wrap">
-          <PrimaryActionDropDown
+          <SplitButton
             variant="solid"
             tone="primary"
             onAction={fn()}
@@ -298,9 +298,9 @@ export const RegularButtonVariants: Story = {
             </Icon>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             variant="subtle"
             tone="neutral"
             onAction={fn()}
@@ -312,9 +312,9 @@ export const RegularButtonVariants: Story = {
             </Icon>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             variant="outline"
             tone="primary"
             onAction={fn()}
@@ -326,9 +326,9 @@ export const RegularButtonVariants: Story = {
             </Icon>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             variant="outline"
             tone="critical"
             onAction={fn()}
@@ -340,9 +340,9 @@ export const RegularButtonVariants: Story = {
             </Icon>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             variant="ghost"
             tone="primary"
             onAction={fn()}
@@ -354,7 +354,7 @@ export const RegularButtonVariants: Story = {
             </Icon>
             <Menu.Item id="action1">Action 1</Menu.Item>
             <Menu.Item id="action2">Action 2</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
         </Stack>
       </Stack>
     </Stack>
@@ -368,7 +368,7 @@ export const SplitButtonVariants: Story = {
       <Stack>
         <h3>Split Button Sizes (data-mode='split')</h3>
         <Stack direction="row" gap="400" alignItems="center">
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             size="2xs"
             variant="solid"
@@ -381,9 +381,9 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="save-publish">Save & Publish</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             size="xs"
             variant="solid"
@@ -396,9 +396,9 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="save-publish">Save & Publish</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             size="md"
             variant="solid"
@@ -411,7 +411,7 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="save-publish">Save & Publish</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
         </Stack>
       </Stack>
 
@@ -419,7 +419,7 @@ export const SplitButtonVariants: Story = {
       <Stack>
         <h3>Split Button Style Variants</h3>
         <Stack direction="row" gap="400" wrap="wrap">
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             variant="solid"
             tone="primary"
@@ -431,9 +431,9 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             variant="subtle"
             tone="neutral"
@@ -445,9 +445,9 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             variant="outline"
             tone="primary"
@@ -459,9 +459,9 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             variant="outline"
             tone="critical"
@@ -473,9 +473,9 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
 
-          <PrimaryActionDropDown
+          <SplitButton
             defaultAction="save"
             variant="ghost"
             tone="primary"
@@ -487,7 +487,7 @@ export const SplitButtonVariants: Story = {
             </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
-          </PrimaryActionDropDown>
+          </SplitButton>
         </Stack>
       </Stack>
     </Stack>
@@ -497,7 +497,7 @@ export const SplitButtonVariants: Story = {
 export const DisabledStates: Story = {
   render: () => (
     <Stack direction="row" gap="400">
-      <PrimaryActionDropDown
+      <SplitButton
         isDisabled
         onAction={fn()}
         aria-label="Disabled actions"
@@ -507,9 +507,9 @@ export const DisabledStates: Story = {
         </Icon>
         <Menu.Item id="action1">Disabled Action</Menu.Item>
         <Menu.Item id="action2">Another Action</Menu.Item>
-      </PrimaryActionDropDown>
+      </SplitButton>
 
-      <PrimaryActionDropDown onAction={fn()} aria-label="Mixed state actions">
+      <SplitButton onAction={fn()} aria-label="Mixed state actions">
         <Icon slot="icon">
           <Save />
         </Icon>
@@ -518,7 +518,7 @@ export const DisabledStates: Story = {
           Disabled Item
         </Menu.Item>
         <Menu.Item id="another">Another Action</Menu.Item>
-      </PrimaryActionDropDown>
+      </SplitButton>
     </Stack>
   ),
 };
@@ -532,7 +532,7 @@ export const ControlledExample: Story = {
         <p style={{ marginBottom: "16px" }}>
           Current primary action: <strong>{defaultAction}</strong>
         </p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction={defaultAction}
           onAction={(id) => alert(`${id} clicked!`)}
           aria-label="Controlled example actions"
@@ -543,7 +543,7 @@ export const ControlledExample: Story = {
           <Menu.Item id="save">Save</Menu.Item>
           <Menu.Item id="save-publish">Save and publish</Menu.Item>
           <Menu.Item id="save-next">Save and open next</Menu.Item>
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ marginTop: "16px", fontSize: "14px", color: "#666" }}>
           The primary button always shows the default action (first option).
           Selecting from dropdown executes actions but doesn't change the
@@ -567,7 +567,7 @@ export const RegularButtonMode: Story = {
       <div>
         <h3>Regular Button Mode (no defaultAction)</h3>
         <p>Clicking anywhere on the button opens the dropdown</p>
-        <PrimaryActionDropDown
+        <SplitButton
           aria-label="Import and export options"
           onAction={(id) => alert(`${id} clicked!`)}
         >
@@ -577,13 +577,13 @@ export const RegularButtonMode: Story = {
           <Menu.Item id="add-customer">Add customer</Menu.Item>
           <Menu.Item id="import-csv">Import products from csv</Menu.Item>
           <Menu.Item id="export-csv">Export products to csv</Menu.Item>
-        </PrimaryActionDropDown>
+        </SplitButton>
       </div>
 
       <div>
         <h3>Split Button Mode (with defaultAction)</h3>
         <p>Primary button executes action, arrow opens dropdown</p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="save"
           onAction={(id) => alert(`${id} clicked!`)}
           aria-label="Split button save actions"
@@ -594,7 +594,7 @@ export const RegularButtonMode: Story = {
           <Menu.Item id="save">Save</Menu.Item>
           <Menu.Item id="save-publish">Save and publish</Menu.Item>
           <Menu.Item id="save-next">Save and open next</Menu.Item>
-        </PrimaryActionDropDown>
+        </SplitButton>
       </div>
     </Stack>
   ),
@@ -606,7 +606,7 @@ export const WithSections: Story = {
       <div>
         <h3>Sectioned Menu (Split Button Mode)</h3>
         <p>Using sections and separators to organize actions</p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="save"
           onAction={(id) => alert(`${id} clicked!`)}
           aria-label="Sectioned document actions"
@@ -636,13 +636,13 @@ export const WithSections: Story = {
               Delete Document
             </Menu.Item>
           </Menu.Section>
-        </PrimaryActionDropDown>
+        </SplitButton>
       </div>
 
       <div>
         <h3>Sectioned Menu (Regular Button Mode)</h3>
         <p>Sections also work in regular button mode</p>
-        <PrimaryActionDropDown
+        <SplitButton
           onAction={(id) => alert(`${id} clicked!`)}
           aria-label="Task management actions"
         >
@@ -658,7 +658,7 @@ export const WithSections: Story = {
             <Menu.Item id="import-csv">Import from CSV</Menu.Item>
             <Menu.Item id="import-json">Import from JSON</Menu.Item>
           </Menu.Section>
-        </PrimaryActionDropDown>
+        </SplitButton>
       </div>
     </Stack>
   ),
@@ -666,7 +666,7 @@ export const WithSections: Story = {
 
 export const AccessibilityTest: Story = {
   render: () => (
-    <PrimaryActionDropDown
+    <SplitButton
       aria-label="More sending options"
       defaultAction="send"
       onAction={fn()}
@@ -678,7 +678,7 @@ export const AccessibilityTest: Story = {
       <Menu.Item id="schedule">Schedule Send</Menu.Item>
       <Menu.Item id="draft">Save as Draft</Menu.Item>
       <Menu.Item id="template">Save as Template</Menu.Item>
-    </PrimaryActionDropDown>
+    </SplitButton>
   ),
   play: async ({ canvasElement, step }) => {
     const localCanvas = within(canvasElement);
@@ -779,7 +779,7 @@ export const EdgeCasesAndFallbacks: Story = {
       <Stack direction="column" gap="200">
         <h3>Edge Case: defaultAction Not Found</h3>
         <p>When defaultAction="nonexistent" but no Menu.Item has that ID</p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="nonexistent"
           aria-label="Missing default action test"
           onAction={(id) => alert(`Action: ${id}`)}
@@ -789,7 +789,7 @@ export const EdgeCasesAndFallbacks: Story = {
           </Icon>
           <Menu.Item id="save">Save Document</Menu.Item>
           <Menu.Item id="export">Export PDF</Menu.Item>
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Primary button shows "No actions available" and is disabled,
           but dropdown trigger is enabled (since there are valid menu items)
@@ -800,7 +800,7 @@ export const EdgeCasesAndFallbacks: Story = {
       <Stack direction="column" gap="200">
         <h3>Edge Case: No Menu Items</h3>
         <p>Component with no Menu.Item children</p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="save"
           aria-label="No menu items test"
           onAction={(id) => alert(`Action: ${id}`)}
@@ -809,7 +809,7 @@ export const EdgeCasesAndFallbacks: Story = {
             <Save />
           </Icon>
           {/* No Menu.Item components */}
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Button shows "No actions available" and is disabled
         </p>
@@ -821,7 +821,7 @@ export const EdgeCasesAndFallbacks: Story = {
         <p>
           defaultAction points to disabled item, all other items disabled too
         </p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="save"
           aria-label="All disabled items test"
           onAction={(id) => alert(`Action: ${id}`)}
@@ -835,7 +835,7 @@ export const EdgeCasesAndFallbacks: Story = {
           <Menu.Item id="export" isDisabled>
             Export PDF
           </Menu.Item>
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Button shows "Save Document" but is disabled (honors
           defaultAction even if disabled)
@@ -846,7 +846,7 @@ export const EdgeCasesAndFallbacks: Story = {
       <Stack direction="column" gap="200">
         <h3>Edge Case: Empty Menu Section</h3>
         <p>Menu.Section with no Menu.Item children</p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="save"
           aria-label="Empty section test"
           onAction={(id) => alert(`Action: ${id}`)}
@@ -857,7 +857,7 @@ export const EdgeCasesAndFallbacks: Story = {
           <Menu.Section label="Empty Section">
             {/* No Menu.Item components */}
           </Menu.Section>
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Button shows "No actions available" and is disabled
         </p>
@@ -867,7 +867,7 @@ export const EdgeCasesAndFallbacks: Story = {
       <Stack direction="column" gap="200">
         <h3>Edge Case: Regular Mode No Label</h3>
         <p>Regular button mode without label slot</p>
-        <PrimaryActionDropDown
+        <SplitButton
           aria-label="No label slot test"
           onAction={(id) => alert(`Action: ${id}`)}
         >
@@ -877,7 +877,7 @@ export const EdgeCasesAndFallbacks: Story = {
           <Menu.Item id="save">Save Document</Menu.Item>
           <Menu.Item id="export">Export PDF</Menu.Item>
           {/* No Text slot="label" */}
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Button shows "Select an option" as fallback text
         </p>
@@ -887,7 +887,7 @@ export const EdgeCasesAndFallbacks: Story = {
       <Stack direction="column" gap="200">
         <h3>Edge Case: Menu Items Without IDs</h3>
         <p>Some Menu.Items missing id props</p>
-        <PrimaryActionDropDown
+        <SplitButton
           defaultAction="valid"
           aria-label="Missing ID test"
           onAction={(id) => alert(`Action: ${id}`)}
@@ -898,7 +898,7 @@ export const EdgeCasesAndFallbacks: Story = {
           <Menu.Item>No ID Item</Menu.Item>
           <Menu.Item id="valid">Valid Item</Menu.Item>
           <Menu.Item>Another No ID</Menu.Item>
-        </PrimaryActionDropDown>
+        </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Button shows "Valid Item" (skips items without IDs)
         </p>

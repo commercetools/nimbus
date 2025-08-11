@@ -2,20 +2,20 @@ import React from "react";
 import { Button } from "@/components/button";
 import { IconButton } from "@/components/icon-button";
 import { Menu } from "@/components/menu";
-import type { PrimaryActionDropDownProps } from "./primary-action-dropdown.types";
+import type { SplitButtonProps } from "./split-button.types";
 import {
-  PrimaryActionDropDownRootSlot,
-  PrimaryActionDropDownButtonGroupSlot,
-  PrimaryActionDropDownPrimaryButtonSlot,
-  PrimaryActionDropDownTriggerSlot,
-} from "./primary-action-dropdown.slots";
+  SplitButtonRootSlot,
+  SplitButtonButtonGroupSlot,
+  SplitButtonPrimaryButtonSlot,
+  SplitButtonTriggerSlot,
+} from "./split-button.slots";
 import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
 
 // Re-export types
-export type * from "./primary-action-dropdown.types";
+export type * from "./split-button.types";
 
 /**
- * # PrimaryActionDropDown
+ * # SplitButton
  *
  * A split-button component that combines a primary action button with a dropdown menu.
  *
@@ -25,7 +25,7 @@ export type * from "./primary-action-dropdown.types";
  *
  * Use with Menu.Item, Menu.Section, and Menu.Separator components for content.
  */
-export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
+export const SplitButton = (props: SplitButtonProps) => {
   const {
     size = "md",
     variant = "solid",
@@ -265,15 +265,15 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
     : isDropdownTriggerDisabled;
 
   return (
-    <PrimaryActionDropDownRootSlot
+    <SplitButtonRootSlot
       variant={variant}
       data-mode={isSplitButtonMode ? "split" : "regular"}
     >
       {isSplitButtonMode ? (
         // Split Button Mode: Separate primary button + dropdown trigger
-        <PrimaryActionDropDownButtonGroupSlot>
+        <SplitButtonButtonGroupSlot>
           {/* Primary Action Button - Internal to component */}
-          <PrimaryActionDropDownPrimaryButtonSlot asChild>
+          <SplitButtonPrimaryButtonSlot asChild>
             <Button
               {...buttonProps}
               isDisabled={isPrimaryDisabled}
@@ -282,7 +282,7 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
               {iconElement}
               {buttonContent.content}
             </Button>
-          </PrimaryActionDropDownPrimaryButtonSlot>
+          </SplitButtonPrimaryButtonSlot>
 
           {/* Menu Trigger and Dropdown */}
           <Menu.Root
@@ -295,7 +295,7 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
             onAction={onAction ? (key) => onAction(String(key)) : undefined}
           >
             <Menu.Trigger asChild>
-              <PrimaryActionDropDownTriggerSlot asChild>
+              <SplitButtonTriggerSlot asChild>
                 <IconButton
                   {...buttonProps}
                   aria-label={ariaLabel}
@@ -303,12 +303,12 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
                 >
                   <KeyboardArrowDown />
                 </IconButton>
-              </PrimaryActionDropDownTriggerSlot>
+              </SplitButtonTriggerSlot>
             </Menu.Trigger>
 
             <Menu.Content>{menuItems}</Menu.Content>
           </Menu.Root>
-        </PrimaryActionDropDownButtonGroupSlot>
+        </SplitButtonButtonGroupSlot>
       ) : (
         // Regular Button Mode: Single button that opens dropdown on click
         <Menu.Root
@@ -321,7 +321,7 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
           onAction={onAction ? (key) => onAction(String(key)) : undefined}
         >
           <Menu.Trigger asChild>
-            <PrimaryActionDropDownPrimaryButtonSlot asChild>
+            <SplitButtonPrimaryButtonSlot asChild>
               <Button
                 {...buttonProps}
                 isDisabled={isRegularButtonDisabled}
@@ -331,17 +331,17 @@ export const PrimaryActionDropDown = (props: PrimaryActionDropDownProps) => {
                 {buttonContent.content}
                 <KeyboardArrowDown />
               </Button>
-            </PrimaryActionDropDownPrimaryButtonSlot>
+            </SplitButtonPrimaryButtonSlot>
           </Menu.Trigger>
 
           <Menu.Content>{menuItems}</Menu.Content>
         </Menu.Root>
       )}
-    </PrimaryActionDropDownRootSlot>
+    </SplitButtonRootSlot>
   );
 };
 
-PrimaryActionDropDown.displayName = "PrimaryActionDropDown";
+SplitButton.displayName = "SplitButton";
 
 // Export for internal use by react-docgen
-export { PrimaryActionDropDown as _PrimaryActionDropDown };
+export { SplitButton as _SplitButton };
