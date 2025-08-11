@@ -23,20 +23,29 @@ export const DatePickerTimeInput = ({
   useEffect(() => {
     // Check if date changed
     if (dateValue && previousDateRef.current?.compare(dateValue) !== 0) {
-      // Small delay to ensure the DOM is ready
-      setTimeout(() => {
-        // Find the first focusable segment within the time input container
-        const container = timeInputRef.current;
-        if (container) {
-          const firstSegment = container.querySelector(
-            '[role="spinbutton"]'
-          ) as HTMLElement;
+      // Only auto-focus if no time input segment currently has focus
+      // This prevents stealing focus during user interaction with time segments
+      const container = timeInputRef.current;
+      const activeElement = document.activeElement;
+      const hasTimeSegmentFocus =
+        container?.contains(activeElement) &&
+        activeElement?.getAttribute("role") === "spinbutton";
 
-          if (firstSegment) {
-            firstSegment.focus();
+      if (!hasTimeSegmentFocus) {
+        // Small delay to ensure the DOM is ready
+        setTimeout(() => {
+          // Find the first focusable segment within the time input container
+          if (container) {
+            const firstSegment = container.querySelector(
+              '[role="spinbutton"]'
+            ) as HTMLElement;
+
+            if (firstSegment) {
+              firstSegment.focus();
+            }
           }
-        }
-      }, 50);
+        }, 50);
+      }
     }
 
     previousDateRef.current = dateValue;
