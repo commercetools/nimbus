@@ -64,7 +64,10 @@ export const RichTextInput = (props: RichTextInputProps) => {
     return value ?? defaultValue ?? "";
   });
 
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<{
+    focus: () => void;
+    resetValue: (html: string) => void;
+  } | null>(null);
 
   // Handle controlled value changes
   useEffect(() => {
@@ -76,7 +79,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
   }, [value, serializedValue]);
 
   const handleChange = useCallback(
-    (slateValue: any) => {
+    (slateValue: ReturnType<typeof createEmptyValue>) => {
       const newHtml = toHTML(slateValue);
       const hasInternalSlateValueChanged = internalValue !== slateValue;
       const hasSerializedValueChanged = newHtml !== serializedValue;

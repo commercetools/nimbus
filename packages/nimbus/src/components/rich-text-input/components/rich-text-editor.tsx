@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { createEditor, type Descendant } from "slate";
-import { Slate, Editable, withReact, ReactEditor } from "slate-react";
+import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import isHotkey from "is-hotkey";
 import { Box } from "@chakra-ui/react";
@@ -21,6 +21,7 @@ import {
   resetEditor,
   Softbreaker,
 } from "./rich-text-utils/slate-helpers";
+import { createEmptyValue } from "./rich-text-utils/html-serialization";
 
 // Keyboard shortcuts
 const HOTKEYS = {
@@ -125,15 +126,19 @@ export const RichTextEditor = forwardRef<
   );
 
   // Render element
-  const renderElement = useCallback((props: any) => <Element {...props} />, []);
+  const renderElement = useCallback(
+    (props: Parameters<typeof Element>[0]) => <Element {...props} />,
+    []
+  );
 
   // Render leaf
-  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
+  const renderLeaf = useCallback(
+    (props: Parameters<typeof Leaf>[0]) => <Leaf {...props} />,
+    []
+  );
 
   // Ensure we always have a valid value
-  const defaultValue = [
-    { type: "paragraph", children: [{ text: "" }] },
-  ] as Descendant[];
+  const defaultValue = createEmptyValue();
   const safeInitialValue =
     Array.isArray(value) && value.length > 0 ? value : defaultValue;
 

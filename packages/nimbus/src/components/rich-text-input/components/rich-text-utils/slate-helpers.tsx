@@ -3,9 +3,7 @@ import {
   Editor,
   Transforms,
   Element as SlateElement,
-  Text as SlateText,
   Range,
-  type Location,
   type Editor as SlateEditor,
 } from "slate";
 import {
@@ -13,10 +11,10 @@ import {
   type RenderElementProps,
   type RenderLeafProps,
 } from "slate-react";
-// @ts-ignore - is-url package doesn't have proper types
+// @ts-expect-error - is-url package doesn't have proper types
 import isUrl from "is-url";
-import { BLOCK_TAGS } from "./constants";
 import type { CustomElement, CustomText, ElementFormat } from "./types";
+import { fromHTML } from "./html-serialization";
 
 const LIST_TYPES = ["bulleted-list", "numbered-list"];
 
@@ -36,9 +34,12 @@ export const isBlockActive = (
 
   const [match] = Array.from(
     Editor.nodes(editor, {
+      // cSpell:ignore unhang
       at: Editor.unhangRange(editor, selection),
       match: (n) =>
-        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
+        !Editor.isEditor(n) &&
+        SlateElement.isElement(n) &&
+        (n as CustomElement).type === format,
     })
   );
 
@@ -68,7 +69,7 @@ export const toggleBlock = (
     match: (n) =>
       !Editor.isEditor(n) &&
       SlateElement.isElement(n) &&
-      LIST_TYPES.includes(n.type),
+      LIST_TYPES.includes((n as CustomElement).type),
     split: true,
   });
 
@@ -96,7 +97,6 @@ export const focusEditor = (editor: SlateEditor): void => {
 
 // Reset the editor to a specific value
 export const resetEditor = (editor: SlateEditor, value: string): void => {
-  const { fromHTML } = require("./html-serialization");
   const newValue = fromHTML(value);
 
   // Clear current content
@@ -115,7 +115,7 @@ export const resetEditor = (editor: SlateEditor, value: string): void => {
 };
 
 // Validate and normalize Slate state
-export const validSlateStateAdapter = (value: any): CustomElement[] => {
+export const validSlateStateAdapter = (value: unknown): CustomElement[] => {
   if (!Array.isArray(value)) {
     return [{ type: "paragraph", children: [{ text: "" }] }] as CustomElement[];
   }
@@ -144,11 +144,11 @@ export const validSlateStateAdapter = (value: any): CustomElement[] => {
 export const withLinks = (editor: SlateEditor): SlateEditor => {
   const { insertData, insertText, isInline } = editor;
 
-  editor.isInline = (element) => {
+  editor.isInline = (element: CustomElement) => {
     return element.type === "link" ? true : isInline(element);
   };
 
-  editor.insertText = (text) => {
+  editor.insertText = (text: string) => {
     if (text && isUrl(text)) {
       wrapLink(editor, text);
     } else {
@@ -156,7 +156,7 @@ export const withLinks = (editor: SlateEditor): SlateEditor => {
     }
   };
 
-  editor.insertData = (data) => {
+  editor.insertData = (data: DataTransfer) => {
     const text = data.getData("text/plain");
 
     if (text && isUrl(text)) {
@@ -172,7 +172,9 @@ export const withLinks = (editor: SlateEditor): SlateEditor => {
 const unwrapLink = (editor: SlateEditor): void => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
+      !Editor.isEditor(n) &&
+      SlateElement.isElement(n) &&
+      (n as CustomElement).type === "link",
   });
 };
 
@@ -203,9 +205,10 @@ export const Element = ({
   children,
   element,
 }: RenderElementProps): ReactElement => {
-  const style = { textAlign: element.align } as React.CSSProperties;
+  const customElement = element as CustomElement;
+  const style = { textAlign: customElement.align } as React.CSSProperties;
 
-  switch (element.type) {
+  switch (customElement.type) {
     case "block-quote":
       return (
         <blockquote style={style} {...attributes}>
@@ -264,7 +267,7 @@ export const Element = ({
       return (
         <a
           {...attributes}
-          href={element.url}
+          href={customElement.url}
           rel="noopener noreferrer"
           style={style}
         >
@@ -286,31 +289,32 @@ export const Leaf = ({
   children,
   leaf,
 }: RenderLeafProps): ReactElement => {
-  if (leaf.bold) {
+  const customLeaf = leaf as CustomText;
+  if (customLeaf.bold) {
     children = <strong>{children}</strong>;
   }
 
-  if (leaf.code) {
+  if (customLeaf.code) {
     children = <code>{children}</code>;
   }
 
-  if (leaf.italic) {
+  if (customLeaf.italic) {
     children = <em>{children}</em>;
   }
 
-  if (leaf.underline) {
+  if (customLeaf.underline) {
     children = <u>{children}</u>;
   }
 
-  if (leaf.strikethrough) {
+  if (customLeaf.strikethrough) {
     children = <del>{children}</del>;
   }
 
-  if (leaf.superscript) {
+  if (customLeaf.superscript) {
     children = <sup>{children}</sup>;
   }
 
-  if (leaf.subscript) {
+  if (customLeaf.subscript) {
     children = <sub>{children}</sub>;
   }
 
@@ -318,6 +322,7 @@ export const Leaf = ({
 };
 
 // Soft line break handling
+// cSpell:ignore Softbreaker
 export const Softbreaker = {
   placeholderCharacter: "\u200B\n",
   serialize: (string: string): string =>

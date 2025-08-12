@@ -1,10 +1,4 @@
-import type {
-  BaseEditor,
-  BaseText,
-  Descendant,
-  Element as SlateElement,
-  Text as SlateText,
-} from "slate";
+import type { BaseEditor, BaseText, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 import type { HistoryEditor } from "slate-history";
 import type { BLOCK_TAGS, MARK_TAGS } from "./constants";

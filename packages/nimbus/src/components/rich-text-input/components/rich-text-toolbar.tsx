@@ -1,6 +1,5 @@
 import { useCallback, type RefObject } from "react";
-import { useSlate, ReactEditor } from "slate-react";
-import type { Editor as SlateEditor } from "slate";
+import { useSlate } from "slate-react";
 import {
   Toolbar,
   ToggleButton,
@@ -15,7 +14,6 @@ import {
   FormatUnderlined,
   FormatStrikethrough,
   Code,
-  Link,
   FormatQuote,
   FormatListBulleted,
   FormatListNumbered,
@@ -36,7 +34,7 @@ export interface RichTextToolbarProps {
 }
 
 export const RichTextToolbar = (props: RichTextToolbarProps) => {
-  const { editorRef, isDisabled = false, className } = props;
+  const { isDisabled = false, className } = props;
   const editor = useSlate();
 
   const handleMarkToggle = useCallback(

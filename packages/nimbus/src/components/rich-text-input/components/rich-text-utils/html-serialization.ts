@@ -1,3 +1,4 @@
+// @ts-expect-error - escape-html package doesn't have proper types
 import escapeHtml from "escape-html";
 import {
   Text,
@@ -26,28 +27,29 @@ export const toHTML = (value: Descendant[]): string => {
 
 const serializeNode = (node: SlateNode): string => {
   if (Text.isText(node)) {
-    let string = escapeHtml(node.text);
+    const textNode = node as CustomText;
+    let string = escapeHtml(textNode.text);
 
     // Apply text formatting
-    if (node.bold) {
+    if (textNode.bold) {
       string = `<strong>${string}</strong>`;
     }
-    if (node.code) {
+    if (textNode.code) {
       string = `<code>${string}</code>`;
     }
-    if (node.italic) {
+    if (textNode.italic) {
       string = `<em>${string}</em>`;
     }
-    if (node.underline) {
+    if (textNode.underline) {
       string = `<u>${string}</u>`;
     }
-    if (node.superscript) {
+    if (textNode.superscript) {
       string = `<sup>${string}</sup>`;
     }
-    if (node.subscript) {
+    if (textNode.subscript) {
       string = `<sub>${string}</sub>`;
     }
-    if (node.strikethrough) {
+    if (textNode.strikethrough) {
       string = `<del>${string}</del>`;
     }
 
@@ -83,7 +85,7 @@ const serializeNode = (node: SlateNode): string => {
       return `<h4>${children}</h4>`;
     case "heading-five":
       return `<h5>${children}</h5>`;
-    case "link":
+    case "link": {
       let hrefAttr = "";
       if (element.url) {
         // Sanitize href to prevent XSS
@@ -105,6 +107,7 @@ const serializeNode = (node: SlateNode): string => {
       }
 
       return `<a${hrefAttr}${otherAttrsString}>${children}</a>`;
+    }
     default:
       return children;
   }
@@ -201,7 +204,7 @@ const deserializeNode = (node: Node): Descendant | string | null => {
     }
 
     // Process children
-    slateElement.children = processChildren(children) as any;
+    slateElement.children = processChildren(children) as CustomText[];
     return slateElement;
   }
 

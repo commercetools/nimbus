@@ -6,7 +6,10 @@ import type { richTextInputRecipe } from "./rich-text-input.recipe";
 type DefaultExcludedProps = "css" | "asChild" | "as";
 
 export interface RichTextInputProps
-  extends Omit<RichTextInputSlotProps, DefaultExcludedProps | "children"> {
+  extends Omit<
+    RichTextInputSlotProps,
+    DefaultExcludedProps | "children" | "size" | "variant"
+  > {
   /**
    * The ref for the rich text input component
    */
