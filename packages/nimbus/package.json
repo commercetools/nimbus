@@ -48,12 +48,18 @@
   "dependencies": {
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/interactions": "catalog:react",
+    "escape-html": "^1.0.3",
+    "is-hotkey": "^0.2.0",
     "next-themes": "catalog:react",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^4.6.1",
     "react-stately": "catalog:react",
-    "react-use": "^17.5.1"
+    "react-use": "^17.5.1",
+    "slate": "^0.75.0",
+    "slate-history": "^0.113.1",
+    "slate-hyperscript": "^0.77.0",
+    "slate-react": "^0.75.0"
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
@@ -69,6 +75,8 @@
     "@storybook/react-vite": "catalog:tooling",
     "@testing-library/react": "catalog:tooling",
     "@testing-library/user-event": "catalog:tooling",
+    "@types/escape-html": "^1.0.4",
+    "@types/is-hotkey": "^0.1.10",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
@@ -99,6 +107,7 @@
     "build:lib": "vite build",
     "dev": "vite build --watch",
     "test": "vitest",
+    "typecheck": "tsc --noEmit",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",

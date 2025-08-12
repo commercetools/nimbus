@@ -1,0 +1,190 @@
+---
+title: RichTextInput
+description:
+  A rich text input component with formatting capabilities for creating
+  formatted text content.
+category: inputs
+---
+
+import { RichTextInput } from "./rich-text-input";
+
+# RichTextInput
+
+A rich text input component that provides users with formatting tools to create
+rich text content. It supports various text formatting options including bold,
+italic, underline, lists, headings, and links.
+
+## Features
+
+- **Text Formatting**: Bold, italic, underline, strikethrough, code,
+  superscript, subscript
+- **Block Formatting**: Headings (H1-H5), blockquotes, bulleted and numbered
+  lists
+- **Links**: Automatic URL detection and link creation
+- **Keyboard Shortcuts**: Standard rich text editing shortcuts (Cmd+B, Cmd+I,
+  etc.)
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **HTML Output**: Clean HTML string output for easy integration with forms and
+  APIs
+- **Controlled/Uncontrolled**: Supports both controlled and uncontrolled usage
+  patterns
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import { RichTextInput } from "@commercetools/nimbus";
+
+function BasicExample() {
+  const [value, setValue] = useState("");
+
+  return (
+    <RichTextInput
+      value={value}
+      onChange={setValue}
+      placeholder="Start typing..."
+    />
+  );
+}
+```
+
+### Uncontrolled Usage
+
+```tsx
+import { RichTextInput } from "@commercetools/nimbus";
+
+function UncontrolledExample() {
+  return (
+    <RichTextInput
+      defaultValue="<p>Initial content with <strong>formatting</strong></p>"
+      placeholder="Start typing..."
+    />
+  );
+}
+```
+
+### Form Integration
+
+```tsx
+import { RichTextInput } from "@commercetools/nimbus";
+import { useForm } from "react-hook-form";
+
+function FormExample() {
+  const { control, handleSubmit } = useForm();
+
+  return (
+    <form onSubmit={handleSubmit(console.log)}>
+      <Controller
+        name="content"
+        control={control}
+        render={({ field }) => (
+          <RichTextInput
+            value={field.value}
+            onChange={field.onChange}
+            placeholder="Enter your content..."
+          />
+        )}
+      />
+    </form>
+  );
+}
+```
+
+## Keyboard Shortcuts
+
+The rich text input supports standard keyboard shortcuts for formatting:
+
+- **Cmd/Ctrl + B** - Toggle bold formatting
+- **Cmd/Ctrl + I** - Toggle italic formatting
+- **Cmd/Ctrl + U** - Toggle underline formatting
+- **Cmd/Ctrl + `** - Toggle code formatting
+- **Shift + Enter** - Insert soft line break
+
+## Formatting Options
+
+### Text Formatting
+
+- **Bold** - Make text bold
+- **Italic** - Make text italic
+- **Underline** - Add underline to text
+- **Strikethrough** - Add strikethrough to text
+- **Code** - Format text as inline code
+- **Superscript** - Format text as superscript
+- **Subscript** - Format text as subscript
+
+### Block Formatting
+
+- **Headings** - H1, H2, H3, H4, H5 heading levels
+- **Blockquote** - Format text as a blockquote
+- **Bulleted List** - Create unordered lists
+- **Numbered List** - Create ordered lists
+
+### Links
+
+- **Automatic Detection** - URLs are automatically converted to links
+- **Manual Creation** - Use the toolbar to create links
+
+## API Reference
+
+### Props
+
+| Prop           | Type                      | Default     | Description                                        |
+| -------------- | ------------------------- | ----------- | -------------------------------------------------- |
+| `value`        | `string`                  | -           | The HTML value of the rich text input (controlled) |
+| `defaultValue` | `string`                  | -           | The default HTML value (uncontrolled)              |
+| `onChange`     | `(value: string) => void` | -           | Called when the value changes                      |
+| `onFocus`      | `FocusEventHandler`       | -           | Called when the input is focused                   |
+| `onBlur`       | `FocusEventHandler`       | -           | Called when the input is blurred                   |
+| `placeholder`  | `string`                  | -           | Placeholder text to show when empty                |
+| `isDisabled`   | `boolean`                 | `false`     | Whether the input is disabled                      |
+| `isReadOnly`   | `boolean`                 | `false`     | Whether the input is read-only                     |
+| `hasError`     | `boolean`                 | `false`     | Whether the input has an error state               |
+| `hasWarning`   | `boolean`                 | `false`     | Whether the input has a warning state              |
+| `autoFocus`    | `boolean`                 | `false`     | Whether to focus the input when it mounts          |
+| `size`         | `"sm" \| "md" \| "lg"`    | `"md"`      | Size variant of the input                          |
+| `variant`      | `"outline" \| "filled"`   | `"outline"` | Visual variant of the input                        |
+
+### Utility Functions
+
+The RichTextInput also exports utility functions for working with rich text
+content:
+
+```tsx
+import { isEmpty, toHTML, fromHTML } from "@commercetools/nimbus";
+
+// Check if rich text content is empty
+const empty = isEmpty("<p></p>"); // true
+const notEmpty = isEmpty("<p>Hello</p>"); // false
+
+// Convert between HTML and internal format (advanced usage)
+const slateValue = fromHTML("<p><strong>Bold</strong> text</p>");
+const htmlValue = toHTML(slateValue);
+```
+
+## Best Practices
+
+1. **Always provide a placeholder** to guide users on what content is expected
+2. **Use controlled components** when you need to validate or transform the
+   content
+3. **Handle empty states** using the `isEmpty` utility function
+4. **Consider accessibility** - the component handles most accessibility
+   concerns automatically
+5. **Validate HTML output** on the server side before storing or displaying
+   content
+
+## Accessibility
+
+The RichTextInput component is built with accessibility in mind:
+
+- **Keyboard Navigation**: Full keyboard support for all formatting options
+- **Screen Readers**: Proper ARIA labels and roles for all interactive elements
+- **Focus Management**: Clear focus indicators and logical tab order
+- **Semantic HTML**: Generated HTML uses proper semantic elements
+
+## Examples
+
+<RichTextInput placeholder="Try typing and using the formatting tools!" />
+
+The component automatically handles complex rich text editing scenarios while
+maintaining a clean and accessible interface.
