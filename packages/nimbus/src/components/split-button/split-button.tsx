@@ -104,7 +104,7 @@ export const SplitButton = (props: SplitButtonProps) => {
 
   /**
    * Separate icon/label slots from menu items.
-   * This allows users to provide <Icon slot="icon"> and <Text slot="label">
+   * This allows users to provide Icon components with slot="icon" and Text components with slot="label"
    * alongside their Menu.Item components.
    */
   const separateSlots = (children: React.ReactNode) => {
