@@ -1,0 +1,172 @@
+import {
+  useMemo,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+  type ForwardedRef,
+  type FocusEventHandler,
+  type ReactNode,
+} from "react";
+import { createEditor, type Descendant } from "slate";
+import { Slate, Editable, withReact, ReactEditor } from "slate-react";
+import { withHistory } from "slate-history";
+import isHotkey from "is-hotkey";
+import { Box } from "@chakra-ui/react";
+import {
+  Element,
+  Leaf,
+  withLinks,
+  toggleMark,
+  focusEditor,
+  resetEditor,
+  Softbreaker,
+} from "./rich-text-utils/slate-helpers";
+
+// Keyboard shortcuts
+const HOTKEYS = {
+  "mod+b": "bold",
+  "mod+i": "italic",
+  "mod+u": "underline",
+  "mod+`": "code",
+} as const;
+
+export interface RichTextEditorProps {
+  value?: Descendant[];
+  onChange: (value: Descendant[]) => void;
+  onFocus?: FocusEventHandler<HTMLDivElement>;
+  onBlur?: FocusEventHandler<HTMLDivElement>;
+  placeholder?: string;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  autoFocus?: boolean;
+  className?: string;
+  toolbar?: ReactNode;
+}
+
+export interface RichTextEditorRef {
+  focus: () => void;
+  resetValue: (html: string) => void;
+}
+
+export const RichTextEditor = forwardRef<
+  RichTextEditorRef,
+  RichTextEditorProps
+>((props, forwardedRef: ForwardedRef<RichTextEditorRef>) => {
+  const {
+    value,
+    onChange,
+    onFocus,
+    onBlur,
+    placeholder = "Start typing...",
+    isDisabled = false,
+    isReadOnly = false,
+    autoFocus = false,
+    className,
+    toolbar,
+  } = props;
+
+  // Create editor with plugins
+  const editor = useMemo(() => {
+    const baseEditor = createEditor();
+    return withLinks(withHistory(withReact(baseEditor)));
+  }, []);
+
+  // Handle keyboard shortcuts
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      // Handle formatting shortcuts
+      for (const hotkey in HOTKEYS) {
+        if (isHotkey(hotkey, event)) {
+          event.preventDefault();
+          const mark = HOTKEYS[hotkey as keyof typeof HOTKEYS];
+          toggleMark(editor, mark);
+          return;
+        }
+      }
+
+      // Handle soft line breaks (Shift+Enter)
+      if (event.shiftKey && event.key === "Enter") {
+        event.preventDefault();
+        editor.insertText(Softbreaker.placeholderCharacter);
+        return;
+      }
+    },
+    [editor]
+  );
+
+  // Handle focus
+  const handleFocus = useCallback(
+    (event: React.FocusEvent<HTMLDivElement>) => {
+      if (onFocus) {
+        onFocus(event);
+      }
+    },
+    [onFocus]
+  );
+
+  // Handle blur
+  const handleBlur = useCallback(
+    (event: React.FocusEvent<HTMLDivElement>) => {
+      if (onBlur) {
+        onBlur(event);
+      }
+    },
+    [onBlur]
+  );
+
+  // Expose methods through ref
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      focus: () => focusEditor(editor),
+      resetValue: (html: string) => resetEditor(editor, html),
+    }),
+    [editor]
+  );
+
+  // Render element
+  const renderElement = useCallback((props: any) => <Element {...props} />, []);
+
+  // Render leaf
+  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
+
+  // Ensure we always have a valid value
+  const defaultValue = [
+    { type: "paragraph", children: [{ text: "" }] },
+  ] as Descendant[];
+  const safeInitialValue =
+    Array.isArray(value) && value.length > 0 ? value : defaultValue;
+
+  return (
+    <Box
+      className={className}
+      opacity={isDisabled ? 0.5 : 1}
+      pointerEvents={isDisabled ? "none" : "auto"}
+    >
+      <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
+        {toolbar}
+        <Editable
+          className="slate-editor"
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+          readOnly={isReadOnly || isDisabled}
+          onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          aria-label="Rich text editor"
+          role="textbox"
+          aria-multiline="true"
+          style={{
+            minHeight: "inherit",
+            outline: "none",
+            cursor: isReadOnly ? "default" : "text",
+          }}
+        />
+      </Slate>
+    </Box>
+  );
+});
+
+RichTextEditor.displayName = "RichTextEditor";

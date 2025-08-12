@@ -48,12 +48,19 @@
   "dependencies": {
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/interactions": "catalog:react",
+    "escape-html": "^1.0.3",
+    "is-hotkey": "^0.2.0",
+    "is-url": "^1.2.4",
     "next-themes": "catalog:react",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^4.6.1",
     "react-stately": "catalog:react",
-    "react-use": "^17.5.1"
+    "react-use": "^17.5.1",
+    "slate": "^0.75.0",
+    "slate-history": "^0.113.1",
+    "slate-hyperscript": "^0.77.0",
+    "slate-react": "^0.75.0"
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
