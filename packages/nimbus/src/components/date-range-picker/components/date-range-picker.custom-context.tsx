@@ -16,7 +16,7 @@ export const DateRangePickerCustomContext = ({
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const dateRangePickerState = useContext(DateRangePickerStateContext);
 
-  // DateRangePicker-specific: Check if all 6 segments (start: day, month, year; end: day, month, year) have values
+  // Check if all 6 segments (start: day, month, year; end: day, month, year) have values
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hasCompleteRangeDate = (date: any) =>
     date?.day && date?.month && date?.year;
@@ -28,7 +28,7 @@ export const DateRangePickerCustomContext = ({
 
   const { granularity } = dateRangePickerState!;
 
-  // DateRangePicker-specific: Extract time values from start and end dates separately
+  // Extract time values from start and end dates separately
   const startTimeValue =
     dateRangePickerState?.value?.start &&
     "hour" in dateRangePickerState.value.start
@@ -79,7 +79,7 @@ export const DateRangePickerCustomContext = ({
     },
     /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
-      // DateRangePicker-specific: Clear both start and end values
+      // Clear both start and end values
       onPress: () => dateRangePickerState?.setValue(null),
       "aria-label": "Clear input value",
       isDisabled: isDateRangePickerDisabled,
@@ -94,13 +94,13 @@ export const DateRangePickerCustomContext = ({
    * ================================
    */
 
-  // DateRangePicker-specific: Separate time input slots for start and end times
+  // Separate time input slots for start and end times
   const timeInputSlots = {
     startTimeInput: {
       value: startTimeValue,
       onChange: (value: TimeValue | null) => {
         if (value !== null && dateRangePickerState?.value?.start) {
-          // DateRangePicker-specific: Update the start date with the new time
+          // Update the start date with the new time
           const currentValue = dateRangePickerState.value;
           const startDate = currentValue.start;
           const endDate = currentValue.end;
@@ -126,7 +126,7 @@ export const DateRangePickerCustomContext = ({
       value: endTimeValue,
       onChange: (value: TimeValue | null) => {
         if (value !== null && dateRangePickerState?.value?.end) {
-          // DateRangePicker-specific: Update the end date with the new time
+          // Update the end date with the new time
           const currentValue = dateRangePickerState.value;
           const startDate = currentValue.start;
           const endDate = currentValue.end;

@@ -19,9 +19,11 @@ export const DateRangePickerTimeInput = ({
     return null;
   }
 
-  // DateRangePicker-specific: Focus the time input when date range changes (user selects dates from calendar)
+  // Focus the time input when date range changes (user selects dates from calendar)
   useEffect(() => {
-    // DateRangePicker-specific: Check if date range changed by comparing start and end dates
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    // Check if date range changed by comparing start and end dates
     const hasValueChanged =
       (value?.start &&
         previousValueRef.current?.start?.compare(value.start) !== 0) ||
@@ -38,7 +40,7 @@ export const DateRangePickerTimeInput = ({
 
       if (!hasTimeSegmentFocus) {
         // Small delay to ensure the DOM is ready
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           // Find the first focusable segment within the time input container
           if (container) {
             const firstSegment = container.querySelector(
@@ -53,8 +55,14 @@ export const DateRangePickerTimeInput = ({
       }
     }
 
-    // DateRangePicker-specific: Update previous value reference for range comparison
     previousValueRef.current = value;
+
+    // Cleanup timeout on effect re-run or unmount to prevent memory leaks
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [value]);
 
   return (
@@ -68,7 +76,7 @@ export const DateRangePickerTimeInput = ({
       justifyContent="center"
       gap="200"
     >
-      {/* DateRangePicker-specific: Start DateInput with separate label */}
+      {/* Start DateInput with separate label */}
       <Flex alignItems="center" gap="200">
         {/* TODO: translate hardcoded string */}
         <Text
@@ -89,7 +97,7 @@ export const DateRangePickerTimeInput = ({
         />
       </Flex>
 
-      {/* DateRangePicker-specific: End DateInput with separate label */}
+      {/* End DateInput with separate label */}
       <Flex alignItems="center" gap="200">
         {/* TODO: translate hardcoded string */}
         <Text

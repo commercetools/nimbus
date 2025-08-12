@@ -22,6 +22,8 @@ export const DatePickerTimeInput = ({
   // Focus the time input when date changes (user selects a date from calendar)
   useEffect(() => {
     // Check if date changed
+    let timeoutId: NodeJS.Timeout | undefined;
+
     if (dateValue && previousDateRef.current?.compare(dateValue) !== 0) {
       // Only auto-focus if no time input segment currently has focus
       // This prevents stealing focus during user interaction with time segments
@@ -33,22 +35,26 @@ export const DatePickerTimeInput = ({
 
       if (!hasTimeSegmentFocus) {
         // Small delay to ensure the DOM is ready
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           // Find the first focusable segment within the time input container
           if (container) {
             const firstSegment = container.querySelector(
               '[role="spinbutton"]'
             ) as HTMLElement;
-
-            if (firstSegment) {
-              firstSegment.focus();
-            }
+            firstSegment?.focus();
           }
         }, 50);
       }
     }
 
     previousDateRef.current = dateValue;
+
+    // Cleanup timeout on effect re-run or unmount to prevent memory leaks
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [dateValue]);
 
   return (
