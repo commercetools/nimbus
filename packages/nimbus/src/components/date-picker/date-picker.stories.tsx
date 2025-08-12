@@ -1290,6 +1290,145 @@ export const TimeSupport: Story = {
     );
 
     await step(
+      "Footer time input segments maintain focus during keyboard value changes",
+      async () => {
+        // Test with hour picker that has time input in footer
+        const hourPicker = await canvas.findByRole("group", {
+          name: "Date and time picker (second)",
+        });
+
+        // Open calendar to ensure footer time input is visible
+        const calendarButton = await within(hourPicker).findByRole("button", {
+          name: /calendar/i,
+        });
+        await userEvent.click(calendarButton);
+
+        // Wait for calendar to appear
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).toBeInTheDocument();
+        });
+
+        // Wait for the footer time input to be rendered
+        await waitFor(async () => {
+          const startTimeFooterInput = await within(document.body).findByRole(
+            "group",
+            {
+              name: "Enter time (hour, minute, and second)",
+            }
+          );
+          await expect(startTimeFooterInput).toBeInTheDocument();
+        });
+
+        // Get the footer time input group
+        const startTimeFooterInput = within(document.body).getByRole("group", {
+          name: "Enter time (hour, minute, and second)",
+        });
+
+        // Get all segments from the footer time input
+        const footerSegments =
+          within(startTimeFooterInput).getAllByRole("spinbutton");
+        const footerHourSegment = footerSegments.find(
+          (segment) => segment.getAttribute("data-type") === "hour"
+        );
+
+        await expect(footerHourSegment).toBeInTheDocument();
+
+        // Focus the footer hour segment
+        await userEvent.click(footerHourSegment!);
+        await expect(footerHourSegment).toHaveFocus();
+
+        // Get initial displayed value (should show "2" for 2 PM)
+        const initialDisplayValue = footerHourSegment!.textContent;
+        await expect(initialDisplayValue).toBe("2");
+
+        // Use arrow up to change value
+        await userEvent.keyboard("{ArrowUp}");
+
+        // Verify focus remained on the hour segment
+        await expect(footerHourSegment).toHaveFocus();
+
+        // Verify displayed value actually changed (2 -> 3)
+        const newDisplayValue = footerHourSegment!.textContent;
+        await expect(newDisplayValue).toBe("3");
+        await expect(newDisplayValue).not.toBe(initialDisplayValue);
+
+        // Tab to minute segment
+        await userEvent.keyboard("{Tab}");
+
+        // Find the minute segment
+        const footerMinuteSegment = footerSegments.find(
+          (segment) => segment.getAttribute("data-type") === "minute"
+        );
+        await expect(footerMinuteSegment).toHaveFocus();
+
+        // Get initial displayed value for minute (should show "30")
+        const initialMinuteDisplayValue = footerMinuteSegment!.textContent;
+        await expect(initialMinuteDisplayValue).toBe("30");
+
+        // Use arrow up to change minute value
+        await userEvent.keyboard("{ArrowUp}");
+
+        // Verify focus remained on the minute segment
+        await expect(footerMinuteSegment).toHaveFocus();
+
+        // Verify displayed value actually changed (30 -> 31)
+        const newMinuteDisplayValue = footerMinuteSegment!.textContent;
+        await expect(newMinuteDisplayValue).toBe("31");
+        await expect(newMinuteDisplayValue).not.toBe(initialMinuteDisplayValue);
+
+        // Tab to seconds segment
+        await userEvent.keyboard("{Tab}");
+
+        // Find the seconds segment
+        const footerSecondsSegment = footerSegments.find(
+          (segment) => segment.getAttribute("data-type") === "second"
+        );
+        await expect(footerSecondsSegment).toHaveFocus();
+
+        // Get initial displayed value for seconds (should show "45")
+        const initialSecondsDisplayValue = footerSecondsSegment!.textContent;
+        await expect(initialSecondsDisplayValue).toBe("45");
+
+        // Use arrow up to change seconds value
+        await userEvent.keyboard("{ArrowUp}");
+
+        // Verify focus remained on the seconds segment
+        await expect(footerSecondsSegment).toHaveFocus();
+
+        // Verify displayed value actually changed (45 -> 46)
+        const newSecondsDisplayValue = footerSecondsSegment!.textContent;
+        await expect(newSecondsDisplayValue).toBe("46");
+        await expect(newSecondsDisplayValue).not.toBe(
+          initialSecondsDisplayValue
+        );
+
+        // Close calendar for cleanup
+        await userEvent.keyboard("{Escape}");
+        await waitFor(async () => {
+          const calendar = within(document.body).queryByRole("application");
+          await expect(calendar).not.toBeInTheDocument();
+        });
+
+        // Final assertion: verify the main picker shows the updated time values
+        const pickerSegments = within(hourPicker).getAllByRole("spinbutton");
+        const finalHourSegment = pickerSegments.find(
+          (segment) => segment.getAttribute("data-type") === "hour"
+        );
+        const finalMinuteSegment = pickerSegments.find(
+          (segment) => segment.getAttribute("data-type") === "minute"
+        );
+        const finalSecondsSegment = pickerSegments.find(
+          (segment) => segment.getAttribute("data-type") === "second"
+        );
+
+        await expect(finalHourSegment).toHaveTextContent("3");
+        await expect(finalMinuteSegment).toHaveTextContent("31");
+        await expect(finalSecondsSegment).toHaveTextContent("46");
+      }
+    );
+
+    await step(
       "Clear functionality works across all time granularities",
       async () => {
         const pickers = [
