@@ -75,6 +75,17 @@ export const RichTextEditor = forwardRef<
   // Handle keyboard shortcuts
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
+      // Handle undo/redo shortcuts
+      if ((event.metaKey || event.ctrlKey) && event.key === "z") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          editor.redo();
+        } else {
+          editor.undo();
+        }
+        return;
+      }
+
       // Handle formatting shortcuts
       for (const hotkey in HOTKEYS) {
         if (isHotkey(hotkey, event)) {
