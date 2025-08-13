@@ -135,15 +135,6 @@ export const richTextInputRecipe = defineSlotRecipe({
     },
   },
   variants: {
-    variant: {
-      outline: {},
-      filled: {
-        root: {
-          backgroundColor: "bg.subtle",
-          borderWidth: "0",
-        },
-      },
-    },
     state: {
       error: {
         root: {
@@ -187,8 +178,5 @@ export const richTextInputRecipe = defineSlotRecipe({
         },
       },
     },
-  },
-  defaultVariants: {
-    variant: "outline",
   },
 });

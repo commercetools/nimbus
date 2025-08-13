@@ -39,13 +39,11 @@ export const RichTextInput = (props: RichTextInputProps) => {
     hasError = false,
     hasWarning = false,
     autoFocus = false,
-    variant = "outline",
     ...restProps
   } = props;
 
   const recipe = useSlotRecipe({ recipe: richTextInputRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps({
-    variant,
     state: hasError ? "error" : hasWarning ? "warning" : undefined,
     disabled: isDisabled,
     readOnly: isReadOnly,

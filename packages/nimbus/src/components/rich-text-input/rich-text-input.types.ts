@@ -66,11 +66,6 @@ export interface RichTextInputProps
    * Whether to focus the input when it mounts
    */
   autoFocus?: boolean;
-
-  /**
-   * Visual variant of the rich text input
-   */
-  variant?: RecipeVariantProps<typeof richTextInputRecipe>["variant"];
 }
 
 // Event types for internal use
