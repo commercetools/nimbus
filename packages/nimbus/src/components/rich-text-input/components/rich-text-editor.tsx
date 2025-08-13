@@ -160,26 +160,28 @@ export const RichTextEditor = forwardRef<
       pointerEvents={isDisabled ? "none" : "auto"}
     >
       <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
-        {toolbar}
-        <Editable
-          className="slate-editor"
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          placeholder={placeholder}
-          autoFocus={autoFocus}
-          readOnly={isReadOnly || isDisabled}
-          onKeyDown={handleKeyDown}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          aria-label="Rich text editor"
-          role="textbox"
-          aria-multiline="true"
-          style={{
-            minHeight: "inherit",
-            outline: "none",
-            cursor: isReadOnly ? "default" : "text",
-          }}
-        />
+        <Box boxShadow="1">{toolbar}</Box>
+        <Box p="400" asChild>
+          <Editable
+            className="slate-editor"
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            placeholder={placeholder}
+            autoFocus={autoFocus}
+            readOnly={isReadOnly || isDisabled}
+            onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            aria-label="Rich text editor"
+            role="textbox"
+            aria-multiline="true"
+            style={{
+              minHeight: "inherit",
+              outline: "none",
+              cursor: isReadOnly ? "default" : "text",
+            }}
+          />
+        </Box>
       </Slate>
     </Box>
   );

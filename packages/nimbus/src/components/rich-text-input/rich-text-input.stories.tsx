@@ -325,23 +325,6 @@ export const WithWarning: Story = {
   },
 };
 
-export const SmallSize: Story = {
-  args: {
-    defaultValue: "<p>This is a <strong>small</strong> rich text input.</p>",
-    size: "sm",
-    placeholder: "Small input...",
-  },
-};
-
-export const LargeSize: Story = {
-  args: {
-    defaultValue:
-      "<p>This is a <strong>large</strong> rich text input with more space.</p>",
-    size: "lg",
-    placeholder: "Large input...",
-  },
-};
-
 export const FilledVariant: Story = {
   args: {
     defaultValue:
