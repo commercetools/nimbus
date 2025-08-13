@@ -1,7 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useRecipe } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { RichTextInputRootSlot } from "./rich-text-input.slots";
+import {
+  RichTextInputRootSlot,
+  RichTextInputEditorSlot,
+} from "./rich-text-input.slots";
 import {
   RichTextEditor,
   type RichTextEditorRef,
@@ -40,7 +43,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
     ...restProps
   } = props;
 
-  const recipe = useRecipe({ recipe: richTextInputRecipe });
+  const recipe = useSlotRecipe({ recipe: richTextInputRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps({
     variant,
     state: hasError ? "error" : hasWarning ? "warning" : undefined,
@@ -107,7 +110,6 @@ export const RichTextInput = (props: RichTextInputProps) => {
       ? currentValue
       : createEmptyValue();
 
-  // TODO: we need to override the menu selection autofocus behavior somehow. This might impact the Menu component
   return (
     <RichTextInputRootSlot
       {...recipeProps}
@@ -115,21 +117,22 @@ export const RichTextInput = (props: RichTextInputProps) => {
       {...functionalProps}
       ref={forwardedRef}
     >
-      <RichTextEditor
-        className="rich-text-editor"
-        ref={editorRef}
-        value={safeValue}
-        onChange={handleChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        isDisabled={isDisabled}
-        isReadOnly={isReadOnly}
-        autoFocus={autoFocus}
-        toolbar={
-          !isReadOnly ? <RichTextToolbar isDisabled={isDisabled} /> : null
-        }
-      />
+      <RichTextInputEditorSlot asChild>
+        <RichTextEditor
+          ref={editorRef}
+          value={safeValue}
+          onChange={handleChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          placeholder={placeholder}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          autoFocus={autoFocus}
+          toolbar={
+            !isReadOnly ? <RichTextToolbar isDisabled={isDisabled} /> : null
+          }
+        />
+      </RichTextInputEditorSlot>
     </RichTextInputRootSlot>
   );
 };

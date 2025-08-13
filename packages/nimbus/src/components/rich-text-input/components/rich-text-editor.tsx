@@ -11,7 +11,10 @@ import { createEditor, type Descendant } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import isHotkey from "is-hotkey";
-import { Box } from "@/components";
+import {
+  RichTextInputEditableSlot,
+  RichTextInputToolbarSlot,
+} from "../rich-text-input.slots";
 import {
   Element,
   Leaf,
@@ -40,7 +43,6 @@ export interface RichTextEditorProps {
   isDisabled?: boolean;
   isReadOnly?: boolean;
   autoFocus?: boolean;
-  className?: string;
   toolbar?: ReactNode;
 }
 
@@ -62,7 +64,6 @@ export const RichTextEditor = forwardRef<
     isDisabled = false,
     isReadOnly = false,
     autoFocus = false,
-    className,
     toolbar,
   } = props;
 
@@ -154,36 +155,26 @@ export const RichTextEditor = forwardRef<
     Array.isArray(value) && value.length > 0 ? value : defaultValue;
 
   return (
-    <Box
-      className={className}
-      opacity={isDisabled ? 0.5 : 1}
-      pointerEvents={isDisabled ? "none" : "auto"}
-    >
-      <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
-        <Box boxShadow="1">{toolbar}</Box>
-        <Box p="400" asChild>
-          <Editable
-            className="slate-editor"
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-            placeholder={placeholder}
-            autoFocus={autoFocus}
-            readOnly={isReadOnly || isDisabled}
-            onKeyDown={handleKeyDown}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            aria-label="Rich text editor"
-            role="textbox"
-            aria-multiline="true"
-            style={{
-              minHeight: "inherit",
-              outline: "none",
-              cursor: isReadOnly ? "default" : "text",
-            }}
-          />
-        </Box>
-      </Slate>
-    </Box>
+    <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
+      {toolbar && (
+        <RichTextInputToolbarSlot asChild>{toolbar}</RichTextInputToolbarSlot>
+      )}
+      <RichTextInputEditableSlot asChild>
+        <Editable
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+          readOnly={isReadOnly || isDisabled}
+          onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          aria-label="Rich text editor"
+          role="textbox"
+          aria-multiline="true"
+        />
+      </RichTextInputEditableSlot>
+    </Slate>
   );
 });
 

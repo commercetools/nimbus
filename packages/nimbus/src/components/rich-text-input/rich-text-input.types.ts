@@ -1,15 +1,12 @@
 import type { Ref, FocusEventHandler } from "react";
 import type { RecipeVariantProps } from "@chakra-ui/react";
-import type { RichTextInputSlotProps } from "./rich-text-input.slots";
+import type { RichTextInputRootSlotProps } from "./rich-text-input.slots";
 import type { richTextInputRecipe } from "./rich-text-input.recipe";
 
 type DefaultExcludedProps = "css" | "asChild" | "as";
 
 export interface RichTextInputProps
-  extends Omit<
-    RichTextInputSlotProps,
-    DefaultExcludedProps | "children" | "size" | "variant"
-  > {
+  extends Omit<RichTextInputRootSlotProps, DefaultExcludedProps | "children"> {
   /**
    * The ref for the rich text input component
    */

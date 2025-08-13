@@ -2,31 +2,44 @@ import {
   type HTMLChakraProps,
   type RecipeVariantProps,
   type UnstyledProp,
-  type ConditionalValue,
-  createRecipeContext,
+  createSlotRecipeContext,
 } from "@chakra-ui/react";
 import { richTextInputRecipe } from "./rich-text-input.recipe";
 
-export interface RichTextInputRecipeProps
-  extends RecipeVariantProps<typeof richTextInputRecipe>,
-    UnstyledProp {}
-
-export interface RichTextInputSlotProps {
-  size?: ConditionalValue<"sm" | "md" | "lg">;
-  variant?: ConditionalValue<"outline" | "filled">;
-  state?: ConditionalValue<"error" | "warning">;
-}
-
-export type RichTextInputRootSlotProps = HTMLChakraProps<
-  "div",
-  RichTextInputRecipeProps
->;
-
-const { withContext } = createRecipeContext({
+const { withProvider, withContext } = createSlotRecipeContext({
   recipe: richTextInputRecipe,
 });
 
-export const RichTextInputRootSlot = withContext<
+// Root slot
+export interface RichTextInputRootSlotProps
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof richTextInputRecipe> & UnstyledProp
+  > {}
+
+export const RichTextInputRootSlot = withProvider<
   HTMLDivElement,
   RichTextInputRootSlotProps
->("div");
+>("div", "root");
+
+// Toolbar slot
+export interface RichTextInputToolbarSlotProps extends HTMLChakraProps<"div"> {}
+export const RichTextInputToolbarSlot = withContext<
+  HTMLDivElement,
+  RichTextInputToolbarSlotProps
+>("div", "toolbar");
+
+// Editor slot
+export interface RichTextInputEditorSlotProps extends HTMLChakraProps<"div"> {}
+export const RichTextInputEditorSlot = withContext<
+  HTMLDivElement,
+  RichTextInputEditorSlotProps
+>("div", "editor");
+
+// Editable slot
+export interface RichTextInputEditableSlotProps
+  extends HTMLChakraProps<"div"> {}
+export const RichTextInputEditableSlot = withContext<
+  HTMLDivElement,
+  RichTextInputEditableSlotProps
+>("div", "editable");

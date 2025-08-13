@@ -341,7 +341,9 @@ export const RichTextToolbar = ({
             toggleMark(editor, "superscript")
           )}
         >
-          <span style={{ fontSize: "0.75em", verticalAlign: "super" }}>X²</span>
+          <Text fontSize="75%" verticalAlign="super">
+            X²
+          </Text>
           <VisuallyHidden>Superscript</VisuallyHidden>
         </IconToggleButton>
         <IconToggleButton
@@ -354,7 +356,9 @@ export const RichTextToolbar = ({
             toggleMark(editor, "subscript")
           )}
         >
-          <span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>X₂</span>
+          <Text fontSize="75%" verticalAlign="sub">
+            X₂
+          </Text>
           <VisuallyHidden>Subscript</VisuallyHidden>
         </IconToggleButton>
       </ToggleButtonGroup.Root>
