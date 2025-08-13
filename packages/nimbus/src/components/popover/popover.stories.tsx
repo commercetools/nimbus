@@ -26,7 +26,9 @@ export const Base: Story = {
       </Popover.Content>
     </Popover.Root>
   ),
-  args: {},
+  args: {
+    ["aria-label"]: "popover",
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     
