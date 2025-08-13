@@ -1,4 +1,10 @@
-import { forwardRef, useMemo, useState, createContext, useContext } from "react";
+import {
+  forwardRef,
+  useMemo,
+  useState,
+  createContext,
+  useContext,
+} from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import type {
@@ -38,15 +44,18 @@ interface DataTableContextValue<T = any> {
   showSelectionColumn: boolean;
   showDetailsColumn: boolean;
   disabledKeys?: Selection;
-  onRowAction?: (row: DataTableRowType<T>, action: 'click' | 'select') => void;
+  isDisabled: (rowId: string) => boolean;
+  onRowAction?: (row: DataTableRowType<T>, action: "click" | "select") => void;
 }
 
 const DataTableContext = createContext<DataTableContextValue | null>(null);
 
 DataTableContext.displayName = "DataTableContext";
 
-export const useDataTableContext = <T = any>(): DataTableContextValue<T> => {
-  const context = useContext(DataTableContext) as DataTableContextValue<T> | null;
+export const useDataTableContext = <T = any,>(): DataTableContextValue<T> => {
+  const context = useContext(
+    DataTableContext
+  ) as DataTableContextValue<T> | null;
   if (!context) {
     throw new Error("DataTable components must be used within DataTable.Root");
   }
@@ -71,11 +80,16 @@ function filterRows<T>(
           value.toLowerCase().includes(lowerCaseSearch)
         );
       });
-      
+
       if (nestedKey && row[nestedKey]) {
         let nestedContent = row[nestedKey];
         if (Array.isArray(row[nestedKey])) {
-          nestedContent = filterRows(row[nestedKey], search, columns, nestedKey);
+          nestedContent = filterRows(
+            row[nestedKey],
+            search,
+            columns,
+            nestedKey
+          );
           if (match || (nestedContent && nestedContent.length > 0)) {
             return { ...row, [nestedKey]: nestedContent };
           }
@@ -122,8 +136,10 @@ function sortRows<T>(
       bSortValue = String(bValue).toLowerCase();
     }
 
-    if (aSortValue < bSortValue) return sortDescriptor.direction === "ascending" ? -1 : 1;
-    if (aSortValue > bSortValue) return sortDescriptor.direction === "ascending" ? 1 : -1;
+    if (aSortValue < bSortValue)
+      return sortDescriptor.direction === "ascending" ? -1 : 1;
+    if (aSortValue > bSortValue)
+      return sortDescriptor.direction === "ascending" ? 1 : -1;
     return 0;
   });
 
@@ -140,14 +156,17 @@ function sortRows<T>(
   });
 }
 
-function hasExpandableRows<T>(rows: DataTableRowType<T>[], nestedKey?: string): boolean {
+function hasExpandableRows<T>(
+  rows: DataTableRowType<T>[],
+  nestedKey?: string
+): boolean {
   if (!nestedKey) return false;
   return rows.some(
     (row) =>
-      (row[nestedKey] && (
-        Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true
-      )) ||
-      (Array.isArray(row[nestedKey]) && hasExpandableRows(row[nestedKey], nestedKey))
+      (row[nestedKey] &&
+        (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true)) ||
+      (Array.isArray(row[nestedKey]) &&
+        hasExpandableRows(row[nestedKey], nestedKey))
   );
 }
 
@@ -185,7 +204,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const [internalSortDescriptor, setInternalSortDescriptor] = useState<
       SortDescriptor | undefined
     >();
-    
+
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
@@ -225,7 +244,11 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       }
     };
 
-
+    const isDisabled = (rowId: string) => {
+      if (!disabledKeys) return false;
+      if (disabledKeys === "all") return true;
+      return disabledKeys.has(rowId);
+    };
 
     const contextValue: DataTableContextValue<T> = {
       columns,
@@ -257,11 +280,12 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       showDetailsColumn,
       disabledKeys,
       onRowAction,
+      isDisabled,
     };
 
     return (
       <DataTableContext.Provider value={contextValue}>
-        <DataTableRootSlot 
+        <DataTableRootSlot
           ref={ref}
           truncated={isTruncated}
           density={density}
@@ -273,13 +297,11 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
           }}
           {...rest}
         >
-          <ResizableTableContainer>
-            {children}
-          </ResizableTableContainer>
+          <ResizableTableContainer>{children}</ResizableTableContainer>
         </DataTableRootSlot>
       </DataTableContext.Provider>
     );
   }
 );
 
-DataTableRoot.displayName = "DataTableRoot"; 
+DataTableRoot.displayName = "DataTableRoot";

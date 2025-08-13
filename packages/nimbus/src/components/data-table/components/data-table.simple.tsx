@@ -14,9 +14,12 @@ import {
   Row as RaRow,
   type RowProps as RaRowProps,
   Cell as RaCell,
+  type CellProps as RaCellProps,
   Collection as RaCollection,
   useTableOptions,
   type SortDescriptor as RaSortDesctiptor,
+  ButtonContext as RaButtonContext,
+  type Key as RaKey,
 } from "react-aria-components";
 import {
   ArrowDownward,
@@ -81,7 +84,9 @@ export const DataTableExample = forwardRef<HTMLTableElement, RaTableProps>(
         },
       ]);
     };
-
+    const disabledRowIds = new Set(
+      rows.filter((row) => row.isDisabled).map((row) => row.id)
+    ) as Iterable<RaKey>;
     return (
       <Stack>
         <Flex alignItems="center" gap="200">
@@ -105,6 +110,7 @@ export const DataTableExample = forwardRef<HTMLTableElement, RaTableProps>(
             rows={sortedRows}
             sortDescriptor={sortDescriptor}
             onSortChange={setSortDescriptor}
+            disabledKeys={disabledRowIds}
             allowsSorting
           />
         </Flex>
@@ -173,6 +179,7 @@ export const DataTableRoot = forwardRef<
         selectionMode={selectionMode}
         sortDescriptor={sortDescriptor}
         onSortChange={onSortChange}
+        disabledBehavior="all"
         {...restProps}
       >
         <DataTableHeader columns={columns}>
@@ -187,8 +194,16 @@ export const DataTableRoot = forwardRef<
         </DataTableHeader>
         <RaTableBody items={rows} dependencies={[columns]}>
           {(row) => (
-            <DataTableRow columns={columns}>
-              {(column) => <RaCell>{row[column.id]}</RaCell>}
+            <DataTableRow
+              isDisabled={row.isDisabled as boolean}
+              columns={columns}
+            >
+              {(column) => (
+                <DataTableCell row={row}>
+                  {row[column.id]}
+                  <Button onPress={() => alert("im clicked")}>click me</Button>
+                </DataTableCell>
+              )}
             </DataTableRow>
           )}
         </RaTableBody>
@@ -203,7 +218,6 @@ const DataTableHeader = forwardRef<
 >(function DataTableHeader({ columns, children, ...otherProps }, ref) {
   const { selectionBehavior, selectionMode, allowsDragging } =
     useTableOptions();
-
   return (
     <RaTableHeader ref={ref} {...otherProps}>
       {/* Add extra columns for drag and drop and selection. */}
@@ -249,20 +263,47 @@ const DataTableRow = forwardRef<
   const { selectionBehavior, allowsDragging } = useTableOptions();
 
   return (
-    <RaRow id={id} ref={ref} {...otherProps}>
+    <RaRow
+      style={{ userSelect: "all" }}
+      onAction={() => {}}
+      id={id}
+      ref={ref}
+      {...otherProps}
+    >
       {allowsDragging && (
-        <RaCell>
+        <DataTableCell>
           <Button slot="drag">
             <DragIndicator />
           </Button>
-        </RaCell>
+        </DataTableCell>
       )}
       {selectionBehavior === "toggle" && (
-        <RaCell>
+        <DataTableCell>
           <Checkbox slot="selection" />
-        </RaCell>
+        </DataTableCell>
       )}
-      <RaCollection items={columns}>{children}</RaCollection>
+      <RaCollection items={columns}>
+        {typeof children === "function"
+          ? (column) => children(column)
+          : children}
+      </RaCollection>
     </RaRow>
+  );
+});
+
+const DataTableCell = forwardRef<
+  HTMLTableCellElement,
+  RaCellProps & { row?: DataTableRowItem }
+>(function DataTableCell({ children, row, ...rest }, ref) {
+  return (
+    <RaCell ref={ref} {...rest}>
+      {(renderProps) => (
+        <RaButtonContext.Provider
+          value={{ isDisabled: row?.isDisabled as boolean }}
+        >
+          {typeof children === "function" ? children(renderProps) : children}
+        </RaButtonContext.Provider>
+      )}
+    </RaCell>
   );
 });

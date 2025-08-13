@@ -55,7 +55,7 @@ export const Base: Story = {
 
     await step("Can be focused with the keyboard", async () => {
       await userEvent.keyboard("{tab}");
-      await expect(checkboxElement).toHaveFocus();
+      await expect(inputElement).toHaveFocus();
     });
 
     await step("Can be triggered with space-bar", async () => {
@@ -64,16 +64,16 @@ export const Base: Story = {
       await userEvent.keyboard(" ");
       await expect(onChange).toHaveBeenCalledTimes(2);
     });
-    await step("Can not be triggered with enter", async () => {
+    await step("Can be triggered with enter", async () => {
       await userEvent.keyboard("{enter}");
-      await expect(onChange).toHaveBeenCalledTimes(2);
+      await expect(onChange).toHaveBeenCalledTimes(3);
     });
 
     await step("Can be triggered by clicking on root & label", async () => {
       htmlLabel.click();
-      await expect(onChange).toHaveBeenCalledTimes(3);
-      displayLabel.click();
       await expect(onChange).toHaveBeenCalledTimes(4);
+      displayLabel.click();
+      await expect(onChange).toHaveBeenCalledTimes(5);
     });
   },
 };
