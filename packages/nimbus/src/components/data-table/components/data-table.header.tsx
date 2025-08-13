@@ -1,71 +1,27 @@
-import { forwardRef, useState, useCallback } from "react";
+import { forwardRef } from "react";
+import { VisuallyHidden } from "react-aria";
 import {
   TableHeader as RaTableHeader,
-  Column as RaColumn,
-  ColumnResizer,
-  Checkbox as RaCheckbox,
+  Collection as RaCollection,
+  useTableOptions,
 } from "react-aria-components";
-import { DataTableHeaderSortIcon, DataTableColumnResizer } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.root";
-import { ArrowDownward } from "@commercetools/nimbus-icons";
-import { Divider, Checkbox } from "@/components";
+import { DataTableColumn } from "./data-table.column";
 
+import { Box, Checkbox } from "@/components";
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataTableHeaderProps {}
 
 export const DataTableHeader = forwardRef<
   HTMLTableSectionElement,
   DataTableHeaderProps
 >(function DataTableHeader(props, ref) {
-  const {
-    visibleCols,
-    sortDescriptor,
-    onSortChange,
-    allowsSorting,
-    maxHeight,
-    showSelectionColumn,
-    showExpandColumn,
-    showDetailsColumn,
-    selectionMode,
-  } = useDataTableContext();
+  const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
+    useDataTableContext();
 
-  const [isHeaderHovered, setIsHeaderHovered] = useState(false);
-  const [focusedColumn, setFocusedColumn] = useState<string | null>(null);
-  const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
-
-  const handleHoverStart = useCallback(() => setIsHeaderHovered(true), []);
-  const handleHoverEnd = useCallback(() => setIsHeaderHovered(false), []);
-  const handleBlur = useCallback(() => setFocusedColumn(null), []);
-
-  // Render sort indicator
-  const renderSortIndicator = (columnId: string) => {
-    if (!allowsSorting) return null;
-
-    const column = visibleCols.find((col) => col.id === columnId);
-    if (column?.isSortable === false) return null;
-
-    const isActive = sortDescriptor?.column === columnId;
-    const isHovered = hoveredColumn === columnId;
-    const direction = sortDescriptor?.direction;
-
-    // If not sorted and not hovered, don't show any icon
-    if (!isActive && !isHovered) {
-      return null;
-    }
-
-    const rotation = direction === "ascending" ? "180deg" : "0deg";
-
-    return (
-      <DataTableHeaderSortIcon
-        aria-hidden="true"
-        color={isActive ? "neutral.11" : "neutral.10"}
-        style={{
-          transform: `rotate(${rotation})`,
-        }}
-      >
-        <ArrowDownward />
-      </DataTableHeaderSortIcon>
-    );
-  };
+  // This can also be used to see if drag'n'drop is enabled
+  const { selectionBehavior, selectionMode } = useTableOptions();
 
   return (
     <RaTableHeader
@@ -78,120 +34,71 @@ export const DataTableHeader = forwardRef<
           zIndex: 10,
         }),
       }}
-      onHoverStart={handleHoverStart}
-      onHoverEnd={handleHoverEnd}
+      columns={activeColumns}
       {...props}
     >
-      {showSelectionColumn && (
-        <RaColumn
+      {selectionBehavior === "toggle" && (
+        <DataTableColumn
           id="selection"
           className="selection-column-header"
           width={70}
           allowsSorting={false}
-          aria-label={selectionMode === "multiple" ? "Select all rows" : "Select row"}
+          unstyled
+          isInternalColumn={true}
         >
-          {selectionMode === "multiple" && (
-            <RaCheckbox slot="selection" aria-label="Select all rows">
-              {({ isSelected, isIndeterminate }) => (
-                <Checkbox
-                  isSelected={isSelected}
-                  isIndeterminate={isIndeterminate}
-                  aria-label="Select all rows"
-                />
-              )}
-            </RaCheckbox>
-          )}
-        </RaColumn>
+          {selectionMode === "multiple" && <Checkbox slot="selection" />}
+        </DataTableColumn>
       )}
-
       {showExpandColumn && (
-        <RaColumn
+        <DataTableColumn
           id="expand"
           width={20}
           minWidth={20}
           maxWidth={20}
           allowsSorting={false}
           aria-label="Expand rows"
-        />
+          isInternalColumn={true}
+        >
+          <VisuallyHidden>Expand rows</VisuallyHidden>
+        </DataTableColumn>
       )}
+      <RaCollection items={activeColumns}>
+        {(column) => {
+          const isDetailsColumn =
+            column.id === "nimbus-data-table-details-column";
 
-      {visibleCols.map((col, index) => {
-        const isSortable = allowsSorting && col.isSortable !== false;
-        const isLastColumn = index === visibleCols.length - 1;
-        return (
-          <>
-            <RaColumn
-              allowsSorting={isSortable}
-              key={col.id}
-              id={col.id}
-              isRowHeader
-              width={col.width}
-              defaultWidth={col.defaultWidth}
-              minWidth={col.minWidth}
-              maxWidth={col.maxWidth}
+          return (
+            <DataTableColumn
+              allowsSorting={
+                // use column.isSortable if defined, and fallback to allowsSorting if not
+                column.isSortable !== undefined
+                  ? column.isSortable
+                  : allowsSorting
+              }
+              isRowHeader={isDetailsColumn ? false : true}
+              isInternalColumn={isDetailsColumn}
+              width={column.width}
+              defaultWidth={column.defaultWidth}
+              minWidth={column.minWidth}
+              maxWidth={column.maxWidth}
+              column={column}
             >
-              {isHeaderHovered && !isLastColumn && (
-                <Divider
-                  orientation="vertical"
-                  color="gray.200"
-                  className="data-table-header-divider"
-                />
-              )}
-              <div
-                tabIndex={0}
-                onFocus={() => setFocusedColumn(col.id)}
-                onMouseEnter={() => setHoveredColumn(col.id)}
-                onMouseLeave={() => setHoveredColumn(null)}
-                style={{
-                  cursor: isSortable ? "pointer" : "default",
-                }}
-              >
-                <span data-multiline-header>{col.header}</span>
-                {col.headerIcon && (
-                  <span style={{ marginLeft: "8px" }}>{col.headerIcon}</span>
-                )}
-                {renderSortIndicator(col.id)}
-              </div>
-              {col.isAdjustable !== false && !isLastColumn && (
-                <ColumnResizer aria-label="Resize column">
-                  {({ isResizing, isFocused }) => (
-                    <DataTableColumnResizer
-                      data-resizing={isResizing}
-                      data-focused={isFocused}
-                    />
+              {isDetailsColumn ? (
+                <VisuallyHidden>Details</VisuallyHidden>
+              ) : (
+                <>
+                  <span data-multiline-header>{column.header}</span>
+                  {column.headerIcon && (
+                    <Box as="span" ml="200">
+                      {column.headerIcon}
+                    </Box>
                   )}
-                </ColumnResizer>
+                </>
               )}
-            </RaColumn>
-
-            {/* Details column header - shown after first data column */}
-            {showDetailsColumn && index === 0 && (
-              <RaColumn
-                key="details-header"
-                id="details"
-                className="details-column-header"
-                width={70}
-                allowsSorting={false}
-                aria-label="Row details"
-              >
-                <span style={{ 
-                  position: "absolute", 
-                  width: "1px", 
-                  height: "1px", 
-                  padding: 0, 
-                  margin: "-1px", 
-                  overflow: "hidden", 
-                  clip: "rect(0, 0, 0, 0)", 
-                  whiteSpace: "nowrap", 
-                  border: 0 
-                }}>
-                  Details
-                </span>
-              </RaColumn>
-            )}
-          </>
-        );
-      })}
+            </DataTableColumn>
+          );
+        }}
+      </RaCollection>
     </RaTableHeader>
   );
 });

@@ -100,7 +100,7 @@ export const DataTableExample = forwardRef<HTMLTableElement, RaTableProps>(
               <Checkbox value="level">Show Level</Checkbox>
             </RaCheckboxGroup>
           </Flex>
-          <Button variant="ghost" onPress={addRow}>
+          <Button variant="ghost" onPress={addRow} aria-label="add row">
             Add Row
           </Button>
         </Flex>
@@ -164,7 +164,7 @@ export const DataTableRoot = forwardRef<
   {
     columns,
     rows,
-    selectionMode = "multiple",
+    selectionMode = "single",
     sortDescriptor,
     onSortChange,
     allowsSorting,
@@ -180,6 +180,7 @@ export const DataTableRoot = forwardRef<
         sortDescriptor={sortDescriptor}
         onSortChange={onSortChange}
         disabledBehavior="all"
+        aria-label="nimbus table"
         {...restProps}
       >
         <DataTableHeader columns={columns}>
@@ -201,7 +202,12 @@ export const DataTableRoot = forwardRef<
               {(column) => (
                 <DataTableCell row={row}>
                   {row[column.id]}
-                  <Button onPress={() => alert("im clicked")}>click me</Button>
+                  <Button
+                    aria-label="click me"
+                    onPress={() => alert("im clicked")}
+                  >
+                    click me
+                  </Button>
                 </DataTableCell>
               )}
             </DataTableRow>

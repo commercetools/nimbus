@@ -1,8 +1,12 @@
-import type { DataTableRootProps } from "./data-table.slots"
-import type { RecipeVariantProps } from "@chakra-ui/react"
-import { dataTableRecipe } from "./data-table.recipe"
-import type { ReactNode } from "react";
-import type { SortDirection as RaSortDirection, Selection } from "react-aria-components";
+import type { ReactNode, FC } from "react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
+import type {
+  SortDirection as RaSortDirection,
+  ColumnProps as RaColumnProps,
+  Selection,
+} from "react-aria-components";
+import { dataTableRecipe } from "./data-table.recipe";
+import type { DataTableRootProps } from "./data-table.slots";
 
 export type SortDirection = RaSortDirection;
 
@@ -15,9 +19,13 @@ export type DataTableColumn<T = any> = {
   id: string;
   header: ReactNode;
   accessor: (row: T) => ReactNode;
-  render?: (cell: { value: any; row: T; column: DataTableColumn<T> }) => ReactNode;
+  render?: (cell: {
+    value: any;
+    row: T;
+    column: DataTableColumn<T>;
+  }) => ReactNode;
   isVisible?: boolean;
-  isAdjustable?: boolean;
+  isResizable?: boolean;
   width?: number | null;
   defaultWidth?: number | null;
   minWidth?: number | null;
@@ -42,7 +50,8 @@ export type DataTableDensity = "default" | "condensed";
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type DataTableVariantProps = Omit<DataTableRootProps, 'columns' | 'data'> & RecipeVariantProps<typeof dataTableRecipe>;
+type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
+  RecipeVariantProps<typeof dataTableRecipe>;
 
 /**
  * Main props interface for the DataTable component.
@@ -53,7 +62,7 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   columns: DataTableColumn<T>[];
   data: DataTableRow<T>[];
   visibleColumns?: string[];
-  isAdjustable?: boolean;
+  isResizable?: boolean;
   isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
@@ -75,5 +84,16 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   footer?: React.ReactNode;
   nestedKey?: string;
   disabledKeys?: Selection;
-  onRowAction?: (row: DataTableRow<T>, action: 'click' | 'select') => void;
+  onRowAction?: (row: DataTableRow<T>, action: "click" | "select") => void;
 }
+
+/** Combined props for the Column element (Chakra styles + Aria behavior). */
+export type DataTableColumnProps = RaColumnProps & {
+  ref?: React.Ref<HTMLTableCellElement>;
+  column?: DataTableColumn;
+  unstyled?: boolean;
+  isInternalColumn?: boolean;
+};
+
+/** Type signature for the `DataTable.Column` sub-component. */
+export type DataTableColumnComponent = FC<DataTableColumnProps>;

@@ -5,7 +5,6 @@ import { DataTableHeader } from "./components/data-table.header";
 import { DataTableBody } from "./components/data-table.body";
 import { DataTableRow } from "./components/data-table.row";
 import { DataTableFooter } from "./components/data-table.footer";
-import { DataTableExample } from "./components/data-table.simple";
 import {
   DataTableExpandButton,
   DataTableDetailsButton,
@@ -31,7 +30,7 @@ const DataTableBase = forwardRef<
 });
 
 // Create the DataTable namespace object as an object literal
-export const DataTable = Object.assign(DataTableExample, {
+export const DataTable = Object.assign(DataTableBase, {
   Root: DataTableRoot,
   Table: DataTableTable,
   Header: DataTableHeader,

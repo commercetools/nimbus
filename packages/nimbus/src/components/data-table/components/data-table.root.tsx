@@ -37,7 +37,7 @@ interface DataTableContextValue<T = any> {
   onRowClick?: (row: DataTableRowType<T>) => void;
   onDetailsClick?: (row: DataTableRowType<T>) => void;
   toggleExpand: (id: string) => void;
-  visibleCols: DataTableColumn<T>[];
+  activeColumns: DataTableColumn<T>[];
   filteredRows: DataTableRowType<T>[];
   sortedRows: DataTableRowType<T>[];
   showExpandColumn: boolean;
@@ -209,29 +209,40 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
 
-    const visibleCols = useMemo(
-      () =>
-        columns.filter(
-          (col) =>
-            (visibleColumns ? visibleColumns.includes(col.id) : true) &&
-            col.isVisible !== false
-        ),
-      [columns, visibleColumns]
-    );
+    const showDetailsColumn = true; // Details column is always shown
+
+    const activeColumns = useMemo(() => {
+      const activeCols = columns.filter(
+        (col) =>
+          (visibleColumns ? visibleColumns.includes(col.id) : true) &&
+          col.isVisible !== false
+      );
+      if (showDetailsColumn) {
+        // Add the 'details column' to the active columns after the first column
+        activeCols.splice(1, 0, {
+          id: "nimbus-data-table-details-column",
+          header: undefined,
+          accessor: () => null,
+          width: 70,
+          isSortable: false,
+        });
+      }
+      return activeCols;
+    }, [columns, visibleColumns, showDetailsColumn]);
 
     const filteredRows = useMemo(
-      () => (search ? filterRows(data, search, visibleCols, nestedKey) : data),
-      [data, search, visibleCols, nestedKey]
+      () =>
+        search ? filterRows(data, search, activeColumns, nestedKey) : data,
+      [data, search, activeColumns, nestedKey]
     );
 
     const sortedRows = useMemo(
-      () => sortRows(filteredRows, sortDescriptor, visibleCols, nestedKey),
-      [filteredRows, sortDescriptor, visibleCols, nestedKey]
+      () => sortRows(filteredRows, sortDescriptor, activeColumns, nestedKey),
+      [filteredRows, sortDescriptor, activeColumns, nestedKey]
     );
 
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
     const showSelectionColumn = selectionMode !== "none";
-    const showDetailsColumn = true; // Details column is always shown
 
     const toggleExpand = (id: string) =>
       setExpanded((e) => ({ ...e, [id]: !e[id] }));
@@ -272,7 +283,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       onRowClick,
       onDetailsClick,
       toggleExpand,
-      visibleCols,
+      activeColumns,
       filteredRows,
       sortedRows,
       showExpandColumn,
@@ -296,6 +307,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
             }),
           }}
           {...rest}
+          asChild
         >
           <ResizableTableContainer>{children}</ResizableTableContainer>
         </DataTableRootSlot>

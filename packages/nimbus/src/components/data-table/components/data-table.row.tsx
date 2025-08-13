@@ -1,5 +1,10 @@
 import { forwardRef, useState } from "react";
-import { Row as RaRow, Cell as RaCell, Checkbox as RaCheckbox } from "react-aria-components";
+import {
+  Row as RaRow,
+  Cell as RaCell,
+  Collection as RaCollection,
+  useTableOptions,
+} from "react-aria-components";
 import { Highlight } from "@chakra-ui/react";
 import { useDataTableContext } from "./data-table.root";
 import { DataTableExpandButton } from "../data-table.slots";
@@ -21,7 +26,7 @@ export interface DataTableRowProps {
 export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
   function DataTableRow({ row, depth = 0 }, ref) {
     const {
-      visibleCols,
+      activeColumns,
       search,
       expanded,
       toggleExpand,
@@ -33,20 +38,23 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
       isTruncated,
       onRowClick,
       onDetailsClick,
-      disabledKeys,
+      isSelected,
+      isDisabled,
       onRowAction,
     } = useDataTableContext();
+
+    const { selectionBehavior } = useTableOptions();
 
     // Hover state management - only for copy functionality
     const [hoveredCell, setHoveredCell] = useState<string | null>(null);
     const [, copyToClipboard] = useCopyToClipboard();
 
     // Helper function to check if row is disabled
-    const isDisabled = (rowId: string) => {
-      if (!disabledKeys) return false;
-      if (disabledKeys === "all") return true;
-      return disabledKeys.has(rowId);
-    };
+    // const isDisabled = (rowId: string) => {
+    //   if (!disabledKeys) return false;
+    //   if (disabledKeys === "all") return true;
+    //   return disabledKeys.has(rowId);
+    // };
 
     const hasNestedContent =
       nestedKey &&
@@ -85,8 +93,10 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
       <>
         <RaRow
           onAction={
-            !isDisabled(row.id) && isRowClickable ? handleRowClick : undefined
+            !isDisabled(row.id) && isRowClickable ? handleRowClick : () => {}
           }
+          isDisabled={isDisabled(row.id)}
+          columns={activeColumns}
           ref={ref}
           id={row.id}
           className={`data-table-row ${isDisabled(row.id) ? "data-table-row-disabled" : ""}`}
@@ -98,32 +108,28 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                 : undefined,
             position: "relative",
             ...(depth > 0 && {
-                borderLeft: "2px solid var(--colors-primary-6)",
-                backgroundColor: "var(--colors-slate-2)",
-              }),
+              borderLeft: "2px solid var(--colors-primary-6)",
+              backgroundColor: "var(--colors-slate-2)",
+            }),
           }}
         >
           {/* Selection checkbox cell if selection is enabled */}
-          {showSelectionColumn && (
+          {selectionBehavior === "toggle" && (
             <RaCell
               style={{
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <RaCheckbox
-                slot="selection"
-                isDisabled={isDisabled(row.id)}
-                aria-label="Select row"
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="100%"
+                h="100%"
               >
-                {({ isSelected }) => (
-                  <Checkbox
-                    isSelected={isSelected}
-                    isDisabled={isDisabled(row.id)}
-                    aria-label="Select row"
-                  />
-                )}
-              </RaCheckbox>
+                <Checkbox name="select-row" slot="selection" />
+              </Box>
             </RaCell>
           )}
 
@@ -132,14 +138,11 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
             <RaCell>
               {hasNestedContent ? (
                 <Box
-                  onClick={(e) => e.stopPropagation()} // Prevent row click when clicking expand button area
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
-                    height: "100%",
-                  }}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  w="100%"
+                  h="100%"
                 >
                   <DataTableExpandButton
                     aria-label={isExpanded ? "Collapse" : "Expand"}
@@ -160,13 +163,53 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
           )}
 
           {/* Data cells */}
-          {visibleCols.map((col, index) => {
-            const cellId = `${row.id}-${col.id}`;
-            const cellValue = col.accessor(row);
-            const isCurrentCellHovered = hoveredCell === cellId;
+          <RaCollection items={activeColumns}>
+            {(col) => {
+              const cellId = `${row.id}-${col.id}`;
+              const cellValue = col.accessor(row);
+              const isCurrentCellHovered = hoveredCell === cellId;
+              const isDetailsCell =
+                col.id === "nimbus-data-table-details-column";
 
-            return (
-              <>
+              if (isDetailsCell) {
+                return (
+                  <RaCell
+                    key="details-column"
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Box
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    >
+                      <Button
+                        aria-label="View row details"
+                        className="data-table-row-details-button"
+                        disabled={isDisabled(row.id)}
+                        variant="outline"
+                        colorPalette="primary"
+                        size="2xs"
+                        onPress={() => {
+                          if (onDetailsClick) {
+                            onDetailsClick(row);
+                          }
+                        }}
+                      >
+                        Open
+                      </Button>
+                    </Box>
+                  </RaCell>
+                );
+              }
+
+              return (
                 <RaCell key={col.id}>
                   <Box
                     className={isTruncated ? "truncated-cell" : ""}
@@ -204,6 +247,7 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                         variant="ghost"
                         aria-label="Copy to clipboard"
                         colorPalette="primary"
+                        className="nimbus-table-cell-copy-button"
                         onPress={() => handleCopy(cellValue)}
                         style={{
                           marginLeft: "4px",
@@ -217,53 +261,16 @@ export const DataTableRow = forwardRef<HTMLTableRowElement, DataTableRowProps>(
                     )}
                   </Box>
                 </RaCell>
-
-                {/* Details button cell - shown after first data column */}
-                {showDetailsColumn && index === 0 && (
-                  <RaCell
-                    key="details-column"
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    >
-                      <Button
-                        aria-label="View row details"
-                        className="data-table-row-details-button"
-                        disabled={isDisabled(row.id)}
-                        variant="outline"
-                        colorPalette="primary"
-                        size="2xs"
-                        onPress={() => {
-                          if (onDetailsClick) {
-                            onDetailsClick(row);
-                          }
-                        }}
-                      >
-                        Open
-                      </Button>
-                    </Box>
-                  </RaCell>
-                )}
-              </>
-            );
-          })}
+              );
+            }}
+          </RaCollection>
         </RaRow>
 
         {hasNestedContent && isExpanded && nestedKey && (
           <RaRow>
             <RaCell
               colSpan={
-                visibleCols.length +
+                activeColumns.length +
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0) +
                 (showDetailsColumn ? 1 : 0)
