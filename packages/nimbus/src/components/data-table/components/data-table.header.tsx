@@ -5,7 +5,7 @@ import {
   Collection as RaCollection,
   useTableOptions,
 } from "react-aria-components";
-import { useDataTableContext } from "./data-table.root";
+import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
 
 import { Box, Checkbox } from "@/components";
@@ -19,7 +19,6 @@ export const DataTableHeader = forwardRef<
 >(function DataTableHeader(props, ref) {
   const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
     useDataTableContext();
-
   // This can also be used to see if drag'n'drop is enabled
   const { selectionBehavior, selectionMode } = useTableOptions();
 
@@ -37,13 +36,14 @@ export const DataTableHeader = forwardRef<
       columns={activeColumns}
       {...props}
     >
+      {/** Internal/non-data columns like selection and expand
+       * need to be in the same order in the header and row components*/}
       {selectionBehavior === "toggle" && (
         <DataTableColumn
           id="selection"
           className="selection-column-header"
           width={70}
           allowsSorting={false}
-          unstyled
           isInternalColumn={true}
         >
           {selectionMode === "multiple" && <Checkbox slot="selection" />}

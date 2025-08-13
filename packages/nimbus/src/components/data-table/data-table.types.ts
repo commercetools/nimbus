@@ -8,6 +8,40 @@ import type {
 import { dataTableRecipe } from "./data-table.recipe";
 import type { DataTableRootProps } from "./data-table.slots";
 
+export interface DataTableContextValue<
+  T extends object = Record<string, unknown>,
+> {
+  columns: DataTableColumnItem<T>[];
+  data: DataTableRowItem<T>[];
+  visibleColumns?: string[];
+  search?: string;
+  sortDescriptor?: SortDescriptor;
+  selectedKeys?: Selection;
+  defaultSelectedKeys?: Selection;
+  expanded: Record<string, boolean>;
+  allowsSorting?: boolean;
+  selectionMode?: "none" | "single" | "multiple";
+  disallowEmptySelection?: boolean;
+  isRowClickable?: boolean;
+  maxHeight?: string | number;
+  isTruncated?: boolean;
+  density?: "default" | "condensed";
+  nestedKey?: string;
+  onSortChange?: (descriptor: SortDescriptor) => void;
+  onSelectionChange?: (keys: Selection) => void;
+  onRowClick?: (row: DataTableRowItem<T>) => void;
+  onDetailsClick?: (row: DataTableRowItem<T>) => void;
+  toggleExpand: (id: string) => void;
+  activeColumns: DataTableColumnItem<T>[];
+  filteredRows: DataTableRowItem<T>[];
+  sortedRows: DataTableRowItem<T>[];
+  showExpandColumn: boolean;
+  showSelectionColumn: boolean;
+  showDetailsColumn: boolean;
+  disabledKeys?: Selection;
+  onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+}
+
 export type SortDirection = RaSortDirection;
 
 export type SortDescriptor = {
@@ -15,14 +49,14 @@ export type SortDescriptor = {
   direction: SortDirection;
 };
 
-export type DataTableColumn<T = any> = {
+export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
   id: string;
   header: ReactNode;
   accessor: (row: T) => ReactNode;
   render?: (cell: {
-    value: any;
+    value: unknown;
     row: T;
-    column: DataTableColumn<T>;
+    column: DataTableColumnItem<T>;
   }) => ReactNode;
   isVisible?: boolean;
   isResizable?: boolean;
@@ -36,11 +70,12 @@ export type DataTableColumn<T = any> = {
   headerIcon?: ReactNode;
 };
 
-export type DataTableRow<T = any> = T & {
+export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
   id: string;
+  isDisabled?: boolean;
   // Children can now be either nested table rows OR arbitrary React content
   // Note: The actual nested key is flexible and specified via nestedKey prop
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type DataTableDensity = "default" | "condensed";
@@ -58,9 +93,10 @@ type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
  * Extends DataTableVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface DataTableProps<T = any> extends DataTableVariantProps {
-  columns: DataTableColumn<T>[];
-  data: DataTableRow<T>[];
+export interface DataTableProps<T extends object = Record<string, unknown>>
+  extends DataTableVariantProps {
+  columns: DataTableColumnItem<T>[];
+  data: DataTableRowItem<T>[];
   visibleColumns?: string[];
   isResizable?: boolean;
   isRowClickable?: boolean;
@@ -75,24 +111,25 @@ export interface DataTableProps<T = any> extends DataTableVariantProps {
   selectedKeys?: Selection;
   defaultSelectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
-  onRowClick?: (row: DataTableRow<T>) => void;
-  onDetailsClick?: (row: DataTableRow<T>) => void;
-  renderDetails?: (row: DataTableRow<T>) => ReactNode;
+  onRowClick?: (row: DataTableRowItem<T>) => void;
+  onDetailsClick?: (row: DataTableRowItem<T>) => void;
+  renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
   children?: React.ReactNode;
   density?: DataTableDensity;
   isTruncated?: boolean;
   footer?: React.ReactNode;
   nestedKey?: string;
   disabledKeys?: Selection;
-  onRowAction?: (row: DataTableRow<T>, action: "click" | "select") => void;
+  onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
 }
 
 /** Combined props for the Column element (Chakra styles + Aria behavior). */
 export type DataTableColumnProps = RaColumnProps & {
   ref?: React.Ref<HTMLTableCellElement>;
-  column?: DataTableColumn;
+  column?: DataTableColumnItem;
   unstyled?: boolean;
   isInternalColumn?: boolean;
+  tabIndex?: number;
 };
 
 /** Type signature for the `DataTable.Column` sub-component. */

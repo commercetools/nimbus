@@ -1,72 +1,20 @@
-import {
-  forwardRef,
-  useMemo,
-  useState,
-  createContext,
-  useContext,
-} from "react";
+import { forwardRef, useMemo, useState, useCallback } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
+import { DataTableContext } from "./data-table.context";
 import type {
   DataTableProps,
-  DataTableColumn,
-  DataTableRow as DataTableRowType,
+  DataTableColumnItem,
+  DataTableRowItem as DataTableRowType,
   SortDescriptor,
+  DataTableContextValue,
 } from "../data-table.types";
-import type { Selection } from "react-aria-components";
-
-interface DataTableContextValue<T = any> {
-  columns: DataTableColumn<T>[];
-  data: DataTableRowType<T>[];
-  visibleColumns?: string[];
-  search?: string;
-  sortDescriptor?: SortDescriptor;
-  selectedKeys?: Selection;
-  defaultSelectedKeys?: Selection;
-  expanded: Record<string, boolean>;
-  allowsSorting?: boolean;
-  selectionMode?: "none" | "single" | "multiple";
-  disallowEmptySelection?: boolean;
-  isRowClickable?: boolean;
-  maxHeight?: string | number;
-  isTruncated?: boolean;
-  density?: "default" | "condensed";
-  nestedKey?: string;
-  onSortChange?: (descriptor: SortDescriptor) => void;
-  onSelectionChange?: (keys: Selection) => void;
-  onRowClick?: (row: DataTableRowType<T>) => void;
-  onDetailsClick?: (row: DataTableRowType<T>) => void;
-  toggleExpand: (id: string) => void;
-  activeColumns: DataTableColumn<T>[];
-  filteredRows: DataTableRowType<T>[];
-  sortedRows: DataTableRowType<T>[];
-  showExpandColumn: boolean;
-  showSelectionColumn: boolean;
-  showDetailsColumn: boolean;
-  disabledKeys?: Selection;
-  isDisabled: (rowId: string) => boolean;
-  onRowAction?: (row: DataTableRowType<T>, action: "click" | "select") => void;
-}
-
-const DataTableContext = createContext<DataTableContextValue | null>(null);
-
-DataTableContext.displayName = "DataTableContext";
-
-export const useDataTableContext = <T = any,>(): DataTableContextValue<T> => {
-  const context = useContext(
-    DataTableContext
-  ) as DataTableContextValue<T> | null;
-  if (!context) {
-    throw new Error("DataTable components must be used within DataTable.Root");
-  }
-  return context;
-};
 
 // Utility functions
-function filterRows<T>(
+function filterRows<T extends object>(
   rows: DataTableRowType<T>[],
   search: string,
-  columns: DataTableColumn<T>[],
+  columns: DataTableColumnItem<T>[],
   nestedKey?: string
 ): DataTableRowType<T>[] {
   if (!search) return rows;
@@ -90,7 +38,12 @@ function filterRows<T>(
             columns,
             nestedKey
           );
-          if (match || (nestedContent && nestedContent.length > 0)) {
+          if (
+            match ||
+            (nestedContent &&
+              Array.isArray(nestedContent) &&
+              nestedContent.length > 0)
+          ) {
             return { ...row, [nestedKey]: nestedContent };
           }
         } else {
@@ -106,10 +59,10 @@ function filterRows<T>(
     .filter(Boolean) as DataTableRowType<T>[];
 }
 
-function sortRows<T>(
+function sortRows<T extends object>(
   rows: DataTableRowType<T>[],
   sortDescriptor: SortDescriptor | undefined,
-  columns: DataTableColumn<T>[],
+  columns: DataTableColumnItem<T>[],
   nestedKey?: string
 ): DataTableRowType<T>[] {
   if (!sortDescriptor) return rows;
@@ -156,7 +109,7 @@ function sortRows<T>(
   });
 }
 
-function hasExpandableRows<T>(
+function hasExpandableRows<T extends object>(
   rows: DataTableRowType<T>[],
   nestedKey?: string
 ): boolean {
@@ -171,13 +124,13 @@ function hasExpandableRows<T>(
 }
 
 export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
-  function DataTableRoot<T = any>(
+  function DataTableRoot<T extends object = Record<string, unknown>>(
     props: DataTableProps<T>,
     ref: React.Ref<HTMLDivElement>
   ) {
     const {
-      columns,
-      data,
+      columns = [],
+      data = [],
       visibleColumns,
       search,
       sortDescriptor: controlledSortDescriptor,
@@ -186,12 +139,12 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       defaultSelectedKeys,
       onSelectionChange,
       selectionMode = "none",
-      disallowEmptySelection,
-      allowsSorting,
-      isRowClickable,
+      disallowEmptySelection = false,
+      allowsSorting = false,
+      isRowClickable = false,
       maxHeight,
-      isTruncated,
-      density,
+      isTruncated = false,
+      density = "default",
       nestedKey,
       onRowClick,
       onDetailsClick,
@@ -208,7 +161,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
-
+    // TODO: should we really always show this?
     const showDetailsColumn = true; // Details column is always shown
 
     const activeColumns = useMemo(() => {
@@ -244,74 +197,111 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
     const showSelectionColumn = selectionMode !== "none";
 
-    const toggleExpand = (id: string) =>
-      setExpanded((e) => ({ ...e, [id]: !e[id] }));
+    const toggleExpand = useCallback(
+      (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] })),
+      []
+    );
 
-    const handleSortChange = (descriptor: SortDescriptor) => {
-      if (onSortChange) {
-        onSortChange(descriptor);
-      } else {
-        setInternalSortDescriptor(descriptor);
-      }
-    };
+    const handleSortChange = useCallback(
+      (descriptor: SortDescriptor) => {
+        if (onSortChange) {
+          onSortChange(descriptor);
+        } else {
+          setInternalSortDescriptor(descriptor);
+        }
+      },
+      [onSortChange]
+    );
 
-    const isDisabled = (rowId: string) => {
-      if (!disabledKeys) return false;
-      if (disabledKeys === "all") return true;
-      return disabledKeys.has(rowId);
-    };
-
-    const contextValue: DataTableContextValue<T> = {
-      columns,
-      data,
-      visibleColumns,
-      search,
-      sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
-      expanded,
-      allowsSorting,
-      selectionMode,
-      disallowEmptySelection,
-      isRowClickable,
-      maxHeight,
-      isTruncated,
-      density,
-      nestedKey,
-      onSortChange: handleSortChange,
-      onSelectionChange,
-      onRowClick,
-      onDetailsClick,
-      toggleExpand,
-      activeColumns,
-      filteredRows,
-      sortedRows,
-      showExpandColumn,
-      showSelectionColumn,
-      showDetailsColumn,
-      disabledKeys,
-      onRowAction,
-      isDisabled,
-    };
+    const contextValue: DataTableContextValue<T> = useMemo(
+      () => ({
+        columns,
+        data,
+        visibleColumns,
+        search,
+        sortDescriptor,
+        selectedKeys,
+        defaultSelectedKeys,
+        expanded,
+        allowsSorting,
+        selectionMode,
+        disallowEmptySelection,
+        isRowClickable,
+        maxHeight,
+        isTruncated,
+        density,
+        nestedKey,
+        onSortChange: handleSortChange,
+        onSelectionChange,
+        onRowClick,
+        onDetailsClick,
+        toggleExpand,
+        activeColumns,
+        filteredRows,
+        sortedRows,
+        showExpandColumn,
+        showSelectionColumn,
+        showDetailsColumn,
+        disabledKeys,
+        onRowAction,
+      }),
+      [
+        columns,
+        data,
+        visibleColumns,
+        search,
+        sortDescriptor,
+        selectedKeys,
+        defaultSelectedKeys,
+        expanded,
+        allowsSorting,
+        selectionMode,
+        disallowEmptySelection,
+        isRowClickable,
+        maxHeight,
+        isTruncated,
+        density,
+        nestedKey,
+        handleSortChange,
+        onSelectionChange,
+        onRowClick,
+        onDetailsClick,
+        toggleExpand,
+        activeColumns,
+        filteredRows,
+        sortedRows,
+        showExpandColumn,
+        showSelectionColumn,
+        showDetailsColumn,
+        disabledKeys,
+        onRowAction,
+      ]
+    );
 
     return (
-      <DataTableContext.Provider value={contextValue}>
-        <DataTableRootSlot
-          ref={ref}
-          truncated={isTruncated}
-          density={density}
-          style={{
-            ...(maxHeight && {
-              maxHeight,
-              overflowY: "auto",
-            }),
-          }}
-          {...rest}
-          asChild
-        >
-          <ResizableTableContainer>{children}</ResizableTableContainer>
-        </DataTableRootSlot>
-      </DataTableContext.Provider>
+      <DataTableRootSlot
+        ref={ref}
+        truncated={isTruncated}
+        density={density}
+        style={{
+          ...(maxHeight && {
+            maxHeight,
+            overflowY: "auto",
+          }),
+        }}
+        {...rest}
+        asChild
+      >
+        <ResizableTableContainer>
+          <DataTableContext.Provider
+            value={
+              contextValue as DataTableContextValue<Record<string, unknown>>
+            }
+          >
+            {children}
+          </DataTableContext.Provider>
+        </ResizableTableContainer>
+      </DataTableRootSlot>
     );
   }
 );

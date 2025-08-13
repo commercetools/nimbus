@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
-import { useDataTableContext } from "./data-table.root";
+import { useDataTableContext } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -12,7 +12,7 @@ export const DataTableBody = forwardRef<
   DataTableBodyProps
 >(function DataTableBody(props, ref) {
   const { sortedRows, activeColumns } = useDataTableContext();
-
+  // TODO: renderEmptyState should be controlled by props
   return (
     <RaTableBody
       ref={ref}

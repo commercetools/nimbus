@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
-import { useDataTableContext } from "./data-table.root";
+import { useDataTableContext } from "./data-table.context";
 import {
   DataTableTableSlot,
   type DataTableTableSlotProps,

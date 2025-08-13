@@ -1,7 +1,7 @@
 import { ColumnResizer, Column as RaColumn } from "react-aria-components";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Divider, Flex } from "@/components";
-import { useDataTableContext } from "./data-table.root";
+import { useDataTableContext } from "./data-table.context";
 import {
   DataTableColumnSlot,
   DataTableHeaderSortIcon,
@@ -15,13 +15,18 @@ export const DataTableColumn: DataTableColumnComponent = ({
   column,
   unstyled,
   isInternalColumn,
+  tabIndex,
   ...otherProps
 }) => {
   const { sortDescriptor } = useDataTableContext();
   const isActive = sortDescriptor?.column === column?.id;
-
+  /**
+   * TODO: Pass styles to DataTableColumnSlot from props,
+   * except for height/minHeight/maxHeight which enable react-aria's
+   * column resizing
+   */
   return (
-    <DataTableColumnSlot unstyled={unstyled} asChild>
+    <DataTableColumnSlot unstyled={unstyled} tabIndex={tabIndex} asChild>
       <RaColumn ref={ref} {...otherProps}>
         {(renderProps) => {
           const { allowsSorting } = renderProps;
@@ -32,10 +37,9 @@ export const DataTableColumn: DataTableColumnComponent = ({
               : children;
           }
           return (
-            <Flex>
+            <Flex tabIndex={column?.isResizable ? 0 : -1} focusRing="outside">
               <Divider
                 orientation="vertical"
-                color="gray.200"
                 className="data-table-column-divider"
               />
               {typeof children === "function"

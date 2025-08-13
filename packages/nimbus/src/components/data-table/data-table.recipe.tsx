@@ -34,31 +34,41 @@ export const dataTableRecipe = defineSlotRecipe({
         paddingLeft: "600",
         paddingRight: "600",
         color: "neutral.11",
+        focusRing: "outside",
+        "& .nimbus-table-cell-copy-button": {
+          display: "none",
+        },
+        _hover: {
+          "& > div > .nimbus-table-cell-copy-button": {
+            display: "inherit",
+          },
+        },
       },
       "& .data-table-row": {
         borderBottom: "1px solid {colors.neutral.3}",
+        focusRing: "outside",
         "&:last-child": {
           borderBottom: "none",
         },
-      },
-      "& .data-table-row-details-button": {
-        opacity: 0,
-      },
-      "& .data-table-row-details-button:focus": {
-        opacity: 1,
-      },
-      "& .data-table-row:hover": {
-        backgroundColor: "{colors.primary.3}",
-        transition: "background-color 100ms ease",
-        transform: "translate3d(0, 0, 0)",
+        _hover: {
+          backgroundColor: "{colors.primary.3}",
+          transition: "background-color 100ms ease",
+          transform: "translate3d(0, 0, 0)",
+          "& .data-table-row-details-button": {
+            opacity: 1,
+          },
+        },
         "& .data-table-row-details-button": {
+          opacity: 0,
+        },
+        "& .data-table-row-details-button:focus": {
           opacity: 1,
         },
       },
-      "& .data-table-row-selected": {
-        backgroundColor: "{colors.primary.4}",
+      "& .data-table-row[data-selected='true']": {
+        background: "{colors.primary.4}",
       },
-      "& .data-table-row-disabled": {
+      "& .data-table-row[data-disabled='true']": {
         "& .data-table-row-details-button": {
           display: "none",
         },
@@ -74,22 +84,27 @@ export const dataTableRecipe = defineSlotRecipe({
         fontWeight: "500",
         textStyle: "sm",
         fontSize: "300",
-        height: "40px",
+        height: "1000",
+        "& .data-table-column-divider": {
+          display: "none",
+          position: "absolute",
+          right: 0,
+          top: "10%",
+          bottom: "10%",
+          height: "80%",
+          width: "1px",
+          pointerEvents: "none",
+        },
         _hover: {
           "& .data-table-column-divider": {
             display: "inherit",
           },
-          "& .data-table-column-divider:last-of-type": {
+          "& tr th:last-of-type .data-table-column-divider": {
             display: "none",
           },
         },
       },
       // Multiline header truncation using webkit line clamp
-      "& span[data-multiline-header]": {
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
-        WebkitLineClamp: "2",
-      } as object,
     },
     table: {
       width: "100%",
@@ -98,7 +113,6 @@ export const dataTableRecipe = defineSlotRecipe({
     column: {
       textAlign: "right",
       position: "relative",
-
       paddingTop: "100",
       paddingBottom: "100",
       paddingLeft: "600",
@@ -112,16 +126,7 @@ export const dataTableRecipe = defineSlotRecipe({
       "& .nimbus-data-table__headerSortIcon": {
         display: "none",
       },
-      "& .data-table-column-divider": {
-        position: "absolute",
-        right: 0,
-        top: "10%",
-        bottom: "10%",
-        height: "80%",
-        width: "1px",
-        pointerEvents: "none",
-        display: "none",
-      },
+
       "& > div": {
         display: "flex",
         alignItems: "center",
@@ -132,13 +137,15 @@ export const dataTableRecipe = defineSlotRecipe({
         },
         "& span[data-multiline-header]": {
           overflow: "hidden",
-          lineHeight: "18px",
-          maxHeight: "36px",
+          lineHeight: "450",
           wordBreak: "break-word",
           whiteSpace: "normal",
           textOverflow: "ellipsis",
           textAlign: "left",
-        },
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+        } as object,
         "& > span:not(:first-of-type)": {
           flexShrink: 0,
         },

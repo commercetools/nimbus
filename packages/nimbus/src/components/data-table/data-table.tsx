@@ -1,13 +1,19 @@
 import { forwardRef } from "react";
-import { DataTableRoot } from "./components/data-table.root";
-import { DataTableTable } from "./components/data-table.table";
-import { DataTableHeader } from "./components/data-table.header";
 import { DataTableBody } from "./components/data-table.body";
-import { DataTableRow } from "./components/data-table.row";
-import { DataTableFooter } from "./components/data-table.footer";
+import { DataTableCell } from "./components/data-table.cell";
+import { DataTableColumn } from "./components/data-table.column";
 import {
-  DataTableExpandButton,
+  DataTableContext,
+  useDataTableContext,
+} from "./components/data-table.context";
+import { DataTableFooter } from "./components/data-table.footer";
+import { DataTableHeader } from "./components/data-table.header";
+import { DataTableRoot } from "./components/data-table.root";
+import { DataTableRow } from "./components/data-table.row";
+import { DataTableTable } from "./components/data-table.table";
+import {
   DataTableDetailsButton,
+  DataTableExpandButton,
   DataTableNestedIcon,
   DataTableSelectionCell,
 } from "./data-table.slots";
@@ -34,13 +40,17 @@ export const DataTable = Object.assign(DataTableBase, {
   Root: DataTableRoot,
   Table: DataTableTable,
   Header: DataTableHeader,
+  Column: DataTableColumn,
   Body: DataTableBody,
   Row: DataTableRow,
+  Cell: DataTableCell,
   Footer: DataTableFooter,
   ExpandButton: DataTableExpandButton,
   DetailsButton: DataTableDetailsButton,
   NestedIcon: DataTableNestedIcon,
   SelectionCell: DataTableSelectionCell,
+  Context: DataTableContext,
+  useDataTableContext,
 });
 
 /**
@@ -52,8 +62,10 @@ export {
   DataTableRoot as _DataTableRoot,
   DataTableTable as _DataTableTable,
   DataTableHeader as _DataTableHeader,
+  DataTableColumn as _DataTableColumn,
   DataTableBody as _DataTableBody,
   DataTableRow as _DataTableRow,
+  DataTableCell as _DataTableCell,
   DataTableFooter as _DataTableFooter,
   DataTableExpandButton as _DataTableExpandButton,
   DataTableDetailsButton as _DataTableDetailsButton,
