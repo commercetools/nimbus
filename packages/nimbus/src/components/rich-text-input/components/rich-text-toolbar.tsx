@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type RefObject } from "react";
+import { useCallback, useMemo } from "react";
 import { useSlate } from "slate-react";
 import type { Key } from "react-aria";
 import {
@@ -39,10 +39,8 @@ import type { CustomElement, CustomText } from "./rich-text-utils/types";
 
 type FormatType = keyof CustomText;
 type BlockType = CustomElement["type"];
-import type { RichTextEditorRef } from "./rich-text-editor";
 
 export interface RichTextToolbarProps {
-  editorRef?: RefObject<RichTextEditorRef>;
   isDisabled?: boolean;
   className?: string;
   size?: "xs" | "md";
@@ -243,10 +241,6 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           onAction={(styleId) => handleTextStyleChange(String(styleId))}
         >
           <Menu.Trigger
-            borderRadius="200"
-            overflow="hidden"
-            border="1px solid"
-            borderColor="neutral.6"
             width="4000"
             aria-label="Text style menu"
             alignSelf="stretch"

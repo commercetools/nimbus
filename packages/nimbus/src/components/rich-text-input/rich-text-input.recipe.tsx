@@ -20,15 +20,7 @@ export const richTextInputRecipe = defineRecipe({
       borderColor: "accent.emphasized",
       boxShadow: "0 0 0 1px token(colors.accent.emphasized)",
     },
-    "& .rich-text-toolbar": {
-      display: "flex",
-      alignItems: "center",
-      gap: "100",
-      padding: "200",
-      borderBottomWidth: "1px",
-      borderBottomColor: "border.subtle",
-      backgroundColor: "bg.surface",
-    },
+    // TODO: do we need this? Seems like we don't need all the properties. Plus, what are the "accepted values" for the font sizes and others properties?
     "& .rich-text-editor": {
       position: "relative",
       minHeight: "800",
@@ -131,44 +123,6 @@ export const richTextInputRecipe = defineRecipe({
     },
   },
   variants: {
-    size: {
-      sm: {
-        "& .rich-text-editor": {
-          minHeight: "600",
-          padding: "250",
-          fontSize: "350",
-          lineHeight: "450",
-        },
-        "& .rich-text-toolbar": {
-          padding: "150",
-          gap: "75",
-        },
-      },
-      md: {
-        "& .rich-text-editor": {
-          minHeight: "800",
-          padding: "300",
-          fontSize: "400",
-          lineHeight: "500",
-        },
-        "& .rich-text-toolbar": {
-          padding: "200",
-          gap: "100",
-        },
-      },
-      lg: {
-        "& .rich-text-editor": {
-          minHeight: "1000",
-          padding: "400",
-          fontSize: "450",
-          lineHeight: "550",
-        },
-        "& .rich-text-toolbar": {
-          padding: "250",
-          gap: "125",
-        },
-      },
-    },
     variant: {
       outline: {},
       filled: {
@@ -203,14 +157,10 @@ export const richTextInputRecipe = defineRecipe({
       true: {
         backgroundColor: "bg.subtle",
         cursor: "default",
-        "& .rich-text-toolbar": {
-          display: "none",
-        },
       },
     },
   },
   defaultVariants: {
-    size: "md",
     variant: "outline",
   },
 });

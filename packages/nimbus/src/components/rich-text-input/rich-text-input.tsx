@@ -2,7 +2,10 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { RichTextInputRootSlot } from "./rich-text-input.slots";
-import { RichTextEditor } from "./components/rich-text-editor";
+import {
+  RichTextEditor,
+  type RichTextEditorRef,
+} from "./components/rich-text-editor";
 import { RichTextToolbar } from "./components/rich-text-toolbar";
 import type { RichTextInputProps } from "./rich-text-input.types";
 import {
@@ -33,14 +36,12 @@ export const RichTextInput = (props: RichTextInputProps) => {
     hasError = false,
     hasWarning = false,
     autoFocus = false,
-    size = "md",
     variant = "outline",
     ...restProps
   } = props;
 
   const recipe = useRecipe({ recipe: richTextInputRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps({
-    size,
     variant,
     state: hasError ? "error" : hasWarning ? "warning" : undefined,
     disabled: isDisabled,
@@ -64,10 +65,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
     return value ?? defaultValue ?? "";
   });
 
-  const editorRef = useRef<{
-    focus: () => void;
-    resetValue: (html: string) => void;
-  } | null>(null);
+  const editorRef = useRef<RichTextEditorRef>(null);
 
   // Handle controlled value changes
   useEffect(() => {
@@ -110,11 +108,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
       : createEmptyValue();
 
   const toolbar = !isReadOnly ? (
-    <RichTextToolbar
-      className="rich-text-toolbar"
-      editorRef={editorRef}
-      isDisabled={isDisabled}
-    />
+    <RichTextToolbar isDisabled={isDisabled} />
   ) : undefined;
 
   return (

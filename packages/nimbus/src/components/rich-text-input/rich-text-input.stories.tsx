@@ -182,30 +182,14 @@ export const BuildingBlocks: Story = {
               Richtext Toolbar - Buttons
             </Text>
             <Stack direction="row" gap="200" flexWrap="wrap">
-              <Button size="sm" variant="outline">
-                Bold
-              </Button>
-              <Button size="sm" variant="outline">
-                Italic
-              </Button>
-              <Button size="sm" variant="outline">
-                Underline
-              </Button>
-              <Button size="sm" variant="outline">
-                Strikethrough
-              </Button>
-              <Button size="sm" variant="outline">
-                Code
-              </Button>
-              <Button size="sm" variant="outline">
-                Superscript
-              </Button>
-              <Button size="sm" variant="outline">
-                Link
-              </Button>
-              <Button size="sm" variant="outline">
-                Quote
-              </Button>
+              <Button variant="outline">Bold</Button>
+              <Button variant="outline">Italic</Button>
+              <Button variant="outline">Underline</Button>
+              <Button variant="outline">Strikethrough</Button>
+              <Button variant="outline">Code</Button>
+              <Button variant="outline">Superscript</Button>
+              <Button variant="outline">Link</Button>
+              <Button variant="outline">Quote</Button>
             </Stack>
           </Box>
         </Stack>

@@ -71,11 +71,6 @@ export interface RichTextInputProps
   autoFocus?: boolean;
 
   /**
-   * Size variant of the rich text input
-   */
-  size?: RecipeVariantProps<typeof richTextInputRecipe>["size"];
-
-  /**
    * Visual variant of the rich text input
    */
   variant?: RecipeVariantProps<typeof richTextInputRecipe>["variant"];
