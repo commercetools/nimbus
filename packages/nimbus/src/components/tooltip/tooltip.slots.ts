@@ -3,7 +3,7 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createRecipeContext,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 import { type TooltipProps as RATooltipProps } from "react-aria-components";
 

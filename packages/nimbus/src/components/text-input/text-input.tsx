@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { mergeRefs, useRecipe } from "@chakra-ui/react";
+import { mergeRefs } from "@chakra-ui/react";
+import { useRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
 import { Input } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";

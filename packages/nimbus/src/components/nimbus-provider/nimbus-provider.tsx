@@ -1,4 +1,4 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react/styled-system";
 import { I18nProvider, RouterProvider } from "react-aria";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";

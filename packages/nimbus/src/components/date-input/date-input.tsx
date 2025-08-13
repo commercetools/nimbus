@@ -9,7 +9,7 @@ import {
   DateInput as DateInputField,
   DateSegment,
 } from "react-aria-components";
-import { useRecipe } from "@chakra-ui/react";
+import { useRecipe } from "@chakra-ui/react/styled-system";
 import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateInputProps } from "./date-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";

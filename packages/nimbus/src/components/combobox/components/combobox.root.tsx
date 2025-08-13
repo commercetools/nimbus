@@ -1,4 +1,4 @@
-import { useSlotRecipe } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { comboBoxSlotRecipe } from "../combobox.recipe";
 import { ComboBoxRootSlot } from "../combobox.slots";
 import { SingleSelectRoot } from "./combobox.single-select-root";

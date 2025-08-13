@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
+import { mergeRefs } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useNumberField, useLocale } from "react-aria";
 import { useNumberFieldState } from "react-stately";
 import { Box } from "@/components";

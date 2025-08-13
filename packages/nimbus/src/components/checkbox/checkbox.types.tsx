@@ -1,5 +1,5 @@
 import type { CheckboxRootProps } from "./checkbox.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { checkboxSlotRecipe } from "./checkbox.recipe";
 import type { AriaCheckboxProps } from "react-aria";
 

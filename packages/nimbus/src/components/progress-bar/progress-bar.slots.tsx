@@ -1,10 +1,10 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type {
   RecipeProps,
   UnstyledProp,
   HTMLChakraProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { AriaProgressBarProps } from "react-aria";
 import { progressBarSlotRecipe } from "./progress-bar.recipe.tsx";
 

@@ -3,7 +3,7 @@ import type {
   UnstyledProp,
   HTMLChakraProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { badgeRecipe } from "./badge.recipe";
 
 /**

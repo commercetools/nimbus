@@ -3,7 +3,7 @@ import { LoadingSpinner } from "./loading-spinner";
 import { Stack } from "./../stack";
 import type { LoadingSpinnerProps } from "./loading-spinner.types";
 import { within, expect } from "storybook/test";
-import { Box } from "@chakra-ui/react";
+import { Box } from "@/components";
 
 const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
 

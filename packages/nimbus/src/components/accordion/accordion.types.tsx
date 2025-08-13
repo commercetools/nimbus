@@ -1,4 +1,7 @@
-import type { RecipeVariantProps, HTMLChakraProps } from "@chakra-ui/react";
+import type {
+  RecipeVariantProps,
+  HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
 import { accordionSlotRecipe } from "./accordion.recipe";
 import { type DisclosureProps } from "react-aria-components";
 import type { ReactNode, RefObject, RefAttributes } from "react";

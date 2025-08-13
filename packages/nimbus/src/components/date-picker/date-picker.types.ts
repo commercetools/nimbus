@@ -1,7 +1,7 @@
 import type { DateInputProps } from "@/components/date-input";
 import type { DatePickerStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { datePickerSlotRecipe } from "./date-picker.recipe";
 
 /**
