@@ -4,7 +4,7 @@ import { RichTextInput } from "./rich-text-input";
 import { Box, Stack, Text, Button } from "@/components";
 
 const meta: Meta<typeof RichTextInput> = {
-  title: "Components/Inputs/RichTextInput",
+  title: "Components/RichTextInput",
   component: RichTextInput,
   parameters: {
     layout: "padded",

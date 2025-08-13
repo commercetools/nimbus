@@ -19,12 +19,8 @@ import {
   FormatUnderlined,
   FormatStrikethrough,
   Code,
-  FormatQuote,
   FormatListBulleted,
   FormatListNumbered,
-  FormatAlignLeft,
-  FormatAlignCenter,
-  FormatAlignRight,
   KeyboardArrowDown,
   Undo,
   Redo,
@@ -35,9 +31,9 @@ import {
   toggleMark,
   toggleBlock,
 } from "./rich-text-utils/slate-helpers";
-import type { CustomElement, CustomText } from "./rich-text-utils/types";
+import { Editor } from "slate";
+import type { CustomElement } from "./rich-text-utils/types";
 
-type FormatType = keyof CustomText;
 type BlockType = CustomElement["type"];
 
 export interface RichTextToolbarProps {
@@ -122,7 +118,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isBlockActive(editor, "heading-five")) return "heading-five";
     if (isBlockActive(editor, "block-quote")) return "block-quote";
     return "paragraph";
-  }, [editor, editor.selection]);
+  }, [editor, editor.selection, editor.children]);
 
   const selectedTextStyle = textStyles.find((v) => v.id === currentTextStyle);
   const selectedTextStyleProps = selectedTextStyle?.props || {};
@@ -136,54 +132,24 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     [editor]
   );
 
-  // Handle formatting toggles
-  const handleFormatToggle = useCallback(
-    (selectedKeys: Set<Key>) => {
-      const formats = Array.from(selectedKeys) as FormatType[];
-      const allFormats: FormatType[] = [
-        "bold",
-        "italic",
-        "underline",
-        "strikethrough",
-        "code",
-      ];
-
-      allFormats.forEach((format) => {
-        const shouldBeActive = formats.includes(format);
-        const isCurrentlyActive = isMarkActive(editor, format);
-
-        if (shouldBeActive !== isCurrentlyActive) {
-          toggleMark(editor, format);
-        }
-      });
-    },
-    [editor]
-  );
-
-  // Handle advanced formatting toggles
-  const handleAdvancedFormatToggle = useCallback(
-    (selectedKeys: Set<Key>) => {
-      const formats = Array.from(selectedKeys) as FormatType[];
-      const advancedFormats: FormatType[] = ["superscript", "subscript"];
-
-      advancedFormats.forEach((format) => {
-        const shouldBeActive = formats.includes(format);
-        const isCurrentlyActive = isMarkActive(editor, format);
-
-        if (shouldBeActive !== isCurrentlyActive) {
-          toggleMark(editor, format);
-        }
-      });
-    },
-    [editor]
-  );
-
   // Handle list formatting
   const handleListToggle = useCallback(
     (selectedKeys: Set<Key>) => {
       const selected = Array.from(selectedKeys)[0] as BlockType | undefined;
+      const currentlyActive = isBlockActive(editor, "bulleted-list")
+        ? "bulleted-list"
+        : isBlockActive(editor, "numbered-list")
+          ? "numbered-list"
+          : null;
+
       if (selected) {
+        // Always toggle the selected list type
+        // If it's the same as currently active, it will deactivate
+        // If it's different, it will switch to the new type
         toggleBlock(editor, selected);
+      } else if (currentlyActive) {
+        // If no selection but there's an active list, toggle it off
+        toggleBlock(editor, currentlyActive);
       }
     },
     [editor]
@@ -198,7 +164,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isMarkActive(editor, "strikethrough")) keys.push("strikethrough");
     if (isMarkActive(editor, "code")) keys.push("code");
     return new Set(keys);
-  }, [editor, editor.selection]);
+  }, [editor, editor.selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected advanced formatting keys
   const selectedAdvancedFormatKeys = useMemo(() => {
@@ -206,7 +172,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isMarkActive(editor, "superscript")) keys.push("superscript");
     if (isMarkActive(editor, "subscript")) keys.push("subscript");
     return new Set(keys);
-  }, [editor, editor.selection]);
+  }, [editor, editor.selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected list formatting key
   const selectedListKeys = useMemo(() => {
@@ -214,16 +180,17 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isBlockActive(editor, "bulleted-list")) keys.push("bulleted-list");
     if (isBlockActive(editor, "numbered-list")) keys.push("numbered-list");
     return new Set(keys);
-  }, [editor, editor.selection]);
+  }, [editor, editor.selection, editor.children]);
 
   // Check history state for undo/redo buttons
+  // cSpell:ignore undos
   const hasUndos = useMemo(() => {
     return editor.history && editor.history.undos.length > 0;
-  }, [editor, editor.selection]);
+  }, [editor, editor.selection, editor.children]);
 
   const hasRedos = useMemo(() => {
     return editor.history && editor.history.redos.length > 0;
-  }, [editor, editor.selection]);
+  }, [editor, editor.selection, editor.children]);
 
   if (isDisabled) {
     return null;
@@ -277,7 +244,6 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
       <ToggleButtonGroup.Root
         selectionMode="multiple"
         selectedKeys={selectedFormatKeys}
-        onSelectionChange={handleFormatToggle}
       >
         <IconToggleButton
           id="bold"
@@ -285,6 +251,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Bold"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "bold")}
         >
           <FormatBold />
           <VisuallyHidden>Bold (Cmd+B)</VisuallyHidden>
@@ -295,6 +262,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Italic"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "italic")}
         >
           <FormatItalic />
           <VisuallyHidden>Italic (Cmd+I)</VisuallyHidden>
@@ -305,6 +273,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Underline"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "underline")}
         >
           <FormatUnderlined />
           <VisuallyHidden>Underline (Cmd+U)</VisuallyHidden>
@@ -315,6 +284,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Strikethrough"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "strikethrough")}
         >
           <FormatStrikethrough />
           <VisuallyHidden>Strikethrough</VisuallyHidden>
@@ -325,6 +295,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Code"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "code")}
         >
           <Code />
           <VisuallyHidden>Code (Cmd+`)</VisuallyHidden>
@@ -337,7 +308,6 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
       <ToggleButtonGroup.Root
         selectionMode="multiple"
         selectedKeys={selectedAdvancedFormatKeys}
-        onSelectionChange={handleAdvancedFormatToggle}
       >
         <IconToggleButton
           id="superscript"
@@ -345,6 +315,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Superscript"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "superscript")}
         >
           <span style={{ fontSize: "0.75em", verticalAlign: "super" }}>X²</span>
           <VisuallyHidden>Superscript</VisuallyHidden>
@@ -355,69 +326,12 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Subscript"
           onMouseDown={(event) => event.preventDefault()}
+          onPress={() => toggleMark(editor, "subscript")}
         >
           <span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>X₂</span>
           <VisuallyHidden>Subscript</VisuallyHidden>
         </IconToggleButton>
       </ToggleButtonGroup.Root>
-
-      <Divider orientation="vertical" />
-
-      {/* Quote Button */}
-      <Group>
-        <IconButton
-          size={buttonSize}
-          variant="ghost"
-          aria-label="Quote"
-          onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleBlock(editor, "block-quote")}
-          bg={
-            isBlockActive(editor, "block-quote") ? "neutral.3" : "transparent"
-          }
-        >
-          <FormatQuote />
-          <VisuallyHidden>Quote</VisuallyHidden>
-        </IconButton>
-      </Group>
-
-      <Divider orientation="vertical" />
-
-      {/* Text Alignment Toggle Group */}
-      <Group>
-        <ToggleButtonGroup.Root
-          selectionMode="single"
-          defaultSelectedKeys={["left"]}
-          aria-label="Text alignment"
-        >
-          <IconToggleButton
-            id="left"
-            size={buttonSize}
-            variant="ghost"
-            aria-label="Align Left"
-            onMouseDown={(event) => event.preventDefault()}
-          >
-            <FormatAlignLeft />
-          </IconToggleButton>
-          <IconToggleButton
-            id="center"
-            size={buttonSize}
-            variant="ghost"
-            aria-label="Align Center"
-            onMouseDown={(event) => event.preventDefault()}
-          >
-            <FormatAlignCenter />
-          </IconToggleButton>
-          <IconToggleButton
-            id="right"
-            size={buttonSize}
-            variant="ghost"
-            aria-label="Align Right"
-            onMouseDown={(event) => event.preventDefault()}
-          >
-            <FormatAlignRight />
-          </IconToggleButton>
-        </ToggleButtonGroup.Root>
-      </Group>
 
       <Divider orientation="vertical" />
 

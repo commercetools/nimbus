@@ -4,6 +4,7 @@ import {
   Transforms,
   Element as SlateElement,
   Range,
+  Text,
   type Editor as SlateEditor,
 } from "slate";
 import {
@@ -20,8 +21,40 @@ const LIST_TYPES = ["bulleted-list", "numbered-list"];
 
 // Check if a mark is currently active
 export const isMarkActive = (editor: SlateEditor, format: string): boolean => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format as keyof CustomText] === true : false;
+  const { selection } = editor;
+
+  // For collapsed selection (cursor position), use the standard approach
+  if (!selection || Range.isCollapsed(selection)) {
+    const marks = Editor.marks(editor);
+    return marks ? marks[format as keyof CustomText] === true : false;
+  }
+
+  // For text selection, check if any selected text has the mark
+  // This provides better mixed formatting detection
+  try {
+    const textNodes = Array.from(
+      Editor.nodes(editor, {
+        at: selection,
+        match: (n) => Text.isText(n),
+      })
+    );
+
+    if (textNodes.length === 0) {
+      const marks = Editor.marks(editor);
+      return marks ? marks[format as keyof CustomText] === true : false;
+    }
+
+    // Show as active if any selected text has this mark
+    // This gives users visual feedback about partial formatting
+    return textNodes.some(([node]) => {
+      const textNode = node as CustomText;
+      return textNode[format as keyof CustomText] === true;
+    });
+  } catch {
+    // Fallback to original approach if node traversal fails
+    const marks = Editor.marks(editor);
+    return marks ? marks[format as keyof CustomText] === true : false;
+  }
 };
 
 // Check if a block type is currently active

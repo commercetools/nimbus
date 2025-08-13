@@ -67,11 +67,15 @@ export const richTextInputRecipe = defineRecipe({
           borderLeftWidth: "4px",
           borderLeftColor: "accent.emphasized",
           paddingLeft: "400",
-          fontStyle: "italic",
           color: "fg.subtle",
         },
-        "& ul, & ol": {
+        "& ul": {
           paddingLeft: "600",
+          listStyleType: "disc",
+        },
+        "& ol": {
+          paddingLeft: "600",
+          listStyleType: "decimal",
         },
         "& code": {
           backgroundColor: "bg.subtle",
