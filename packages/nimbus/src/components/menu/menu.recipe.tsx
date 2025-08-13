@@ -200,6 +200,13 @@ export const menuSlotRecipe = defineSlotRecipe({
         },
       },
 
+      // Hide selection column space when no selection mode
+      "&:not([data-selection-mode])": {
+        "& [slot='selection']": {
+          display: "none",
+        },
+      },
+
       // Adjust padding when selection mode is active
       "&[data-selection-mode]": {
         paddingInlineStart: "200",
