@@ -1,5 +1,6 @@
-import { useCallback, useMemo } from "react";
-import { useSlate } from "slate-react";
+import { useMemo, useCallback } from "react";
+import { Editor, Transforms } from "slate";
+import { useSlate, ReactEditor } from "slate-react";
 import type { Key } from "react-aria";
 import {
   Toolbar,
@@ -31,23 +32,44 @@ import {
   toggleMark,
   toggleBlock,
 } from "./rich-text-utils/slate-helpers";
-import { Editor } from "slate";
 import type { CustomElement } from "./rich-text-utils/types";
 
 type BlockType = CustomElement["type"];
 
 export interface RichTextToolbarProps {
   isDisabled?: boolean;
-  className?: string;
-  size?: "xs" | "md";
 }
 
-export const RichTextToolbar = (props: RichTextToolbarProps) => {
-  const { isDisabled = false, className, size = "xs" } = props;
+export const RichTextToolbar = ({
+  isDisabled = false,
+}: RichTextToolbarProps) => {
   const editor = useSlate();
 
-  // Map size to proper IconToggleButton sizes
-  const buttonSize = size === "md" ? "md" : "xs";
+  // Helper function to preserve selection when toolbar buttons are clicked
+  const withPreservedSelection = useCallback(
+    (action: () => void) => {
+      return () => {
+        // Save the current selection
+        const { selection } = editor;
+
+        // Execute the action
+        action();
+
+        // Restore selection if it was lost
+        if (selection && !editor.selection) {
+          Transforms.select(editor, selection);
+        }
+
+        // Ensure editor stays focused
+        if (!ReactEditor.isFocused(editor)) {
+          ReactEditor.focus(editor);
+        }
+      };
+    },
+    [editor]
+  );
+
+  const buttonSize = "xs";
 
   // Text style definitions that map to our Slate block types
   const textStyles = [
@@ -109,7 +131,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     },
   ];
 
-  // Get current block type
+  // Get current block type - using useSlate() means this automatically updates
   const currentTextStyle = useMemo(() => {
     if (isBlockActive(editor, "heading-one")) return "heading-one";
     if (isBlockActive(editor, "heading-two")) return "heading-two";
@@ -118,7 +140,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isBlockActive(editor, "heading-five")) return "heading-five";
     if (isBlockActive(editor, "block-quote")) return "block-quote";
     return "paragraph";
-  }, [editor, editor.selection, editor.children]);
+  }, [editor.selection, editor.children]); // Block types don't need marks
 
   const selectedTextStyle = textStyles.find((v) => v.id === currentTextStyle);
   const selectedTextStyleProps = selectedTextStyle?.props || {};
@@ -127,35 +149,35 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
   // Handle text style changes
   const handleTextStyleChange = useCallback(
     (styleId: string) => {
-      toggleBlock(editor, styleId as BlockType);
+      withPreservedSelection(() => {
+        toggleBlock(editor, styleId as BlockType);
+      })();
     },
-    [editor]
+    [editor, withPreservedSelection]
   );
 
   // Handle list formatting
   const handleListToggle = useCallback(
     (selectedKeys: Set<Key>) => {
-      const selected = Array.from(selectedKeys)[0] as BlockType | undefined;
-      const currentlyActive = isBlockActive(editor, "bulleted-list")
-        ? "bulleted-list"
-        : isBlockActive(editor, "numbered-list")
-          ? "numbered-list"
-          : null;
+      withPreservedSelection(() => {
+        const selected = Array.from(selectedKeys)[0] as BlockType | undefined;
+        const currentlyActive = isBlockActive(editor, "bulleted-list")
+          ? "bulleted-list"
+          : isBlockActive(editor, "numbered-list")
+            ? "numbered-list"
+            : null;
 
-      if (selected) {
-        // Always toggle the selected list type
-        // If it's the same as currently active, it will deactivate
-        // If it's different, it will switch to the new type
-        toggleBlock(editor, selected);
-      } else if (currentlyActive) {
-        // If no selection but there's an active list, toggle it off
-        toggleBlock(editor, currentlyActive);
-      }
+        if (selected) {
+          toggleBlock(editor, selected);
+        } else if (currentlyActive) {
+          toggleBlock(editor, currentlyActive);
+        }
+      })();
     },
-    [editor]
+    [editor, withPreservedSelection]
   );
 
-  // Get currently selected formatting keys
+  // Get currently selected formatting keys - simplified deps
   const selectedFormatKeys = useMemo(() => {
     const keys: string[] = [];
     if (isMarkActive(editor, "bold")) keys.push("bold");
@@ -164,7 +186,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isMarkActive(editor, "strikethrough")) keys.push("strikethrough");
     if (isMarkActive(editor, "code")) keys.push("code");
     return new Set(keys);
-  }, [editor, editor.selection, editor.children, Editor.marks(editor)]);
+  }, [editor.selection, editor.children, Editor.marks(editor)]); // Include marks for pending mark state
 
   // Get currently selected advanced formatting keys
   const selectedAdvancedFormatKeys = useMemo(() => {
@@ -172,7 +194,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isMarkActive(editor, "superscript")) keys.push("superscript");
     if (isMarkActive(editor, "subscript")) keys.push("subscript");
     return new Set(keys);
-  }, [editor, editor.selection, editor.children, Editor.marks(editor)]);
+  }, [editor.selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected list formatting key
   const selectedListKeys = useMemo(() => {
@@ -180,28 +202,24 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
     if (isBlockActive(editor, "bulleted-list")) keys.push("bulleted-list");
     if (isBlockActive(editor, "numbered-list")) keys.push("numbered-list");
     return new Set(keys);
-  }, [editor, editor.selection, editor.children]);
+  }, [editor.selection, editor.children]); // Block types don't need marks
 
   // Check history state for undo/redo buttons
   // cSpell:ignore undos
   const hasUndos = useMemo(() => {
     return editor.history && editor.history.undos.length > 0;
-  }, [editor, editor.selection, editor.children]);
+  }, [editor.selection, editor.children]); // History doesn't need marks
 
   const hasRedos = useMemo(() => {
     return editor.history && editor.history.redos.length > 0;
-  }, [editor, editor.selection, editor.children]);
+  }, [editor.selection, editor.children]); // History doesn't need marks
 
   if (isDisabled) {
     return null;
   }
 
   return (
-    <Toolbar
-      className={className}
-      orientation="horizontal"
-      aria-label="Text formatting"
-    >
+    <Toolbar orientation="horizontal" aria-label="Text formatting">
       {/* Text Style Menu */}
       <Group>
         <Menu.Root
@@ -251,7 +269,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Bold"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "bold")}
+          onPress={withPreservedSelection(() => toggleMark(editor, "bold"))}
         >
           <FormatBold />
           <VisuallyHidden>Bold (Cmd+B)</VisuallyHidden>
@@ -262,7 +280,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Italic"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "italic")}
+          onPress={withPreservedSelection(() => toggleMark(editor, "italic"))}
         >
           <FormatItalic />
           <VisuallyHidden>Italic (Cmd+I)</VisuallyHidden>
@@ -273,7 +291,9 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Underline"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "underline")}
+          onPress={withPreservedSelection(() =>
+            toggleMark(editor, "underline")
+          )}
         >
           <FormatUnderlined />
           <VisuallyHidden>Underline (Cmd+U)</VisuallyHidden>
@@ -284,7 +304,9 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Strikethrough"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "strikethrough")}
+          onPress={withPreservedSelection(() =>
+            toggleMark(editor, "strikethrough")
+          )}
         >
           <FormatStrikethrough />
           <VisuallyHidden>Strikethrough</VisuallyHidden>
@@ -295,7 +317,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Code"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "code")}
+          onPress={withPreservedSelection(() => toggleMark(editor, "code"))}
         >
           <Code />
           <VisuallyHidden>Code (Cmd+`)</VisuallyHidden>
@@ -315,7 +337,9 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Superscript"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "superscript")}
+          onPress={withPreservedSelection(() =>
+            toggleMark(editor, "superscript")
+          )}
         >
           <span style={{ fontSize: "0.75em", verticalAlign: "super" }}>X²</span>
           <VisuallyHidden>Superscript</VisuallyHidden>
@@ -326,7 +350,9 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Subscript"
           onMouseDown={(event) => event.preventDefault()}
-          onPress={() => toggleMark(editor, "subscript")}
+          onPress={withPreservedSelection(() =>
+            toggleMark(editor, "subscript")
+          )}
         >
           <span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>X₂</span>
           <VisuallyHidden>Subscript</VisuallyHidden>
@@ -370,7 +396,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Undo"
           isDisabled={!hasUndos || isDisabled}
-          onPress={() => editor.undo()}
+          onPress={withPreservedSelection(() => editor.undo())}
           onMouseDown={(event) => event.preventDefault()}
         >
           <Undo />
@@ -381,7 +407,7 @@ export const RichTextToolbar = (props: RichTextToolbarProps) => {
           variant="ghost"
           aria-label="Redo"
           isDisabled={!hasRedos || isDisabled}
-          onPress={() => editor.redo()}
+          onPress={withPreservedSelection(() => editor.redo())}
           onMouseDown={(event) => event.preventDefault()}
         >
           <Redo />

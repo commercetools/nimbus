@@ -11,7 +11,7 @@ import { createEditor, type Descendant } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import isHotkey from "is-hotkey";
-import { Box } from "@chakra-ui/react";
+import { Box } from "@/components";
 import {
   Element,
   Leaf,

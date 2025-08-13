@@ -107,10 +107,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
       ? currentValue
       : createEmptyValue();
 
-  const toolbar = !isReadOnly ? (
-    <RichTextToolbar isDisabled={isDisabled} />
-  ) : undefined;
-
+  // TODO: we need to override the menu selection autofocus behavior somehow. This might impact the Menu component
   return (
     <RichTextInputRootSlot
       {...recipeProps}
@@ -129,7 +126,9 @@ export const RichTextInput = (props: RichTextInputProps) => {
         isDisabled={isDisabled}
         isReadOnly={isReadOnly}
         autoFocus={autoFocus}
-        toolbar={toolbar}
+        toolbar={
+          !isReadOnly ? <RichTextToolbar isDisabled={isDisabled} /> : null
+        }
       />
     </RichTextInputRootSlot>
   );
