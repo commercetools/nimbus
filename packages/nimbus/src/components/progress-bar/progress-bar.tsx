@@ -50,8 +50,12 @@ export const ProgressBar = (props: ProgressBarProps) => {
   } = props;
 
   const recipe = useSlotRecipe({ key: "progressBar" });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
-  const [styleProps, otherProps] = extractStyleProps(remainingProps);
+  const [recipeProps, remainingProps] = recipe.splitVariantProps({
+    variant,
+    colorPalette,
+    ...props,
+  });
+  const [styleProps] = extractStyleProps(remainingProps);
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));

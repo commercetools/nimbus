@@ -2,7 +2,7 @@ import { Box, Text, Stack, Button } from "@commercetools/nimbus";
 import { useMemo, useState, useEffect } from "react";
 import * as nimbus from "@commercetools/nimbus";
 // Keep the import even though it's commented out in the render for now
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import { ComponentPropsTable } from "./components/component-props-table.tsx";
 import { ReactNode } from "react";
 

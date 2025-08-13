@@ -23,6 +23,7 @@ const mockNavigate = fn();
 const useHref = (href: string) => "some-domain.com" + `/app${href}`;
 
 const mockRouter: NimbusRouterConfig = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigate: (href: string, options?: any) => {
     mockNavigate(href, options);
     console.log(`Navigating to: ${useHref(href)}`, options);
@@ -109,7 +110,7 @@ export const WithRouter: Story = {
       </Box>
     </NimbusProvider>
   ),
-  play: async ({ canvasElement, step, args }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const content = canvas.getByTestId("router-content");
     const firstLink = canvas.getByTestId("router-link");

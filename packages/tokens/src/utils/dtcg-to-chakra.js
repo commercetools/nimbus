@@ -16,20 +16,22 @@ import isPlainObject from "is-plain-obj";
 
 export function formatDTCGforChakra(tokens) {
   /**clone all tokens */
-  const clone = structuredClone(tokens);
+  const clone = globalThis.structuredClone
+    ? globalThis.structuredClone(tokens)
+    : JSON.parse(JSON.stringify(tokens));
 
   const isDarkLightPair = (obj) => {
     return (
       isPlainObject(obj) &&
-      obj.hasOwnProperty("dark") &&
-      obj.hasOwnProperty("light") &&
+      Object.prototype.hasOwnProperty.call(obj, "dark") &&
+      Object.prototype.hasOwnProperty.call(obj, "light") &&
       Object.keys(obj).length === 2
     );
   };
 
   const format = (slice) => {
     /** if object has a $value key, it is a leaf node and should be transformed */
-    if (slice.hasOwnProperty("$value")) {
+    if (Object.prototype.hasOwnProperty.call(slice, "$value")) {
       /** store $value as value */
       slice.value = slice.$value;
       /** delete all keys except value, since they are not valid in building chakra theme values */
@@ -39,7 +41,7 @@ export function formatDTCGforChakra(tokens) {
       /** if object does not have a $value key, it is not a leaf node. */
     } else if (isDarkLightPair(slice)) {
       const processToken = (token) => {
-        if (token.hasOwnProperty("$value")) {
+        if (Object.prototype.hasOwnProperty.call(token, "$value")) {
           return token.$value;
         }
         const result = {};

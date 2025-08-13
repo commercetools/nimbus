@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
-import express, { Request, Response } from "express";
-import { Plugin } from "vite";
+import express, { type Request, type Response } from "express";
+import rateLimit from "express-rate-limit";
+import { type Plugin } from "vite";
 import { findMonorepoRoot } from "../utils/find-monorepo-root"; // Import the function
 
 interface FileSystemRequestBody {
@@ -19,6 +20,16 @@ export function fileSystemApiPlugin(): Plugin {
       const app = express();
       app.use(express.json());
 
+      // Set up rate limiter: maximum of 1000 requests per 100ms
+      // https://github.com/commercetools/nimbus/security/code-scanning/10
+      const limiter = rateLimit({
+        windowMs: 100, // 100ms
+        max: 1000, // limit each IP to 1000 requests per windowMs
+      });
+
+      // Apply rate limiter to all /api/fs routes
+      app.use("/api/fs", limiter);
+
       // Helper to resolve file paths within the monorepo
       const resolvePath = async (repoPath: string): Promise<string> => {
         const monorepoRoot = await findMonorepoRoot(process.cwd());
@@ -33,7 +44,10 @@ export function fileSystemApiPlugin(): Plugin {
       // CRUD API Endpoints
       app.post(
         "/api/fs",
-        async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
+        async (
+          req: Request<object, object, FileSystemRequestBody>,
+          res: Response
+        ) => {
           try {
             const { repoPath, content } = req.body;
             if (!repoPath) throw new Error("repoPath is required");
@@ -68,7 +82,10 @@ export function fileSystemApiPlugin(): Plugin {
 
       app.put(
         "/api/fs",
-        async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
+        async (
+          req: Request<object, object, FileSystemRequestBody>,
+          res: Response
+        ) => {
           try {
             const { repoPath, content } = req.body;
             if (!repoPath) throw new Error("repoPath is required");
@@ -85,7 +102,10 @@ export function fileSystemApiPlugin(): Plugin {
 
       app.delete(
         "/api/fs",
-        async (req: Request<{}, {}, FileSystemRequestBody>, res: Response) => {
+        async (
+          req: Request<object, object, FileSystemRequestBody>,
+          res: Response
+        ) => {
           try {
             const { repoPath } = req.body;
             if (!repoPath) throw new Error("repoPath is required");

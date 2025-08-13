@@ -5,6 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    express-rate-limit:
+      specifier: ^8.0.1
+      version: 8.0.1
   react:
     '@chakra-ui/cli':
       specifier: ^3.17.0
@@ -103,6 +107,9 @@ catalogs:
     eslint-plugin-react-refresh:
       specifier: ^0.4.20
       version: 0.4.20
+    eslint-plugin-storybook:
+      specifier: ^9.0.18
+      version: 9.0.18
     glob:
       specifier: ^11.0.3
       version: 11.0.3
@@ -194,6 +201,9 @@ importers:
       eslint-plugin-prettier:
         specifier: catalog:tooling
         version: 5.5.3(eslint-config-prettier@10.1.2(eslint@9.32.0))(eslint@9.32.0)(prettier@3.6.2)
+      eslint-plugin-storybook:
+        specifier: catalog:tooling
+        version: 9.0.18(eslint@9.32.0)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))(typescript@5.8.3)
       globals:
         specifier: catalog:tooling
         version: 16.3.0
@@ -324,6 +334,9 @@ importers:
       express-fileupload:
         specifier: ^1.5.1
         version: 1.5.1
+      express-rate-limit:
+        specifier: 'catalog:'
+        version: 8.0.1(express@4.21.2)
       fuse.js:
         specifier: ^7.0.0
         version: 7.1.0
@@ -3862,6 +3875,13 @@ packages:
     peerDependencies:
       eslint: '>=8.40'
 
+  eslint-plugin-storybook@9.0.18:
+    resolution: {integrity: sha512-f2FnWjTQkM9kYtbpChVuEo8F04QATBiuxYUdSBR58lWb3NprPKBfmRZC1dTA5NVeLY6geXduDLIPXefwXFz6Ag==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      eslint: '>=8'
+      storybook: ^9.0.18
+
   eslint-scope@8.4.0:
     resolution: {integrity: sha512-sNXOfKCn74rt8RICKMvJS7XKV/Xk9kA7DyJr8mJik3S7Cwgy3qlkkmyS2uQB3jiJg6VNdZd/pDBJu0nvG2NlTg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -3958,6 +3978,12 @@ packages:
   express-fileupload@1.5.1:
     resolution: {integrity: sha512-LsYG1ALXEB7vlmjuSw8ABeOctMp8a31aUC5ZF55zuz7O2jLFnmJYrCv10py357ky48aEoBQ/9bVXgFynjvaPmA==}
     engines: {node: '>=12.0.0'}
+
+  express-rate-limit@8.0.1:
+    resolution: {integrity: sha512-aZVCnybn7TVmxO4BtlmnvX+nuz8qHW124KKJ8dumsBsmv5ZLxE0pYu7S2nwyRBGHHCAzdmnGyrc5U/rksSPO7Q==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: '>= 4.11'
 
   express@4.21.2:
     resolution: {integrity: sha512-28HqgMZAmih1Czt9ny7qr6ek2qddF4FclbMzwhCREB6OFfH+rXAnuNCwo1/wFvrtbgsQDb4kSbX9de9lFbrXnA==}
@@ -4434,6 +4460,10 @@ packages:
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
+
+  ip-address@10.0.1:
+    resolution: {integrity: sha512-NWv9YLW4PoW2B7xtzaS3NCot75m6nK7Icdv0o3lfMceJVRfSoQwqD4wEH5rLwoKJwUiZ/rfpiVBhnaF0FK4HoA==}
+    engines: {node: '>= 12'}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -11327,6 +11357,15 @@ snapshots:
     dependencies:
       eslint: 9.32.0
 
+  eslint-plugin-storybook@9.0.18(eslint@9.32.0)(storybook@9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2))(typescript@5.8.3):
+    dependencies:
+      '@typescript-eslint/utils': 8.38.0(eslint@9.32.0)(typescript@5.8.3)
+      eslint: 9.32.0
+      storybook: 9.0.18(@testing-library/dom@10.4.0)(prettier@3.6.2)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
   eslint-scope@8.4.0:
     dependencies:
       esrecurse: 4.3.0
@@ -11456,6 +11495,11 @@ snapshots:
   express-fileupload@1.5.1:
     dependencies:
       busboy: 1.6.0
+
+  express-rate-limit@8.0.1(express@4.21.2):
+    dependencies:
+      express: 4.21.2
+      ip-address: 10.0.1
 
   express@4.21.2:
     dependencies:
@@ -12044,6 +12088,8 @@ snapshots:
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
+
+  ip-address@10.0.1: {}
 
   ipaddr.js@1.9.1: {}
 

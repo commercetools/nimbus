@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { Preview } from "@storybook/react-vite";
 
 import { APCACheck } from "./apca-check";

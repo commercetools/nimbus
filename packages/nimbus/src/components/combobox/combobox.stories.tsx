@@ -821,7 +821,6 @@ export const ControlledState: Story = {
   },
   render: (args) => {
     const [controlledValue, setControlledValue] = useState<Key | null>(
-      /* eslint-disable @typescript-eslint/no-unsafe-argument  */
       // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
       args.selectedKey
     );

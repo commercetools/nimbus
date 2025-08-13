@@ -6,9 +6,9 @@ import {
 
 /**
  * # Grid
- * 
+ *
  * An easily customizable Grid component, re-exported from Chakra UI, that provides a consistent layout structure across different products.
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/grid}
  */
 export interface GridProps extends ChakraGridProps {

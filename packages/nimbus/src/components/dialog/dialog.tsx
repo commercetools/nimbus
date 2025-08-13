@@ -47,11 +47,11 @@ interface DialogComponents {
 
 /**
  * # Dialog
- * 
+ *
  * displays a dialog
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/dialog}
- * 
+ *
  * @experimental This component is experimental and may change or be removed in future versions.
  */
 // Export the Dialog composite with proper typing

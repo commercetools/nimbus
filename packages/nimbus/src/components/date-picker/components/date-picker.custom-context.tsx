@@ -17,7 +17,6 @@ export const DatePickerCustomContext = ({
   const datePickerState = useContext(DatePickerStateContext);
   const noInputValue = datePickerState?.dateValue === null;
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { timeValue, setTimeValue, granularity } = datePickerState!;
 
   // Try to get disabled state from the button context

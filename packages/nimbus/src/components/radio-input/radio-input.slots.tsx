@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
   RadioInputOptionSlotProps,

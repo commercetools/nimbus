@@ -25,7 +25,7 @@ export const Divider = (props: DividerProps) => {
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  const elementType = as || "div";
+  const elementType = as || orientation === "vertical" ? "div" : "hr";
 
   // Use React Aria's useSeparator hook for accessibility
   const { separatorProps } = useSeparator({

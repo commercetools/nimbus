@@ -16,9 +16,9 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * # DateInput
- * 
+ *
  * allows entering a date
- * 
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dateinput}
  */
 export const DateInput = (props: DateInputProps) => {
