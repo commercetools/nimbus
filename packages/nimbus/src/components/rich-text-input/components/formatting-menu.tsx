@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from "react";
 import { useSlate, ReactEditor } from "slate-react";
-import { Transforms } from "slate";
+import { Transforms, Editor } from "slate";
 import type { Key } from "react-aria";
 import { Menu, IconButton, Text, Box } from "@/components";
 import {
@@ -49,7 +49,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
     if (isMarkActive(editor, "superscript")) keys.push("superscript");
     if (isMarkActive(editor, "subscript")) keys.push("subscript");
     return new Set(keys);
-  }, [editor.selection, editor.children]);
+  }, [editor.selection, editor.children, Editor.marks(editor)]); // Include marks for pending mark state
 
   const handleSelectionChange = useCallback(
     (keys: "all" | Set<Key>) => {

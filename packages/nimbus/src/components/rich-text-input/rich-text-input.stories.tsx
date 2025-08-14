@@ -1043,3 +1043,88 @@ FormattingShowcase.play = async ({
     expect(editor).toHaveTextContent("Additional content added.");
   });
 };
+
+// =============================================================================
+// Pending Marks Consistency Test
+// =============================================================================
+
+export const PendingMarksConsistency: Story = {
+  args: {
+    placeholder: "Test pending marks consistency...",
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    // Need to get the parent node to have the menu portal in scope
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    const editor = canvas.getByRole("textbox");
+
+    // Click in empty editor to focus
+    await userEvent.click(editor);
+
+    // Test toolbar buttons show pending marks
+    const boldButton = canvas.getByRole("button", { name: /bold/i });
+    const italicButton = canvas.getByRole("button", { name: /italic/i });
+
+    // Apply bold and italic
+    await userEvent.click(boldButton);
+    await userEvent.click(italicButton);
+
+    // Wait for toolbar buttons to show as pressed
+    await waitFor(() => {
+      expect(boldButton).toHaveAttribute("aria-pressed", "true");
+      expect(italicButton).toHaveAttribute("aria-pressed", "true");
+    });
+
+    // Test formatting menu shows pending marks
+    const formattingMenuButton = canvas.getByRole("button", {
+      name: /more formatting options/i,
+    });
+    await userEvent.click(formattingMenuButton);
+
+    // Wait for menu to appear and click code option
+    await waitFor(() => {
+      expect(canvas.getByRole("menu")).toBeInTheDocument();
+    });
+
+    const codeMenuItem = canvas.getByRole("menuitemcheckbox", { name: /Code/ });
+    await userEvent.click(codeMenuItem);
+
+    // Reopen menu to verify code is selected
+    await userEvent.click(formattingMenuButton);
+    await waitFor(() => {
+      expect(canvas.getByRole("menu")).toBeInTheDocument();
+    });
+
+    // Check if the code menu item is selected
+    const codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", {
+      name: /Code/,
+    });
+    expect(codeMenuItemAfter).toHaveAttribute("aria-checked", "true");
+
+    // Close menu and type text
+    await userEvent.keyboard("{Escape}");
+
+    // Wait for menu to close and pending marks to be ready
+    await waitFor(() => {
+      expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+    });
+
+    // Small delay to ensure pending marks are properly set
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    await userEvent.type(editor, "Test text");
+
+    // Verify all formatting was applied
+    await waitFor(() => {
+      const strongElement = editor.querySelector("strong");
+      const emElement = editor.querySelector("em");
+      const codeElement = editor.querySelector("code");
+
+      expect(strongElement).toBeInTheDocument();
+      expect(emElement).toBeInTheDocument();
+      expect(codeElement).toBeInTheDocument();
+      expect(editor).toHaveTextContent("Test text");
+    });
+  },
+};
