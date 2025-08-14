@@ -2,13 +2,16 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable } from "./data-table";
 import { Stack } from "./../stack";
 import type {
-  DataTableColumn,
-  DataTableRow,
+  DataTableColumnItem,
+  DataTableRowItem,
   SortDescriptor,
   DataTableProps,
 } from "./data-table.types";
 import { useState } from "react";
 import { TextInput } from "./../text-input";
+
+// Define specific data types for the stories
+
 import type { Selection } from "react-aria-components";
 import { Info } from "@commercetools/nimbus-icons";
 import { IconButton } from "../icon-button";
@@ -18,7 +21,7 @@ import { IconButton } from "../icon-button";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-const meta: Meta<DataTableProps> = {
+const meta: Meta<object> = {
   title: "components/DataTable",
   component: DataTable,
 };
@@ -32,37 +35,47 @@ export default meta;
 type Story = StoryObj<DataTableProps>;
 
 // Sample data and columns
-const columns: DataTableColumn[] = [
+const columns: DataTableColumnItem[] = [
   {
     id: "name",
     header: "Name with a long header",
-    accessor: (row) => row.name,
+    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
   },
-  { id: "age", header: "Age", accessor: (row) => row.age },
-  { id: "role", header: "Role", accessor: (row) => row.role },
+  {
+    id: "age",
+    header: "Age",
+    accessor: (row: Record<string, unknown>) => row.age as React.ReactNode,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
+  },
   {
     id: "custom",
     header: "Custom",
-    accessor: (row) => row.class,
-    render: ({ value }) => <span style={{ color: "#60646C" }}>{value}</span>,
+    accessor: (row: Record<string, unknown>) => row.class as React.ReactNode,
+    render: ({ value }) => (
+      <span style={{ color: "#60646C" }}>{value as string}</span>
+    ),
   },
 ];
 
 // Sortable columns - same as above but with explicit sortable configuration
-const sortableColumns: DataTableColumn[] = [
+const sortableColumns: DataTableColumnItem[] = [
   {
     id: "name",
     header: "Name",
-    accessor: (row) => row.name,
+    accessor: (row) => row.name as React.ReactNode,
     isSortable: true,
-    isAdjustable: true,
+    isResizable: true,
     headerIcon: (
       <IconButton
         aria-label="Custom Column Information"
         size="2xs"
         colorPalette="primary"
         variant="ghost"
-        onPress={(e) => {
+        onPress={() => {
           alert(
             "Check how the `headerIcon` property was used to display this info button."
           );
@@ -75,27 +88,29 @@ const sortableColumns: DataTableColumn[] = [
   {
     id: "age",
     header: "Age",
-    accessor: (row) => row.age,
+    accessor: (row) => row.age as React.ReactNode,
     isSortable: true,
-    isAdjustable: true,
+    isResizable: true,
   },
   {
     id: "role",
     header: "Role",
-    accessor: (row) => row.role,
+    accessor: (row) => row.role as React.ReactNode,
     isSortable: true,
-    isAdjustable: true,
+    isResizable: true,
   },
   {
     id: "custom",
     header: "Custom (Not Sortable)",
-    accessor: (row) => row.class,
-    render: ({ value }) => <span style={{ color: "#60646C" }}>{value}</span>,
+    accessor: (row) => row.class as React.ReactNode,
+    render: ({ value }) => (
+      <span style={{ color: "#60646C" }}>{value as string}</span>
+    ),
     isSortable: false, // This column is not sortable
   },
 ];
 
-const data: DataTableRow[] = [
+const data: DataTableRowItem[] = [
   { id: "1", name: "Alice", age: 30, role: "Admin", class: "special" },
   { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
   { id: "3", name: "Carol", age: 28, role: "User", class: "common" },
@@ -118,7 +133,7 @@ export const Base: Story = {
     columns,
     data,
     allowsSorting: true,
-    isAdjustable: true,
+    isResizable: true,
     isRowClickable: true,
   },
 };
@@ -132,7 +147,7 @@ export const WithDetailsButton: Story = {
     columns,
     data,
     allowsSorting: true,
-    isAdjustable: true,
+    isResizable: true,
     onDetailsClick: (row) => {
       alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
     },
@@ -195,19 +210,19 @@ export const SearchAndHighlight: Story = {
 
 export const AdjustableColumns: Story = {
   render: (args) => {
-    const [isAdjustable, setIsAdjustable] = useState(false);
+    const [isResizable, setisResizable] = useState(false);
     return (
       <Stack gap={16}>
         <label style={{ display: "block", marginBottom: 12 }}>
           <input
             type="checkbox"
-            checked={isAdjustable}
-            onChange={(e) => setIsAdjustable(e.target.checked)}
+            checked={isResizable}
+            onChange={(e) => setisResizable(e.target.checked)}
             style={{ marginRight: 12 }}
           />
           Resizable Column
         </label>
-        <DataTable {...args} isAdjustable={isAdjustable} />
+        <DataTable {...args} isResizable={isResizable} />
       </Stack>
     );
   },
@@ -401,7 +416,7 @@ export const SortingWithSearch: Story = {
 };
 
 export const SelectionShowcase: Story = {
-  render: (args) => {
+  render: () => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
     const [search, setSearch] = useState("");
     const [selectionMode, setSelectionMode] = useState<
@@ -494,7 +509,9 @@ export const SelectionShowcase: Story = {
                 id="selection-mode-select"
                 value={selectionMode}
                 onChange={(e) =>
-                  handleSelectionModeChange(e.target.value as any)
+                  handleSelectionModeChange(
+                    e.target.value as "none" | "single" | "multiple"
+                  )
                 }
                 style={{
                   padding: "6px 12px",
@@ -738,7 +755,7 @@ export const SelectionShowcase: Story = {
 };
 
 // Sample data with longer text for truncation demonstration
-const longTextData: DataTableRow[] = [
+const longTextData: DataTableRowItem[] = [
   {
     id: "1",
     name: "Alice Johnson",
@@ -778,15 +795,27 @@ const longTextData: DataTableRow[] = [
 ];
 
 // Columns for truncation demo with longer content
-const truncationColumns: DataTableColumn[] = [
-  { id: "name", header: "Name", accessor: (row) => row.name },
-  { id: "age", header: "Age", accessor: (row) => row.age },
-  { id: "role", header: "Role", accessor: (row) => row.role },
-  { id: "email", header: "Email", accessor: (row) => row.email },
+const truncationColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row) => row.name as React.ReactNode,
+  },
+  { id: "age", header: "Age", accessor: (row) => row.age as React.ReactNode },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row) => row.role as React.ReactNode,
+  },
+  {
+    id: "email",
+    header: "Email",
+    accessor: (row) => row.email as React.ReactNode,
+  },
   {
     id: "description",
     header: "Description",
-    accessor: (row) => row.class,
+    accessor: (row) => row.class as React.ReactNode,
   },
 ];
 
@@ -828,7 +857,7 @@ export const TextTruncation: Story = {
 };
 
 // Enhanced data with nested rows for comprehensive demo
-const comprehensiveData: DataTableRow[] = [
+const comprehensiveData: DataTableRowItem[] = [
   {
     id: "1",
     name: "Alice Johnson",
@@ -930,26 +959,41 @@ const comprehensiveData: DataTableRow[] = [
 ];
 
 // Comprehensive columns with all features
-const comprehensiveColumns: DataTableColumn[] = [
-  { id: "name", header: "Name", accessor: (row) => row.name, isSortable: true },
-  { id: "age", header: "Age", accessor: (row) => row.age, isSortable: true },
-  { id: "role", header: "Role", accessor: (row) => row.role, isSortable: true },
+const comprehensiveColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row) => row.name as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "age",
+    header: "Age",
+    accessor: (row) => row.age as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row) => row.role as React.ReactNode,
+    isSortable: true,
+  },
   {
     id: "email",
     header: "Email",
-    accessor: (row) => row.email,
+    accessor: (row) => row.email as React.ReactNode,
     isSortable: true,
   },
   {
     id: "department",
     header: "Department",
-    accessor: (row) => row.department,
+    accessor: (row) => row.department as React.ReactNode,
     isSortable: true,
   },
   {
     id: "status",
     header: "Status",
-    accessor: (row) => row.status,
+    accessor: (row) => row.status as React.ReactNode,
     isSortable: true,
     render: ({ value }) => (
       <span
@@ -976,14 +1020,14 @@ const comprehensiveColumns: DataTableColumn[] = [
                   : "#595959",
         }}
       >
-        {value}
+        {value as React.ReactNode}
       </span>
     ),
   },
   {
     id: "description",
     header: "Description",
-    accessor: (row) => row.class,
+    accessor: (row) => row.class as React.ReactNode,
     isSortable: false,
   },
 ];
@@ -994,26 +1038,26 @@ export const MultilineHeaders: Story = {
       {
         id: "name",
         header: "Employee Full Name",
-        accessor: (row) => row.name,
+        accessor: (row) => row.name as React.ReactNode,
         isSortable: true,
-        isAdjustable: true,
+        isResizable: true,
         defaultWidth: 140,
       },
       {
         id: "role",
         header:
           "Current Position and Primary Responsibilities within Organization",
-        accessor: (row) => row.role,
+        accessor: (row) => row.role as React.ReactNode,
         isSortable: true,
-        isAdjustable: true,
+        isResizable: true,
         defaultWidth: 180,
       },
       {
         id: "department",
         header: "Department or Business Unit Assignment",
-        accessor: (row) => row.department || "Engineering",
+        accessor: (row) => (row.department || "Engineering") as React.ReactNode,
         isSortable: true,
-        isAdjustable: true,
+        isResizable: true,
         defaultWidth: 160,
       },
     ],
@@ -1038,12 +1082,12 @@ export const MultilineHeaders: Story = {
       },
     ],
     allowsSorting: true,
-    isAdjustable: true,
+    isResizable: true,
   },
 };
 
 export const WithFooter: Story = {
-  render: (args) => {
+  render: () => {
     const footerContent = (
       <div
         style={{
@@ -1138,80 +1182,89 @@ export const WithFooter: Story = {
 };
 
 export const HorizontalScrolling: Story = {
-  render: (args) => {
+  render: () => {
     // Create many columns to force horizontal scrolling
-    const manyColumns: DataTableColumn[] = [
+    const manyColumns: DataTableColumnItem[] = [
       {
         id: "name",
         header: "Full Name",
-        accessor: (row) => row.name,
+        accessor: (row) => row.name as React.ReactNode,
         minWidth: 150,
       },
-      { id: "age", header: "Age", accessor: (row) => row.age, minWidth: 80 },
+      {
+        id: "age",
+        header: "Age",
+        accessor: (row) => row.age as React.ReactNode,
+        minWidth: 80,
+      },
       {
         id: "role",
         header: "Role/Position",
-        accessor: (row) => row.role,
+        accessor: (row) => row.role as React.ReactNode,
         minWidth: 120,
       },
       {
         id: "email",
         header: "Email Address",
-        accessor: (row) => row.email || "user@example.com",
+        accessor: (row) => (row.email || "user@example.com") as React.ReactNode,
         minWidth: 200,
       },
       {
         id: "department",
         header: "Department",
-        accessor: (row) => row.department || "Engineering",
+        accessor: (row) => (row.department || "Engineering") as React.ReactNode,
         minWidth: 150,
       },
       {
         id: "location",
         header: "Office Location",
-        accessor: (row) => row.location || "San Francisco, CA",
+        accessor: (row) =>
+          (row.location || "San Francisco, CA") as React.ReactNode,
         minWidth: 180,
       },
       {
         id: "phone",
         header: "Phone Number",
-        accessor: (row) => row.phone || "+1 (555) 123-4567",
+        accessor: (row) =>
+          (row.phone || "+1 (555) 123-4567") as React.ReactNode,
         minWidth: 150,
       },
       {
         id: "salary",
         header: "Annual Salary",
-        accessor: (row) => row.salary || "$95,000",
+        accessor: (row) => (row.salary || "$95,000") as React.ReactNode,
         minWidth: 120,
       },
       {
         id: "startDate",
         header: "Start Date",
-        accessor: (row) => row.startDate || "2023-01-15",
+        accessor: (row) => (row.startDate || "2023-01-15") as React.ReactNode,
         minWidth: 120,
       },
       {
         id: "manager",
         header: "Reporting Manager",
-        accessor: (row) => row.manager || "John Smith",
+        accessor: (row) => (row.manager || "John Smith") as React.ReactNode,
         minWidth: 150,
       },
       {
         id: "projects",
         header: "Active Projects",
-        accessor: (row) => row.projects || "Project Alpha, Beta",
+        accessor: (row) =>
+          (row.projects || "Project Alpha, Beta") as React.ReactNode,
         minWidth: 200,
       },
       {
         id: "skills",
         header: "Technical Skills",
-        accessor: (row) => row.skills || "React, TypeScript, Node.js",
+        accessor: (row) =>
+          (row.skills || "React, TypeScript, Node.js") as React.ReactNode,
         minWidth: 250,
       },
     ];
 
     // Create data with wide content
-    const wideData: DataTableRow[] = Array.from({ length: 10 }, (_, i) => ({
+    const wideData: DataTableRowItem[] = Array.from({ length: 10 }, (_, i) => ({
       id: `${i + 1}`,
       name: `Employee Name ${i + 1}`,
       age: 25 + (i % 15),
@@ -1265,7 +1318,7 @@ export const HorizontalScrolling: Story = {
         <DataTable
           columns={manyColumns}
           data={wideData}
-          isAdjustable={true}
+          isResizable={true}
           allowsSorting={true}
           maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
@@ -1312,7 +1365,7 @@ export const HorizontalScrolling: Story = {
 };
 
 // Data with flexible nested children - mix of table rows and React content
-const flexibleNestedData: DataTableRow[] = [
+const flexibleNestedData: DataTableRowItem[] = [
   {
     id: "user-1",
     name: "Alice Johnson",
@@ -1730,14 +1783,30 @@ export const FlexibleNestedChildren: Story = {
   },
   args: {
     columns: [
-      { id: "name", header: "Name", accessor: (row) => row.name },
-      { id: "age", header: "Age", accessor: (row) => row.age },
-      { id: "role", header: "Role", accessor: (row) => row.role },
-      { id: "class", header: "Level", accessor: (row) => row.class },
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row) => row.name as React.ReactNode,
+      },
+      {
+        id: "age",
+        header: "Age",
+        accessor: (row) => row.age as React.ReactNode,
+      },
+      {
+        id: "role",
+        header: "Role",
+        accessor: (row) => row.role as React.ReactNode,
+      },
+      {
+        id: "class",
+        header: "Level",
+        accessor: (row) => row.class as React.ReactNode,
+      },
     ],
     data: flexibleNestedData,
     allowsSorting: true,
-    isAdjustable: true,
+    isResizable: true,
     maxHeight: "400px",
     nestedKey: "children",
   },
@@ -1774,9 +1843,21 @@ export const NoNestedContent: Story = {
   },
   args: {
     columns: [
-      { id: "name", header: "Name", accessor: (row) => row.name },
-      { id: "type", header: "Type", accessor: (row) => row.type },
-      { id: "status", header: "Status", accessor: (row) => row.status },
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row) => row.name as React.ReactNode,
+      },
+      {
+        id: "type",
+        header: "Type",
+        accessor: (row) => row.type as React.ReactNode,
+      },
+      {
+        id: "status",
+        header: "Status",
+        accessor: (row) => row.status as React.ReactNode,
+      },
     ],
     data: [
       {
@@ -1819,7 +1900,7 @@ export const NoNestedContent: Story = {
       },
     ],
     allowsSorting: true,
-    isAdjustable: true,
+    isResizable: true,
     // Notice: no nestedKey prop, so no nested content will be rendered
   },
 };
@@ -1895,11 +1976,27 @@ const fetchData = [
 ];
 
 // Define columns for the nested table
-const nestedTableColumns: DataTableColumn[] = [
-  { id: "species", header: "Species", accessor: (row: any) => row.species },
-  { id: "genus", header: "Genus", accessor: (row: any) => row.genus },
-  { id: "distance", header: "Distance", accessor: (row: any) => row.distance },
-  { id: "area", header: "Area", accessor: (row: any) => row.area },
+const nestedTableColumns: DataTableColumnItem<Record<string, unknown>>[] = [
+  {
+    id: "species",
+    header: "Species",
+    accessor: (row: Record<string, unknown>) => row.species as React.ReactNode,
+  },
+  {
+    id: "genus",
+    header: "Genus",
+    accessor: (row: Record<string, unknown>) => row.genus as React.ReactNode,
+  },
+  {
+    id: "distance",
+    header: "Distance",
+    accessor: (row: Record<string, unknown>) => row.distance as React.ReactNode,
+  },
+  {
+    id: "area",
+    header: "Area",
+    accessor: (row: Record<string, unknown>) => row.area as React.ReactNode,
+  },
 ];
 
 // Create nested table data with proper React components
@@ -1914,7 +2011,7 @@ const modifiedFetchedData = fetchData.map((item) => ({
         columns={nestedTableColumns}
         data={item.sky}
         allowsSorting={true}
-        isAdjustable={true}
+        isResizable={true}
         // No nestedKey needed for this inner table since sky data doesn't have further nesting
       />
     </div>
@@ -1954,19 +2051,24 @@ export const NestedTable: Story = {
       {
         id: "name",
         header: "Galaxy/Object",
-        accessor: (row: any) => row.name,
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
       },
-      { id: "type", header: "Type", accessor: (row: any) => row.type },
+      {
+        id: "type",
+        header: "Type",
+        accessor: (row: Record<string, unknown>) => row.type as React.ReactNode,
+      },
       {
         id: "distance",
         header: "Distance",
-        accessor: (row: any) => row.distance,
+        accessor: (row: Record<string, unknown>) =>
+          row.distance as React.ReactNode,
       },
     ],
     data: modifiedFetchedData,
     nestedKey: "sky", // Custom nested key
     allowsSorting: true,
-    isAdjustable: true,
+    isResizable: true,
   },
 };
 
@@ -1988,7 +2090,7 @@ export const AllFeatures: Story = {
     });
 
     // Settings
-    const [isAdjustable, setIsAdjustable] = useState(true);
+    const [isResizable, setisResizable] = useState(true);
     const [allowsSorting, setAllowsSorting] = useState(true);
     const [isRowClickable, setIsRowClickable] = useState(true);
     const [stickyHeader, setStickyHeader] = useState(false);
@@ -2002,39 +2104,71 @@ export const AllFeatures: Story = {
     const allColumns = comprehensiveColumns.map((col) => col.id);
 
     // Define columns for the nested table
-    const nestedComprehensiveTableColumns: DataTableColumn[] = [
-      { id: "id", header: "id", accessor: (row: any) => row.id },
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "age", header: "Age", accessor: (row: any) => row.age },
-      { id: "role", header: "Role", accessor: (row: any) => row.role },
-      { id: "class", header: "Class", accessor: (row: any) => row.class },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
+    const nestedComprehensiveTableColumns: DataTableColumnItem[] = [
+      {
+        id: "id",
+        header: "id",
+        accessor: (row: Record<string, unknown>) => row.id as React.ReactNode,
+      },
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "age",
+        header: "Age",
+        accessor: (row: Record<string, unknown>) => row.age as React.ReactNode,
+      },
+      {
+        id: "role",
+        header: "Role",
+        accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
+      },
+      {
+        id: "class",
+        header: "Class",
+        accessor: (row: Record<string, unknown>) =>
+          row.class as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
       {
         id: "department",
         header: "Department",
-        accessor: (row: any) => row.department,
+        accessor: (row: Record<string, unknown>) =>
+          row.department as React.ReactNode,
       },
-      { id: "status", header: "Status", accessor: (row: any) => row.status },
+      {
+        id: "status",
+        header: "Status",
+        accessor: (row: Record<string, unknown>) =>
+          row.status as React.ReactNode,
+      },
     ];
 
     // Create nested table data with proper React components
     const modifiedComprehensiveData = comprehensiveData.map((item) => ({
       ...item,
-      children: (
-        item.children && (<div style={{ padding: "16px" }}>
+      children: item.children && (
+        <div style={{ padding: "16px" }}>
           <h4 style={{ margin: "0 0 12px 0", color: "#374151" }}>
-            {item.name} Details
+            {item.name as React.ReactNode} Details
           </h4>
           <DataTable
             columns={nestedComprehensiveTableColumns}
-            data={item.children}
+            data={item.children as DataTableRowItem[]}
             allowsSorting={true}
-            isAdjustable={true}
+            isResizable={true}
             onDetailsClick={(row) => {
               alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
             }}
           />
-        </div>)
+        </div>
       ),
     }));
 
@@ -2151,8 +2285,8 @@ export const AllFeatures: Story = {
               >
                 <input
                   type="checkbox"
-                  checked={isAdjustable}
-                  onChange={(e) => setIsAdjustable(e.target.checked)}
+                  checked={isResizable}
+                  onChange={(e) => setisResizable(e.target.checked)}
                   style={{ marginRight: "6px" }}
                 />
                 Resizable Columns
@@ -2265,7 +2399,11 @@ export const AllFeatures: Story = {
               <select
                 id="all-features-selection-mode"
                 value={selectionMode}
-                onChange={(e) => setSelectionMode(e.target.value as any)}
+                onChange={(e) =>
+                  setSelectionMode(
+                    e.target.value as "none" | "single" | "multiple"
+                  )
+                }
                 style={{
                   padding: "4px 8px",
                   borderRadius: "4px",
@@ -2384,7 +2522,7 @@ export const AllFeatures: Story = {
             onSortChange={setSortDescriptor}
             selectionMode={selectionMode}
             disallowEmptySelection={disallowEmptySelection}
-            isAdjustable={isAdjustable}
+            isResizable={isResizable}
             allowsSorting={allowsSorting}
             isRowClickable={isRowClickable}
             maxHeight={stickyHeader ? "400px" : undefined}
@@ -2465,18 +2603,23 @@ export const AllFeatures: Story = {
 };
 
 export const DisabledRowsShowcase: Story = {
-  render: (args) => {
+  render: () => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["2"]));
-    const [disabledKeys, setDisabledKeys] = useState<Selection>(new Set(["3", "5", "7"]));
+    const [disabledKeys, setDisabledKeys] = useState<Selection>(
+      new Set(["3", "5", "7"])
+    );
     const [rowActionLog, setRowActionLog] = useState<string[]>([]);
 
-    const handleRowAction = (row: any, action: 'click' | 'select') => {
+    const handleRowAction = (
+      row: DataTableRowItem,
+      action: "click" | "select"
+    ) => {
       const message = `${action.toUpperCase()} attempted on disabled row: ${row.name} (ID: ${row.id})`;
-      setRowActionLog(prev => [message, ...prev.slice(0, 4)]); // Keep last 5 messages
+      setRowActionLog((prev) => [message, ...prev.slice(0, 4)]); // Keep last 5 messages
     };
 
     const toggleDisabled = (rowId: string) => {
-      setDisabledKeys(prev => {
+      setDisabledKeys((prev) => {
         if (prev === "all") return new Set([rowId]);
         const newSet = new Set(prev);
         if (newSet.has(rowId)) {
@@ -2493,8 +2636,9 @@ export const DisabledRowsShowcase: Story = {
         <div>
           <h3>Disabled Rows Showcase</h3>
           <p>
-            Demonstration of disabled row functionality. Disabled rows cannot be selected
-            or clicked, and show visual feedback when interactions are attempted.
+            Demonstration of disabled row functionality. Disabled rows cannot be
+            selected or clicked, and show visual feedback when interactions are
+            attempted.
           </p>
         </div>
 
@@ -2518,18 +2662,21 @@ export const DisabledRowsShowcase: Story = {
                   fontSize: "12px",
                   border: "1px solid #ccc",
                   borderRadius: "4px",
-                  backgroundColor: 
-                    disabledKeys !== "all" && disabledKeys.has(row.id) 
-                      ? "#ffcccc" 
+                  backgroundColor:
+                    disabledKeys !== "all" && disabledKeys.has(row.id)
+                      ? "#ffcccc"
                       : "#fff",
                   cursor: "pointer",
                 }}
               >
-                {disabledKeys !== "all" && disabledKeys.has(row.id) ? "Enable" : "Disable"} {row.name}
+                {disabledKeys !== "all" && disabledKeys.has(row.id)
+                  ? "Enable"
+                  : "Disable"}{" "}
+                {row.name as React.ReactNode}
               </button>
             ))}
           </div>
-          
+
           <div style={{ marginTop: "12px" }}>
             <button
               onClick={() => setDisabledKeys("all")}
@@ -2615,16 +2762,38 @@ export const DisabledRowsShowcase: Story = {
             fontSize: "14px",
           }}
         >
-          <h4 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600" }}>
+          <h4
+            style={{
+              margin: "0 0 12px 0",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}
+          >
             💡 Disabled Rows Features
           </h4>
           <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-            <li><strong>Visual Feedback:</strong> Disabled rows have reduced opacity and not-allowed cursor</li>
-            <li><strong>Selection Prevention:</strong> Disabled rows cannot be selected via checkbox</li>
-            <li><strong>Click Prevention:</strong> Disabled rows cannot be clicked</li>
-            <li><strong>Action Callbacks:</strong> onRowAction is called when disabled rows are interacted with</li>
-            <li><strong>Select All:</strong> Only selects non-disabled rows</li>
-            <li><strong>Indeterminate State:</strong> Accounts for disabled rows in calculations</li>
+            <li>
+              <strong>Visual Feedback:</strong> Disabled rows have reduced
+              opacity and not-allowed cursor
+            </li>
+            <li>
+              <strong>Selection Prevention:</strong> Disabled rows cannot be
+              selected via checkbox
+            </li>
+            <li>
+              <strong>Click Prevention:</strong> Disabled rows cannot be clicked
+            </li>
+            <li>
+              <strong>Action Callbacks:</strong> onRowAction is called when
+              disabled rows are interacted with
+            </li>
+            <li>
+              <strong>Select All:</strong> Only selects non-disabled rows
+            </li>
+            <li>
+              <strong>Indeterminate State:</strong> Accounts for disabled rows
+              in calculations
+            </li>
           </ul>
         </div>
       </Stack>

@@ -8,6 +8,8 @@ export const dataTableRecipe = defineSlotRecipe({
   // Available slots for the DataTable component
   slots: [
     "root",
+    "table",
+    "column",
     "footer",
     "selectionCell",
     "detailsButton",
@@ -32,31 +34,41 @@ export const dataTableRecipe = defineSlotRecipe({
         paddingLeft: "600",
         paddingRight: "600",
         color: "neutral.11",
+        focusRing: "outside",
+        "& .nimbus-table-cell-copy-button": {
+          display: "none",
+        },
+        _hover: {
+          "& > div > .nimbus-table-cell-copy-button": {
+            display: "inherit",
+          },
+        },
       },
       "& .data-table-row": {
         borderBottom: "1px solid {colors.neutral.3}",
+        focusRing: "outside",
         "&:last-child": {
           borderBottom: "none",
         },
-      },
-      "& .data-table-row-details-button": {
-        opacity: 0,
-      },
-      "& .data-table-row-details-button:focus": {
-        opacity: 1,
-      },
-      "& .data-table-row:hover": {
-        backgroundColor: "{colors.primary.3}",
-        transition: "background-color 100ms ease",
-        transform: "translate3d(0, 0, 0)",
+        _hover: {
+          backgroundColor: "{colors.primary.3}",
+          transition: "background-color 100ms ease",
+          transform: "translate3d(0, 0, 0)",
+          "& .data-table-row-details-button": {
+            opacity: 1,
+          },
+        },
         "& .data-table-row-details-button": {
+          opacity: 0,
+        },
+        "& .data-table-row-details-button:focus": {
           opacity: 1,
         },
       },
-      "& .data-table-row-selected": {
-        backgroundColor: "{colors.primary.4}",
+      "& .data-table-row[data-selected='true']": {
+        background: "{colors.primary.4}",
       },
-      "& .data-table-row-disabled": {
+      "& .data-table-row[data-disabled='true']": {
         "& .data-table-row-details-button": {
           display: "none",
         },
@@ -72,73 +84,97 @@ export const dataTableRecipe = defineSlotRecipe({
         fontWeight: "500",
         textStyle: "sm",
         fontSize: "300",
-        height: "40px",
-      },
-      "& .react-aria-Column": {
-        textAlign: "right",
-        position: "relative",
-        cursor: "pointer",
-        userSelect: "none",
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
-        lineHeight: "450",
-        "& > div": {
-          display: "flex",
-          alignItems: "center",
-          "& > span:first-of-type": {
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+        height: "1000",
+        "& .data-table-column-divider": {
+          display: "none",
+          position: "absolute",
+          right: 0,
+          top: "10%",
+          bottom: "10%",
+          height: "80%",
+          width: "1px",
+          pointerEvents: "none",
+        },
+        _hover: {
+          "& .data-table-column-divider": {
+            display: "inherit",
           },
-          "& span[data-multiline-header]": {
-            overflow: "hidden",
-            lineHeight: "18px",
-            maxHeight: "36px", 
-            wordBreak: "break-word",
-            whiteSpace: "normal",
-            textOverflow: "ellipsis",
-            textAlign: "left",
-          },
-          "& > span:not(:first-of-type)": {
-            flexShrink: 0,
+          "& tr th:last-of-type .data-table-column-divider": {
+            display: "none",
           },
         },
-        "&.selection-column-header, &#expand": {
-          cursor: "default",
-          "&:hover": {
-            backgroundColor: "transparent",
-          },
-        },
-        "&[aria-sort]": {
-          fontWeight: 600,
-          "&[aria-sort='none']:hover": {
-            // backgroundColor: "#F0F0F0",
-          },
-          "&[aria-sort='ascending'], &[aria-sort='descending']": {
-            // backgroundColor: "#F0F8FF",
-            "&:hover": {
-              // backgroundColor: "#E6F3FF",
-            },
-          },
-        },
-      },
-      "& .data-table-header-divider": {
-        position: "absolute",
-        right: 0,
-        top: "10%",
-        bottom: "10%",
-        height: "80%",
-        width: "1px",
-        pointerEvents: "none",
       },
       // Multiline header truncation using webkit line clamp
-      "& span[data-multiline-header]": {
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
-        WebkitLineClamp: "2",
-      } as {},
+    },
+    table: {
+      width: "100%",
+      tableLayout: "fixed",
+    },
+    column: {
+      textAlign: "right",
+      position: "relative",
+      paddingTop: "100",
+      paddingBottom: "100",
+      paddingLeft: "600",
+      paddingRight: "600",
+      lineHeight: "450",
+      focusVisibleRing: "outside",
+      focusRing: "outside",
+      _focus: {
+        focusRing: "outside",
+      },
+      "& .nimbus-data-table__headerSortIcon": {
+        display: "none",
+      },
+
+      "& > div": {
+        display: "flex",
+        alignItems: "center",
+        "& > span:first-of-type": {
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        },
+        "& span[data-multiline-header]": {
+          overflow: "hidden",
+          lineHeight: "450",
+          wordBreak: "break-word",
+          whiteSpace: "normal",
+          textOverflow: "ellipsis",
+          textAlign: "left",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+        } as object,
+        "& > span:not(:first-of-type)": {
+          flexShrink: 0,
+        },
+      },
+      "&.selection-column-header, &#expand": {
+        cursor: "default",
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+      },
+      "&[aria-sort]": {
+        fontWeight: 600,
+        cursor: "pointer",
+        "&[aria-sort='none']:hover": {
+          "& .nimbus-data-table__headerSortIcon": {
+            display: "inherit",
+          },
+        },
+        "&[aria-sort='ascending'], &[aria-sort='descending']": {
+          "& .nimbus-data-table__headerSortIcon": {
+            display: "inherit",
+          },
+        },
+        "&[aria-sort='ascending']": {
+          "& .nimbus-data-table__headerSortIcon": {
+            transform: "rotate(180deg)",
+          },
+        },
+      },
     },
     footer: {
       width: "100%",

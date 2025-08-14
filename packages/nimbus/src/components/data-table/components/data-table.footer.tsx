@@ -15,4 +15,4 @@ export const DataTableFooter = forwardRef<HTMLDivElement, DataTableFooterProps>(
   }
 );
 
-DataTableFooter.displayName = "DataTable.Footer"; 
+DataTableFooter.displayName = "DataTable.Footer";
