@@ -26,7 +26,7 @@ export const Base: Story = {
   args: {
     ["aria-label"]: "popover",
   },
-  play: async ({ canvasElement, step }) => {
+  play: async ({ step }) => {
     await step("Renders popover content", async () => {
       // Use screen instead of canvas since popover is rendered in a portal
       const content = screen.getByTestId("test-popover-content");
