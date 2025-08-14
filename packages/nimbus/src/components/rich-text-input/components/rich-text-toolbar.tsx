@@ -203,10 +203,6 @@ export const RichTextToolbar = ({
     return editor.history && editor.history.redos.length > 0;
   }, [editor.selection, editor.children]); // History doesn't need marks
 
-  if (isDisabled) {
-    return null;
-  }
-
   return (
     <Toolbar
       orientation="horizontal"
@@ -223,6 +219,7 @@ export const RichTextToolbar = ({
             width="4000"
             aria-label="Text style menu"
             alignSelf="stretch"
+            isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
           >
             <Box display="flex" alignItems="center" gap="200" px="200">
@@ -256,12 +253,14 @@ export const RichTextToolbar = ({
       <ToggleButtonGroup.Root
         selectionMode="multiple"
         selectedKeys={selectedFormatKeys}
+        isDisabled={isDisabled}
       >
         <IconToggleButton
           id="bold"
           size={buttonSize}
           variant="ghost"
           aria-label="Bold"
+          isDisabled={isDisabled}
           onMouseDown={(event) => event.preventDefault()}
           onPress={withPreservedSelection(() => toggleMark(editor, "bold"))}
         >
@@ -273,6 +272,7 @@ export const RichTextToolbar = ({
           size={buttonSize}
           variant="ghost"
           aria-label="Italic"
+          isDisabled={isDisabled}
           onMouseDown={(event) => event.preventDefault()}
           onPress={withPreservedSelection(() => toggleMark(editor, "italic"))}
         >
@@ -284,6 +284,7 @@ export const RichTextToolbar = ({
           size={buttonSize}
           variant="ghost"
           aria-label="Underline"
+          isDisabled={isDisabled}
           onMouseDown={(event) => event.preventDefault()}
           onPress={withPreservedSelection(() =>
             toggleMark(editor, "underline")
@@ -305,12 +306,14 @@ export const RichTextToolbar = ({
         selectedKeys={selectedListKeys}
         onSelectionChange={handleListToggle}
         aria-label="List formatting"
+        isDisabled={isDisabled}
       >
         <IconToggleButton
           id="bulleted-list"
           size={buttonSize}
           variant="ghost"
           aria-label="Bulleted List"
+          isDisabled={isDisabled}
           onMouseDown={(event) => event.preventDefault()}
         >
           <FormatListBulleted />
@@ -320,6 +323,7 @@ export const RichTextToolbar = ({
           size={buttonSize}
           variant="ghost"
           aria-label="Numbered List"
+          isDisabled={isDisabled}
           onMouseDown={(event) => event.preventDefault()}
         >
           <FormatListNumbered />

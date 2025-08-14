@@ -33,20 +33,24 @@ export const RichTextInput = (props: RichTextInputProps) => {
     placeholder = "",
     isDisabled = false,
     isReadOnly = false,
-    hasError = false,
-    hasWarning = false,
+    isInvalid = false,
     autoFocus = false,
     ...restProps
   } = props;
 
   const recipe = useSlotRecipe({ recipe: richTextInputRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps({
-    state: hasError ? "error" : hasWarning ? "warning" : undefined,
-    disabled: isDisabled,
-    readOnly: isReadOnly,
+    // Only semantic variants go here (none currently defined)
     ...restProps,
   });
   const [styleProps, functionalProps] = extractStyleProps(remainingProps);
+
+  // Data attributes for state-based styling
+  const dataAttributes = {
+    "data-disabled": isDisabled ? "true" : undefined,
+    "data-invalid": isInvalid ? "true" : undefined,
+    "data-readonly": isReadOnly ? "true" : undefined,
+  };
 
   // Internal state management
   const [internalValue, setInternalValue] = useState(() => {
@@ -110,6 +114,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
       {...recipeProps}
       {...styleProps}
       {...functionalProps}
+      {...dataAttributes}
       ref={forwardedRef}
     >
       <RichTextEditor

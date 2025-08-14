@@ -312,25 +312,8 @@ export const Disabled: Story = {
 export const WithError: Story = {
   args: {
     defaultValue: "<p>This input has an error state.</p>",
-    hasError: true,
+    isInvalid: true,
     placeholder: "Start typing...",
-  },
-};
-
-export const WithWarning: Story = {
-  args: {
-    defaultValue: "<p>This input has a warning state.</p>",
-    hasWarning: true,
-    placeholder: "Start typing...",
-  },
-};
-
-export const FilledVariant: Story = {
-  args: {
-    defaultValue:
-      "<p>This rich text input uses the <strong>filled</strong> variant.</p>",
-    variant: "filled",
-    placeholder: "Filled input...",
   },
 };
 

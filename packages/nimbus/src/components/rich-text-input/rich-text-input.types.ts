@@ -1,9 +1,7 @@
 import type { Ref, FocusEventHandler } from "react";
-import type { RecipeVariantProps } from "@chakra-ui/react";
 import type { RichTextInputRootSlotProps } from "./rich-text-input.slots";
-import type { richTextInputRecipe } from "./rich-text-input.recipe";
 
-type DefaultExcludedProps = "css" | "asChild" | "as";
+type DefaultExcludedProps = "css" | "asChild" | "as" | "onChange";
 
 export interface RichTextInputProps
   extends Omit<RichTextInputRootSlotProps, DefaultExcludedProps | "children"> {
@@ -53,14 +51,9 @@ export interface RichTextInputProps
   isReadOnly?: boolean;
 
   /**
-   * Whether the input has an error
+   * Whether the input is in an invalid state
    */
-  hasError?: boolean;
-
-  /**
-   * Whether the input has a warning
-   */
-  hasWarning?: boolean;
+  isInvalid?: boolean;
 
   /**
    * Whether to focus the input when it mounts

@@ -14,22 +14,33 @@ export const richTextInputRecipe = defineSlotRecipe({
       colorPalette: "slate",
       borderColor: "colorPalette.7",
       backgroundColor: "bg.default",
+
+      // Invalid state styling
+      "&[data-invalid='true']": {
+        borderWidth: "2px",
+        borderColor: "critical.7",
+      },
     },
     toolbar: {
       boxShadow: "1",
+
+      // Disabled state styling for toolbar
+      "[data-disabled='true'] &": {
+        opacity: "0.5",
+      },
     },
-    // TODO: continue auditing styling from here
     editable: {
       padding: "400",
       minHeight: "inherit",
       outline: "none",
-      "& [data-slate-placeholder='true']": {
-        color: "fg.muted !important",
-        opacity: "1 !important",
+
+      // Disabled state styling for editable
+      "[data-disabled='true'] &": {
+        cursor: "not-allowed",
+        opacity: "0.5",
       },
-      "& > * + *": {
-        marginTop: "300",
-      },
+
+      // Styling for user-facing editor text
       "& h1": {
         fontSize: "600",
         fontWeight: "600",
@@ -117,46 +128,5 @@ export const richTextInputRecipe = defineSlotRecipe({
       },
     },
   },
-  variants: {
-    state: {
-      error: {
-        root: {
-          borderColor: "error.emphasized",
-          _focusWithin: {
-            borderColor: "error.emphasized",
-            boxShadow: "0 0 0 1px token(colors.error.emphasized)",
-          },
-        },
-      },
-      warning: {
-        root: {
-          borderColor: "warning.emphasized",
-          _focusWithin: {
-            borderColor: "warning.emphasized",
-            boxShadow: "0 0 0 1px token(colors.warning.emphasized)",
-          },
-        },
-      },
-    },
-    disabled: {
-      true: {
-        root: {
-          opacity: "0.5",
-          cursor: "not-allowed",
-          backgroundColor: "bg.subtle",
-        },
-      },
-    },
-    readOnly: {
-      true: {
-        root: {
-          backgroundColor: "bg.subtle",
-          cursor: "default",
-        },
-        editable: {
-          cursor: "default",
-        },
-      },
-    },
-  },
+  variants: {},
 });
