@@ -48,4 +48,5 @@ export * from "./progress-bar";
 export * from "./range-calendar";
 export * from "./menu";
 export * from "./date-range-picker";
+export * from "./popover";
 export * from "./toolbar";
