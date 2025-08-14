@@ -1,7 +1,7 @@
-import { PopoverRootSlot, PopoverContentSlot } from "./popover.slots";
+import { PopoverTriggerSlot, PopoverContentSlot } from "./popover.slots";
 import type { PopoverComponents } from "./popover.types";
 
 export const Popover: PopoverComponents = {
-  Root: PopoverRootSlot,
+  Trigger: PopoverTriggerSlot,
   Content: PopoverContentSlot,
 };

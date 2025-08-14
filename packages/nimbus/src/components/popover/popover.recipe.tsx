@@ -1,6 +1,6 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const slots = ["root", "content"];
+const slots = ["trigger", "content"];
 
 /**
  * Recipe configuration for the Popover component.
@@ -12,7 +12,7 @@ export const popoverSlotRecipe = defineSlotRecipe({
   slots,
   // Base styles applied to all instances of the component
   base: {
-    root: {
+    trigger: {
       position: "relative",
       display: "inline-block",
     },

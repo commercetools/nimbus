@@ -1,16 +1,12 @@
-import type {
-  DialogTriggerProps,
-  PopoverProps,
-  ButtonProps,
-} from "react-aria-components";
+import type { DialogTriggerProps, PopoverProps } from "react-aria-components";
 
-export interface PopoverRootSlotProps extends DialogTriggerProps {
+export interface PopoverTriggerSlotProps extends DialogTriggerProps {
   children: React.ReactNode;
 }
 
 export type PopoverContentSlotProps = PopoverProps;
 
 export type PopoverComponents = {
-  Root: React.FC<PopoverRootSlotProps>;
+  Trigger: React.FC<PopoverTriggerSlotProps>;
   Content: React.FC<PopoverContentSlotProps>;
 };

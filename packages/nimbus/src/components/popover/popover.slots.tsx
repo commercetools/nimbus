@@ -6,14 +6,14 @@ import {
 } from "react-aria-components";
 import {
   type PopoverContentSlotProps,
-  type PopoverRootSlotProps,
+  type PopoverTriggerSlotProps,
 } from "./popover.types";
 
 const { withProvider } = createSlotRecipeContext({
   recipe: popoverSlotRecipe,
 });
 
-export const PopoverRootSlot = (props: PopoverRootSlotProps) => (
+export const PopoverTriggerSlot = (props: PopoverTriggerSlotProps) => (
   <RaDialogTrigger {...props} />
 );
 
