@@ -61,5 +61,6 @@ const config: StorybookConfig = {
       },
     },
   },
+  optimizeDeps: {},
 };
 export default config;
