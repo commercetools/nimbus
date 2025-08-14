@@ -1076,7 +1076,9 @@ export const SelectionWithSortingAndSearch: Story = {
                 id="selection-mode-select"
                 value={selectionMode}
                 onChange={(e) =>
-                  handleSelectionModeChange(e.target.value as any)
+                  handleSelectionModeChange(
+                    e.target.value as "none" | "single" | "multiple"
+                  )
                 }
                 style={{
                   padding: "6px 12px",
