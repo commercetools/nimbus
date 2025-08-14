@@ -18,8 +18,6 @@ import {
   FormatBold,
   FormatItalic,
   FormatUnderlined,
-  FormatStrikethrough,
-  Code,
   FormatListBulleted,
   FormatListNumbered,
   KeyboardArrowDown,
@@ -33,6 +31,7 @@ import {
   toggleBlock,
 } from "./rich-text-utils/slate-helpers";
 import type { CustomElement } from "./rich-text-utils/types";
+import { FormattingMenu } from "./formatting-menu";
 
 type BlockType = CustomElement["type"];
 
@@ -183,18 +182,8 @@ export const RichTextToolbar = ({
     if (isMarkActive(editor, "bold")) keys.push("bold");
     if (isMarkActive(editor, "italic")) keys.push("italic");
     if (isMarkActive(editor, "underline")) keys.push("underline");
-    if (isMarkActive(editor, "strikethrough")) keys.push("strikethrough");
-    if (isMarkActive(editor, "code")) keys.push("code");
     return new Set(keys);
   }, [editor.selection, editor.children, Editor.marks(editor)]); // Include marks for pending mark state
-
-  // Get currently selected advanced formatting keys
-  const selectedAdvancedFormatKeys = useMemo(() => {
-    const keys: string[] = [];
-    if (isMarkActive(editor, "superscript")) keys.push("superscript");
-    if (isMarkActive(editor, "subscript")) keys.push("subscript");
-    return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected list formatting key
   const selectedListKeys = useMemo(() => {
@@ -298,70 +287,10 @@ export const RichTextToolbar = ({
           <FormatUnderlined />
           <VisuallyHidden>Underline (Cmd+U)</VisuallyHidden>
         </IconToggleButton>
-        <IconToggleButton
-          id="strikethrough"
-          size={buttonSize}
-          variant="ghost"
-          aria-label="Strikethrough"
-          onMouseDown={(event) => event.preventDefault()}
-          onPress={withPreservedSelection(() =>
-            toggleMark(editor, "strikethrough")
-          )}
-        >
-          <FormatStrikethrough />
-          <VisuallyHidden>Strikethrough</VisuallyHidden>
-        </IconToggleButton>
-        <IconToggleButton
-          id="code"
-          size={buttonSize}
-          variant="ghost"
-          aria-label="Code"
-          onMouseDown={(event) => event.preventDefault()}
-          onPress={withPreservedSelection(() => toggleMark(editor, "code"))}
-        >
-          <Code />
-          <VisuallyHidden>Code (Cmd+`)</VisuallyHidden>
-        </IconToggleButton>
       </ToggleButtonGroup.Root>
 
-      <Divider orientation="vertical" />
-
-      {/* Advanced Formatting Toggles */}
-      <ToggleButtonGroup.Root
-        selectionMode="multiple"
-        selectedKeys={selectedAdvancedFormatKeys}
-      >
-        <IconToggleButton
-          id="superscript"
-          size={buttonSize}
-          variant="ghost"
-          aria-label="Superscript"
-          onMouseDown={(event) => event.preventDefault()}
-          onPress={withPreservedSelection(() =>
-            toggleMark(editor, "superscript")
-          )}
-        >
-          <Text fontSize="75%" verticalAlign="super">
-            X²
-          </Text>
-          <VisuallyHidden>Superscript</VisuallyHidden>
-        </IconToggleButton>
-        <IconToggleButton
-          id="subscript"
-          size={buttonSize}
-          variant="ghost"
-          aria-label="Subscript"
-          onMouseDown={(event) => event.preventDefault()}
-          onPress={withPreservedSelection(() =>
-            toggleMark(editor, "subscript")
-          )}
-        >
-          <Text fontSize="75%" verticalAlign="sub">
-            X₂
-          </Text>
-          <VisuallyHidden>Subscript</VisuallyHidden>
-        </IconToggleButton>
-      </ToggleButtonGroup.Root>
+      {/* Formatting Menu for additional options */}
+      <FormattingMenu isDisabled={isDisabled} />
 
       <Divider orientation="vertical" />
 
