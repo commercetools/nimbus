@@ -12,12 +12,23 @@ import {
   type RenderElementProps,
   type RenderLeafProps,
 } from "slate-react";
-// @ts-expect-error - is-url package doesn't have proper types
-import isUrl from "is-url";
 import type { CustomElement, CustomText, ElementFormat } from "./types";
 import { fromHTML } from "./html-serialization";
 
+// Simple URL validation function
+const isUrl = (text: string): boolean => {
+  try {
+    const url = new URL(text);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
 const LIST_TYPES = ["bulleted-list", "numbered-list"];
+
+// Define valid mark formats, `text` is not a mark but the text content
+type MarkFormat = keyof Omit<CustomText, "text">;
 
 // Check if a mark is currently active
 export const isMarkActive = (editor: SlateEditor, format: string): boolean => {
@@ -26,7 +37,7 @@ export const isMarkActive = (editor: SlateEditor, format: string): boolean => {
   // For collapsed selection (cursor position), use the standard approach
   if (!selection || Range.isCollapsed(selection)) {
     const marks = Editor.marks(editor);
-    return marks ? marks[format as keyof CustomText] === true : false;
+    return marks ? marks[format as MarkFormat] === true : false;
   }
 
   // For text selection, check if any selected text has the mark
@@ -41,19 +52,19 @@ export const isMarkActive = (editor: SlateEditor, format: string): boolean => {
 
     if (textNodes.length === 0) {
       const marks = Editor.marks(editor);
-      return marks ? marks[format as keyof CustomText] === true : false;
+      return marks ? marks[format as MarkFormat] === true : false;
     }
 
     // Show as active only if all selected text has this mark
     // Prioritizes unformatted text - if any text is unformatted, button shows inactive
     return textNodes.every(([node]) => {
       const textNode = node as CustomText;
-      return textNode[format as keyof CustomText] === true;
+      return textNode[format as MarkFormat] === true;
     });
   } catch {
     // Fallback to original approach if node traversal fails
     const marks = Editor.marks(editor);
-    return marks ? marks[format as keyof CustomText] === true : false;
+    return marks ? marks[format as MarkFormat] === true : false;
   }
 };
 

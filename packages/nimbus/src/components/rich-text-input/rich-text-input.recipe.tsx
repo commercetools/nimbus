@@ -100,6 +100,7 @@ export const richTextInputRecipe = defineSlotRecipe({
       "& a": {
         color: "accent.emphasized",
         textDecoration: "underline",
+        cursor: "pointer",
         _hover: {
           textDecoration: "none",
         },

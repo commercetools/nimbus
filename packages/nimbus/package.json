@@ -50,7 +50,6 @@
     "@react-aria/interactions": "catalog:react",
     "escape-html": "^1.0.3",
     "is-hotkey": "^0.2.0",
-    "is-url": "^1.2.4",
     "next-themes": "catalog:react",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
