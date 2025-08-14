@@ -51,13 +51,13 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             position="absolute"
             top="50%"
             transform="translateY(-50%)"
-            left="var(--input-padding, 400)"
+            left={400}
             zIndex={1}
             className="nimbus-text-input-leading-element"
             data-slot="leading-element"
             _rtl={{
               left: "auto",
-              right: "var(--input-padding, 400)"
+              right: "400"
             }}
           >
             {leadingElement}
@@ -77,14 +77,14 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           <Box 
             position="absolute"
             top="50%"
+            right={400}
             transform="translateY(-50%)"
-            right="var(--input-padding, 400)"
             zIndex={1}
             className="nimbus-text-input-trailing-element"
             data-slot="trailing-element"
             _rtl={{
               right: "auto",
-              left: "var(--input-padding, 400)"
+              left: "400"
             }}
           >
             {trailingElement}
