@@ -5,8 +5,3 @@ export interface PopoverTriggerSlotProps extends DialogTriggerProps {
 }
 
 export type PopoverContentSlotProps = PopoverProps;
-
-export type PopoverComponents = {
-  Trigger: React.FC<PopoverTriggerSlotProps>;
-  Content: React.FC<PopoverContentSlotProps>;
-};

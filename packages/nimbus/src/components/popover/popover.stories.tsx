@@ -2,14 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Popover } from "./popover";
 import { expect, screen } from "storybook/test";
 
-const meta: Meta<typeof Popover.Trigger> = {
+const meta: Meta<typeof Popover> = {
   title: "components/Popover",
-  component: Popover.Trigger,
+  component: Popover,
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Popover.Trigger>;
+type Story = StoryObj<typeof Popover>;
 
 /**
  * Base story
@@ -18,9 +18,9 @@ type Story = StoryObj<typeof Popover.Trigger>;
 export const Base: Story = {
   render: () => (
     <Popover.Trigger isOpen data-testid="test-popover-trigger">
-      <Popover.Content aria-label="popover" data-testid="test-popover-content">
+      <Popover aria-label="popover" data-testid="test-popover-content">
         <p>This is a basic popover component!</p>
-      </Popover.Content>
+      </Popover>
     </Popover.Trigger>
   ),
 

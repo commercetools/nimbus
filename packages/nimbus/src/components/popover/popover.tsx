@@ -1,7 +1,5 @@
 import { PopoverTriggerSlot, PopoverContentSlot } from "./popover.slots";
-import type { PopoverComponents } from "./popover.types";
 
-export const Popover: PopoverComponents = {
+export const Popover = Object.assign(PopoverContentSlot, {
   Trigger: PopoverTriggerSlot,
-  Content: PopoverContentSlot,
-};
+});
