@@ -76,6 +76,7 @@
     "@storybook/react-vite": "catalog:tooling",
     "@testing-library/react": "catalog:tooling",
     "@testing-library/user-event": "catalog:tooling",
+    "@types/is-hotkey": "^0.1.10",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
