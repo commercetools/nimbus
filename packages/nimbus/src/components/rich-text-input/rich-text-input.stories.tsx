@@ -1096,11 +1096,11 @@ export const PendingMarksConsistency: Story = {
       expect(canvas.getByRole("menu")).toBeInTheDocument();
     });
 
-    // Check if the code menu item is selected
+    // Check if the code menu item is selected (no visual checkbox, but background highlight)
     const codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", {
       name: /Code/,
     });
-    expect(codeMenuItemAfter).toHaveAttribute("aria-checked", "true");
+    expect(codeMenuItemAfter).toHaveAttribute("data-selected");
 
     // Close menu and type text
     await userEvent.keyboard("{Escape}");
