@@ -30,6 +30,22 @@ export const textInputRecipe = defineRecipe({
       "--border-width": "sizes.50",
       color: "critical.11",
     },
+    
+    // Adjust padding when there are leading/trailing elements
+    "&.has-leading-element": {
+      pl: "1200",
+      _rtl: {
+        pl: "initial",
+        pr: "1200",
+      }
+    },
+    "&.has-trailing-element": {
+      pr: "1200",
+      _rtl: {
+        pr: "initial",
+        pl: "1200",
+      }
+    }
   },
 
   variants: {
@@ -38,11 +54,41 @@ export const textInputRecipe = defineRecipe({
         h: 800,
         textStyle: "sm",
         px: 300,
+        "--input-padding": "300",
+        "&.has-leading-element": {
+          pl: "1000", 
+          _rtl: {
+            pl: "300",
+            pr: "1000",
+          }
+        },
+        "&.has-trailing-element": {
+          pr: "1000",
+          _rtl: {
+            pr: "300", 
+            pl: "1000",
+          }
+        },
       },
       md: {
         h: 1000,
         textStyle: "md",
         px: 400,
+        "--input-padding": "400",
+        "&.has-leading-element": {
+          pl: "1200",
+          _rtl: {
+            pl: "400",
+            pr: "1200",
+          }
+        },
+        "&.has-trailing-element": {
+          pr: "1200",
+          _rtl: {
+            pr: "400",
+            pl: "1200",
+          }
+        },
       },
     },
 

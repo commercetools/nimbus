@@ -4,6 +4,7 @@ import { TextInput } from "./text-input";
 import type { TextInputProps } from "./text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { Box, Stack, Text } from "@/components";
+import { Search, Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof TextInput> = {
   title: "components/TextInput",
@@ -285,6 +286,143 @@ export const Controlled: Story = {
         await expect(typeof call[0]).toBe("string");
       }
     });
+  },
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    placeholder: "Search...",
+    leadingElement: <Search />,
+    "aria-label": "search-input",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    placeholder: "Enter password",
+    trailingElement: <Visibility style={{ cursor: "pointer" }} />,
+    "aria-label": "password-input",
+  },
+};
+
+export const InteractiveElements: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [passwordValue, setPasswordValue] = useState("");
+    
+    const handleClear = () => {
+      setValue("");
+    };
+    
+    const togglePassword = () => {
+      setShowPassword(!showPassword);
+    };
+    
+    return (
+      <Stack direction="column" gap="800">
+        <Text>Interactive search with clear button</Text>
+        <TextInput
+          placeholder="Search for products"
+          leadingElement={<Search style={{ color: "gray" }} />}
+          trailingElement={
+            value ? (
+              <Box 
+                cursor="pointer" 
+                onClick={handleClear}
+                aria-label="Clear search"
+                role="button"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                ✕
+              </Box>
+            ) : null
+          }
+          value={value}
+          onChange={setValue}
+          aria-label="interactive-search-input"
+        />
+        
+        <Text mt="400">Interactive password visibility toggle</Text>
+        <TextInput
+          placeholder="Enter password"
+          type={showPassword ? "text" : "password"}
+          value={passwordValue}
+          onChange={setPasswordValue}
+          trailingElement={
+            <Box 
+              cursor="pointer" 
+              onClick={togglePassword}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              role="button"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </Box>
+          }
+          aria-label="interactive-password-input"
+        />
+      </Stack>
+    );
+  },
+};
+
+export const WithBothElements: Story = {
+  args: {
+    placeholder: "Search for products",
+    leadingElement: <Search />,
+    trailingElement: <Box cursor="pointer">Clear</Box>,
+    "aria-label": "search-with-clear-input",
+  },
+};
+
+export const WithBothElementsDifferentSizes: Story = {
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400">
+        {inputSize.map((size) => (
+          <TextInput
+            key={String(size)}
+            size={size}
+            placeholder={`Size ${size}`}
+            leadingElement={<Search />}
+            trailingElement={<Box cursor="pointer">Clear</Box>}
+            aria-label={`size-${size}-input`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const RTLSupport: Story = {
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400">
+        <Box>
+          <Text mb="200">LTR direction (left-to-right)</Text>
+          <TextInput
+            placeholder="Search in LTR"
+            leadingElement={<Search />}
+            trailingElement={<Box cursor="pointer">Clear</Box>}
+            aria-label="ltr-input"
+          />
+        </Box>
+        <Box dir="rtl" width="100%">
+          <Text mb="200" textAlign="right">RTL direction (right-to-left)</Text>
+          <TextInput
+            placeholder="Search in RTL"
+            leadingElement={<Search />}
+            trailingElement={<Box cursor="pointer">Clear</Box>}
+            aria-label="rtl-input"
+          />
+        </Box>
+      </Stack>
+    );
   },
 };
 
