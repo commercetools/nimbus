@@ -284,9 +284,11 @@ export const DataTableRow = forwardRef(function DataTableRow<
               borderLeft: "2px solid blue",
             }}
           >
-            {nestedKey && Array.isArray(row[nestedKey])
-              ? `${(row[nestedKey] as unknown[]).length} nested items`
-              : nestedKey && (row[nestedKey] as React.ReactNode)}
+            {isExpanded
+              ? nestedKey && Array.isArray(row[nestedKey])
+                ? `${(row[nestedKey] as unknown[]).length} nested items`
+                : nestedKey && (row[nestedKey] as React.ReactNode)
+              : null}
           </DataTableCell>
         </RaRow>
       )}
