@@ -121,7 +121,14 @@ export const fromHTML = (html: string): Descendant[] => {
 
   try {
     // Simple HTML parsing - for now just handle basic cases
-    if (html.includes("<p>") || html.includes("<h") || html.includes("<div>")) {
+    if (
+      html.includes("<p>") ||
+      html.includes("<h") ||
+      html.includes("<div>") ||
+      html.includes("<blockquote>") ||
+      html.includes("<ul>") ||
+      html.includes("<ol>")
+    ) {
       const document = new DOMParser().parseFromString(html, "text/html");
       const body = document.body;
 
