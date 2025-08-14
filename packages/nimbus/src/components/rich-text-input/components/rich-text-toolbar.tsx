@@ -208,7 +208,12 @@ export const RichTextToolbar = ({
   }
 
   return (
-    <Toolbar orientation="horizontal" aria-label="Text formatting">
+    <Toolbar
+      orientation="horizontal"
+      aria-label="Text formatting"
+      width="full"
+      overflow="hidden"
+    >
       {/* Text Style Menu */}
       <Group>
         <Menu.Root
@@ -321,7 +326,8 @@ export const RichTextToolbar = ({
         </IconToggleButton>
       </ToggleButtonGroup.Root>
 
-      <Divider orientation="vertical" />
+      {/* Spacer to push undo/redo buttons to the right */}
+      <Box flexGrow="1" />
 
       <Group>
         <IconButton
