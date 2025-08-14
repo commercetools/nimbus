@@ -44,9 +44,9 @@ export const isMarkActive = (editor: SlateEditor, format: string): boolean => {
       return marks ? marks[format as keyof CustomText] === true : false;
     }
 
-    // Show as active if any selected text has this mark
-    // This gives users visual feedback about partial formatting
-    return textNodes.some(([node]) => {
+    // Show as active only if all selected text has this mark
+    // Prioritizes unformatted text - if any text is unformatted, button shows inactive
+    return textNodes.every(([node]) => {
       const textNode = node as CustomText;
       return textNode[format as keyof CustomText] === true;
     });
