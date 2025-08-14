@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const richTextInputRecipe = defineSlotRecipe({
-  slots: ["root", "toolbar", "editor", "editable"],
+  slots: ["root", "toolbar", "editable"],
   className: "nimbus-rich-text-input",
   base: {
     root: {
@@ -11,31 +11,14 @@ export const richTextInputRecipe = defineSlotRecipe({
       width: "full",
       borderRadius: "200",
       borderWidth: "1px",
-      borderColor: "border.subtle",
+      colorPalette: "slate",
+      borderColor: "colorPalette.7",
       backgroundColor: "bg.default",
-      transitionProperty: "common",
-      transitionDuration: "moderate",
-      _hover: {
-        borderColor: "border.emphasized",
-      },
-      _focusWithin: {
-        borderColor: "accent.emphasized",
-        boxShadow: "0 0 0 1px token(colors.accent.emphasized)",
-      },
     },
     toolbar: {
-      borderBottomWidth: "1px",
-      borderBottomColor: "border.subtle",
       boxShadow: "1",
     },
-    editor: {
-      position: "relative",
-      minHeight: "800",
-      cursor: "text",
-      outline: "0",
-      fontSize: "400",
-      lineHeight: "500",
-    },
+    // TODO: continue auditing styling from here
     editable: {
       padding: "400",
       minHeight: "inherit",
@@ -161,9 +144,6 @@ export const richTextInputRecipe = defineSlotRecipe({
           opacity: "0.5",
           cursor: "not-allowed",
           backgroundColor: "bg.subtle",
-        },
-        editor: {
-          pointerEvents: "none",
         },
       },
     },

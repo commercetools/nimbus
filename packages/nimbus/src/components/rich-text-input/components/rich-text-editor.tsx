@@ -157,7 +157,7 @@ export const RichTextEditor = forwardRef<
   return (
     <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
       {toolbar && (
-        <RichTextInputToolbarSlot asChild>{toolbar}</RichTextInputToolbarSlot>
+        <RichTextInputToolbarSlot>{toolbar}</RichTextInputToolbarSlot>
       )}
       <RichTextInputEditableSlot asChild>
         <Editable

@@ -1,10 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSlotRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import {
-  RichTextInputRootSlot,
-  RichTextInputEditorSlot,
-} from "./rich-text-input.slots";
+import { RichTextInputRootSlot } from "./rich-text-input.slots";
 import {
   RichTextEditor,
   type RichTextEditorRef,
@@ -115,22 +112,20 @@ export const RichTextInput = (props: RichTextInputProps) => {
       {...functionalProps}
       ref={forwardedRef}
     >
-      <RichTextInputEditorSlot asChild>
-        <RichTextEditor
-          ref={editorRef}
-          value={safeValue}
-          onChange={handleChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          placeholder={placeholder}
-          isDisabled={isDisabled}
-          isReadOnly={isReadOnly}
-          autoFocus={autoFocus}
-          toolbar={
-            !isReadOnly ? <RichTextToolbar isDisabled={isDisabled} /> : null
-          }
-        />
-      </RichTextInputEditorSlot>
+      <RichTextEditor
+        ref={editorRef}
+        value={safeValue}
+        onChange={handleChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        isDisabled={isDisabled}
+        isReadOnly={isReadOnly}
+        autoFocus={autoFocus}
+        toolbar={
+          !isReadOnly ? <RichTextToolbar isDisabled={isDisabled} /> : null
+        }
+      />
     </RichTextInputRootSlot>
   );
 };

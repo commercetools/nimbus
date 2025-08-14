@@ -24,17 +24,11 @@ export const RichTextInputRootSlot = withProvider<
 
 // Toolbar slot
 export interface RichTextInputToolbarSlotProps extends HTMLChakraProps<"div"> {}
+
 export const RichTextInputToolbarSlot = withContext<
   HTMLDivElement,
   RichTextInputToolbarSlotProps
 >("div", "toolbar");
-
-// Editor slot
-export interface RichTextInputEditorSlotProps extends HTMLChakraProps<"div"> {}
-export const RichTextInputEditorSlot = withContext<
-  HTMLDivElement,
-  RichTextInputEditorSlotProps
->("div", "editor");
 
 // Editable slot
 export interface RichTextInputEditableSlotProps
