@@ -26,7 +26,7 @@ export const dataTableRecipe = defineSlotRecipe({
       borderRadius: "8px",
       border: "1px solid {colors.neutral.3}",
       boxShadow: "1",
-      overflow: "hidden",
+      overflow: "auto",
       contain: "layout style",
       "& .react-aria-Cell": {
         paddingTop: "400",
@@ -47,6 +47,9 @@ export const dataTableRecipe = defineSlotRecipe({
       "& .data-table-row": {
         borderBottom: "1px solid {colors.neutral.3}",
         focusRing: "outside",
+        "& td, div": {
+          userSelect: "none",
+        },
         "&:last-child": {
           borderBottom: "none",
         },
@@ -107,7 +110,7 @@ export const dataTableRecipe = defineSlotRecipe({
       // Multiline header truncation using webkit line clamp
     },
     table: {
-      width: "100%",
+      width: "fit-content",
       tableLayout: "fixed",
     },
     column: {

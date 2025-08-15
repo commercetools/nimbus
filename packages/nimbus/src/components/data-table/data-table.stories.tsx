@@ -1,20 +1,40 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
+import type { Selection } from "react-aria-components";
+import { Stack, TextInput, IconButton, Dialog, Button } from "@/components";
+import { Info } from "@commercetools/nimbus-icons";
 import { DataTable } from "./data-table";
-import { Stack } from "./../stack";
+
 import type {
   DataTableColumnItem,
   DataTableRowItem,
   SortDescriptor,
   DataTableProps,
 } from "./data-table.types";
-import { useState } from "react";
-import { TextInput } from "./../text-input";
 
-// Define specific data types for the stories
+type ModalState = {
+  isOpen: boolean;
+  onClose?: () => void;
+  title?: string;
 
-import type { Selection } from "react-aria-components";
-import { Info } from "@commercetools/nimbus-icons";
-import { IconButton } from "../icon-button";
+  children: React.ReactNode;
+};
+const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
+  <Dialog.Root
+    open={isOpen}
+    onOpenChange={({ open }) => !open && onClose && onClose()}
+  >
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>{title}</Dialog.Title>
+      </Dialog.Header>
+      <Dialog.Body>{children}</Dialog.Body>
+      <Dialog.Footer>
+        <Button onClick={onClose}>Close</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+);
 
 /**
  * Storybook metadata configuration
@@ -2074,6 +2094,18 @@ export const NestedTable: Story = {
 
 export const AllFeatures: Story = {
   render: () => {
+    const [modalState, setModalState] = useState<{
+      isOpen: boolean;
+      row?: DataTableRowItem;
+    }>({
+      isOpen: false,
+    });
+    const [rowClickModalState, setRowClickModalState] = useState<{
+      isOpen: boolean;
+      row?: DataTableRowItem;
+    }>({
+      isOpen: false,
+    });
     // Feature toggles
     const [search, setSearch] = useState("");
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
@@ -2165,7 +2197,7 @@ export const AllFeatures: Story = {
             allowsSorting={true}
             isResizable={true}
             onDetailsClick={(row) => {
-              alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
+              setModalState({ isOpen: true, row });
             }}
           />
         </div>
@@ -2524,22 +2556,42 @@ export const AllFeatures: Story = {
             disallowEmptySelection={disallowEmptySelection}
             isResizable={isResizable}
             allowsSorting={allowsSorting}
-            isRowClickable={isRowClickable}
+            isRowClickable={true}
             maxHeight={stickyHeader ? "400px" : undefined}
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            // onRowClick={(row) => {
-            //   if (isRowClickable) {
-            //     alert(`Clicked row: ${row.name} (${row.role})`);
-            //   }
-            // }}
+            onRowClick={(row) => {
+              console.log("row clicked");
+              setRowClickModalState({ isOpen: true, row });
+            }}
             onDetailsClick={(row) => {
-              alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
+              console.log("details clicked");
+              setModalState({ isOpen: true, row });
             }}
           />
         </div>
-
+        <InfoModal
+          key="details"
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState({ isOpen: false, row: undefined })}
+          title={`${modalState?.row?.name}'s Details`}
+        >
+          {modalState?.row &&
+            Object.entries(modalState.row!)
+              .filter(([k]) => !["id", "children"].includes(k))
+              .map(([k, v]) => <div>{`${k}: ${v}`}</div>)}
+        </InfoModal>
+        <InfoModal
+          key="row-click"
+          isOpen={rowClickModalState.isOpen}
+          onClose={() =>
+            setRowClickModalState({ isOpen: false, row: undefined })
+          }
+          title={`🎉🎉You Clicked ${rowClickModalState?.row?.name}'s Row🎉🎉`}
+        >
+          <></>
+        </InfoModal>
         {/* Feature Information */}
         <div
           style={{
@@ -2751,7 +2803,13 @@ export const DisabledRowsShowcase: Story = {
             alert(`Row clicked: ${row.name} (${row.role})`);
           }}
         />
-
+        <InfoModal
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState({ isOpen: false, row: null })}
+          title="Modal Title"
+        >
+          Modal content here
+        </InfoModal>
         {/* Feature Information */}
         <div
           style={{

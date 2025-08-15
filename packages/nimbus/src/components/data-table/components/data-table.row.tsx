@@ -1,10 +1,11 @@
-import { forwardRef } from "react";
+import { forwardRef, useRef, useCallback, useEffect } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
   useTableOptions,
 } from "react-aria-components";
-import { Highlight } from "@chakra-ui/react";
+import { mergeRefs } from "@chakra-ui/react";
+import { Highlight } from "@chakra-ui/react/highlight";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
 import { DataTableExpandButton } from "../data-table.slots";
@@ -48,10 +49,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
     onRowAction,
   } = useDataTableContext<T>();
 
-  const { selectionBehavior } = useTableOptions();
-
-  const [, copyToClipboard] = useCopyToClipboard();
-
   // Helper function to check if row is disabled
   const getIsDisabled = (rowId: string) => {
     if (!disabledKeys) return false;
@@ -59,27 +56,99 @@ export const DataTableRow = forwardRef(function DataTableRow<
     if (row.isDisabled) return true;
     return disabledKeys.has(rowId);
   };
-
   const isDisabled = getIsDisabled(row.id);
+
+  /**
+   * Custom row click handling implementation to work around React Aria limitations.
+   *
+   * React Aria Components disable row actions when a row is selected, which prevents
+   * custom click handlers from working properly. This implementation uses native DOM
+   * event listeners to bypass this limitation and provide consistent row click behavior.
+   *
+   * @see https://github.com/adobe/react-spectrum/issues/7962
+   */
+
+  /**
+   * Handles row click events with smart filtering to avoid conflicts with interactive elements.
+   * Uses native DOM Event type to be compatible with addEventListener.
+   *
+   * @param e - Native DOM Event from the click listener
+   */
+  const handleRowClick = (e: Event) => {
+    // Cast target to Element since EventTarget doesn't have closest method
+    const clickedElement = e.target as Element;
+    // Prevent row click when clicking on interactive elements to avoid conflicts
+    const isInteractiveElement = clickedElement?.closest(
+      'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
+    );
+
+    if (!isInteractiveElement && isRowClickable && onRowClick) {
+      if (!isDisabled) {
+        onRowClick(row);
+      } else {
+        // Handle disabled row clicks differently - allows for special disabled row actions
+        // TODO: Clarify business requirement - why allow clicks on disabled rows?
+        if (onRowAction) {
+          onRowAction(row, "click");
+        }
+      }
+    }
+  };
+
+  /**
+   * Ref to track the callback ref invocation count and store the DOM node reference.
+   * This prevents duplicate event listeners and enables proper cleanup.
+   */
+  const counterRef = useRef<{ count: number; node?: HTMLElement }>({
+    count: 0,
+    node: undefined,
+  });
+
+  /**
+   * Callback ref that attaches the click event listener to the row DOM element.
+   * Only attaches the listener once per row instance to prevent memory leaks.
+   *
+   * @param node - The HTMLElement reference from React's ref callback
+   */
+  const rowNodeRef = useCallback(
+    (node: HTMLElement) => {
+      counterRef.current.count += 1;
+
+      // Only attach event listener on first callback invocation when row is clickable
+      if (counterRef.current.count === 1 && node && isRowClickable) {
+        counterRef.current.node = node;
+        // Use capture phase to ensure we handle the event before child elements
+        node.addEventListener("click", handleRowClick, { capture: true });
+      }
+    },
+    [isRowClickable, handleRowClick]
+  );
+
+  /**
+   * Cleanup effect to remove event listeners when the component unmounts.
+   * This prevents memory leaks when rows are removed from the DOM (e.g., filtering, pagination).
+   */
+  useEffect(() => {
+    return () => {
+      if (counterRef.current.count >= 1 && counterRef.current.node) {
+        console.log("removing row event listener");
+        counterRef.current.node.removeEventListener("click", handleRowClick);
+      }
+    };
+  }, [handleRowClick]);
+
+  // Combine the forwarded ref with our callback ref for proper DOM access
+  const rowRef = mergeRefs(ref, rowNodeRef);
+
+  const { selectionBehavior } = useTableOptions();
+
+  const [, copyToClipboard] = useCopyToClipboard();
 
   const hasNestedContent =
     nestedKey &&
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
   const isExpanded = expanded[row.id];
-
-  const handleRowClick = () => {
-    if (isDisabled) {
-      if (onRowAction) {
-        onRowAction(row, "click");
-      }
-      return;
-    }
-
-    if (isRowClickable && onRowClick) {
-      onRowClick(row);
-    }
-  };
 
   // Action handlers - only copy functionality
   const handleCopy = (value: unknown) => {
@@ -100,10 +169,10 @@ export const DataTableRow = forwardRef(function DataTableRow<
   return (
     <>
       <RaRow
-        onAction={!isDisabled && isRowClickable ? handleRowClick : () => {}}
+        // onAction={!isDisabled && isRowClickable ? handleRowClick : () => {}}
         isDisabled={isDisabled}
         columns={activeColumns}
-        ref={ref}
+        ref={rowRef}
         id={row.id}
         className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""}`}
         style={{
@@ -125,6 +194,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
         {/* Selection checkbox cell if selection is enabled */}
         {selectionBehavior === "toggle" && (
           <DataTableCell
+            data-slot="selection"
             isDisabled={isDisabled}
             style={{
               alignItems: "center",
