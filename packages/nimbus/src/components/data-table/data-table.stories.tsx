@@ -1,12 +1,37 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import type { Selection } from "react-aria-components";
-import { Stack, TextInput, IconButton, Dialog, Button } from "@/components";
-import { Info } from "@commercetools/nimbus-icons";
+import {
+  Stack,
+  TextInput,
+  Dialog,
+  Button,
+  Checkbox,
+  Heading,
+  Text,
+  Select,
+  Box,
+  Flex,
+} from "@/components";
 import { DataTable } from "./data-table";
+import {
+  columns,
+  sortableColumns,
+  data,
+  longTextData,
+  truncationColumns,
+  comprehensiveData,
+  comprehensiveColumns,
+  flexibleNestedData,
+  modifiedFetchedData,
+  multilineHeadersColumns,
+  multilineHeadersData,
+  manyColumns,
+  wideData,
+  nestedComprehensiveTableColumns,
+} from "./test-data";
 
 import type {
-  DataTableColumnItem,
   DataTableRowItem,
   SortDescriptor,
   DataTableProps,
@@ -30,11 +55,88 @@ const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
       </Dialog.Header>
       <Dialog.Body>{children}</Dialog.Body>
       <Dialog.Footer>
-        <Button onClick={onClose}>Close</Button>
+        <Button onPress={onClose}>Close</Button>
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
 );
+
+// Wrapper component that automatically handles modals for onDetailsClick and onRowClick
+const DataTableWithModals = ({
+  onDetailsClick,
+  onRowClick,
+  ...props
+}: DataTableProps & {
+  onDetailsClick?: (row: DataTableRowItem) => void;
+  onRowClick?: (row: DataTableRowItem) => void;
+}) => {
+  const [detailsModalState, setDetailsModalState] = useState<{
+    isOpen: boolean;
+    row?: DataTableRowItem;
+  }>({
+    isOpen: false,
+  });
+
+  const [rowClickModalState, setRowClickModalState] = useState<{
+    isOpen: boolean;
+    row?: DataTableRowItem;
+  }>({
+    isOpen: false,
+  });
+
+  const handleDetailsClick = onDetailsClick
+    ? (row: DataTableRowItem) => {
+        setDetailsModalState({ isOpen: true, row });
+        onDetailsClick?.(row);
+      }
+    : undefined;
+
+  const handleRowClick = onRowClick
+    ? (row: DataTableRowItem) => {
+        setRowClickModalState({ isOpen: true, row });
+        onRowClick?.(row);
+      }
+    : undefined;
+
+  return (
+    <>
+      <DataTable
+        {...props}
+        onDetailsClick={handleDetailsClick}
+        onRowClick={handleRowClick}
+      />
+
+      {/* Details Modal */}
+      {onDetailsClick && (
+        <InfoModal
+          isOpen={detailsModalState.isOpen}
+          onClose={() =>
+            setDetailsModalState({ isOpen: false, row: undefined })
+          }
+          title={`${detailsModalState?.row?.name}'s Details`}
+        >
+          {detailsModalState?.row &&
+            Object.entries(detailsModalState.row!)
+              .filter(([k]) => !["id"].includes(k))
+              .map(([k, v]) => <div key={k}>{`${k}: ${v}`}</div>)}
+        </InfoModal>
+      )}
+
+      {/* Row Click Modal */}
+      {onRowClick && (
+        <InfoModal
+          isOpen={rowClickModalState.isOpen}
+          onClose={() =>
+            setRowClickModalState({ isOpen: false, row: undefined })
+          }
+          title={`🎉 You Clicked ${rowClickModalState?.row?.name}'s Row 🎉`}
+        >
+          <div>Row clicked successfully!</div>
+        </InfoModal>
+      )}
+    </>
+  );
+};
 
 /**
  * Storybook metadata configuration
@@ -54,101 +156,13 @@ export default meta;
  */
 type Story = StoryObj<DataTableProps>;
 
-// Sample data and columns
-const columns: DataTableColumnItem[] = [
-  {
-    id: "name",
-    header: "Name with a long header",
-    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
-  },
-  {
-    id: "age",
-    header: "Age",
-    accessor: (row: Record<string, unknown>) => row.age as React.ReactNode,
-  },
-  {
-    id: "role",
-    header: "Role",
-    accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
-  },
-  {
-    id: "custom",
-    header: "Custom",
-    accessor: (row: Record<string, unknown>) => row.class as React.ReactNode,
-    render: ({ value }) => (
-      <span style={{ color: "#60646C" }}>{value as string}</span>
-    ),
-  },
-];
-
-// Sortable columns - same as above but with explicit sortable configuration
-const sortableColumns: DataTableColumnItem[] = [
-  {
-    id: "name",
-    header: "Name",
-    accessor: (row) => row.name as React.ReactNode,
-    isSortable: true,
-    isResizable: true,
-    headerIcon: (
-      <IconButton
-        aria-label="Custom Column Information"
-        size="2xs"
-        colorPalette="primary"
-        variant="ghost"
-        onPress={() => {
-          alert(
-            "Check how the `headerIcon` property was used to display this info button."
-          );
-        }}
-      >
-        <Info />
-      </IconButton>
-    ),
-  },
-  {
-    id: "age",
-    header: "Age",
-    accessor: (row) => row.age as React.ReactNode,
-    isSortable: true,
-    isResizable: true,
-  },
-  {
-    id: "role",
-    header: "Role",
-    accessor: (row) => row.role as React.ReactNode,
-    isSortable: true,
-    isResizable: true,
-  },
-  {
-    id: "custom",
-    header: "Custom (Not Sortable)",
-    accessor: (row) => row.class as React.ReactNode,
-    render: ({ value }) => (
-      <span style={{ color: "#60646C" }}>{value as string}</span>
-    ),
-    isSortable: false, // This column is not sortable
-  },
-];
-
-const data: DataTableRowItem[] = [
-  { id: "1", name: "Alice", age: 30, role: "Admin", class: "special" },
-  { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
-  { id: "3", name: "Carol", age: 28, role: "User", class: "common" },
-  { id: "4", name: "David", age: 32, role: "Manager", class: "premium" },
-  { id: "5", name: "Emma", age: 27, role: "Developer", class: "special" },
-  { id: "6", name: "Frank", age: 29, role: "Designer", class: "rare" },
-  { id: "7", name: "Grace", age: 31, role: "Analyst", class: "common" },
-  { id: "8", name: "Henry", age: 26, role: "Developer", class: "special" },
-  { id: "9", name: "Ivy", age: 33, role: "Manager", class: "premium" },
-  { id: "10", name: "Jack", age: 24, role: "Intern", class: "junior" },
-];
-
 /**
  * Base story
  * Demonstrates the most basic implementation
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
+  render: (args) => <DataTableWithModals {...args} onDetailsClick={() => {}} />,
   args: {
     columns,
     data,
@@ -163,14 +177,17 @@ export const Base: Story = {
  * Demonstrates the details button functionality that's always present in the second column
  */
 export const WithDetailsButton: Story = {
+  render: (args) => (
+    <DataTableWithModals
+      {...args}
+      onDetailsClick={() => {}} // Just need to pass a function to enable the modal
+    />
+  ),
   args: {
     columns,
     data,
     allowsSorting: true,
     isResizable: true,
-    onDetailsClick: (row) => {
-      alert(`Details clicked for: ${row.name} (ID: ${row.id})`);
-    },
   },
 };
 
@@ -187,19 +204,22 @@ export const ColumnManager: Story = {
     };
     return (
       <>
-        <div style={{ marginBottom: 12 }}>
+        <Stack direction="row" gap="400" mb="300" wrap="wrap">
           {allColumns.map((colId) => (
-            <label key={colId} style={{ marginRight: 12 }}>
-              <input
-                type="checkbox"
-                checked={visible.includes(colId)}
-                onChange={() => handleCheckboxChange(colId)}
-              />
+            <Checkbox
+              key={colId}
+              isSelected={visible.includes(colId)}
+              onChange={() => handleCheckboxChange(colId)}
+            >
               {colId}
-            </label>
+            </Checkbox>
           ))}
-        </div>
-        <DataTable {...args} visibleColumns={visible} />
+        </Stack>
+        <DataTableWithModals
+          {...args}
+          visibleColumns={visible}
+          onDetailsClick={() => {}}
+        />
       </>
     );
   },
@@ -207,6 +227,7 @@ export const ColumnManager: Story = {
 };
 
 export const CustomColumn: Story = {
+  render: (args) => <DataTableWithModals {...args} onDetailsClick={() => {}} />,
   args: { columns, data },
 };
 
@@ -221,7 +242,11 @@ export const SearchAndHighlight: Story = {
           placeholder="Search..."
           width="1/3"
         />
-        <DataTable {...args} search={search} />
+        <DataTableWithModals
+          {...args}
+          search={search}
+          onDetailsClick={() => {}}
+        />
       </Stack>
     );
   },
@@ -232,17 +257,15 @@ export const AdjustableColumns: Story = {
   render: (args) => {
     const [isResizable, setisResizable] = useState(false);
     return (
-      <Stack gap={16}>
-        <label style={{ display: "block", marginBottom: 12 }}>
-          <input
-            type="checkbox"
-            checked={isResizable}
-            onChange={(e) => setisResizable(e.target.checked)}
-            style={{ marginRight: 12 }}
-          />
+      <Stack gap="400" alignItems="flex-start">
+        <Checkbox isSelected={isResizable} onChange={setisResizable}>
           Resizable Column
-        </label>
-        <DataTable {...args} isResizable={isResizable} />
+        </Checkbox>
+        <DataTableWithModals
+          {...args}
+          isResizable={isResizable}
+          onDetailsClick={() => {}}
+        />
       </Stack>
     );
   },
@@ -256,18 +279,16 @@ export const Condensed: Story = {
   render: (args) => {
     const [condensed, setCondensed] = useState(false);
     return (
-      <>
-        <label style={{ display: "block", marginBottom: 12 }}>
-          <input
-            type="checkbox"
-            checked={condensed}
-            onChange={(e) => setCondensed(e.target.checked)}
-            style={{ marginRight: 12 }}
-          />
+      <Stack gap="500" alignItems="flex-start">
+        <Checkbox isSelected={condensed} onChange={setCondensed}>
           Condensed
-        </label>
-        <DataTable {...args} density={condensed ? "condensed" : "default"} />
-      </>
+        </Checkbox>
+        <DataTableWithModals
+          {...args}
+          density={condensed ? "condensed" : "default"}
+          onDetailsClick={() => {}}
+        />
+      </Stack>
     );
   },
   args: { columns, data },
@@ -277,19 +298,17 @@ export const StickyHeader: Story = {
   render: (args) => {
     const [sticky, setSticky] = useState(false);
     return (
-      <>
-        <label style={{ display: "block", marginBottom: 12 }}>
-          {/* This is supposed to set the sticky header from the top to the bottom of the table. */}
-          <input
-            type="checkbox"
-            checked={sticky}
-            onChange={(e) => setSticky(e.target.checked)}
-            style={{ marginRight: 12 }}
-          />
+      <Stack gap="500" alignItems="flex-start">
+        {/* This is supposed to set the sticky header from the top to the bottom of the table. */}
+        <Checkbox isSelected={sticky} onChange={setSticky}>
           Sticky header (with max height)
-        </label>
-        <DataTable {...args} maxHeight={sticky ? "400px" : undefined} />
-      </>
+        </Checkbox>
+        <DataTableWithModals
+          {...args}
+          maxHeight={sticky ? "400px" : undefined}
+          onDetailsClick={() => {}}
+        />
+      </Stack>
     );
   },
   args: {
@@ -300,10 +319,11 @@ export const StickyHeader: Story = {
 
 export const ClickableRows: Story = {
   render: (args) => (
-    <DataTable
+    <DataTableWithModals
       {...args}
       isRowClickable
-      onRowClick={(row) => alert(`Clicked row: ${row.name}`)}
+      onRowClick={() => {}} // Just need to pass a function to enable the modal
+      onDetailsClick={() => {}}
     />
   ),
   args: { columns, data },
@@ -312,15 +332,15 @@ export const ClickableRows: Story = {
 export const WithSorting: Story = {
   render: (args) => {
     return (
-      <Stack gap={16}>
-        <div>
-          <h3>Sorting Example</h3>
-          <p>
+      <Stack gap="500" alignItems="flex-start">
+        <Stack gap="300">
+          <Heading size="md">Sorting Example</Heading>
+          <Text>
             Click on column headers to sort. The "Custom" column is not
             sortable.
-          </p>
-        </div>
-        <DataTable {...args} />
+          </Text>
+        </Stack>
+        <DataTableWithModals {...args} onDetailsClick={() => {}} />
       </Stack>
     );
   },
@@ -340,60 +360,52 @@ export const ControlledSorting: Story = {
     });
 
     return (
-      <Stack gap={16}>
-        <div>
-          <h3>Controlled Sorting Example</h3>
-          <p>
-            Current sort: <strong>{sortDescriptor.column}</strong> (
-            {sortDescriptor.direction})
-          </p>
-          <p>
+      <Stack gap="500" alignItems="flex-start">
+        <Stack gap="300">
+          <Heading size="md">Controlled Sorting Example</Heading>
+          <Text>
+            Current sort:{" "}
+            <Text as="span" fontWeight="bold">
+              {sortDescriptor.column}
+            </Text>{" "}
+            ({sortDescriptor.direction})
+          </Text>
+          <Text>
             The sorting state is controlled externally and can be
             programmatically changed.
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <button
-            onClick={() =>
+          </Text>
+        </Stack>
+        <Stack direction="row" gap="300" wrap="wrap">
+          <Button
+            onPress={() =>
               setSortDescriptor({ column: "name", direction: "ascending" })
             }
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
+            variant="outline"
           >
             Sort by Name (A-Z)
-          </button>
-          <button
-            onClick={() =>
+          </Button>
+          <Button
+            onPress={() =>
               setSortDescriptor({ column: "age", direction: "descending" })
             }
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
+            variant="outline"
           >
             Sort by Age (High-Low)
-          </button>
-          <button
-            onClick={() =>
+          </Button>
+          <Button
+            onPress={() =>
               setSortDescriptor({ column: "role", direction: "ascending" })
             }
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
+            variant="outline"
           >
             Sort by Role (A-Z)
-          </button>
-        </div>
-        <DataTable
+          </Button>
+        </Stack>
+        <DataTableWithModals
           {...args}
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
+          onDetailsClick={() => {}}
         />
       </Stack>
     );
@@ -410,21 +422,25 @@ export const SortingWithSearch: Story = {
     const [search, setSearch] = useState("");
 
     return (
-      <Stack gap={16}>
-        <div>
-          <h3>Sorting + Search Example</h3>
-          <p>
+      <Stack gap="500" alignItems="flex-start">
+        <Stack gap="300">
+          <Heading size="md">Sorting + Search Example</Heading>
+          <Text>
             Combine search functionality with sorting. Search results are also
             sortable.
-          </p>
-        </div>
+          </Text>
+        </Stack>
         <TextInput
           value={search}
           onChange={setSearch}
           placeholder="Search and then sort..."
           width="1/3"
         />
-        <DataTable {...args} search={search} />
+        <DataTableWithModals
+          {...args}
+          search={search}
+          onDetailsClick={() => {}}
+        />
       </Stack>
     );
   },
@@ -462,282 +478,136 @@ export const SelectionShowcase: Story = {
     };
 
     return (
-      <Stack gap={20}>
-        <div>
-          <h3>Row Selection Showcase</h3>
-          <p>
+      <Stack gap="300" alignItems="flex-start">
+        <Stack gap="100">
+          <Heading size="md">Row Selection Showcase</Heading>
+          <Text>
             Comprehensive demonstration of all row selection capabilities. Use
             the controls below to test different selection modes, behaviors, and
             interactions.
-          </p>
-        </div>
+          </Text>
+        </Stack>
 
         {/* Controls Section */}
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "8px",
-            border: "1px solid #e9ecef",
-          }}
+        <Stack
+          gap="300"
+          p="500"
+          bg="neutral.2"
+          borderRadius="100"
+          border="1px solid"
+          borderColor="neutral.5"
         >
           {/* Search */}
-          <div style={{ marginBottom: "16px" }}>
-            <h3
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              🔍 Search & Filter
-            </h3>
+          <Stack gap="100" mb="200">
+            <Heading size="sm">🔍 Search & Filter</Heading>
             <TextInput
               value={search}
               onChange={setSearch}
               placeholder="Search to filter rows..."
               width="300px"
             />
-          </div>
+          </Stack>
 
           {/* Selection Settings */}
-          <div style={{ marginBottom: "16px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
-              ✅ Selection Mode
-            </h4>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                marginBottom: "8px",
-              }}
-            >
-              <label
-                htmlFor="selection-mode-select"
-                style={{ fontSize: "14px" }}
-              >
-                Mode:
-              </label>
-              <select
-                id="selection-mode-select"
-                value={selectionMode}
-                onChange={(e) =>
+          <Stack gap="100" mb="200">
+            <Heading size="sm">✅ Selection Mode</Heading>
+            <Stack direction="row" gap="300" alignItems="center">
+              <Text fontSize="sm">Mode:</Text>
+              <Select.Root
+                selectedKey={selectionMode}
+                onSelectionChange={(key) =>
                   handleSelectionModeChange(
-                    e.target.value as "none" | "single" | "multiple"
+                    key as "none" | "single" | "multiple"
                   )
                 }
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                  fontSize: "14px",
-                }}
+                width="200px"
               >
-                <option value="none">None (No Selection)</option>
-                <option value="single">Single Row</option>
-                <option value="multiple">Multiple Rows</option>
-              </select>
+                <Select.Options>
+                  <Select.Option id="none">None (No Selection)</Select.Option>
+                  <Select.Option id="single">Single Row</Select.Option>
+                  <Select.Option id="multiple">Multiple Rows</Select.Option>
+                </Select.Options>
+              </Select.Root>
 
               {selectionMode !== "none" && (
-                <>
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      fontSize: "14px",
-                    }}
+                <Stack gap="100" direction="row">
+                  <Checkbox
+                    isSelected={disallowEmptySelection}
+                    onChange={setDisallowEmptySelection}
                   >
-                    <input
-                      type="checkbox"
-                      checked={disallowEmptySelection}
-                      onChange={(e) =>
-                        setDisallowEmptySelection(e.target.checked)
-                      }
-                      style={{ marginRight: "6px" }}
-                    />
                     Require Selection
-                  </label>
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      fontSize: "14px",
-                    }}
+                  </Checkbox>
+                  <Checkbox
+                    isSelected={isRowClickable}
+                    onChange={setIsRowClickable}
                   >
-                    <input
-                      type="checkbox"
-                      checked={isRowClickable}
-                      onChange={(e) => setIsRowClickable(e.target.checked)}
-                      style={{ marginRight: "6px" }}
-                    />
                     Clickable Rows
-                  </label>
-                </>
+                  </Checkbox>
+                </Stack>
               )}
-            </div>
-
+            </Stack>
             {selectionMode !== "none" && (
-              <div
-                style={{
-                  fontSize: "14px",
-                  color: "#666",
-                  marginBottom: "12px",
-                }}
-              >
-                <strong>Selected:</strong> {selectedCount} row(s) |
-                <strong> IDs:</strong>{" "}
+              <Text fontSize="350" color="neutral.12">
+                <strong>Selected:</strong> {selectedCount} row(s) |{" "}
+                <strong>IDs:</strong>{" "}
                 {Array.from(selectedKeys).join(", ") || "None"}
-              </div>
+              </Text>
             )}
-          </div>
+          </Stack>
 
           {/* Quick Actions */}
           {selectionMode !== "none" && (
-            <div>
-              <h4
-                style={{
-                  margin: "0 0 8px 0",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                }}
-              >
-                🎯 Quick Actions
-              </h4>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                <button
-                  onClick={() => setSelectedKeys(new Set())}
-                  disabled={disallowEmptySelection && selectedCount <= 1}
-                  style={{
-                    padding: "6px 12px",
-                    fontSize: "12px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    backgroundColor: "#fff",
-                    cursor:
-                      disallowEmptySelection && selectedCount <= 1
-                        ? "not-allowed"
-                        : "pointer",
-                    opacity:
-                      disallowEmptySelection && selectedCount <= 1 ? 0.5 : 1,
-                  }}
+            <Stack gap="100">
+              <Heading size="sm">🎯 Quick Actions</Heading>
+              <Stack direction="row" gap="300" wrap="wrap">
+                <Button
+                  onPress={() => setSelectedKeys(new Set())}
+                  isDisabled={disallowEmptySelection && selectedCount <= 1}
+                  size="xs"
+                  variant="outline"
                 >
                   Clear Selection
-                </button>
+                </Button>
 
                 {selectionMode === "multiple" && (
                   <>
-                    <button
-                      onClick={() => setSelectedKeys(new Set(["1", "3", "5"]))}
-                      style={{
-                        padding: "6px 12px",
-                        fontSize: "12px",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        backgroundColor: "#fff",
-                        cursor: "pointer",
-                      }}
+                    <Button
+                      onPress={() => setSelectedKeys(new Set(["1", "3", "5"]))}
+                      size="xs"
+                      variant="outline"
                     >
                       Select Odd Rows
-                    </button>
-                    <button
-                      onClick={() => setSelectedKeys(new Set(["2", "4", "6"]))}
-                      style={{
-                        padding: "6px 12px",
-                        fontSize: "12px",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        backgroundColor: "#fff",
-                        cursor: "pointer",
-                      }}
+                    </Button>
+                    <Button
+                      onPress={() => setSelectedKeys(new Set(["2", "4", "6"]))}
+                      size="xs"
+                      variant="outline"
                     >
                       Select Even Rows
-                    </button>
-                    <button
-                      onClick={() => setSelectedKeys("all")}
-                      style={{
-                        padding: "6px 12px",
-                        fontSize: "12px",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        backgroundColor: "#fff",
-                        cursor: "pointer",
-                      }}
+                    </Button>
+                    <Button
+                      onPress={() => setSelectedKeys("all")}
+                      size="xs"
+                      variant="outline"
                     >
                       Select All
-                    </button>
+                    </Button>
                   </>
                 )}
 
                 {selectionMode === "single" && (
-                  <button
-                    onClick={() => setSelectedKeys(new Set(["1"]))}
-                    style={{
-                      padding: "6px 12px",
-                      fontSize: "12px",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      backgroundColor: "#fff",
-                      cursor: "pointer",
-                    }}
+                  <Button
+                    onPress={() => setSelectedKeys(new Set(["1"]))}
+                    size="xs"
+                    variant="outline"
                   >
                     Select First Row
-                  </button>
+                  </Button>
                 )}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           )}
-        </div>
-
-        {/* Feature Explanation */}
-        <div
-          style={{
-            padding: "12px",
-            backgroundColor: "#eff6ff",
-            border: "1px solid #93c5fd",
-            borderRadius: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <strong>Features Demonstrated:</strong>
-          <ul style={{ margin: "8px 0 0 20px", lineHeight: "1.5" }}>
-            <li>
-              <strong>None Mode:</strong> No selection checkboxes or
-              functionality
-            </li>
-            <li>
-              <strong>Single Mode:</strong> Radio-button behavior, one row at a
-              time
-            </li>
-            <li>
-              <strong>Multiple Mode:</strong> Checkboxes with select all/none in
-              header
-            </li>
-            <li>
-              <strong>Search Integration:</strong> Selection works with filtered
-              results
-            </li>
-            <li>
-              <strong>Required Selection:</strong> Prevent deselecting when
-              enabled
-            </li>
-            <li>
-              <strong>Row Clicking:</strong> Click entire row to select
-              (optional)
-            </li>
-            <li>
-              <strong>Programmatic Control:</strong> Buttons to demonstrate
-              selection API
-            </li>
-          </ul>
-        </div>
-
+        </Stack>
         <DataTable
           columns={sortableColumns}
           data={data}
@@ -767,105 +637,108 @@ export const SelectionShowcase: Story = {
                 }
               : undefined
           }
+          onDetailsClick={() => {}}
         />
+        {/* Feature Explanation */}
+        <Box
+          p="400"
+          bg="blue.5"
+          border="1px solid"
+          borderColor="blue.9"
+          borderRadius="100"
+        >
+          <Stack gap="100">
+            <Text fontWeight="bold" fontSize="300">
+              Features Demonstrated:
+            </Text>
+            <Box as="ul" pl="500" lineHeight="1.5" fontSize="300">
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  None Mode:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  No selection checkboxes or functionality
+                </Text>
+              </Box>
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  Single Mode:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  Radio-button behavior, one row at a time
+                </Text>
+              </Box>
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  Multiple Mode:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  Checkboxes with select all/none in header
+                </Text>
+              </Box>
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  Search Integration:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  Selection works with filtered results
+                </Text>
+              </Box>
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  Required Selection:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  Prevent deselecting when enabled
+                </Text>
+              </Box>
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  Row Clicking:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  Click entire row to select (optional)
+                </Text>
+              </Box>
+              <Box as="li">
+                <Text as="span" fontWeight="bold" fontSize="300">
+                  Programmatic Control:
+                </Text>{" "}
+                <Text as="span" fontSize="300">
+                  Buttons to demonstrate selection API
+                </Text>
+              </Box>
+            </Box>
+          </Stack>
+        </Box>
       </Stack>
     );
   },
   args: {},
 };
 
-// Sample data with longer text for truncation demonstration
-const longTextData: DataTableRowItem[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    age: 30,
-    role: "Senior Software Engineer",
-    class:
-      "This is a very long description that should be truncated when the truncation feature is enabled. It contains multiple words and should demonstrate how the truncation works with ellipsis and hover to show full content.",
-    email: "alice.johnson@company.com",
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    age: 25,
-    role: "Frontend Developer",
-    class:
-      "Another lengthy description that will showcase the truncation functionality. This text is intentionally long to demonstrate how the component handles overflow text with truncation enabled.",
-    email: "bob.smith@company.com",
-  },
-  {
-    id: "3",
-    name: "Carol Williams",
-    age: 28,
-    role: "UX Designer",
-    class:
-      "A comprehensive description that exceeds the normal cell width and needs truncation. When truncated, users can hover to see the full content in a tooltip-like display.",
-    email: "carol.williams@company.com",
-  },
-  {
-    id: "4",
-    name: "David Brown",
-    age: 32,
-    role: "Product Manager",
-    class:
-      "Extended text content that demonstrates the importance of truncation in data tables where space is limited but full content access is still needed via hover interaction.",
-    email: "david.brown@company.com",
-  },
-];
-
-// Columns for truncation demo with longer content
-const truncationColumns: DataTableColumnItem[] = [
-  {
-    id: "name",
-    header: "Name",
-    accessor: (row) => row.name as React.ReactNode,
-  },
-  { id: "age", header: "Age", accessor: (row) => row.age as React.ReactNode },
-  {
-    id: "role",
-    header: "Role",
-    accessor: (row) => row.role as React.ReactNode,
-  },
-  {
-    id: "email",
-    header: "Email",
-    accessor: (row) => row.email as React.ReactNode,
-  },
-  {
-    id: "description",
-    header: "Description",
-    accessor: (row) => row.class as React.ReactNode,
-  },
-];
-
 export const TextTruncation: Story = {
   render: (args) => {
     const [isTruncated, setIsTruncated] = useState(false);
 
     return (
-      <Stack gap={16}>
-        <label
-          style={{ display: "block", marginBottom: 12, alignContent: "center" }}
-        >
-          <input
-            type="checkbox"
-            checked={isTruncated}
-            onChange={(e) => setIsTruncated(e.target.checked)}
-            style={{ marginRight: 12 }}
-          />
+      <Stack gap="500" alignItems="flex-start">
+        <Checkbox isSelected={isTruncated} onChange={setIsTruncated}>
           Enable text truncation
-        </label>
-        <div
-          style={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px",
-            overflow: "hidden",
-            maxWidth: "100%",
-          }}
+        </Checkbox>
+        <Box
+          border="1px solid"
+          borderColor="neutral.6"
+          borderRadius="md"
+          overflow="hidden"
+          maxWidth="100%"
         >
-          <DataTable {...args} isTruncated={isTruncated} />
-        </div>
+          <DataTableWithModals
+            {...args}
+            isTruncated={isTruncated}
+            onDetailsClick={() => {}}
+          />
+        </Box>
       </Stack>
     );
   },
@@ -876,231 +749,10 @@ export const TextTruncation: Story = {
   },
 };
 
-// Enhanced data with nested rows for comprehensive demo
-const comprehensiveData: DataTableRowItem[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    age: 30,
-    role: "Senior Software Engineer",
-    class:
-      "This is a very long description that should be truncated when the truncation feature is enabled. It contains multiple words and should demonstrate how the truncation works with ellipsis and hover to show full content.",
-    email: "alice.johnson@company.com",
-    department: "Engineering",
-    status: "Active",
-    children: [
-      {
-        id: "1-1",
-        name: "Project Alpha",
-        age: 2,
-        role: "Frontend Project",
-        class: "React-based dashboard application",
-        email: "project.alpha@company.com",
-        department: "Engineering",
-        status: "In Progress",
-      },
-      {
-        id: "1-2",
-        name: "Project Beta",
-        age: 1,
-        role: "Backend Project",
-        class: "Node.js API service",
-        email: "project.beta@company.com",
-        department: "Engineering",
-        status: "Planning",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    age: 25,
-    role: "Frontend Developer",
-    class:
-      "Another lengthy description that will showcase the truncation functionality. This text is intentionally long to demonstrate how the component handles overflow text with truncation enabled.",
-    email: "bob.smith@company.com",
-    department: "Engineering",
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Carol Williams",
-    age: 28,
-    role: "UX Designer",
-    class:
-      "A comprehensive description that exceeds the normal cell width and needs truncation. When truncated, users can hover to see the full content in a tooltip-like display.",
-    email: "carol.williams@company.com",
-    department: "Design",
-    status: "Active",
-    children: [
-      {
-        id: "3-1",
-        name: "Design System",
-        age: 3,
-        role: "Component Library",
-        class: "Comprehensive design system with tokens",
-        email: "design.system@company.com",
-        department: "Design",
-        status: "Active",
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "David Brown",
-    age: 32,
-    role: "Product Manager",
-    class:
-      "Extended text content that demonstrates the importance of truncation in data tables where space is limited but full content access is still needed via hover interaction.",
-    email: "david.brown@company.com",
-    department: "Product",
-    status: "Active",
-  },
-  {
-    id: "5",
-    name: "Emma Davis",
-    age: 27,
-    role: "DevOps Engineer",
-    class: "Infrastructure and deployment specialist",
-    email: "emma.davis@company.com",
-    department: "Engineering",
-    status: "On Leave",
-  },
-  {
-    id: "6",
-    name: "Frank Wilson",
-    age: 35,
-    role: "Senior Designer",
-    class: "Creative director for visual design",
-    email: "frank.wilson@company.com",
-    department: "Design",
-    status: "Active",
-  },
-];
-
-// Comprehensive columns with all features
-const comprehensiveColumns: DataTableColumnItem[] = [
-  {
-    id: "name",
-    header: "Name",
-    accessor: (row) => row.name as React.ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "age",
-    header: "Age",
-    accessor: (row) => row.age as React.ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "role",
-    header: "Role",
-    accessor: (row) => row.role as React.ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "email",
-    header: "Email",
-    accessor: (row) => row.email as React.ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "department",
-    header: "Department",
-    accessor: (row) => row.department as React.ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "status",
-    header: "Status",
-    accessor: (row) => row.status as React.ReactNode,
-    isSortable: true,
-    render: ({ value }) => (
-      <span
-        style={{
-          padding: "4px 8px",
-          borderRadius: "12px",
-          fontSize: "12px",
-          fontWeight: "500",
-          backgroundColor:
-            value === "Active"
-              ? "#e6f7ff"
-              : value === "In Progress"
-                ? "#fff7e6"
-                : value === "Planning"
-                  ? "#f6ffed"
-                  : "#f5f5f5",
-          color:
-            value === "Active"
-              ? "#0958d9"
-              : value === "In Progress"
-                ? "#d46b08"
-                : value === "Planning"
-                  ? "#389e0d"
-                  : "#595959",
-        }}
-      >
-        {value as React.ReactNode}
-      </span>
-    ),
-  },
-  {
-    id: "description",
-    header: "Description",
-    accessor: (row) => row.class as React.ReactNode,
-    isSortable: false,
-  },
-];
-
 export const MultilineHeaders: Story = {
   args: {
-    columns: [
-      {
-        id: "name",
-        header: "Employee Full Name",
-        accessor: (row) => row.name as React.ReactNode,
-        isSortable: true,
-        isResizable: true,
-        defaultWidth: 140,
-      },
-      {
-        id: "role",
-        header:
-          "Current Position and Primary Responsibilities within Organization",
-        accessor: (row) => row.role as React.ReactNode,
-        isSortable: true,
-        isResizable: true,
-        defaultWidth: 180,
-      },
-      {
-        id: "department",
-        header: "Department or Business Unit Assignment",
-        accessor: (row) => (row.department || "Engineering") as React.ReactNode,
-        isSortable: true,
-        isResizable: true,
-        defaultWidth: 160,
-      },
-    ],
-    data: [
-      {
-        id: "1",
-        name: "Alice Johnson",
-        role: "Senior Software Engineer",
-        department: "Engineering",
-      },
-      {
-        id: "2",
-        name: "Bob Smith",
-        role: "Frontend Developer",
-        department: "Engineering",
-      },
-      {
-        id: "3",
-        name: "Carol Williams",
-        role: "UX Designer",
-        department: "Design",
-      },
-    ],
+    columns: multilineHeadersColumns,
+    data: multilineHeadersData,
     allowsSorting: true,
     isResizable: true,
   },
@@ -1109,93 +761,57 @@ export const MultilineHeaders: Story = {
 export const WithFooter: Story = {
   render: () => {
     const footerContent = (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "16px",
-          marginTop: "16px",
-        }}
+      <Stack
+        direction="row"
+        justify="space-between"
+        align="center"
+        gap="400"
+        mt="400"
       >
-        <div>
-          <strong>Total: {data.length} items</strong>
-        </div>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            style={{
-              padding: "8px 16px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "#fff",
-              cursor: "pointer",
-            }}
-          >
+        <Text fontWeight="bold">Total: {data.length} items</Text>
+        <Stack direction="row" gap="300" align="center">
+          <Button size="xs" variant="outline">
             Previous
-          </button>
-          <span style={{ padding: "8px 12px" }}>Page 1 of 1</span>
-          <button
-            style={{
-              padding: "8px 16px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "#fff",
-              cursor: "pointer",
-            }}
-          >
+          </Button>
+          <Text px="300">Page 1 of 1</Text>
+          <Button size="xs" variant="outline">
             Next
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Stack>
+      </Stack>
     );
 
     return (
-      <Stack gap={20}>
-        <div>
-          <h2
-            style={{
-              fontSize: "24px",
-              fontWeight: "600",
-              marginBottom: "16px",
-            }}
-          >
-            📄 DataTable with Custom Footer
-          </h2>
-          <p style={{ marginBottom: "16px", color: "#666" }}>
+      <Stack gap="500" alignItems="flex-start">
+        <Stack gap="400">
+          <Heading size="lg">📄 DataTable with Custom Footer</Heading>
+          <Text color="neutral.10">
             This example shows how to add custom footer content like pagination,
             totals, or action buttons.
-          </p>
-        </div>
+          </Text>
+        </Stack>
 
-        <DataTable
+        <DataTableWithModals
           columns={columns}
           data={data}
           allowsSorting={true}
           selectionMode="multiple"
           footer={footerContent}
+          onDetailsClick={() => {}}
         />
 
-        <div
-          style={{
-            marginTop: "16px",
-            padding: "16px",
-            backgroundColor: "#f5f5f5",
-            borderRadius: "8px",
-          }}
-        >
-          <h3
-            style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}
-          >
+        <Box mt="400" p="400" bg="neutral.2" borderRadius="md">
+          <Heading size="sm" mb="300">
             Footer Features:
-          </h3>
-          <ul style={{ margin: 0, paddingLeft: "20px" }}>
-            <li>Custom content via the `footer` prop</li>
-            <li>Consistent styling with table theme</li>
-            <li>Perfect for pagination controls</li>
-            <li>Works with horizontal scrolling</li>
-            <li>Can contain any React component</li>
-          </ul>
-        </div>
+          </Heading>
+          <Box as="ul" pl="500">
+            <Box as="li">Custom content via the `footer` prop</Box>
+            <Box as="li">Consistent styling with table theme</Box>
+            <Box as="li">Perfect for pagination controls</Box>
+            <Box as="li">Works with horizontal scrolling</Box>
+            <Box as="li">Can contain any React component</Box>
+          </Box>
+        </Box>
       </Stack>
     );
   },
@@ -1203,601 +819,98 @@ export const WithFooter: Story = {
 
 export const HorizontalScrolling: Story = {
   render: () => {
-    // Create many columns to force horizontal scrolling
-    const manyColumns: DataTableColumnItem[] = [
-      {
-        id: "name",
-        header: "Full Name",
-        accessor: (row) => row.name as React.ReactNode,
-        minWidth: 150,
-      },
-      {
-        id: "age",
-        header: "Age",
-        accessor: (row) => row.age as React.ReactNode,
-        minWidth: 80,
-      },
-      {
-        id: "role",
-        header: "Role/Position",
-        accessor: (row) => row.role as React.ReactNode,
-        minWidth: 120,
-      },
-      {
-        id: "email",
-        header: "Email Address",
-        accessor: (row) => (row.email || "user@example.com") as React.ReactNode,
-        minWidth: 200,
-      },
-      {
-        id: "department",
-        header: "Department",
-        accessor: (row) => (row.department || "Engineering") as React.ReactNode,
-        minWidth: 150,
-      },
-      {
-        id: "location",
-        header: "Office Location",
-        accessor: (row) =>
-          (row.location || "San Francisco, CA") as React.ReactNode,
-        minWidth: 180,
-      },
-      {
-        id: "phone",
-        header: "Phone Number",
-        accessor: (row) =>
-          (row.phone || "+1 (555) 123-4567") as React.ReactNode,
-        minWidth: 150,
-      },
-      {
-        id: "salary",
-        header: "Annual Salary",
-        accessor: (row) => (row.salary || "$95,000") as React.ReactNode,
-        minWidth: 120,
-      },
-      {
-        id: "startDate",
-        header: "Start Date",
-        accessor: (row) => (row.startDate || "2023-01-15") as React.ReactNode,
-        minWidth: 120,
-      },
-      {
-        id: "manager",
-        header: "Reporting Manager",
-        accessor: (row) => (row.manager || "John Smith") as React.ReactNode,
-        minWidth: 150,
-      },
-      {
-        id: "projects",
-        header: "Active Projects",
-        accessor: (row) =>
-          (row.projects || "Project Alpha, Beta") as React.ReactNode,
-        minWidth: 200,
-      },
-      {
-        id: "skills",
-        header: "Technical Skills",
-        accessor: (row) =>
-          (row.skills || "React, TypeScript, Node.js") as React.ReactNode,
-        minWidth: 250,
-      },
-    ];
-
-    // Create data with wide content
-    const wideData: DataTableRowItem[] = Array.from({ length: 10 }, (_, i) => ({
-      id: `${i + 1}`,
-      name: `Employee Name ${i + 1}`,
-      age: 25 + (i % 15),
-      role: `Senior ${["Developer", "Designer", "Manager", "Analyst"][i % 4]}`,
-      email: `employee${i + 1}@company.com`,
-      department: ["Engineering", "Design", "Marketing", "Sales"][i % 4],
-      location: [
-        "San Francisco, CA",
-        "New York, NY",
-        "London, UK",
-        "Berlin, Germany",
-      ][i % 4],
-      phone: `+1 (555) ${String(123 + i).padStart(3, "0")}-${String(4567 + i).padStart(4, "0")}`,
-      salary: `$${(80000 + i * 5000).toLocaleString()}`,
-      startDate: `202${2 + (i % 2)}-${String((i % 12) + 1).padStart(2, "0")}-15`,
-      manager: ["Alice Johnson", "Bob Smith", "Carol Williams", "David Brown"][
-        i % 4
-      ],
-      projects: [
-        `Project ${String.fromCharCode(65 + (i % 3))}`,
-        `Initiative ${String.fromCharCode(88 + (i % 3))}`,
-      ].join(", "),
-      skills: [
-        "React, TypeScript, Node.js",
-        "Figma, Sketch, Adobe Creative Suite",
-        "Python, Django, PostgreSQL",
-        "Salesforce, HubSpot, Analytics",
-      ][i % 4],
-    }));
-
     return (
-      <Stack gap={20}>
-        <div>
-          <h2
-            style={{
-              fontSize: "24px",
-              fontWeight: "600",
-              marginBottom: "16px",
-            }}
-          >
-            📊 Horizontal Scrolling DataTable
-          </h2>
-          <p style={{ marginBottom: "16px", color: "#666" }}>
+      <Stack gap="500">
+        <Stack gap="300">
+          <Heading size="lg">📊 Horizontal Scrolling DataTable</Heading>
+          <Text color="neutral.10">
             This table has many columns with wide content to demonstrate
             horizontal scrolling. The header remains sticky during horizontal
             scrolling.
-          </p>
-        </div>
+          </Text>
+        </Stack>
 
         {/* Container with fixed width to force horizontal scrolling */}
-        <DataTable
+        <DataTableWithModals
           columns={manyColumns}
           data={wideData}
           isResizable={true}
           allowsSorting={true}
           maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
+          onDetailsClick={() => {}}
           footer={
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                fontSize: "14px",
-              }}
+            <Stack
+              direction="row"
+              justify="space-between"
+              align="center"
+              gap="400"
             >
-              <span>Showing {wideData.length} employees</span>
-              <span>Scroll horizontally to see all columns →</span>
-            </div>
+              <Text>Showing {wideData.length} employees</Text>
+              <Text>Scroll horizontally to see all columns →</Text>
+            </Stack>
           }
         />
 
-        <div
-          style={{
-            marginTop: "16px",
-            padding: "16px",
-            backgroundColor: "#f5f5f5",
-            borderRadius: "8px",
-          }}
-        >
-          <h3
-            style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}
-          >
+        <Box mt="400" p="400" bg="neutral.2" borderRadius="md">
+          <Heading size="sm" mb="300">
             Features Demonstrated:
-          </h3>
-          <ul style={{ margin: 0, paddingLeft: "20px" }}>
-            <li>Horizontal scrolling when columns exceed container width</li>
-            <li>Sticky header that remains visible during horizontal scroll</li>
-            <li>Column resizing with maintained scroll position</li>
-            <li>Row selection maintained during scrolling</li>
-            <li>Sorting functionality with horizontal scroll</li>
-            <li>Custom footer that scrolls horizontally with the table</li>
-          </ul>
-        </div>
+          </Heading>
+          <Box as="ul" pl="500">
+            <Box as="li">
+              Horizontal scrolling when columns exceed container width
+            </Box>
+            <Box as="li">
+              Sticky header that remains visible during horizontal scroll
+            </Box>
+            <Box as="li">Column resizing with maintained scroll position</Box>
+            <Box as="li">Row selection maintained during scrolling</Box>
+            <Box as="li">Sorting functionality with horizontal scroll</Box>
+            <Box as="li">
+              Custom footer that scrolls horizontally with the table
+            </Box>
+          </Box>
+        </Box>
       </Stack>
     );
   },
 };
 
-// Data with flexible nested children - mix of table rows and React content
-const flexibleNestedData: DataTableRowItem[] = [
-  {
-    id: "user-1",
-    name: "Alice Johnson",
-    age: 30,
-    role: "Team Lead",
-    class: "senior",
-    // Traditional nested table rows
-    children: [
-      {
-        id: "user-1-project-1",
-        name: "Project Alpha",
-        age: 6,
-        role: "Web App",
-        class: "active",
-      },
-      {
-        id: "user-1-project-2",
-        name: "Project Beta",
-        age: 3,
-        role: "Mobile App",
-        class: "planning",
-      },
-    ],
-  },
-  {
-    id: "user-2",
-    name: "Bob Smith",
-    age: 28,
-    role: "Developer",
-    class: "mid-level",
-    // React content as children - a detailed profile card
-    children: (
-      <div
-        style={{
-          padding: "20px",
-          backgroundColor: "#f8fafc",
-          borderRadius: "8px",
-          border: "1px solid #e2e8f0",
-          margin: "8px 0",
-        }}
-      >
-        <div style={{ display: "flex", gap: "16px", marginBottom: "12px" }}>
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              backgroundColor: "#3b82f6",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          >
-            BS
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 4px 0", color: "#1e293b" }}>
-              Bob Smith - Developer Profile
-            </h4>
-            <p style={{ margin: "0", color: "#64748b", fontSize: "14px" }}>
-              Specializes in React, TypeScript, and Node.js development
-            </p>
-          </div>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "12px",
-          }}
-        >
-          <div>
-            <strong style={{ color: "#374151" }}>Skills:</strong>
-            <div
-              style={{
-                marginTop: "4px",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "4px",
-              }}
-            >
-              {["React", "TypeScript", "Node.js", "GraphQL"].map((skill) => (
-                <span
-                  key={skill}
-                  style={{
-                    padding: "2px 8px",
-                    backgroundColor: "#dbeafe",
-                    color: "#1e40af",
-                    borderRadius: "12px",
-                    fontSize: "12px",
-                  }}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div>
-            <strong style={{ color: "#374151" }}>Contact:</strong>
-            <p
-              style={{
-                margin: "4px 0 0 0",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
-              📧 bob.smith@company.com
-              <br />
-              📱 +1 (555) 123-4567
-            </p>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "user-3",
-    name: "Carol Williams",
-    age: 35,
-    role: "Designer",
-    class: "senior",
-    // Interactive form as children
-    children: (
-      <div
-        style={{
-          padding: "20px",
-          backgroundColor: "#fefefe",
-          border: "1px solid #e5e7eb",
-          borderRadius: "8px",
-          margin: "8px 0",
-        }}
-      >
-        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>
-          Update Designer Settings
-        </h4>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "16px",
-          }}
-        >
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "4px",
-                fontWeight: "500",
-                color: "#374151",
-              }}
-            >
-              Design Tool Preference:
-            </label>
-            <select
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: "6px",
-                backgroundColor: "white",
-              }}
-            >
-              <option>Figma</option>
-              <option>Sketch</option>
-              <option>Adobe XD</option>
-            </select>
-          </div>
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "4px",
-                fontWeight: "500",
-                color: "#374151",
-              }}
-            >
-              Availability:
-            </label>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                <input
-                  type="radio"
-                  name="availability"
-                  value="full-time"
-                  defaultChecked
-                />
-                Full-time
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                <input type="radio" name="availability" value="part-time" />
-                Part-time
-              </label>
-            </div>
-          </div>
-        </div>
-        <div style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
-          <button
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Save Changes
-          </button>
-          <button
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "transparent",
-              color: "#6b7280",
-              border: "1px solid #d1d5db",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "user-4",
-    name: "David Chen",
-    age: 29,
-    role: "Data Analyst",
-    class: "mid-level",
-    // Chart/visualization as children
-    children: (
-      <div
-        style={{
-          padding: "20px",
-          backgroundColor: "#f9fafb",
-          border: "1px solid #e5e7eb",
-          borderRadius: "8px",
-          margin: "8px 0",
-        }}
-      >
-        <h4 style={{ margin: "0 0 16px 0", color: "#111827" }}>
-          Data Analytics Dashboard
-        </h4>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "16px",
-          }}
-        >
-          <div
-            style={{
-              padding: "16px",
-              backgroundColor: "white",
-              borderRadius: "6px",
-              border: "1px solid #e5e7eb",
-              textAlign: "center",
-            }}
-          >
-            <div
-              style={{ fontSize: "24px", fontWeight: "bold", color: "#059669" }}
-            >
-              847
-            </div>
-            <div
-              style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
-            >
-              Reports Generated
-            </div>
-          </div>
-          <div
-            style={{
-              padding: "16px",
-              backgroundColor: "white",
-              borderRadius: "6px",
-              border: "1px solid #e5e7eb",
-              textAlign: "center",
-            }}
-          >
-            <div
-              style={{ fontSize: "24px", fontWeight: "bold", color: "#dc2626" }}
-            >
-              23
-            </div>
-            <div
-              style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
-            >
-              Data Issues Found
-            </div>
-          </div>
-          <div
-            style={{
-              padding: "16px",
-              backgroundColor: "white",
-              borderRadius: "6px",
-              border: "1px solid #e5e7eb",
-              textAlign: "center",
-            }}
-          >
-            <div
-              style={{ fontSize: "24px", fontWeight: "bold", color: "#2563eb" }}
-            >
-              156
-            </div>
-            <div
-              style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
-            >
-              Active Datasets
-            </div>
-          </div>
-        </div>
-        <div style={{ marginTop: "16px" }}>
-          <div
-            style={{
-              fontSize: "14px",
-              fontWeight: "500",
-              marginBottom: "8px",
-              color: "#374151",
-            }}
-          >
-            Recent Activity:
-          </div>
-          <div
-            style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.5" }}
-          >
-            • Completed quarterly sales analysis
-            <br />
-            • Updated customer segmentation model
-            <br />
-            • Fixed data pipeline for user metrics
-            <br />• Created executive dashboard for Q4 review
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "user-5",
-    name: "Emma Rodriguez",
-    age: 26,
-    role: "QA Engineer",
-    class: "junior",
-    // Simple text content
-    children: (
-      <div
-        style={{
-          padding: "16px",
-          backgroundColor: "#fff7ed",
-          border: "1px solid #fed7aa",
-          borderRadius: "6px",
-          margin: "8px 0",
-        }}
-      >
-        <p style={{ margin: "0", color: "#9a3412", fontSize: "14px" }}>
-          🧪 <strong>Testing Focus:</strong> Currently working on automated
-          testing for the new checkout flow. Planning to implement end-to-end
-          tests using Playwright and enhance unit test coverage for payment
-          components.
-        </p>
-      </div>
-    ),
-  },
-];
-
 export const FlexibleNestedChildren: Story = {
   render: (args) => {
     return (
-      <Stack gap={16}>
-        <div>
-          <h3>Flexible Nested Children</h3>
-          <p>
+      <Stack gap="400">
+        <Stack gap="300">
+          <Heading size="md">Flexible Nested Children</Heading>
+          <Text>
             Demonstrates the new flexible children system where nested content
             can be either:
-          </p>
-          <ul style={{ marginLeft: "20px", lineHeight: "1.6" }}>
-            <li>
-              <strong>Table rows</strong> - Traditional nested table structure
-              (Alice's projects)
-            </li>
-            <li>
-              <strong>React components</strong> - Rich interactive content like
-              profile cards, forms, charts
-            </li>
-            <li>
-              <strong>Simple content</strong> - Text, alerts, or any other React
-              elements
-            </li>
-          </ul>
-          <p>
+          </Text>
+          <Box as="ul" ml="500" lineHeight="1.6">
+            <Box as="li">
+              <Text as="span" fontWeight="bold">
+                Table rows
+              </Text>{" "}
+              - Traditional nested table structure (Alice's projects)
+            </Box>
+            <Box as="li">
+              <Text as="span" fontWeight="bold">
+                React components
+              </Text>{" "}
+              - Rich interactive content like profile cards, forms, charts
+            </Box>
+            <Box as="li">
+              <Text as="span" fontWeight="bold">
+                Simple content
+              </Text>{" "}
+              - Text, alerts, or any other React elements
+            </Box>
+          </Box>
+          <Text>
             Click the expand buttons to see different types of nested content.
-          </p>
-        </div>
-        <DataTable {...args} />
+          </Text>
+        </Stack>
+        <DataTableWithModals {...args} onDetailsClick={() => {}} />
       </Stack>
     );
   },
@@ -1835,29 +948,30 @@ export const FlexibleNestedChildren: Story = {
 export const NoNestedContent: Story = {
   render: (args) => {
     return (
-      <Stack gap={16}>
-        <div>
-          <h3>No Nested Content (Default Behavior)</h3>
-          <p>
-            When no <code>nestedKey</code> is provided, the component ignores
-            any nested properties and only renders parent rows. This is the new
-            default behavior.
-          </p>
-          <div
-            style={{
-              padding: "12px",
-              backgroundColor: "#fef3c7",
-              border: "1px solid #fbbf24",
-              borderRadius: "6px",
-              fontSize: "14px",
-            }}
+      <Stack gap="400">
+        <Stack gap="300">
+          <Heading size="md">No Nested Content (Default Behavior)</Heading>
+          <Text>
+            When no <Text as="code">nestedKey</Text> is provided, the component
+            ignores any nested properties and only renders parent rows. This is
+            the new default behavior.
+          </Text>
+          <Box
+            p="300"
+            bg="warning.2"
+            border="1px solid"
+            borderColor="warning.6"
+            borderRadius="150"
+            fontSize="350"
           >
-            <strong>Note:</strong> The data below contains "children"
-            properties, but they won't be rendered without explicitly setting{" "}
-            <code>nestedKey="children"</code>.
-          </div>
-        </div>
-        <DataTable {...args} />
+            <Text>
+              <Text as="strong">Note:</Text> The data below contains "children"
+              properties, but they won't be rendered without explicitly setting{" "}
+              <Text as="code">nestedKey="children"</Text>.
+            </Text>
+          </Box>
+        </Stack>
+        <DataTableWithModals {...args} onDetailsClick={() => {}} />
       </Stack>
     );
   },
@@ -1925,144 +1039,32 @@ export const NoNestedContent: Story = {
   },
 };
 
-// Data demonstrating flexible nestedKey usage
-const fetchData = [
-  {
-    id: "galaxy-1",
-    name: "Milky Way",
-    type: "Spiral Galaxy",
-    distance: "0 ly",
-    // Using "sky" as the nested key
-    sky: [
-      {
-        id: "star-1",
-        species: "Alpha Centauri",
-        genus: "Star System",
-        distance: "4.37 ly",
-        area: 12.5,
-      },
-      {
-        id: "star-2",
-        species: "Proxima Centauri",
-        genus: "Red Dwarf",
-        distance: "4.24 ly",
-        area: 240,
-      },
-      {
-        id: "star-3",
-        species: "Barnard's Star",
-        genus: "Red Dwarf",
-        distance: "5.96 ly",
-        area: 17.5,
-      },
-    ],
-  },
-  {
-    id: "galaxy-2",
-    name: "Andromeda",
-    type: "Spiral Galaxy",
-    distance: "2.537M ly",
-    // Using "sky" as the nested key with React content
-    sky: [
-      {
-        id: "star-1",
-        species: "Alpha Centauri",
-        genus: "Star System",
-        distance: "4.37 ly",
-        area: 20.45,
-      },
-      {
-        id: "star-2",
-        species: "Proxima Centauri",
-        genus: "Red Dwarf",
-        distance: "4.24 ly",
-        area: 400.05,
-      },
-      {
-        id: "star-3",
-        species: "Barnard's Star",
-        genus: "Red Dwarf",
-        distance: "5.96 ly",
-        area: 102.0,
-      },
-    ],
-  },
-  {
-    id: "sunny-2",
-    name: "Abrakadabra",
-    type: "Spiral Galaxy 2",
-    distance: "20.537M ly",
-  },
-];
-
-// Define columns for the nested table
-const nestedTableColumns: DataTableColumnItem<Record<string, unknown>>[] = [
-  {
-    id: "species",
-    header: "Species",
-    accessor: (row: Record<string, unknown>) => row.species as React.ReactNode,
-  },
-  {
-    id: "genus",
-    header: "Genus",
-    accessor: (row: Record<string, unknown>) => row.genus as React.ReactNode,
-  },
-  {
-    id: "distance",
-    header: "Distance",
-    accessor: (row: Record<string, unknown>) => row.distance as React.ReactNode,
-  },
-  {
-    id: "area",
-    header: "Area",
-    accessor: (row: Record<string, unknown>) => row.area as React.ReactNode,
-  },
-];
-
-// Create nested table data with proper React components
-const modifiedFetchedData = fetchData.map((item) => ({
-  ...item,
-  sky: item.sky && (
-    <div style={{ padding: "16px" }}>
-      <h4 style={{ margin: "0 0 12px 0", color: "#374151" }}>
-        {item.name} Details
-      </h4>
-      <DataTable
-        columns={nestedTableColumns}
-        data={item.sky}
-        allowsSorting={true}
-        isResizable={true}
-        // No nestedKey needed for this inner table since sky data doesn't have further nesting
-      />
-    </div>
-  ),
-}));
-
 export const NestedTable: Story = {
   render: (args) => {
     return (
-      <Stack gap={16}>
-        <div>
-          <h3>Tables Within Tables</h3>
-          <p>
+      <Stack gap="400">
+        <Stack gap="300">
+          <Heading size="md">Tables Within Tables</Heading>
+          <Text>
             This example demonstrates nested DataTable components where each
             parent row can expand to show a complete DataTable with its own
             data, columns, and functionality.
-          </p>
-          <div
-            style={{
-              padding: "12px",
-              backgroundColor: "#eff6ff",
-              border: "1px solid #93c5fd",
-              borderRadius: "6px",
-              fontSize: "14px",
-            }}
+          </Text>
+          <Box
+            p="300"
+            bg="info.2"
+            border="1px solid"
+            borderColor="info.6"
+            borderRadius="150"
+            fontSize="350"
           >
-            <strong>Usage:</strong> Nest DataTable components as React content
-            using custom nestedKey
-          </div>
-        </div>
-        <DataTable {...args} />
+            <Text>
+              <Text as="strong">Usage:</Text> Nest DataTable components as React
+              content using custom nestedKey
+            </Text>
+          </Box>
+        </Stack>
+        <DataTableWithModals {...args} onDetailsClick={() => {}} />
       </Stack>
     );
   },
@@ -2094,18 +1096,6 @@ export const NestedTable: Story = {
 
 export const AllFeatures: Story = {
   render: () => {
-    const [modalState, setModalState] = useState<{
-      isOpen: boolean;
-      row?: DataTableRowItem;
-    }>({
-      isOpen: false,
-    });
-    const [rowClickModalState, setRowClickModalState] = useState<{
-      isOpen: boolean;
-      row?: DataTableRowItem;
-    }>({
-      isOpen: false,
-    });
     // Feature toggles
     const [search, setSearch] = useState("");
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["1"]));
@@ -2135,72 +1125,22 @@ export const AllFeatures: Story = {
 
     const allColumns = comprehensiveColumns.map((col) => col.id);
 
-    // Define columns for the nested table
-    const nestedComprehensiveTableColumns: DataTableColumnItem[] = [
-      {
-        id: "id",
-        header: "id",
-        accessor: (row: Record<string, unknown>) => row.id as React.ReactNode,
-      },
-      {
-        id: "name",
-        header: "Name",
-        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
-      },
-      {
-        id: "age",
-        header: "Age",
-        accessor: (row: Record<string, unknown>) => row.age as React.ReactNode,
-      },
-      {
-        id: "role",
-        header: "Role",
-        accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
-      },
-      {
-        id: "class",
-        header: "Class",
-        accessor: (row: Record<string, unknown>) =>
-          row.class as React.ReactNode,
-      },
-      {
-        id: "email",
-        header: "Email",
-        accessor: (row: Record<string, unknown>) =>
-          row.email as React.ReactNode,
-      },
-      {
-        id: "department",
-        header: "Department",
-        accessor: (row: Record<string, unknown>) =>
-          row.department as React.ReactNode,
-      },
-      {
-        id: "status",
-        header: "Status",
-        accessor: (row: Record<string, unknown>) =>
-          row.status as React.ReactNode,
-      },
-    ];
-
     // Create nested table data with proper React components
     const modifiedComprehensiveData = comprehensiveData.map((item) => ({
       ...item,
       children: item.children && (
-        <div style={{ padding: "16px" }}>
-          <h4 style={{ margin: "0 0 12px 0", color: "#374151" }}>
+        <Box p="400">
+          <Heading size="sm" mb="300" color="neutral.12">
             {item.name as React.ReactNode} Details
-          </h4>
-          <DataTable
+          </Heading>
+          <DataTableWithModals
             columns={nestedComprehensiveTableColumns}
             data={item.children as DataTableRowItem[]}
             allowsSorting={true}
             isResizable={true}
-            onDetailsClick={(row) => {
-              setModalState({ isOpen: true, row });
-            }}
+            onDetailsClick={() => {}}
           />
-        </div>
+        </Box>
       ),
     }));
 
@@ -2213,337 +1153,263 @@ export const AllFeatures: Story = {
     };
 
     const selectedCount = Array.from(selectedKeys).length;
-    const buttonStyle = {
-      padding: "6px 12px",
-      fontSize: "12px",
-      border: "1px solid #ccc",
-      borderRadius: "4px",
-      backgroundColor: "#fff",
-    };
 
     return (
-      <Stack gap={20}>
-        <div>
-          <h2
-            style={{ margin: "0 0 8px 0", fontSize: "24px", fontWeight: "600" }}
-          >
-            🚀 DataTable - All Features Showcase
-          </h2>
-          <p style={{ margin: "0 0 16px 0", color: "#666", fontSize: "16px" }}>
+      <Stack gap="500">
+        <Stack gap="300">
+          <Heading size="lg">🚀 DataTable - All Features Showcase</Heading>
+          <Text color="neutral.10" fontSize="400">
             Comprehensive demo showcasing all DataTable capabilities. Toggle
             features below to see how they work together.
-          </p>
-        </div>
+          </Text>
+        </Stack>
 
         {/* Controls Section */}
-        <div
-          style={{
-            padding: "20px",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "8px",
-            border: "1px solid #e9ecef",
-          }}
+        <Box
+          p="500"
+          bg="neutral.2"
+          borderRadius="200"
+          border="1px solid"
+          borderColor="neutral.6"
         >
           {/* Search */}
-          <div style={{ marginBottom: "20px" }}>
-            <h3
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
+          <Box mb="500">
+            <Heading size="sm" mb="200" fontSize="350" fontWeight="600">
               🔍 Search & Filter
-            </h3>
+            </Heading>
             <TextInput
               value={search}
               onChange={setSearch}
               placeholder="Search across all columns..."
               width="300px"
             />
-          </div>
+          </Box>
 
           {/* Column Visibility */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
+          <Box mb="500">
+            <Heading size="sm" mb="200" fontSize="350" fontWeight="600">
               👁️ Column Visibility
-            </h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+            </Heading>
+            <Flex flexWrap="wrap" gap="300">
               {allColumns.map((colId) => (
-                <label
+                <Text
                   key={colId}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "14px",
-                  }}
+                  as="label"
+                  display="flex"
+                  alignItems="center"
+                  fontSize="350"
+                  gap="100"
                 >
-                  <input
-                    type="checkbox"
-                    checked={visibleColumns.includes(colId)}
+                  <Checkbox
+                    isSelected={visibleColumns.includes(colId)}
                     onChange={() => handleColumnToggle(colId)}
-                    style={{ marginRight: "6px" }}
                   />
                   {colId.charAt(0).toUpperCase() + colId.slice(1)}
-                </label>
+                </Text>
               ))}
-            </div>
-          </div>
+            </Flex>
+          </Box>
 
           {/* Table Settings */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
+          <Box marginBottom="500">
+            <Heading
+              as="h4"
+              size="lg"
+              marginBottom="200"
+              fontSize="350"
+              fontWeight="600"
             >
               ⚙️ Table Settings
-            </h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
+            </Heading>
+            <Flex flexWrap="wrap" gap="400">
+              <Text
+                as="label"
+                display="flex"
+                alignItems="center"
+                fontSize="350"
+                gap="100"
               >
-                <input
-                  type="checkbox"
-                  checked={isResizable}
-                  onChange={(e) => setisResizable(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
+                <Checkbox isSelected={isResizable} onChange={setisResizable} />
                 Resizable Columns
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
+              </Text>
+              <Text
+                as="label"
+                display="flex"
+                alignItems="center"
+                fontSize="350"
+                gap="100"
               >
-                <input
-                  type="checkbox"
-                  checked={allowsSorting}
-                  onChange={(e) => setAllowsSorting(e.target.checked)}
-                  style={{ marginRight: "6px" }}
+                <Checkbox
+                  isSelected={allowsSorting}
+                  onChange={setAllowsSorting}
                 />
                 Sorting
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
+              </Text>
+              <Text
+                as="label"
+                display="flex"
+                alignItems="center"
+                fontSize="350"
+                gap="100"
               >
-                <input
-                  type="checkbox"
-                  checked={isRowClickable}
-                  onChange={(e) => setIsRowClickable(e.target.checked)}
-                  style={{ marginRight: "6px" }}
+                <Checkbox
+                  isSelected={isRowClickable}
+                  onChange={setIsRowClickable}
                 />
                 Clickable Rows
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
+              </Text>
+              <Text
+                as="label"
+                display="flex"
+                alignItems="center"
+                fontSize="350"
+                gap="100"
               >
-                <input
-                  type="checkbox"
-                  checked={stickyHeader}
-                  onChange={(e) => setStickyHeader(e.target.checked)}
-                  style={{ marginRight: "6px" }}
+                <Checkbox
+                  isSelected={stickyHeader}
+                  onChange={setStickyHeader}
                 />
                 Sticky Header
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
+              </Text>
+              <Text
+                as="label"
+                display="flex"
+                alignItems="center"
+                fontSize="350"
+                gap="100"
               >
-                <input
-                  type="checkbox"
-                  checked={isTruncated}
-                  onChange={(e) => setIsTruncated(e.target.checked)}
-                  style={{ marginRight: "6px" }}
-                />
+                <Checkbox isSelected={isTruncated} onChange={setIsTruncated} />
                 Text Truncation
-              </label>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "14px",
-                }}
+              </Text>
+              <Text
+                as="label"
+                display="flex"
+                alignItems="center"
+                fontSize="350"
+                gap="100"
               >
-                <input
-                  type="checkbox"
-                  checked={density === "condensed"}
-                  onChange={(e) =>
-                    setDensity(e.target.checked ? "condensed" : "default")
+                <Checkbox
+                  isSelected={density === "condensed"}
+                  onChange={(checked) =>
+                    setDensity(checked ? "condensed" : "default")
                   }
-                  style={{ marginRight: "6px" }}
                 />
                 Condensed Mode
-              </label>
-            </div>
-          </div>
+              </Text>
+            </Flex>
+          </Box>
 
           {/* Selection Settings */}
-          <div style={{ marginBottom: "20px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
+          <Box marginBottom="500">
+            <Heading
+              as="h4"
+              size="lg"
+              marginBottom="200"
+              fontSize="350"
+              fontWeight="600"
             >
               ✅ Selection Settings
-            </h4>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                marginBottom: "8px",
-              }}
-            >
-              <label
-                htmlFor="all-features-selection-mode"
-                style={{ fontSize: "14px" }}
-              >
-                Selection Mode:
-              </label>
-              <select
-                id="all-features-selection-mode"
-                value={selectionMode}
-                onChange={(e) =>
-                  setSelectionMode(
-                    e.target.value as "none" | "single" | "multiple"
-                  )
+            </Heading>
+            <Flex alignItems="center" gap="400" marginBottom="200">
+              <Text fontSize="350">Selection Mode:</Text>
+              <Select.Root
+                selectedKey={selectionMode}
+                onSelectionChange={(key) =>
+                  setSelectionMode(key as "none" | "single" | "multiple")
                 }
-                style={{
-                  padding: "4px 8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                }}
+                size="sm"
               >
-                <option value="none">None</option>
-                <option value="single">Single</option>
-                <option value="multiple">Multiple</option>
-              </select>
+                <Select.Options>
+                  <Select.Option id="none">None</Select.Option>
+                  <Select.Option id="single">Single</Select.Option>
+                  <Select.Option id="multiple">Multiple</Select.Option>
+                </Select.Options>
+              </Select.Root>
               {selectionMode !== "none" && (
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "14px",
-                  }}
+                <Text
+                  as="label"
+                  display="flex"
+                  alignItems="center"
+                  fontSize="350"
+                  gap="100"
                 >
-                  <input
-                    type="checkbox"
-                    checked={disallowEmptySelection}
-                    onChange={(e) =>
-                      setDisallowEmptySelection(e.target.checked)
-                    }
-                    style={{ marginRight: "6px" }}
+                  <Checkbox
+                    isSelected={disallowEmptySelection}
+                    onChange={setDisallowEmptySelection}
                   />
                   Require Selection
-                </label>
+                </Text>
               )}
-            </div>
+            </Flex>
             {selectionMode !== "none" && (
-              <div style={{ fontSize: "14px", color: "#666" }}>
-                <strong>Selected:</strong> {selectedCount} row(s) |
-                <strong> IDs:</strong>{" "}
+              <Text fontSize="350" color="neutral.9">
+                <Text as="span" fontWeight="600">
+                  Selected:
+                </Text>{" "}
+                {selectedCount} row(s) |{" "}
+                <Text as="span" fontWeight="600">
+                  IDs:
+                </Text>{" "}
                 {Array.from(selectedKeys).join(", ") || "None"}
-              </div>
+              </Text>
             )}
-          </div>
+          </Box>
 
           {/* Quick Actions */}
-          <div>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
+          <Box>
+            <Heading
+              as="h4"
+              size="lg"
+              marginBottom="200"
+              fontSize="350"
+              fontWeight="600"
             >
               🎯 Quick Actions
-            </h4>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              <button
-                onClick={() => setSelectedKeys(new Set())}
-                disabled={selectionMode === "none"}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor: "#fff",
-                  cursor: selectionMode === "none" ? "not-allowed" : "pointer",
-                  opacity: selectionMode === "none" ? 0.5 : 1,
-                }}
+            </Heading>
+            <Flex gap="200" flexWrap="wrap">
+              <Button
+                onPress={() => setSelectedKeys(new Set())}
+                isDisabled={selectionMode === "none"}
+                size="xs"
+                variant="outline"
               >
                 Clear Selection
-              </button>
-              <button
-                onClick={() => setVisibleColumns(allColumns)}
-                style={{
-                  ...buttonStyle,
-                  cursor: "pointer",
-                }}
+              </Button>
+              <Button
+                onPress={() => setVisibleColumns(allColumns)}
+                size="xs"
+                variant="outline"
               >
                 Show All Columns
-              </button>
-              <button
-                onClick={() => setVisibleColumns(["name", "role", "status"])}
-                style={{
-                  ...buttonStyle,
-                  cursor: "pointer",
-                }}
+              </Button>
+              <Button
+                onPress={() => setVisibleColumns(["name", "role", "status"])}
+                size="xs"
+                variant="outline"
               >
                 Minimal View
-              </button>
-              <button
-                onClick={() => setSearch("Engineer")}
-                style={{
-                  ...buttonStyle,
-                  cursor: "pointer",
-                }}
+              </Button>
+              <Button
+                onPress={() => setSearch("Engineer")}
+                size="xs"
+                variant="outline"
               >
                 Search "Engineer"
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </Flex>
+          </Box>
+        </Box>
 
         {/* Data Table */}
-        <div
-          style={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            overflow: "hidden",
-            maxHeight: stickyHeader ? "400px" : "none",
-            overflowY: stickyHeader ? "auto" : "visible",
-          }}
+        <Box
+          border="1px solid"
+          borderColor="neutral.4"
+          borderRadius="200"
+          overflow="hidden"
+          maxHeight={stickyHeader ? "400px" : "none"}
+          overflowY={stickyHeader ? "auto" : "visible"}
         >
-          <DataTable
+          <DataTableWithModals
             columns={comprehensiveColumns}
             data={modifiedComprehensiveData}
             visibleColumns={visibleColumns}
@@ -2561,93 +1427,67 @@ export const AllFeatures: Story = {
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            onRowClick={(row) => {
+            onRowClick={() => {
               console.log("row clicked");
-              setRowClickModalState({ isOpen: true, row });
             }}
-            onDetailsClick={(row) => {
+            onDetailsClick={() => {
               console.log("details clicked");
-              setModalState({ isOpen: true, row });
             }}
           />
-        </div>
-        <InfoModal
-          key="details"
-          isOpen={modalState.isOpen}
-          onClose={() => setModalState({ isOpen: false, row: undefined })}
-          title={`${modalState?.row?.name}'s Details`}
-        >
-          {modalState?.row &&
-            Object.entries(modalState.row!)
-              .filter(([k]) => !["id", "children"].includes(k))
-              .map(([k, v]) => <div>{`${k}: ${v}`}</div>)}
-        </InfoModal>
-        <InfoModal
-          key="row-click"
-          isOpen={rowClickModalState.isOpen}
-          onClose={() =>
-            setRowClickModalState({ isOpen: false, row: undefined })
-          }
-          title={`🎉🎉You Clicked ${rowClickModalState?.row?.name}'s Row🎉🎉`}
-        >
-          <></>
-        </InfoModal>
+        </Box>
         {/* Feature Information */}
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f0f8ff",
-            borderRadius: "8px",
-            border: "1px solid #b3d9ff",
-            fontSize: "14px",
-          }}
+        <Box
+          p="400"
+          bg="info.2"
+          borderRadius="200"
+          border="1px solid"
+          borderColor="info.4"
+          fontSize="350"
         >
-          <h4
-            style={{
-              margin: "0 0 12px 0",
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
+          <Heading
+            as="h4"
+            size="lg"
+            marginBottom="300"
+            fontSize="400"
+            fontWeight="600"
           >
             💡 Features Demonstrated
-          </h4>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "12px",
-            }}
+          </Heading>
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(auto-fit, minmax(250px, 1fr))"
+            gap="300"
           >
-            <div>
-              <strong>✨ Core Features:</strong>
-              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-                <li>Column visibility management</li>
-                <li>Resizable columns</li>
-                <li>Search with highlighting</li>
-                <li>Sorting (controlled)</li>
-              </ul>
-            </div>
-            <div>
-              <strong>🎯 Selection:</strong>
-              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-                <li>Single/Multiple selection modes</li>
-                <li>Required selection option</li>
-                <li>Programmatic selection control</li>
-              </ul>
-            </div>
-            <div>
-              <strong>🚀 Advanced:</strong>
-              <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-                <li>Nested rows with expand/collapse</li>
-                <li>Custom cell rendering (Status badges)</li>
-                <li>Text truncation with hover</li>
-                <li>Sticky headers</li>
-                <li>Density options</li>
-                <li>Clickable rows</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+            <Box>
+              <Text fontWeight="600">✨ Core Features:</Text>
+              <Box as="ul" marginLeft="400" paddingLeft="0" marginTop="100">
+                <Text as="li">Column visibility management</Text>
+                <Text as="li">Resizable columns</Text>
+                <Text as="li">Search with highlighting</Text>
+                <Text as="li">Sorting (controlled)</Text>
+              </Box>
+            </Box>
+            <Box>
+              <Text fontWeight="600">🎯 Selection:</Text>
+              <Box as="ul" marginLeft="400" paddingLeft="0" marginTop="100">
+                <Text as="li">Single/Multiple selection modes</Text>
+                <Text as="li">Required selection option</Text>
+                <Text as="li">Programmatic selection control</Text>
+              </Box>
+            </Box>
+            <Box>
+              <Text fontWeight="600">🚀 Advanced:</Text>
+              <Box as="ul" marginLeft="400" paddingLeft="0" marginTop="100">
+                <Text as="li">Nested rows with expand/collapse</Text>
+                <Text as="li">Custom cell rendering (Status badges)</Text>
+                <Text as="li">Text truncation with hover</Text>
+                <Text as="li">Sticky headers</Text>
+                <Text as="li">Density options</Text>
+                <Text as="li">Clickable rows</Text>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       </Stack>
     );
   },
@@ -2684,112 +1524,89 @@ export const DisabledRowsShowcase: Story = {
     };
 
     return (
-      <Stack gap={20}>
-        <div>
-          <h3>Disabled Rows Showcase</h3>
-          <p>
+      <Stack gap="500">
+        <Stack gap="300">
+          <Heading size="lg">Disabled Rows Showcase</Heading>
+          <Text color="neutral.10" fontSize="400">
             Demonstration of disabled row functionality. Disabled rows cannot be
             selected or clicked, and show visual feedback when interactions are
             attempted.
-          </p>
-        </div>
+          </Text>
+        </Stack>
 
         {/* Controls */}
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "8px",
-            border: "1px solid #e9ecef",
-          }}
+        <Box
+          p="400"
+          bg="neutral.2"
+          borderRadius="200"
+          border="1px solid"
+          borderColor="neutral.4"
         >
-          <h4 style={{ margin: "0 0 12px 0" }}>Controls</h4>
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Heading as="h4" size="lg" marginBottom="300">
+            Controls
+          </Heading>
+          <Flex gap="300" flexWrap="wrap">
             {data.map((row) => (
-              <button
+              <Button
                 key={row.id}
-                onClick={() => toggleDisabled(row.id)}
-                style={{
-                  padding: "4px 8px",
-                  fontSize: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor:
-                    disabledKeys !== "all" && disabledKeys.has(row.id)
-                      ? "#ffcccc"
-                      : "#fff",
-                  cursor: "pointer",
-                }}
+                onPress={() => toggleDisabled(row.id)}
+                size="xs"
+                variant="outline"
+                bg={
+                  disabledKeys !== "all" && disabledKeys.has(row.id)
+                    ? "critical.3"
+                    : "bg"
+                }
               >
                 {disabledKeys !== "all" && disabledKeys.has(row.id)
                   ? "Enable"
                   : "Disable"}{" "}
                 {row.name as React.ReactNode}
-              </button>
+              </Button>
             ))}
-          </div>
+          </Flex>
 
-          <div style={{ marginTop: "12px" }}>
-            <button
-              onClick={() => setDisabledKeys("all")}
-              style={{
-                padding: "6px 12px",
-                fontSize: "12px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                backgroundColor: disabledKeys === "all" ? "#ffcccc" : "#fff",
-                cursor: "pointer",
-                marginRight: "8px",
-              }}
+          <Flex marginTop="300" gap="200">
+            <Button
+              onPress={() => setDisabledKeys("all")}
+              size="xs"
+              variant="outline"
+              bg={disabledKeys === "all" ? "critical.3" : "bg"}
             >
               Disable All
-            </button>
-            <button
-              onClick={() => setDisabledKeys(new Set())}
-              style={{
-                padding: "6px 12px",
-                fontSize: "12px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                backgroundColor: "#fff",
-                cursor: "pointer",
-              }}
+            </Button>
+            <Button
+              onPress={() => setDisabledKeys(new Set())}
+              size="xs"
+              variant="outline"
             >
               Enable All
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Flex>
+        </Box>
 
         {/* Action Log */}
         {rowActionLog.length > 0 && (
-          <div
-            style={{
-              padding: "12px",
-              backgroundColor: "#fff3cd",
-              border: "1px solid #ffeaa7",
-              borderRadius: "6px",
-            }}
+          <Box
+            p="300"
+            bg="warning.2"
+            border="1px solid"
+            borderColor="warning.4"
+            borderRadius="150"
           >
-            <h5 style={{ margin: "0 0 8px 0", color: "#856404" }}>
+            <Heading as="h5" size="md" marginBottom="200" color="warning.11">
               🚫 Disabled Row Interactions Log
-            </h5>
+            </Heading>
             {rowActionLog.map((message, index) => (
-              <div
-                key={index}
-                style={{
-                  fontSize: "12px",
-                  color: "#856404",
-                  margin: "2px 0",
-                }}
-              >
+              <Text key={index} fontSize="300" color="warning.11" marginY="50">
                 {message}
-              </div>
+              </Text>
             ))}
-          </div>
+          </Box>
         )}
 
         {/* DataTable */}
-        <DataTable
+        <DataTableWithModals
           columns={sortableColumns}
           data={data}
           selectedKeys={selectedKeys}
@@ -2799,61 +1616,8 @@ export const DisabledRowsShowcase: Story = {
           selectionMode="multiple"
           allowsSorting={true}
           isRowClickable={true}
-          onRowClick={(row) => {
-            alert(`Row clicked: ${row.name} (${row.role})`);
-          }}
+          onRowClick={() => {}}
         />
-        <InfoModal
-          isOpen={modalState.isOpen}
-          onClose={() => setModalState({ isOpen: false, row: null })}
-          title="Modal Title"
-        >
-          Modal content here
-        </InfoModal>
-        {/* Feature Information */}
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f0f8ff",
-            borderRadius: "8px",
-            border: "1px solid #b3d9ff",
-            fontSize: "14px",
-          }}
-        >
-          <h4
-            style={{
-              margin: "0 0 12px 0",
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
-          >
-            💡 Disabled Rows Features
-          </h4>
-          <ul style={{ margin: "4px 0 0 16px", paddingLeft: 0 }}>
-            <li>
-              <strong>Visual Feedback:</strong> Disabled rows have reduced
-              opacity and not-allowed cursor
-            </li>
-            <li>
-              <strong>Selection Prevention:</strong> Disabled rows cannot be
-              selected via checkbox
-            </li>
-            <li>
-              <strong>Click Prevention:</strong> Disabled rows cannot be clicked
-            </li>
-            <li>
-              <strong>Action Callbacks:</strong> onRowAction is called when
-              disabled rows are interacted with
-            </li>
-            <li>
-              <strong>Select All:</strong> Only selects non-disabled rows
-            </li>
-            <li>
-              <strong>Indeterminate State:</strong> Accounts for disabled rows
-              in calculations
-            </li>
-          </ul>
-        </div>
       </Stack>
     );
   },

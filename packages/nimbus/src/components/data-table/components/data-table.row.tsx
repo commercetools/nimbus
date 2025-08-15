@@ -131,7 +131,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
   useEffect(() => {
     return () => {
       if (counterRef.current.count >= 1 && counterRef.current.node) {
-        console.log("removing row event listener");
         counterRef.current.node.removeEventListener("click", handleRowClick);
       }
     };
