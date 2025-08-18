@@ -10,101 +10,218 @@ export const textInputRecipe = defineRecipe({
 
   // Base styles applied to all instances of the component
   base: {
-    display: "block",
-    borderRadius: "200",
-    colorPalette: "neutral",
-    width: "100%",
+    "& .nimbus-text-input-container": {
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      borderRadius: "200",
+      border: "solid-25",
+      width: "100%",
+      height: "100%",
+      bg: "white",
+      boxShadow: "5",
+      overflow: "hidden", // Ensure elements stay within borders
+    },
+
     focusVisibleRing: "outside",
-    bg: "transparent",
-    outline: "none",
-    boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-    _placeholder: {
-      opacity: 0.5,
-      color: "currentColor",
+    _focusVisible: {
+      // Ensure focus ring surrounds the entire input, including elements
+      zIndex: 1,
     },
+
     _disabled: {
+      "& .nimbus-text-input-container": {
+        bg: "neutral.3",
+      },
       layerStyle: "disabled",
-      bg: "neutral.3",
     },
+
     "&[data-invalid='true']": {
-      "--border-color": "colors.critical.7",
-      "--border-width": "sizes.50",
+      "& .nimbus-text-input-container": {
+        boxShadow: "5",
+      },
       color: "critical.11",
     },
-    
-    // Adjust padding when there are leading/trailing elements
-    "&.has-leading-element": {
-      pl: "1200",
+
+    // Position for leading and trailing elements
+    "& .leading-element": {
+      position: "absolute",
+      display: "flex",
+      alignItems: "center",
+      // width: "200",
+      // zIndex: 1,
+      left: "400",
+      right: "200",
       _rtl: {
-        pl: "initial",
-        pr: "1200",
-      }
+        left: "auto",
+        right: "400",
+      },
     },
-    "&.has-trailing-element": {
-      pr: "1200",
+
+    "& .trailing-element": {
+      position: "absolute",
+      display: "flex",
+      alignItems: "center",
+      // zIndex: 1,
+      right: "400",
+      left: "200",
       _rtl: {
-        pr: "initial",
-        pl: "1200",
-      }
-    }
+        right: "auto",
+        left: "400",
+      },
+    },
+
+    // Style the input element when there are leading/trailing elements
+    "& [data-part='input']": {
+      width: "100%",
+      height: "100%",
+      // padding: "400",
+      outline: "none",
+      border: "none",
+      borderRadius: "inherit",
+      bg: "transparent",
+      color: "inherit",
+      fontSize: "inherit",
+      fontFamily: "inherit",
+      lineHeight: "inherit",
+
+      _focusVisible: {
+        outline: "none",
+        boxShadow: "none", // Remove default focus ring from input
+      },
+
+      _placeholder: {
+        opacity: 0.5,
+        color: "currentColor",
+      },
+
+      _disabled: {
+        opacity: 0.6,
+        cursor: "not-allowed",
+      },
+    },
+
+    // Adjust padding when leading element is present
+    "&[data-has-leading='true'] [data-part='input']": {
+      // paddingLeft: "1200",
+      _rtl: {
+        paddingLeft: "400",
+        // paddingRight: "1200",
+      },
+    },
+
+    // Adjust padding when trailing element is present
+    "&[data-has-trailing='true'] [data-part='input']": {
+      paddingRight: "1200",
+      _rtl: {
+        paddingRight: "400",
+        paddingLeft: "1200",
+      },
+    },
+
+    // For both leading and trailing elements
+    "&[data-has-leading='true'][data-has-trailing='true'] [data-part='input']":
+      {
+        paddingLeft: "1200",
+        paddingRight: "1200",
+        _rtl: {
+          paddingLeft: "1200",
+          paddingRight: "1200",
+        },
+      },
   },
 
   variants: {
     size: {
       sm: {
-        h: 800,
+        height: "800",
         textStyle: "sm",
-        px: 300,
-        "--input-padding": "300",
-        "&.has-leading-element": {
-          pl: "1000", 
-          _rtl: {
-            pl: "300",
-            pr: "1000",
-          }
+        "& [data-part='input']": {
+          padding: "300",
         },
-        "&.has-trailing-element": {
-          pr: "1000",
+        "& .leading-element": {
+          left: "300",
           _rtl: {
-            pr: "300", 
-            pl: "1000",
-          }
+            left: "auto",
+            right: "300",
+          },
+        },
+        "& .trailing-element": {
+          right: "300",
+          _rtl: {
+            right: "auto",
+            left: "300",
+          },
+        },
+        "&[data-has-leading='true'] [data-part='input']": {
+          paddingLeft: "1000",
+          _rtl: {
+            paddingLeft: "300",
+            paddingRight: "1000",
+          },
+        },
+        "&[data-has-trailing='true'] [data-part='input']": {
+          paddingRight: "1000",
+          _rtl: {
+            paddingRight: "300",
+            paddingLeft: "1000",
+          },
         },
       },
       md: {
-        h: 1000,
+        height: "1000",
         textStyle: "md",
-        px: 400,
-        "--input-padding": "400",
-        "&.has-leading-element": {
-          pl: "1200",
-          _rtl: {
-            pl: "400",
-            pr: "1200",
-          }
+        "& [data-part='input']": {
+          padding: "400",
         },
-        "&.has-trailing-element": {
-          pr: "1200",
+        "& .leading-element": {
+          left: "400",
           _rtl: {
-            pr: "400",
-            pl: "1200",
-          }
+            left: "auto",
+            right: "400",
+          },
+        },
+        "& .trailing-element": {
+          right: "400",
+          _rtl: {
+            right: "auto",
+            left: "400",
+          },
+        },
+        "&[data-has-leading='true'] [data-part='input']": {
+          paddingLeft: "1200",
+          _rtl: {
+            paddingLeft: "400",
+            paddingRight: "1200",
+          },
+        },
+        "&[data-has-trailing='true'] [data-part='input']": {
+          paddingRight: "1200",
+          _rtl: {
+            paddingRight: "400",
+            paddingLeft: "1200",
+          },
         },
       },
     },
 
     variant: {
       solid: {
-        "--border-width": "sizes.25",
-        "--border-color": "colors.neutral.7",
-        backgroundColor: "primary.1",
+        "& .nimbus-text-input-container": {
+          boxShadow: "inset 0 0 0 sizes.25 colors.neutral.7",
+          backgroundColor: "primary.1",
+        },
         _hover: {
-          backgroundColor: "primary.2",
+          "& .nimbus-text-input-container": {
+            backgroundColor: "primary.2",
+          },
         },
       },
       ghost: {
         _hover: {
-          backgroundColor: "primary.2",
+          "& .nimbus-text-input-container": {
+            backgroundColor: "primary.2",
+          },
         },
       },
     },

@@ -12,7 +12,17 @@ export interface TextInputRecipeProps
     UnstyledProp {}
 
 export type TextInputRootSlotProps = HTMLChakraProps<
-  "input",
+  "div",
+  TextInputRecipeProps
+>;
+
+export type TextInputLeadingElementSlotProps = HTMLChakraProps<
+  "div",
+  TextInputRecipeProps
+>;
+
+export type TextInputTrailingElementSlotProps = HTMLChakraProps<
+  "div",
   TextInputRecipeProps
 >;
 
@@ -23,6 +33,16 @@ const { withContext } = createRecipeContext({ recipe: textInputRecipe });
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
 export const TextInputRootSlot = withContext<
-  HTMLInputElement,
+  HTMLDivElement,
   TextInputRootSlotProps
->("input");
+>("div");
+
+export const TextInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  TextInputLeadingElementSlotProps
+>("div");
+
+export const TextInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  TextInputTrailingElementSlotProps
+>("div");

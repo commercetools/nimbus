@@ -21,4 +21,5 @@ export interface TextInputProps
    * Will respect text direction (right in LTR, left in RTL)
    */
   trailingElement?: ReactNode;
+  placeholder?: string;
 }

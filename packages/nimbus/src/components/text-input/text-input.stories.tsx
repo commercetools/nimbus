@@ -4,7 +4,12 @@ import { TextInput } from "./text-input";
 import type { TextInputProps } from "./text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { Box, Stack, Text } from "@/components";
-import { Search, Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
+import {
+  Search,
+  Visibility,
+  VisibilityOff,
+  AddReaction,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof TextInput> = {
   title: "components/TextInput",
@@ -292,7 +297,7 @@ export const Controlled: Story = {
 export const WithLeadingElement: Story = {
   args: {
     placeholder: "Search...",
-    leadingElement: <Search />,
+    leadingElement: <AddReaction />,
     "aria-label": "search-input",
   },
 };
@@ -310,15 +315,15 @@ export const InteractiveElements: Story = {
     const [value, setValue] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [passwordValue, setPasswordValue] = useState("");
-    
+
     const handleClear = () => {
       setValue("");
     };
-    
+
     const togglePassword = () => {
       setShowPassword(!showPassword);
     };
-    
+
     return (
       <Stack direction="column" gap="800">
         <Text>Interactive search with clear button</Text>
@@ -327,8 +332,8 @@ export const InteractiveElements: Story = {
           leadingElement={<Search style={{ color: "gray" }} />}
           trailingElement={
             value ? (
-              <Box 
-                cursor="pointer" 
+              <Box
+                cursor="pointer"
                 onClick={handleClear}
                 aria-label="Clear search"
                 role="button"
@@ -344,7 +349,7 @@ export const InteractiveElements: Story = {
           onChange={setValue}
           aria-label="interactive-search-input"
         />
-        
+
         <Text mt="400">Interactive password visibility toggle</Text>
         <TextInput
           placeholder="Enter password"
@@ -352,8 +357,8 @@ export const InteractiveElements: Story = {
           value={passwordValue}
           onChange={setPasswordValue}
           trailingElement={
-            <Box 
-              cursor="pointer" 
+            <Box
+              cursor="pointer"
               onClick={togglePassword}
               aria-label={showPassword ? "Hide password" : "Show password"}
               role="button"
@@ -374,8 +379,8 @@ export const InteractiveElements: Story = {
 export const WithBothElements: Story = {
   args: {
     placeholder: "Search for products",
-    leadingElement: <Search />,
-    trailingElement: <Box cursor="pointer">Clear</Box>,
+    leadingElement: <AddReaction />,
+    trailingElement: <AddReaction />,
     "aria-label": "search-with-clear-input",
   },
 };
@@ -413,7 +418,9 @@ export const RTLSupport: Story = {
           />
         </Box>
         <Box dir="rtl" width="100%">
-          <Text mb="200" textAlign="right">RTL direction (right-to-left)</Text>
+          <Text mb="200" textAlign="right">
+            RTL direction (right-to-left)
+          </Text>
           <TextInput
             placeholder="Search in RTL"
             leadingElement={<Search />}
@@ -450,6 +457,95 @@ export const InputTypes: Story = {
         {inputTypes.map((type) => (
           <TextInput key={type} {...args} placeholder={type} type={type} />
         ))}
+      </Stack>
+    );
+  },
+};
+
+export const WithElementsInsideInput: Story = {
+  render: () => {
+    return (
+      <Stack gap="500">
+        <Box>
+          <Text as="h3" mb="300">
+            Elements inside input border
+          </Text>
+          <Text mb="300">With leading element:</Text>
+          <TextInput
+            placeholder="Leading element inside input"
+            leadingElement={<Search />}
+            aria-label="with-leading"
+          />
+        </Box>
+
+        <Box>
+          <Text mb="300">With trailing element:</Text>
+          <TextInput
+            placeholder="Trailing element inside input"
+            trailingElement={<Visibility />}
+            aria-label="with-trailing"
+          />
+        </Box>
+
+        <Box>
+          <Text mb="300">With both elements:</Text>
+          <TextInput
+            placeholder="Both elements inside input"
+            leadingElement={<Search />}
+            trailingElement={<Visibility />}
+            aria-label="with-both"
+          />
+        </Box>
+
+        <Box>
+          <Text as="h3" mb="300">
+            Focus State
+          </Text>
+          <Text mb="300">Focus ring appears around the entire input:</Text>
+          <TextInput
+            placeholder="Click to focus"
+            leadingElement={<Search />}
+            trailingElement={<Visibility />}
+            aria-label="focus-demo"
+          />
+        </Box>
+
+        <Box>
+          <Text mb="300">Autofocused input with elements:</Text>
+          <TextInput
+            placeholder="Already focused"
+            leadingElement={<Search />}
+            trailingElement={<Visibility />}
+            aria-label="autofocus-demo"
+            autoFocus
+          />
+        </Box>
+
+        <Box>
+          <Text as="h3" mb="300">
+            Disabled State
+          </Text>
+          <TextInput
+            placeholder="Disabled input"
+            leadingElement={<Search />}
+            trailingElement={<Visibility />}
+            aria-label="disabled-demo"
+            isDisabled
+          />
+        </Box>
+
+        <Box>
+          <Text as="h3" mb="300">
+            Invalid State
+          </Text>
+          <TextInput
+            placeholder="Invalid input"
+            leadingElement={<Search />}
+            trailingElement={<Visibility />}
+            aria-label="invalid-demo"
+            data-invalid="true"
+          />
+        </Box>
       </Stack>
     );
   },
