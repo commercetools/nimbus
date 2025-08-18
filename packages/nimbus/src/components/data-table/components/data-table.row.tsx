@@ -123,10 +123,12 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * @param e - Native DOM Event from the click listener
    */
   const handleRowClick = (e: Event) => {
+    // Don't do anything if isRowClickable is false
+    if (!isRowClickable) return;
     // Prevent row click when clicking on interactive elements to avoid conflicts
     const isInteractiveElement = getIsTableRowChildElementInteractive(e);
 
-    if (!isInteractiveElement && isRowClickable && onRowClick) {
+    if (!isInteractiveElement && onRowClick) {
       if (!isDisabled) {
         onRowClick(row);
       } else {
@@ -165,7 +167,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
    * 2. **Event Capture**: Uses capture phase to handle events before child elements
    * 3. **Dual Listeners**: Attaches both pointerdown (for selection control) and mouseup (for clicks)
-   * 4. **Conditional Setup**: Only sets up listeners when the row is actually clickable
+   * 4. **Always Available**: Listeners are always attached to support dynamic isRowClickable changes
    *
    * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
    * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
@@ -173,12 +175,15 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * The click listener invokes the row's onClick handler.
    * Using capture phase ensures our handlers run before any child element handlers.
    *
+   * Performance note: Always attaching listeners has negligible overhead (~few bytes per row)
+   * but provides better support for dynamic row clickability and reduces re-renders.
+   *
    * @param node - The HTMLElement reference from React's ref callback
    */
   const rowNodeRef = useCallback(
     (node: HTMLElement) => {
       counterRef.current.count += 1;
-      // Only attach event listener on first callback invocation when row is clickable
+      // Only attach event listener on first callback invocation
       if (counterRef.current.count === 1 && node) {
         counterRef.current.node = node;
         // Ensures that selection does not happen on row click, only when the selection cell is clicked
@@ -190,13 +195,11 @@ export const DataTableRow = forwardRef(function DataTableRow<
             capture: true,
           }
         );
-        if (isRowClickable) {
-          // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
-          node.addEventListener("click", handleRowClick, { capture: true });
-        }
+        // Use click event to set onClick handler
+        node.addEventListener("click", handleRowClick, { capture: true });
       }
     },
-    [isRowClickable, handleRowClick]
+    [handleRowClick]
   );
 
   /**
