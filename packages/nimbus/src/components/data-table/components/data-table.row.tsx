@@ -189,15 +189,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
    * 2. **Event Capture**: Uses capture phase to handle events before child elements
    * 3. **Dual Listeners**: Attaches both pointerdown (for selection control) and mouseup (for clicks)
-<<<<<<< HEAD
-<<<<<<< HEAD
    * 4. **Always Available**: Listeners are always attached to support dynamic onRowClick changes
-=======
-   * 4. **Conditional Setup**: Only sets up listeners when the row is actually clickable
->>>>>>> c271b6e4 (chore(stories): update story controls/styling to pass a11y tests)
-=======
-   * 4. **Always Available**: Listeners are always attached to support dynamic onRowClick changes
->>>>>>> 9a262c13 (feat(row clicks): remove details button and update stories to display former details modal on row click)
    *
    * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
    * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
@@ -359,15 +351,15 @@ export const DataTableRow = forwardRef(function DataTableRow<
                   position="relative"
                   overflow="hidden"
                   cursor={isDisabled ? "not-allowed" : "text"}
-                  style={
-                    // TODO: I'm not clear on what this is supposed to do?
-                    {
-                      // Add indentation for the first column of nested rows
-                      // ...(depth > 0 &&
-                      //   index === 0 && {
-                      //     paddingLeft: `${16 + depth * 16}px`,
-                    }
-                  }
+                  // style={
+                  //   // TODO: I'm not clear on what this is supposed to do?
+
+                  //     // Add indentation for the first column of nested rows
+                  //     // ...(depth > 0 &&
+                  //     //   index === 0 && {
+                  //     //     paddingLeft: `${16 + depth * 16}px`,
+                  //     //   }),
+                  // }
                 >
                   {col.render
                     ? col.render({
