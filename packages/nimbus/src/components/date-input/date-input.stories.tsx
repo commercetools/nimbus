@@ -266,43 +266,45 @@ export const Granularity: Story = {
     return (
       <>
         {["en-US", "de-DE"].map((locale) => (
-          <I18nProvider locale={locale}>
-            <Stack direction="column" gap="400" alignItems="start" mb="800">
-              <Text fontWeight="700">{locale}</Text>
-              <Text>Granularity: day (date only)</Text>
-              <DateInput
-                {...args}
-                defaultValue={dateValue}
-                granularity="day"
-                aria-label="Granularity day"
-                data-testid="granularity-day"
-              />
-              <Text>Granularity: hour (date + hour)</Text>
-              <DateInput
-                {...args}
-                defaultValue={dateTimeValue}
-                granularity="hour"
-                aria-label="Granularity hour"
-                data-testid="granularity-hour"
-              />
-              <Text>Granularity: minute (date + hour + minute)</Text>
-              <DateInput
-                {...args}
-                defaultValue={dateTimeValue}
-                granularity="minute"
-                aria-label="Granularity minute"
-                data-testid="granularity-minute"
-              />
-              <Text>Granularity: second (date + hour + minute + second)</Text>
-              <DateInput
-                {...args}
-                defaultValue={dateTimeValue}
-                granularity="second"
-                aria-label="Granularity second"
-                data-testid="granularity-second"
-              />
-            </Stack>
-          </I18nProvider>
+          <div key={locale}>
+            <I18nProvider locale={locale}>
+              <Stack direction="column" gap="400" alignItems="start" mb="800">
+                <Text fontWeight="700">{locale}</Text>
+                <Text>Granularity: day (date only)</Text>
+                <DateInput
+                  {...args}
+                  defaultValue={dateValue}
+                  granularity="day"
+                  aria-label="Granularity day"
+                  data-testid="granularity-day"
+                />
+                <Text>Granularity: hour (date + hour)</Text>
+                <DateInput
+                  {...args}
+                  defaultValue={dateTimeValue}
+                  granularity="hour"
+                  aria-label="Granularity hour"
+                  data-testid="granularity-hour"
+                />
+                <Text>Granularity: minute (date + hour + minute)</Text>
+                <DateInput
+                  {...args}
+                  defaultValue={dateTimeValue}
+                  granularity="minute"
+                  aria-label="Granularity minute"
+                  data-testid="granularity-minute"
+                />
+                <Text>Granularity: second (date + hour + minute + second)</Text>
+                <DateInput
+                  {...args}
+                  defaultValue={dateTimeValue}
+                  granularity="second"
+                  aria-label="Granularity second"
+                  data-testid="granularity-second"
+                />
+              </Stack>
+            </I18nProvider>
+          </div>
         ))}
       </>
     );
