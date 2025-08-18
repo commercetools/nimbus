@@ -49,8 +49,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         {...styleProps}
         className={`${styleProps.className || ""}`}
         onClick={handleWrapperClick}
-        // data-has-leading={leadingElement ? "true" : "false"}
-        // data-has-trailing={trailingElement ? "true" : "false"}
+        data-has-leading={leadingElement ? "true" : "false"}
+        data-has-trailing={trailingElement ? "true" : "false"}
       >
         <div className="nimbus-text-input-container">
           {leadingElement && (

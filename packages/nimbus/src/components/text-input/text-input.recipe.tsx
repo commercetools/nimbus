@@ -75,7 +75,7 @@ export const textInputRecipe = defineRecipe({
     "& [data-part='input']": {
       width: "100%",
       height: "100%",
-      // padding: "400",
+      padding: "400",
       outline: "none",
       border: "none",
       borderRadius: "inherit",
@@ -103,10 +103,10 @@ export const textInputRecipe = defineRecipe({
 
     // Adjust padding when leading element is present
     "&[data-has-leading='true'] [data-part='input']": {
-      // paddingLeft: "1200",
+      paddingLeft: "1200",
       _rtl: {
         paddingLeft: "400",
-        // paddingRight: "1200",
+        paddingRight: "1200",
       },
     },
 
