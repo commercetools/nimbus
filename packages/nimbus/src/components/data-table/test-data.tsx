@@ -37,7 +37,7 @@ export const columns: DataTableColumnItem[] = [
     header: "Custom",
     accessor: (row: Record<string, unknown>) => row.class as React.ReactNode,
     render: ({ value }) => (
-      <Text as="span" color="neutral.10">
+      <Text as="span" color="neutral.11">
         {value as string}
       </Text>
     ),
@@ -87,7 +87,7 @@ export const sortableColumns: DataTableColumnItem[] = [
     header: "Custom (Not Sortable)",
     accessor: (row) => row.class as React.ReactNode,
     render: ({ value }) => (
-      <Text as="span" color="neutral.10">
+      <Text as="span" color="neutral.11">
         {value as string}
       </Text>
     ),
@@ -556,7 +556,7 @@ export const flexibleNestedData: DataTableRowItem[] = [
             <Text fontSize="600" fontWeight="bold" color="green.11">
               847
             </Text>
-            <Text fontSize="300" color="neutral.10" mt="100">
+            <Text fontSize="300" color="neutral.11" mt="100">
               Reports Generated
             </Text>
           </Box>
@@ -571,7 +571,7 @@ export const flexibleNestedData: DataTableRowItem[] = [
             <Text fontSize="600" fontWeight="bold" color="red.11">
               23
             </Text>
-            <Text fontSize="300" color="neutral.10" mt="100">
+            <Text fontSize="300" color="neutral.11" mt="100">
               Data Issues Found
             </Text>
           </Box>
@@ -586,7 +586,7 @@ export const flexibleNestedData: DataTableRowItem[] = [
             <Text fontSize="600" fontWeight="bold" color="blue.11">
               156
             </Text>
-            <Text fontSize="300" color="neutral.10" mt="100">
+            <Text fontSize="300" color="neutral.11" mt="100">
               Active Datasets
             </Text>
           </Box>
@@ -595,7 +595,7 @@ export const flexibleNestedData: DataTableRowItem[] = [
           <Text fontSize="350" fontWeight="500" mb="200" color="neutral.11">
             Recent Activity:
           </Text>
-          <Text fontSize="300" color="neutral.10" lineHeight="1.5">
+          <Text fontSize="300" color="neutral.11" lineHeight="1.5">
             • Completed quarterly sales analysis
             <br />
             • Updated customer segmentation model

@@ -241,6 +241,7 @@ export const SearchAndHighlight: Story = {
           onChange={setSearch}
           placeholder="Search..."
           width="1/3"
+          aria-label="search-rows"
         />
         <DataTableWithModals
           {...args}
@@ -435,6 +436,7 @@ export const SortingWithSearch: Story = {
           onChange={setSearch}
           placeholder="Search and then sort..."
           width="1/3"
+          aria-label="filter-rows"
         />
         <DataTableWithModals
           {...args}
@@ -505,6 +507,7 @@ export const SelectionShowcase: Story = {
               onChange={setSearch}
               placeholder="Search to filter rows..."
               width="300px"
+              aria-label="filter-rows"
             />
           </Stack>
 
@@ -512,7 +515,9 @@ export const SelectionShowcase: Story = {
           <Stack gap="100" mb="200">
             <Heading size="sm">✅ Selection Mode</Heading>
             <Stack direction="row" gap="300" alignItems="center">
-              <Text fontSize="sm">Mode:</Text>
+              <Text as="label" fontSize="sm" id="select-selection-mode">
+                Mode:
+              </Text>
               <Select.Root
                 selectedKey={selectionMode}
                 onSelectionChange={(key) =>
@@ -521,6 +526,7 @@ export const SelectionShowcase: Story = {
                   )
                 }
                 width="200px"
+                aria-labelledby="select-selection-mode"
               >
                 <Select.Options>
                   <Select.Option id="none">None (No Selection)</Select.Option>
@@ -785,7 +791,7 @@ export const WithFooter: Story = {
       <Stack gap="500" alignItems="flex-start">
         <Stack gap="400">
           <Heading size="lg">📄 DataTable with Custom Footer</Heading>
-          <Text color="neutral.10">
+          <Text color="neutral.11">
             This example shows how to add custom footer content like pagination,
             totals, or action buttons.
           </Text>
@@ -823,7 +829,7 @@ export const HorizontalScrolling: Story = {
       <Stack gap="500">
         <Stack gap="300">
           <Heading size="lg">📊 Horizontal Scrolling DataTable</Heading>
-          <Text color="neutral.10">
+          <Text color="neutral.11">
             This table has many columns with wide content to demonstrate
             horizontal scrolling. The header remains sticky during horizontal
             scrolling.
@@ -1158,7 +1164,7 @@ export const AllFeatures: Story = {
       <Stack gap="500">
         <Stack gap="300">
           <Heading size="lg">🚀 DataTable - All Features Showcase</Heading>
-          <Text color="neutral.10" fontSize="400">
+          <Text color="neutral.11" fontSize="400">
             Comprehensive demo showcasing all DataTable capabilities. Toggle
             features below to see how they work together.
           </Text>
@@ -1180,8 +1186,9 @@ export const AllFeatures: Story = {
             <TextInput
               value={search}
               onChange={setSearch}
-              placeholder="Search across all columns..."
+              placeholder="Fliter table..."
               width="300px"
+              aria-label="filter table"
             />
           </Box>
 
@@ -1192,20 +1199,13 @@ export const AllFeatures: Story = {
             </Heading>
             <Flex flexWrap="wrap" gap="300">
               {allColumns.map((colId) => (
-                <Text
+                <Checkbox
                   key={colId}
-                  as="label"
-                  display="flex"
-                  alignItems="center"
-                  fontSize="350"
-                  gap="100"
+                  isSelected={visibleColumns.includes(colId)}
+                  onChange={() => handleColumnToggle(colId)}
                 >
-                  <Checkbox
-                    isSelected={visibleColumns.includes(colId)}
-                    onChange={() => handleColumnToggle(colId)}
-                  />
                   {colId.charAt(0).toUpperCase() + colId.slice(1)}
-                </Text>
+                </Checkbox>
               ))}
             </Flex>
           </Box>
@@ -1213,7 +1213,6 @@ export const AllFeatures: Story = {
           {/* Table Settings */}
           <Box marginBottom="500">
             <Heading
-              as="h4"
               size="lg"
               marginBottom="200"
               fontSize="350"
@@ -1222,87 +1221,38 @@ export const AllFeatures: Story = {
               ⚙️ Table Settings
             </Heading>
             <Flex flexWrap="wrap" gap="400">
-              <Text
-                as="label"
-                display="flex"
-                alignItems="center"
-                fontSize="350"
-                gap="100"
-              >
-                <Checkbox isSelected={isResizable} onChange={setisResizable} />
-                Resizable Columns
-              </Text>
-              <Text
-                as="label"
-                display="flex"
-                alignItems="center"
-                fontSize="350"
-                gap="100"
-              >
-                <Checkbox
-                  isSelected={allowsSorting}
-                  onChange={setAllowsSorting}
-                />
+              <Checkbox isSelected={isResizable} onChange={setisResizable}>
+                Resizable Columns{" "}
+              </Checkbox>
+              <Checkbox isSelected={allowsSorting} onChange={setAllowsSorting}>
                 Sorting
-              </Text>
-              <Text
-                as="label"
-                display="flex"
-                alignItems="center"
-                fontSize="350"
-                gap="100"
+              </Checkbox>
+              <Checkbox
+                isSelected={isRowClickable}
+                onChange={setIsRowClickable}
               >
-                <Checkbox
-                  isSelected={isRowClickable}
-                  onChange={setIsRowClickable}
-                />
                 Clickable Rows
-              </Text>
-              <Text
-                as="label"
-                display="flex"
-                alignItems="center"
-                fontSize="350"
-                gap="100"
-              >
-                <Checkbox
-                  isSelected={stickyHeader}
-                  onChange={setStickyHeader}
-                />
+              </Checkbox>
+              <Checkbox isSelected={stickyHeader} onChange={setStickyHeader}>
                 Sticky Header
-              </Text>
-              <Text
-                as="label"
-                display="flex"
-                alignItems="center"
-                fontSize="350"
-                gap="100"
-              >
-                <Checkbox isSelected={isTruncated} onChange={setIsTruncated} />
+              </Checkbox>
+              <Checkbox isSelected={isTruncated} onChange={setIsTruncated}>
                 Text Truncation
-              </Text>
-              <Text
-                as="label"
-                display="flex"
-                alignItems="center"
-                fontSize="350"
-                gap="100"
+              </Checkbox>
+              <Checkbox
+                isSelected={density === "condensed"}
+                onChange={(checked) =>
+                  setDensity(checked ? "condensed" : "default")
+                }
               >
-                <Checkbox
-                  isSelected={density === "condensed"}
-                  onChange={(checked) =>
-                    setDensity(checked ? "condensed" : "default")
-                  }
-                />
                 Condensed Mode
-              </Text>
+              </Checkbox>
             </Flex>
           </Box>
 
           {/* Selection Settings */}
           <Box marginBottom="500">
             <Heading
-              as="h4"
               size="lg"
               marginBottom="200"
               fontSize="350"
@@ -1311,13 +1261,16 @@ export const AllFeatures: Story = {
               ✅ Selection Settings
             </Heading>
             <Flex alignItems="center" gap="400" marginBottom="200">
-              <Text fontSize="350">Selection Mode:</Text>
+              <Text as="label" fontSize="350" id="select-selection-mode">
+                Selection Mode:
+              </Text>
               <Select.Root
                 selectedKey={selectionMode}
                 onSelectionChange={(key) =>
                   setSelectionMode(key as "none" | "single" | "multiple")
                 }
                 size="sm"
+                aria-labelledby="select-selection-mode"
               >
                 <Select.Options>
                   <Select.Option id="none">None</Select.Option>
@@ -1326,23 +1279,16 @@ export const AllFeatures: Story = {
                 </Select.Options>
               </Select.Root>
               {selectionMode !== "none" && (
-                <Text
-                  as="label"
-                  display="flex"
-                  alignItems="center"
-                  fontSize="350"
-                  gap="100"
+                <Checkbox
+                  isSelected={disallowEmptySelection}
+                  onChange={setDisallowEmptySelection}
                 >
-                  <Checkbox
-                    isSelected={disallowEmptySelection}
-                    onChange={setDisallowEmptySelection}
-                  />
                   Require Selection
-                </Text>
+                </Checkbox>
               )}
             </Flex>
             {selectionMode !== "none" && (
-              <Text fontSize="350" color="neutral.9">
+              <Text fontSize="350" color="neutral.12">
                 <Text as="span" fontWeight="600">
                   Selected:
                 </Text>{" "}
@@ -1358,7 +1304,6 @@ export const AllFeatures: Story = {
           {/* Quick Actions */}
           <Box>
             <Heading
-              as="h4"
               size="lg"
               marginBottom="200"
               fontSize="350"
@@ -1444,13 +1389,7 @@ export const AllFeatures: Story = {
           borderColor="info.4"
           fontSize="350"
         >
-          <Heading
-            as="h4"
-            size="lg"
-            marginBottom="300"
-            fontSize="400"
-            fontWeight="600"
-          >
+          <Heading size="lg" marginBottom="300" fontSize="400" fontWeight="600">
             💡 Features Demonstrated
           </Heading>
           <Box
@@ -1527,7 +1466,7 @@ export const DisabledRowsShowcase: Story = {
       <Stack gap="500">
         <Stack gap="300">
           <Heading size="lg">Disabled Rows Showcase</Heading>
-          <Text color="neutral.10" fontSize="400">
+          <Text color="neutral.11" fontSize="400">
             Demonstration of disabled row functionality. Disabled rows cannot be
             selected or clicked, and show visual feedback when interactions are
             attempted.
@@ -1542,7 +1481,7 @@ export const DisabledRowsShowcase: Story = {
           border="1px solid"
           borderColor="neutral.4"
         >
-          <Heading as="h4" size="lg" marginBottom="300">
+          <Heading size="lg" marginBottom="300">
             Controls
           </Heading>
           <Flex gap="300" flexWrap="wrap">
