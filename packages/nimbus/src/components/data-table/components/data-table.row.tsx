@@ -100,7 +100,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * 2. **Smart Event Filtering**: Prevent conflicts with interactive elements (checkboxes, buttons)
    * 3. **Selection Isolation**: Ensure row selection only happens via explicit selection controls
    * 4. **Disabled Row Handling**: Support custom actions even on disabled rows when needed
-   * 5. **Text Selection Support**: Avoid triggering click handler when users are selecting text
    *
    * This approach maintains the accessibility benefits of React Aria while enabling the
    * expected UX patterns for modern data tables. Without this implementation, users would
@@ -126,17 +125,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
   const handleRowClick = (e: Event) => {
     // Prevent row click when clicking on interactive elements to avoid conflicts
     const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-    // Prevent row click when text is selected
-    const hasSelectedText =
-      window.getSelection()?.toString() !== undefined &&
-      window.getSelection()!.toString().length > 0;
 
-    if (
-      !isInteractiveElement &&
-      !hasSelectedText &&
-      isRowClickable &&
-      onRowClick
-    ) {
+    if (!isInteractiveElement && isRowClickable && onRowClick) {
       if (!isDisabled) {
         onRowClick(row);
       } else {
@@ -180,7 +170,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
    * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
    * in react-aria'a onPress handler.
-   * The mouseup listener invokes the row's onClick handler once any possible text selection has been completed.
+   * The click listener invokes the row's onClick handler.
    * Using capture phase ensures our handlers run before any child element handlers.
    *
    * @param node - The HTMLElement reference from React's ref callback
@@ -202,7 +192,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
         );
         if (isRowClickable) {
           // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
-          node.addEventListener("mouseup", handleRowClick, { capture: true });
+          node.addEventListener("click", handleRowClick, { capture: true });
         }
       }
     },
