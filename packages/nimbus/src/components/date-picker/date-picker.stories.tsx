@@ -1944,9 +1944,10 @@ export const HideTimeZone: Story = {
         });
 
         // Check that footer time inputs show timezone when hideTimeZone is false
-        const footerTimeInputsShown = within(document.body).getAllByRole(
-          "group"
-        );
+        // Find the currently open calendar dialog
+        const calendarDialog = within(document.body).getByRole("dialog");
+        const footerTimeInputsShown =
+          within(calendarDialog).getAllByRole("group");
         const timezoneInFooterShown = footerTimeInputsShown.some((input) =>
           within(input).queryByText(/EDT/i)
         );
@@ -1972,12 +1973,15 @@ export const HideTimeZone: Story = {
         });
 
         // Check that footer time inputs don't show timezone when hideTimeZone is true
-        const footerTimeInputsHidden = within(document.body).getAllByRole(
-          "group"
-        );
+        // Find the currently open calendar dialog for the hidden timezone picker
+        const calendarDialogHidden = within(document.body).getByRole("dialog");
+        const footerTimeInputsHidden =
+          within(calendarDialogHidden).getAllByRole("group");
+
         const timezoneInFooterHidden = footerTimeInputsHidden.some((input) =>
           within(input).queryByText(/EDT/i)
         );
+
         await expect(timezoneInFooterHidden).toBe(false);
 
         // Close calendar
@@ -2439,8 +2443,8 @@ export const UnavailableDates: Story = {
       const calendarGrid = await within(document.body).findByRole("grid");
       const dateCells = within(calendarGrid).getAllByRole("gridcell");
 
-      let availableEvenButton = null;
-      let expectedDay = null;
+      let availableEvenButton: HTMLElement | null = null;
+      let expectedDay: string | null = null;
 
       for (const cell of dateCells) {
         const button = cell.querySelector("button");
