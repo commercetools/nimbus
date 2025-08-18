@@ -36,7 +36,6 @@ export const SplitButton = (props: SplitButtonProps) => {
     isOpen,
     defaultOpen,
     onOpenChange,
-    children,
   } = props;
 
   const buttonProps = { size, variant, tone };
@@ -60,28 +59,9 @@ export const SplitButton = (props: SplitButtonProps) => {
     isCritical?: boolean;
   }
 
-  interface SlotProps {
-    slot: string;
-    children?: React.ReactNode;
-  }
-
   interface ComponentWithChildren {
     children: React.ReactNode;
   }
-
-  // Helper to check if element has slot prop
-  const hasSlotProp = (
-    element: React.ReactNode
-  ): element is React.ReactElement<SlotProps> => {
-    if (!React.isValidElement(element)) return false;
-    if (
-      !element.props ||
-      typeof element.props !== "object" ||
-      element.props === null
-    )
-      return false;
-    return "slot" in element.props;
-  };
 
   // Check if element is a Menu.Item with required props
   const isMenuItemWithId = (
@@ -101,24 +81,18 @@ export const SplitButton = (props: SplitButtonProps) => {
     return "children" in props;
   };
 
-  /**
-   * Separate icon slots from menu items.
-   * This allows users to provide Icon components with slot="icon"
-   * alongside their Menu.Item components.
-   */
-  const separateSlots = (children: React.ReactNode) => {
-    const childArray = React.Children.toArray(children);
-    return {
-      iconElement: childArray.find(
-        (child) => hasSlotProp(child) && child.props.slot === "icon"
-      ),
-      menuItems: childArray.filter(
-        (child) => !hasSlotProp(child) || child.props.slot !== "icon"
-      ),
-    };
-  };
-
-  const { iconElement, menuItems } = separateSlots(children);
+  // Separate Icon slots from Menu items
+  const childArray = React.Children.toArray(props.children);
+  const iconElement = childArray.find(
+    (child): child is React.ReactElement =>
+      React.isValidElement(child) &&
+      (child.props as { slot?: string })?.slot === "icon"
+  );
+  const menuItems = childArray.filter(
+    (child) =>
+      !React.isValidElement(child) ||
+      (child.props as { slot?: string })?.slot !== "icon"
+  );
 
   /**
    * Check if there are any actionable (enabled) Menu.Items in the children.
