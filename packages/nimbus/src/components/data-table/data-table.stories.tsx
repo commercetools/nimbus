@@ -1345,7 +1345,7 @@ export const AllFeatures: Story = {
               )}
             </Flex>
             {selectionMode !== "none" && (
-              <Text fontSize="350" color="neutral.12">
+              <Text fontSize="350" color="neutral.11">
                 <Text as="span" fontWeight="600">
                   Selected:
                 </Text>{" "}
