@@ -26,6 +26,36 @@ export interface DataTableRowProps<T extends object = Record<string, unknown>> {
   depth?: number;
 }
 
+/**
+ * Determines if a click event originated from an interactive element within a table row.
+ * This is crucial for preventing row click handlers from interfering with intended
+ * interactions like checkbox selection, button clicks, or other form controls.
+ *
+ * @param e - The DOM Event object from the click listener
+ * @returns Element if an interactive element was found, null otherwise
+ */
+function getIsTableRowChildElementInteractive(e: Event) {
+  // Cast target to Element since EventTarget doesn't have closest method
+  const clickedElement = e.target as Element;
+  return clickedElement?.closest(
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
+  );
+}
+
+/**
+ * Prevents event propagation when clicking on non-interactive elements.
+ * This is essential for row selection behavior - we only want selection events
+ * to bubble up when the user specifically clicks on selection controls, not
+ * when they click anywhere on the row.
+ *
+ * @param e - The DOM Event to potentially stop propagation on
+ */
+function stopPropagationToNonInteractiveElements(e: Event) {
+  const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+  if (!isInteractiveElement) {
+    e.stopPropagation();
+  }
+}
 export const DataTableRow = forwardRef(function DataTableRow<
   T extends object = Record<string, unknown>,
 >(
@@ -59,30 +89,54 @@ export const DataTableRow = forwardRef(function DataTableRow<
   const isDisabled = getIsDisabled(row.id);
 
   /**
-   * Custom row click handling implementation to work around React Aria limitations.
+   * COMPLEX ROW CLICK HANDLING - WHY THIS APPROACH IS NECESSARY
    *
-   * React Aria Components disable row actions when a row is selected, which prevents
-   * custom click handlers from working properly. This implementation uses native DOM
-   * event listeners to bypass this limitation and provide consistent row click behavior.
+   * React Aria Components has a fundamental limitation where row actions are disabled
+   * when a row is selected, which breaks custom click handlers and navigation patterns
+   * commonly expected in data tables. This implementation uses native DOM event listeners
+   * to bypass React Aria's built-in limitations and provide the following critical features:
    *
-   * @see https://github.com/adobe/react-spectrum/issues/7962
+   * 1. **Row Click Handler**: Allow users to click anywhere on a row and activate the onClick handler
+   * 2. **Smart Event Filtering**: Prevent conflicts with interactive elements (checkboxes, buttons)
+   * 3. **Selection Isolation**: Ensure row selection only happens via explicit selection controls
+   * 4. **Disabled Row Handling**: Support custom actions even on disabled rows when needed
+   * 5. **Text Selection Support**: Avoid triggering click handler when users are selecting text
+   *
+   * This approach maintains the accessibility benefits of React Aria while enabling the
+   * expected UX patterns for modern data tables. Without this implementation, users would
+   * lose the ability to invoke the rows' onClick handler once selection is enabled.
+   *
+   * @see https://github.com/adobe/react-spectrum/issues/7962 - React Aria limitation
    */
 
   /**
-   * Handles row click events with smart filtering to avoid conflicts with interactive elements.
-   * Uses native DOM Event type to be compatible with addEventListener.
+   * Handles row click events with sophisticated filtering to ensure proper UX behavior.
+   *
+   * This function implements multiple layers of click validation:
+   * - Prevents interference with interactive elements (buttons, checkboxes, inputs)
+   * - Respects text selection (users shouldn't trigger onClick handler when copying text)
+   * - Handles both enabled and disabled row states appropriately
+   * - Only triggers onClick handler when the row is explicitly marked as clickable
+   *
+   * Uses native DOM Event type to maintain compatibility with addEventListener and
+   * ensure consistent behavior across different browsers and interaction methods.
    *
    * @param e - Native DOM Event from the click listener
    */
   const handleRowClick = (e: Event) => {
-    // Cast target to Element since EventTarget doesn't have closest method
-    const clickedElement = e.target as Element;
     // Prevent row click when clicking on interactive elements to avoid conflicts
-    const isInteractiveElement = clickedElement?.closest(
-      'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
-    );
+    const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+    // Prevent row click when text is selected
+    const hasSelectedText =
+      window.getSelection()?.toString() !== undefined &&
+      window.getSelection()!.toString().length > 0;
 
-    if (!isInteractiveElement && isRowClickable && onRowClick) {
+    if (
+      !isInteractiveElement &&
+      !hasSelectedText &&
+      isRowClickable &&
+      onRowClick
+    ) {
       if (!isDisabled) {
         onRowClick(row);
       } else {
@@ -96,8 +150,16 @@ export const DataTableRow = forwardRef(function DataTableRow<
   };
 
   /**
-   * Ref to track the callback ref invocation count and store the DOM node reference.
-   * This prevents duplicate event listeners and enables proper cleanup.
+   * Ref to track callback ref invocations and store the DOM node reference.
+   *
+   * React's callback refs can be called multiple times during a component's lifecycle
+   * (on mount, re-renders, unmount), so we need to track invocation count to ensure:
+   * - Event listeners are only attached once per row instance
+   * - We maintain a reference to the DOM node for cleanup
+   * - Memory leaks are prevented by avoiding duplicate listeners
+   *
+   * The counter pattern ensures we only attach listeners on the first callback
+   * invocation when the DOM node is actually available.
    */
   const counterRef = useRef<{ count: number; node?: HTMLElement }>({
     count: 0,
@@ -105,20 +167,43 @@ export const DataTableRow = forwardRef(function DataTableRow<
   });
 
   /**
-   * Callback ref that attaches the click event listener to the row DOM element.
-   * Only attaches the listener once per row instance to prevent memory leaks.
+   * Callback ref that attaches event listeners to the row DOM element.
+   *
+   * This ref is critical for implementing custom row click behavior outside of
+   * React Aria's event system. It performs several important tasks:
+   *
+   * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
+   * 2. **Event Capture**: Uses capture phase to handle events before child elements
+   * 3. **Dual Listeners**: Attaches both pointerdown (for selection control) and mouseup (for clicks)
+   * 4. **Conditional Setup**: Only sets up listeners when the row is actually clickable
+   *
+   * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
+   * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
+   * in react-aria'a onPress handler.
+   * The mouseup listener invokes the row's onClick handler once any possible text selection has been completed.
+   * Using capture phase ensures our handlers run before any child element handlers.
    *
    * @param node - The HTMLElement reference from React's ref callback
    */
   const rowNodeRef = useCallback(
     (node: HTMLElement) => {
       counterRef.current.count += 1;
-
       // Only attach event listener on first callback invocation when row is clickable
-      if (counterRef.current.count === 1 && node && isRowClickable) {
+      if (counterRef.current.count === 1 && node) {
         counterRef.current.node = node;
-        // Use capture phase to ensure we handle the event before child elements
-        node.addEventListener("click", handleRowClick, { capture: true });
+        // Ensures that selection does not happen on row click, only when the selection cell is clicked
+        node.addEventListener(
+          // Use pointerdown event in order to capture event before it bubbles to react-aria's onPress handler
+          "pointerdown",
+          stopPropagationToNonInteractiveElements,
+          {
+            capture: true,
+          }
+        );
+        if (isRowClickable) {
+          // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
+          node.addEventListener("mouseup", handleRowClick, { capture: true });
+        }
       }
     },
     [isRowClickable, handleRowClick]
@@ -126,17 +211,32 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
   /**
    * Cleanup effect to remove event listeners when the component unmounts.
-   * This prevents memory leaks when rows are removed from the DOM (e.g., filtering, pagination).
+   *
+   * This is crucial for preventing memory leaks in dynamic table scenarios where:
+   * - Rows are filtered in/out of view
+   * - Pagination changes remove rows from the DOM
+   * - Table data is refreshed or updated
+   * - Component is unmounted during navigation
+   *
+   * Without proper cleanup, event listeners would remain attached to orphaned
+   * DOM nodes, leading to memory leaks and potential crashes in long-running applications.
+   * The cleanup runs in the effect's return function, ensuring it executes
+   * before the component is fully removed from the React tree.
    */
   useEffect(() => {
     return () => {
       if (counterRef.current.count >= 1 && counterRef.current.node) {
-        counterRef.current.node.removeEventListener("click", handleRowClick);
+        counterRef.current.node.removeEventListener(
+          "pointerdown",
+          stopPropagationToNonInteractiveElements
+        );
+        counterRef.current.node.removeEventListener("mouseup", handleRowClick);
       }
     };
   }, [handleRowClick]);
 
   // Combine the forwarded ref with our callback ref for proper DOM access
+  // This allows parent components to access the row element while maintaining our event listeners
   const rowRef = mergeRefs(ref, rowNodeRef);
 
   const { selectionBehavior } = useTableOptions();
@@ -200,7 +300,11 @@ export const DataTableRow = forwardRef(function DataTableRow<
               w="100%"
               h="100%"
             >
-              <Checkbox name="select-row" slot="selection" />
+              <Checkbox
+                name="select-row"
+                slot="selection"
+                aria-label="select row"
+              />
             </Box>
           </DataTableCell>
         )}
