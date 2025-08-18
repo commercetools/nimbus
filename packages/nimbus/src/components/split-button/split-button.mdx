@@ -20,7 +20,7 @@ A button that combines a primary action with a dropdown menu of related actions,
 
 ## Overview
 
-The SplitButton component addresses the need for interfaces that require a dominant action with several less frequently used, but still important, related options. It supports two modes: split button mode (with a separate primary action button) and regular button mode (entire button opens dropdown).
+The SplitButton component addresses the need for interfaces that require a dominant action with several less frequently used, but still important, related options. It provides a separate primary action button and a dropdown trigger for additional options.
 
 ### Resources
 
@@ -39,8 +39,8 @@ The basic SplitButton with a primary action and dropdown menu items.
 ```jsx-live
 const App = () => (
   <SplitButton
-    defaultAction="save"
     onAction={(actionId) => alert(`Action: ${actionId}`)}
+    aria-label="More save options"
   >
     <Menu.Item id="save">Save</Menu.Item>
     <Menu.Item id="save-publish">Save and Publish</Menu.Item>
@@ -56,8 +56,8 @@ A typical document management scenario with various file operations.
 ```jsx-live
 const App = () => (
   <SplitButton
-    defaultAction="share"
     onAction={(actionId) => alert(`Action: ${actionId}`)}
+    aria-label="More document actions"
   >
     <Menu.Item id="share">Share Document</Menu.Item>
     <Menu.Item id="copy-link">Copy Link</Menu.Item>
@@ -75,8 +75,8 @@ Common task management actions showing how critical (destructive) actions are hi
 ```jsx-live
 const App = () => (
   <SplitButton
-    defaultAction="complete"
     onAction={(actionId) => alert(`Action: ${actionId}`)}
+    aria-label="More task actions"
   >
     <Menu.Item id="complete">Complete Task</Menu.Item>
     <Menu.Item id="edit">Edit Task</Menu.Item>
@@ -88,21 +88,6 @@ const App = () => (
 )
 ```
 
-### Regular Button Mode
-
-When no `defaultAction` is specified, the entire button opens the dropdown.
-
-```jsx-live
-const App = () => (
-  <SplitButton onAction={(actionId) => alert(`Action: ${actionId}`)}>
-    <Menu.Item id="edit">Edit</Menu.Item>
-    <Menu.Item id="duplicate">Duplicate</Menu.Item>
-    <Menu.Item id="archive">Archive</Menu.Item>
-    <Menu.Separator />
-    <Menu.Item id="delete" isCritical>Delete</Menu.Item>
-  </SplitButton>
-)
-```
 
 ### Organized Menu Sections
 
@@ -111,8 +96,8 @@ Use Menu.Section to organize related actions into groups.
 ```jsx-live
 const App = () => (
   <SplitButton
-    defaultAction="import-export"
     onAction={(actionId) => alert(`Action: ${actionId}`)}
+    aria-label="More import and export actions"
   >
     <Menu.Item id="import-export">Import / Export</Menu.Item>
     <Menu.Section label="Add Items">
@@ -139,15 +124,15 @@ The component supports different sizes to match your interface scale.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" gap="400" alignItems="center">
-    <SplitButton size="2xs" defaultAction="option1" onAction={(id) => {}}>
+    <SplitButton size="2xs" onAction={(id) => {}} aria-label="More options">
       <Menu.Item id="option1">Option 1</Menu.Item>
       <Menu.Item id="option2">Option 2</Menu.Item>
     </SplitButton>
-    <SplitButton size="xs" defaultAction="option1" onAction={(id) => {}}>
+    <SplitButton size="xs" onAction={(id) => {}} aria-label="More options">
       <Menu.Item id="option1">Option 1</Menu.Item>
       <Menu.Item id="option2">Option 2</Menu.Item>
     </SplitButton>
-    <SplitButton size="md" defaultAction="option1" onAction={(id) => {}}>
+    <SplitButton size="md" onAction={(id) => {}} aria-label="More options">
       <Menu.Item id="option1">Option 1</Menu.Item>
       <Menu.Item id="option2">Option 2</Menu.Item>
     </SplitButton>
@@ -162,15 +147,15 @@ Choose from different visual styles to match your design system.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" gap="400" wrap="wrap">
-    <SplitButton variant="solid" tone="primary" defaultAction="action1" onAction={(id) => {}}>
+    <SplitButton variant="solid" tone="primary" onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Action 1</Menu.Item>
       <Menu.Item id="action2">Action 2</Menu.Item>
     </SplitButton>
-    <SplitButton variant="outline" tone="primary" defaultAction="action1" onAction={(id) => {}}>
+    <SplitButton variant="outline" tone="primary" onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Action 1</Menu.Item>
       <Menu.Item id="action2">Action 2</Menu.Item>
     </SplitButton>
-    <SplitButton variant="ghost" tone="primary" defaultAction="action1" onAction={(id) => {}}>
+    <SplitButton variant="ghost" tone="primary" onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Action 1</Menu.Item>
       <Menu.Item id="action2">Action 2</Menu.Item>
     </SplitButton>
@@ -185,12 +170,12 @@ You can disable the entire component or individual menu items.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" gap="400">
-    <SplitButton defaultAction="available" onAction={(id) => {}}>
+    <SplitButton onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="available">Available Action</Menu.Item>
       <Menu.Item id="disabled" isDisabled>Disabled Item</Menu.Item>
       <Menu.Item id="another">Another Action</Menu.Item>
     </SplitButton>
-    <SplitButton isDisabled defaultAction="action1" onAction={(id) => {}}>
+    <SplitButton isDisabled onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Disabled Action</Menu.Item>
       <Menu.Item id="action2">Another Action</Menu.Item>
     </SplitButton>
@@ -200,17 +185,12 @@ const App = () => (
 
 ## How It Works
 
-The SplitButton component has two modes:
+The SplitButton component provides a split-action interface:
 
-### Split Button Mode (with `defaultAction`)
-1. **Primary Button**: Executes the specified default action directly
-2. **Dropdown Trigger**: Separate arrow button opens the dropdown menu
-3. **Menu Actions**: Selecting items from the dropdown triggers the `onAction` callback
-
-### Regular Button Mode (no `defaultAction`)
-1. **Single Button**: The entire button opens the dropdown menu
-2. **Menu Selection**: Users select from the dropdown to trigger actions
-3. **Space Efficient**: Useful when all actions are equally important
+1. **Primary Button**: Automatically executes the first enabled Menu.Item action
+2. **Dropdown Trigger**: Separate arrow button opens the dropdown menu with all actions
+3. **Smart Selection**: If the first Menu.Item is disabled, automatically selects the next enabled one
+4. **Menu Actions**: Selecting items from the dropdown triggers the `onAction` callback
 
 ## Guidelines
 
@@ -218,7 +198,7 @@ The SplitButton provides a space-efficient way to present a primary action along
 
 ### Best Practices
 
-- **Clear Primary Action**: When using split mode, ensure the default action is the most common or important
+- **Order Actions by Priority**: Place the most common or important action first in your Menu.Items
 - **Related Actions**: Group logically related actions in the dropdown menu
 - **Appropriate Grouping**: Use Menu.Section to organize complex action sets
 - **Consistent Labeling**: Use clear, action-oriented labels that match your application's terminology
@@ -241,7 +221,7 @@ The SplitButton provides a space-efficient way to present a primary action along
 
 - When actions are unrelated or serve different purposes
 - For navigation between different sections or pages
-- When all actions are equally important (use regular buttons instead)
+- When all actions are equally important (use separate buttons or a Menu instead)
 - For simple binary choices (use a toggle or two separate buttons)
 - When the primary action isn't clearly more important than alternatives
 
@@ -261,8 +241,8 @@ Use the `isCritical` prop on Menu.Item to highlight destructive or irreversible 
 ```jsx-live
 const App = () => (
   <SplitButton
-    defaultAction="update"
     onAction={(actionId) => alert(`Action: ${actionId}`)}
+    aria-label="More account actions"
   >
     <Menu.Item id="update">Update Account</Menu.Item>
     <Menu.Item id="password">Change Password</Menu.Item>
@@ -278,14 +258,16 @@ const App = () => (
 
 ### Features
 
-- **Dual Modes**: Split button mode with primary action, or regular button mode
-- **Menu Integration**: Built on top of the Menu component for dropdown functionality
+- **Split Button Interface**: Primary action button with dropdown trigger
+- **Automatic Selection**: Smart primary action selection from the first enabled Menu.Item
+- **Menu Integration**: Built on top of the Menu component for dropdown functionality  
 - **Keyboard Navigation**: Full keyboard support with Tab, Enter, Space, Arrow keys, and Escape
-- **Flexible Content**: Supports icons, labels, and rich menu content through slots
+- **Flexible Content**: Supports icons and rich menu content through slots
 - **Accessible**: Built-in ARIA attributes and screen reader support
 - **Visual Variants**: Multiple size, variant, and tone options
 - **Critical Action Support**: Visual highlighting for destructive menu items
 - **Focus Management**: Proper focus trapping and restoration
+- **Smart Fallbacks**: Handles disabled items and empty menus gracefully
 
 ### Properties
 
@@ -329,8 +311,7 @@ The component provides comprehensive screen reader support:
 ```jsx-live
 const App = () => (
   <SplitButton
-    defaultAction="send"
-    aria-label="Send message with additional options"
+    aria-label="More sending options"
     onAction={(actionId) => alert(`Action: ${actionId}`)}
   >
     <Menu.Item id="send">Send Message</Menu.Item>

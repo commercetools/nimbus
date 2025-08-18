@@ -19,9 +19,9 @@ export type * from "./split-button.types";
  *
  * A split-button component that combines a primary action button with a dropdown menu.
  *
- * Supports two modes:
- * - Split button mode: When `defaultAction` is provided, shows primary action + dropdown trigger
- * - Regular button mode: When no `defaultAction`, entire button opens dropdown
+ * Shows a primary action button + dropdown trigger. The primary button automatically
+ * executes the first enabled Menu.Item action, while the dropdown trigger opens a menu
+ * with all available options.
  *
  * Use with Menu.Item, Menu.Section, and Menu.Separator components for content.
  */
@@ -30,7 +30,6 @@ export const SplitButton = (props: SplitButtonProps) => {
     size = "md",
     variant = "solid",
     tone,
-    defaultAction,
     isDisabled = false,
     "aria-label": ariaLabel,
     onAction,
@@ -103,8 +102,8 @@ export const SplitButton = (props: SplitButtonProps) => {
   };
 
   /**
-   * Separate icon/label slots from menu items.
-   * This allows users to provide Icon components with slot="icon" and Text components with slot="label"
+   * Separate icon slots from menu items.
+   * This allows users to provide Icon components with slot="icon"
    * alongside their Menu.Item components.
    */
   const separateSlots = (children: React.ReactNode) => {
@@ -113,62 +112,13 @@ export const SplitButton = (props: SplitButtonProps) => {
       iconElement: childArray.find(
         (child) => hasSlotProp(child) && child.props.slot === "icon"
       ),
-      labelElement: childArray.find(
-        (child) => hasSlotProp(child) && child.props.slot === "label"
-      ),
       menuItems: childArray.filter(
-        (child) =>
-          !hasSlotProp(child) ||
-          (child.props.slot !== "icon" && child.props.slot !== "label")
+        (child) => !hasSlotProp(child) || child.props.slot !== "icon"
       ),
     };
   };
 
-  const { iconElement, labelElement, menuItems } = separateSlots(children);
-
-  /**
-   * Find a specific Menu.Item by ID to populate the primary button content in split mode.
-   * This searches through Menu.Items (including those nested in Menu.Sections).
-   *
-   * @param children - The menu children to search through
-   * @param targetId - The ID of the Menu.Item we want to find
-   * @returns The Menu.Item content and properties, or null if not found
-   */
-  const findMenuItemById = (
-    children: React.ReactNode,
-    targetId: string
-  ): {
-    content: React.ReactNode;
-    isDisabled: boolean;
-    isCritical: boolean;
-  } | null => {
-    let found: {
-      content: React.ReactNode;
-      isDisabled: boolean;
-      isCritical: boolean;
-    } | null = null;
-
-    React.Children.forEach(children, (child) => {
-      if (found) return;
-
-      // Direct Menu.Item match
-      if (isMenuItemWithId(child) && child.props.id === targetId) {
-        found = {
-          content: child.props.children,
-          isDisabled: child.props.isDisabled || false,
-          isCritical: child.props.isCritical || false,
-        };
-        return;
-      }
-
-      // Recurse into Menu.Section or any component with children
-      if (hasChildren(child)) {
-        found = findMenuItemById(child.props.children, targetId);
-      }
-    });
-
-    return found;
-  };
+  const { iconElement, menuItems } = separateSlots(children);
 
   /**
    * Check if there are any actionable (enabled) Menu.Items in the children.
@@ -196,147 +146,105 @@ export const SplitButton = (props: SplitButtonProps) => {
   };
 
   /**
-   * Get the primary button content for split mode.
-   * Uses defaultAction if provided, otherwise shows standard fallback text.
-   * This is the main function that resolves "what should the primary button show?".
+   * Find the primary Menu.Item using the same logic as the original PrimaryActionDropdown.
+   * Selects the first enabled Menu.Item, or falls back to the first Menu.Item if all are disabled.
    */
-  const getPrimaryButtonContent = (): {
-    content: React.ReactNode;
-    isDisabled: boolean;
-    actionId: string | null;
-  } => {
-    // If defaultAction is specified, try to use it directly
-    if (defaultAction) {
-      const item = findMenuItemById(menuItems, defaultAction);
-      if (item) {
-        return {
-          content: item.content,
-          isDisabled: item.isDisabled || false,
-          actionId: defaultAction,
-        };
-      }
-    }
+  const findPrimaryMenuItem = () => {
+    const allMenuItems: Array<{
+      content: React.ReactNode;
+      isDisabled: boolean;
+      actionId: string | null;
+    }> = [];
 
-    // If no defaultAction found or no defaultAction specified, show standard fallback
-    return {
-      // TODO: localize this
-      content: "No actions available",
-      isDisabled: true,
-      actionId: null,
+    // Recursively collect all Menu.Items from children (including nested ones)
+    const collectMenuItems = (children: React.ReactNode): void => {
+      React.Children.forEach(children, (child) => {
+        if (isMenuItemWithId(child)) {
+          allMenuItems.push({
+            content: child.props.children,
+            isDisabled: child.props.isDisabled || false,
+            actionId: child.props.id,
+          });
+        }
+
+        // Recurse into Menu.Section or any component with children
+        if (hasChildren(child)) {
+          collectMenuItems(child.props.children);
+        }
+      });
     };
-  };
 
-  // Determine if we're in "split button" mode (with defaultAction) or "regular button" mode (no defaultAction)
-  const isSplitButtonMode = defaultAction !== undefined;
+    collectMenuItems(menuItems);
+
+    // Find first enabled Menu.Item, or fallback to first Menu.Item
+    const primaryMenuItem =
+      allMenuItems.find((item) => !item.isDisabled) || allMenuItems[0];
+
+    return (
+      primaryMenuItem || {
+        // TODO: Localize this
+        content: "No actions available",
+        isDisabled: true,
+        actionId: null,
+      }
+    );
+  };
 
   // Check if there are any actionable menu items for dropdown functionality
   const hasActionableItems = hasActionableMenuItems(menuItems);
 
-  /**
-   * Resolve what content to show on the primary button based on the current mode:
-   * - Split mode: Use Menu.Item content (from defaultAction or first available)
-   * - Regular mode: Use label slot content
-   */
-  const buttonContent = isSplitButtonMode
-    ? getPrimaryButtonContent()
-    : {
-        content:
-          labelElement && hasSlotProp(labelElement)
-            ? labelElement.props.children
-            : // TODO: localize this
-              "Select an option",
-        isDisabled: false,
-        actionId: null,
-      };
+  // Get the primary button content using smart selection
+  const buttonContent = findPrimaryMenuItem();
 
   const executePrimaryAction = () => {
-    if (buttonContent.actionId && !buttonContent.isDisabled && onAction) {
+    if (!buttonContent.isDisabled && buttonContent.actionId && onAction) {
       onAction(buttonContent.actionId);
     }
   };
 
   const isPrimaryDisabled = isDisabled || buttonContent.isDisabled;
-
-  // In regular mode, if there are no actionable items, the entire button should be disabled
-  // In split mode, only disable the dropdown trigger if there are no actionable items
   const isDropdownTriggerDisabled = isDisabled || !hasActionableItems;
-  const isRegularButtonDisabled = isSplitButtonMode
-    ? isPrimaryDisabled
-    : isDropdownTriggerDisabled;
 
   return (
-    <SplitButtonRootSlot
-      variant={variant}
-      data-mode={isSplitButtonMode ? "split" : "regular"}
-    >
-      {isSplitButtonMode ? (
-        // Split Button Mode: Separate primary button + dropdown trigger
-        <SplitButtonButtonGroupSlot>
-          {/* Primary Action Button - Internal to component */}
-          <SplitButtonPrimaryButtonSlot asChild>
-            <Button
-              {...buttonProps}
-              isDisabled={isPrimaryDisabled}
-              onPress={executePrimaryAction}
-            >
-              {iconElement}
-              {buttonContent.content}
-            </Button>
-          </SplitButtonPrimaryButtonSlot>
-
-          {/* Menu Trigger and Dropdown */}
-          <Menu.Root
-            trigger="press"
-            isOpen={isOpen}
-            defaultOpen={defaultOpen}
-            onOpenChange={onOpenChange}
-            placement="bottom end"
-            selectionMode="none"
-            onAction={onAction ? (key) => onAction(String(key)) : undefined}
+    <SplitButtonRootSlot variant={variant} data-mode="split">
+      <SplitButtonButtonGroupSlot>
+        {/* Primary Action Button */}
+        <SplitButtonPrimaryButtonSlot asChild>
+          <Button
+            {...buttonProps}
+            isDisabled={isPrimaryDisabled}
+            onPress={executePrimaryAction}
           >
-            <Menu.Trigger asChild>
-              <SplitButtonTriggerSlot asChild>
-                <IconButton
-                  {...buttonProps}
-                  aria-label={ariaLabel}
-                  isDisabled={isDropdownTriggerDisabled}
-                >
-                  <KeyboardArrowDown />
-                </IconButton>
-              </SplitButtonTriggerSlot>
-            </Menu.Trigger>
+            {iconElement}
+            {buttonContent.content}
+          </Button>
+        </SplitButtonPrimaryButtonSlot>
 
-            <Menu.Content>{menuItems}</Menu.Content>
-          </Menu.Root>
-        </SplitButtonButtonGroupSlot>
-      ) : (
-        // Regular Button Mode: Single button that opens dropdown on click
+        {/* Menu Trigger and Dropdown */}
         <Menu.Root
           trigger="press"
           isOpen={isOpen}
           defaultOpen={defaultOpen}
           onOpenChange={onOpenChange}
-          placement="bottom start"
+          placement="bottom end"
           selectionMode="none"
           onAction={onAction ? (key) => onAction(String(key)) : undefined}
         >
           <Menu.Trigger asChild>
-            <SplitButtonPrimaryButtonSlot asChild>
-              <Button
+            <SplitButtonTriggerSlot asChild>
+              <IconButton
                 {...buttonProps}
-                isDisabled={isRegularButtonDisabled}
                 aria-label={ariaLabel}
+                isDisabled={isDropdownTriggerDisabled}
               >
-                {iconElement}
-                {buttonContent.content}
                 <KeyboardArrowDown />
-              </Button>
-            </SplitButtonPrimaryButtonSlot>
+              </IconButton>
+            </SplitButtonTriggerSlot>
           </Menu.Trigger>
 
           <Menu.Content>{menuItems}</Menu.Content>
         </Menu.Root>
-      )}
+      </SplitButtonButtonGroupSlot>
     </SplitButtonRootSlot>
   );
 };

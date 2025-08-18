@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { useState } from "react";
 import { SplitButton } from "./index";
-import { Stack, Icon, Text } from "@/components";
+import { Stack, Icon } from "@/components";
 import { Menu } from "@/components/menu";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
 
@@ -23,7 +22,6 @@ export const Basic: Story = {
   render: () => (
     <SplitButton
       defaultOpen={true}
-      defaultAction="save"
       onAction={(id) => console.log(`Action: ${id}`)}
       aria-label="More actions"
     >
@@ -198,11 +196,7 @@ export const WithComplexContent: Story = {
 export const SizeVariants: Story = {
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
-      <SplitButton
-        size="2xs"
-        onAction={fn()}
-        aria-label="Size variant actions"
-      >
+      <SplitButton size="2xs" onAction={fn()} aria-label="Size variant actions">
         <Icon slot="icon">
           <Save />
         </Icon>
@@ -210,11 +204,7 @@ export const SizeVariants: Story = {
         <Menu.Item id="action2">Action 2</Menu.Item>
       </SplitButton>
 
-      <SplitButton
-        size="xs"
-        onAction={fn()}
-        aria-label="Size variant actions"
-      >
+      <SplitButton size="xs" onAction={fn()} aria-label="Size variant actions">
         <Icon slot="icon">
           <Save />
         </Icon>
@@ -222,141 +212,13 @@ export const SizeVariants: Story = {
         <Menu.Item id="action2">Action 2</Menu.Item>
       </SplitButton>
 
-      <SplitButton
-        size="md"
-        onAction={fn()}
-        aria-label="Size variant actions"
-      >
+      <SplitButton size="md" onAction={fn()} aria-label="Size variant actions">
         <Icon slot="icon">
           <Save />
         </Icon>
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
       </SplitButton>
-    </Stack>
-  ),
-};
-
-export const RegularButtonVariants: Story = {
-  render: () => (
-    <Stack gap="600">
-      {/* Regular Button Mode - Size Variants */}
-      <Stack>
-        <h3>Regular Button Sizes (data-mode='regular')</h3>
-        <Stack direction="row" gap="400" alignItems="center">
-          <SplitButton
-            size="2xs"
-            variant="solid"
-            tone="primary"
-            onAction={fn()}
-            aria-label="Regular button actions"
-          >
-            <Text slot="label">Actions</Text>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-
-          <SplitButton
-            size="xs"
-            variant="solid"
-            tone="primary"
-            onAction={fn()}
-            aria-label="Regular button actions"
-          >
-            <Text slot="label">Actions</Text>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-
-          <SplitButton
-            size="md"
-            variant="solid"
-            tone="primary"
-            onAction={fn()}
-            aria-label="Regular button actions"
-          >
-            <Text slot="label">Actions</Text>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-        </Stack>
-      </Stack>
-
-      {/* Regular Button Mode - Style Variants */}
-      <Stack>
-        <h3>Regular Button Style Variants</h3>
-        <Stack direction="row" gap="400" wrap="wrap">
-          <SplitButton
-            variant="solid"
-            tone="primary"
-            onAction={fn()}
-            aria-label="Solid primary actions"
-          >
-            <Text slot="label">Solid Primary</Text>
-            <Icon slot="icon">
-              <Save />
-            </Icon>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-
-          <SplitButton
-            variant="subtle"
-            tone="neutral"
-            onAction={fn()}
-            aria-label="Subtle neutral actions"
-          >
-            <Text slot="label">Subtle Neutral</Text>
-            <Icon slot="icon">
-              <Save />
-            </Icon>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-
-          <SplitButton
-            variant="outline"
-            tone="primary"
-            onAction={fn()}
-            aria-label="Outline primary actions"
-          >
-            <Text slot="label">Outline Primary</Text>
-            <Icon slot="icon">
-              <Save />
-            </Icon>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-
-          <SplitButton
-            variant="outline"
-            tone="critical"
-            onAction={fn()}
-            aria-label="Outline critical actions"
-          >
-            <Text slot="label">Outline Critical</Text>
-            <Icon slot="icon">
-              <Save />
-            </Icon>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-
-          <SplitButton
-            variant="ghost"
-            tone="primary"
-            onAction={fn()}
-            aria-label="Ghost primary actions"
-          >
-            <Text slot="label">Ghost Primary</Text>
-            <Icon slot="icon">
-              <Save />
-            </Icon>
-            <Menu.Item id="action1">Action 1</Menu.Item>
-            <Menu.Item id="action2">Action 2</Menu.Item>
-          </SplitButton>
-        </Stack>
-      </Stack>
     </Stack>
   ),
 };
@@ -369,7 +231,6 @@ export const SplitButtonVariants: Story = {
         <h3>Split Button Sizes (data-mode='split')</h3>
         <Stack direction="row" gap="400" alignItems="center">
           <SplitButton
-            defaultAction="save"
             size="2xs"
             variant="solid"
             tone="primary"
@@ -384,7 +245,6 @@ export const SplitButtonVariants: Story = {
           </SplitButton>
 
           <SplitButton
-            defaultAction="save"
             size="xs"
             variant="solid"
             tone="primary"
@@ -399,7 +259,6 @@ export const SplitButtonVariants: Story = {
           </SplitButton>
 
           <SplitButton
-            defaultAction="save"
             size="md"
             variant="solid"
             tone="primary"
@@ -420,7 +279,6 @@ export const SplitButtonVariants: Story = {
         <h3>Split Button Style Variants</h3>
         <Stack direction="row" gap="400" wrap="wrap">
           <SplitButton
-            defaultAction="save"
             variant="solid"
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
@@ -434,7 +292,6 @@ export const SplitButtonVariants: Story = {
           </SplitButton>
 
           <SplitButton
-            defaultAction="save"
             variant="subtle"
             tone="neutral"
             onAction={(id) => alert(`${id} clicked!`)}
@@ -448,7 +305,6 @@ export const SplitButtonVariants: Story = {
           </SplitButton>
 
           <SplitButton
-            defaultAction="save"
             variant="outline"
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
@@ -462,7 +318,6 @@ export const SplitButtonVariants: Story = {
           </SplitButton>
 
           <SplitButton
-            defaultAction="save"
             variant="outline"
             tone="critical"
             onAction={(id) => alert(`${id} clicked!`)}
@@ -476,7 +331,6 @@ export const SplitButtonVariants: Story = {
           </SplitButton>
 
           <SplitButton
-            defaultAction="save"
             variant="ghost"
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
@@ -497,11 +351,7 @@ export const SplitButtonVariants: Story = {
 export const DisabledStates: Story = {
   render: () => (
     <Stack direction="row" gap="400">
-      <SplitButton
-        isDisabled
-        onAction={fn()}
-        aria-label="Disabled actions"
-      >
+      <SplitButton isDisabled onAction={fn()} aria-label="Disabled actions">
         <Icon slot="icon">
           <Save />
         </Icon>
@@ -523,154 +373,74 @@ export const DisabledStates: Story = {
   ),
 };
 
-export const ControlledExample: Story = {
-  render: () => {
-    const [defaultAction, setDefaultAction] = useState("save");
-
-    return (
-      <div>
-        <p style={{ marginBottom: "16px" }}>
-          Current primary action: <strong>{defaultAction}</strong>
-        </p>
-        <SplitButton
-          defaultAction={defaultAction}
-          onAction={(id) => alert(`${id} clicked!`)}
-          aria-label="Controlled example actions"
-        >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
-          <Menu.Item id="save">Save</Menu.Item>
-          <Menu.Item id="save-publish">Save and publish</Menu.Item>
-          <Menu.Item id="save-next">Save and open next</Menu.Item>
-        </SplitButton>
-        <p style={{ marginTop: "16px", fontSize: "14px", color: "#666" }}>
-          The primary button always shows the default action (first option).
-          Selecting from dropdown executes actions but doesn't change the
-          primary button.
-        </p>
-        <button
-          onClick={() =>
-            setDefaultAction(defaultAction === "save" ? "save-publish" : "save")
-          }
-        >
-          Toggle Default Action
-        </button>
-      </div>
-    );
-  },
-};
-
-export const RegularButtonMode: Story = {
+export const AutomaticSelectionDemo: Story = {
   render: () => (
-    <Stack direction="column" gap="400">
-      <div>
-        <h3>Regular Button Mode (no defaultAction)</h3>
-        <p>Clicking anywhere on the button opens the dropdown</p>
-        <SplitButton
-          aria-label="Import and export options"
-          onAction={(id) => alert(`${id} clicked!`)}
-        >
-          <Text slot="label">Import / Export</Text>
-          <Menu.Item id="add-product">Add product</Menu.Item>
-          <Menu.Item id="add-category">Add category</Menu.Item>
-          <Menu.Item id="add-customer">Add customer</Menu.Item>
-          <Menu.Item id="import-csv">Import products from csv</Menu.Item>
-          <Menu.Item id="export-csv">Export products to csv</Menu.Item>
-        </SplitButton>
-      </div>
-
-      <div>
-        <h3>Split Button Mode (with defaultAction)</h3>
-        <p>Primary button executes action, arrow opens dropdown</p>
-        <SplitButton
-          defaultAction="save"
-          onAction={(id) => alert(`${id} clicked!`)}
-          aria-label="Split button save actions"
-        >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
-          <Menu.Item id="save">Save</Menu.Item>
-          <Menu.Item id="save-publish">Save and publish</Menu.Item>
-          <Menu.Item id="save-next">Save and open next</Menu.Item>
-        </SplitButton>
-      </div>
-    </Stack>
+    <div>
+      <p style={{ marginBottom: "16px" }}>
+        The component automatically selects the first enabled option as the
+        primary action.
+      </p>
+      <SplitButton
+        onAction={(id) => alert(`${id} clicked!`)}
+        aria-label="Automatic selection demo"
+      >
+        <Icon slot="icon">
+          <Save />
+        </Icon>
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="save-publish">Save and publish</Menu.Item>
+        <Menu.Item id="save-next">Save and open next</Menu.Item>
+      </SplitButton>
+      <p style={{ marginTop: "16px", fontSize: "14px", color: "#666" }}>
+        The primary button shows "Save" because it's the first enabled
+        Menu.Item. All actions are available in the dropdown.
+      </p>
+    </div>
   ),
 };
 
 export const WithSections: Story = {
   render: () => (
-    <Stack direction="column" gap="400">
-      <div>
-        <h3>Sectioned Menu (Split Button Mode)</h3>
-        <p>Using sections and separators to organize actions</p>
-        <SplitButton
-          defaultAction="save"
-          onAction={(id) => alert(`${id} clicked!`)}
-          aria-label="Sectioned document actions"
-        >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
+    <div>
+      <h3>Sectioned Menu</h3>
+      <p>Using sections and separators to organize actions</p>
+      <SplitButton
+        onAction={(id) => alert(`${id} clicked!`)}
+        aria-label="Sectioned document actions"
+      >
+        <Icon slot="icon">
+          <Save />
+        </Icon>
 
-          <Menu.Section label="File Actions">
-            <Menu.Item id="save">Save Document</Menu.Item>
-            <Menu.Item id="save-as">Save As Copy</Menu.Item>
-            <Menu.Item id="export">Export PDF</Menu.Item>
-          </Menu.Section>
+        <Menu.Section label="File Actions">
+          <Menu.Item id="save">Save Document</Menu.Item>
+          <Menu.Item id="save-as">Save As Copy</Menu.Item>
+          <Menu.Item id="export">Export PDF</Menu.Item>
+        </Menu.Section>
 
-          <Menu.Separator />
+        <Menu.Separator />
 
-          <Menu.Section label="Share">
-            <Menu.Item id="share-link">Share Link</Menu.Item>
-            <Menu.Item id="send-email">Send via Email</Menu.Item>
-          </Menu.Section>
+        <Menu.Section label="Share">
+          <Menu.Item id="share-link">Share Link</Menu.Item>
+          <Menu.Item id="send-email">Send via Email</Menu.Item>
+        </Menu.Section>
 
-          <Menu.Separator />
+        <Menu.Separator />
 
-          <Menu.Section label="Manage">
-            <Menu.Item id="archive">Archive</Menu.Item>
-            <Menu.Item id="delete" isCritical>
-              Delete Document
-            </Menu.Item>
-          </Menu.Section>
-        </SplitButton>
-      </div>
-
-      <div>
-        <h3>Sectioned Menu (Regular Button Mode)</h3>
-        <p>Sections also work in regular button mode</p>
-        <SplitButton
-          onAction={(id) => alert(`${id} clicked!`)}
-          aria-label="Task management actions"
-        >
-          <Text slot="label">Manage Tasks</Text>
-          <Menu.Section label="Create">
-            <Menu.Item id="new-task">New Task</Menu.Item>
-            <Menu.Item id="new-project">New Project</Menu.Item>
-          </Menu.Section>
-
-          <Menu.Separator />
-
-          <Menu.Section label="Import">
-            <Menu.Item id="import-csv">Import from CSV</Menu.Item>
-            <Menu.Item id="import-json">Import from JSON</Menu.Item>
-          </Menu.Section>
-        </SplitButton>
-      </div>
-    </Stack>
+        <Menu.Section label="Manage">
+          <Menu.Item id="archive">Archive</Menu.Item>
+          <Menu.Item id="delete" isCritical>
+            Delete Document
+          </Menu.Item>
+        </Menu.Section>
+      </SplitButton>
+    </div>
   ),
 };
 
 export const AccessibilityTest: Story = {
   render: () => (
-    <SplitButton
-      aria-label="More sending options"
-      defaultAction="send"
-      onAction={fn()}
-    >
+    <SplitButton aria-label="More sending options" onAction={fn()}>
       <Icon slot="icon">
         <Save />
       </Icon>
@@ -775,24 +545,28 @@ export const AccessibilityTest: Story = {
 export const EdgeCasesAndFallbacks: Story = {
   render: () => (
     <Stack direction="column" gap="600">
-      {/* Edge Case: defaultAction not found */}
+      {/* Edge Case: First option disabled */}
       <Stack direction="column" gap="200">
-        <h3>Edge Case: defaultAction Not Found</h3>
-        <p>When defaultAction="nonexistent" but no Menu.Item has that ID</p>
+        <h3>Edge Case: First Option Disabled</h3>
+        <p>
+          When the first Menu.Item is disabled, the component automatically
+          selects the next enabled option
+        </p>
         <SplitButton
-          defaultAction="nonexistent"
-          aria-label="Missing default action test"
+          aria-label="Disabled first option test"
           onAction={(id) => alert(`Action: ${id}`)}
         >
           <Icon slot="icon">
             <Save />
           </Icon>
-          <Menu.Item id="save">Save Document</Menu.Item>
+          <Menu.Item id="save" isDisabled>
+            Save Document
+          </Menu.Item>
           <Menu.Item id="export">Export PDF</Menu.Item>
         </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
-          Expected: Primary button shows "No actions available" and is disabled,
-          but dropdown trigger is enabled (since there are valid menu items)
+          Expected: Primary button shows "Export PDF" (first enabled option) and
+          is enabled
         </p>
       </Stack>
 
@@ -801,7 +575,6 @@ export const EdgeCasesAndFallbacks: Story = {
         <h3>Edge Case: No Menu Items</h3>
         <p>Component with no Menu.Item children</p>
         <SplitButton
-          defaultAction="save"
           aria-label="No menu items test"
           onAction={(id) => alert(`Action: ${id}`)}
         >
@@ -819,10 +592,10 @@ export const EdgeCasesAndFallbacks: Story = {
       <Stack direction="column" gap="200">
         <h3>Edge Case: All Menu Items Disabled</h3>
         <p>
-          defaultAction points to disabled item, all other items disabled too
+          When all Menu.Items are disabled, the component uses the first one but
+          disables everything
         </p>
         <SplitButton
-          defaultAction="save"
           aria-label="All disabled items test"
           onAction={(id) => alert(`Action: ${id}`)}
         >
@@ -837,8 +610,7 @@ export const EdgeCasesAndFallbacks: Story = {
           </Menu.Item>
         </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
-          Expected: Button shows "Save Document" but is disabled (honors
-          defaultAction even if disabled)
+          Expected: Button shows "Save Document" (first option) but is disabled
         </p>
       </Stack>
 
@@ -847,7 +619,6 @@ export const EdgeCasesAndFallbacks: Story = {
         <h3>Edge Case: Empty Menu Section</h3>
         <p>Menu.Section with no Menu.Item children</p>
         <SplitButton
-          defaultAction="save"
           aria-label="Empty section test"
           onAction={(id) => alert(`Action: ${id}`)}
         >
@@ -863,32 +634,11 @@ export const EdgeCasesAndFallbacks: Story = {
         </p>
       </Stack>
 
-      {/* Edge Case: Regular mode with no label slot */}
-      <Stack direction="column" gap="200">
-        <h3>Edge Case: Regular Mode No Label</h3>
-        <p>Regular button mode without label slot</p>
-        <SplitButton
-          aria-label="No label slot test"
-          onAction={(id) => alert(`Action: ${id}`)}
-        >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
-          <Menu.Item id="save">Save Document</Menu.Item>
-          <Menu.Item id="export">Export PDF</Menu.Item>
-          {/* No Text slot="label" */}
-        </SplitButton>
-        <p style={{ fontSize: "12px", color: "#666" }}>
-          Expected: Button shows "Select an option" as fallback text
-        </p>
-      </Stack>
-
       {/* Edge Case: Menu.Item without ID */}
       <Stack direction="column" gap="200">
         <h3>Edge Case: Menu Items Without IDs</h3>
         <p>Some Menu.Items missing id props</p>
         <SplitButton
-          defaultAction="valid"
           aria-label="Missing ID test"
           onAction={(id) => alert(`Action: ${id}`)}
         >
@@ -900,7 +650,8 @@ export const EdgeCasesAndFallbacks: Story = {
           <Menu.Item>Another No ID</Menu.Item>
         </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
-          Expected: Button shows "Valid Item" (skips items without IDs)
+          Expected: Button shows "Valid Item" (automatically selects first valid
+          Menu.Item)
         </p>
       </Stack>
     </Stack>
@@ -909,29 +660,27 @@ export const EdgeCasesAndFallbacks: Story = {
     const localCanvas = within(canvasElement);
 
     await step(
-      "Test defaultAction not found - should show fallback",
+      "Test disabled first option - should select next enabled",
       async () => {
         // Find the first test case by its header
         const testHeader = localCanvas.getByText(
-          "Edge Case: defaultAction Not Found"
+          "Edge Case: First Option Disabled"
         );
         const testContainer = testHeader.closest("div")!;
         const testCanvas = within(testContainer);
 
         const buttons = testCanvas.getAllByRole("button", { hidden: true });
         const primaryButton = buttons.find((btn) =>
-          btn.textContent?.includes("No actions available")
+          btn.textContent?.includes("Export PDF")
         );
         const dropdownTrigger = buttons.find((btn) =>
-          btn
-            .getAttribute("aria-label")
-            ?.includes("Missing default action test")
+          btn.getAttribute("aria-label")?.includes("Disabled first option test")
         );
 
         expect(primaryButton).toBeInTheDocument();
-        expect(primaryButton).toBeDisabled();
+        expect(primaryButton).not.toBeDisabled();
         expect(dropdownTrigger).toBeInTheDocument();
-        expect(dropdownTrigger).not.toBeDisabled(); // Should be enabled since there are valid menu items
+        expect(dropdownTrigger).not.toBeDisabled();
       }
     );
 
@@ -955,7 +704,7 @@ export const EdgeCasesAndFallbacks: Story = {
     });
 
     await step(
-      "Test disabled defaultAction - should show content but be disabled",
+      "Test all disabled items - should show first but be disabled",
       async () => {
         const testHeader = localCanvas.getByText(
           "Edge Case: All Menu Items Disabled"
@@ -975,25 +724,6 @@ export const EdgeCasesAndFallbacks: Story = {
         expect(primaryButton).toBeDisabled();
         expect(dropdownTrigger).toBeInTheDocument();
         expect(dropdownTrigger).toBeDisabled();
-      }
-    );
-
-    await step(
-      "Test regular mode no label - should show fallback",
-      async () => {
-        const testHeader = localCanvas.getByText(
-          "Edge Case: Regular Mode No Label"
-        );
-        const testContainer = testHeader.closest("div")!;
-        const testCanvas = within(testContainer);
-
-        const buttons = testCanvas.getAllByRole("button", { hidden: true });
-        const primaryButton = buttons.find((btn) =>
-          btn.textContent?.includes("Select an option")
-        );
-
-        expect(primaryButton).toBeInTheDocument();
-        expect(primaryButton).not.toBeDisabled();
       }
     );
 
