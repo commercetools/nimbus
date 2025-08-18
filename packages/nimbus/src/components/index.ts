@@ -34,6 +34,7 @@ export * from "./form-field";
 export * from "./icon";
 export * from "./loading-spinner";
 export * from "./password-input";
+export * from "./split-button";
 export * from "./time-input";
 export * from "./multiline-text-input";
 export * from "./radio-input";
