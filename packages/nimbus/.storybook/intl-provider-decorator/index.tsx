@@ -90,16 +90,13 @@ export const WithIntlDecorator: Decorator = (Story, context) => {
   useEffect(() => {
     async function fetchLocale(locale: string) {
       try {
-        console.log(`Loading locale: ${locale}`); //TODO: Remove this
         const messagesForLocale = await getMessagesForLocale(locale);
-        console.log("Loaded messages:", messagesForLocale); //TODO: Remove this
         const normalizedMessages = formatTranslations(messagesForLocale);
         setMessages(normalizedMessages);
       } catch (error) {
-        console.warn(`Failed to load messages for locale ${locale}`, error); //TODO: Remove this?
-        const englishMessages = await getMessagesForLocale("en");
-        const normalizedMessages = formatTranslations(englishMessages);
-        setMessages(normalizedMessages);
+        console.warn(`Failed to load messages for locale ${locale}`, error);
+        // For tests, use empty messages instead of trying to load again
+        setMessages({});
       } finally {
         setIsLoading(false);
       }
@@ -108,8 +105,13 @@ export const WithIntlDecorator: Decorator = (Story, context) => {
     fetchLocale(locale);
   }, [locale]);
 
+  // If still loading, render with empty messages for tests
   if (isLoading) {
-    return <>Loading translations...</>;
+    return (
+      <IntlProvider locale={locale} messages={{}} defaultLocale="en">
+        <Story {...context} />
+      </IntlProvider>
+    );
   }
 
   return (
