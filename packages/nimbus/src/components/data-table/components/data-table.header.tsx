@@ -42,7 +42,8 @@ export const DataTableHeader = forwardRef<
         <DataTableColumn
           id="selection"
           className="selection-column-header"
-          width={70}
+          maxWidth={72}
+          minWidth={72}
           allowsSorting={false}
           isInternalColumn={true}
         >
@@ -51,10 +52,9 @@ export const DataTableHeader = forwardRef<
       )}
       {showExpandColumn && (
         <DataTableColumn
-          id="expand"
-          width={20}
-          minWidth={20}
-          maxWidth={20}
+          className="expand-column-header"
+          maxWidth={24}
+          minWidth={24}
           allowsSorting={false}
           aria-label="Expand rows"
           isInternalColumn={true}
@@ -79,7 +79,7 @@ export const DataTableHeader = forwardRef<
               isInternalColumn={isDetailsColumn}
               width={column.width}
               defaultWidth={column.defaultWidth}
-              minWidth={column.minWidth}
+              minWidth={column.minWidth ?? 150}
               maxWidth={column.maxWidth}
               column={column}
             >

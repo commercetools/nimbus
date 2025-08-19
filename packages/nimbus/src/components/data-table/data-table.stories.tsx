@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
-import type { Selection } from "react-aria-components";
+import { useState, isValidElement, type ReactNode } from "react";
+import { type Selection, useLocale } from "react-aria-components";
 import {
   Stack,
   TextInput,
@@ -18,6 +18,8 @@ import {
   columns,
   sortableColumns,
   data,
+  mcMockData,
+  mcColumns,
   longTextData,
   truncationColumns,
   comprehensiveData,
@@ -44,6 +46,7 @@ type ModalState = {
 
   children: React.ReactNode;
 };
+
 const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
   <Dialog.Root
     open={isOpen}
@@ -61,14 +64,112 @@ const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
   </Dialog.Root>
 );
 
+type DetailsModalItemProps = {
+  label: string;
+  value: ReactNode;
+};
+
+const DetailsModalItem = ({ label, value }: DetailsModalItemProps) =>
+  label !== "children" &&
+  !isValidElement(value) && (
+    <Flex gap="200" as="li">
+      <Text color="neutral.11" as="label" id={`${label}-${value}`}>
+        {label}:
+      </Text>
+      <Text
+        fontFamily={label === "ID" ? "mono" : undefined}
+        aria-labelledby={`${label}-${value}`}
+      >
+        {value as string}
+      </Text>
+    </Flex>
+  );
+
+type ProductDetailsModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  row?: DataTableRowItem;
+};
+
+const ProductDetailsModal = ({
+  isOpen,
+  onClose,
+  row,
+}: ProductDetailsModalProps) => {
+  if (!row) return null;
+  const { locale } = useLocale();
+  console.log(locale);
+  // Extract product data from commercetools structure
+  const productName = row.name || "Unknown Product";
+  const productSlug = row.slug || "";
+  const productType = row.productType || "";
+  const createdAt = row.createdAt || "";
+  const lastModifiedAt = row.lastModifiedAt || "";
+
+  const version = row.version || "";
+  // put ct data into array to reduce repetition of components in render
+  const detailItems: DetailsModalItemProps[] = [
+    { label: "Name", value: productName as string },
+    { label: "Slug", value: productSlug as string },
+    { label: "Type", value: productType as string },
+    { label: "Version", value: version as string },
+    { label: "Created", value: createdAt as string },
+    { label: "Modified", value: lastModifiedAt as string },
+  ];
+  return (
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={({ open }) => !open && onClose && onClose()}
+    >
+      <Dialog.Content maxWidth="600px">
+        <Dialog.Header>
+          <Dialog.Title>{productName as string} - Product Details</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <Stack gap="400">
+            {/* Product Information */}
+            <Box>
+              <Text as="h2" fontWeight="500" mb="200">
+                Product Information
+              </Text>
+              <Stack as="ul" listStyle="none" gap="200">
+                {detailItems.map((item) => (
+                  <DetailsModalItem key={item.label} {...item} />
+                ))}
+              </Stack>
+            </Box>
+
+            {/* Product ID */}
+            <Box>
+              <Text as="h2" fontWeight="500" mb="200">
+                Technical Details
+              </Text>
+              <Stack as="ul" listStyle="none" gap="200">
+                <DetailsModalItem label={"ID"} value={row.id as string} />
+              </Stack>
+            </Box>
+          </Stack>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button onPress={onClose} variant="outline">
+            Close
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+};
+
 // Wrapper component that automatically handles modals for onDetailsClick and onRowClick
 const DataTableWithModals = ({
   onDetailsClick,
   onRowClick,
+  isProductDetailsTable,
   ...props
 }: DataTableProps & {
   onDetailsClick?: (row: DataTableRowItem) => void;
   onRowClick?: (row: DataTableRowItem) => void;
+  isProductDetailsTable?: boolean;
 }) => {
   const [detailsModalState, setDetailsModalState] = useState<{
     isOpen: boolean;
@@ -107,20 +208,38 @@ const DataTableWithModals = ({
       />
 
       {/* Details Modal */}
-      {onDetailsClick && (
-        <InfoModal
-          isOpen={detailsModalState.isOpen}
-          onClose={() =>
-            setDetailsModalState({ isOpen: false, row: undefined })
-          }
-          title={`${detailsModalState?.row?.name}'s Details`}
-        >
-          {detailsModalState?.row &&
-            Object.entries(detailsModalState.row!)
-              .filter(([k]) => !["id"].includes(k))
-              .map(([k, v]) => <div key={k}>{`${k}: ${v}`}</div>)}
-        </InfoModal>
-      )}
+      {onDetailsClick &&
+        (isProductDetailsTable ? (
+          <ProductDetailsModal
+            isOpen={detailsModalState.isOpen}
+            onClose={() =>
+              setDetailsModalState({ isOpen: false, row: undefined })
+            }
+            row={detailsModalState?.row}
+          />
+        ) : (
+          <InfoModal
+            isOpen={detailsModalState.isOpen}
+            onClose={() =>
+              setDetailsModalState({ isOpen: false, row: undefined })
+            }
+            title={`${detailsModalState?.row?.name}'s Details`}
+          >
+            {detailsModalState?.row && (
+              <Stack as="ul" listStyle="none" gap="200">
+                {Object.entries(detailsModalState.row!)
+                  .filter(([k]) => !["id", "children"].includes(k))
+                  .map(([k, v]) => (
+                    <DetailsModalItem
+                      key={k}
+                      label={k}
+                      value={v as ReactNode}
+                    />
+                  ))}
+              </Stack>
+            )}
+          </InfoModal>
+        ))}
 
       {/* Row Click Modal */}
       {onRowClick && (
@@ -162,13 +281,21 @@ type Story = StoryObj<DataTableProps>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  render: (args) => <DataTableWithModals {...args} onDetailsClick={() => {}} />,
+  render: (args) => (
+    <DataTableWithModals
+      {...args}
+      isProductDetailsTable
+      onDetailsClick={() => {}}
+    />
+  ),
   args: {
-    columns,
-    data,
+    columns: mcColumns,
+    data: mcMockData,
     allowsSorting: true,
     isResizable: true,
     isRowClickable: true,
+    density: "condensed",
+    selectionMode: "multiple",
   },
 };
 

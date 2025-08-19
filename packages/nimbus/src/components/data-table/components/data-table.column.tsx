@@ -18,13 +18,16 @@ export const DataTableColumn: DataTableColumnComponent = ({
   tabIndex,
   ...otherProps
 }) => {
-  const { sortDescriptor } = useDataTableContext();
+  const { sortDescriptor, isResizable } = useDataTableContext();
   const isActive = sortDescriptor?.column === column?.id;
+  const isColumnResizable =
+    column?.isResizable !== undefined ? column?.isResizable : isResizable;
   /**
    * TODO: Pass styles to DataTableColumnSlot from props,
    * except for height/minHeight/maxHeight which enable react-aria's
    * column resizing
    */
+
   return (
     <DataTableColumnSlot unstyled={unstyled} tabIndex={tabIndex} asChild>
       <RaColumn ref={ref} {...otherProps}>
@@ -53,7 +56,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
                   <ArrowDownward />
                 </DataTableHeaderSortIcon>
               )}
-              {column?.isResizable && (
+              {isColumnResizable && (
                 <ColumnResizer aria-label="Resize column">
                   {({ isResizing, isFocused }) => (
                     <DataTableColumnResizer
