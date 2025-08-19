@@ -150,6 +150,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       onDetailsClick,
       disabledKeys,
       onRowAction,
+      isResizable,
       children,
       ...rest
     } = props;
@@ -242,6 +243,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         showExpandColumn,
         showSelectionColumn,
         showDetailsColumn,
+        isResizable,
         disabledKeys,
         onRowAction,
       }),
@@ -273,6 +275,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         showExpandColumn,
         showSelectionColumn,
         showDetailsColumn,
+        isResizable,
         disabledKeys,
         onRowAction,
       ]

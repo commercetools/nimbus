@@ -312,6 +312,7 @@ export const comprehensiveColumns: DataTableColumnItem[] = [
     header: "Status",
     accessor: (row) => row.status as React.ReactNode,
     isSortable: true,
+    maxWidth: 140,
     render: ({ value }) => {
       const colorPalette =
         value === "Active"
@@ -958,5 +959,217 @@ export const nestedComprehensiveTableColumns: DataTableColumnItem[] = [
     id: "status",
     header: "Status",
     accessor: (row: Record<string, unknown>) => row.status as React.ReactNode,
+  },
+];
+
+const getStatus = (row: Record<string, unknown>) => {
+  if (row.published && !row.hasStagedChanges) {
+    return "Published";
+  }
+  if (row.published && row.hasStagedChanges) {
+    return "Modified";
+  }
+  if (!row.published && row.hasStagedChanges) {
+    return "Unpublished";
+  }
+  return "Draft";
+};
+
+export const mcColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Product name",
+    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+    isResizable: true,
+  },
+  {
+    id: "productType",
+    header: "Product type",
+    accessor: (row: Record<string, unknown>) =>
+      row.productType as React.ReactNode,
+    isResizable: true,
+  },
+  {
+    id: "key",
+    header: "Product key",
+    accessor: (row: Record<string, unknown>) =>
+      (row.key || "--") as React.ReactNode,
+    isResizable: true,
+  },
+  {
+    id: "Stores",
+    header: "Stores",
+    accessor: (row: Record<string, unknown>) => row.stores as React.ReactNode,
+    isResizable: true,
+    render: ({ value }) => {
+      const stores = value as string[];
+      return (
+        <Box as="ul" listStyleType="disc" pl="4" m="0">
+          {stores?.map((store, index) => (
+            <Box as="li" key={index} fontSize="sm" lineHeight="1.4" ml="400">
+              {store}
+            </Box>
+          ))}
+        </Box>
+      );
+    },
+  },
+  {
+    id: "published",
+    header: "Status",
+    accessor: (row: Record<string, unknown>) =>
+      getStatus(row) as React.ReactNode,
+    isResizable: true,
+    render: ({ value }) => {
+      let colorPalette;
+      switch (value) {
+        case "Published":
+          colorPalette = "positive";
+          break;
+        case "Modified":
+          colorPalette = "warning";
+          break;
+        case "Unpublished":
+          colorPalette = "neutral";
+          break;
+        default:
+          colorPalette = "neutral";
+      }
+
+      return (
+        <Badge colorPalette={colorPalette} size="xs">
+          {value as React.ReactNode}
+        </Badge>
+      );
+    },
+  },
+  {
+    id: "createdAt",
+    header: "Date created",
+    accessor: (row: Record<string, unknown>) =>
+      row.createdAt as React.ReactNode,
+    isResizable: true,
+  },
+  {
+    id: "lastModifiedAt",
+    header: "Date modified",
+    accessor: (row: Record<string, unknown>) =>
+      row.lastModifiedAt as React.ReactNode,
+    isResizable: true,
+  },
+];
+
+export const mcMockData = [
+  {
+    id: "01",
+    key: "premium-headphones",
+    version: 11,
+    createdAt: new Date("2025-03-25T10:15:15.546Z").toLocaleString(),
+    lastModifiedAt: new Date("2025-07-07T19:00:31.044Z").toLocaleString(),
+    productType: "Electronics",
+    stores: ["Canada", "United States", "South Africa", "Germany"],
+    name: "Premium Wireless Headphones",
+    slug: "premium-wireless-headphones",
+    published: true,
+    hasStagedChanges: false,
+    staged: {
+      masterVariant: {
+        images: [
+          {
+            url: "https://thispersondoesnotexist.com/",
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: "02",
+    key: "smart-watch",
+    version: 7,
+    createdAt: new Date("2025-02-15T08:30:22.123Z").toLocaleString(),
+    lastModifiedAt: new Date("2025-06-20T14:25:45.678Z").toLocaleString(),
+    productType: "Wearables",
+    stores: ["Venezuela", "France"],
+    name: "Smart Fitness Watch",
+    slug: "smart-fitness-watch",
+    published: true,
+    hasStagedChanges: false,
+    staged: {
+      masterVariant: {
+        images: [
+          {
+            url: "https://thispersondoesnotexist.com/",
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: "03",
+    key: "laptop-stand",
+    version: 4,
+    createdAt: new Date("2025-01-10T12:45:33.456Z").toLocaleString(),
+    lastModifiedAt: new Date("2025-05-30T16:10:12.789Z").toLocaleString(),
+    productType: "Accessories",
+    stores: ["United Kingdom", "Australia"],
+    name: "Ergonomic Laptop Stand",
+    slug: "ergonomic-laptop-stand",
+    published: false,
+    hasStagedChanges: true,
+    staged: {
+      masterVariant: {
+        images: [
+          {
+            url: "https://thispersondoesnotexist.com/",
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: "04",
+    key: "wireless-mouse",
+    version: 2,
+    createdAt: new Date("2025-04-05T09:15:44.567Z").toLocaleString(),
+    lastModifiedAt: new Date("2025-07-12T11:30:55.890Z").toLocaleString(),
+    productType: "Computer Peripherals",
+    stores: ["Japan", "China"],
+    name: "Wireless Gaming Mouse",
+    slug: "wireless-gaming-mouse",
+    published: true,
+    hasStagedChanges: false,
+    staged: {
+      masterVariant: {
+        images: [
+          {
+            url: "https://thispersondoesnotexist.com/",
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: "05",
+    key: "bluetooth-speaker",
+    version: 8,
+    createdAt: new Date("2025-03-20T15:20:30.234Z").toLocaleString(),
+    lastModifiedAt: new Date("2025-06-28T13:45:18.123Z").toLocaleString(),
+    productType: "Audio",
+    stores: ["Italy", "Spain"],
+
+    name: "Portable Bluetooth Speaker",
+    slug: "portable-bluetooth-speaker",
+    published: true,
+    hasStagedChanges: false,
+
+    staged: {
+      masterVariant: {
+        images: [
+          {
+            url: "https://thispersondoesnotexist.com/",
+          },
+        ],
+      },
+    },
   },
 ];

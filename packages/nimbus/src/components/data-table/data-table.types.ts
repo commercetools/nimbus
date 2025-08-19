@@ -40,6 +40,7 @@ export interface DataTableContextValue<
   showDetailsColumn: boolean;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  isResizable?: boolean;
 }
 
 export type SortDirection = RaSortDirection;

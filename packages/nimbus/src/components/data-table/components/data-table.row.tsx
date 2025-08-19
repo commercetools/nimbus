@@ -192,14 +192,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
          * need to be in the same order in the header and row components*/}
         {/* Selection checkbox cell if selection is enabled */}
         {selectionBehavior === "toggle" && (
-          <DataTableCell
-            data-slot="selection"
-            isDisabled={isDisabled}
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <DataTableCell data-slot="selection" isDisabled={isDisabled}>
             <Box
               display="flex"
               alignItems="center"
@@ -214,25 +207,20 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
         {/* Expand/collapse cell if expand column is shown */}
         {showExpandColumn && (
-          <DataTableCell isDisabled={isDisabled}>
+          <DataTableCell data-slot="expand" isDisabled={isDisabled}>
             {hasNestedContent ? (
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+              <DataTableExpandButton
                 w="100%"
                 h="100%"
+                cursor="pointer"
+                aria-label={isExpanded ? "Collapse" : "Expand"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleExpand(row.id);
+                }}
               >
-                <DataTableExpandButton
-                  aria-label={isExpanded ? "Collapse" : "Expand"}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleExpand(row.id);
-                  }}
-                >
-                  {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-                </DataTableExpandButton>
-              </Box>
+                {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+              </DataTableExpandButton>
             ) : null}
           </DataTableCell>
         )}
@@ -283,16 +271,13 @@ export const DataTableRow = forwardRef(function DataTableRow<
                 <Flex>
                   <Box
                     className={isTruncated ? "truncated-cell" : ""}
+                    display="inline-block"
                     h="100%"
                     minW="0"
+                    maxW="100%"
                     position="relative"
-                    cursor={
-                      isDisabled
-                        ? "not-allowed"
-                        : isRowClickable
-                          ? "inherit"
-                          : undefined
-                    }
+                    overflow="hidden"
+                    cursor={isDisabled ? "not-allowed" : "text"}
                     style={
                       // TODO: I'm not clear on what this is supposed to do?
                       {

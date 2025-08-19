@@ -35,6 +35,10 @@ export const dataTableRecipe = defineSlotRecipe({
         paddingRight: "600",
         color: "neutral.11",
         focusRing: "outside",
+        hyphens: "auto",
+        "&[data-slot='expand']": {
+          padding: 0,
+        },
         "& .nimbus-table-cell-copy-button": {
           display: "none",
         },
@@ -48,7 +52,7 @@ export const dataTableRecipe = defineSlotRecipe({
         borderBottom: "1px solid {colors.neutral.3}",
         focusRing: "outside",
         "& td, div": {
-          userSelect: "none",
+          userSelect: "text",
         },
         "&:last-child": {
           borderBottom: "none",
@@ -153,11 +157,14 @@ export const dataTableRecipe = defineSlotRecipe({
           flexShrink: 0,
         },
       },
-      "&.selection-column-header, &#expand": {
+      "&.selection-column-header, &.expand-column-header": {
         cursor: "default",
         "&:hover": {
           backgroundColor: "transparent",
         },
+      },
+      "&.expand-column-header": {
+        padding: "0",
       },
       "&[aria-sort]": {
         fontWeight: 600,
