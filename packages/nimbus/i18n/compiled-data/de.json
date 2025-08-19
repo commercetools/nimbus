@@ -1,0 +1,74 @@
+{
+  "Nimbus.datePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Eingangswert löschen"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTime": [
+    {
+      "type": 0,
+      "value": "Zeit eingeben"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHour": [
+    {
+      "type": 0,
+      "value": "Zeit eingeben (Stunde)"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Uhrzeit eingeben (Stunde und Minute)"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Zeit eingeben (Stunde, Minute und Sekunde)"
+    }
+  ],
+  "Nimbus.datePicker.time.startTime": [
+    {
+      "type": 0,
+      "value": "Startzeit"
+    }
+  ],
+  "Nimbus.loadingSpinner.default": [
+    {
+      "type": 0,
+      "value": "Laden von Daten"
+    }
+  ],
+  "Nimbus.numberInput.decrement": [
+    {
+      "type": 0,
+      "value": "Verkleinern"
+    }
+  ],
+  "Nimbus.numberInput.increment": [
+    {
+      "type": 0,
+      "value": "Inkrement"
+    }
+  ],
+  "Nimbus.passwordInput.hide": [
+    {
+      "type": 0,
+      "value": "Passwort verstecken"
+    }
+  ],
+  "Nimbus.passwordInput.show": [
+    {
+      "type": 0,
+      "value": "Passwort anzeigen"
+    }
+  ],
+  "Nimbus.select.clearSelection": [
+    {
+      "type": 0,
+      "value": "Auswahl löschen"
+    }
+  ]
+}

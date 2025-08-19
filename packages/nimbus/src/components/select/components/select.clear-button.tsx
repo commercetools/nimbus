@@ -3,10 +3,12 @@ import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { SelectStateContext } from "react-aria-components";
 import { ClearPressResponder } from "@react-aria/interactions";
+import messages from "../messages";
+import { useIntl } from "react-intl";
 
 export const SelectClearButton = () => {
   const state = useContext(SelectStateContext);
-
+  const intl = useIntl();
   if (!state?.selectedKey) {
     return null;
   }
@@ -22,7 +24,7 @@ export const SelectClearButton = () => {
         size="2xs"
         variant="ghost"
         tone="primary"
-        aria-label="Clear Selection"
+        aria-label={intl.formatMessage(messages.clearSelection)}
         onPress={onPressRequest}
       >
         <CloseIcon />

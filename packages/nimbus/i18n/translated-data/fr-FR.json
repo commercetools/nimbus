@@ -1,0 +1,50 @@
+{
+  "Nimbus.datePicker.clearInput": {
+    "developer_comment": "Aria label for clear input button in date picker",
+    "string": "Effacer la valeur d'entrée"
+  },
+  "Nimbus.datePicker.time.enterTime": {
+    "developer_comment": "Aria label for time input field in date picker",
+    "string": "Saisir l'heure"
+  },
+  "Nimbus.datePicker.time.enterTimeHour": {
+    "developer_comment": "Aria label for hour-only time input in date picker",
+    "string": "Saisir l'heure (heure)"
+  },
+  "Nimbus.datePicker.time.enterTimeHourMinute": {
+    "developer_comment": "Aria label for hour and minute time input in date picker",
+    "string": "Saisir l'heure (heure et minute)"
+  },
+  "Nimbus.datePicker.time.enterTimeHourMinuteSecond": {
+    "developer_comment": "Aria label for full time input with seconds in date picker",
+    "string": "Saisir l'heure (heure, minute et seconde)"
+  },
+  "Nimbus.datePicker.time.startTime": {
+    "developer_comment": "Label for start time in date picker",
+    "string": "Heure de début"
+  },
+  "Nimbus.loadingSpinner.default": {
+    "developer_comment": "Default loading message for loading spinners",
+    "string": "Chargement des données"
+  },
+  "Nimbus.numberInput.decrement": {
+    "developer_comment": "Aria label & tooltip for decrement button in number input",
+    "string": "Décroissance"
+  },
+  "Nimbus.numberInput.increment": {
+    "developer_comment": "Aria label & tooltip for increment button in number input",
+    "string": "Incrément"
+  },
+  "Nimbus.passwordInput.hide": {
+    "developer_comment": "Aria label for hide password button",
+    "string": "Cacher le mot de passe"
+  },
+  "Nimbus.passwordInput.show": {
+    "developer_comment": "Aria label for show password button",
+    "string": "Afficher le mot de passe"
+  },
+  "Nimbus.select.clearSelection": {
+    "developer_comment": "Aria label for select clear button",
+    "string": "Effacer la sélection"
+  }
+}

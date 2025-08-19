@@ -1,0 +1,9 @@
+import { defineMessages } from "react-intl";
+
+export default defineMessages({
+  clearSelection: {
+    id: "Nimbus.select.clearSelection",
+    description: "Aria label for select clear button",
+    defaultMessage: "Clear Selection",
+  },
+});

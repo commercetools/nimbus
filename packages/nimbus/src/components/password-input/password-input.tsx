@@ -3,7 +3,8 @@ import { Box, IconButton, Tooltip } from "@/components";
 import { TextInput } from "@/components/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
-
+import { useIntl } from "react-intl";
+import messages from "./messages";
 /**
  * # PasswordInput
  *
@@ -13,6 +14,7 @@ import type { PasswordInputProps } from "./password-input.types";
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, forwardedRef) => {
+    const intl = useIntl();
     const { size = "md", isDisabled } = props;
     const [showPassword, setShowPassword] = useState(false);
     const toggleVisibility = () => setShowPassword(!showPassword);
@@ -52,13 +54,18 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               size={iconSize}
               variant="ghost"
               tone="primary"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={
+                showPassword
+                  ? intl.formatMessage(messages.hide)
+                  : intl.formatMessage(messages.show)
+              }
               onPress={toggleVisibility}
               isDisabled={isDisabled}
             >
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
             <Tooltip.Content>
+              //TODO: RETURN TO THIS
               {showPassword ? "Hide password" : "Show Password"}
             </Tooltip.Content>
           </Tooltip.Root>
