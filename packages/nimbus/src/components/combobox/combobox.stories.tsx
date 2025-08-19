@@ -794,7 +794,6 @@ export const Base: Story = {
           await within(multiSelect).findByLabelText(/selected values/i);
         // The first tag gets focus directly, not the TagList container
         await expect(tagList.childNodes[0]).toHaveFocus();
-
         // Tab to remove tag button
         await userEvent.tab();
         const removeButton = within(
@@ -803,13 +802,11 @@ export const Base: Story = {
           name: /remove koala/i,
         });
         await expect(removeButton).toHaveFocus();
-
         // Tab to clear button
         await userEvent.tab();
         const clearButton =
           await within(multiSelect).findByLabelText(/clear selection/i);
         await expect(clearButton).toHaveFocus();
-
         // Tab to toggle button
         await userEvent.tab();
         await expect(multiSelect).not.toHaveFocus();
