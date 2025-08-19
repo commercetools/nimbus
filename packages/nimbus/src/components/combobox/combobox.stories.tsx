@@ -792,10 +792,8 @@ export const Base: Story = {
         await userEvent.tab();
         const tagList =
           await within(multiSelect).findByLabelText(/selected values/i);
-        await waitFor(async () => {
-          // The first tag gets focus directly, not the TagList container
-          await expect(tagList.childNodes[0]).toHaveFocus();
-        });
+        // The first tag gets focus directly, not the TagList container
+        await expect(tagList.childNodes[0]).toHaveFocus();
 
         // Tab to remove tag button
         await userEvent.tab();
@@ -804,17 +802,13 @@ export const Base: Story = {
         ).getByRole("button", {
           name: /remove koala/i,
         });
-        await waitFor(async () => {
-          await expect(removeButton).toHaveFocus();
-        });
+        await expect(removeButton).toHaveFocus();
 
         // Tab to clear button
         await userEvent.tab();
         const clearButton =
           await within(multiSelect).findByLabelText(/clear selection/i);
-        await waitFor(async () => {
-          await expect(clearButton).toHaveFocus();
-        });
+        await expect(clearButton).toHaveFocus();
 
         // Tab to toggle button
         await userEvent.tab();
