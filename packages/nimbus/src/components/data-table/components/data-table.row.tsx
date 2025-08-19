@@ -130,7 +130,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * Ref to track single click timeout for distinguishing single vs double clicks.
    * This prevents row navigation on double-clicks when the user intends to select text.
    */
-  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const clickTimeoutRef = useRef<number | null>(null);
 
   /**
    * Handles row click events with sophisticated filtering to ensure proper UX behavior.
@@ -161,12 +161,12 @@ export const DataTableRow = forwardRef(function DataTableRow<
       if (!isInteractiveElement && !hasSelectedText) {
         // Clear any existing timeout to handle rapid clicks
         if (clickTimeoutRef.current) {
-          clearTimeout(clickTimeoutRef.current);
+          window.clearTimeout(clickTimeoutRef.current);
         }
 
         // Delay the row click to allow for potential double-click cancellation
         // Standard double-click timeout is typically 300-500ms
-        clickTimeoutRef.current = setTimeout(() => {
+        clickTimeoutRef.current = window.setTimeout(() => {
           if (!isDisabled) {
             onRowClick(row);
           } else {
@@ -200,7 +200,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
     if (!isInteractiveElement) {
       // Cancel any pending single-click action
       if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
+        window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
       }
       // Allow browser's default text selection behavior
@@ -294,7 +294,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
     return () => {
       // Clear any pending click timeout to prevent memory leaks and stale callbacks
       if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
+        window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
       }
 
