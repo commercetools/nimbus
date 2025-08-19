@@ -27,6 +27,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
    * except for height/minHeight/maxHeight which enable react-aria's
    * column resizing
    */
+
   return (
     <DataTableColumnSlot unstyled={unstyled} tabIndex={tabIndex} asChild>
       <RaColumn ref={ref} {...otherProps}>

@@ -46,6 +46,7 @@ type ModalState = {
 
   children: React.ReactNode;
 };
+
 const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
   <Dialog.Root
     open={isOpen}

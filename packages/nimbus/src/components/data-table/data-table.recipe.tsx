@@ -52,7 +52,7 @@ export const dataTableRecipe = defineSlotRecipe({
         borderBottom: "1px solid {colors.neutral.3}",
         focusRing: "outside",
         "& td, div": {
-          userSelect: "none",
+          userSelect: "text",
         },
         "&:last-child": {
           borderBottom: "none",
