@@ -13,11 +13,13 @@ import type {
   DataTableRowItem as DataTableRowType,
   DataTableColumnItem,
 } from "../data-table.types";
-import { Box, Checkbox } from "@/components";
+import { Box, Checkbox, Flex, IconButton } from "@/components";
+import { useCopyToClipboard } from "@/hooks";
 
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
+  ContentCopy,
 } from "@commercetools/nimbus-icons";
 
 export interface DataTableRowProps<T extends object = Record<string, unknown>> {
@@ -117,7 +119,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * 2. **Smart Event Filtering**: Prevent conflicts with interactive elements (checkboxes, buttons)
    * 3. **Selection Isolation**: Ensure row selection only happens via explicit selection controls
    * 4. **Disabled Row Handling**: Support custom actions even on disabled rows when needed
-   * 5. **Text Selection Support**: Avoid triggering click handler when users are selecting text
    *
    * This approach maintains the accessibility benefits of React Aria while enabling the
    * expected UX patterns for modern data tables. Without this implementation, users would
@@ -131,7 +132,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
    *
    * This function implements multiple layers of click validation:
    * - Prevents interference with interactive elements (buttons, checkboxes, inputs)
-   * - Respects text selection (users shouldn't trigger onClick handler when copying text)
    * - Handles both enabled and disabled row states appropriately
    * - Only triggers onClick handler when the row is explicitly marked as clickable
    *
@@ -145,12 +145,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
     if (!onRowClick) return;
     // Prevent row click when clicking on interactive elements to avoid conflicts
     const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-    // Prevent row click when text is selected
-    const hasSelectedText =
-      window.getSelection()?.toString() !== undefined &&
-      window.getSelection()!.toString().length > 0;
 
-    if (!isInteractiveElement && !hasSelectedText) {
+    if (!isInteractiveElement) {
       if (!isDisabled) {
         onRowClick(row);
       } else {
@@ -257,11 +253,19 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
   const { selectionBehavior } = useTableOptions();
 
+  const [, copyToClipboard] = useCopyToClipboard();
+
   const hasNestedContent =
     nestedKey &&
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
   const isExpanded = expanded[row.id];
+
+  // Action handlers - only copy functionality
+  const handleCopy = (value: unknown) => {
+    const textValue = typeof value === "string" ? value : String(value);
+    copyToClipboard(textValue);
+  };
 
   // Highlight helper
   const highlightCell = (value: unknown): React.ReactNode =>
@@ -342,34 +346,53 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
             return (
               <DataTableCell isDisabled={isDisabled} key={col.id}>
-                <Box
-                  className={isTruncated ? "truncated-cell" : ""}
-                  display="inline-block"
-                  h="100%"
-                  minW="0"
-                  maxW="100%"
-                  position="relative"
-                  overflow="hidden"
-                  cursor={isDisabled ? "not-allowed" : "text"}
-                  style={
-                    // TODO: I'm not clear on what this is supposed to do?
-                    {
-                      // Add indentation for the first column of nested rows
-                      // ...(depth > 0 &&
-                      //   index === 0 && {
-                      //     paddingLeft: `${16 + depth * 16}px`,
-                      //   }),
+                <Flex>
+                  <Box
+                    className={isTruncated ? "truncated-cell" : ""}
+                    display="inline-block"
+                    h="100%"
+                    minW="0"
+                    maxW="100%"
+                    position="relative"
+                    overflow="hidden"
+                    cursor={isDisabled ? "not-allowed" : undefined}
+                    style={
+                      // TODO: I'm not clear on what this is supposed to do?
+                      {
+                        // Add indentation for the first column of nested rows
+                        // ...(depth > 0 &&
+                        //   index === 0 && {
+                        //     paddingLeft: `${16 + depth * 16}px`,
+                        //   }),
+                      }
                     }
-                  }
-                >
-                  {col.render
-                    ? col.render({
-                        value: highlightCell(cellValue),
-                        row,
-                        column: col,
-                      })
-                    : highlightCell(cellValue)}
-                </Box>
+                  >
+                    {col.render
+                      ? col.render({
+                          value: highlightCell(cellValue),
+                          row,
+                          column: col,
+                        })
+                      : highlightCell(cellValue)}
+                  </Box>
+                  {/* Cell hover buttons */}
+
+                  <IconButton
+                    key="copy-btn"
+                    size="2xs"
+                    variant="ghost"
+                    aria-label="Copy to clipboard"
+                    colorPalette="primary"
+                    className="nimbus-table-cell-copy-button"
+                    onPress={() => handleCopy(cellValue)}
+                    ml="100"
+                  >
+                    <ContentCopy
+                      key="copy-icon"
+                      onClick={() => handleCopy(cellValue)}
+                    />
+                  </IconButton>
+                </Flex>
               </DataTableCell>
             );
           }}
