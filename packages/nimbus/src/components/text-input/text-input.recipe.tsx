@@ -15,15 +15,12 @@ export const textInputRecipe = defineRecipe({
       display: "flex",
       alignItems: "center",
       borderRadius: "200",
-      border: "solid-25",
       width: "100%",
       height: "100%",
-      bg: "white",
-      boxShadow: "5",
       overflow: "hidden", // Ensure elements stay within borders
+      focusVisibleRing: "outside",
     },
 
-    focusVisibleRing: "outside",
     _focusVisible: {
       // Ensure focus ring surrounds the entire input, including elements
       zIndex: 1,
@@ -40,6 +37,8 @@ export const textInputRecipe = defineRecipe({
       "& .nimbus-text-input-container": {
         boxShadow: "5",
       },
+      "--border-color": "colors.critical.7",
+      "--border-width": "sizes.50",
       color: "critical.11",
     },
 
@@ -48,10 +47,9 @@ export const textInputRecipe = defineRecipe({
       position: "absolute",
       display: "flex",
       alignItems: "center",
-      width: "600",
-      // zIndex: 1,
-      // left: "400",
-      // right: "200",
+      width: "600", // TODO: seems sketchy to specify a width
+      left: "400",
+      right: "200",
       _rtl: {
         left: "auto",
         right: "400",
@@ -63,7 +61,7 @@ export const textInputRecipe = defineRecipe({
       display: "flex",
       alignItems: "center",
       justifyItems: "right",
-      right: "400",
+      // right: "200", // TODO: fix this
       width: "600",
       _rtl: {
         right: "auto",
@@ -76,18 +74,18 @@ export const textInputRecipe = defineRecipe({
       width: "100%",
       height: "100%",
       padding: "400",
-      outline: "none",
-      border: "none",
-      borderRadius: "inherit",
+      colorPalette: "neutral",
       bg: "transparent",
-      color: "inherit",
+      outline: "none",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      borderRadius: "inherit",
       fontSize: "inherit",
       fontFamily: "inherit",
       lineHeight: "inherit",
 
       _focusVisible: {
-        outline: "none",
-        boxShadow: "none", // Remove default focus ring from input
+        // outline: "none",
+        // boxShadow: "none", // Remove default focus ring from input
       },
 
       _placeholder: {
@@ -181,6 +179,8 @@ export const textInputRecipe = defineRecipe({
         "& .nimbus-text-input-container": {
           boxShadow: "inset 0 0 0 sizes.25 colors.neutral.7",
           backgroundColor: "primary.1",
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
         },
         _hover: {
           "& .nimbus-text-input-container": {
