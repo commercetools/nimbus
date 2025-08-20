@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { SplitButton } from "./index";
-import { Stack, Icon, Divider } from "@/components";
+import { Stack, Divider } from "@/components";
 import { Menu } from "@/components/menu";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
 
@@ -24,10 +24,8 @@ export const Basic: Story = {
       defaultOpen={true}
       onAction={(id) => console.log(`Action: ${id}`)}
       aria-label="More actions"
+      icon={<Save />}
     >
-      <Icon slot="icon">
-        <Save />
-      </Icon>
       <Menu.Item id="save">Save</Menu.Item>
       <Menu.Item id="save-publish">Save and publish</Menu.Item>
       <Menu.Item id="save-next">Save and open next</Menu.Item>
@@ -147,10 +145,8 @@ export const DocumentManagement: Story = {
     <SplitButton
       onAction={(id) => alert(`${id} clicked!`)}
       aria-label="Document actions"
+      icon={<Share />}
     >
-      <Icon slot="icon">
-        <Share />
-      </Icon>
       <Menu.Item id="share">Share Document</Menu.Item>
       <Menu.Item id="copy-link">Copy Link</Menu.Item>
       <Menu.Item id="email">Send via Email</Menu.Item>
@@ -178,10 +174,8 @@ export const WithComplexContent: Story = {
     <SplitButton
       onAction={(id) => alert(`${id} clicked!`)}
       aria-label="Task actions"
+      icon={<Edit />}
     >
-      <Icon slot="icon">
-        <Edit />
-      </Icon>
       <Menu.Item id="complete">Complete Task</Menu.Item>
       <Menu.Item id="edit">Edit Task</Menu.Item>
       <Menu.Item id="duplicate">Duplicate Task</Menu.Item>
@@ -196,26 +190,32 @@ export const WithComplexContent: Story = {
 export const SizeVariants: Story = {
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
-      <SplitButton size="2xs" onAction={fn()} aria-label="Size variant actions">
-        <Icon slot="icon">
-          <Save />
-        </Icon>
+      <SplitButton
+        size="2xs"
+        onAction={fn()}
+        aria-label="Size variant actions"
+        icon={<Save />}
+      >
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
       </SplitButton>
 
-      <SplitButton size="xs" onAction={fn()} aria-label="Size variant actions">
-        <Icon slot="icon">
-          <Save />
-        </Icon>
+      <SplitButton
+        size="xs"
+        onAction={fn()}
+        aria-label="Size variant actions"
+        icon={<Save />}
+      >
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
       </SplitButton>
 
-      <SplitButton size="md" onAction={fn()} aria-label="Size variant actions">
-        <Icon slot="icon">
-          <Save />
-        </Icon>
+      <SplitButton
+        size="md"
+        onAction={fn()}
+        aria-label="Size variant actions"
+        icon={<Save />}
+      >
         <Menu.Item id="action1">Action 1</Menu.Item>
         <Menu.Item id="action2">Action 2</Menu.Item>
       </SplitButton>
@@ -236,10 +236,8 @@ export const SplitButtonVariants: Story = {
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button save actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="save-publish">Save & Publish</Menu.Item>
           </SplitButton>
@@ -250,10 +248,8 @@ export const SplitButtonVariants: Story = {
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button save actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="save-publish">Save & Publish</Menu.Item>
           </SplitButton>
@@ -264,10 +260,8 @@ export const SplitButtonVariants: Story = {
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button save actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="save-publish">Save & Publish</Menu.Item>
           </SplitButton>
@@ -283,10 +277,8 @@ export const SplitButtonVariants: Story = {
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button solid actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
           </SplitButton>
@@ -296,10 +288,8 @@ export const SplitButtonVariants: Story = {
             tone="neutral"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button subtle actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
           </SplitButton>
@@ -309,10 +299,8 @@ export const SplitButtonVariants: Story = {
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button outline actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
           </SplitButton>
@@ -322,10 +310,8 @@ export const SplitButtonVariants: Story = {
             tone="critical"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button outline critical actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
           </SplitButton>
@@ -335,10 +321,8 @@ export const SplitButtonVariants: Story = {
             tone="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button ghost actions"
+            icon={<Save />}
           >
-            <Icon slot="icon">
-              <Save />
-            </Icon>
             <Menu.Item id="save">Save</Menu.Item>
             <Menu.Item id="export">Export</Menu.Item>
           </SplitButton>
@@ -351,18 +335,21 @@ export const SplitButtonVariants: Story = {
 export const DisabledStates: Story = {
   render: () => (
     <Stack direction="row" gap="400">
-      <SplitButton isDisabled onAction={fn()} aria-label="Disabled actions">
-        <Icon slot="icon">
-          <Save />
-        </Icon>
+      <SplitButton
+        isDisabled
+        onAction={fn()}
+        aria-label="Disabled actions"
+        icon={<Save />}
+      >
         <Menu.Item id="action1">Disabled Action</Menu.Item>
         <Menu.Item id="action2">Another Action</Menu.Item>
       </SplitButton>
 
-      <SplitButton onAction={fn()} aria-label="Mixed state actions">
-        <Icon slot="icon">
-          <Save />
-        </Icon>
+      <SplitButton
+        onAction={fn()}
+        aria-label="Mixed state actions"
+        icon={<Save />}
+      >
         <Menu.Item id="available">Available Action</Menu.Item>
         <Menu.Item id="disabled" isDisabled>
           Disabled Item
@@ -383,10 +370,8 @@ export const AutomaticSelectionDemo: Story = {
       <SplitButton
         onAction={(id) => alert(`${id} clicked!`)}
         aria-label="Automatic selection demo"
+        icon={<Save />}
       >
-        <Icon slot="icon">
-          <Save />
-        </Icon>
         <Menu.Item id="save">Save</Menu.Item>
         <Menu.Item id="save-publish">Save and publish</Menu.Item>
         <Menu.Item id="save-next">Save and open next</Menu.Item>
@@ -407,11 +392,8 @@ export const WithSections: Story = {
       <SplitButton
         onAction={(id) => alert(`${id} clicked!`)}
         aria-label="Sectioned document actions"
+        icon={<Save />}
       >
-        <Icon slot="icon">
-          <Save />
-        </Icon>
-
         <Menu.Section label="File Actions">
           <Menu.Item id="save">Save Document</Menu.Item>
           <Menu.Item id="save-as">Save As Copy</Menu.Item>
@@ -440,10 +422,11 @@ export const WithSections: Story = {
 
 export const AccessibilityTest: Story = {
   render: () => (
-    <SplitButton aria-label="More sending options" onAction={fn()}>
-      <Icon slot="icon">
-        <Save />
-      </Icon>
+    <SplitButton
+      aria-label="More sending options"
+      onAction={fn()}
+      icon={<Save />}
+    >
       <Menu.Item id="send">Send Message</Menu.Item>
       <Menu.Item id="schedule">Schedule Send</Menu.Item>
       <Menu.Item id="draft">Save as Draft</Menu.Item>
@@ -555,10 +538,8 @@ export const EdgeCasesAndFallbacks: Story = {
         <SplitButton
           aria-label="Disabled first option test"
           onAction={(id) => alert(`Action: ${id}`)}
+          icon={<Save />}
         >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
           <Menu.Item id="save" isDisabled>
             Save Document
           </Menu.Item>
@@ -577,11 +558,10 @@ export const EdgeCasesAndFallbacks: Story = {
         <SplitButton
           aria-label="No menu items test"
           onAction={(id) => alert(`Action: ${id}`)}
+          icon={<Save />}
         >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
           {/* No Menu.Item components */}
+          <></>
         </SplitButton>
         <p style={{ fontSize: "12px", color: "#666" }}>
           Expected: Button shows "No actions available" and is disabled
@@ -598,10 +578,8 @@ export const EdgeCasesAndFallbacks: Story = {
         <SplitButton
           aria-label="All disabled items test"
           onAction={(id) => alert(`Action: ${id}`)}
+          icon={<Save />}
         >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
           <Menu.Item id="save" isDisabled>
             Save Document
           </Menu.Item>
@@ -621,10 +599,8 @@ export const EdgeCasesAndFallbacks: Story = {
         <SplitButton
           aria-label="Empty section test"
           onAction={(id) => alert(`Action: ${id}`)}
+          icon={<Save />}
         >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
           <Menu.Section label="Empty Section">
             {/* No Menu.Item components */}
           </Menu.Section>
@@ -641,10 +617,8 @@ export const EdgeCasesAndFallbacks: Story = {
         <SplitButton
           aria-label="Missing ID test"
           onAction={(id) => alert(`Action: ${id}`)}
+          icon={<Save />}
         >
-          <Icon slot="icon">
-            <Save />
-          </Icon>
           <Menu.Item>No ID Item</Menu.Item>
           <Menu.Item id="valid">Valid Item</Menu.Item>
           <Menu.Item>Another No ID</Menu.Item>
