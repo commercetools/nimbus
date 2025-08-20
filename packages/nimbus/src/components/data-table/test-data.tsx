@@ -1006,7 +1006,7 @@ export const mcColumns: DataTableColumnItem[] = [
       return (
         <Box as="ul" listStyleType="disc" pl="4" m="0">
           {stores?.map((store, index) => (
-            <Box as="li" key={index} fontSize="sm" lineHeight="1.4">
+            <Box as="li" key={index} fontSize="sm" lineHeight="1.4" ml="400">
               {store}
             </Box>
           ))}

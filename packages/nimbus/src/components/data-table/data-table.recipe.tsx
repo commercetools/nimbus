@@ -39,14 +39,6 @@ export const dataTableRecipe = defineSlotRecipe({
         "&[data-slot='expand']": {
           padding: 0,
         },
-        "& .nimbus-table-cell-copy-button": {
-          display: "none",
-        },
-        _hover: {
-          "& > div > .nimbus-table-cell-copy-button": {
-            display: "inherit",
-          },
-        },
       },
       "& .data-table-row": {
         borderBottom: "1px solid {colors.neutral.3}",
