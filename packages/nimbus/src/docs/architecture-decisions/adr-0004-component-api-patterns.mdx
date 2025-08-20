@@ -20,15 +20,26 @@ tags:
 
 # ADR: How to Design Component APIs for Consumers
 
-## The Problem
+## Why This Matters
 
-When building a new component, we often ask: _"How should consumers use this?"_
+When building design system components, choosing the wrong API pattern leads to:
 
-- Should it be one component like `<Button>`?
-- Multiple parts like `<Card.Header>` and `<Card.Content>`?
-- Something with slots like `<Text slot="label">`?
+- **Prop explosion** - endless props for every edge case
+- **Maintenance headaches** - changes require updating multiple interfaces
+- **Developer confusion** - unclear when to use which approach
+- **Inconsistent APIs** - different patterns across similar components
 
-This guide helps you choose the right approach.
+This guide provides a systematic approach to choose the right pattern that
+scales with complexity while remaining intuitive.
+
+## Quick Reference
+
+| Pattern                 | Use When                                   | Example                                                          |
+| ----------------------- | ------------------------------------------ | ---------------------------------------------------------------- |
+| **Single Component**    | Simple, well-defined needs                 | `<Button variant="primary">Save</Button>`                        |
+| **Single + Slots**      | One thing, different content spots         | `<Alert><Text slot="title">Title</Text></Alert>`                 |
+| **Compound Components** | Multiple related parts with different jobs | `<Menu.Root><Menu.Trigger/><Menu.Content/></Menu.Root>`          |
+| **Compound + Slots**    | Multiple parts needing rich content        | `<Select.Option><Text slot="label">Apple</Text></Select.Option>` |
 
 ## Three Patterns, One Decision Tree
 
@@ -44,10 +55,10 @@ We have **3 patterns** for consumer-facing APIs:
 ### 2. **Single Component + Slots**
 
 ```tsx
-<Card>
-  <Text slot="header">Title</Text>
-  <Button slot="content">Action</Button>
-</Card>
+<Alert>
+  <Text slot="title">Alert Title</Text>
+  <Button slot="actions">Dismiss</Button>
+</Alert>
 ```
 
 ### 3. **Compound Components**
@@ -75,44 +86,58 @@ Ask these questions in order:
 
 ### 1. Is this one logical thing?
 
-**Why this matters:** Single logical entities should feel unified to consumers, while collections of related parts should expose their individual pieces for maximum flexibility.
+**Core Principle**: If consumers mentally model it as one cohesive unit, use
+single component patterns. If they think about distinct parts, use compound
+patterns.
 
 **Examples of "one thing":**
-- A button → consumers think "click to do action"
-- A date picker → consumers think "input a date"
-- A card → consumers think "container for related content"
-- A text input → consumers think "type text here"
+
+- Button → consumers think "click to do action"
+- DatePicker → consumers think "input a date"
 
 **Examples of "multiple things":**
-- A select with options → consumers think "choose from list" + "individual choices"
-- A menu with items → consumers think "menu container" + "clickable actions"
-- An accordion with sections → consumers think "collapsible list" + "individual sections"
 
-**The principle:** If consumers mentally model it as one cohesive unit, use single component patterns. If they think about distinct parts, use compound patterns.
+- Select with options → consumers think "choose from list" + "individual
+  choices"
+- Menu with items → consumers think "menu container" + "clickable actions"
+- Accordion → consumers think "collapsible list" + "individual sections"
 
-**If YES:** Go to question 2  
-**If NO:** Go to question 3
+**API Honesty Principle**: Don't mislead consumers about DOM structure or
+behavior. The API should reflect how the component actually works.
+
+**If YES (one thing):** Go to question 2  
+**If NO (multiple things):** Go to question 3
 
 ---
 
 ### 2. Do users put different content in different spots?
 
-**Why this matters:** Slots provide structured flexibility - consumers get predictable placement without losing customization. Props become unwieldy when you need many content variations.
+**Why this matters:** Slots provide structured flexibility - consumers get
+predictable placement without losing customization. Props become unwieldy when
+you need many content variations.
 
-**Card example** → Different spots ✅:
-- Header spot: titles, badges, close buttons
-- Content spot: text, forms, images, anything
-- **Why slots win:** `<Card><Text slot="header">` is cleaner than `headerContent={<Text>}` props
+**Alert example** → Different spots ✅:
+
+- Title spot: warning messages, error text
+- Actions spot: buttons, links, dismiss controls
+- **Why slots win:** `<Alert><Text slot="title">` is cleaner than
+  `titleContent={<Text>}` props
 
 **Button example** → One spot ❌:
+
 - Just one spot for content (text or icon)
-- **Why simple wins:** `<Button>Save</Button>` is cleaner than `<Button><Text slot="content">Save</Text>`
+- **Why simple wins:** `<Button>Save</Button>` is cleaner than
+  `<Button><Text slot="content">Save</Text>`
 
 **DatePicker example** → One conceptual input ❌:
-- Just one conceptual input (date selection)
-- **Why simple wins:** Consumers don't need to structure the internal calendar/dropdown parts
 
-**The trade-off:** Slots add API surface but provide semantic structure. Only add them when consumers genuinely need to place different content types in distinct areas.
+- Just one conceptual input (date selection)
+- **Why simple wins:** Consumers don't need to structure the internal
+  calendar/dropdown parts
+
+**The trade-off:** Slots add API surface but provide semantic structure. Only
+add them when consumers genuinely need to place different content types in
+distinct areas.
 
 **If YES:** Use **Single Component + Slots**  
 **If NO:** Use **Single Component**
@@ -121,27 +146,35 @@ Ask these questions in order:
 
 ### 3. Do the parts have different jobs?
 
-**Why this matters:** When parts have distinct responsibilities, compound components let consumers access each part's specific functionality. Single components hide too much when parts need different behaviors.
+**Function vs Layout Principle**: Use compound components for functional
+distinctions (different behaviors, responsibilities). Use slots for content
+structure/layout within the same functional context.
 
 **Select example** → Different jobs ✅:
+
 - Root: manages open/closed state
-- Options: manages keyboard navigation  
+- Options: manages keyboard navigation
 - Option: manages selection
-- **Why compound wins:** Consumer needs to customize each part's behavior differently
+- **Why compound wins:** Each part has distinct responsibilities and behaviors
 
 **Menu example** → Different jobs ✅:
-- Root: manages focus
-- Item: handles click events
-- Separator: just visual
+
+- Root: manages focus and state
+- Item: handles click events and selection
+- Separator: provides visual structure
 - **Why compound wins:** Items need click handlers, separators don't
 
 **What "different jobs" means:**
+
 - Different event handling (click, hover, focus)
 - Different state management (open/closed, selected/unselected)
 - Different accessibility roles (menu vs menuitem)
-- Different styling needs (container vs content)
+- Different styling responsibilities (container vs content)
 
-**The principle:** If you find yourself writing "this part does X, that part does Y," you need compound components.
+**Anti-Namespacing Principle**: Don't create compound components solely for
+positioning or styling when they add no functional purpose beyond existing
+primitives. Ask: "Does this provide behavior, styling, or grouping value beyond
+what consumers could achieve with existing components?"
 
 **If YES:** Use **Compound Components** + Go to question 4  
 **If NO:** Reconsider - maybe it's really one thing
@@ -150,24 +183,39 @@ Ask these questions in order:
 
 ### 4. Do the parts need flexible content?
 
-**Why this matters:** Slots in compound components handle the "rich content" use case elegantly. Without slots, you'd need many props or children restrictions. But slots add complexity, so only use them when consumers actually need structured content.
+**Component Mechanics Unchanged Principle**: Slots should organize content
+without changing core functionality. onClick, keyboard navigation, etc. work
+identically whether you use simple children or complex slots.
 
 **Select.Option example** → Flexible content ✅:
-- Can have simple: `<Select.Option>Apple</Select.Option>`
-- Can have rich: `<Select.Option><Text slot="label">Apple</Text><Text slot="description">Sweet</Text></Select.Option>`
-- **Why slots win:** Better than `label={}` and `description={}` props for complex content
 
-**Accordion item header example** → Flexible content ✅:
-- Can have simple text: `<Text slot="header">Section 1</Text>`
-- Can have rich content: `<Stack slot="header"><Text>Title</Text><Button>Action</Button></Stack>`
-- **Why slots win:** Headers often need buttons, badges, or complex layouts
+- Simple: `<Select.Option>Apple</Select.Option>`
+- Complex:
+  `<Select.Option><Text slot="label">Apple</Text><Text slot="description">Sweet</Text></Select.Option>`
+- **Key insight:** Same selection behavior regardless of content complexity
+
+**Menu.Item example** → Flexible content ✅:
+
+- Simple: `<Menu.Item onSelect={handleSave}>Save Document</Menu.Item>`
+- Complex:
+  `<Menu.Item onSelect={handleSave}><Text slot="label">Save</Text><Text slot="shortcut">⌘S</Text></Menu.Item>`
+- **Key insight:** Same onClick behavior and keyboard navigation
+
+**Sectioning vs Positioning**:
+
+- **Compound component** (`Card.Header`) = semantic grouping with styling value
+  and header-specific spacing
+- **Slot** (`slot="title"`) = pure content placement within an existing
+  component structure
 
 **Ask yourself:**
-- Do consumers want to put icons, badges, descriptions, or other structured content in this part?
-- Would we need 3+ content-related props to handle all use cases?
-- Do consumers need semantic control over the content structure?
 
-**The cost-benefit:** Slots are powerful but add cognitive load. Only pay this cost when consumers genuinely need the flexibility.
+- Will the same component part need both simple AND complex content?
+- Would this require 3+ content-related props to handle all use cases?
+- Do consumers need structured content positioning without changing behavior?
+
+**Primitives + Convenience Principle**: Provide convenient defaults, but let
+consumers use primitives for edge cases.
 
 **If YES:** Use **Compound Components + Slots**  
 **If NO:** Use **Standard Compound Components**
@@ -181,12 +229,15 @@ Ask these questions in order:
 **Real codebase usage:**
 
 ```tsx
-<Button variant="primary">Save</Button>
+<Button variant="primary">
+  <Icon>save</Icon>
+  Save Document
+</Button>
 <Button variant="subtle">Cancel</Button>
 ```
 
-**Why Single Component:** Only one content area (text or icon), simple internal
-implementation.
+**Why Single Component:** Uses component tree composition rather than props for
+icons. Only one content area that can contain text, icons, or both.
 
 ### DatePicker → Single Component ✅
 
@@ -220,26 +271,28 @@ complexity (calendar, dropdowns, validation) is hidden from consumers.
 **Why Single Component:** Only one content area (text), simple internal
 implementation.
 
-### Card → Single Component + Slots ⚠️
+### Card → Compound Components ✅
 
-**Decision path:** One thing? ✅ → Different spots? ✅
+**Decision path:** One thing? ❌ → Different jobs? ✅ → Flexible content? ✅
 
 ```tsx
-<!-- Current (compound pattern) -->
 <Card.Root cardPadding="md" borderStyle="outlined">
-  <Card.Header><b>Card Title</b></Card.Header>
-  <Card.Content><p>Card content here</p></Card.Content>
-</Card.Root>
-
-<!-- Should be (single component + slots) -->
-<Card cardPadding="md" borderStyle="outlined">
-  <Text slot="header">Card Title</Text>
-  <Stack slot="content">
+  <Card.Header>
+    <Heading slot="title">Project Update</Heading>
+    <Text slot="description">Latest progress report</Text>
+    <Icon slot="startIcon">info</Icon>
+  </Card.Header>
+  <Card.Content>
     <Text>Card content here</Text>
-    <Button>Action</Button>
-  </Stack>
-</Card>
+    <Button>Take Action</Button>
+  </Card.Content>
+</Card.Root>
 ```
+
+**Why Compound + Slots**: `Card.Header` is a semantic section with
+header-specific styling and spacing. It groups related elements (title,
+description, icons) that consumers understand as "the header part." Slots within
+Card.Header organize the header's internal content structure.
 
 ### Select → Compound + Slots ✅
 
@@ -288,12 +341,12 @@ implementation.
 
 ## Quick Reference
 
-| Pattern              | When to Use                        | Example                                         |
-| -------------------- | ---------------------------------- | ----------------------------------------------- |
-| **Single Component** | One thing, simple content          | `<Button>Save</Button>`                         |
-| **Single + Slots**   | One thing, different content spots | `<Card><Text slot="header">Title</Text></Card>` |
-| **Standard Compound** | Multiple things, simple content    | `<TagGroup.Root><TagGroup.Tag>...`              |
-| **Compound + Slots** | Multiple things, rich content      | `<Accordion.Item><Text slot="header">...`       |
+| Pattern               | When to Use                        | Example                                          |
+| --------------------- | ---------------------------------- | ------------------------------------------------ |
+| **Single Component**  | One thing, simple content          | `<Button>Save</Button>`                          |
+| **Single + Slots**    | One thing, different content spots | `<Alert><Text slot="title">Title</Text></Alert>` |
+| **Standard Compound** | Multiple things, simple content    | `<TagGroup.Root><TagGroup.Tag>...`               |
+| **Compound + Slots**  | Multiple things, rich content      | `<Accordion.Item><Text slot="header">...`        |
 
 ## What About Slots Internally?
 
@@ -333,43 +386,78 @@ export const Select = {
 // Each part manages its own logic and state
 ```
 
-## Common Mistakes
+## When NOT to Use These Patterns
 
-❌ **Making everything compound**
+### Avoid Redundant Namespacing
+
+❌ **Bad**: Components that exist only for namespacing without functional value:
 
 ```tsx
-<!-- Overkill -->
+// Menu.Title is just styled text - use Text component directly
+<Menu.Root>
+  <Menu.Title>Actions</Menu.Title>
+  <Menu.Item>Edit</Menu.Item>
+</Menu.Root>
+```
+
+✅ **Better**: Use existing components when no additional functionality is
+needed:
+
+```tsx
+<Menu.Root>
+  <Text fontWeight="bold" mb="2">
+    Actions
+  </Text>
+  <Menu.Item>Edit</Menu.Item>
+</Menu.Root>
+```
+
+### Don't Over-Engineer Simple Components
+
+❌ **Bad**: Unnecessary complexity for simple cases:
+
+```tsx
 <Button.Root>
   <Button.Content>Save</Button.Content>
 </Button.Root>
 ```
 
-❌ **Making complex things simple**
+✅ **Better**: Keep simple things simple:
 
 ```tsx
-<!-- Missing structure -->
-<Select options={[...]} />
-<!-- Consumers can't customize individual options -->
+<Button variant="primary">Save</Button>
 ```
 
-❌ **Confusing internal and consumer slots**
+### Don't Change Component Mechanics with Slots
+
+❌ **Bad**: Slot changes how the component works:
 
 ```tsx
-<!-- Internal implementation detail (wrong to document) -->
-<Button slot="calendarToggle" />
+<Menu.Item>
+  <Text slot="content">Save</Text>
+  <Icon slot="trigger">settings</Icon> {/* Changes click target */}
+</Menu.Item>
+```
 
-<!-- Consumer API (correct to document) -->
-<Text slot="label">Apple</Text>
+✅ **Better**: Slots only organize content, behavior stays the same:
+
+```tsx
+<Menu.Item onClick={handleSave}>
+  <Text slot="label">Save</Text>
+  <Text slot="shortcut">⌘S</Text> {/* Just for positioning */}
+</Menu.Item>
 ```
 
 ## Next Steps
 
 1. **Review existing components** against this decision tree
 2. **Fix existing APIs** to use correct patterns:
-   - **Card**: Change from `<Card.Root><Card.Header>` to `<Card><Text slot="header">`
-   - **Accordion**: Change from `<Accordion.Header>` to `<Text slot="header">` within `<Accordion.Item>`
-   - **Alert**: Change from `<Alert.Root><Alert.Title>` to `<Alert><Text slot="title">`
-   - **FormField**: Change from `<FormField.Root><FormField.Label>` to `<FormField><Text slot="label">`
+   - **Accordion**: Change from `<Accordion.Header>` to slots within
+     `<Accordion.Item>`
+   - **Alert**: Change from `<Alert.Root><Alert.Title>` to
+     `<Alert><Text slot="title">`
+   - **FormField**: Change from `<FormField.Root><FormField.Label>` to
+     `<FormField><Text slot="label">`
 3. **Update Storybook** examples to show correct usage patterns
 
 ---
