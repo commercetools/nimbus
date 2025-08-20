@@ -787,12 +787,10 @@ export const Base: Story = {
         await userEvent.keyboard("{Escape}");
         // Focus combobox wrapper again
         multiSelect.focus();
-
-        // In React Aria v1.11.0, tab from the wrapper goes directly to first tag (TagList has tabindex=-1)
+        // Tab to tags
         await userEvent.tab();
         const tagList =
           await within(multiSelect).findByLabelText(/selected values/i);
-        // The first tag gets focus directly, not the TagList container
         await expect(tagList.childNodes[0]).toHaveFocus();
         // Tab to remove tag button
         await userEvent.tab();
