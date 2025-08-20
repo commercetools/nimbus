@@ -48,10 +48,10 @@ export const textInputRecipe = defineRecipe({
       position: "absolute",
       display: "flex",
       alignItems: "center",
-      // width: "200",
+      width: "600",
       // zIndex: 1,
-      left: "400",
-      right: "200",
+      // left: "400",
+      // right: "200",
       _rtl: {
         left: "auto",
         right: "400",
@@ -62,9 +62,9 @@ export const textInputRecipe = defineRecipe({
       position: "absolute",
       display: "flex",
       alignItems: "center",
-      // zIndex: 1,
+      justifyItems: "right",
       right: "400",
-      left: "200",
+      width: "600",
       _rtl: {
         right: "auto",
         left: "400",
@@ -100,35 +100,6 @@ export const textInputRecipe = defineRecipe({
         cursor: "not-allowed",
       },
     },
-
-    // Adjust padding when leading element is present
-    "&[data-has-leading='true'] [data-part='input']": {
-      paddingLeft: "1200",
-      _rtl: {
-        paddingLeft: "400",
-        paddingRight: "1200",
-      },
-    },
-
-    // Adjust padding when trailing element is present
-    "&[data-has-trailing='true'] [data-part='input']": {
-      paddingRight: "1200",
-      _rtl: {
-        paddingRight: "400",
-        paddingLeft: "1200",
-      },
-    },
-
-    // For both leading and trailing elements
-    "&[data-has-leading='true'][data-has-trailing='true'] [data-part='input']":
-      {
-        paddingLeft: "1200",
-        paddingRight: "1200",
-        _rtl: {
-          paddingLeft: "1200",
-          paddingRight: "1200",
-        },
-      },
   },
 
   variants: {
@@ -189,17 +160,17 @@ export const textInputRecipe = defineRecipe({
           },
         },
         "&[data-has-leading='true'] [data-part='input']": {
-          paddingLeft: "1200",
+          paddingLeft: "1000",
           _rtl: {
             paddingLeft: "400",
-            paddingRight: "1200",
+            paddingRight: "1000",
           },
         },
         "&[data-has-trailing='true'] [data-part='input']": {
-          paddingRight: "1200",
+          paddingRight: "1000",
           _rtl: {
             paddingRight: "400",
-            paddingLeft: "1200",
+            paddingLeft: "1000",
           },
         },
       },
