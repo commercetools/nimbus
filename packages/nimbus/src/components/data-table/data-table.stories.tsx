@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, isValidElement, type ReactNode } from "react";
-import { type Selection, useLocale } from "react-aria-components";
+import type { Selection } from "react-aria-components";
 import {
   Stack,
   TextInput,
@@ -97,15 +97,12 @@ const ProductDetailsModal = ({
   row,
 }: ProductDetailsModalProps) => {
   if (!row) return null;
-  const { locale } = useLocale();
-  console.log(locale);
   // Extract product data from commercetools structure
   const productName = row.name || "Unknown Product";
   const productSlug = row.slug || "";
   const productType = row.productType || "";
   const createdAt = row.createdAt || "";
   const lastModifiedAt = row.lastModifiedAt || "";
-
   const version = row.version || "";
   // put ct data into array to reduce repetition of components in render
   const detailItems: DetailsModalItemProps[] = [
