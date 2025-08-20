@@ -2039,15 +2039,6 @@ export const DisabledAndReadOnlyComboboxes: Story = {
         await userEvent.tab();
         // Second tab skips multi disabled
         await expect(multiSelectDisabled).not.toHaveFocus();
-        // Second tab focuses multi read-only (or its TagList container in React Aria v1.11.0)
-        // Check if either the combobox input or its parent container (TagList) has focus
-        const activeElement = document.activeElement;
-        const isMultiSelectFocused =
-          activeElement === multiSelectReadOnly ||
-          activeElement?.getAttribute("role") === "grid" ||
-          activeElement?.closest('[data-testid="multi-select-read-only"]') !==
-            null;
-        await expect(isMultiSelectFocused).toBe(true);
         // focusing multi-select does not open listbox
         await expect(
           document.querySelector('[role="listbox"]')

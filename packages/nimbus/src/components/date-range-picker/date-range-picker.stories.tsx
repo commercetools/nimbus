@@ -897,7 +897,7 @@ export const Controlled: Story = {
         });
         const segments = within(dateGroup).getAllByRole("spinbutton");
 
-        // Try to input an invalid date (February 30th)
+        // Try to input an invalid date
         await userEvent.click(segments[0]);
         await userEvent.keyboard("13");
 
