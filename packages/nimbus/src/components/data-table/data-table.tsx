@@ -12,7 +12,6 @@ import { DataTableRoot } from "./components/data-table.root";
 import { DataTableRow } from "./components/data-table.row";
 import { DataTableTable } from "./components/data-table.table";
 import {
-  DataTableDetailsButton,
   DataTableExpandButton,
   DataTableNestedIcon,
   DataTableSelectionCell,
@@ -46,7 +45,6 @@ export const DataTable = Object.assign(DataTableBase, {
   Cell: DataTableCell,
   Footer: DataTableFooter,
   ExpandButton: DataTableExpandButton,
-  DetailsButton: DataTableDetailsButton,
   NestedIcon: DataTableNestedIcon,
   SelectionCell: DataTableSelectionCell,
   Context: DataTableContext,
@@ -68,7 +66,6 @@ export {
   DataTableCell as _DataTableCell,
   DataTableFooter as _DataTableFooter,
   DataTableExpandButton as _DataTableExpandButton,
-  DataTableDetailsButton as _DataTableDetailsButton,
   DataTableNestedIcon as _DataTableNestedIcon,
   DataTableSelectionCell as _DataTableSelectionCell,
 };

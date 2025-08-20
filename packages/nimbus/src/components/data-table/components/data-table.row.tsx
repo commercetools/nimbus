@@ -13,12 +13,11 @@ import type {
   DataTableRowItem as DataTableRowType,
   DataTableColumnItem,
 } from "../data-table.types";
-import { Box, Checkbox, Button, Flex, IconButton } from "@/components";
-import { useCopyToClipboard } from "@/hooks";
+import { Box, Checkbox } from "@/components";
+
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
-  ContentCopy,
 } from "@commercetools/nimbus-icons";
 
 export interface DataTableRowProps<T extends object = Record<string, unknown>> {
@@ -43,16 +42,37 @@ function getIsTableRowChildElementInteractive(e: Event) {
 }
 
 /**
- * Prevents event propagation when clicking on non-interactive elements.
- * This is essential for row selection behavior - we only want selection events
- * to bubble up when the user specifically clicks on selection controls, not
- * when they click anywhere on the row.
+ * Determines if a click event originated from a selection-related interactive element.
+ * This helps distinguish between selection controls and other interactive elements.
+ *
+ * @param e - The DOM Event object from the click listener
+ * @returns Element if a selection-related interactive element was found, null otherwise
+ */
+function getIsSelectionInteractiveElement(e: Event) {
+  const clickedElement = e.target as Element;
+  return clickedElement?.closest(
+    '[slot="selection"], [data-slot="selection"], [role="checkbox"]'
+  );
+}
+
+/**
+ * Prevents event propagation when clicking on non-interactive elements or
+ * interactive elements that are not selection-related.
+ * This ensures that:
+ * - Selection only happens when clicking on selection controls
+ * - Other interactive elements (buttons, etc.) don't trigger selection
+ * - Non-interactive areas don't trigger selection
  *
  * @param e - The DOM Event to potentially stop propagation on
  */
 function stopPropagationToNonInteractiveElements(e: Event) {
   const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-  if (!isInteractiveElement) {
+  const isSelectionElement = getIsSelectionInteractiveElement(e);
+
+  // Stop propagation if:
+  // 1. It's not an interactive element at all, OR
+  // 2. It's an interactive element but NOT a selection element
+  if (!isInteractiveElement || (isInteractiveElement && !isSelectionElement)) {
     e.stopPropagation();
   }
 }
@@ -71,11 +91,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
     disabledKeys,
     showExpandColumn,
     showSelectionColumn,
-    showDetailsColumn,
-    isRowClickable,
     isTruncated,
     onRowClick,
-    onDetailsClick,
     onRowAction,
   } = useDataTableContext<T>();
 
@@ -100,6 +117,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * 2. **Smart Event Filtering**: Prevent conflicts with interactive elements (checkboxes, buttons)
    * 3. **Selection Isolation**: Ensure row selection only happens via explicit selection controls
    * 4. **Disabled Row Handling**: Support custom actions even on disabled rows when needed
+   * 5. **Text Selection Support**: Avoid triggering click handler when users are selecting text
    *
    * This approach maintains the accessibility benefits of React Aria while enabling the
    * expected UX patterns for modern data tables. Without this implementation, users would
@@ -123,12 +141,16 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * @param e - Native DOM Event from the click listener
    */
   const handleRowClick = (e: Event) => {
-    // Don't do anything if isRowClickable is false
-    if (!isRowClickable) return;
+    // Don't do anything if onRowClick is undefined
+    if (!onRowClick) return;
     // Prevent row click when clicking on interactive elements to avoid conflicts
     const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+    // Prevent row click when text is selected
+    const hasSelectedText =
+      window.getSelection()?.toString() !== undefined &&
+      window.getSelection()!.toString().length > 0;
 
-    if (!isInteractiveElement && onRowClick) {
+    if (!isInteractiveElement && !hasSelectedText) {
       if (!isDisabled) {
         onRowClick(row);
       } else {
@@ -167,12 +189,12 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
    * 2. **Event Capture**: Uses capture phase to handle events before child elements
    * 3. **Dual Listeners**: Attaches both pointerdown (for selection control) and mouseup (for clicks)
-   * 4. **Always Available**: Listeners are always attached to support dynamic isRowClickable changes
+   * 4. **Always Available**: Listeners are always attached to support dynamic onRowClick changes
    *
    * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
    * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
    * in react-aria'a onPress handler.
-   * The click listener invokes the row's onClick handler.
+   * The mouseup listener invokes the row's onClick handler once any possible text selection has been completed.
    * Using capture phase ensures our handlers run before any child element handlers.
    *
    * Performance note: Always attaching listeners has negligible overhead (~few bytes per row)
@@ -195,8 +217,9 @@ export const DataTableRow = forwardRef(function DataTableRow<
             capture: true,
           }
         );
-        // Use click event to set onClick handler
-        node.addEventListener("click", handleRowClick, { capture: true });
+
+        // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
+        node.addEventListener("mouseup", handleRowClick, { capture: true });
       }
     },
     [handleRowClick]
@@ -234,19 +257,11 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
   const { selectionBehavior } = useTableOptions();
 
-  const [, copyToClipboard] = useCopyToClipboard();
-
   const hasNestedContent =
     nestedKey &&
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
   const isExpanded = expanded[row.id];
-
-  // Action handlers - only copy functionality
-  const handleCopy = (value: unknown) => {
-    const textValue = typeof value === "string" ? value : String(value);
-    copyToClipboard(textValue);
-  };
 
   // Highlight helper
   const highlightCell = (value: unknown): React.ReactNode =>
@@ -261,7 +276,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
   return (
     <>
       <RaRow
-        // onAction={!isDisabled && isRowClickable ? handleRowClick : () => {}}
         isDisabled={isDisabled}
         columns={activeColumns}
         ref={rowRef}
@@ -270,7 +284,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
         style={{
           cursor: isDisabled
             ? "not-allowed"
-            : isRowClickable
+            : onRowClick
               ? "pointer"
               : undefined,
           position: "relative",
@@ -325,94 +339,37 @@ export const DataTableRow = forwardRef(function DataTableRow<
         <RaCollection items={activeColumns}>
           {(col: DataTableColumnItem<T>) => {
             const cellValue = col.accessor(row);
-            const isDetailsCell = col.id === "nimbus-data-table-details-column";
 
-            if (isDetailsCell) {
-              return (
-                <DataTableCell
-                  key="details-column"
-                  isDisabled={isDisabled}
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    w="100%"
-                    h="100%"
-                  >
-                    <Button
-                      aria-label="View row details"
-                      className="data-table-row-details-button"
-                      disabled={isDisabled}
-                      variant="outline"
-                      colorPalette="primary"
-                      size="2xs"
-                      onPress={() => {
-                        if (onDetailsClick) {
-                          onDetailsClick(row);
-                        }
-                      }}
-                    >
-                      Open
-                    </Button>
-                  </Box>
-                </DataTableCell>
-              );
-            }
             return (
               <DataTableCell isDisabled={isDisabled} key={col.id}>
-                <Flex>
-                  <Box
-                    className={isTruncated ? "truncated-cell" : ""}
-                    display="inline-block"
-                    h="100%"
-                    minW="0"
-                    maxW="100%"
-                    position="relative"
-                    overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : "text"}
-                    style={
-                      // TODO: I'm not clear on what this is supposed to do?
-                      {
-                        // Add indentation for the first column of nested rows
-                        // ...(depth > 0 &&
-                        //   index === 0 && {
-                        //     paddingLeft: `${16 + depth * 16}px`,
-                        //   }),
-                      }
+                <Box
+                  className={isTruncated ? "truncated-cell" : ""}
+                  display="inline-block"
+                  h="100%"
+                  minW="0"
+                  maxW="100%"
+                  position="relative"
+                  overflow="hidden"
+                  cursor={isDisabled ? "not-allowed" : "text"}
+                  style={
+                    // TODO: I'm not clear on what this is supposed to do?
+                    {
+                      // Add indentation for the first column of nested rows
+                      // ...(depth > 0 &&
+                      //   index === 0 && {
+                      //     paddingLeft: `${16 + depth * 16}px`,
+                      //   }),
                     }
-                  >
-                    {col.render
-                      ? col.render({
-                          value: highlightCell(cellValue),
-                          row,
-                          column: col,
-                        })
-                      : highlightCell(cellValue)}
-                  </Box>
-
-                  {/* Cell hover buttons */}
-
-                  <IconButton
-                    key="copy-btn"
-                    size="2xs"
-                    variant="ghost"
-                    aria-label="Copy to clipboard"
-                    colorPalette="primary"
-                    className="nimbus-table-cell-copy-button"
-                    onPress={() => handleCopy(cellValue)}
-                    ml="100"
-                  >
-                    <ContentCopy
-                      key="copy-icon"
-                      onClick={() => handleCopy(cellValue)}
-                    />
-                  </IconButton>
-                </Flex>
+                  }
+                >
+                  {col.render
+                    ? col.render({
+                        value: highlightCell(cellValue),
+                        row,
+                        column: col,
+                      })
+                    : highlightCell(cellValue)}
+                </Box>
               </DataTableCell>
             );
           }}
@@ -426,10 +383,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
             colSpan={
               activeColumns.length +
               (showExpandColumn ? 1 : 0) +
-              (showSelectionColumn ? 1 : 0) +
-              (showDetailsColumn ? 1 : 0) -
-              // length is 1 indexed, but arrays/sets are 0 indexed, so we need to subtract 1 from the total
-              1
+              (showSelectionColumn ? 1 : 0)
             }
             style={{
               borderLeft: "2px solid blue",

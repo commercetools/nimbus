@@ -159,35 +159,19 @@ const ProductDetailsModal = ({
 
 // Wrapper component that automatically handles modals for onDetailsClick and onRowClick
 const DataTableWithModals = ({
-  onDetailsClick,
   onRowClick,
   isProductDetailsTable,
   ...props
 }: DataTableProps & {
-  onDetailsClick?: (row: DataTableRowItem) => void;
   onRowClick?: (row: DataTableRowItem) => void;
   isProductDetailsTable?: boolean;
 }) => {
-  const [detailsModalState, setDetailsModalState] = useState<{
-    isOpen: boolean;
-    row?: DataTableRowItem;
-  }>({
-    isOpen: false,
-  });
-
   const [rowClickModalState, setRowClickModalState] = useState<{
     isOpen: boolean;
     row?: DataTableRowItem;
   }>({
     isOpen: false,
   });
-
-  const handleDetailsClick = onDetailsClick
-    ? (row: DataTableRowItem) => {
-        setDetailsModalState({ isOpen: true, row });
-        onDetailsClick?.(row);
-      }
-    : undefined;
 
   const handleRowClick = onRowClick
     ? (row: DataTableRowItem) => {
@@ -198,33 +182,33 @@ const DataTableWithModals = ({
 
   return (
     <>
-      <DataTable
-        {...props}
-        onDetailsClick={handleDetailsClick}
-        onRowClick={handleRowClick}
-      />
+      <DataTable {...props} onRowClick={handleRowClick} />
 
       {/* Details Modal */}
-      {onDetailsClick &&
+      {onRowClick &&
         (isProductDetailsTable ? (
           <ProductDetailsModal
-            isOpen={detailsModalState.isOpen}
+            isOpen={rowClickModalState.isOpen}
             onClose={() =>
-              setDetailsModalState({ isOpen: false, row: undefined })
+              setRowClickModalState({ isOpen: false, row: undefined })
             }
-            row={detailsModalState?.row}
+            row={rowClickModalState?.row}
           />
         ) : (
           <InfoModal
-            isOpen={detailsModalState.isOpen}
+            isOpen={rowClickModalState.isOpen}
             onClose={() =>
-              setDetailsModalState({ isOpen: false, row: undefined })
+              setRowClickModalState({ isOpen: false, row: undefined })
             }
-            title={`${detailsModalState?.row?.name}'s Details`}
+            title={
+              rowClickModalState.row?.name
+                ? `${rowClickModalState?.row?.name}'s Details`
+                : `Details for row ${rowClickModalState?.row?.id}`
+            }
           >
-            {detailsModalState?.row && (
+            {rowClickModalState?.row && (
               <Stack as="ul" listStyle="none" gap="200">
-                {Object.entries(detailsModalState.row!)
+                {Object.entries(rowClickModalState.row!)
                   .filter(([k]) => !["id", "children"].includes(k))
                   .map(([k, v]) => (
                     <DetailsModalItem
@@ -237,19 +221,6 @@ const DataTableWithModals = ({
             )}
           </InfoModal>
         ))}
-
-      {/* Row Click Modal */}
-      {onRowClick && (
-        <InfoModal
-          isOpen={rowClickModalState.isOpen}
-          onClose={() =>
-            setRowClickModalState({ isOpen: false, row: undefined })
-          }
-          title={`🎉 You Clicked ${rowClickModalState?.row?.name}'s Row 🎉`}
-        >
-          <div>Row clicked successfully!</div>
-        </InfoModal>
-      )}
     </>
   );
 };
@@ -282,7 +253,7 @@ export const Base: Story = {
     <DataTableWithModals
       {...args}
       isProductDetailsTable
-      onDetailsClick={() => {}}
+      onRowClick={() => {}}
     />
   ),
   args: {
@@ -290,28 +261,7 @@ export const Base: Story = {
     data: mcMockData,
     allowsSorting: true,
     isResizable: true,
-    isRowClickable: true,
-    density: "condensed",
     selectionMode: "multiple",
-  },
-};
-
-/**
- * Details Button Story
- * Demonstrates the details button functionality that's always present in the second column
- */
-export const WithDetailsButton: Story = {
-  render: (args) => (
-    <DataTableWithModals
-      {...args}
-      onDetailsClick={() => {}} // Just need to pass a function to enable the modal
-    />
-  ),
-  args: {
-    columns,
-    data,
-    allowsSorting: true,
-    isResizable: true,
   },
 };
 
@@ -342,7 +292,9 @@ export const ColumnManager: Story = {
         <DataTableWithModals
           {...args}
           visibleColumns={visible}
-          onDetailsClick={() => {}}
+          onRowClick={() => {
+            console.log("row clicked");
+          }}
         />
       </>
     );
@@ -351,7 +303,7 @@ export const ColumnManager: Story = {
 };
 
 export const CustomColumn: Story = {
-  render: (args) => <DataTableWithModals {...args} onDetailsClick={() => {}} />,
+  render: (args) => <DataTableWithModals {...args} onRowClick={() => {}} />,
   args: { columns, data },
 };
 
@@ -367,11 +319,7 @@ export const SearchAndHighlight: Story = {
           width="1/3"
           aria-label="search-rows"
         />
-        <DataTableWithModals
-          {...args}
-          search={search}
-          onDetailsClick={() => {}}
-        />
+        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -389,7 +337,7 @@ export const AdjustableColumns: Story = {
         <DataTableWithModals
           {...args}
           isResizable={isResizable}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -411,7 +359,7 @@ export const Condensed: Story = {
         <DataTableWithModals
           {...args}
           density={condensed ? "condensed" : "default"}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -431,7 +379,7 @@ export const StickyHeader: Story = {
         <DataTableWithModals
           {...args}
           maxHeight={sticky ? "400px" : undefined}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -443,14 +391,21 @@ export const StickyHeader: Story = {
 };
 
 export const ClickableRows: Story = {
-  render: (args) => (
-    <DataTableWithModals
-      {...args}
-      isRowClickable
-      onRowClick={() => {}} // Just need to pass a function to enable the modal
-      onDetailsClick={() => {}}
-    />
-  ),
+  render: (args) => {
+    const [isRowClickable, setIsRowClickable] = useState(true);
+    return (
+      <Stack gap="500" alignItems="flex-start">
+        {/* This is supposed to set the sticky header from the top to the bottom of the table. */}
+        <Checkbox isSelected={isRowClickable} onChange={setIsRowClickable}>
+          Clickable Rows
+        </Checkbox>
+        <DataTableWithModals
+          {...args}
+          onRowClick={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
+        />
+      </Stack>
+    );
+  },
   args: { columns, data },
 };
 
@@ -465,7 +420,7 @@ export const WithSorting: Story = {
             sortable.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -530,7 +485,7 @@ export const ControlledSorting: Story = {
           {...args}
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -562,11 +517,7 @@ export const SortingWithSearch: Story = {
           width="1/3"
           aria-label="filter-rows"
         />
-        <DataTableWithModals
-          {...args}
-          search={search}
-          onDetailsClick={() => {}}
-        />
+        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -585,7 +536,7 @@ export const SelectionShowcase: Story = {
       "none" | "single" | "multiple"
     >("multiple");
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(false);
-    const [isRowClickable, setIsRowClickable] = useState(false);
+    const [isRowClickable, setIsRowClickable] = useState(true);
 
     const selectedCount = Array.from(selectedKeys).length;
 
@@ -659,22 +610,22 @@ export const SelectionShowcase: Story = {
                 </Select.Options>
               </Select.Root>
 
-              {selectionMode !== "none" && (
-                <Stack gap="100" direction="row">
+              <Stack gap="300" direction="row">
+                <Checkbox
+                  isSelected={isRowClickable}
+                  onChange={setIsRowClickable}
+                >
+                  Clickable Rows
+                </Checkbox>
+                {selectionMode !== "none" && (
                   <Checkbox
                     isSelected={disallowEmptySelection}
                     onChange={setDisallowEmptySelection}
                   >
                     Require Selection
                   </Checkbox>
-                  <Checkbox
-                    isSelected={isRowClickable}
-                    onChange={setIsRowClickable}
-                  >
-                    Clickable Rows
-                  </Checkbox>
-                </Stack>
-              )}
+                )}
+              </Stack>
             </Stack>
             {selectionMode !== "none" && (
               <Text fontSize="350" color="neutral.12">
@@ -738,7 +689,7 @@ export const SelectionShowcase: Story = {
             </Stack>
           )}
         </Stack>
-        <DataTable
+        <DataTableWithModals
           columns={sortableColumns}
           data={data}
           search={search}
@@ -747,27 +698,7 @@ export const SelectionShowcase: Story = {
           selectionMode={selectionMode}
           disallowEmptySelection={disallowEmptySelection}
           allowsSorting={true}
-          isRowClickable={isRowClickable}
-          onRowClick={
-            isRowClickable
-              ? (row) => {
-                  if (selectionMode === "single") {
-                    setSelectedKeys(new Set([row.id]));
-                  } else if (selectionMode === "multiple") {
-                    const newSelection = new Set(selectedKeys);
-                    if (newSelection.has(row.id)) {
-                      if (!disallowEmptySelection || newSelection.size > 1) {
-                        newSelection.delete(row.id);
-                      }
-                    } else {
-                      newSelection.add(row.id);
-                    }
-                    setSelectedKeys(newSelection);
-                  }
-                }
-              : undefined
-          }
-          onDetailsClick={() => {}}
+          onRowClick={isRowClickable ? () => {} : undefined}
         />
         {/* Feature Explanation */}
         <Box
@@ -866,7 +797,7 @@ export const TextTruncation: Story = {
           <DataTableWithModals
             {...args}
             isTruncated={isTruncated}
-            onDetailsClick={() => {}}
+            onRowClick={() => {}}
           />
         </Box>
       </Stack>
@@ -912,11 +843,13 @@ export const SingleRowSelection: Story = {
 };
 
 export const MultilineHeaders: Story = {
+  render: (args) => <DataTableWithModals {...args} />,
   args: {
     columns: multilineHeadersColumns,
     data: multilineHeadersData,
     allowsSorting: true,
     isResizable: true,
+    onRowClick: () => {},
   },
 };
 
@@ -959,7 +892,7 @@ export const WithFooter: Story = {
           allowsSorting={true}
           selectionMode="multiple"
           footer={footerContent}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
 
         <Box mt="400" p="400" bg="neutral.2" borderRadius="md">
@@ -1000,7 +933,7 @@ export const HorizontalScrolling: Story = {
           allowsSorting={true}
           maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
           footer={
             <Stack
               direction="row"
@@ -1072,7 +1005,7 @@ export const FlexibleNestedChildren: Story = {
             Click the expand buttons to see different types of nested content.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -1133,7 +1066,7 @@ export const NoNestedContent: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -1226,7 +1159,7 @@ export const NestedTable: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -1286,7 +1219,7 @@ export const AllFeatures: Story = {
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
 
     const allColumns = comprehensiveColumns.map((col) => col.id);
-
+    console.log("rerentder");
     // Create nested table data with proper React components
     const modifiedComprehensiveData = comprehensiveData.map((item) => ({
       ...item,
@@ -1300,7 +1233,7 @@ export const AllFeatures: Story = {
             data={item.children as DataTableRowItem[]}
             allowsSorting={true}
             isResizable={true}
-            onDetailsClick={() => {}}
+            onRowClick={() => {}}
           />
         </Box>
       ),
@@ -1523,17 +1456,11 @@ export const AllFeatures: Story = {
             disallowEmptySelection={disallowEmptySelection}
             isResizable={isResizable}
             allowsSorting={allowsSorting}
-            isRowClickable={true}
             maxHeight={stickyHeader ? "400px" : undefined}
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            onRowClick={() => {
-              console.log("row clicked");
-            }}
-            onDetailsClick={() => {
-              console.log("details clicked");
-            }}
+            onRowClick={isRowClickable ? () => {} : undefined}
           />
         </Box>
         {/* Feature Information */}
@@ -1710,7 +1637,6 @@ export const DisabledRowsShowcase: Story = {
           onRowAction={handleRowAction}
           selectionMode="multiple"
           allowsSorting={true}
-          isRowClickable={true}
           onRowClick={() => {}}
         />
       </Stack>
