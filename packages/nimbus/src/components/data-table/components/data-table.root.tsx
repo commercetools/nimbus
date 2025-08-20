@@ -141,7 +141,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       selectionMode = "none",
       disallowEmptySelection = false,
       allowsSorting = false,
-      isRowClickable = false,
       maxHeight,
       isTruncated = false,
       density = "default",
@@ -162,8 +161,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
-    // TODO: should we really always show this?
-    const showDetailsColumn = true; // Details column is always shown
 
     const activeColumns = useMemo(() => {
       const activeCols = columns.filter(
@@ -171,18 +168,8 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
           (visibleColumns ? visibleColumns.includes(col.id) : true) &&
           col.isVisible !== false
       );
-      if (showDetailsColumn) {
-        // Add the 'details column' to the active columns after the first column
-        activeCols.splice(1, 0, {
-          id: "nimbus-data-table-details-column",
-          header: undefined,
-          accessor: () => null,
-          width: 70,
-          isSortable: false,
-        });
-      }
       return activeCols;
-    }, [columns, visibleColumns, showDetailsColumn]);
+    }, [columns, visibleColumns]);
 
     const filteredRows = useMemo(
       () =>
@@ -227,7 +214,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         allowsSorting,
         selectionMode,
         disallowEmptySelection,
-        isRowClickable,
         maxHeight,
         isTruncated,
         density,
@@ -242,7 +228,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         sortedRows,
         showExpandColumn,
         showSelectionColumn,
-        showDetailsColumn,
         isResizable,
         disabledKeys,
         onRowAction,
@@ -259,7 +244,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         allowsSorting,
         selectionMode,
         disallowEmptySelection,
-        isRowClickable,
         maxHeight,
         isTruncated,
         density,
@@ -274,7 +258,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         sortedRows,
         showExpandColumn,
         showSelectionColumn,
-        showDetailsColumn,
         isResizable,
         disabledKeys,
         onRowAction,
