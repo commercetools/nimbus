@@ -78,14 +78,14 @@ export const paginationRecipe = defineSlotRecipe({
     size: {
       sm: {
         ellipsis: {
-          minWidth: "1100",
-          height: "1100",
-          fontSize: "300",
+          minWidth: "800",
+          height: "800",
+          fontSize: "350",
         },
         trigger: {
-          minWidth: "1100",
-          height: "1100",
-          fontSize: "300",
+          minWidth: "800",
+          height: "800",
+          fontSize: "350",
         },
         list: {
           gap: "75",
@@ -93,14 +93,14 @@ export const paginationRecipe = defineSlotRecipe({
       },
       md: {
         ellipsis: {
-          minWidth: "1100",
-          height: "1100",
-          fontSize: "350",
+          minWidth: "1000",
+          height: "1000",
+          fontSize: "400",
         },
         trigger: {
-          minWidth: "1100",
-          height: "1100",
-          fontSize: "350",
+          minWidth: "1000",
+          height: "1000",
+          fontSize: "400",
         },
         list: {
           gap: "100",
@@ -108,14 +108,14 @@ export const paginationRecipe = defineSlotRecipe({
       },
       lg: {
         ellipsis: {
-          minWidth: "1000",
-          height: "1000",
-          fontSize: "400",
+          minWidth: "1200",
+          height: "1200",
+          fontSize: "500",
         },
         trigger: {
-          minWidth: "1000",
-          height: "1000",
-          fontSize: "400",
+          minWidth: "1200",
+          height: "1200",
+          fontSize: "500",
         },
         list: {
           gap: "150",
