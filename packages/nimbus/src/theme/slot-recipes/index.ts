@@ -29,6 +29,7 @@ import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-r
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+import { paginationRecipe } from "@/components/pagination/pagination.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -50,4 +51,5 @@ export const slotRecipes = {
   progressBar: progressBarSlotRecipe,
   menu: menuSlotRecipe,
   splitButton: splitButtonSlotRecipe,
+  pagination: paginationRecipe,
 };

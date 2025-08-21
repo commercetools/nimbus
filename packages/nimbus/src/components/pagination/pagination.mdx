@@ -1,0 +1,602 @@
+---
+id: Components-Pagination
+title: Pagination
+description: Navigation component for large datasets with full accessibility support
+documentState: ReviewedInternal
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Pagination
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2702-5711
+---
+
+# Pagination
+
+A fully accessible, compound component for navigating through large datasets. Built with React Aria Components and Chakra UI v3 for enterprise-grade accessibility and performance.
+
+## Overview
+
+The Pagination component provides users with an intuitive way to navigate through paginated content. It features intelligent page condensation, comprehensive keyboard support, and follows WCAG 2.1 AA accessibility standards.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[React ARIA](https://react-spectrum.adobe.com/react-aria/Button.html)  
+[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)  
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2702-5711)
+
+## Basic Usage
+
+The Pagination component uses a compound pattern where each part serves a specific role in creating accessible navigation.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(5);
+  const totalPages = 20;
+
+  const generatePageRange = (current, total, siblings = 1) => {
+    const range = [];
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        range.push({ type: 'page', page: i });
+      }
+      return range;
+    }
+
+    range.push({ type: 'page', page: 1 });
+
+    const leftBoundary = Math.max(2, current - siblings);
+    if (leftBoundary > 2) {
+      range.push({ type: 'ellipsis' });
+    }
+
+    const start = Math.max(2, current - siblings);
+    const end = Math.min(total - 1, current + siblings);
+
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && !range.some(item => item.type === 'page' && item.page === i)) {
+        range.push({ type: 'page', page: i });
+      }
+    }
+
+    const rightBoundary = Math.min(total - 1, current + siblings);
+    if (rightBoundary < total - 1) {
+      range.push({ type: 'ellipsis' });
+    }
+
+    if (total > 1) {
+      range.push({ type: 'page', page: total });
+    }
+
+    return range;
+  };
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={totalPages} 
+      onPageChange={setCurrentPage}
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        {generatePageRange(currentPage, totalPages).map((item, index) => 
+          item.type === 'page' ? (
+            <Pagination.Item key={item.page} page={item.page} />
+          ) : (
+            <Pagination.Ellipsis key={`ellipsis-${index}`} />
+          )
+        )}
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+## Size Variants
+
+Choose the appropriate size based on your layout and importance of the navigation.
+
+### Small
+
+Ideal for compact layouts and secondary navigation areas.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(3);
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={8}
+      onPageChange={setCurrentPage}
+      size="sm"
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        <Pagination.Item page={1} />
+        <Pagination.Item page={2} />
+        <Pagination.Item page={3} />
+        <Pagination.Item page={4} />
+        <Pagination.Ellipsis />
+        <Pagination.Item page={8} />
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+### Medium (Default)
+
+The standard size for most pagination use cases.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(3);
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={8}
+      onPageChange={setCurrentPage}
+      size="md"
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        <Pagination.Item page={1} />
+        <Pagination.Item page={2} />
+        <Pagination.Item page={3} />
+        <Pagination.Item page={4} />
+        <Pagination.Ellipsis />
+        <Pagination.Item page={8} />
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+### Large
+
+Use for prominent navigation areas or when pagination is a primary interface element.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(3);
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={8}
+      onPageChange={setCurrentPage}
+      size="lg"
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        <Pagination.Item page={1} />
+        <Pagination.Item page={2} />
+        <Pagination.Item page={3} />
+        <Pagination.Item page={4} />
+        <Pagination.Ellipsis />
+        <Pagination.Item page={8} />
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+## Visual Variants
+
+Different visual treatments for various design contexts.
+
+### Solid (Default)
+
+Provides clear visual hierarchy with filled active states.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(5);
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={10}
+      onPageChange={setCurrentPage}
+      variant="solid"
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        <Pagination.Item page={4} />
+        <Pagination.Item page={5} />
+        <Pagination.Item page={6} />
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+### Outline
+
+Subtle appearance with bordered styling, ideal for minimal interfaces.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(5);
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={10}
+      onPageChange={setCurrentPage}
+      variant="outline"
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        <Pagination.Item page={4} />
+        <Pagination.Item page={5} />
+        <Pagination.Item page={6} />
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+### Ghost
+
+Minimal styling with subtle hover effects, perfect for clean layouts.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(5);
+
+  return (
+    <Pagination.Root 
+      currentPage={currentPage} 
+      totalPages={10}
+      onPageChange={setCurrentPage}
+      variant="ghost"
+    >
+      <Pagination.List>
+        <Pagination.PrevTrigger />
+        <Pagination.Item page={4} />
+        <Pagination.Item page={5} />
+        <Pagination.Item page={6} />
+        <Pagination.NextTrigger />
+      </Pagination.List>
+    </Pagination.Root>
+  );
+};
+```
+
+## Advanced Usage
+
+### Table Pagination
+
+Integration pattern for paginated data tables.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage] = React.useState(10);
+  const totalItems = 157;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const generatePageRange = (current, total, siblings = 1) => {
+    const range = [];
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        range.push({ type: 'page', page: i });
+      }
+      return range;
+    }
+
+    range.push({ type: 'page', page: 1 });
+
+    const leftBoundary = Math.max(2, current - siblings);
+    if (leftBoundary > 2) {
+      range.push({ type: 'ellipsis' });
+    }
+
+    const start = Math.max(2, current - siblings);
+    const end = Math.min(total - 1, current + siblings);
+
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && !range.some(item => item.type === 'page' && item.page === i)) {
+        range.push({ type: 'page', page: i });
+      }
+    }
+
+    const rightBoundary = Math.min(total - 1, current + siblings);
+    if (rightBoundary < total - 1) {
+      range.push({ type: 'ellipsis' });
+    }
+
+    if (total > 1) {
+      range.push({ type: 'page', page: total });
+    }
+
+    return range;
+  };
+
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+  return (
+    <Stack direction="column" gap="400">
+      {/* Table would go here */}
+      <Box bg="gray.50" p="400" borderRadius="md">
+        <Text>Table content for page {currentPage}</Text>
+        <Text fontSize="sm" color="gray.600">
+          Items {startItem}-{endItem} of {totalItems}
+        </Text>
+      </Box>
+      
+      <Pagination.Root 
+        currentPage={currentPage} 
+        totalPages={totalPages} 
+        onPageChange={setCurrentPage}
+        aria-label={`Table pagination, showing ${startItem} to ${endItem} of ${totalItems} items`}
+      >
+        <Pagination.List>
+          <Pagination.PrevTrigger />
+          {generatePageRange(currentPage, totalPages).map((item, index) => 
+            item.type === 'page' ? (
+              <Pagination.Item key={item.page} page={item.page} />
+            ) : (
+              <Pagination.Ellipsis key={`ellipsis-${index}`} />
+            )
+          )}
+          <Pagination.NextTrigger />
+        </Pagination.List>
+      </Pagination.Root>
+    </Stack>
+  );
+};
+```
+
+### Custom Page Range Logic
+
+Adjust the number of surrounding pages shown with `siblingCount`.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(10);
+  const [siblingCount, setSiblingCount] = React.useState(2);
+
+  const generatePageRange = (current, total, siblings = 1) => {
+    const range = [];
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        range.push({ type: 'page', page: i });
+      }
+      return range;
+    }
+
+    range.push({ type: 'page', page: 1 });
+
+    const leftBoundary = Math.max(2, current - siblings);
+    if (leftBoundary > 2) {
+      range.push({ type: 'ellipsis' });
+    }
+
+    const start = Math.max(2, current - siblings);
+    const end = Math.min(total - 1, current + siblings);
+
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && !range.some(item => item.type === 'page' && item.page === i)) {
+        range.push({ type: 'page', page: i });
+      }
+    }
+
+    const rightBoundary = Math.min(total - 1, current + siblings);
+    if (rightBoundary < total - 1) {
+      range.push({ type: 'ellipsis' });
+    }
+
+    if (total > 1) {
+      range.push({ type: 'page', page: total });
+    }
+
+    return range;
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="horizontal" gap="400" alignItems="center">
+        <Text>Sibling Count:</Text>
+        <Button 
+          size="xs" 
+          variant={siblingCount === 1 ? "solid" : "outline"}
+          onClick={() => setSiblingCount(1)}
+        >
+          1
+        </Button>
+        <Button 
+          size="xs" 
+          variant={siblingCount === 2 ? "solid" : "outline"}
+          onClick={() => setSiblingCount(2)}
+        >
+          2
+        </Button>
+        <Button 
+          size="xs" 
+          variant={siblingCount === 3 ? "solid" : "outline"}
+          onClick={() => setSiblingCount(3)}
+        >
+          3
+        </Button>
+      </Stack>
+      
+      <Pagination.Root 
+        currentPage={currentPage} 
+        totalPages={50} 
+        onPageChange={setCurrentPage}
+        siblingCount={siblingCount}
+      >
+        <Pagination.List>
+          <Pagination.PrevTrigger />
+          {generatePageRange(currentPage, 50, siblingCount).map((item, index) => 
+            item.type === 'page' ? (
+              <Pagination.Item key={item.page} page={item.page} />
+            ) : (
+              <Pagination.Ellipsis key={`ellipsis-${index}`} />
+            )
+          )}
+          <Pagination.NextTrigger />
+        </Pagination.List>
+      </Pagination.Root>
+    </Stack>
+  );
+};
+```
+
+## Guidelines
+
+Pagination guidelines ensure consistent and accessible navigation experiences across different content types and use cases.
+
+### Best Practices
+
+- **Contextual labeling**: Provide meaningful `aria-label` values that describe what content is being paginated
+- **Performance considerations**: Use pagination for large datasets (> 50 items) to maintain performance
+- **Loading states**: Show loading indicators when page changes involve network requests
+- **URL synchronization**: Sync pagination state with URL parameters for bookmarkable pages
+- **Mobile optimization**: Consider different layouts for mobile devices with limited screen space
+
+### Usage Guidelines
+
+> [!TIP]  
+> When to use
+
+- **Large datasets**: Use pagination when displaying more than 25-50 items
+- **Table navigation**: Essential for data tables with extensive records
+- **Search results**: Break up search results into manageable chunks
+- **Content listings**: Product catalogs, blog posts, or file directories
+- **Performance optimization**: When loading all items would impact page performance
+
+> [!CAUTION]  
+> When not to use
+
+- **Small datasets**: Don't paginate fewer than 25 items unless performance requires it
+- **Critical content**: Avoid paginating content that users need to see together
+- **Infinite scroll contexts**: Use infinite scroll for social feeds or continuous browsing
+- **Single-screen content**: If all content fits comfortably on one screen
+
+### Mobile Considerations
+
+On mobile devices, consider showing fewer page numbers and prioritizing previous/next navigation.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(5);
+  
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="500">Mobile-optimized pagination</Text>
+      <Pagination.Root 
+        currentPage={currentPage} 
+        totalPages={20} 
+        onPageChange={setCurrentPage}
+        size="sm"
+        siblingCount={0}
+      >
+        <Pagination.List>
+          <Pagination.PrevTrigger />
+          <Pagination.Item page={1} />
+          {currentPage > 3 && <Pagination.Ellipsis />}
+          {currentPage > 1 && currentPage < 20 && (
+            <Pagination.Item page={currentPage} />
+          )}
+          {currentPage < 18 && <Pagination.Ellipsis />}
+          <Pagination.Item page={20} />
+          <Pagination.NextTrigger />
+        </Pagination.List>
+      </Pagination.Root>
+    </Stack>
+  );
+};
+```
+
+## Specs
+
+<PropsTable id="Pagination" />
+
+## Accessibility
+
+The Pagination component implements comprehensive accessibility features to ensure usability for all users, including those using assistive technologies.
+
+### WCAG 2.1 AA Compliance
+
+The component meets enterprise-grade accessibility standards with the following features:
+
+#### 1. Semantic Structure
+- Uses semantic `nav` element with proper ARIA labels
+- Ordered list (`ol`) structure for logical page sequence
+- Clear programmatic relationships between navigation elements
+
+#### 2. Keyboard Navigation
+- **Tab**: Navigate to pagination controls
+- **Enter/Space**: Activate page buttons and navigation triggers
+- **Arrow keys**: Move between pagination items (enhanced navigation)
+- **Home/End**: Jump to first/last page (when supported)
+
+#### 3. Screen Reader Support
+- Dynamic `aria-current="page"` for active page identification
+- Contextual announcements: "Page 5 of 20" in navigation label
+- Hidden instruction text for keyboard navigation guidance
+- Proper button roles and accessible names
+
+#### 4. Visual Accessibility
+- **High contrast mode**: Works with Windows High Contrast mode
+- **Focus indicators**: Clear visual focus states for keyboard users
+- **Color independence**: Doesn't rely solely on color for state indication
+- **Touch targets**: Minimum 44px touch targets for mobile accessibility
+
+#### 5. Assistive Technology Integration
+```jsx-live
+const App = () => (
+  <Pagination.Root 
+    currentPage={3} 
+    totalPages={10} 
+    onPageChange={() => {}}
+    aria-label="Product search results pagination"
+  >
+    <Pagination.List>
+      <Pagination.PrevTrigger aria-label="Go to previous page of products" />
+      <Pagination.Item page={2} />
+      <Pagination.Item page={3} />
+      <Pagination.Item page={4} />
+      <Pagination.NextTrigger aria-label="Go to next page of products" />
+    </Pagination.List>
+  </Pagination.Root>
+);
+```
+
+### Accessibility Standards
+
+#### 1. Perceivable (WCAG Principle 1)
+- **1.3.1 Info and Relationships**: Semantic HTML structure with proper heading hierarchy
+- **1.4.3 Contrast (Minimum)**: Meets AA contrast requirements
+- **1.4.1 Use of Color**: Visual state changes include non-color indicators
+
+#### 2. Operable (WCAG Principle 2)
+- **2.1.1 Keyboard**: Full keyboard operability
+- **2.4.7 Focus Visible**: Clear focus indicators
+- **2.5.5 Target Size**: 44px minimum touch targets
+
+#### 3. Understandable (WCAG Principle 3)
+- **3.2.1 On Focus**: No unexpected context changes
+- **3.3.1 Error Identification**: Clear disabled state communication
+
+#### 4. Robust (WCAG Principle 4)
+- **4.1.2 Name, Role, Value**: Proper ARIA implementation
+- **4.1.3 Status Messages**: Dynamic page state announcements
