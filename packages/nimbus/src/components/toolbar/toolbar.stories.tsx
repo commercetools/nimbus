@@ -297,6 +297,27 @@ export const WithGroups: Story = {
 
 export const Variants: Story = {
   args: {},
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          /**
+           * The ButtonToggleGroup usually has the role="toolbar", but since it
+           * is within a toolbar, RA changes the role to "group", unfortunately
+           * without removing the aria-orientation attribute (which is not allowed
+           * on a group).
+           *
+           * This rule disables the corresponding a11y check for the element
+           */
+          {
+            id: "aria-allowed-attr",
+            selector: '[role="group"][aria-orientation]',
+            enabled: false,
+          },
+        ],
+      },
+    },
+  },
   render: (args) => (
     <Box>
       {(["plain", "outline"] as const).map((variant) => (
@@ -312,47 +333,96 @@ export const Variants: Story = {
             data-testid={`toolbar-${variant}-horizontal`}
             aria-label={`${variant} horizontal toolbar`}
           >
-            <IconButton
-              size="xs"
-              variant="ghost"
-              aria-label="New"
-              data-testid={`new-btn-${variant}`}
+            <ToggleButtonGroup.Root
+              selectionMode="multiple"
+              defaultSelectedKeys={["new"]}
+              data-testid={`toggle-group-1-${variant}`}
             >
-              <Add />
-            </IconButton>
-            <IconButton
-              size="xs"
-              variant="ghost"
-              aria-label="Save"
-              data-testid={`save-btn-${variant}`}
-            >
-              <Save />
-            </IconButton>
+              <IconToggleButton
+                id="new"
+                size="xs"
+                variant="ghost"
+                aria-label="New"
+                data-testid={`new-btn-${variant}`}
+              >
+                <Add />
+              </IconToggleButton>
+              <IconToggleButton
+                id="save"
+                size="xs"
+                variant="ghost"
+                aria-label="Save"
+                data-testid={`save-btn-${variant}`}
+              >
+                <Save />
+              </IconToggleButton>
+            </ToggleButtonGroup.Root>
             <Divider
               orientation="vertical"
               data-testid={`separator-${variant}`}
             />
-            <IconButton
-              size="xs"
-              variant="ghost"
-              aria-label="Print"
-              data-testid={`print-btn-${variant}`}
+            <ToggleButtonGroup.Root
+              selectionMode="multiple"
+              data-testid={`toggle-group-2-${variant}`}
             >
-              <Print />
-            </IconButton>
-            <IconButton
-              size="xs"
-              variant="ghost"
-              aria-label="Settings"
-              data-testid={`settings-btn-${variant}`}
-            >
-              <Settings />
-            </IconButton>
+              <IconToggleButton
+                id="print"
+                size="xs"
+                variant="ghost"
+                aria-label="Print"
+                data-testid={`print-btn-${variant}`}
+              >
+                <Print />
+              </IconToggleButton>
+              <IconToggleButton
+                id="settings"
+                size="xs"
+                variant="ghost"
+                aria-label="Settings"
+                data-testid={`settings-btn-${variant}`}
+              >
+                <Settings />
+              </IconToggleButton>
+            </ToggleButtonGroup.Root>
           </Toolbar>
         </Box>
       ))}
     </Box>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Test IconToggleButton active state persistence", async () => {
+      // Test with plain variant
+      const newToggle = canvas.getByTestId("new-btn-plain");
+      const saveToggle = canvas.getByTestId("save-btn-plain");
+      const printToggle = canvas.getByTestId("print-btn-plain");
+
+      // New should be active by default
+      await expect(newToggle).toHaveAttribute("aria-pressed", "true");
+      await expect(saveToggle).toHaveAttribute("aria-pressed", "false");
+      await expect(printToggle).toHaveAttribute("aria-pressed", "false");
+
+      // Click save to activate it
+      await userEvent.click(saveToggle);
+      await expect(saveToggle).toHaveAttribute("aria-pressed", "true");
+
+      // New should still be active (multiple selection mode)
+      await expect(newToggle).toHaveAttribute("aria-pressed", "true");
+
+      // Click print to activate it
+      await userEvent.click(printToggle);
+      await expect(printToggle).toHaveAttribute("aria-pressed", "true");
+
+      // Click new to deactivate it
+      await userEvent.click(newToggle);
+      await expect(newToggle).toHaveAttribute("aria-pressed", "false");
+
+      // Save and print should still be active
+      await expect(saveToggle).toHaveAttribute("aria-pressed", "true");
+      await expect(printToggle).toHaveAttribute("aria-pressed", "true");
+    });
+  },
 };
 
 export const RichTextEditor: Story = {
