@@ -198,7 +198,6 @@ export const RichTextToolbar = ({
           onAction={(styleId) => handleTextStyleChange(String(styleId))}
           onClose={() => {
             // This is a workaround to ensure the editor is focused when the menu is closed
-
             requestAnimationFrame(() =>
               setTimeout(() => {
                 focusEditor(editor);
