@@ -22,14 +22,16 @@ When enhancing components, you will:
 - Follow the compound component pattern when applicable
 
 **Implementation Guidelines:**
-- Update component-name.types.ts with new prop definitions, ensuring proper TypeScript typing
+- Update component-name.types.ts with new prop definitions, ensuring proper TypeScript typing and exports
 - Extend component-name.recipe.ts by adding new variants to existing recipes or creating complementary recipes
-- Modify component-name.slots.tsx if new styled elements are needed
+- Modify component-name.slots.tsx if new styled elements are needed (follow "Slot" suffix naming)
 - Update the main component file to handle new props while preserving existing logic
-- Ensure ref forwarding continues to work if applicable
+- **NO forwardRef usage** - maintain React 19 compatibility with standard component patterns
+- Follow the established slot component + implementation component separation pattern
 
 **Quality Assurance:**
 - Add comprehensive Storybook stories covering all new variants and combinations
+- Stories should show real API usage without helper abstractions
 - Test new functionality alongside existing features to ensure no regressions
 - Update component documentation in the .mdx file to reflect new capabilities
 - Verify that new recipes are properly registered in theme files

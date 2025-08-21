@@ -14,7 +14,7 @@ import type { PropsWithChildren } from "react";
 type PaginationRootSlotProps = HTMLChakraProps<"nav", RecipeProps<"nav">>;
 
 /** Combined props for the root element (Chakra styles + Recipe variants). */
-type PaginationRootProps = PaginationRootSlotProps &
+export type PaginationRootProps = PaginationRootSlotProps &
   RecipeVariantProps<typeof paginationRecipe> & {
     currentPage: number;
     totalPages: number;

@@ -108,7 +108,9 @@ const generatePageRange = (
   return range;
 };
 
-const DefaultPaginationContent = ({
+// Helper component that demonstrates the complete API structure
+// This shows users exactly how to compose pagination manually
+const PaginationExample = ({
   currentPage,
   totalPages,
   siblingCount = 1,
@@ -166,14 +168,25 @@ export const Default: Story = {
       },
     },
   },
-  render: (args) => (
-    <Pagination.Root {...args}>
-      <DefaultPaginationContent
-        currentPage={args.currentPage}
-        totalPages={args.totalPages}
-      />
-    </Pagination.Root>
-  ),
+  render: (args) => {
+    const pages = generatePageRange(args.currentPage, args.totalPages, 1);
+
+    return (
+      <Pagination.Root {...args}>
+        <Pagination.List>
+          <Pagination.PrevTrigger />
+          {pages.map((page, index) =>
+            page === "ellipsis" ? (
+              <Pagination.Ellipsis key={`ellipsis-${index}`} />
+            ) : (
+              <Pagination.Item key={page} page={page as number} />
+            )
+          )}
+          <Pagination.NextTrigger />
+        </Pagination.List>
+      </Pagination.Root>
+    );
+  },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
 
@@ -243,6 +256,7 @@ export const Interactive: Story = {
   render: () => {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 15;
+    const pages = generatePageRange(currentPage, totalPages, 1);
 
     return (
       <Stack gap="400">
@@ -255,10 +269,17 @@ export const Interactive: Story = {
           onPageChange={setCurrentPage}
           aria-label="Interactive pagination example"
         >
-          <DefaultPaginationContent
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+          <Pagination.List>
+            <Pagination.PrevTrigger />
+            {pages.map((page, index) =>
+              page === "ellipsis" ? (
+                <Pagination.Ellipsis key={`ellipsis-${index}`} />
+              ) : (
+                <Pagination.Item key={page} page={page as number} />
+              )
+            )}
+            <Pagination.NextTrigger />
+          </Pagination.List>
         </Pagination.Root>
       </Stack>
     );
@@ -322,24 +343,38 @@ export const Sizes: Story = {
       },
     },
   },
-  render: () => (
-    <Stack gap="800">
-      {sizes.map((size) => (
-        <Stack key={size} gap="200">
-          <code>{size}</code>
-          <Pagination.Root
-            currentPage={3}
-            totalPages={8}
-            size={size}
-            onPageChange={fn()}
-            aria-label={`Pagination navigation - ${size} size`}
-          >
-            <DefaultPaginationContent currentPage={3} totalPages={8} />
-          </Pagination.Root>
-        </Stack>
-      ))}
-    </Stack>
-  ),
+  render: () => {
+    const pages = generatePageRange(3, 8, 1);
+
+    return (
+      <Stack gap="800">
+        {sizes.map((size) => (
+          <Stack key={size} gap="200">
+            <code>{size}</code>
+            <Pagination.Root
+              currentPage={3}
+              totalPages={8}
+              size={size}
+              onPageChange={fn()}
+              aria-label={`Pagination navigation - ${size} size`}
+            >
+              <Pagination.List>
+                <Pagination.PrevTrigger />
+                {pages.map((page, index) =>
+                  page === "ellipsis" ? (
+                    <Pagination.Ellipsis key={`ellipsis-${index}`} />
+                  ) : (
+                    <Pagination.Item key={page} page={page as number} />
+                  )
+                )}
+                <Pagination.NextTrigger />
+              </Pagination.List>
+            </Pagination.Root>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -384,24 +419,38 @@ export const Variants: Story = {
       },
     },
   },
-  render: () => (
-    <Stack gap="800">
-      {variants.map((variant) => (
-        <Stack key={variant} gap="200">
-          <code>{variant}</code>
-          <Pagination.Root
-            currentPage={4}
-            totalPages={10}
-            variant={variant}
-            onPageChange={fn()}
-            aria-label={`Pagination navigation - ${variant} variant`}
-          >
-            <DefaultPaginationContent currentPage={4} totalPages={10} />
-          </Pagination.Root>
-        </Stack>
-      ))}
-    </Stack>
-  ),
+  render: () => {
+    const pages = generatePageRange(4, 10, 1);
+
+    return (
+      <Stack gap="800">
+        {variants.map((variant) => (
+          <Stack key={variant} gap="200">
+            <code>{variant}</code>
+            <Pagination.Root
+              currentPage={4}
+              totalPages={10}
+              variant={variant}
+              onPageChange={fn()}
+              aria-label={`Pagination navigation - ${variant} variant`}
+            >
+              <Pagination.List>
+                <Pagination.PrevTrigger />
+                {pages.map((page, index) =>
+                  page === "ellipsis" ? (
+                    <Pagination.Ellipsis key={`ellipsis-${index}`} />
+                  ) : (
+                    <Pagination.Item key={page} page={page as number} />
+                  )
+                )}
+                <Pagination.NextTrigger />
+              </Pagination.List>
+            </Pagination.Root>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -458,7 +507,7 @@ export const SmallPageCount: Story = {
           onPageChange={fn()}
           aria-label="Single page pagination"
         >
-          <DefaultPaginationContent currentPage={1} totalPages={1} />
+          <PaginationExample currentPage={1} totalPages={1} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -469,7 +518,7 @@ export const SmallPageCount: Story = {
           onPageChange={fn()}
           aria-label="Two page pagination"
         >
-          <DefaultPaginationContent currentPage={1} totalPages={2} />
+          <PaginationExample currentPage={1} totalPages={2} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -480,7 +529,7 @@ export const SmallPageCount: Story = {
           onPageChange={fn()}
           aria-label="Five page pagination"
         >
-          <DefaultPaginationContent currentPage={3} totalPages={5} />
+          <PaginationExample currentPage={3} totalPages={5} />
         </Pagination.Root>
       </Stack>
     </Stack>
@@ -564,7 +613,7 @@ export const LargePageCount: Story = {
           onPageChange={fn()}
           aria-label="Large pagination - middle"
         >
-          <DefaultPaginationContent currentPage={25} totalPages={50} />
+          <PaginationExample currentPage={25} totalPages={50} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -575,7 +624,7 @@ export const LargePageCount: Story = {
           onPageChange={fn()}
           aria-label="Large pagination - early"
         >
-          <DefaultPaginationContent currentPage={5} totalPages={100} />
+          <PaginationExample currentPage={5} totalPages={100} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -586,7 +635,7 @@ export const LargePageCount: Story = {
           onPageChange={fn()}
           aria-label="Large pagination - late"
         >
-          <DefaultPaginationContent currentPage={95} totalPages={100} />
+          <PaginationExample currentPage={95} totalPages={100} />
         </Pagination.Root>
       </Stack>
     </Stack>
@@ -664,7 +713,7 @@ export const SiblingCount: Story = {
           onPageChange={fn()}
           aria-label="Pagination navigation - sibling count 0"
         >
-          <DefaultPaginationContent
+          <PaginationExample
             currentPage={10}
             totalPages={30}
             siblingCount={0}
@@ -679,7 +728,7 @@ export const SiblingCount: Story = {
           onPageChange={fn()}
           aria-label="Pagination navigation - sibling count 1"
         >
-          <DefaultPaginationContent
+          <PaginationExample
             currentPage={10}
             totalPages={30}
             siblingCount={1}
@@ -694,7 +743,7 @@ export const SiblingCount: Story = {
           onPageChange={fn()}
           aria-label="Pagination navigation - sibling count 2"
         >
-          <DefaultPaginationContent
+          <PaginationExample
             currentPage={10}
             totalPages={30}
             siblingCount={2}
@@ -709,7 +758,7 @@ export const SiblingCount: Story = {
           onPageChange={fn()}
           aria-label="Pagination navigation - sibling count 3"
         >
-          <DefaultPaginationContent
+          <PaginationExample
             currentPage={15}
             totalPages={50}
             siblingCount={3}
@@ -796,7 +845,7 @@ export const EdgeCases: Story = {
           onPageChange={args.onPageChange}
           aria-label="Pagination navigation - first page"
         >
-          <DefaultPaginationContent currentPage={1} totalPages={10} />
+          <PaginationExample currentPage={1} totalPages={10} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -807,7 +856,7 @@ export const EdgeCases: Story = {
           onPageChange={args.onPageChange}
           aria-label="Pagination navigation - last page"
         >
-          <DefaultPaginationContent currentPage={10} totalPages={10} />
+          <PaginationExample currentPage={10} totalPages={10} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -818,7 +867,7 @@ export const EdgeCases: Story = {
           onPageChange={args.onPageChange}
           aria-label="Pagination navigation - near first"
         >
-          <DefaultPaginationContent currentPage={2} totalPages={20} />
+          <PaginationExample currentPage={2} totalPages={20} />
         </Pagination.Root>
       </Stack>
       <Stack gap="200">
@@ -829,7 +878,7 @@ export const EdgeCases: Story = {
           onPageChange={args.onPageChange}
           aria-label="Pagination navigation - near last"
         >
-          <DefaultPaginationContent currentPage={19} totalPages={20} />
+          <PaginationExample currentPage={19} totalPages={20} />
         </Pagination.Root>
       </Stack>
     </Stack>
@@ -945,6 +994,8 @@ export const KeyboardNavigation: Story = {
   },
   render: () => {
     const [currentPage, setCurrentPage] = useState(5);
+    const pages = generatePageRange(currentPage, 12, 1);
+
     return (
       <Pagination.Root
         currentPage={currentPage}
@@ -952,7 +1003,17 @@ export const KeyboardNavigation: Story = {
         onPageChange={setCurrentPage}
         aria-label="Keyboard navigation test pagination"
       >
-        <DefaultPaginationContent currentPage={currentPage} totalPages={12} />
+        <Pagination.List>
+          <Pagination.PrevTrigger />
+          {pages.map((page, index) =>
+            page === "ellipsis" ? (
+              <Pagination.Ellipsis key={`ellipsis-${index}`} />
+            ) : (
+              <Pagination.Item key={page} page={page as number} />
+            )
+          )}
+          <Pagination.NextTrigger />
+        </Pagination.List>
       </Pagination.Root>
     );
   },
@@ -1044,7 +1105,7 @@ export const VariantMatrix: Story = {
                   onPageChange={fn()}
                   aria-label={`${size} ${variant} pagination`}
                 >
-                  <DefaultPaginationContent currentPage={3} totalPages={8} />
+                  <PaginationExample currentPage={3} totalPages={8} />
                 </Pagination.Root>
               </Stack>
             ))}
@@ -1173,7 +1234,7 @@ export const UsagePatterns: Story = {
             size="sm"
             aria-label="Table pagination"
           >
-            <DefaultPaginationContent
+            <PaginationExample
               currentPage={tablePage}
               totalPages={Math.ceil(tableData.length / itemsPerPage)}
             />
@@ -1193,7 +1254,7 @@ export const UsagePatterns: Story = {
             variant="outline"
             aria-label="Search results pagination"
           >
-            <DefaultPaginationContent currentPage={searchPage} totalPages={3} />
+            <PaginationExample currentPage={searchPage} totalPages={3} />
           </Pagination.Root>
         </Stack>
 
@@ -1211,7 +1272,7 @@ export const UsagePatterns: Story = {
             siblingCount={2}
             aria-label="Data grid pagination"
           >
-            <DefaultPaginationContent
+            <PaginationExample
               currentPage={gridPage}
               totalPages={847}
               siblingCount={2}
@@ -1292,10 +1353,7 @@ export const PerformanceTesting: Story = {
             onPageChange={setRapidPage}
             aria-label="Rapid interaction test"
           >
-            <DefaultPaginationContent
-              currentPage={rapidPage}
-              totalPages={1000}
-            />
+            <PaginationExample currentPage={rapidPage} totalPages={1000} />
           </Pagination.Root>
         </Stack>
 
@@ -1311,10 +1369,7 @@ export const PerformanceTesting: Story = {
             siblingCount={1}
             aria-label="Extreme scale test"
           >
-            <DefaultPaginationContent
-              currentPage={extremePage}
-              totalPages={1000000}
-            />
+            <PaginationExample currentPage={extremePage} totalPages={1000000} />
           </Pagination.Root>
         </Stack>
       </Stack>
@@ -1389,10 +1444,7 @@ export const ErrorHandling: Story = {
             onPageChange={setCurrentPage}
             aria-label="Single page boundary test"
           >
-            <DefaultPaginationContent
-              currentPage={currentPage}
-              totalPages={1}
-            />
+            <PaginationExample currentPage={currentPage} totalPages={1} />
           </Pagination.Root>
         </Stack>
 
@@ -1404,7 +1456,7 @@ export const ErrorHandling: Story = {
             onPageChange={() => {}}
             aria-label="Custom navigation for product catalog"
           >
-            <DefaultPaginationContent currentPage={2} totalPages={5} />
+            <PaginationExample currentPage={2} totalPages={5} />
           </Pagination.Root>
         </Stack>
 
@@ -1417,7 +1469,7 @@ export const ErrorHandling: Story = {
             siblingCount={0}
             aria-label="Zero sibling pagination"
           >
-            <DefaultPaginationContent
+            <PaginationExample
               currentPage={10}
               totalPages={20}
               siblingCount={0}
@@ -1507,10 +1559,7 @@ const ComponentWithCustomControls = ({
       totalPages={totalPages}
       onPageChange={setCurrentPage}
     >
-      <DefaultPaginationContent
-        currentPage={currentPage}
-        totalPages={totalPages}
-      />
+      <PaginationExample currentPage={currentPage} totalPages={totalPages} />
     </Pagination.Root>
   );
 };
@@ -1619,7 +1668,7 @@ export const AccessibilityTesting: Story = {
             onPageChange={setCurrentPage}
             aria-label="Product catalog pagination"
           >
-            <DefaultPaginationContent
+            <PaginationExample
               currentPage={currentPage}
               totalPages={totalPages}
             />
@@ -1637,7 +1686,7 @@ export const AccessibilityTesting: Story = {
             onPageChange={() => {}}
             aria-label="Keyboard navigation test pagination"
           >
-            <DefaultPaginationContent currentPage={5} totalPages={12} />
+            <PaginationExample currentPage={5} totalPages={12} />
           </Pagination.Root>
         </Stack>
 
@@ -1653,7 +1702,7 @@ export const AccessibilityTesting: Story = {
             variant="outline"
             aria-label="High contrast mode pagination"
           >
-            <DefaultPaginationContent currentPage={3} totalPages={8} />
+            <PaginationExample currentPage={3} totalPages={8} />
           </Pagination.Root>
         </Stack>
 
@@ -1673,7 +1722,7 @@ export const AccessibilityTesting: Story = {
                   size={size as "sm" | "md" | "lg"}
                   aria-label={`Touch target test - ${size} size`}
                 >
-                  <DefaultPaginationContent currentPage={2} totalPages={5} />
+                  <PaginationExample currentPage={2} totalPages={5} />
                 </Pagination.Root>
               </Stack>
             ))}
@@ -1794,4 +1843,4 @@ export { ComponentWithCustomControls as _ComponentWithCustomControls };
 
 // Export utility functions for potential reuse in other story files
 export { generatePageRange as _generatePageRange };
-export { DefaultPaginationContent as _DefaultPaginationContent };
+export { PaginationExample as _PaginationExample };

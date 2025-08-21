@@ -1,10 +1,17 @@
-import { withContext } from "../pagination.slots";
+import { PaginationListSlot } from "../pagination.slots";
 import type {
   PaginationListProps,
   PaginationListComponent,
 } from "../pagination.types";
 
-export const PaginationList: PaginationListComponent = withContext<
-  "ol",
-  PaginationListProps
->("ol", "list");
+export const PaginationList: PaginationListComponent = ({
+  children,
+  ref,
+  ...rest
+}: PaginationListProps) => {
+  return (
+    <PaginationListSlot ref={ref} {...rest}>
+      {children}
+    </PaginationListSlot>
+  );
+};

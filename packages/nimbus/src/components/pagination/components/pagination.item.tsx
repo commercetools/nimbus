@@ -1,21 +1,18 @@
-import React from "react";
-import { withContext } from "../pagination.slots";
+import { PaginationItemSlot, PaginationTriggerSlot } from "../pagination.slots";
 import { usePaginationContext } from "./pagination.root";
 import type {
   PaginationItemProps,
   PaginationItemComponent,
 } from "../pagination.types";
 
-const ItemBase = withContext<"li", PaginationItemProps>("li", "item");
-const ButtonElement = withContext<"button", Record<string, unknown>>(
-  "button",
-  "trigger"
-);
-
-export const PaginationItem: PaginationItemComponent = React.forwardRef<
-  HTMLLIElement,
-  PaginationItemProps
->(({ page, isActive, isDisabled, onPageChange, ...rest }, ref) => {
+export const PaginationItem: PaginationItemComponent = ({
+  page,
+  isActive,
+  isDisabled,
+  onPageChange,
+  ref,
+  ...rest
+}: PaginationItemProps) => {
   const context = usePaginationContext();
   const { currentPage, onPageChange: contextOnPageChange } = context;
 
@@ -40,8 +37,8 @@ export const PaginationItem: PaginationItemComponent = React.forwardRef<
   };
 
   return (
-    <ItemBase ref={ref}>
-      <ButtonElement
+    <PaginationItemSlot ref={ref} page={page} {...rest}>
+      <PaginationTriggerSlot
         type="button"
         tabIndex={isDisabled ? -1 : 0}
         aria-current={isCurrentPage ? "page" : undefined}
@@ -50,10 +47,9 @@ export const PaginationItem: PaginationItemComponent = React.forwardRef<
         onKeyDown={handleKeyDown}
         data-disabled={isDisabled}
         disabled={isDisabled}
-        {...rest}
       >
         {page}
-      </ButtonElement>
-    </ItemBase>
+      </PaginationTriggerSlot>
+    </PaginationItemSlot>
   );
-});
+};

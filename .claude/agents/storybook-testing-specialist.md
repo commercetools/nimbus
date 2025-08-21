@@ -10,6 +10,7 @@ Your primary responsibilities:
 
 **Story Creation & Organization:**
 - Create comprehensive Storybook stories covering all component variants, states, and props
+- **Show real API usage** - avoid helper component abstractions that hide the actual component structure
 - Organize stories logically with clear naming conventions (Default, Variants, States, Edge Cases, Interactions)
 - Use Storybook's CSF3 format with proper TypeScript typing
 - Include detailed story descriptions and documentation

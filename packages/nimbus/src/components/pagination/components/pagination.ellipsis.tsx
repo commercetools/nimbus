@@ -1,29 +1,26 @@
-import React from "react";
-import { withContext } from "../pagination.slots";
+import {
+  PaginationItemSlot,
+  PaginationEllipsisSlot,
+} from "../pagination.slots";
 import type {
   PaginationEllipsisProps,
   PaginationEllipsisComponent,
 } from "../pagination.types";
 
-const ListItemBase = withContext<"li", PaginationEllipsisProps>("li", "item");
-
-const EllipsisBase = withContext<"span", Record<string, unknown>>(
-  "span",
-  "ellipsis"
-);
-
-export const PaginationEllipsis: PaginationEllipsisComponent = React.forwardRef<
-  HTMLSpanElement,
-  PaginationEllipsisProps
->(({ children = "…", direction = "end", ...rest }, ref) => {
+export const PaginationEllipsis: PaginationEllipsisComponent = ({
+  children = "…",
+  direction = "end",
+  ref,
+  ...rest
+}: PaginationEllipsisProps) => {
   const contextualLabel =
     direction === "start"
       ? "More pages before current page"
       : "More pages after current page";
 
   return (
-    <ListItemBase role="listitem">
-      <EllipsisBase
+    <PaginationItemSlot role="listitem" page={0}>
+      <PaginationEllipsisSlot
         ref={ref}
         aria-label={contextualLabel}
         role="separator"
@@ -31,7 +28,7 @@ export const PaginationEllipsis: PaginationEllipsisComponent = React.forwardRef<
         {...rest}
       >
         {children}
-      </EllipsisBase>
-    </ListItemBase>
+      </PaginationEllipsisSlot>
+    </PaginationItemSlot>
   );
-});
+};

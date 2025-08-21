@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from "react";
-import { withProvider } from "../pagination.slots";
+import { createContext, useContext } from "react";
+import { PaginationRootSlot } from "../pagination.slots";
 import type {
   PaginationProps,
   PaginationRootComponent,
@@ -25,66 +25,62 @@ export const usePaginationContext = () => {
   return context;
 };
 
-const NavRoot = withProvider<"nav", PaginationProps>("nav", "root");
+export const PaginationRoot: PaginationRootComponent = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  siblingCount = 1,
+  showFirstLast = true,
+  "aria-label": ariaLabel = "Pagination navigation",
+  children,
+  ref,
+  ...rest
+}: PaginationProps) => {
+  const contextValue: PaginationContextValue = {
+    currentPage,
+    totalPages,
+    onPageChange,
+    siblingCount,
+    showFirstLast,
+  };
 
-export const PaginationRoot: PaginationRootComponent = React.forwardRef<
-  HTMLElement,
-  PaginationProps
->(
-  (
-    {
-      currentPage,
-      totalPages,
-      onPageChange,
-      siblingCount = 1,
-      showFirstLast = true,
-      "aria-label": ariaLabel = "Pagination navigation",
-      children,
-      ...rest
-    },
-    ref
-  ) => {
-    const contextValue: PaginationContextValue = {
-      currentPage,
-      totalPages,
-      onPageChange,
-      siblingCount,
-      showFirstLast,
-    };
+  // Enhanced aria-label with context
+  const enhancedAriaLabel = `${ariaLabel}, page ${currentPage} of ${totalPages}`;
+  const descriptionId = `${ariaLabel.replace(/\s+/g, "-").toLowerCase()}-description`;
 
-    // Enhanced aria-label with context
-    const enhancedAriaLabel = `${ariaLabel}, page ${currentPage} of ${totalPages}`;
-    const descriptionId = `${ariaLabel.replace(/\s+/g, "-").toLowerCase()}-description`;
-
-    return (
-      <PaginationContext.Provider value={contextValue}>
-        <NavRoot
-          ref={ref as React.Ref<HTMLElement>}
-          aria-label={enhancedAriaLabel}
-          aria-describedby={descriptionId}
-          role="navigation"
-          {...rest}
+  return (
+    <PaginationContext.Provider value={contextValue}>
+      <PaginationRootSlot
+        ref={ref}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+        siblingCount={siblingCount}
+        showFirstLast={showFirstLast}
+        aria-label={enhancedAriaLabel}
+        aria-describedby={descriptionId}
+        role="navigation"
+        {...rest}
+      >
+        {children}
+        <span
+          id={descriptionId}
+          style={{
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            padding: 0,
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+            border: 0,
+          }}
         >
-          {children}
-          <span
-            id={descriptionId}
-            style={{
-              position: "absolute",
-              width: "1px",
-              height: "1px",
-              padding: 0,
-              margin: "-1px",
-              overflow: "hidden",
-              clip: "rect(0, 0, 0, 0)",
-              whiteSpace: "nowrap",
-              border: 0,
-            }}
-          >
-            Use arrow keys to navigate between pages, or press Enter to select a
-            page
-          </span>
-        </NavRoot>
-      </PaginationContext.Provider>
-    );
-  }
-);
+          Use arrow keys to navigate between pages, or press Enter to select a
+          page
+        </span>
+      </PaginationRootSlot>
+    </PaginationContext.Provider>
+  );
+};
