@@ -197,11 +197,16 @@ export const RichTextToolbar = ({
           onAction={(styleId) => handleTextStyleChange(String(styleId))}
         >
           <Tooltip.Root delay={0} closeDelay={0}>
+            {/* Menu trigger styles mimic the Select component */}
             <Menu.Trigger
+              height="800"
               width="4000"
-              aria-label="Text style menu"
+              bg="primary.1"
+              borderRadius="200"
+              _hover={{ bg: "primary.2" }}
               isDisabled={isDisabled}
               onMouseDown={(event) => event.preventDefault()}
+              aria-label="Text style menu"
             >
               <Box display="flex" alignItems="center" gap="200" px="200">
                 <Box display="flex" alignItems="center" gap="200" flexGrow="1">
