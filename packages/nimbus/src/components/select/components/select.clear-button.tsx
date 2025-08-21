@@ -25,6 +25,7 @@ export const SelectClearButton = () => {
         variant="ghost"
         tone="primary"
         aria-label={intl.formatMessage(messages.clearSelection)}
+        aria-labelledby=""
         onPress={onPressRequest}
       >
         <CloseIcon />

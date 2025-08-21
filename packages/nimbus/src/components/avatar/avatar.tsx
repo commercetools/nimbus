@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Image } from "@chakra-ui/react/image";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
+import { useIntl } from "react-intl";
+import { messages } from "./messages.ts";
 
 function getInitials(firstName: string, lastName: string) {
   return (
@@ -13,13 +15,13 @@ export const Avatar = (props: AvatarProps) => {
   const { ref, firstName, lastName, src, alt, ...rest } = props;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-
+  const intl = useIntl();
   const fullName = `${firstName} ${lastName}`;
 
   const sharedProps = {
-    "aria-label": `${fullName} avatar`,
     ref,
     ...rest,
+    "aria-label": `${fullName} ${intl.formatMessage(messages.avatar)}`,
   };
 
   const onLoad = () => {

@@ -26,7 +26,7 @@ export const calendarSlotRecipe = defineSlotRecipe({
       borderBottom: "solid-25",
       borderColor: "neutral.3",
     },
-    // the container contianing the month(s) grid(s)
+    // the container containing the month(s) grid(s)
     grids: {
       display: "flex",
       flexWrap: "wrap",

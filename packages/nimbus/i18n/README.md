@@ -178,13 +178,31 @@ The script automatically detects:
 ## Future Needs/Considerations
 
 - **Translation validation** and quality scoring
-- **Integration with CI/CD** for automated translation checks
-- **Shared setup** Set up a more robust workflow for this, ct has a pro account:
+-
+- Integration with CI for automated translation checks
+- Shared setup- Set up a more robust workflow for this, ct has a pro account:
   https://commercetools.atlassian.net/wiki/spaces/itops/pages/897482932/DeepL+Pro
 - Add to more components
 - Test with mc-fe
+- while testing with mc-fe, review how uikit handles intlMsg prop and see if we
+  can emulate it
+- does IntlDecorator work if Storybook set up w/in mc-fe (eg future shared
+  components)
 - Tests
-- Ask about Storybook
+- Storybook - select 2 components to loop through to test locals
+- unit tests will handle this level of testing once in place
+- Test components with a screen reader
+- add 18n tests themselves
+- ***
+- - manual overrides!!
+- -only updating one string at a time.
+
+  follow up on: DatePicker focus ring Storybook - Select - example under docs
+  clear button
+
+  -Not sure if this will work as expected for some languages, how far do we want
+  to take translations like this? "aria-label":
+  `${fullName} ${intl.formatMessage(messages.avatar)}`,
 
 ## Related Documentation
 
