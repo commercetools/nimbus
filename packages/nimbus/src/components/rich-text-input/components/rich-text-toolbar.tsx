@@ -54,7 +54,7 @@ export const RichTextToolbar = ({
       label: "Paragraph",
       props: {
         textStyle: "md",
-        fontWeight: "400",
+        fontWeight: "500",
       },
     },
     {
@@ -125,7 +125,6 @@ export const RichTextToolbar = ({
   }, [editor.selection, editor.children]); // Block types don't need marks
 
   const selectedTextStyle = textStyles.find((v) => v.id === currentTextStyle);
-  const selectedTextStyleProps = selectedTextStyle?.props || {};
   const selectedTextStyleLabel = selectedTextStyle?.label || "";
 
   // Handle text style changes
@@ -206,7 +205,7 @@ export const RichTextToolbar = ({
             >
               <Box display="flex" alignItems="center" gap="200" px="200">
                 <Box display="flex" alignItems="center" gap="200" flexGrow="1">
-                  <Text my="auto" {...selectedTextStyleProps}>
+                  <Text my="auto" textStyle="sm" fontWeight="500">
                     {selectedTextStyleLabel}
                   </Text>
                 </Box>

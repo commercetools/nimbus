@@ -43,7 +43,7 @@ export const richTextInputRecipe = defineSlotRecipe({
       // Styling for user-facing editor text
       "& p": {
         textStyle: "md",
-        fontWeight: "400",
+        fontWeight: "500",
       },
       "& h1": {
         textStyle: "2xl",
