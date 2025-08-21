@@ -9,7 +9,11 @@ export const dataTableRecipe = defineSlotRecipe({
   slots: [
     "root",
     "table",
+    "header",
     "column",
+    "body",
+    "row",
+    "cell",
     "footer",
     "selectionCell",
     "detailsButton",
@@ -28,137 +32,93 @@ export const dataTableRecipe = defineSlotRecipe({
       boxShadow: "1",
       overflow: "auto",
       contain: "layout style",
-      "& .react-aria-Cell": {
-        paddingTop: "400",
-        paddingBottom: "400",
-        paddingLeft: "600",
-        paddingRight: "600",
-        color: "neutral.11",
-        focusRing: "outside",
-        hyphens: "auto",
-        "&[data-slot='expand']": {
-          padding: 0,
-        },
-        "& .nimbus-table-cell-copy-button": {
-          display: "none",
-        },
-        _hover: {
-          "& > div > .nimbus-table-cell-copy-button": {
-            display: "inherit",
-          },
-        },
-      },
-      "& .data-table-row": {
-        borderBottom: "1px solid {colors.neutral.3}",
-        focusRing: "outside",
-        "& td, div": {
-          userSelect: "text",
-        },
-        "&:last-child": {
-          borderBottom: "none",
-        },
-        _hover: {
-          backgroundColor: "{colors.primary.3}",
-          transition: "background-color 100ms ease",
-          transform: "translate3d(0, 0, 0)",
-          "& .data-table-row-details-button": {
-            opacity: 1,
-          },
-        },
-        "& .data-table-row-details-button": {
-          opacity: 0,
-        },
-        "& .data-table-row-details-button:focus": {
-          opacity: 1,
-        },
-      },
-      "& .data-table-row[data-selected='true']": {
-        background: "{colors.primary.4}",
-      },
-      "& .data-table-row[data-disabled='true']": {
-        "& .data-table-row-details-button": {
-          display: "none",
-        },
-        // layerStyle: "disabled",
-        opacity: 0.8,
-        cursor: "not-allowed",
-      },
-      "& .data-table-header": {
-        background: "colorPalette.2",
-        color: "colorPalette.11",
-        borderBottom: "1px solid {colors.neutral.3}",
-        lineHeight: "400",
-        fontWeight: "500",
-        textStyle: "sm",
-        fontSize: "300",
-        height: "1000",
-        "& .data-table-column-divider": {
-          display: "none",
-          position: "absolute",
-          right: 0,
-          top: "10%",
-          bottom: "10%",
-          height: "80%",
-          width: "1px",
-          pointerEvents: "none",
-        },
-        _hover: {
-          "& .data-table-column-divider": {
-            display: "inherit",
-          },
-          "& tr th:last-of-type .data-table-column-divider": {
-            display: "none",
-          },
-        },
-      },
-      // Multiline header truncation using webkit line clamp
     },
     table: {
       width: "fit-content",
       tableLayout: "fixed",
     },
+    header: {
+      background: "colorPalette.2",
+      color: "colorPalette.11",
+      borderBottom: "1px solid {colors.neutral.3}",
+      lineHeight: "400",
+      fontWeight: "500",
+      textStyle: "sm",
+      fontSize: "300",
+      height: "1000",
+      "&[data-sticky]": {
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      },
+      "& span[data-multiline-header]": {
+        overflow: "hidden",
+        lineHeight: "450",
+        wordBreak: "break-word",
+        whiteSpace: "normal",
+        textOverflow: "ellipsis",
+        textAlign: "left",
+        display: "-webkit-box",
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical",
+      } as object,
+      "& .data-table-column-divider": {
+        display: "none",
+        position: "absolute",
+        right: 0,
+        top: "10%",
+        bottom: "10%",
+        height: "80%",
+        width: "1px",
+        pointerEvents: "none",
+      },
+      _hover: {
+        "& .data-table-column-divider": {
+          display: "inherit",
+        },
+        "& tr th:last-of-type .data-table-column-divider": {
+          display: "none",
+        },
+      },
+    },
     column: {
       textAlign: "right",
       position: "relative",
-      paddingTop: "100",
-      paddingBottom: "100",
-      paddingLeft: "600",
-      paddingRight: "600",
       lineHeight: "450",
-      focusVisibleRing: "outside",
-      focusRing: "outside",
-      _focus: {
-        focusRing: "outside",
+      h: "100%",
+      "&:focus": {
+        outlineWidth: "var(--focus-ring-width)",
+        outlineColor: "var(--focus-ring-color)",
+        outlineStyle: "var(--focus-ring-style)",
+        outlineOffset: "-2px",
+        borderRadius: "2px",
       },
-      "& .nimbus-data-table__headerSortIcon": {
-        display: "none",
-      },
-
-      "& > div": {
+      "& > .nimbus-data-table__column-container": {
+        paddingTop: "100",
+        paddingBottom: "100",
+        paddingLeft: "600",
+        paddingRight: "600",
         display: "flex",
         alignItems: "center",
-        "& > span:first-of-type": {
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+        h: "100%",
+        // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
+        "&:focus": {
+          outlineWidth: "var(--focus-ring-width)",
+          outlineColor: "var(--focus-ring-color)",
+          outlineStyle: "var(--focus-ring-style)",
+          outlineOffset: "-2px",
+          borderRadius: "2px",
         },
-        "& span[data-multiline-header]": {
-          overflow: "hidden",
-          lineHeight: "450",
-          wordBreak: "break-word",
-          whiteSpace: "normal",
-          textOverflow: "ellipsis",
-          textAlign: "left",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-        } as object,
         "& > span:not(:first-of-type)": {
           flexShrink: 0,
         },
       },
       "&.selection-column-header, &.expand-column-header": {
         cursor: "default",
+        paddingTop: "100",
+        paddingBottom: "100",
+        paddingLeft: "600",
+        paddingRight: "600",
         "&:hover": {
           backgroundColor: "transparent",
         },
@@ -170,19 +130,65 @@ export const dataTableRecipe = defineSlotRecipe({
         fontWeight: 600,
         cursor: "pointer",
         "&[aria-sort='none']:hover": {
-          "& .nimbus-data-table__headerSortIcon": {
+          "& .nimbus-data-table__headerSortIcon > svg": {
             display: "inherit",
           },
         },
-        "&[aria-sort='ascending'], &[aria-sort='descending']": {
-          "& .nimbus-data-table__headerSortIcon": {
-            display: "inherit",
-          },
+      },
+    },
+    body: {},
+    row: {
+      borderBottom: "1px solid {colors.neutral.3}",
+      focusRing: "outside",
+      "& td, div": {
+        userSelect: "none",
+      },
+      "&:last-child": {
+        borderBottom: "none",
+      },
+      "&[data-selected='true']": {
+        background: "{colors.primary.4}",
+      },
+      "&[data-disabled='true']": {
+        "& .data-table-row-details-button": {
+          display: "none",
         },
-        "&[aria-sort='ascending']": {
-          "& .nimbus-data-table__headerSortIcon": {
-            transform: "rotate(180deg)",
-          },
+        // layerStyle: "disabled",
+        opacity: 0.8,
+        cursor: "not-allowed",
+      },
+      _hover: {
+        backgroundColor: "{colors.primary.3}",
+        transition: "background-color 100ms ease",
+        transform: "translate3d(0, 0, 0)",
+        "& .data-table-row-details-button": {
+          opacity: 1,
+        },
+      },
+      "& .data-table-row-details-button": {
+        opacity: 0,
+      },
+      "& .data-table-row-details-button:focus": {
+        opacity: 1,
+      },
+    },
+    cell: {
+      paddingTop: "400",
+      paddingBottom: "400",
+      paddingLeft: "600",
+      paddingRight: "600",
+      color: "neutral.11",
+      focusRing: "outside",
+      hyphens: "auto",
+      "&[data-slot='expand']": {
+        padding: 0,
+      },
+      "& .nimbus-table-cell-copy-button": {
+        display: "none",
+      },
+      _hover: {
+        "& > div > .nimbus-table-cell-copy-button": {
+          display: "inherit",
         },
       },
     },
@@ -194,17 +200,27 @@ export const dataTableRecipe = defineSlotRecipe({
     expandButton: {},
     nestedIcon: {},
     headerSortIcon: {
-      transition: "transform 100ms cubic-bezier(0.4, 0.0, 0.2, 1)",
-      display: "inline-flex",
+      transition: "transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+      display: "flex",
       alignItems: "center",
       justifyContent: "center",
       marginLeft: "6px",
       width: "16px",
       height: "16px",
       willChange: "opacity, color, transform",
+      color: "neutral.10",
+      // Only hide the svg so that the sort icon appearing does not cause layout shift
+      "& > svg": { display: "none" },
+      "&[data-sort-active='true']": {
+        color: "neutral.11",
+        "& > svg": { display: "inherit" },
+      },
+      "&[data-sort-direction='ascending']": {
+        transform: "rotate(180deg)",
+      },
     },
     columnResizer: {
-      width: "4px",
+      width: "150",
       height: "100%",
       position: "absolute",
       right: 0,
@@ -214,11 +230,16 @@ export const dataTableRecipe = defineSlotRecipe({
       background: "transparent",
       outline: "none",
       zIndex: 2,
+      "&:hover": {
+        background: "var(--focus-ring-color)",
+      },
       "&[data-resizing='true']": {
         background: "{colors.primary}",
       },
       "&[data-focused='true']": {
-        outline: "1px solid {colors.primary}",
+        outlineWidth: "var(--focus-ring-width)",
+        outlineColor: "var(--focus-ring-color)",
+        outlineStyle: "var(--focus-ring-style)",
       },
     },
   },

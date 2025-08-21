@@ -1,23 +1,29 @@
-import { forwardRef } from "react";
 import {
   Cell as RaCell,
-  type CellProps as RaCellProps,
   ButtonContext as RaButtonContext,
 } from "react-aria-components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
+import type { DataTableCellProps } from "../data-table.types";
+import { DataTableCellSlot } from "../data-table.slots";
 
-export const DataTableCell = forwardRef<
-  HTMLTableCellElement,
-  RaCellProps & { isDisabled?: boolean }
->(function DataTableCell({ children, isDisabled, ...rest }, ref) {
+export const DataTableCell = ({
+  ref,
+  children,
+  isDisabled,
+  ...props
+}: DataTableCellProps) => {
   // Basically here for disabling any child buttons via context (magic) when the row is disabled
   // TODO: Perhaps this could use a slot and stylability?
+  const [styleProps, restProps] = extractStyleProps(props);
   return (
-    <RaCell ref={ref} {...rest}>
-      {(renderProps) => (
-        <RaButtonContext.Provider value={{ isDisabled }}>
-          {typeof children === "function" ? children(renderProps) : children}
-        </RaButtonContext.Provider>
-      )}
-    </RaCell>
+    <DataTableCellSlot asChild {...styleProps}>
+      <RaCell ref={ref} {...restProps}>
+        {(renderProps) => (
+          <RaButtonContext.Provider value={{ isDisabled }}>
+            {typeof children === "function" ? children(renderProps) : children}
+          </RaButtonContext.Provider>
+        )}
+      </RaCell>
+    </DataTableCellSlot>
   );
-});
+};
