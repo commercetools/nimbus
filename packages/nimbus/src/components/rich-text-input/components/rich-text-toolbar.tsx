@@ -31,6 +31,7 @@ import {
   toggleMark,
   toggleBlock,
   usePreservedSelection,
+  focusEditor,
 } from "./rich-text-utils";
 import type { CustomElement } from "./rich-text-utils/types";
 import { FormattingMenu } from "./formatting-menu";
@@ -196,6 +197,15 @@ export const RichTextToolbar = ({
       <Group>
         <Menu.Root
           onAction={(styleId) => handleTextStyleChange(String(styleId))}
+          onClose={() => {
+            console.log("onClose called");
+            requestAnimationFrame(() =>
+              setTimeout(() => {
+                console.log("focus editor called");
+                focusEditor(editor);
+              }, 50)
+            );
+          }}
         >
           <Tooltip.Root delay={0} closeDelay={0}>
             <Menu.Trigger
