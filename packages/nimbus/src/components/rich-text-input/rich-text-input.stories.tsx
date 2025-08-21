@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { RichTextInput } from "./rich-text-input";
-import { Box } from "@/components";
+import { Box, Text } from "@/components";
 
 const meta = {
   title: "Components/RichTextInput",
@@ -869,6 +869,74 @@ export const OnFocusBlurCallbacks: Story = {
     await userEvent.click(canvasElement);
     await waitFor(() => {
       expect(canvas.getByText("Events: Focus, Blur")).toBeInTheDocument();
+    });
+  },
+};
+
+export const OnFocusCursorPositionRestoration: Story = {
+  render: () => {
+    return (
+      <Box>
+        <RichTextInput placeholder="Test cursor position restoration with toolbar" />
+        <Text fontSize="350" color="neutral.10" mt="100">
+          Test: Types text, captures cursor position, clicks Text style menu,
+          selects option, then verifies cursor position is restored to editor.
+        </Text>
+      </Box>
+    );
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    // Need to get the parent node to have the menu portal in scope
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    const editor = canvas.getByRole("textbox");
+
+    // Focus the editor and type some text to establish cursor position
+    await userEvent.click(editor);
+    await userEvent.type(editor, "Hello World Test");
+
+    // Capture the initial selection position (should be at end of text)
+    const initialSelection = window.getSelection();
+    const initialOffset = initialSelection?.anchorOffset;
+    const initialNode = initialSelection?.anchorNode;
+
+    // Verify we have a valid selection
+    expect(initialSelection?.rangeCount).toBeGreaterThan(0);
+    expect(initialOffset).toBeDefined();
+
+    // Click on the Text style menu button to blur the editor
+    const textStyleButton = canvas.getByRole("button", {
+      name: /text style menu/i,
+    });
+    await userEvent.click(textStyleButton);
+
+    // Wait for the menu to appear
+    await waitFor(() => {
+      expect(canvas.getByRole("menu")).toBeInTheDocument();
+    });
+
+    // Click on the first menu option (try different role types)
+    const firstMenuItem = canvas.getAllByRole("menuitem")[0];
+
+    if (firstMenuItem) {
+      await userEvent.click(firstMenuItem);
+    }
+
+    // Wait for the menu to close and focus to return to editor
+    await waitFor(() => {
+      expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+    });
+
+    // Wait for focus to be restored and verify cursor position is restored
+    await waitFor(() => {
+      const restoredSelection = window.getSelection();
+      const restoredOffset = restoredSelection?.anchorOffset;
+      const restoredNode = restoredSelection?.anchorNode;
+
+      // The cursor position should be restored to the same location
+      expect(restoredOffset).toBe(initialOffset);
+      expect(restoredNode).toBe(initialNode);
     });
   },
 };
