@@ -1,22 +1,46 @@
 {
+  "Nimbus.alert.dismiss": {
+    "developer_comment": "aria-label for dismiss button in alert",
+    "string": "Dispensar"
+  },
+  "Nimbus.avatar.avatar": {
+    "developer_comment": "aria-label for avatar",
+    "string": "avatar"
+  },
+  "Nimbus.calendar.nextMonth": {
+    "developer_comment": "aria-label for next month button in calendar",
+    "string": "Próximo mês"
+  },
+  "Nimbus.calendar.nextYear": {
+    "developer_comment": "aria-label for next year button in calendar",
+    "string": "Próximo ano"
+  },
+  "Nimbus.calendar.previousMonth": {
+    "developer_comment": "aria-label for previous month button in calendar",
+    "string": "Mês anterior"
+  },
+  "Nimbus.calendar.previousYear": {
+    "developer_comment": "aria-label for previous year button in calendar",
+    "string": "Ano anterior"
+  },
   "Nimbus.datePicker.clearInput": {
-    "developer_comment": "Aria label for clear input button in date picker",
+    "developer_comment": "aria-label for clear input button in date picker",
     "string": "Limpar valor de entrada"
   },
   "Nimbus.datePicker.time.enterTime": {
-    "developer_comment": "Aria label for time input field in date picker",
+    "developer_comment": "aria-label for time input field in date picker",
     "string": "Inserir hora"
   },
   "Nimbus.datePicker.time.enterTimeHour": {
-    "developer_comment": "Aria label for hour-only time input in date picker",
+    "developer_comment": "aria-label for hour-only time input in date picker",
     "string": "Insira o horário (hora)"
   },
   "Nimbus.datePicker.time.enterTimeHourMinute": {
-    "developer_comment": "Aria label for hour and minute time input in date picker",
+    "developer_comment": "aria-label for hour and minute time input in date picker",
     "string": "Digite a hora (hora e minuto)"
   },
   "Nimbus.datePicker.time.enterTimeHourMinuteSecond": {
-    "developer_comment": "Aria label for full time input with seconds in date picker",
+    "developer_comment": "aria-label for full time input with seconds in date picker",
     "string": "Digite a hora (hora, minuto e segundo)"
   },
   "Nimbus.datePicker.time.startTime": {
@@ -28,23 +52,23 @@
     "string": "Carregando dados"
   },
   "Nimbus.numberInput.decrement": {
-    "developer_comment": "Aria label & tooltip for decrement button in number input",
+    "developer_comment": "aria-label & tooltip for decrement button in number input",
     "string": "Diminuição"
   },
   "Nimbus.numberInput.increment": {
-    "developer_comment": "Aria label & tooltip for increment button in number input",
+    "developer_comment": "aria-label & tooltip for increment button in number input",
     "string": "Incremento"
   },
   "Nimbus.passwordInput.hide": {
-    "developer_comment": "Aria label for hide password button",
+    "developer_comment": "aria-label for hide password button",
     "string": "Ocultar senha"
   },
   "Nimbus.passwordInput.show": {
-    "developer_comment": "Aria label for show password button",
+    "developer_comment": "aria-label for show password button",
     "string": "Mostrar senha"
   },
   "Nimbus.select.clearSelection": {
-    "developer_comment": "Aria label for select clear button",
+    "developer_comment": "aria-label for select clear button",
     "string": "Limpar seleção"
   }
 }

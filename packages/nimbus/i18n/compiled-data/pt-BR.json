@@ -1,4 +1,40 @@
 {
+  "Nimbus.alert.dismiss": [
+    {
+      "type": 0,
+      "value": "Dispensar"
+    }
+  ],
+  "Nimbus.avatar.avatar": [
+    {
+      "type": 0,
+      "value": "avatar"
+    }
+  ],
+  "Nimbus.calendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Próximo mês"
+    }
+  ],
+  "Nimbus.calendar.nextYear": [
+    {
+      "type": 0,
+      "value": "Próximo ano"
+    }
+  ],
+  "Nimbus.calendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Mês anterior"
+    }
+  ],
+  "Nimbus.calendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Ano anterior"
+    }
+  ],
   "Nimbus.datePicker.clearInput": [
     {
       "type": 0,

@@ -19,9 +19,9 @@ export const Avatar = (props: AvatarProps) => {
   const fullName = `${firstName} ${lastName}`;
 
   const sharedProps = {
+    "aria-label": `${fullName} ${intl.formatMessage(messages.avatar)}`,
     ref,
     ...rest,
-    "aria-label": `${fullName} ${intl.formatMessage(messages.avatar)}`,
   };
 
   const onLoad = () => {
