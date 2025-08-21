@@ -63,8 +63,8 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
       selectedKeys={selectedKeys}
       onSelectionChange={(args) => {
         // This is a workaround to ensure the editor is focused when the menu is closed
+        handleSelectionChange(args);
         requestAnimationFrame(() => {
-          handleSelectionChange(args);
           setTimeout(() => {
             focusEditor(editor);
           }, 50);
