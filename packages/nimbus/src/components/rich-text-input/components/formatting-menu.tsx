@@ -62,14 +62,13 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
       selectionMode="multiple"
       selectedKeys={selectedKeys}
       onSelectionChange={(args) => {
-        handleSelectionChange(args);
-
         // This is a workaround to ensure the editor is focused when the menu is closed
-        requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          handleSelectionChange(args);
           setTimeout(() => {
             focusEditor(editor);
-          }, 50)
-        );
+          }, 50);
+        });
       }}
     >
       <Tooltip.Root delay={0} closeDelay={0}>

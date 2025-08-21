@@ -3,18 +3,11 @@ import {
   useCallback,
   useImperativeHandle,
   forwardRef,
-  useRef,
   type ForwardedRef,
   type FocusEventHandler,
   type ReactNode,
 } from "react";
-import {
-  createEditor,
-  type Descendant,
-  Transforms,
-  Editor,
-  type Range,
-} from "slate";
+import { createEditor, type Descendant } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import isHotkey from "is-hotkey";
@@ -74,9 +67,6 @@ export const RichTextEditor = forwardRef<
     toolbar,
   } = props;
 
-  // Store the last cursor position when editor loses focus
-  const lastSelectionRef = useRef<Range | null>(null);
-
   // Create editor with plugins
   const editor = useMemo(() => {
     const baseEditor = createEditor();
@@ -123,26 +113,6 @@ export const RichTextEditor = forwardRef<
       if (onFocus) {
         onFocus(event);
       }
-
-      // Restore cursor position if we have a saved selection
-      if (lastSelectionRef.current) {
-        // Use requestAnimationFrame to ensure the editor is fully focused and ready
-        requestAnimationFrame(() => {
-          try {
-            // Check if the saved selection is still valid
-            if (
-              lastSelectionRef.current &&
-              Editor.hasPath(editor, lastSelectionRef.current.anchor.path) &&
-              Editor.hasPath(editor, lastSelectionRef.current.focus.path)
-            ) {
-              Transforms.select(editor, lastSelectionRef.current);
-            }
-          } catch (error) {
-            // If the selection is invalid, clear it and let the editor use default focus behavior
-            console.warn("Could not restore cursor position:", error);
-          }
-        });
-      }
     },
     [onFocus, editor]
   );
@@ -150,12 +120,6 @@ export const RichTextEditor = forwardRef<
   // Handle blur
   const handleBlur = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
-      // Save current cursor position when losing focus
-      const { selection } = editor;
-      if (selection) {
-        lastSelectionRef.current = selection;
-      }
-
       if (onBlur) {
         onBlur(event);
       }
