@@ -191,6 +191,7 @@ export const RichTextToolbar = ({
       aria-label="Text formatting"
       width="full"
       overflow="hidden"
+      size="xs"
     >
       {/* Text Style Menu */}
       <Group>
