@@ -22,7 +22,7 @@ export const DatePickerTimeInput = ({
   // Focus the time input when date changes (user selects a date from calendar)
   useEffect(() => {
     // Check if date changed
-    let timeoutId: NodeJS.Timeout | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     if (dateValue && previousDateRef.current?.compare(dateValue) !== 0) {
       // Only auto-focus if no time input segment currently has focus

@@ -12,7 +12,7 @@ jobs:
     container:
       # Make sure to grab the latest version of the Playwright image
       # https://playwright.dev/docs/docker#pull-the-image
-      image: mcr.microsoft.com/playwright:v1.52.0-noble
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
 
     steps:
       - name: Checkout repository
@@ -21,12 +21,14 @@ jobs:
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck:strict
+
       - name: Run tests
         run: pnpm test
         timeout-minutes: 5
         env:
           NODE_ENV: production
-
-      - name: Lint (optional)
-        run: pnpm lint
-        continue-on-error: true

@@ -21,10 +21,11 @@ export interface ProgressBarRecipeProps
  * aria props, and data attributes.
  */
 export interface ProgressBarRootProps
-  extends HTMLChakraProps<"div", ProgressBarRecipeProps>,
+  extends Omit<HTMLChakraProps<"div", ProgressBarRecipeProps>, "translate">,
     Omit<RecipeVariantProps<typeof progressBarSlotRecipe>, "isIndeterminate">,
     AriaProgressBarProps {
   [key: `data-${string}`]: string;
+  translate?: "yes" | "no";
 }
 
 const { withProvider, withContext } = createSlotRecipeContext({
