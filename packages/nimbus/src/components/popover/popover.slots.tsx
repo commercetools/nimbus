@@ -1,23 +1,17 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import { popoverSlotRecipe } from "./popover.recipe";
 import {
-  DialogTrigger as RaDialogTrigger,
   Popover as RaPopover,
 } from "react-aria-components";
 import {
-  type PopoverContentSlotProps,
-  type PopoverTriggerSlotProps,
+  type PopoverRootSlotProps,
 } from "./popover.types";
 
-const { withProvider } = createSlotRecipeContext({
+const { withContext } = createRecipeContext({
   recipe: popoverSlotRecipe,
 });
 
-export const PopoverTriggerSlot = (props: PopoverTriggerSlotProps) => (
-  <RaDialogTrigger {...props} />
-);
-
-export const PopoverContentSlot = withProvider<
+export const PopoverRootSlot = withContext<
   HTMLDivElement,
-  PopoverContentSlotProps
->(RaPopover, "content");
+  PopoverRootSlotProps
+>(RaPopover);

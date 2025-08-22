@@ -1,27 +1,17 @@
-import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
-
-const slots = ["trigger", "content"];
-
+import { defineRecipe } from "@chakra-ui/react/styled-system";
 /**
  * Recipe configuration for the Popover component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const popoverSlotRecipe = defineSlotRecipe({
+export const popoverSlotRecipe = defineRecipe({
   // Unique class name prefix for the component
   className: "nimbus-popover",
-  slots,
   // Base styles applied to all instances of the component
   base: {
-    trigger: {
-      position: "relative",
-      display: "inline-block",
-    },
-    content: {
       bg: "white",
       borderRadius: "200",
       boxShadow: "5",
       padding: "400",
       zIndex: 1,
-    },
   },
 });
