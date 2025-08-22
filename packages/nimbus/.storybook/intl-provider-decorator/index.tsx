@@ -55,21 +55,21 @@ const getMessagesForLocale = async (
   try {
     switch (language) {
       case "de":
-        return (await import("../../i18n/translated-data/de.json")).default;
+        return (await import("../../i18n/data/de.json")).default;
       case "en":
-        return (await import("../../i18n/translated-data/en.json")).default;
+        return (await import("../../i18n/data/en.json")).default;
       case "fr":
-        return (await import("../../i18n/translated-data/fr-FR.json")).default;
+        return (await import("../../i18n/data/fr-FR.json")).default;
       // case "es":
       //   return (await import("../../../i18n/data/es.json")).default;
-      // case "pt":
-      //   return (await import("../../../i18n/data/pt-BR.json")).default;
+      case "pt":
+        return (await import("../../i18n/data/pt-BR.json")).default;
       default:
-        return (await import("../../i18n/translated-data/en.json")).default;
+        return (await import("../../i18n/data/en.json")).default;
     }
   } catch {
     // Fallback to English if any import fails
-    return (await import("../../i18n/translated-data/en.json")).default;
+    return (await import("../../i18n/data/en.json")).default;
   }
 };
 

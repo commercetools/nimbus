@@ -47,9 +47,9 @@ This runs a 4-step workflow:
 
 ```bash
 # 1. Extract messages from components
-pnpm dlx @formatjs/cli extract --format=transifex --out-file=../i18n/core.json 'src/**/messages.ts'
+pnpm dlx @formatjs/cli extract --format=transifex --out-file=i18n/data/core.json 'src/**/messages.ts'
 # 2. Copy directly to English so that it's in sync with core.json
-cp ../i18n/core.json ../i18n/en.json
+cp i18n/data/core.json i18n/data/en.json
 # 3. Auto-translate to all supported languages via DeepL API
 pnpm translate-all  # What it says
 # 4. Compile for runtime optimization

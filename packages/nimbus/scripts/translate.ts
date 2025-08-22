@@ -47,7 +47,7 @@ const LANGUAGE_MAPPING = {
 type SupportedLanguage = keyof typeof LANGUAGE_MAPPING;
 
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
-const I18N_DIR = join(__dirname, "../i18n/translated-data");
+const I18N_DIR = join(__dirname, "../i18n/data");
 const CORE_FILE = join(I18N_DIR, "core.json");
 
 const DEEPL_API_URL = "https://api-free.deepl.com/v2/translate";

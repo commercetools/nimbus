@@ -1,7 +1,7 @@
 {
   "Nimbus.alert.dismiss": {
     "developer_comment": "aria-label for dismiss button in alert",
-    "string": "Dispensar"
+    "string": "Dismiss"
   },
   "Nimbus.avatar.avatar": {
     "developer_comment": "aria-label for avatar",
@@ -9,66 +9,90 @@
   },
   "Nimbus.calendar.nextMonth": {
     "developer_comment": "aria-label for next month button in calendar",
-    "string": "Próximo mês"
+    "string": "Next month"
   },
   "Nimbus.calendar.nextYear": {
     "developer_comment": "aria-label for next year button in calendar",
-    "string": "Próximo ano"
+    "string": "Next year"
   },
   "Nimbus.calendar.previousMonth": {
     "developer_comment": "aria-label for previous month button in calendar",
-    "string": "Mês anterior"
+    "string": "Previous month"
   },
   "Nimbus.calendar.previousYear": {
     "developer_comment": "aria-label for previous year button in calendar",
-    "string": "Ano anterior"
+    "string": "Previous year"
+  },
+  "Nimbus.combobox.clearSelection": {
+    "developer_comment": "aria-label for single and multi select combobox clear selection button",
+    "string": "Clear selection"
+  },
+  "Nimbus.combobox.comboboxDialog": {
+    "developer_comment": "aria-label for combobox dialog",
+    "string": "Combobox dialog"
+  },
+  "Nimbus.combobox.comboboxOptions": {
+    "developer_comment": "aria-label for combobox options",
+    "string": "Combobox options"
+  },
+  "Nimbus.combobox.filterComboboxOptions": {
+    "developer_comment": "aria-label for combobox filter options input",
+    "string": "Filter combobox options"
+  },
+  "Nimbus.combobox.selectedValues": {
+    "developer_comment": "aria-label for selected values",
+    "string": "Selected values"
+  },
+  "Nimbus.combobox.toggleCombobox": {
+    "developer_comment": "aria-label for combobox toggle button",
+    "string": "Toggle combobox"
   },
   "Nimbus.datePicker.clearInput": {
     "developer_comment": "aria-label for clear input button in date picker",
-    "string": "Limpar valor de entrada"
+    "string": "Clear input value"
   },
   "Nimbus.datePicker.time.enterTime": {
     "developer_comment": "aria-label for time input field in date picker",
-    "string": "Inserir hora"
+    "string": "Enter time"
   },
   "Nimbus.datePicker.time.enterTimeHour": {
     "developer_comment": "aria-label for hour-only time input in date picker",
-    "string": "Insira o horário (hora)"
+    "string": "Enter time (hour)"
   },
   "Nimbus.datePicker.time.enterTimeHourMinute": {
     "developer_comment": "aria-label for hour and minute time input in date picker",
-    "string": "Digite a hora (hora e minuto)"
+    "string": "Enter time (hour and minute)"
   },
   "Nimbus.datePicker.time.enterTimeHourMinuteSecond": {
     "developer_comment": "aria-label for full time input with seconds in date picker",
-    "string": "Digite a hora (hora, minuto e segundo)"
+    "string": "Enter time (hour, minute, and second)"
   },
   "Nimbus.datePicker.time.startTime": {
     "developer_comment": "Label for start time in date picker",
-    "string": "Hora de início"
+    "string": "Start time"
   },
   "Nimbus.loadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
-    "string": "Carregando dados"
+    "string": "Loading data"
   },
   "Nimbus.numberInput.decrement": {
     "developer_comment": "aria-label & tooltip for decrement button in number input",
-    "string": "Diminuição"
+    "string": "Decrement"
   },
   "Nimbus.numberInput.increment": {
     "developer_comment": "aria-label & tooltip for increment button in number input",
-    "string": "Incremento"
+    "string": "Increment"
   },
   "Nimbus.passwordInput.hide": {
     "developer_comment": "aria-label for hide password button",
-    "string": "Ocultar senha"
+    "string": "Hide password"
   },
   "Nimbus.passwordInput.show": {
     "developer_comment": "aria-label for show password button",
-    "string": "Mostrar senha"
+    "string": "Show password"
   },
   "Nimbus.select.clearSelection": {
     "developer_comment": "aria-label for select clear button",
-    "string": "Limpar seleção"
+    "string": "Clear Selection"
   }
 }

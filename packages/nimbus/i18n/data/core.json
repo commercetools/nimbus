@@ -1,74 +1,98 @@
 {
   "Nimbus.alert.dismiss": {
     "developer_comment": "aria-label for dismiss button in alert",
-    "string": "Ablehnen"
+    "string": "Dismiss"
   },
   "Nimbus.avatar.avatar": {
     "developer_comment": "aria-label for avatar",
-    "string": "avatar MEH"
+    "string": "avatar"
   },
   "Nimbus.calendar.nextMonth": {
     "developer_comment": "aria-label for next month button in calendar",
-    "string": "Nächster Monat"
+    "string": "Next month"
   },
   "Nimbus.calendar.nextYear": {
     "developer_comment": "aria-label for next year button in calendar",
-    "string": "Nächstes Jahr"
+    "string": "Next year"
   },
   "Nimbus.calendar.previousMonth": {
     "developer_comment": "aria-label for previous month button in calendar",
-    "string": "Vorheriger Monat"
+    "string": "Previous month"
   },
   "Nimbus.calendar.previousYear": {
     "developer_comment": "aria-label for previous year button in calendar",
-    "string": "Voriges Jahr"
+    "string": "Previous year"
+  },
+  "Nimbus.combobox.clearSelection": {
+    "developer_comment": "aria-label for single and multi select combobox clear selection button",
+    "string": "Clear selection"
+  },
+  "Nimbus.combobox.comboboxDialog": {
+    "developer_comment": "aria-label for combobox dialog",
+    "string": "Combobox dialog"
+  },
+  "Nimbus.combobox.comboboxOptions": {
+    "developer_comment": "aria-label for combobox options",
+    "string": "Combobox options"
+  },
+  "Nimbus.combobox.filterComboboxOptions": {
+    "developer_comment": "aria-label for combobox filter options input",
+    "string": "Filter combobox options"
+  },
+  "Nimbus.combobox.selectedValues": {
+    "developer_comment": "aria-label for selected values",
+    "string": "Selected values"
+  },
+  "Nimbus.combobox.toggleCombobox": {
+    "developer_comment": "aria-label for combobox toggle button",
+    "string": "Toggle combobox"
   },
   "Nimbus.datePicker.clearInput": {
     "developer_comment": "aria-label for clear input button in date picker",
-    "string": "Eingangswert löschen MEH"
+    "string": "Clear input value"
   },
   "Nimbus.datePicker.time.enterTime": {
     "developer_comment": "aria-label for time input field in date picker",
-    "string": "Zeit eingeben MEH"
+    "string": "Enter time"
   },
   "Nimbus.datePicker.time.enterTimeHour": {
     "developer_comment": "aria-label for hour-only time input in date picker",
-    "string": "Zeit eingeben (Stunde) MEH"
+    "string": "Enter time (hour)"
   },
   "Nimbus.datePicker.time.enterTimeHourMinute": {
     "developer_comment": "aria-label for hour and minute time input in date picker",
-    "string": "Uhrzeit eingeben (Stunde und Minute) MEH"
+    "string": "Enter time (hour and minute)"
   },
   "Nimbus.datePicker.time.enterTimeHourMinuteSecond": {
     "developer_comment": "aria-label for full time input with seconds in date picker",
-    "string": "Zeit eingeben (Stunde, Minute und Sekunde) MEH"
+    "string": "Enter time (hour, minute, and second)"
   },
   "Nimbus.datePicker.time.startTime": {
     "developer_comment": "Label for start time in date picker",
-    "string": "Startzeit MEH"
+    "string": "Start time"
   },
   "Nimbus.loadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
-    "string": "Laden von Daten MEH"
+    "string": "Loading data"
   },
   "Nimbus.numberInput.decrement": {
     "developer_comment": "aria-label & tooltip for decrement button in number input",
-    "string": "Verkleinern MEH"
+    "string": "Decrement"
   },
   "Nimbus.numberInput.increment": {
     "developer_comment": "aria-label & tooltip for increment button in number input",
-    "string": "Inkrement MEH"
+    "string": "Increment"
   },
   "Nimbus.passwordInput.hide": {
     "developer_comment": "aria-label for hide password button",
-    "string": "Passwort verstecken MEH"
+    "string": "Hide password"
   },
   "Nimbus.passwordInput.show": {
     "developer_comment": "aria-label for show password button",
-    "string": "Passwort anzeigen MEH"
+    "string": "Show password"
   },
   "Nimbus.select.clearSelection": {
     "developer_comment": "aria-label for select clear button",
-    "string": "Auswahl löschen MEH"
+    "string": "Clear Selection"
   }
 }

@@ -8,6 +8,8 @@ import { IconButton, Flex, Box } from "@/components";
 import { ComboBoxStateContext } from "react-aria-components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
+import { useIntl } from "react-intl";
+import { messages } from "../messages";
 
 export const ComboBoxSingleSelectButtonGroup = ({
   isDisabled,
@@ -15,6 +17,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
   isLoading,
 }: ComboBoxButtonGroupProps) => {
   const state = useContext(ComboBoxStateContext);
+  const intl = useIntl();
   return (
     <ComboBoxButtonGroupSlot>
       {state?.selectedKey && (
@@ -24,7 +27,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
           size="2xs"
           variant="ghost"
           tone="primary"
-          aria-label="Clear Selection"
+          aria-label={intl.formatMessage(messages.clearSelection)}
           isDisabled={isDisabled || isReadOnly}
           _expanded={{ bg: "transparent" }}
           onPress={() => state?.setSelectedKey(null)}
@@ -50,7 +53,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
         <IconButton
           size="2xs"
           variant="ghost"
-          aria-label="toggle combobox"
+          aria-label={intl.formatMessage(messages.toggleCombobox)}
           tone="neutral"
           my="auto"
           isDisabled={isDisabled || isReadOnly}

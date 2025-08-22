@@ -35,6 +35,42 @@
       "value": "Ano anterior"
     }
   ],
+  "Nimbus.combobox.clearSelection": [
+    {
+      "type": 0,
+      "value": "Limpar seleção"
+    }
+  ],
+  "Nimbus.combobox.comboboxDialog": [
+    {
+      "type": 0,
+      "value": "Caixa de diálogo Combobox"
+    }
+  ],
+  "Nimbus.combobox.comboboxOptions": [
+    {
+      "type": 0,
+      "value": "Opções de combobox"
+    }
+  ],
+  "Nimbus.combobox.filterComboboxOptions": [
+    {
+      "type": 0,
+      "value": "Filtrar opções de combobox"
+    }
+  ],
+  "Nimbus.combobox.selectedValues": [
+    {
+      "type": 0,
+      "value": "Valores selecionados"
+    }
+  ],
+  "Nimbus.combobox.toggleCombobox": [
+    {
+      "type": 0,
+      "value": "Alternar caixa de combinação"
+    }
+  ],
   "Nimbus.datePicker.clearInput": [
     {
       "type": 0,

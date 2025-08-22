@@ -21,10 +21,12 @@
       "require": {
         "default": "./dist/setup-jsdom-polyfills.cjs"
       }
-    }
+    },
+    "./i18n/compiled-data/*": "./i18n/compiled-data/*"
   },
   "files": [
     "dist",
+    "i18n/compiled-data",
     "package.json"
   ],
   "publishConfig": {
@@ -100,8 +102,8 @@
     "build": "pnpm run build-theme-typings && pnpm run build:lib",
     "build:lib": "vite build",
     "dev": "vite build --watch",
-    "extract-intl": "mkdir -p i18n/translated-data i18n/compiled-data && pnpm dlx @formatjs/cli extract --format=transifex --out-file=i18n/translated-data/core.json 'src/**/messages.ts' && cp i18n/translated-data/core.json i18n/translated-data/en.json && pnpm translate-all && pnpm compile-intl",
-    "compile-intl": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast i18n/translated-data i18n/compiled-data",
+    "extract-intl": "mkdir -p i18n/data i18n/compiled-data && pnpm dlx @formatjs/cli extract --format=transifex --out-file=i18n/data/core.json 'src/**/messages.ts' && cp i18n/data/core.json i18n/data/en.json && pnpm translate-all && pnpm compile-intl",
+    "compile-intl": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast i18n/data i18n/compiled-data",
     "translate": "npx tsx scripts/translate.ts",
     "translate-all": "npx tsx scripts/translate.ts fr-FR && npx tsx scripts/translate.ts pt-BR && npx tsx scripts/translate.ts de",
     "test": "vitest",

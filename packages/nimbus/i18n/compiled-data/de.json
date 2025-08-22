@@ -2,7 +2,7 @@
   "Nimbus.alert.dismiss": [
     {
       "type": 0,
-      "value": "Ablehnen"
+      "value": "Ablehnen MEH"
     }
   ],
   "Nimbus.avatar.avatar": [
@@ -14,25 +14,61 @@
   "Nimbus.calendar.nextMonth": [
     {
       "type": 0,
-      "value": "Nächster Monat"
+      "value": "Nächster Monat MEH"
     }
   ],
   "Nimbus.calendar.nextYear": [
     {
       "type": 0,
-      "value": "Nächstes Jahr"
+      "value": "Nächstes Jahr MEH"
     }
   ],
   "Nimbus.calendar.previousMonth": [
     {
       "type": 0,
-      "value": "Vorheriger Monat"
+      "value": "Vorheriger Monat MEH"
     }
   ],
   "Nimbus.calendar.previousYear": [
     {
       "type": 0,
-      "value": "Voriges Jahr"
+      "value": "Voriges Jahr MEH"
+    }
+  ],
+  "Nimbus.combobox.clearSelection": [
+    {
+      "type": 0,
+      "value": "Auswahl löschen MEH"
+    }
+  ],
+  "Nimbus.combobox.comboboxDialog": [
+    {
+      "type": 0,
+      "value": "Combobox-Dialog MEH"
+    }
+  ],
+  "Nimbus.combobox.comboboxOptions": [
+    {
+      "type": 0,
+      "value": "Combobox-Optionen MEH"
+    }
+  ],
+  "Nimbus.combobox.filterComboboxOptions": [
+    {
+      "type": 0,
+      "value": "Combobox-Optionen filtern MEH"
+    }
+  ],
+  "Nimbus.combobox.selectedValues": [
+    {
+      "type": 0,
+      "value": "Ausgewählte Werte"
+    }
+  ],
+  "Nimbus.combobox.toggleCombobox": [
+    {
+      "type": 0,
+      "value": "Umschaltbare Combobox"
     }
   ],
   "Nimbus.datePicker.clearInput": [
