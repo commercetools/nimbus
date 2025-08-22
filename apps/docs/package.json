@@ -54,7 +54,7 @@
     "to-vfile": "^8.0.0",
     "vite-plugin-markdown": "^2.2.0",
     "vite-tsconfig-paths": "^5.1.3",
-    "zod": "^4.0.5"
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/js": "catalog:tooling",
