@@ -1,101 +1,76 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react";
 
 /**
  * Recipe configuration for the TextInput component.
- * Defines the styling variants and base styles using Chakra UI's recipe system.
+ * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  */
-export const textInputRecipe = defineRecipe({
+export const textInputSlotRecipe = defineSlotRecipe({
+  slots: ["root", "leadingElement", "input", "trailingElement"],
   // Unique class name prefix for the component
   className: "nimbus-text-input",
 
   // Base styles applied to all instances of the component
   base: {
-    "& .nimbus-text-input-container": {
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
+    root: {
+      display: "inline-flex",
+      cursor: "text",
       borderRadius: "200",
-      width: "100%",
-      height: "100%",
-      overflow: "hidden", // Ensure elements stay within borders
-      focusVisibleRing: "outside",
-    },
-
-    _focusVisible: {
-      // Ensure focus ring surrounds the entire input, including elements
-      zIndex: 1,
-    },
-
-    _disabled: {
-      "& .nimbus-text-input-container": {
-        bg: "neutral.3",
-      },
-      layerStyle: "disabled",
-    },
-
-    "&[data-invalid='true']": {
-      "& .nimbus-text-input-container": {
-        boxShadow: "5",
-      },
-      "--border-color": "colors.critical.7",
-      "--border-width": "sizes.50",
-      color: "critical.11",
-    },
-
-    // Position for leading and trailing elements
-    "& .leading-element": {
-      position: "absolute",
-      display: "flex",
-      alignItems: "center",
-      width: "600", // TODO: seems sketchy to specify a width
-      left: "400",
-      right: "200",
-      _rtl: {
-        left: "auto",
-        right: "400",
-      },
-    },
-
-    "& .trailing-element": {
-      position: "absolute",
-      display: "flex",
-      alignItems: "center",
-      justifyItems: "right",
-      // right: "200", // TODO: fix this
-      width: "600",
-      _rtl: {
-        right: "auto",
-        left: "400",
-      },
-    },
-
-    // Style the input element when there are leading/trailing elements
-    "& [data-part='input']": {
-      width: "100%",
-      height: "100%",
-      padding: "400",
-      colorPalette: "neutral",
-      bg: "transparent",
-      outline: "none",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-      borderRadius: "inherit",
-      fontSize: "inherit",
-      fontFamily: "inherit",
-      lineHeight: "inherit",
+      alignItems: "center",
 
-      _focusVisible: {
-        // outline: "none",
-        // boxShadow: "none", // Remove default focus ring from input
+      _focusWithin: {
+        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
+        outlineWidth: "var(--focus-ring-width)",
+        outlineColor: "var(--focus-ring-color)",
+        outlineStyle: "var(--focus-ring-style)",
+        outlineOffset: "var(--focus-ring-offset)",
       },
+
+      "& *": {
+        outline: "none !important",
+      },
+
+      focusVisibleRing: "outside",
+      focusRing: "outside",
+
+      "&[data-invalid='true']": {
+        "--border-color": "colors.critical.7",
+        "--border-width": "sizes.50",
+        color: "critical.11",
+      },
+
+      _disabled: {
+        bg: "neutral.3",
+        layerStyle: "disabled",
+      },
+    },
+
+    leadingElement: {
+      color: "neutral.11",
+      outline: "1px solid red",
+      display: "flex",
+      alignItems: "center",
+    },
+
+    trailingElement: {
+      color: "neutral.11",
+      outline: "1px solid green",
+      display: "flex",
+      alignItems: "center",
+    },
+
+    input: {
+      cursor: "inherit",
+      display: "block",
+      flexGrow: 1,
+      outline: "1px solid orange",
+      bg: "transparent",
+
+      fontSize: "inherit",
 
       _placeholder: {
         opacity: 0.5,
         color: "currentColor",
-      },
-
-      _disabled: {
-        opacity: 0.6,
-        cursor: "not-allowed",
       },
     },
   },
@@ -103,94 +78,41 @@ export const textInputRecipe = defineRecipe({
   variants: {
     size: {
       sm: {
-        height: "800",
-        textStyle: "sm",
-        "& [data-part='input']": {
-          padding: "300",
+        root: {
+          height: "800",
+          px: "300",
+          gap: "200",
+          textStyle: "sm",
         },
-        "& .leading-element": {
-          left: "300",
-          _rtl: {
-            left: "auto",
-            right: "300",
-          },
-        },
-        "& .trailing-element": {
-          right: "300",
-          _rtl: {
-            right: "auto",
-            left: "300",
-          },
-        },
-        "&[data-has-leading='true'] [data-part='input']": {
-          paddingLeft: "1000",
-          _rtl: {
-            paddingLeft: "300",
-            paddingRight: "1000",
-          },
-        },
-        "&[data-has-trailing='true'] [data-part='input']": {
-          paddingRight: "1000",
-          _rtl: {
-            paddingRight: "300",
-            paddingLeft: "1000",
-          },
-        },
+        input: {},
       },
       md: {
-        height: "1000",
-        textStyle: "md",
-        "& [data-part='input']": {
-          padding: "400",
+        root: {
+          height: "1000",
+          px: "400",
+          gap: "300",
+          textStyle: "md",
         },
-        "& .leading-element": {
-          left: "400",
-          _rtl: {
-            left: "auto",
-            right: "400",
-          },
-        },
-        "& .trailing-element": {
-          right: "400",
-          _rtl: {
-            right: "auto",
-            left: "400",
-          },
-        },
-        "&[data-has-leading='true'] [data-part='input']": {
-          paddingLeft: "1000",
-          _rtl: {
-            paddingLeft: "400",
-            paddingRight: "1000",
-          },
-        },
-        "&[data-has-trailing='true'] [data-part='input']": {
-          paddingRight: "1000",
-          _rtl: {
-            paddingRight: "400",
-            paddingLeft: "1000",
-          },
-        },
+        input: {},
       },
     },
 
     variant: {
       solid: {
-        "& .nimbus-text-input-container": {
-          boxShadow: "inset 0 0 0 sizes.25 colors.neutral.7",
-          backgroundColor: "primary.1",
+        root: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
-        },
-        _hover: {
-          "& .nimbus-text-input-container": {
+
+          backgroundColor: "primary.1",
+
+          _hover: {
             backgroundColor: "primary.2",
           },
         },
       },
       ghost: {
-        _hover: {
-          "& .nimbus-text-input-container": {
+        root: {
+          _hover: {
             backgroundColor: "primary.2",
           },
         },

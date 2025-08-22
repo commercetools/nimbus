@@ -1,48 +1,40 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
   type RecipeVariantProps,
-  type UnstyledProp,
-  createRecipeContext,
+  createSlotRecipeContext,
 } from "@chakra-ui/react";
 
-import { textInputRecipe } from "./text-input.recipe";
+import { textInputSlotRecipe } from "./text-input.recipe";
 
-export interface TextInputRecipeProps
-  extends RecipeVariantProps<typeof textInputRecipe>,
-    UnstyledProp {}
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "textInput",
+});
 
-export type TextInputRootSlotProps = HTMLChakraProps<
-  "div",
-  TextInputRecipeProps
->;
-
-export type TextInputLeadingElementSlotProps = HTMLChakraProps<
-  "div",
-  TextInputRecipeProps
->;
-
-export type TextInputTrailingElementSlotProps = HTMLChakraProps<
-  "div",
-  TextInputRecipeProps
->;
-
-const { withContext } = createRecipeContext({ recipe: textInputRecipe });
-
-/**
- * Root component that provides the styling context for the TextInput component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const TextInputRootSlot = withContext<
+export interface TextInputRootProps
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof textInputSlotRecipe>
+  > {}
+export const TextInputRootSlot = withProvider<
   HTMLDivElement,
-  TextInputRootSlotProps
->("div");
+  TextInputRootProps
+>("div", "root");
 
+interface TextInputLeadingElementProps extends HTMLChakraProps<"div"> {}
 export const TextInputLeadingElementSlot = withContext<
   HTMLDivElement,
-  TextInputLeadingElementSlotProps
->("div");
+  TextInputLeadingElementProps
+>("div", "leadingElement");
 
+interface TextInputInputProps extends HTMLChakraProps<"input"> {}
+export const TextInputInputSlot = withContext<
+  HTMLInputElement,
+  TextInputInputProps
+>("input", "input");
+
+interface TextInputTrailingElementProps extends HTMLChakraProps<"div"> {}
 export const TextInputTrailingElementSlot = withContext<
   HTMLDivElement,
-  TextInputTrailingElementSlotProps
->("div");
+  TextInputTrailingElementProps
+>("div", "trailingElement");

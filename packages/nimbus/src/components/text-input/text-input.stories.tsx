@@ -329,7 +329,7 @@ export const InteractiveElements: Story = {
         <Text>Interactive search with clear button</Text>
         <TextInput
           placeholder="Search for products"
-          leadingElement={<Search style={{ color: "gray" }} />}
+          leadingElement={<Search />}
           trailingElement={
             value ? (
               <Box
@@ -386,7 +386,7 @@ export const WithBothElements: Story = {
 };
 
 export const WithBothElementsDifferentSizes: Story = {
-  render: (args) => {
+  render: () => {
     return (
       <Stack direction="column" gap="400">
         {inputSize.map((size) => (
@@ -405,7 +405,7 @@ export const WithBothElementsDifferentSizes: Story = {
 };
 
 export const RTLSupport: Story = {
-  render: (args) => {
+  render: () => {
     return (
       <Stack direction="column" gap="400">
         <Box>

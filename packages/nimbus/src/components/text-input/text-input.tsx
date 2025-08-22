@@ -1,15 +1,15 @@
 import { forwardRef, useRef } from "react";
-import { mergeRefs, useRecipe } from "@chakra-ui/react";
+import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
 import { useObjectRef, useTextField } from "react-aria";
 import { Input } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
   TextInputRootSlot,
   TextInputLeadingElementSlot,
+  TextInputInputSlot,
   TextInputTrailingElementSlot,
 } from "./text-input.slots";
 import type { TextInputProps } from "./text-input.types";
-import { textInputRecipe } from "./text-input.recipe";
 
 /**
  * # TextInput
@@ -21,50 +21,47 @@ import { textInputRecipe } from "./text-input.recipe";
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (props, forwardedRef) => {
     const { leadingElement, trailingElement, ...restProps } = props;
-    const recipe = useRecipe({ recipe: textInputRecipe });
+
+    const recipe = useSlotRecipe({ key: "textInput" });
+    const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
 
     const localRef = useRef<HTMLInputElement>(null);
     const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-    const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
     const [styleProps, otherProps] = extractStyleProps(remainingProps);
     const { inputProps } = useTextField(otherProps, ref);
 
     // Focus the input when clicking on the wrapper
     const handleWrapperClick = (e: React.MouseEvent) => {
-      // Don't trigger if clicked on a child with onClick handler
-      if ((e.target as HTMLElement).onclick) {
-        return;
-      }
+      // TODO: reliably ignore interactive elements
+      localRef.current?.focus();
+    };
 
-      // Only focus if we clicked the wrapper directly, not an interactive element inside
-      if (e.currentTarget === e.target) {
-        localRef.current?.focus();
-      }
+    const stateProps = {
+      "data-disabled": inputProps.disabled ? "true" : undefined,
+      "data-invalid": inputProps["aria-invalid"] ? "true" : "false",
     };
 
     return (
       <TextInputRootSlot
         {...recipeProps}
         {...styleProps}
-        className={`${styleProps.className || ""}`}
+        {...stateProps}
         onClick={handleWrapperClick}
-        data-has-leading={leadingElement ? "true" : "false"}
-        data-has-trailing={trailingElement ? "true" : "false"}
       >
-        <div className="nimbus-text-input-container">
-          {leadingElement && (
-            <TextInputLeadingElementSlot className="leading-element">
-              {leadingElement}
-            </TextInputLeadingElementSlot>
-          )}
-          <Input ref={ref} {...inputProps} data-part="input" />
-          {trailingElement && (
-            <TextInputTrailingElementSlot className="trailing-element">
-              {trailingElement}
-            </TextInputTrailingElementSlot>
-          )}
-        </div>
+        {leadingElement && (
+          <TextInputLeadingElementSlot>
+            {leadingElement}
+          </TextInputLeadingElementSlot>
+        )}
+        <TextInputInputSlot asChild>
+          <Input ref={ref} {...inputProps} />
+        </TextInputInputSlot>
+        {trailingElement && (
+          <TextInputTrailingElementSlot>
+            {trailingElement}
+          </TextInputTrailingElementSlot>
+        )}
       </TextInputRootSlot>
     );
   }
