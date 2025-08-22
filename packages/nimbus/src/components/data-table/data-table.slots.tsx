@@ -40,7 +40,12 @@ export const DataTableRoot = withProvider<HTMLDivElement, DataTableRootProps>(
 );
 
 // Wrapper slot for react aria `Table` component
-export type DataTableTableSlotProps = HTMLChakraProps<"table">;
+export type DataTableTableSlotProps = Omit<
+  HTMLChakraProps<"table">,
+  "translate"
+> & {
+  translate?: "yes" | "no";
+};
 export const DataTableTableSlot = withContext<
   HTMLTableElement,
   DataTableTableSlotProps
