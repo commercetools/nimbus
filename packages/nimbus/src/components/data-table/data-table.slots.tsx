@@ -60,7 +60,6 @@ export const DataTableSelectionCell = withContext<
   HTMLTableCellElement,
   HTMLChakraProps<"td">
 >("td", "selectionCell");
-
 export const DataTableExpandButton = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"button">

@@ -1187,7 +1187,6 @@ export const AllFeatures: Story = {
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
 
     const allColumns = comprehensiveColumns.map((col) => col.id);
-    console.log("rerentder");
     // Create nested table data with proper React components
     const modifiedComprehensiveData = comprehensiveData.map((item) => ({
       ...item,

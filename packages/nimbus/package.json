@@ -61,7 +61,6 @@
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
-    "@pandacss/types": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-docs": "catalog:tooling",
