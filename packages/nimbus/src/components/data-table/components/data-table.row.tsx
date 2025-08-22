@@ -16,12 +16,11 @@ import { useCopyToClipboard } from "@/hooks";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
-import { DataTableRowSlot, DataTableExpandButton } from "../data-table.slots";
+import { DataTableRowSlot, DataTableDetailsButton } from "../data-table.slots";
 import type { DataTableRowProps, DataTableRowItem } from "../data-table.types";
 
 export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
   row,
-  depth = 0,
   ref,
   ...props
 }: DataTableRowProps<T>) => {
@@ -163,24 +162,10 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
     <>
       <DataTableRowSlot asChild {...styleProps}>
         <RaRow
-          // onAction={!isDisabled && isRowClickable ? handleRowClick : () => {}}
           isDisabled={isDisabled}
           columns={activeColumns}
           ref={rowRef}
-          id={row.id}
-          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""}`}
-          style={{
-            cursor: isDisabled
-              ? "not-allowed"
-              : isRowClickable
-                ? "pointer"
-                : undefined,
-            position: "relative",
-            ...(depth > 0 && {
-              borderLeft: "2px solid var(--colors-primary-6)",
-              backgroundColor: "var(--colors-slate-2)",
-            }),
-          }}
+          data-clickable={isRowClickable}
           dependencies={[isExpanded, search, isTruncated]}
           {...restProps}
         >
@@ -205,18 +190,19 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
           {showExpandColumn && (
             <DataTableCell data-slot="expand" isDisabled={isDisabled}>
               {hasNestedContent ? (
-                <DataTableExpandButton
+                <IconButton
+                  unstyled
                   w="100%"
                   h="100%"
                   cursor="pointer"
+                  focusRing={"outside"}
                   aria-label={isExpanded ? "Collapse" : "Expand"}
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onPress={() => {
                     toggleExpand(row.id);
                   }}
                 >
                   {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-                </DataTableExpandButton>
+                </IconButton>
               ) : null}
             </DataTableCell>
           )}
@@ -229,28 +215,14 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
 
               if (isDetailsCell) {
                 return (
-                  <DataTableCell
-                    key="details-column"
-                    isDisabled={isDisabled}
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      w="100%"
-                      h="100%"
-                    >
+                  <DataTableCell isDisabled={isDisabled}>
+                    <DataTableDetailsButton asChild>
                       <Button
                         aria-label="View row details"
-                        className="data-table-row-details-button"
-                        disabled={isDisabled}
                         variant="outline"
                         colorPalette="primary"
                         size="2xs"
+                        margin="auto"
                         onPress={() => {
                           if (onDetailsClick) {
                             onDetailsClick(row);
@@ -259,7 +231,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                       >
                         Open
                       </Button>
-                    </Box>
+                    </DataTableDetailsButton>
                   </DataTableCell>
                 );
               }
@@ -274,17 +246,6 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                       maxW="100%"
                       position="relative"
                       overflow="hidden"
-                      cursor={isDisabled ? "not-allowed" : "text"}
-                      style={
-                        // TODO: I'm not clear on what this is supposed to do?
-                        {
-                          // Add indentation for the first column of nested rows
-                          // ...(depth > 0 &&
-                          //   index === 0 && {
-                          //     paddingLeft: `${16 + depth * 16}px`,
-                          //   }),
-                        }
-                      }
                     >
                       {col.render
                         ? col.render({
@@ -298,19 +259,14 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                     {/* Cell hover buttons */}
 
                     <IconButton
-                      key="copy-btn"
+                      aria-label="Copy to clipboard"
+                      className="nimbus-table-cell-copy-button"
                       size="2xs"
                       variant="ghost"
-                      aria-label="Copy to clipboard"
                       colorPalette="primary"
-                      className="nimbus-table-cell-copy-button"
                       onPress={() => handleCopy(cellValue)}
-                      ml="100"
                     >
-                      <ContentCopy
-                        key="copy-icon"
-                        onClick={() => handleCopy(cellValue)}
-                      />
+                      <ContentCopy />
                     </IconButton>
                   </Flex>
                 </DataTableCell>
@@ -320,12 +276,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
         </RaRow>
       </DataTableRowSlot>
       {showExpandColumn && (
-        <DataTableRowSlot
-          {...styleProps}
-          data-row-expanded={isExpanded}
-          asChild
-        >
-          <RaRow style={{ display: isExpanded ? undefined : "none" }}>
+        <DataTableRowSlot {...styleProps} asChild>
+          <RaRow
+            data-nested-row-expanded={isExpanded ? "true" : "false"}
+            dependencies={[isExpanded]}
+          >
             <DataTableCell
               isDisabled={isDisabled}
               colSpan={
@@ -333,9 +288,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0)
               }
-              style={{
-                borderLeft: "2px solid blue",
-              }}
+              data-nested-cell
             >
               {isExpanded
                 ? nestedKey && Array.isArray(row[nestedKey])

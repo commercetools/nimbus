@@ -1479,7 +1479,7 @@ export const AllFeatures: Story = {
           borderRadius="200"
           overflow="hidden"
           maxHeight={stickyHeader ? "400px" : "none"}
-          overflowY={stickyHeader ? "auto" : "visible"}
+          // overflowY={stickyHeader ? "auto" : "visible"}
         >
           <DataTableWithModals
             columns={comprehensiveColumns}

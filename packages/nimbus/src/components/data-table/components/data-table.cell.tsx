@@ -13,7 +13,6 @@ export const DataTableCell = ({
   ...props
 }: DataTableCellProps) => {
   // Basically here for disabling any child buttons via context (magic) when the row is disabled
-  // TODO: Perhaps this could use a slot and stylability?
   const [styleProps, restProps] = extractStyleProps(props);
   return (
     <DataTableCellSlot asChild {...styleProps}>

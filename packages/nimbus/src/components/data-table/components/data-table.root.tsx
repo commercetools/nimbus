@@ -173,12 +173,7 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
       ref={ref}
       truncated={isTruncated}
       density={density}
-      style={{
-        ...(maxHeight && {
-          maxHeight,
-          overflowY: "auto",
-        }),
-      }}
+      maxH={maxHeight}
       {...rest}
       asChild
     >

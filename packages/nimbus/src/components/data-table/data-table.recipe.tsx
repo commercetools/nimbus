@@ -138,38 +138,36 @@ export const dataTableRecipe = defineSlotRecipe({
     },
     body: {},
     row: {
+      position: "relative",
       borderBottom: "1px solid {colors.neutral.3}",
       focusRing: "outside",
+      "&:hover:not([data-nested-row-expanded])": {
+        backgroundColor: "{colors.primary.3}",
+        transition: "background-color 200ms ease",
+        transform: "translate3d(0, 0, 0)",
+        "& .nimbus-data-table__detailsButton": {
+          opacity: 1,
+        },
+      },
       "& td, div": {
         userSelect: "none",
       },
       "&:last-child": {
         borderBottom: "none",
       },
+      "&[data-clickable='true']": {
+        cursor: "pointer",
+      },
       "&[data-selected='true']": {
         background: "{colors.primary.4}",
       },
       "&[data-disabled='true']": {
-        "& .data-table-row-details-button": {
-          display: "none",
-        },
         // layerStyle: "disabled",
         opacity: 0.8,
         cursor: "not-allowed",
       },
-      _hover: {
-        backgroundColor: "{colors.primary.3}",
-        transition: "background-color 100ms ease",
-        transform: "translate3d(0, 0, 0)",
-        "& .data-table-row-details-button": {
-          opacity: 1,
-        },
-      },
-      "& .data-table-row-details-button": {
-        opacity: 0,
-      },
-      "& .data-table-row-details-button:focus": {
-        opacity: 1,
+      "&[data-nested-row-expanded='false']": {
+        display: "none",
       },
     },
     cell: {
@@ -180,24 +178,39 @@ export const dataTableRecipe = defineSlotRecipe({
       color: "neutral.11",
       focusRing: "outside",
       hyphens: "auto",
+      height: "100%",
+      _hover: {
+        "& .nimbus-table-cell-copy-button:not([data-disabled='true'])": {
+          display: "inherit",
+        },
+      },
       "&[data-slot='expand']": {
         padding: 0,
       },
       "& .nimbus-table-cell-copy-button": {
         display: "none",
+        ml: "100",
       },
-      _hover: {
-        "& > div > .nimbus-table-cell-copy-button": {
-          display: "inherit",
-        },
+      "&[data-nested-cell]": {
+        boxShadow: "inset 2px 0 0 {colors.primary.10}",
       },
     },
     footer: {
       width: "100%",
     },
     selectionCell: {},
-    detailsButton: {},
-    expandButton: {},
+    detailsButton: {
+      margin: "auto",
+      colorPalette: "primary",
+      opacity: 0,
+      focusRing: "outside",
+      _focus: {
+        opacity: 1,
+      },
+      "&[data-disabled='true']": {
+        opacity: 0,
+      },
+    },
     nestedIcon: {},
     headerSortIcon: {
       transition: "transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)",
@@ -259,19 +272,15 @@ export const dataTableRecipe = defineSlotRecipe({
     },
     density: {
       default: {
-        root: {
-          "& .react-aria-Cell": {
-            paddingTop: "400",
-            paddingBottom: "400",
-          },
+        cell: {
+          paddingTop: "400",
+          paddingBottom: "400",
         },
       },
       condensed: {
-        root: {
-          "& .react-aria-Cell": {
-            paddingTop: "300",
-            paddingBottom: "300",
-          },
+        cell: {
+          paddingTop: "300",
+          paddingBottom: "300",
         },
       },
     },
