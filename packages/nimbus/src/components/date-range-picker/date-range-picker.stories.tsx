@@ -897,20 +897,20 @@ export const Controlled: Story = {
         });
         const segments = within(dateGroup).getAllByRole("spinbutton");
 
-        // Try to input an invalid date (February 30th)
+        // Try to input an invalid date
         await userEvent.click(segments[0]);
-        await userEvent.keyboard("2");
+        await userEvent.keyboard("13");
 
         await userEvent.click(segments[1]);
-        await userEvent.keyboard("30");
+        await userEvent.keyboard("34");
 
         await userEvent.click(segments[2]);
         await userEvent.keyboard("2025");
 
         await waitFor(async () => {
-          await expect(segments[0]).toHaveAttribute("aria-valuenow", "2");
-          await expect(segments[1]).toHaveAttribute("aria-valuenow", "3");
-          await expect(segments[2]).toHaveAttribute("aria-valuenow", "202");
+          await expect(segments[0]).toHaveAttribute("aria-valuenow", "3");
+          await expect(segments[1]).toHaveAttribute("aria-valuenow", "4");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
         });
 
         // The actual controlled value might not update if the date is invalid
@@ -2201,7 +2201,10 @@ export const HideTimeZone: Story = {
       await helpersShown.openCalendar();
 
       // Check that footer time inputs show timezone when hideTimeZone is false
-      const footerTimeInputsShown = within(document.body).getAllByRole("group");
+      // Find the currently open calendar dialog
+      const calendarDialog = within(document.body).getByRole("dialog");
+      const footerTimeInputsShown =
+        within(calendarDialog).getAllByRole("group");
       const timezoneInFooterShown = footerTimeInputsShown.some((input) =>
         within(input).queryByText(/EDT/i)
       );
@@ -2217,12 +2220,15 @@ export const HideTimeZone: Story = {
       await helpersHidden.openCalendar();
 
       // Check that footer time inputs don't show timezone when hideTimeZone is true
-      const footerTimeInputsHidden = within(document.body).getAllByRole(
-        "group"
-      );
+      // Find the currently open calendar dialog for the hidden timezone picker
+      const calendarDialogHidden = within(document.body).getByRole("dialog");
+      const footerTimeInputsHidden =
+        within(calendarDialogHidden).getAllByRole("group");
+
       const timezoneInFooterHidden = footerTimeInputsHidden.some((input) =>
         within(input).queryByText(/EDT/i)
       );
+
       await expect(timezoneInFooterHidden).toBe(false);
 
       await helpersHidden.closeCalendar();
