@@ -21,12 +21,14 @@ jobs:
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck:strict
+
       - name: Run tests
         run: pnpm test
         timeout-minutes: 5
         env:
           NODE_ENV: production
-
-      - name: Lint (optional)
-        run: pnpm lint
-        continue-on-error: true
