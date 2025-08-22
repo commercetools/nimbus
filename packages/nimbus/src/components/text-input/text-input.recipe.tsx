@@ -63,7 +63,7 @@ export const textInputSlotRecipe = defineSlotRecipe({
       cursor: "inherit",
       display: "block",
       flexGrow: 1,
-      outline: "1px solid orange",
+      outline: "1px solid orange", // TODO: lol
       bg: "transparent",
 
       fontSize: "inherit",
