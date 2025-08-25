@@ -6,7 +6,7 @@ import type { PopoverRootSlotProps } from "./popover.types";
  *
  * A component that displays floating content in relation to a trigger element.
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/overlays/popover}
+ * Note this component is only used internally.
  */
 export const Popover = (props: PopoverRootSlotProps) => {
   const { children, ...rest } = props;
