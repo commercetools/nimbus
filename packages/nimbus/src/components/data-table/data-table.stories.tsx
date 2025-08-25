@@ -157,7 +157,7 @@ const ProductDetailsModal = ({
   );
 };
 
-// Wrapper component that automatically handles modals for onDetailsClick and onRowClick
+// Wrapper component that automatically handles modals for onRowClick
 const DataTableWithModals = ({
   onRowClick,
   isProductDetailsTable,

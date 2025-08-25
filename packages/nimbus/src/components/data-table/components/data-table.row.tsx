@@ -127,6 +127,12 @@ export const DataTableRow = forwardRef(function DataTableRow<
    */
 
   /**
+   * Ref to track single click timeout for distinguishing single vs double clicks.
+   * This prevents row navigation on double-clicks when the user intends to select text.
+   */
+  const clickTimeoutRef = useRef<number | null>(null);
+
+  /**
    * Handles row click events with sophisticated filtering to ensure proper UX behavior.
    *
    * This function implements multiple layers of click validation:
@@ -134,34 +140,73 @@ export const DataTableRow = forwardRef(function DataTableRow<
    * - Respects text selection (users shouldn't trigger onClick handler when copying text)
    * - Handles both enabled and disabled row states appropriately
    * - Only triggers onClick handler when the row is explicitly marked as clickable
+   * - Uses a delay mechanism to distinguish single clicks from double clicks
    *
    * Uses native DOM Event type to maintain compatibility with addEventListener and
    * ensure consistent behavior across different browsers and interaction methods.
    *
    * @param e - Native DOM Event from the click listener
    */
-  const handleRowClick = (e: Event) => {
-    // Don't do anything if onRowClick is undefined
-    if (!onRowClick) return;
-    // Prevent row click when clicking on interactive elements to avoid conflicts
-    const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-    // Prevent row click when text is selected
-    const hasSelectedText =
-      window.getSelection()?.toString() !== undefined &&
-      window.getSelection()!.toString().length > 0;
+  const handleRowClick = useCallback(
+    (e: Event) => {
+      // Don't do anything if onRowClick is undefined
+      if (!onRowClick) return;
+      // Prevent row click when clicking on interactive elements to avoid conflicts
+      const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+      // Prevent row click when text is selected
+      const hasSelectedText =
+        window.getSelection()?.toString() !== undefined &&
+        window.getSelection()!.toString().length > 0;
 
-    if (!isInteractiveElement && !hasSelectedText) {
-      if (!isDisabled) {
-        onRowClick(row);
-      } else {
-        // Handle disabled row clicks differently - allows for special disabled row actions
-        // TODO: Clarify business requirement - why allow clicks on disabled rows?
-        if (onRowAction) {
-          onRowAction(row, "click");
+      if (!isInteractiveElement && !hasSelectedText) {
+        // Clear any existing timeout to handle rapid clicks
+        if (clickTimeoutRef.current) {
+          window.clearTimeout(clickTimeoutRef.current);
         }
+
+        // Delay the row click to allow for potential double-click cancellation
+        // Standard double-click timeout is typically 300-500ms
+        clickTimeoutRef.current = window.setTimeout(() => {
+          if (!isDisabled) {
+            onRowClick(row);
+          } else {
+            // Handle disabled row clicks differently - allows for special disabled row actions
+            // TODO: Clarify business requirement - why allow clicks on disabled rows?
+            if (onRowAction) {
+              onRowAction(row, "click");
+            }
+          }
+          clickTimeoutRef.current = null;
+        }, 300);
       }
+    },
+    [onRowClick, onRowAction, row, isDisabled]
+  );
+
+  /**
+   * Handles double-click events to enable default browser text selection behavior.
+   *
+   * When users double-click on text within a table row, they expect the browser's
+   * default word selection behavior. This handler:
+   * - Cancels any pending single-click row navigation
+   * - Allows the browser's native word selection to work normally
+   * - Only applies to non-interactive elements (preserves button/input behavior)
+   *
+   * @param e - Native DOM Event from the dblclick listener
+   */
+  const handleRowDoubleClick = useCallback((e: Event) => {
+    const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+
+    if (!isInteractiveElement) {
+      // Cancel any pending single-click action
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current);
+        clickTimeoutRef.current = null;
+      }
+      // Allow browser's default text selection behavior
+      // No need to prevent default or stop propagation - let the browser handle it
     }
-  };
+  }, []); // No dependencies needed - this function doesn't use any external variables
 
   /**
    * Ref to track callback ref invocations and store the DOM node reference.
@@ -188,13 +233,14 @@ export const DataTableRow = forwardRef(function DataTableRow<
    *
    * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
    * 2. **Event Capture**: Uses capture phase to handle events before child elements
-   * 3. **Dual Listeners**: Attaches both pointerdown (for selection control) and mouseup (for clicks)
+   * 3. **Multiple Listeners**: Attaches pointerdown, mouseup, and dblclick listeners
    * 4. **Always Available**: Listeners are always attached to support dynamic onRowClick changes
    *
    * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
    * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
    * in react-aria'a onPress handler.
    * The mouseup listener invokes the row's onClick handler once any possible text selection has been completed.
+   * The dblclick listener enables native browser text selection behavior on double-clicks.
    * Using capture phase ensures our handlers run before any child element handlers.
    *
    * Performance note: Always attaching listeners has negligible overhead (~few bytes per row)
@@ -220,9 +266,14 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
         // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
         node.addEventListener("mouseup", handleRowClick, { capture: true });
+
+        // Use dblclick event to enable native browser text selection behavior
+        node.addEventListener("dblclick", handleRowDoubleClick, {
+          capture: true,
+        });
       }
     },
-    [handleRowClick]
+    [handleRowClick, handleRowDoubleClick]
   );
 
   /**
@@ -241,15 +292,25 @@ export const DataTableRow = forwardRef(function DataTableRow<
    */
   useEffect(() => {
     return () => {
+      // Clear any pending click timeout to prevent memory leaks and stale callbacks
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current);
+        clickTimeoutRef.current = null;
+      }
+
       if (counterRef.current.count >= 1 && counterRef.current.node) {
         counterRef.current.node.removeEventListener(
           "pointerdown",
           stopPropagationToNonInteractiveElements
         );
         counterRef.current.node.removeEventListener("mouseup", handleRowClick);
+        counterRef.current.node.removeEventListener(
+          "dblclick",
+          handleRowDoubleClick
+        );
       }
     };
-  }, [handleRowClick]);
+  }, [handleRowClick, handleRowDoubleClick]);
 
   // Combine the forwarded ref with our callback ref for proper DOM access
   // This allows parent components to access the row element while maintaining our event listeners
@@ -351,16 +412,15 @@ export const DataTableRow = forwardRef(function DataTableRow<
                   position="relative"
                   overflow="hidden"
                   cursor={isDisabled ? "not-allowed" : "text"}
-                  style={
-                    // TODO: I'm not clear on what this is supposed to do?
-                    {
-                      // Add indentation for the first column of nested rows
-                      // ...(depth > 0 &&
-                      //   index === 0 && {
-                      //     paddingLeft: `${16 + depth * 16}px`,
-                      //   }),
-                    }
-                  }
+                  // style={
+                  //   // TODO: I'm not clear on what this is supposed to do?
+
+                  //     // Add indentation for the first column of nested rows
+                  //     // ...(depth > 0 &&
+                  //     //   index === 0 && {
+                  //     //     paddingLeft: `${16 + depth * 16}px`,
+                  //     //   }),
+                  // }
                 >
                   {col.render
                     ? col.render({
