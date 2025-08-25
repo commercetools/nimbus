@@ -1,0 +1,98 @@
+{
+  "Nimbus.alert.dismiss": {
+    "developer_comment": "aria-label for dismiss button in alert",
+    "string": "Rejeter"
+  },
+  "Nimbus.avatar.avatar": {
+    "developer_comment": "aria-label for avatar",
+    "string": "avatar"
+  },
+  "Nimbus.calendar.nextMonth": {
+    "developer_comment": "aria-label for next month button in calendar",
+    "string": "Le mois prochain"
+  },
+  "Nimbus.calendar.nextYear": {
+    "developer_comment": "aria-label for next year button in calendar",
+    "string": "L'année prochaine"
+  },
+  "Nimbus.calendar.previousMonth": {
+    "developer_comment": "aria-label for previous month button in calendar",
+    "string": "Mois précédent"
+  },
+  "Nimbus.calendar.previousYear": {
+    "developer_comment": "aria-label for previous year button in calendar",
+    "string": "Année précédente"
+  },
+  "Nimbus.combobox.clearSelection": {
+    "developer_comment": "aria-label for single and multi select combobox clear selection button",
+    "string": "Effacer la sélection"
+  },
+  "Nimbus.combobox.comboboxDialog": {
+    "developer_comment": "aria-label for combobox dialog",
+    "string": "Boîte de dialogue"
+  },
+  "Nimbus.combobox.comboboxOptions": {
+    "developer_comment": "aria-label for combobox options",
+    "string": "Options de la boîte combinée"
+  },
+  "Nimbus.combobox.filterComboboxOptions": {
+    "developer_comment": "aria-label for combobox filter options input",
+    "string": "Filtrer les options de la boîte combobox"
+  },
+  "Nimbus.combobox.selectedValues": {
+    "developer_comment": "aria-label for selected values",
+    "string": "Valeurs sélectionnées"
+  },
+  "Nimbus.combobox.toggleCombobox": {
+    "developer_comment": "aria-label for combobox toggle button",
+    "string": "Basculer le combobox"
+  },
+  "Nimbus.datePicker.clearInput": {
+    "developer_comment": "aria-label for clear input button in date picker",
+    "string": "Effacer la valeur d'entrée"
+  },
+  "Nimbus.datePicker.time.enterTime": {
+    "developer_comment": "aria-label for time input field in date picker",
+    "string": "Saisir l'heure"
+  },
+  "Nimbus.datePicker.time.enterTimeHour": {
+    "developer_comment": "aria-label for hour-only time input in date picker",
+    "string": "Saisir l'heure (heure)"
+  },
+  "Nimbus.datePicker.time.enterTimeHourMinute": {
+    "developer_comment": "aria-label for hour and minute time input in date picker",
+    "string": "Saisir l'heure (heure et minute)"
+  },
+  "Nimbus.datePicker.time.enterTimeHourMinuteSecond": {
+    "developer_comment": "aria-label for full time input with seconds in date picker",
+    "string": "Saisir l'heure (heure, minute et seconde)"
+  },
+  "Nimbus.datePicker.time.startTime": {
+    "developer_comment": "Label for start time in date picker",
+    "string": "Heure de début"
+  },
+  "Nimbus.loadingSpinner.default": {
+    "developer_comment": "Default loading message for loading spinners",
+    "string": "Chargement des données"
+  },
+  "Nimbus.numberInput.decrement": {
+    "developer_comment": "aria-label & tooltip for decrement button in number input",
+    "string": "Décroissance"
+  },
+  "Nimbus.numberInput.increment": {
+    "developer_comment": "aria-label & tooltip for increment button in number input",
+    "string": "Incrément"
+  },
+  "Nimbus.passwordInput.hide": {
+    "developer_comment": "aria-label for hide password button",
+    "string": "Cacher le mot de passe"
+  },
+  "Nimbus.passwordInput.show": {
+    "developer_comment": "aria-label for show password button",
+    "string": "Afficher le mot de passe"
+  },
+  "Nimbus.select.clearSelection": {
+    "developer_comment": "aria-label for select clear button",
+    "string": "Effacer la sélection"
+  }
+}

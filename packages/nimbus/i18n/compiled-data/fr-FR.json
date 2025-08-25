@@ -1,0 +1,146 @@
+{
+  "Nimbus.alert.dismiss": [
+    {
+      "type": 0,
+      "value": "Rejeter"
+    }
+  ],
+  "Nimbus.avatar.avatar": [
+    {
+      "type": 0,
+      "value": "avatar"
+    }
+  ],
+  "Nimbus.calendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Le mois prochain"
+    }
+  ],
+  "Nimbus.calendar.nextYear": [
+    {
+      "type": 0,
+      "value": "L'année prochaine"
+    }
+  ],
+  "Nimbus.calendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Mois précédent"
+    }
+  ],
+  "Nimbus.calendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Année précédente"
+    }
+  ],
+  "Nimbus.combobox.clearSelection": [
+    {
+      "type": 0,
+      "value": "Effacer la sélection"
+    }
+  ],
+  "Nimbus.combobox.comboboxDialog": [
+    {
+      "type": 0,
+      "value": "Boîte de dialogue"
+    }
+  ],
+  "Nimbus.combobox.comboboxOptions": [
+    {
+      "type": 0,
+      "value": "Options de la boîte combinée"
+    }
+  ],
+  "Nimbus.combobox.filterComboboxOptions": [
+    {
+      "type": 0,
+      "value": "Filtrer les options de la boîte combobox"
+    }
+  ],
+  "Nimbus.combobox.selectedValues": [
+    {
+      "type": 0,
+      "value": "Valeurs sélectionnées"
+    }
+  ],
+  "Nimbus.combobox.toggleCombobox": [
+    {
+      "type": 0,
+      "value": "Basculer le combobox"
+    }
+  ],
+  "Nimbus.datePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Effacer la valeur d'entrée"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTime": [
+    {
+      "type": 0,
+      "value": "Saisir l'heure"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHour": [
+    {
+      "type": 0,
+      "value": "Saisir l'heure (heure)"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Saisir l'heure (heure et minute)"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Saisir l'heure (heure, minute et seconde)"
+    }
+  ],
+  "Nimbus.datePicker.time.startTime": [
+    {
+      "type": 0,
+      "value": "Heure de début"
+    }
+  ],
+  "Nimbus.loadingSpinner.default": [
+    {
+      "type": 0,
+      "value": "Chargement des données"
+    }
+  ],
+  "Nimbus.numberInput.decrement": [
+    {
+      "type": 0,
+      "value": "Décroissance"
+    }
+  ],
+  "Nimbus.numberInput.increment": [
+    {
+      "type": 0,
+      "value": "Incrément"
+    }
+  ],
+  "Nimbus.passwordInput.hide": [
+    {
+      "type": 0,
+      "value": "Cacher le mot de passe"
+    }
+  ],
+  "Nimbus.passwordInput.show": [
+    {
+      "type": 0,
+      "value": "Afficher le mot de passe"
+    }
+  ],
+  "Nimbus.select.clearSelection": [
+    {
+      "type": 0,
+      "value": "Effacer la sélection"
+    }
+  ]
+}

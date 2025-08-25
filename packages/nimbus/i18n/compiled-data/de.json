@@ -1,0 +1,146 @@
+{
+  "Nimbus.alert.dismiss": [
+    {
+      "type": 0,
+      "value": "Ablehnen MEH"
+    }
+  ],
+  "Nimbus.avatar.avatar": [
+    {
+      "type": 0,
+      "value": "avatar MEH"
+    }
+  ],
+  "Nimbus.calendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Nächster Monat MEH"
+    }
+  ],
+  "Nimbus.calendar.nextYear": [
+    {
+      "type": 0,
+      "value": "Nächstes Jahr MEH"
+    }
+  ],
+  "Nimbus.calendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Vorheriger Monat MEH"
+    }
+  ],
+  "Nimbus.calendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Voriges Jahr MEH"
+    }
+  ],
+  "Nimbus.combobox.clearSelection": [
+    {
+      "type": 0,
+      "value": "Auswahl löschen MEH"
+    }
+  ],
+  "Nimbus.combobox.comboboxDialog": [
+    {
+      "type": 0,
+      "value": "Combobox-Dialog MEH"
+    }
+  ],
+  "Nimbus.combobox.comboboxOptions": [
+    {
+      "type": 0,
+      "value": "Combobox-Optionen MEH"
+    }
+  ],
+  "Nimbus.combobox.filterComboboxOptions": [
+    {
+      "type": 0,
+      "value": "Combobox-Optionen filtern MEH"
+    }
+  ],
+  "Nimbus.combobox.selectedValues": [
+    {
+      "type": 0,
+      "value": "Ausgewählte Werte"
+    }
+  ],
+  "Nimbus.combobox.toggleCombobox": [
+    {
+      "type": 0,
+      "value": "Umschaltbare Combobox"
+    }
+  ],
+  "Nimbus.datePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Eingangswert löschen MEH"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTime": [
+    {
+      "type": 0,
+      "value": "Zeit eingeben MEH"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHour": [
+    {
+      "type": 0,
+      "value": "Zeit eingeben (Stunde) MEH"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Uhrzeit eingeben (Stunde und Minute) MEH"
+    }
+  ],
+  "Nimbus.datePicker.time.enterTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Zeit eingeben (Stunde, Minute und Sekunde) MEH"
+    }
+  ],
+  "Nimbus.datePicker.time.startTime": [
+    {
+      "type": 0,
+      "value": "Startzeit MEH"
+    }
+  ],
+  "Nimbus.loadingSpinner.default": [
+    {
+      "type": 0,
+      "value": "Laden von Daten MEH"
+    }
+  ],
+  "Nimbus.numberInput.decrement": [
+    {
+      "type": 0,
+      "value": "Verkleinern MEH"
+    }
+  ],
+  "Nimbus.numberInput.increment": [
+    {
+      "type": 0,
+      "value": "Inkrement MEH"
+    }
+  ],
+  "Nimbus.passwordInput.hide": [
+    {
+      "type": 0,
+      "value": "Passwort verstecken MEH"
+    }
+  ],
+  "Nimbus.passwordInput.show": [
+    {
+      "type": 0,
+      "value": "Passwort anzeigen MEH"
+    }
+  ],
+  "Nimbus.select.clearSelection": [
+    {
+      "type": 0,
+      "value": "Auswahl löschen MEH"
+    }
+  ]
+}

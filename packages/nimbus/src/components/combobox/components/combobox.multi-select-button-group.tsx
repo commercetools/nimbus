@@ -8,7 +8,8 @@ import { ClearPressResponder } from "@react-aria/interactions";
 import { IconButton, Flex, Box } from "@/components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
-
+import { useIntl } from "react-intl";
+import { messages } from "../messages";
 export const ComboBoxButtonGroup = ({
   selectedKeys,
   onSelectionChange,
@@ -18,6 +19,7 @@ export const ComboBoxButtonGroup = ({
   isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
+  const intl = useIntl();
   const handleClearSelection = useCallback(() => {
     onSelectionChange?.(new Set());
     onInputChange?.("");
@@ -37,7 +39,7 @@ export const ComboBoxButtonGroup = ({
             size="2xs"
             variant="ghost"
             tone="primary"
-            aria-label="Clear Selection"
+            aria-label={intl.formatMessage(messages.clearSelection)}
             isDisabled={isDisabled || isReadOnly}
             onPress={handleClearSelection}
             my="auto"

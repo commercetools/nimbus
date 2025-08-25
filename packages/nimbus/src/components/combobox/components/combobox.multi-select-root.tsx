@@ -27,6 +27,8 @@ import {
   ComboBoxMultiSelectInputSlot,
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
+import { useIntl } from "react-intl";
+import { messages } from "../messages";
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -66,7 +68,7 @@ export const MultiSelectRoot = <T extends object>({
   // Internal state for popover, enables opening on first focus
   const [isOpen, setOpen] = useState(false);
   const preventNextFocusOpen = useRef(false);
-
+  const intl = useIntl();
   // Internal state for selected keys
   const [_selectedKeys, _setSelectedKeys] = useState<Selection>();
   // Prefer selected keys from props (controlled), otherwise from internal state and falls back to default (uncontrolled)
@@ -290,7 +292,7 @@ export const MultiSelectRoot = <T extends object>({
       </RaPressable>
       <ComboBoxPopoverSlot asChild>
         <RaPopover triggerRef={triggerRef} placement="bottom start">
-          <RaDialog aria-label="combobox dialog">
+          <RaDialog aria-label={intl.formatMessage(messages.comboboxDialog)}>
             <RaAutocomplete
               filter={defaultFilter ?? contains}
               inputValue={inputValue}
@@ -302,7 +304,9 @@ export const MultiSelectRoot = <T extends object>({
                   isDisabled={isDisabled}
                   isReadOnly={isReadOnly}
                   isRequired={isRequired}
-                  aria-label="filter combobox options"
+                  aria-label={intl.formatMessage(
+                    messages.filterComboboxOptions
+                  )}
                 >
                   <RaInput
                     onKeyDownCapture={handleInputKeyDown}
@@ -318,7 +322,7 @@ export const MultiSelectRoot = <T extends object>({
                 shouldFocusWrap={true}
                 disabledKeys={isDisabled ? "all" : disabledKeys}
                 escapeKeyBehavior="none"
-                aria-label="combobox options"
+                aria-label={intl.formatMessage(messages.comboboxOptions)}
                 renderEmptyState={renderEmptyState}
               >
                 {children}

@@ -7,6 +7,8 @@ import {
   TextContext,
   useLocale,
 } from "react-aria-components";
+import { useIntl } from "react-intl";
+import { messages } from "../messages";
 
 export const CalendarCustomContext = ({
   children,
@@ -17,7 +19,7 @@ export const CalendarCustomContext = ({
   const buttonContext = useContext(ButtonContext)!;
   const textContext = useContext(TextContext)!;
   const calendarState = useContext(CalendarStateContext)!;
-
+  const intl = useIntl();
   /**
    * Button slots
    * ================================
@@ -25,19 +27,19 @@ export const CalendarCustomContext = ({
   const buttonSlots = {
     "next-month": {
       onPress: () => calendarState.focusNextSection(),
-      "aria-label": "Next month",
+      "aria-label": intl.formatMessage(messages.nextMonth),
     },
     "previous-month": {
       onPress: () => calendarState.focusPreviousSection(),
-      "aria-label": "Previous month",
+      "aria-label": intl.formatMessage(messages.previousMonth),
     },
     "next-year": {
       onPress: () => calendarState.focusNextSection(true),
-      "aria-label": "Next year",
+      "aria-label": intl.formatMessage(messages.nextYear),
     },
     "previous-year": {
       onPress: () => calendarState.focusPreviousSection(true),
-      "aria-label": "Previous year",
+      "aria-label": intl.formatMessage(messages.previousYear),
     },
   };
 
