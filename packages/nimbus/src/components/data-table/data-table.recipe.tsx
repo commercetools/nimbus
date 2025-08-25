@@ -39,6 +39,19 @@ export const dataTableRecipe = defineSlotRecipe({
         "&[data-slot='expand']": {
           padding: 0,
         },
+        "&[data-slot='pin-row-cell']": {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        "& .nimbus-table-cell-copy-button": {
+          display: "none",
+        },
+        "& .nimbus-table-cell-pin-button": {
+          display: "none",
+        },
+        "& .nimbus-table-cell-pin-button-pinned": {
+          display: "inherit",
+        },
       },
       "& .data-table-row": {
         borderBottom: "1px solid {colors.neutral.3}",
@@ -53,6 +66,21 @@ export const dataTableRecipe = defineSlotRecipe({
           backgroundColor: "{colors.primary.3}",
           transition: "background-color 100ms ease",
           transform: "translate3d(0, 0, 0)",
+          "& .data-table-row-details-button": {
+            opacity: 1,
+          },
+          "& .nimbus-table-cell-copy-button": {
+            display: "inherit",
+          },
+          "& .nimbus-table-cell-pin-button": {
+            display: "inherit",
+          },
+        },
+        "& .data-table-row-details-button": {
+          opacity: 0,
+        },
+        "& .data-table-row-details-button:focus": {
+          opacity: 1,
         },
       },
       "& .data-table-row[data-selected='true']": {
@@ -62,6 +90,19 @@ export const dataTableRecipe = defineSlotRecipe({
         // layerStyle: "disabled",
         opacity: 0.8,
         cursor: "not-allowed",
+      },
+      "& .data-table-row-pinned": {
+        borderLeft: "2px solid {colors.neutral.7}",
+        borderRight: "2px solid {colors.neutral.7}",
+        "&.data-table-row-pinned-first": {
+          borderTop: "2px solid {colors.neutral.7}",
+        },
+        "&.data-table-row-pinned-last": {
+          borderBottom: "2px solid {colors.neutral.7}",
+        },
+        "&.data-table-row-pinned-single": {
+          border: "2px solid {colors.neutral.7}",
+        },
       },
       "& .data-table-header": {
         background: "colorPalette.2",

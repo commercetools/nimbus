@@ -35,9 +35,13 @@ export interface DataTableContextValue<
   sortedRows: DataTableRowItem<T>[];
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
+  showPinColumn: boolean;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
   isResizable?: boolean;
+  pinnedRows: Set<string>;
+  onPinToggle?: (rowId: string) => void;
+  togglePin: (id: string) => void;
 }
 
 export type SortDirection = RaSortDirection;
@@ -118,6 +122,9 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   nestedKey?: string;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  pinnedRows?: Set<string>;
+  defaultPinnedRows?: Set<string>;
+  onPinToggle?: (rowId: string) => void;
 }
 
 /** Combined props for the Column element (Chakra styles + Aria behavior). */
