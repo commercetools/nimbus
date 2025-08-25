@@ -23,22 +23,37 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
   const editor = useSlate();
   const withPreservedSelection = usePreservedSelection(editor);
 
-  // Get currently selected formatting keys
+  // Get currently selected formatting keys (strikethrough and code)
   const selectedKeys = useMemo(() => {
     const keys: string[] = [];
     if (isMarkActive(editor, "strikethrough")) keys.push("strikethrough");
     if (isMarkActive(editor, "code")) keys.push("code");
+    return new Set(keys);
+  }, [editor.selection, editor.children, Editor.marks(editor)]); // Include marks for pending mark state
+
+  // Get currently selected script formatting key (superscript or subscript - mutually exclusive)
+  const selectedScriptKeys = useMemo(() => {
+    const keys: string[] = [];
     if (isMarkActive(editor, "superscript")) keys.push("superscript");
     if (isMarkActive(editor, "subscript")) keys.push("subscript");
     return new Set(keys);
   }, [editor.selection, editor.children, Editor.marks(editor)]); // Include marks for pending mark state
 
-  const handleSelectionChange = useCallback(
+  // Combine all selected keys for display purposes
+  const allSelectedKeys = useMemo(() => {
+    return new Set([
+      ...Array.from(selectedKeys),
+      ...Array.from(selectedScriptKeys),
+    ]);
+  }, [selectedKeys, selectedScriptKeys]);
+
+  // Handle all selection changes with custom logic for mutual exclusion
+  const handleAllSelectionChange = useCallback(
     (keys: "all" | Set<Key>) => {
       if (keys === "all") return;
 
       const keyArray = Array.from(keys) as string[];
-      const currentKeys = Array.from(selectedKeys);
+      const currentKeys = Array.from(allSelectedKeys);
 
       // Find newly selected keys (toggle on)
       const newlySelected = keyArray.filter(
@@ -49,21 +64,44 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
         (key) => !keyArray.includes(key)
       );
 
-      // Apply toggles
+      // Handle changes for each key
       [...newlySelected, ...newlyDeselected].forEach((key) => {
-        withPreservedSelection(() => toggleMark(editor, key))();
+        if (key === "superscript" || key === "subscript") {
+          // Handle script formatting with mutual exclusion
+          withPreservedSelection(() => {
+            const currentlyActive = isMarkActive(editor, "superscript")
+              ? "superscript"
+              : isMarkActive(editor, "subscript")
+                ? "subscript"
+                : null;
+
+            if (newlySelected.includes(key)) {
+              // If selecting a script format, deactivate the other one first
+              if (currentlyActive && currentlyActive !== key) {
+                toggleMark(editor, currentlyActive);
+              }
+              toggleMark(editor, key);
+            } else {
+              // Deselecting
+              toggleMark(editor, key);
+            }
+          })();
+        } else {
+          // Handle regular formatting (strikethrough, code)
+          withPreservedSelection(() => toggleMark(editor, key))();
+        }
       });
     },
-    [editor, selectedKeys, withPreservedSelection]
+    [editor, allSelectedKeys, withPreservedSelection]
   );
 
   return (
     <Menu.Root
       selectionMode="multiple"
-      selectedKeys={selectedKeys}
+      selectedKeys={allSelectedKeys}
       onSelectionChange={(args) => {
         // This is a workaround to ensure the editor is focused when the menu is closed
-        handleSelectionChange(args);
+        handleAllSelectionChange(args);
         requestAnimationFrame(() => {
           setTimeout(() => {
             focusEditor(editor);
