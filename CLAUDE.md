@@ -202,3 +202,5 @@ This project includes powerful MCP (Model Context Protocol) servers that enhance
 - **Proactively** use playwright to visually verify UI changes and capture screenshots for documentation
 - **Leverage** sequential-thinking for breaking down complex tasks into manageable steps
 - These tools are pre-configured and ready to use - no additional setup required
+
+- style-props are usually just camelCased versions of a css property, with access to design tokens, I think that should be mentioned somewhere, in an appropriate way.

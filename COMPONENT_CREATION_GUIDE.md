@@ -152,7 +152,7 @@ export const ComponentName = (props: ComponentNameProps) => {
 ### Component API Design
 
 - **Children handling**: Case-by-case basis, aim for readable consumer API
-- **Style props**: Components typically support all available style props
+- **Style props**: Components typically support all available style props (camelCased CSS properties with design token access, e.g., `backgroundColor="primary.3"`, `padding="400"`, `borderRadius="200"`)
 - **Props interface**: Use `ComponentNameProps` / `ComponentNameSlotProps`
   naming
 
@@ -174,21 +174,19 @@ export const ComponentName = (props: ComponentNameProps) => {
 
 ### Recipe Structure
 
+**Standard Recipe** (for components without slots):
+
 ```typescript
 // component-name.recipe.ts
-import { createSlotRecipe } from "@chakra-ui/react";
+import { defineRecipe } from "@chakra-ui/react/styled-system";
 
-export const componentNameSlotRecipe = createSlotRecipe({
+export const componentNameRecipe = defineRecipe({
   className: "nimbus-component-name",
-  description: "Component Name styles",
-  slots: ["root", "subElement"],
   base: {
-    root: {
-      /* base styles */
-    },
-    subElement: {
-      /* base styles */
-    },
+    /* base styles */
+    display: "inline-flex",
+    alignItems: "center",
+    /* ... other base styles */
   },
   variants: {
     size: {
@@ -211,6 +209,39 @@ export const componentNameSlotRecipe = createSlotRecipe({
   defaultVariants: {
     size: "md",
     variant: "solid",
+  },
+});
+```
+
+**Slot Recipe** (for components with slot components):
+
+```typescript
+// component-name.recipe.tsx
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
+
+export const componentNameSlotRecipe = defineSlotRecipe({
+  slots: ["root", "subElement"],
+  className: "nimbus-component-name",
+  base: {
+    root: {
+      /* base styles for root slot */
+    },
+    subElement: {
+      /* base styles for sub-element slot */
+    },
+  },
+  variants: {
+    size: {
+      md: {
+        /* medium size styles for all slots */
+      },
+      sm: {
+        /* small size styles for all slots */
+      },
+    },
+  },
+  defaultVariants: {
+    size: "md",
   },
 });
 ```
@@ -472,7 +503,7 @@ export * from "./components"; // If compound components exist
 
 ### Common Patterns
 
-**React Aria Button with Slot**:
+**React Aria Component with Slot Component**:
 
 ```typescript
 <ButtonSlot asChild>
@@ -480,11 +511,18 @@ export * from "./components"; // If compound components exist
 </ButtonSlot>
 ```
 
-**Recipe Registration**:
+**Standard Recipe Registration**:
 
 ```typescript
-// In appropriate index.ts
-export { componentNameSlotRecipe } from "./component-name.recipe";
+// In packages/nimbus/src/theme/recipes/index.ts
+export { componentNameRecipe } from "../components/component-name/component-name.recipe";
+```
+
+**Slot Recipe Registration**:
+
+```typescript
+// In packages/nimbus/src/theme/slot-recipes/index.ts
+export { componentNameSlotRecipe } from "../components/component-name/component-name.recipe";
 ```
 
 **Props Interface**:
@@ -492,7 +530,7 @@ export { componentNameSlotRecipe } from "./component-name.recipe";
 ```typescript
 interface ComponentProps
   extends ComponentProps<"button">,
-    RecipeVariantProps<typeof recipe> {
+    RecipeVariantProps<typeof componentNameRecipe> {
   // Component-specific props
 }
 ```
