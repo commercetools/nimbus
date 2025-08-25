@@ -9,7 +9,6 @@ import {
   Code,
 } from "@commercetools/nimbus-icons";
 import {
-  focusEditor,
   isMarkActive,
   toggleMark,
   usePreservedSelection,
@@ -99,15 +98,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
     <Menu.Root
       selectionMode="multiple"
       selectedKeys={allSelectedKeys}
-      onSelectionChange={(args) => {
-        // This is a workaround to ensure the editor is focused when the menu is closed
-        handleAllSelectionChange(args);
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            focusEditor(editor);
-          }, 50);
-        });
-      }}
+      onSelectionChange={handleAllSelectionChange}
     >
       <Tooltip.Root delay={0} closeDelay={0}>
         <Menu.Trigger asChild>

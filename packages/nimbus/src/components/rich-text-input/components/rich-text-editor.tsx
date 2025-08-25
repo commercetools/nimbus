@@ -114,7 +114,7 @@ export const RichTextEditor = forwardRef<
         onFocus(event);
       }
     },
-    [onFocus, editor]
+    [onFocus]
   );
 
   // Handle blur
@@ -124,7 +124,7 @@ export const RichTextEditor = forwardRef<
         onBlur(event);
       }
     },
-    [onBlur, editor]
+    [onBlur]
   );
 
   // Expose methods through ref

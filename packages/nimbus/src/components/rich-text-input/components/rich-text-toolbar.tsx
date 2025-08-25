@@ -31,7 +31,6 @@ import {
   toggleMark,
   toggleBlock,
   usePreservedSelection,
-  focusEditor,
 } from "./rich-text-utils";
 import type { CustomElement } from "./rich-text-utils/types";
 import { FormattingMenu } from "./formatting-menu";
@@ -196,15 +195,7 @@ export const RichTextToolbar = ({
       {/* Text Style Menu */}
       <Group>
         <Menu.Root
-          onAction={(styleId) => {
-            // This is a workaround to ensure the editor is focused when the menu is closed
-            requestAnimationFrame(() => {
-              handleTextStyleChange(String(styleId));
-              setTimeout(() => {
-                focusEditor(editor);
-              }, 50);
-            });
-          }}
+          onAction={(styleId) => handleTextStyleChange(String(styleId))}
         >
           <Tooltip.Root delay={0} closeDelay={0}>
             {/* Menu trigger styles mimic the Select component */}

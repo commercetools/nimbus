@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { RichTextInput } from "./rich-text-input";
-import { Box, Text } from "@/components";
+import { Box } from "@/components";
 
 const meta = {
   title: "Components/RichTextInput",
@@ -869,78 +869,6 @@ export const OnFocusBlurCallbacks: Story = {
     await userEvent.click(canvasElement);
     await waitFor(() => {
       expect(canvas.getByText("Events: Focus, Blur")).toBeInTheDocument();
-    });
-  },
-};
-
-export const OnFocusCursorPositionRestoration: Story = {
-  render: () => {
-    return (
-      <Box>
-        <RichTextInput placeholder="Test cursor position restoration with toolbar" />
-        <Text fontSize="350" color="neutral.10" mt="100">
-          Test: Types text, captures cursor position, clicks Text style menu,
-          selects option, then verifies cursor position is restored to editor.
-        </Text>
-      </Box>
-    );
-  },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    // Need to get the parent node to have the menu portal in scope
-    const canvas = within(
-      (canvasElement.parentNode as HTMLElement) ?? canvasElement
-    );
-    const editor = canvas.getByRole("textbox");
-
-    // Focus the editor and type some text to establish cursor position
-    await userEvent.click(editor);
-    await userEvent.type(editor, "Hello World Test");
-
-    // Verify text was typed and editor has focus
-    await waitFor(() => {
-      expect(editor).toHaveTextContent("Hello World Test");
-      expect(editor).toHaveFocus();
-    });
-
-    // Click on the Text style menu button to blur the editor
-    const textStyleButton = canvas.getByRole("button", {
-      name: /text style menu/i,
-    });
-    await userEvent.click(textStyleButton);
-
-    // Wait for the menu to appear
-    await waitFor(() => {
-      expect(canvas.getByRole("menu")).toBeInTheDocument();
-    });
-
-    // Click on the first menu option
-    const firstMenuItem = canvas.getAllByRole("menuitem")[0];
-
-    if (firstMenuItem) {
-      await userEvent.click(firstMenuItem);
-    }
-
-    // Wait for the menu to close and focus to return to editor
-    await waitFor(() => {
-      expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-    });
-
-    // Add a small delay to allow focus restoration to complete
-    await new Promise((resolve) => setTimeout(resolve, 75));
-
-    // Verify that focus is restored to the editor and we can continue typing
-    await waitFor(
-      () => {
-        expect(editor).toHaveFocus();
-      },
-      { timeout: 1000 }
-    );
-
-    // Test that cursor position is preserved by typing at the end
-    await userEvent.type(editor, " More");
-
-    await waitFor(() => {
-      expect(editor).toHaveTextContent("Hello World Test More");
     });
   },
 };
