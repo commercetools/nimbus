@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus-tokens",
-  "version": "0.0.11",
+  "version": "1.0.0",
   "main": "dist/commercetools-nimbus-tokens.cjs.js",
   "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",
@@ -16,9 +16,7 @@
     "build": "style-dictionary build --verbose --config ./src/style-dictionary.config.js",
     "typecheck": "tsc --noEmit"
   },
-  "sideEffects": [
-    "*.css"
-  ],
+  "sideEffects": ["*.css"],
   "preconstruct": {
     "entrypoints": [
       "./index.ts",
@@ -26,12 +24,7 @@
       "./generated/chakra/index.ts"
     ]
   },
-  "files": [
-    "dist",
-    "css",
-    "generated/ts",
-    "generated/chakra"
-  ],
+  "files": ["dist", "css", "generated/ts", "generated/chakra"],
   "devDependencies": {
     "@babel/preset-typescript": "catalog:tooling",
     "@tokens-studio/sd-transforms": "^2.0.1",
