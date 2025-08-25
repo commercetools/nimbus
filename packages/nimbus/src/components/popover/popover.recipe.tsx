@@ -8,10 +8,10 @@ export const popoverSlotRecipe = defineRecipe({
   className: "nimbus-popover",
   // Base styles applied to all instances of the component
   base: {
-      bg: "white",
-      borderRadius: "200",
-      boxShadow: "5",
-      padding: "400",
-      zIndex: 1,
+    bg: "white",
+    borderRadius: "200",
+    boxShadow: "5",
+    padding: "400",
+    zIndex: 1,
   },
 });
