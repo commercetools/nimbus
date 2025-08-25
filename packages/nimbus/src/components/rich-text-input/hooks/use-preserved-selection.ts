@@ -6,6 +6,8 @@ import { ReactEditor } from "slate-react";
  * Hook that provides a helper function to preserve selection when toolbar actions are executed.
  * This prevents losing text selection when interacting with toolbar buttons and menus.
  *
+ * TODO: This works for toggle buttons, but not for menus.
+ *
  * @param editor - The Slate editor instance
  * @returns A function that wraps actions to preserve selection and focus
  */

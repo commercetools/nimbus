@@ -1,7 +1,7 @@
 import type { BaseEditor, BaseText, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 import type { HistoryEditor } from "slate-history";
-import type { BLOCK_TAGS } from "./constants";
+import type { BLOCK_TAGS } from "../constants";
 
 // Custom element type for Slate
 export interface CustomElement {

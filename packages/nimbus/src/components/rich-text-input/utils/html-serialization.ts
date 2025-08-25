@@ -5,7 +5,7 @@ import {
   type Descendant,
   type Node as SlateNode,
 } from "slate";
-import { BLOCK_TAGS, MARK_TAGS } from "./constants";
+import { BLOCK_TAGS, MARK_TAGS } from "../constants";
 import type { CustomElement, CustomText } from "./types";
 import { validSlateStateAdapter } from "./slate-helpers";
 

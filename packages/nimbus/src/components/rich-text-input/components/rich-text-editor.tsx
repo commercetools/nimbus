@@ -10,7 +10,6 @@ import {
 import { createEditor, type Descendant } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
-import isHotkey from "is-hotkey";
 import {
   RichTextInputEditableSlot,
   RichTextInputToolbarSlot,
@@ -19,20 +18,12 @@ import {
   Element,
   Leaf,
   withLinks,
-  toggleMark,
   focusEditor,
   resetEditor,
-  Softbreaker,
-} from "./rich-text-utils/slate-helpers";
-import { createEmptyValue } from "./rich-text-utils/html-serialization";
-
-// Keyboard shortcuts
-const HOTKEYS = {
-  "mod+b": "bold",
-  "mod+i": "italic",
-  "mod+u": "underline",
-  "mod+`": "code",
-} as const;
+} from "../utils/slate-helpers";
+import { createEmptyValue } from "../utils/html-serialization";
+import { useKeyboardShortcuts } from "../hooks/use-keyboard-shortcuts";
+import { EDITOR_DEFAULTS } from "../constants";
 
 export interface RichTextEditorProps {
   value?: Descendant[];
@@ -60,10 +51,10 @@ export const RichTextEditor = forwardRef<
     onChange,
     onFocus,
     onBlur,
-    placeholder = "Start typing...",
-    isDisabled = false,
-    isReadOnly = false,
-    autoFocus = false,
+    placeholder = EDITOR_DEFAULTS.placeholder,
+    isDisabled = EDITOR_DEFAULTS.isDisabled,
+    isReadOnly = EDITOR_DEFAULTS.isReadOnly,
+    autoFocus = EDITOR_DEFAULTS.autoFocus,
     toolbar,
   } = props;
 
@@ -73,39 +64,8 @@ export const RichTextEditor = forwardRef<
     return withLinks(withHistory(withReact(baseEditor)));
   }, []);
 
-  // Handle keyboard shortcuts
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      // Handle undo/redo shortcuts
-      if ((event.metaKey || event.ctrlKey) && event.key === "z") {
-        event.preventDefault();
-        if (event.shiftKey) {
-          editor.redo();
-        } else {
-          editor.undo();
-        }
-        return;
-      }
-
-      // Handle formatting shortcuts
-      for (const hotkey in HOTKEYS) {
-        if (isHotkey(hotkey, event)) {
-          event.preventDefault();
-          const mark = HOTKEYS[hotkey as keyof typeof HOTKEYS];
-          toggleMark(editor, mark);
-          return;
-        }
-      }
-
-      // Handle soft line breaks (Shift+Enter)
-      if (event.shiftKey && event.key === "Enter") {
-        event.preventDefault();
-        editor.insertText(Softbreaker.placeholderCharacter);
-        return;
-      }
-    },
-    [editor]
-  );
+  // Handle keyboard shortcuts using hook
+  const { handleKeyDown } = useKeyboardShortcuts({ editor });
 
   // Handle focus
   const handleFocus = useCallback(

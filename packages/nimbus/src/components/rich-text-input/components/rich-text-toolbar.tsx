@@ -1,7 +1,4 @@
-import { useMemo, useCallback } from "react";
-import { Editor } from "slate";
 import { useSlate } from "slate-react";
-import type { Key } from "react-aria";
 import {
   Toolbar,
   Menu,
@@ -25,17 +22,11 @@ import {
   Undo,
   Redo,
 } from "@commercetools/nimbus-icons";
-import {
-  isMarkActive,
-  isBlockActive,
-  toggleMark,
-  toggleBlock,
-  usePreservedSelection,
-} from "./rich-text-utils";
-import type { CustomElement } from "./rich-text-utils/types";
+import { toggleMark } from "../utils/slate-helpers";
+import { usePreservedSelection } from "../hooks/use-preserved-selection";
+import { useToolbarState } from "../hooks/use-toolbar-state";
+import { textStyles } from "../constants";
 import { FormattingMenu } from "./formatting-menu";
-
-type BlockType = CustomElement["type"];
 
 export interface RichTextToolbarProps {
   isDisabled?: boolean;
@@ -47,142 +38,17 @@ export const RichTextToolbar = ({
   const editor = useSlate();
   const withPreservedSelection = usePreservedSelection(editor);
 
-  // Text style definitions that map to our Slate block types
-  const textStyles = [
-    {
-      id: "paragraph",
-      label: "Paragraph",
-      props: {
-        textStyle: "md",
-        fontWeight: "500",
-      },
-    },
-    {
-      id: "heading-one",
-      label: "Heading 1",
-      props: {
-        textStyle: "2xl",
-        fontWeight: "500",
-      },
-    },
-    {
-      id: "heading-two",
-      label: "Heading 2",
-      props: {
-        textStyle: "xl",
-        fontWeight: "500",
-      },
-    },
-    {
-      id: "heading-three",
-      label: "Heading 3",
-      props: {
-        textStyle: "lg",
-        fontWeight: "500",
-      },
-    },
-    {
-      id: "heading-four",
-      label: "Heading 4",
-      props: {
-        textStyle: "md",
-        fontWeight: "500",
-      },
-    },
-    {
-      id: "heading-five",
-      label: "Heading 5",
-      props: {
-        textStyle: "xs",
-        fontWeight: "500",
-      },
-    },
-    {
-      id: "block-quote",
-      label: "Quote",
-      props: {
-        textStyle: "md",
-        fontWeight: "400",
-      },
-    },
-  ];
-
-  // Get current block type - using useSlate() means this automatically updates
-  const currentTextStyle = useMemo(() => {
-    const blockTypes = [
-      "heading-one",
-      "heading-two",
-      "heading-three",
-      "heading-four",
-      "heading-five",
-      "block-quote",
-    ];
-    return (
-      blockTypes.find((type) =>
-        isBlockActive(editor, type as CustomElement["type"])
-      ) || "paragraph"
-    );
-  }, [editor.selection, editor.children]); // Block types don't need marks
-
-  const selectedTextStyle = textStyles.find((v) => v.id === currentTextStyle);
-  const selectedTextStyleLabel = selectedTextStyle?.label || "";
-
-  // Handle text style changes
-  const handleTextStyleChange = useCallback(
-    (styleId: string) => {
-      withPreservedSelection(() => {
-        toggleBlock(editor, styleId as BlockType);
-      })();
-    },
-    [editor, withPreservedSelection]
-  );
-
-  // Handle list formatting
-  const handleListToggle = useCallback(
-    (selectedKeys: Set<Key>) => {
-      withPreservedSelection(() => {
-        const selected = Array.from(selectedKeys)[0] as BlockType | undefined;
-        const currentlyActive = isBlockActive(editor, "bulleted-list")
-          ? "bulleted-list"
-          : isBlockActive(editor, "numbered-list")
-            ? "numbered-list"
-            : null;
-
-        if (selected) {
-          toggleBlock(editor, selected);
-        } else if (currentlyActive) {
-          toggleBlock(editor, currentlyActive);
-        }
-      })();
-    },
-    [editor, withPreservedSelection]
-  );
-
-  // Get currently selected formatting keys - simplified deps
-  const selectedFormatKeys = useMemo(() => {
-    const keys: string[] = [];
-    if (isMarkActive(editor, "bold")) keys.push("bold");
-    if (isMarkActive(editor, "italic")) keys.push("italic");
-    if (isMarkActive(editor, "underline")) keys.push("underline");
-    return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]); // Include marks for pending mark state
-
-  // Get currently selected list formatting key
-  const selectedListKeys = useMemo(() => {
-    const keys: string[] = [];
-    if (isBlockActive(editor, "bulleted-list")) keys.push("bulleted-list");
-    if (isBlockActive(editor, "numbered-list")) keys.push("numbered-list");
-    return new Set(keys);
-  }, [editor.selection, editor.children]); // Block types don't need marks
-
-  // Check history state for undo/redo buttons
-  const hasUndos = useMemo(() => {
-    return editor.history && editor.history.undos.length > 0;
-  }, [editor.selection, editor.children]); // History doesn't need marks
-
-  const hasRedos = useMemo(() => {
-    return editor.history && editor.history.redos.length > 0;
-  }, [editor.selection, editor.children]); // History doesn't need marks
+  // Use the toolbar state hook for all state management
+  const {
+    currentTextStyle,
+    selectedTextStyleLabel,
+    handleTextStyleChange,
+    handleListToggle,
+    selectedFormatKeys,
+    selectedListKeys,
+    hasUndos,
+    hasRedos,
+  } = useToolbarState({ withPreservedSelection });
 
   return (
     <Toolbar

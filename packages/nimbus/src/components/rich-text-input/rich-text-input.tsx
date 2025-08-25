@@ -13,7 +13,7 @@ import {
   fromHTML,
   createEmptyValue,
   validSlateStateAdapter,
-} from "./components/rich-text-utils";
+} from "./utils";
 import { richTextInputRecipe } from "./rich-text-input.recipe";
 
 /**
