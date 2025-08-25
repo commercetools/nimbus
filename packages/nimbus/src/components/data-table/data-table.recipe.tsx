@@ -28,6 +28,12 @@ export const dataTableRecipe = defineSlotRecipe({
       boxShadow: "1",
       overflow: "auto",
       contain: "layout style",
+      width: "100%",
+      // CSS custom properties for pinned row shadows
+      "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
+      "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
+      "--pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
+      "--pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
       "& .react-aria-Cell": {
         paddingTop: "400",
         paddingBottom: "400",
@@ -92,16 +98,18 @@ export const dataTableRecipe = defineSlotRecipe({
         cursor: "not-allowed",
       },
       "& .data-table-row-pinned": {
-        borderLeft: "2px solid {colors.neutral.7}",
-        borderRight: "2px solid {colors.neutral.7}",
+        boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
         "&.data-table-row-pinned-first": {
-          borderTop: "2px solid {colors.neutral.7}",
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)",
         },
         "&.data-table-row-pinned-last": {
-          borderBottom: "2px solid {colors.neutral.7}",
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-bottom)",
         },
         "&.data-table-row-pinned-single": {
-          border: "2px solid {colors.neutral.7}",
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top), var(--pinned-shadow-bottom)",
         },
       },
       "& .data-table-header": {
