@@ -747,7 +747,7 @@ export const modifiedFetchedData = fetchData.map((item) => ({
         data={item.sky}
         allowsSorting={true}
         isResizable={true}
-        onDetailsClick={() => {}}
+        onRowClick={() => {}}
         // No nestedKey needed for this inner table since sky data doesn't have further nesting
       />
     </Box>
@@ -1004,7 +1004,7 @@ export const mcColumns: DataTableColumnItem[] = [
     render: ({ value }) => {
       const stores = value as string[];
       return (
-        <Box as="ul" listStyleType="disc" pl="4" m="0">
+        <Box as="ul" listStyle="disc" pl="4" m="0">
           {stores?.map((store, index) => (
             <Box as="li" key={index} fontSize="sm" lineHeight="1.4" ml="400">
               {store}
