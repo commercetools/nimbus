@@ -22,7 +22,6 @@ export interface DataTableContextValue<
   allowsSorting?: boolean;
   selectionMode?: "none" | "single" | "multiple";
   disallowEmptySelection?: boolean;
-  isRowClickable?: boolean;
   maxHeight?: string | number;
   isTruncated?: boolean;
   density?: "default" | "condensed";
@@ -30,14 +29,12 @@ export interface DataTableContextValue<
   onSortChange?: (descriptor: SortDescriptor) => void;
   onSelectionChange?: (keys: Selection) => void;
   onRowClick?: (row: DataTableRowItem<T>) => void;
-  onDetailsClick?: (row: DataTableRowItem<T>) => void;
   toggleExpand: (id: string) => void;
   activeColumns: DataTableColumnItem<T>[];
   filteredRows: DataTableRowItem<T>[];
   sortedRows: DataTableRowItem<T>[];
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
-  showDetailsColumn: boolean;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
   isResizable?: boolean;
@@ -100,7 +97,6 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   data: DataTableRowItem<T>[];
   visibleColumns?: string[];
   isResizable?: boolean;
-  isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
   maxHeight?: string | number;

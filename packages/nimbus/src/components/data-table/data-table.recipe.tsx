@@ -52,7 +52,7 @@ export const dataTableRecipe = defineSlotRecipe({
         borderBottom: "1px solid {colors.neutral.3}",
         focusRing: "outside",
         "& td, div": {
-          userSelect: "text",
+          userSelect: "none",
         },
         "&:last-child": {
           borderBottom: "none",
@@ -61,27 +61,18 @@ export const dataTableRecipe = defineSlotRecipe({
           backgroundColor: "{colors.primary.3}",
           transition: "background-color 100ms ease",
           transform: "translate3d(0, 0, 0)",
-          "& .data-table-row-details-button": {
-            opacity: 1,
-          },
-        },
-        "& .data-table-row-details-button": {
-          opacity: 0,
-        },
-        "& .data-table-row-details-button:focus": {
-          opacity: 1,
         },
       },
       "& .data-table-row[data-selected='true']": {
         background: "{colors.primary.4}",
       },
       "& .data-table-row[data-disabled='true']": {
-        "& .data-table-row-details-button": {
-          display: "none",
-        },
         // layerStyle: "disabled",
         opacity: 0.8,
         cursor: "not-allowed",
+      },
+      "& .data-table-row-selected": {
+        backgroundColor: "{colors.primary.4}",
       },
       "& .data-table-header": {
         background: "colorPalette.2",

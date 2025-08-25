@@ -13,8 +13,9 @@ import type {
   DataTableRowItem as DataTableRowType,
   DataTableColumnItem,
 } from "../data-table.types";
-import { Box, Checkbox, Button, Flex, IconButton } from "@/components";
+import { Box, Checkbox, Flex, IconButton } from "@/components";
 import { useCopyToClipboard } from "@/hooks";
+
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
@@ -26,6 +27,57 @@ export interface DataTableRowProps<T extends object = Record<string, unknown>> {
   depth?: number;
 }
 
+/**
+ * Determines if a click event originated from an interactive element within a table row.
+ * This is crucial for preventing row click handlers from interfering with intended
+ * interactions like checkbox selection, button clicks, or other form controls.
+ *
+ * @param e - The DOM Event object from the click listener
+ * @returns Element if an interactive element was found, null otherwise
+ */
+function getIsTableRowChildElementInteractive(e: Event) {
+  // Cast target to Element since EventTarget doesn't have closest method
+  const clickedElement = e.target as Element;
+  return clickedElement?.closest(
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
+  );
+}
+
+/**
+ * Determines if a click event originated from a selection-related interactive element.
+ * This helps distinguish between selection controls and other interactive elements.
+ *
+ * @param e - The DOM Event object from the click listener
+ * @returns Element if a selection-related interactive element was found, null otherwise
+ */
+function getIsSelectionInteractiveElement(e: Event) {
+  const clickedElement = e.target as Element;
+  return clickedElement?.closest(
+    '[slot="selection"], [data-slot="selection"], [role="checkbox"]'
+  );
+}
+
+/**
+ * Prevents event propagation when clicking on non-interactive elements or
+ * interactive elements that are not selection-related.
+ * This ensures that:
+ * - Selection only happens when clicking on selection controls
+ * - Other interactive elements (buttons, etc.) don't trigger selection
+ * - Non-interactive areas don't trigger selection
+ *
+ * @param e - The DOM Event to potentially stop propagation on
+ */
+function stopPropagationToNonInteractiveElements(e: Event) {
+  const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+  const isSelectionElement = getIsSelectionInteractiveElement(e);
+
+  // Stop propagation if:
+  // 1. It's not an interactive element at all, OR
+  // 2. It's an interactive element but NOT a selection element
+  if (!isInteractiveElement || (isInteractiveElement && !isSelectionElement)) {
+    e.stopPropagation();
+  }
+}
 export const DataTableRow = forwardRef(function DataTableRow<
   T extends object = Record<string, unknown>,
 >(
@@ -41,11 +93,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
     disabledKeys,
     showExpandColumn,
     showSelectionColumn,
-    showDetailsColumn,
-    isRowClickable,
     isTruncated,
     onRowClick,
-    onDetailsClick,
     onRowAction,
   } = useDataTableContext<T>();
 
@@ -59,30 +108,45 @@ export const DataTableRow = forwardRef(function DataTableRow<
   const isDisabled = getIsDisabled(row.id);
 
   /**
-   * Custom row click handling implementation to work around React Aria limitations.
+   * COMPLEX ROW CLICK HANDLING - WHY THIS APPROACH IS NECESSARY
    *
-   * React Aria Components disable row actions when a row is selected, which prevents
-   * custom click handlers from working properly. This implementation uses native DOM
-   * event listeners to bypass this limitation and provide consistent row click behavior.
+   * React Aria Components has a fundamental limitation where row actions are disabled
+   * when a row is selected, which breaks custom click handlers and navigation patterns
+   * commonly expected in data tables. This implementation uses native DOM event listeners
+   * to bypass React Aria's built-in limitations and provide the following critical features:
    *
-   * @see https://github.com/adobe/react-spectrum/issues/7962
+   * 1. **Row Click Handler**: Allow users to click anywhere on a row and activate the onClick handler
+   * 2. **Smart Event Filtering**: Prevent conflicts with interactive elements (checkboxes, buttons)
+   * 3. **Selection Isolation**: Ensure row selection only happens via explicit selection controls
+   * 4. **Disabled Row Handling**: Support custom actions even on disabled rows when needed
+   *
+   * This approach maintains the accessibility benefits of React Aria while enabling the
+   * expected UX patterns for modern data tables. Without this implementation, users would
+   * lose the ability to invoke the rows' onClick handler once selection is enabled.
+   *
+   * @see https://github.com/adobe/react-spectrum/issues/7962 - React Aria limitation
    */
 
   /**
-   * Handles row click events with smart filtering to avoid conflicts with interactive elements.
-   * Uses native DOM Event type to be compatible with addEventListener.
+   * Handles row click events with sophisticated filtering to ensure proper UX behavior.
+   *
+   * This function implements multiple layers of click validation:
+   * - Prevents interference with interactive elements (buttons, checkboxes, inputs)
+   * - Handles both enabled and disabled row states appropriately
+   * - Only triggers onClick handler when the row is explicitly marked as clickable
+   *
+   * Uses native DOM Event type to maintain compatibility with addEventListener and
+   * ensure consistent behavior across different browsers and interaction methods.
    *
    * @param e - Native DOM Event from the click listener
    */
   const handleRowClick = (e: Event) => {
-    // Cast target to Element since EventTarget doesn't have closest method
-    const clickedElement = e.target as Element;
+    // Don't do anything if onRowClick is undefined
+    if (!onRowClick) return;
     // Prevent row click when clicking on interactive elements to avoid conflicts
-    const isInteractiveElement = clickedElement?.closest(
-      'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
-    );
+    const isInteractiveElement = getIsTableRowChildElementInteractive(e);
 
-    if (!isInteractiveElement && isRowClickable && onRowClick) {
+    if (!isInteractiveElement) {
       if (!isDisabled) {
         onRowClick(row);
       } else {
@@ -96,8 +160,16 @@ export const DataTableRow = forwardRef(function DataTableRow<
   };
 
   /**
-   * Ref to track the callback ref invocation count and store the DOM node reference.
-   * This prevents duplicate event listeners and enables proper cleanup.
+   * Ref to track callback ref invocations and store the DOM node reference.
+   *
+   * React's callback refs can be called multiple times during a component's lifecycle
+   * (on mount, re-renders, unmount), so we need to track invocation count to ensure:
+   * - Event listeners are only attached once per row instance
+   * - We maintain a reference to the DOM node for cleanup
+   * - Memory leaks are prevented by avoiding duplicate listeners
+   *
+   * The counter pattern ensures we only attach listeners on the first callback
+   * invocation when the DOM node is actually available.
    */
   const counterRef = useRef<{ count: number; node?: HTMLElement }>({
     count: 0,
@@ -105,38 +177,78 @@ export const DataTableRow = forwardRef(function DataTableRow<
   });
 
   /**
-   * Callback ref that attaches the click event listener to the row DOM element.
-   * Only attaches the listener once per row instance to prevent memory leaks.
+   * Callback ref that attaches event listeners to the row DOM element.
+   *
+   * This ref is critical for implementing custom row click behavior outside of
+   * React Aria's event system. It performs several important tasks:
+   *
+   * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
+   * 2. **Event Capture**: Uses capture phase to handle events before child elements
+   * 3. **Dual Listeners**: Attaches both pointerdown (for selection control) and mouseup (for clicks)
+   * 4. **Always Available**: Listeners are always attached to support dynamic onRowClick changes
+   *
+   * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
+   * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
+   * in react-aria'a onPress handler.
+   * The mouseup listener invokes the row's onClick handler once any possible text selection has been completed.
+   * Using capture phase ensures our handlers run before any child element handlers.
+   *
+   * Performance note: Always attaching listeners has negligible overhead (~few bytes per row)
+   * but provides better support for dynamic row clickability and reduces re-renders.
    *
    * @param node - The HTMLElement reference from React's ref callback
    */
   const rowNodeRef = useCallback(
     (node: HTMLElement) => {
       counterRef.current.count += 1;
-
-      // Only attach event listener on first callback invocation when row is clickable
-      if (counterRef.current.count === 1 && node && isRowClickable) {
+      // Only attach event listener on first callback invocation
+      if (counterRef.current.count === 1 && node) {
         counterRef.current.node = node;
-        // Use capture phase to ensure we handle the event before child elements
-        node.addEventListener("click", handleRowClick, { capture: true });
+        // Ensures that selection does not happen on row click, only when the selection cell is clicked
+        node.addEventListener(
+          // Use pointerdown event in order to capture event before it bubbles to react-aria's onPress handler
+          "pointerdown",
+          stopPropagationToNonInteractiveElements,
+          {
+            capture: true,
+          }
+        );
+
+        // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
+        node.addEventListener("mouseup", handleRowClick, { capture: true });
       }
     },
-    [isRowClickable, handleRowClick]
+    [handleRowClick]
   );
 
   /**
    * Cleanup effect to remove event listeners when the component unmounts.
-   * This prevents memory leaks when rows are removed from the DOM (e.g., filtering, pagination).
+   *
+   * This is crucial for preventing memory leaks in dynamic table scenarios where:
+   * - Rows are filtered in/out of view
+   * - Pagination changes remove rows from the DOM
+   * - Table data is refreshed or updated
+   * - Component is unmounted during navigation
+   *
+   * Without proper cleanup, event listeners would remain attached to orphaned
+   * DOM nodes, leading to memory leaks and potential crashes in long-running applications.
+   * The cleanup runs in the effect's return function, ensuring it executes
+   * before the component is fully removed from the React tree.
    */
   useEffect(() => {
     return () => {
       if (counterRef.current.count >= 1 && counterRef.current.node) {
-        counterRef.current.node.removeEventListener("click", handleRowClick);
+        counterRef.current.node.removeEventListener(
+          "pointerdown",
+          stopPropagationToNonInteractiveElements
+        );
+        counterRef.current.node.removeEventListener("mouseup", handleRowClick);
       }
     };
   }, [handleRowClick]);
 
   // Combine the forwarded ref with our callback ref for proper DOM access
+  // This allows parent components to access the row element while maintaining our event listeners
   const rowRef = mergeRefs(ref, rowNodeRef);
 
   const { selectionBehavior } = useTableOptions();
@@ -168,7 +280,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
   return (
     <>
       <RaRow
-        // onAction={!isDisabled && isRowClickable ? handleRowClick : () => {}}
         isDisabled={isDisabled}
         columns={activeColumns}
         ref={rowRef}
@@ -177,7 +288,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
         style={{
           cursor: isDisabled
             ? "not-allowed"
-            : isRowClickable
+            : onRowClick
               ? "pointer"
               : undefined,
           position: "relative",
@@ -200,7 +311,11 @@ export const DataTableRow = forwardRef(function DataTableRow<
               w="100%"
               h="100%"
             >
-              <Checkbox name="select-row" slot="selection" />
+              <Checkbox
+                name="select-row"
+                slot="selection"
+                aria-label="select row"
+              />
             </Box>
           </DataTableCell>
         )}
@@ -228,44 +343,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
         <RaCollection items={activeColumns}>
           {(col: DataTableColumnItem<T>) => {
             const cellValue = col.accessor(row);
-            const isDetailsCell = col.id === "nimbus-data-table-details-column";
 
-            if (isDetailsCell) {
-              return (
-                <DataTableCell
-                  key="details-column"
-                  isDisabled={isDisabled}
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    w="100%"
-                    h="100%"
-                  >
-                    <Button
-                      aria-label="View row details"
-                      className="data-table-row-details-button"
-                      disabled={isDisabled}
-                      variant="outline"
-                      colorPalette="primary"
-                      size="2xs"
-                      onPress={() => {
-                        if (onDetailsClick) {
-                          onDetailsClick(row);
-                        }
-                      }}
-                    >
-                      Open
-                    </Button>
-                  </Box>
-                </DataTableCell>
-              );
-            }
             return (
               <DataTableCell isDisabled={isDisabled} key={col.id}>
                 <Flex>
@@ -277,7 +355,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
                     maxW="100%"
                     position="relative"
                     overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : "text"}
+                    cursor={isDisabled ? "not-allowed" : undefined}
                     style={
                       // TODO: I'm not clear on what this is supposed to do?
                       {
@@ -297,7 +375,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
                         })
                       : highlightCell(cellValue)}
                   </Box>
-
                   {/* Cell hover buttons */}
 
                   <IconButton
@@ -329,10 +406,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
             colSpan={
               activeColumns.length +
               (showExpandColumn ? 1 : 0) +
-              (showSelectionColumn ? 1 : 0) +
-              (showDetailsColumn ? 1 : 0) -
-              // length is 1 indexed, but arrays/sets are 0 indexed, so we need to subtract 1 from the total
-              1
+              (showSelectionColumn ? 1 : 0)
             }
             style={{
               borderLeft: "2px solid blue",

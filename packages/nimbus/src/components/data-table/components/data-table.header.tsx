@@ -7,7 +7,6 @@ import {
 } from "react-aria-components";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
-
 import { Box, Checkbox } from "@/components";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -64,9 +63,6 @@ export const DataTableHeader = forwardRef<
       )}
       <RaCollection items={activeColumns}>
         {(column) => {
-          const isDetailsColumn =
-            column.id === "nimbus-data-table-details-column";
-
           return (
             <DataTableColumn
               allowsSorting={
@@ -75,25 +71,18 @@ export const DataTableHeader = forwardRef<
                   ? column.isSortable
                   : allowsSorting
               }
-              isRowHeader={isDetailsColumn ? false : true}
-              isInternalColumn={isDetailsColumn}
+              isRowHeader={true}
               width={column.width}
               defaultWidth={column.defaultWidth}
               minWidth={column.minWidth ?? 150}
               maxWidth={column.maxWidth}
               column={column}
             >
-              {isDetailsColumn ? (
-                <VisuallyHidden>Details</VisuallyHidden>
-              ) : (
-                <>
-                  <span data-multiline-header>{column.header}</span>
-                  {column.headerIcon && (
-                    <Box as="span" ml="200">
-                      {column.headerIcon}
-                    </Box>
-                  )}
-                </>
+              <span data-multiline-header>{column.header}</span>
+              {column.headerIcon && (
+                <Box as="span" ml="200">
+                  {column.headerIcon}
+                </Box>
               )}
             </DataTableColumn>
           );
