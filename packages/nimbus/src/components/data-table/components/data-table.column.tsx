@@ -1,6 +1,7 @@
 import { ColumnResizer, Column as RaColumn } from "react-aria-components";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Divider, Flex } from "@/components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useDataTableContext } from "./data-table.context";
 import {
   DataTableColumnSlot,
@@ -13,24 +14,28 @@ export const DataTableColumn: DataTableColumnComponent = ({
   children,
   ref,
   column,
-  unstyled,
   isInternalColumn,
-  tabIndex,
+  width,
+  minWidth,
+  maxWidth,
   ...otherProps
 }) => {
   const { sortDescriptor, isResizable } = useDataTableContext();
   const isActive = sortDescriptor?.column === column?.id;
   const isColumnResizable =
     column?.isResizable !== undefined ? column?.isResizable : isResizable;
-  /**
-   * TODO: Pass styles to DataTableColumnSlot from props,
-   * except for height/minHeight/maxHeight which enable react-aria's
-   * column resizing
-   */
+
+  const [styleProps, restProps] = extractStyleProps(otherProps);
 
   return (
-    <DataTableColumnSlot unstyled={unstyled} tabIndex={tabIndex} asChild>
-      <RaColumn ref={ref} {...otherProps}>
+    <DataTableColumnSlot {...styleProps} asChild>
+      <RaColumn
+        width={width}
+        minWidth={minWidth}
+        maxWidth={maxWidth}
+        ref={ref}
+        {...restProps}
+      >
         {(renderProps) => {
           const { allowsSorting } = renderProps;
 
@@ -40,7 +45,11 @@ export const DataTableColumn: DataTableColumnComponent = ({
               : children;
           }
           return (
-            <Flex tabIndex={column?.isResizable ? 0 : -1} focusRing="outside">
+            <Flex
+              // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
+              tabIndex={isColumnResizable || allowsSorting ? -1 : 0}
+              className="nimbus-data-table__column-container"
+            >
               <Divider
                 orientation="vertical"
                 className="data-table-column-divider"
@@ -51,17 +60,21 @@ export const DataTableColumn: DataTableColumnComponent = ({
               {allowsSorting && (
                 <DataTableHeaderSortIcon
                   aria-hidden="true"
-                  color={isActive ? "neutral.11" : "neutral.10"}
+                  data-sort-active={isActive}
+                  data-sort-direction={
+                    isActive ? sortDescriptor?.direction : "none"
+                  }
                 >
                   <ArrowDownward />
                 </DataTableHeaderSortIcon>
               )}
               {isColumnResizable && (
                 <ColumnResizer aria-label="Resize column">
-                  {({ isResizing, isFocused }) => (
+                  {({ isResizing, isFocused, isHovered }) => (
                     <DataTableColumnResizer
                       data-resizing={isResizing}
                       data-focused={isFocused}
+                      data-hovered={isHovered}
                     />
                   )}
                 </ColumnResizer>
