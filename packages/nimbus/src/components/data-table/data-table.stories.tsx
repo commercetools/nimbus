@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, isValidElement, type ReactNode } from "react";
+import React, { useState, isValidElement, type ReactNode } from "react";
 import { type Selection, useLocale } from "react-aria-components";
 import {
   Stack,
@@ -1681,6 +1681,47 @@ export const DisabledRowsShowcase: Story = {
           onRowAction={handleRowAction}
           selectionMode="multiple"
           allowsSorting={true}
+          isRowClickable={true}
+          onRowClick={() => {}}
+        />
+      </Stack>
+    );
+  },
+  args: {},
+};
+
+export const RowPinning: Story = {
+  render: () => {
+    const [pinnedRows, setPinnedRows] = React.useState<Set<string>>(new Set());
+
+    const handlePinToggle = (rowId: string) => {
+      setPinnedRows((prev) => {
+        const newPinnedRows = new Set(prev);
+        if (newPinnedRows.has(rowId)) {
+          newPinnedRows.delete(rowId);
+        } else {
+          newPinnedRows.add(rowId);
+        }
+        return newPinnedRows;
+      });
+    };
+
+    return (
+      <Stack direction="column" gap="400">
+        <Heading as="h3" size="lg">
+          Row Pinning Feature Demo
+        </Heading>
+        <Text>
+          Hover over rows to see the pin button appear in the last column.
+          Pinned rows will always stay at the top and are excluded from sorting.
+        </Text>
+        <DataTable
+          columns={sortableColumns}
+          data={data}
+          pinnedRows={pinnedRows}
+          onPinToggle={handlePinToggle}
+          allowsSorting={true}
+          selectionMode="multiple"
           isRowClickable={true}
           onRowClick={() => {}}
         />
