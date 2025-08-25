@@ -386,8 +386,8 @@ importers:
         specifier: ^15.0.1
         version: 15.0.1
       remark-flexible-toc:
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.2.0
+        version: 1.2.0(unified@11.0.5)
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.1
@@ -1185,8 +1185,8 @@ packages:
     resolution: {integrity: sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==}
     engines: {node: '>=18.18'}
 
-  '@inquirer/confirm@5.1.15':
-    resolution: {integrity: sha512-SwHMGa8Z47LawQN0rog0sT+6JpiL0B7eW9p1Bb7iCeKDGTI5Ez25TSc2l8kw52VV7hA4sX/C78CGkMrKXfuspA==}
+  '@inquirer/confirm@5.1.16':
+    resolution: {integrity: sha512-j1a5VstaK5KQy8Mu8cHmuQvN1Zc62TbLhjJxwHvKPPKEoowSF6h/0UdOpA9DNdWZ+9Inq73+puRq1df6OJ8Sag==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/node': '>=18'
@@ -1194,8 +1194,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/core@10.1.15':
-    resolution: {integrity: sha512-8xrp836RZvKkpNbVvgWUlxjT4CraKk2q+I3Ksy+seI2zkcE+y6wNs1BVhgcv8VyImFecUhdQrYLdW32pAjwBdA==}
+  '@inquirer/core@10.2.0':
+    resolution: {integrity: sha512-NyDSjPqhSvpZEMZrLCYUquWNl+XC/moEcVFqS55IEYIYsY0a1cUCevSqk7ctOlnm/RaSBU5psFryNlxcmGrjaA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/node': '>=18'
@@ -5806,8 +5806,10 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
-  remark-flexible-toc@1.1.1:
-    resolution: {integrity: sha512-aOmKELS8EtHXRnaqr9oNVyL/v+Ki4uKSOZJR5nniFDW/Pamv0wYmPSKuITI8vYmKGlHPV3wL9Sexxs5aD/PP5A==}
+  remark-flexible-toc@1.2.0:
+    resolution: {integrity: sha512-EqUIcYL5GRLzzrdXnwaGdvFqSxbQ9l08d+QQE6Jw4vCuKwADMzM0t9qXb32p0G28X57lZryBAgSPDBnEDePcOg==}
+    peerDependencies:
+      unified: ^11
 
   remark-gfm@4.0.1:
     resolution: {integrity: sha512-1quofZ2RQ9EWdeN34S79+KExV1764+wCUGop5CPL1WGdD0ocPpu91lzPGbwWMECpEpd42kJGQwzRfyov9j4yNg==}
@@ -7639,15 +7641,15 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.2': {}
 
-  '@inquirer/confirm@5.1.15(@types/node@24.0.3)':
+  '@inquirer/confirm@5.1.16(@types/node@24.0.3)':
     dependencies:
-      '@inquirer/core': 10.1.15(@types/node@24.0.3)
+      '@inquirer/core': 10.2.0(@types/node@24.0.3)
       '@inquirer/type': 3.0.8(@types/node@24.0.3)
     optionalDependencies:
       '@types/node': 24.0.3
     optional: true
 
-  '@inquirer/core@10.1.15(@types/node@24.0.3)':
+  '@inquirer/core@10.2.0(@types/node@24.0.3)':
     dependencies:
       '@inquirer/figures': 1.0.13
       '@inquirer/type': 3.0.8(@types/node@24.0.3)
@@ -13046,7 +13048,7 @@ snapshots:
       '@bundled-es-modules/cookie': 2.0.1
       '@bundled-es-modules/statuses': 1.0.1
       '@bundled-es-modules/tough-cookie': 0.1.6
-      '@inquirer/confirm': 5.1.15(@types/node@24.0.3)
+      '@inquirer/confirm': 5.1.16(@types/node@24.0.3)
       '@mswjs/interceptors': 0.37.6
       '@open-draft/deferred-promise': 2.2.0
       '@open-draft/until': 2.1.0
@@ -13853,7 +13855,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-flexible-toc@1.1.1:
+  remark-flexible-toc@1.2.0(unified@11.0.5):
     dependencies:
       '@types/mdast': 4.0.4
       github-slugger: 2.0.0
