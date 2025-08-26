@@ -65,25 +65,31 @@ export const Base: Story = {
       "Keyboard Navigation - Tab enters group, arrows move between tags",
       async () => {
         await userEvent.tab();
-        expect(koala).toHaveFocus();
+        const firstRow = canvas.getAllByRole("row")[0];
+        expect(firstRow).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        expect(kangaroo).toHaveFocus();
+        const secondRow = canvas.getAllByRole("row")[1];
+        expect(secondRow).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        expect(platypus).toHaveFocus();
+        const thirdRow = canvas.getAllByRole("row")[2];
+        expect(thirdRow).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        expect(baldEagle).toHaveFocus();
+        const fourthRow = canvas.getAllByRole("row")[3];
+        expect(fourthRow).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        expect(bison).toHaveFocus();
+        const fifthRow = canvas.getAllByRole("row")[4];
+        expect(fifthRow).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        expect(skunk).toHaveFocus();
+        const sixthRow = canvas.getAllByRole("row")[5];
+        expect(sixthRow).toHaveFocus();
         // make sure focus wraps
         await userEvent.keyboard("{ArrowRight}");
-        expect(koala).toHaveFocus();
+        expect(firstRow).toHaveFocus();
         await userEvent.keyboard("{ArrowLeft}");
-        expect(skunk).toHaveFocus();
+        expect(sixthRow).toHaveFocus();
         await userEvent.tab();
         // tab removes focus from tabs
-        expect(skunk).not.toHaveFocus();
+        expect(sixthRow).not.toHaveFocus();
       }
     );
   },
@@ -119,16 +125,19 @@ export const TagRemoval: Story = {
     const [koala, kangaroo] = tags;
     await step("Tags - keyboard removal", async () => {
       await userEvent.tab();
-      expect(koala).toHaveFocus();
+      // Get the first row element directly
+      const firstRow = canvas.getAllByRole("row")[0];
+      expect(firstRow).toHaveFocus();
       await userEvent.keyboard("{backspace}");
-      expect(koala).not.toBeInTheDocument();
+      expect(firstRow).not.toBeInTheDocument();
     });
 
     await step("Tags - mouse removal", async () => {
-      const removeKangarooButton = within(kangaroo).getByLabelText("Remove");
+      const secondRow = canvas.getAllByRole("row")[1];
+      const removeKangarooButton = within(secondRow).getByLabelText("Remove");
       await userEvent.click(removeKangarooButton);
       expect(args.onRemove).toHaveBeenCalled();
-      expect(kangaroo).not.toBeInTheDocument();
+      expect(secondRow).not.toBeInTheDocument();
     });
   },
 };
@@ -161,7 +170,8 @@ export const SingleSelection: Story = {
 
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
-      expect(koala).toHaveFocus();
+      const firstRow = canvas.getAllByRole("row")[0];
+      expect(firstRow).toHaveFocus();
       await userEvent.keyboard("{enter}");
       await canvas.queryByText("Current selection: koala");
       await userEvent.keyboard("{ArrowRight}");
@@ -171,10 +181,12 @@ export const SingleSelection: Story = {
     });
 
     await step("Tags - mouse selection", async () => {
-      await userEvent.click(koala);
+      const firstRow = canvas.getAllByRole("row")[0];
+      const secondRow = canvas.getAllByRole("row")[1];
+      await userEvent.click(firstRow);
       await userEvent.click(tagList);
       await canvas.queryByText("Current selection: koala");
-      await userEvent.click(kangaroo);
+      await userEvent.click(secondRow);
       //selecting another tag deselects the current selection
       await canvas.queryByText("Current selection: kangaroo");
     });
@@ -212,7 +224,8 @@ export const MultipleSelection: Story = {
 
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
-      expect(koala).toHaveFocus();
+      const firstRow = canvas.getAllByRole("row")[0];
+      expect(firstRow).toHaveFocus();
       await userEvent.keyboard("{enter}");
       await canvas.queryByText("Current selection: koala");
       await userEvent.keyboard("{ArrowRight}");
@@ -224,13 +237,15 @@ export const MultipleSelection: Story = {
     });
 
     await step("Tags - mouse selection", async () => {
-      await userEvent.click(koala);
+      const firstRow = canvas.getAllByRole("row")[0];
+      const secondRow = canvas.getAllByRole("row")[1];
+      await userEvent.click(firstRow);
       await userEvent.click(tagList);
       await canvas.queryByText("Current selection: koala");
-      await userEvent.click(kangaroo);
+      await userEvent.click(secondRow);
       await canvas.queryByText("Current selection: koala, kangaroo");
       //clicking selected tag deselects
-      await userEvent.click(kangaroo);
+      await userEvent.click(secondRow);
       await canvas.queryByText("Current selection: koala");
     });
   },
@@ -261,7 +276,8 @@ export const EmptyState: Story = {
     const [koala] = tags;
     await step("Tags - empty state", async () => {
       await userEvent.tab();
-      expect(koala).toHaveFocus();
+      const firstRow = canvas.getAllByRole("row")[0];
+      expect(firstRow).toHaveFocus();
       await userEvent.keyboard("{backspace}");
       await canvas.queryByText("No Animals");
     });

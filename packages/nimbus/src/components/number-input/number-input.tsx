@@ -17,6 +17,8 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
+import { useIntl } from "react-intl";
+import messages from "./messages";
 /**
  * # NumberInput
  *
@@ -27,7 +29,7 @@ import { numberInputRecipe } from "./number-input.recipe";
 export const NumberInput = (props: NumberInputProps) => {
   const { size, ref: forwardedRef, ...restProps } = props;
   const { locale } = useLocale();
-
+  const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
@@ -64,16 +66,16 @@ export const NumberInput = (props: NumberInputProps) => {
         height="full"
       >
         <NumberInputIncrementButtonSlot
-          aria-label="Increment"
           {...incrementButtonProps}
           {...stateProps}
+          aria-label={intl.formatMessage(messages.increment)}
         >
           <KeyboardArrowUp />
         </NumberInputIncrementButtonSlot>
         <NumberInputDecrementButtonSlot
-          aria-label="Decrement"
           {...decrementButtonProps}
           {...stateProps}
+          aria-label={intl.formatMessage(messages.decrement)}
         >
           <KeyboardArrowDown />
         </NumberInputDecrementButtonSlot>
