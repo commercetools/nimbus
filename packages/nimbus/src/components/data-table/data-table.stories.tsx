@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import React, { useState, isValidElement, type ReactNode } from "react";
+import React, {
+  useState,
+  isValidElement,
+  type ReactNode,
+  useEffect,
+} from "react";
 import { type Selection } from "react-aria-components";
 import { within, expect, waitFor, userEvent } from "storybook/test";
 import {
@@ -90,38 +95,50 @@ type ProductDetailsModalProps = {
   isOpen: boolean;
   onClose: () => void;
   row?: DataTableRowItem;
+  onSave?: (updatedRow: DataTableRowItem) => void;
 };
 
 const ProductDetailsModal = ({
   isOpen,
   onClose,
   row,
+  onSave,
 }: ProductDetailsModalProps) => {
-  if (!row) return null;
-  // Extract product data from commercetools structure
-  const productName = row.name || "Unknown Product";
-  const productSlug = row.slug || "";
-  const productType = row.productType || "";
-  const createdAt = row.createdAt || "";
-  const lastModifiedAt = row.lastModifiedAt || "";
-  const version = row.version || "";
-  // put ct data into array to reduce repetition of components in render
-  const detailItems: DetailsModalItemProps[] = [
-    { label: "Name", value: productName as string },
-    { label: "Slug", value: productSlug as string },
-    { label: "Type", value: productType as string },
-    { label: "Version", value: version as string },
-    { label: "Created", value: createdAt as string },
-    { label: "Modified", value: lastModifiedAt as string },
-  ];
+  const [formData, setFormData] = useState<DataTableRowItem | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Initialize form data when modal opens
+  useEffect(() => {
+    if (row) {
+      setFormData({ ...row });
+    }
+  }, [row]);
+
+  if (!row || !formData) return null;
+
+  const handleInputChange = (
+    field: string,
+    value: string | string[] | boolean
+  ) => {
+    setFormData((prev) => (prev ? { ...prev, [field]: value } : null));
+  };
+
+  const handleSave = async () => {
+    if (formData && onSave) {
+      setIsSaving(true);
+      onSave(formData);
+      // Brief delay to show saving state
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setIsSaving(false);
+      // Don't call onClose here - let the parent handle it
+    }
+  };
+
   return (
-    <Dialog.Root
-      open={isOpen}
-      onOpenChange={({ open }) => !open && onClose && onClose()}
-    >
+    <Dialog.Root open={isOpen}>
       <Dialog.Content maxWidth="600px">
         <Dialog.Header>
-          <Dialog.Title>{productName as string} - Product Details</Dialog.Title>
+          <Dialog.Title>{formData.name as string}</Dialog.Title>
         </Dialog.Header>
         <Dialog.Body>
           <Stack gap="400">
@@ -130,27 +147,126 @@ const ProductDetailsModal = ({
               <Text as="h2" fontWeight="500" mb="200">
                 Product Information
               </Text>
-              <Stack as="ul" listStyle="none" gap="200">
-                {detailItems.map((item) => (
-                  <DetailsModalItem key={item.label} {...item} />
-                ))}
+              <Stack gap="300">
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Product name
+                  </Text>
+                  <TextInput
+                    value={formData.name as string}
+                    onChange={(value) => handleInputChange("name", value)}
+                    width="100%"
+                  />
+                </Box>
+
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Category
+                  </Text>
+                  <TextInput
+                    value={formData.category as string}
+                    onChange={(value) => handleInputChange("category", value)}
+                    width="100%"
+                  />
+                </Box>
+
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Status
+                  </Text>
+                  <select
+                    value={
+                      formData.published && formData.hasStagedChanges
+                        ? "Modified"
+                        : formData.published
+                          ? "Published"
+                          : "Unpublished"
+                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "Published") {
+                        handleInputChange("published", true);
+                        handleInputChange("hasStagedChanges", false);
+                      } else if (value === "Modified") {
+                        handleInputChange("published", true);
+                        handleInputChange("hasStagedChanges", true);
+                      } else if (value === "Unpublished") {
+                        handleInputChange("published", false);
+                        handleInputChange("hasStagedChanges", false);
+                      }
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      borderRadius: "4px",
+                      border: "1px solid #ccc",
+                    }}
+                  >
+                    <option value="Published">Published</option>
+                    <option value="Modified">Modified</option>
+                    <option value="Unpublished">Unpublished</option>
+                  </select>
+                </Box>
+
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Stores
+                  </Text>
+                  <TextInput
+                    value={(formData.stores as string[])?.join(", ") || ""}
+                    onChange={(value) => {
+                      const stores = value
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter((s) => s);
+                      handleInputChange("stores", stores);
+                    }}
+                    width="100%"
+                    placeholder="Enter stores separated by commas"
+                    aria-label="stores"
+                    isDisabled
+                  />
+                </Box>
               </Stack>
             </Box>
 
-            {/* Product ID */}
             <Box>
               <Text as="h2" fontWeight="500" mb="200">
                 Technical Details
               </Text>
-              <Stack as="ul" listStyle="none" gap="200">
-                <DetailsModalItem label={"ID"} value={row.id as string} />
+              <Stack gap="300">
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Product ID
+                  </Text>
+                  <TextInput
+                    value={formData.key as string}
+                    isReadOnly
+                    width="100%"
+                    backgroundColor="neutral.2"
+                    isDisabled
+                  />
+                </Box>
               </Stack>
             </Box>
           </Stack>
         </Dialog.Body>
         <Dialog.Footer>
-          <Button onPress={onClose} variant="outline">
-            Close
+          <Button
+            onPress={() => {
+              console.log("Cancel button clicked");
+              onClose();
+            }}
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={handleSave}
+            colorPalette="primary"
+            isDisabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </Dialog.Footer>
       </Dialog.Content>
@@ -174,6 +290,17 @@ const DataTableWithModals = ({
     isOpen: false,
   });
 
+  const [tableData, setTableData] = useState<DataTableRowItem[]>(
+    props.data || []
+  );
+
+  // Sync tableData with props.data when it changes
+  useEffect(() => {
+    if (props.data) {
+      setTableData(props.data);
+    }
+  }, [props.data]);
+
   const handleRowClick = onRowClick
     ? (row: DataTableRowItem) => {
         setRowClickModalState({ isOpen: true, row });
@@ -181,9 +308,29 @@ const DataTableWithModals = ({
       }
     : undefined;
 
+  const handleSave = (updatedRow: DataTableRowItem) => {
+    setTableData((prev) => {
+      // Create a completely new array reference to force re-render
+      const newData = [
+        ...prev.map((row) =>
+          row.id === updatedRow.id ? { ...updatedRow } : { ...row }
+        ),
+      ];
+      return newData;
+    });
+
+    // Close the modal after saving
+    setRowClickModalState({ isOpen: false, row: undefined });
+  };
+
   return (
     <>
-      <DataTable {...props} onRowClick={handleRowClick} />
+      <DataTable
+        {...props}
+        data={tableData}
+        onRowClick={handleRowClick}
+        key={JSON.stringify(tableData)} // Force re-render when data changes
+      />
 
       {/* Details Modal */}
       {onRowClick &&
@@ -194,6 +341,7 @@ const DataTableWithModals = ({
               setRowClickModalState({ isOpen: false, row: undefined })
             }
             row={rowClickModalState?.row}
+            onSave={handleSave}
           />
         ) : (
           <InfoModal
@@ -263,6 +411,14 @@ export const Base: Story = {
     allowsSorting: true,
     isResizable: true,
     selectionMode: "multiple",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Click on any row to open the product details modal. Edit the fields and click Save to see the changes reflected in the data table.",
+      },
+    },
   },
 };
 

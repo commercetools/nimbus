@@ -981,41 +981,23 @@ export const mcColumns: DataTableColumnItem[] = [
     header: "Product name",
     accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
     isResizable: true,
-  },
-  {
-    id: "productType",
-    header: "Product type",
-    accessor: (row: Record<string, unknown>) =>
-      row.productType as React.ReactNode,
-    isResizable: true,
-  },
-  {
-    id: "key",
-    header: "Product key",
-    accessor: (row: Record<string, unknown>) =>
-      (row.key || "--") as React.ReactNode,
-    isResizable: true,
-  },
-  {
-    id: "Stores",
-    header: "Stores",
-    accessor: (row: Record<string, unknown>) => row.stores as React.ReactNode,
-    isResizable: true,
-    render: ({ value }) => {
-      const stores = value as string[];
-      return (
-        <Box as="ul" listStyle="disc" pl="4" m="0">
-          {stores?.map((store, index) => (
-            <Box as="li" key={index} fontSize="sm" lineHeight="1.4" ml="400">
-              {store}
-            </Box>
-          ))}
+    render: ({ value, row }) => (
+      <Box>
+        <Box fontWeight="500">{value as React.ReactNode}</Box>
+        <Box fontSize="sm" color="neutral.10" fontWeight="400">
+          Product ID: {row.key as string}
         </Box>
-      );
-    },
+      </Box>
+    ),
   },
   {
-    id: "published",
+    id: "category",
+    header: "Category",
+    accessor: (row: Record<string, unknown>) => row.category as React.ReactNode,
+    isResizable: true,
+  },
+  {
+    id: "status",
     header: "Status",
     accessor: (row: Record<string, unknown>) =>
       getStatus(row) as React.ReactNode,
@@ -1044,132 +1026,112 @@ export const mcColumns: DataTableColumnItem[] = [
     },
   },
   {
-    id: "createdAt",
-    header: "Date created",
-    accessor: (row: Record<string, unknown>) =>
-      row.createdAt as React.ReactNode,
+    id: "stores",
+    header: "Stores",
+    accessor: (row: Record<string, unknown>) => row.stores as React.ReactNode,
     isResizable: true,
+    render: ({ value }) => {
+      const stores = value as string[];
+      return (
+        <Box as="ul" listStyle="disc" pl="4" m="0">
+          {stores?.map((store, index) => (
+            <Box as="li" key={index} fontSize="sm" lineHeight="1.4" ml="400">
+              {store}
+            </Box>
+          ))}
+        </Box>
+      );
+    },
   },
   {
-    id: "lastModifiedAt",
+    id: "dateModified",
     header: "Date modified",
     accessor: (row: Record<string, unknown>) =>
-      row.lastModifiedAt as React.ReactNode,
+      row.dateModified as React.ReactNode,
     isResizable: true,
+    isSortable: true,
   },
 ];
 
 export const mcMockData = [
   {
-    id: "01",
-    key: "premium-headphones",
-    version: 11,
-    createdAt: new Date("2025-03-25T10:15:15.546Z").toLocaleString(),
-    lastModifiedAt: new Date("2025-07-07T19:00:31.044Z").toLocaleString(),
-    productType: "Electronics",
+    id: "1",
+    key: "65dc16dc18d",
+    name: "Midnight Bloom Silk Blouse",
+    category: "Tops",
+    published: true,
+    hasStagedChanges: false,
     stores: ["Canada", "United States", "South Africa", "Germany"],
-    name: "Premium Wireless Headphones",
-    slug: "premium-wireless-headphones",
-    published: true,
-    hasStagedChanges: false,
-    staged: {
-      masterVariant: {
-        images: [
-          {
-            url: "https://thispersondoesnotexist.com/",
-          },
-        ],
-      },
-    },
+    dateModified: "10.05.2024 11:20",
   },
   {
-    id: "02",
-    key: "smart-watch",
-    version: 7,
-    createdAt: new Date("2025-02-15T08:30:22.123Z").toLocaleString(),
-    lastModifiedAt: new Date("2025-06-20T14:25:45.678Z").toLocaleString(),
-    productType: "Wearables",
+    id: "2",
+    key: "451ed5e1gf45e1g",
+    name: "Urban Canvas Denim",
+    category: "Pants",
+    published: true,
+    hasStagedChanges: false,
     stores: ["Venezuela", "France"],
-    name: "Smart Fitness Watch",
-    slug: "smart-fitness-watch",
-    published: true,
-    hasStagedChanges: false,
-    staged: {
-      masterVariant: {
-        images: [
-          {
-            url: "https://thispersondoesnotexist.com/",
-          },
-        ],
-      },
-    },
+    dateModified: "11.06.2024 11:28",
   },
   {
-    id: "03",
-    key: "laptop-stand",
-    version: 4,
-    createdAt: new Date("2025-01-10T12:45:33.456Z").toLocaleString(),
-    lastModifiedAt: new Date("2025-05-30T16:10:12.789Z").toLocaleString(),
-    productType: "Accessories",
-    stores: ["United Kingdom", "Australia"],
-    name: "Ergonomic Laptop Stand",
-    slug: "ergonomic-laptop-stand",
+    id: "3",
+    key: "s5d15f1s51f",
+    name: "Coastal Breeze Linen Pants",
+    category: "Pants",
     published: false,
+    hasStagedChanges: false,
+    stores: ["Spain", "India", "South Africa"],
+    dateModified: "03.06.2024 07:28",
+  },
+  {
+    id: "4",
+    key: "51fc5e1fe5f1",
+    name: "Rustic Knit Merino",
+    category: "Merino",
+    published: true,
     hasStagedChanges: true,
-    staged: {
-      masterVariant: {
-        images: [
-          {
-            url: "https://thispersondoesnotexist.com/",
-          },
-        ],
-      },
-    },
+    stores: ["Canada", "United States", "South Africa", "Germany"],
+    dateModified: "11.06.2024 11:28",
   },
   {
-    id: "04",
-    key: "wireless-mouse",
-    version: 2,
-    createdAt: new Date("2025-04-05T09:15:44.567Z").toLocaleString(),
-    lastModifiedAt: new Date("2025-07-12T11:30:55.890Z").toLocaleString(),
-    productType: "Computer Peripherals",
-    stores: ["Japan", "China"],
-    name: "Wireless Gaming Mouse",
-    slug: "wireless-gaming-mouse",
+    id: "5",
+    key: "w15e1g5e1fc5e",
+    name: "Sunset Stripes Cotton Tee",
+    category: "Tshirts",
     published: true,
     hasStagedChanges: false,
-    staged: {
-      masterVariant: {
-        images: [
-          {
-            url: "https://thispersondoesnotexist.com/",
-          },
-        ],
-      },
-    },
+    stores: ["Venezuela", "France"],
+    dateModified: "10.05.2024 11:20",
   },
   {
-    id: "05",
-    key: "bluetooth-speaker",
-    version: 8,
-    createdAt: new Date("2025-03-20T15:20:30.234Z").toLocaleString(),
-    lastModifiedAt: new Date("2025-06-28T13:45:18.123Z").toLocaleString(),
-    productType: "Audio",
-    stores: ["Italy", "Spain"],
-
-    name: "Portable Bluetooth Speaker",
-    slug: "portable-bluetooth-speaker",
+    id: "6",
+    key: "51ec54e1v4ev",
+    name: "Crimson Peak Jeans",
+    category: "Hoodies",
+    published: false,
+    hasStagedChanges: false,
+    stores: ["Spain", "Poland"],
+    dateModified: "11.06.2024 11:28",
+  },
+  {
+    id: "7",
+    key: "51e5ce1v54e1",
+    name: "Coastal Drift Shorts",
+    category: "Shorts",
     published: true,
     hasStagedChanges: false,
-
-    staged: {
-      masterVariant: {
-        images: [
-          {
-            url: "https://thispersondoesnotexist.com/",
-          },
-        ],
-      },
-    },
+    stores: ["Poland", "Portugal", "Mexico"],
+    dateModified: "03.06.2024 07:28",
+  },
+  {
+    id: "8",
+    key: "97zj8z7m9z7jk",
+    name: "Solaris Flare Jeans",
+    category: "Pants",
+    published: true,
+    hasStagedChanges: true,
+    stores: ["Spain", "India", "South Africa"],
+    dateModified: "10.05.2024 11:20",
   },
 ];
