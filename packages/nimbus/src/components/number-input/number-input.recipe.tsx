@@ -36,7 +36,7 @@ export const numberInputRecipe = defineSlotRecipe({
         opacity: 0.5,
         color: "currentColor",
       },
-      _disabled: {
+      "&[data-disabled='true']": {
         layerStyle: "disabled",
         bg: "neutral.3",
       },
@@ -61,7 +61,7 @@ export const numberInputRecipe = defineSlotRecipe({
       _active: {
         bg: "neutral.4",
       },
-      _disabled: {
+      "&[data-disabled='true']": {
         opacity: 0.5,
         cursor: "not-allowed",
       },
@@ -89,7 +89,7 @@ export const numberInputRecipe = defineSlotRecipe({
       _active: {
         bg: "neutral.4",
       },
-      _disabled: {
+      "&[data-disabled='true']": {
         opacity: 0.5,
         cursor: "not-allowed",
       },

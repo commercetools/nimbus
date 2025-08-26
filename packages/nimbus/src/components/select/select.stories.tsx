@@ -289,6 +289,102 @@ export const AsyncLoading: Story = {
 };
 
 /**
+ * Clearable
+ * Demonstrates the isClearable prop which shows a clear button when a value is selected
+ */
+export const Clearable: Story = {
+  render: () => {
+    const [selectedFruit, setSelectedFruit] = useState<Key>();
+
+    return (
+      <Stack gap="600">
+        <Box>
+          <Text fontWeight="bold" mb="200">
+            Clearable Select (isClearable=true)
+          </Text>
+          <Select.Root
+            selectedKey={selectedFruit}
+            onSelectionChange={
+              setSelectedFruit as SelectRootProps["onSelectionChange"]
+            }
+            aria-label="Select a fruit"
+            data-testid="clearable-select"
+          >
+            <Select.Options>
+              <Select.Option id="apple">Apple</Select.Option>
+              <Select.Option id="banana">Banana</Select.Option>
+              <Select.Option id="orange">Orange</Select.Option>
+              <Select.Option id="cherry">Cherry</Select.Option>
+            </Select.Options>
+          </Select.Root>
+          <Text fontSize="100" mt="200">
+            Selected: {selectedFruit ? String(selectedFruit) : "None"}
+          </Text>
+        </Box>
+
+        <Box>
+          <Text fontWeight="bold" mb="200">
+            Non-clearable Select (isClearable=false, default)
+          </Text>
+          <Select.Root
+            isClearable={false}
+            aria-label="Select a fruit"
+            data-testid="non-clearable-select"
+          >
+            <Select.Options>
+              <Select.Option id="apple">Apple</Select.Option>
+              <Select.Option id="banana">Banana</Select.Option>
+              <Select.Option id="orange">Orange</Select.Option>
+              <Select.Option id="cherry">Cherry</Select.Option>
+            </Select.Options>
+          </Select.Root>
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const clearableSelect = canvas.getByTestId("clearable-select");
+    const clearableButton = clearableSelect.querySelector("button");
+
+    await step("Clearable select is rendered", async () => {
+      await expect(clearableButton).toBeInTheDocument();
+    });
+
+    await step("Select an option", async () => {
+      await userEvent.click(clearableButton!);
+      const option = document.querySelector(
+        '[role="option"][data-value="apple"]'
+      );
+      await userEvent.click(option!);
+      await expect(clearableButton).toHaveTextContent("Apple");
+    });
+
+    await step("Clear button appears when value is selected", async () => {
+      const clearButton = clearableSelect.querySelector(
+        '[aria-label="Clear Selection"]'
+      );
+      await expect(clearButton).toBeInTheDocument();
+    });
+
+    await step("Clicking clear button removes selection", async () => {
+      const clearButton = clearableSelect.querySelector(
+        '[aria-label="Clear Selection"]'
+      );
+      await userEvent.click(clearButton!);
+      await expect(clearableButton).not.toHaveTextContent("Apple");
+    });
+
+    await step("Clear button disappears after clearing", async () => {
+      const clearButton = clearableSelect.querySelector(
+        '[aria-label="Clear Selection"]'
+      );
+      await expect(clearButton).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
  * Disabled
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
  */

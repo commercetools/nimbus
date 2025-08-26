@@ -51,3 +51,4 @@ export * from "./menu";
 export * from "./date-range-picker";
 export * from "./toolbar";
 export * from "./data-table";
+export * from "./pagination";
