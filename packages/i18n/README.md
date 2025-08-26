@@ -6,6 +6,8 @@ This package contains all translation messages from the Nimbus design system.
 
 # add diagram
 
+# review Text intlMessage prop
+
 # preconstruct build?
 
 # i18n dist folder
