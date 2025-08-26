@@ -104,6 +104,7 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   search?: string;
   maxHeight?: string | number;
   sortDescriptor?: SortDescriptor;
+  defaultSortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
   selectionMode?: "none" | "single" | "multiple";
   selectionBehavior?: "toggle" | "replace";

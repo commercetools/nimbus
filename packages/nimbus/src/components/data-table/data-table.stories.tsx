@@ -411,12 +411,16 @@ export const Base: Story = {
     allowsSorting: true,
     isResizable: true,
     selectionMode: "multiple",
+    defaultSortDescriptor: {
+      column: "dateModified",
+      direction: "ascending",
+    },
   },
   parameters: {
     docs: {
       description: {
         story:
-          "Click on any row to open the product details modal. Edit the fields and click Save to see the changes reflected in the data table.",
+          "Click on any row to open the product details modal. Edit the fields and click Save to see the changes reflected in the data table. Table is sorted by Date Modified (newest first) by default.",
       },
     },
   },
