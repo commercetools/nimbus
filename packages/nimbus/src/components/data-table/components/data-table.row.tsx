@@ -13,8 +13,7 @@ import type {
   DataTableRowItem as DataTableRowType,
   DataTableColumnItem,
 } from "../data-table.types";
-import { Box, Checkbox, Button, Flex, IconButton, Tooltip } from "@/components";
-import { useCopyToClipboard } from "@/hooks";
+import { Box, Checkbox, IconButton, Tooltip } from "@/components";
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
@@ -92,9 +91,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
     disabledKeys,
     showExpandColumn,
     showSelectionColumn,
-    showDetailsColumn,
-    showPinColumn,
-    isRowClickable,
     isTruncated,
     onRowClick,
     onRowAction,
@@ -350,12 +346,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
     return "";
   };
 
-  // Action handlers - only copy functionality
-  const handleCopy = (value: unknown) => {
-    const textValue = typeof value === "string" ? value : String(value);
-    copyToClipboard(textValue);
-  };
-
   // Highlight helper
   const highlightCell = (value: unknown): React.ReactNode =>
     search && typeof value === "string" ? (
@@ -435,44 +425,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
 
             return (
               <DataTableCell isDisabled={isDisabled} key={col.id}>
-                <Flex>
-                  <Box
-                    className={isTruncated ? "truncated-cell" : ""}
-                    display="inline-block"
-                    h="100%"
-                    minW="0"
-                    maxW="100%"
-                    position="relative"
-                    overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : "text"}
-                  >
-                    {col.render
-                      ? col.render({
-                          value: highlightCell(cellValue),
-                          row,
-                          column: col,
-                        })
-                      : highlightCell(cellValue)}
-                  </Box>
-
-                  {/* Cell hover buttons */}
-
-                  <IconButton
-                    key="copy-btn"
-                    size="2xs"
-                    variant="ghost"
-                    aria-label="Copy to clipboard"
-                    colorPalette="primary"
-                    className="nimbus-table-cell-copy-button"
-                    onPress={() => handleCopy(cellValue)}
-                    ml="100"
-                  >
-                    <ContentCopy
-                      key="copy-icon"
-                      onClick={() => handleCopy(cellValue)}
-                    />
-                  </IconButton>
-                </Flex>
                 <Box
                   className={isTruncated ? "truncated-cell" : ""}
                   display="inline-block"
@@ -482,15 +434,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
                   position="relative"
                   overflow="hidden"
                   cursor={isDisabled ? "not-allowed" : "text"}
-                  // style={
-                  //   // TODO: I'm not clear on what this is supposed to do?
-
-                  //     // Add indentation for the first column of nested rows
-                  //     // ...(depth > 0 &&
-                  //     //   index === 0 && {
-                  //     //     paddingLeft: `${16 + depth * 16}px`,
-                  //     //   }),
-                  // }
                 >
                   {col.render
                     ? col.render({
@@ -505,14 +448,14 @@ export const DataTableRow = forwardRef(function DataTableRow<
           }}
         </RaCollection>
         <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
-          <Tooltip.Root>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              w="100%"
-              h="100%"
-            >
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="100%"
+            h="100%"
+          >
+            <Tooltip.Root>
               <IconButton
                 key="pin-btn"
                 size="2xs"
@@ -520,7 +463,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
                 aria-label={isPinned ? "Unpin row" : "Pin row"}
                 colorPalette="primary"
                 className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
-                onPress={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   togglePin(row.id);
                 }}
               >
@@ -529,8 +473,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
               <Tooltip.Content placement="top">
                 {isPinned ? "Unpin row" : "Pin row"}
               </Tooltip.Content>
-            </Box>
-          </Tooltip.Root>
+            </Tooltip.Root>
+          </Box>
         </DataTableCell>
       </RaRow>
 
@@ -542,9 +486,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
               activeColumns.length +
               (showExpandColumn ? 1 : 0) +
               (showSelectionColumn ? 1 : 0) +
-              (showDetailsColumn ? 1 : 0) +
-              (showPinColumn ? 1 : 0) -
-              // length is 1 indexed, but arrays/sets are 0 indexed, so we need to subtract 1 from the total
               1
             }
             style={{

@@ -194,7 +194,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
     const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
-    const showPinColumn = true; // Pin column is always shown
 
     const activeColumns = useMemo(() => {
       const activeCols = columns.filter(
@@ -288,7 +287,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         sortedRows,
         showExpandColumn,
         showSelectionColumn,
-        showPinColumn,
         isResizable,
         disabledKeys,
         onRowAction,
@@ -322,7 +320,6 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         sortedRows,
         showExpandColumn,
         showSelectionColumn,
-        showPinColumn,
         isResizable,
         disabledKeys,
         onRowAction,

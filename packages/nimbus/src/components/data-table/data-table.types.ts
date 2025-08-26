@@ -35,7 +35,6 @@ export interface DataTableContextValue<
   sortedRows: DataTableRowItem<T>[];
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
-  showPinColumn: boolean;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
   isResizable?: boolean;
