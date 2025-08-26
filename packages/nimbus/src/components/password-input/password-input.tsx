@@ -13,7 +13,7 @@ import type { PasswordInputProps } from "./password-input.types";
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, forwardedRef) => {
-    const { size = "md", isDisabled } = props;
+    const { size = "md", isDisabled, leadingElement, ...restProps } = props;
     const [showPassword, setShowPassword] = useState(false);
     const toggleVisibility = () => setShowPassword(!showPassword);
 
@@ -39,12 +39,18 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
 
     return (
       <Box display="inline-block" position="relative">
+        {leadingElement && (
+          <Box position="absolute" left={400} top={size === "md" ? 200 : 150}>
+            {leadingElement}
+          </Box>
+        )}
         <TextInput
           width="full"
           ref={forwardedRef}
           type={showPassword ? "text" : "password"}
-          {...props}
+          {...restProps}
           pr={iconButtonSafeSpace}
+          pl={leadingElement ? "1000" : undefined}
         />
         <Box position="absolute" {...iconPositionProps}>
           <Tooltip.Root>

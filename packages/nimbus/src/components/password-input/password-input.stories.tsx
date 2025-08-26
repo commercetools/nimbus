@@ -77,6 +77,24 @@ export const WithSizes: Story = {
   ),
 };
 
+export const WithLeadingElement: Story = {
+  args: {
+    ["aria-label"]: "Enter your password",
+    placeholder: "Password",
+    leadingElement: <Text>🔒</Text>,
+  },
+  render: (args) => (
+    <Stack gap="600">
+      <Box>
+        <PasswordInput size="sm" {...args} />
+      </Box>
+      <Box>
+        <PasswordInput size="md" {...args} />
+      </Box>
+    </Stack>
+  ),
+};
+
 export const Disabled: Story = {
   args: {
     ["aria-label"]: "Enter your password",
