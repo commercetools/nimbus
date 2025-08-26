@@ -25,9 +25,9 @@ export const Pagination = (props: PaginationProps) => {
     pageSizeOptions = [10, 20, 50, 100],
     onPageChange,
     onPageSizeChange,
-    isDisabled = false,
     "aria-label": ariaLabel = "Pagination",
-    size = "md",
+    enablePageInput = true,
+    enablePageSizeSelector = true,
   } = props;
 
   const pagination = usePagination({
@@ -58,31 +58,31 @@ export const Pagination = (props: PaginationProps) => {
   return (
     <Stack gap="400" direction={{ base: "column", sm: "row" }} align="center">
       {/* Page Size Selector */}
-      <Flex align="center" gap="200">
-        <Select.Root
-          isClearable={false}
-          selectedKey={pagination.pageSize.toString()}
-          onSelectionChange={handlePageSizeChange}
-          size={size}
-          aria-label="Items per page"
-        >
-          <Select.Options>
-            {pageSizeSelectOptions.map((option) => (
-              <Select.Option key={option.id} id={option.id}>
-                {option.name}
-              </Select.Option>
-            ))}
-          </Select.Options>
-        </Select.Root>
-        <Text>items per page</Text>
-      </Flex>
+      {enablePageSizeSelector && (
+        <Flex align="center" gap="200">
+          <Select.Root
+            isClearable={false}
+            selectedKey={pagination.pageSize.toString()}
+            onSelectionChange={handlePageSizeChange}
+            aria-label="Items per page"
+          >
+            <Select.Options>
+              {pageSizeSelectOptions.map((option) => (
+                <Select.Option key={option.id} id={option.id}>
+                  {option.name}
+                </Select.Option>
+              ))}
+            </Select.Options>
+          </Select.Root>
+          <Text color="neutral.12">items per page</Text>
+        </Flex>
+      )}
       <Flex flexGrow="1" />
       {/* Page Navigator */}
       <Flex align="center" gap="200" role="navigation" aria-label={ariaLabel}>
         <IconButton
           onClick={pagination.goToPreviousPage}
-          isDisabled={isDisabled || !pagination.hasPreviousPage}
-          size={size === "sm" ? "2xs" : "md"}
+          isDisabled={!pagination.hasPreviousPage}
           variant="ghost"
           tone="primary"
           aria-label="Go to previous page"
@@ -90,28 +90,31 @@ export const Pagination = (props: PaginationProps) => {
           <ChevronLeft />
         </IconButton>
 
-        <Flex align="center" gap="100">
-          <Text fontSize="sm" color="neutral.12">
-            Page
-          </Text>
-          <NumberInput
-            value={pagination.currentPage}
-            onChange={(value) => pagination.goToPage(value)}
-            minValue={1}
-            maxValue={pagination.totalPages}
-            isDisabled={isDisabled}
-            width="10ch"
-            aria-label="Current page"
-          />
-          <Text fontSize="sm" color="neutral.12">
+        <Flex align="center" gap="200">
+          <Text color="neutral.12">Page</Text>
+          {enablePageInput ? (
+            <NumberInput
+              value={pagination.currentPage}
+              onChange={(value) => pagination.goToPage(value)}
+              minValue={1}
+              maxValue={pagination.totalPages}
+              isDisabled={false}
+              width="9ch"
+              aria-label="Current page"
+            />
+          ) : (
+            <Text fontWeight="semibold" color="neutral.12">
+              {pagination.currentPage}
+            </Text>
+          )}
+          <Text color="neutral.12">
             of {pagination.totalPages.toLocaleString()}
           </Text>
         </Flex>
 
         <IconButton
           onClick={pagination.goToNextPage}
-          isDisabled={isDisabled || !pagination.hasNextPage}
-          size={size === "sm" ? "2xs" : "md"}
+          isDisabled={!pagination.hasNextPage}
           variant="ghost"
           tone="primary"
           aria-label="Go to next page"

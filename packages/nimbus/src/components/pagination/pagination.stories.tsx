@@ -24,15 +24,6 @@ const meta: Meta<typeof Pagination> = {
       control: { type: "object" },
       description: "Available page size options in dropdown",
     },
-    isDisabled: {
-      control: { type: "boolean" },
-      description: "Disables all pagination controls",
-    },
-    size: {
-      control: { type: "select" },
-      options: ["sm", "md"],
-      description: "Size variant for pagination controls",
-    },
   },
 };
 
@@ -50,7 +41,20 @@ export const Default: Story = {
     currentPage: 1,
     pageSize: 20,
     pageSizeOptions: [10, 20, 50, 100],
-    size: "md",
+  },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 1);
+    const [pageSize, setPageSize] = useState(args.pageSize || 20);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
   },
 };
 
@@ -106,6 +110,20 @@ export const FewItems: Story = {
     pageSize: 20,
     pageSizeOptions: [10, 20, 50, 100],
   },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 1);
+    const [pageSize, setPageSize] = useState(args.pageSize || 20);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
+  },
 };
 
 /**
@@ -115,9 +133,23 @@ export const FewItems: Story = {
 export const LastPage: Story = {
   args: {
     totalItems: 2560,
-    currentPage: 128, // Last page with pageSize of 20
+    currentPage: 128,
     pageSize: 20,
     pageSizeOptions: [10, 20, 50, 100],
+  },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 128);
+    const [pageSize, setPageSize] = useState(args.pageSize || 20);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
   },
 };
 
@@ -132,33 +164,19 @@ export const Empty: Story = {
     pageSize: 20,
     pageSizeOptions: [10, 20, 50, 100],
   },
-};
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 1);
+    const [pageSize, setPageSize] = useState(args.pageSize || 20);
 
-/**
- * Disabled pagination.
- * All controls are disabled for loading states.
- */
-export const Disabled: Story = {
-  args: {
-    totalItems: 2560,
-    currentPage: 5,
-    pageSize: 20,
-    pageSizeOptions: [10, 20, 50, 100],
-    isDisabled: true,
-  },
-};
-
-/**
- * Small size pagination.
- * More compact version for dense layouts.
- */
-export const SmallSize: Story = {
-  args: {
-    totalItems: 2560,
-    currentPage: 10,
-    pageSize: 20,
-    pageSizeOptions: [10, 20, 50, 100],
-    size: "sm",
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
   },
 };
 
@@ -173,6 +191,20 @@ export const CustomPageSizes: Story = {
     pageSize: 25,
     pageSizeOptions: [5, 25, 50, 100, 250],
   },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 1);
+    const [pageSize, setPageSize] = useState(args.pageSize || 25);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
+  },
 };
 
 /**
@@ -185,5 +217,77 @@ export const LargeDataset: Story = {
     currentPage: 2500,
     pageSize: 500,
     pageSizeOptions: [100, 250, 500, 1000],
+  },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 2500);
+    const [pageSize, setPageSize] = useState(args.pageSize || 500);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
+  },
+};
+
+/**
+ * Pagination without page input.
+ * Shows page number as text instead of an editable input field.
+ * Useful for simplified navigation or mobile interfaces.
+ */
+export const WithoutPageInput: Story = {
+  args: {
+    totalItems: 2560,
+    currentPage: 5,
+    pageSize: 20,
+    pageSizeOptions: [10, 20, 50, 100],
+    enablePageInput: false,
+  },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 5);
+    const [pageSize, setPageSize] = useState(args.pageSize || 20);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
+  },
+};
+
+/**
+ * Pagination without page size selector.
+ * Displays only the page navigation controls without the page size dropdown.
+ * Useful when page size should be fixed or controlled elsewhere.
+ */
+export const WithoutPageSizeSelector: Story = {
+  args: {
+    totalItems: 2560,
+    currentPage: 1,
+    pageSize: 20,
+    pageSizeOptions: [10, 20, 50, 100],
+    enablePageSizeSelector: false,
+  },
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(args.currentPage || 1);
+    const [pageSize, setPageSize] = useState(args.pageSize || 20);
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    );
   },
 };

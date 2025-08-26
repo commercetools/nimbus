@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 
 export interface PaginationProps {
   /** Total number of items */
@@ -13,14 +12,12 @@ export interface PaginationProps {
   onPageChange?: (page: number) => void;
   /** Callback when page size changes */
   onPageSizeChange?: (pageSize: number) => void;
-  /** Whether the pagination is disabled */
-  isDisabled?: boolean;
   /** Custom aria-label for the navigation */
   "aria-label"?: string;
-  /** Size variant for the pagination controls */
-  size?: "sm" | "md";
-  /** Children (render prop for custom content) */
-  children?: ReactNode;
+  /** Enables the page number input for direct page navigation */
+  enablePageInput?: boolean;
+  /** Enables the page size selector dropdown */
+  enablePageSizeSelector?: boolean;
 }
 
 export interface PaginationState {
