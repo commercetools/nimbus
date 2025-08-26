@@ -1,0 +1,196 @@
+---
+id: Components-Pagination
+title: Pagination
+description: Displays controls for navigating through paginated content.
+documentState: InitialDraft
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Pagination
+tags:
+  - component
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system
+---
+
+# Pagination
+
+A component that provides navigation controls for paginated content, allowing users to move through pages of data and adjust the number of items displayed per page.
+
+## Overview
+
+The Pagination component combines page navigation controls with a page size selector, providing a complete solution for navigating through large datasets. It includes previous/next navigation buttons, page number display with optional direct input, and configurable items per page selection.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+
+## Variables
+
+Get familiar with the features.
+
+### Basic Usage
+
+The most common implementation with navigation controls and page size selection.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(20);
+  
+  return (
+    <Pagination
+      totalItems={150}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```
+
+### Page Navigation
+
+#### With Page Input
+
+Allows users to directly type a page number for quick navigation through large datasets.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  
+  return (
+    <Pagination
+      totalItems={500}
+      currentPage={currentPage}
+      pageSize={10}
+      onPageChange={setCurrentPage}
+      enablePageInput={true}
+    />
+  );
+};
+```
+
+#### Without Page Input
+
+Simple navigation with previous/next buttons and current page display.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  
+  return (
+    <Pagination
+      totalItems={100}
+      currentPage={currentPage}
+      pageSize={10}
+      onPageChange={setCurrentPage}
+      enablePageInput={false}
+    />
+  );
+};
+```
+
+### Page Size Selection
+
+#### Custom Page Size Options
+
+Configure the available page size options to match your data requirements.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(3);
+  
+  return (
+    <Pagination
+      totalItems={1000}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      pageSizeOptions={[3, 5, 8, 13]}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```
+
+#### Without Page Size Selector
+
+When the number of items per page should be fixed.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  
+  return (
+    <Pagination
+      totalItems={75}
+      currentPage={currentPage}
+      pageSize={15}
+      onPageChange={setCurrentPage}
+      enablePageSizeSelector={false}
+    />
+  );
+};
+```
+
+
+
+
+## Accessibility
+
+The Pagination component is built with accessibility in mind:
+
+- Navigation controls have proper ARIA labels
+- Keyboard navigation support with Tab, Enter, and Space keys
+- Screen reader friendly with descriptive labels
+- Disabled states for unavailable navigation options
+- Focus management for keyboard users
+- Customizable aria-label for the navigation container
+
+## Usage Guidelines
+
+### When to use
+
+- **Data tables**: Navigate through rows of tabular data
+- **Lists**: Browse through long lists of items
+- **Search results**: Move through pages of search results
+- **Galleries**: Navigate through collections of images or cards
+
+### Best practices
+
+- **Consistent positioning**: Place pagination controls in a predictable location, typically at the bottom of the content
+- **Show total pages**: Always display the total number of pages to give users context
+- **Reasonable page sizes**: Offer page size options that make sense for your content type
+- **Remember preferences**: Consider persisting the user's page size preference
+- **Reset on filter changes**: Return to page 1 when filters or search queries change
+
+## Props
+
+### Pagination Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `totalItems` | `number` | - | Total number of items to paginate |
+| `currentPage` | `number` | 1 | Current page number (1-based) |
+| `pageSize` | `number` | 10 | Number of items per page |
+| `pageSizeOptions` | `number[]` | `[10, 20, 50, 100]` | Available page size options |
+| `onPageChange` | `(page: number) => void` | - | Callback when page changes |
+| `onPageSizeChange` | `(pageSize: number) => void` | - | Callback when page size changes |
+| `aria-label` | `string` | "Pagination" | Custom aria-label for the navigation |
+| `enablePageInput` | `boolean` | `true` | Enables direct page number input |
+| `enablePageSizeSelector` | `boolean` | `true` | Enables page size dropdown |
+
+## Related Components
+
+- [Table](/components/table) - Often used with pagination for data tables
+- [DataTable](/components/data-table) - Advanced table with built-in pagination support
+- [Select](/components/select) - Used internally for page size selection
+- [NumberInput](/components/number-input) - Used internally for page number input
+- [IconButton](/components/icon-button) - Used for navigation buttons
