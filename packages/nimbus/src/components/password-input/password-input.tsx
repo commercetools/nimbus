@@ -3,7 +3,7 @@ import { Box, IconButton, Tooltip } from "@/components";
 import { TextInput } from "@/components/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import messages from "./messages";
 
 /**
@@ -65,9 +65,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
             <Tooltip.Content>
-              {showPassword
-                ? intl.formatMessage(messages.hide)
-                : intl.formatMessage(messages.show)}
+              <FormattedMessage
+                {...(showPassword ? messages.hide : messages.show)}
+              />
             </Tooltip.Content>
           </Tooltip.Root>
         </Box>
