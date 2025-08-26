@@ -54,7 +54,6 @@ export const Base: Story = {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
     const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo, platypus, baldEagle, bison, skunk] = tags;
 
     await step("on render", async () => {
       await expect(tagList).toBeInTheDocument();
@@ -65,31 +64,31 @@ export const Base: Story = {
       "Keyboard Navigation - Tab enters group, arrows move between tags",
       async () => {
         await userEvent.tab();
-        const firstRow = canvas.getAllByRole("row")[0];
-        expect(firstRow).toHaveFocus();
+        const koala = canvas.getAllByRole("row")[0];
+        expect(koala).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        const secondRow = canvas.getAllByRole("row")[1];
-        expect(secondRow).toHaveFocus();
+        const kangaroo = canvas.getAllByRole("row")[1];
+        expect(kangaroo).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        const thirdRow = canvas.getAllByRole("row")[2];
-        expect(thirdRow).toHaveFocus();
+        const platypus = canvas.getAllByRole("row")[2];
+        expect(platypus).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        const fourthRow = canvas.getAllByRole("row")[3];
-        expect(fourthRow).toHaveFocus();
+        const baldEagle = canvas.getAllByRole("row")[3];
+        expect(baldEagle).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        const fifthRow = canvas.getAllByRole("row")[4];
-        expect(fifthRow).toHaveFocus();
+        const bison = canvas.getAllByRole("row")[4];
+        expect(bison).toHaveFocus();
         await userEvent.keyboard("{ArrowRight}");
-        const sixthRow = canvas.getAllByRole("row")[5];
-        expect(sixthRow).toHaveFocus();
+        const skunk = canvas.getAllByRole("row")[5];
+        expect(skunk).toHaveFocus();
         // make sure focus wraps
         await userEvent.keyboard("{ArrowRight}");
-        expect(firstRow).toHaveFocus();
+        expect(koala).toHaveFocus();
         await userEvent.keyboard("{ArrowLeft}");
-        expect(sixthRow).toHaveFocus();
+        expect(skunk).toHaveFocus();
         await userEvent.tab();
         // tab removes focus from tabs
-        expect(sixthRow).not.toHaveFocus();
+        expect(skunk).not.toHaveFocus();
       }
     );
   },
@@ -120,24 +119,21 @@ export const TagRemoval: Story = {
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
-    const tagList = canvas.getByRole("grid");
-    const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo] = tags;
+
     await step("Tags - keyboard removal", async () => {
       await userEvent.tab();
-      // Get the first row element directly
-      const firstRow = canvas.getAllByRole("row")[0];
-      expect(firstRow).toHaveFocus();
+      const koala = canvas.getAllByRole("row")[0];
+      expect(koala).toHaveFocus();
       await userEvent.keyboard("{backspace}");
-      expect(firstRow).not.toBeInTheDocument();
+      expect(koala).not.toBeInTheDocument();
     });
 
     await step("Tags - mouse removal", async () => {
-      const secondRow = canvas.getAllByRole("row")[1];
-      const removeKangarooButton = within(secondRow).getByLabelText("Remove");
+      const kangaroo = canvas.getAllByRole("row")[1];
+      const removeKangarooButton = within(kangaroo).getByLabelText("Remove");
       await userEvent.click(removeKangarooButton);
       expect(args.onRemove).toHaveBeenCalled();
-      expect(secondRow).not.toBeInTheDocument();
+      expect(kangaroo).not.toBeInTheDocument();
     });
   },
 };
@@ -165,30 +161,28 @@ export const SingleSelection: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
-    const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo] = tags;
 
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
-      const firstRow = canvas.getAllByRole("row")[0];
-      expect(firstRow).toHaveFocus();
+      const koala = canvas.getAllByRole("row")[0];
+      expect(koala).toHaveFocus();
       await userEvent.keyboard("{enter}");
-      await canvas.queryByText("Current selection: koala");
+      canvas.queryByText("Current selection: koala");
       await userEvent.keyboard("{ArrowRight}");
       await userEvent.keyboard("{enter}");
       //selecting another tag deselects the current selection
-      await canvas.queryByText("Current selection: kangaroo");
+      canvas.queryByText("Current selection: kangaroo");
     });
 
     await step("Tags - mouse selection", async () => {
-      const firstRow = canvas.getAllByRole("row")[0];
-      const secondRow = canvas.getAllByRole("row")[1];
-      await userEvent.click(firstRow);
+      const koala = canvas.getAllByRole("row")[0];
+      await userEvent.click(koala);
       await userEvent.click(tagList);
-      await canvas.queryByText("Current selection: koala");
-      await userEvent.click(secondRow);
+      canvas.queryByText("Current selection: koala");
+      const kangaroo = canvas.getAllByRole("row")[1];
+      await userEvent.click(kangaroo);
       //selecting another tag deselects the current selection
-      await canvas.queryByText("Current selection: kangaroo");
+      canvas.queryByText("Current selection: kangaroo");
     });
   },
 };
@@ -219,34 +213,32 @@ export const MultipleSelection: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tagList = canvas.getByRole("grid");
-    const tags = within(tagList).getAllByRole("row");
-    const [koala, kangaroo] = tags;
 
     await step("Tags - keyboard selection", async () => {
       await userEvent.tab();
-      const firstRow = canvas.getAllByRole("row")[0];
-      expect(firstRow).toHaveFocus();
+      const koala = canvas.getAllByRole("row")[0];
+      expect(koala).toHaveFocus();
       await userEvent.keyboard("{enter}");
-      await canvas.queryByText("Current selection: koala");
+      canvas.queryByText("Current selection: koala");
       await userEvent.keyboard("{ArrowRight}");
       await userEvent.keyboard("{enter}");
-      await canvas.queryByText("Current selection: koala, kangaroo");
+      canvas.queryByText("Current selection: koala, kangaroo");
       //hitting enter again deselects
       await userEvent.keyboard("{enter}");
-      await canvas.queryByText("Current selection: koala");
+      canvas.queryByText("Current selection: koala");
     });
 
     await step("Tags - mouse selection", async () => {
-      const firstRow = canvas.getAllByRole("row")[0];
-      const secondRow = canvas.getAllByRole("row")[1];
-      await userEvent.click(firstRow);
+      const koala = canvas.getAllByRole("row")[0];
+      await userEvent.click(koala);
       await userEvent.click(tagList);
-      await canvas.queryByText("Current selection: koala");
-      await userEvent.click(secondRow);
-      await canvas.queryByText("Current selection: koala, kangaroo");
+      canvas.queryByText("Current selection: koala");
+      const kangaroo = canvas.getAllByRole("row")[1];
+      await userEvent.click(kangaroo);
+      canvas.queryByText("Current selection: koala, kangaroo");
       //clicking selected tag deselects
-      await userEvent.click(secondRow);
-      await canvas.queryByText("Current selection: koala");
+      await userEvent.click(kangaroo);
+      canvas.queryByText("Current selection: koala");
     });
   },
 };
@@ -271,21 +263,18 @@ export const EmptyState: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const tagList = canvas.getByRole("grid");
-    const tags = within(tagList).getAllByRole("row");
-    const [koala] = tags;
     await step("Tags - empty state", async () => {
       await userEvent.tab();
-      const firstRow = canvas.getAllByRole("row")[0];
-      expect(firstRow).toHaveFocus();
+      const koala = canvas.getAllByRole("row")[0];
+      expect(koala).toHaveFocus();
       await userEvent.keyboard("{backspace}");
-      await canvas.queryByText("No Animals");
+      canvas.queryByText("No Animals");
     });
   },
 };
-/**
- * Showcase Sizes
- */
+// /**
+//  * Showcase Sizes
+//  */
 export const Sizes: Story = {
   args: {},
   render: () => {
