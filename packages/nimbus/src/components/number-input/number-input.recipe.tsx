@@ -9,33 +9,42 @@ export const numberInputRecipe = defineSlotRecipe({
   className: "nimbus-number-input",
 
   // Define the slots for this multi-part component
-  slots: ["root", "input", "incrementButton", "decrementButton"],
+  slots: [
+    "root",
+    "leadingElement",
+    "trailingElement",
+    "input",
+    "incrementButton",
+    "decrementButton",
+  ],
 
   // Base styles applied to all instances of the component
   base: {
     root: {
-      display: "inline-block",
+      display: "inline-flex",
       position: "relative",
+      borderRadius: "200",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       // Apply input hover styles when buttons are hovered
-      "&:has(button:hover) input": {
+      "&:has(button:hover) root": {
         backgroundColor: "primary.2",
       },
-    },
-    input: {
-      "--border-width": "sizes.25",
-      "--border-color": "colors.neutral.7",
-      display: "block",
-      borderRadius: "200",
-      colorPalette: "neutral",
-      focusVisibleRing: "outside",
-      bg: "transparent",
-      outline: "none",
-      appearance: "textfield",
-      width: "full",
-      _placeholder: {
-        opacity: 0.5,
-        color: "currentColor",
+
+      _focusWithin: {
+        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
+        outlineWidth: "var(--focus-ring-width)",
+        outlineColor: "var(--focus-ring-color)",
+        outlineStyle: "var(--focus-ring-style)",
+        outlineOffset: "var(--focus-ring-offset)",
       },
+
+      "& *": {
+        outline: "none !important",
+      },
+
+      focusVisibleRing: "outside",
+      focusRing: "outside",
+
       _disabled: {
         layerStyle: "disabled",
         bg: "neutral.3",
@@ -43,6 +52,37 @@ export const numberInputRecipe = defineSlotRecipe({
       "&[data-invalid='true']": {
         "--border-color": "colors.critical.7",
         color: "critical.11",
+      },
+    },
+    leadingElement: {
+      color: "neutral.11",
+      outline: "1px solid red",
+      pl: 200,
+      display: "flex",
+      alignItems: "center",
+    },
+    trailingElement: {
+      color: "neutral.11",
+      outline: "1px solid green",
+      pr: 800,
+      display: "flex",
+      alignItems: "center",
+    },
+    input: {
+      "--border-width": "sizes.25",
+      "--border-color": "colors.neutral.7",
+      display: "block",
+      flexGrow: 1,
+      borderRadius: "inherit",
+      colorPalette: "neutral",
+      // focusVisibleRing: "outside",
+      bg: "transparent",
+      outline: "none",
+      appearance: "textfield",
+      width: "full",
+      _placeholder: {
+        opacity: 0.5,
+        color: "currentColor",
       },
     },
     incrementButton: {
@@ -128,18 +168,18 @@ export const numberInputRecipe = defineSlotRecipe({
         root: {
           // Apply input hover styles when buttons are hovered for solid variant
           "&:has(button:hover) input": {
-            backgroundColor: "primary.2",
+            // backgroundColor: "primary.2",
           },
+          backgroundColor: "neutral.1",
         },
         input: {
           "&[data-invalid='true']": {
             boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
             "--border-width": "sizes.50",
           },
-          boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-          backgroundColor: "neutral.1",
+          // boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
           _hover: {
-            backgroundColor: "primary.2",
+            // backgroundColor: "primary.2",
           },
         },
         incrementButton: {

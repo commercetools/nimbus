@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
+import { Box, Stack, Text, FormField, Button } from "@/components";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof NumberInput> = {
   title: "components/NumberInput",
@@ -219,6 +220,31 @@ export const AllCombinations: Story = {
       ))}
     </Stack>
   ),
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    placeholder: "Enter id",
+    leadingElement: <AddReaction />,
+    "aria-label": "Number input with leading element",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    placeholder: "Enter id",
+    trailingElement: <AddReaction />,
+    "aria-label": "Number input with trailing element",
+  },
+};
+
+export const WithLeadingAndTrailingElement: Story = {
+  args: {
+    placeholder: "Enter id",
+    leadingElement: <AddReaction />,
+    trailingElement: <AddReaction />,
+    "aria-label": "Number input with leading and trailing elements",
+  },
 };
 
 export const Controlled: Story = {

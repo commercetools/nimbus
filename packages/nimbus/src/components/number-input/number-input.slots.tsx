@@ -18,6 +18,16 @@ export type NumberInputRootSlotProps = HTMLChakraProps<
   NumberInputRecipeProps
 >;
 
+export type NumberInputLeadingElementSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
+>;
+
+export type NumberInputTrailingElementSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
+>;
+
 export type NumberInputInputSlotProps = HTMLChakraProps<
   "input",
   NumberInputRecipeProps
@@ -47,6 +57,16 @@ export const NumberInputRootSlot = withProvider<
   HTMLDivElement,
   NumberInputRootSlotProps
 >("div", "root");
+
+export const NumberInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  NumberInputLeadingElementSlotProps
+>("div", "leadingElement");
+
+export const NumberInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  NumberInputTrailingElementSlotProps
+>("div", "trailingElement");
 
 /**
  * Input slot for NumberInput component.
