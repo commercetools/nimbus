@@ -7,7 +7,7 @@ export const toolbarRecipe = defineRecipe({
     p: "var(--toolbar-spacing)",
     gap: "var(--toolbar-spacing)",
     borderRadius: "300",
-    alignItems: "stretch",
+    alignItems: "center",
     flexDirection: "var(--toolbar-direction)",
 
     "& .nimbus-group, & .nimbus-toggle-button-group__root": {
@@ -20,22 +20,25 @@ export const toolbarRecipe = defineRecipe({
     size: {
       xs: {
         "--toolbar-spacing": "{spacing.100}",
+        "--divider-size": "{sizes.600}",
       },
       md: {
         "--toolbar-spacing": "{spacing.200}",
+        "--divider-size": "{sizes.800}",
       },
     },
     orientation: {
       horizontal: {
         "--toolbar-direction": "row",
         "& .nimbus-divider": {
-          height: "auto",
+          height: "var(--divider-size)",
           mx: "var(--toolbar-spacing)",
         },
       },
       vertical: {
         "--toolbar-direction": "column",
         "& .nimbus-divider": {
+          width: "var(--divider-size)",
           my: "var(--toolbar-spacing)",
         },
       },

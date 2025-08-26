@@ -22,7 +22,6 @@ export interface ToolbarProps
    * @default "horizontal"
    */
   orientation?: RecipeVariantProps<typeof toolbarRecipe>["orientation"];
-
   /**
    * The size of the toolbar.
    * @default "md"

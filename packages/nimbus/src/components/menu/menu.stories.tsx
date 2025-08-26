@@ -567,13 +567,13 @@ export const SingleSelection: Story = {
 
       // Check that medium is selected initially
       const mediumItem = canvas.getByRole("menuitemradio", { name: /Medium/ });
-      await expect(mediumItem).toHaveAttribute("aria-checked", "true");
+      await expect(mediumItem).toHaveAttribute("data-selected");
 
       // Check that other items are not selected
       const smallItem = canvas.getByRole("menuitemradio", { name: /Small/ });
       const largeItem = canvas.getByRole("menuitemradio", { name: /Large/ });
-      await expect(smallItem).toHaveAttribute("aria-checked", "false");
-      await expect(largeItem).toHaveAttribute("aria-checked", "false");
+      await expect(smallItem).not.toHaveAttribute("data-selected");
+      await expect(largeItem).not.toHaveAttribute("data-selected");
     });
 
     await step("Select different item with mouse", async () => {
@@ -603,13 +603,13 @@ export const SingleSelection: Story = {
 
       // Check that small is now selected
       const smallItem = canvas.getByRole("menuitemradio", { name: /Small/ });
-      await expect(smallItem).toHaveAttribute("aria-checked", "true");
+      await expect(smallItem).toHaveAttribute("data-selected");
 
       // Check that others are not selected
       const mediumItem = canvas.getByRole("menuitemradio", { name: /Medium/ });
       const largeItem = canvas.getByRole("menuitemradio", { name: /Large/ });
-      await expect(mediumItem).toHaveAttribute("aria-checked", "false");
-      await expect(largeItem).toHaveAttribute("aria-checked", "false");
+      await expect(mediumItem).not.toHaveAttribute("data-selected");
+      await expect(largeItem).not.toHaveAttribute("data-selected");
     });
 
     await step("Navigate and select with keyboard", async () => {
@@ -760,10 +760,10 @@ export const MultiSelection: Story = {
         name: /Strikethrough/,
       });
 
-      await expect(boldItem).toHaveAttribute("aria-checked", "true");
-      await expect(italicItem).toHaveAttribute("aria-checked", "true");
-      await expect(underlineItem).toHaveAttribute("aria-checked", "false");
-      await expect(strikethroughItem).toHaveAttribute("aria-checked", "false");
+      await expect(boldItem).toHaveAttribute("data-selected");
+      await expect(italicItem).toHaveAttribute("data-selected");
+      await expect(underlineItem).not.toHaveAttribute("data-selected");
+      await expect(strikethroughItem).not.toHaveAttribute("data-selected");
     });
 
     await step("Toggle selection with mouse click", async () => {
