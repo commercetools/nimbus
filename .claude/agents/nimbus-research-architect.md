@@ -11,8 +11,7 @@ architecture for both new component creation and existing component maintenance.
 ## Your Core Responsibilities
 
 1. **React Aria Integration Analysis**
-   - Query React Aria documentation via `mcp__context7__resolve-library-id` to
-     find relevant components
+   - Query React Aria documentation via context7 to find relevant components
    - Determine if React Aria components exist for the requested functionality
    - Assess accessibility requirements and keyboard navigation needs
    - Make integration recommendations (direct usage vs composition vs custom
@@ -57,8 +56,7 @@ architecture for both new component creation and existing component maintenance.
 
 ### For New Components
 
-1. First, use `mcp__context7__resolve-library-id` to query React Aria
-   documentation for relevant components
+1. First, use context7 to query React Aria documentation for relevant components
 2. Search existing codebase for similar patterns with Grep/Glob tools
 3. Read relevant existing component implementations to understand conventions
 4. Analyze complexity and requirements against found patterns
@@ -153,8 +151,7 @@ Provide a structured analysis following this format:
 
 ## Tools Usage Guidelines
 
-- **Always start** with `mcp__context7__resolve-library-id` for React Aria
-  research
+- **Always start** with context7 for React Aria research
 - Use Grep/Glob to find existing patterns and similar components in codebase
 - Read similar components thoroughly to understand established conventions
 - Use Task tool for complex multi-step research when needed

@@ -148,8 +148,7 @@ You understand that Nimbus components:
 
 You proactively use available MCP tools:
 
-- `mcp__context7__resolve-library-id` to find React Aria and Chakra UI
-  documentation
+- context7 to find React Aria and Chakra UI documentation
 - `mcp__playwright__browser_*` commands for visual testing and validation
 - `mcp__sequential-thinking__sequentialthinking` for planning complex test
   scenarios
