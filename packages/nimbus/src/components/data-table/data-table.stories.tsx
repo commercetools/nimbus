@@ -293,11 +293,13 @@ const DataTableWithModals = ({
   const [tableData, setTableData] = useState<DataTableRowItem[]>(
     props.data || []
   );
+  const [dataVersion, setDataVersion] = useState(0);
 
   // Sync tableData with props.data when it changes
   useEffect(() => {
     if (props.data) {
       setTableData(props.data);
+      setDataVersion(0);
     }
   }, [props.data]);
 
@@ -319,6 +321,9 @@ const DataTableWithModals = ({
       return newData;
     });
 
+    // Increment data version to force re-render
+    setDataVersion((prev) => prev + 1);
+
     // Close the modal after saving
     setRowClickModalState({ isOpen: false, row: undefined });
   };
@@ -329,7 +334,7 @@ const DataTableWithModals = ({
         {...props}
         data={tableData}
         onRowClick={handleRowClick}
-        key={JSON.stringify(tableData)} // Force re-render when data changes
+        key={`table-v${dataVersion}`} // Force re-render when data changes
       />
 
       {/* Details Modal */}
