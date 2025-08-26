@@ -14,7 +14,6 @@ export const AlertDismissButton = ({
   const context = useContext(AlertContext);
   const intl = useIntl();
 
-  const dismissLabel = intl.formatMessage(messages.dismiss);
   useEffect(() => {
     if (context) {
       const slotElement = (
