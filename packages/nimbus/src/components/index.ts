@@ -51,3 +51,4 @@ export * from "./menu";
 export * from "./date-range-picker";
 export * from "./toolbar";
 export * from "./rich-text-input";
+export * from "./data-table";

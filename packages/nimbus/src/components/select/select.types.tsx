@@ -26,8 +26,18 @@ export interface SelectOptionsProps<T>
     Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}
 
 export interface SelectOptionProps<T>
-  extends Omit<RaListBoxItemProps<T>, keyof SelectOptionSlotProps>,
-    SelectOptionSlotProps {}
+  extends Omit<
+      RaListBoxItemProps<T>,
+      | "onClick"
+      | "translate"
+      | "onBlur"
+      | "onFocus"
+      | "onKeyDown"
+      | "onKeyUp"
+      | "onMouseDown"
+      | "onMouseUp"
+    >,
+    Omit<SelectOptionSlotProps, keyof RaListBoxItemProps<T>> {}
 
 export interface SelectOptionGroupProps<T>
   extends RaListBoxSectionProps<T>,

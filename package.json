@@ -21,6 +21,8 @@
     "component:new": "pnpm hygen component new",
     "generate:tokens": "pnpm --filter @commercetools/nimbus-tokens run build",
     "lint": "eslint .",
+    "typecheck": "pnpm -r --filter './packages/*' --bail=false typecheck || true",
+    "typecheck:strict": "pnpm -r --filter './packages/*' typecheck",
     "nimbus:init": "pnpm nimbus:reset && pnpm install && pnpm build && pnpm playwright:install",
     "nimbus:reset": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
     "playwright:install": "pnpm exec playwright install chromium",
@@ -53,7 +55,7 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
-    "@changesets/changelog-github": "0.5.0",
+    "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.27.5",
     "@eslint/js": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",

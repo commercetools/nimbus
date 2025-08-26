@@ -4,6 +4,10 @@ import {
   type HTMLChakraProps,
   type RecipeVariantProps,
 } from "@chakra-ui/react/styled-system";
+import {
+  Checkbox as RaCheckbox,
+  type CheckboxProps,
+} from "react-aria-components";
 import { checkboxSlotRecipe } from "./checkbox.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -11,12 +15,14 @@ const { withProvider, withContext } = createSlotRecipeContext({
 });
 
 export interface CheckboxRootProps
-  extends HTMLChakraProps<
-    "label",
-    RecipeVariantProps<typeof checkboxSlotRecipe>
-  > {}
-export const CheckboxRoot = withProvider<HTMLLabelElement, CheckboxRootProps>(
-  "label",
+  extends Omit<
+      HTMLChakraProps<"label", RecipeVariantProps<typeof checkboxSlotRecipe>>,
+      keyof CheckboxProps
+    >,
+    CheckboxProps {}
+
+export const CheckboxRoot = withProvider<CheckboxRootProps, CheckboxRootProps>(
+  RaCheckbox,
   "root"
 );
 

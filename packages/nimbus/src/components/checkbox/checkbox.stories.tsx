@@ -35,21 +35,27 @@ export const Base: Story = {
     const displayLabel = canvasElement.querySelector(
       '[data-slot="label"]'
     ) as HTMLSpanElement;
-    const htmlInput = canvas.getByTestId("test-checkbox");
+    const checkboxElement = canvas.getByTestId("test-checkbox");
+    const inputElement = checkboxElement.querySelector(
+      "input"
+    ) as HTMLInputElement;
     const onChange = args.onChange;
 
     await step(
-      "Forwards data- & aria-attributes to the actual html-input",
+      "Forwards data- & aria-attributes to the checkbox element",
       async () => {
-        await expect(htmlInput.tagName).toBe("INPUT");
-        await expect(htmlInput).toHaveAttribute("data-testid", "test-checkbox");
-        await expect(htmlInput).toHaveAttribute("aria-label", "test-label");
+        await expect(checkboxElement.tagName).toBe("LABEL");
+        await expect(checkboxElement).toHaveAttribute(
+          "data-testid",
+          "test-checkbox"
+        );
+        await expect(inputElement).toHaveAttribute("aria-label", "test-label");
       }
     );
 
     await step("Can be focused with the keyboard", async () => {
       await userEvent.keyboard("{tab}");
-      await expect(htmlInput).toHaveFocus();
+      await expect(inputElement).toHaveFocus();
     });
 
     await step("Can be triggered with space-bar", async () => {
@@ -58,16 +64,16 @@ export const Base: Story = {
       await userEvent.keyboard(" ");
       await expect(onChange).toHaveBeenCalledTimes(2);
     });
-    await step("Can not be triggered with enter", async () => {
+    await step("Can be triggered with enter", async () => {
       await userEvent.keyboard("{enter}");
-      await expect(onChange).toHaveBeenCalledTimes(2);
+      await expect(onChange).toHaveBeenCalledTimes(3);
     });
 
     await step("Can be triggered by clicking on root & label", async () => {
       htmlLabel.click();
-      await expect(onChange).toHaveBeenCalledTimes(3);
-      displayLabel.click();
       await expect(onChange).toHaveBeenCalledTimes(4);
+      displayLabel.click();
+      await expect(onChange).toHaveBeenCalledTimes(5);
     });
   },
 };
@@ -87,24 +93,24 @@ export const Disabled: Story = {
     const htmlLabel = canvasElement.querySelector(
       '[data-slot="root"]'
     ) as HTMLLabelElement;
-    const htmlInput = canvas.getByTestId("test-checkbox");
+    const checkboxElement = canvas.getByTestId("test-checkbox");
 
-    await step("input has html 'disabled' attribute", async () => {
-      await expect(htmlInput).toHaveAttribute("disabled");
+    await step("checkbox element has disabled state", async () => {
+      await expect(checkboxElement).toHaveAttribute("data-disabled", "true");
     });
 
     await step("Can not be focused with the keyboard", async () => {
       await userEvent.keyboard("{tab}");
-      await expect(htmlInput).not.toHaveFocus();
+      await expect(checkboxElement).not.toHaveFocus();
     });
 
     await step(
       "Can not be triggered by clicking on the root- or label-element",
       async () => {
-        //await expect(htmlInput).toBeDisabled();
-        await expect(htmlInput).not.toBeChecked();
+        //await expect(checkboxElement).toBeDisabled();
+        await expect(checkboxElement).not.toBeChecked();
         htmlLabel.click();
-        await expect(htmlInput).not.toBeChecked();
+        await expect(checkboxElement).not.toBeChecked();
         await expect(args.onChange).not.toBeCalled();
       }
     );
@@ -122,9 +128,9 @@ export const Invalid: Story = {
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const htmlInput = canvas.getByTestId("test-checkbox");
-    await step("html input state is invalid", async () => {
-      await expect(htmlInput).toBeInvalid();
+    const checkboxElement = canvas.getByTestId("test-checkbox");
+    await step("checkbox element has invalid state", async () => {
+      await expect(checkboxElement).toHaveAttribute("data-invalid", "true");
     });
   },
 };
@@ -138,9 +144,15 @@ export const InvisibleLabel: Story = {
 
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
-    const htmlInput = canvas.getByTestId("test-checkbox");
+    const checkboxElement = canvas.getByTestId("test-checkbox");
+    const inputElement = checkboxElement.querySelector(
+      "input"
+    ) as HTMLInputElement;
     await step("Has alternative label", async () => {
-      await expect(htmlInput).toHaveAttribute("aria-label", args["aria-label"]);
+      await expect(inputElement).toHaveAttribute(
+        "aria-label",
+        args["aria-label"]
+      );
     });
   },
 };

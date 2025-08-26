@@ -46,6 +46,7 @@
     }
   },
   "dependencies": {
+    "@chakra-ui/react": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "escape-html": "^1.0.3",
@@ -63,11 +64,9 @@
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
-    "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
-    "@pandacss/types": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-docs": "catalog:tooling",
@@ -111,6 +110,7 @@
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "typecheck": "tsc --noEmit"
   }
 }

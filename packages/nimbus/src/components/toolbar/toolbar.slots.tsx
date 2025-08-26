@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
   createRecipeContext,
@@ -25,7 +24,9 @@ interface ToolbarRecipeProps
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
 export interface ToolbarSlotProps
-  extends HTMLChakraProps<"div", ToolbarRecipeProps> {}
+  extends Omit<HTMLChakraProps<"div", ToolbarRecipeProps>, "translate"> {
+  translate?: "yes" | "no";
+}
 
 /**
  * Slot component that provides the styling context for the Group component.

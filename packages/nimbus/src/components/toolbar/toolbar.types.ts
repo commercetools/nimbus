@@ -28,6 +28,18 @@ export interface ToolbarProps
    */
   size?: RecipeVariantProps<typeof toolbarRecipe>["size"];
 
+  /**
+   * The size of the toolbar.
+   * @default "md"
+   */
+  size?: RecipeVariantProps<typeof toolbarRecipe>["size"];
+
+  /**
+   * The visual variant of the toolbar.
+   * @default "plain"
+   */
+  variant?: RecipeVariantProps<typeof toolbarRecipe>["variant"];
+
   ref?: Ref<HTMLDivElement>;
 }
 

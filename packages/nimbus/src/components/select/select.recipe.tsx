@@ -25,11 +25,6 @@ export const selectSlotRecipe = defineSlotRecipe({
       position: "relative",
       maxWidth: "100%",
       borderRadius: "200",
-      // [data-focused]
-      // [data-focus-visible]
-      // [data-open]
-      // [data-invalid]
-      // [data-required]
       "&[data-disabled='true']": {
         layerStyle: "disabled",
         pointerEvents: "none",
@@ -56,13 +51,6 @@ export const selectSlotRecipe = defineSlotRecipe({
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
       },
-
-      // [data-hovered]
-      // [data-pressed]
-      // [data-focused]
-      // [data-focus-visible]
-      // [data-disabled]
-      // [data-pending]
     },
     triggerLabel: {
       // *Magic*
@@ -103,10 +91,6 @@ export const selectSlotRecipe = defineSlotRecipe({
       overflowY: "auto",
       scrollbarWidth: "thin",
       scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
-      // [data-trigger="..."]
-      // [data-placement="left | right | top | bottom"]
-      // [data-entering]
-      // [data-exiting]
     },
     // Option group header
     optionGroup: {

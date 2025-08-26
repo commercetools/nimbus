@@ -21,7 +21,7 @@ export const DateRangePickerTimeInput = ({
 
   // Focus the time input when date range changes (user selects dates from calendar)
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     // Check if date range changed by comparing start and end dates
     const hasValueChanged =
