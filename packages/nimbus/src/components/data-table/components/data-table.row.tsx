@@ -13,11 +13,11 @@ import type {
   DataTableRowItem as DataTableRowType,
   DataTableColumnItem,
 } from "../data-table.types";
-import { Box, Checkbox } from "@/components";
-
+import { Box, Checkbox, IconButton, Tooltip } from "@/components";
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
+  PushPin,
 } from "@commercetools/nimbus-icons";
 
 export interface DataTableRowProps<T extends object = Record<string, unknown>> {
@@ -94,6 +94,9 @@ export const DataTableRow = forwardRef(function DataTableRow<
     isTruncated,
     onRowClick,
     onRowAction,
+    pinnedRows,
+    togglePin,
+    sortedRows,
   } = useDataTableContext<T>();
 
   // Helper function to check if row is disabled
@@ -323,6 +326,25 @@ export const DataTableRow = forwardRef(function DataTableRow<
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
   const isExpanded = expanded[row.id];
+  const isPinned = pinnedRows.has(row.id);
+
+  // Calculate pinned row position for styling
+  const pinnedRowIds = sortedRows
+    .filter((r) => pinnedRows.has(r.id))
+    .map((r) => r.id);
+  const pinnedRowIndex = isPinned ? pinnedRowIds.indexOf(row.id) : -1;
+  const isFirstPinned = pinnedRowIndex === 0;
+  const isLastPinned = pinnedRowIndex === pinnedRowIds.length - 1;
+  const isSinglePinned = pinnedRowIds.length === 1 && isPinned;
+
+  // Generate pinned row CSS classes
+  const getPinnedRowClasses = () => {
+    if (!isPinned) return "";
+    if (isSinglePinned) return "data-table-row-pinned-single";
+    if (isFirstPinned) return "data-table-row-pinned-first";
+    if (isLastPinned) return "data-table-row-pinned-last";
+    return "";
+  };
 
   // Highlight helper
   const highlightCell = (value: unknown): React.ReactNode =>
@@ -341,7 +363,7 @@ export const DataTableRow = forwardRef(function DataTableRow<
         columns={activeColumns}
         ref={rowRef}
         id={row.id}
-        className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""}`}
+        className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
         style={{
           cursor: isDisabled
             ? "not-allowed"
@@ -412,15 +434,6 @@ export const DataTableRow = forwardRef(function DataTableRow<
                   position="relative"
                   overflow="hidden"
                   cursor={isDisabled ? "not-allowed" : "text"}
-                  // style={
-                  //   // TODO: I'm not clear on what this is supposed to do?
-
-                  //     // Add indentation for the first column of nested rows
-                  //     // ...(depth > 0 &&
-                  //     //   index === 0 && {
-                  //     //     paddingLeft: `${16 + depth * 16}px`,
-                  //     //   }),
-                  // }
                 >
                   {col.render
                     ? col.render({
@@ -434,6 +447,35 @@ export const DataTableRow = forwardRef(function DataTableRow<
             );
           }}
         </RaCollection>
+        <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="100%"
+            h="100%"
+          >
+            <Tooltip.Root>
+              <IconButton
+                key="pin-btn"
+                size="2xs"
+                variant="ghost"
+                aria-label={isPinned ? "Unpin row" : "Pin row"}
+                colorPalette="primary"
+                className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  togglePin(row.id);
+                }}
+              >
+                <PushPin />
+              </IconButton>
+              <Tooltip.Content placement="top">
+                {isPinned ? "Unpin row" : "Pin row"}
+              </Tooltip.Content>
+            </Tooltip.Root>
+          </Box>
+        </DataTableCell>
       </RaRow>
 
       {showExpandColumn && (
@@ -443,7 +485,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
             colSpan={
               activeColumns.length +
               (showExpandColumn ? 1 : 0) +
-              (showSelectionColumn ? 1 : 0)
+              (showSelectionColumn ? 1 : 0) +
+              1
             }
             style={{
               borderLeft: "2px solid blue",

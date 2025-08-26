@@ -63,47 +63,73 @@ function sortRows<T extends object>(
   rows: DataTableRowType<T>[],
   sortDescriptor: SortDescriptor | undefined,
   columns: DataTableColumnItem<T>[],
-  nestedKey?: string
+  nestedKey?: string,
+  pinnedRows?: Set<string>
 ): DataTableRowType<T>[] {
-  if (!sortDescriptor) return rows;
+  // Separate pinned and unpinned rows
+  const pinned: DataTableRowType<T>[] = [];
+  const unpinned: DataTableRowType<T>[] = [];
 
-  const column = columns.find((col) => col.id === sortDescriptor.column);
-  if (!column) return rows;
-
-  const sortedRows = [...rows].sort((a, b) => {
-    const aValue = column.accessor(a);
-    const bValue = column.accessor(b);
-
-    if (aValue == null && bValue == null) return 0;
-    if (aValue == null) return 1;
-    if (bValue == null) return -1;
-
-    let aSortValue = aValue;
-    let bSortValue = bValue;
-
-    if (typeof aValue === "number" && typeof bValue === "number") {
-      aSortValue = aValue;
-      bSortValue = bValue;
+  rows.forEach((row) => {
+    if (pinnedRows?.has(row.id)) {
+      pinned.push(row);
     } else {
-      aSortValue = String(aValue).toLowerCase();
-      bSortValue = String(bValue).toLowerCase();
+      unpinned.push(row);
     }
-
-    if (aSortValue < bSortValue)
-      return sortDescriptor.direction === "ascending" ? -1 : 1;
-    if (aSortValue > bSortValue)
-      return sortDescriptor.direction === "ascending" ? 1 : -1;
-    return 0;
   });
 
-  return sortedRows.map((row) => {
+  let sortedUnpinnedRows = unpinned;
+
+  // Only sort if we have a sort descriptor
+  if (sortDescriptor) {
+    const column = columns.find((col) => col.id === sortDescriptor.column);
+    if (column) {
+      // Sort only the unpinned rows
+      sortedUnpinnedRows = [...unpinned].sort((a, b) => {
+        const aValue = column.accessor(a);
+        const bValue = column.accessor(b);
+
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return 1;
+        if (bValue == null) return -1;
+
+        let aSortValue = aValue;
+        let bSortValue = bValue;
+
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          aSortValue = aValue;
+          bSortValue = bValue;
+        } else {
+          aSortValue = String(aValue).toLowerCase();
+          bSortValue = String(bValue).toLowerCase();
+        }
+
+        if (aSortValue < bSortValue)
+          return sortDescriptor.direction === "ascending" ? -1 : 1;
+        if (aSortValue > bSortValue)
+          return sortDescriptor.direction === "ascending" ? 1 : -1;
+        return 0;
+      });
+    }
+  }
+
+  // Combine pinned rows (at top) with sorted unpinned rows
+  const allSortedRows = [...pinned, ...sortedUnpinnedRows];
+
+  return allSortedRows.map((row) => {
     if (!nestedKey || !row[nestedKey]) {
       return row;
     }
     return {
       ...row,
       [nestedKey]: Array.isArray(row[nestedKey])
-        ? sortRows(row[nestedKey], sortDescriptor, columns, nestedKey)
+        ? sortRows(
+            row[nestedKey],
+            sortDescriptor,
+            columns,
+            nestedKey,
+            pinnedRows
+          )
         : row[nestedKey],
     };
   });
@@ -150,6 +176,9 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       disabledKeys,
       onRowAction,
       isResizable,
+      pinnedRows: controlledPinnedRows,
+      defaultPinnedRows,
+      onPinToggle,
       children,
       ...rest
     } = props;
@@ -159,8 +188,12 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     >();
 
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+    const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
+      () => defaultPinnedRows || new Set()
+    );
 
     const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
+    const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
 
     const activeColumns = useMemo(() => {
       const activeCols = columns.filter(
@@ -178,8 +211,15 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     );
 
     const sortedRows = useMemo(
-      () => sortRows(filteredRows, sortDescriptor, activeColumns, nestedKey),
-      [filteredRows, sortDescriptor, activeColumns, nestedKey]
+      () =>
+        sortRows(
+          filteredRows,
+          sortDescriptor,
+          activeColumns,
+          nestedKey,
+          pinnedRows
+        ),
+      [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
     );
 
     const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
@@ -188,6 +228,25 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
     const toggleExpand = useCallback(
       (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] })),
       []
+    );
+
+    const togglePin = useCallback(
+      (id: string) => {
+        if (onPinToggle) {
+          onPinToggle(id);
+        } else {
+          setInternalPinnedRows((prev) => {
+            const newPinnedRows = new Set(prev);
+            if (newPinnedRows.has(id)) {
+              newPinnedRows.delete(id);
+            } else {
+              newPinnedRows.add(id);
+            }
+            return newPinnedRows;
+          });
+        }
+      },
+      [onPinToggle]
     );
 
     const handleSortChange = useCallback(
@@ -231,6 +290,9 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         isResizable,
         disabledKeys,
         onRowAction,
+        pinnedRows,
+        onPinToggle,
+        togglePin,
       }),
       [
         columns,
@@ -261,6 +323,9 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
         isResizable,
         disabledKeys,
         onRowAction,
+        pinnedRows,
+        onPinToggle,
+        togglePin,
       ]
     );
 

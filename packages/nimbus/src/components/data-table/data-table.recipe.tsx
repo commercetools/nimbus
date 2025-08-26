@@ -28,6 +28,12 @@ export const dataTableRecipe = defineSlotRecipe({
       boxShadow: "1",
       overflow: "auto",
       contain: "layout style",
+      width: "100%",
+      // CSS custom properties for pinned row shadows
+      "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
+      "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
+      "--pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
+      "--pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
       "& .react-aria-Cell": {
         paddingTop: "400",
         paddingBottom: "400",
@@ -38,6 +44,19 @@ export const dataTableRecipe = defineSlotRecipe({
         hyphens: "auto",
         "&[data-slot='expand']": {
           padding: 0,
+        },
+        "&[data-slot='pin-row-cell']": {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        "& .nimbus-table-cell-copy-button": {
+          display: "none",
+        },
+        "& .nimbus-table-cell-pin-button": {
+          display: "none",
+        },
+        "& .nimbus-table-cell-pin-button-pinned": {
+          display: "inherit",
         },
       },
       "& .data-table-row": {
@@ -53,6 +72,21 @@ export const dataTableRecipe = defineSlotRecipe({
           backgroundColor: "{colors.primary.3}",
           transition: "background-color 100ms ease",
           transform: "translate3d(0, 0, 0)",
+          "& .data-table-row-details-button": {
+            opacity: 1,
+          },
+          "& .nimbus-table-cell-copy-button": {
+            display: "inherit",
+          },
+          "& .nimbus-table-cell-pin-button": {
+            display: "inherit",
+          },
+        },
+        "& .data-table-row-details-button": {
+          opacity: 0,
+        },
+        "& .data-table-row-details-button:focus": {
+          opacity: 1,
         },
       },
       "& .data-table-row[data-selected='true']": {
@@ -62,6 +96,21 @@ export const dataTableRecipe = defineSlotRecipe({
         // layerStyle: "disabled",
         opacity: 0.8,
         cursor: "not-allowed",
+      },
+      "& .data-table-row-pinned": {
+        boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
+        "&.data-table-row-pinned-first": {
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)",
+        },
+        "&.data-table-row-pinned-last": {
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-bottom)",
+        },
+        "&.data-table-row-pinned-single": {
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top), var(--pinned-shadow-bottom)",
+        },
       },
       "& .data-table-header": {
         background: "colorPalette.2",

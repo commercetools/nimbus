@@ -89,6 +89,17 @@ export const DataTableHeader = forwardRef<
           );
         }}
       </RaCollection>
+      <DataTableColumn
+        className="pin-rows-column-header"
+        id="pin-rows"
+        maxWidth={72}
+        minWidth={72}
+        allowsSorting={false}
+        isInternalColumn={true}
+        aria-label="Pin rows"
+      >
+        <VisuallyHidden>Pin rows</VisuallyHidden>
+      </DataTableColumn>
     </RaTableHeader>
   );
 });
