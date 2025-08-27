@@ -3,6 +3,8 @@ import { useContext, useRef, useEffect } from "react";
 import { useLocale } from "react-aria";
 import { DatePickerStateContext } from "react-aria-components";
 import type { DatePickerTimeInputProps } from "../date-picker.types";
+import { FormattedMessage } from "react-intl";
+import messages from "../date-picker.i18n";
 
 export const DatePickerTimeInput = ({
   hideTimeZone,
@@ -68,9 +70,8 @@ export const DatePickerTimeInput = ({
       justifyContent="center"
       gap="200"
     >
-      {/* TODO: translate hardcoded string */}
       <Text textStyle="xs" fontWeight="500" color="neutral.12">
-        Start time
+        <FormattedMessage {...messages.startTime} />
       </Text>
       <TimeInput
         slot="timeInput"
