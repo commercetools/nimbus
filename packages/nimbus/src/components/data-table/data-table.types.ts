@@ -34,6 +34,7 @@ export interface DataTableContextValue<
   allowsSorting?: boolean;
   selectionMode?: "none" | "single" | "multiple";
   disallowEmptySelection?: boolean;
+  isRowClickable?: boolean;
   maxHeight?: string | number;
   isTruncated?: boolean;
   density?: "default" | "condensed";
@@ -115,6 +116,7 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   visibleColumns?: string[];
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
+  isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
   maxHeight?: string | number;
