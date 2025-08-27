@@ -85,11 +85,19 @@ export const WithLeadingElement: Story = {
   },
   render: (args) => (
     <Stack gap="600">
+      Sizes
       <Box>
         <PasswordInput size="sm" {...args} />
       </Box>
       <Box>
         <PasswordInput size="md" {...args} />
+      </Box>
+      Variants
+      <Box>
+        <PasswordInput variant="solid" {...args} />
+      </Box>
+      <Box>
+        <PasswordInput variant="ghost" {...args} />
       </Box>
     </Stack>
   ),

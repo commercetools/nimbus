@@ -39,18 +39,14 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
 
     return (
       <Box display="inline-block" position="relative">
-        {leadingElement && (
-          <Box position="absolute" left={400} top={size === "md" ? 200 : 150}>
-            {leadingElement}
-          </Box>
-        )}
         <TextInput
           width="full"
           ref={forwardedRef}
+          leadingElement={leadingElement}
           type={showPassword ? "text" : "password"}
           {...restProps}
           pr={iconButtonSafeSpace}
-          pl={leadingElement ? "1000" : undefined}
+          pl={leadingElement ? "400" : undefined}
         />
         <Box position="absolute" {...iconPositionProps}>
           <Tooltip.Root>
