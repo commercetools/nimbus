@@ -8,7 +8,7 @@ import {
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
 import { useIntl } from "react-intl";
-import messages from "../messages";
+import messages from "../date-picker.i18n";
 
 export const DatePickerCustomContext = ({
   children,

@@ -2,7 +2,7 @@ import { defineMessages } from "react-intl";
 
 export default defineMessages({
   defaultLoadingMessage: {
-    id: "Nimbus.loadingSpinner.default",
+    id: "Nimbus.LoadingSpinner.default",
     description: "Default loading message for loading spinners",
     defaultMessage: "Loading data",
   },

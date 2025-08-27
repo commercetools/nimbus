@@ -4,7 +4,7 @@ import { useLocale } from "react-aria";
 import { DatePickerStateContext } from "react-aria-components";
 import type { DatePickerTimeInputProps } from "../date-picker.types";
 import { FormattedMessage } from "react-intl";
-import messages from "../messages";
+import messages from "../date-picker.i18n";
 
 export const DatePickerTimeInput = ({
   hideTimeZone,

@@ -1,77 +1,77 @@
 {
-  "Nimbus.alert.dismiss": [
+  "Nimbus.Alert.dismiss": [
     {
       "type": 0,
       "value": "Schließen MEH"
     }
   ],
-  "Nimbus.datePicker.clearInput": [
-    {
-      "type": 0,
-      "value": "Eingangswert löschen MEH"
-    }
-  ],
-  "Nimbus.datePicker.time.enterTime": [
+  "Nimbus.DatePicker.Time.enterTime": [
     {
       "type": 0,
       "value": "Zeit eingeben MEH"
     }
   ],
-  "Nimbus.datePicker.time.enterTimeHour": [
+  "Nimbus.DatePicker.Time.enterTimeHour": [
     {
       "type": 0,
       "value": "Zeit eingeben (Stunde) MEH"
     }
   ],
-  "Nimbus.datePicker.time.enterTimeHourMinute": [
+  "Nimbus.DatePicker.Time.enterTimeHourMinute": [
     {
       "type": 0,
       "value": "Uhrzeit eingeben (Stunde und Minute) MEH"
     }
   ],
-  "Nimbus.datePicker.time.enterTimeHourMinuteSecond": [
+  "Nimbus.DatePicker.Time.enterTimeHourMinuteSecond": [
     {
       "type": 0,
       "value": "Zeit eingeben (Stunde, Minute und Sekunde) MEH"
     }
   ],
-  "Nimbus.datePicker.time.startTime": [
+  "Nimbus.DatePicker.Time.startTime": [
     {
       "type": 0,
       "value": "Startzeit MEH"
     }
   ],
-  "Nimbus.loadingSpinner.default": [
+  "Nimbus.DatePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Eingangswert löschen MEH"
+    }
+  ],
+  "Nimbus.LoadingSpinner.default": [
     {
       "type": 0,
       "value": "Daten werden geladen MEH"
     }
   ],
-  "Nimbus.numberInput.decrement": [
+  "Nimbus.NumberInput.decrement": [
     {
       "type": 0,
       "value": "Verkleinern MEH"
     }
   ],
-  "Nimbus.numberInput.increment": [
+  "Nimbus.NumberInput.increment": [
     {
       "type": 0,
       "value": "Inkrement MEH"
     }
   ],
-  "Nimbus.passwordInput.hide": [
+  "Nimbus.PasswordInput.hide": [
     {
       "type": 0,
       "value": "Passwort verstecken MEH"
     }
   ],
-  "Nimbus.passwordInput.show": [
+  "Nimbus.PasswordInput.show": [
     {
       "type": 0,
       "value": "Passwort anzeigen MEH"
     }
   ],
-  "Nimbus.select.clearSelection": [
+  "Nimbus.Select.clearSelection": [
     {
       "type": 0,
       "value": "Auswahl löschen MEH"

@@ -20,7 +20,7 @@
     "changeset:status": "changeset status --verbose",
     "compile-i18n": "pnpm --filter @commercetools-nimbus/i18n compile-data",
     "component:new": "pnpm hygen component new",
-    "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/messages.ts' && pnpm compile-i18n",
+    "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/*.i18n.ts'",
     "generate:tokens": "pnpm --filter @commercetools/nimbus-tokens run build",
     "lint": "eslint .",
     "typecheck": "pnpm -r --filter './packages/*' --bail=false typecheck || true",
