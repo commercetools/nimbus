@@ -95,7 +95,9 @@ export const Pagination = (props: PaginationProps) => {
           {enablePageInput ? (
             <NumberInput
               value={pagination.currentPage}
-              onChange={(value) => pagination.goToPage(value)}
+              onChange={(value: number | undefined) =>
+                pagination.goToPage(value || 1)
+              }
               minValue={1}
               maxValue={pagination.totalPages}
               isDisabled={false}

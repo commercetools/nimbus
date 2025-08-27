@@ -1,4 +1,3 @@
-
 export interface PaginationProps {
   /** Total number of items */
   totalItems: number;
