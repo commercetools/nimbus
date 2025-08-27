@@ -53,7 +53,7 @@ export const numberInputRecipe = defineSlotRecipe({
     leadingElement: {
       color: "neutral.11",
       outline: "1px solid red",
-      pl: 200,
+      pl: 400,
       display: "flex",
       alignItems: "center",
     },
@@ -137,16 +137,14 @@ export const numberInputRecipe = defineSlotRecipe({
         input: {
           h: 800,
           textStyle: "sm",
-          px: 300,
-          paddingRight: 800,
+          px: 100,
         },
       },
       md: {
         input: {
           h: 1000,
           textStyle: "md",
-          px: 400,
-          paddingRight: 800,
+          px: 200,
         },
       },
     },
@@ -157,10 +155,6 @@ export const numberInputRecipe = defineSlotRecipe({
           // Apply hover effect to root
           _hover: {
             backgroundColor: "primary.2",
-            // Override button backgrounds to stay transparent during root hover
-            "& button": {
-              backgroundColor: "none !important",
-            },
           },
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
