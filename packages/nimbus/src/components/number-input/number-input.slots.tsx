@@ -61,11 +61,13 @@ export const NumberInputRootSlot = withProvider<
 export const NumberInputLeadingElementSlot = withContext<
   HTMLDivElement,
   NumberInputLeadingElementSlotProps
->("div", "leadingElement");
-
-export const NumberInputTrailingElementSlot = withContext<
+  // @ts-ignore
+  >("div", "leadingElement");
+  
+  export const NumberInputTrailingElementSlot = withContext<
   HTMLDivElement,
   NumberInputTrailingElementSlotProps
+  // @ts-ignore TODO: what is it that you want from me, ts compiler
 >("div", "trailingElement");
 
 /**

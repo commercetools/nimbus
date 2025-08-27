@@ -85,6 +85,8 @@ export const Variants: Story = {
           </Text>
           <NumberInput
             variant={variant}
+            leadingElement={<AddReaction />}
+            trailingElement={<AddReaction />}
             placeholder="123"
             aria-label={`Variant ${variant} number input`}
           />

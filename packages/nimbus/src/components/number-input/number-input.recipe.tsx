@@ -69,8 +69,6 @@ export const numberInputRecipe = defineSlotRecipe({
       alignItems: "center",
     },
     input: {
-      "--border-width": "sizes.25",
-      "--border-color": "colors.neutral.7",
       display: "block",
       flexGrow: 1,
       borderRadius: "inherit",
@@ -168,8 +166,10 @@ export const numberInputRecipe = defineSlotRecipe({
         root: {
           // Apply input hover styles when buttons are hovered for solid variant
           "&:has(button:hover) input": {
-            // backgroundColor: "primary.2",
+            backgroundColor: "primary.2",
           },
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
           backgroundColor: "neutral.1",
         },
         input: {
