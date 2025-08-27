@@ -41,7 +41,7 @@ export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
       ...restProps,
       isDisabled: isLoading || isDisabled,
     };
-    console.log("recipeProps", recipeProps);
+
     return (
       <SelectRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
         <RaSelect {...raSelectProps}>

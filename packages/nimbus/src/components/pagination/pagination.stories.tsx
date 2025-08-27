@@ -669,15 +669,11 @@ export const WithoutPageSizeSelector: Story = {
 
       // Should still show page navigation - check what's actually rendered
       const navigationText = navigation.textContent || "";
-      console.log("Navigation text:", navigationText);
 
       // Check if there's a page input element
       const pageInput = canvas.queryByLabelText("Current page");
       if (pageInput) {
-        console.log("Page input found, value:", pageInput.value);
         await expect(pageInput).toHaveValue("1");
-      } else {
-        console.log("No page input found");
       }
 
       // The navigation should contain "128" for sure
