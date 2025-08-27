@@ -26,12 +26,12 @@ export const DataTableHeader = <
   const { selectionBehavior, selectionMode } = useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
   return (
-    <DataTableHeaderSlot asChild {...styleProps}>
+    <DataTableHeaderSlot {...styleProps} asChild>
       <RaTableHeader
         ref={ref}
         className="data-table-header"
-        columns={activeColumns}
         {...(maxHeight && { ["data-sticky"]: true })}
+        columns={activeColumns}
         {...restProps}
       >
         {/** Internal/non-data columns like selection and expand
@@ -63,9 +63,6 @@ export const DataTableHeader = <
         )}
         <RaCollection items={activeColumns}>
           {(column) => {
-            const isDetailsColumn =
-              column.id === "nimbus-data-table-details-column";
-
             return (
               <DataTableColumn
                 allowsSorting={
@@ -74,31 +71,34 @@ export const DataTableHeader = <
                     ? column.isSortable
                     : allowsSorting
                 }
-                isRowHeader={isDetailsColumn ? false : true}
-                isInternalColumn={isDetailsColumn}
-                width={isDetailsColumn ? 96 : column.width}
-                defaultWidth={isDetailsColumn ? 96 : column.defaultWidth}
-                // Set the default data column minWidth to 150 (this is an arbitrary number)
-                minWidth={isDetailsColumn ? 96 : (column.minWidth ?? 150)}
-                maxWidth={isDetailsColumn ? 96 : column.maxWidth}
+                isRowHeader={true}
+                width={column.width}
+                defaultWidth={column.defaultWidth}
+                minWidth={column.minWidth ?? 150}
+                maxWidth={column.maxWidth}
                 column={column}
               >
-                {isDetailsColumn ? (
-                  <VisuallyHidden>Details</VisuallyHidden>
-                ) : (
-                  <>
-                    <span data-multiline-header>{column.header}</span>
-                    {column.headerIcon && (
-                      <Box as="span" ml="200">
-                        {column.headerIcon}
-                      </Box>
-                    )}
-                  </>
+                <span data-multiline-header>{column.header}</span>
+                {column.headerIcon && (
+                  <Box as="span" ml="200">
+                    {column.headerIcon}
+                  </Box>
                 )}
               </DataTableColumn>
             );
           }}
         </RaCollection>
+        <DataTableColumn
+          className="pin-rows-column-header"
+          id="pin-rows"
+          maxWidth={72}
+          minWidth={72}
+          allowsSorting={false}
+          isInternalColumn={true}
+          aria-label="Pin rows"
+        >
+          <VisuallyHidden>Pin rows</VisuallyHidden>
+        </DataTableColumn>
       </RaTableHeader>
     </DataTableHeaderSlot>
   );

@@ -47,7 +47,7 @@
     "react-live": "^4.1.7",
     "react-syntax-highlighter": "^15.6.3",
     "remark": "^15.0.1",
-    "remark-flexible-toc": "^1.1.1",
+    "remark-flexible-toc": "^1.2.0",
     "remark-gfm": "^4.0.0",
     "remark-mark-highlight": "^0.1.1",
     "slug": "^11.0.0",

@@ -19,6 +19,7 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
     renderEmptyState,
     search,
     sortDescriptor: controlledSortDescriptor,
+    defaultSortDescriptor,
     onSortChange,
     selectedKeys,
     defaultSelectedKeys,
@@ -36,6 +37,9 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
     disabledKeys,
     onRowAction,
     isResizable,
+    pinnedRows: controlledPinnedRows,
+    defaultPinnedRows,
+    onPinToggle,
     ref,
     children,
     ...rest
@@ -43,9 +47,14 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
-  >();
+  >(defaultSortDescriptor);
 
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
+    () => defaultPinnedRows || new Set()
+  );
+
+  const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
 
   const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
   // TODO: should we really always show this?
@@ -86,6 +95,25 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
   const toggleExpand = useCallback(
     (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] })),
     []
+  );
+
+  const togglePin = useCallback(
+    (id: string) => {
+      if (onPinToggle) {
+        onPinToggle(id);
+      } else {
+        setInternalPinnedRows((prev) => {
+          const newPinnedRows = new Set(prev);
+          if (newPinnedRows.has(id)) {
+            newPinnedRows.delete(id);
+          } else {
+            newPinnedRows.add(id);
+          }
+          return newPinnedRows;
+        });
+      }
+    },
+    [onPinToggle]
   );
 
   const handleSortChange = useCallback(
@@ -132,6 +160,9 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
       isResizable,
       disabledKeys,
       onRowAction,
+      pinnedRows,
+      onPinToggle,
+      togglePin,
     }),
     [
       columns,
@@ -165,6 +196,9 @@ export const DataTableRoot = <T extends object = Record<string, unknown>>(
       isResizable,
       disabledKeys,
       onRowAction,
+      pinnedRows,
+      onPinToggle,
+      togglePin,
     ]
   );
 

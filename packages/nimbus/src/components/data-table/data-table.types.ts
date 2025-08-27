@@ -34,7 +34,6 @@ export interface DataTableContextValue<
   allowsSorting?: boolean;
   selectionMode?: "none" | "single" | "multiple";
   disallowEmptySelection?: boolean;
-  isRowClickable?: boolean;
   maxHeight?: string | number;
   isTruncated?: boolean;
   density?: "default" | "condensed";
@@ -42,17 +41,18 @@ export interface DataTableContextValue<
   onSortChange?: (descriptor: SortDescriptor) => void;
   onSelectionChange?: (keys: Selection) => void;
   onRowClick?: (row: DataTableRowItem<T>) => void;
-  onDetailsClick?: (row: DataTableRowItem<T>) => void;
   toggleExpand: (id: string) => void;
   activeColumns: DataTableColumnItem<T>[];
   filteredRows: DataTableRowItem<T>[];
   sortedRows: DataTableRowItem<T>[];
   showExpandColumn: boolean;
   showSelectionColumn: boolean;
-  showDetailsColumn: boolean;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
   isResizable?: boolean;
+  pinnedRows: Set<string>;
+  onPinToggle?: (rowId: string) => void;
+  togglePin: (id: string) => void;
 }
 
 export type SortDirection = RaSortDirection;
@@ -115,11 +115,11 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   visibleColumns?: string[];
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
-  isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
   maxHeight?: string | number;
   sortDescriptor?: SortDescriptor;
+  defaultSortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
   selectionMode?: "none" | "single" | "multiple";
   selectionBehavior?: "toggle" | "replace";
@@ -138,6 +138,9 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   nestedKey?: string;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  pinnedRows?: Set<string>;
+  defaultPinnedRows?: Set<string>;
+  onPinToggle?: (rowId: string) => void;
 }
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */

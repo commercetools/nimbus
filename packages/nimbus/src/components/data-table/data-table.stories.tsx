@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, isValidElement, type ReactNode } from "react";
-import { type Selection, useLocale } from "react-aria-components";
+import React, {
+  useState,
+  isValidElement,
+  type ReactNode,
+  useEffect,
+} from "react";
+import { type Selection } from "react-aria-components";
+import { within, expect, waitFor, userEvent } from "storybook/test";
 import {
   Stack,
   TextInput,
@@ -89,41 +95,50 @@ type ProductDetailsModalProps = {
   isOpen: boolean;
   onClose: () => void;
   row?: DataTableRowItem;
+  onSave?: (updatedRow: DataTableRowItem) => void;
 };
 
 const ProductDetailsModal = ({
   isOpen,
   onClose,
   row,
+  onSave,
 }: ProductDetailsModalProps) => {
-  if (!row) return null;
-  const { locale } = useLocale();
-  console.log(locale);
-  // Extract product data from commercetools structure
-  const productName = row.name || "Unknown Product";
-  const productSlug = row.slug || "";
-  const productType = row.productType || "";
-  const createdAt = row.createdAt || "";
-  const lastModifiedAt = row.lastModifiedAt || "";
+  const [formData, setFormData] = useState<DataTableRowItem | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const version = row.version || "";
-  // put ct data into array to reduce repetition of components in render
-  const detailItems: DetailsModalItemProps[] = [
-    { label: "Name", value: productName as string },
-    { label: "Slug", value: productSlug as string },
-    { label: "Type", value: productType as string },
-    { label: "Version", value: version as string },
-    { label: "Created", value: createdAt as string },
-    { label: "Modified", value: lastModifiedAt as string },
-  ];
+  // Initialize form data when modal opens
+  useEffect(() => {
+    if (row) {
+      setFormData({ ...row });
+    }
+  }, [row]);
+
+  if (!row || !formData) return null;
+
+  const handleInputChange = (
+    field: string,
+    value: string | string[] | boolean
+  ) => {
+    setFormData((prev) => (prev ? { ...prev, [field]: value } : null));
+  };
+
+  const handleSave = async () => {
+    if (formData && onSave) {
+      setIsSaving(true);
+      onSave(formData);
+      // Brief delay to show saving state
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setIsSaving(false);
+      // Don't call onClose here - let the parent handle it
+    }
+  };
+
   return (
-    <Dialog.Root
-      open={isOpen}
-      onOpenChange={({ open }) => !open && onClose && onClose()}
-    >
+    <Dialog.Root open={isOpen}>
       <Dialog.Content maxWidth="600px">
         <Dialog.Header>
-          <Dialog.Title>{productName as string} - Product Details</Dialog.Title>
+          <Dialog.Title>{formData.name as string}</Dialog.Title>
         </Dialog.Header>
         <Dialog.Body>
           <Stack gap="400">
@@ -132,27 +147,121 @@ const ProductDetailsModal = ({
               <Text as="h2" fontWeight="500" mb="200">
                 Product Information
               </Text>
-              <Stack as="ul" listStyle="none" gap="200">
-                {detailItems.map((item) => (
-                  <DetailsModalItem key={item.label} {...item} />
-                ))}
+              <Stack gap="300">
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Product name
+                  </Text>
+                  <TextInput
+                    value={formData.name as string}
+                    onChange={(value) => handleInputChange("name", value)}
+                    width="100%"
+                  />
+                </Box>
+
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Category
+                  </Text>
+                  <TextInput
+                    value={formData.category as string}
+                    onChange={(value) => handleInputChange("category", value)}
+                    width="100%"
+                  />
+                </Box>
+
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Status
+                  </Text>
+                  <select
+                    value={
+                      formData.published && formData.hasStagedChanges
+                        ? "Modified"
+                        : formData.published
+                          ? "Published"
+                          : "Unpublished"
+                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "Published") {
+                        handleInputChange("published", true);
+                        handleInputChange("hasStagedChanges", false);
+                      } else if (value === "Modified") {
+                        handleInputChange("published", true);
+                        handleInputChange("hasStagedChanges", true);
+                      } else if (value === "Unpublished") {
+                        handleInputChange("published", false);
+                        handleInputChange("hasStagedChanges", false);
+                      }
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      borderRadius: "4px",
+                      border: "1px solid #ccc",
+                    }}
+                  >
+                    <option value="Published">Published</option>
+                    <option value="Modified">Modified</option>
+                    <option value="Unpublished">Unpublished</option>
+                  </select>
+                </Box>
+
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Stores
+                  </Text>
+                  <TextInput
+                    value={(formData.stores as string[]).toString() || ""}
+                    onChange={(value) => {
+                      handleInputChange("stores", value.split(","));
+                    }}
+                    width="100%"
+                    placeholder="Enter stores separated by commas"
+                    aria-label="stores"
+                  />
+                </Box>
               </Stack>
             </Box>
 
-            {/* Product ID */}
             <Box>
               <Text as="h2" fontWeight="500" mb="200">
                 Technical Details
               </Text>
-              <Stack as="ul" listStyle="none" gap="200">
-                <DetailsModalItem label={"ID"} value={row.id as string} />
+              <Stack gap="300">
+                <Box>
+                  <Text as="label" fontSize="sm" fontWeight="500" mb="100">
+                    Product ID
+                  </Text>
+                  <TextInput
+                    value={formData.key as string}
+                    isReadOnly
+                    width="100%"
+                    backgroundColor="neutral.2"
+                    isDisabled
+                  />
+                </Box>
               </Stack>
             </Box>
           </Stack>
         </Dialog.Body>
         <Dialog.Footer>
-          <Button onPress={onClose} variant="outline">
-            Close
+          <Button
+            onPress={() => {
+              console.log("Cancel button clicked");
+              onClose();
+            }}
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={handleSave}
+            colorPalette="primary"
+            isDisabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </Dialog.Footer>
       </Dialog.Content>
@@ -160,24 +269,15 @@ const ProductDetailsModal = ({
   );
 };
 
-// Wrapper component that automatically handles modals for onDetailsClick and onRowClick
+// Wrapper component that automatically handles modals for onRowClick
 const DataTableWithModals = ({
-  onDetailsClick,
   onRowClick,
   isProductDetailsTable,
   ...props
 }: DataTableProps & {
-  onDetailsClick?: (row: DataTableRowItem) => void;
   onRowClick?: (row: DataTableRowItem) => void;
   isProductDetailsTable?: boolean;
 }) => {
-  const [detailsModalState, setDetailsModalState] = useState<{
-    isOpen: boolean;
-    row?: DataTableRowItem;
-  }>({
-    isOpen: false,
-  });
-
   const [rowClickModalState, setRowClickModalState] = useState<{
     isOpen: boolean;
     row?: DataTableRowItem;
@@ -185,12 +285,17 @@ const DataTableWithModals = ({
     isOpen: false,
   });
 
-  const handleDetailsClick = onDetailsClick
-    ? (row: DataTableRowItem) => {
-        setDetailsModalState({ isOpen: true, row });
-        onDetailsClick?.(row);
-      }
-    : undefined;
+  const [tableData, setTableData] = useState<DataTableRowItem[]>(
+    props.data || []
+  );
+  const [dataVersion, setDataVersion] = useState(0);
+
+  useEffect(() => {
+    if (props.data) {
+      setTableData(props.data);
+      setDataVersion(0);
+    }
+  }, [props.data]);
 
   const handleRowClick = onRowClick
     ? (row: DataTableRowItem) => {
@@ -199,35 +304,55 @@ const DataTableWithModals = ({
       }
     : undefined;
 
+  const handleSave = (updatedRow: DataTableRowItem) => {
+    setTableData((prev) => {
+      const newData = [
+        ...prev.map((row) =>
+          row.id === updatedRow.id ? { ...updatedRow } : { ...row }
+        ),
+      ];
+      return newData;
+    });
+
+    setDataVersion((prev) => prev + 1);
+    setRowClickModalState({ isOpen: false, row: undefined });
+  };
+
   return (
     <>
       <DataTable
         {...props}
-        onDetailsClick={handleDetailsClick}
+        data={tableData}
         onRowClick={handleRowClick}
+        key={`table-v${dataVersion}`} // Force re-render when data changes
       />
 
       {/* Details Modal */}
-      {onDetailsClick &&
+      {onRowClick &&
         (isProductDetailsTable ? (
           <ProductDetailsModal
-            isOpen={detailsModalState.isOpen}
+            isOpen={rowClickModalState.isOpen}
             onClose={() =>
-              setDetailsModalState({ isOpen: false, row: undefined })
+              setRowClickModalState({ isOpen: false, row: undefined })
             }
-            row={detailsModalState?.row}
+            row={rowClickModalState?.row}
+            onSave={handleSave}
           />
         ) : (
           <InfoModal
-            isOpen={detailsModalState.isOpen}
+            isOpen={rowClickModalState.isOpen}
             onClose={() =>
-              setDetailsModalState({ isOpen: false, row: undefined })
+              setRowClickModalState({ isOpen: false, row: undefined })
             }
-            title={`${detailsModalState?.row?.name}'s Details`}
+            title={
+              rowClickModalState.row?.name
+                ? `${rowClickModalState?.row?.name}'s Details`
+                : `Details for row ${rowClickModalState?.row?.id}`
+            }
           >
-            {detailsModalState?.row && (
+            {rowClickModalState?.row && (
               <Stack as="ul" listStyle="none" gap="200">
-                {Object.entries(detailsModalState.row!)
+                {Object.entries(rowClickModalState.row!)
                   .filter(([k]) => !["id", "children"].includes(k))
                   .map(([k, v]) => (
                     <DetailsModalItem
@@ -240,19 +365,6 @@ const DataTableWithModals = ({
             )}
           </InfoModal>
         ))}
-
-      {/* Row Click Modal */}
-      {onRowClick && (
-        <InfoModal
-          isOpen={rowClickModalState.isOpen}
-          onClose={() =>
-            setRowClickModalState({ isOpen: false, row: undefined })
-          }
-          title={`🎉 You Clicked ${rowClickModalState?.row?.name}'s Row 🎉`}
-        >
-          <div>Row clicked successfully!</div>
-        </InfoModal>
-      )}
     </>
   );
 };
@@ -285,7 +397,7 @@ export const Base: Story = {
     <DataTableWithModals
       {...args}
       isProductDetailsTable
-      onDetailsClick={() => {}}
+      onRowClick={() => {}}
     />
   ),
   args: {
@@ -293,28 +405,19 @@ export const Base: Story = {
     data: mcMockData,
     allowsSorting: true,
     isResizable: true,
-    isRowClickable: true,
-    density: "condensed",
     selectionMode: "multiple",
+    defaultSortDescriptor: {
+      column: "dateModified",
+      direction: "ascending",
+    },
   },
-};
-
-/**
- * Details Button Story
- * Demonstrates the details button functionality that's always present in the second column
- */
-export const WithDetailsButton: Story = {
-  render: (args) => (
-    <DataTableWithModals
-      {...args}
-      onDetailsClick={() => {}} // Just need to pass a function to enable the modal
-    />
-  ),
-  args: {
-    columns,
-    data,
-    allowsSorting: true,
-    isResizable: true,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Click on any row to open the product details modal. Edit the fields and click Save to see the changes reflected in the data table. Table is sorted by Date Modified (newest first) by default.",
+      },
+    },
   },
 };
 
@@ -345,7 +448,9 @@ export const ColumnManager: Story = {
         <DataTableWithModals
           {...args}
           visibleColumns={visible}
-          onDetailsClick={() => {}}
+          onRowClick={() => {
+            console.log("row clicked");
+          }}
         />
       </>
     );
@@ -354,7 +459,7 @@ export const ColumnManager: Story = {
 };
 
 export const CustomColumn: Story = {
-  render: (args) => <DataTableWithModals {...args} onDetailsClick={() => {}} />,
+  render: (args) => <DataTableWithModals {...args} onRowClick={() => {}} />,
   args: { columns, data },
 };
 
@@ -370,11 +475,7 @@ export const SearchAndHighlight: Story = {
           width="1/3"
           aria-label="search-rows"
         />
-        <DataTableWithModals
-          {...args}
-          search={search}
-          onDetailsClick={() => {}}
-        />
+        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -392,7 +493,7 @@ export const AdjustableColumns: Story = {
         <DataTableWithModals
           {...args}
           isResizable={isResizable}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -414,7 +515,7 @@ export const Condensed: Story = {
         <DataTableWithModals
           {...args}
           density={condensed ? "condensed" : "default"}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -434,7 +535,7 @@ export const StickyHeader: Story = {
         <DataTableWithModals
           {...args}
           maxHeight={sticky ? "400px" : undefined}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -446,14 +547,21 @@ export const StickyHeader: Story = {
 };
 
 export const ClickableRows: Story = {
-  render: (args) => (
-    <DataTableWithModals
-      {...args}
-      isRowClickable
-      onRowClick={() => {}} // Just need to pass a function to enable the modal
-      onDetailsClick={() => {}}
-    />
-  ),
+  render: (args) => {
+    const [isRowClickable, setIsRowClickable] = useState(true);
+    return (
+      <Stack gap="500" alignItems="flex-start">
+        {/* This is supposed to set the sticky header from the top to the bottom of the table. */}
+        <Checkbox isSelected={isRowClickable} onChange={setIsRowClickable}>
+          Clickable Rows
+        </Checkbox>
+        <DataTableWithModals
+          {...args}
+          onRowClick={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
+        />
+      </Stack>
+    );
+  },
   args: { columns, data },
 };
 
@@ -468,7 +576,7 @@ export const WithSorting: Story = {
             sortable.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -533,7 +641,7 @@ export const ControlledSorting: Story = {
           {...args}
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -565,11 +673,7 @@ export const SortingWithSearch: Story = {
           width="1/3"
           aria-label="filter-rows"
         />
-        <DataTableWithModals
-          {...args}
-          search={search}
-          onDetailsClick={() => {}}
-        />
+        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -588,7 +692,7 @@ export const SelectionShowcase: Story = {
       "none" | "single" | "multiple"
     >("multiple");
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(false);
-    const [isRowClickable, setIsRowClickable] = useState(false);
+    const [isRowClickable, setIsRowClickable] = useState(true);
 
     const selectedCount = Array.from(selectedKeys).length;
 
@@ -662,22 +766,22 @@ export const SelectionShowcase: Story = {
                 </Select.Options>
               </Select.Root>
 
-              {selectionMode !== "none" && (
-                <Stack gap="100" direction="row">
+              <Stack gap="300" direction="row">
+                <Checkbox
+                  isSelected={isRowClickable}
+                  onChange={setIsRowClickable}
+                >
+                  Clickable Rows
+                </Checkbox>
+                {selectionMode !== "none" && (
                   <Checkbox
                     isSelected={disallowEmptySelection}
                     onChange={setDisallowEmptySelection}
                   >
                     Require Selection
                   </Checkbox>
-                  <Checkbox
-                    isSelected={isRowClickable}
-                    onChange={setIsRowClickable}
-                  >
-                    Clickable Rows
-                  </Checkbox>
-                </Stack>
-              )}
+                )}
+              </Stack>
             </Stack>
             {selectionMode !== "none" && (
               <Text fontSize="350" color="neutral.12">
@@ -741,7 +845,7 @@ export const SelectionShowcase: Story = {
             </Stack>
           )}
         </Stack>
-        <DataTable
+        <DataTableWithModals
           columns={sortableColumns}
           data={data}
           search={search}
@@ -750,27 +854,7 @@ export const SelectionShowcase: Story = {
           selectionMode={selectionMode}
           disallowEmptySelection={disallowEmptySelection}
           allowsSorting={true}
-          isRowClickable={isRowClickable}
-          onRowClick={
-            isRowClickable
-              ? (row) => {
-                  if (selectionMode === "single") {
-                    setSelectedKeys(new Set([row.id]));
-                  } else if (selectionMode === "multiple") {
-                    const newSelection = new Set(selectedKeys);
-                    if (newSelection.has(row.id)) {
-                      if (!disallowEmptySelection || newSelection.size > 1) {
-                        newSelection.delete(row.id);
-                      }
-                    } else {
-                      newSelection.add(row.id);
-                    }
-                    setSelectedKeys(newSelection);
-                  }
-                }
-              : undefined
-          }
-          onDetailsClick={() => {}}
+          onRowClick={isRowClickable ? () => {} : undefined}
         />
         {/* Feature Explanation */}
         <Box
@@ -869,7 +953,7 @@ export const TextTruncation: Story = {
           <DataTableWithModals
             {...args}
             isTruncated={isTruncated}
-            onDetailsClick={() => {}}
+            onRowClick={() => {}}
           />
         </Box>
       </Stack>
@@ -883,11 +967,13 @@ export const TextTruncation: Story = {
 };
 
 export const MultilineHeaders: Story = {
+  render: (args) => <DataTableWithModals {...args} />,
   args: {
     columns: multilineHeadersColumns,
     data: multilineHeadersData,
     allowsSorting: true,
     isResizable: true,
+    onRowClick: () => {},
   },
 };
 
@@ -930,7 +1016,7 @@ export const WithFooter: Story = {
           allowsSorting={true}
           selectionMode="multiple"
           footer={footerContent}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
         />
 
         <Box mt="400" p="400" bg="neutral.2" borderRadius="md">
@@ -971,7 +1057,7 @@ export const HorizontalScrolling: Story = {
           allowsSorting={true}
           maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
-          onDetailsClick={() => {}}
+          onRowClick={() => {}}
           footer={
             <Stack
               direction="row"
@@ -1043,7 +1129,7 @@ export const FlexibleNestedChildren: Story = {
             Click the expand buttons to see different types of nested content.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -1104,7 +1190,7 @@ export const NoNestedContent: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -1197,7 +1283,7 @@ export const NestedTable: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onDetailsClick={() => {}} />
+        <DataTableWithModals {...args} onRowClick={() => {}} />
       </Stack>
     );
   },
@@ -1257,7 +1343,6 @@ export const AllFeatures: Story = {
     const [disallowEmptySelection, setDisallowEmptySelection] = useState(true);
 
     const allColumns = comprehensiveColumns.map((col) => col.id);
-
     // Create nested table data with proper React components
     const modifiedComprehensiveData = comprehensiveData.map((item) => ({
       ...item,
@@ -1271,7 +1356,7 @@ export const AllFeatures: Story = {
             data={item.children as DataTableRowItem[]}
             allowsSorting={true}
             isResizable={true}
-            onDetailsClick={() => {}}
+            onRowClick={() => {}}
           />
         </Box>
       ),
@@ -1415,7 +1500,7 @@ export const AllFeatures: Story = {
               )}
             </Flex>
             {selectionMode !== "none" && (
-              <Text fontSize="350" color="neutral.12">
+              <Text fontSize="350" color="neutral.11">
                 <Text as="span" fontWeight="600">
                   Selected:
                 </Text>{" "}
@@ -1494,17 +1579,11 @@ export const AllFeatures: Story = {
             disallowEmptySelection={disallowEmptySelection}
             isResizable={isResizable}
             allowsSorting={allowsSorting}
-            isRowClickable={true}
             maxHeight={stickyHeader ? "400px" : undefined}
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            onRowClick={() => {
-              console.log("row clicked");
-            }}
-            onDetailsClick={() => {
-              console.log("details clicked");
-            }}
+            onRowClick={isRowClickable ? () => {} : undefined}
           />
         </Box>
         {/* Feature Information */}
@@ -1681,11 +1760,266 @@ export const DisabledRowsShowcase: Story = {
           onRowAction={handleRowAction}
           selectionMode="multiple"
           allowsSorting={true}
-          isRowClickable={true}
           onRowClick={() => {}}
         />
       </Stack>
     );
   },
   args: {},
+};
+
+export const RowPinning: Story = {
+  render: () => {
+    const [pinnedRows, setPinnedRows] = React.useState<Set<string>>(new Set());
+
+    const handlePinToggle = (rowId: string) => {
+      setPinnedRows((prev) => {
+        const newPinnedRows = new Set(prev);
+        if (newPinnedRows.has(rowId)) {
+          newPinnedRows.delete(rowId);
+        } else {
+          newPinnedRows.add(rowId);
+        }
+        return newPinnedRows;
+      });
+    };
+
+    return (
+      <Stack direction="column" gap="400">
+        <Heading as="h3" size="lg">
+          Row Pinning Feature Demo
+        </Heading>
+        <Text>
+          Hover over rows to see the pin button appear in the last column.
+          Pinned rows will always stay at the top and are excluded from sorting.
+        </Text>
+        <DataTable
+          columns={sortableColumns}
+          data={data}
+          pinnedRows={pinnedRows}
+          onPinToggle={handlePinToggle}
+          allowsSorting={true}
+          selectionMode="multiple"
+          onRowClick={() => {}}
+          data-testid="pinning-data-table"
+        />
+      </Stack>
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Pin buttons exist but have CSS class that hides them",
+      async () => {
+        const rows = canvas.getAllByRole("row");
+        const firstDataRow = rows[1]; // Skip header row
+
+        // Pin button should exist in DOM but be hidden via CSS
+        const pinButton = within(firstDataRow).getByLabelText(/pin row/i);
+        expect(pinButton).toBeInTheDocument();
+        expect(pinButton).toHaveClass("nimbus-table-cell-pin-button");
+        expect(pinButton).not.toHaveClass(
+          "nimbus-table-cell-pin-button-pinned"
+        );
+      }
+    );
+
+    await step("Pin button is accessible on row hover", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1]; // Skip header row
+
+      await userEvent.hover(firstDataRow);
+      await waitFor(async () => {
+        const pinButton = within(firstDataRow).getByLabelText(/pin row/i);
+        // Button should be accessible (focusable) when row is hovered
+        expect(pinButton).toBeInTheDocument();
+        expect(pinButton).not.toBeDisabled();
+      });
+    });
+
+    await step("Can pin a row by clicking pin button", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1]; // Skip header row
+
+      await userEvent.hover(firstDataRow);
+      const pinButton = within(firstDataRow).getByLabelText(/pin row/i);
+      await userEvent.click(pinButton);
+
+      await waitFor(async () => {
+        // Row should now have pinned styling
+        expect(firstDataRow).toHaveClass("data-table-row-pinned");
+        // Pin button should show "unpin" state and have pinned class
+        const unpinButton = within(firstDataRow).getByLabelText(/unpin row/i);
+        expect(unpinButton).toBeInTheDocument();
+        expect(unpinButton).toHaveClass("nimbus-table-cell-pin-button-pinned");
+      });
+    });
+
+    await step("Pinned row has correct styling", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+
+      // Should have pinned row class with single pinned styling
+      expect(firstDataRow).toHaveClass("data-table-row-pinned");
+      expect(firstDataRow).toHaveClass("data-table-row-pinned-single");
+
+      // Pin button should be visible with pinned class
+      const pinButton = within(firstDataRow).getByLabelText(/unpin row/i);
+      expect(pinButton).toHaveClass("nimbus-table-cell-pin-button-pinned");
+    });
+
+    await step("Can pin multiple rows", async () => {
+      const rows = canvas.getAllByRole("row");
+      const secondDataRow = rows[2]; // Skip header row
+
+      await userEvent.hover(secondDataRow);
+      const pinButton = within(secondDataRow).getByLabelText(/pin row/i);
+      await userEvent.click(pinButton);
+
+      await waitFor(async () => {
+        // Both rows should be pinned
+        expect(rows[1]).toHaveClass("data-table-row-pinned");
+        expect(rows[2]).toHaveClass("data-table-row-pinned");
+
+        // First pinned row should have "first" class, second should have "last" class
+        expect(rows[1]).toHaveClass("data-table-row-pinned-first");
+        expect(rows[2]).toHaveClass("data-table-row-pinned-last");
+
+        // Neither should have "single" class anymore
+        expect(rows[1]).not.toHaveClass("data-table-row-pinned-single");
+        expect(rows[2]).not.toHaveClass("data-table-row-pinned-single");
+      });
+    });
+
+    await step("Can unpin a row", async () => {
+      const rows = canvas.getAllByRole("row");
+      const secondDataRow = rows[2];
+
+      await userEvent.hover(secondDataRow);
+      const unpinButton = within(secondDataRow).getByLabelText(/unpin row/i);
+      await userEvent.click(unpinButton);
+
+      await waitFor(async () => {
+        // Second row should no longer be pinned
+        expect(secondDataRow).not.toHaveClass("data-table-row-pinned");
+
+        // First row should now be single pinned again
+        expect(rows[1]).toHaveClass("data-table-row-pinned-single");
+        expect(rows[1]).not.toHaveClass("data-table-row-pinned-first");
+      });
+    });
+
+    await step("Pinned rows stay at the top when sorting", async () => {
+      // First, ensure we have a pinned row
+      const rows = canvas.getAllByRole("row");
+      const pinnedRow = rows[1];
+      const pinnedRowId = pinnedRow.getAttribute("id");
+
+      // Find a sortable column header and click it
+      const nameColumnHeader = canvas.getByText("Name");
+      await userEvent.click(nameColumnHeader);
+
+      await waitFor(async () => {
+        // After sorting, the pinned row should still be first
+        const updatedRows = canvas.getAllByRole("row");
+        const firstDataRowAfterSort = updatedRows[1];
+        expect(firstDataRowAfterSort.getAttribute("id")).toBe(pinnedRowId);
+        expect(firstDataRowAfterSort).toHaveClass("data-table-row-pinned");
+      });
+    });
+  },
+};
+
+export const RowPinningEdgeCases: Story = {
+  render: () => {
+    const [pinnedRows, setPinnedRows] = React.useState<Set<string>>(
+      new Set(["1", "3"]) // Pre-pin some rows
+    );
+    const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
+      new Set(["2"])
+    );
+
+    const handlePinToggle = (rowId: string) => {
+      setPinnedRows((prev) => {
+        const newPinnedRows = new Set(prev);
+        if (newPinnedRows.has(rowId)) {
+          newPinnedRows.delete(rowId);
+        } else {
+          newPinnedRows.add(rowId);
+        }
+        return newPinnedRows;
+      });
+    };
+
+    return (
+      <Stack direction="column" gap="400">
+        <Heading as="h3" size="lg">
+          Row Pinning Edge Cases
+        </Heading>
+        <Text>
+          Testing edge cases: pre-pinned rows, interaction with selection, and
+          pin state with filtering/searching.
+        </Text>
+        <DataTable
+          columns={sortableColumns}
+          data={data.slice(0, 5)} // Use smaller dataset for edge case testing
+          pinnedRows={pinnedRows}
+          onPinToggle={handlePinToggle}
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          allowsSorting={true}
+          selectionMode="multiple"
+          onRowClick={() => {}}
+          data-testid="edge-cases-data-table"
+        />
+      </Stack>
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Pre-pinned rows are displayed correctly", async () => {
+      const rows = canvas.getAllByRole("row");
+
+      // Both should have pinned styling
+      expect(rows[1]).toHaveClass("data-table-row-pinned");
+      expect(rows[2]).toHaveClass("data-table-row-pinned");
+
+      // First should have "first" class, second should have "last" class
+      expect(rows[1]).toHaveClass("data-table-row-pinned-first");
+      expect(rows[2]).toHaveClass("data-table-row-pinned-last");
+    });
+
+    await step("Pin button has correct accessibility attributes", async () => {
+      const rows = canvas.getAllByRole("row");
+      const unpinnedRow = rows[3]; // Should be an unpinned row
+
+      await userEvent.hover(unpinnedRow);
+      const pinButton = within(unpinnedRow).getByLabelText(/pin row/i);
+
+      // Check ARIA attributes
+      expect(pinButton).toHaveAttribute("aria-label", "Pin row");
+      expect(pinButton.tagName).toBe("BUTTON");
+    });
+
+    // TODO: Add keyboard navigation tests
+    // await step("Pin functionality works with keyboard navigation", async () => {
+    //   const rows = canvas.getAllByRole("row");
+    //   const unpinnedRow = rows[3]; // Use an unpinned row
+
+    //   await userEvent.hover(unpinnedRow);
+    //   const pinButton = within(unpinnedRow).getByLabelText(/pin row/i);
+
+    //   // Focus the pin button and press Enter
+    //   pinButton.focus();
+    //   await userEvent.keyboard("{Enter}");
+
+    //   await waitFor(async () => {
+    //     expect(unpinnedRow).toHaveClass("data-table-row-pinned");
+    //   });
+    // });
+  },
 };

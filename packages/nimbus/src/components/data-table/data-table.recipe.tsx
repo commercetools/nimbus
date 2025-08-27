@@ -32,6 +32,119 @@ export const dataTableRecipe = defineSlotRecipe({
       boxShadow: "1",
       overflow: "auto",
       contain: "layout style",
+      width: "100%",
+      // CSS custom properties for pinned row shadows
+      "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
+      "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
+      "--pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
+      "--pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
+      "& .react-aria-Cell": {
+        paddingTop: "400",
+        paddingBottom: "400",
+        paddingLeft: "600",
+        paddingRight: "600",
+        color: "neutral.11",
+        focusRing: "outside",
+        hyphens: "auto",
+        "&[data-slot='expand']": {
+          padding: 0,
+        },
+        "&[data-slot='pin-row-cell']": {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        "& .nimbus-table-cell-copy-button": {
+          display: "none",
+        },
+        "& .nimbus-table-cell-pin-button": {
+          display: "none",
+        },
+        "& .nimbus-table-cell-pin-button-pinned": {
+          display: "inherit",
+        },
+      },
+      "& .data-table-row": {
+        borderBottom: "1px solid {colors.neutral.3}",
+        focusRing: "outside",
+        "& td, div": {
+          userSelect: "text",
+        },
+        "&:last-child": {
+          borderBottom: "none",
+        },
+        _hover: {
+          backgroundColor: "{colors.primary.3}",
+          transition: "background-color 100ms ease",
+          transform: "translate3d(0, 0, 0)",
+          "& .data-table-row-details-button": {
+            opacity: 1,
+          },
+          "& .nimbus-table-cell-copy-button": {
+            display: "inherit",
+          },
+          "& .nimbus-table-cell-pin-button": {
+            display: "inherit",
+          },
+        },
+        "& .data-table-row-details-button": {
+          opacity: 0,
+        },
+        "& .data-table-row-details-button:focus": {
+          opacity: 1,
+        },
+      },
+      "& .data-table-row[data-selected='true']": {
+        background: "{colors.primary.4}",
+      },
+      "& .data-table-row[data-disabled='true']": {
+        // layerStyle: "disabled",
+        opacity: 0.8,
+        cursor: "not-allowed",
+      },
+      "& .data-table-row-pinned": {
+        boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
+        "&.data-table-row-pinned-first": {
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)",
+        },
+        "&.data-table-row-pinned-last": {
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-bottom)",
+        },
+        "&.data-table-row-pinned-single": {
+          boxShadow:
+            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top), var(--pinned-shadow-bottom)",
+        },
+      },
+      "& .data-table-header": {
+        background: "colorPalette.2",
+        color: "colorPalette.11",
+        borderBottom: "1px solid {colors.neutral.3}",
+        lineHeight: "400",
+        fontWeight: "500",
+        textStyle: "sm",
+        fontSize: "300",
+        height: "1000",
+        "& .data-table-column-divider": {
+          display: "none",
+          position: "absolute",
+          right: 0,
+          top: "10%",
+          bottom: "10%",
+          height: "80%",
+          width: "1px",
+          pointerEvents: "none",
+        },
+        _hover: {
+          "& .data-table-column-divider": {
+            display: "inherit",
+          },
+          "& tr th:last-of-type .data-table-column-divider": {
+            display: "none",
+          },
+        },
+      },
+      // Multiline header truncation using webkit line clamp
     },
     table: {
       width: "fit-content",
