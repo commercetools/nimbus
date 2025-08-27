@@ -6,7 +6,7 @@ import { NumberInput } from "../number-input";
 import { Flex } from "../flex";
 import { Stack } from "../stack";
 import { ChevronLeft, ChevronRight } from "@commercetools/nimbus-icons";
-import { usePagination } from "./utils/use-pagination";
+import { usePagination } from "./hooks/use-pagination";
 import type { PaginationProps } from "./pagination.types";
 
 /**
@@ -37,7 +37,6 @@ export const Pagination = (props: PaginationProps) => {
     onPageChange,
     onPageSizeChange,
   });
-
 
   // Prepare page size options for select
   const pageSizeSelectOptions = useMemo(

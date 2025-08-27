@@ -5,4 +5,4 @@ export type {
   UsePaginationProps,
   UsePaginationReturn,
 } from "./pagination.types";
-export { usePagination } from "./utils/use-pagination";
+export { usePagination } from "./hooks/use-pagination";
