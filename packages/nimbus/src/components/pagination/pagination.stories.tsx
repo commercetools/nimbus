@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect } from "storybook/test";
 import { Pagination } from "./pagination";
 import { useState } from "react";
-import { Stack, Box, Text, Heading } from "@/components";
+import { Stack, Box, Text } from "@/components";
 
 const meta: Meta<typeof Pagination> = {
   title: "components/Pagination",
@@ -88,6 +88,40 @@ export const Default: Story = {
       // Check that page input updated (as string)
       await expect(pageInput).toHaveValue("5");
     });
+
+    await step("Test input validation - non-numeric input", async () => {
+      const pageInput = canvas.getByLabelText("Current page");
+
+      // Try typing non-numeric characters
+      await userEvent.clear(pageInput);
+      await userEvent.type(pageInput, "abc");
+
+      // Should reject non-numeric input (empty or previous valid value)
+      await expect(pageInput).not.toHaveValue("abc");
+    });
+
+    await step("Test input validation - decimal values", async () => {
+      const pageInput = canvas.getByLabelText("Current page");
+
+      // Try typing decimal value
+      await userEvent.clear(pageInput);
+      await userEvent.type(pageInput, "5.5");
+
+      // Should handle decimal input appropriately (likely truncated)
+      const value = pageInput.value;
+      await expect(["5", "5.5"]).toContain(value);
+    });
+
+    await step("Test input validation - negative numbers", async () => {
+      const pageInput = canvas.getByLabelText("Current page");
+
+      // Try typing negative number
+      await userEvent.clear(pageInput);
+      await userEvent.type(pageInput, "-1");
+
+      // Should reject negative input or handle it gracefully
+      await expect(pageInput).not.toHaveValue("-1");
+    });
   },
 };
 
@@ -104,7 +138,9 @@ export const Controlled: Story = {
     return (
       <Stack gap="600">
         <Stack gap="200">
-          <Heading size="lg">Controlled Pagination</Heading>
+          <Text fontSize="lg" fontWeight="bold">
+            Controlled Pagination
+          </Text>
           <Text color="neutral.11">
             This pagination is controlled by React state. Current page:{" "}
             {currentPage}, Page size: {pageSize}
@@ -345,6 +381,24 @@ export const Empty: Story = {
       // Should still be valid since the component will handle bounds internally
       await expect(pageInput).toHaveValue("5");
     });
+
+    await step("Test edge case input validation in empty state", async () => {
+      const pageInput = canvas.getByLabelText("Current page");
+
+      // Test zero input
+      await userEvent.clear(pageInput);
+      await userEvent.type(pageInput, "0");
+
+      // Zero should not be accepted (minimum is 1)
+      await expect(pageInput).not.toHaveValue("0");
+
+      // Test very large number
+      await userEvent.clear(pageInput);
+      await userEvent.type(pageInput, "99999");
+
+      // Large number should be handled gracefully
+      await expect(pageInput).toHaveValue("99999");
+    });
   },
 };
 
@@ -520,6 +574,52 @@ export const WithoutPageInput: Story = {
       />
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const navigation = canvas.getByRole("navigation");
+
+    await step("Verify page input is disabled/read-only", async () => {
+      // Should not have an editable page input
+      const pageInputs = canvas.queryAllByLabelText("Current page");
+      await expect(pageInputs).toHaveLength(0);
+
+      // Should show page number as text (5 of 128)
+      await expect(navigation).toHaveTextContent(/5\s+of\s+128/);
+    });
+
+    await step("Test navigation buttons still work", async () => {
+      const nextButton = canvas.getByLabelText("Go to next page");
+      const prevButton = canvas.getByLabelText("Go to previous page");
+
+      // Both buttons should be enabled
+      await expect(nextButton).toBeEnabled();
+      await expect(prevButton).toBeEnabled();
+
+      // Test next navigation
+      await userEvent.click(nextButton);
+      await expect(navigation).toHaveTextContent(/6\s+of\s+128/);
+
+      // Test previous navigation
+      await userEvent.click(prevButton);
+      await expect(navigation).toHaveTextContent(/5\s+of\s+128/);
+    });
+
+    await step("Test page size selector still works", async () => {
+      const pageSizeSelect = canvas.getByLabelText("Items per page");
+      await expect(pageSizeSelect).toBeInTheDocument();
+
+      // Change page size and verify total pages update
+      await userEvent.click(pageSizeSelect);
+      await userEvent.keyboard("{ArrowUp}"); // Move to "10" from "20"
+      await userEvent.keyboard("{Enter}");
+
+      // Wait for state update
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      // Should now show 256 total pages (2560/10)
+      await expect(navigation).toHaveTextContent(/of\s+256/);
+    });
+  },
 };
 
 /**
@@ -549,117 +649,61 @@ export const WithoutPageSizeSelector: Story = {
       />
     );
   },
-};
-
-/**
- * Pagination with debounced input behavior.
- * Demonstrates that rapid typing in the page input doesn't trigger multiple page changes.
- * The onPageChange callback is only called after the user stops typing for 300ms.
- */
-export const DebouncedInput: Story = {
-  args: {
-    totalItems: 2560,
-    currentPage: 1,
-    pageSize: 20,
-    pageSizeOptions: [10, 20, 50, 100],
-  },
-  render: (args) => {
-    const [currentPage, setCurrentPage] = useState(args.currentPage || 1);
-    const [pageSize, setPageSize] = useState(args.pageSize || 20);
-    const [changeLog, setChangeLog] = useState<string[]>([]);
-
-    const handlePageChange = (page: number) => {
-      setCurrentPage(page);
-      const timestamp = new Date().toLocaleTimeString();
-      setChangeLog((prev) => [
-        ...prev,
-        `${timestamp}: Page changed to ${page}`,
-      ]);
-    };
-
-    return (
-      <Stack gap="600">
-        <Stack gap="200">
-          <Heading size="lg">Debounced Page Input</Heading>
-          <Text color="neutral.11">
-            Type rapidly in the page input field. Notice that the onPageChange
-            callback is only fired after you stop typing for 300ms, preventing
-            excessive updates.
-          </Text>
-        </Stack>
-
-        <Pagination
-          {...args}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          onPageChange={handlePageChange}
-          onPageSizeChange={setPageSize}
-        />
-
-        <Stack gap="200">
-          <Text fontWeight="semibold">Page Change Log:</Text>
-          <Box
-            p="300"
-            bg="neutral.3"
-            borderRadius="md"
-            maxH="200px"
-            overflowY="auto"
-            fontSize="sm"
-          >
-            {changeLog.length === 0 ? (
-              <Text color="neutral.12">
-                No page changes yet. Try typing in the page input above.
-              </Text>
-            ) : (
-              <Stack gap="100">
-                {changeLog.map((log, index) => (
-                  <Text key={index} fontFamily="mono">
-                    {log}
-                  </Text>
-                ))}
-              </Stack>
-            )}
-          </Box>
-          <Text fontSize="xs" color="neutral.10">
-            Clear the log by refreshing the story.
-          </Text>
-        </Stack>
-      </Stack>
-    );
-  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const navigation = canvas.getByRole("navigation");
 
-    await step("Verify component renders correctly", async () => {
+    await step("Verify page size selector is hidden", async () => {
+      // Should not have a page size selector
+      const pageSizeSelectors = canvas.queryAllByLabelText("Items per page");
+      await expect(pageSizeSelectors).toHaveLength(0);
+
+      // Should still show page navigation
+      await expect(navigation).toHaveTextContent(/1\s+of\s+128/);
+    });
+
+    await step("Test page input still works", async () => {
       const pageInput = canvas.getByLabelText("Current page");
+      await expect(pageInput).toBeInTheDocument();
       await expect(pageInput).toHaveValue("1");
 
-      // Should show no changes initially
-      await expect(
-        canvas.getByText(
-          "No page changes yet. Try typing in the page input above."
-        )
-      ).toBeInTheDocument();
-
-      // Should show the pagination component
-      await expect(canvas.getByText("Page Change Log:")).toBeInTheDocument();
-      await expect(
-        canvas.getByText("Debounced Page Input")
-      ).toBeInTheDocument();
-    });
-
-    await step("Test basic input interaction", async () => {
-      const pageInput = canvas.getByLabelText("Current page");
-
-      // Clear and type a page number
+      // Test direct page input
       await userEvent.clear(pageInput);
       await userEvent.type(pageInput, "10");
-
-      // Input should show "10" immediately (visual feedback works)
       await expect(pageInput).toHaveValue("10");
-
-      // The test demonstrates the feature - actual debounce testing is complex in automated tests
-      // But the visual story will show the debounce behavior to developers
     });
+
+    await step("Test navigation buttons still work", async () => {
+      const nextButton = canvas.getByLabelText("Go to next page");
+      const prevButton = canvas.getByLabelText("Go to previous page");
+
+      // Previous should be disabled on page 1
+      await expect(prevButton).toBeDisabled();
+      await expect(nextButton).toBeEnabled();
+
+      // Test next navigation
+      await userEvent.click(nextButton);
+      await expect(navigation).toHaveTextContent(/11\s+of\s+128/);
+
+      // Previous should now be enabled
+      await expect(prevButton).toBeEnabled();
+    });
+
+    await step(
+      "Verify total pages remain fixed without page size selector",
+      async () => {
+        // Total pages should remain 128 (2560/20) since page size cannot be changed
+        await expect(navigation).toHaveTextContent(/of\s+128/);
+
+        // Navigate to verify calculation is consistent
+        const pageInput = canvas.getByLabelText("Current page");
+        await userEvent.clear(pageInput);
+        await userEvent.type(pageInput, "128");
+        await expect(pageInput).toHaveValue("128");
+
+        // Should still show 128 total pages
+        await expect(navigation).toHaveTextContent(/128\s+of\s+128/);
+      }
+    );
   },
 };

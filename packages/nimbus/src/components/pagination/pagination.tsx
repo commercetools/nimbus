@@ -1,5 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
-import { useDebounce } from "react-use";
+import { useMemo } from "react";
 import { Select } from "../select";
 import { Text } from "../text";
 import { IconButton } from "../icon-button";
@@ -39,24 +38,6 @@ export const Pagination = (props: PaginationProps) => {
     onPageSizeChange,
   });
 
-  // Internal state for NumberInput value to allow immediate visual feedback
-  const [inputValue, setInputValue] = useState<number>(pagination.currentPage);
-
-  // Update input value when current page changes externally (e.g., via navigation buttons)
-  useEffect(() => {
-    setInputValue(pagination.currentPage);
-  }, [pagination.currentPage]);
-
-  // Debounced page navigation function
-  useDebounce(
-    () => {
-      if (inputValue !== pagination.currentPage) {
-        pagination.goToPage(inputValue);
-      }
-    },
-    300,
-    [inputValue]
-  );
 
   // Prepare page size options for select
   const pageSizeSelectOptions = useMemo(
@@ -114,9 +95,9 @@ export const Pagination = (props: PaginationProps) => {
           <Text color="neutral.12">Page</Text>
           {enablePageInput ? (
             <NumberInput
-              value={inputValue}
+              value={pagination.currentPage}
               onChange={(value: number | undefined) =>
-                setInputValue(value || 1)
+                pagination.goToPage(value || 1)
               }
               minValue={1}
               maxValue={pagination.totalPages}
