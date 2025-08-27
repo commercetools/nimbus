@@ -213,18 +213,14 @@ const ProductDetailsModal = ({
                     Stores
                   </Text>
                   <TextInput
-                    value={(formData.stores as string[])?.join(", ") || ""}
+                    value={(formData.stores as string[]).toString() || ""}
                     onChange={(value) => {
-                      const stores = value
-                        .split(",")
-                        .map((s) => s.trim())
-                        .filter((s) => s);
-                      handleInputChange("stores", stores);
+                      const stores = value;
+                      handleInputChange("stores", stores.split(","));
                     }}
                     width="100%"
                     placeholder="Enter stores separated by commas"
                     aria-label="stores"
-                    isDisabled
                   />
                 </Box>
               </Stack>
