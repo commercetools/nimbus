@@ -18,7 +18,7 @@ import {
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
 import { useIntl } from "react-intl";
-import messages from "./messages";
+import messages from "./number-input.i18n";
 /**
  * # NumberInput
  *
