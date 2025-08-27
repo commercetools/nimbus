@@ -215,8 +215,7 @@ const ProductDetailsModal = ({
                   <TextInput
                     value={(formData.stores as string[]).toString() || ""}
                     onChange={(value) => {
-                      const stores = value;
-                      handleInputChange("stores", stores.split(","));
+                      handleInputChange("stores", value.split(","));
                     }}
                     width="100%"
                     placeholder="Enter stores separated by commas"
