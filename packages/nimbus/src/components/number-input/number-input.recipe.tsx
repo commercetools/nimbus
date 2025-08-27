@@ -69,7 +69,6 @@ export const numberInputRecipe = defineSlotRecipe({
       flexGrow: 1,
       borderRadius: "inherit",
       colorPalette: "neutral",
-      // focusVisibleRing: "outside",
       bg: "transparent",
       outline: "none",
       appearance: "textfield",
