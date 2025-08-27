@@ -160,6 +160,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
       visibleColumns,
       search,
       sortDescriptor: controlledSortDescriptor,
+      defaultSortDescriptor,
       onSortChange,
       selectedKeys,
       defaultSelectedKeys,
@@ -185,7 +186,7 @@ export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
 
     const [internalSortDescriptor, setInternalSortDescriptor] = useState<
       SortDescriptor | undefined
-    >();
+    >(defaultSortDescriptor);
 
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
     const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
