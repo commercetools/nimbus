@@ -25,10 +25,6 @@ export const numberInputRecipe = defineSlotRecipe({
       position: "relative",
       borderRadius: "200",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-      // Apply input hover styles when buttons are hovered
-      "&:has(button:hover) root": {
-        backgroundColor: "primary.2",
-      },
 
       _focusWithin: {
         // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
@@ -93,9 +89,6 @@ export const numberInputRecipe = defineSlotRecipe({
       justifyContent: "center",
       cursor: "button",
       bg: "transparent",
-      _hover: {
-        bg: "primary.2",
-      },
       _active: {
         bg: "neutral.4",
       },
@@ -121,9 +114,6 @@ export const numberInputRecipe = defineSlotRecipe({
       justifyContent: "center",
       cursor: "button",
       bg: "transparent",
-      _hover: {
-        bg: "primary.2",
-      },
       _active: {
         bg: "neutral.4",
       },
@@ -164,9 +154,13 @@ export const numberInputRecipe = defineSlotRecipe({
     variant: {
       solid: {
         root: {
-          // Apply input hover styles when buttons are hovered for solid variant
-          "&:has(button:hover) input": {
+          // Apply hover effect to root
+          _hover: {
             backgroundColor: "primary.2",
+            // Override button backgrounds to stay transparent during root hover
+            "& button": {
+              backgroundColor: "none !important",
+            },
           },
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
@@ -176,10 +170,6 @@ export const numberInputRecipe = defineSlotRecipe({
           "&[data-invalid='true']": {
             boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
             "--border-width": "sizes.50",
-          },
-          // boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-          _hover: {
-            // backgroundColor: "primary.2",
           },
         },
         incrementButton: {
@@ -193,7 +183,7 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 -0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
         decrementButton: {
@@ -207,14 +197,14 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
       },
       ghost: {
         root: {
           // Apply input hover styles when buttons are hovered for ghost variant
-          "&:has(button:hover) input": {
+          _hover: {
             backgroundColor: "primary.2",
           },
         },
@@ -223,9 +213,6 @@ export const numberInputRecipe = defineSlotRecipe({
             boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
             "--border-width": "sizes.50",
           },
-          _hover: {
-            backgroundColor: "primary.2",
-          },
         },
         incrementButton: {
           "&[data-invalid='true']": {
@@ -233,7 +220,7 @@ export const numberInputRecipe = defineSlotRecipe({
             borderRight: "2px solid var(--border-color)",
           },
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
         decrementButton: {
@@ -242,7 +229,7 @@ export const numberInputRecipe = defineSlotRecipe({
             borderRight: "2px solid var(--border-color)",
           },
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
       },
