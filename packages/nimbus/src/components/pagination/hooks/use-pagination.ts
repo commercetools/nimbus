@@ -1,9 +1,79 @@
 import { useState, useCallback, useMemo } from "react";
-import type {
-  UsePaginationProps,
-  UsePaginationReturn,
-} from "../pagination.types";
 
+export interface PaginationState {
+  /** Total number of items across all pages */
+  totalItems: number;
+  /** Current active page (1-based) */
+  currentPage: number;
+  /** Number of items displayed per page */
+  pageSize: number;
+  /** Total number of pages available */
+  totalPages: number;
+  /** Index of the first item on current page (1-based) */
+  startItem: number;
+  /** Index of the last item on current page (1-based) */
+  endItem: number;
+  /** Whether there is a previous page available */
+  hasPreviousPage: boolean;
+  /** Whether there is a next page available */
+  hasNextPage: boolean;
+}
+
+export interface UsePaginationProps {
+  /** Total number of items to paginate */
+  totalItems: number;
+  /** Initial current page (1-based), defaults to 1 */
+  currentPage?: number;
+  /** Initial number of items per page, defaults to 10 */
+  pageSize?: number;
+  /** Callback fired when the current page changes */
+  onPageChange?: (page: number) => void;
+  /** Callback fired when the page size changes */
+  onPageSizeChange?: (pageSize: number) => void;
+}
+
+export interface UsePaginationReturn extends PaginationState {
+  /** Navigate to a specific page number (1-based) */
+  goToPage: (page: number) => void;
+  /** Navigate to the previous page, if available */
+  goToPreviousPage: () => void;
+  /** Navigate to the next page, if available */
+  goToNextPage: () => void;
+  /** Change the number of items displayed per page */
+  setPageSize: (pageSize: number) => void;
+}
+
+/**
+ * # usePagination
+ *
+ * Custom hook that provides pagination state management and navigation controls.
+ *
+ * Supports both controlled and uncontrolled modes:
+ * - Controlled: Parent component manages currentPage state via props and callbacks
+ * - Uncontrolled: Hook manages internal currentPage state automatically
+ *
+ * @param props - Configuration object for pagination behavior
+ * @param props.totalItems - Total number of items to paginate
+ * @param props.currentPage - Current page number (controlled mode). If undefined, uses uncontrolled mode
+ * @param props.pageSize - Number of items per page (defaults to 20)
+ * @param props.onPageChange - Callback fired when page changes
+ * @param props.onPageSizeChange - Callback fired when page size changes
+ *
+ * @returns Object containing pagination state and navigation functions:
+ * - totalItems: Total number of items
+ * - currentPage: Current active page number (1-based)
+ * - pageSize: Number of items per page
+ * - totalPages: Total number of pages
+ * - startItem: First item number on current page
+ * - endItem: Last item number on current page
+ * - hasPreviousPage: Whether previous page exists
+ * - hasNextPage: Whether next page exists
+ * - goToPage: Function to navigate to specific page
+ * - goToPreviousPage: Function to navigate to previous page
+ * - goToNextPage: Function to navigate to next page
+ * - setPageSize: Function to change page size
+ *
+ */
 export function usePagination({
   totalItems,
   currentPage: controlledCurrentPage,

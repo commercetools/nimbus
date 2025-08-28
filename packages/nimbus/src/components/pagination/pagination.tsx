@@ -1,11 +1,13 @@
 import { useMemo } from "react";
-import { Select } from "../select";
-import { Text } from "../text";
-import { IconButton } from "../icon-button";
-import { NumberInput } from "../number-input";
-import { Flex } from "../flex";
-import { Stack } from "../stack";
 import { ChevronLeft, ChevronRight } from "@commercetools/nimbus-icons";
+import {
+  Flex,
+  IconButton,
+  NumberInput,
+  Select,
+  Stack,
+  Text,
+} from "@/components";
 import { usePagination } from "./hooks/use-pagination";
 import type { PaginationProps } from "./pagination.types";
 

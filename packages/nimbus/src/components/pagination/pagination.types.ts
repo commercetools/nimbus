@@ -18,29 +18,3 @@ export interface PaginationProps {
   /** Enables the page size selector dropdown */
   enablePageSizeSelector?: boolean;
 }
-
-export interface PaginationState {
-  totalItems: number;
-  currentPage: number;
-  pageSize: number;
-  totalPages: number;
-  startItem: number;
-  endItem: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
-
-export interface UsePaginationProps {
-  totalItems: number;
-  currentPage?: number;
-  pageSize?: number;
-  onPageChange?: (page: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
-}
-
-export interface UsePaginationReturn extends PaginationState {
-  goToPage: (page: number) => void;
-  goToPreviousPage: () => void;
-  goToNextPage: () => void;
-  setPageSize: (pageSize: number) => void;
-}
