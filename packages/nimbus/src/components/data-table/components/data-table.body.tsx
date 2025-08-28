@@ -1,33 +1,37 @@
-import { forwardRef } from "react";
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
+import type { DataTableBodyProps, DataTableRowItem } from "../data-table.types";
+import { DataTableBodySlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DataTableBodyProps {}
+const DefaultEmptyStateMessage = () => (
+  <Box w="100%" p="200">
+    No Data
+  </Box>
+);
 
-export const DataTableBody = forwardRef<
-  HTMLTableSectionElement,
-  DataTableBodyProps
->(function DataTableBody(props, ref) {
-  const { sortedRows, activeColumns } = useDataTableContext();
-  // TODO: renderEmptyState should be controlled by props
+export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
+  ref,
+  ...props
+}: DataTableBodyProps<T>) => {
+  const { sortedRows, activeColumns, renderEmptyState } =
+    useDataTableContext<T>();
+  const [styleProps, restProps] = extractStyleProps(props);
   return (
-    <RaTableBody
-      ref={ref}
-      items={sortedRows}
-      dependencies={[activeColumns]}
-      renderEmptyState={() => (
-        <Box w="100%" p="200">
-          No Data
-        </Box>
-      )}
-      {...props}
-    >
-      {(row) => <DataTableRow key={row.id} row={row} />}
-    </RaTableBody>
+    <DataTableBodySlot asChild {...styleProps}>
+      <RaTableBody
+        ref={ref}
+        items={sortedRows}
+        dependencies={[activeColumns]}
+        renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}
+        {...restProps}
+      >
+        {(row) => <DataTableRow key={row.id} row={row} />}
+      </RaTableBody>
+    </DataTableBodySlot>
   );
-});
+};
 
 DataTableBody.displayName = "DataTable.Body";

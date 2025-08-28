@@ -51,11 +51,40 @@ export const DataTableTableSlot = withContext<
   DataTableTableSlotProps
 >("table", "table");
 
-export type DataTableColumnSlotProps = HTMLChakraProps<"th"> & UnstyledProp;
+// Wrapper slot for the react aria `TableHeader` component
+export type DataTableHeaderSlotProps = HTMLChakraProps<"tr">;
+export const DataTableHeaderSlot = withContext<
+  HTMLTableSectionElement,
+  DataTableHeaderSlotProps
+>("tr", "header");
+
+// Wrapper slot for react aria `Column` component
+export type DataTableColumnSlotProps = HTMLChakraProps<"th">;
 export const DataTableColumnSlot = withContext<
   HTMLTableCellElement,
   DataTableColumnSlotProps
 >("th", "column");
+
+// Wrapper for the react aria `TableBody` component
+export type DataTableBodySlotProps = HTMLChakraProps<"tbody">;
+export const DataTableBodySlot = withContext<
+  HTMLTableSectionElement,
+  DataTableBodySlotProps
+>("tbody", "body");
+
+// Wrapper for the react aria `Row` component
+export type DataTableRowSlotProps = HTMLChakraProps<"tr">;
+export const DataTableRowSlot = withContext<
+  HTMLTableRowElement,
+  DataTableRowSlotProps
+>("tr", "row");
+
+// Wrapper for the react aria `Cell` component
+export type DataTableCellSlotProps = HTMLChakraProps<"td">;
+export const DataTableCellSlot = withContext<
+  HTMLTableCellElement,
+  DataTableCellSlotProps
+>("td", "cell");
 
 export const DataTableFooter = withContext<
   HTMLDivElement,

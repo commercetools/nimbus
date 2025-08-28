@@ -1,12 +1,23 @@
-import type { ReactNode, FC } from "react";
+import type { ReactNode, FC, Ref } from "react";
 import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type {
   SortDirection as RaSortDirection,
+  TableHeaderProps as RaTableHeaderProps,
   ColumnProps as RaColumnProps,
+  TableBodyProps as RaTableBodyProps,
+  RowProps as RaRowProps,
+  CellProps as RaCellProps,
   Selection,
 } from "react-aria-components";
 import { dataTableRecipe } from "./data-table.recipe";
-import type { DataTableRootProps } from "./data-table.slots";
+import type {
+  DataTableRootProps,
+  DataTableHeaderSlotProps,
+  DataTableColumnSlotProps,
+  DataTableBodySlotProps,
+  DataTableRowSlotProps,
+  DataTableCellSlotProps,
+} from "./data-table.slots";
 
 export interface DataTableContextValue<
   T extends object = Record<string, unknown>,
@@ -14,6 +25,7 @@ export interface DataTableContextValue<
   columns: DataTableColumnItem<T>[];
   data: DataTableRowItem<T>[];
   visibleColumns?: string[];
+  renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   search?: string;
   sortDescriptor?: SortDescriptor;
   selectedKeys?: Selection;
@@ -22,6 +34,7 @@ export interface DataTableContextValue<
   allowsSorting?: boolean;
   selectionMode?: "none" | "single" | "multiple";
   disallowEmptySelection?: boolean;
+  isRowClickable?: boolean;
   maxHeight?: string | number;
   isTruncated?: boolean;
   density?: "default" | "condensed";
@@ -69,6 +82,7 @@ export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
   isSortable?: boolean;
   isRowHeader?: boolean;
   headerIcon?: ReactNode;
+  [key: string]: unknown;
 };
 
 export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
@@ -97,9 +111,12 @@ type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
 export interface DataTableProps<T extends object = Record<string, unknown>>
   extends DataTableVariantProps {
   columns: DataTableColumnItem<T>[];
+  unstyled?: boolean;
   data: DataTableRowItem<T>[];
   visibleColumns?: string[];
+  renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
+  isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
   maxHeight?: string | number;
@@ -115,10 +132,11 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   onRowClick?: (row: DataTableRowItem<T>) => void;
   onDetailsClick?: (row: DataTableRowItem<T>) => void;
   renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
-  children?: React.ReactNode;
+  ref?: Ref<HTMLDivElement>;
+  children?: ReactNode;
   density?: DataTableDensity;
   isTruncated?: boolean;
-  footer?: React.ReactNode;
+  footer?: ReactNode;
   nestedKey?: string;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
@@ -127,14 +145,39 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   onPinToggle?: (rowId: string) => void;
 }
 
-/** Combined props for the Column element (Chakra styles + Aria behavior). */
-export type DataTableColumnProps = RaColumnProps & {
-  ref?: React.Ref<HTMLTableCellElement>;
-  column?: DataTableColumnItem;
-  unstyled?: boolean;
-  isInternalColumn?: boolean;
-  tabIndex?: number;
-};
+/**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
+export type DataTableHeaderProps<T extends DataTableColumnItem> =
+  RaTableHeaderProps<T> &
+    DataTableHeaderSlotProps & { ref?: Ref<HTMLTableSectionElement> };
 
+/** Combined props for the Column element (Chakra styles + Aria behavior). */
+export type DataTableColumnProps = RaColumnProps &
+  Omit<DataTableColumnSlotProps, "width" | "minWidth" | "maxWidth"> & {
+    ref?: Ref<HTMLTableCellElement>;
+    column?: DataTableColumnItem;
+    unstyled?: boolean;
+    isInternalColumn?: boolean;
+    tabIndex?: number;
+  };
 /** Type signature for the `DataTable.Column` sub-component. */
 export type DataTableColumnComponent = FC<DataTableColumnProps>;
+
+/** Combined props for the TableBody element (Chakra styles + Aria behavior). */
+export type DataTableBodyProps<T extends DataTableRowItem> =
+  RaTableBodyProps<T> &
+    DataTableBodySlotProps & { ref?: Ref<HTMLTableSectionElement> };
+
+/** Combined props for the Row element (Chakra styles + Aria behavior). */
+export type DataTableRowProps<T extends DataTableRowItem> = RaRowProps<T> &
+  DataTableRowSlotProps & {
+    ref?: Ref<HTMLTableRowElement>;
+    row: T;
+    depth?: number;
+  };
+
+/** Combined props for the Cell element (Chakra styles + Aria behavior). */
+export type DataTableCellProps = RaCellProps &
+  DataTableCellSlotProps & {
+    ref?: Ref<HTMLTableCellElement>;
+    isDisabled?: boolean;
+  };

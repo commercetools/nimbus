@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
@@ -8,10 +8,11 @@ import { mergeRefs } from "@chakra-ui/react";
 import { Highlight } from "@chakra-ui/react/highlight";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
-import { DataTableExpandButton } from "../data-table.slots";
+import { DataTableExpandButton, DataTableRowSlot } from "../data-table.slots";
 import type {
-  DataTableRowItem as DataTableRowType,
+  DataTableRowItem,
   DataTableColumnItem,
+  DataTableRowProps,
 } from "../data-table.types";
 import { Box, Checkbox, IconButton, Tooltip } from "@/components";
 import {
@@ -19,11 +20,7 @@ import {
   KeyboardArrowRight,
   PushPin,
 } from "@commercetools/nimbus-icons";
-
-export interface DataTableRowProps<T extends object = Record<string, unknown>> {
-  row: DataTableRowType<T>;
-  depth?: number;
-}
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * Determines if a click event originated from an interactive element within a table row.
@@ -76,12 +73,11 @@ function stopPropagationToNonInteractiveElements(e: Event) {
     e.stopPropagation();
   }
 }
-export const DataTableRow = forwardRef(function DataTableRow<
-  T extends object = Record<string, unknown>,
->(
-  { row, depth = 0 }: DataTableRowProps<T>,
-  ref: React.Ref<HTMLTableRowElement>
-) {
+export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
+  row,
+  ref,
+  ...props
+}: DataTableRowProps<T>) => {
   const {
     activeColumns,
     search,
@@ -99,6 +95,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
     sortedRows,
   } = useDataTableContext<T>();
 
+  const [styleProps, restProps] = extractStyleProps(props);
+
   // Helper function to check if row is disabled
   const getIsDisabled = (rowId: string) => {
     if (!disabledKeys) return false;
@@ -109,29 +107,20 @@ export const DataTableRow = forwardRef(function DataTableRow<
   const isDisabled = getIsDisabled(row.id);
 
   /**
-   * COMPLEX ROW CLICK HANDLING - WHY THIS APPROACH IS NECESSARY
+   * Custom row click handling implementation to work around React Aria limitations.
    *
-   * React Aria Components has a fundamental limitation where row actions are disabled
-   * when a row is selected, which breaks custom click handlers and navigation patterns
-   * commonly expected in data tables. This implementation uses native DOM event listeners
-   * to bypass React Aria's built-in limitations and provide the following critical features:
+   * React Aria Components disable row actions when a row is selected, which prevents
+   * custom click handlers from working properly. This implementation uses native DOM
+   * event listeners to bypass this limitation and provide consistent row click behavior.
    *
-   * 1. **Row Click Handler**: Allow users to click anywhere on a row and activate the onClick handler
-   * 2. **Smart Event Filtering**: Prevent conflicts with interactive elements (checkboxes, buttons)
-   * 3. **Selection Isolation**: Ensure row selection only happens via explicit selection controls
-   * 4. **Disabled Row Handling**: Support custom actions even on disabled rows when needed
-   * 5. **Text Selection Support**: Avoid triggering click handler when users are selecting text
-   *
-   * This approach maintains the accessibility benefits of React Aria while enabling the
-   * expected UX patterns for modern data tables. Without this implementation, users would
-   * lose the ability to invoke the rows' onClick handler once selection is enabled.
-   *
-   * @see https://github.com/adobe/react-spectrum/issues/7962 - React Aria limitation
+   * @see https://github.com/adobe/react-spectrum/issues/7962
    */
 
   /**
-   * Ref to track single click timeout for distinguishing single vs double clicks.
-   * This prevents row navigation on double-clicks when the user intends to select text.
+   * Handles row click events with smart filtering to avoid conflicts with interactive elements.
+   * Uses native DOM Event type to be compatible with addEventListener.
+   *
+   * @param e - Native DOM Event from the click listener
    */
   const clickTimeoutRef = useRef<number | null>(null);
 
@@ -212,16 +201,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
   }, []); // No dependencies needed - this function doesn't use any external variables
 
   /**
-   * Ref to track callback ref invocations and store the DOM node reference.
-   *
-   * React's callback refs can be called multiple times during a component's lifecycle
-   * (on mount, re-renders, unmount), so we need to track invocation count to ensure:
-   * - Event listeners are only attached once per row instance
-   * - We maintain a reference to the DOM node for cleanup
-   * - Memory leaks are prevented by avoiding duplicate listeners
-   *
-   * The counter pattern ensures we only attach listeners on the first callback
-   * invocation when the DOM node is actually available.
+   * Ref to track the callback ref invocation count and store the DOM node reference.
+   * This prevents duplicate event listeners and enables proper cleanup.
    */
   const counterRef = useRef<{ count: number; node?: HTMLElement }>({
     count: 0,
@@ -229,25 +210,8 @@ export const DataTableRow = forwardRef(function DataTableRow<
   });
 
   /**
-   * Callback ref that attaches event listeners to the row DOM element.
-   *
-   * This ref is critical for implementing custom row click behavior outside of
-   * React Aria's event system. It performs several important tasks:
-   *
-   * 1. **Single Attachment**: Only attaches listeners on the first callback invocation
-   * 2. **Event Capture**: Uses capture phase to handle events before child elements
-   * 3. **Multiple Listeners**: Attaches pointerdown, mouseup, and dblclick listeners
-   * 4. **Always Available**: Listeners are always attached to support dynamic onRowClick changes
-   *
-   * The pointerdown listener prevents unwanted selection behavior when clicking on non-interactive
-   * areas by stopping event propogation before the event first reaches the first event listener (onPointerDown)
-   * in react-aria'a onPress handler.
-   * The mouseup listener invokes the row's onClick handler once any possible text selection has been completed.
-   * The dblclick listener enables native browser text selection behavior on double-clicks.
-   * Using capture phase ensures our handlers run before any child element handlers.
-   *
-   * Performance note: Always attaching listeners has negligible overhead (~few bytes per row)
-   * but provides better support for dynamic row clickability and reduces re-renders.
+   * Callback ref that attaches the click event listener to the row DOM element.
+   * Only attaches the listener once per row instance to prevent memory leaks.
    *
    * @param node - The HTMLElement reference from React's ref callback
    */
@@ -358,31 +322,86 @@ export const DataTableRow = forwardRef(function DataTableRow<
   // TODO: does the row need a slot for styling?
   return (
     <>
-      <RaRow
-        isDisabled={isDisabled}
-        columns={activeColumns}
-        ref={rowRef}
-        id={row.id}
-        className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
-        style={{
-          cursor: isDisabled
-            ? "not-allowed"
-            : onRowClick
-              ? "pointer"
-              : undefined,
-          position: "relative",
-          ...(depth > 0 && {
-            borderLeft: "2px solid var(--colors-primary-6)",
-            backgroundColor: "var(--colors-slate-2)",
-          }),
-        }}
-        dependencies={[isExpanded, search, isTruncated]}
-      >
-        {/** Internal/non-data columns like selection and expand
-         * need to be in the same order in the header and row components*/}
-        {/* Selection checkbox cell if selection is enabled */}
-        {selectionBehavior === "toggle" && (
-          <DataTableCell data-slot="selection" isDisabled={isDisabled}>
+      <DataTableRowSlot asChild {...styleProps}>
+        <RaRow
+          isDisabled={isDisabled}
+          columns={activeColumns}
+          ref={rowRef}
+          id={row.id}
+          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
+          {...restProps}
+          dependencies={[isExpanded, search, isTruncated]}
+        >
+          {/** Internal/non-data columns like selection and expand
+           * need to be in the same order in the header and row components*/}
+          {/* Selection checkbox cell if selection is enabled */}
+          {selectionBehavior === "toggle" && (
+            <DataTableCell data-slot="selection" isDisabled={isDisabled}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="100%"
+                h="100%"
+              >
+                <Checkbox
+                  name="select-row"
+                  slot="selection"
+                  aria-label="select row"
+                />
+              </Box>
+            </DataTableCell>
+          )}
+
+          {/* Expand/collapse cell if expand column is shown */}
+          {showExpandColumn && (
+            <DataTableCell data-slot="expand" isDisabled={isDisabled}>
+              {hasNestedContent ? (
+                <DataTableExpandButton
+                  w="100%"
+                  h="100%"
+                  cursor="pointer"
+                  aria-label={isExpanded ? "Collapse" : "Expand"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpand(row.id);
+                  }}
+                >
+                  {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+                </DataTableExpandButton>
+              ) : null}
+            </DataTableCell>
+          )}
+          {/* Data cells */}
+          <RaCollection items={activeColumns}>
+            {(col: DataTableColumnItem<T>) => {
+              const cellValue = col.accessor(row);
+
+              return (
+                <DataTableCell isDisabled={isDisabled} key={col.id}>
+                  <Box
+                    className={isTruncated ? "truncated-cell" : ""}
+                    display="inline-block"
+                    h="100%"
+                    minW="0"
+                    maxW="100%"
+                    position="relative"
+                    overflow="hidden"
+                    cursor={isDisabled ? "not-allowed" : "text"}
+                  >
+                    {col.render
+                      ? col.render({
+                          value: highlightCell(cellValue),
+                          row,
+                          column: col,
+                        })
+                      : highlightCell(cellValue)}
+                  </Box>
+                </DataTableCell>
+              );
+            }}
+          </RaCollection>
+          <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
             <Box
               display="flex"
               alignItems="center"
@@ -390,118 +409,57 @@ export const DataTableRow = forwardRef(function DataTableRow<
               w="100%"
               h="100%"
             >
-              <Checkbox
-                name="select-row"
-                slot="selection"
-                aria-label="select row"
-              />
+              <Tooltip.Root>
+                <IconButton
+                  key="pin-btn"
+                  size="2xs"
+                  variant="ghost"
+                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  colorPalette="primary"
+                  className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePin(row.id);
+                  }}
+                >
+                  <PushPin />
+                </IconButton>
+                <Tooltip.Content placement="top">
+                  {isPinned ? "Unpin row" : "Pin row"}
+                </Tooltip.Content>
+              </Tooltip.Root>
             </Box>
           </DataTableCell>
-        )}
-
-        {/* Expand/collapse cell if expand column is shown */}
-        {showExpandColumn && (
-          <DataTableCell data-slot="expand" isDisabled={isDisabled}>
-            {hasNestedContent ? (
-              <DataTableExpandButton
-                w="100%"
-                h="100%"
-                cursor="pointer"
-                aria-label={isExpanded ? "Collapse" : "Expand"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleExpand(row.id);
-                }}
-              >
-                {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-              </DataTableExpandButton>
-            ) : null}
-          </DataTableCell>
-        )}
-        {/* Data cells */}
-        <RaCollection items={activeColumns}>
-          {(col: DataTableColumnItem<T>) => {
-            const cellValue = col.accessor(row);
-
-            return (
-              <DataTableCell isDisabled={isDisabled} key={col.id}>
-                <Box
-                  className={isTruncated ? "truncated-cell" : ""}
-                  display="inline-block"
-                  h="100%"
-                  minW="0"
-                  maxW="100%"
-                  position="relative"
-                  overflow="hidden"
-                  cursor={isDisabled ? "not-allowed" : "text"}
-                >
-                  {col.render
-                    ? col.render({
-                        value: highlightCell(cellValue),
-                        row,
-                        column: col,
-                      })
-                    : highlightCell(cellValue)}
-                </Box>
-              </DataTableCell>
-            );
-          }}
-        </RaCollection>
-        <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            w="100%"
-            h="100%"
-          >
-            <Tooltip.Root>
-              <IconButton
-                key="pin-btn"
-                size="2xs"
-                variant="ghost"
-                aria-label={isPinned ? "Unpin row" : "Pin row"}
-                colorPalette="primary"
-                className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  togglePin(row.id);
-                }}
-              >
-                <PushPin />
-              </IconButton>
-              <Tooltip.Content placement="top">
-                {isPinned ? "Unpin row" : "Pin row"}
-              </Tooltip.Content>
-            </Tooltip.Root>
-          </Box>
-        </DataTableCell>
-      </RaRow>
+        </RaRow>
+      </DataTableRowSlot>
 
       {showExpandColumn && (
-        <RaRow style={{ display: isExpanded ? undefined : "none" }}>
-          <DataTableCell
-            isDisabled={isDisabled}
-            colSpan={
-              activeColumns.length +
-              (showExpandColumn ? 1 : 0) +
-              (showSelectionColumn ? 1 : 0) +
-              1
-            }
-            style={{
-              borderLeft: "2px solid blue",
-            }}
+        <DataTableRowSlot {...styleProps} asChild>
+          <RaRow
+            data-nested-row-expanded={isExpanded ? "true" : "false"}
+            dependencies={[isExpanded]}
           >
-            {isExpanded
-              ? nestedKey && Array.isArray(row[nestedKey])
-                ? `${(row[nestedKey] as unknown[]).length} nested items`
-                : nestedKey && (row[nestedKey] as React.ReactNode)
-              : null}
-          </DataTableCell>
-        </RaRow>
+            <DataTableCell
+              isDisabled={isDisabled}
+              colSpan={
+                activeColumns.length +
+                (showExpandColumn ? 1 : 0) +
+                (showSelectionColumn ? 1 : 0) +
+                1
+              }
+              data-nested-cell
+            >
+              {isExpanded
+                ? nestedKey && Array.isArray(row[nestedKey])
+                  ? `${(row[nestedKey] as unknown[]).length} nested items`
+                  : nestedKey && (row[nestedKey] as React.ReactNode)
+                : null}
+            </DataTableCell>
+          </RaRow>
+        </DataTableRowSlot>
       )}
     </>
   );
-});
+};
 
 DataTableRow.displayName = "DataTable.Row";

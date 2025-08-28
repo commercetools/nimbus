@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useDataTableContext } from "./data-table.context";
 import {
   DataTableTableSlot,
@@ -21,6 +22,8 @@ export const DataTableTable = forwardRef<
     disabledKeys,
   } = useDataTableContext();
 
+  const [styleProps, restProps] = extractStyleProps(props);
+
   // Convert sort descriptor to react-aria format
   const ariaSortDescriptor = sortDescriptor
     ? {
@@ -40,7 +43,7 @@ export const DataTableTable = forwardRef<
   };
 
   return (
-    <DataTableTableSlot {...props} asChild>
+    <DataTableTableSlot {...styleProps} asChild>
       <RaTable
         ref={ref}
         sortDescriptor={ariaSortDescriptor}
@@ -52,7 +55,7 @@ export const DataTableTable = forwardRef<
         disallowEmptySelection={disallowEmptySelection}
         disabledKeys={disabledKeys}
         disabledBehavior="all"
-        {...props}
+        {...restProps}
       >
         {children}
       </RaTable>
