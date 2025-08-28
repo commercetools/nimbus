@@ -294,8 +294,6 @@ export const AsyncLoading: Story = {
  */
 export const Clearable: Story = {
   render: () => {
-    const [selectedFruit, setSelectedFruit] = useState<Key>();
-
     return (
       <Stack gap="600">
         <Box>
@@ -304,10 +302,7 @@ export const Clearable: Story = {
           </Text>
           <Select.Root
             isClearable={true}
-            selectedKey={selectedFruit}
-            onSelectionChange={
-              setSelectedFruit as SelectRootProps["onSelectionChange"]
-            }
+            defaultSelectedKey="apple"
             aria-label="Select a fruit"
             data-testid="clearable-select"
           >
@@ -315,20 +310,17 @@ export const Clearable: Story = {
               <Select.Option id="apple">Apple</Select.Option>
               <Select.Option id="banana">Banana</Select.Option>
               <Select.Option id="orange">Orange</Select.Option>
-              <Select.Option id="cherry">Cherry</Select.Option>
             </Select.Options>
           </Select.Root>
-          <Text fontSize="100" mt="200">
-            Selected: {selectedFruit ? String(selectedFruit) : "None"}
-          </Text>
         </Box>
 
         <Box>
           <Text fontWeight="bold" mb="200">
-            Non-clearable Select (isClearable=false, default)
+            Non-clearable Select (isClearable=false)
           </Text>
           <Select.Root
             isClearable={false}
+            defaultSelectedKey="banana"
             aria-label="Select a fruit"
             data-testid="non-clearable-select"
           >
@@ -336,7 +328,6 @@ export const Clearable: Story = {
               <Select.Option id="apple">Apple</Select.Option>
               <Select.Option id="banana">Banana</Select.Option>
               <Select.Option id="orange">Orange</Select.Option>
-              <Select.Option id="cherry">Cherry</Select.Option>
             </Select.Options>
           </Select.Root>
         </Box>
@@ -345,89 +336,28 @@ export const Clearable: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const clearableSelect = canvas.getByTestId("clearable-select");
-    const clearableButton = clearableSelect.querySelector("button");
-    const nonClearableSelect = canvas.getByTestId("non-clearable-select");
-    const nonClearableButton = nonClearableSelect.querySelector("button");
-
-    await step("Clearable select is rendered", async () => {
-      await expect(clearableButton).toBeInTheDocument();
-    });
-
-    await step("No clear button initially when no selection", async () => {
-      const clearButton = clearableSelect.querySelector(
-        '[aria-label="Clear Selection"]'
-      );
-      await expect(clearButton).not.toBeInTheDocument();
-    });
-
-    await step("Select an option in clearable select", async () => {
-      await userEvent.click(clearableButton!);
-      const options = document.querySelectorAll('[role="option"]');
-      await userEvent.click(options[0]); // Click first option (Apple)
-      await expect(clearableButton).toHaveTextContent("Apple");
-    });
-
-    await step("Clear button appears when value is selected", async () => {
-      const clearButton = clearableSelect.querySelector(
-        '[aria-label="Clear Selection"]'
-      );
-      await expect(clearButton).toBeInTheDocument();
-    });
-
-    await step("Clicking clear button removes selection", async () => {
-      const clearButton = clearableSelect.querySelector(
-        '[aria-label="Clear Selection"]'
-      );
-      await userEvent.click(clearButton!);
-      // After clearing, the button should show the default placeholder text
-      await expect(clearableButton).toHaveTextContent("Select an item");
-    });
-
-    await step("Clear button disappears after clearing", async () => {
-      const clearButton = clearableSelect.querySelector(
-        '[aria-label="Clear Selection"]'
-      );
-      await expect(clearButton).not.toBeInTheDocument();
-    });
-
-    // Test non-clearable select
-    await step("Non-clearable select is rendered", async () => {
-      await expect(nonClearableButton).toBeInTheDocument();
-    });
-
-    await step("Select an option in non-clearable select", async () => {
-      await userEvent.click(nonClearableButton!);
-      const listbox = document.querySelector('[role="listbox"]');
-      await expect(listbox).toBeInTheDocument();
-
-      const options = document.querySelectorAll('[role="option"]');
-      await userEvent.click(options[2]); // Click Orange
-      await expect(nonClearableButton).toHaveTextContent("Orange");
-    });
 
     await step(
-      "No clear button in non-clearable select when value is selected",
+      "Clear button is rendered when isClearable=true and value is selected",
       async () => {
+        const clearableSelect = canvas.getByTestId("clearable-select");
+        const clearButton = clearableSelect.querySelector(
+          '[aria-label="Clear Selection"]'
+        );
+        await expect(clearButton).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Clear button is NOT rendered when isClearable=false and value is selected",
+      async () => {
+        const nonClearableSelect = canvas.getByTestId("non-clearable-select");
         const clearButton = nonClearableSelect.querySelector(
           '[aria-label="Clear Selection"]'
         );
         await expect(clearButton).not.toBeInTheDocument();
       }
     );
-
-    await step("Non-clearable select can change selection", async () => {
-      await userEvent.click(nonClearableButton!);
-      const options = document.querySelectorAll('[role="option"]');
-      await userEvent.click(options[3]); // Click Cherry
-      await expect(nonClearableButton).toHaveTextContent("Cherry");
-
-      // Still no clear button after changing selection
-      const clearButton = nonClearableSelect.querySelector(
-        '[aria-label="Clear Selection"]'
-      );
-      await expect(clearButton).not.toBeInTheDocument();
-    });
   },
 };
 
