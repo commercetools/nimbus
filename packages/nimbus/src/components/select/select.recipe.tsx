@@ -189,6 +189,14 @@ export const selectSlotRecipe = defineSlotRecipe({
         },
       },
     },
+
+    isClearable: {
+      false: {
+        triggerLabel: {
+          "--button-safespace": "sizes.1000",
+        },
+      },
+    },
   },
 
   // Default variant values when not explicitly specified
