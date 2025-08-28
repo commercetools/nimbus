@@ -21,7 +21,6 @@ export const columns: DataTableColumnItem[] = [
     id: "name",
     header: "Name with a long header",
     accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
-    minWidth: 96,
   },
   {
     id: "age",

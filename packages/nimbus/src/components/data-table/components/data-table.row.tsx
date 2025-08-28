@@ -1,361 +1,465 @@
-import { forwardRef, useMemo, useState, useCallback } from "react";
-import { ResizableTableContainer } from "react-aria-components";
-import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
-import { DataTableContext } from "./data-table.context";
+import { useRef, useCallback, useEffect } from "react";
+import {
+  Row as RaRow,
+  Collection as RaCollection,
+  useTableOptions,
+} from "react-aria-components";
+import { mergeRefs } from "@chakra-ui/react";
+import { Highlight } from "@chakra-ui/react/highlight";
+import { useDataTableContext } from "./data-table.context";
+import { DataTableCell } from "./data-table.cell";
+import { DataTableExpandButton, DataTableRowSlot } from "../data-table.slots";
 import type {
-  DataTableProps,
+  DataTableRowItem,
   DataTableColumnItem,
-  DataTableRowItem as DataTableRowType,
-  SortDescriptor,
-  DataTableContextValue,
+  DataTableRowProps,
 } from "../data-table.types";
+import { Box, Checkbox, IconButton, Tooltip } from "@/components";
+import {
+  KeyboardArrowDown,
+  KeyboardArrowRight,
+  PushPin,
+} from "@commercetools/nimbus-icons";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
-// Utility functions
-function filterRows<T extends object>(
-  rows: DataTableRowType<T>[],
-  search: string,
-  columns: DataTableColumnItem<T>[],
-  nestedKey?: string
-): DataTableRowType<T>[] {
-  if (!search) return rows;
-  const lowerCaseSearch = search.toLowerCase();
-  return rows
-    .map((row) => {
-      const match = columns.some((col) => {
-        const value = col.accessor(row);
-        return (
-          typeof value === "string" &&
-          value.toLowerCase().includes(lowerCaseSearch)
-        );
-      });
-
-      if (nestedKey && row[nestedKey]) {
-        let nestedContent = row[nestedKey];
-        if (Array.isArray(row[nestedKey])) {
-          nestedContent = filterRows(
-            row[nestedKey],
-            search,
-            columns,
-            nestedKey
-          );
-          if (
-            match ||
-            (nestedContent &&
-              Array.isArray(nestedContent) &&
-              nestedContent.length > 0)
-          ) {
-            return { ...row, [nestedKey]: nestedContent };
-          }
-        } else {
-          if (match) {
-            return { ...row, [nestedKey]: nestedContent };
-          }
-        }
-        return null;
-      } else {
-        return match ? row : null;
-      }
-    })
-    .filter(Boolean) as DataTableRowType<T>[];
-}
-
-function sortRows<T extends object>(
-  rows: DataTableRowType<T>[],
-  sortDescriptor: SortDescriptor | undefined,
-  columns: DataTableColumnItem<T>[],
-  nestedKey?: string,
-  pinnedRows?: Set<string>
-): DataTableRowType<T>[] {
-  // Separate pinned and unpinned rows
-  const pinned: DataTableRowType<T>[] = [];
-  const unpinned: DataTableRowType<T>[] = [];
-
-  rows.forEach((row) => {
-    if (pinnedRows?.has(row.id)) {
-      pinned.push(row);
-    } else {
-      unpinned.push(row);
-    }
-  });
-
-  let sortedUnpinnedRows = unpinned;
-
-  // Only sort if we have a sort descriptor
-  if (sortDescriptor) {
-    const column = columns.find((col) => col.id === sortDescriptor.column);
-    if (column) {
-      // Sort only the unpinned rows
-      sortedUnpinnedRows = [...unpinned].sort((a, b) => {
-        const aValue = column.accessor(a);
-        const bValue = column.accessor(b);
-
-        if (aValue == null && bValue == null) return 0;
-        if (aValue == null) return 1;
-        if (bValue == null) return -1;
-
-        let aSortValue = aValue;
-        let bSortValue = bValue;
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          aSortValue = aValue;
-          bSortValue = bValue;
-        } else {
-          aSortValue = String(aValue).toLowerCase();
-          bSortValue = String(bValue).toLowerCase();
-        }
-
-        if (aSortValue < bSortValue)
-          return sortDescriptor.direction === "ascending" ? -1 : 1;
-        if (aSortValue > bSortValue)
-          return sortDescriptor.direction === "ascending" ? 1 : -1;
-        return 0;
-      });
-    }
-  }
-
-  // Combine pinned rows (at top) with sorted unpinned rows
-  const allSortedRows = [...pinned, ...sortedUnpinnedRows];
-
-  return allSortedRows.map((row) => {
-    if (!nestedKey || !row[nestedKey]) {
-      return row;
-    }
-    return {
-      ...row,
-      [nestedKey]: Array.isArray(row[nestedKey])
-        ? sortRows(
-            row[nestedKey],
-            sortDescriptor,
-            columns,
-            nestedKey,
-            pinnedRows
-          )
-        : row[nestedKey],
-    };
-  });
-}
-
-function hasExpandableRows<T extends object>(
-  rows: DataTableRowType<T>[],
-  nestedKey?: string
-): boolean {
-  if (!nestedKey) return false;
-  return rows.some(
-    (row) =>
-      (row[nestedKey] &&
-        (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true)) ||
-      (Array.isArray(row[nestedKey]) &&
-        hasExpandableRows(row[nestedKey], nestedKey))
+/**
+ * Determines if a click event originated from an interactive element within a table row.
+ * This is crucial for preventing row click handlers from interfering with intended
+ * interactions like checkbox selection, button clicks, or other form controls.
+ *
+ * @param e - The DOM Event object from the click listener
+ * @returns Element if an interactive element was found, null otherwise
+ */
+function getIsTableRowChildElementInteractive(e: Event) {
+  // Cast target to Element since EventTarget doesn't have closest method
+  const clickedElement = e.target as Element;
+  return clickedElement?.closest(
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
   );
 }
 
-export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
-  function DataTableRoot<T extends object = Record<string, unknown>>(
-    props: DataTableProps<T>,
-    ref: React.Ref<HTMLDivElement>
-  ) {
-    const {
-      columns = [],
-      data = [],
-      visibleColumns,
-      search,
-      sortDescriptor: controlledSortDescriptor,
-      defaultSortDescriptor,
-      onSortChange,
-      selectedKeys,
-      defaultSelectedKeys,
-      onSelectionChange,
-      selectionMode = "none",
-      disallowEmptySelection = false,
-      allowsSorting = false,
-      maxHeight,
-      isTruncated = false,
-      density = "default",
-      nestedKey,
-      onRowClick,
-      onDetailsClick,
-      disabledKeys,
-      onRowAction,
-      isResizable,
-      pinnedRows: controlledPinnedRows,
-      defaultPinnedRows,
-      onPinToggle,
-      children,
-      ...rest
-    } = props;
+/**
+ * Determines if a click event originated from a selection-related interactive element.
+ * This helps distinguish between selection controls and other interactive elements.
+ *
+ * @param e - The DOM Event object from the click listener
+ * @returns Element if a selection-related interactive element was found, null otherwise
+ */
+function getIsSelectionInteractiveElement(e: Event) {
+  const clickedElement = e.target as Element;
+  return clickedElement?.closest(
+    '[slot="selection"], [data-slot="selection"], [role="checkbox"]'
+  );
+}
 
-    const [internalSortDescriptor, setInternalSortDescriptor] = useState<
-      SortDescriptor | undefined
-    >(defaultSortDescriptor);
+/**
+ * Prevents event propagation when clicking on non-interactive elements or
+ * interactive elements that are not selection-related.
+ * This ensures that:
+ * - Selection only happens when clicking on selection controls
+ * - Other interactive elements (buttons, etc.) don't trigger selection
+ * - Non-interactive areas don't trigger selection
+ *
+ * @param e - The DOM Event to potentially stop propagation on
+ */
+function stopPropagationToNonInteractiveElements(e: Event) {
+  const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+  const isSelectionElement = getIsSelectionInteractiveElement(e);
 
-    const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-    const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
-      () => defaultPinnedRows || new Set()
-    );
-
-    const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
-    const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
-
-    const activeColumns = useMemo(() => {
-      const activeCols = columns.filter(
-        (col) =>
-          (visibleColumns ? visibleColumns.includes(col.id) : true) &&
-          col.isVisible !== false
-      );
-      return activeCols;
-    }, [columns, visibleColumns]);
-
-    const filteredRows = useMemo(
-      () =>
-        search ? filterRows(data, search, activeColumns, nestedKey) : data,
-      [data, search, activeColumns, nestedKey]
-    );
-
-    const sortedRows = useMemo(
-      () =>
-        sortRows(
-          filteredRows,
-          sortDescriptor,
-          activeColumns,
-          nestedKey,
-          pinnedRows
-        ),
-      [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
-    );
-
-    const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
-    const showSelectionColumn = selectionMode !== "none";
-
-    const toggleExpand = useCallback(
-      (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] })),
-      []
-    );
-
-    const togglePin = useCallback(
-      (id: string) => {
-        if (onPinToggle) {
-          onPinToggle(id);
-        } else {
-          setInternalPinnedRows((prev) => {
-            const newPinnedRows = new Set(prev);
-            if (newPinnedRows.has(id)) {
-              newPinnedRows.delete(id);
-            } else {
-              newPinnedRows.add(id);
-            }
-            return newPinnedRows;
-          });
-        }
-      },
-      [onPinToggle]
-    );
-
-    const handleSortChange = useCallback(
-      (descriptor: SortDescriptor) => {
-        if (onSortChange) {
-          onSortChange(descriptor);
-        } else {
-          setInternalSortDescriptor(descriptor);
-        }
-      },
-      [onSortChange]
-    );
-
-    const contextValue: DataTableContextValue<T> = useMemo(
-      () => ({
-        columns,
-        data,
-        visibleColumns,
-        search,
-        sortDescriptor,
-        selectedKeys,
-        defaultSelectedKeys,
-        expanded,
-        allowsSorting,
-        selectionMode,
-        disallowEmptySelection,
-        maxHeight,
-        isTruncated,
-        density,
-        nestedKey,
-        onSortChange: handleSortChange,
-        onSelectionChange,
-        onRowClick,
-        onDetailsClick,
-        toggleExpand,
-        activeColumns,
-        filteredRows,
-        sortedRows,
-        showExpandColumn,
-        showSelectionColumn,
-        isResizable,
-        disabledKeys,
-        onRowAction,
-        pinnedRows,
-        onPinToggle,
-        togglePin,
-      }),
-      [
-        columns,
-        data,
-        visibleColumns,
-        search,
-        sortDescriptor,
-        selectedKeys,
-        defaultSelectedKeys,
-        expanded,
-        allowsSorting,
-        selectionMode,
-        disallowEmptySelection,
-        maxHeight,
-        isTruncated,
-        density,
-        nestedKey,
-        handleSortChange,
-        onSelectionChange,
-        onRowClick,
-        onDetailsClick,
-        toggleExpand,
-        activeColumns,
-        filteredRows,
-        sortedRows,
-        showExpandColumn,
-        showSelectionColumn,
-        isResizable,
-        disabledKeys,
-        onRowAction,
-        pinnedRows,
-        onPinToggle,
-        togglePin,
-      ]
-    );
-
-    return (
-      <DataTableRootSlot
-        ref={ref}
-        truncated={isTruncated}
-        density={density}
-        style={{
-          ...(maxHeight && {
-            maxHeight,
-            overflowY: "auto",
-          }),
-        }}
-        {...rest}
-        asChild
-      >
-        <ResizableTableContainer>
-          <DataTableContext.Provider
-            value={
-              contextValue as DataTableContextValue<Record<string, unknown>>
-            }
-          >
-            {children}
-          </DataTableContext.Provider>
-        </ResizableTableContainer>
-      </DataTableRootSlot>
-    );
+  // Stop propagation if:
+  // 1. It's not an interactive element at all, OR
+  // 2. It's an interactive element but NOT a selection element
+  if (!isInteractiveElement || (isInteractiveElement && !isSelectionElement)) {
+    e.stopPropagation();
   }
-);
+}
+export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
+  row,
+  ref,
+  ...props
+}: DataTableRowProps<T>) => {
+  const {
+    activeColumns,
+    search,
+    expanded,
+    toggleExpand,
+    nestedKey,
+    disabledKeys,
+    showExpandColumn,
+    showSelectionColumn,
+    isTruncated,
+    onRowClick,
+    onRowAction,
+    pinnedRows,
+    togglePin,
+    sortedRows,
+  } = useDataTableContext<T>();
 
-DataTableRoot.displayName = "DataTableRoot";
+  const [styleProps, restProps] = extractStyleProps(props);
+
+  // Helper function to check if row is disabled
+  const getIsDisabled = (rowId: string) => {
+    if (!disabledKeys) return false;
+    if (disabledKeys === "all") return true;
+    if (row.isDisabled) return true;
+    return disabledKeys.has(rowId);
+  };
+  const isDisabled = getIsDisabled(row.id);
+
+  /**
+   * Custom row click handling implementation to work around React Aria limitations.
+   *
+   * React Aria Components disable row actions when a row is selected, which prevents
+   * custom click handlers from working properly. This implementation uses native DOM
+   * event listeners to bypass this limitation and provide consistent row click behavior.
+   *
+   * @see https://github.com/adobe/react-spectrum/issues/7962
+   */
+
+  /**
+   * Handles row click events with smart filtering to avoid conflicts with interactive elements.
+   * Uses native DOM Event type to be compatible with addEventListener.
+   *
+   * @param e - Native DOM Event from the click listener
+   */
+  const clickTimeoutRef = useRef<number | null>(null);
+
+  /**
+   * Handles row click events with sophisticated filtering to ensure proper UX behavior.
+   *
+   * This function implements multiple layers of click validation:
+   * - Prevents interference with interactive elements (buttons, checkboxes, inputs)
+   * - Respects text selection (users shouldn't trigger onClick handler when copying text)
+   * - Handles both enabled and disabled row states appropriately
+   * - Only triggers onClick handler when the row is explicitly marked as clickable
+   * - Uses a delay mechanism to distinguish single clicks from double clicks
+   *
+   * Uses native DOM Event type to maintain compatibility with addEventListener and
+   * ensure consistent behavior across different browsers and interaction methods.
+   *
+   * @param e - Native DOM Event from the click listener
+   */
+  const handleRowClick = useCallback(
+    (e: Event) => {
+      // Don't do anything if onRowClick is undefined
+      if (!onRowClick) return;
+      // Prevent row click when clicking on interactive elements to avoid conflicts
+      const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+      // Prevent row click when text is selected
+      const hasSelectedText =
+        window.getSelection()?.toString() !== undefined &&
+        window.getSelection()!.toString().length > 0;
+
+      if (!isInteractiveElement && !hasSelectedText) {
+        // Clear any existing timeout to handle rapid clicks
+        if (clickTimeoutRef.current) {
+          window.clearTimeout(clickTimeoutRef.current);
+        }
+
+        // Delay the row click to allow for potential double-click cancellation
+        // Standard double-click timeout is typically 300-500ms
+        clickTimeoutRef.current = window.setTimeout(() => {
+          if (!isDisabled) {
+            onRowClick(row);
+          } else {
+            // Handle disabled row clicks differently - allows for special disabled row actions
+            // TODO: Clarify business requirement - why allow clicks on disabled rows?
+            if (onRowAction) {
+              onRowAction(row, "click");
+            }
+          }
+          clickTimeoutRef.current = null;
+        }, 300);
+      }
+    },
+    [onRowClick, onRowAction, row, isDisabled]
+  );
+
+  /**
+   * Handles double-click events to enable default browser text selection behavior.
+   *
+   * When users double-click on text within a table row, they expect the browser's
+   * default word selection behavior. This handler:
+   * - Cancels any pending single-click row navigation
+   * - Allows the browser's native word selection to work normally
+   * - Only applies to non-interactive elements (preserves button/input behavior)
+   *
+   * @param e - Native DOM Event from the dblclick listener
+   */
+  const handleRowDoubleClick = useCallback((e: Event) => {
+    const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+
+    if (!isInteractiveElement) {
+      // Cancel any pending single-click action
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current);
+        clickTimeoutRef.current = null;
+      }
+      // Allow browser's default text selection behavior
+      // No need to prevent default or stop propagation - let the browser handle it
+    }
+  }, []); // No dependencies needed - this function doesn't use any external variables
+
+  /**
+   * Ref to track the callback ref invocation count and store the DOM node reference.
+   * This prevents duplicate event listeners and enables proper cleanup.
+   */
+  const counterRef = useRef<{ count: number; node?: HTMLElement }>({
+    count: 0,
+    node: undefined,
+  });
+
+  /**
+   * Callback ref that attaches the click event listener to the row DOM element.
+   * Only attaches the listener once per row instance to prevent memory leaks.
+   *
+   * @param node - The HTMLElement reference from React's ref callback
+   */
+  const rowNodeRef = useCallback(
+    (node: HTMLElement) => {
+      counterRef.current.count += 1;
+      // Only attach event listener on first callback invocation
+      if (counterRef.current.count === 1 && node) {
+        counterRef.current.node = node;
+        // Ensures that selection does not happen on row click, only when the selection cell is clicked
+        node.addEventListener(
+          // Use pointerdown event in order to capture event before it bubbles to react-aria's onPress handler
+          "pointerdown",
+          stopPropagationToNonInteractiveElements,
+          {
+            capture: true,
+          }
+        );
+
+        // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
+        node.addEventListener("mouseup", handleRowClick, { capture: true });
+
+        // Use dblclick event to enable native browser text selection behavior
+        node.addEventListener("dblclick", handleRowDoubleClick, {
+          capture: true,
+        });
+      }
+    },
+    [handleRowClick, handleRowDoubleClick]
+  );
+
+  /**
+   * Cleanup effect to remove event listeners when the component unmounts.
+   *
+   * This is crucial for preventing memory leaks in dynamic table scenarios where:
+   * - Rows are filtered in/out of view
+   * - Pagination changes remove rows from the DOM
+   * - Table data is refreshed or updated
+   * - Component is unmounted during navigation
+   *
+   * Without proper cleanup, event listeners would remain attached to orphaned
+   * DOM nodes, leading to memory leaks and potential crashes in long-running applications.
+   * The cleanup runs in the effect's return function, ensuring it executes
+   * before the component is fully removed from the React tree.
+   */
+  useEffect(() => {
+    return () => {
+      // Clear any pending click timeout to prevent memory leaks and stale callbacks
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current);
+        clickTimeoutRef.current = null;
+      }
+
+      if (counterRef.current.count >= 1 && counterRef.current.node) {
+        counterRef.current.node.removeEventListener(
+          "pointerdown",
+          stopPropagationToNonInteractiveElements
+        );
+        counterRef.current.node.removeEventListener("mouseup", handleRowClick);
+        counterRef.current.node.removeEventListener(
+          "dblclick",
+          handleRowDoubleClick
+        );
+      }
+    };
+  }, [handleRowClick, handleRowDoubleClick]);
+
+  // Combine the forwarded ref with our callback ref for proper DOM access
+  // This allows parent components to access the row element while maintaining our event listeners
+  const rowRef = mergeRefs(ref, rowNodeRef);
+
+  const { selectionBehavior } = useTableOptions();
+
+  const hasNestedContent =
+    nestedKey &&
+    row[nestedKey] &&
+    (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
+  const isExpanded = expanded[row.id];
+  const isPinned = pinnedRows.has(row.id);
+
+  // Calculate pinned row position for styling
+  const pinnedRowIds = sortedRows
+    .filter((r) => pinnedRows.has(r.id))
+    .map((r) => r.id);
+  const pinnedRowIndex = isPinned ? pinnedRowIds.indexOf(row.id) : -1;
+  const isFirstPinned = pinnedRowIndex === 0;
+  const isLastPinned = pinnedRowIndex === pinnedRowIds.length - 1;
+  const isSinglePinned = pinnedRowIds.length === 1 && isPinned;
+
+  // Generate pinned row CSS classes
+  const getPinnedRowClasses = () => {
+    if (!isPinned) return "";
+    if (isSinglePinned) return "data-table-row-pinned-single";
+    if (isFirstPinned) return "data-table-row-pinned-first";
+    if (isLastPinned) return "data-table-row-pinned-last";
+    return "";
+  };
+
+  // Highlight helper
+  const highlightCell = (value: unknown): React.ReactNode =>
+    search && typeof value === "string" ? (
+      <Highlight query={search} ignoreCase={true} matchAll={true}>
+        {value}
+      </Highlight>
+    ) : (
+      (value as React.ReactNode)
+    );
+  // TODO: does the row need a slot for styling?
+  return (
+    <>
+      <DataTableRowSlot asChild {...styleProps}>
+        <RaRow
+          isDisabled={isDisabled}
+          columns={activeColumns}
+          ref={rowRef}
+          id={row.id}
+          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
+          {...restProps}
+          dependencies={[isExpanded, search, isTruncated]}
+        >
+          {/** Internal/non-data columns like selection and expand
+           * need to be in the same order in the header and row components*/}
+          {/* Selection checkbox cell if selection is enabled */}
+          {selectionBehavior === "toggle" && (
+            <DataTableCell data-slot="selection" isDisabled={isDisabled}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="100%"
+                h="100%"
+              >
+                <Checkbox
+                  name="select-row"
+                  slot="selection"
+                  aria-label="select row"
+                />
+              </Box>
+            </DataTableCell>
+          )}
+
+          {/* Expand/collapse cell if expand column is shown */}
+          {showExpandColumn && (
+            <DataTableCell data-slot="expand" isDisabled={isDisabled}>
+              {hasNestedContent ? (
+                <DataTableExpandButton
+                  w="100%"
+                  h="100%"
+                  cursor="pointer"
+                  aria-label={isExpanded ? "Collapse" : "Expand"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpand(row.id);
+                  }}
+                >
+                  {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+                </DataTableExpandButton>
+              ) : null}
+            </DataTableCell>
+          )}
+          {/* Data cells */}
+          <RaCollection items={activeColumns}>
+            {(col: DataTableColumnItem<T>) => {
+              const cellValue = col.accessor(row);
+
+              return (
+                <DataTableCell isDisabled={isDisabled} key={col.id}>
+                  <Box
+                    className={isTruncated ? "truncated-cell" : ""}
+                    display="inline-block"
+                    h="100%"
+                    minW="0"
+                    maxW="100%"
+                    position="relative"
+                    overflow="hidden"
+                    cursor={isDisabled ? "not-allowed" : "text"}
+                  >
+                    {col.render
+                      ? col.render({
+                          value: highlightCell(cellValue),
+                          row,
+                          column: col,
+                        })
+                      : highlightCell(cellValue)}
+                  </Box>
+                </DataTableCell>
+              );
+            }}
+          </RaCollection>
+          <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              w="100%"
+              h="100%"
+            >
+              <Tooltip.Root>
+                <IconButton
+                  key="pin-btn"
+                  size="2xs"
+                  variant="ghost"
+                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  colorPalette="primary"
+                  className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePin(row.id);
+                  }}
+                >
+                  <PushPin />
+                </IconButton>
+                <Tooltip.Content placement="top">
+                  {isPinned ? "Unpin row" : "Pin row"}
+                </Tooltip.Content>
+              </Tooltip.Root>
+            </Box>
+          </DataTableCell>
+        </RaRow>
+      </DataTableRowSlot>
+
+      {showExpandColumn && (
+        <DataTableRowSlot {...styleProps} asChild>
+          <RaRow
+            data-nested-row-expanded={isExpanded ? "true" : "false"}
+            dependencies={[isExpanded]}
+          >
+            <DataTableCell
+              isDisabled={isDisabled}
+              colSpan={
+                activeColumns.length +
+                (showExpandColumn ? 1 : 0) +
+                (showSelectionColumn ? 1 : 0) +
+                1
+              }
+              data-nested-cell
+            >
+              {isExpanded
+                ? nestedKey && Array.isArray(row[nestedKey])
+                  ? `${(row[nestedKey] as unknown[]).length} nested items`
+                  : nestedKey && (row[nestedKey] as React.ReactNode)
+                : null}
+            </DataTableCell>
+          </RaRow>
+        </DataTableRowSlot>
+      )}
+    </>
+  );
+};
+
+DataTableRow.displayName = "DataTable.Row";

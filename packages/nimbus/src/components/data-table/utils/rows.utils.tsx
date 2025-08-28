@@ -3,6 +3,7 @@ import type {
   DataTableRowItem as DataTableRowType,
   SortDescriptor,
 } from "../data-table.types";
+
 // Utility functions
 export function filterRows<T extends object>(
   rows: DataTableRowType<T>[],
@@ -56,47 +57,73 @@ export function sortRows<T extends object>(
   rows: DataTableRowType<T>[],
   sortDescriptor: SortDescriptor | undefined,
   columns: DataTableColumnItem<T>[],
-  nestedKey?: string
+  nestedKey?: string,
+  pinnedRows?: Set<string>
 ): DataTableRowType<T>[] {
-  if (!sortDescriptor) return rows;
+  // Separate pinned and unpinned rows
+  const pinned: DataTableRowType<T>[] = [];
+  const unpinned: DataTableRowType<T>[] = [];
 
-  const column = columns.find((col) => col.id === sortDescriptor.column);
-  if (!column) return rows;
-
-  const sortedRows = [...rows].sort((a, b) => {
-    const aValue = column.accessor(a);
-    const bValue = column.accessor(b);
-
-    if (aValue == null && bValue == null) return 0;
-    if (aValue == null) return 1;
-    if (bValue == null) return -1;
-
-    let aSortValue = aValue;
-    let bSortValue = bValue;
-
-    if (typeof aValue === "number" && typeof bValue === "number") {
-      aSortValue = aValue;
-      bSortValue = bValue;
+  rows.forEach((row) => {
+    if (pinnedRows?.has(row.id)) {
+      pinned.push(row);
     } else {
-      aSortValue = String(aValue).toLowerCase();
-      bSortValue = String(bValue).toLowerCase();
+      unpinned.push(row);
     }
-
-    if (aSortValue < bSortValue)
-      return sortDescriptor.direction === "ascending" ? -1 : 1;
-    if (aSortValue > bSortValue)
-      return sortDescriptor.direction === "ascending" ? 1 : -1;
-    return 0;
   });
 
-  return sortedRows.map((row) => {
+  let sortedUnpinnedRows = unpinned;
+
+  // Only sort if we have a sort descriptor
+  if (sortDescriptor) {
+    const column = columns.find((col) => col.id === sortDescriptor.column);
+    if (column) {
+      // Sort only the unpinned rows
+      sortedUnpinnedRows = [...unpinned].sort((a, b) => {
+        const aValue = column.accessor(a);
+        const bValue = column.accessor(b);
+
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return 1;
+        if (bValue == null) return -1;
+
+        let aSortValue = aValue;
+        let bSortValue = bValue;
+
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          aSortValue = aValue;
+          bSortValue = bValue;
+        } else {
+          aSortValue = String(aValue).toLowerCase();
+          bSortValue = String(bValue).toLowerCase();
+        }
+
+        if (aSortValue < bSortValue)
+          return sortDescriptor.direction === "ascending" ? -1 : 1;
+        if (aSortValue > bSortValue)
+          return sortDescriptor.direction === "ascending" ? 1 : -1;
+        return 0;
+      });
+    }
+  }
+
+  // Combine pinned rows (at top) with sorted unpinned rows
+  const allSortedRows = [...pinned, ...sortedUnpinnedRows];
+
+  return allSortedRows.map((row) => {
     if (!nestedKey || !row[nestedKey]) {
       return row;
     }
     return {
       ...row,
       [nestedKey]: Array.isArray(row[nestedKey])
-        ? sortRows(row[nestedKey], sortDescriptor, columns, nestedKey)
+        ? sortRows(
+            row[nestedKey],
+            sortDescriptor,
+            columns,
+            nestedKey,
+            pinnedRows
+          )
         : row[nestedKey],
     };
   });

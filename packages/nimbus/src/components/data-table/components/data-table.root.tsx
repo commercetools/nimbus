@@ -1,225 +1,216 @@
-import { useMemo, useState, useCallback } from "react";
+import { forwardRef, useMemo, useState, useCallback } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
-import { filterRows, sortRows, hasExpandableRows } from "../utils/rows.utils";
 import { DataTableContext } from "./data-table.context";
 import type {
   DataTableProps,
   SortDescriptor,
   DataTableContextValue,
 } from "../data-table.types";
+import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 
-export const DataTableRoot = <T extends object = Record<string, unknown>>(
-  props: DataTableProps<T>
-) => {
-  const {
-    columns = [],
-    data = [],
-    visibleColumns,
-    renderEmptyState,
-    search,
-    sortDescriptor: controlledSortDescriptor,
-    defaultSortDescriptor,
-    onSortChange,
-    selectedKeys,
-    defaultSelectedKeys,
-    onSelectionChange,
-    selectionMode = "none",
-    disallowEmptySelection = false,
-    allowsSorting = false,
-    isRowClickable = false,
-    maxHeight,
-    isTruncated = false,
-    density = "default",
-    nestedKey,
-    onRowClick,
-    onDetailsClick,
-    disabledKeys,
-    onRowAction,
-    isResizable,
-    pinnedRows: controlledPinnedRows,
-    defaultPinnedRows,
-    onPinToggle,
-    ref,
-    children,
-    ...rest
-  } = props;
+export const DataTableRoot = forwardRef<HTMLDivElement, DataTableProps>(
+  function DataTableRoot<T extends object = Record<string, unknown>>(
+    props: DataTableProps<T>,
+    ref: React.Ref<HTMLDivElement>
+  ) {
+    const {
+      columns = [],
+      data = [],
+      visibleColumns,
+      search,
+      sortDescriptor: controlledSortDescriptor,
+      defaultSortDescriptor,
+      onSortChange,
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+      selectionMode = "none",
+      disallowEmptySelection = false,
+      allowsSorting = false,
+      maxHeight,
+      isTruncated = false,
+      density = "default",
+      nestedKey,
+      onRowClick,
+      onDetailsClick,
+      disabledKeys,
+      onRowAction,
+      isResizable,
+      pinnedRows: controlledPinnedRows,
+      defaultPinnedRows,
+      onPinToggle,
+      children,
+      ...rest
+    } = props;
 
-  const [internalSortDescriptor, setInternalSortDescriptor] = useState<
-    SortDescriptor | undefined
-  >(defaultSortDescriptor);
+    const [internalSortDescriptor, setInternalSortDescriptor] = useState<
+      SortDescriptor | undefined
+    >(defaultSortDescriptor);
 
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
-    () => defaultPinnedRows || new Set()
-  );
-
-  const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
-
-  const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
-  // TODO: should we really always show this?
-  const showDetailsColumn = true; // Details column is always shown
-
-  const activeColumns = useMemo(() => {
-    const activeCols = columns.filter(
-      (col) =>
-        (visibleColumns ? visibleColumns.includes(col.id) : true) &&
-        col.isVisible !== false
+    const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+    const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
+      () => defaultPinnedRows || new Set()
     );
-    if (showDetailsColumn) {
-      // Add the 'details column' to the active columns after the first column
-      activeCols.splice(1, 0, {
-        id: "nimbus-data-table-details-column",
-        header: undefined,
-        accessor: () => null,
-        width: 70,
-        isSortable: false,
-      });
-    }
-    return activeCols;
-  }, [columns, visibleColumns, showDetailsColumn]);
 
-  const filteredRows = useMemo(
-    () => (search ? filterRows(data, search, activeColumns, nestedKey) : data),
-    [data, search, activeColumns, nestedKey]
-  );
+    const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
+    const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
 
-  const sortedRows = useMemo(
-    () => sortRows(filteredRows, sortDescriptor, activeColumns, nestedKey),
-    [filteredRows, sortDescriptor, activeColumns, nestedKey]
-  );
+    const activeColumns = useMemo(() => {
+      const activeCols = columns.filter(
+        (col) =>
+          (visibleColumns ? visibleColumns.includes(col.id) : true) &&
+          col.isVisible !== false
+      );
+      return activeCols;
+    }, [columns, visibleColumns]);
 
-  const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
-  const showSelectionColumn = selectionMode !== "none";
+    const filteredRows = useMemo(
+      () =>
+        search ? filterRows(data, search, activeColumns, nestedKey) : data,
+      [data, search, activeColumns, nestedKey]
+    );
 
-  const toggleExpand = useCallback(
-    (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] })),
-    []
-  );
+    const sortedRows = useMemo(
+      () =>
+        sortRows(
+          filteredRows,
+          sortDescriptor,
+          activeColumns,
+          nestedKey,
+          pinnedRows
+        ),
+      [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
+    );
 
-  const togglePin = useCallback(
-    (id: string) => {
-      if (onPinToggle) {
-        onPinToggle(id);
-      } else {
-        setInternalPinnedRows((prev) => {
-          const newPinnedRows = new Set(prev);
-          if (newPinnedRows.has(id)) {
-            newPinnedRows.delete(id);
-          } else {
-            newPinnedRows.add(id);
-          }
-          return newPinnedRows;
-        });
-      }
-    },
-    [onPinToggle]
-  );
+    const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
+    const showSelectionColumn = selectionMode !== "none";
 
-  const handleSortChange = useCallback(
-    (descriptor: SortDescriptor) => {
-      if (onSortChange) {
-        onSortChange(descriptor);
-      } else {
-        setInternalSortDescriptor(descriptor);
-      }
-    },
-    [onSortChange]
-  );
+    const toggleExpand = useCallback(
+      (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] })),
+      []
+    );
 
-  const contextValue: DataTableContextValue<T> = useMemo(
-    () => ({
-      columns,
-      data,
-      visibleColumns,
-      renderEmptyState,
-      search,
-      sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
-      expanded,
-      allowsSorting,
-      selectionMode,
-      disallowEmptySelection,
-      isRowClickable,
-      maxHeight,
-      isTruncated,
-      density,
-      nestedKey,
-      onSortChange: handleSortChange,
-      onSelectionChange,
-      onRowClick,
-      onDetailsClick,
-      toggleExpand,
-      activeColumns,
-      filteredRows,
-      sortedRows,
-      showExpandColumn,
-      showSelectionColumn,
-      showDetailsColumn,
-      isResizable,
-      disabledKeys,
-      onRowAction,
-      pinnedRows,
-      onPinToggle,
-      togglePin,
-    }),
-    [
-      columns,
-      data,
-      visibleColumns,
-      renderEmptyState,
-      search,
-      sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
-      expanded,
-      allowsSorting,
-      selectionMode,
-      disallowEmptySelection,
-      isRowClickable,
-      maxHeight,
-      isTruncated,
-      density,
-      nestedKey,
-      handleSortChange,
-      onSelectionChange,
-      onRowClick,
-      onDetailsClick,
-      toggleExpand,
-      activeColumns,
-      filteredRows,
-      sortedRows,
-      showExpandColumn,
-      showSelectionColumn,
-      showDetailsColumn,
-      isResizable,
-      disabledKeys,
-      onRowAction,
-      pinnedRows,
-      onPinToggle,
-      togglePin,
-    ]
-  );
+    const togglePin = useCallback(
+      (id: string) => {
+        if (onPinToggle) {
+          onPinToggle(id);
+        } else {
+          setInternalPinnedRows((prev) => {
+            const newPinnedRows = new Set(prev);
+            if (newPinnedRows.has(id)) {
+              newPinnedRows.delete(id);
+            } else {
+              newPinnedRows.add(id);
+            }
+            return newPinnedRows;
+          });
+        }
+      },
+      [onPinToggle]
+    );
 
-  return (
-    <DataTableRootSlot
-      ref={ref}
-      truncated={isTruncated}
-      density={density}
-      maxH={maxHeight}
-      {...rest}
-      asChild
-    >
-      <ResizableTableContainer>
-        <DataTableContext.Provider
-          value={contextValue as DataTableContextValue<Record<string, unknown>>}
-        >
-          {children}
-        </DataTableContext.Provider>
-      </ResizableTableContainer>
-    </DataTableRootSlot>
-  );
-};
+    const handleSortChange = useCallback(
+      (descriptor: SortDescriptor) => {
+        if (onSortChange) {
+          onSortChange(descriptor);
+        } else {
+          setInternalSortDescriptor(descriptor);
+        }
+      },
+      [onSortChange]
+    );
+
+    const contextValue: DataTableContextValue<T> = useMemo(
+      () => ({
+        columns,
+        data,
+        visibleColumns,
+        search,
+        sortDescriptor,
+        selectedKeys,
+        defaultSelectedKeys,
+        expanded,
+        allowsSorting,
+        selectionMode,
+        disallowEmptySelection,
+        maxHeight,
+        isTruncated,
+        density,
+        nestedKey,
+        onSortChange: handleSortChange,
+        onSelectionChange,
+        onRowClick,
+        onDetailsClick,
+        toggleExpand,
+        activeColumns,
+        filteredRows,
+        sortedRows,
+        showExpandColumn,
+        showSelectionColumn,
+        isResizable,
+        disabledKeys,
+        onRowAction,
+        pinnedRows,
+        onPinToggle,
+        togglePin,
+      }),
+      [
+        columns,
+        data,
+        visibleColumns,
+        search,
+        sortDescriptor,
+        selectedKeys,
+        defaultSelectedKeys,
+        expanded,
+        allowsSorting,
+        selectionMode,
+        disallowEmptySelection,
+        maxHeight,
+        isTruncated,
+        density,
+        nestedKey,
+        handleSortChange,
+        onSelectionChange,
+        onRowClick,
+        onDetailsClick,
+        toggleExpand,
+        activeColumns,
+        filteredRows,
+        sortedRows,
+        showExpandColumn,
+        showSelectionColumn,
+        isResizable,
+        disabledKeys,
+        onRowAction,
+        pinnedRows,
+        onPinToggle,
+        togglePin,
+      ]
+    );
+
+    return (
+      <DataTableRootSlot
+        ref={ref}
+        truncated={isTruncated}
+        density={density}
+        maxH={maxHeight}
+        {...rest}
+        asChild
+      >
+        <ResizableTableContainer>
+          <DataTableContext.Provider
+            value={
+              contextValue as DataTableContextValue<Record<string, unknown>>
+            }
+          >
+            {children}
+          </DataTableContext.Provider>
+        </ResizableTableContainer>
+      </DataTableRootSlot>
+    );
+  }
+);
 
 DataTableRoot.displayName = "DataTableRoot";
