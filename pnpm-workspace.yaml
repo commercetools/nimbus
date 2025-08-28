@@ -61,7 +61,7 @@ catalogs:
     react-aria: 3.42.0
     react-aria-components: 1.11.0
     react-stately: 3.40.0
-    "@react-aria/interactions": 3.25.4
+    "@react-aria/interactions": 3.25.5
     "@react-aria/optimize-locales-plugin": 1.1.5
     "@internationalized/date": ^3.8.2
   utils:
