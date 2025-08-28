@@ -151,13 +151,9 @@ export const numberInputRecipe = defineSlotRecipe({
     variant: {
       solid: {
         root: {
-          // Apply hover effect to root
+          // Apply hover effect to root, button color is deeper when hovered
           _hover: {
             backgroundColor: "primary.2",
-            // TODO: make a decision re: hovering behavior
-            "& button": {
-              backgroundColor: "neutral.1",
-            },
           },
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
@@ -180,7 +176,7 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 -0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primaryAlpha.4 !important",
+            backgroundColor: "primaryAlpha.4",
           },
         },
         decrementButton: {
@@ -194,7 +190,7 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primaryAlpha.4 !important",
+            backgroundColor: "primaryAlpha.4",
           },
         },
       },
@@ -217,7 +213,7 @@ export const numberInputRecipe = defineSlotRecipe({
             borderRight: "2px solid var(--border-color)",
           },
           _hover: {
-            backgroundColor: "primaryAlpha.4 !important",
+            backgroundColor: "primaryAlpha.4",
           },
         },
         decrementButton: {
