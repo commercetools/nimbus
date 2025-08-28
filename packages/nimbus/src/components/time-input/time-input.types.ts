@@ -42,4 +42,16 @@ type ExcludedProps =
 export interface TimeInputProps
   extends Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
     Omit<TimeFieldStateOptions<TimeValue>, ExcludedProps>,
-    RecipeVariantProps<typeof timeInputRecipe> {}
+    RecipeVariantProps<typeof timeInputRecipe> {
+  /**
+   * Optional element to display at the start of the input
+   * Will respect text direction (left in LTR, right in RTL)
+   */
+  leadingElement?: React.ReactNode;
+
+  /**
+   * Optional element to display at the end of the input
+   * Will respect text direction (right in LTR, left in RTL)
+   */
+  trailingElement?: React.ReactNode;
+  }

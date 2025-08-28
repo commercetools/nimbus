@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TimeInput } from "./time-input";
-import { Button, FormField, Stack, Text } from "@/components";
+import { Box, Button, FormField, Stack, Text } from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
 import { userEvent, within, expect, fn } from "storybook/test";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -346,12 +347,66 @@ export const Variants: Story = {
     return (
       <Stack direction="column">
         {variants.map((variant) => (
-          <TimeInput
-            aria-label={`${variant}-variant TimeInput`}
-            key={variant}
-            {...args}
-            variant={variant}
-          />
+          <Box key={variant}>
+            <Text>{variant}</Text>
+            <TimeInput
+              aria-label={`${variant}-variant TimeInput`}
+              key={variant}
+              {...args}
+              variant={variant}
+            />
+          </Box>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    leadingElement: <AddReaction />,
+    "aria-label": "time-input",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    trailingElement: <AddReaction />,
+    "aria-label": "time-input",
+  },
+};
+
+export const WithBothElementsAndSizes: Story = {
+  render: (args) => {
+    const variants = ["ghost", "solid"] as const;
+
+    return (
+      <Stack direction="column">
+        Variants and Sizes
+        {variants.map((variant) => (
+          <Stack key={variant}>
+            <Box>
+              <Text>{variant}</Text>
+              <TimeInput
+                size="sm"
+                aria-label={`${variant}-variant TimeInput`}
+                {...args}
+                variant={variant}
+                leadingElement={<AddReaction />}
+                trailingElement={<AddReaction />}
+              />
+            </Box>
+            <Box>
+              <TimeInput
+                size="md"
+                aria-label={`${variant}-variant TimeInput`}
+                {...args}
+                variant={variant}
+                leadingElement={<AddReaction />}
+                trailingElement={<AddReaction />}
+              />
+            </Box>
+          </Stack>
         ))}
       </Stack>
     );

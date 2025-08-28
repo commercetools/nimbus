@@ -33,6 +33,10 @@ export const textInputSlotRecipe = defineSlotRecipe({
       focusVisibleRing: "outside",
       focusRing: "outside",
 
+      _hover: {
+        backgroundColor: "primary.2",
+      },
+
       "&[data-invalid='true']": {
         "--border-color": "colors.critical.7",
         "--border-width": "sizes.50",
@@ -102,20 +106,11 @@ export const textInputSlotRecipe = defineSlotRecipe({
         root: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
-
           backgroundColor: "primary.1",
-
-          _hover: {
-            backgroundColor: "primary.2",
-          },
         },
       },
       ghost: {
-        root: {
-          _hover: {
-            backgroundColor: "primary.2",
-          },
-        },
+        root: {},
       },
     },
   },

@@ -22,6 +22,10 @@ interface TimeInputRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 export interface TimeInputRootProps
   extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
 
+interface TimeInputLeadingElementProps extends HTMLChakraProps<"div"> {}
+
+interface TimeInputTrailingElementProps extends HTMLChakraProps<"div"> {}
+
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: timeInputRecipe,
@@ -35,6 +39,16 @@ export const TimeInputRootSlot = withProvider<
   HTMLDivElement,
   TimeInputRootProps
 >("div", "root");
+
+export const TimeInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  TimeInputLeadingElementProps
+>("div", "leadingElement");
+
+export const TimeInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  TimeInputTrailingElementProps
+>("div", "trailingElement");
 
 /**
  * Slot component for the TimeField part of the TimeInput.
