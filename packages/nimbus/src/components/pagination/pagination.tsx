@@ -102,6 +102,7 @@ export const Pagination = (props: PaginationProps) => {
               }
               minValue={1}
               maxValue={pagination.totalPages}
+              step={1}
               isDisabled={false}
               width="9ch"
               aria-label="Current page"

@@ -108,7 +108,7 @@ export const Default: Story = {
       await userEvent.type(pageInput, "5.5");
 
       // Should handle decimal input appropriately (likely truncated)
-      const value = pageInput.value;
+      const value = (pageInput as HTMLInputElement).value;
       await expect(["5", "5.5"]).toContain(value);
     });
 
@@ -397,7 +397,7 @@ export const Empty: Story = {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Check if the value was corrected (it might be reset to 1 or previous valid value)
-      const correctedValue = pageInput.value;
+      const correctedValue = (pageInput as HTMLInputElement).value;
       // Accept either "1" (corrected to min) or empty string (cleared)
       await expect(["1", ""]).toContain(correctedValue);
 
