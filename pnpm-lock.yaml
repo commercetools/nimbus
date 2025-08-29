@@ -11,8 +11,8 @@ catalogs:
       version: 8.0.1
   react:
     '@chakra-ui/cli':
-      specifier: ^3.25.0
-      version: 3.25.0
+      specifier: ^3.26.0
+      version: 3.26.0
     '@chakra-ui/react':
       specifier: ^3.25.0
       version: 3.25.0
@@ -525,7 +525,7 @@ importers:
     devDependencies:
       '@chakra-ui/cli':
         specifier: catalog:react
-        version: 3.25.0(@chakra-ui/react@3.25.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
+        version: 3.26.0(@chakra-ui/react@3.25.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../nimbus-icons
@@ -845,8 +845,8 @@ packages:
   '@bundled-es-modules/tough-cookie@0.1.6':
     resolution: {integrity: sha512-dvMHbL464C0zI+Yqxbz6kZ5TOEp7GLW+pry/RWndAR8MJQAXZ2rPmIs8tziTZjeIyhSNZgZbCePtfSbdWqStJw==}
 
-  '@chakra-ui/cli@3.25.0':
-    resolution: {integrity: sha512-lsoxSZbn6ZpWQPY8aFHnHtLVoCZ26TaGLVNlCRauziis/jIHtuI26sGQqJrW+UQ0ebJWoqQlUq3AikfF4GwygA==}
+  '@chakra-ui/cli@3.26.0':
+    resolution: {integrity: sha512-BAnuzUCael9vjvq6bvNpX/UWJFu2I+pIfPqKT3I7ejo/c5JM6IDDqZQp7cs+10e0S4MXH743R/TfnVU96OOPBw==}
     hasBin: true
     peerDependencies:
       '@chakra-ui/react': '>=3.0.0-next.0'
@@ -7266,7 +7266,7 @@ snapshots:
       tough-cookie: 4.1.4
     optional: true
 
-  '@chakra-ui/cli@3.25.0(@chakra-ui/react@3.25.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
+  '@chakra-ui/cli@3.26.0(@chakra-ui/react@3.25.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
     dependencies:
       '@chakra-ui/react': 3.25.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clack/prompts': 0.11.0
