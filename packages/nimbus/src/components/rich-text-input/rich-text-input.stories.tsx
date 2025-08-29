@@ -1107,7 +1107,7 @@ export const PendingMarksConsistency: Story = {
             .closest('[role*="menuitem"]') as HTMLElement;
         } catch {
           // Final fallback: find any menu item containing "code"
-          const menuItems = canvas.getAllByRole(/menuitem/);
+          const menuItems = canvas.getAllByRole("menuitem");
           codeMenuItem = menuItems.find((item) =>
             item.textContent?.toLowerCase().includes("code")
           );
