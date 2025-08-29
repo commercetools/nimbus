@@ -1164,8 +1164,9 @@ export const OptionGroups: Story = {
         singleSelect.focus();
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
-        // Find sections
-        const groups = document.querySelectorAll('[role="group"]');
+        const listbox = document.querySelector('[role="listbox"]');
+        const groups =
+          listbox?.querySelectorAll(':scope > [role="group"]') || [];
         await expect(groups.length).toBe(2);
         // Check section labels
         const groupLabels = document.querySelectorAll('[role="presentation"]');
@@ -1186,7 +1187,9 @@ export const OptionGroups: Story = {
         // There are 5 options with 'a' in them
         await expect(options.length).toBe(5);
         // There are options with 'a' in both sections
-        let groups = document.querySelectorAll('[role="group"]');
+        const listbox1 = document.querySelector('[role="listbox"]');
+        let groups =
+          listbox1?.querySelectorAll(':scope > [role="group"]') || [];
         await expect(groups.length).toBe(2);
         // Hit 'p' key
         await userEvent.keyboard("{p}");
@@ -1195,7 +1198,8 @@ export const OptionGroups: Story = {
         await expect(options.length).toBe(1);
         await expect(findOptionByText("Apple")).toBeInTheDocument();
         // there is only one section displayed
-        groups = document.querySelectorAll('[role="group"]');
+        const listbox2 = document.querySelector('[role="listbox"]');
+        groups = listbox2?.querySelectorAll(':scope > [role="group"]') || [];
         await expect(groups.length).toBe(1);
         const groupLabels = document.querySelectorAll('[role="presentation"]');
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
@@ -1225,8 +1229,10 @@ export const OptionGroups: Story = {
         multiSelect.focus();
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
-        // Find sections
-        const groups = document.querySelectorAll('[role="group"]');
+        // Find sections - React Aria 3.25.5+ may add wrapper groups, so we need to be specific
+        const listbox = document.querySelector('[role="listbox"]');
+        const groups =
+          listbox?.querySelectorAll(':scope > [role="group"]') || [];
         await expect(groups.length).toBe(2);
         // Check section labels
         const groupLabels = document.querySelectorAll('[role="presentation"]');
@@ -1249,7 +1255,9 @@ export const OptionGroups: Story = {
         // There are 5 options with 'a' in them
         await expect(options.length).toBe(5);
         // There are options with 'a' in both sections
-        let groups = document.querySelectorAll('[role="group"]');
+        const listbox3 = document.querySelector('[role="listbox"]');
+        let groups =
+          listbox3?.querySelectorAll(':scope > [role="group"]') || [];
         await expect(groups.length).toBe(2);
         // Hit 'p' key
         await userEvent.keyboard("{p}");
@@ -1258,7 +1266,8 @@ export const OptionGroups: Story = {
         await expect(options.length).toBe(1);
         await expect(findOptionByText("Apple")).toBeInTheDocument();
         // there is only one section displayed
-        groups = document.querySelectorAll('[role="group"]');
+        const listbox4 = document.querySelector('[role="listbox"]');
+        groups = listbox4?.querySelectorAll(':scope > [role="group"]') || [];
         await expect(groups.length).toBe(1);
         const groupLabels = document.querySelectorAll('[role="presentation"]');
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
