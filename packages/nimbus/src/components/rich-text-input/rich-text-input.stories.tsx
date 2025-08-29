@@ -1083,9 +1083,12 @@ export const PendingMarksConsistency: Story = {
     await userEvent.click(formattingMenuButton);
 
     // Wait for menu to appear (check in document body due to portal)
-    await waitFor(() => {
-      expect(canvas.getByRole("menu")).toBeInTheDocument();
-    }, { timeout: 2000 });
+    await waitFor(
+      () => {
+        expect(canvas.getByRole("menu")).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Look for code menu item - try different approaches since the structure may have changed
     let codeMenuItem;
@@ -1099,11 +1102,13 @@ export const PendingMarksConsistency: Story = {
       } catch {
         try {
           // Third try: look by text content
-          codeMenuItem = canvas.getByText("Code").closest('[role*="menuitem"]') as HTMLElement;
+          codeMenuItem = canvas
+            .getByText("Code")
+            .closest('[role*="menuitem"]') as HTMLElement;
         } catch {
           // Final fallback: find any menu item containing "code"
           const menuItems = canvas.getAllByRole(/menuitem/);
-          codeMenuItem = menuItems.find(item => 
+          codeMenuItem = menuItems.find((item) =>
             item.textContent?.toLowerCase().includes("code")
           );
         }
@@ -1115,28 +1120,36 @@ export const PendingMarksConsistency: Story = {
 
     // Reopen menu to verify code is selected
     await userEvent.click(formattingMenuButton);
-    await waitFor(() => {
-      expect(canvas.getByRole("menu")).toBeInTheDocument();
-    }, { timeout: 2000 });
+    await waitFor(
+      () => {
+        expect(canvas.getByRole("menu")).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Check if the code menu item is selected - try different attributes
     let codeMenuItemAfter;
     try {
-      codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", { name: "Code" });
+      codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", {
+        name: "Code",
+      });
     } catch {
       try {
         codeMenuItemAfter = canvas.getByRole("menuitem", { name: /code/i });
       } catch {
-        codeMenuItemAfter = canvas.getByText("Code").closest('[role*="menuitem"]') as HTMLElement;
+        codeMenuItemAfter = canvas
+          .getByText("Code")
+          .closest('[role*="menuitem"]') as HTMLElement;
       }
     }
 
     // Check various possible selection attributes
-    const isSelected = codeMenuItemAfter?.hasAttribute("data-selected") ||
-                      codeMenuItemAfter?.hasAttribute("aria-checked") ||
-                      codeMenuItemAfter?.getAttribute("aria-checked") === "true" ||
-                      codeMenuItemAfter?.hasAttribute("data-state");
-    
+    const isSelected =
+      codeMenuItemAfter?.hasAttribute("data-selected") ||
+      codeMenuItemAfter?.hasAttribute("aria-checked") ||
+      codeMenuItemAfter?.getAttribute("aria-checked") === "true" ||
+      codeMenuItemAfter?.hasAttribute("data-state");
+
     expect(isSelected).toBeTruthy();
 
     // Close menu and type text
