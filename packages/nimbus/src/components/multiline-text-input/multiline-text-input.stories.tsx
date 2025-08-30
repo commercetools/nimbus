@@ -4,6 +4,7 @@ import { MultilineTextInput } from "./multiline-text-input";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { Box, Stack, Text, FormField } from "@/components";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof MultilineTextInput> = {
   title: "components/MultilineTextInput",
@@ -83,6 +84,61 @@ export const Variants: Story = {
             placeholder={`${variant as string} textarea`}
           />
         ))}
+      </Stack>
+    );
+  },
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    leadingElement: <Text>Leading</Text>,
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    trailingElement: <Text>Trailing</Text>,
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+};
+
+export const WithBothElementsVariantsAndSizes: Story = {
+  args: {
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column">
+        <Stack direction="row" gap="400" alignItems="flex-start">
+          {inputVariants.map((variant) => (
+            <MultilineTextInput
+              key={variant as string}
+              {...args}
+              variant={variant}
+              size="sm"
+              leadingElement={<AddReaction />}
+              trailingElement={<AddReaction />}
+              placeholder={`${variant as string} textarea`}
+            />
+          ))}
+        </Stack>
+        <Stack direction="row" gap="400" alignItems="flex-start">
+          {inputVariants.map((variant) => (
+            <MultilineTextInput
+              key={variant as string}
+              {...args}
+              variant={variant}
+              size="md"
+              leadingElement={<AddReaction />}
+              trailingElement={<AddReaction />}
+              placeholder={`${variant as string} textarea`}
+            />
+          ))}
+        </Stack>
       </Stack>
     );
   },

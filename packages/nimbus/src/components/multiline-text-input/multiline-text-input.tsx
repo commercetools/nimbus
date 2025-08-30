@@ -4,7 +4,12 @@ import { useObjectRef, useTextField } from "react-aria";
 import { TextArea } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
-import { MultilineTextInputRootSlot } from "./multiline-text-input.slots";
+import {
+  MultilineTextInputRootSlot,
+  MultilineTextInputLeadingElementSlot,
+  MultilineTextInputTrailingElementSlot,
+  MultilineTextInputTextAreaSlot,
+} from "./multiline-text-input.slots";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
 
@@ -16,7 +21,14 @@ import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
  * @see {@link https://nimbus-documentation.vercel.app/components/forms/multiline-text-input}
  */
 export const MultilineTextInput = (props: MultilineTextInputProps) => {
-  const { ref: forwardedRef, rows = 1, autoGrow = false, ...restProps } = props; // The default `rows` attribute for a textarea is 2, so we need to override it
+  const {
+    ref: forwardedRef,
+    leadingElement,
+    trailingElement,
+    rows = 1,
+    autoGrow = false,
+    ...restProps
+  } = props; // The default `rows` attribute for a textarea is 2, so we need to override it
   const recipe = useRecipe({ recipe: multilineTextInputRecipe });
 
   const localRef = useRef<HTMLTextAreaElement>(null);
@@ -74,8 +86,22 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
   }, [adjustHeight, autoGrow, ref]);
 
   return (
-    <MultilineTextInputRootSlot {...recipeProps} {...styleProps} asChild>
-      <TextArea ref={ref} rows={rows} {...inputProps} />
+    <MultilineTextInputRootSlot {...recipeProps} {...styleProps}>
+      <>
+        {leadingElement && (
+          <MultilineTextInputLeadingElementSlot>
+            {leadingElement}
+          </MultilineTextInputLeadingElementSlot>
+        )}
+        <MultilineTextInputTextAreaSlot asChild>
+          <TextArea ref={ref} rows={rows} {...inputProps} />
+        </MultilineTextInputTextAreaSlot>
+        {trailingElement && (
+          <MultilineTextInputTrailingElementSlot>
+            {trailingElement}
+          </MultilineTextInputTrailingElementSlot>
+        )}
+      </>
     </MultilineTextInputRootSlot>
   );
 };

@@ -14,6 +14,11 @@ export interface MultilineTextInputProps
    */
   autoGrow?: boolean;
   /**
+   * Number of visible text lines for the control.
+   * @default 1
+   */
+  rows?: number;
+  /**
    * Optional element to display at the start of the input
    * Will respect text direction (left in LTR, right in RTL)
    */
@@ -24,4 +29,5 @@ export interface MultilineTextInputProps
    * Will respect text direction (right in LTR, left in RTL)
    */
   trailingElement?: React.ReactNode;
+  placeholder?: string;
 }
