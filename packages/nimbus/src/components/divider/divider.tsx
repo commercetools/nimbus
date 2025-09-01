@@ -1,8 +1,9 @@
-import { useRef } from "react";
-import { useSeparator, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { Separator as RaSeparator } from "react-aria-components";
+import { useRecipe } from "@chakra-ui/react";
 import { DividerRoot } from "./divider.slots";
 import type { DividerProps } from "./divider.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
+import { dividerRecipe } from "./divider.recipe";
 
 /**
  * Divider
@@ -19,27 +20,25 @@ import type { DividerProps } from "./divider.types";
  * - built with React Aria for accessibility
  */
 
-export const Divider = (props: DividerProps) => {
-  const { ref: forwardedRef, as, orientation = "horizontal", ...rest } = props;
-
-  const localRef = useRef<HTMLDivElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  const elementType = as || orientation === "vertical" ? "div" : "hr";
-
-  // Use React Aria's useSeparator hook for accessibility
-  const { separatorProps } = useSeparator({
+export const Divider = ({
+  ref: forwardedRef,
+  orientation = "horizontal",
+  ...props
+}: DividerProps) => {
+  const recipe = useRecipe({ recipe: dividerRecipe });
+  const [recipeProps, variantFreeProps] = recipe.splitVariantProps({
     orientation,
-    ...rest,
+    ...props,
+  });
+  const [styleProps, functionalProps] = extractStyleProps({
+    orientation,
+    ...variantFreeProps,
   });
 
   return (
-    <DividerRoot
-      as={elementType}
-      {...mergeProps(rest, { ref, orientation }, separatorProps, {
-        "aria-orientation": orientation,
-      })}
-    />
+    <DividerRoot asChild {...recipeProps} {...styleProps}>
+      <RaSeparator ref={forwardedRef} {...functionalProps} />
+    </DividerRoot>
   );
 };
 
