@@ -11,7 +11,6 @@ export const menuSlotRecipe = defineSlotRecipe({
     "popover",
     "content",
     "item",
-    "separator",
     "section",
     "sectionLabel",
     "submenu",
@@ -178,13 +177,6 @@ export const menuSlotRecipe = defineSlotRecipe({
         layerStyle: "disabled",
         pointerEvents: "none",
       },
-    },
-    separator: {
-      height: "25",
-      flexShrink: 0,
-      backgroundColor: "neutral.6",
-      my: "200",
-      mx: "-200",
     },
     section: {
       display: "flex",

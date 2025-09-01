@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { SplitButton } from "./index";
-import { Stack, Icon } from "@/components";
+import { Stack, Icon, Divider } from "@/components";
 import { Menu } from "@/components/menu";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
 
@@ -418,14 +418,14 @@ export const WithSections: Story = {
           <Menu.Item id="export">Export PDF</Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="Share">
           <Menu.Item id="share-link">Share Link</Menu.Item>
           <Menu.Item id="send-email">Send via Email</Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="Manage">
           <Menu.Item id="archive">Archive</Menu.Item>

@@ -5,7 +5,6 @@ import type {
   MenuItemProps as RaMenuItemProps,
   ButtonProps as RaButtonProps,
   PopoverProps as RaPopoverProps,
-  SeparatorProps as RaSeparatorProps,
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
@@ -60,10 +59,6 @@ export interface MenuItemProps extends RaMenuItemProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-// Menu separator component
-export interface MenuSeparatorProps extends RaSeparatorProps {
-  ref?: Ref<HTMLDivElement>;
-}
 
 // Menu section component
 export interface MenuSectionProps<T = object> extends RaMenuSectionProps<T> {

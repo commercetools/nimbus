@@ -74,7 +74,7 @@ const App = () => (
         <Text slot="description">Redo the last undone action</Text>
         <Kbd slot="keyboard">⌘Y</Kbd>
       </Menu.Item>
-      <Menu.Separator />
+      <Divider />
       <Menu.Item id="cut">
         <Text slot="label">Cut</Text>
         <Text slot="description">Cut the selected text</Text>
@@ -139,7 +139,7 @@ const App = () => (
       <Menu.Content>
         <Menu.Item id="edit">Edit</Menu.Item>
         <Menu.Item id="duplicate">Duplicate</Menu.Item>
-        <Menu.Separator />
+        <Divider />
         <Menu.Item id="delete" isCritical>Delete</Menu.Item>
       </Menu.Content>
     </Menu.Root>
@@ -172,7 +172,7 @@ const App = () => (
         </Menu.Item>
       </Menu.Section>
       
-      <Menu.Separator />
+      <Divider />
       
       <Menu.Section label="Support">
         <Menu.Item id="help">
@@ -185,7 +185,7 @@ const App = () => (
         </Menu.Item>
       </Menu.Section>
       
-      <Menu.Separator />
+      <Divider />
       
       <Menu.Item id="logout" isCritical>
         <Icon slot="icon"><Icons.Logout /></Icon>
@@ -343,7 +343,7 @@ const App = () => {
             </Menu.Item>
           </Menu.Section>
           
-          <Menu.Separator />
+          <Divider />
           
           {/* Section with multiple selection */}
           <Menu.Section
@@ -370,7 +370,7 @@ const App = () => {
             </Menu.Item>
           </Menu.Section>
           
-          <Menu.Separator />
+          <Divider />
           
           {/* Section with single selection */}
           <Menu.Section
@@ -489,7 +489,7 @@ const App = () => (
         <Kbd slot="keyboard">⌘O</Kbd>
       </Menu.Item>
       
-      <Menu.Separator />
+      <Divider />
       
       <Menu.SubmenuTrigger>
         <Menu.Item>
@@ -509,7 +509,7 @@ const App = () => (
         </Menu.Submenu>
       </Menu.SubmenuTrigger>
       
-      <Menu.Separator />
+      <Divider />
       
       <Menu.Item id="save">
         <Icon slot="icon"><Icons.Save /></Icon>
@@ -594,7 +594,7 @@ const App = () => (
         <Icon slot="icon"><Icons.Backup /></Icon>
         <Text slot="label">Archive</Text>
       </Menu.Item>
-      <Menu.Separator />
+      <Divider />
       <Menu.Item id="delete" isCritical>
         <Icon slot="icon"><Icons.Delete /></Icon>
         <Text slot="label">Delete</Text>
@@ -672,7 +672,7 @@ const App = () => (
           <Text slot="description">Manage your account preferences</Text>
         </Menu.Item>
       </Menu.Section>
-      <Menu.Separator />
+      <Divider />
       <Menu.Item id="signout" isCritical>
         <Text slot="label">Sign Out</Text>
         <Text slot="description">Sign out of your account</Text>

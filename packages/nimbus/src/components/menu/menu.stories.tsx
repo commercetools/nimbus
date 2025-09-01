@@ -5,6 +5,7 @@ import { Menu } from "./index";
 import {
   Box,
   Button,
+  Divider,
   Heading,
   Icon,
   IconButton,
@@ -83,7 +84,7 @@ export const Basic: Story = {
           <Kbd slot="keyboard">⌘Y</Kbd>
         </Menu.Item>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Item id="copy">
           <Text slot="label">Copy</Text>
@@ -101,7 +102,7 @@ export const Basic: Story = {
           <Kbd slot="keyboard">⌘V</Kbd>
         </Menu.Item>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Item id="select-all">
           <Text slot="label">Select All</Text>
@@ -249,7 +250,7 @@ export const TriggerVariations: Story = {
               <Menu.Item id="edit">Edit</Menu.Item>
               <Menu.Item id="duplicate">Duplicate</Menu.Item>
               <Menu.Item id="archive">Archive</Menu.Item>
-              <Menu.Separator />
+              <Divider />
               <Menu.Item id="delete" isCritical>
                 Delete
               </Menu.Item>
@@ -919,7 +920,7 @@ export const MixedSelection: Story = {
                   </Menu.Item>
                 </Menu.Section>
 
-                <Menu.Separator />
+                <Divider />
 
                 {/* Section with multiple selection */}
                 <Menu.Section
@@ -947,7 +948,7 @@ export const MixedSelection: Story = {
                   </Menu.Item>
                 </Menu.Section>
 
-                <Menu.Separator />
+                <Divider />
 
                 {/* Section with single selection */}
                 <Menu.Section
@@ -1032,7 +1033,7 @@ export const MixedSelection: Story = {
                   </Menu.Item>
                 </Menu.Section>
 
-                <Menu.Separator />
+                <Divider />
 
                 {/* This section overrides with multiple selection */}
                 <Menu.Section
@@ -1286,7 +1287,7 @@ export const ComplexExample: Story = {
           </Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="Edit Operations">
           <Menu.Item id="undo">
@@ -1320,7 +1321,7 @@ export const ComplexExample: Story = {
           </Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="View Options">
           <Menu.Item id="zoom-in">
@@ -1347,7 +1348,7 @@ export const ComplexExample: Story = {
           </Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="Item Variations">
           {/* Item with icon only */}
@@ -1398,7 +1399,7 @@ export const ComplexExample: Story = {
           </Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="States & Behaviors">
           <Menu.Item id="selected">
@@ -1429,7 +1430,7 @@ export const ComplexExample: Story = {
           </Menu.Item>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Section label="Submenu Examples">
           {/* Single level submenu */}
@@ -1566,7 +1567,7 @@ export const ComplexExample: Story = {
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
 
-              <Menu.Separator />
+              <Divider />
 
               <Menu.Item id="advanced" isDisabled>
                 <Text slot="label">Advanced Settings</Text>
@@ -1661,7 +1662,7 @@ export const ComplexExample: Story = {
                 </Menu.Submenu>
               </Menu.SubmenuTrigger>
 
-              <Menu.Separator />
+              <Divider />
 
               <Menu.Item id="custom-report" isCritical>
                 <Icon slot="icon">
@@ -1676,7 +1677,7 @@ export const ComplexExample: Story = {
           </Menu.SubmenuTrigger>
         </Menu.Section>
 
-        <Menu.Separator />
+        <Divider />
 
         <Menu.Item href="/help" target="_blank" rel="noopener">
           <Icon slot="icon">
@@ -2011,7 +2012,7 @@ export const CollectionPatternDemo: Story = {
               {fileMenuItems.map((item) => {
                 // Render separator
                 if (item.id === "divider") {
-                  return <Menu.Separator key={Math.random()} />;
+                  return <Divider key={Math.random()} />;
                 }
 
                 // Render menu item
