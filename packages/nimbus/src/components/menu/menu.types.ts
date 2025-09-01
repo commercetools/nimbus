@@ -59,7 +59,6 @@ export interface MenuItemProps extends RaMenuItemProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-
 // Menu section component
 export interface MenuSectionProps<T = object> extends RaMenuSectionProps<T> {
   ref?: Ref<HTMLDivElement>;
