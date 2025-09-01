@@ -1083,26 +1083,34 @@ export const PendingMarksConsistency: Story = {
     });
     await userEvent.click(formattingMenuButton);
 
-    // Wait for menu to appear and click code option
+    // Wait for menu and its items to be fully rendered
     await waitFor(() => {
-      expect(canvas.getByRole("menu")).toBeInTheDocument();
+      const menu = canvas.getByRole("menu");
+      expect(menu).toBeInTheDocument();
+      // Ensure menu items are rendered by checking for at least one
+      const menuItems = canvas.getAllByRole("menuitemcheckbox");
+      expect(menuItems.length).toBeGreaterThan(0);
     });
 
-    const codeMenuItem = await waitFor(() =>
-      canvas.getByRole("menuitemcheckbox", { name: /Code/ })
-    );
+    const codeMenuItem = canvas.getByRole("menuitemcheckbox", { name: /Code/ });
     await userEvent.click(codeMenuItem);
 
     // Reopen menu to verify code is selected
     await userEvent.click(formattingMenuButton);
+
+    // Wait for menu and its items to be fully rendered
     await waitFor(() => {
-      expect(canvas.getByRole("menu")).toBeInTheDocument();
+      const menu = canvas.getByRole("menu");
+      expect(menu).toBeInTheDocument();
+      // Ensure menu items are rendered by checking for at least one
+      const menuItems = canvas.getAllByRole("menuitemcheckbox");
+      expect(menuItems.length).toBeGreaterThan(0);
     });
 
-    // Check if the code menu item is selected (no visual checkbox, but background highlight)
-    const codeMenuItemAfter = await waitFor(() =>
-      canvas.getByRole("menuitemcheckbox", { name: /Code/ })
-    );
+    // Now safely find and check the code menu item
+    const codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", {
+      name: /Code/,
+    });
     expect(codeMenuItemAfter).toHaveAttribute("data-selected");
 
     // Close menu and type text
