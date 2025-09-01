@@ -1054,10 +1054,11 @@ export const PendingMarksConsistency: Story = {
     placeholder: "Test pending marks consistency...",
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    // Need to get the parent node to have the menu portal in scope
+    // Query the menu via the document body to include portal-rendered content
     const canvas = within(
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
+    const ui = within(canvasElement.ownerDocument.body);
     const editor = canvas.getByRole("textbox");
 
     // Click in empty editor to focus
@@ -1081,44 +1082,35 @@ export const PendingMarksConsistency: Story = {
     const formattingMenuButton = canvas.getByRole("button", {
       name: /more formatting options/i,
     });
-    await userEvent.click(formattingMenuButton);
+    await userEvent.click(formattingMenuButton, { pointerEventsCheck: 0 });
 
-    // Wait for menu and its items to be fully rendered
-    await waitFor(() => {
-      const menu = canvas.getByRole("menu");
-      expect(menu).toBeInTheDocument();
-      // Ensure menu items are rendered by checking for at least one
-      const menuItems = canvas.getAllByRole("menuitemcheckbox");
-      expect(menuItems.length).toBeGreaterThan(0);
+    // Await the portal-rendered menu and its items via document body scope
+    await ui.findByRole("menu");
+    const codeMenuItem = await ui.findByRole("menuitemcheckbox", {
+      name: /Code/i,
     });
-
-    const codeMenuItem = canvas.getByRole("menuitemcheckbox", { name: /Code/ });
     await userEvent.click(codeMenuItem);
 
-    // Reopen menu to verify code is selected
-    await userEvent.click(formattingMenuButton);
-
-    // Wait for menu and its items to be fully rendered
+    // Close menu explicitly and wait for it to be gone to avoid toggle races
+    await userEvent.keyboard("{Escape}");
     await waitFor(() => {
-      const menu = canvas.getByRole("menu");
-      expect(menu).toBeInTheDocument();
-      // Ensure menu items are rendered by checking for at least one
-      const menuItems = canvas.getAllByRole("menuitemcheckbox");
-      expect(menuItems.length).toBeGreaterThan(0);
+      expect(ui.queryByRole("menu")).not.toBeInTheDocument();
     });
 
-    // Now safely find and check the code menu item
-    const codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", {
-      name: /Code/,
+    // Reopen and verify selection state
+    await userEvent.click(formattingMenuButton, { pointerEventsCheck: 0 });
+    await ui.findByRole("menu");
+    const codeMenuItemAfter = await ui.findByRole("menuitemcheckbox", {
+      name: /Code/i,
     });
-    expect(codeMenuItemAfter).toHaveAttribute("data-selected");
+    expect(codeMenuItemAfter).toHaveAttribute("aria-checked", "true");
 
     // Close menu and type text
     await userEvent.keyboard("{Escape}");
 
     // Wait for menu to close and pending marks to be ready
     await waitFor(() => {
-      expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+      expect(ui.queryByRole("menu")).not.toBeInTheDocument();
     });
 
     // Small delay to ensure pending marks are properly set
