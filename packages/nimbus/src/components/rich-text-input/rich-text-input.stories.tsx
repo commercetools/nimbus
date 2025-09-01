@@ -1088,7 +1088,9 @@ export const PendingMarksConsistency: Story = {
       expect(canvas.getByRole("menu")).toBeInTheDocument();
     });
 
-    const codeMenuItem = canvas.getByRole("menuitemcheckbox", { name: /Code/ });
+    const codeMenuItem = await waitFor(() =>
+      canvas.getByRole("menuitemcheckbox", { name: /Code/ })
+    );
     await userEvent.click(codeMenuItem);
 
     // Reopen menu to verify code is selected
@@ -1098,9 +1100,9 @@ export const PendingMarksConsistency: Story = {
     });
 
     // Check if the code menu item is selected (no visual checkbox, but background highlight)
-    const codeMenuItemAfter = canvas.getByRole("menuitemcheckbox", {
-      name: /Code/,
-    });
+    const codeMenuItemAfter = await waitFor(() =>
+      canvas.getByRole("menuitemcheckbox", { name: /Code/ })
+    );
     expect(codeMenuItemAfter).toHaveAttribute("data-selected");
 
     // Close menu and type text
