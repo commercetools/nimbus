@@ -4,13 +4,13 @@ import {
   type UnstyledProp,
   createSlotRecipeContext,
 } from "@chakra-ui/react";
-import { dataTableRecipe } from "./data-table.recipe";
+import { dataTableSlotRecipe } from "./data-table.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {
+interface dataTableSlotRecipeProps extends RecipeProps<"div">, UnstyledProp {
   truncated?: boolean;
   density?: "default" | "condensed";
 }
@@ -22,11 +22,10 @@ interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataTableRootProps
-  extends HTMLChakraProps<"div", DataTableRecipeProps> {}
+  extends HTMLChakraProps<"div", dataTableSlotRecipeProps> {}
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "dataTable",
-  recipe: dataTableRecipe,
+  recipe: dataTableSlotRecipe,
 });
 
 /**
