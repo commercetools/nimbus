@@ -22,6 +22,12 @@ export const SelectRootSlot = withProvider<HTMLDivElement, SelectRootSlotProps>(
   "root"
 );
 
+export const SelectLeadingElementSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+  // @ts-ignore
+>("div", "leadingElement");
+
 // Trigger Button
 export interface SelectTriggerSlotProps extends HTMLChakraProps<"button"> {}
 export const SelectTriggerSlot = withContext<

@@ -5,6 +5,7 @@ import type { Key } from "react-aria";
 import { useState } from "react";
 import { type SelectRootProps } from "./select.types";
 import { userEvent, within, expect, fn } from "storybook/test";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 import { useAsyncList } from "react-stately";
 
@@ -238,6 +239,7 @@ export const AsyncLoading: Story = {
           isLoading={isLoading}
           selectedKey={animal}
           onSelectionChange={setAnimal as SelectRootProps["onSelectionChange"]}
+          leadingElement={<AddReaction />}
           aria-label="Select your new pet"
           data-testid="select"
         >
@@ -730,6 +732,7 @@ export const VariantsAndSizes: Story = {
                     key={JSON.stringify({ size })}
                     {...props}
                     aria-label="Select something"
+                    leadingElement={<AddReaction />}
                   >
                     <Select.Options>
                       <Select.Option>

@@ -7,6 +7,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 export const selectSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
+    "leadingElement",
     "trigger",
     "triggerLabel",
     "options",
@@ -63,6 +64,12 @@ export const selectSlotRecipe = defineSlotRecipe({
       // [data-focus-visible]
       // [data-disabled]
       // [data-pending]
+    },
+    leadingElement: {
+      // The leadingElement color should matches the DropdownIndicatorIcon
+      // TODO: there might be a more nimbus way to do this
+      color: "neutral.12",
+      opacity: 0.5,
     },
     triggerLabel: {
       // *Magic*
@@ -167,6 +174,9 @@ export const selectSlotRecipe = defineSlotRecipe({
           px: "400",
           textStyle: "sm",
         },
+        triggerLabel: {
+          pl: 100,
+        },
       },
       md: {
         root: {},
@@ -174,6 +184,9 @@ export const selectSlotRecipe = defineSlotRecipe({
           h: "1000",
           px: "400",
           textStyle: "md",
+        },
+        triggerLabel: {
+          pl: 200,
         },
       }, // Medium
     },

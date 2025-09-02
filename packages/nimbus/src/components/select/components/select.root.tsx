@@ -17,6 +17,7 @@ import {
   SelectRootSlot,
   SelectTriggerSlot,
   SelectTriggerLabelSlot,
+  SelectLeadingElementSlot,
 } from "./../select.slots";
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectRootProps } from "./../select.types";
@@ -31,7 +32,7 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/select}
  */
 export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
-  ({ children, isLoading, isDisabled, ...props }, ref) => {
+  ({ children, leadingElement, isLoading, isDisabled, ...props }, ref) => {
     const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
     const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
     const [styleProps, restProps] = extractStyleProps(restRecipeProps);
@@ -47,6 +48,11 @@ export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
           <chakra.div position="relative">
             <SelectTriggerSlot zIndex={0} asChild>
               <RaButton>
+                {leadingElement && (
+                  <SelectLeadingElementSlot asChild>
+                    {leadingElement}
+                  </SelectLeadingElementSlot>
+                )}
                 <SelectTriggerLabelSlot asChild>
                   <RaSelectValue />
                 </SelectTriggerLabelSlot>
