@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   AccordionTriggerSlot,
   AccordionTitleSlot,
@@ -9,10 +9,11 @@ import { KeyboardArrowRight } from "@commercetools/nimbus-icons";
 import { Button as RaButton } from "react-aria-components";
 import type { AccordionHeaderProps } from "../accordion.types";
 
-export const AccordionHeader = forwardRef<
-  HTMLButtonElement,
-  AccordionHeaderProps
->(({ children, ...props }, ref) => {
+export const AccordionHeader = ({
+  children,
+  ref,
+  ...props
+}: AccordionHeaderProps) => {
   // Extract HeaderRightContent if present
   const headerContent = useMemo(() => {
     const main: React.ReactNode[] = [];
@@ -52,4 +53,4 @@ export const AccordionHeader = forwardRef<
       )}
     </Flex>
   );
-});
+};

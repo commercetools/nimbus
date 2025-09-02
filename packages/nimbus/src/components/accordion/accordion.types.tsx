@@ -1,6 +1,6 @@
 import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { accordionSlotRecipe } from "./accordion.recipe";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import type {
   DisclosureGroupProps as RaDisclosureGroupProps,
   DisclosureProps as RaDisclosureProps,
@@ -17,6 +17,8 @@ export interface AccordionRootProps
     RecipeVariantProps<typeof accordionSlotRecipe> {
   /** The accordion items to display */
   children: ReactNode;
+  /** Ref to the root element */
+  ref?: Ref<HTMLDivElement>;
 }
 
 /**
@@ -27,6 +29,8 @@ export interface AccordionItemProps extends RaDisclosureProps {
   children: ReactNode;
   /** Unique value for this item (used for controlled state) */
   value?: string;
+  /** Ref to the item element */
+  ref?: Ref<HTMLDivElement>;
 }
 
 /**
@@ -36,6 +40,8 @@ export interface AccordionItemProps extends RaDisclosureProps {
 export interface AccordionHeaderProps extends RaButtonProps {
   /** The header content to display */
   children: ReactNode;
+  /** Ref to the header element */
+  ref?: Ref<HTMLButtonElement>;
 }
 
 /**
@@ -45,4 +51,6 @@ export interface AccordionHeaderProps extends RaButtonProps {
 export interface AccordionContentProps extends RaDisclosurePanelProps {
   /** The content to display when expanded */
   children: ReactNode;
+  /** Ref to the content element */
+  ref?: Ref<HTMLDivElement>;
 }
