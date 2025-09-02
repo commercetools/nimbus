@@ -58,9 +58,8 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&:focus": {
         outline: "none",
       },
-
+      // Target direct descendant Divider components
       '& > [role="separator"]': {
-        position: "relative",
         mx: "-200",
         my: "200",
         // compensate for left & right bleed
