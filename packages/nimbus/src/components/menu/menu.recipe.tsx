@@ -58,6 +58,14 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&:focus": {
         outline: "none",
       },
+
+      '& [role="separator"]': {
+        position: "relative",
+        mx: "-200",
+        my: "200",
+        // compensate for left & right bleed
+        width: "calc(100% + {sizes.400})",
+      },
     },
     item: {
       display: "grid",
