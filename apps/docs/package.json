@@ -16,7 +16,7 @@
     "@commercetools/nimbus-icons": "workspace:^",
     "@emotion/react": "catalog:react",
     "@internationalized/date": "catalog:react",
-    "@mdx-js/mdx": "^3.1.0",
+    "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.0",
     "@types/express": "^5.0.0",
