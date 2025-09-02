@@ -48,7 +48,7 @@ const external = [
   "react/jsx-runtime",
 
   // UI frameworks & styling.
-  "@chakra-ui/react",
+  new RegExp("@chakra-ui/react?[^.].*$"),
   // TODO: evaluate whether it makes more sense for `react-aria` and related packages to be bundled w/the library as they are currently,
   //       or declared as peer deps to reduce unintentional code duplication if a consuming app already has react-aria related libraries installed (eg @internationalized/date or react-stately).
 

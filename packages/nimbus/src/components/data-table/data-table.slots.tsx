@@ -89,22 +89,27 @@ export const DataTableFooter = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("footer", "footer");
+
 export const DataTableSelectionCell = withContext<
   HTMLTableCellElement,
   HTMLChakraProps<"td">
 >("td", "selectionCell");
+
 export const DataTableExpandButton = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"button">
 >("button", "expandButton");
+
 export const DataTableNestedIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">
 >("span", "nestedIcon");
+
 export const DataTableHeaderSortIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">
 >("span", "headerSortIcon");
+
 export const DataTableColumnResizer = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
