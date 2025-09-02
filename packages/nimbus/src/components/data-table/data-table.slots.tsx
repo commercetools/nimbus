@@ -25,7 +25,7 @@ export interface DataTableRootProps
   extends HTMLChakraProps<"div", DataTableRecipeProps> {}
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "data-table",
+  key: "dataTable",
   recipe: dataTableRecipe,
 });
 
