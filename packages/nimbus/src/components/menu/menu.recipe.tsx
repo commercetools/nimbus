@@ -59,7 +59,7 @@ export const menuSlotRecipe = defineSlotRecipe({
         outline: "none",
       },
 
-      '& [role="separator"]': {
+      '& > [role="separator"]': {
         position: "relative",
         mx: "-200",
         my: "200",
