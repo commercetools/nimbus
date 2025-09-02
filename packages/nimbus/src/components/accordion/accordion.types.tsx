@@ -5,6 +5,7 @@ import type {
 import { accordionSlotRecipe } from "./accordion.recipe";
 import { type DisclosureProps } from "react-aria-components";
 import type { ReactNode, RefObject, RefAttributes } from "react";
+import type { Key } from "react-aria-components";
 import { useButton, useDisclosure } from "react-aria";
 import type { useDisclosureState } from "react-stately";
 
@@ -45,6 +46,10 @@ export type DisclosureGroupProps = AccordionProps & {
   onExpandedChange?: (isExpanded: boolean) => void;
   isDisabled?: boolean;
   isExpanded?: boolean;
+  /** The currently expanded keys in the group (controlled). */
+  expandedKeys?: Iterable<Key>;
+  /** The initial expanded keys in the group (uncontrolled). */
+  defaultExpandedKeys?: Iterable<Key>;
 };
 
 export type DisclosureItemProps = AccordionItemProps & {

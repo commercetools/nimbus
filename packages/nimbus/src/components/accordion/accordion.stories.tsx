@@ -186,3 +186,35 @@ export const Disabled: Story = {
     </Accordion.Root>
   ),
 };
+
+export const DefaultExpandedKeys: Story = {
+  render: () => (
+    <Accordion.Root allowsMultipleExpanded defaultExpandedKeys={["a", "c"]}>
+      {items.map((item, index) => (
+        <Accordion.Item key={index} value={item.value}>
+          <Accordion.Header>{item.title}</Accordion.Header>
+          <Accordion.Content>{item.text}</Accordion.Content>
+        </Accordion.Item>
+      ))}
+    </Accordion.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const accordion = canvasElement.querySelector(
+      '[data-slot="root"]'
+    ) as HTMLElement;
+
+    const panels = accordion.querySelectorAll(
+      '[data-slot="panel"]'
+    ) as NodeListOf<HTMLDivElement>;
+
+    await step("First and third items are initially expanded", async () => {
+      await waitFor(() => {
+        // First and third panels should be visible
+        expect(panels[0]).toBeVisible();
+        expect(panels[2]).toBeVisible();
+        // Second panel should not be visible
+        expect(panels[1]).not.toBeVisible();
+      });
+    });
+  },
+};
