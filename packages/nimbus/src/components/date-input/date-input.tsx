@@ -1,4 +1,5 @@
 import {
+  DateInputLeadingElementSlot,
   DateInputRootSlot,
   DateInputSegmentGroupSlot,
   DateInputSegmentSlot,
@@ -23,20 +24,28 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  */
 export const DateInput = (props: DateInputProps) => {
   const recipe = useRecipe({ recipe: dateInputSlotRecipe });
-  const [recipeProps, recipeFreeProps] = recipe.splitVariantProps(props);
+  const { leadingElement, ...rest } = props;
+  const [recipeProps, recipeFreeProps] = recipe.splitVariantProps({ ...rest });
   const [styleProps, functionalProps] = extractStyleProps(recipeFreeProps);
 
   return (
     <DateInputRootSlot {...recipeProps} {...styleProps} asChild>
       <DateField {...functionalProps}>
         <DateInputSegmentGroupSlot asChild>
-          <DateInputField>
-            {(segment) => (
-              <DateInputSegmentSlot asChild>
-                <DateSegment segment={segment} />
-              </DateInputSegmentSlot>
+          <>
+            {leadingElement && (
+              <DateInputLeadingElementSlot>
+                {leadingElement}
+              </DateInputLeadingElementSlot>
             )}
-          </DateInputField>
+            <DateInputField>
+              {(segment) => (
+                <DateInputSegmentSlot asChild>
+                  <DateSegment segment={segment} />
+                </DateInputSegmentSlot>
+              )}
+            </DateInputField>
+          </>
         </DateInputSegmentGroupSlot>
       </DateField>
     </DateInputRootSlot>

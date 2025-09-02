@@ -7,7 +7,13 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 export const timeInputRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
   className: "nimbus-time-input",
-  slots: ["root", "leadingElement", "trailingElement", "segmentGroup", "segment"],
+  slots: [
+    "root",
+    "leadingElement",
+    "trailingElement",
+    "segmentGroup",
+    "segment",
+  ],
 
   // Base styles applied to all instances of the component
   base: {
@@ -17,10 +23,6 @@ export const timeInputRecipe = defineSlotRecipe({
       alignItems: "center",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
 
-      _hover: {
-            backgroundColor: "primary.2",
-          },
-      
       "&[data-focus-within='true']": {
         // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
         outlineWidth: "var(--focus-ring-width)",
@@ -134,9 +136,18 @@ export const timeInputRecipe = defineSlotRecipe({
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
           backgroundColor: "neutral.1",
+          _hover: {
+            backgroundColor: "primary.2",
+          },
         },
       },
-      ghost: {},
+      ghost: {
+        root: {
+          _hover: {
+            backgroundColor: "primary.2",
+          },
+        },
+      },
     },
   },
   defaultVariants: {

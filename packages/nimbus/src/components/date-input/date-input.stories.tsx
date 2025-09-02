@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import type { DateValue } from "react-aria";
 import { I18nProvider } from "react-aria";
+import { CalendarMonth } from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -204,6 +205,72 @@ export const VariantsSizesAndStates: Story = {
                           {...state.props}
                           variant={variant}
                           size={size}
+                          defaultValue={new CalendarDate(2025, 6, 15)}
+                          aria-label={`${state.label} ${variant} ${size} date input`}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Showcase State Variants
+ * Demonstrates isDisabled, isReadOnly, isRequired, and isInvalid properties
+ * for both style variants and sizes
+ */
+export const LeadingIconVariantsSizesAndStates: Story = {
+  render: (args: DateInputProps) => {
+    const states = [
+      { label: "Default", props: {} },
+      { label: "Disabled", props: { isDisabled: true } },
+      { label: "Read Only", props: { isReadOnly: true } },
+      { label: "Required", props: { isRequired: true } },
+      { label: "Invalid", props: { isInvalid: true } },
+    ];
+
+    const variants = ["solid", "ghost", "plain"] as const;
+    const sizes = ["sm", "md"] as const;
+
+    return (
+      <Stack direction="column" gap="600" alignItems="start">
+        {states.map((state) => (
+          <Stack
+            key={state.label}
+            direction="column"
+            gap="200"
+            alignItems="start"
+          >
+            <Stack direction="column" gap="400" alignItems="start">
+              <Text fontWeight="700">{state.label}</Text>
+              {variants.map((variant) => (
+                <Stack
+                  key={variant}
+                  direction="column"
+                  gap="200"
+                  alignItems="start"
+                >
+                  <Stack direction="row" gap="400" alignItems="start">
+                    {sizes.map((size) => (
+                      <Stack
+                        key={size}
+                        direction="column"
+                        gap="100"
+                        alignItems="start"
+                      >
+                        <DateInput
+                          {...args}
+                          {...state.props}
+                          variant={variant}
+                          size={size}
+                          leadingElement={<CalendarMonth />}
                           defaultValue={new CalendarDate(2025, 6, 15)}
                           aria-label={`${state.label} ${variant} ${size} date input`}
                         />
