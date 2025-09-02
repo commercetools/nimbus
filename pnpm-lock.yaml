@@ -51,8 +51,8 @@ catalogs:
       specifier: ^7.27.1
       version: 7.27.1
     '@eslint/js':
-      specifier: ^9.33.0
-      version: 9.33.0
+      specifier: ^9.34.0
+      version: 9.34.0
     '@preconstruct/cli':
       specifier: ^2.8.12
       version: 2.8.12
@@ -185,7 +185,7 @@ importers:
         version: 2.27.5
       '@eslint/js':
         specifier: catalog:tooling
-        version: 9.33.0
+        version: 9.34.0
       '@preconstruct/cli':
         specifier: catalog:tooling
         version: 2.8.12
@@ -246,7 +246,7 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: catalog:tooling
-        version: 9.33.0
+        version: 9.34.0
       '@types/react':
         specifier: catalog:react
         version: 19.1.8
@@ -412,7 +412,7 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: catalog:tooling
-        version: 9.33.0
+        version: 9.34.0
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -1143,10 +1143,6 @@ packages:
 
   '@eslint/eslintrc@3.3.1':
     resolution: {integrity: sha512-gtF186CXhIl1p4pJNGZw8Yc6RlshoePRvE0X91oPGb3vZ8pM3qOS9W9NGPat9LziaBV7XrJWGylNQXkGcnM3IQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@eslint/js@9.33.0':
-    resolution: {integrity: sha512-5K1/mKhWaMfreBGJTwval43JJmkip0RmM+3+IuqupeSKNC/Th2Kc7ucaq5ovTSra/OOKB9c58CGSz3QMVbWt0A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/js@9.34.0':
@@ -7660,8 +7656,6 @@ snapshots:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
-
-  '@eslint/js@9.33.0': {}
 
   '@eslint/js@9.34.0': {}
 
