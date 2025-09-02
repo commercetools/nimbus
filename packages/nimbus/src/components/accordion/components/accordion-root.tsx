@@ -1,9 +1,9 @@
-import React, { forwardRef, type Key } from "react";
-import { AccordionRoot as AccordionRootSlot } from "../accordion.slots";
-import { useDisclosureGroupState } from "react-stately";
+import { forwardRef } from "react";
+import { AccordionRootSlot } from "../accordion.slots";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import type { DisclosureGroupProps } from "../accordion.types";
-import { DisclosureGroupStateContext } from "../accordion-context";
+import { DisclosureGroup as RaDisclosureGroup } from "react-aria-components";
+import type { AccordionRootProps } from "../accordion.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * # Accordion
@@ -12,23 +12,21 @@ import { DisclosureGroupStateContext } from "../accordion-context";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/accordion}
  */
-export const AccordionRoot = forwardRef<HTMLDivElement, DisclosureGroupProps>(
-  ({ children, onExpandedChange, ...props }, forwardedRef) => {
-    const state = useDisclosureGroupState({
-      ...props,
-      onExpandedChange: (keys: Set<Key>) => {
-        onExpandedChange?.(keys.size > 0);
-      },
-    });
+export const AccordionRoot = forwardRef<HTMLDivElement, AccordionRootProps>(
+  (props, forwardedRef) => {
     const recipe = useSlotRecipe({ key: "accordion" });
-    const [recipeProps] = recipe.splitVariantProps(props);
+    const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+    const [styleProps, raProps] = extractStyleProps(restRecipeProps);
 
     return (
-      <DisclosureGroupStateContext.Provider value={state}>
-        <AccordionRootSlot data-slot="root" ref={forwardedRef} {...recipeProps}>
-          {children}
-        </AccordionRootSlot>
-      </DisclosureGroupStateContext.Provider>
+      <AccordionRootSlot
+        ref={forwardedRef}
+        {...recipeProps}
+        {...styleProps}
+        asChild
+      >
+        <RaDisclosureGroup {...raProps} />
+      </AccordionRootSlot>
     );
   }
 );

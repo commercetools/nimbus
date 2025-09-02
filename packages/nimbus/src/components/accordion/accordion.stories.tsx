@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Accordion } from "./accordion";
-import type { AccordionProps } from "./accordion.types";
 import { Avatar, Button, Checkbox, Flex } from "@/components";
 import { expect, userEvent, waitFor } from "storybook/test";
 
@@ -19,28 +18,32 @@ const items = [
   { value: "c", title: "Third Item", text: "Some value 3..." },
 ];
 
-const sizes: AccordionProps["size"][] = ["sm", "md"];
+const sizes = ["sm", "md"] as const;
 
 export const Basic: Story = {
   render: () => (
-    <Accordion.Root>
+    <Accordion.Root data-testid="accordion-root">
       <Accordion.Item>
-        <Accordion.Header>First Item</Accordion.Header>
-        <Accordion.Content>First item content</Accordion.Content>
+        <Accordion.Header data-testid="accordion-trigger">
+          First Item
+        </Accordion.Header>
+        <Accordion.Content data-testid="accordion-panel">
+          First item content
+        </Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const accordion = canvasElement.querySelector(
-      '[data-slot="root"]'
+      '[data-testid="accordion-root"]'
     ) as HTMLElement;
 
     const trigger = accordion.querySelector(
-      '[data-slot="trigger"]'
+      '[data-testid="accordion-trigger"]'
     ) as HTMLButtonElement;
 
     const panel = accordion.querySelector(
-      '[data-slot="panel"]'
+      '[data-testid="accordion-panel"]'
     ) as HTMLDivElement;
 
     await step("Can be focused with keyboard", async () => {
@@ -66,13 +69,13 @@ export const Basic: Story = {
 
 export const WithHeaderItemsToRight: Story = {
   render: () => (
-    <Accordion.Root>
+    <Accordion.Root data-testid="accordion-root">
       <Accordion.Item value="a">
         <Accordion.Header>First Item</Accordion.Header>
         <Accordion.Content>First item content</Accordion.Content>
       </Accordion.Item>
       <Accordion.Item value="b">
-        <Accordion.Header>
+        <Accordion.Header data-testid="accordion-trigger">
           Second Item
           <Accordion.HeaderRightContent>
             <Button tone="critical" m="100">
@@ -83,22 +86,24 @@ export const WithHeaderItemsToRight: Story = {
             </Button>
           </Accordion.HeaderRightContent>
         </Accordion.Header>
-        <Accordion.Content>Second item content</Accordion.Content>
+        <Accordion.Content data-testid="accordion-panel">
+          Second item content
+        </Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const accordion = canvasElement.querySelector(
-      '[data-slot="root"]'
+      '[data-testid="accordion-root"]'
     ) as HTMLElement;
     const additionalButtons = accordion.querySelectorAll("button");
     const trigger = accordion.querySelector(
-      '[data-slot="trigger"]'
+      '[data-testid="accordion-trigger"]'
     ) as HTMLButtonElement;
 
     await step("Additional buttons don't trigger accordion", async () => {
       const panel = accordion.querySelector(
-        '[data-slot="panel"]'
+        '[data-testid="accordion-panel"]'
       ) as HTMLDivElement;
       await expect(panel).not.toBeVisible();
 
@@ -113,7 +118,7 @@ export const WithHeaderItemsToRight: Story = {
 
     await step("Main trigger still works", async () => {
       const panel = accordion.querySelector(
-        '[data-slot="panel"]'
+        '[data-testid="accordion-panel"]'
       ) as HTMLDivElement;
       await userEvent.click(trigger);
       await expect(panel).toBeVisible();
@@ -189,22 +194,28 @@ export const Disabled: Story = {
 
 export const DefaultExpandedKeys: Story = {
   render: () => (
-    <Accordion.Root allowsMultipleExpanded defaultExpandedKeys={["a", "c"]}>
+    <Accordion.Root
+      allowsMultipleExpanded
+      defaultExpandedKeys={["a", "c"]}
+      data-testid="accordion-root"
+    >
       {items.map((item, index) => (
         <Accordion.Item key={index} value={item.value}>
           <Accordion.Header>{item.title}</Accordion.Header>
-          <Accordion.Content>{item.text}</Accordion.Content>
+          <Accordion.Content data-testid="accordion-panel">
+            {item.text}
+          </Accordion.Content>
         </Accordion.Item>
       ))}
     </Accordion.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const accordion = canvasElement.querySelector(
-      '[data-slot="root"]'
+      '[data-testid="accordion-root"]'
     ) as HTMLElement;
 
     const panels = accordion.querySelectorAll(
-      '[data-slot="panel"]'
+      '[data-testid="accordion-panel"]'
     ) as NodeListOf<HTMLDivElement>;
 
     await step("First and third items are initially expanded", async () => {

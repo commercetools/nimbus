@@ -1,39 +1,16 @@
-import React, {
-  forwardRef,
-  useContext,
-  type ComponentProps,
-  type ReactNode,
-} from "react";
-import { AccordionPanel } from "../accordion.slots";
-import { useObjectRef } from "react-aria";
-import { mergeProps, mergeRefs } from "@chakra-ui/react";
-import { ItemContext } from "../accordion-context";
-
-type AccordionContentProps = {
-  /**
-   * The content to display
-   */
-  children: ReactNode;
-} & ComponentProps<typeof AccordionPanel>;
+import { forwardRef } from "react";
+import { AccordionPanelSlot } from "../accordion.slots";
+import { DisclosurePanel as RaDisclosurePanel } from "react-aria-components";
+import type { AccordionContentProps } from "../accordion.types";
 
 // Create Content component
 export const AccordionContent = forwardRef<
   HTMLDivElement,
   AccordionContentProps
->((props, forwardedRef) => {
-  const context = useContext(ItemContext);
-  const ref = useObjectRef<HTMLDivElement>(
-    mergeRefs(context?.panelRef, forwardedRef)
-  );
-
+>(({ children, ...props }, forwardedRef) => {
   return (
-    // @ts-expect-error TODO - fix prop types merging conflict
-    <AccordionPanel
-      ref={ref}
-      {...mergeProps({ ...context?.panelProps, ...props })}
-      data-slot="panel"
-    >
-      {props.children}
-    </AccordionPanel>
+    <AccordionPanelSlot ref={forwardedRef} asChild>
+      <RaDisclosurePanel {...props}>{children}</RaDisclosurePanel>
+    </AccordionPanelSlot>
   );
 });
