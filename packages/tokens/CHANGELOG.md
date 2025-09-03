@@ -1,6 +1,6 @@
 # @commercetools/nimbus-tokens
 
-## 1.0.0
+## 1.0.1
 
 ### Patch Changes
 
