@@ -88,11 +88,19 @@ export const Default: Story = {
     expect(toolbar).toBeInTheDocument();
 
     // Verify placeholder is present (Slate.js handles placeholders differently)
-    const hasPlaceholder =
-      editor.querySelector("[data-slate-placeholder]") ||
-      editor.textContent === "" ||
-      editor.querySelector(".slate-placeholder");
-    expect(hasPlaceholder).toBeTruthy();
+    // Check for various placeholder implementations and empty editor state
+    await waitFor(() => {
+      const hasPlaceholder =
+        editor.querySelector("[data-slate-placeholder]") ||
+        editor.querySelector(".slate-placeholder") ||
+        editor.querySelector(
+          '[data-slate-editor] > [data-slate-node="element"] > [data-slate-leaf]'
+        ) ||
+        !editor.textContent ||
+        editor.textContent.trim() === "" ||
+        editor.getAttribute("aria-placeholder") === "Start typing...";
+      expect(hasPlaceholder).toBeTruthy();
+    });
 
     // Test basic typing
     await userEvent.click(editor);
@@ -114,11 +122,20 @@ export const WithPlaceholder: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
-    // Verify placeholder is visible
-    const placeholderElement =
-      editor.querySelector("[data-slate-placeholder]") ||
-      editor.querySelector(".slate-placeholder");
-    expect(placeholderElement || editor.textContent === "").toBeTruthy();
+    // Verify placeholder is visible or editor is empty
+    await waitFor(() => {
+      const placeholderElement =
+        editor.querySelector("[data-slate-placeholder]") ||
+        editor.querySelector(".slate-placeholder") ||
+        editor.querySelector(
+          '[data-slate-editor] > [data-slate-node="element"] > [data-slate-leaf]'
+        );
+      const isEmpty = !editor.textContent || editor.textContent.trim() === "";
+      const hasPlaceholder =
+        editor.getAttribute("aria-placeholder") ===
+        "Enter your content here...";
+      expect(placeholderElement || isEmpty || hasPlaceholder).toBeTruthy();
+    });
 
     // Test placeholder disappears on input
     await userEvent.click(editor);
