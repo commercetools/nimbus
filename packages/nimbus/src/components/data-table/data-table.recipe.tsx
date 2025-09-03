@@ -4,7 +4,7 @@ import { defineSlotRecipe } from "@chakra-ui/react";
  * Slot recipe configuration for the DataTable component.
  * Defines the styling variants, base styles, and slots using Chakra UI's slot recipe system.
  */
-export const dataTableRecipe = defineSlotRecipe({
+export const dataTableSlotRecipe = defineSlotRecipe({
   // Available slots for the DataTable component
   slots: [
     "root",

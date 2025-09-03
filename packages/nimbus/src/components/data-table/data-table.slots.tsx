@@ -4,13 +4,13 @@ import {
   type UnstyledProp,
   createSlotRecipeContext,
 } from "@chakra-ui/react";
-import { dataTableRecipe } from "./data-table.recipe";
+import { dataTableSlotRecipe } from "./data-table.recipe";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {
+interface dataTableSlotRecipeProps extends RecipeProps<"div">, UnstyledProp {
   truncated?: boolean;
   density?: "default" | "condensed";
 }
@@ -22,11 +22,10 @@ interface DataTableRecipeProps extends RecipeProps<"div">, UnstyledProp {
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataTableRootProps
-  extends HTMLChakraProps<"div", DataTableRecipeProps> {}
+  extends HTMLChakraProps<"div", dataTableSlotRecipeProps> {}
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "data-table",
-  recipe: dataTableRecipe,
+  recipe: dataTableSlotRecipe,
 });
 
 /**
@@ -90,22 +89,27 @@ export const DataTableFooter = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("footer", "footer");
+
 export const DataTableSelectionCell = withContext<
   HTMLTableCellElement,
   HTMLChakraProps<"td">
 >("td", "selectionCell");
+
 export const DataTableExpandButton = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"button">
 >("button", "expandButton");
+
 export const DataTableNestedIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">
 >("span", "nestedIcon");
+
 export const DataTableHeaderSortIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">
 >("span", "headerSortIcon");
+
 export const DataTableColumnResizer = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">

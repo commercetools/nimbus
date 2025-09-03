@@ -9,7 +9,7 @@ import type {
   CellProps as RaCellProps,
   Selection,
 } from "react-aria-components";
-import { dataTableRecipe } from "./data-table.recipe";
+import { dataTableSlotRecipe } from "./data-table.recipe";
 import type {
   DataTableRootProps,
   DataTableHeaderSlotProps,
@@ -101,7 +101,7 @@ export type DataTableDensity = "default" | "condensed";
  * and styling variants from the recipe.
  */
 type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
-  RecipeVariantProps<typeof dataTableRecipe>;
+  RecipeVariantProps<typeof dataTableSlotRecipe>;
 
 /**
  * Main props interface for the DataTable component.
