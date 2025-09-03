@@ -5,7 +5,7 @@ import { Clear } from "@commercetools/nimbus-icons";
 import { IconButton } from "../../icon-button";
 import { AlertContext } from "./alert.root";
 import { useIntl } from "react-intl";
-import { messages } from "../avatar.i18n";
+import { messages } from "../alert.i18n";
 
 export const AlertDismissButton = ({
   children,
