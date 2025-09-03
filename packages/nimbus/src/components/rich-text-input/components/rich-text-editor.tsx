@@ -115,7 +115,7 @@ export const RichTextEditor = forwardRef<
     Array.isArray(value) && value.length > 0 ? value : defaultValue;
 
   return (
-    <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
+    <Slate editor={editor} initialValue={safeInitialValue} onChange={onChange}>
       {toolbar && (
         <RichTextInputToolbarSlot>{toolbar}</RichTextInputToolbarSlot>
       )}
