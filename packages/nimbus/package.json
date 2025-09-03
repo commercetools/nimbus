@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "0.0.12-rc4",
+  "version": "1.0.1",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "type": "module",
@@ -23,10 +23,7 @@
       }
     }
   },
-  "files": [
-    "dist",
-    "package.json"
-  ],
+  "files": ["dist", "package.json"],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -35,14 +32,10 @@
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
   },
-  "sideEffects": [
-    "*.css"
-  ],
+  "sideEffects": ["*.css"],
   "typesVersions": {
     "*": {
-      "*": [
-        "./dist/index.d.ts"
-      ]
+      "*": ["./dist/index.d.ts"]
     }
   },
   "dependencies": {
