@@ -115,7 +115,6 @@ export const RichTextEditor = forwardRef<
     Array.isArray(value) && value.length > 0 ? value : defaultValue;
 
   return (
-    // @ts-expect-error - Using initialValue instead of value due to breaking change in slate-react 0.117.4+. TypeScript types haven't been updated yet to reflect this API change, hence the ts-ignore. Runtime code expects initialValue but type definitions still expect value
     <Slate editor={editor} initialValue={safeInitialValue} onChange={onChange}>
       {toolbar && (
         <RichTextInputToolbarSlot>{toolbar}</RichTextInputToolbarSlot>
