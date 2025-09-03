@@ -1,0 +1,334 @@
+---
+id: Components-InlineSvg
+title: InlineSvg
+description: Render arbitrary SVG markup with XSS protection
+order: 999
+menu:
+  - Components
+  - Display
+  - InlineSvg
+tags:
+  - component
+  - svg
+  - icon
+  - inline
+  - security
+---
+
+# InlineSvg
+
+The `InlineSvg` component allows you to render arbitrary SVG markup as an icon with built-in XSS protection. It sanitizes the provided SVG string to remove potentially dangerous elements and attributes before rendering.
+
+## Features
+
+- **Security First**: Automatic sanitization of SVG content to prevent XSS attacks
+- **API Compatible**: Drop-in replacement for existing InlineSvg implementations
+- **Accessibility**: Support for title and description elements
+- **Consistent Styling**: Uses the same recipe system as the Icon component
+- **Performance**: Memoized sanitization for optimal re-renders
+- **Zero External Dependencies**: Uses native browser APIs for parsing and sanitization
+
+## Basic Usage
+
+```jsx-live
+const App = () => {
+  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/></svg>';
+  
+  return (
+    <InlineSvg data={svgData} size="lg" />
+  );
+};
+```
+
+## With Accessibility
+
+Adding title and description for better screen reader support:
+
+```jsx-live
+const App = () => {
+  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/></svg>';
+  
+  return (
+    <InlineSvg 
+      data={svgData} 
+      title="Custom Icon"
+      description="A custom SVG icon with accessibility features"
+      size="lg" 
+    />
+  );
+};
+```
+
+## Sizes
+
+The component supports all standard icon sizes:
+
+```jsx-live
+const App = () => {
+  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg>';
+  
+  return (
+    <Flex gap="400" align="center">
+      <InlineSvg data={svgData} size="2xs" />
+      <InlineSvg data={svgData} size="xs" />
+      <InlineSvg data={svgData} size="sm" />
+      <InlineSvg data={svgData} size="md" />
+      <InlineSvg data={svgData} size="lg" />
+      <InlineSvg data={svgData} size="xl" />
+    </Flex>
+  );
+};
+```
+
+## Colors
+
+Apply colors using design tokens:
+
+```jsx-live
+const App = () => {
+  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/></svg>';
+  
+  return (
+    <Flex gap="400" align="center">
+      <InlineSvg data={svgData} size="lg" color="primary.500" />
+      <InlineSvg data={svgData} size="lg" color="success.500" />
+      <InlineSvg data={svgData} size="lg" color="warning.500" />
+      <InlineSvg data={svgData} size="lg" color="critical.500" />
+      <InlineSvg data={svgData} size="lg" color="neutral.600" />
+    </Flex>
+  );
+};
+```
+
+## Complex SVG
+
+The component preserves complex SVG structures including groups, multiple paths, and transformations:
+
+```jsx-live
+const App = () => {
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(2, 2)">
+      <path d="M10 0L20 5L10 10L0 5Z" fill="currentColor"/>
+      <path d="M0 7L10 12L20 7V15L10 20L0 15Z" fill="currentColor" opacity="0.7"/>
+    </g>
+  </svg>`;
+  
+  return (
+    <InlineSvg data={svgData} size="xl" color="primary.500" />
+  );
+};
+```
+
+## Multi-Color SVG
+
+SVGs with inline colors are preserved:
+
+```jsx-live
+const App = () => {
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="4" fill="#FF6B6B"/>
+    <circle cx="16" cy="8" r="4" fill="#4ECDC4"/>
+    <circle cx="12" cy="16" r="4" fill="#45B7D1"/>
+  </svg>`;
+  
+  return (
+    <InlineSvg data={svgData} size="xl" />
+  );
+};
+```
+
+## Security
+
+The component automatically sanitizes potentially dangerous content:
+
+- Removes `<script>` tags
+- Removes event handlers (onclick, onload, etc.)
+- Removes `<style>` tags
+- Sanitizes URLs in href attributes (blocks javascript:, data:, etc.)
+- Removes other potentially dangerous elements
+
+```jsx-live
+const App = () => {
+  // This malicious SVG content will be sanitized
+  const maliciousSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <script>alert('XSS')</script>
+    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor" onclick="alert('click')"/>
+    <style>body { display: none; }</style>
+  </svg>`;
+  
+  return (
+    <Stack gap="400">
+      <Text>The following SVG has malicious content that gets sanitized:</Text>
+      <InlineSvg data={maliciousSvg} size="lg" title="Sanitized SVG" />
+      <Text fontSize="sm" color="neutral.600">
+        Script tags, event handlers, and style tags are removed
+      </Text>
+    </Stack>
+  );
+};
+```
+
+## Specs
+
+<PropsTable id="InlineSvg" />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `string` | - | **Required.** SVG markup as a string |
+| `size` | `"2xs" \| "xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Size of the icon |
+| `color` | `string` | `currentColor` | Color of the icon (uses design tokens) |
+| `title` | `string` | - | Optional title for accessibility |
+| `description` | `string` | - | Optional description for accessibility |
+| `preserveViewBox` | `boolean` | `true` | Whether to preserve the original viewBox |
+| `className` | `string` | - | Additional CSS class names |
+
+## Migration Guide
+
+### From @commercetools-uikit/inline-svg
+
+The new component is designed to be a drop-in replacement:
+
+```tsx
+// Before
+import InlineSvg from '@commercetools-uikit/inline-svg';
+
+<InlineSvg 
+  data={svgString}
+  size="medium"
+  color="primary"
+/>
+
+// After
+import { InlineSvg } from '@commercetools/nimbus';
+
+<InlineSvg 
+  data={svgString}
+  size="md"  // Note: size values use abbreviated format
+  color="primary.500"  // Note: use design token color values
+/>
+```
+
+### Size Mapping
+
+- `small` → `sm`
+- `medium` → `md`
+- `big` → `lg`
+- `scale` → Use explicit size values
+
+### Color Mapping
+
+Use design token colors instead of semantic names:
+- `primary` → `primary.500`
+- `info` → `info.500`
+- `warning` → `warning.500`
+- `error` → `critical.500`
+- `success` → `success.500`
+
+## Accessibility
+
+The component automatically handles accessibility:
+
+1. When a `title` is provided, the SVG is given `role="img"` and appropriate ARIA labels
+2. Without a title, the SVG has `role="presentation"` for decorative use
+3. The `description` prop adds a `<desc>` element for extended descriptions
+
+## Security Considerations
+
+The component provides comprehensive XSS protection:
+
+### What Gets Removed
+
+- All JavaScript execution vectors (`<script>`, event handlers)
+- Style injection attempts (`<style>` tags, style attributes)
+- Dangerous protocols in URLs (`javascript:`, `data:`, etc.)
+- Potentially dangerous elements (`<iframe>`, `<embed>`, etc.)
+
+### What Gets Preserved
+
+- SVG structure elements (`<g>`, `<path>`, `<circle>`, etc.)
+- Visual attributes (fill, stroke, transform, etc.)
+- Accessibility elements (`<title>`, `<desc>`)
+- Safe URLs (http:, https:, relative paths, fragments)
+
+## Best Practices
+
+1. **Always provide a title** for non-decorative SVGs
+2. **Use design tokens** for colors to maintain consistency
+3. **Test with real SVG data** from your actual use cases
+4. **Validate SVG markup** before storing in your database
+5. **Consider performance** for very large or complex SVGs
+
+## Examples
+
+### Icon from External Source
+
+```tsx
+import { InlineSvg } from '@commercetools/nimbus';
+
+function UserAvatar({ svgData }) {
+  return (
+    <InlineSvg
+      data={svgData}
+      size="lg"
+      title="User Avatar"
+      description="Custom user-uploaded avatar icon"
+      color="neutral.600"
+    />
+  );
+}
+```
+
+### Dynamic Icon Loading
+
+```tsx
+import { InlineSvg } from '@commercetools/nimbus';
+import { useState, useEffect } from 'react';
+
+function DynamicIcon({ iconId }) {
+  const [svgData, setSvgData] = useState('');
+
+  useEffect(() => {
+    fetch(`/api/icons/${iconId}`)
+      .then(res => res.text())
+      .then(setSvgData);
+  }, [iconId]);
+
+  if (!svgData) return null;
+
+  return (
+    <InlineSvg
+      data={svgData}
+      size="md"
+      title={`Icon ${iconId}`}
+    />
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+import { InlineSvg } from '@commercetools/nimbus';
+import { Box } from '@chakra-ui/react';
+
+function IconButton({ svg, onClick }) {
+  return (
+    <Box
+      as="button"
+      p="200"
+      borderRadius="200"
+      bg="primary.50"
+      _hover={{ bg: 'primary.100' }}
+      onClick={onClick}
+    >
+      <InlineSvg
+        data={svg}
+        size="md"
+        color="primary.600"
+      />
+    </Box>
+  );
+}
+```

@@ -32,6 +32,7 @@ export * from "./badge";
 export * from "./card";
 export * from "./form-field";
 export * from "./icon";
+export * from "./inline-svg";
 export * from "./loading-spinner";
 export * from "./password-input";
 export * from "./split-button";
