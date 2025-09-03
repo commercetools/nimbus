@@ -87,8 +87,8 @@ catalogs:
       specifier: ^3.2.4
       version: 3.2.4
     '@vueless/storybook-dark-mode':
-      specifier: ^9.0.7
-      version: 9.0.7
+      specifier: ^9.0.8
+      version: 9.0.8
     eslint:
       specifier: ^9.34.0
       version: 9.34.0
@@ -579,7 +579,7 @@ importers:
         version: 3.2.4(@vitest/browser@3.2.4)(vitest@3.2.4)
       '@vueless/storybook-dark-mode':
         specifier: catalog:tooling
-        version: 9.0.7(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 9.0.8(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       apca-w3:
         specifier: ^0.1.9
         version: 0.1.9
@@ -2737,8 +2737,8 @@ packages:
   '@vue/shared@3.5.20':
     resolution: {integrity: sha512-SoRGP596KU/ig6TfgkCMbXkr4YJ91n/QSdMuqeP5r3hVIYA3CPHUBCc7Skak0EAKV+5lL4KyIh61VA/pK1CIAA==}
 
-  '@vueless/storybook-dark-mode@9.0.7':
-    resolution: {integrity: sha512-GwCSHCeFoOX+XVH7oQ+GLzUDp5gAvF6DSziSN9rUqVPUmBFZoE121uFwkn3CB/Pj7PU/Gz7zpxPqjxE5E5Y8Ew==}
+  '@vueless/storybook-dark-mode@9.0.8':
+    resolution: {integrity: sha512-VwYn0PnuZ4SIVZigU20FuUDadX++imsGP0w11CXchCjF6fqdrlEm4VrMCTF9tkh4U0ea2znl1ZYXAajUKyOJxw==}
     engines: {node: '>=20'}
 
   '@xobotyi/scrollbar-width@1.9.5':
@@ -9774,7 +9774,7 @@ snapshots:
 
   '@vue/shared@3.5.20': {}
 
-  '@vueless/storybook-dark-mode@9.0.7(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@vueless/storybook-dark-mode@9.0.8(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/icons': 1.4.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
