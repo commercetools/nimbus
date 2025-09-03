@@ -25,7 +25,6 @@ catalogs:
     eslint-plugin-react-refresh: ^0.4.20
     prettier: ^3.6.2
     "@preconstruct/cli": ^2.8.12
-    hygen: ^6.2.11
     "@vitejs/plugin-react": ^4.4.1
     "@vitejs/plugin-react-swc": ^3.10.2
     vite: ^7.0.5
