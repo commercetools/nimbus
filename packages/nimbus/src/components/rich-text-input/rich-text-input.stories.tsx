@@ -104,15 +104,15 @@ export const Default: Story = {
 
     // Test basic typing
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Hello world");
 
     // Wait for Slate to process the input with increased timeout for CI
@@ -150,15 +150,15 @@ export const WithPlaceholder: Story = {
 
     // Test placeholder disappears on input
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Test");
     await waitFor(() => {
       // Placeholder should be gone when content is present
@@ -215,15 +215,15 @@ export const Controlled: Story = {
 
     // Test that changes update the controlled value
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, " updated");
 
     // Wait for the value display to update
@@ -323,15 +323,15 @@ export const Invalid: Story = {
 
     // Test that editing still works
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, " Additional text.");
     await waitFor(() => {
       expect(editor).toHaveTextContent("Additional text.");
@@ -354,8 +354,8 @@ export const AutoFocus: Story = {
 
     // Test that typing works immediately (suggesting focus)
     // Small delay to ensure Slate's internal state is ready after auto-focus
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Auto-focused!");
     await waitFor(() => {
       expect(editor).toHaveTextContent("Auto-focused!");
@@ -420,15 +420,15 @@ export const ItalicFormatting: Story = {
     const editor = canvas.getByRole("textbox");
 
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Normal text ");
 
     // Click italic button
@@ -460,15 +460,15 @@ export const UnderlineFormatting: Story = {
     const editor = canvas.getByRole("textbox");
 
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Normal text ");
 
     // Click underline button
@@ -850,9 +850,9 @@ export const UndoRedo: Story = {
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const undoButton = canvas.getByRole("button", { name: /undo/i });
     const redoButton = canvas.getByRole("button", { name: /redo/i });
@@ -863,7 +863,7 @@ export const UndoRedo: Story = {
 
     // Type some text
     await userEvent.type(editor, "First text");
-    
+
     // Wait for text to be processed with proper timeout
     await waitFor(
       () => {
@@ -871,7 +871,7 @@ export const UndoRedo: Story = {
       },
       { timeout: 3000 }
     );
-    
+
     // Wait for undo button to be enabled
     await waitFor(() => {
       expect(undoButton).not.toBeDisabled();
@@ -880,11 +880,11 @@ export const UndoRedo: Story = {
     // Apply formatting
     const boldButton = canvas.getByRole("button", { name: /bold/i });
     await userEvent.click(boldButton);
-    
+
     // Small delay before typing more text
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
     await userEvent.type(editor, " bold text");
-    
+
     // Wait for the bold text to appear
     await waitFor(() => {
       expect(editor).toHaveTextContent("First text bold text");
@@ -938,15 +938,15 @@ export const OnChangeCallback: Story = {
 
     // Test onChange is called
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Test");
 
     await waitFor(() => {
@@ -1067,15 +1067,15 @@ export const EmptyContent: Story = {
 
     // Test that typing works from empty state
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "New content");
 
     // Wait for Slate to process the input
@@ -1099,15 +1099,15 @@ export const MalformedHTML: Story = {
 
     // Should still be editable
     await userEvent.click(editor);
-    
+
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-    
+
     // Small delay to ensure Slate's internal state is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, " additional text");
 
     await waitFor(() => {
