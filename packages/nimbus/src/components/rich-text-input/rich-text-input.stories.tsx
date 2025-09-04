@@ -151,9 +151,12 @@ export const Default: Story = {
 
     // Test basic typing
     await userEvent.click(editor);
-    await waitFor(() => {
-      expect(editor).toHaveFocus();
-    }, { timeout: 8000, interval: 50 });
+    await waitFor(
+      () => {
+        expect(editor).toHaveFocus();
+      },
+      { timeout: 8000, interval: 50 }
+    );
 
     await new Promise((resolve) => setTimeout(resolve, 200));
     await userEvent.type(editor, "Hello world");
@@ -172,9 +175,10 @@ export const DisabledState: Story = {
     const editor = canvas.getByRole("textbox");
 
     // Test disabled state
-    const root = editor.closest('[data-disabled="true"]') || 
-                 editor.closest("[data-disabled]") ||
-                 canvasElement.querySelector('[data-disabled="true"]');
+    const root =
+      editor.closest('[data-disabled="true"]') ||
+      editor.closest("[data-disabled]") ||
+      canvasElement.querySelector('[data-disabled="true"]');
     expect(root).toHaveAttribute("data-disabled", "true");
 
     // Verify toolbar is still visible but disabled
@@ -204,9 +208,10 @@ export const ReadOnlyState: Story = {
     const editor = canvas.getByRole("textbox");
 
     // Verify read-only state
-    const root = editor.closest('[data-readonly="true"]') ||
-                 editor.closest("[data-readonly]") ||
-                 canvasElement.querySelector('[data-readonly="true"]');
+    const root =
+      editor.closest('[data-readonly="true"]') ||
+      editor.closest("[data-readonly]") ||
+      canvasElement.querySelector('[data-readonly="true"]');
     expect(root).toHaveAttribute("data-readonly", "true");
 
     // Verify content is visible
@@ -230,9 +235,10 @@ export const InvalidState: Story = {
     const editor = canvas.getByRole("textbox");
 
     // Verify invalid state styling
-    const root = editor.closest('[data-invalid="true"]') ||
-                 editor.closest("[data-invalid]") ||
-                 canvasElement.querySelector('[data-invalid="true"]');
+    const root =
+      editor.closest('[data-invalid="true"]') ||
+      editor.closest("[data-invalid]") ||
+      canvasElement.querySelector('[data-invalid="true"]');
     expect(root).toHaveAttribute("data-invalid", "true");
 
     // Verify content and functionality still work
@@ -254,7 +260,9 @@ export const InvalidState: Story = {
 
 export const ControlledMode: Story = {
   render: () => {
-    const [value, setValue] = useState("<p>Initial <em>controlled</em> value</p>");
+    const [value, setValue] = useState(
+      "<p>Initial <em>controlled</em> value</p>"
+    );
 
     return (
       <div>
@@ -286,10 +294,13 @@ export const ControlledMode: Story = {
     await userEvent.type(editor, " updated");
 
     // Wait for the value display to update
-    await waitFor(() => {
-      const valueDisplay = canvas.getByText(/Current value:/);
-      expect(valueDisplay).toHaveTextContent("updated");
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        const valueDisplay = canvas.getByText(/Current value:/);
+        expect(valueDisplay).toHaveTextContent("updated");
+      },
+      { timeout: 1000 }
+    );
   },
 };
 
@@ -382,24 +393,30 @@ export const TextFormatting: Story = {
     await userEvent.type(editor, " normal");
 
     // Verify content structure
-    await waitFor(() => {
-      const strongElement = editor.querySelector("strong");
-      const emElement = editor.querySelector("em");
-      const uElement = editor.querySelector("u");
-      
-      expect(strongElement).toBeInTheDocument();
-      expect(emElement).toBeInTheDocument();
-      expect(uElement).toBeInTheDocument();
-      
-      // Verify the full text content is present
-      expect(editor).toHaveTextContent(/Normal.*bold.*italic.*underlined.*normal/);
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        const strongElement = editor.querySelector("strong");
+        const emElement = editor.querySelector("em");
+        const uElement = editor.querySelector("u");
+
+        expect(strongElement).toBeInTheDocument();
+        expect(emElement).toBeInTheDocument();
+        expect(uElement).toBeInTheDocument();
+
+        // Verify the full text content is present
+        expect(editor).toHaveTextContent(
+          /Normal.*bold.*italic.*underlined.*normal/
+        );
+      },
+      { timeout: 3000 }
+    );
   },
 };
 
 export const MenuFormatting: Story = {
   args: {
-    defaultValue: "<p>Normal text <code>inline code</code> <del>strikethrough</del> E=mc<sup>2</sup> H<sub>2</sub>O</p>",
+    defaultValue:
+      "<p>Normal text <code>inline code</code> <del>strikethrough</del> E=mc<sup>2</sup> H<sub>2</sub>O</p>",
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
@@ -444,7 +461,8 @@ export const MenuFormatting: Story = {
 
 export const BlockElements: Story = {
   args: {
-    defaultValue: "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3><h4>Heading 4</h4><h5>Heading 5</h5><p>Regular paragraph with <strong>formatting</strong>.</p><blockquote>This is a blockquote with important information.</blockquote>",
+    defaultValue:
+      "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3><h4>Heading 4</h4><h5>Heading 5</h5><p>Regular paragraph with <strong>formatting</strong>.</p><blockquote>This is a blockquote with important information.</blockquote>",
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
@@ -456,8 +474,12 @@ export const BlockElements: Story = {
     expect(editor.querySelector("h3")).toHaveTextContent("Heading 3");
     expect(editor.querySelector("h4")).toHaveTextContent("Heading 4");
     expect(editor.querySelector("h5")).toHaveTextContent("Heading 5");
-    expect(editor.querySelector("p")).toHaveTextContent(/Regular paragraph with formatting/i);
-    expect(editor.querySelector("blockquote")).toHaveTextContent("This is a blockquote with important information.");
+    expect(editor.querySelector("p")).toHaveTextContent(
+      /Regular paragraph with formatting/i
+    );
+    expect(editor.querySelector("blockquote")).toHaveTextContent(
+      "This is a blockquote with important information."
+    );
     expect(editor.querySelector("strong")).toBeInTheDocument();
 
     // Verify text style dropdown functionality
@@ -474,7 +496,8 @@ export const BlockElements: Story = {
 
 export const ListFunctionality: Story = {
   args: {
-    defaultValue: "<p>Regular paragraph</p><ul><li>First bulleted item</li><li>Second item with <strong>bold formatting</strong></li></ul><ol><li>First numbered item</li><li>Second numbered item</li></ol>",
+    defaultValue:
+      "<p>Regular paragraph</p><ul><li>First bulleted item</li><li>Second item with <strong>bold formatting</strong></li></ul><ol><li>First numbered item</li><li>Second numbered item</li></ol>",
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
@@ -573,7 +596,8 @@ export const UndoRedo: Story = {
 
 export const ComplexContent: Story = {
   args: {
-    defaultValue: "<h1>Document Title</h1><p>This is a paragraph with <strong>bold</strong> and <em>italic</em> text.</p><h2>Section Header</h2><blockquote>This is an important quote with <u>underlined</u> text.</blockquote><ul><li>First bulleted item</li><li>Second item with <code>inline code</code></li></ul><ol><li>First numbered item</li><li>Second numbered item</li></ol><p>Paragraph with <del>strikethrough</del> and super<sup>script</sup> and sub<sub>script</sub>.</p>",
+    defaultValue:
+      "<h1>Document Title</h1><p>This is a paragraph with <strong>bold</strong> and <em>italic</em> text.</p><h2>Section Header</h2><blockquote>This is an important quote with <u>underlined</u> text.</blockquote><ul><li>First bulleted item</li><li>Second item with <code>inline code</code></li></ul><ol><li>First numbered item</li><li>Second numbered item</li></ol><p>Paragraph with <del>strikethrough</del> and super<sup>script</sup> and sub<sub>script</sub>.</p>",
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
@@ -616,10 +640,12 @@ export const ComplexContent: Story = {
 export const EdgeCases: Story = {
   render: () => {
     const [testCase, setTestCase] = useState<"empty" | "malformed">("empty");
-    
+
     const cases = {
       empty: { defaultValue: "", placeholder: "Empty editor" },
-      malformed: { defaultValue: "<div>Invalid div content</div><span>Invalid span</span>" },
+      malformed: {
+        defaultValue: "<div>Invalid div content</div><span>Invalid span</span>",
+      },
     };
 
     return (
@@ -627,28 +653,28 @@ export const EdgeCases: Story = {
         <div style={{ marginBottom: "16px" }}>
           <button
             onClick={() => setTestCase("empty")}
-            style={{ 
-              margin: "0 8px 0 0", 
+            style={{
+              margin: "0 8px 0 0",
               padding: "8px 16px",
               backgroundColor: testCase === "empty" ? "#007acc" : "#f0f0f0",
               color: testCase === "empty" ? "white" : "black",
               border: "1px solid #ccc",
               borderRadius: "4px",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
             Empty
           </button>
           <button
             onClick={() => setTestCase("malformed")}
-            style={{ 
-              margin: "0 8px 0 0", 
+            style={{
+              margin: "0 8px 0 0",
               padding: "8px 16px",
               backgroundColor: testCase === "malformed" ? "#007acc" : "#f0f0f0",
               color: testCase === "malformed" ? "white" : "black",
               border: "1px solid #ccc",
               borderRadius: "4px",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
             Malformed
