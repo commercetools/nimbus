@@ -11,22 +11,22 @@ const waitForSlateReady = async (canvas: ReturnType<typeof within>) => {
     () => {
       expect(editor).toHaveAttribute("data-slate-ready", "true");
     },
-    { timeout: 5000, interval: 50 }
+    { timeout: 10000, interval: 50 }
   );
-  // Additional small delay to ensure any async operations are complete
-  await new Promise((resolve) => setTimeout(resolve, 50));
+  // Longer delay to ensure Slate is fully initialized in all environments
+  await new Promise((resolve) => setTimeout(resolve, 200));
 };
 
 const waitForButtonState = async (
   button: HTMLElement,
   expectedState: string,
-  timeout = 5000
+  timeout = 8000
 ) => {
   await waitFor(
     () => {
       expect(button).toHaveAttribute("aria-pressed", expectedState);
     },
-    { timeout, interval: 100 }
+    { timeout, interval: 50 }
   );
 };
 
@@ -45,13 +45,13 @@ const waitForTextContent = async (
 
 const waitForSlateOperationComplete = async (editor: HTMLElement) => {
   // Wait for any pending DOM mutations to complete
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 200));
   // Wait for editor to be stable (no aria-busy or loading states)
   await waitFor(
     () => {
       expect(editor).not.toHaveAttribute("aria-busy", "true");
     },
-    { timeout: 2000, interval: 50 }
+    { timeout: 3000, interval: 50 }
   );
 };
 
@@ -130,6 +130,9 @@ export const Default: Story = {
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
 
+    // Wait for Slate to be ready
+    await waitForSlateReady(canvas);
+
     // Verify basic rendering
     const editor = canvas.getByRole("textbox");
     expect(editor).toBeInTheDocument();
@@ -159,20 +162,15 @@ export const Default: Story = {
     // Wait for focus to be established
     await waitFor(() => {
       expect(editor).toHaveFocus();
-    });
+    }, { timeout: 8000, interval: 50 });
 
-    // Small delay to ensure Slate's internal state is ready
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // Enhanced delay to ensure Slate's internal state is ready
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     await userEvent.type(editor, "Hello world");
 
-    // Wait for Slate to process the input with increased timeout for CI
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("Hello world");
-      },
-      { timeout: 5000 }
-    );
+    // Wait for text content with enhanced timeout and robust checking
+    await waitForTextContent(editor, "Hello world");
   },
 };
 

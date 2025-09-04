@@ -71,10 +71,10 @@ export const RichTextEditor = forwardRef<
 
   // Set editor as ready after initialization
   useEffect(() => {
-    // Small delay to ensure Slate is fully initialized
+    // Longer delay to ensure Slate is fully initialized across all environments
     const timeoutId = setTimeout(() => {
       setIsEditorReady(true);
-    }, 10);
+    }, 100);
 
     return () => clearTimeout(timeoutId);
   }, []);
