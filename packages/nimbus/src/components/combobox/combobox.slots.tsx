@@ -1,4 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext, type HTMLChakraProps } from "@chakra-ui/react";
 import type {
   ComboBoxRootProps,
   ComboBoxValueSlotProps,
@@ -22,6 +22,12 @@ export const ComboBoxRootSlot = withProvider<
   ComboBoxRootProps<object>
 >("div", "root");
 
+export const ComboBoxLeadingElementSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+  // @ts-ignore TODO: don't understood the error I'm ignoring
+>("div", "leadingElement");
+  
 // Value - Input (single) or TagList (multi)
 export const ComboBoxValueSlot = withContext<
   HTMLDivElement,

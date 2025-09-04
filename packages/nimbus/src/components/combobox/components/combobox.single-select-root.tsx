@@ -5,6 +5,7 @@ import {
 } from "react-aria-components";
 import { SingleSelectInput } from "./combobox.single-select-input";
 import { ComboBoxOptions } from "./combobox.options";
+import { ComboBoxLeadingElementSlot } from "../combobox.slots";
 import { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button-group";
 import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
 
@@ -18,6 +19,7 @@ export const SingleSelectRoot = <T extends object>({
   renderEmptyState,
   shouldFocusWrap = true,
   isLoading,
+  leadingElement,
   ref,
   ...rest
 }: ComboBoxSingleSelectRootProps<T>) => {
@@ -46,6 +48,11 @@ export const SingleSelectRoot = <T extends object>({
       {...rest}
       ref={ref}
     >
+      {leadingElement && (
+        <ComboBoxLeadingElementSlot>
+          {leadingElement}
+        </ComboBoxLeadingElementSlot>
+      )}
       <SingleSelectInput
         ref={inputRef}
         placeholder={placeholder}

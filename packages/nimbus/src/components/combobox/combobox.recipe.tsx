@@ -9,6 +9,7 @@ import { checkboxSlotRecipe } from "../checkbox/checkbox.recipe";
 export const comboBoxSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
+    "leadingElement",
     "value",
     "buttonGroup",
     "popover",
@@ -32,6 +33,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignSelf: "flex-start",
       maxWidth: "100%",
       borderRadius: "200",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _hover: {
         bg: "primary.2",
       },
@@ -56,21 +58,27 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         opacity: 0.5,
       },
     },
+    leadingElement: {
+      color: "neutral.12",
+      opacity: 0.5,
+      px: 200,
+      placeSelf: "center",
+    },
     value: {
-      display: "flex",
+      display: "inline-flex",
+      flexGrow: 1,
       focusRing: "outside",
       alignItems: "flex-start",
       pr: "1600",
       pl: "400",
       py: "100",
-      borderRadius: "200",
+      borderRadius: "inherit",
       color: "neutral.12",
       maxWidth: "100%",
       textAlign: "left",
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _disabled: { pointerEvents: "none" },
       '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
@@ -167,9 +175,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       solid: {
         root: {
           width: "7200",
+          ...selectSlotRecipe.variants?.variant.outline.trigger,
         },
         value: {
-          ...selectSlotRecipe.variants?.variant.outline.trigger,
           width: "100%",
         },
       },
@@ -223,7 +231,16 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      single: {},
+      single: {
+        value: {
+          // zIndex: "0",
+          // focusRing: "outside",
+          // borderTop: "1px solid green",
+          // borderBottom: "1px solid green",
+          // borderRight: "1px solid green",
+          // border: "1px solid green",
+        },
+      },
       none: {},
     },
   },

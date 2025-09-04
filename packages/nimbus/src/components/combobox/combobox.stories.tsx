@@ -20,6 +20,7 @@ import {
   Button,
 } from "@/components";
 import { ComboBox } from "./combobox";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -902,6 +903,7 @@ export const ControlledState: Story = {
                 inputValue={singleInputValue}
                 onInputChange={handleSingleInputChange}
                 placeholder="Select an animal..."
+                leadingElement={<AddReaction />}
               >
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
@@ -922,6 +924,7 @@ export const ControlledState: Story = {
                 inputValue={multiInputValue}
                 onInputChange={handleMultiInputChange}
                 placeholder="Select multiple animals..."
+                leadingElement={<AddReaction />}
               >
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
