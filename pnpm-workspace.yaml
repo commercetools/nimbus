@@ -26,7 +26,7 @@ catalogs:
     prettier: ^3.6.2
     "@preconstruct/cli": ^2.8.12
     hygen: ^6.2.11
-    "@vitejs/plugin-react": ^4.4.1
+    "@vitejs/plugin-react": ^5.0.2
     "@vitejs/plugin-react-swc": ^3.10.2
     vite: ^7.0.5
     vite-bundle-analyzer: ^1.0.0
