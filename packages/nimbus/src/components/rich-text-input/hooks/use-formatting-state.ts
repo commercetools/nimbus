@@ -15,11 +15,11 @@
  * @returns Object containing formatting state and selection change handler
  */
 import { useMemo, useCallback } from "react";
-import { Editor } from "slate";
 import { useSlate } from "slate-react";
 import type { Key } from "react-aria";
 import { BASIC_FORMATTING, SCRIPT_FORMATTING } from "../constants";
 import { isMarkActive, toggleMark } from "../utils/slate-helpers";
+import { useMarkTracker } from "./use-mark-tracker";
 
 export interface UseFormattingStateProps {
   withPreservedSelection: (fn: () => void) => () => void;
@@ -30,14 +30,17 @@ export const useFormattingState = ({
 }: UseFormattingStateProps) => {
   const editor = useSlate();
 
-  // Get currently selected formatting keys (strikethrough and code)
+  // Track mark changes for reactive updates
+  const markState = useMarkTracker(editor);
+
+  // Get currently selected formatting keys (strikethrough and code) with mark state dependency
   const selectedKeys = useMemo(() => {
     const keys: string[] = [];
     BASIC_FORMATTING.forEach((format) => {
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
+  }, [editor, markState]);
 
   // Get currently selected script formatting key (superscript or subscript - mutually exclusive)
   const selectedScriptKeys = useMemo(() => {
@@ -46,7 +49,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
+  }, [editor, markState]);
 
   // Combine all selected keys for display purposes
   const allSelectedKeys = useMemo(() => {

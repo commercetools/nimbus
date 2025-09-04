@@ -15,7 +15,6 @@
  * @returns Object containing all toolbar state and event handlers
  */
 import { useMemo, useCallback } from "react";
-import { Editor } from "slate";
 import { useSlate } from "slate-react";
 import type { Key } from "react-aria";
 import { textStyles, blockTypes, type BlockType } from "../constants";
@@ -25,6 +24,7 @@ import {
   toggleBlock,
 } from "../utils/slate-helpers";
 import type { CustomElement } from "../utils/types";
+import { useMarkTracker } from "./use-mark-tracker";
 
 export interface UseToolbarStateProps {
   withPreservedSelection: (fn: () => void) => () => void;
@@ -35,14 +35,17 @@ export const useToolbarState = ({
 }: UseToolbarStateProps) => {
   const editor = useSlate();
 
-  // Get current block type - using useSlate() means this automatically updates
+  // Track mark changes for reactive updates
+  const markState = useMarkTracker(editor);
+
+  // Get current block type
   const currentTextStyle = useMemo(() => {
     return (
       blockTypes.find((type) =>
         isBlockActive(editor, type as CustomElement["type"])
       ) || "paragraph"
     );
-  }, [editor.selection, editor.children]);
+  }, [editor]);
 
   const selectedTextStyle = textStyles.find((v) => v.id === currentTextStyle);
   const selectedTextStyleLabel = selectedTextStyle?.label || "";
@@ -78,14 +81,14 @@ export const useToolbarState = ({
     [editor, withPreservedSelection]
   );
 
-  // Get currently selected formatting keys - simplified deps
+  // Get currently selected formatting keys with mark state dependency
   const selectedFormatKeys = useMemo(() => {
     const keys: string[] = [];
     if (isMarkActive(editor, "bold")) keys.push("bold");
     if (isMarkActive(editor, "italic")) keys.push("italic");
     if (isMarkActive(editor, "underline")) keys.push("underline");
     return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
+  }, [editor, markState]);
 
   // Get currently selected list formatting key
   const selectedListKeys = useMemo(() => {
