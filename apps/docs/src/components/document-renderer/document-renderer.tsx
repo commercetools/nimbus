@@ -4,7 +4,6 @@ import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Flex, Stack, Text, Badge } from "@commercetools/nimbus";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { memo } from "react";
-import { Helmet } from "react-helmet-async";
 import { brandNameAtom } from "@/atoms/brand";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 
@@ -29,11 +28,9 @@ const DocumentRendererComponent = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {[...meta.menu].join(" > ")} | {brandName}
-        </title>
-      </Helmet>
+      <title>
+        {[...meta.menu].join(" > ")} | {brandName}
+      </title>
       <Box width="full" maxWidth="4xl">
         <Stack gap="400">
           <Flex
