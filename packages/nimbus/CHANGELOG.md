@@ -1,5 +1,18 @@
 # @commercetools/nimbus
 
+## 1.0.2
+
+### Patch Changes
+
+- [#366](https://github.com/commercetools/nimbus/pull/366)
+  [`71f88eb`](https://github.com/commercetools/nimbus/commit/71f88eb84cef675a5b7fd80f8009d239f07cb3ce)
+  Thanks [@dependabot](https://github.com/apps/dependabot)! - Update slate
+  dependency and resolve breaking changes
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@1.0.2
+  - @commercetools/nimbus-icons@1.0.2
+
 ## 1.0.1
 
 ### Minor Changes
