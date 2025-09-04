@@ -38,7 +38,10 @@ export default defineConfig(async () => {
         }),
       ],
       test: {
-        setupFiles: ["./.storybook/vitest.setup.ts"],
+        setupFiles: [
+          "./.storybook/vitest.setup.ts",
+          "./src/test/slate-headless-polyfills.ts",
+        ],
         // make vitest fn's available globally (no need to import them)
         globals: true,
         // Increase timeouts for browser stability
