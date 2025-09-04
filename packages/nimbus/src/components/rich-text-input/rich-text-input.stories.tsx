@@ -114,7 +114,7 @@ export const Default: Story = {
     );
 
     // Add a small delay for editor initialization
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
     await userEvent.type(editor, "Hello world", { delay: 50 });
 
@@ -819,6 +819,9 @@ export const UndoRedo: Story = {
     expect(undoButton).toBeDisabled();
     expect(redoButton).toBeDisabled();
 
+    // Add a small delay for editor initialization
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
     // Type some text with delay to ensure each character registers
     await userEvent.type(editor, "First text", { delay: 50 });
 
@@ -1010,6 +1013,15 @@ export const EmptyContent: Story = {
 
     // Test that typing works from empty state
     await userEvent.click(editor);
+
+    // Wait for focus
+    await waitFor(() => {
+      expect(editor).toHaveFocus();
+    });
+
+    // Add a small delay for editor initialization
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
     await userEvent.type(editor, "New content");
 
     await waitFor(() => {

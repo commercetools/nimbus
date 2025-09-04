@@ -111,7 +111,7 @@ export const RichTextToolbar = ({
         isDisabled={isDisabled}
       >
         <Tooltip.Root delay={0} closeDelay={0}>
-          <ToggleButtonGroup.Button
+          <IconToggleButton
             id="bold"
             size="xs"
             variant="ghost"
@@ -119,16 +119,14 @@ export const RichTextToolbar = ({
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() => toggleMark(editor, "bold"))}
-            px={0}
-            py={0}
           >
             <FormatBold />
             <VisuallyHidden>Bold</VisuallyHidden>
-          </ToggleButtonGroup.Button>
+          </IconToggleButton>
           <Tooltip.Content placement="top">Bold</Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
-          <ToggleButtonGroup.Button
+          <IconToggleButton
             id="italic"
             size="xs"
             variant="ghost"
@@ -136,16 +134,14 @@ export const RichTextToolbar = ({
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() => toggleMark(editor, "italic"))}
-            px={0}
-            py={0}
           >
             <FormatItalic />
             <VisuallyHidden>Italic</VisuallyHidden>
-          </ToggleButtonGroup.Button>
+          </IconToggleButton>
           <Tooltip.Content placement="top">Italic</Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
-          <ToggleButtonGroup.Button
+          <IconToggleButton
             id="underline"
             size="xs"
             variant="ghost"
@@ -155,12 +151,10 @@ export const RichTextToolbar = ({
             onPress={withPreservedSelection(() =>
               toggleMark(editor, "underline")
             )}
-            px={0}
-            py={0}
           >
             <FormatUnderlined />
             <VisuallyHidden>Underline</VisuallyHidden>
-          </ToggleButtonGroup.Button>
+          </IconToggleButton>
           <Tooltip.Content placement="top">Underline</Tooltip.Content>
         </Tooltip.Root>
       </ToggleButtonGroup.Root>

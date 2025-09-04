@@ -40,6 +40,11 @@ export const richTextInputRecipe = defineSlotRecipe({
         opacity: "0.5",
       },
 
+      // Slate.js placeholder styling
+      "& [data-slate-placeholder]": {
+        paddingBlock: "400",
+      },
+
       // Styling for user-facing editor text
       "& p": {
         textStyle: "md",
