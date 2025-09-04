@@ -104,27 +104,12 @@ export const Default: Story = {
 
     // Test basic typing
     await userEvent.click(editor);
-
-    // Wait for editor to be focused and ready
-    await waitFor(
-      () => {
-        expect(editor).toHaveFocus();
-      },
-      { timeout: 2000 }
-    );
-
-    // Add a small delay for editor initialization
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    await userEvent.type(editor, "Hello world", { delay: 50 });
-
-    // Wait for content to be updated with more generous timeout for CI
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("Hello world");
-      },
-      { timeout: 5000 }
-    );
+    await userEvent.type(editor, "Hello world");
+    
+    // Wait for Slate to process the input
+    await waitFor(() => {
+      expect(editor).toHaveTextContent("Hello world");
+    });
   },
 };
 
@@ -355,21 +340,18 @@ export const BoldFormatting: Story = {
       expect(editor).toHaveFocus();
     });
 
-    await userEvent.type(editor, "Normal text ", { delay: 50 });
+    await userEvent.type(editor, "Normal text ");
 
     // Click bold button
     const boldButton = canvas.getByRole("button", { name: /bold/i });
     await userEvent.click(boldButton);
 
     // Wait for button state to update
-    await waitFor(
-      () => {
-        expect(boldButton).toHaveAttribute("aria-pressed", "true");
-      },
-      { timeout: 2000 }
-    );
+    await waitFor(() => {
+      expect(boldButton).toHaveAttribute("aria-pressed", "true");
+    });
 
-    await userEvent.type(editor, "bold text", { delay: 50 });
+    await userEvent.type(editor, "bold text");
 
     // Click bold button again to turn off
     await userEvent.click(boldButton);
@@ -473,17 +455,14 @@ export const CombinedFormatting: Story = {
     await userEvent.click(italicButton);
     await userEvent.click(underlineButton);
 
-    // Wait for all button states to update
-    await waitFor(
-      () => {
-        expect(boldButton).toHaveAttribute("aria-pressed", "true");
-        expect(italicButton).toHaveAttribute("aria-pressed", "true");
-        expect(underlineButton).toHaveAttribute("aria-pressed", "true");
-      },
-      { timeout: 2000 }
-    );
+    // Wait for button states to update
+    await waitFor(() => {
+      expect(boldButton).toHaveAttribute("aria-pressed", "true");
+      expect(italicButton).toHaveAttribute("aria-pressed", "true");
+      expect(underlineButton).toHaveAttribute("aria-pressed", "true");
+    });
 
-    await userEvent.type(editor, "Bold italic underlined text", { delay: 50 });
+    await userEvent.type(editor, "Bold italic underlined text");
 
     // Verify nested formatting
     await waitFor(() => {
@@ -819,23 +798,10 @@ export const UndoRedo: Story = {
     expect(undoButton).toBeDisabled();
     expect(redoButton).toBeDisabled();
 
-    // Type some text with delay to ensure each character registers
-    await userEvent.type(editor, "First text", { delay: 50 });
-
-    // Wait for text to appear and history to update
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("First text");
-      },
-      { timeout: 3000 }
-    );
-
-    await waitFor(
-      () => {
-        expect(undoButton).not.toBeDisabled();
-      },
-      { timeout: 2000 }
-    );
+    // Type some text
+    await userEvent.type(editor, "First text");
+    expect(editor).toHaveTextContent("First text");
+    expect(undoButton).not.toBeDisabled();
 
     // Apply formatting
     const boldButton = canvas.getByRole("button", { name: /bold/i });
@@ -1012,6 +978,7 @@ export const EmptyContent: Story = {
     await userEvent.click(editor);
     await userEvent.type(editor, "New content");
 
+    // Wait for Slate to process the input
     await waitFor(() => {
       expect(editor).toHaveTextContent("New content");
       expect(editor.querySelector("p")).toBeInTheDocument();
