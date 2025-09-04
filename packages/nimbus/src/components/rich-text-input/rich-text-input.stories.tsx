@@ -4,6 +4,57 @@ import { expect, userEvent, within, waitFor } from "storybook/test";
 import { RichTextInput } from "./rich-text-input";
 import { Box } from "@/components";
 
+// Test utilities for Slate editor synchronization
+const waitForSlateReady = async (canvas: ReturnType<typeof within>) => {
+  const editor = canvas.getByRole("textbox");
+  await waitFor(
+    () => {
+      expect(editor).toHaveAttribute("data-slate-ready", "true");
+    },
+    { timeout: 5000, interval: 50 }
+  );
+  // Additional small delay to ensure any async operations are complete
+  await new Promise((resolve) => setTimeout(resolve, 50));
+};
+
+const waitForButtonState = async (
+  button: HTMLElement,
+  expectedState: string,
+  timeout = 5000
+) => {
+  await waitFor(
+    () => {
+      expect(button).toHaveAttribute("aria-pressed", expectedState);
+    },
+    { timeout, interval: 100 }
+  );
+};
+
+const waitForTextContent = async (
+  element: HTMLElement,
+  expectedContent: string,
+  timeout = 5000
+) => {
+  await waitFor(
+    () => {
+      expect(element).toHaveTextContent(expectedContent);
+    },
+    { timeout, interval: 100 }
+  );
+};
+
+const waitForSlateOperationComplete = async (editor: HTMLElement) => {
+  // Wait for any pending DOM mutations to complete
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  // Wait for editor to be stable (no aria-busy or loading states)
+  await waitFor(
+    () => {
+      expect(editor).not.toHaveAttribute("aria-busy", "true");
+    },
+    { timeout: 2000, interval: 50 }
+  );
+};
+
 const meta = {
   title: "Components/RichTextInput",
   component: RichTextInput,
@@ -499,6 +550,9 @@ export const CombinedFormatting: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
+    // Wait for Slate editor to be fully ready
+    await waitForSlateReady(canvas);
+
     await userEvent.click(editor);
 
     // Wait for focus
@@ -511,16 +565,20 @@ export const CombinedFormatting: Story = {
     const italicButton = canvas.getByRole("button", { name: /italic/i });
     const underlineButton = canvas.getByRole("button", { name: /underline/i });
 
+    // Click buttons with small delays to allow state updates
     await userEvent.click(boldButton);
-    await userEvent.click(italicButton);
-    await userEvent.click(underlineButton);
+    await waitForSlateOperationComplete(editor);
 
-    // Wait for button states to update
-    await waitFor(() => {
-      expect(boldButton).toHaveAttribute("aria-pressed", "true");
-      expect(italicButton).toHaveAttribute("aria-pressed", "true");
-      expect(underlineButton).toHaveAttribute("aria-pressed", "true");
-    });
+    await userEvent.click(italicButton);
+    await waitForSlateOperationComplete(editor);
+
+    await userEvent.click(underlineButton);
+    await waitForSlateOperationComplete(editor);
+
+    // Wait for button states to update using robust assertions
+    await waitForButtonState(boldButton, "true");
+    await waitForButtonState(italicButton, "true");
+    await waitForButtonState(underlineButton, "true");
 
     await userEvent.type(editor, "Bold italic underlined text");
 
@@ -844,15 +902,15 @@ export const UndoRedo: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
+    // Wait for Slate editor to be fully ready
+    await waitForSlateReady(canvas);
+
     await userEvent.click(editor);
 
     // Wait for focus
     await waitFor(() => {
       expect(editor).toHaveFocus();
     });
-
-    // Small delay to ensure Slate's internal state is ready
-    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const undoButton = canvas.getByRole("button", { name: /undo/i });
     const redoButton = canvas.getByRole("button", { name: /redo/i });
@@ -861,46 +919,51 @@ export const UndoRedo: Story = {
     expect(undoButton).toBeDisabled();
     expect(redoButton).toBeDisabled();
 
-    // Type some text
+    // Type some text and wait for it to be processed
     await userEvent.type(editor, "First text");
+    await waitForSlateOperationComplete(editor);
 
-    // Wait for text to be processed with proper timeout
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("First text");
-      },
-      { timeout: 3000 }
-    );
+    // Use robust text content assertion
+    await waitForTextContent(editor, "First text");
 
     // Wait for undo button to be enabled
     await waitFor(() => {
       expect(undoButton).not.toBeDisabled();
     });
 
-    // Apply formatting
+    // Apply formatting and wait for completion
     const boldButton = canvas.getByRole("button", { name: /bold/i });
     await userEvent.click(boldButton);
+    await waitForSlateOperationComplete(editor);
 
-    // Small delay before typing more text
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    // Wait for bold button state to update
+    await waitForButtonState(boldButton, "true");
+
+    // Type additional text
     await userEvent.type(editor, " bold text");
+    await waitForSlateOperationComplete(editor);
 
     // Wait for the bold text to appear
-    await waitFor(() => {
-      expect(editor).toHaveTextContent("First text bold text");
-    });
+    await waitForTextContent(editor, "First text bold text");
 
-    // Test undo
+    // Test undo - this should undo the " bold text" typing
     await userEvent.click(undoButton);
+    await waitForSlateOperationComplete(editor);
+
+    // Wait for redo button to be enabled
     await waitFor(() => {
       expect(redoButton).not.toBeDisabled();
     });
 
-    // Test redo
+    // After undo, we should have "First text" (before the bold formatting was applied)
+    await waitForTextContent(editor, "First text", 3000);
+
+    // Test redo - this should restore the " bold text"
     await userEvent.click(redoButton);
-    await waitFor(() => {
-      expect(editor).toHaveTextContent("bold text");
-    });
+    await waitForSlateOperationComplete(editor);
+
+    // After redo, we should have the full text again
+    await waitForTextContent(editor, "First text bold text");
   },
 };
 

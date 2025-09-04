@@ -3,6 +3,8 @@ import {
   useCallback,
   useImperativeHandle,
   forwardRef,
+  useState,
+  useEffect,
   type ForwardedRef,
   type FocusEventHandler,
   type ReactNode,
@@ -58,10 +60,23 @@ export const RichTextEditor = forwardRef<
     toolbar,
   } = props;
 
+  // Track editor readiness state
+  const [isEditorReady, setIsEditorReady] = useState(false);
+
   // Create editor with plugins
   const editor = useMemo(() => {
     const baseEditor = createEditor();
     return withLinks(withHistory(withReact(baseEditor)));
+  }, []);
+
+  // Set editor as ready after initialization
+  useEffect(() => {
+    // Small delay to ensure Slate is fully initialized
+    const timeoutId = setTimeout(() => {
+      setIsEditorReady(true);
+    }, 10);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // Handle keyboard shortcuts using hook
@@ -132,6 +147,7 @@ export const RichTextEditor = forwardRef<
           aria-label="Rich text editor"
           role="textbox"
           aria-multiline="true"
+          data-slate-ready={isEditorReady ? "true" : undefined}
         />
       </RichTextInputEditableSlot>
     </Slate>
