@@ -426,6 +426,9 @@ export const BoldFormatting: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
+    // Wait for Slate editor to be fully ready
+    await waitForSlateReady(canvas);
+
     await userEvent.click(editor);
 
     // Wait for focus
@@ -438,11 +441,10 @@ export const BoldFormatting: Story = {
     // Click bold button
     const boldButton = canvas.getByRole("button", { name: /bold/i });
     await userEvent.click(boldButton);
+    await waitForSlateOperationComplete(editor);
 
-    // Wait for button state to update
-    await waitFor(() => {
-      expect(boldButton).toHaveAttribute("aria-pressed", "true");
-    });
+    // Wait for button state to update using robust assertion
+    await waitForButtonState(boldButton, "true");
 
     await userEvent.type(editor, "bold text");
 
@@ -470,6 +472,9 @@ export const ItalicFormatting: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
+    // Wait for Slate editor to be fully ready
+    await waitForSlateReady(canvas);
+
     await userEvent.click(editor);
 
     // Wait for focus to be established
@@ -477,19 +482,17 @@ export const ItalicFormatting: Story = {
       expect(editor).toHaveFocus();
     });
 
-    // Small delay to ensure Slate's internal state is ready
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
     await userEvent.type(editor, "Normal text ");
 
     // Click italic button
     const italicButton = canvas.getByRole("button", { name: /italic/i });
     await userEvent.click(italicButton);
+    await waitForSlateOperationComplete(editor);
 
     await userEvent.type(editor, "italic text");
 
-    // Verify italic button is active
-    expect(italicButton).toHaveAttribute("aria-pressed", "true");
+    // Verify italic button is active using robust assertion
+    await waitForButtonState(italicButton, "true");
 
     // Verify content structure
     await waitFor(
@@ -510,6 +513,9 @@ export const UnderlineFormatting: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
+    // Wait for Slate editor to be fully ready
+    await waitForSlateReady(canvas);
+
     await userEvent.click(editor);
 
     // Wait for focus to be established
@@ -517,19 +523,17 @@ export const UnderlineFormatting: Story = {
       expect(editor).toHaveFocus();
     });
 
-    // Small delay to ensure Slate's internal state is ready
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
     await userEvent.type(editor, "Normal text ");
 
     // Click underline button
     const underlineButton = canvas.getByRole("button", { name: /underline/i });
     await userEvent.click(underlineButton);
+    await waitForSlateOperationComplete(editor);
 
     await userEvent.type(editor, "underlined text");
 
-    // Verify underline button is active
-    expect(underlineButton).toHaveAttribute("aria-pressed", "true");
+    // Verify underline button is active using robust assertion
+    await waitForButtonState(underlineButton, "true");
 
     // Verify content structure
     await waitFor(
@@ -1272,6 +1276,9 @@ export const PendingMarksConsistency: Story = {
     const ui = within(canvasElement.ownerDocument.body);
     const editor = canvas.getByRole("textbox");
 
+    // Wait for Slate editor to be fully ready
+    await waitForSlateReady(canvas);
+
     // Click in empty editor to focus
     await userEvent.click(editor);
 
@@ -1281,13 +1288,14 @@ export const PendingMarksConsistency: Story = {
 
     // Apply bold and italic
     await userEvent.click(boldButton);
-    await userEvent.click(italicButton);
+    await waitForSlateOperationComplete(editor);
 
-    // Wait for toolbar buttons to show as pressed
-    await waitFor(() => {
-      expect(boldButton).toHaveAttribute("aria-pressed", "true");
-      expect(italicButton).toHaveAttribute("aria-pressed", "true");
-    });
+    await userEvent.click(italicButton);
+    await waitForSlateOperationComplete(editor);
+
+    // Wait for toolbar buttons to show as pressed using robust assertions
+    await waitForButtonState(boldButton, "true");
+    await waitForButtonState(italicButton, "true");
 
     // Test formatting menu shows pending marks
     const formattingMenuButton = canvas.getByRole("button", {
