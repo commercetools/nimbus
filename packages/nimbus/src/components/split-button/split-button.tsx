@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/button";
 import { IconButton } from "@/components/icon-button";
 import { Menu } from "@/components/menu";
+import { Icon } from "@/components/icon";
 import type { SplitButtonProps } from "./split-button.types";
 import {
   SplitButtonRootSlot,
@@ -36,6 +37,7 @@ export const SplitButton = (props: SplitButtonProps) => {
     isOpen,
     defaultOpen,
     onOpenChange,
+    icon,
   } = props;
 
   const buttonProps = { size, variant, tone };
@@ -81,18 +83,8 @@ export const SplitButton = (props: SplitButtonProps) => {
     return "children" in props;
   };
 
-  // Separate Icon slots from Menu items
-  const childArray = React.Children.toArray(props.children);
-  const iconElement = childArray.find(
-    (child): child is React.ReactElement =>
-      React.isValidElement(child) &&
-      (child.props as { slot?: string })?.slot === "icon"
-  );
-  const menuItems = childArray.filter(
-    (child) =>
-      !React.isValidElement(child) ||
-      (child.props as { slot?: string })?.slot !== "icon"
-  );
+  // All children are menu items
+  const menuItems = props.children;
 
   /**
    * Check if there are any actionable (enabled) Menu.Items in the children.
@@ -189,7 +181,7 @@ export const SplitButton = (props: SplitButtonProps) => {
             isDisabled={isPrimaryDisabled}
             onPress={executePrimaryAction}
           >
-            {iconElement}
+            {icon && <Icon>{icon}</Icon>}
             {buttonContent.content}
           </Button>
         </SplitButtonPrimaryButtonSlot>

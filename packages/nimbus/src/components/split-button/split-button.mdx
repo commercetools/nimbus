@@ -1,7 +1,9 @@
 ---
 id: Components-SplitButton
 title: SplitButton
-description: A button that combines a primary action with a dropdown menu of related actions.
+description:
+  A button that combines a primary action with a dropdown menu of related
+  actions.
 lifecycleState: Alpha
 order: 999
 menu:
@@ -16,11 +18,15 @@ figmaLink: >-
 
 # SplitButton
 
-A button that combines a primary action with a dropdown menu of related actions, providing a flexible and accessible way to group related functionality.
+A button that combines a primary action with a dropdown menu of related actions,
+providing a flexible and accessible way to group related functionality.
 
 ## Overview
 
-The SplitButton component addresses the need for interfaces that require a dominant action with several less frequently used, but still important, related options. It provides a separate primary action button and a dropdown trigger for additional options.
+The SplitButton component addresses the need for interfaces that require a
+dominant action with several less frequently used, but still important, related
+options. It provides a separate primary action button and a dropdown trigger for
+additional options.
 
 ### Resources
 
@@ -37,16 +43,21 @@ Get familiar with the features.
 The basic SplitButton with a primary action and dropdown menu items.
 
 ```jsx-live
-const App = () => (
-  <SplitButton
-    onAction={(actionId) => alert(`Action: ${actionId}`)}
-    aria-label="More save options"
-  >
-    <Menu.Item id="save">Save</Menu.Item>
-    <Menu.Item id="save-publish">Save and Publish</Menu.Item>
-    <Menu.Item id="save-next">Save and Open Next</Menu.Item>
-  </SplitButton>
-)
+const App = () => {
+  const { Save } = icons;
+
+  return (
+    <SplitButton
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More save options"
+      icon={<Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+    </SplitButton>
+  );
+}
 ```
 
 ### Document Management Actions
@@ -54,40 +65,50 @@ const App = () => (
 A typical document management scenario with various file operations.
 
 ```jsx-live
-const App = () => (
-  <SplitButton
-    onAction={(actionId) => alert(`Action: ${actionId}`)}
-    aria-label="More document actions"
-  >
-    <Menu.Item id="share">Share Document</Menu.Item>
-    <Menu.Item id="copy-link">Copy Link</Menu.Item>
-    <Menu.Item id="email">Send via Email</Menu.Item>
-    <Menu.Item id="download">Download PDF</Menu.Item>
-    <Menu.Item id="print">Print Document</Menu.Item>
-  </SplitButton>
-)
+const App = () => {
+  const { Share } = icons;
+
+  return (
+    <SplitButton
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More document actions"
+      icon={<Share />}
+    >
+      <Menu.Item id="share">Share Document</Menu.Item>
+      <Menu.Item id="copy-link">Copy Link</Menu.Item>
+      <Menu.Item id="email">Send via Email</Menu.Item>
+      <Menu.Item id="download">Download PDF</Menu.Item>
+      <Menu.Item id="print">Print Document</Menu.Item>
+    </SplitButton>
+  );
+}
 ```
 
 ### Task Actions with Critical Action
 
-Common task management actions showing how critical (destructive) actions are highlighted.
+Common task management actions showing how critical (destructive) actions are
+highlighted.
 
 ```jsx-live
-const App = () => (
-  <SplitButton
-    onAction={(actionId) => alert(`Action: ${actionId}`)}
-    aria-label="More task actions"
-  >
-    <Menu.Item id="complete">Complete Task</Menu.Item>
-    <Menu.Item id="edit">Edit Task</Menu.Item>
-    <Menu.Item id="duplicate">Duplicate Task</Menu.Item>
-    <Menu.Item id="archive">Archive Task</Menu.Item>
-    <Divider />
-    <Menu.Item id="delete" isCritical>Delete Task</Menu.Item>
-  </SplitButton>
-)
-```
+const App = () => {
+  const { Edit } = icons;
 
+  return (
+    <SplitButton
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More task actions"
+      icon={<Edit />}
+    >
+      <Menu.Item id="complete">Complete Task</Menu.Item>
+      <Menu.Item id="edit">Edit Task</Menu.Item>
+      <Menu.Item id="duplicate">Duplicate Task</Menu.Item>
+      <Menu.Item id="archive">Archive Task</Menu.Item>
+      <Menu.Separator />
+      <Menu.Item id="delete" isCritical>Delete Task</Menu.Item>
+    </SplitButton>
+  );
+}
+```
 
 ### Organized Menu Sections
 
@@ -188,20 +209,27 @@ const App = () => (
 The SplitButton component provides a split-action interface:
 
 1. **Primary Button**: Automatically executes the first enabled Menu.Item action
-2. **Dropdown Trigger**: Separate arrow button opens the dropdown menu with all actions
-3. **Smart Selection**: If the first Menu.Item is disabled, automatically selects the next enabled one
-4. **Menu Actions**: Selecting items from the dropdown triggers the `onAction` callback
+2. **Dropdown Trigger**: Separate arrow button opens the dropdown menu with all
+   actions
+3. **Smart Selection**: If the first Menu.Item is disabled, automatically
+   selects the next enabled one
+4. **Menu Actions**: Selecting items from the dropdown triggers the `onAction`
+   callback
 
 ## Guidelines
 
-The SplitButton provides a space-efficient way to present a primary action alongside related secondary actions, maintaining visual hierarchy while offering comprehensive functionality.
+The SplitButton provides a space-efficient way to present a primary action
+alongside related secondary actions, maintaining visual hierarchy while offering
+comprehensive functionality.
 
 ### Best Practices
 
-- **Order Actions by Priority**: Place the most common or important action first in your Menu.Items
+- **Order Actions by Priority**: Place the most common or important action first
+  in your Menu.Items
 - **Related Actions**: Group logically related actions in the dropdown menu
 - **Appropriate Grouping**: Use Menu.Section to organize complex action sets
-- **Consistent Labeling**: Use clear, action-oriented labels that match your application's terminology
+- **Consistent Labeling**: Use clear, action-oriented labels that match your
+  application's terminology
 - **Critical Actions**: Use the `isCritical` prop for destructive actions
 - **Accessible Labels**: Provide meaningful aria-labels for screen readers
 
@@ -210,7 +238,8 @@ The SplitButton provides a space-efficient way to present a primary action along
 > [!TIP]\
 > When to use
 
-- When you have one dominant action with several related but less frequent options
+- When you have one dominant action with several related but less frequent
+  options
 - For document or data management interfaces with multiple export/save options
 - In task management systems where actions are contextually related
 - When you need to consolidate multiple related buttons to save space
@@ -221,7 +250,8 @@ The SplitButton provides a space-efficient way to present a primary action along
 
 - When actions are unrelated or serve different purposes
 - For navigation between different sections or pages
-- When all actions are equally important (use separate buttons or a Menu instead)
+- When all actions are equally important (use separate buttons or a Menu
+  instead)
 - For simple binary choices (use a toggle or two separate buttons)
 - When the primary action isn't clearly more important than alternatives
 
@@ -236,7 +266,8 @@ The SplitButton provides a space-efficient way to present a primary action along
 
 ### Critical Actions
 
-Use the `isCritical` prop on Menu.Item to highlight destructive or irreversible actions.
+Use the `isCritical` prop on Menu.Item to highlight destructive or irreversible
+actions.
 
 ```jsx-live
 const App = () => (
@@ -259,10 +290,14 @@ const App = () => (
 ### Features
 
 - **Split Button Interface**: Primary action button with dropdown trigger
-- **Automatic Selection**: Smart primary action selection from the first enabled Menu.Item
-- **Menu Integration**: Built on top of the Menu component for dropdown functionality  
-- **Keyboard Navigation**: Full keyboard support with Tab, Enter, Space, Arrow keys, and Escape
-- **Flexible Content**: Supports icons and rich menu content through slots
+- **Automatic Selection**: Smart primary action selection from the first enabled
+  Menu.Item
+- **Menu Integration**: Built on top of the Menu component for dropdown
+  functionality
+- **Keyboard Navigation**: Full keyboard support with Tab, Enter, Space, Arrow
+  keys, and Escape
+- **Flexible Content**: Supports icons through the icon prop and rich menu
+  content
 - **Accessible**: Built-in ARIA attributes and screen reader support
 - **Visual Variants**: Multiple size, variant, and tone options
 - **Critical Action Support**: Visual highlighting for destructive menu items
@@ -275,7 +310,9 @@ const App = () => (
 
 ## Accessibility
 
-The SplitButton component is built with accessibility in mind, providing full keyboard navigation and screen reader support for both the primary action and dropdown functionality.
+The SplitButton component is built with accessibility in mind, providing full
+keyboard navigation and screen reader support for both the primary action and
+dropdown functionality.
 
 ### Keyboard Interactions
 
