@@ -17,7 +17,7 @@ export interface SplitButtonProps
   /**
    * Children should contain:
    * - Icon slot: Icon component with slot="icon" containing an icon element
-   * - Menu components: Menu.Item, Menu.Section, Menu.Separator
+   * - Menu components: Menu.Item, Menu.Section, Divider
    *
    * The component automatically selects the first enabled Menu.Item as the primary action.
    */

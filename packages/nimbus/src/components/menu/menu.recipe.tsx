@@ -11,7 +11,6 @@ export const menuSlotRecipe = defineSlotRecipe({
     "popover",
     "content",
     "item",
-    "separator",
     "section",
     "sectionLabel",
     "submenu",
@@ -58,6 +57,13 @@ export const menuSlotRecipe = defineSlotRecipe({
       // Focus styles for keyboard navigation
       "&:focus": {
         outline: "none",
+      },
+      // Target direct descendant Divider components
+      '& > [role="separator"]': {
+        mx: "-200",
+        my: "200",
+        // compensate for left & right bleed
+        width: "calc(100% + {sizes.400})",
       },
     },
     item: {
@@ -178,13 +184,6 @@ export const menuSlotRecipe = defineSlotRecipe({
         layerStyle: "disabled",
         pointerEvents: "none",
       },
-    },
-    separator: {
-      height: "25",
-      flexShrink: 0,
-      backgroundColor: "neutral.6",
-      my: "200",
-      mx: "-200",
     },
     section: {
       display: "flex",

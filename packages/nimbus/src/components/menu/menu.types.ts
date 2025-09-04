@@ -5,7 +5,6 @@ import type {
   MenuItemProps as RaMenuItemProps,
   ButtonProps as RaButtonProps,
   PopoverProps as RaPopoverProps,
-  SeparatorProps as RaSeparatorProps,
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
@@ -57,11 +56,6 @@ export interface MenuItemProps extends RaMenuItemProps {
    * if set to `true`, highlights the item as critical (red)
    * */
   isCritical?: boolean;
-  ref?: Ref<HTMLDivElement>;
-}
-
-// Menu separator component
-export interface MenuSeparatorProps extends RaSeparatorProps {
   ref?: Ref<HTMLDivElement>;
 }
 
