@@ -26,6 +26,8 @@ export default defineConfig(async () => {
           "@chakra-ui/react/kbd",
           "@storybook/react-vite",
           "storybook/test",
+          /*           "@mdx-js/react",
+          "markdown-to-jsx", */
         ],
       },
       plugins: [

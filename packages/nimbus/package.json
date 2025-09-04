@@ -23,7 +23,10 @@
       }
     }
   },
-  "files": ["dist", "package.json"],
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -32,10 +35,14 @@
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "dependencies": {
@@ -60,11 +67,12 @@
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
+    "@mdx-js/react": "catalog:storybook",
     "@react-aria/optimize-locales-plugin": "catalog:react",
-    "@storybook/addon-a11y": "catalog:tooling",
-    "@storybook/addon-docs": "catalog:tooling",
-    "@storybook/addon-vitest": "catalog:tooling",
-    "@storybook/react-vite": "catalog:tooling",
+    "@storybook/addon-a11y": "catalog:storybook",
+    "@storybook/addon-docs": "catalog:storybook",
+    "@storybook/addon-vitest": "catalog:storybook",
+    "@storybook/react-vite": "catalog:storybook",
     "@testing-library/react": "catalog:tooling",
     "@testing-library/user-event": "catalog:tooling",
     "@types/escape-html": "^1.0.4",
@@ -74,15 +82,16 @@
     "@vitejs/plugin-react": "catalog:tooling",
     "@vitest/browser": "catalog:tooling",
     "@vitest/coverage-v8": "catalog:tooling",
-    "@vueless/storybook-dark-mode": "catalog:tooling",
+    "@vueless/storybook-dark-mode": "catalog:storybook",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.10.2",
     "glob": "catalog:tooling",
+    "markdown-to-jsx": "catalog:storybook",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "rollup-plugin-tree-shakeable": "catalog:tooling",
-    "storybook": "catalog:tooling",
+    "storybook": "catalog:storybook",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
     "vite-tsconfig-paths": "catalog:tooling",
