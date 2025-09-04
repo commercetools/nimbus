@@ -114,7 +114,7 @@ export const Default: Story = {
     );
 
     // Add a small delay for editor initialization
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     await userEvent.type(editor, "Hello world", { delay: 50 });
 
@@ -396,16 +396,30 @@ export const ItalicFormatting: Story = {
     const editor = canvas.getByRole("textbox");
 
     await userEvent.click(editor);
+
+    // Wait for focus
+    await waitFor(() => {
+      expect(editor).toHaveFocus();
+    });
+
+    // Add a small delay for editor initialization
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Normal text ");
 
     // Click italic button
     const italicButton = canvas.getByRole("button", { name: /italic/i });
     await userEvent.click(italicButton);
 
-    await userEvent.type(editor, "italic text");
+    // Wait for button state to update
+    await waitFor(
+      () => {
+        expect(italicButton).toHaveAttribute("aria-pressed", "true");
+      },
+      { timeout: 2000 }
+    );
 
-    // Verify italic button is active
-    expect(italicButton).toHaveAttribute("aria-pressed", "true");
+    await userEvent.type(editor, "italic text");
 
     // Verify content structure
     await waitFor(
@@ -427,6 +441,15 @@ export const UnderlineFormatting: Story = {
     const editor = canvas.getByRole("textbox");
 
     await userEvent.click(editor);
+
+    // Wait for focus
+    await waitFor(() => {
+      expect(editor).toHaveFocus();
+    });
+
+    // Add a small delay for editor initialization
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Normal text ");
 
     // Click underline button
@@ -820,7 +843,7 @@ export const UndoRedo: Story = {
     expect(redoButton).toBeDisabled();
 
     // Add a small delay for editor initialization
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Type some text with delay to ensure each character registers
     await userEvent.type(editor, "First text", { delay: 50 });
@@ -828,7 +851,8 @@ export const UndoRedo: Story = {
     // Wait for text to appear and history to update
     await waitFor(
       () => {
-        expect(editor).toHaveTextContent("First text");
+        // Check that "First text" is contained in the editor content
+        expect(editor.textContent).toContain("First text");
       },
       { timeout: 3000 }
     );
@@ -893,6 +917,15 @@ export const OnChangeCallback: Story = {
 
     // Test onChange is called
     await userEvent.click(editor);
+
+    // Wait for focus
+    await waitFor(() => {
+      expect(editor).toHaveFocus();
+    });
+
+    // Add a small delay for editor initialization
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     await userEvent.type(editor, "Test");
 
     await waitFor(() => {
@@ -1020,7 +1053,7 @@ export const EmptyContent: Story = {
     });
 
     // Add a small delay for editor initialization
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     await userEvent.type(editor, "New content");
 
@@ -1147,6 +1180,14 @@ export const PendingMarksConsistency: Story = {
 
     // Click in empty editor to focus
     await userEvent.click(editor);
+
+    // Wait for focus
+    await waitFor(() => {
+      expect(editor).toHaveFocus();
+    });
+
+    // Add a small delay for editor initialization
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Test toolbar buttons show pending marks
     const boldButton = canvas.getByRole("button", { name: /bold/i });
