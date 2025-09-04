@@ -108,7 +108,7 @@ export const Pagination = (props: PaginationProps) => {
               aria-label="Current page"
             />
           ) : (
-            <Text fontWeight="semibold" color="neutral.12">
+            <Text fontWeight="semibold" color="neutral.12" aria-current="page">
               {pagination.currentPage}
             </Text>
           )}
