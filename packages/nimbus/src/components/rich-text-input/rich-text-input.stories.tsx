@@ -160,9 +160,12 @@ export const Default: Story = {
     await userEvent.click(editor);
 
     // Wait for focus to be established
-    await waitFor(() => {
-      expect(editor).toHaveFocus();
-    }, { timeout: 8000, interval: 50 });
+    await waitFor(
+      () => {
+        expect(editor).toHaveFocus();
+      },
+      { timeout: 8000, interval: 50 }
+    );
 
     // Enhanced delay to ensure Slate's internal state is ready
     await new Promise((resolve) => setTimeout(resolve, 200));
