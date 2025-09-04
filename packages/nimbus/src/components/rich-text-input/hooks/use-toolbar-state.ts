@@ -15,7 +15,6 @@
  * @returns Object containing all toolbar state and event handlers
  */
 import { useMemo, useCallback } from "react";
-import { Editor } from "slate";
 import { useSlate } from "slate-react";
 import type { Key } from "react-aria";
 import { textStyles, blockTypes, type BlockType } from "../constants";
@@ -85,7 +84,8 @@ export const useToolbarState = ({
     if (isMarkActive(editor, "italic")) keys.push("italic");
     if (isMarkActive(editor, "underline")) keys.push("underline");
     return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
+    // Include editor.marks to detect pending marks changes
+  }, [editor.selection, editor.children, editor.marks]);
 
   // Get currently selected list formatting key
   const selectedListKeys = useMemo(() => {

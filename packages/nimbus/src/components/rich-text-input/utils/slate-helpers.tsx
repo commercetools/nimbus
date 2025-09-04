@@ -179,6 +179,11 @@ export const toggleMark = (editor: SlateEditor, format: string): void => {
   } else {
     Editor.addMark(editor, format, true);
   }
+
+  // Force an onChange event by triggering a no-op operation
+  // This ensures that the editor state updates and components re-render
+  // when marks are toggled with a collapsed selection (pending marks)
+  editor.onChange();
 };
 
 // Toggle a block type (heading, list, etc.)
