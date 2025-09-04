@@ -106,6 +106,7 @@ export const Pagination = (props: PaginationProps) => {
               isDisabled={false}
               width="9ch"
               aria-label="Current page"
+              aria-current="page"
             />
           ) : (
             <Text fontWeight="semibold" color="neutral.12" aria-current="page">
