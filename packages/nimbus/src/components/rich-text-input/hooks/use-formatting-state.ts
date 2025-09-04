@@ -15,6 +15,7 @@
  * @returns Object containing formatting state and selection change handler
  */
 import { useMemo, useCallback } from "react";
+import { Editor } from "slate";
 import { useSlate } from "slate-react";
 import type { Key } from "react-aria";
 import { BASIC_FORMATTING, SCRIPT_FORMATTING } from "../constants";
@@ -36,8 +37,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
-    // Include editor.marks to detect pending marks changes
-  }, [editor.selection, editor.children, editor.marks]);
+  }, [editor.selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected script formatting key (superscript or subscript - mutually exclusive)
   const selectedScriptKeys = useMemo(() => {
@@ -46,8 +46,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
-    // Include editor.marks to detect pending marks changes
-  }, [editor.selection, editor.children, editor.marks]);
+  }, [editor.selection, editor.children, Editor.marks(editor)]);
 
   // Combine all selected keys for display purposes
   const allSelectedKeys = useMemo(() => {
