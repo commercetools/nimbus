@@ -105,7 +105,7 @@ export const Default: Story = {
     // Test basic typing
     await userEvent.click(editor);
     await userEvent.type(editor, "Hello world");
-    
+
     // Wait for Slate to process the input
     await waitFor(() => {
       expect(editor).toHaveTextContent("Hello world");
