@@ -92,7 +92,8 @@
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
-    "react": "catalog:react"
+    "react": "catalog:react",
+    "react-intl": "catalog:react"
   },
   "scripts": {
     "build": "pnpm run build-theme-typings && pnpm run build:lib",
