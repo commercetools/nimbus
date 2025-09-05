@@ -63,13 +63,20 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     leadingElement: {
       position: "absolute",
+      left: 0,
+      top: "50%",
+      px: "200",
+      transform: "translateY(-50%)",
       color: "neutral.10",
-      px: 200,
-      placeSelf: "center",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      height: "100%",
     },
     value: {
       display: "inline-flex",
       flexGrow: 1,
+      flexShrink: 1,
       alignItems: "flex-start",
       pr: "1600",
       pl: "800",
@@ -108,6 +115,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     multiSelectInput: {
       "& input": {
+        flexGrow: 1,
+        flexShrink: 1,
         py: "300",
         px: "400",
         focusRing: "none",

@@ -924,7 +924,6 @@ export const ControlledState: Story = {
                 inputValue={multiInputValue}
                 onInputChange={handleMultiInputChange}
                 placeholder="Select multiple animals..."
-                leadingElement={<AddReaction />}
               >
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
@@ -1084,6 +1083,69 @@ export const AllVariantsAndSizes: Story = {
                         size={size}
                         variant={variant}
                         placeholder={`focus to search...`}
+                      >
+                        {(item) => (
+                          <ComboBox.Option>{item.name}</ComboBox.Option>
+                        )}
+                      </ComboBox.Root>
+                    </FormField.Input>
+                  </FormField.Root>
+                </Stack>
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * All Variants and Sizes with Leading Element
+ * Display of all available variants and sizes for both single and multi-select with Leading Element
+ */
+export const AllVariantsAndSizesWithLeadingElement: Story = {
+  render: () => {
+    const sizes = ["sm", "md"] as const;
+    const variants = ["solid", "ghost"] as const;
+
+    return (
+      <Stack direction="column" gap="600">
+        {variants.map((variant) => (
+          <Stack key={variant} direction="column" gap="400">
+            <Text fontSize="500" fontWeight="600" textTransform="capitalize">
+              {variant} Variant
+            </Text>
+            {sizes.map((size) => (
+              <Stack key={`${variant}-${size}`} direction="column" gap="300">
+                <h4>Size: {size.toUpperCase()}</h4>
+                <Stack direction="row" gap="400">
+                  <FormField.Root alignSelf={"flex-start"}>
+                    <FormField.Label>{`Single Select ${variant} ${size}`}</FormField.Label>
+                    <FormField.Input>
+                      <ComboBox.Root
+                        defaultItems={options}
+                        size={size}
+                        variant={variant}
+                        placeholder={`type to search...`}
+                        leadingElement={<AddReaction />}
+                      >
+                        {(item) => (
+                          <ComboBox.Option>{item.name}</ComboBox.Option>
+                        )}
+                      </ComboBox.Root>
+                    </FormField.Input>
+                  </FormField.Root>
+                  <FormField.Root alignSelf={"flex-start"}>
+                    <FormField.Label>{`Multi-Select ${variant} ${size}`}</FormField.Label>
+                    <FormField.Input>
+                      <ComboBox.Root
+                        defaultItems={options}
+                        selectionMode="multiple"
+                        size={size}
+                        variant={variant}
+                        placeholder={`focus to search...`}
+                        leadingElement={<AddReaction />}
                       >
                         {(item) => (
                           <ComboBox.Option>{item.name}</ComboBox.Option>
