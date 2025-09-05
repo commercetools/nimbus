@@ -22,13 +22,8 @@ export const timeInputRecipe = defineSlotRecipe({
       borderRadius: "200",
       alignItems: "center",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-
-      "&[data-focus-within='true']": {
-        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "var(--focus-ring-offset)",
+      _focusWithin: {
+        layerStyle: "focusRing",
       },
       focusVisibleRing: "outside",
       focusRing: "outside",

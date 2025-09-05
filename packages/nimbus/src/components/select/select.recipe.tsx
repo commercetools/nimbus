@@ -66,10 +66,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       // [data-pending]
     },
     leadingElement: {
-      // The leadingElement color should matches the DropdownIndicatorIcon
-      // TODO: there might be a more nimbus way to do this
-      color: "neutral.12",
-      opacity: 0.5,
+      color: "neutral.10",
     },
     triggerLabel: {
       // *Magic*

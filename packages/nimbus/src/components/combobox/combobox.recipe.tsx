@@ -34,6 +34,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       maxWidth: "100%",
       borderRadius: "200",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _focusWithin: {
+        focusRing: "outside",
+      },
       _hover: {
         bg: "primary.2",
       },
@@ -67,12 +70,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     value: {
       display: "inline-flex",
       flexGrow: 1,
-      focusRing: "outside",
       alignItems: "flex-start",
       pr: "1600",
       pl: "400",
       py: "100",
-      borderRadius: "inherit",
+      borderRadius: "200",
       color: "neutral.12",
       maxWidth: "100%",
       textAlign: "left",
@@ -220,10 +222,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
             bg: "unset",
           },
           '&[data-focused="true"]': {
-            // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-            outlineWidth: "var(--focus-ring-width)",
-            outlineColor: "var(--focus-ring-color)",
-            outlineStyle: "var(--focus-ring-style)",
+            layerStyle: "focusRing",
+            // setting outlineOffset to 'none' overrides the encapsulated 'focusRing' offset
+            outlineOffset: "none",
             bg: "unset",
           },
           _hover: {
@@ -231,16 +232,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      single: {
-        value: {
-          // zIndex: "0",
-          // focusRing: "outside",
-          // borderTop: "1px solid green",
-          // borderBottom: "1px solid green",
-          // borderRight: "1px solid green",
-          // border: "1px solid green",
-        },
-      },
+      single: {},
       none: {},
     },
   },

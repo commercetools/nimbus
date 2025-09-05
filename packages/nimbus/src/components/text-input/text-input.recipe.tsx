@@ -17,21 +17,13 @@ export const textInputSlotRecipe = defineSlotRecipe({
       borderRadius: "200",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       alignItems: "center",
-
       _focusWithin: {
-        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "var(--focus-ring-offset)",
+        layerStyle: "focusRing",
       },
 
       "& *": {
         outline: "none !important",
       },
-
-      focusVisibleRing: "outside",
-      focusRing: "outside",
 
       _hover: {
         backgroundColor: "primary.2",
@@ -88,7 +80,6 @@ export const textInputSlotRecipe = defineSlotRecipe({
           gap: "200",
           textStyle: "sm",
         },
-        input: {},
       },
       md: {
         root: {
@@ -97,7 +88,6 @@ export const textInputSlotRecipe = defineSlotRecipe({
           gap: "300",
           textStyle: "md",
         },
-        input: {},
       },
     },
 
@@ -109,9 +99,7 @@ export const textInputSlotRecipe = defineSlotRecipe({
           backgroundColor: "primary.1",
         },
       },
-      ghost: {
-        root: {},
-      },
+      ghost: {},
     },
   },
 

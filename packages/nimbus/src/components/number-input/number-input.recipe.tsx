@@ -25,13 +25,8 @@ export const numberInputRecipe = defineSlotRecipe({
       position: "relative",
       borderRadius: "200",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-
       _focusWithin: {
-        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "var(--focus-ring-offset)",
+        layerStyle: "focusRing",
       },
 
       "& *": {
