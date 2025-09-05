@@ -15,7 +15,7 @@ import { useInlineSvg } from "./hooks";
  * <InlineSvg
  *   data='<svg viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12..."/></svg>'
  *   size="md"
- *   color="primary.500"
+ *   color="primary.9"
  * />
  * ```
  *
@@ -31,15 +31,15 @@ export const InlineSvg = forwardRef<SVGSVGElement, InlineSvgProps>(
     if (!isValid) {
       return null;
     }
-
     return (
-      <InlineSvgRootSlot
-        ref={forwardedRef}
-        role="presentation"
-        {...svgAttributes}
-        {...rest}
-        dangerouslySetInnerHTML={{ __html: innerSvgContent }}
-      />
+      <InlineSvgRootSlot asChild {...rest}>
+        <svg
+          ref={forwardedRef}
+          role="presentation"
+          {...svgAttributes}
+          dangerouslySetInnerHTML={{ __html: innerSvgContent }}
+        />
+      </InlineSvgRootSlot>
     );
   }
 );
