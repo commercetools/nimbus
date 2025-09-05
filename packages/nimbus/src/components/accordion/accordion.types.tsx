@@ -1,57 +1,56 @@
-import type {
-  RecipeVariantProps,
-  HTMLChakraProps,
-} from "@chakra-ui/react/styled-system";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { accordionSlotRecipe } from "./accordion.recipe";
-import { type DisclosureProps } from "react-aria-components";
-import type { ReactNode, RefObject, RefAttributes } from "react";
-import { useButton, useDisclosure } from "react-aria";
-import type { useDisclosureState } from "react-stately";
+import type { ReactNode, Ref } from "react";
+import type {
+  DisclosureGroupProps as RaDisclosureGroupProps,
+  DisclosureProps as RaDisclosureProps,
+  DisclosurePanelProps as RaDisclosurePanelProps,
+  ButtonProps as RaButtonProps,
+} from "react-aria-components";
 
-export type AccordionRootProps = HTMLChakraProps<
-  "div",
-  RecipeVariantProps<typeof accordionSlotRecipe>
->;
-
-export type AccordionComposition = {
-  state: ReturnType<typeof useDisclosureState>;
-  buttonProps: ReturnType<typeof useButton>["buttonProps"];
-  panelProps: ReturnType<typeof useDisclosure>["panelProps"];
-  triggerRef: RefObject<HTMLButtonElement>;
-  panelRef: RefObject<HTMLDivElement>;
-  isFocusVisible: boolean;
-};
-export interface AccordionProps
-  extends Omit<DisclosureProps, "children" | "id"> {
-  additionalTriggerComponent?: ReactNode;
+/**
+ * Props for the Accordion Root component.
+ * Controls the overall accordion container and behavior.
+ */
+export interface AccordionRootProps
+  extends RaDisclosureGroupProps,
+    RecipeVariantProps<typeof accordionSlotRecipe> {
+  /** The accordion items to display */
   children: ReactNode;
-  recipe?: string;
-  size?: "sm" | "md";
+  /** Ref to the root element */
+  ref?: Ref<HTMLDivElement>;
 }
 
-export type AccordionItemProps = {
-  isDisabled?: boolean;
-  isExpanded?: boolean;
-  onExpandedChange?: (isExpanded: boolean) => void;
-  id?: string;
+/**
+ * Props for individual Accordion Item components.
+ */
+export interface AccordionItemProps extends RaDisclosureProps {
+  /** The accordion item content (Header and Content components) */
   children: ReactNode;
-  title?: string;
-};
-
-export type DisclosureGroupProps = AccordionProps & {
-  children: ReactNode;
-  ref?: RefAttributes<HTMLButtonElement>;
-  allowsMultipleExpanded?: boolean;
-  onExpandedChange?: (isExpanded: boolean) => void;
-  isDisabled?: boolean;
-  isExpanded?: boolean;
-};
-
-export type DisclosureItemProps = AccordionItemProps & {
-  children: ReactNode;
-  id?: string;
+  /** Unique value for this item (used for controlled state) */
   value?: string;
-  isDisabled?: boolean;
-  isExpanded?: boolean;
-  onExpandedChange?: (isExpanded: boolean) => void;
-};
+  /** Ref to the item element */
+  ref?: Ref<HTMLDivElement>;
+}
+
+/**
+ * Props for Accordion Header component.
+ * Displays the clickable header that expands/collapses content.
+ */
+export interface AccordionHeaderProps extends RaButtonProps {
+  /** The header content to display */
+  children: ReactNode;
+  /** Ref to the header element */
+  ref?: Ref<HTMLButtonElement>;
+}
+
+/**
+ * Props for Accordion Content component.
+ * Contains the collapsible content area.
+ */
+export interface AccordionContentProps extends RaDisclosurePanelProps {
+  /** The content to display when expanded */
+  children: ReactNode;
+  /** Ref to the content element */
+  ref?: Ref<HTMLDivElement>;
+}
