@@ -9,6 +9,7 @@ import {
   Visibility,
   VisibilityOff,
   AddReaction,
+  AddBox,
 } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof TextInput> = {
@@ -395,7 +396,7 @@ export const WithBothElementsDifferentSizes: Story = {
             size={size}
             placeholder={`Size ${size}`}
             leadingElement={<Search />}
-            trailingElement={<Box cursor="pointer">Clear</Box>}
+            trailingElement={<AddBox />}
             aria-label={`size-${size}-input`}
           />
         ))}
@@ -413,7 +414,7 @@ export const RTLSupport: Story = {
           <TextInput
             placeholder="Search in LTR"
             leadingElement={<Search />}
-            trailingElement={<Box cursor="pointer">Clear</Box>}
+            trailingElement={<AddBox />}
             aria-label="ltr-input"
           />
         </Box>
@@ -424,7 +425,7 @@ export const RTLSupport: Story = {
           <TextInput
             placeholder="Search in RTL"
             leadingElement={<Search />}
-            trailingElement={<Box cursor="pointer">Clear</Box>}
+            trailingElement={<AddBox />}
             aria-label="rtl-input"
           />
         </Box>

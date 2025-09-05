@@ -113,6 +113,18 @@ export const timeInputRecipe = defineSlotRecipe({
         segment: {
           textStyle: "sm",
         },
+        leadingElement: {
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
+        trailingElement: {
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
       },
       md: {
         root: {
@@ -122,6 +134,18 @@ export const timeInputRecipe = defineSlotRecipe({
         },
         segment: {
           textStyle: "md",
+        },
+        leadingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
+        },
+        trailingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
         },
       },
     },

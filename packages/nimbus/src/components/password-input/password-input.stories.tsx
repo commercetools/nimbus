@@ -4,6 +4,7 @@ import { PasswordInput } from "./password-input";
 import { useState } from "react";
 import { within, expect, userEvent } from "storybook/test";
 import { Text } from "@/components";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 export default {
   title: "Components/PasswordInput",
@@ -81,7 +82,7 @@ export const WithLeadingElement: Story = {
   args: {
     ["aria-label"]: "Enter your password",
     placeholder: "Password",
-    leadingElement: <Text>🔒</Text>,
+    leadingElement: <AddReaction />,
   },
   render: (args) => (
     <Stack gap="600">

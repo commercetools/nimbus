@@ -62,8 +62,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
-      color: "neutral.12",
-      opacity: 0.5,
+      position: "absolute",
+      color: "neutral.10",
       px: 200,
       placeSelf: "center",
     },
@@ -72,7 +72,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       flexGrow: 1,
       alignItems: "flex-start",
       pr: "1600",
-      pl: "400",
+      pl: "800",
       py: "100",
       borderRadius: "200",
       color: "neutral.12",
@@ -163,12 +163,24 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           minH: "800",
           textStyle: "sm",
         },
+        leadingElement: {
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
       },
       // Medium
       md: {
         value: {
           minH: "1000",
           textStyle: "md",
+        },
+        leadingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
         },
       },
     },

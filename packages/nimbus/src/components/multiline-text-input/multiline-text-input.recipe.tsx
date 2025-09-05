@@ -65,12 +65,10 @@ export const multilineTextInputRecipe = defineSlotRecipe({
     leadingElement: {
       display: "flex",
       justifyContent: "flex-start",
-      py: 50,
     },
     trailingElement: {
       display: "flex",
       justifyContent: "flex-start",
-      py: 50,
     },
     textarea: {
       flexGrow: 1,
@@ -92,6 +90,20 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         textarea: {
           px: 100,
         },
+        leadingElement: {
+          py: "100",
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
+        trailingElement: {
+          py: "100",
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
       },
       md: {
         root: {
@@ -102,6 +114,18 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         },
         textarea: {
           px: 200,
+        },
+        leadingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
+        },
+        trailingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
         },
       },
     },

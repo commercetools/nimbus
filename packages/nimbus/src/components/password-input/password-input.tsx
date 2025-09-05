@@ -30,7 +30,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             right: "400",
           }
         : {
-            top: "50",
+            top: "150",
             right: "400",
           };
 

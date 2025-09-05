@@ -46,28 +46,27 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
-      color: "neutral.11",
-      outline: "1px solid red",
+      color: "neutral.10",
       pl: 400,
       display: "flex",
       alignItems: "center",
     },
     trailingElement: {
-      color: "neutral.11",
-      outline: "1px solid green",
+      color: "neutral.10",
       pr: 800,
       display: "flex",
       alignItems: "center",
     },
     input: {
-      display: "block",
+      display: "flex",
       flexGrow: 1,
+      flexShrink: 1,
       borderRadius: "inherit",
       colorPalette: "neutral",
       bg: "transparent",
       outline: "none",
       appearance: "textfield",
-      width: "full",
+      // width: "full",
       _placeholder: {
         opacity: 0.5,
         color: "currentColor",
@@ -133,12 +132,36 @@ export const numberInputRecipe = defineSlotRecipe({
           textStyle: "sm",
           px: 100,
         },
+        leadingElement: {
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
+        trailingElement: {
+          "& > *": {
+            h: "400",
+            w: "400",
+          },
+        },
       },
       md: {
         input: {
           h: 1000,
           textStyle: "md",
           px: 200,
+        },
+        leadingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
+        },
+        trailingElement: {
+          "& > *": {
+            h: "500",
+            w: "500",
+          },
         },
       },
     },
