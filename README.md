@@ -135,28 +135,6 @@ pnpm build:docs
 pnpm build:tokens
 ```
 
-### Creating New Components
-
-Nimbus provides a scaffolding tool to generate new component templates:
-
-```bash
-pnpm component:new
-```
-
-This interactive command will:
-
-1. Prompt you for the component name
-2. Generate all necessary files with appropriate templates
-3. Set up the component structure following our best practices
-
-The generated files include:
-
-- Component implementation
-- TypeScript types
-- Documentation (MDX)
-- Story files for visual testing
-- Index exports
-
 ## 🛠️ Project Management
 
 ### Initialize or Reset
