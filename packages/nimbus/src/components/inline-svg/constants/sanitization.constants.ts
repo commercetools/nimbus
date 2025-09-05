@@ -15,11 +15,12 @@ export const DEFAULT_FORBIDDEN_TAGS = [
 
 /**
  * Attributes that are forbidden in SVG content for security reasons
- * Note: Event handlers (attributes starting with "on") are blocked by pattern matching
- * in sanitize-svg.ts rather than being listed here explicitly
  */
 export const DEFAULT_FORBIDDEN_ATTRIBUTES = [
-  // Other potentially dangerous attributes
+  /*
+   * Note: Event handlers (attributes starting with "on") are blocked by pattern matching
+   * in sanitize-svg.ts rather than being listed here explicitly
+   * */
   "style", // Unless explicitly allowed
   "href", // Will be sanitized separately
   "xlink:href", // Will be sanitized separately
@@ -28,4 +29,4 @@ export const DEFAULT_FORBIDDEN_ATTRIBUTES = [
 /**
  * Protocols allowed in URL attributes
  */
-export const ALLOWED_PROTOCOLS = ["http:", "https:", "#"] as const;
+export const ALLOWED_PROTOCOLS = ["http:", "https:", "#", "//"] as const;
