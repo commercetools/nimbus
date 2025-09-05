@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import type { InlineSvgProps } from "./inline-svg.types";
 import { InlineSvgRootSlot } from "./inline-svg.slots";
 import { useInlineSvg } from "./hooks";
@@ -21,27 +20,25 @@ import { useInlineSvg } from "./hooks";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/inline-svg}
  */
-export const InlineSvg = forwardRef<SVGSVGElement, InlineSvgProps>(
-  (props, forwardedRef) => {
-    const { data, ...rest } = props;
+export const InlineSvg = (props: InlineSvgProps) => {
+  const { data, ref, ...rest } = props;
 
-    const { isValid, svgAttributes, innerSvgContent } = useInlineSvg(data);
+  const { isValid, svgAttributes, innerSvgContent } = useInlineSvg(data);
 
-    // Don't render if sanitization failed
-    if (!isValid) {
-      return null;
-    }
-    return (
-      <InlineSvgRootSlot asChild {...rest}>
-        <svg
-          ref={forwardedRef}
-          role="presentation"
-          {...svgAttributes}
-          dangerouslySetInnerHTML={{ __html: innerSvgContent }}
-        />
-      </InlineSvgRootSlot>
-    );
+  // Don't render if sanitization failed
+  if (!isValid) {
+    return null;
   }
-);
+  return (
+    <InlineSvgRootSlot asChild {...rest}>
+      <svg
+        ref={ref}
+        role="presentation"
+        {...svgAttributes}
+        dangerouslySetInnerHTML={{ __html: innerSvgContent }}
+      />
+    </InlineSvgRootSlot>
+  );
+};
 
 InlineSvg.displayName = "InlineSvg";
