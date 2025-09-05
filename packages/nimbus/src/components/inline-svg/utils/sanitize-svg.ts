@@ -1,85 +1,29 @@
-import type { SanitizationOptions } from "../inline-svg.types";
+import {
+  DEFAULT_FORBIDDEN_TAGS,
+  DEFAULT_FORBIDDEN_ATTRIBUTES,
+  ALLOWED_PROTOCOLS,
+} from "../constants";
 
-const DEFAULT_FORBIDDEN_TAGS = [
-  "script",
-  "style",
-  "iframe",
-  "embed",
-  "object",
-  "applet",
-  "link",
-  "base",
-  "meta",
-];
-
-const DEFAULT_FORBIDDEN_ATTRIBUTES = [
-  // Event handlers
-  "onabort",
-  "onblur",
-  "oncancel",
-  "oncanplay",
-  "oncanplaythrough",
-  "onchange",
-  "onclick",
-  "onclose",
-  "oncontextmenu",
-  "oncuechange",
-  "ondblclick",
-  "ondrag",
-  "ondragend",
-  "ondragenter",
-  "ondragleave",
-  "ondragover",
-  "ondragstart",
-  "ondrop",
-  "ondurationchange",
-  "onemptied",
-  "onended",
-  "onerror",
-  "onfocus",
-  "oninput",
-  "oninvalid",
-  "onkeydown",
-  "onkeypress",
-  "onkeyup",
-  "onload",
-  "onloadeddata",
-  "onloadedmetadata",
-  "onloadstart",
-  "onmousedown",
-  "onmouseenter",
-  "onmouseleave",
-  "onmousemove",
-  "onmouseout",
-  "onmouseover",
-  "onmouseup",
-  "onmousewheel",
-  "onpause",
-  "onplay",
-  "onplaying",
-  "onprogress",
-  "onratechange",
-  "onreset",
-  "onresize",
-  "onscroll",
-  "onseeked",
-  "onseeking",
-  "onselect",
-  "onshow",
-  "onstalled",
-  "onsubmit",
-  "onsuspend",
-  "ontimeupdate",
-  "ontoggle",
-  "onvolumechange",
-  "onwaiting",
-  // Other potentially dangerous attributes
-  "style", // Unless explicitly allowed
-  "href", // Will be sanitized separately
-  "xlink:href", // Will be sanitized separately
-];
-
-const ALLOWED_PROTOCOLS = ["http:", "https:", "#"];
+/**
+ * Configuration options for SVG sanitization
+ */
+interface SanitizationOptions {
+  /**
+   * Whether to allow style attributes in SVG elements
+   * @default false
+   */
+  allowStyles?: boolean;
+  /**
+   * Additional attributes to remove during sanitization beyond the default set
+   * @default []
+   */
+  forbiddenAttributes?: string[];
+  /**
+   * Additional tags to remove during sanitization beyond the default set
+   * @default []
+   */
+  forbiddenTags?: string[];
+}
 
 /**
  * Sanitizes a URL to prevent XSS attacks
@@ -95,7 +39,7 @@ function sanitizeUrl(url: string): string {
   // Parse and validate URL
   try {
     const parsed = new URL(trimmed);
-    if (ALLOWED_PROTOCOLS.includes(parsed.protocol)) {
+    if ((ALLOWED_PROTOCOLS as readonly string[]).includes(parsed.protocol)) {
       return trimmed;
     }
   } catch {

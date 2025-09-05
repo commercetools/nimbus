@@ -1,0 +1,5 @@
+export {
+  DEFAULT_FORBIDDEN_TAGS,
+  DEFAULT_FORBIDDEN_ATTRIBUTES,
+  ALLOWED_PROTOCOLS,
+} from "./sanitization.constants";
