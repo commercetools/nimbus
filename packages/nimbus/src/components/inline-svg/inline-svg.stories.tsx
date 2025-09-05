@@ -259,3 +259,39 @@ export const InvalidSvg: Story = {
     });
   },
 };
+
+/**
+ * Test that 'as' and 'asChild' props are not supported
+ */
+export const NoAsOrAsChildSupport: Story = {
+  args: {
+    data: simpleSvg,
+    size: "lg",
+    // These props are not part of InlineSvgProps type definition
+    // Testing runtime behavior to ensure they're ignored if passed
+    ...({ as: "div", asChild: true } as Record<string, unknown>),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Component always renders as SVG regardless of 'as' prop",
+      async () => {
+        const svg = canvas.getByRole("presentation");
+        expect(svg).toBeInTheDocument();
+        expect(svg.tagName.toLowerCase()).toBe("svg");
+
+        // Should not find a div element
+        const div = canvasElement.querySelector("div");
+        expect(div).not.toBeInTheDocument();
+      }
+    );
+
+    await step("asChild prop is ignored", async () => {
+      // The component should still render as an SVG even with asChild
+      const svg = canvas.getByRole("presentation");
+      expect(svg).toBeInTheDocument();
+      expect(svg.tagName.toLowerCase()).toBe("svg");
+    });
+  },
+};
