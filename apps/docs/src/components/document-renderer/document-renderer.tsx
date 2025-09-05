@@ -21,7 +21,7 @@ const DocumentRendererComponent = () => {
 
   const pageTitle = useMemo(() => {
     return meta?.menu
-      ? `${meta.menu.join(" > ")} | ${brandName}`
+      ? `${meta.menu.reverse().join(" / ")} | ${brandName}`
       : `${brandName} | Home`;
   }, [meta?.menu, brandName]);
 
