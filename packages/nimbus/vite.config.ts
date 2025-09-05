@@ -18,7 +18,7 @@ const createEntries = async () => {
   const componentEntryPoints = await glob("src/components/**/index.ts");
   // Declare an entrypoint for each component's index file. This enables consuming applications to only bundle the components imported into their app, instead of requiring that consumers bundle all components if they use any component.
   for (const file of componentEntryPoints) {
-    // Get the name of the folder containing the index file to maintain semi-unique file/entrypooint names
+    // Get the name of the folder containing the index file to maintain semi-unique file/entrypoint names
     const fileName = file.split("/").at(-2)?.split(".")[0];
     // Don't create an entrypoint if there is not a file name (should not happen)
     if (!fileName) {
