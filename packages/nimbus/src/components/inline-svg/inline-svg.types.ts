@@ -8,10 +8,6 @@ export interface InlineSvgProps
    */
   data: string;
   /**
-   * Custom className to apply to the SVG element
-   */
-  className?: string;
-  /**
    * Ref to the SVG element
    */
   ref?: Ref<SVGSVGElement>;
