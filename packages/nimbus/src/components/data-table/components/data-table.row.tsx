@@ -403,11 +403,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
           </RaCollection>
           <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
             <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              w="100%"
-              h="100%"
+              data-slot={
+                isPinned
+                  ? "nimbus-table-cell-pin-button-pinned"
+                  : "nimbus-table-cell-pin-button"
+              }
             >
               <Tooltip.Root>
                 <IconButton
@@ -416,7 +416,6 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   variant="ghost"
                   aria-label={isPinned ? "Unpin row" : "Pin row"}
                   colorPalette="primary"
-                  className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     togglePin(row.id);
