@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' | while read file_path; do [ -n \"$file_path\" ] && echo \"$file_path\" | grep -E '\\.(js|mjs|jsx|ts|tsx|json|md|mdx|css|scss|yaml|yml)$' && cd \"$CLAUDE_PROJECT_DIR\" && pnpm prettier --write \"$file_path\" || true; done",
+            "timeout": 1
+          }
+        ]
+      }
+    ]
+  }
+}
