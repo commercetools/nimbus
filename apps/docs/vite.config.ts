@@ -15,7 +15,6 @@ export default defineConfig({
             "lodash",
             "prism-react-renderer",
             "jotai",
-            "react-json-tree",
             "react-live",
             "react-syntax-highlighter",
           ],
