@@ -30,6 +30,6 @@
     "@tokens-studio/sd-transforms": "^2.0.1",
     "is-plain-obj": "^4.1.0",
     "prettier": "catalog:tooling",
-    "style-dictionary": "^4.3.0"
+    "style-dictionary": "^5.0.4"
   }
 }
