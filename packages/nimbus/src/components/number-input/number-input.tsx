@@ -40,10 +40,16 @@ export const NumberInput = (props: NumberInputProps) => {
   // Extract style props
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
-  // Pass only functional props to react-aria
-  const state = useNumberFieldState({ locale, ...functionalProps });
+  // Pass only functional props to react-aria with localized aria-labels
+  const ariaProps = {
+    ...functionalProps,
+    incrementAriaLabel: intl.formatMessage(messages.increment),
+    decrementAriaLabel: intl.formatMessage(messages.decrement),
+  };
+
+  const state = useNumberFieldState({ locale, ...ariaProps });
   const { inputProps, incrementButtonProps, decrementButtonProps } =
-    useNumberField(functionalProps, state, ref);
+    useNumberField(ariaProps, state, ref);
 
   const stateProps = {
     "data-invalid": props.isInvalid,
@@ -68,14 +74,12 @@ export const NumberInput = (props: NumberInputProps) => {
         <NumberInputIncrementButtonSlot
           {...incrementButtonProps}
           {...stateProps}
-          aria-label={intl.formatMessage(messages.increment)}
         >
           <KeyboardArrowUp />
         </NumberInputIncrementButtonSlot>
         <NumberInputDecrementButtonSlot
           {...decrementButtonProps}
           {...stateProps}
-          aria-label={intl.formatMessage(messages.decrement)}
         >
           <KeyboardArrowDown />
         </NumberInputDecrementButtonSlot>
