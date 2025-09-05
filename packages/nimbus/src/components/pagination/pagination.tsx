@@ -58,12 +58,7 @@ export const Pagination = (props: PaginationProps) => {
   };
 
   return (
-    <Stack
-      gap="400"
-      direction={{ base: "column", sm: "row" }}
-      align="center"
-      as="nav"
-    >
+    <Stack gap="400" direction={{ base: "column", sm: "row" }} align="center">
       {/* Page Size Selector */}
       {enablePageSizeSelector && (
         <Flex align="center" gap="200">
