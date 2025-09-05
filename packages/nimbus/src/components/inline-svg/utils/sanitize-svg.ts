@@ -1,8 +1,4 @@
-import {
-  DEFAULT_FORBIDDEN_TAGS,
-  DEFAULT_FORBIDDEN_ATTRIBUTES,
-  ALLOWED_PROTOCOLS,
-} from "../constants";
+import { DEFAULT_FORBIDDEN_TAGS, ALLOWED_PROTOCOLS } from "../constants";
 
 /**
  * Configuration options for SVG sanitization
@@ -74,15 +70,14 @@ function sanitizeElement(
     return null;
   }
 
-  // Clone the element to avoid modifying the original
-  const cloned = element.cloneNode(false) as Element;
+  // Create a new element instead of cloning to ensure no attributes are copied
+  // Use the SVG namespace for SVG elements
+  const namespace = element.namespaceURI || "http://www.w3.org/2000/svg";
+  const cloned = document.createElementNS(namespace, element.tagName);
 
   // Process attributes
-  const allForbiddenAttrs = [
-    ...DEFAULT_FORBIDDEN_ATTRIBUTES,
-    ...forbiddenAttributes,
-  ];
-  if (!allowStyles && !allForbiddenAttrs.includes("style")) {
+  const allForbiddenAttrs = [...forbiddenAttributes];
+  if (!allowStyles) {
     allForbiddenAttrs.push("style");
   }
 
@@ -100,13 +95,14 @@ function sanitizeElement(
     // Check for explicitly forbidden attributes
     if (!isForbidden) {
       for (const forbidden of allForbiddenAttrs) {
-        if (attrName === forbidden || attrName.startsWith(forbidden)) {
+        if (attrName === forbidden) {
           isForbidden = true;
           break;
         }
       }
     }
 
+    // Skip forbidden attributes - don't add them to the cloned element
     if (isForbidden) {
       continue;
     }
@@ -120,7 +116,7 @@ function sanitizeElement(
       continue;
     }
 
-    // Copy safe attributes
+    // Copy safe attributes preserving original case for SVG compatibility
     cloned.setAttribute(attr.name, attr.value);
   }
 

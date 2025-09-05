@@ -5,7 +5,7 @@ description: Render arbitrary SVG markup with XSS protection
 order: 999
 menu:
   - Components
-  - Display
+  - Media
   - InlineSvg
 tags:
   - component
@@ -90,11 +90,12 @@ const App = () => {
   
   return (
     <Flex gap="400" align="center">
-      <InlineSvg data={svgData} size="lg" color="primary.500" />
-      <InlineSvg data={svgData} size="lg" color="success.500" />
-      <InlineSvg data={svgData} size="lg" color="warning.500" />
-      <InlineSvg data={svgData} size="lg" color="critical.500" />
-      <InlineSvg data={svgData} size="lg" color="neutral.600" />
+      <InlineSvg data={svgData} size="lg" color="primary.9" />
+      <InlineSvg data={svgData} size="lg" color="neutral.9" />
+      <InlineSvg data={svgData} size="lg" color="info.9" />
+      <InlineSvg data={svgData} size="lg" color="positive.9" />
+      <InlineSvg data={svgData} size="lg" color="warning.9" />
+      <InlineSvg data={svgData} size="lg" color="critical.9" />
     </Flex>
   );
 };
@@ -114,7 +115,7 @@ const App = () => {
   </svg>`;
   
   return (
-    <InlineSvg data={svgData} size="xl" color="primary.500" />
+    <InlineSvg data={svgData} size="xl" color="primary.9" />
   );
 };
 ```
@@ -160,7 +161,7 @@ const App = () => {
     <Stack gap="400">
       <Text>The following SVG has malicious content that gets sanitized:</Text>
       <InlineSvg data={maliciousSvg} size="lg" title="Sanitized SVG" />
-      <Text fontSize="sm" color="neutral.600">
+      <Text fontSize="sm" color="neutral.9">
         Script tags, event handlers, and style tags are removed
       </Text>
     </Stack>
@@ -203,76 +204,3 @@ The component provides comprehensive XSS protection:
 3. **Test with real SVG data** from your actual use cases
 4. **Validate SVG markup** before storing in your database
 5. **Consider performance** for very large or complex SVGs
-
-## Examples
-
-### Icon from External Source
-
-```tsx
-import { InlineSvg } from '@commercetools/nimbus';
-
-function UserAvatar({ svgData }) {
-  return (
-    <InlineSvg
-      data={svgData}
-      size="lg"
-      title="User Avatar"
-      description="Custom user-uploaded avatar icon"
-      color="neutral.600"
-    />
-  );
-}
-```
-
-### Dynamic Icon Loading
-
-```tsx
-import { InlineSvg } from '@commercetools/nimbus';
-import { useState, useEffect } from 'react';
-
-function DynamicIcon({ iconId }) {
-  const [svgData, setSvgData] = useState('');
-
-  useEffect(() => {
-    fetch(`/api/icons/${iconId}`)
-      .then(res => res.text())
-      .then(setSvgData);
-  }, [iconId]);
-
-  if (!svgData) return null;
-
-  return (
-    <InlineSvg
-      data={svgData}
-      size="md"
-      title={`Icon ${iconId}`}
-    />
-  );
-}
-```
-
-### With Custom Styling
-
-```tsx
-import { InlineSvg } from '@commercetools/nimbus';
-import { Box } from '@chakra-ui/react';
-
-function IconButton({ svg, onClick }) {
-  return (
-    <Box
-      as="button"
-      p="200"
-      borderRadius="200"
-      bg="primary.50"
-      _hover={{ bg: 'primary.100' }}
-      onClick={onClick}
-    >
-      <InlineSvg
-        data={svg}
-        size="md"
-        color="primary.600"
-      />
-    </Box>
-  );
-}
-```

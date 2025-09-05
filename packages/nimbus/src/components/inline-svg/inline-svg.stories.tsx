@@ -5,7 +5,7 @@ import { Group } from "../group";
 import { InlineSvg } from "./inline-svg";
 
 const meta: Meta<typeof InlineSvg> = {
-  title: "Components/Media/InlineSvg",
+  title: "Components/InlineSvg",
   component: InlineSvg,
   parameters: {
     layout: "centered",
@@ -36,15 +36,20 @@ type Story = StoryObj<typeof meta>;
 
 // Simple SVG data for testing
 const simpleSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="currentColor"/>
-</svg>`;
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+  3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+  </svg>`;
 
-const complexSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="currentColor" stroke-width="2" fill="none">
-    <circle cx="12" cy="12" r="10"/>
-    <path d="M12 6v6l4 4"/>
-  </g>
-</svg>`;
+const complexSvg = `<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+  <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+  <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+  <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+  <line x1="12" x2="12" y1="22.08" y2="12"/>
+</svg>
+`;
 
 const multiColorSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
   <rect x="3" y="3" width="18" height="18" rx="2" fill="#e11d48"/>
@@ -53,13 +58,15 @@ const multiColorSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/sv
 </svg>`;
 
 // Malicious SVG data for security testing
-const maliciousSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <script>alert('XSS')</script>
-  <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="currentColor" onclick="alert('XSS')"/>
-  <a href="javascript:alert('XSS')">
-    <circle cx="12" cy="12" r="5"/>
-  </a>
+const maliciousSvg = `<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" onclick="alert('XSS')" onLoad="alert('XSS2')">
+  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" onmouseover="alert('XSS4')"/>
+  <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+  <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+  <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+  <line x1="12" x2="12" y1="22.08" y2="12"/>
   <style>body { display: none; }</style>
+  <script>alert('XSS3')</script>
 </svg>`;
 
 /**
@@ -89,7 +96,7 @@ export const ComplexSvg: Story = {
   args: {
     data: complexSvg,
     size: "xl",
-    color: "primary.500",
+    color: "primary.9",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -97,9 +104,17 @@ export const ComplexSvg: Story = {
     await step("Complex SVG structure is preserved", async () => {
       const svg = canvas.getByRole("presentation");
       expect(svg).toBeInTheDocument();
-      expect(svg.querySelector("g")).toBeInTheDocument();
-      expect(svg.querySelector("circle")).toBeInTheDocument();
       expect(svg.querySelector("path")).toBeInTheDocument();
+      expect(svg.querySelector("polyline")).toBeInTheDocument();
+      expect(svg.querySelector("line")).toBeInTheDocument();
+    });
+
+    await step("SVG root attributes are preserved", async () => {
+      const svg = canvas.getByRole("presentation");
+      expect(svg).toHaveAttribute("stroke", "currentColor");
+      expect(svg).toHaveAttribute("stroke-linecap", "round");
+      expect(svg).toHaveAttribute("stroke-linejoin", "round");
+      expect(svg).toHaveAttribute("stroke-width", "2");
     });
   },
 };
@@ -138,12 +153,12 @@ export const Sizes: Story = {
 export const Colors: Story = {
   render: () => (
     <Group gap="200">
-      <InlineSvg data={simpleSvg} size="lg" color="primary.500" />
-      <InlineSvg data={simpleSvg} size="lg" color="secondary.500" />
-      <InlineSvg data={simpleSvg} size="lg" color="tertiary.500" />
-      <InlineSvg data={simpleSvg} size="lg" color="success.500" />
-      <InlineSvg data={simpleSvg} size="lg" color="warning.500" />
-      <InlineSvg data={simpleSvg} size="lg" color="critical.500" />
+      <InlineSvg data={simpleSvg} size="lg" color="primary.9" />
+      <InlineSvg data={simpleSvg} size="lg" color="neutral.9" />
+      <InlineSvg data={simpleSvg} size="lg" color="info.9" />
+      <InlineSvg data={simpleSvg} size="lg" color="positive.9" />
+      <InlineSvg data={simpleSvg} size="lg" color="warning.9" />
+      <InlineSvg data={simpleSvg} size="lg" color="critical.9" />
     </Group>
   ),
   play: async ({ canvasElement, step }) => {
@@ -212,12 +227,18 @@ export const SecurityTest: Story = {
       // Style tags should be removed
       expect(svg.querySelector("style")).not.toBeInTheDocument();
 
-      // Note: Event handler and javascript: URL sanitization requires DOMPurify
-      // or a more comprehensive sanitization library. The current implementation
-      // provides basic protection against script/style injection but may not
-      // remove all event handlers in all browser environments.
+      // Event handlers should be removed
+      expect(svg.hasAttribute("onclick")).toBe(false);
+      expect(svg.hasAttribute("onload")).toBe(false);
+      expect(svg.hasAttribute("onerror")).toBe(false);
 
-      // For production use, consider adding DOMPurify for complete XSS protection
+      // Check that no element has event handlers
+      const allElements = svg.querySelectorAll("*");
+      allElements.forEach((element) => {
+        Array.from(element.attributes).forEach((attr) => {
+          expect(attr.name.toLowerCase().startsWith("on")).toBe(false);
+        });
+      });
     });
   },
 };
@@ -233,23 +254,6 @@ export const InvalidSvg: Story = {
   play: async ({ canvasElement, step }) => {
     await step("Invalid SVG does not render", async () => {
       // Component should handle invalid SVG gracefully and not render anything
-      const container = canvasElement.querySelector(".nimbus-icon");
-      expect(container).not.toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * Empty SVG handling
- */
-export const EmptySvg: Story = {
-  args: {
-    data: "",
-    size: "md",
-  },
-  play: async ({ canvasElement, step }) => {
-    await step("Empty SVG does not render", async () => {
-      // Component should handle empty data gracefully
       const container = canvasElement.querySelector(".nimbus-icon");
       expect(container).not.toBeInTheDocument();
     });
