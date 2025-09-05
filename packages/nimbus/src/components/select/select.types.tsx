@@ -18,6 +18,8 @@ export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
   isLoading?: boolean;
   /** Children must be ReactNode, no render props/functions allowed */
   children: ReactNode;
+  /** Whether the select should show a clear button when a value is selected */
+  isClearable?: boolean;
 }
 
 // Fix the incompatible event handler types by using a more specific type

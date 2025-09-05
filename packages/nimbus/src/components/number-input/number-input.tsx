@@ -47,7 +47,6 @@ export const NumberInput = (props: NumberInputProps) => {
     "data-invalid": props.isInvalid,
     "data-disabled": props.isDisabled,
   };
-
   return (
     <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
       <NumberInputInputSlot
