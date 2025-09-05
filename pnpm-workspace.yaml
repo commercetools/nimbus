@@ -3,7 +3,7 @@ packages:
   - apps/*
 
 catalog:
-  express-rate-limit: ^8.0.1
+  express-rate-limit: ^8.1.0
 
 catalogMode: strict
 
