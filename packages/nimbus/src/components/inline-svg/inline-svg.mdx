@@ -170,69 +170,13 @@ const App = () => {
 
 ## Specs
 
-<PropsTable id="InlineSvg" />
 
 ## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `data` | `string` | - | **Required.** SVG markup as a string |
-| `size` | `"2xs" \| "xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Size of the icon |
-| `color` | `string` | `currentColor` | Color of the icon (uses design tokens) |
-| `title` | `string` | - | Optional title for accessibility |
-| `description` | `string` | - | Optional description for accessibility |
-| `preserveViewBox` | `boolean` | `true` | Whether to preserve the original viewBox |
-| `className` | `string` | - | Additional CSS class names |
-
-## Migration Guide
-
-### From @commercetools-uikit/inline-svg
-
-The new component is designed to be a drop-in replacement:
-
-```tsx
-// Before
-import InlineSvg from '@commercetools-uikit/inline-svg';
-
-<InlineSvg 
-  data={svgString}
-  size="medium"
-  color="primary"
-/>
-
-// After
-import { InlineSvg } from '@commercetools/nimbus';
-
-<InlineSvg 
-  data={svgString}
-  size="md"  // Note: size values use abbreviated format
-  color="primary.500"  // Note: use design token color values
-/>
-```
-
-### Size Mapping
-
-- `small` → `sm`
-- `medium` → `md`
-- `big` → `lg`
-- `scale` → Use explicit size values
-
-### Color Mapping
-
-Use design token colors instead of semantic names:
-- `primary` → `primary.500`
-- `info` → `info.500`
-- `warning` → `warning.500`
-- `error` → `critical.500`
-- `success` → `success.500`
+<PropsTable id="InlineSvg" />
 
 ## Accessibility
 
-The component automatically handles accessibility:
-
-1. When a `title` is provided, the SVG is given `role="img"` and appropriate ARIA labels
-2. Without a title, the SVG has `role="presentation"` for decorative use
-3. The `description` prop adds a `<desc>` element for extended descriptions
+The SVG is rendered with `role="presentation"` as it's intended for decorative use. If you need accessible SVGs, include `<title>` and `<desc>` elements directly in your SVG markup - they will be preserved during sanitization.
 
 ## Security Considerations
 

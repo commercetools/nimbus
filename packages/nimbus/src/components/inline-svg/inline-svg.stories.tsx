@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
-import { Stack } from "../stack";
 import { Group } from "../group";
 
 import { InlineSvg } from "./inline-svg";
@@ -28,21 +27,6 @@ const meta: Meta<typeof InlineSvg> = {
     data: {
       control: "text",
       description: "SVG markup as a string",
-    },
-    title: {
-      control: "text",
-      description: "Title for accessibility",
-    },
-    description: {
-      control: "text",
-      description: "Description for accessibility",
-    },
-    preserveViewBox: {
-      control: "boolean",
-      description: "Whether to preserve the original viewBox",
-      table: {
-        defaultValue: { summary: "true" },
-      },
     },
   },
 };
@@ -94,33 +78,6 @@ export const Basic: Story = {
       expect(svg).toBeInTheDocument();
       expect(svg).toHaveAttribute("viewBox", "0 0 24 24");
       expect(svg.querySelector("path")).toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * InlineSvg with accessibility attributes
- */
-export const WithAccessibility: Story = {
-  args: {
-    data: simpleSvg,
-    title: "Security Shield Icon",
-    description: "A shield icon representing security and protection",
-    size: "lg",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Accessibility attributes are present", async () => {
-      const svg = canvas.getByRole("img");
-      expect(svg).toBeInTheDocument();
-      expect(svg).toHaveAttribute("aria-label", "Security Shield Icon");
-      expect(svg.querySelector("title")).toHaveTextContent(
-        "Security Shield Icon"
-      );
-      expect(svg.querySelector("desc")).toHaveTextContent(
-        "A shield icon representing security and protection"
-      );
     });
   },
 };
@@ -240,14 +197,13 @@ export const SecurityTest: Story = {
   args: {
     data: maliciousSvg,
     size: "lg",
-    title: "Sanitized SVG",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Malicious content is removed", async () => {
       // Use a more specific query since the SVG is present but might have timing issues
-      const svg = canvas.getByLabelText("Sanitized SVG");
+      const svg = canvas.getByRole("presentation");
       expect(svg).toBeInTheDocument();
 
       // Script tags should be removed
@@ -296,42 +252,6 @@ export const EmptySvg: Story = {
       // Component should handle empty data gracefully
       const container = canvasElement.querySelector(".nimbus-icon");
       expect(container).not.toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * PreserveViewBox option
- */
-export const PreserveViewBox: Story = {
-  render: () => (
-    <Stack gap="200">
-      <InlineSvg
-        data={simpleSvg}
-        size="xl"
-        preserveViewBox={true}
-        title="With ViewBox"
-      />
-      <InlineSvg
-        data={simpleSvg}
-        size="xl"
-        preserveViewBox={false}
-        title="Without ViewBox"
-      />
-    </Stack>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("ViewBox preservation works correctly", async () => {
-      const svgs = canvas.getAllByRole("img");
-      expect(svgs).toHaveLength(2);
-
-      // First SVG should have viewBox
-      expect(svgs[0]).toHaveAttribute("viewBox", "0 0 24 24");
-
-      // Second SVG should not have viewBox
-      expect(svgs[1]).not.toHaveAttribute("viewBox");
     });
   },
 };
