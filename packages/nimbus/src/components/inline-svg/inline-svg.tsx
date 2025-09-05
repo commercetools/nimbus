@@ -29,6 +29,8 @@ export const InlineSvg = (props: InlineSvgProps) => {
   if (!isValid) {
     return null;
   }
+
+  // Always render as SVG - no asChild support
   return (
     <InlineSvgRootSlot asChild {...rest}>
       <svg

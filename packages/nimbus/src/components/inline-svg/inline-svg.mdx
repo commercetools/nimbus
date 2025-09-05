@@ -32,40 +32,31 @@ The `InlineSvg` component allows you to render arbitrary SVG markup as an icon w
 
 ```jsx-live
 const App = () => {
-  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/></svg>';
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+  3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+  </svg>`;
   
   return (
-    <InlineSvg data={svgData} size="lg" />
-  );
-};
-```
-
-## With Accessibility
-
-Adding title and description for better screen reader support:
-
-```jsx-live
-const App = () => {
-  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/></svg>';
-  
-  return (
-    <InlineSvg 
-      data={svgData} 
-      title="Custom Icon"
-      description="A custom SVG icon with accessibility features"
-      size="lg" 
-    />
+    <InlineSvg data={svgData} size="md" />
   );
 };
 ```
 
 ## Sizes
 
-The component supports all standard icon sizes:
+### Predefined Sizes
+
+The component supports all standard icon sizes through the `size` prop:
 
 ```jsx-live
 const App = () => {
-  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg>';
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+  3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+  </svg>`;
   
   return (
     <Flex gap="400" align="center">
@@ -80,13 +71,39 @@ const App = () => {
 };
 ```
 
+### Custom Sizes
+
+For custom sizing, you can use the `boxSize`, `width`, or `height` props with any valid CSS value or design token:
+
+```jsx-live
+const App = () => {
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+  3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+  </svg>`;
+  
+  return (
+    <Flex gap="400" align="center">
+      <InlineSvg data={svgData} boxSize="800"/>
+      <InlineSvg data={svgData} boxSize="1600"/>
+      <InlineSvg data={svgData} width="800" height="800"/>
+    </Flex>
+  );
+};
+```
+
 ## Colors
 
 Apply colors using design tokens:
 
 ```jsx-live
 const App = () => {
-  const svgData = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/></svg>';
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+  3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+  </svg>`;
   
   return (
     <Flex gap="400" align="center">
@@ -107,12 +124,14 @@ The component preserves complex SVG structures including groups, multiple paths,
 
 ```jsx-live
 const App = () => {
-  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(2, 2)">
-      <path d="M10 0L20 5L10 10L0 5Z" fill="currentColor"/>
-      <path d="M0 7L10 12L20 7V15L10 20L0 15Z" fill="currentColor" opacity="0.7"/>
-    </g>
-  </svg>`;
+  const svgData = `<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+  <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+  <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+  <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+  <line x1="12" x2="12" y1="22.08" y2="12"/>
+</svg>`;
   
   return (
     <InlineSvg data={svgData} size="xl" color="primary.9" />
@@ -127,10 +146,10 @@ SVGs with inline colors are preserved:
 ```jsx-live
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="8" cy="8" r="4" fill="#FF6B6B"/>
-    <circle cx="16" cy="8" r="4" fill="#4ECDC4"/>
-    <circle cx="12" cy="16" r="4" fill="#45B7D1"/>
-  </svg>`;
+  <rect x="3" y="3" width="18" height="18" rx="2" fill="#e11d48"/>
+  <circle cx="12" cy="12" r="5" fill="#10b981"/>
+  <path d="M12 9v6M9 12h6" stroke="white" stroke-width="2"/>
+</svg>`;
   
   return (
     <InlineSvg data={svgData} size="xl" />
@@ -151,18 +170,23 @@ The component automatically sanitizes potentially dangerous content:
 ```jsx-live
 const App = () => {
   // This malicious SVG content will be sanitized
-  const maliciousSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <script>alert('XSS')</script>
-    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor" onclick="alert('click')"/>
-    <style>body { display: none; }</style>
-  </svg>`;
+  const maliciousSvg = `<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" onclick="alert('XSS')" onLoad="alert('XSS2')">
+  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" onmouseover="alert('XSS4')"/>
+  <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+  <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+  <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+  <line x1="12" x2="12" y1="22.08" y2="12"/>
+  <style>body { display: none; }</style>
+  <script>alert('XSS3')</script>
+</svg>`;
   
   return (
     <Stack gap="400">
       <Text>The following SVG has malicious content that gets sanitized:</Text>
-      <InlineSvg data={maliciousSvg} size="lg" title="Sanitized SVG" />
+      <InlineSvg data={maliciousSvg} size="lg" />
       <Text fontSize="sm" color="neutral.9">
-        Script tags, event handlers, and style tags are removed
+        Script tags, event handlers, and style tags are automatically removed
       </Text>
     </Stack>
   );
