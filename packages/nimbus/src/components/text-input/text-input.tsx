@@ -27,7 +27,12 @@ export const TextInput = (props: TextInputProps) => {
   const { inputProps } = useTextField(otherProps, ref);
 
   return (
-    <TextInputRootSlot {...otherProps} {...recipeProps} {...styleProps} asChild>
+    <TextInputRootSlot
+      className={props?.className as string}
+      {...recipeProps}
+      {...styleProps}
+      asChild
+    >
       <Input ref={ref} {...inputProps} />
     </TextInputRootSlot>
   );

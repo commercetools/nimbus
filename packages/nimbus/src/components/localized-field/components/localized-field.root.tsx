@@ -128,43 +128,46 @@ export const LocalizedField = ({
         <LocalizedFieldLabelSlot {...labelProps}>
           <Box as="span">{label}</Box>
           {isRequired && <sup aria-hidden="true">*</sup>}
-          {hint && (
-            <RaDialogTrigger>
-              <Box
-                as="span"
-                display="inline-block"
-                position="relative"
-                width="1ch"
-                height="1ch"
-                ml="200"
-              >
+          {
+            /**TODO: should this component be reusable between the FormField and here? */
+            hint && (
+              <RaDialogTrigger>
                 <Box
                   as="span"
-                  display="inline-flex"
-                  position="absolute"
-                  top="50%"
-                  right="50%"
-                  transform="translate(50%, -50%)"
+                  display="inline-block"
+                  position="relative"
+                  width="1ch"
+                  height="1ch"
+                  ml="200"
                 >
-                  <IconButton
-                    aria-label="__MORE INFO"
-                    size="2xs"
-                    tone="info"
-                    variant="link"
+                  <Box
+                    as="span"
+                    display="inline-flex"
+                    position="absolute"
+                    top="50%"
+                    right="50%"
+                    transform="translate(50%, -50%)"
                   >
-                    <HelpOutline />
-                  </IconButton>
+                    <IconButton
+                      aria-label="__MORE INFO"
+                      size="2xs"
+                      tone="info"
+                      variant="link"
+                    >
+                      <HelpOutline />
+                    </IconButton>
+                  </Box>
                 </Box>
-              </Box>
-              <Popover padding={0}>
-                <LocalizedFieldInfoDialogSlot asChild>
-                  <RaDialog>
-                    <Box p="300">{hint}</Box>
-                  </RaDialog>
-                </LocalizedFieldInfoDialogSlot>
-              </Popover>
-            </RaDialogTrigger>
-          )}
+                <Popover padding={0}>
+                  <LocalizedFieldInfoDialogSlot asChild>
+                    <RaDialog>
+                      <Box p="300">{hint}</Box>
+                    </RaDialog>
+                  </LocalizedFieldInfoDialogSlot>
+                </Popover>
+              </RaDialogTrigger>
+            )
+          }
         </LocalizedFieldLabelSlot>
       )}
       <LocalizedFieldFieldsContainerSlot id={localeFieldsContainerId}>
