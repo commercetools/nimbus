@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useNumberField, useLocale } from "react-aria";
@@ -9,6 +9,7 @@ import {
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { getCurrencyFormatOptions } from "./utils";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,
@@ -21,15 +22,33 @@ import { numberInputRecipe } from "./number-input.recipe";
  * # NumberInput
  *
  * A number input allows users to enter numerical values and adjust them incrementally.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
+ * When used with currency, the locale for formatting comes from React Aria's I18nProvider context.
  */
 export const NumberInput = (props: NumberInputProps) => {
-  const { size, ref: forwardedRef, ...restProps } = props;
+  const {
+    size,
+    ref: forwardedRef,
+    currency,
+    showCurrencySymbol = currency ? true : false, // Default to true when currency is provided
+    allowHighPrecision = false,
+    step,
+    ...restProps
+  } = props;
   const { locale } = useLocale();
 
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  // Create currency-aware format options
+  const formatOptions = useMemo(() => {
+    if (!currency) return undefined;
+
+    return getCurrencyFormatOptions(
+      currency,
+      allowHighPrecision,
+      showCurrencySymbol
+    );
+  }, [currency, locale, showCurrencySymbol, allowHighPrecision]);
 
   // Split recipe props first
   const recipe = useSlotRecipe({ recipe: numberInputRecipe });
@@ -38,15 +57,60 @@ export const NumberInput = (props: NumberInputProps) => {
   // Extract style props
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
-  // Pass only functional props to react-aria
-  const state = useNumberFieldState({ locale, ...functionalProps });
+  // Enhance functional props with currency-aware settings
+  const enhancedFunctionalProps = {
+    ...functionalProps,
+    locale: locale,
+    formatOptions,
+    // CRITICAL: React Aria Step Behavior
+    //
+    // React Aria NumberField uses the `step` property for TWO distinct purposes:
+    // 1. Increment/Decrement Amount: How much to add/subtract when using buttons/arrow keys
+    // 2. Validation Constraint: A validation rule that snaps typed values to step boundaries on blur
+    //
+    // KEY BEHAVIOR DIFFERENCE:
+    // - WITH step (e.g., step: 1):
+    //   • On blur: calls snapValueToStep(12.345, min, max, 1) → rounds to 12
+    //   • High precision input (12.345) gets truncated to step boundary (12)
+    //   • Step validation overrides formatOptions.maximumFractionDigits
+    //
+    // - WITHOUT step (undefined/null):
+    //   • On blur: NO step validation occurs
+    //   • High precision input (12.345) is preserved
+    //   • Only formatOptions.maximumFractionDigits controls display precision
+    //   • Increment/decrement still works with default behavior (integer steps)
+    //
+    // ACTUAL CODE (React Aria's internal commit function):
+    // Source: react-spectrum/packages/@react-stately/numberfield/src/useNumberFieldState.ts
+    // Related issue: https://github.com/adobe/react-spectrum/issues/6359
+    // ```
+    // let clampedValue: number;
+    // if (step === undefined || isNaN(step)) {
+    //   // NO STEP: Only enforce min/max bounds, preserve precision
+    //   clampedValue = clamp(parsedValue, minValue, maxValue);
+    // } else {
+    //   // WITH STEP: Enforce min/max bounds AND snap to step boundaries (loses precision)
+    //   clampedValue = snapValueToStep(parsedValue, minValue, maxValue, step);
+    // }
+    // ```
+    //
+    // CONCLUSION: For high precision currency inputs, step should be undefined
+    // to prevent React Aria's step validation from truncating user input.
+    //
+    // Only use `step` if the consumer provides it.
+    step: step || undefined,
+  };
+
+  // Pass enhanced props to react-aria
+  const state = useNumberFieldState(enhancedFunctionalProps);
   const { inputProps, incrementButtonProps, decrementButtonProps } =
-    useNumberField(functionalProps, state, ref);
+    useNumberField(enhancedFunctionalProps, state, ref);
 
   const stateProps = {
     "data-invalid": props.isInvalid,
     "data-disabled": props.isDisabled,
   };
+
   return (
     <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
       <NumberInputInputSlot
