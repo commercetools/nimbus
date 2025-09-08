@@ -2,7 +2,7 @@ import {
   Flex,
   Box,
   useHotkeys,
-  LegacyDialog,
+  Modal,
   TextInput,
   Text,
   Kbd,
@@ -45,7 +45,7 @@ export const AppNavBarSearch = () => {
 
   return (
     <Flex grow="1">
-      <LegacyDialog.Root
+      <Modal.Root
         open={open}
         placement="top"
         motionPreset="slide-in-bottom"
@@ -53,8 +53,8 @@ export const AppNavBarSearch = () => {
         scrollBehavior="outside"
         size="xl"
       >
-        <LegacyDialog.Backdrop />
-        <LegacyDialog.Trigger>
+        <Modal.Backdrop />
+        <Modal.Trigger>
           <Box position="relative">
             <TextInput
               size="md"
@@ -69,14 +69,14 @@ export const AppNavBarSearch = () => {
               <Kbd>⌘+K</Kbd>
             </Box>
           </Box>
-        </LegacyDialog.Trigger>
-        <LegacyDialog.Content divideY="1px" backdropBlur="5px">
-          <LegacyDialog.Header>
-            <LegacyDialog.Title fontWeight="600">
+        </Modal.Trigger>
+        <Modal.Content divideY="1px" backdropBlur="5px">
+          <Modal.Header>
+            <Modal.Title fontWeight="600">
               Search the Documentation
-            </LegacyDialog.Title>
-          </LegacyDialog.Header>
-          <LegacyDialog.Body>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
             <ComboBox
               inputValue={query}
               onInputChange={setQuery}
@@ -132,9 +132,9 @@ export const AppNavBarSearch = () => {
                 <strong>Enter</strong> to confirm selection.
               </Text>
             </ComboBox>
-          </LegacyDialog.Body>
-        </LegacyDialog.Content>
-      </LegacyDialog.Root>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </Flex>
   );
 };
