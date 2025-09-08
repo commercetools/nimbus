@@ -1,18 +1,35 @@
-import { useState, useMemo, useRef, useEffect, type ReactNode } from "react";
-import { Collection } from "react-aria-components";
-import { FormField, Button } from "@/components";
-import type { FormFieldRootHandle } from "@/components/form-field/components/form-field.root";
+import { useState, useMemo, type ReactNode } from "react";
+import {
+  Collection as RaCollection,
+  Dialog as RaDialog,
+  DialogTrigger as RaDialogTrigger,
+} from "react-aria-components";
+import { useField, useId } from "react-aria";
+import {
+  ErrorOutline,
+  HelpOutline,
+  Language,
+} from "@commercetools/nimbus-icons";
+import { Box, Button, IconButton } from "@/components";
+import { Popover } from "../../popover";
 import {
   LocalizedFieldRootSlot,
   LocalizedFieldLabelSlot,
+  LocalizedFieldInfoDialogSlot,
   LocalizedFieldFieldsContainerSlot,
   LocalizedFieldToggleButtonContainerSlot,
+  LocalizedFieldDescriptionSlot,
+  LocalizedFieldErrorSlot,
 } from "../localized-field.slots";
 import type { LocalizedFieldProps } from "../localized-field.types";
+import {
+  sortLocalesByDefaultLocaleLanguage,
+  getHasInvalidLocaleFields,
+} from "../utils/localized-field.utils";
 import { LocalizedFieldLocaleField } from "./localized-field.locale-field";
 
 /** internal type for object containing all data for a single locale */
-export type AllDataForLocale = {
+export type MergedLocaleFieldData = {
   locale: string;
   inputValue: string;
   placeholder?: string;
@@ -21,17 +38,8 @@ export type AllDataForLocale = {
   error?: ReactNode;
 };
 
-/**
- * Interface for the imperative ref handle exposed by LocalizedField
- */
-export interface LocalizedFieldHandle {
-  /** The input properties object from the FormField.Root component */
-  inputProps: FormFieldRootHandle["inputProps"];
-  /** Reference to the underlying FormField.Root DOM element */
-  element: HTMLDivElement | null;
-}
-
 export const LocalizedField = ({
+  type = "text",
   defaultLocale,
   valuesByLocale,
   placeholdersByLocale,
@@ -39,104 +47,191 @@ export const LocalizedField = ({
   warningsByLocale,
   errorsByLocale,
   label,
-  // infoBox,
-  // error,
-  // warning,
-  // isRequired,
-  // isInvalid,
-  // isDisabled,
-  // isReadOnly,
+  hint,
+  description,
+  error,
+  warning,
+  isRequired,
+  isInvalid,
+  isDisabled,
+  isReadOnly,
   onChange,
   onBlur,
   onFocus,
   defaultExpanded = false,
   displayAllLocales = false,
-  "aria-label": ariaLabel,
-  // ...rest
+  size,
+  // DOM & Style props for wrapper container
+  ...rest
 }: LocalizedFieldProps) => {
-  // Internal ref to access FormField.Root's imperative handle
-  const formFieldRef = useRef<FormFieldRootHandle>(null);
   const [expanded, setExpanded] = useState(
     displayAllLocales ?? defaultExpanded
   );
-  const [inputProps, setInputProps] = useState<
-    FormFieldRootHandle["inputProps"]
-  >({} as FormFieldRootHandle["inputProps"]);
+  /** used to associate container with toggle button for `aria-controls` */
+  const localeFieldsContainerId = useId();
 
-  // Update inputProps when formFieldRef becomes available
-  useEffect(() => {
-    if (formFieldRef.current?.inputProps) {
-      setInputProps(formFieldRef.current.inputProps);
-    }
-  }, [formFieldRef.current?.inputProps]);
-
-  // Expose the FormField.Root inputProps through the imperative handle
-  // Note: This is internal to the component and not exposed via props
-
-  const allDataForLocale = useMemo(
-    () =>
-      Object.keys(valuesByLocale).reduce(
-        (acc: Array<AllDataForLocale>, locale) => {
-          const allDataForLocale = {
-            locale: locale,
-            inputValue: valuesByLocale[locale] as string,
-            placeholder: placeholdersByLocale?.[locale],
-            description: descriptionsByLocale?.[locale],
-            warning: warningsByLocale?.[locale],
-            error: errorsByLocale?.[locale],
-          };
-          if (expanded || (!expanded && locale === defaultLocale)) {
-            return [...acc, allDataForLocale];
-          }
-          return acc;
-        },
-        []
-      ),
-    [
-      valuesByLocale,
-      placeholdersByLocale,
-      descriptionsByLocale,
-      warningsByLocale,
-      errorsByLocale,
+  const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
+    useField({
+      label,
+      description: warning ?? description,
+      errorMessage: error,
+      isInvalid,
+    });
+  const locales = Object.keys(valuesByLocale);
+  const allDataForLocales = useMemo(() => {
+    const sortedLocales = sortLocalesByDefaultLocaleLanguage(
       defaultLocale,
-      expanded,
-    ]
+      locales
+    );
+
+    return sortedLocales.reduce(
+      (allLocaleData: MergedLocaleFieldData[], locale) => {
+        const allDataForLocale = {
+          locale: locale,
+          inputValue: valuesByLocale[locale] as string,
+          placeholder: placeholdersByLocale?.[locale],
+          description: descriptionsByLocale?.[locale],
+          warning: warningsByLocale?.[locale],
+          error: errorsByLocale?.[locale],
+        };
+        if (expanded || (!expanded && locale === defaultLocale)) {
+          return [...allLocaleData, allDataForLocale];
+        }
+        return allLocaleData;
+      },
+      []
+    );
+  }, [
+    valuesByLocale,
+    placeholdersByLocale,
+    descriptionsByLocale,
+    warningsByLocale,
+    errorsByLocale,
+    defaultLocale,
+    expanded,
+  ]);
+
+  const groupHasInvalidLocaleFields = getHasInvalidLocaleFields(
+    errorsByLocale,
+    defaultLocale
   );
 
-  if (!label && !ariaLabel) {
-    console.log(label);
-    console.warn(
-      "! Nimbus LocalizedField: you must provide either a label or aria-label prop"
-    );
+  // If there are fields that are invalid, ensure that field group
+  // shows all fields so that invalid field is visible
+  if (groupHasInvalidLocaleFields && !expanded) {
+    setExpanded(true);
   }
 
   return (
-    <LocalizedFieldRootSlot asChild {...inputProps}>
-      <FormField.Root ref={formFieldRef} as="fieldset">
-        {label && (
-          <LocalizedFieldLabelSlot asChild>
-            <FormField.Label as="legend">{label}</FormField.Label>
-          </LocalizedFieldLabelSlot>
-        )}
-        <LocalizedFieldFieldsContainerSlot>
-          <Collection items={allDataForLocale}>
-            {(item) => {
-              return (
-                <LocalizedFieldLocaleField
-                  {...item}
-                  id={item.locale}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                />
-              );
-            }}
-          </Collection>
-        </LocalizedFieldFieldsContainerSlot>
+    <LocalizedFieldRootSlot {...rest} {...fieldProps} type={type} size={size}>
+      {label && (
+        <LocalizedFieldLabelSlot {...labelProps}>
+          <Box as="span">{label}</Box>
+          {isRequired && <sup aria-hidden="true">*</sup>}
+          {hint && (
+            <RaDialogTrigger>
+              <Box
+                as="span"
+                display="inline-block"
+                position="relative"
+                width="1ch"
+                height="1ch"
+                ml="200"
+              >
+                <Box
+                  as="span"
+                  display="inline-flex"
+                  position="absolute"
+                  top="50%"
+                  right="50%"
+                  transform="translate(50%, -50%)"
+                >
+                  <IconButton
+                    aria-label="__MORE INFO"
+                    size="2xs"
+                    tone="info"
+                    variant="link"
+                  >
+                    <HelpOutline />
+                  </IconButton>
+                </Box>
+              </Box>
+              <Popover padding={0}>
+                <LocalizedFieldInfoDialogSlot asChild>
+                  <RaDialog>
+                    <Box p="300">{hint}</Box>
+                  </RaDialog>
+                </LocalizedFieldInfoDialogSlot>
+              </Popover>
+            </RaDialogTrigger>
+          )}
+        </LocalizedFieldLabelSlot>
+      )}
+      <LocalizedFieldFieldsContainerSlot id={localeFieldsContainerId}>
+        <RaCollection items={allDataForLocales}>
+          {(item) => {
+            return (
+              <LocalizedFieldLocaleField
+                {...item}
+                id={item.locale}
+                onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}
+                isDisabled={isDisabled}
+                isReadOnly={isReadOnly}
+                isInvalid={isInvalid}
+                size={size}
+                type={type}
+              />
+            );
+          }}
+        </RaCollection>
+      </LocalizedFieldFieldsContainerSlot>
+      {description && !warning && (
+        <LocalizedFieldDescriptionSlot {...descriptionProps}>
+          {description}
+        </LocalizedFieldDescriptionSlot>
+      )}
+      {warning && (
+        <LocalizedFieldDescriptionSlot role="status" {...descriptionProps}>
+          {warning}
+        </LocalizedFieldDescriptionSlot>
+      )}
+      {error && (
+        <LocalizedFieldErrorSlot {...errorMessageProps}>
+          <Box
+            as={ErrorOutline}
+            display="inline-flex"
+            boxSize="400"
+            verticalAlign="text-bottom"
+            mr="100"
+          />
+          {error}
+        </LocalizedFieldErrorSlot>
+      )}
+      {!displayAllLocales && locales.length > 1 && (
         <LocalizedFieldToggleButtonContainerSlot>
-          <Button onPress={() => setExpanded(!expanded)}>expand</Button>
+          <Button
+            aria-labelledby={labelProps.id}
+            aria-controls={localeFieldsContainerId}
+            aria-expanded={expanded}
+            onPress={() => setExpanded(!expanded)}
+            isDisabled={isDisabled || (expanded && groupHasInvalidLocaleFields)}
+            variant="ghost"
+            size="2xs"
+            colorPalette="primary"
+          >
+            <Box
+              as={Language}
+              display="inline-flex"
+              boxSize="400"
+              verticalAlign="text-bottom"
+              mr="100"
+            />
+            {expanded ? "Hide all" : "Show all"} languages
+          </Button>
         </LocalizedFieldToggleButtonContainerSlot>
-      </FormField.Root>
+      )}
     </LocalizedFieldRootSlot>
   );
 };

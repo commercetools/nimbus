@@ -4,7 +4,6 @@ import { useRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
 import { Input } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-
 import { TextInputRootSlot } from "./text-input.slots";
 import type { TextInputProps } from "./text-input.types";
 import { textInputRecipe } from "./text-input.recipe";
@@ -28,7 +27,7 @@ export const TextInput = (props: TextInputProps) => {
   const { inputProps } = useTextField(otherProps, ref);
 
   return (
-    <TextInputRootSlot {...recipeProps} {...styleProps} asChild>
+    <TextInputRootSlot {...otherProps} {...recipeProps} {...styleProps} asChild>
       <Input ref={ref} {...inputProps} />
     </TextInputRootSlot>
   );
