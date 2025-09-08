@@ -36,7 +36,9 @@
       "react-aria": "catalog:react",
       "react-aria-components": "catalog:react",
       "react-stately": "catalog:react",
-      "@react-aria/interactions": "catalog:react"
+      "@react-aria/interactions": "catalog:react",
+      "tmp": "^0.2.5",
+      "brace-expansion": "^2.0.2"
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
