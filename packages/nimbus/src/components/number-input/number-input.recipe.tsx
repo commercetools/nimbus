@@ -48,13 +48,11 @@ export const numberInputRecipe = defineSlotRecipe({
     },
     leadingElement: {
       color: "neutral.10",
-      pl: 400,
       display: "flex",
       alignItems: "center",
     },
     trailingElement: {
       color: "neutral.10",
-      pr: 800,
       display: "flex",
       alignItems: "center",
     },
@@ -134,6 +132,8 @@ export const numberInputRecipe = defineSlotRecipe({
           pr: 200,
         },
         leadingElement: {
+          pl: 400,
+          pr: 200,
           "& > *": {
             h: "400",
             w: "400",
@@ -153,12 +153,14 @@ export const numberInputRecipe = defineSlotRecipe({
           px: 200,
         },
         leadingElement: {
+          pl: 400,
           "& > *": {
             h: "500",
             w: "500",
           },
         },
         trailingElement: {
+          pr: 600,
           "& > *": {
             h: "500",
             w: "500",
