@@ -59,7 +59,7 @@ export const NumberInput = (props: NumberInputProps) => {
     <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
       <NumberInputInputSlot
         ref={ref}
-        {...functionalProps}
+        className={props?.className as string}
         {...inputProps}
         {...stateProps}
         size={size}

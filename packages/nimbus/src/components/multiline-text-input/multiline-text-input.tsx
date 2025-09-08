@@ -76,7 +76,7 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
 
   return (
     <MultilineTextInputRootSlot
-      {...otherProps}
+      className={props?.className as string}
       {...recipeProps}
       {...styleProps}
       asChild
