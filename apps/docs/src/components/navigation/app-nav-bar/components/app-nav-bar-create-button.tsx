@@ -1,7 +1,7 @@
 import { Info, Add } from "@commercetools/nimbus-icons";
 import {
   Button,
-  LegacyDialog,
+  Dialog,
   TextInput,
   Stack,
   Text,
@@ -27,9 +27,9 @@ export const AppNavBarCreateButton = () => {
   } = useCreateDocument();
 
   return (
-    <LegacyDialog.Root open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
-      <LegacyDialog.Backdrop />
-      <LegacyDialog.Trigger asChild>
+    <Dialog.Root open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
+      <Dialog.Backdrop />
+      <Dialog.Trigger asChild>
         <Button
           colorPalette="primary"
           size="xs"
@@ -39,15 +39,15 @@ export const AppNavBarCreateButton = () => {
           <Add />
           New document
         </Button>
-      </LegacyDialog.Trigger>
-      <LegacyDialog.Content divideY="1px">
-        <LegacyDialog.Header>
-          <LegacyDialog.Title>Create New Document</LegacyDialog.Title>
-          <LegacyDialog.Description>
+      </Dialog.Trigger>
+      <Dialog.Content divideY="1px">
+        <Dialog.Header>
+          <Dialog.Title>Create New Document</Dialog.Title>
+          <Dialog.Description>
             Fill in the details to create a new document.
-          </LegacyDialog.Description>
-        </LegacyDialog.Header>
-        <LegacyDialog.Body>
+          </Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Body>
           {!isLoading ? (
             <Stack gap="400" mt="400">
               <Stack>
@@ -110,9 +110,9 @@ export const AppNavBarCreateButton = () => {
               Saving in progress...
             </Text>
           )}
-        </LegacyDialog.Body>
+        </Dialog.Body>
         {!isLoading && (
-          <LegacyDialog.Footer>
+          <Dialog.Footer>
             <Button variant="ghost" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
@@ -124,9 +124,9 @@ export const AppNavBarCreateButton = () => {
             >
               Create
             </Button>
-          </LegacyDialog.Footer>
+          </Dialog.Footer>
         )}
-      </LegacyDialog.Content>
-    </LegacyDialog.Root>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
