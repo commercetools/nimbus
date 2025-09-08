@@ -24,6 +24,7 @@ export const numberInputRecipe = defineSlotRecipe({
       display: "inline-flex",
       position: "relative",
       borderRadius: "200",
+      pr: "400",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _focusWithin: {
         layerStyle: "focusRing",
@@ -66,7 +67,6 @@ export const numberInputRecipe = defineSlotRecipe({
       bg: "transparent",
       outline: "none",
       appearance: "textfield",
-      // width: "full",
       _placeholder: {
         opacity: 0.5,
         color: "currentColor",
@@ -131,6 +131,7 @@ export const numberInputRecipe = defineSlotRecipe({
           h: 800,
           textStyle: "sm",
           px: 100,
+          pr: 200,
         },
         leadingElement: {
           "& > *": {
