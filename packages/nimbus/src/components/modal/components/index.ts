@@ -1,0 +1,10 @@
+export { ModalRoot } from "./modal.root";
+export { ModalTrigger } from "./modal.trigger";
+export { ModalContent } from "./modal.content";
+export { ModalBackdrop } from "./modal.backdrop";
+export { ModalHeader } from "./modal.header";
+export { ModalBody } from "./modal.body";
+export { ModalFooter } from "./modal.footer";
+export { ModalTitle } from "./modal.title";
+export { ModalDescription } from "./modal.description";
+export { ModalCloseTrigger } from "./modal.close-trigger";
