@@ -342,7 +342,7 @@ export const Clearable: Story = {
       async () => {
         const clearableSelect = canvas.getByTestId("clearable-select");
         const clearButton = clearableSelect.querySelector(
-          '[aria-label="Clear Selection"]'
+          '[aria-label="Clear selection"]'
         );
         await expect(clearButton).toBeInTheDocument();
       }
@@ -353,7 +353,7 @@ export const Clearable: Story = {
       async () => {
         const nonClearableSelect = canvas.getByTestId("non-clearable-select");
         const clearButton = nonClearableSelect.querySelector(
-          '[aria-label="Clear Selection"]'
+          '[aria-label="Clear selection"]'
         );
         await expect(clearButton).not.toBeInTheDocument();
       }
@@ -361,10 +361,10 @@ export const Clearable: Story = {
   },
 };
 
-/**
- * Disabled
- * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
- */
+// /**
+//  * Disabled
+//  * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
+//  */
 export const Disabled: Story = {
   render: () => {
     return (
