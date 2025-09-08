@@ -32,15 +32,94 @@ export const Base: Story = {
         defaultLocale="en"
         onChange={handleSetLocaleValue}
         valuesByLocale={localeValues}
-        // descriptionsByLocale={baseDescriptions}
         placeholdersByLocale={basePlaceholders}
-        errorsByLocale={baseErrors}
+        // descriptionsByLocale={baseDescriptions}
+        // errorsByLocale={baseErrors}
         // warningsByLocale={baseWarnings}
         label="greetings"
         hint="its a greeting"
         description="a polite word or sign of welcome or recognition."
-        // size="sm"
+        // warning="youve been warned"
+        // error="youre wrong"
+      />
+    );
+  },
+};
+
+export const MultiLine: Story = {
+  render: () => {
+    const [localeValues, setLocaleValues] = useState(baseValues);
+    const handleSetLocaleValue = (value: string | number, locale: string) => {
+      setLocaleValues({ ...localeValues, [locale]: value });
+    };
+    return (
+      <LocalizedField
+        type="multiLine"
+        name="localize greetings"
+        defaultLocale="en"
+        onChange={handleSetLocaleValue}
+        valuesByLocale={localeValues}
+        placeholdersByLocale={basePlaceholders}
+        // descriptionsByLocale={baseDescriptions}
+        // errorsByLocale={baseErrors}
+        // warningsByLocale={baseWarnings}
+        label="greetings"
+        hint="its a greeting"
+        description="a polite word or sign of welcome or recognition."
+        // warning="youve been warned"
+        // error="youre wrong"
+      />
+    );
+  },
+};
+
+export const Money: Story = {
+  render: () => {
+    const [localeValues, setLocaleValues] = useState(baseValues);
+    const handleSetLocaleValue = (value: string | number, locale: string) => {
+      setLocaleValues({ ...localeValues, [locale]: value });
+    };
+    return (
+      <LocalizedField
+        type="money"
+        name="localize greetings"
+        defaultLocale="en"
+        onChange={handleSetLocaleValue}
+        valuesByLocale={localeValues}
+        placeholdersByLocale={basePlaceholders}
+        // descriptionsByLocale={baseDescriptions}
+        // errorsByLocale={baseErrors}
+        // warningsByLocale={baseWarnings}
+        label="greetings"
+        hint="its a greeting"
+        description="a polite word or sign of welcome or recognition."
+        // warning="youve been warned"
+        // error="youre wrong"
+      />
+    );
+  },
+};
+
+export const RichText: Story = {
+  render: () => {
+    const [localeValues, setLocaleValues] = useState(baseValues);
+    const handleSetLocaleValue = (value: string | number, locale: string) => {
+      setLocaleValues({ ...localeValues, [locale]: value });
+    };
+    return (
+      <LocalizedField
         type="richText"
+        name="localize greetings"
+        defaultLocale="en"
+        onChange={handleSetLocaleValue}
+        valuesByLocale={localeValues}
+        placeholdersByLocale={basePlaceholders}
+        // descriptionsByLocale={baseDescriptions}
+        // errorsByLocale={baseErrors}
+        // warningsByLocale={baseWarnings}
+        label="greetings"
+        hint="its a greeting"
+        description="a polite word or sign of welcome or recognition."
         // warning="youve been warned"
         // error="youre wrong"
       />

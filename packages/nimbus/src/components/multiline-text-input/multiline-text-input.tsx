@@ -27,8 +27,6 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
   const { inputProps } = useTextField<"textarea">(otherProps, ref);
 
-  console.log(otherProps, inputProps);
-
   // Auto-grow functionality
   const adjustHeight = useCallback(() => {
     const textarea = ref.current;
