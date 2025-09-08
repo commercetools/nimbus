@@ -39,9 +39,9 @@ export const LocalizedFieldLocaleField = ({
     case "multiLine":
       InputComponent = MultilineTextInput;
       break;
-    // case "money":
-    //   InputComponent = NumberInput;
-    //   break;
+    case "money":
+      InputComponent = NumberInput;
+      break;
     case "richText":
       InputComponent = RichTextInput;
       break;
@@ -72,7 +72,8 @@ export const LocalizedFieldLocaleField = ({
               isDisabled={isDisabled}
               isReadOnly={isReadOnly}
               isInvalid={isInvalid || !!error}
-              // size={size}
+              size={size}
+              locale={locale}
             />
           </LocalizedFieldLocaleFieldInputSlot>
         </FormField.Input>
