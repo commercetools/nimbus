@@ -66,7 +66,7 @@ export const NumberInput = (props: NumberInputProps) => {
     >
       <NumberInputInputSlot
         ref={ref}
-        {...functionalProps}
+        className={props?.className as string}
         {...inputProps}
         {...stateProps}
         // https://github.com/adobe/react-spectrum/issues/4744
