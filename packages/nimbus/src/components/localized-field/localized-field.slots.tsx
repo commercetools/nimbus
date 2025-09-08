@@ -23,11 +23,19 @@ export const LocalizedFieldRootSlot = withProvider<
 
 // Label Slot
 export interface LocalizedFieldLabelSlotProps
-  extends HTMLChakraProps<"legend"> {}
+  extends HTMLChakraProps<"label"> {}
 export const LocalizedFieldLabelSlot = withContext<
-  HTMLLegendElement,
+  HTMLLabelElement,
   LocalizedFieldLabelSlotProps
 >("legend", "label");
+
+// InfoDialog Slot
+export interface LocalizedFieldInfoDialogSlotProps
+  extends HTMLChakraProps<"div"> {}
+export const LocalizedFieldInfoDialogSlot = withContext<
+  HTMLDivElement,
+  LocalizedFieldInfoDialogSlotProps
+>("div", "infoDialog");
 
 // FieldsContainer Slot
 export interface LocalizedFieldFieldsContainerSlotProps
@@ -59,6 +67,15 @@ export const LocalizedFieldToggleButtonContainerSlot = withContext<
   HTMLDivElement,
   LocalizedFieldToggleButtonContainerSlotProps
 >("div", "toggleButtonContainer");
+
+// LocaleFieldRoot Slot
+
+export interface LocalizedFieldLocaleFieldRootSlotProps
+  extends HTMLChakraProps<"div"> {}
+export const LocalizedFieldLocaleFieldRootSlot = withContext<
+  HTMLDivElement,
+  LocalizedFieldLocaleFieldRootSlotProps
+>("div", "localeFieldRoot");
 
 // FieldLabel Slot
 export interface LocalizedFieldLocaleFieldLabelSlotProps
