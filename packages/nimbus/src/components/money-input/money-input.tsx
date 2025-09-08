@@ -1,25 +1,409 @@
+import { useRef, useState, useCallback, useId } from "react";
+import { mergeRefs } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { useObjectRef, useTextField } from "react-aria";
+import { Select, Tooltip } from "@/components";
+import { HighPrecision } from "@commercetools/nimbus-icons";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
-  MoneyInputRoot,
-  MoneyInputAmountInput,
-  MoneyInputCurrencySelect,
-  MoneyInputBadge,
-} from "./components";
+  MoneyInputRootSlot,
+  MoneyInputCurrencySelectSlot,
+  MoneyInputAmountInputSlot,
+  MoneyInputBadgeSlot,
+} from "./money-input.slots";
+import { moneyInputRecipe } from "./money-input.recipe";
 import {
+  formatAmount,
+  isHighPrecision,
   convertToMoneyValue,
   parseMoneyValue,
   isEmpty,
-  isHighPrecision,
   isTouched,
 } from "./utils";
+import type { TValue, TCurrencyCode } from "./utils";
 
-const MoneyInputNamespace = {
-  Root: MoneyInputRoot,
-  AmountInput: MoneyInputAmountInput,
-  CurrencySelect: MoneyInputCurrencySelect,
-  Badge: MoneyInputBadge,
-} as const;
+// Custom event type for MoneyInput onChange handler
+type TCustomEvent = {
+  target: {
+    id?: string;
+    name?: string;
+    value?: string | string[] | null;
+  };
+  persist?: () => void;
+};
 
-type MoneyInputType = typeof MoneyInputNamespace & {
+export interface MoneyInputProps {
+  /**
+   * Used as HTML id property. An id is auto-generated when it is not specified.
+   */
+  id?: string;
+  /**
+   * The prefix used to create a HTML `name` property for the amount input field (`${name}.amount`) and the currency dropdown (`${name}.currencyCode`).
+   */
+  name?: string;
+  /**
+   * Value of the input. Consists of the currency code and an amount. `amount` is a string representing the amount. A dot has to be used as the decimal separator.
+   */
+  value: TValue;
+  /**
+   * List of possible currencies. When not provided or empty, the component renders a label with the value's currency instead of a dropdown.
+   */
+  currencies?: string[];
+  /**
+   * Called when input is blurred
+   */
+  onBlur?: (event: TCustomEvent) => void;
+  /**
+   * Called when input is focused
+   */
+  onFocus?: (event: TCustomEvent) => void;
+  /**
+   * Called with the event of the input or dropdown when either the currency or the amount have changed.
+   */
+  onChange?: (event: TCustomEvent) => void;
+  /**
+   * Use this property to reduce the paddings of the component for a ui compact variant
+   */
+  isCondensed?: boolean;
+  /**
+   * Indicates that the input cannot be modified (e.g not authorized, or changes currently saving).
+   */
+  isDisabled?: boolean;
+  /**
+   * Indicates that the field is displaying read-only content
+   */
+  isReadOnly?: boolean;
+  /**
+   * Indicates that input has errors
+   */
+  hasError?: boolean;
+  /**
+   * Control to indicate on the input if there are selected values that are potentially invalid
+   */
+  hasWarning?: boolean;
+  /**
+   * Shows high precision badge in case current value uses high precision.
+   */
+  hasHighPrecisionBadge?: boolean;
+  /**
+   * Horizontal size limit of the input fields.
+   */
+  horizontalConstraint?:
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16
+    | "scale"
+    | "auto";
+  /**
+   * Indicates that the currency input cannot be modified.
+   */
+  isCurrencyInputDisabled?: boolean;
+  /**
+   * Placeholder text for the amount input
+   */
+  placeholder?: string;
+  /**
+   * Focus the input on initial render
+   */
+  autoFocus?: boolean;
+  /**
+   * Used as HTML `autocomplete` property
+   */
+  autoComplete?: string;
+  /**
+   * Override the default tooltip content for high precision badge
+   */
+  tooltipContent?: string;
+  /**
+   * Dom element to portal the currency select menu to
+   */
+  menuPortalTarget?: Element;
+  /**
+   * z-index value for the currency select menu portal
+   */
+  menuPortalZIndex?: number;
+  /**
+   * whether the menu should block scroll while open
+   */
+  menuShouldBlockScroll?: boolean;
+}
+
+/**
+ * # MoneyInput
+ *
+ * A specialized input component for entering monetary amounts with currency selection.
+ * Supports high precision values and automatic locale-based formatting.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/money-input}
+ */
+export const MoneyInputComponent = (props: MoneyInputProps) => {
+  const {
+    id: providedId,
+    name,
+    value,
+    currencies = [],
+    onChange,
+    onFocus,
+    onBlur,
+    isCondensed,
+    isDisabled,
+    isReadOnly,
+    hasError,
+    hasWarning,
+    hasHighPrecisionBadge = true,
+    horizontalConstraint,
+    isCurrencyInputDisabled,
+    placeholder = "0.00",
+    autoFocus,
+    autoComplete,
+    tooltipContent,
+    menuPortalTarget,
+    menuPortalZIndex = 1,
+    menuShouldBlockScroll,
+    ...restProps
+  } = props;
+
+  // Generate IDs
+  const generatedId = useId();
+  const id = providedId || generatedId;
+
+  // State management
+  const [currencyHasFocus, setCurrencyHasFocus] = useState(false);
+  const [amountHasFocus, setAmountHasFocus] = useState(false);
+  const hasFocus = currencyHasFocus || amountHasFocus;
+  const hasNoCurrencies = !currencies || currencies.length === 0;
+
+  // Check if current value is high precision
+  const isCurrentlyHighPrecision = isHighPrecision(value, "en-US");
+
+  // Refs
+  const localRef = useRef<HTMLInputElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, null));
+
+  // Recipe setup
+  const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
+  const [recipeProps, recipeLessProps] = recipe.splitVariantProps(restProps);
+  const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
+
+  // Helper functions
+  const getAmountInputId = () => `${id}-amount`;
+  const getCurrencyDropdownId = () => `${id}-currency`;
+  const getAmountInputName = () => (name ? `${name}.amount` : undefined);
+  const getCurrencyDropdownName = () =>
+    name ? `${name}.currencyCode` : undefined;
+
+  // Event handlers
+  const handleAmountChange = useCallback(
+    (newValue: string) => {
+      const event: TCustomEvent = {
+        persist: () => {},
+        target: {
+          id: getAmountInputId(),
+          name: getAmountInputName(),
+          value: newValue,
+        },
+      };
+      onChange?.(event);
+    },
+    [onChange, id, name]
+  );
+
+  const handleAmountFocus = useCallback(() => {
+    setAmountHasFocus(true);
+    const event: TCustomEvent = {
+      persist: () => {},
+      target: {
+        id: getAmountInputId(),
+        name: getAmountInputName(),
+        value: value.amount,
+      },
+    };
+    onFocus?.(event);
+  }, [onFocus, value.amount, id, name]);
+
+  const handleAmountBlur = useCallback(() => {
+    setAmountHasFocus(false);
+
+    // Format the amount on blur
+    if (value.amount && value.currencyCode) {
+      const formattedAmount = formatAmount(
+        value.amount,
+        "en-US",
+        value.currencyCode as TCurrencyCode
+      );
+      if (formattedAmount !== value.amount) {
+        handleAmountChange(formattedAmount);
+      }
+    }
+
+    const event: TCustomEvent = {
+      persist: () => {},
+      target: {
+        id: getAmountInputId(),
+        name: getAmountInputName(),
+        value: value.amount,
+      },
+    };
+    onBlur?.(event);
+  }, [onBlur, value, id, name, handleAmountChange]);
+
+  const handleCurrencyChange = useCallback(
+    (currencyCode: string) => {
+      const event: TCustomEvent = {
+        persist: () => {},
+        target: {
+          id: getCurrencyDropdownId(),
+          name: getCurrencyDropdownName(),
+          value: currencyCode,
+        },
+      };
+      onChange?.(event);
+    },
+    [onChange, id, name]
+  );
+
+  const handleCurrencyFocus = useCallback(() => {
+    setCurrencyHasFocus(true);
+    const event: TCustomEvent = {
+      persist: () => {},
+      target: {
+        id: getCurrencyDropdownId(),
+        name: getCurrencyDropdownName(),
+        value: value.currencyCode,
+      },
+    };
+    onFocus?.(event);
+  }, [onFocus, value.currencyCode, id, name]);
+
+  const handleCurrencyBlur = useCallback(() => {
+    setCurrencyHasFocus(false);
+    const event: TCustomEvent = {
+      persist: () => {},
+      target: {
+        id: getCurrencyDropdownId(),
+        name: getCurrencyDropdownName(),
+        value: value.currencyCode,
+      },
+    };
+    onBlur?.(event);
+  }, [onBlur, value.currencyCode, id, name]);
+
+  const handleCurrencySelectionChange = useCallback(
+    (selectedKey: string | number | null) => {
+      if (selectedKey && typeof selectedKey === "string") {
+        handleCurrencyChange(selectedKey);
+      }
+    },
+    [handleCurrencyChange]
+  );
+
+  // React Aria TextField setup for amount input
+  const { inputProps } = useTextField(
+    {
+      id: getAmountInputId(),
+      name: getAmountInputName(),
+      type: "text",
+      value: value.amount,
+      autoComplete,
+      placeholder,
+      isDisabled,
+      isReadOnly,
+      autoFocus,
+      onFocus: handleAmountFocus,
+      onChange: handleAmountChange,
+      onBlur: handleAmountBlur,
+      "aria-label": "Amount input",
+      ...functionalProps,
+    },
+    ref
+  );
+
+  const stateProps = {
+    hasError,
+    hasWarning,
+    isDisabled,
+    isReadOnly,
+    isCondensed,
+    hasFocus,
+  };
+
+  return (
+    <MoneyInputRootSlot
+      {...recipeProps}
+      {...styleProps}
+      {...stateProps}
+      horizontalConstraint={horizontalConstraint}
+    >
+      {/* Currency Select or Label */}
+      <MoneyInputCurrencySelectSlot {...stateProps}>
+        {hasNoCurrencies ? (
+          <label htmlFor={getAmountInputId()} data-testid="currency-label">
+            {value.currencyCode}
+          </label>
+        ) : (
+          <Select.Root
+            selectedKey={value.currencyCode || null}
+            onSelectionChange={handleCurrencySelectionChange}
+            onFocus={handleCurrencyFocus}
+            onBlur={handleCurrencyBlur}
+            isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
+            isClearable={false}
+            placeholder=""
+            aria-label="Currency selection"
+            data-testid="currency-dropdown"
+          >
+            <Select.Options>
+              {currencies.map((currencyCode) => (
+                <Select.Option key={currencyCode} id={currencyCode}>
+                  {currencyCode}
+                </Select.Option>
+              ))}
+            </Select.Options>
+          </Select.Root>
+        )}
+      </MoneyInputCurrencySelectSlot>
+
+      {/* Amount Input */}
+      <MoneyInputAmountInputSlot
+        ref={ref}
+        data-has-focus={hasFocus}
+        data-has-high-precision={
+          hasHighPrecisionBadge && isCurrentlyHighPrecision
+        }
+        {...inputProps}
+        {...stateProps}
+      />
+
+      {/* High Precision Badge */}
+      {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
+        <MoneyInputBadgeSlot data-testid="high-precision-badge">
+          <Tooltip.Root>
+            <HighPrecision color={isDisabled ? "neutral.6" : "primary.9"} />
+            <Tooltip.Content>
+              {tooltipContent || "High Precision Price"}
+            </Tooltip.Content>
+          </Tooltip.Root>
+        </MoneyInputBadgeSlot>
+      )}
+    </MoneyInputRootSlot>
+  );
+};
+
+MoneyInputComponent.displayName = "MoneyInput";
+
+// Create the main export with static methods
+type MoneyInputType = typeof MoneyInputComponent & {
   // Static methods preserved from UI Kit
   convertToMoneyValue: typeof convertToMoneyValue;
   parseMoneyValue: typeof parseMoneyValue;
@@ -31,7 +415,7 @@ type MoneyInputType = typeof MoneyInputNamespace & {
   getCurrencyDropdownId: (id: string) => string;
 };
 
-export const MoneyInput = MoneyInputNamespace as MoneyInputType;
+export const MoneyInput = MoneyInputComponent as MoneyInputType;
 
 // Attach static methods
 MoneyInput.convertToMoneyValue = convertToMoneyValue;

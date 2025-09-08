@@ -1,5 +1,5 @@
 import { Tooltip } from "@/components";
-import { Info } from "@commercetools/nimbus-icons";
+import { HighPrecision } from "@commercetools/nimbus-icons";
 import { MoneyInputBadgeSlot } from "../money-input.slots";
 import { useMoneyInputContext } from "../money-input-context";
 import type { MoneyInputBadgeProps } from "../money-input.types";
@@ -20,7 +20,7 @@ export const MoneyInputBadge = ({
   return (
     <MoneyInputBadgeSlot data-testid="high-precision-badge">
       <Tooltip.Root>
-        <Info color={isDisabled ? "neutral.6" : "info"} />
+        <HighPrecision color={isDisabled ? "neutral.6" : "primary.9"} />
         <Tooltip.Content>{tooltipTitle}</Tooltip.Content>
       </Tooltip.Root>
     </MoneyInputBadgeSlot>

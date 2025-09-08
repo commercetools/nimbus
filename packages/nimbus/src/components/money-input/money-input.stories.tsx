@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
-import { MoneyInput } from "./money-input";
-import type { TValue, MoneyInputRootProps } from "./money-input.types";
+import { MoneyInput, type MoneyInputProps } from "./money-input";
+import type { TValue } from "./money-input.types";
 
 // Custom event type for MoneyInput onChange handler
 type TCustomEvent = {
@@ -15,14 +15,14 @@ type TCustomEvent = {
 };
 
 // Props for the MoneyInputExample wrapper component
-interface MoneyInputExampleProps extends Partial<MoneyInputRootProps> {
+interface MoneyInputExampleProps extends Partial<MoneyInputProps> {
   initialValue?: TValue;
   currencies?: string[];
 }
 
-const meta: Meta<typeof MoneyInput.Root> = {
+const meta: Meta<typeof MoneyInput> = {
   title: "Components/Inputs/MoneyInput",
-  component: MoneyInput.Root,
+  component: MoneyInput,
   parameters: {
     layout: "centered",
   },
@@ -30,7 +30,7 @@ const meta: Meta<typeof MoneyInput.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof MoneyInput.Root>;
+type Story = StoryObj<typeof MoneyInput>;
 
 // Default currencies for examples
 const DEFAULT_CURRENCIES = ["EUR", "USD", "GBP", "JPY", "AED", "KWD"];
@@ -60,17 +60,14 @@ const MoneyInputExample = ({
 
   return (
     <div style={{ minHeight: "200px", width: "400px" }}>
-      <MoneyInput.Root
+      <MoneyInput
         value={value}
         currencies={currencies}
         onChange={handleChange}
         name="money-input"
+        placeholder="0.00"
         {...props}
-      >
-        <MoneyInput.CurrencySelect />
-        <MoneyInput.AmountInput placeholder="0.00" />
-        <MoneyInput.Badge />
-      </MoneyInput.Root>
+      />
 
       {/* Debug display */}
       <pre
@@ -345,17 +342,14 @@ export const FormIntegrationExample: Story = {
           >
             Product Price
           </label>
-          <MoneyInput.Root
+          <MoneyInput
             value={formData.price}
             currencies={DEFAULT_CURRENCIES}
             onChange={handlePriceChange}
             name="price"
             hasHighPrecisionBadge
-          >
-            <MoneyInput.CurrencySelect />
-            <MoneyInput.AmountInput placeholder="0.00" />
-            <MoneyInput.Badge />
-          </MoneyInput.Root>
+            placeholder="0.00"
+          />
         </div>
 
         <div>
@@ -368,17 +362,14 @@ export const FormIntegrationExample: Story = {
           >
             Discount Amount
           </label>
-          <MoneyInput.Root
+          <MoneyInput
             value={formData.discount}
             currencies={DEFAULT_CURRENCIES}
             onChange={handleDiscountChange}
             name="discount"
             hasHighPrecisionBadge
-          >
-            <MoneyInput.CurrencySelect />
-            <MoneyInput.AmountInput placeholder="0.00" />
-            <MoneyInput.Badge />
-          </MoneyInput.Root>
+            placeholder="0.00"
+          />
         </div>
 
         <pre
