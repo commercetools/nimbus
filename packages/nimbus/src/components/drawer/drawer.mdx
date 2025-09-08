@@ -1,0 +1,401 @@
+---
+id: drawer
+title: Drawer
+description: A drawer component optimized for edge-positioned sliding panels, built on the Modal base component.
+menu: Components
+tags: 
+  - overlay
+  - modal
+  - drawer
+  - navigation
+  - panel
+  - slide
+---
+
+# Drawer
+
+A drawer component optimized for edge-positioned sliding panels. Built on the Modal base component with React Aria Components for accessibility and WCAG 2.1 AA compliance.
+
+Perfect for navigation panels, detail views, filters, and mobile-first interfaces.
+
+## Features
+
+- **Edge positioning**: Supports left, right, top, and bottom sides
+- **Automatic mapping**: Side prop automatically configures placement and motion presets
+- **Drawer-specific sizes**: Includes narrow, wide variants plus standard sizing
+- **Full accessibility**: Built with React Aria Components for WCAG 2.1 AA compliance
+- **Flexible state**: Controlled and uncontrolled modes supported
+- **Portal rendering**: Renders outside normal DOM flow by default
+- **Focus management**: Automatic focus handling and keyboard navigation
+- **Dismissal options**: Click-outside, Escape key, and programmatic dismissal
+
+## Side Mapping
+
+The `side` prop automatically determines the placement and animation:
+
+- `side="left"` → `placement="left"`, `motionPreset="slide-in-left"`
+- `side="right"` → `placement="right"`, `motionPreset="slide-in-right"`
+- `side="top"` → `placement="top"`, `motionPreset="slide-in-top"`
+- `side="bottom"` → `placement="bottom"`, `motionPreset="slide-in-bottom"`
+
+## Basic Usage
+
+```jsx-live
+<Drawer.Root>
+  <Drawer.Trigger>Open Navigation</Drawer.Trigger>
+  <Drawer.Content side="left" size="md">
+    <Drawer.Backdrop />
+    <Drawer.Header>
+      <Drawer.Title>Navigation</Drawer.Title>
+      <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+    </Drawer.Header>
+    <Drawer.Body>
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <a href="#" style={{ padding: '0.5rem', textDecoration: 'none' }}>
+          🏠 Dashboard
+        </a>
+        <a href="#" style={{ padding: '0.5rem', textDecoration: 'none' }}>
+          👤 Profile
+        </a>
+        <a href="#" style={{ padding: '0.5rem', textDecoration: 'none' }}>
+          ⚙️ Settings
+        </a>
+      </nav>
+    </Drawer.Body>
+  </Drawer.Content>
+</Drawer.Root>
+```
+
+## Use Cases
+
+### Navigation Drawer (Left)
+
+Perfect for primary navigation menus and application structure.
+
+```jsx-live
+<Drawer.Root>
+  <Drawer.Trigger>Open Menu</Drawer.Trigger>
+  <Drawer.Content side="left" size="md">
+    <Drawer.Backdrop />
+    <Drawer.Header>
+      <Drawer.Title>Main Navigation</Drawer.Title>
+      <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+    </Drawer.Header>
+    <Drawer.Body>
+      <nav style={{ display: 'flex', flexDirection: 'column' }}>
+        <a href="#" style={{ padding: '1rem', borderBottom: '1px solid #eee' }}>
+          Dashboard
+        </a>
+        <a href="#" style={{ padding: '1rem', borderBottom: '1px solid #eee' }}>
+          Projects
+        </a>
+        <a href="#" style={{ padding: '1rem', borderBottom: '1px solid #eee' }}>
+          Team
+        </a>
+        <a href="#" style={{ padding: '1rem', borderBottom: '1px solid #eee' }}>
+          Settings
+        </a>
+      </nav>
+    </Drawer.Body>
+  </Drawer.Content>
+</Drawer.Root>
+```
+
+### Detail Panel (Right)
+
+Ideal for showing detailed information without leaving the current context.
+
+```jsx-live
+<Drawer.Root>
+  <Drawer.Trigger>View Details</Drawer.Trigger>
+  <Drawer.Content side="right" size="wide">
+    <Drawer.Backdrop />
+    <Drawer.Header>
+      <Drawer.Title>Product Details</Drawer.Title>
+      <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+    </Drawer.Header>
+    <Drawer.Body>
+      <Drawer.Description>
+        Detailed product information and specifications.
+      </Drawer.Description>
+      <div style={{ marginTop: '1rem' }}>
+        <h4>Features</h4>
+        <ul>
+          <li>High-quality materials</li>
+          <li>2-year warranty</li>
+          <li>Free shipping</li>
+          <li>30-day returns</li>
+        </ul>
+      </div>
+    </Drawer.Body>
+    <Drawer.Footer>
+      <button style={{ padding: '0.5rem 1rem', marginRight: '0.5rem' }}>
+        Add to Wishlist
+      </button>
+      <button style={{ 
+        padding: '0.5rem 1rem', 
+        backgroundColor: '#007bff', 
+        color: 'white', 
+        border: 'none', 
+        borderRadius: '4px' 
+      }}>
+        Add to Cart
+      </button>
+    </Drawer.Footer>
+  </Drawer.Content>
+</Drawer.Root>
+```
+
+### Notifications (Top)
+
+Great for displaying notifications or search results from the top.
+
+```jsx-live
+<Drawer.Root>
+  <Drawer.Trigger>Show Notifications</Drawer.Trigger>
+  <Drawer.Content side="top" size="lg">
+    <Drawer.Backdrop />
+    <Drawer.Header>
+      <Drawer.Title>Recent Notifications</Drawer.Title>
+      <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+    </Drawer.Header>
+    <Drawer.Body>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ padding: '1rem', border: '1px solid #e0e0e0', borderRadius: '8px' }}>
+          <strong>New message</strong>
+          <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem' }}>
+            You have a new message from Alice
+          </p>
+        </div>
+        <div style={{ padding: '1rem', border: '1px solid #e0e0e0', borderRadius: '8px' }}>
+          <strong>System update</strong>
+          <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem' }}>
+            Security update available
+          </p>
+        </div>
+      </div>
+    </Drawer.Body>
+  </Drawer.Content>
+</Drawer.Root>
+```
+
+### Action Sheet (Bottom)
+
+Perfect for mobile action sheets and contextual menus.
+
+```jsx-live
+<Drawer.Root>
+  <Drawer.Trigger>Show Options</Drawer.Trigger>
+  <Drawer.Content side="bottom" size="sm">
+    <Drawer.Backdrop />
+    <Drawer.Header>
+      <Drawer.Title>Quick Actions</Drawer.Title>
+      <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+    </Drawer.Header>
+    <Drawer.Body>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <button style={{ 
+          padding: '1rem', 
+          border: '1px solid #ccc', 
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span>📤</span>
+          Share
+        </button>
+        <button style={{ 
+          padding: '1rem', 
+          border: '1px solid #ccc', 
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span>📋</span>
+          Copy
+        </button>
+        <button style={{ 
+          padding: '1rem', 
+          border: '1px solid #ccc', 
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span>⭐</span>
+          Save
+        </button>
+        <button style={{ 
+          padding: '1rem', 
+          border: '1px solid #dc3545', 
+          borderRadius: '8px',
+          backgroundColor: '#dc3545',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span>🗑️</span>
+          Delete
+        </button>
+      </div>
+    </Drawer.Body>
+  </Drawer.Content>
+</Drawer.Root>
+```
+
+## Sizes
+
+Drawers support both standard sizes and drawer-specific variants:
+
+### Standard Sizes
+- `xs`, `sm`, `md` (default), `lg`, `xl`
+
+### Drawer-Specific Sizes
+- `narrow` - Compact drawer for tool panels or minimal navigation
+- `wide` - Extended drawer for detailed content or forms
+- `cover` - 80% of screen size
+- `full` - Full screen coverage
+
+```jsx-live
+<div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+  <Drawer.Root>
+    <Drawer.Trigger>Narrow</Drawer.Trigger>
+    <Drawer.Content side="left" size="narrow">
+      <Drawer.Backdrop />
+      <Drawer.Header>
+        <Drawer.Title>Narrow</Drawer.Title>
+        <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+      </Drawer.Header>
+      <Drawer.Body>
+        <div style={{ textAlign: 'center' }}>
+          <p>Compact drawer</p>
+        </div>
+      </Drawer.Body>
+    </Drawer.Content>
+  </Drawer.Root>
+  
+  <Drawer.Root>
+    <Drawer.Trigger>Wide</Drawer.Trigger>
+    <Drawer.Content side="right" size="wide">
+      <Drawer.Backdrop />
+      <Drawer.Header>
+        <Drawer.Title>Wide Drawer</Drawer.Title>
+        <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+      </Drawer.Header>
+      <Drawer.Body>
+        <p>This wide drawer has more space for detailed content.</p>
+      </Drawer.Body>
+    </Drawer.Content>
+  </Drawer.Root>
+</div>
+```
+
+## Controlled Usage
+
+Control the drawer state externally using the `isOpen` and `onOpenChange` props:
+
+```jsx-live
+function ControlledDrawer() {
+  const [isOpen, setIsOpen] = React.useState(false);
+  
+  return (
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={() => setIsOpen(true)}>
+          Open Drawer
+        </button>
+        <button onClick={() => setIsOpen(false)} style={{ marginLeft: '0.5rem' }}>
+          Close Drawer
+        </button>
+      </div>
+      <p>Drawer is {isOpen ? 'open' : 'closed'}</p>
+      
+      <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Drawer.Content side="left" size="md">
+          <Drawer.Backdrop />
+          <Drawer.Header>
+            <Drawer.Title>Controlled Drawer</Drawer.Title>
+            <Drawer.CloseTrigger>×</Drawer.CloseTrigger>
+          </Drawer.Header>
+          <Drawer.Body>
+            <p>This drawer is controlled by external state.</p>
+            <button onClick={() => setIsOpen(false)}>
+              Close from Inside
+            </button>
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
+    </div>
+  );
+}
+```
+
+## Differences from Modal
+
+While Drawer extends the Modal component, it has several key differences:
+
+### Positioning
+- **Modal**: Centers content on screen with various placements (center, top, bottom)
+- **Drawer**: Attaches to screen edges with full height/width positioning
+
+### Animation
+- **Modal**: Primarily scale and fade animations
+- **Drawer**: Edge-specific slide animations (slide-in-left, slide-in-right, etc.)
+
+### Sizing
+- **Modal**: Width-based sizing (xs to xl)
+- **Drawer**: Side-aware sizing (width for left/right, height for top/bottom)
+
+### Use Cases
+- **Modal**: Focused tasks, confirmations, forms that need full attention
+- **Drawer**: Navigation, supplementary information, contextual actions
+
+### API Differences
+
+| Feature | Modal | Drawer |
+|---------|-------|--------|
+| Primary prop | `placement` | `side` |
+| Sizing | Width-focused | Side-aware |
+| Motion | Scale, slide variants | Edge-specific slides |
+| Shape | Rounded corners all sides | Edge-specific rounding |
+
+## Accessibility
+
+Drawer inherits all accessibility features from the Modal base:
+
+- **Focus management**: Automatically traps and restores focus
+- **Keyboard navigation**: Escape key dismissal, Tab navigation within drawer
+- **Screen reader support**: Proper labeling with title and description
+- **WCAG 2.1 AA compliant**: Meets accessibility standards
+
+### Keyboard Interactions
+
+| Key | Action |
+|-----|--------|
+| `Escape` | Closes the drawer |
+| `Tab` | Moves focus to the next focusable element within the drawer |
+| `Shift + Tab` | Moves focus to the previous focusable element within the drawer |
+
+### ARIA Attributes
+
+- The drawer content has `role="dialog"`
+- Title is linked via `aria-labelledby`
+- Description is linked via `aria-describedby`
+- Close button has appropriate `aria-label`
+
+## API Reference
+
+<PropsTable id="Drawer" />
+
+## Related Components
+
+- **[Modal](../modal)** - The base component that Drawer extends
+- **[Dialog](../dialog)** - For focused modal dialogs
+- **[Popover](../popover)** - For lightweight contextual overlays

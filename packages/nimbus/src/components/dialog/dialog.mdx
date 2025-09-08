@@ -1,10 +1,10 @@
 ---
 id: Dialog
 title: Dialog
-description: displays a dialog
-documentState: InitialDraft
-lifecycleState: Experimental
-order: 999
+description: A center-focused modal dialog optimized for alerts, confirmations, and forms
+documentState: Ready
+lifecycleState: Stable
+order: 1
 menu:
   - Components
   - Feedback
@@ -12,10 +12,345 @@ menu:
 tags:
   - dialog
   - modal
+  - overlay
+  - accessibility
+  - confirmation
+  - alert
+  - form
 
 ---
 
 # Dialog
 
-Experimental, do not use.
+A center-focused dialog component optimized for alerts, confirmations, and modal forms. Built on top of the Modal component with pre-configured defaults for traditional dialog use cases.
+
+## Key Features
+
+- **Center-positioned by default** - Perfect for alerts and confirmations  
+- **Scale animation** - Smooth, attention-grabbing entrance
+- **WCAG 2.1 AA compliant** - Full accessibility support via React Aria
+- **Focus management** - Automatic focus trapping and restoration
+- **Keyboard navigation** - Escape key and click-outside dismissal
+- **Backdrop overlay** - Visual separation from page content
+
+## When to Use
+
+Use Dialog for:
+
+- **Confirmation dialogs** - "Are you sure?" type interactions
+- **Alert messages** - Important notifications requiring acknowledgment
+- **Short forms** - Login, signup, or edit dialogs
+- **Simple content** - Brief information or settings
+
+For larger content, sidebars, or slide-in panels, use [Modal](/components/feedback/modal) instead.
+
+## Basic Usage
+
+```jsx-live
+<Dialog.Root>
+  <Dialog.Trigger>
+    <Button>Open Dialog</Button>
+  </Dialog.Trigger>
+  <Dialog.Content>
+    <Dialog.Backdrop />
+    <Dialog.Header>
+      <Dialog.Title>Dialog Title</Dialog.Title>
+      <Dialog.CloseTrigger>
+        <Button variant="ghost" size="sm">×</Button>
+      </Dialog.CloseTrigger>
+    </Dialog.Header>
+    <Dialog.Body>
+      <Dialog.Description>
+        This is a basic dialog with default center positioning and scale animation.
+      </Dialog.Description>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Dialog.CloseTrigger>
+        <Button variant="outline">Cancel</Button>
+      </Dialog.CloseTrigger>
+      <Button>Confirm</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+## Confirmation Dialog
+
+Perfect for destructive actions that need user confirmation:
+
+```jsx-live
+<Dialog.Root>
+  <Dialog.Trigger>
+    <Button variant="destructive">Delete Item</Button>
+  </Dialog.Trigger>
+  <Dialog.Content size="sm">
+    <Dialog.Backdrop />
+    <Dialog.Header>
+      <Dialog.Title>Confirm Delete</Dialog.Title>
+      <Dialog.CloseTrigger>
+        <Button variant="ghost" size="sm">×</Button>
+      </Dialog.CloseTrigger>
+    </Dialog.Header>
+    <Dialog.Body>
+      <Dialog.Description>
+        This action cannot be undone. Are you sure you want to delete this item?
+      </Dialog.Description>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Dialog.CloseTrigger>
+        <Button variant="outline">Cancel</Button>
+      </Dialog.CloseTrigger>
+      <Button variant="destructive">Delete</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+## Form Dialog
+
+Ideal for short forms and user input:
+
+```jsx-live
+<Dialog.Root>
+  <Dialog.Trigger>
+    <Button>Edit Profile</Button>
+  </Dialog.Trigger>
+  <Dialog.Content size="md">
+    <Dialog.Backdrop />
+    <Dialog.Header>
+      <Dialog.Title>Edit Profile</Dialog.Title>
+      <Dialog.CloseTrigger>
+        <Button variant="ghost" size="sm">×</Button>
+      </Dialog.CloseTrigger>
+    </Dialog.Header>
+    <Dialog.Body>
+      <Stack gap="4">
+        <div>
+          <label htmlFor="name">Name</label>
+          <input id="name" type="text" placeholder="Enter your name" />
+        </div>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input id="email" type="email" placeholder="Enter your email" />
+        </div>
+      </Stack>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Dialog.CloseTrigger>
+        <Button variant="outline">Cancel</Button>
+      </Dialog.CloseTrigger>
+      <Button>Save Changes</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+## Alert Dialog
+
+For important notifications that require acknowledgment:
+
+```jsx-live
+<Dialog.Root>
+  <Dialog.Trigger>
+    <Button variant="outline">Show Alert</Button>
+  </Dialog.Trigger>
+  <Dialog.Content size="sm">
+    <Dialog.Backdrop />
+    <Dialog.Header>
+      <Dialog.Title>Important Notice</Dialog.Title>
+    </Dialog.Header>
+    <Dialog.Body>
+      <Dialog.Description>
+        Your session will expire in 5 minutes. Please save your work before continuing.
+      </Dialog.Description>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Dialog.CloseTrigger>
+        <Button>Understood</Button>
+      </Dialog.CloseTrigger>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+## Size Variants
+
+Dialog supports different sizes to match your content:
+
+```jsx-live
+<Stack gap="4">
+  <Dialog.Root>
+    <Dialog.Trigger>
+      <Button size="sm">Small Dialog</Button>
+    </Dialog.Trigger>
+    <Dialog.Content size="sm">
+      <Dialog.Backdrop />
+      <Dialog.Header>
+        <Dialog.Title>Small Dialog</Dialog.Title>
+        <Dialog.CloseTrigger>
+          <Button variant="ghost" size="sm">×</Button>
+        </Dialog.CloseTrigger>
+      </Dialog.Header>
+      <Dialog.Body>
+        <Dialog.Description>Perfect for simple confirmations.</Dialog.Description>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Dialog.CloseTrigger>
+          <Button size="sm">OK</Button>
+        </Dialog.CloseTrigger>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+  
+  <Dialog.Root>
+    <Dialog.Trigger>
+      <Button>Medium Dialog (Default)</Button>
+    </Dialog.Trigger>
+    <Dialog.Content size="md">
+      <Dialog.Backdrop />
+      <Dialog.Header>
+        <Dialog.Title>Medium Dialog</Dialog.Title>
+        <Dialog.CloseTrigger>
+          <Button variant="ghost" size="sm">×</Button>
+        </Dialog.CloseTrigger>
+      </Dialog.Header>
+      <Dialog.Body>
+        <Dialog.Description>The default size for most use cases.</Dialog.Description>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Dialog.CloseTrigger>
+          <Button>OK</Button>
+        </Dialog.CloseTrigger>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+  
+  <Dialog.Root>
+    <Dialog.Trigger>
+      <Button size="lg">Large Dialog</Button>
+    </Dialog.Trigger>
+    <Dialog.Content size="lg">
+      <Dialog.Backdrop />
+      <Dialog.Header>
+        <Dialog.Title>Large Dialog</Dialog.Title>
+        <Dialog.CloseTrigger>
+          <Button variant="ghost" size="sm">×</Button>
+        </Dialog.CloseTrigger>
+      </Dialog.Header>
+      <Dialog.Body>
+        <Dialog.Description>For complex forms or detailed content.</Dialog.Description>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Dialog.CloseTrigger>
+          <Button>OK</Button>
+        </Dialog.CloseTrigger>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+</Stack>
+```
+
+## Controlled State
+
+Use controlled state when you need programmatic control:
+
+```jsx-live
+function ControlledDialog() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <Stack gap="4">
+      <Text>Dialog is {isOpen ? 'open' : 'closed'}</Text>
+      
+      <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Dialog.Trigger>
+          <Button>Toggle Dialog</Button>
+        </Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Backdrop />
+          <Dialog.Header>
+            <Dialog.Title>Controlled Dialog</Dialog.Title>
+            <Dialog.CloseTrigger>
+              <Button variant="ghost" size="sm">×</Button>
+            </Dialog.CloseTrigger>
+          </Dialog.Header>
+          <Dialog.Body>
+            <Dialog.Description>
+              This dialog's state is controlled by the parent component.
+            </Dialog.Description>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Dialog.CloseTrigger>
+              <Button variant="outline">Cancel</Button>
+            </Dialog.CloseTrigger>
+            <Button onClick={() => setIsOpen(false)}>Save</Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+      
+      <Button onClick={() => setIsOpen(!isOpen)}>
+        Toggle from outside
+      </Button>
+    </Stack>
+  );
+}
+```
+
+## Accessibility
+
+Dialog provides comprehensive accessibility features:
+
+- **Focus management** - Focus moves to dialog and returns to trigger on close
+- **Keyboard navigation** - Tab cycles through interactive elements
+- **Escape key** - Closes the dialog
+- **Click outside** - Dismisses the dialog (configurable)
+- **Screen reader support** - Proper ARIA labels and descriptions
+- **Role semantics** - Uses `role="dialog"` with accessible labeling
+
+### ARIA Labels
+
+Always provide accessible labels:
+
+```jsx-live
+<Dialog.Root>
+  <Dialog.Trigger>
+    <Button>Settings</Button>
+  </Dialog.Trigger>
+  <Dialog.Content>
+    <Dialog.Backdrop />
+    <Dialog.Header>
+      <Dialog.Title>Application Settings</Dialog.Title>
+      <Dialog.CloseTrigger aria-label="Close settings dialog">
+        <Button variant="ghost" size="sm">×</Button>
+      </Dialog.CloseTrigger>
+    </Dialog.Header>
+    <Dialog.Body>
+      <Dialog.Description>
+        Modify your application preferences and account settings.
+      </Dialog.Description>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Dialog.CloseTrigger>
+        <Button>Close</Button>
+      </Dialog.CloseTrigger>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+## API Reference
+
+<PropsTable id="Dialog" />
+
+## Comparison with Modal
+
+| Feature | Dialog | Modal |
+|---------|--------|-------|
+| **Default Position** | Center | Configurable |
+| **Default Animation** | Scale | Configurable |
+| **Use Cases** | Alerts, confirmations, short forms | Large content, drawers, complex layouts |
+| **Size Options** | xs, sm, md, lg, xl | xs, sm, md, lg, xl, cover, full |
+| **Placement** | center, top, bottom | center, top, bottom |
+
+Choose **Dialog** for traditional modal dialogs that need user attention. Choose **Modal** for larger content areas or when you need more layout flexibility.
 

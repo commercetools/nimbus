@@ -1,5 +1,11 @@
 import { Info, Add } from "@commercetools/nimbus-icons";
-import { Button, Dialog, TextInput, Stack, Text } from "@commercetools/nimbus";
+import {
+  Button,
+  LegacyDialog,
+  TextInput,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { useCreateDocument } from "@/hooks/useCreateDocument";
 
 /**
@@ -21,9 +27,9 @@ export const AppNavBarCreateButton = () => {
   } = useCreateDocument();
 
   return (
-    <Dialog.Root open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
-      <Dialog.Backdrop />
-      <Dialog.Trigger asChild>
+    <LegacyDialog.Root open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
+      <LegacyDialog.Backdrop />
+      <LegacyDialog.Trigger asChild>
         <Button
           colorPalette="primary"
           size="xs"
@@ -33,15 +39,15 @@ export const AppNavBarCreateButton = () => {
           <Add />
           New document
         </Button>
-      </Dialog.Trigger>
-      <Dialog.Content divideY="1px">
-        <Dialog.Header>
-          <Dialog.Title>Create New Document</Dialog.Title>
-          <Dialog.Description>
+      </LegacyDialog.Trigger>
+      <LegacyDialog.Content divideY="1px">
+        <LegacyDialog.Header>
+          <LegacyDialog.Title>Create New Document</LegacyDialog.Title>
+          <LegacyDialog.Description>
             Fill in the details to create a new document.
-          </Dialog.Description>
-        </Dialog.Header>
-        <Dialog.Body>
+          </LegacyDialog.Description>
+        </LegacyDialog.Header>
+        <LegacyDialog.Body>
           {!isLoading ? (
             <Stack gap="400" mt="400">
               <Stack>
@@ -104,9 +110,9 @@ export const AppNavBarCreateButton = () => {
               Saving in progress...
             </Text>
           )}
-        </Dialog.Body>
+        </LegacyDialog.Body>
         {!isLoading && (
-          <Dialog.Footer>
+          <LegacyDialog.Footer>
             <Button variant="ghost" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
@@ -118,9 +124,9 @@ export const AppNavBarCreateButton = () => {
             >
               Create
             </Button>
-          </Dialog.Footer>
+          </LegacyDialog.Footer>
         )}
-      </Dialog.Content>
-    </Dialog.Root>
+      </LegacyDialog.Content>
+    </LegacyDialog.Root>
   );
 };
