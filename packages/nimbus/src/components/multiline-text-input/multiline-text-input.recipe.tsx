@@ -1,4 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 import { designTokens } from "@commercetools/nimbus-tokens";
 
 /**

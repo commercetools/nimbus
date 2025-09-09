@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
+import { mergeRefs } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
 import { Input } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -37,7 +38,7 @@ export const TextInput = (props: TextInputProps) => {
   const { inputProps } = useTextField(otherProps, ref);
 
   // Focus the input when clicking on the wrapper
-  const handleWrapperClick = (e: React.MouseEvent) => {
+  const handleWrapperClick = () => {
     // TODO: reliably ignore interactive elements
     localRef.current?.focus();
   };
