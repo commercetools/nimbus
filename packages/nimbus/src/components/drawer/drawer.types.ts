@@ -25,7 +25,7 @@ export type DrawerSize =
  * Props for the Drawer.Root component
  *
  * The root component that provides context and state management for the drawer.
- * Extends Modal.Root with drawer-specific functionality.
+ * Extends Dialog.Root with drawer-specific functionality.
  */
 export interface DrawerRootProps {
   /**
@@ -72,7 +72,7 @@ export interface DrawerTriggerProps extends ComponentProps<"button"> {
 /**
  * Props for the Drawer.Content component
  *
- * The main drawer content container that extends Modal.Content with
+ * The main drawer content container that extends Dialog.Content with
  * edge-positioning and drawer-specific behavior.
  */
 export interface DrawerContentProps

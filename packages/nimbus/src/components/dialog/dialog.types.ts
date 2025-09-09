@@ -1,111 +1,228 @@
-import type {
-  ModalRootProps,
-  ModalTriggerProps,
-  ModalContentProps,
-  ModalBackdropProps,
-  ModalHeaderProps,
-  ModalBodyProps,
-  ModalFooterProps,
-  ModalTitleProps,
-  ModalDescriptionProps,
-  ModalCloseTriggerProps,
-} from "../modal/modal.types";
+import { type ComponentProps } from "react";
+import { type RecipeVariantProps } from "@chakra-ui/react";
+import { dialogSlotRecipe } from "./dialog.recipe";
 
 /**
  * Props for the Dialog.Root component
  *
  * The root component that provides context and state management for the dialog.
- * Identical to Modal.Root as it uses the same underlying implementation.
+ * Uses React Aria's DialogTrigger for accessibility and state management.
  */
-export interface DialogRootProps extends ModalRootProps {}
+export interface DialogRootProps {
+  /**
+   * The children components (Trigger, Content, etc.)
+   */
+  children: React.ReactNode;
+
+  /**
+   * Whether the dialog is open (controlled mode)
+   */
+  isOpen?: boolean;
+
+  /**
+   * Callback fired when the dialog open state changes
+   * @param isOpen - Whether the dialog is now open
+   */
+  onOpenChange?: (isOpen: boolean) => void;
+
+  /**
+   * Whether the dialog is open by default (uncontrolled mode)
+   * @default false
+   */
+  defaultOpen?: boolean;
+
+}
 
 /**
  * Props for the Dialog.Trigger component
  *
  * The trigger element that opens the dialog when activated.
- * Identical to Modal.Trigger as it uses the same underlying implementation.
  */
-export interface DialogTriggerProps extends ModalTriggerProps {}
+export interface DialogTriggerProps extends ComponentProps<"button"> {
+  /**
+   * The trigger content
+   */
+  children: React.ReactNode;
+
+  /**
+   * Whether to render as a child element (use children directly as the trigger)
+   * @default false
+   */
+  asChild?: boolean;
+
+  /**
+   * Whether the trigger is disabled
+   * @default false
+   */
+  isDisabled?: boolean;
+}
 
 /**
  * Props for the Dialog.Content component
  *
- * The main dialog content container optimized for center-positioned modal dialogs.
- * Extends Modal.Content with Dialog-specific defaults for placement and motionPreset.
+ * The main dialog content container that wraps the React Aria Dialog and Dialog.
  */
 export interface DialogContentProps
-  extends Omit<ModalContentProps, "placement" | "motionPreset"> {
+  extends ComponentProps<"div">,
+    RecipeVariantProps<typeof dialogSlotRecipe> {
   /**
-   * The placement of the dialog content
-   * @default "center" - Dialogs are optimized for center positioning
+   * The dialog content
    */
-  placement?: "center" | "top" | "bottom";
+  children: React.ReactNode;
 
   /**
-   * The motion preset for dialog animations
-   * @default "scale" - Dialogs use scale animation for better UX
+   * Whether to render the dialog in a portal
+   * @default true
    */
-  motionPreset?:
-    | "scale"
-    | "slide-in-bottom"
-    | "slide-in-top"
-    | "slide-in-left"
-    | "slide-in-right"
-    | "none";
+  isPortalled?: boolean;
+
+  /**
+   * The container element for the portal
+   */
+  portalContainer?: HTMLElement | (() => HTMLElement);
+
+  /**
+   * Whether to show the backdrop overlay
+   * @default true
+   */
+  hasBackdrop?: boolean;
+
+  /**
+   * Whether the dialog should close when clicking outside
+   * @default true
+   */
+  isDismissable?: boolean;
+
+  /**
+   * Whether the dialog should close when pressing Escape
+   * @default true
+   */
+  isKeyboardDismissDisabled?: boolean;
+
+  /**
+   * Callback fired when the dialog requests to be closed
+   */
+  onClose?: () => void;
 }
 
 /**
  * Props for the Dialog.Backdrop component
  *
  * The backdrop overlay that appears behind the dialog content.
- * Identical to Modal.Backdrop as it uses the same underlying implementation.
  */
-export interface DialogBackdropProps extends ModalBackdropProps {}
+export interface DialogBackdropProps extends ComponentProps<"div"> {
+  /**
+   * Custom styles for the backdrop
+   */
+  style?: React.CSSProperties;
+}
 
 /**
  * Props for the Dialog.Header component
  *
  * The header section of the dialog content.
- * Identical to Modal.Header as it uses the same underlying implementation.
  */
-export interface DialogHeaderProps extends ModalHeaderProps {}
+export interface DialogHeaderProps extends ComponentProps<"header"> {
+  /**
+   * The header content
+   */
+  children: React.ReactNode;
+}
 
 /**
  * Props for the Dialog.Body component
  *
  * The main body content section of the dialog.
- * Identical to Modal.Body as it uses the same underlying implementation.
  */
-export interface DialogBodyProps extends ModalBodyProps {}
+export interface DialogBodyProps extends ComponentProps<"div"> {
+  /**
+   * The body content
+   */
+  children: React.ReactNode;
+}
 
 /**
  * Props for the Dialog.Footer component
  *
  * The footer section of the dialog, typically containing action buttons.
- * Identical to Modal.Footer as it uses the same underlying implementation.
  */
-export interface DialogFooterProps extends ModalFooterProps {}
+export interface DialogFooterProps extends ComponentProps<"footer"> {
+  /**
+   * The footer content (usually buttons)
+   */
+  children: React.ReactNode;
+}
 
 /**
  * Props for the Dialog.Title component
  *
  * The accessible title element for the dialog.
- * Identical to Modal.Title as it uses the same underlying implementation.
  */
-export interface DialogTitleProps extends ModalTitleProps {}
+export interface DialogTitleProps extends ComponentProps<"h2"> {
+  /**
+   * The title text
+   */
+  children: React.ReactNode;
+}
 
 /**
  * Props for the Dialog.Description component
  *
  * The accessible description element for the dialog.
- * Identical to Modal.Description as it uses the same underlying implementation.
  */
-export interface DialogDescriptionProps extends ModalDescriptionProps {}
+export interface DialogDescriptionProps extends ComponentProps<"p"> {
+  /**
+   * The description text
+   */
+  children: React.ReactNode;
+}
 
 /**
  * Props for the Dialog.CloseTrigger component
  *
  * A button that closes the dialog when activated.
- * Identical to Modal.CloseTrigger as it uses the same underlying implementation.
+ * Displays an IconButton with an X icon by default.
  */
-export interface DialogCloseTriggerProps extends ModalCloseTriggerProps {}
+export interface DialogCloseTriggerProps {
+  /**
+   * Accessible label for the close button
+   * @default "Close dialog"
+   */
+  "aria-label"?: string;
+
+  /**
+   * Additional class name
+   */
+  className?: string;
+
+  /**
+   * Whether the button is disabled
+   */
+  disabled?: boolean;
+}
+
+/**
+ * Size variants for the dialog
+ */
+export type DialogSize = "xs" | "sm" | "md" | "lg" | "xl" | "cover" | "full";
+
+/**
+ * Placement variants for the dialog
+ */
+export type DialogPlacement = "center" | "top" | "bottom";
+
+/**
+ * Scroll behavior variants for the dialog
+ */
+export type DialogScrollBehavior = "inside" | "outside";
+
+/**
+ * Motion preset variants for dialog animations
+ */
+export type DialogMotionPreset =
+  | "scale"
+  | "slide-in-bottom"
+  | "slide-in-top"
+  | "slide-in-left"
+  | "slide-in-right"
+  | "none";

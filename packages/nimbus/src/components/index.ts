@@ -50,7 +50,6 @@ export * from "./date-picker";
 export * from "./progress-bar";
 export * from "./range-calendar";
 export * from "./menu";
-export * from "./modal";
 export * from "./date-range-picker";
 export * from "./toolbar";
 export * from "./rich-text-input";
