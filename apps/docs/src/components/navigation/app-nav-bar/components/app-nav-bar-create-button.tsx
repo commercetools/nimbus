@@ -1,11 +1,5 @@
 import { Info, Add } from "@commercetools/nimbus-icons";
-import {
-  Button,
-  Dialog,
-  TextInput,
-  Stack,
-  Text,
-} from "@commercetools/nimbus";
+import { Button, Dialog, TextInput, Stack, Text } from "@commercetools/nimbus";
 import { useCreateDocument } from "@/hooks/useCreateDocument";
 
 /**

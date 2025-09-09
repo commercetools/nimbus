@@ -4,10 +4,10 @@ import type { ModalBodyProps } from "../modal.types";
 
 /**
  * # Modal.Body
- * 
+ *
  * The main body content section of the modal.
  * Contains the primary modal content and handles overflow/scrolling.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Content>

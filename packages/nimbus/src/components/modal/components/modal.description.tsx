@@ -5,10 +5,10 @@ import type { ModalDescriptionProps } from "../modal.types";
 
 /**
  * # Modal.Description
- * 
+ *
  * The accessible description element for the modal.
  * Uses React Aria's Text for proper accessibility and screen reader support.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Content>
@@ -20,18 +20,17 @@ import type { ModalDescriptionProps } from "../modal.types";
  * </Modal.Content>
  * ```
  */
-export const ModalDescription = forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
-  (props, ref) => {
-    const { children, ...restProps } = props;
+export const ModalDescription = forwardRef<
+  HTMLParagraphElement,
+  ModalDescriptionProps
+>((props, ref) => {
+  const { children, ...restProps } = props;
 
-    return (
-      <ModalDescriptionSlot ref={ref} asChild {...restProps}>
-        <RaText slot="description">
-          {children}
-        </RaText>
-      </ModalDescriptionSlot>
-    );
-  }
-);
+  return (
+    <ModalDescriptionSlot ref={ref} asChild {...restProps}>
+      <RaText slot="description">{children}</RaText>
+    </ModalDescriptionSlot>
+  );
+});
 
 ModalDescription.displayName = "Modal.Description";

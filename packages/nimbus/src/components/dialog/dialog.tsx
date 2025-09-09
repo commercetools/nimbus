@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { Modal } from "../modal/modal";
-import type { 
+import type {
   DialogRootProps,
   DialogTriggerProps,
   DialogContentProps,
@@ -18,11 +18,11 @@ export type * from "./dialog.types";
 
 /**
  * # Dialog.Content
- * 
+ *
  * Dialog-specific content component that wraps Modal.Content with optimized defaults.
- * Pre-configured for center positioning and scale animations - perfect for alerts, 
+ * Pre-configured for center positioning and scale animations - perfect for alerts,
  * confirmations, and form dialogs.
- * 
+ *
  * @example
  * ```tsx
  * <Dialog.Content size="md">
@@ -49,7 +49,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
     } = props;
 
     return (
-      <Modal.Content 
+      <Modal.Content
         ref={ref}
         placement={placement}
         motionPreset={motionPreset}
@@ -66,20 +66,20 @@ DialogContent.displayName = "Dialog.Content";
  * ============================================================
  * A center-focused dialog component optimized for alerts, confirmations, and modal forms.
  * Built on top of the Modal component with pre-configured defaults for traditional dialog use cases.
- * 
+ *
  * Key differences from Modal:
  * - Default placement: "center" (vs configurable)
- * - Default animation: "scale" (vs configurable) 
+ * - Default animation: "scale" (vs configurable)
  * - Optimized for quick interactions and focused content
  * - Perfect for alerts, confirmations, forms, and focused tasks
- * 
+ *
  * Features:
  * - All Modal functionality with dialog-optimized defaults
  * - WCAG 2.1 AA accessibility compliance via React Aria
  * - Focus management and keyboard navigation
  * - Click-outside and Escape key dismissal
  * - Backdrop overlay with smooth animations
- * 
+ *
  * @example
  * ```tsx
  * <Dialog.Root>
@@ -101,7 +101,7 @@ DialogContent.displayName = "Dialog.Content";
  *   </Dialog.Content>
  * </Dialog.Root>
  * ```
- * 
+ *
  * @see https://react-spectrum.adobe.com/react-aria/Dialog.html
  */
 export const Dialog = {
@@ -114,10 +114,9 @@ export const Dialog = {
   Footer: Modal.Footer as React.ComponentType<DialogFooterProps>,
   Title: Modal.Title as React.ComponentType<DialogTitleProps>,
   Description: Modal.Description as React.ComponentType<DialogDescriptionProps>,
-  CloseTrigger: Modal.CloseTrigger as React.ComponentType<DialogCloseTriggerProps>,
+  CloseTrigger:
+    Modal.CloseTrigger as React.ComponentType<DialogCloseTriggerProps>,
 };
 
 // Internal exports for react-docgen
-export {
-  DialogContent as _DialogContent,
-};
+export { DialogContent as _DialogContent };

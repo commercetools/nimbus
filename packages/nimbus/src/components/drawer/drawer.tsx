@@ -17,9 +17,9 @@ export type * from "./drawer.types";
  * ============================================================
  * A drawer component optimized for edge-positioned sliding panels.
  * Built on the Modal base component with React Aria Components for accessibility and WCAG 2.1 AA compliance.
- * 
+ *
  * Perfect for navigation panels, detail views, filters, and mobile-first interfaces.
- * 
+ *
  * Key Features:
  * - Edge positioning with automatic placement and animation mapping
  * - Four sides supported: left, right, top, bottom
@@ -29,13 +29,13 @@ export type * from "./drawer.types";
  * - Click-outside and Escape key dismissal
  * - Portal rendering support
  * - Backdrop overlay with animations
- * 
+ *
  * The `side` prop automatically configures placement and motion:
  * - side="left" → placement="left", motionPreset="slide-in-left"
- * - side="right" → placement="right", motionPreset="slide-in-right"  
+ * - side="right" → placement="right", motionPreset="slide-in-right"
  * - side="top" → placement="top", motionPreset="slide-in-top"
  * - side="bottom" → placement="bottom", motionPreset="slide-in-bottom"
- * 
+ *
  * @example
  * // Left navigation drawer
  * <Drawer.Root>
@@ -54,7 +54,7 @@ export type * from "./drawer.types";
  *     </Drawer.Body>
  *   </Drawer.Content>
  * </Drawer.Root>
- * 
+ *
  * @example
  * // Right detail panel drawer
  * <Drawer.Root>
@@ -77,7 +77,7 @@ export type * from "./drawer.types";
  *     </Drawer.Footer>
  *   </Drawer.Content>
  * </Drawer.Root>
- * 
+ *
  * @example
  * // Bottom mobile action sheet
  * <Drawer.Root>
@@ -95,12 +95,12 @@ export type * from "./drawer.types";
  *     </Drawer.Body>
  *   </Drawer.Content>
  * </Drawer.Root>
- * 
+ *
  * @see https://react-spectrum.adobe.com/react-aria/Dialog.html
  * @see Modal component (the base component this extends)
  */
 export const Drawer = {
-  Root: DrawerRoot,            // MUST BE FIRST - primary entry point
+  Root: DrawerRoot, // MUST BE FIRST - primary entry point
   Trigger: DrawerTrigger,
   Content: DrawerContent,
   Backdrop: DrawerBackdrop,

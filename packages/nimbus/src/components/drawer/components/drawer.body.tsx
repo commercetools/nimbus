@@ -4,10 +4,10 @@ import type { DrawerBodyProps } from "../drawer.types";
 
 /**
  * # Drawer.Body
- * 
+ *
  * The main body content section of the drawer.
  * Contains the primary drawer content with scrollable overflow handling.
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Content side="left">

@@ -5,10 +5,10 @@ import type { ModalTitleProps } from "../modal.types";
 
 /**
  * # Modal.Title
- * 
+ *
  * The accessible title element for the modal.
  * Uses React Aria's Heading for proper accessibility and screen reader support.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Content>

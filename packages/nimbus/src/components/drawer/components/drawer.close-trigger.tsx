@@ -5,13 +5,13 @@ import type { DrawerCloseTriggerProps } from "../drawer.types";
 
 /**
  * # Drawer.CloseTrigger
- * 
+ *
  * A button that closes the drawer when activated.
  * Uses React Aria's Button with proper accessibility features.
- * 
+ *
  * Automatically handles keyboard interaction and provides appropriate
  * ARIA labeling for screen readers.
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Content side="left">
@@ -24,27 +24,21 @@ import type { DrawerCloseTriggerProps } from "../drawer.types";
  * </Drawer.Content>
  * ```
  */
-export const DrawerCloseTrigger = forwardRef<HTMLButtonElement, DrawerCloseTriggerProps>(
-  (props, ref) => {
-    const { 
-      children, 
-      "aria-label": ariaLabel = "Close drawer", 
-      ...restProps 
-    } = props;
+export const DrawerCloseTrigger = forwardRef<
+  HTMLButtonElement,
+  DrawerCloseTriggerProps
+>((props, ref) => {
+  const {
+    children,
+    "aria-label": ariaLabel = "Close drawer",
+    ...restProps
+  } = props;
 
-    return (
-      <RaButton 
-        ref={ref} 
-        slot="close" 
-        aria-label={ariaLabel}
-        {...restProps}
-      >
-        <DrawerCloseTriggerSlot asChild>
-          {children}
-        </DrawerCloseTriggerSlot>
-      </RaButton>
-    );
-  }
-);
+  return (
+    <RaButton ref={ref} slot="close" aria-label={ariaLabel} {...restProps}>
+      <DrawerCloseTriggerSlot asChild>{children}</DrawerCloseTriggerSlot>
+    </RaButton>
+  );
+});
 
 DrawerCloseTrigger.displayName = "Drawer.CloseTrigger";

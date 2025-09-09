@@ -4,10 +4,10 @@ import type { ModalTriggerProps } from "../modal.types";
 
 /**
  * # Modal.Trigger
- * 
+ *
  * The trigger element that opens the modal when activated.
  * Uses React Aria's Button for accessibility and keyboard support.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Root>
@@ -21,9 +21,7 @@ export const ModalTrigger = (props: ModalTriggerProps) => {
 
   return (
     <ModalTriggerSlot asChild>
-      <RaButton {...restProps}>
-        {children}
-      </RaButton>
+      <RaButton {...restProps}>{children}</RaButton>
     </ModalTriggerSlot>
   );
 };

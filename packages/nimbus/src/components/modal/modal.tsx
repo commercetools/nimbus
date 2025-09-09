@@ -17,7 +17,7 @@ export type * from "./modal.types";
  * ============================================================
  * A foundational modal component that serves as the base for both Dialog and Drawer components.
  * Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
- * 
+ *
  * Features:
  * - Controlled and uncontrolled modes
  * - Customizable placement, size, and animations
@@ -25,7 +25,7 @@ export type * from "./modal.types";
  * - Click-outside and Escape key dismissal
  * - Portal rendering support
  * - Backdrop overlay with animations
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Root>
@@ -48,11 +48,11 @@ export type * from "./modal.types";
  *   </Modal.Content>
  * </Modal.Root>
  * ```
- * 
+ *
  * @see https://react-spectrum.adobe.com/react-aria/Dialog.html
  */
 export const Modal = {
-  Root: ModalRoot,          // MUST BE FIRST - primary entry point
+  Root: ModalRoot, // MUST BE FIRST - primary entry point
   Trigger: ModalTrigger,
   Content: ModalContent,
   Backdrop: ModalBackdrop,

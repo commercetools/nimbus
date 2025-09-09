@@ -144,7 +144,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
       },
       right: {
         positioner: {
-          justifyContent: "flex-end", 
+          justifyContent: "flex-end",
           alignItems: "stretch",
         },
         content: {
@@ -281,7 +281,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
             w: "2xl",
           },
           "&[data-side=top], &[data-side=bottom]": {
-            maxH: "2xl", 
+            maxH: "2xl",
             h: "2xl",
           },
         },
