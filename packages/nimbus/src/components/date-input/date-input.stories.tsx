@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DateInput } from "./date-input";
 import type { DateInputProps } from "./date-input.types";
-import { Button, FormField, Stack, Text } from "@/components";
+import { Button, FormField, Stack, Text, Icon } from "@/components";
 import {
   CalendarDate,
   CalendarDateTime,
@@ -270,7 +270,7 @@ export const LeadingIconVariantsSizesAndStates: Story = {
                           {...state.props}
                           variant={variant}
                           size={size}
-                          leadingElement={<CalendarMonth />}
+                          leadingElement={<Icon as={CalendarMonth} />}
                           defaultValue={new CalendarDate(2025, 6, 15)}
                           aria-label={`${state.label} ${variant} ${size} date input`}
                         />

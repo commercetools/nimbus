@@ -66,7 +66,9 @@ export const selectSlotRecipe = defineSlotRecipe({
       // [data-pending]
     },
     leadingElement: {
-      color: "neutral.10",
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
     },
     triggerLabel: {
       // *Magic*
@@ -168,17 +170,15 @@ export const selectSlotRecipe = defineSlotRecipe({
         root: {},
         trigger: {
           h: "800",
-          px: "400",
+          px: "300",
           textStyle: "sm",
         },
         triggerLabel: {
           pl: 100,
         },
         leadingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -192,10 +192,8 @@ export const selectSlotRecipe = defineSlotRecipe({
           pl: 200,
         },
         leadingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
       }, // Medium
     },

@@ -18,6 +18,7 @@ import {
   Flex,
   RadioInput,
   Button,
+  Icon,
 } from "@/components";
 import { ComboBox } from "./combobox";
 import { AddReaction } from "@commercetools/nimbus-icons";
@@ -903,7 +904,7 @@ export const ControlledState: Story = {
                 inputValue={singleInputValue}
                 onInputChange={handleSingleInputChange}
                 placeholder="Select an animal..."
-                leadingElement={<AddReaction />}
+                leadingElement={<Icon as={AddReaction} />}
               >
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
@@ -1128,7 +1129,7 @@ export const AllVariantsAndSizesWithLeadingElement: Story = {
                         size={size}
                         variant={variant}
                         placeholder={`type to search...`}
-                        leadingElement={<AddReaction />}
+                        leadingElement={<Icon as={AddReaction} boxSize="500" />}
                       >
                         {(item) => (
                           <ComboBox.Option>{item.name}</ComboBox.Option>
@@ -1145,7 +1146,7 @@ export const AllVariantsAndSizesWithLeadingElement: Story = {
                         size={size}
                         variant={variant}
                         placeholder={`focus to search...`}
-                        leadingElement={<AddReaction />}
+                        leadingElement={<Icon as={AddReaction} />}
                       >
                         {(item) => (
                           <ComboBox.Option>{item.name}</ComboBox.Option>

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Stack } from "@/components";
+import { Box, Stack, Icon } from "@/components";
 import { PasswordInput } from "./password-input";
 import { useState } from "react";
 import { within, expect, userEvent } from "storybook/test";
@@ -82,7 +82,7 @@ export const WithLeadingElement: Story = {
   args: {
     ["aria-label"]: "Enter your password",
     placeholder: "Password",
-    leadingElement: <AddReaction />,
+    leadingElement: <Icon as={AddReaction} />,
   },
   render: (args) => (
     <Stack gap="600">

@@ -41,18 +41,18 @@ export const timeInputRecipe = defineSlotRecipe({
     },
     segmentGroup: {
       display: "flex",
-      flexGrow: 1,
+      flex: "0 0 auto",
       borderRadius: "inherit",
       bg: "transparent",
       alignItems: "center",
     },
     leadingElement: {
-      color: "neutral.11",
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
     },
     trailingElement: {
-      color: "neutral.11",
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
     },
@@ -114,16 +114,12 @@ export const timeInputRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         leadingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
         trailingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -136,16 +132,12 @@ export const timeInputRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
         trailingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },

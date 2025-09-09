@@ -63,10 +63,12 @@ export const multilineTextInputRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
+      overflow: "hidden",
       display: "flex",
       justifyContent: "flex-start",
     },
     trailingElement: {
+      overflow: "hidden",
       display: "flex",
       justifyContent: "flex-start",
     },
@@ -92,17 +94,13 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         },
         leadingElement: {
           py: "100",
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
         trailingElement: {
           py: "100",
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -116,16 +114,12 @@ export const multilineTextInputRecipe = defineSlotRecipe({
           px: 200,
         },
         leadingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
         trailingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },

@@ -22,7 +22,7 @@ export const textInputSlotRecipe = defineSlotRecipe({
       },
 
       "& *": {
-        outline: "none !important",
+        outline: "none",
       },
 
       _hover: {
@@ -42,13 +42,13 @@ export const textInputSlotRecipe = defineSlotRecipe({
     },
 
     leadingElement: {
-      color: "neutral.10",
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
     },
 
     trailingElement: {
-      color: "neutral.10",
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
     },
@@ -57,7 +57,6 @@ export const textInputSlotRecipe = defineSlotRecipe({
       cursor: "inherit",
       display: "block",
       flexGrow: 1,
-      outline: "1px solid orange", // TODO: lol
       bg: "transparent",
 
       fontSize: "inherit",
@@ -79,16 +78,12 @@ export const textInputSlotRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         leadingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
         trailingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -99,16 +94,12 @@ export const textInputSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
         trailingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },

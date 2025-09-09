@@ -92,13 +92,11 @@ export const dateInputSlotRecipe = defineSlotRecipe({
           h: 800,
           textStyle: "sm",
           px: 300,
-          gap: 100
+          gap: 50,
         },
         leadingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -106,13 +104,11 @@ export const dateInputSlotRecipe = defineSlotRecipe({
           h: 1000,
           textStyle: "md",
           px: 400,
-          gap: 200,
+          gap: 100,
         },
         leadingElement: {
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },

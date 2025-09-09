@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MultilineTextInput } from "./multiline-text-input";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
+import { Box, Stack, Text, FormField, Icon } from "@/components";
 import { AddReaction } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof MultilineTextInput> = {
@@ -120,8 +120,8 @@ export const WithBothElementsVariantsAndSizes: Story = {
               {...args}
               variant={variant}
               size="sm"
-              leadingElement={<AddReaction />}
-              trailingElement={<AddReaction />}
+              leadingElement={<Icon as={AddReaction} />}
+              trailingElement={<Icon as={AddReaction} />}
               placeholder={`${variant as string} textarea`}
             />
           ))}
@@ -133,8 +133,8 @@ export const WithBothElementsVariantsAndSizes: Story = {
               {...args}
               variant={variant}
               size="md"
-              leadingElement={<AddReaction />}
-              trailingElement={<AddReaction />}
+              leadingElement={<Icon as={AddReaction} boxSize="500" />}
+              trailingElement={<Icon as={AddReaction} boxSize="500" />}
               placeholder={`${variant as string} textarea`}
             />
           ))}

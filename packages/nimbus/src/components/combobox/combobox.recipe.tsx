@@ -72,6 +72,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyContent: "center",
       height: "100%",
+      overflow: "hidden",
     },
     value: {
       display: "inline-flex",
@@ -173,12 +174,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           py: "100",
         },
         leadingElement: {
-          // pl: "200",
-          // pr: "100",
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          pl: "200",
+          pr: "50",
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       // Medium
@@ -191,12 +190,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           py: "100",
         },
         leadingElement: {
-          // pl: "400",
-          // pr: "200",
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          pl: "300",
+          pr: "100",
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },

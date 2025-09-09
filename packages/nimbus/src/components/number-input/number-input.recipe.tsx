@@ -47,12 +47,12 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
-      color: "neutral.10",
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
     },
     trailingElement: {
-      color: "neutral.10",
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
     },
@@ -129,21 +129,18 @@ export const numberInputRecipe = defineSlotRecipe({
           h: 800,
           textStyle: "sm",
           px: 100,
-          pr: 200,
+          pr: 100,
         },
         leadingElement: {
-          pl: 400,
-          pr: 200,
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          pl: 300,
+          pr: 100,
+          minHeight: "400",
+          minWidth: "400",
         },
         trailingElement: {
-          "& > *": {
-            h: "400",
-            w: "400",
-          },
+          pr: 500,
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -154,17 +151,13 @@ export const numberInputRecipe = defineSlotRecipe({
         },
         leadingElement: {
           pl: 400,
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
         trailingElement: {
           pr: 600,
-          "& > *": {
-            h: "500",
-            w: "500",
-          },
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Select } from "./select";
-import { Text, Stack, Box } from "@/components";
+import { Text, Stack, Box, Icon } from "@/components";
 import type { Key } from "react-aria";
 import { useState } from "react";
 import { type SelectRootProps } from "./select.types";
@@ -239,7 +239,7 @@ export const AsyncLoading: Story = {
           isLoading={isLoading}
           selectedKey={animal}
           onSelectionChange={setAnimal as SelectRootProps["onSelectionChange"]}
-          leadingElement={<AddReaction />}
+          leadingElement={<Icon as={AddReaction} />}
           aria-label="Select your new pet"
           data-testid="select"
         >
@@ -870,7 +870,7 @@ export const LeadingElementVariantsAndSizes: Story = {
                     key={JSON.stringify({ size })}
                     {...props}
                     aria-label="Select something"
-                    leadingElement={<AddReaction />}
+                    leadingElement={<Icon as={AddReaction} />}
                   >
                     <Select.Options>
                       <Select.Option>

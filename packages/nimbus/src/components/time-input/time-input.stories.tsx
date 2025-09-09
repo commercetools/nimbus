@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TimeInput } from "./time-input";
-import { Box, Button, FormField, Stack, Text } from "@/components";
+import { Box, Button, FormField, Stack, Text, Icon } from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
@@ -392,8 +392,8 @@ export const WithBothElementsAndSizes: Story = {
                 aria-label={`${variant}-variant TimeInput`}
                 {...args}
                 variant={variant}
-                leadingElement={<AddReaction />}
-                trailingElement={<AddReaction />}
+                leadingElement={<Icon as={AddReaction} />}
+                trailingElement={<Icon as={AddReaction} />}
               />
             </Box>
             <Box>
@@ -402,8 +402,8 @@ export const WithBothElementsAndSizes: Story = {
                 aria-label={`${variant}-variant TimeInput`}
                 {...args}
                 variant={variant}
-                leadingElement={<AddReaction />}
-                trailingElement={<AddReaction />}
+                leadingElement={<Icon as={AddReaction} boxSize="500" />}
+                trailingElement={<Icon as={AddReaction} boxSize="500" />}
               />
             </Box>
           </Stack>
