@@ -17,8 +17,18 @@ import type { ModalTriggerProps } from "../modal.types";
  * ```
  */
 export const ModalTrigger = (props: ModalTriggerProps) => {
-  const { children, ...restProps } = props;
+  const { children, asChild, ...restProps } = props;
 
+  // If asChild is true, wrap children directly in RaButton with asChild
+  if (asChild) {
+    return (
+      <ModalTriggerSlot {...restProps} asChild>
+        {children}
+      </ModalTriggerSlot>
+    );
+  }
+
+  // Otherwise, wrap with both ModalTriggerSlot and RaButton
   return (
     <ModalTriggerSlot asChild>
       <RaButton {...restProps}>{children}</RaButton>

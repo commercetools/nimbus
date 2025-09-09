@@ -21,20 +21,15 @@ export const AppNavBarCreateButton = () => {
   } = useCreateDocument();
 
   return (
-    <Dialog.Root open={isOpen} onEscapeKeyDown={() => setIsOpen(false)}>
-      <Dialog.Backdrop />
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
-        <Button
-          colorPalette="primary"
-          size="xs"
-          variant="ghost"
-          onPress={() => setIsOpen(true)}
-        >
+        <Button colorPalette="primary" size="xs" variant="ghost">
           <Add />
           New document
         </Button>
       </Dialog.Trigger>
       <Dialog.Content divideY="1px">
+        <Dialog.Backdrop />
         <Dialog.Header>
           <Dialog.Title>Create New Document</Dialog.Title>
           <Dialog.Description>
