@@ -2,7 +2,7 @@ import {
   Flex,
   Box,
   useHotkeys,
-  Modal,
+  Dialog,
   TextInput,
   Text,
   Kbd,
@@ -45,7 +45,7 @@ export const AppNavBarSearch = () => {
 
   return (
     <Flex grow="1">
-      <Modal.Root
+      <Dialog.Root
         open={open}
         placement="top"
         motionPreset="slide-in-bottom"
@@ -53,7 +53,7 @@ export const AppNavBarSearch = () => {
         scrollBehavior="outside"
         size="xl"
       >
-        <Modal.Trigger asChild>
+        <Dialog.Trigger asChild>
           <Box position="relative">
             <TextInput
               size="md"
@@ -69,13 +69,15 @@ export const AppNavBarSearch = () => {
               <Kbd>⌘+K</Kbd>
             </Box>
           </Box>
-        </Modal.Trigger>
-        <Modal.Content divideY="1px" backdropBlur="5px">
-          <Modal.Backdrop />
-          <Modal.Header>
-            <Modal.Title fontWeight="600">Search the Documentation</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
+        </Dialog.Trigger>
+        <Dialog.Content divideY="1px" backdropBlur="5px">
+          <Dialog.Backdrop />
+          <Dialog.Header>
+            <Dialog.Title fontWeight="600">
+              Search the Documentation
+            </Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
             <ComboBox
               inputValue={query}
               onInputChange={setQuery}
@@ -131,9 +133,9 @@ export const AppNavBarSearch = () => {
                 <strong>Enter</strong> to confirm selection.
               </Text>
             </ComboBox>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal.Root>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
     </Flex>
   );
 };
