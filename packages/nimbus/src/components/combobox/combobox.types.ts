@@ -84,8 +84,7 @@ export interface ComboBoxMultiSelectRootSlotProps<T extends object>
   extends HTMLChakraProps<
     "div",
     RecipeVariantProps<typeof comboBoxSlotRecipe> & ComboBoxMultiSelect<T>
-  > {
-}
+  > {}
 /** Combined props for the multi select root element (Chakra styles + Aria behavior + Recipe variants). */
 export interface ComboBoxMultiSelectRootProps<T extends object>
   extends Omit<ComboBoxMultiSelectRootSlotProps<T>, "selectionMode">,
@@ -118,7 +117,7 @@ export type ComboBoxMultiSelectValueProps<T extends object> = {
   ref?: Ref<HTMLDivElement>;
   containerRef?: RefObject<HTMLDivElement | null>;
   size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
-    /**
+  /**
    * Optional element to display at the start of the input
    * Will respect text direction (left in LTR, right in RTL)
    */

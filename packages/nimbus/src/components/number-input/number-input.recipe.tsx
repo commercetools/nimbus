@@ -77,7 +77,6 @@ export const numberInputRecipe = defineSlotRecipe({
         "--border-color": "colors.critical.7",
         color: "critical.11",
       },
-
     },
     incrementButton: {
       "--border-width": "sizes.25",

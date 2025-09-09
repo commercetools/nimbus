@@ -29,7 +29,13 @@ import messages from "./number-input.i18n";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
  */
 export const NumberInput = (props: NumberInputProps) => {
-  const { size, leadingElement, trailingElement, ref: forwardedRef, ...restProps } = props;
+  const {
+    size,
+    leadingElement,
+    trailingElement,
+    ref: forwardedRef,
+    ...restProps
+  } = props;
   const { locale } = useLocale();
   const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
