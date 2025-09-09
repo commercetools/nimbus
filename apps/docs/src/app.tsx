@@ -1,4 +1,5 @@
 import { NimbusProvider, Flex, Box, Stack } from "@commercetools/nimbus";
+import { IntlProvider } from "react-intl";
 import { Menu } from "./components/navigation/menu";
 import { DocumentRenderer } from "./components/document-renderer";
 import { Toc } from "./components/navigation/toc";
@@ -14,10 +15,11 @@ function App() {
   const [, setActiveRoute] = useAtom(activeRouteAtom);
 
   return (
-    <RouterProvider>
-      <NimbusProvider router={{ navigate: setActiveRoute }}>
-        <>
-          <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
+    <IntlProvider locale="en" messages={{}}>
+      <RouterProvider>
+        <NimbusProvider router={{ navigate: setActiveRoute }}>
+          <>
+            <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
             <Box position="sticky" top="0" zIndex="1" bg="neutral.1">
               <AppNavBar />
             </Box>
@@ -65,9 +67,10 @@ function App() {
               </StickySidebar>
             </Flex>
           </Flex>
-        </>
-      </NimbusProvider>
-    </RouterProvider>
+          </>
+        </NimbusProvider>
+      </RouterProvider>
+    </IntlProvider>
   );
 }
 
