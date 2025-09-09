@@ -291,9 +291,82 @@ export const AsyncLoading: Story = {
 };
 
 /**
- * Disabled
- * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
+ * Clearable
+ * Demonstrates the isClearable prop which shows a clear button when a value is selected
  */
+export const Clearable: Story = {
+  render: () => {
+    return (
+      <Stack gap="600">
+        <Box>
+          <Text fontWeight="bold" mb="200">
+            Clearable Select (isClearable=true)
+          </Text>
+          <Select.Root
+            isClearable={true}
+            defaultSelectedKey="apple"
+            aria-label="Select a fruit"
+            data-testid="clearable-select"
+          >
+            <Select.Options>
+              <Select.Option id="apple">Apple</Select.Option>
+              <Select.Option id="banana">Banana</Select.Option>
+              <Select.Option id="orange">Orange</Select.Option>
+            </Select.Options>
+          </Select.Root>
+        </Box>
+
+        <Box>
+          <Text fontWeight="bold" mb="200">
+            Non-clearable Select (isClearable=false)
+          </Text>
+          <Select.Root
+            isClearable={false}
+            defaultSelectedKey="banana"
+            aria-label="Select a fruit"
+            data-testid="non-clearable-select"
+          >
+            <Select.Options>
+              <Select.Option id="apple">Apple</Select.Option>
+              <Select.Option id="banana">Banana</Select.Option>
+              <Select.Option id="orange">Orange</Select.Option>
+            </Select.Options>
+          </Select.Root>
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Clear button is rendered when isClearable=true and value is selected",
+      async () => {
+        const clearableSelect = canvas.getByTestId("clearable-select");
+        const clearButton = clearableSelect.querySelector(
+          '[aria-label="Clear selection"]'
+        );
+        await expect(clearButton).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Clear button is NOT rendered when isClearable=false and value is selected",
+      async () => {
+        const nonClearableSelect = canvas.getByTestId("non-clearable-select");
+        const clearButton = nonClearableSelect.querySelector(
+          '[aria-label="Clear selection"]'
+        );
+        await expect(clearButton).not.toBeInTheDocument();
+      }
+    );
+  },
+};
+
+// /**
+//  * Disabled
+//  * @see https://react-spectrum.adobe.com/react-aria/Select.html#disabled
+//  */
 export const Disabled: Story = {
   render: () => {
     return (

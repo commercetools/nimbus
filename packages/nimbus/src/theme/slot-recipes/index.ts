@@ -14,6 +14,7 @@ import { rangeCalendarSlotRecipe } from "@/components/range-calendar/range-calen
 import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
+import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -29,6 +30,8 @@ import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-r
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
+import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -45,9 +48,11 @@ export const slotRecipes = {
   dateInput: dateInputSlotRecipe,
   dateRangePicker: dateRangePickerSlotRecipe,
   datePicker: datePickerSlotRecipe,
+  dataTable: dataTableSlotRecipe,
   radioInput: radioInputSlotRecipe,
   combobox: comboBoxSlotRecipe,
   progressBar: progressBarSlotRecipe,
   menu: menuSlotRecipe,
   textInput: textInputSlotRecipe,
+  splitButton: splitButtonSlotRecipe,
 };

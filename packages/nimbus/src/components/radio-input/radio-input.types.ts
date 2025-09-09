@@ -2,7 +2,7 @@ import type {
   HTMLChakraProps,
   RecipeVariantProps,
   RecipeProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { radioInputSlotRecipe } from "./radio-input.recipe";
 import type {
   RadioGroupProps as RaRadioGroupProps,

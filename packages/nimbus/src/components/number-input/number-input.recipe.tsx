@@ -69,6 +69,15 @@ export const numberInputRecipe = defineSlotRecipe({
         opacity: 0.5,
         color: "currentColor",
       },
+      "&[data-disabled='true']": {
+        layerStyle: "disabled",
+        bg: "neutral.3",
+      },
+      "&[data-invalid='true']": {
+        "--border-color": "colors.critical.7",
+        color: "critical.11",
+      },
+
     },
     incrementButton: {
       "--border-width": "sizes.25",
@@ -83,7 +92,7 @@ export const numberInputRecipe = defineSlotRecipe({
       _active: {
         bg: "neutral.4",
       },
-      _disabled: {
+      "&[data-disabled='true']": {
         opacity: 0.5,
         cursor: "not-allowed",
       },
@@ -108,7 +117,7 @@ export const numberInputRecipe = defineSlotRecipe({
       _active: {
         bg: "neutral.4",
       },
-      _disabled: {
+      "&[data-disabled='true']": {
         opacity: 0.5,
         cursor: "not-allowed",
       },

@@ -3,7 +3,7 @@ import type { Preview } from "@storybook/react-vite";
 
 import { APCACheck } from "./apca-check";
 import { CustomDocsContainer } from "./docs-container";
-import { ThemeDecorator } from "./theme-decorator";
+import { ThemeDecorator, WithIntlDecorator } from "./decorators";
 
 const apca = APCACheck("custom", (fontSize: string) => {
   const size = parseFloat(fontSize);
@@ -53,6 +53,7 @@ const preview: Preview = {
   },
   tags: ["autodocs", "a11y-test"],
   decorators: [
+    WithIntlDecorator,
     (Story, context) => {
       return (
         <ThemeDecorator context={context}>
@@ -78,7 +79,7 @@ export const globalTypes = {
         { value: "de", right: "🇩🇪", title: "German (de)" },
         { value: "es", right: "🇪🇸", title: "Spanish (es)" },
         { value: "fr-FR", right: "🇫🇷", title: "French (fr-FR)" },
-        { value: "pt-BR", right: "🇵🇹", title: "Portuguese (pt-PT)" },
+        { value: "pt-BR", right: "🇧🇷", title: "Portuguese (pt-BR)" },
       ],
       dynamicTitle: true,
     },

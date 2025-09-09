@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 
 import { dividerRecipe } from "./divider.recipe";
 import type { DividerRootProps } from "./divider.types";

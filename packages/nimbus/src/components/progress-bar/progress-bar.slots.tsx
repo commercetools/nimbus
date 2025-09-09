@@ -1,10 +1,10 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type {
   RecipeProps,
   UnstyledProp,
   HTMLChakraProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { AriaProgressBarProps } from "react-aria";
 import { progressBarSlotRecipe } from "./progress-bar.recipe.tsx";
 
@@ -21,10 +21,11 @@ export interface ProgressBarRecipeProps
  * aria props, and data attributes.
  */
 export interface ProgressBarRootProps
-  extends HTMLChakraProps<"div", ProgressBarRecipeProps>,
+  extends Omit<HTMLChakraProps<"div", ProgressBarRecipeProps>, "translate">,
     Omit<RecipeVariantProps<typeof progressBarSlotRecipe>, "isIndeterminate">,
     AriaProgressBarProps {
   [key: `data-${string}`]: string;
+  translate?: "yes" | "no";
 }
 
 const { withProvider, withContext } = createSlotRecipeContext({

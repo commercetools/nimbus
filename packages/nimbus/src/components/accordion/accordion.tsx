@@ -1,4 +1,4 @@
-import { AccordionHeaderRightContent } from "./accordion.slots";
+import { AccordionHeaderRightContentSlot } from "./accordion.slots";
 import { AccordionRoot } from "./components/accordion-root";
 import { AccordionHeader } from "./components/accordion-header";
 import { AccordionContent } from "./components/accordion-content";
@@ -10,7 +10,7 @@ export const Accordion = {
   Item: AccordionItem,
   Header: AccordionHeader,
   Content: AccordionContent,
-  HeaderRightContent: AccordionHeaderRightContent,
+  HeaderRightContent: AccordionHeaderRightContentSlot,
 };
 
 export {
@@ -18,5 +18,5 @@ export {
   AccordionItem as _AccordionItem,
   AccordionHeader as _AccordionHeader,
   AccordionContent as _AccordionContent,
-  AccordionHeaderRightContent as _AccordionHeaderRightContent,
+  AccordionHeaderRightContentSlot as _AccordionHeaderRightContent,
 };

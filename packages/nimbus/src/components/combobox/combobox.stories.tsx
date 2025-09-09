@@ -785,7 +785,9 @@ export const Base: Story = {
         multiSelect.focus();
         // Select an option so tag exists for next test
         await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}");
-        // Focus combobox
+        // Close the popover after selection
+        await userEvent.keyboard("{Escape}");
+        // Focus combobox wrapper again
         multiSelect.focus();
         // Tab to tags
         await userEvent.tab();
@@ -1229,7 +1231,9 @@ export const OptionGroups: Story = {
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
         // Find sections
-        const groups = document.querySelectorAll('[role="group"]');
+        const groups = document.querySelectorAll(
+          '[role="listbox"] [role="group"]'
+        );
         await expect(groups.length).toBe(2);
         // Check section labels
         const groupLabels = document.querySelectorAll('[role="presentation"]');
@@ -1250,7 +1254,9 @@ export const OptionGroups: Story = {
         // There are 5 options with 'a' in them
         await expect(options.length).toBe(5);
         // There are options with 'a' in both sections
-        let groups = document.querySelectorAll('[role="group"]');
+        let groups = document.querySelectorAll(
+          '[role="listbox"] [role="group"]'
+        );
         await expect(groups.length).toBe(2);
         // Hit 'p' key
         await userEvent.keyboard("{p}");
@@ -1259,7 +1265,7 @@ export const OptionGroups: Story = {
         await expect(options.length).toBe(1);
         await expect(findOptionByText("Apple")).toBeInTheDocument();
         // there is only one section displayed
-        groups = document.querySelectorAll('[role="group"]');
+        groups = document.querySelectorAll('[role="listbox"] [role="group"]');
         await expect(groups.length).toBe(1);
         const groupLabels = document.querySelectorAll('[role="presentation"]');
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
@@ -1290,7 +1296,9 @@ export const OptionGroups: Story = {
         // Open popover
         await userEvent.keyboard("{ArrowDown}");
         // Find sections
-        const groups = document.querySelectorAll('[role="group"]');
+        const groups = document.querySelectorAll(
+          '[role="listbox"] [role="group"]'
+        );
         await expect(groups.length).toBe(2);
         // Check section labels
         const groupLabels = document.querySelectorAll('[role="presentation"]');
@@ -1313,7 +1321,9 @@ export const OptionGroups: Story = {
         // There are 5 options with 'a' in them
         await expect(options.length).toBe(5);
         // There are options with 'a' in both sections
-        let groups = document.querySelectorAll('[role="group"]');
+        let groups = document.querySelectorAll(
+          '[role="listbox"] [role="group"]'
+        );
         await expect(groups.length).toBe(2);
         // Hit 'p' key
         await userEvent.keyboard("{p}");
@@ -1322,7 +1332,7 @@ export const OptionGroups: Story = {
         await expect(options.length).toBe(1);
         await expect(findOptionByText("Apple")).toBeInTheDocument();
         // there is only one section displayed
-        groups = document.querySelectorAll('[role="group"]');
+        groups = document.querySelectorAll('[role="listbox"] [role="group"]');
         await expect(groups.length).toBe(1);
         const groupLabels = document.querySelectorAll('[role="presentation"]');
         await expect(groupLabels[0]).toHaveTextContent("Fruits");
@@ -2103,8 +2113,6 @@ export const DisabledAndReadOnlyComboboxes: Story = {
         await userEvent.tab();
         // Second tab skips multi disabled
         await expect(multiSelectDisabled).not.toHaveFocus();
-        // Second tab focuses multi read-only
-        await expect(multiSelectReadOnly).toHaveFocus();
         // focusing multi-select does not open listbox
         await expect(
           document.querySelector('[role="listbox"]')

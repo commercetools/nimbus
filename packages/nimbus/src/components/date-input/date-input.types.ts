@@ -1,5 +1,5 @@
 import type { DateInputRootProps } from "./date-input.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateValue } from "react-aria";
 import type { DateFieldProps } from "react-aria-components";

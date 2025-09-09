@@ -5,11 +5,10 @@ import type {
   MenuItemProps as RaMenuItemProps,
   ButtonProps as RaButtonProps,
   PopoverProps as RaPopoverProps,
-  SeparatorProps as RaSeparatorProps,
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type { MenuTriggerSlotProps } from "./menu.slots";
 import { menuSlotRecipe } from "./menu.recipe";
 
@@ -57,11 +56,6 @@ export interface MenuItemProps extends RaMenuItemProps {
    * if set to `true`, highlights the item as critical (red)
    * */
   isCritical?: boolean;
-  ref?: Ref<HTMLDivElement>;
-}
-
-// Menu separator component
-export interface MenuSeparatorProps extends RaSeparatorProps {
   ref?: Ref<HTMLDivElement>;
 }
 

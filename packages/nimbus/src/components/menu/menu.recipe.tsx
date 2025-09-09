@@ -1,4 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 /**
  * Recipe configuration for the Menu component.
@@ -11,7 +11,6 @@ export const menuSlotRecipe = defineSlotRecipe({
     "popover",
     "content",
     "item",
-    "separator",
     "section",
     "sectionLabel",
     "submenu",
@@ -59,25 +58,31 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&:focus": {
         outline: "none",
       },
+      // Target direct descendant Divider components
+      '& > [role="separator"]': {
+        mx: "-200",
+        my: "200",
+        // compensate for left & right bleed
+        width: "calc(100% + {sizes.400})",
+      },
     },
     item: {
       display: "grid",
       /*
-       * Define a 5-column grid:
-       * 1. selection – checkbox (size to content, 0 when no selection mode)
-       * 2. icon      – size to its content (usually 0 when no icon)
-       * 3. label/description – takes up all remaining space
-       * 4. keyboard  – size to its content (or 0 when missing)
-       * 5. flyout    – size to its content (or 0 when missing)
+       * Define a 4-column grid:
+       * 1. icon      – size to its content (usually 0 when no icon)
+       * 2. label/description – takes up all remaining space
+       * 3. keyboard  – size to its content (or 0 when missing)
+       * 4. flyout    – size to its content (or 0 when missing)
        *
-       * Using `1fr` for the third column ensures that, when columns 4 or 5
+       * Using `1fr` for the second column ensures that, when columns 3 or 4
        * are absent for a particular row, the label/description column expands
        * to fill the available width instead of leaving empty reserved space.
        */
-      gridTemplateColumns: "auto auto 1fr auto auto",
+      gridTemplateColumns: "auto 1fr auto auto",
       gridTemplateAreas: `
-        'selection icon label keyboard flyoutCaret'
-        'selection icon description keyboard flyoutCaret'`,
+        'icon label keyboard flyoutCaret'
+        'icon description keyboard flyoutCaret'`,
       flexDirection: "column",
       alignItems: "start",
       px: "300",
@@ -107,10 +112,6 @@ export const menuSlotRecipe = defineSlotRecipe({
 
       "&[data-selected]": {
         bg: "primary.3",
-
-        "& [slot='selection']": {
-          color: "primary.9",
-        },
       },
 
       // Critical state
@@ -178,45 +179,11 @@ export const menuSlotRecipe = defineSlotRecipe({
         boxSize: "500",
       },
 
-      // Styles for Checkbox[slot="selection"]
-      "& [slot='selection']": {
-        gridArea: "selection",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        ml: "200",
-        mr: "300",
-        my: "auto",
-        color: "neutral.11",
-
-        /** has-submenu + selectable = impossible = hide checkbox*/
-        "[data-has-submenu='true']&": {
-          opacity: ".0",
-          ml: "-600",
-        },
-
-        "& svg": {
-          boxSize: "500",
-        },
-      },
-
-      // Adjust padding when selection mode is active
-      "&[data-selection-mode]": {
-        paddingInlineStart: "200",
-      },
-
       // Disabled state
       "&[data-disabled]": {
         layerStyle: "disabled",
         pointerEvents: "none",
       },
-    },
-    separator: {
-      height: "25",
-      flexShrink: 0,
-      backgroundColor: "neutral.6",
-      my: "200",
-      mx: "-200",
     },
     section: {
       display: "flex",

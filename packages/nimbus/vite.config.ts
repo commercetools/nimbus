@@ -18,7 +18,7 @@ const createEntries = async () => {
   const componentEntryPoints = await glob("src/components/**/index.ts");
   // Declare an entrypoint for each component's index file. This enables consuming applications to only bundle the components imported into their app, instead of requiring that consumers bundle all components if they use any component.
   for (const file of componentEntryPoints) {
-    // Get the name of the folder containing the index file to maintain semi-unique file/entrypooint names
+    // Get the name of the folder containing the index file to maintain semi-unique file/entrypoint names
     const fileName = file.split("/").at(-2)?.split(".")[0];
     // Don't create an entrypoint if there is not a file name (should not happen)
     if (!fileName) {
@@ -45,10 +45,11 @@ const external = [
   // React core
   "react",
   "react-dom",
+  "react-intl",
   "react/jsx-runtime",
 
   // UI frameworks & styling.
-  "@chakra-ui/react",
+  new RegExp("@chakra-ui/react?[^.].*$"),
   // TODO: evaluate whether it makes more sense for `react-aria` and related packages to be bundled w/the library as they are currently,
   //       or declared as peer deps to reduce unintentional code duplication if a consuming app already has react-aria related libraries installed (eg @internationalized/date or react-stately).
 

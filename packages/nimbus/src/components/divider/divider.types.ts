@@ -3,9 +3,9 @@ import type {
   UnstyledProp,
   HTMLChakraProps,
   RecipeVariantProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { dividerRecipe } from "./divider.recipe";
-import type { SeparatorProps } from "react-aria";
+import type { SeparatorProps } from "react-aria-components";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props

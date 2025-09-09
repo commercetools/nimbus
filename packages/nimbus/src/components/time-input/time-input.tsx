@@ -7,7 +7,7 @@ import {
 } from "./time-input.slots";
 
 import { TimeField, DateInput, DateSegment } from "react-aria-components";
-import { useRecipe } from "@chakra-ui/react";
+import { useRecipe } from "@chakra-ui/react/styled-system";
 import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeInputProps } from "./time-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";

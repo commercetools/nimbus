@@ -1,4 +1,5 @@
-import { Dialog as ChakraDialog, Portal } from "@chakra-ui/react";
+import { Dialog as ChakraDialog } from "@chakra-ui/react/dialog";
+import { Portal } from "@chakra-ui/react/portal";
 
 interface DialogContentProps extends ChakraDialog.ContentProps {
   portalled?: boolean;

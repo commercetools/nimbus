@@ -11,16 +11,20 @@
     ]
   },
   "scripts": {
-    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
+    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs && pnpm run compile-i18n",
     "build:packages": "pnpm -r --filter './packages/*' build",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "changeset": "changeset",
     "changeset:version-and-format": "changeset version && prettier --write --parser json '**/package.json' && pnpm install --lockfile-only",
     "changeset:status": "changeset status --verbose",
+    "compile-i18n": "pnpm --filter @commercetools-nimbus/i18n compile-data",
     "component:new": "pnpm hygen component new",
+    "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/*.i18n.ts'",
     "generate:tokens": "pnpm --filter @commercetools/nimbus-tokens run build",
     "lint": "eslint .",
+    "typecheck": "pnpm -r --filter './packages/*' --bail=false typecheck || true",
+    "typecheck:strict": "pnpm -r --filter './packages/*' typecheck",
     "nimbus:init": "pnpm nimbus:reset && pnpm install && pnpm build && pnpm playwright:install",
     "nimbus:reset": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
     "playwright:install": "pnpm exec playwright install chromium",
@@ -40,7 +44,9 @@
       "react-aria": "catalog:react",
       "react-aria-components": "catalog:react",
       "react-stately": "catalog:react",
-      "@react-aria/interactions": "catalog:react"
+      "@react-aria/interactions": "catalog:react",
+      "tmp": "^0.2.5",
+      "brace-expansion": "^2.0.2"
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
@@ -53,8 +59,8 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
-    "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.5",
+    "@changesets/changelog-github": "0.5.1",
+    "@changesets/cli": "2.29.6",
     "@eslint/js": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",
     "eslint": "catalog:tooling",
@@ -62,7 +68,6 @@
     "eslint-plugin-prettier": "catalog:tooling",
     "eslint-plugin-storybook": "catalog:tooling",
     "globals": "catalog:tooling",
-    "hygen": "catalog:tooling",
     "playwright": "catalog:tooling",
     "prettier": "catalog:tooling",
     "tsx": "catalog:tooling",

@@ -24,9 +24,12 @@ export const Base: Story = {
       await expect(divider).toHaveAttribute("role", "separator");
     });
 
-    await step("Has correct aria-orientation", async () => {
-      await expect(divider).toHaveAttribute("aria-orientation", "horizontal");
-    });
+    await step(
+      "Has no aria-orientation (uses default, horizontal)",
+      async () => {
+        await expect(divider).not.toHaveAttribute("aria-orientation");
+      }
+    );
 
     await step("Is not focusable", async () => {
       await expect(divider).not.toHaveAttribute("tabindex");
@@ -46,14 +49,6 @@ export const Horizontal: Story = {
       <Box p="100">Content below the divider</Box>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const divider = canvas.getByTestId("horizontal-divider");
-
-    await step("Has correct aria-orientation for horizontal", async () => {
-      await expect(divider).toHaveAttribute("aria-orientation", "horizontal");
-    });
-  },
 };
 
 export const Vertical: Story = {

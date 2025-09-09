@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { mergeRefs, useSlotRecipe } from "@chakra-ui/react";
+import { mergeRefs } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useNumberField, useLocale } from "react-aria";
 import { useNumberFieldState } from "react-stately";
 import { Box } from "@/components";
@@ -18,6 +19,8 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
+import { useIntl } from "react-intl";
+import messages from "./number-input.i18n";
 /**
  * # NumberInput
  *
@@ -28,7 +31,7 @@ import { numberInputRecipe } from "./number-input.recipe";
 export const NumberInput = (props: NumberInputProps) => {
   const { size, leadingElement, trailingElement, ref: forwardedRef, ...restProps } = props;
   const { locale } = useLocale();
-
+  const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
@@ -39,16 +42,21 @@ export const NumberInput = (props: NumberInputProps) => {
   // Extract style props
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
-  // Pass only functional props to react-aria
-  const state = useNumberFieldState({ locale, ...functionalProps });
+  // Pass only functional props to react-aria with localized aria-labels
+  const ariaProps = {
+    ...functionalProps,
+    incrementAriaLabel: intl.formatMessage(messages.increment),
+    decrementAriaLabel: intl.formatMessage(messages.decrement),
+  };
+
+  const state = useNumberFieldState({ locale, ...ariaProps });
   const { inputProps, incrementButtonProps, decrementButtonProps } =
-    useNumberField(functionalProps, state, ref);
+    useNumberField(ariaProps, state, ref);
 
   const stateProps = {
     "data-invalid": props.isInvalid,
     "data-disabled": props.isDisabled,
   };
-
   return (
     <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
       {leadingElement && (
@@ -76,14 +84,12 @@ export const NumberInput = (props: NumberInputProps) => {
         height="full"
       >
         <NumberInputIncrementButtonSlot
-          aria-label="Increment"
           {...incrementButtonProps}
           {...stateProps}
         >
           <KeyboardArrowUp />
         </NumberInputIncrementButtonSlot>
         <NumberInputDecrementButtonSlot
-          aria-label="Decrement"
           {...decrementButtonProps}
           {...stateProps}
         >

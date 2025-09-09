@@ -1,5 +1,4 @@
 import { Box, Code, system, Table, Text } from "@commercetools/nimbus";
-import { JSONTree } from "react-json-tree";
 import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { preferPxAtom } from "@/atoms/prefer-px-atom";
@@ -9,8 +8,6 @@ type GenericTableDemoProps = {
   category: string;
   /** demoProperty */
   demoProperty?: DemoComponentId;
-  /** displays a JSON-tree to debug */
-  debug?: boolean;
 };
 
 const defaultBoxSize = "1600";
@@ -127,7 +124,6 @@ const PrettyBox = ({ ...props }) => (
 );
 
 export const GenericTokenTableDemo = ({
-  debug,
   demoProperty,
   ...props
 }: GenericTableDemoProps) => {
@@ -193,7 +189,6 @@ export const GenericTokenTableDemo = ({
           })}
         </Table.Body>
       </Table.Root>
-      {debug && <JSONTree data={system.tokens.categoryMap} />}
     </div>
   );
 };

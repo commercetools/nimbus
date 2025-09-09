@@ -5,4 +5,4 @@
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/heading}
  */
-export { Heading } from "@chakra-ui/react";
+export { Heading } from "@chakra-ui/react/heading";

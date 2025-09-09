@@ -1,4 +1,4 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 /**
  * Recipe configuration for the Select component.
@@ -26,11 +26,6 @@ export const selectSlotRecipe = defineSlotRecipe({
       position: "relative",
       maxWidth: "100%",
       borderRadius: "200",
-      // [data-focused]
-      // [data-focus-visible]
-      // [data-open]
-      // [data-invalid]
-      // [data-required]
       "&[data-disabled='true']": {
         layerStyle: "disabled",
         pointerEvents: "none",
@@ -57,13 +52,6 @@ export const selectSlotRecipe = defineSlotRecipe({
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
       },
-
-      // [data-hovered]
-      // [data-pressed]
-      // [data-focused]
-      // [data-focus-visible]
-      // [data-disabled]
-      // [data-pending]
     },
     leadingElement: {
       overflow: "hidden",
@@ -109,10 +97,6 @@ export const selectSlotRecipe = defineSlotRecipe({
       overflowY: "auto",
       scrollbarWidth: "thin",
       scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
-      // [data-trigger="..."]
-      // [data-placement="left | right | top | bottom"]
-      // [data-entering]
-      // [data-exiting]
     },
     // Option group header
     optionGroup: {
@@ -222,6 +206,14 @@ export const selectSlotRecipe = defineSlotRecipe({
         trigger: {
           "--border-width": "sizes.25",
           "--border-color": "transparent",
+        },
+      },
+    },
+
+    isClearable: {
+      false: {
+        triggerLabel: {
+          "--button-safespace": "sizes.1000",
         },
       },
     },

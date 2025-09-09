@@ -7,12 +7,15 @@ import {
   useSlottedContext,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
+import { useIntl } from "react-intl";
+import messages from "../date-picker.i18n";
 
 export const DatePickerCustomContext = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
+  const intl = useIntl();
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const datePickerState = useContext(DatePickerStateContext);
   const noInputValue = datePickerState?.dateValue === null;
@@ -26,13 +29,13 @@ export const DatePickerCustomContext = ({
   const getDefaultTimeInputAriaLabel = () => {
     switch (granularity) {
       case "hour":
-        return "Enter time (hour)";
+        return intl.formatMessage(messages.enterTimeHour);
       case "minute":
-        return "Enter time (hour and minute)";
+        return intl.formatMessage(messages.enterTimeHourMinute);
       case "second":
-        return "Enter time (hour, minute, and second)";
+        return intl.formatMessage(messages.enterTimeHourMinuteSecond);
       default:
-        return "Enter time";
+        return intl.formatMessage(messages.enterTime);
     }
   };
 
@@ -59,7 +62,7 @@ export const DatePickerCustomContext = ({
     /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": "Clear input value",
+      "aria-label": intl.formatMessage(messages.clearInput),
       isDisabled: isDatePickerDisabled,
       // Hide the button when there's no value
       style: noInputValue ? { display: "none" } : undefined,

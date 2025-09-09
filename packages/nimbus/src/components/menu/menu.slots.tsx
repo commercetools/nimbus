@@ -1,7 +1,7 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { menuSlotRecipe } from "./menu.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -42,13 +42,6 @@ export const MenuItemSlot = withContext<HTMLDivElement, MenuItemSlotProps>(
   "div",
   "item"
 );
-
-// Menu Separator
-export type MenuSeparatorSlotProps = HTMLChakraProps<"div">;
-export const MenuSeparatorSlot = withContext<
-  HTMLDivElement,
-  MenuSeparatorSlotProps
->("div", "separator");
 
 // Menu Section
 export type MenuSectionSlotProps = HTMLChakraProps<"div">;

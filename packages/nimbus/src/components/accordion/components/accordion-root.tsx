@@ -1,9 +1,8 @@
-import React, { forwardRef, type Key } from "react";
-import { AccordionRoot as AccordionRootSlot } from "../accordion.slots";
-import { useDisclosureGroupState } from "react-stately";
-import { useSlotRecipe } from "@chakra-ui/react";
-import type { DisclosureGroupProps } from "../accordion.types";
-import { DisclosureGroupStateContext } from "../accordion-context";
+import { AccordionRootSlot } from "../accordion.slots";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { DisclosureGroup as RaDisclosureGroup } from "react-aria-components";
+import type { AccordionRootProps } from "../accordion.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * # Accordion
@@ -12,23 +11,15 @@ import { DisclosureGroupStateContext } from "../accordion-context";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/accordion}
  */
-export const AccordionRoot = forwardRef<HTMLDivElement, DisclosureGroupProps>(
-  ({ children, onExpandedChange, ...props }, forwardedRef) => {
-    const state = useDisclosureGroupState({
-      ...props,
-      onExpandedChange: (keys: Set<Key>) => {
-        onExpandedChange?.(keys.size > 0);
-      },
-    });
-    const recipe = useSlotRecipe({ key: "accordion" });
-    const [recipeProps] = recipe.splitVariantProps(props);
+export const AccordionRoot = (props: AccordionRootProps) => {
+  const { ref, ...restProps } = props;
+  const recipe = useSlotRecipe({ key: "accordion" });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
+  const [styleProps, raProps] = extractStyleProps(restRecipeProps);
 
-    return (
-      <DisclosureGroupStateContext.Provider value={state}>
-        <AccordionRootSlot data-slot="root" ref={forwardedRef} {...recipeProps}>
-          {children}
-        </AccordionRootSlot>
-      </DisclosureGroupStateContext.Provider>
-    );
-  }
-);
+  return (
+    <AccordionRootSlot ref={ref} {...recipeProps} {...styleProps} asChild>
+      <RaDisclosureGroup {...raProps} />
+    </AccordionRootSlot>
+  );
+};

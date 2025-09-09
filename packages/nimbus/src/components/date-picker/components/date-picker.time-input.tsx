@@ -3,6 +3,8 @@ import { useContext, useRef, useEffect } from "react";
 import { useLocale } from "react-aria";
 import { DatePickerStateContext } from "react-aria-components";
 import type { DatePickerTimeInputProps } from "../date-picker.types";
+import { FormattedMessage } from "react-intl";
+import messages from "../date-picker.i18n";
 
 export const DatePickerTimeInput = ({
   hideTimeZone,
@@ -22,7 +24,7 @@ export const DatePickerTimeInput = ({
   // Focus the time input when date changes (user selects a date from calendar)
   useEffect(() => {
     // Check if date changed
-    let timeoutId: NodeJS.Timeout | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     if (dateValue && previousDateRef.current?.compare(dateValue) !== 0) {
       // Only auto-focus if no time input segment currently has focus
@@ -68,9 +70,8 @@ export const DatePickerTimeInput = ({
       justifyContent="center"
       gap="200"
     >
-      {/* TODO: translate hardcoded string */}
       <Text textStyle="xs" fontWeight="500" color="neutral.12">
-        Start time
+        <FormattedMessage {...messages.startTime} />
       </Text>
       <TimeInput
         slot="timeInput"

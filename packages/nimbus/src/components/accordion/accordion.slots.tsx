@@ -1,39 +1,45 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-} from "@chakra-ui/react";
-import type { AccordionRootProps } from "./accordion.types";
+  type RecipeVariantProps,
+} from "@chakra-ui/react/styled-system";
+import { accordionSlotRecipe } from "./accordion.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "accordion",
 });
 
-export const AccordionRoot = withProvider<HTMLDivElement, AccordionRootProps>(
+export type AccordionRootSlotProps = HTMLChakraProps<
   "div",
-  "root"
-);
+  RecipeVariantProps<typeof accordionSlotRecipe>
+>;
 
-export const AccordionDisclosure = withContext<
+export const AccordionRootSlot = withProvider<
+  HTMLDivElement,
+  AccordionRootSlotProps
+>("div", "root");
+
+export const AccordionDisclosureSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "disclosure");
 
-export const AccordionTrigger = withContext<
+export const AccordionTriggerSlot = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"button">
 >("button", "trigger");
 
-export const AccordionPanel = withContext<
+export const AccordionPanelSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "panel");
 
-export const AccordionTitle = withContext<
+export const AccordionTitleSlot = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"div">
 >("div", "accordionTitle");
 
-export const AccordionHeaderRightContent = withContext<
+export const AccordionHeaderRightContentSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "headerContentRight");

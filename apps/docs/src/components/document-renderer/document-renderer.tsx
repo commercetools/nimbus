@@ -3,8 +3,7 @@ import { useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Flex, Stack, Text, Badge } from "@commercetools/nimbus";
 import { BreadcrumbNav } from "../navigation/breadcrumb";
-import { memo } from "react";
-import { Helmet } from "react-helmet-async";
+import { memo, useMemo } from "react";
 import { brandNameAtom } from "@/atoms/brand";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 
@@ -20,6 +19,12 @@ const DocumentRendererComponent = () => {
     ? lifecycleStateDescriptions[lifecycleState]
     : null;
 
+  const pageTitle = useMemo(() => {
+    return meta?.menu
+      ? `${meta.menu.reverse().join(" / ")} | ${brandName}`
+      : `${brandName} | Home`;
+  }, [meta?.menu, brandName]);
+
   if (!content || !meta)
     return (
       <Box>
@@ -29,11 +34,7 @@ const DocumentRendererComponent = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {[...meta.menu].join(" > ")} | {brandName}
-        </title>
-      </Helmet>
+      <title>{pageTitle}</title>
       <Box width="full" maxWidth="4xl">
         <Stack gap="400">
           <Flex

@@ -36,19 +36,23 @@ export const Button = (props: ButtonProps) => {
     ref
   );
 
+  const componentProps = mergeProps(contextProps, buttonProps, {
+    as,
+    asChild,
+    /**
+     * In case `slot` was null, the `useContextProps` hook already
+     * processed it at this point, so it's safe to not attach it
+     * to the DOM element
+     */
+    slot: contextProps.slot || undefined,
+  });
+
   return (
     <ButtonRoot
-      {...mergeProps(contextProps, buttonProps, {
-        as,
-        asChild,
-        /**
-         * In case `slot` was null, the `useContextProps` hook already
-         * processed it at this point, so it's safe to not attach it
-         * to the DOM element
-         */
-        slot: contextProps.slot || undefined,
-      })}
       ref={ref}
+      {...componentProps}
+      aria-disabled={componentProps.isDisabled || undefined}
+      data-disabled={componentProps.isDisabled || undefined}
     >
       {children}
     </ButtonRoot>

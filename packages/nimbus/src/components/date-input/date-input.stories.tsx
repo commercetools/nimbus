@@ -333,7 +333,7 @@ export const Granularity: Story = {
     return (
       <>
         {["en-US", "de-DE"].map((locale) => (
-          <I18nProvider locale={locale}>
+          <I18nProvider locale={locale} key={locale}>
             <Stack direction="column" gap="400" alignItems="start" mb="800">
               <Text fontWeight="700">{locale}</Text>
               <Text>Granularity: day (date only)</Text>
