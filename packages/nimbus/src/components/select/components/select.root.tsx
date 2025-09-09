@@ -66,11 +66,9 @@ export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
               right="400"
               pointerEvents="none"
             >
-              
-                <Flex width="600" my="auto">
-                  <SelectClearButton />
-                </Flex>
-              
+              <Flex width="600" my="auto">
+                <SelectClearButton />
+              </Flex>
 
               <Flex my="auto" w="600" h="600" pointerEvents="none">
                 <Box color="neutral.9" asChild m="auto" w="400" h="400">
