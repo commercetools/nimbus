@@ -21,10 +21,12 @@ interface TimeInputRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TimeInputRootProps
   extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
-
-interface TimeInputLeadingElementProps extends HTMLChakraProps<"div"> {}
-
-interface TimeInputTrailingElementProps extends HTMLChakraProps<"div"> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface TimeInputLeadingElementProps
+  extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface TimeInputTrailingElementProps
+  extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({

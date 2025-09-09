@@ -32,7 +32,6 @@ import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
 
-
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
   list: listSlotRecipe,
