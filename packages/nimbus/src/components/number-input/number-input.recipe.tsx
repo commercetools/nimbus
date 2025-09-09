@@ -31,7 +31,7 @@ export const numberInputRecipe = defineSlotRecipe({
       },
 
       "& *": {
-        outline: "none !important",
+        outline: "none",
       },
 
       focusVisibleRing: "outside",
