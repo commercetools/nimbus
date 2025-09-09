@@ -4,10 +4,10 @@ import type { DrawerHeaderProps } from "../drawer.types";
 
 /**
  * # Drawer.Header
- * 
+ *
  * The header section of the drawer content.
  * Typically contains the title and close button.
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Content side="left">

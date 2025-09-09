@@ -24,24 +24,24 @@ export const ModalTriggerSlot = withContext<
 
 // Backdrop slot - overlay behind the modal
 export type ModalBackdropSlotProps = HTMLChakraProps<"div">;
-export const ModalBackdropSlot = withContext<HTMLDivElement, ModalBackdropSlotProps>(
-  "div",
-  "backdrop"
-);
+export const ModalBackdropSlot = withContext<
+  HTMLDivElement,
+  ModalBackdropSlotProps
+>("div", "backdrop");
 
 // Positioner slot - positions the modal content
 export type ModalPositionerSlotProps = HTMLChakraProps<"div">;
-export const ModalPositionerSlot = withContext<HTMLDivElement, ModalPositionerSlotProps>(
-  "div",
-  "positioner"
-);
+export const ModalPositionerSlot = withContext<
+  HTMLDivElement,
+  ModalPositionerSlotProps
+>("div", "positioner");
 
 // Content slot - main modal container
 export type ModalContentSlotProps = HTMLChakraProps<"div">;
-export const ModalContentSlot = withContext<HTMLDivElement, ModalContentSlotProps>(
-  "div",
-  "content"
-);
+export const ModalContentSlot = withContext<
+  HTMLDivElement,
+  ModalContentSlotProps
+>("div", "content");
 
 // Header slot - modal header section
 export type ModalHeaderSlotProps = HTMLChakraProps<"header">;
@@ -66,17 +66,17 @@ export const ModalFooterSlot = withContext<HTMLElement, ModalFooterSlotProps>(
 
 // Title slot - accessible modal title
 export type ModalTitleSlotProps = HTMLChakraProps<"h2">;
-export const ModalTitleSlot = withContext<HTMLHeadingElement, ModalTitleSlotProps>(
-  "h2",
-  "title"
-);
+export const ModalTitleSlot = withContext<
+  HTMLHeadingElement,
+  ModalTitleSlotProps
+>("h2", "title");
 
 // Description slot - accessible modal description
 export type ModalDescriptionSlotProps = HTMLChakraProps<"p">;
-export const ModalDescriptionSlot = withContext<HTMLParagraphElement, ModalDescriptionSlotProps>(
-  "p",
-  "description"
-);
+export const ModalDescriptionSlot = withContext<
+  HTMLParagraphElement,
+  ModalDescriptionSlotProps
+>("p", "description");
 
 // Close trigger slot - button to close the modal
 export type ModalCloseTriggerSlotProps = HTMLChakraProps<"button">;

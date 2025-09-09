@@ -5,13 +5,13 @@ import type { DrawerTitleProps } from "../drawer.types";
 
 /**
  * # Drawer.Title
- * 
+ *
  * The accessible title element for the drawer.
  * Uses React Aria's Heading for proper accessibility labeling.
- * 
+ *
  * This title automatically labels the drawer for screen readers and
  * provides the primary heading for the drawer content.
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Content side="left">
@@ -28,9 +28,7 @@ export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
 
     return (
       <RaHeading slot="title" ref={ref} {...restProps}>
-        <DrawerTitleSlot asChild>
-          {children}
-        </DrawerTitleSlot>
+        <DrawerTitleSlot asChild>{children}</DrawerTitleSlot>
       </RaHeading>
     );
   }

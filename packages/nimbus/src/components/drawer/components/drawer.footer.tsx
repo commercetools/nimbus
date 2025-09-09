@@ -4,10 +4,10 @@ import type { DrawerFooterProps } from "../drawer.types";
 
 /**
  * # Drawer.Footer
- * 
+ *
  * The footer section of the drawer, typically containing action buttons.
  * Positioned at the bottom of the drawer with consistent spacing.
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Content side="right">

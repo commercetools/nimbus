@@ -1,28 +1,25 @@
 import { forwardRef, useMemo } from "react";
 import { Modal as RaModal, Dialog as RaDialog } from "react-aria-components";
-import { 
-  DrawerPositionerSlot, 
-  DrawerContentSlot 
-} from "../drawer.slots";
-import type { 
-  DrawerContentProps, 
-  DrawerSide, 
-  DrawerPlacement, 
-  DrawerMotionPreset 
+import { DrawerPositionerSlot, DrawerContentSlot } from "../drawer.slots";
+import type {
+  DrawerContentProps,
+  DrawerSide,
+  DrawerPlacement,
+  DrawerMotionPreset,
 } from "../drawer.types";
 
 /**
  * # Drawer.Content
- * 
+ *
  * The main drawer content container that wraps React Aria's Modal and Dialog.
  * Handles portalling, backdrop, edge positioning, and content styling.
- * 
+ *
  * The `side` prop automatically determines placement and animation:
  * - side="left" → placement="left", motionPreset="slide-in-left"
- * - side="right" → placement="right", motionPreset="slide-in-right"  
+ * - side="right" → placement="right", motionPreset="slide-in-right"
  * - side="top" → placement="top", motionPreset="slide-in-top"
  * - side="bottom" → placement="bottom", motionPreset="slide-in-bottom"
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Root>
@@ -59,7 +56,10 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
 
     // Automatically map side to placement and motionPreset
     const { placement, motionPreset } = useMemo(() => {
-      const mappings: Record<DrawerSide, { placement: DrawerPlacement; motionPreset: DrawerMotionPreset }> = {
+      const mappings: Record<
+        DrawerSide,
+        { placement: DrawerPlacement; motionPreset: DrawerMotionPreset }
+      > = {
         left: { placement: "left", motionPreset: "slide-in-left" },
         right: { placement: "right", motionPreset: "slide-in-right" },
         top: { placement: "top", motionPreset: "slide-in-top" },
@@ -77,18 +77,20 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
         isDismissable={isDismissable}
         isKeyboardDismissDisabled={isKeyboardDismissDisabled}
       >
-        <DrawerPositionerSlot side={side} size={size} motionPreset={motionPreset}>
-          <DrawerContentSlot 
-            ref={ref} 
-            asChild 
+        <DrawerPositionerSlot
+          side={side}
+          size={size}
+          motionPreset={motionPreset}
+        >
+          <DrawerContentSlot
+            ref={ref}
+            asChild
             side={side}
-            size={size} 
+            size={size}
             motionPreset={motionPreset}
             {...restProps}
           >
-            <RaDialog onClose={onClose}>
-              {children}
-            </RaDialog>
+            <RaDialog onClose={onClose}>{children}</RaDialog>
           </DrawerContentSlot>
         </DrawerPositionerSlot>
       </RaModal>

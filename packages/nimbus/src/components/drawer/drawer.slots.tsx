@@ -23,40 +23,40 @@ DrawerRootSlot.displayName = "DrawerRootSlot";
  * DrawerTriggerSlot - Trigger button slot component
  */
 export type DrawerTriggerSlotProps = HTMLChakraProps<"button">;
-export const DrawerTriggerSlot = withContext<HTMLButtonElement, DrawerTriggerSlotProps>(
-  "button",
-  "trigger"
-);
+export const DrawerTriggerSlot = withContext<
+  HTMLButtonElement,
+  DrawerTriggerSlotProps
+>("button", "trigger");
 DrawerTriggerSlot.displayName = "DrawerTriggerSlot";
 
 /**
  * DrawerBackdropSlot - Backdrop overlay slot component
  */
 export type DrawerBackdropSlotProps = HTMLChakraProps<"div">;
-export const DrawerBackdropSlot = withContext<HTMLDivElement, DrawerBackdropSlotProps>(
-  "div",
-  "backdrop"
-);
+export const DrawerBackdropSlot = withContext<
+  HTMLDivElement,
+  DrawerBackdropSlotProps
+>("div", "backdrop");
 DrawerBackdropSlot.displayName = "DrawerBackdropSlot";
 
 /**
  * DrawerPositionerSlot - Positioner slot component
  */
 export type DrawerPositionerSlotProps = HTMLChakraProps<"div">;
-export const DrawerPositionerSlot = withContext<HTMLDivElement, DrawerPositionerSlotProps>(
-  "div",
-  "positioner"
-);
+export const DrawerPositionerSlot = withContext<
+  HTMLDivElement,
+  DrawerPositionerSlotProps
+>("div", "positioner");
 DrawerPositionerSlot.displayName = "DrawerPositionerSlot";
 
 /**
  * DrawerContentSlot - Main content slot component
  */
 export type DrawerContentSlotProps = HTMLChakraProps<"div">;
-export const DrawerContentSlot = withContext<HTMLDivElement, DrawerContentSlotProps>(
-  "div",
-  "content"
-);
+export const DrawerContentSlot = withContext<
+  HTMLDivElement,
+  DrawerContentSlotProps
+>("div", "content");
 DrawerContentSlot.displayName = "DrawerContentSlot";
 
 /**
@@ -93,28 +93,28 @@ DrawerFooterSlot.displayName = "DrawerFooterSlot";
  * DrawerTitleSlot - Title element slot component
  */
 export type DrawerTitleSlotProps = HTMLChakraProps<"h2">;
-export const DrawerTitleSlot = withContext<HTMLHeadingElement, DrawerTitleSlotProps>(
-  "h2",
-  "title"
-);
+export const DrawerTitleSlot = withContext<
+  HTMLHeadingElement,
+  DrawerTitleSlotProps
+>("h2", "title");
 DrawerTitleSlot.displayName = "DrawerTitleSlot";
 
 /**
  * DrawerDescriptionSlot - Description element slot component
  */
 export type DrawerDescriptionSlotProps = HTMLChakraProps<"p">;
-export const DrawerDescriptionSlot = withContext<HTMLParagraphElement, DrawerDescriptionSlotProps>(
-  "p",
-  "description"
-);
+export const DrawerDescriptionSlot = withContext<
+  HTMLParagraphElement,
+  DrawerDescriptionSlotProps
+>("p", "description");
 DrawerDescriptionSlot.displayName = "DrawerDescriptionSlot";
 
 /**
  * DrawerCloseTriggerSlot - Close button slot component
  */
 export type DrawerCloseTriggerSlotProps = HTMLChakraProps<"button">;
-export const DrawerCloseTriggerSlot = withContext<HTMLButtonElement, DrawerCloseTriggerSlotProps>(
-  "button",
-  "closeTrigger"
-);
+export const DrawerCloseTriggerSlot = withContext<
+  HTMLButtonElement,
+  DrawerCloseTriggerSlotProps
+>("button", "closeTrigger");
 DrawerCloseTriggerSlot.displayName = "DrawerCloseTriggerSlot";

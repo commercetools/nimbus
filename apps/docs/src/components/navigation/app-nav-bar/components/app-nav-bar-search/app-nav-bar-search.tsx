@@ -72,9 +72,7 @@ export const AppNavBarSearch = () => {
         </Modal.Trigger>
         <Modal.Content divideY="1px" backdropBlur="5px">
           <Modal.Header>
-            <Modal.Title fontWeight="600">
-              Search the Documentation
-            </Modal.Title>
+            <Modal.Title fontWeight="600">Search the Documentation</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <ComboBox

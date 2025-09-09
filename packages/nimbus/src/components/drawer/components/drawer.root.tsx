@@ -4,13 +4,13 @@ import type { DrawerRootProps } from "../drawer.types";
 
 /**
  * # Drawer.Root
- * 
+ *
  * The root component that provides context and state management for the drawer.
  * Uses React Aria's DialogTrigger for accessibility and keyboard interaction.
- * 
+ *
  * This component must wrap all drawer parts (Trigger, Content, etc.) and provides
  * the drawer open/close state and variant styling context.
- * 
+ *
  * @example
  * ```tsx
  * <Drawer.Root>

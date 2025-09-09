@@ -4,10 +4,10 @@ import type { ModalHeaderProps } from "../modal.types";
 
 /**
  * # Modal.Header
- * 
+ *
  * The header section of the modal content.
  * Typically contains the title and close button.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Content>

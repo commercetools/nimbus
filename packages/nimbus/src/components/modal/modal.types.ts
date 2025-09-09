@@ -4,7 +4,7 @@ import { modalSlotRecipe } from "./modal.recipe";
 
 /**
  * Props for the Modal.Root component
- * 
+ *
  * The root component that provides context and state management for the modal.
  * Uses React Aria's DialogTrigger for accessibility and state management.
  */
@@ -13,24 +13,24 @@ export interface ModalRootProps {
    * The children components (Trigger, Content, etc.)
    */
   children: React.ReactNode;
-  
+
   /**
    * Whether the modal is open (controlled mode)
    */
   isOpen?: boolean;
-  
+
   /**
    * Callback fired when the modal open state changes
    * @param isOpen - Whether the modal is now open
    */
   onOpenChange?: (isOpen: boolean) => void;
-  
+
   /**
    * Whether the modal is open by default (uncontrolled mode)
    * @default false
    */
   defaultOpen?: boolean;
-  
+
   /**
    * Whether the modal is disabled
    * @default false
@@ -40,7 +40,7 @@ export interface ModalRootProps {
 
 /**
  * Props for the Modal.Trigger component
- * 
+ *
  * The trigger element that opens the modal when activated.
  */
 export interface ModalTriggerProps extends ComponentProps<"button"> {
@@ -52,7 +52,7 @@ export interface ModalTriggerProps extends ComponentProps<"button"> {
 
 /**
  * Props for the Modal.Content component
- * 
+ *
  * The main modal content container that wraps the React Aria Modal and Dialog.
  */
 export interface ModalContentProps
@@ -62,36 +62,36 @@ export interface ModalContentProps
    * The modal content
    */
   children: React.ReactNode;
-  
+
   /**
    * Whether to render the modal in a portal
    * @default true
    */
   isPortalled?: boolean;
-  
+
   /**
    * The container element for the portal
    */
   portalContainer?: HTMLElement | (() => HTMLElement);
-  
+
   /**
    * Whether to show the backdrop overlay
    * @default true
    */
   hasBackdrop?: boolean;
-  
+
   /**
    * Whether the modal should close when clicking outside
    * @default true
    */
   isDismissable?: boolean;
-  
+
   /**
    * Whether the modal should close when pressing Escape
    * @default true
    */
   isKeyboardDismissDisabled?: boolean;
-  
+
   /**
    * Callback fired when the modal requests to be closed
    */
@@ -100,7 +100,7 @@ export interface ModalContentProps
 
 /**
  * Props for the Modal.Backdrop component
- * 
+ *
  * The backdrop overlay that appears behind the modal content.
  */
 export interface ModalBackdropProps extends ComponentProps<"div"> {
@@ -112,7 +112,7 @@ export interface ModalBackdropProps extends ComponentProps<"div"> {
 
 /**
  * Props for the Modal.Header component
- * 
+ *
  * The header section of the modal content.
  */
 export interface ModalHeaderProps extends ComponentProps<"header"> {
@@ -124,7 +124,7 @@ export interface ModalHeaderProps extends ComponentProps<"header"> {
 
 /**
  * Props for the Modal.Body component
- * 
+ *
  * The main body content section of the modal.
  */
 export interface ModalBodyProps extends ComponentProps<"div"> {
@@ -136,7 +136,7 @@ export interface ModalBodyProps extends ComponentProps<"div"> {
 
 /**
  * Props for the Modal.Footer component
- * 
+ *
  * The footer section of the modal, typically containing action buttons.
  */
 export interface ModalFooterProps extends ComponentProps<"footer"> {
@@ -148,7 +148,7 @@ export interface ModalFooterProps extends ComponentProps<"footer"> {
 
 /**
  * Props for the Modal.Title component
- * 
+ *
  * The accessible title element for the modal.
  */
 export interface ModalTitleProps extends ComponentProps<"h2"> {
@@ -160,7 +160,7 @@ export interface ModalTitleProps extends ComponentProps<"h2"> {
 
 /**
  * Props for the Modal.Description component
- * 
+ *
  * The accessible description element for the modal.
  */
 export interface ModalDescriptionProps extends ComponentProps<"p"> {
@@ -172,20 +172,26 @@ export interface ModalDescriptionProps extends ComponentProps<"p"> {
 
 /**
  * Props for the Modal.CloseTrigger component
- * 
+ *
  * A button that closes the modal when activated.
+ * Displays an IconButton with an X icon by default.
  */
-export interface ModalCloseTriggerProps extends ComponentProps<"button"> {
-  /**
-   * The close button content (typically an icon)
-   */
-  children: React.ReactNode;
-  
+export interface ModalCloseTriggerProps {
   /**
    * Accessible label for the close button
    * @default "Close modal"
    */
   "aria-label"?: string;
+
+  /**
+   * Additional class name
+   */
+  className?: string;
+
+  /**
+   * Whether the button is disabled
+   */
+  disabled?: boolean;
 }
 
 /**
@@ -206,10 +212,10 @@ export type ModalScrollBehavior = "inside" | "outside";
 /**
  * Motion preset variants for modal animations
  */
-export type ModalMotionPreset = 
-  | "scale" 
-  | "slide-in-bottom" 
-  | "slide-in-top" 
-  | "slide-in-left" 
-  | "slide-in-right" 
+export type ModalMotionPreset =
+  | "scale"
+  | "slide-in-bottom"
+  | "slide-in-top"
+  | "slide-in-left"
+  | "slide-in-right"
   | "none";

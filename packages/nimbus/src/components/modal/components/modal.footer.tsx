@@ -4,10 +4,10 @@ import type { ModalFooterProps } from "../modal.types";
 
 /**
  * # Modal.Footer
- * 
+ *
  * The footer section of the modal, typically containing action buttons.
  * Provides consistent spacing and alignment for modal actions.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Content>

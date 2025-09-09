@@ -5,10 +5,10 @@ import type { ModalBackdropProps } from "../modal.types";
 
 /**
  * # Modal.Backdrop
- * 
+ *
  * The backdrop overlay that appears behind the modal content.
  * Provides a semi-transparent overlay and handles click-outside-to-close behavior.
- * 
+ *
  * @example
  * ```tsx
  * <Modal.Root>
