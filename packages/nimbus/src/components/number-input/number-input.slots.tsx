@@ -46,7 +46,7 @@ export type NumberInputDecrementButtonSlotProps = HTMLChakraProps<
   AriaButtonProps;
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  key: "numberInput",
+  recipe: numberInputRecipe,
 });
 
 /**
@@ -61,13 +61,11 @@ export const NumberInputRootSlot = withProvider<
 export const NumberInputLeadingElementSlot = withContext<
   HTMLDivElement,
   NumberInputLeadingElementSlotProps
-  // @ts-ignore
-  >("div", "leadingElement");
-  
-  export const NumberInputTrailingElementSlot = withContext<
+>("div", "leadingElement");
+
+export const NumberInputTrailingElementSlot = withContext<
   HTMLDivElement,
   NumberInputTrailingElementSlotProps
-  // @ts-ignore TODO: what is it that you want from me, ts compiler
 >("div", "trailingElement");
 
 /**

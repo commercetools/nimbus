@@ -8,7 +8,7 @@ import { selectSlotRecipe } from "./select.recipe";
 import { type SelectProps as RaSelectProps } from "react-aria-components";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "select",
+  recipe: selectSlotRecipe,
 });
 
 // Select
@@ -25,7 +25,6 @@ export const SelectRootSlot = withProvider<HTMLDivElement, SelectRootSlotProps>(
 export const SelectLeadingElementSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
-  // @ts-ignore
 >("div", "leadingElement");
 
 // Trigger Button
