@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 import { within, expect, userEvent } from "storybook/test";
 import { Dialog } from "./dialog";
 import { Button, Stack, Text, Heading } from "@/components";
@@ -13,11 +14,15 @@ const meta: Meta<typeof Dialog.Content> = {
   argTypes: {
     size: {
       control: { type: "select" },
-      options: ["xs", "sm", "md", "lg", "xl"],
+      options: ["xs", "sm", "md", "lg", "xl", "cover", "full"],
     },
     placement: {
       control: { type: "select" },
       options: ["center", "top", "bottom"],
+    },
+    scrollBehavior: {
+      control: { type: "select" },
+      options: ["inside", "outside"],
     },
     motionPreset: {
       control: { type: "select" },
@@ -33,30 +38,21 @@ const meta: Meta<typeof Dialog.Content> = {
   },
   render: (args) => (
     <Dialog.Root>
-      <Dialog.Trigger>
-        <Button>Open Dialog</Button>
-      </Dialog.Trigger>
+      <Dialog.Trigger>Open Dialog</Dialog.Trigger>
       <Dialog.Content {...args}>
         <Dialog.Backdrop />
         <Dialog.Header>
           <Dialog.Title>Dialog Title</Dialog.Title>
-          <Dialog.CloseTrigger>
-            <Button variant="ghost" size="xs">
-              ×
-            </Button>
-          </Dialog.CloseTrigger>
+          <Dialog.CloseTrigger />
         </Dialog.Header>
         <Dialog.Body>
           <Dialog.Description>
-            This is a dialog message. Dialogs are perfect for confirmations,
-            alerts, and forms.
+            This is a dialog dialog. You can add any content here.
           </Dialog.Description>
         </Dialog.Body>
         <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="outline">Cancel</Button>
-          </Dialog.CloseTrigger>
-          <Button>Confirm</Button>
+          <Button>Cancel</Button>
+          <Button>Save</Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>
@@ -67,12 +63,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * The default dialog configuration optimized for center positioning and scale animation.
- * Perfect for confirmations and alerts.
+ * The default dialog configuration with medium size and center placement.
  */
 export const Default: Story = {
   args: {
     size: "md",
+    placement: "center",
+    scrollBehavior: "outside",
+    motionPreset: "scale",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement.parentNode as HTMLElement);
@@ -81,15 +79,13 @@ export const Default: Story = {
       const trigger = canvas.getByRole("button", { name: "Open Dialog" });
       await userEvent.click(trigger);
 
-      const dialog = await canvas.findByRole("dialog", {
-        name: "Dialog Title",
-      });
+      const dialog = await canvas.findByRole("dialog", { name: "Dialog Title" });
       expect(dialog).toBeInTheDocument();
     });
 
-    await step("Closes dialog on cancel button", async () => {
-      const cancelButton = canvas.getByRole("button", { name: "Cancel" });
-      await userEvent.click(cancelButton);
+    await step("Closes dialog on close button click", async () => {
+      const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+      await userEvent.click(closeButton);
 
       await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
     });
@@ -97,335 +93,325 @@ export const Default: Story = {
 };
 
 /**
- * A confirmation dialog for destructive actions with appropriate styling.
- */
-export const ConfirmationDialog: Story = {
-  args: {
-    size: "sm",
-  },
-  render: (args) => (
-    <Dialog.Root>
-      <Dialog.Trigger>
-        <Button variant="solid" tone="critical">
-          Delete Item
-        </Button>
-      </Dialog.Trigger>
-      <Dialog.Content {...args}>
-        <Dialog.Backdrop />
-        <Dialog.Header>
-          <Dialog.Title>Confirm Delete</Dialog.Title>
-          <Dialog.CloseTrigger>
-            <Button variant="ghost" size="xs">
-              ×
-            </Button>
-          </Dialog.CloseTrigger>
-        </Dialog.Header>
-        <Dialog.Body>
-          <Dialog.Description>
-            This action cannot be undone. Are you sure you want to delete this
-            item?
-          </Dialog.Description>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="outline">Cancel</Button>
-          </Dialog.CloseTrigger>
-          <Button variant="solid" tone="critical">
-            Delete
-          </Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement.parentNode as HTMLElement);
-
-    await step("Opens confirmation dialog", async () => {
-      const trigger = canvas.getByRole("button", { name: "Delete Item" });
-      await userEvent.click(trigger);
-
-      const dialog = await canvas.findByRole("dialog", {
-        name: "Confirm Delete",
-      });
-      expect(dialog).toBeInTheDocument();
-
-      // Verify destructive action messaging
-      expect(
-        canvas.getByText("This action cannot be undone")
-      ).toBeInTheDocument();
-    });
-
-    await step("Can cancel the action", async () => {
-      const cancelButton = canvas.getByRole("button", { name: "Cancel" });
-      await userEvent.click(cancelButton);
-
-      await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * A form dialog for user input with validation states.
- */
-export const FormDialog: Story = {
-  args: {
-    size: "md",
-  },
-  render: (args) => (
-    <Dialog.Root>
-      <Dialog.Trigger>
-        <Button>Edit Profile</Button>
-      </Dialog.Trigger>
-      <Dialog.Content {...args}>
-        <Dialog.Backdrop />
-        <Dialog.Header>
-          <Dialog.Title>Edit Profile</Dialog.Title>
-          <Dialog.CloseTrigger>
-            <Button variant="ghost" size="xs">
-              ×
-            </Button>
-          </Dialog.CloseTrigger>
-        </Dialog.Header>
-        <Dialog.Body>
-          <Stack gap="4">
-            <div>
-              <label htmlFor="name">Name</label>
-              <input id="name" type="text" placeholder="Enter your name" />
-            </div>
-            <div>
-              <label htmlFor="email">Email</label>
-              <input id="email" type="email" placeholder="Enter your email" />
-            </div>
-          </Stack>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="outline">Cancel</Button>
-          </Dialog.CloseTrigger>
-          <Button>Save Changes</Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement.parentNode as HTMLElement);
-
-    await step("Opens form dialog", async () => {
-      const trigger = canvas.getByRole("button", { name: "Edit Profile" });
-      await userEvent.click(trigger);
-
-      const dialog = await canvas.findByRole("dialog", {
-        name: "Edit Profile",
-      });
-      expect(dialog).toBeInTheDocument();
-    });
-
-    await step("Can interact with form fields", async () => {
-      const nameInput = canvas.getByLabelText("Name");
-      const emailInput = canvas.getByLabelText("Email");
-
-      await userEvent.type(nameInput, "John Doe");
-      await userEvent.type(emailInput, "john@example.com");
-
-      expect(nameInput).toHaveValue("John Doe");
-      expect(emailInput).toHaveValue("john@example.com");
-    });
-
-    await step("Form maintains focus within dialog", async () => {
-      // Test focus management
-      const nameInput = canvas.getByLabelText("Name");
-      expect(nameInput).toBeInTheDocument();
-
-      // Close the dialog
-      const cancelButton = canvas.getByRole("button", { name: "Cancel" });
-      await userEvent.click(cancelButton);
-    });
-  },
-};
-
-/**
- * An alert dialog for important notifications that require acknowledgment.
- */
-export const AlertDialog: Story = {
-  args: {
-    size: "sm",
-  },
-  render: (args) => (
-    <Dialog.Root>
-      <Dialog.Trigger>
-        <Button variant="outline">Show Alert</Button>
-      </Dialog.Trigger>
-      <Dialog.Content {...args}>
-        <Dialog.Backdrop />
-        <Dialog.Header>
-          <Dialog.Title>Important Notice</Dialog.Title>
-        </Dialog.Header>
-        <Dialog.Body>
-          <Dialog.Description>
-            Your session will expire in 5 minutes. Please save your work before
-            continuing.
-          </Dialog.Description>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button>Understood</Button>
-          </Dialog.CloseTrigger>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement.parentNode as HTMLElement);
-
-    await step("Opens alert dialog", async () => {
-      const trigger = canvas.getByRole("button", { name: "Show Alert" });
-      await userEvent.click(trigger);
-
-      const dialog = await canvas.findByRole("dialog", {
-        name: "Important Notice",
-      });
-      expect(dialog).toBeInTheDocument();
-
-      // Verify alert message
-      expect(canvas.getByText(/Your session will expire/)).toBeInTheDocument();
-    });
-
-    await step("Can acknowledge alert", async () => {
-      const acknowledgeButton = canvas.getByRole("button", {
-        name: "Understood",
-      });
-      await userEvent.click(acknowledgeButton);
-
-      await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * Dialog size variants showing different size options.
+ * Dialog with different size variants.
  */
 export const Sizes: Story = {
   args: {},
   render: () => (
-    <Stack gap="4">
-      <Dialog.Root>
-        <Dialog.Trigger>
-          <Button size="xs">Small Dialog</Button>
-        </Dialog.Trigger>
-        <Dialog.Content size="xs">
-          <Dialog.Backdrop />
-          <Dialog.Header>
-            <Dialog.Title>Small Dialog</Dialog.Title>
-            <Dialog.CloseTrigger>
-              <Button variant="ghost" size="xs">
-                ×
-              </Button>
-            </Dialog.CloseTrigger>
-          </Dialog.Header>
-          <Dialog.Body>
-            <Dialog.Description>
-              This is a small dialog, perfect for simple confirmations.
-            </Dialog.Description>
-          </Dialog.Body>
-          <Dialog.Footer>
-            <Dialog.CloseTrigger>
-              <Button size="xs">OK</Button>
-            </Dialog.CloseTrigger>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog.Root>
+    <Stack direction="row" flexWrap="wrap">
+      {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+        <Dialog.Root key={size}>
+          <Dialog.Trigger>{size.toUpperCase()}</Dialog.Trigger>
+          <Dialog.Content size={size}>
+            <Dialog.Backdrop />
+            <Dialog.Header>
+              <Dialog.Title>Size: {size.toUpperCase()}</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Text>This dialog demonstrates the "{size}" size variant.</Text>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button>Close</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement.parentNode as HTMLElement);
+    const sizes = ["XS", "SM", "MD", "LG", "XL"];
 
-      <Dialog.Root>
-        <Dialog.Trigger>
-          <Button>Medium Dialog</Button>
-        </Dialog.Trigger>
-        <Dialog.Content size="md">
-          <Dialog.Backdrop />
-          <Dialog.Header>
-            <Dialog.Title>Medium Dialog</Dialog.Title>
-            <Dialog.CloseTrigger>
-              <Button variant="ghost" size="xs">
-                ×
-              </Button>
-            </Dialog.CloseTrigger>
-          </Dialog.Header>
-          <Dialog.Body>
-            <Dialog.Description>
-              This is a medium dialog, the default size for most dialog use
-              cases.
-            </Dialog.Description>
-          </Dialog.Body>
-          <Dialog.Footer>
-            <Dialog.CloseTrigger>
-              <Button>OK</Button>
-            </Dialog.CloseTrigger>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog.Root>
+    for (const size of sizes) {
+      await step(`Opens ${size} dialog and verifies accessibility`, async () => {
+        const trigger = canvas.getByRole("button", { name: size });
+        await userEvent.click(trigger);
 
-      <Dialog.Root>
-        <Dialog.Trigger>
-          <Button size="lg">Large Dialog</Button>
-        </Dialog.Trigger>
-        <Dialog.Content size="lg">
-          <Dialog.Backdrop />
-          <Dialog.Header>
-            <Dialog.Title>Large Dialog</Dialog.Title>
-            <Dialog.CloseTrigger>
-              <Button variant="ghost" size="xs">
-                ×
-              </Button>
-            </Dialog.CloseTrigger>
-          </Dialog.Header>
-          <Dialog.Body>
-            <Dialog.Description>
-              This is a large dialog, suitable for complex forms or detailed
-              content.
-            </Dialog.Description>
-          </Dialog.Body>
-          <Dialog.Footer>
-            <Dialog.CloseTrigger>
-              <Button>OK</Button>
-            </Dialog.CloseTrigger>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog.Root>
+        const dialog = await canvas.findByRole("dialog", {
+          name: `Size: ${size}`,
+        });
+        expect(dialog).toBeInTheDocument();
+
+        const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+        await userEvent.click(closeButton);
+
+        await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    }
+  },
+};
+
+/**
+ * Dialog with different placement variants.
+ */
+export const Placements: Story = {
+  args: {},
+  render: () => (
+    <Stack direction="row">
+      {(["center", "top", "bottom"] as const).map((placement) => (
+        <Dialog.Root key={placement}>
+          <Dialog.Trigger>{placement}</Dialog.Trigger>
+          <Dialog.Content placement={placement}>
+            <Dialog.Backdrop />
+            <Dialog.Header>
+              <Dialog.Title>Placement: {placement}</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Text>This dialog is positioned at "{placement}".</Text>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button>Close</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement.parentNode as HTMLElement);
+    const placements = ["center", "top", "bottom"];
+
+    for (const placement of placements) {
+      await step(`Tests ${placement} placement dialog`, async () => {
+        const trigger = canvas.getByRole("button", { name: placement });
+        await userEvent.click(trigger);
+
+        const dialog = await canvas.findByRole("dialog", {
+          name: `Placement: ${placement}`,
+        });
+        expect(dialog).toBeInTheDocument();
+
+        const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+        await userEvent.click(closeButton);
+
+        await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    }
+  },
+};
+
+/**
+ * Dialog with scrollable content to test scroll behavior variants.
+ */
+export const ScrollBehavior: Story = {
+  args: {},
+  render: () => (
+    <Stack direction="row">
+      {(["inside", "outside"] as const).map((scrollBehavior) => (
+        <Dialog.Root key={scrollBehavior}>
+          <Dialog.Trigger>Scroll {scrollBehavior}</Dialog.Trigger>
+          <Dialog.Content scrollBehavior={scrollBehavior} size="xs">
+            <Dialog.Backdrop />
+            <Dialog.Header>
+              <Dialog.Title>Scroll: {scrollBehavior}</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Stack>
+                <Text>
+                  This dialog tests "{scrollBehavior}" scroll behavior with lots
+                  of content.
+                </Text>
+                {Array.from({ length: 20 }, (_, i) => (
+                  <Text key={i}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris.
+                  </Text>
+                ))}
+              </Stack>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button>Close</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement.parentNode as HTMLElement);
+
+    await step("Tests inside scroll behavior", async () => {
+      const trigger = canvas.getByRole("button", { name: "Scroll inside" });
+      await userEvent.click(trigger);
+
+      const dialog = await canvas.findByRole("dialog", {
+        name: "Scroll: inside",
+      });
+      expect(dialog).toBeInTheDocument();
+
+      const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+      await userEvent.click(closeButton);
+    });
+  },
+};
+
+/**
+ * Dialog with different motion presets for entrance animations.
+ */
+export const MotionPresets: Story = {
+  args: {},
+  render: () => (
+    <Stack direction="row" flexWrap="wrap">
+      {(
+        [
+          "scale",
+          "slide-in-bottom",
+          "slide-in-top",
+          "slide-in-left",
+          "slide-in-right",
+          "none",
+        ] as const
+      ).map((preset) => (
+        <Dialog.Root key={preset}>
+          <Dialog.Trigger>{preset}</Dialog.Trigger>
+          <Dialog.Content motionPreset={preset}>
+            <Dialog.Backdrop />
+            <Dialog.Header>
+              <Dialog.Title>Motion: {preset}</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Text>This dialog uses "{preset}" animation preset.</Text>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button>Close</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
     </Stack>
   ),
 };
 
 /**
- * Dialog accessibility testing - focuses on keyboard navigation and screen reader support.
+ * Dialog without backdrop for special use cases.
  */
-export const AccessibilityTest: Story = {
-  args: {
-    size: "md",
-  },
-  render: (args) => (
+export const WithoutBackdrop: Story = {
+  args: {},
+  render: () => (
     <Dialog.Root>
-      <Dialog.Trigger>
-        <Button>Accessible Dialog</Button>
-      </Dialog.Trigger>
-      <Dialog.Content {...args}>
-        <Dialog.Backdrop />
+      <Dialog.Trigger>Open Dialog (No Backdrop)</Dialog.Trigger>
+      <Dialog.Content hasBackdrop={false}>
         <Dialog.Header>
-          <Dialog.Title>Accessibility Test</Dialog.Title>
-          <Dialog.CloseTrigger>
-            <Button variant="ghost" size="xs" aria-label="Close dialog">
-              ×
-            </Button>
-          </Dialog.CloseTrigger>
+          <Dialog.Title>No Backdrop Dialog</Dialog.Title>
+          <Dialog.CloseTrigger />
         </Dialog.Header>
         <Dialog.Body>
-          <Dialog.Description>
-            This dialog tests accessibility features including proper focus
-            management, keyboard navigation, and screen reader announcements.
-          </Dialog.Description>
+          <Text>This dialog has no backdrop overlay.</Text>
         </Dialog.Body>
         <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="outline">Cancel</Button>
-          </Dialog.CloseTrigger>
+          <Button>Close</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement.parentNode as HTMLElement);
+
+    await step("Opens dialog without backdrop", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Dialog (No Backdrop)",
+      });
+      await userEvent.click(trigger);
+
+      const dialog = await canvas.findByRole("dialog", {
+        name: "No Backdrop Dialog",
+      });
+      expect(dialog).toBeInTheDocument();
+
+      const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+      await userEvent.click(closeButton);
+    });
+  },
+};
+
+/**
+ * Dialog with controlled state example.
+ */
+export const ControlledState: Story = {
+  args: {},
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+      <Stack>
+        <Button onClick={() => setIsOpen(true)}>Open Controlled Dialog</Button>
+        <Text>Dialog is {isOpen ? "open" : "closed"}</Text>
+
+        <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+          <Dialog.Content>
+            <Dialog.Backdrop />
+            <Dialog.Header>
+              <Dialog.Title>Controlled Dialog</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Dialog.Description>
+                This dialog's open state is controlled by parent component state.
+              </Dialog.Description>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button>Cancel</Button>
+              <Button onClick={() => setIsOpen(false)}>Save</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement.parentNode as HTMLElement);
+
+    await step("Controls dialog state externally", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Controlled Dialog",
+      });
+      await userEvent.click(trigger);
+
+      const dialog = await canvas.findByRole("dialog", {
+        name: "Controlled Dialog",
+      });
+      expect(dialog).toBeInTheDocument();
+
+      const saveButton = canvas.getByRole("button", { name: "Save" });
+      await userEvent.click(saveButton);
+
+      await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Dialog with keyboard navigation and accessibility testing.
+ */
+export const KeyboardNavigation: Story = {
+  args: {},
+  render: () => (
+    <Dialog.Root>
+      <Dialog.Trigger>Test Keyboard Navigation</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Backdrop />
+        <Dialog.Header>
+          <Dialog.Title>Keyboard Navigation Test</Dialog.Title>
+          <Dialog.CloseTrigger aria-label="Close dialog" />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Stack>
+            <Dialog.Description>
+              Test keyboard navigation: Tab through focusable elements, Escape
+              to close, Enter/Space on buttons.
+            </Dialog.Description>
+            <Button>First Button</Button>
+            <Button>Second Button</Button>
+          </Stack>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button>Cancel</Button>
           <Button>Confirm</Button>
         </Dialog.Footer>
       </Dialog.Content>
@@ -434,33 +420,49 @@ export const AccessibilityTest: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement.parentNode as HTMLElement);
 
-    await step("Opens dialog and focuses correctly", async () => {
-      const trigger = canvas.getByRole("button", { name: "Accessible Dialog" });
+    await step("Tests keyboard interactions", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Test Keyboard Navigation",
+      });
       await userEvent.click(trigger);
 
       const dialog = await canvas.findByRole("dialog", {
-        name: "Accessibility Test",
+        name: "Keyboard Navigation Test",
       });
       expect(dialog).toBeInTheDocument();
-    });
 
-    await step("Supports keyboard navigation", async () => {
-      // Tab through interactive elements
-      await userEvent.tab();
-      expect(
-        canvas.getByRole("button", { name: "Close dialog" })
-      ).toHaveFocus();
-
-      await userEvent.tab();
-      expect(canvas.getByRole("button", { name: "Cancel" })).toHaveFocus();
-
-      await userEvent.tab();
-      expect(canvas.getByRole("button", { name: "Confirm" })).toHaveFocus();
-    });
-
-    await step("Closes on Escape key", async () => {
+      // Test Escape key closes dialog
       await userEvent.keyboard("{Escape}");
       await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    await step("Tests focus management", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Test Keyboard Navigation",
+      });
+      await userEvent.click(trigger);
+
+      const dialog = await canvas.findByRole("dialog", {
+        name: "Keyboard Navigation Test",
+      });
+      expect(dialog).toBeInTheDocument();
+
+      // Test Tab navigation
+      await userEvent.tab();
+      const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+      expect(closeButton).toHaveFocus();
+
+      await userEvent.tab();
+      const firstButton = canvas.getByRole("button", { name: "First Button" });
+      expect(firstButton).toHaveFocus();
+
+      await userEvent.tab();
+      const secondButton = canvas.getByRole("button", {
+        name: "Second Button",
+      });
+      expect(secondButton).toHaveFocus();
+
+      await userEvent.click(closeButton);
     });
   },
 };
