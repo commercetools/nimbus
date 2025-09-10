@@ -7,8 +7,12 @@ import { dialogSlotRecipe } from "./dialog.recipe";
  *
  * The root component that provides context and state management for the dialog.
  * Uses React Aria's DialogTrigger for accessibility and state management.
+ *
+ * This component handles configuration through recipe variants that are passed
+ * down to child components via context.
  */
-export interface DialogRootProps {
+export interface DialogRootProps
+  extends RecipeVariantProps<typeof dialogSlotRecipe> {
   /**
    * The children components (Trigger, Content, etc.)
    */
@@ -60,10 +64,9 @@ export interface DialogTriggerProps extends ComponentProps<"button"> {
  * Props for the Dialog.Content component
  *
  * The main dialog content container that wraps the React Aria Dialog and Dialog.
+ * Configuration (size, placement, motionPreset, etc.) is inherited from Dialog.Root via context.
  */
-export interface DialogContentProps
-  extends ComponentProps<"div">,
-    RecipeVariantProps<typeof dialogSlotRecipe> {
+export interface DialogContentProps extends ComponentProps<"div"> {
   /**
    * The dialog content
    */

@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { Modal as RaModal, Dialog as RaDialog } from "react-aria-components";
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { DialogPositionerSlot, DialogContentSlot } from "../dialog.slots";
 import type { DialogContentProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { useDialogContext } from "./dialog.context";
 
 /**
  * # Dialog.Content
@@ -34,31 +34,34 @@ export const DialogContent = (props: DialogContentProps) => {
   const {
     ref: forwardedRef,
     children,
-    isPortalled = true,
-    portalContainer,
-    hasBackdrop = true,
+    // TODO: Implement portal support
+    // isPortalled = true,
+    // portalContainer,
+    // TODO: Implement backdrop control
+    // hasBackdrop = true,
     isDismissable = true,
     isKeyboardDismissDisabled = false,
-    onClose,
+    // TODO: Implement onClose callback
+    // onClose,
     ...restProps
   } = props;
 
-  const recipe = useSlotRecipe({ key: "dialog" });
-  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
+  // Get recipe configuration from context instead of props
+  const contextRecipeProps = useDialogContext();
 
   // create a local ref (because the consumer may not provide a forwardedRef)
   const localRef = useRef<HTMLDivElement>(null);
   // merge the local ref with a potentially forwarded ref
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  const [styleProps, htmlProps] = extractStyleProps(restRecipeProps);
+  const [styleProps, htmlProps] = extractStyleProps(restProps);
 
   return (
     <RaModal
       isDismissable={isDismissable}
       isKeyboardDismissDisabled={isKeyboardDismissDisabled}
     >
-      <DialogPositionerSlot {...recipeProps} {...styleProps}>
+      <DialogPositionerSlot {...contextRecipeProps} {...styleProps}>
         <DialogContentSlot asChild {...htmlProps}>
           <RaDialog ref={ref}>{children}</RaDialog>
         </DialogContentSlot>

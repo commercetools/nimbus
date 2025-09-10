@@ -1,6 +1,8 @@
 import { DialogTrigger as RaDialogTrigger } from "react-aria-components";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { DialogRootSlot } from "../dialog.slots";
 import type { DialogRootProps } from "../dialog.types";
+import { DialogProvider } from "./dialog.context";
 
 /**
  * # Dialog.Root
@@ -25,24 +27,30 @@ import type { DialogRootProps } from "../dialog.types";
  * ```
  */
 export const DialogRoot = (props: DialogRootProps) => {
+  const recipe = useSlotRecipe({ key: "dialog" });
+  const [recipeProps, restProps] = recipe.splitVariantProps(props);
+  
   const {
     children,
     isOpen,
     onOpenChange,
     defaultOpen = false,
-    ...restProps
-  } = props;
+    ...dialogTriggerProps
+  } = restProps;
 
   return (
-    <DialogRootSlot {...restProps}>
-      <RaDialogTrigger
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        defaultOpen={defaultOpen}
-      >
-        {children}
-      </RaDialogTrigger>
-    </DialogRootSlot>
+    <DialogProvider value={recipeProps}>
+      <DialogRootSlot {...recipeProps}>
+        <RaDialogTrigger
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          defaultOpen={defaultOpen}
+          {...dialogTriggerProps}
+        >
+          {children}
+        </RaDialogTrigger>
+      </DialogRootSlot>
+    </DialogProvider>
   );
 };
 

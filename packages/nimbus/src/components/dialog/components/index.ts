@@ -8,3 +8,4 @@ export { DialogFooter } from "./dialog.footer";
 export { DialogTitle } from "./dialog.title";
 export { DialogDescription } from "./dialog.description";
 export { DialogCloseTrigger } from "./dialog.close-trigger";
+export { useDialogContext, DialogProvider } from "./dialog.context";

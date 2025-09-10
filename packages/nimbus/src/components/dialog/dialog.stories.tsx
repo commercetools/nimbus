@@ -4,9 +4,9 @@ import { within, expect, userEvent } from "storybook/test";
 import { Dialog } from "./dialog";
 import { Button, Stack, Text, Heading } from "@/components";
 
-const meta: Meta<typeof Dialog.Content> = {
+const meta: Meta<typeof Dialog.Root> = {
   title: "components/Overlay/Dialog",
-  component: Dialog.Content,
+  component: Dialog.Root,
   parameters: {
     layout: "centered",
   },
@@ -33,9 +33,9 @@ const meta: Meta<typeof Dialog.Content> = {
     },
   },
   render: (args) => (
-    <Dialog.Root>
+    <Dialog.Root {...args}>
       <Dialog.Trigger>Open Dialog</Dialog.Trigger>
-      <Dialog.Content {...args}>
+      <Dialog.Content>
         <Dialog.Backdrop />
         <Dialog.Header>
           <Dialog.Title>Dialog Title</Dialog.Title>
@@ -178,9 +178,9 @@ export const Placements: Story = {
   render: () => (
     <Stack direction="row">
       {(["center", "top", "bottom"] as const).map((placement) => (
-        <Dialog.Root key={placement}>
+        <Dialog.Root key={placement} placement={placement}>
           <Dialog.Trigger>{placement}</Dialog.Trigger>
-          <Dialog.Content placement={placement}>
+          <Dialog.Content>
             <Dialog.Backdrop />
             <Dialog.Header>
               <Dialog.Title>Placement: {placement}</Dialog.Title>
@@ -230,9 +230,9 @@ export const ScrollBehavior: Story = {
   render: () => (
     <Stack direction="row">
       {(["inside", "outside"] as const).map((scrollBehavior) => (
-        <Dialog.Root key={scrollBehavior}>
+        <Dialog.Root key={scrollBehavior} scrollBehavior={scrollBehavior}>
           <Dialog.Trigger>Scroll {scrollBehavior}</Dialog.Trigger>
-          <Dialog.Content scrollBehavior={scrollBehavior}>
+          <Dialog.Content>
             <Dialog.Backdrop />
             <Dialog.Header>
               <Dialog.Title>Scroll: {scrollBehavior}</Dialog.Title>
@@ -297,9 +297,9 @@ export const MotionPresets: Story = {
           "none",
         ] as const
       ).map((preset) => (
-        <Dialog.Root key={preset}>
+        <Dialog.Root key={preset} motionPreset={preset}>
           <Dialog.Trigger>{preset}</Dialog.Trigger>
-          <Dialog.Content motionPreset={preset}>
+          <Dialog.Content>
             <Dialog.Backdrop />
             <Dialog.Header>
               <Dialog.Title>Motion: {preset}</Dialog.Title>
