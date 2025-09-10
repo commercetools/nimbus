@@ -27,8 +27,8 @@ export const timeInputRecipe = defineSlotRecipe({
       },
       focusVisibleRing: "outside",
       focusRing: "outside",
-      "& *": {
-        outline: "none !important",
+      "& input": {
+        outline: "none",
       },
       "&[data-invalid='true']": {
         "--border-color": "colors.critical.7",

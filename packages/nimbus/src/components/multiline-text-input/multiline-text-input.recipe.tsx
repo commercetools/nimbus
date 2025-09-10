@@ -23,8 +23,8 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         layerStyle: "focusRing",
       },
 
-      "& *": {
-        outline: "none !important",
+      "& input": {
+        outline: "none",
       },
 
       focusVisibleRing: "outside",

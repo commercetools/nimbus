@@ -21,7 +21,7 @@ export const textInputSlotRecipe = defineSlotRecipe({
         layerStyle: "focusRing",
       },
 
-      "& *": {
+      "& input": {
         outline: "none",
       },
 

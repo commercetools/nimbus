@@ -30,10 +30,6 @@ export const numberInputRecipe = defineSlotRecipe({
         layerStyle: "focusRing",
       },
 
-      "& *": {
-        outline: "none",
-      },
-
       focusVisibleRing: "outside",
       focusRing: "outside",
 
