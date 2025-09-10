@@ -1,3 +1,6 @@
+import { FormattedMessage } from "react-intl";
+import { FormField } from "@/components";
+import messages from "../localized-field.i18n";
 import type { LocalizedString } from "../localized-field.types";
 
 type LanguagesSplitByDefaultLocale = {
@@ -6,6 +9,12 @@ type LanguagesSplitByDefaultLocale = {
 };
 
 type TouchedLocalizedString = { [locale: string]: boolean };
+
+export const RequiredValueErrorMessage = () => (
+  <FormField.Error>
+    <FormattedMessage {...messages.missingRequiredField} />
+  </FormField.Error>
+);
 
 export const getLocaleFieldAttribute = (
   fieldGroupAttr?: string,

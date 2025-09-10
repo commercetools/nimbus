@@ -5,6 +5,7 @@ import {
   isEmpty,
   omitEmptyTranslations,
   isTouched,
+  RequiredValueErrorMessage,
 } from "./utils/localized-field.utils";
 
 export const LocalizedField = Object.assign(LocalizedFieldRoot, {
@@ -15,4 +16,5 @@ export const LocalizedField = Object.assign(LocalizedFieldRoot, {
   isEmpty,
   createLocalizedString,
   omitEmptyTranslations,
+  RequiredValueErrorMessage,
 });

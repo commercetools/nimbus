@@ -26,7 +26,7 @@ export type LocalizedString = { [locale: string]: string };
  * }
  */
 export type LocalizedCurrency = {
-  [currencyCode: string]: { amount: number; currencyCode: string };
+  [currencyCode: string]: { amount: string | number; currencyCode: string };
 };
 /**
  * Object that maps field data to a specific locale.
