@@ -7,17 +7,11 @@ type LanguagesSplitByDefaultLocale = {
 
 type TouchedLocalizedString = { [locale: string]: boolean };
 
-export const getLocaleFieldId = (
-  fieldGroupId?: string,
+export const getLocaleFieldAttribute = (
+  fieldGroupAttr?: string,
   locale?: string
 ): string | undefined =>
-  fieldGroupId && locale ? `${fieldGroupId}.${locale}` : undefined;
-
-export const getLocaleFieldName = (
-  fieldGroupName?: string,
-  locale?: string
-): string | undefined =>
-  fieldGroupName && locale ? `${fieldGroupName}.${locale}` : undefined;
+  fieldGroupAttr && locale ? `${fieldGroupAttr}.${locale}` : undefined;
 
 // gets the language tag of a given locale, e.g. `de` in `de-DE`
 export const getLanguageForLocale = (locale: string): string =>
@@ -62,12 +56,24 @@ export const sortLocalesByDefaultLocaleLanguage = (
   return [defaultLocale, ...related.sort(), ...unrelated.sort()];
 };
 
-export const getHasInvalidLocaleFields = <TErrors extends object>(
+export const sortCurrencies = (
+  defaultCurrency: string,
+  allCurrencies: string[]
+) => {
+  const remainingCurrencies = allCurrencies.filter(
+    (currency) => currency !== defaultCurrency
+  );
+  return [defaultCurrency, ...remainingCurrencies.sort()];
+};
+
+export const getHasInvalidLocalizedFields = <TErrors extends object>(
   errors?: TErrors,
-  defaultLocale?: string
+  defaultLocaleOrCurrency?: string
 ): boolean => {
-  if (errors && Object.keys(errors).length > 0 && defaultLocale) {
-    return Object.keys(errors).some((locale) => locale !== defaultLocale);
+  if (errors && Object.keys(errors).length > 0 && defaultLocaleOrCurrency) {
+    return Object.keys(errors).some(
+      (localeOrCurrency) => localeOrCurrency !== defaultLocaleOrCurrency
+    );
   }
   return false;
 };

@@ -92,19 +92,3 @@ export const LocalizedFieldLocaleFieldInputSlot = withContext<
   HTMLDivElement,
   LocalizedFieldLocaleFieldInputSlotProps
 >("div", "localeFieldInput");
-
-// FieldDescription Slot
-export interface LocalizedFieldLocaleFieldDescriptionSlotProps
-  extends HTMLChakraProps<"div"> {}
-export const LocalizedFieldLocaleFieldDescriptionSlot = withContext<
-  HTMLDivElement,
-  LocalizedFieldLocaleFieldDescriptionSlotProps
->("div", "localeFieldDescription");
-
-// FieldError Slot
-export interface LocalizedFieldLocaleFieldErrorSlotProps
-  extends HTMLChakraProps<"div"> {}
-export const LocalizedFieldLocaleFieldErrorSlot = withContext<
-  HTMLDivElement,
-  LocalizedFieldLocaleFieldErrorSlotProps
->("div", "localeFieldError");

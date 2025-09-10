@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import {
   FormField,
   TextInput,
@@ -7,8 +8,6 @@ import {
 } from "@/components";
 import {
   LocalizedFieldLocaleFieldRootSlot,
-  // LocalizedFieldLocaleFieldDescriptionSlot,
-  // LocalizedFieldLocaleFieldErrorSlot,
   LocalizedFieldLocaleFieldInputSlot,
   LocalizedFieldLocaleFieldLabelSlot,
 } from "../localized-field.slots";
@@ -17,9 +16,10 @@ import type { LocalizedFieldLocaleFieldProps } from "../localized-field.types";
 export const LocalizedFieldLocaleField = ({
   type,
   size,
-  locale,
+  localeOrCurrency,
+  id,
+  name,
   inputValue = "",
-  placeholder,
   description,
   warning,
   error,
@@ -29,6 +29,7 @@ export const LocalizedFieldLocaleField = ({
   isReadOnly,
   isDisabled,
   isInvalid,
+  ...otherProps
 }: LocalizedFieldLocaleFieldProps) => {
   let InputComponent;
   switch (type) {
@@ -47,6 +48,21 @@ export const LocalizedFieldLocaleField = ({
       break;
   }
 
+  const handleChange = useCallback(
+    (value: string | number) => {
+      onChange({
+        target: {
+          id,
+          name,
+          locale: type !== "money" ? localeOrCurrency : undefined,
+          currency: type === "money" ? localeOrCurrency : undefined,
+          value,
+        },
+      });
+    },
+    [id, name, localeOrCurrency, onChange]
+  );
+
   return (
     <LocalizedFieldLocaleFieldRootSlot asChild>
       <FormField.Root
@@ -55,25 +71,29 @@ export const LocalizedFieldLocaleField = ({
         isInvalid={isInvalid || !!error}
         direction="row"
         size={size}
+        id={id}
       >
         <LocalizedFieldLocaleFieldLabelSlot asChild>
-          <FormField.Label>{locale.toLocaleUpperCase()}</FormField.Label>
+          <FormField.Label>
+            {localeOrCurrency.toLocaleUpperCase()}
+          </FormField.Label>
         </LocalizedFieldLocaleFieldLabelSlot>
         <FormField.Input>
           <LocalizedFieldLocaleFieldInputSlot asChild>
             <InputComponent
+              {...otherProps}
+              size={size}
+              locale={localeOrCurrency}
+              currency={localeOrCurrency}
               // @ts-expect-error: the 'value' should be a string for everything but the number/money input, which must be a number
               // in its' infinite wisdom, ts interprets the union type as 'undefined' because of course it does
               value={inputValue}
-              placeholder={placeholder}
-              onChange={(v: string | number) => onChange(v, locale)}
-              onBlur={(e: React.FocusEvent) => onBlur?.(e, locale)}
-              onFocus={(e: React.FocusEvent) => onFocus?.(e, locale)}
+              onChange={handleChange}
+              onBlur={(e: React.FocusEvent) => onBlur?.(e, localeOrCurrency)}
+              onFocus={(e: React.FocusEvent) => onFocus?.(e, localeOrCurrency)}
               isDisabled={isDisabled}
               isReadOnly={isReadOnly}
               isInvalid={isInvalid || !!error}
-              size={size}
-              locale={locale}
             />
           </LocalizedFieldLocaleFieldInputSlot>
         </FormField.Input>
