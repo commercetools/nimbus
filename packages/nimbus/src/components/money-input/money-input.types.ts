@@ -96,26 +96,6 @@ export interface MoneyInputRootProps
    */
   hasHighPrecisionBadge?: boolean;
   /**
-   * Horizontal size limit of the input fields.
-   */
-  horizontalConstraint?:
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 13
-    | 14
-    | 15
-    | 16
-    | "scale"
-    | "auto";
-  /**
    * Indicates that the currency input cannot be modified.
    */
   isCurrencyInputDisabled?: boolean;
@@ -126,10 +106,6 @@ export interface MoneyInputRootProps
 }
 
 export interface MoneyInputAmountInputProps {
-  /**
-   * Used as HTML `autocomplete` property
-   */
-  autoComplete?: string;
   /**
    * Indicate if the value entered in the input is invalid.
    */
@@ -146,21 +122,6 @@ export interface MoneyInputAmountInputProps {
    * Focus the input on initial render
    */
   isAutofocussed?: boolean;
-}
-
-export interface MoneyInputCurrencySelectProps {
-  /**
-   * Dom element to portal the currency select menu to
-   */
-  menuPortalTarget?: Element;
-  /**
-   * z-index value for the currency select menu portal
-   */
-  menuPortalZIndex?: number;
-  /**
-   * whether the menu should block scroll while open
-   */
-  menuShouldBlockScroll?: boolean;
 }
 
 export interface MoneyInputBadgeProps {

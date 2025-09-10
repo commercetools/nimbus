@@ -1,8 +1,8 @@
-import { useRef, useState, useCallback, useId } from "react";
+import { useRef, useState, useCallback, useId, useMemo } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useObjectRef, useTextField } from "react-aria";
-import { Select, Tooltip } from "@/components";
+import { useObjectRef } from "react-aria";
+import { NumberInput, Select, Tooltip } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
@@ -13,14 +13,14 @@ import {
 } from "./money-input.slots";
 import { moneyInputRecipe } from "./money-input.recipe";
 import {
-  formatAmount,
   isHighPrecision,
   convertToMoneyValue,
   parseMoneyValue,
   isEmpty,
   isTouched,
 } from "./utils";
-import type { TValue, TCurrencyCode } from "./utils";
+import currenciesData from "./utils/currencies";
+import type { TValue } from "./utils";
 
 // Custom event type for MoneyInput onChange handler
 type TCustomEvent = {
@@ -86,26 +86,6 @@ export interface MoneyInputProps {
    */
   hasHighPrecisionBadge?: boolean;
   /**
-   * Horizontal size limit of the input fields.
-   */
-  horizontalConstraint?:
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 13
-    | 14
-    | 15
-    | 16
-    | "scale"
-    | "auto";
-  /**
    * Indicates that the currency input cannot be modified.
    */
   isCurrencyInputDisabled?: boolean;
@@ -118,25 +98,11 @@ export interface MoneyInputProps {
    */
   autoFocus?: boolean;
   /**
-   * Used as HTML `autocomplete` property
-   */
-  autoComplete?: string;
-  /**
    * Override the default tooltip content for high precision badge
+   *
+   * // TODO: this might not be necessary
    */
   tooltipContent?: string;
-  /**
-   * Dom element to portal the currency select menu to
-   */
-  menuPortalTarget?: Element;
-  /**
-   * z-index value for the currency select menu portal
-   */
-  menuPortalZIndex?: number;
-  /**
-   * whether the menu should block scroll while open
-   */
-  menuShouldBlockScroll?: boolean;
 }
 
 /**
@@ -162,15 +128,10 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     hasError,
     hasWarning,
     hasHighPrecisionBadge = true,
-    horizontalConstraint,
     isCurrencyInputDisabled,
     placeholder = "0.00",
     autoFocus,
-    autoComplete,
     tooltipContent,
-    menuPortalTarget,
-    menuPortalZIndex = 1,
-    menuShouldBlockScroll,
     ...restProps
   } = props;
 
@@ -184,8 +145,28 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const hasFocus = currencyHasFocus || amountHasFocus;
   const hasNoCurrencies = !currencies || currencies.length === 0;
 
-  // Check if current value is high precision
-  const isCurrentlyHighPrecision = isHighPrecision(value, "en-US");
+  // Convert string value to number for NumberInput
+  const numericValue = value.amount ? parseFloat(value.amount) : undefined;
+
+  // Implement enhanced high precision detection using raw input value
+  const isCurrentlyHighPrecision = useMemo(() => {
+    if (!value.currencyCode || !value.amount) return false;
+
+    // Safe currency lookup with proper type checking
+    const currencyData = currenciesData[value.currencyCode];
+    if (!currencyData) return false;
+
+    // Use the raw input value (amount string) to check precision
+    const amountStr = value.amount.toString().trim();
+    if (amountStr === "") return false;
+
+    // Parse the raw amount to count decimal places
+    const decimalIndex = amountStr.indexOf(".");
+    if (decimalIndex === -1) return false; // No decimals
+
+    const actualPrecision = amountStr.length - decimalIndex - 1;
+    return actualPrecision > currencyData.fractionDigits;
+  }, [value.amount, value.currencyCode]);
 
   // Refs
   const localRef = useRef<HTMLInputElement>(null);
@@ -193,8 +174,8 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
   // Recipe setup
   const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
-  const [recipeProps, recipeLessProps] = recipe.splitVariantProps(restProps);
-  const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
+  const [recipeProps] = recipe.splitVariantProps(restProps);
+  const [styleProps] = extractStyleProps(restProps);
 
   // Helper functions
   const getAmountInputId = () => `${id}-amount`;
@@ -203,15 +184,16 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const getCurrencyDropdownName = () =>
     name ? `${name}.currencyCode` : undefined;
 
-  // Event handlers
+  // Event handlers - NumberInput will preserve decimal precision with new settings
   const handleAmountChange = useCallback(
-    (newValue: string) => {
+    (newValue: number) => {
+      const stringValue = newValue.toString();
       const event: TCustomEvent = {
         persist: () => {},
         target: {
           id: getAmountInputId(),
           name: getAmountInputName(),
-          value: newValue,
+          value: stringValue,
         },
       };
       onChange?.(event);
@@ -234,19 +216,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
   const handleAmountBlur = useCallback(() => {
     setAmountHasFocus(false);
-
-    // Format the amount on blur
-    if (value.amount && value.currencyCode) {
-      const formattedAmount = formatAmount(
-        value.amount,
-        "en-US",
-        value.currencyCode as TCurrencyCode
-      );
-      if (formattedAmount !== value.amount) {
-        handleAmountChange(formattedAmount);
-      }
-    }
-
     const event: TCustomEvent = {
       persist: () => {},
       target: {
@@ -256,7 +225,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
-  }, [onBlur, value, id, name, handleAmountChange]);
+  }, [onBlur, value, id, name]);
 
   const handleCurrencyChange = useCallback(
     (currencyCode: string) => {
@@ -308,27 +277,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     [handleCurrencyChange]
   );
 
-  // React Aria TextField setup for amount input
-  const { inputProps } = useTextField(
-    {
-      id: getAmountInputId(),
-      name: getAmountInputName(),
-      type: "text",
-      value: value.amount,
-      autoComplete,
-      placeholder,
-      isDisabled,
-      isReadOnly,
-      autoFocus,
-      onFocus: handleAmountFocus,
-      onChange: handleAmountChange,
-      onBlur: handleAmountBlur,
-      "aria-label": "Amount input",
-      ...functionalProps,
-    },
-    ref
-  );
-
   const stateProps = {
     hasError,
     hasWarning,
@@ -339,12 +287,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   };
 
   return (
-    <MoneyInputRootSlot
-      {...recipeProps}
-      {...styleProps}
-      {...stateProps}
-      horizontalConstraint={horizontalConstraint}
-    >
+    <MoneyInputRootSlot {...recipeProps} {...styleProps} {...stateProps}>
       {/* Currency Select or Label */}
       <MoneyInputCurrencySelectSlot {...stateProps}>
         {hasNoCurrencies ? (
@@ -374,16 +317,30 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         )}
       </MoneyInputCurrencySelectSlot>
 
-      {/* Amount Input */}
+      {/* Amount Input - Now using enhanced NumberInput with currency support */}
       <MoneyInputAmountInputSlot
         ref={ref}
         data-has-focus={hasFocus}
         data-has-high-precision={
           hasHighPrecisionBadge && isCurrentlyHighPrecision
         }
-        {...inputProps}
         {...stateProps}
-      />
+        asChild
+      >
+        <NumberInput
+          value={numericValue}
+          currency={value.currencyCode}
+          showCurrencySymbol={false} // Don't show symbol in input, only in currency dropdown
+          allowHighPrecision={true} // Enable high precision for all currencies in MoneyInput
+          onChange={handleAmountChange}
+          onFocus={handleAmountFocus}
+          onBlur={handleAmountBlur}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+        />
+      </MoneyInputAmountInputSlot>
 
       {/* High Precision Badge */}
       {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
@@ -417,6 +374,7 @@ type MoneyInputType = typeof MoneyInputComponent & {
 
 export const MoneyInput = MoneyInputComponent as MoneyInputType;
 
+// TODO: evaluate whether we need these, and whether they're used in the merchant center
 // Attach static methods
 MoneyInput.convertToMoneyValue = convertToMoneyValue;
 MoneyInput.parseMoneyValue = parseMoneyValue;

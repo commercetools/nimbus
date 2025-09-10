@@ -1,4 +1,4 @@
-import { warning, isNumberish } from "./nimbus-utils";
+import { warning } from "./nimbus-utils";
 import currencies from "./currencies";
 
 export type TCurrencyCode = keyof typeof currencies;
@@ -54,7 +54,7 @@ export const createMoneyValue = (
   const currency = currencies[currencyCode];
   if (!currency) return null;
   // The user may enter a value with a comma, dot, or apostrophe as the decimal separator.
-  if (rawAmount.length === 0 || !isNumberish(rawAmount)) return null;
+  if (rawAmount.length === 0 || rawAmount.trim() === "") return null;
 
   warning(
     Boolean(locale) || currency.fractionDigits !== 0,
