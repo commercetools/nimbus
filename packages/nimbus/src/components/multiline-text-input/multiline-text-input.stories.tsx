@@ -478,9 +478,13 @@ export const AutoGrow: Story = {
     );
 
     await step("Auto-grow with manual resize shows resize handle", async () => {
-      // Check that the default auto-grow textarea still has resize capability
-      const computedStyle = window.getComputedStyle(autoGrowTextarea);
+      // Check that the auto-grow textarea's root container has resize capability
+      const rootContainer = autoGrowTextarea.parentElement;
+      await expect(rootContainer).not.toBeNull();
+
+      const computedStyle = window.getComputedStyle(rootContainer!);
       await expect(computedStyle.resize).not.toBe("none");
+      await expect(computedStyle.resize).toBe("vertical");
     });
 
     await step("Limited auto-grow respects max height", async () => {
@@ -490,8 +494,12 @@ export const AutoGrow: Story = {
       const longText = Array(15).fill("This is a long line of text").join("\n");
       await userEvent.type(limitedTextarea, longText);
 
-      // Height should be limited to approximately 200px
-      await expect(limitedTextarea.clientHeight).toBeLessThanOrEqual(220); // Allow some margin
+      // Check the root container height since that's where maxHeight is applied
+      const rootContainer = limitedTextarea.parentElement;
+      await expect(rootContainer).not.toBeNull();
+
+      // Height should be limited by the maxHeight constraint on the root container
+      await expect(rootContainer!.clientHeight).toBeLessThanOrEqual(220); // Allow some margin
     });
 
     // Clean up
