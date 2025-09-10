@@ -1,0 +1,286 @@
+---
+id: Components-tooltip-dev
+title: Tooltip Engineering Guidelines
+description: Engineering guideline for migrating from UI Kit to Nimbus Tooltip component
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Feedback
+  - TooltipDev
+tags:
+  - component
+  - engineering
+  - migration
+---
+
+# Tooltip Engineering Guidelines
+
+This engineering guideline provides developers with actionable instructions and practical examples for migrating from UI Kit to the new Nimbus Tooltip component.
+
+## Key Prerequisites
+
+Before you get started, make sure your application entry point is wrapped with a Nimbus provider:
+
+```tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+
+<NimbusProvider>
+  <ApplicationEntryPoint />
+</NimbusProvider>
+```
+
+## Component Usage
+
+### How to Import
+
+```tsx
+import { Tooltip } from '@commercetools/nimbus';
+```
+
+### Basic Example
+
+A minimal, copy-and-paste example of the tooltip in its simplest form: edit the placement in code code interface to different positions of choice (top, left, right, etc) 
+
+```jsx-live
+// Example: A basic tooltip
+const App = () => (
+  <Tooltip.Root>
+    <Button>Hover me</Button>
+    <Tooltip.Content placement="top">This is a helpful tooltip</Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
+### Common Props and Variations
+
+#### 1. Placement Options
+Control where the tooltip appears relative to its trigger:
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
+    <Tooltip.Root>
+      <Button>Top placement</Button>
+      <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Button>Bottom placement</Button>
+      <Tooltip.Content placement="bottom">Tooltip on bottom</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Button>Left placement</Button>
+      <Tooltip.Content placement="left">Tooltip on left</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Button>Right placement</Button>
+      <Tooltip.Content placement="right">Tooltip on right</Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
+
+#### 2. Timing Control
+Customize show and hide delays:
+
+```jsx-live
+const App = () => (
+  <Tooltip.Root delay={500} closeDelay={300}>
+    <Button>Delayed tooltip</Button>
+    <Tooltip.Content>Appears after 500ms, closes after 300ms</Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
+#### 3. Controlled State
+Programmatically control tooltip visibility:
+
+```jsx-live
+const App = () => {
+ const [isOpen, setIsOpen] = useState(false);
+
+ return( <Tooltip.Root isOpen={isOpen} >
+    <Button onClick={() => setIsOpen(!isOpen)}>
+      Controlled tooltip
+    </Button>
+    <Tooltip.Content>This tooltip is controlled by state</Tooltip.Content>
+ </Tooltip.Root>
+)}
+```
+
+### Advanced Configurations
+
+#### Icon Button with Tooltip
+Essential for accessibility when using icon-only buttons:
+
+```jsx-live
+const App = () => (
+  <Tooltip.Root>
+    <IconButton tone="primary" variant="ghost" size="md">
+      <Icons.Edit />
+    </IconButton>
+    <Tooltip.Content>Edit name</Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
+## Migration Guide (UI Kit to Nimbus)
+
+### Component Mapping
+
+| UI Kit Component | Nimbus Component | Notes |
+|------------------|------------------|-------|
+| `<Tooltip>` | `<Tooltip.Root>` + `<Tooltip.Content>` | Now uses compound component pattern |
+| `title` prop | `<Tooltip.Content>` children | Text content now goes as children |
+| `isOpen` prop | `isOpen` prop | ✅ Same API |
+| `onClose` | `onOpenChange` | ⚠️ Renamed, now receives boolean parameter |
+| `horizontalConstraint` | Not supported | ❌ Removed - use CSS or container sizing |
+
+### API Changes
+
+#### Props Renamed or Changed
+- `onClose` → `onOpenChange`: Now receives `(isOpen: boolean) => void` instead of `() => void`
+- `title` prop → Content as children: Text now goes inside `<Tooltip.Content>`
+- `delay` and `closeDelay`: More granular control over timing
+
+#### Props Removed
+- `horizontalConstraint`: Use CSS width constraints on content instead
+- `tone`: Styling is now handled through design tokens
+
+#### New Props Available
+- `placement`: More placement options with modifiers
+- `defaultOpen`: Set initial state without controlled component
+
+### Code Mod Instructions
+
+If a code mod exists for Tooltip migration, run:
+
+```bash
+npx nimbus-codemods migrate-tooltip
+```
+
+### Manual Migration Steps
+
+For manual migration, follow these steps:
+
+#### Step 1: Replace Component Structure
+**Before (UI Kit):**
+```tsx
+<Tooltip title="Helpful information" isOpen={isOpen} onClose={handleClose}>
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+**After (Nimbus):**
+```tsx
+<Tooltip.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+  <Button>Hover me</Button>
+  <Tooltip.Content>Helpful information</Tooltip.Content>
+</Tooltip.Root>
+```
+
+#### Step 2: Update Event Handlers
+**Before:**
+```tsx
+const handleClose = () => {
+  setIsOpen(false);
+};
+```
+
+**After:**
+```tsx
+const handleOpenChange = (isOpen: boolean) => {
+  setIsOpen(isOpen);
+};
+```
+
+#### Step 3: Handle Removed Props
+For `horizontalConstraint`, wrap with a container or use CSS:
+
+**Before:**
+```tsx
+<Tooltip title="Long text content..." horizontalConstraint="m">
+  <Button>Button</Button>
+</Tooltip>
+```
+
+**After:**
+```tsx
+<Tooltip.Root>
+  <Button>Button</Button>
+  <Tooltip.Content style={{ maxWidth: '200px' }}>
+    Long text content...
+  </Tooltip.Content>
+</Tooltip.Root>
+```
+
+## Resources and Tooling
+
+### Nimbus Storybook
+- **Main documentation**: [Nimbus Storybook - Tooltip](https://nimbus.commercetools.com/?path=/story/components-tooltip)
+- **Live examples**: Interactive examples with source code
+- **Props reference**: Complete API documentation
+
+### Engineering Examples Package
+- Dedicated package with consumer-focused examples
+- Simple, single-use-case examples (separate from complex test files)
+- Located in: `@commercetools/nimbus-examples/tooltip`
+
+### Support Channels
+- **Slack**: Join `#nimbus-migration` channel for real-time support
+- **Documentation**: [Nimbus docs site](https://nimbus.commercetools.com)
+- **GitHub Issues**: Report bugs or feature requests
+
+### AI Tooling
+- **ChatGPT/Claude**: Use prompts like "Convert this UI Kit Tooltip to Nimbus"
+- **GitHub Copilot**: Trained on Nimbus patterns for autocomplete suggestions
+
+### Codemods
+We use `jscodeshift` extensively for migrations. Example setup can be found in UI Kit migrations:
+
+```bash
+# Install jscodeshift if not already available
+npm install -g jscodeshift
+
+# Run Nimbus tooltip migration
+npx @commercetools/nimbus-codemods tooltip
+```
+
+## ⚠️ Caveats and Best Practices For Migration
+
+### Migration Strategy
+
+### Testing Requirements
+- **Run Tests After Migration**: Always run your test suites after migrating to ensure components function as expected. Update tests where needed in your application.
+
+### Common Pitfalls
+- **Compound Component Pattern**: Both `Tooltip.Root` and `Tooltip.Content` are required
+
+
+
+---
+
+**Resources:**
+- [React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
+- [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+- [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
+
+### API Reference
+
+<PropsTable id="Tooltip" />
+
+### Accessibility Standards
+
+Nimbus Tooltip automatically handles most accessibility requirements, but developers should be aware of these standards:
+
+#### WCAG Compliance
+- **1.3.1 Info and Relationships (Level A)**: Programmatic relationships established via `aria-describedby`
+- **2.1.1 Keyboard (Level A)**: Fully keyboard accessible with focus management
+- **4.1.2 Name, Role, Value (Level A)**: Proper ARIA roles and properties implemented
+
+#### Implementation Notes
+- Tooltip triggers are focusable and hoverable
+- Automatic association between trigger and tooltip content
+- Screen reader compatible with proper ARIA attributes
+- Keyboard navigation support built-in
+
