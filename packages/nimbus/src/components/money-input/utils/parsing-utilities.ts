@@ -1,4 +1,4 @@
-import currencies from "./currencies";
+import currencies from "../../../utils/currencies";
 
 export type TCurrencyCode = keyof typeof currencies;
 
@@ -20,8 +20,8 @@ export type TValue = {
   currencyCode: TCurrencyCode | "";
 };
 
-// Parsing function - preserves exact logic from UI Kit
-export const parseRawAmountToNumber = (rawAmount: string, locale: string) => {
+// Parsing function - preserves exact logic from UI Kit (internal use only)
+const parseRawAmountToNumber = (rawAmount: string, locale: string) => {
   let fractionsSeparator;
 
   if (locale) {
@@ -42,6 +42,19 @@ export const parseRawAmountToNumber = (rawAmount: string, locale: string) => {
   return parseFloat(normalizedAmount);
 };
 
+// ARCHITECTURE NOTE: Static Methods Currency Parsing System
+//
+// This function is part of MoneyInput's STATIC METHODS system, which is SEPARATE
+// from the NumberInput formatting system used for live user interaction.
+//
+// Purpose: Converts raw string input to structured TMoneyValue objects for:
+// - MoneyInput.convertToMoneyValue() - form data → API format
+// - MoneyInput.parseMoneyValue() - API format → form data
+// - MoneyInput.isHighPrecision() - precision detection
+//
+// This system does NOT interact with the NumberInput component that handles
+// live user typing. They are independent currency handling systems.
+//
 // Money value creation - preserves exact logic from UI Kit
 export const createMoneyValue = (
   rawAmount: string,
@@ -62,7 +75,7 @@ export const createMoneyValue = (
   const amountAsNumber = parseRawAmountToNumber(rawAmount, locale);
   if (isNaN(amountAsNumber)) return null;
 
-  // The cent amount is rounded to the currencie's default number
+  // The cent amount is rounded to the currency's default number
   // of fraction digits for prices with high precision.
   //
   // Additionally, JavaScript is sometimes incorrect when multiplying floats,

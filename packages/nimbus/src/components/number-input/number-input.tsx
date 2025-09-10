@@ -27,8 +27,6 @@ import { numberInputRecipe } from "./number-input.recipe";
  *
  * A number input allows users to enter numerical values and adjust them incrementally.
  * When used with currency, the locale for formatting comes from React Aria's I18nProvider context.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
  */
 export const NumberInput = (props: NumberInputProps) => {
   const {
@@ -56,7 +54,7 @@ export const NumberInput = (props: NumberInputProps) => {
 
     // For currency display, use currency formatting with precision support
     if (showCurrencySymbol) {
-      return getCurrencyFormatOptions(currency, locale, allowHighPrecision);
+      return getCurrencyFormatOptions(currency, allowHighPrecision);
     }
 
     return undefined;

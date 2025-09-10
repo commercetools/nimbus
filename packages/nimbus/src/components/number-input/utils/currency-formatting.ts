@@ -1,5 +1,23 @@
-import currencies from "./currencies";
+import currencies from "../../../utils/currencies";
 import type { TCurrencyCode } from "./types";
+
+// ARCHITECTURE NOTE: NumberInput Currency Formatting System
+//
+// This file provides currency formatting utilities for NumberInput component's
+// live user interaction system. This is SEPARATE and INDEPENDENT from
+// MoneyInput's static methods system (createMoneyValue + TMoneyValue objects).
+//
+// NumberInput System (this file):
+// - Powers live user typing, validation, and display formatting
+// - Uses React Aria NumberField + Intl.NumberFormat
+// - Handles real-time locale-aware formatting as users type
+//
+// MoneyInput Static Methods System (separate):
+// - Uses createMoneyValue() with custom TMoneyValue objects
+// - Only for API compatibility calls like MoneyInput.convertToMoneyValue()
+// - Does NOT interact with this formatting system
+//
+// Both systems use the same shared currencies.ts data but serve different purposes.
 
 /**
  * Creates format options for React Aria NumberField based on currency
@@ -7,9 +25,6 @@ import type { TCurrencyCode } from "./types";
  */
 export const getCurrencyFormatOptions = (
   currencyCode: TCurrencyCode | "",
-  // NOTE: locale parameter preserved for future use and API consistency
-  // Currently formatting is handled by React Aria's locale context
-  _locale: string = "en-US", // eslint-disable-line @typescript-eslint/no-unused-vars
   allowHighPrecision: boolean = false
 ): Intl.NumberFormatOptions => {
   if (!currencyCode) {

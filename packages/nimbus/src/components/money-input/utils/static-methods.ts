@@ -2,37 +2,13 @@
 const has = (obj: Record<string, unknown>, key: string): boolean => {
   return Object.prototype.hasOwnProperty.call(obj, key);
 };
-import currencies from "./currencies";
+import currencies from "../../../utils/currencies";
 import {
   createMoneyValue,
-  createEmptyMoneyValue,
   getAmountAsNumberFromMoneyValue,
   type TMoneyValue,
   type TValue,
-  type TCurrencyCode,
-} from "./money-parsing";
-
-// Format amount - preserves exact logic from UI Kit
-export const formatAmount = (
-  rawAmount: string,
-  locale: string,
-  currencyCode: TCurrencyCode
-) => {
-  // fallback in case the user didn't enter an amount yet (or it's invalid)
-  const moneyValue =
-    createMoneyValue(rawAmount, locale, currencyCode) ||
-    createEmptyMoneyValue(currencyCode);
-
-  const amount = getAmountAsNumberFromMoneyValue(moneyValue);
-
-  const fractionDigits = moneyValue.preciseAmount
-    ? moneyValue.fractionDigits
-    : currencies[moneyValue.currencyCode].fractionDigits;
-
-  return isNaN(amount)
-    ? ""
-    : amount.toLocaleString(locale, { minimumFractionDigits: fractionDigits });
-};
+} from "./parsing-utilities";
 
 // Static method implementations - preserve exact logic
 export const convertToMoneyValue = (value: TValue, locale: string) =>
@@ -88,13 +64,17 @@ export const parseMoneyValue = (
     'MoneyInput.parseMoneyValue: Value must contain "amount"'
   );
 
-  const amount = formatAmount(
-    getAmountAsNumberFromMoneyValue(moneyValue).toLocaleString(locale, {
-      minimumFractionDigits: moneyValue.fractionDigits,
-    }),
-    locale,
-    moneyValue.currencyCode
-  );
+  // Direct formatting without circular conversion
+  const amountAsNumber = getAmountAsNumberFromMoneyValue(moneyValue);
+  const fractionDigits = moneyValue.preciseAmount
+    ? moneyValue.fractionDigits
+    : currencies[moneyValue.currencyCode].fractionDigits;
+
+  const amount = isNaN(amountAsNumber)
+    ? ""
+    : amountAsNumber.toLocaleString(locale, {
+        minimumFractionDigits: fractionDigits,
+      });
 
   return { amount, currencyCode: moneyValue.currencyCode };
 };

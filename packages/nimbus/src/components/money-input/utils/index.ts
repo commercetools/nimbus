@@ -1,3 +1,2 @@
-export { default as currencies } from "./currencies";
-export * from "./money-parsing";
-export * from "./money-conversion";
+export * from "./parsing-utilities";
+export * from "./static-methods";

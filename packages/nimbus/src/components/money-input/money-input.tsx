@@ -18,7 +18,7 @@ import {
   parseMoneyValue,
   isEmpty,
 } from "./utils";
-import currenciesData from "./utils/currencies";
+import currenciesData from "../../utils/currencies";
 import type { TValue } from "./utils";
 
 // Custom event type for MoneyInput onChange handler
@@ -110,8 +110,6 @@ export interface MoneyInputProps {
  *
  * A specialized input component for entering monetary amounts with currency selection.
  * Supports high precision values and automatic locale-based formatting.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/money-input}
  */
 export const MoneyInputComponent = (props: MoneyInputProps) => {
   const {
@@ -317,7 +315,24 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         )}
       </MoneyInputCurrencySelectSlot>
 
-      {/* Amount Input - Now using enhanced NumberInput with currency support */}
+      {/* Amount Input - ARCHITECTURE NOTE: Dual Formatting Systems
+
+          MoneyInput uses TWO SEPARATE currency formatting systems:
+
+          1. NumberInput (THIS component below):
+             - Handles live user interaction and display formatting
+             - Uses React Aria + Intl.NumberFormat + getCurrencyFormatOptions()
+             - Provides real-time locale-aware input validation and formatting
+             - Powers the actual input field behavior users see
+
+          2. MoneyInput Static Methods (convertToMoneyValue, parseMoneyValue, etc.):
+             - Uses custom parsing system with createMoneyValue() + TMoneyValue objects
+             - Maintains exact UI-Kit behavioral compatibility for Merchant Center
+             - Only triggered by explicit static method calls, NOT during user typing
+
+          These systems are INDEPENDENT and do NOT interact with each other.
+          This design preserves UI-Kit compatibility while leveraging modern React Aria input handling.
+      */}
       <MoneyInputAmountInputSlot
         ref={ref}
         data-has-focus={hasFocus}
@@ -370,7 +385,25 @@ type MoneyInputType = typeof MoneyInputComponent & {
 
 export const MoneyInput = MoneyInputComponent as MoneyInputType;
 
-// Core static methods preserved for Merchant Center compatibility
+// ARCHITECTURE NOTE: Static Methods System
+//
+// These static methods provide UI-Kit compatibility for Merchant Center.
+// They use a SEPARATE currency parsing system (createMoneyValue + TMoneyValue objects)
+// that is INDEPENDENT from the NumberInput formatting system used for live user interaction.
+//
+// Static Methods System (this):
+// - convertToMoneyValue: TValue → TMoneyValue (for API submission)
+// - parseMoneyValue: TMoneyValue → TValue (for form initialization)
+// - isEmpty/isHighPrecision: validation utilities
+// - Uses createMoneyValue() with custom string parsing logic
+//
+// NumberInput System (used above in render):
+// - Uses React Aria NumberField + Intl.NumberFormat
+// - Handles live user typing, locale formatting, validation
+// - Powers the actual input field behavior
+//
+// These systems do NOT communicate - they serve different purposes:
+// Static methods = API compatibility, NumberInput = user experience
 MoneyInput.convertToMoneyValue = convertToMoneyValue;
 MoneyInput.parseMoneyValue = parseMoneyValue;
 MoneyInput.isEmpty = isEmpty;

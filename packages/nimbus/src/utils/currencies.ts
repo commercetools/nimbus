@@ -1,3 +1,18 @@
+// ARCHITECTURE NOTE: Shared Currency Data
+//
+// This currency data is used by TWO INDEPENDENT formatting systems:
+//
+// 1. NumberInput System (live user interaction):
+//    - Uses getCurrencyFormatOptions(), getCurrencyStep()
+//    - Powers React Aria NumberField formatting as users type
+//
+// 2. MoneyInput Static Methods System (API compatibility):
+//    - Uses createMoneyValue() + TMoneyValue objects
+//    - Only triggered by explicit static method calls
+//
+// Both systems access this same data but for different purposes.
+// Changes here affect both NumberInput behavior AND MoneyInput static methods.
+
 const currencies = {
   ADP: { fractionDigits: 0 },
   AED: { fractionDigits: 2 },
