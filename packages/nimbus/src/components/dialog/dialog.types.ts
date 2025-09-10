@@ -192,11 +192,6 @@ export interface DialogCloseTriggerProps
 }
 
 /**
- * Size variants for the dialog
- */
-export type DialogSize = "xs" | "sm" | "md" | "lg" | "xl" | "cover" | "full";
-
-/**
  * Placement variants for the dialog
  */
 export type DialogPlacement = "center" | "top" | "bottom";

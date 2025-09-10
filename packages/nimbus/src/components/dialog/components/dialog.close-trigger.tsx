@@ -5,6 +5,7 @@ import { mergeRefs } from "@chakra-ui/react";
 import { Close } from "@commercetools/nimbus-icons";
 import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
+import { IconButton } from "@/components";
 
 /**
  * # Dialog.CloseTrigger
@@ -42,10 +43,10 @@ export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   return (
-    <DialogCloseTriggerSlot asChild>
-      <RaButton ref={ref} slot="close" aria-label={ariaLabel} {...restProps}>
+    <DialogCloseTriggerSlot>
+      <IconButton ref={ref} slot="close" aria-label={ariaLabel} {...restProps}>
         <Close role="img" />
-      </RaButton>
+      </IconButton>
     </DialogCloseTriggerSlot>
   );
 };

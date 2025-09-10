@@ -78,9 +78,9 @@ export const DialogDescriptionSlot = withContext<
   DialogDescriptionSlotProps
 >("p", "description");
 
-// Close trigger slot - button to close the dialog
-export type DialogCloseTriggerSlotProps = HTMLChakraProps<"button">;
+// Close trigger slot - div container for positioning close button
+export type DialogCloseTriggerSlotProps = HTMLChakraProps<"div">;
 export const DialogCloseTriggerSlot = withContext<
-  HTMLButtonElement,
+  HTMLDivElement,
   DialogCloseTriggerSlotProps
->("button", "closeTrigger");
+>("div", "closeTrigger");
