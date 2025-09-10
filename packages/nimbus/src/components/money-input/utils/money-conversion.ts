@@ -102,11 +102,3 @@ export const isHighPrecision = (formValue: TValue, locale: string): boolean => {
   const moneyValue = convertToMoneyValue(formValue, locale);
   return moneyValue?.type === "highPrecision";
 };
-
-type TTouched = {
-  amount?: boolean;
-  currencyCode?: boolean;
-};
-
-export const isTouched = (touched?: TTouched) =>
-  Boolean(touched && touched.currencyCode && touched.amount);

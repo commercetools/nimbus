@@ -17,7 +17,6 @@ import {
   convertToMoneyValue,
   parseMoneyValue,
   isEmpty,
-  isTouched,
 } from "./utils";
 import currenciesData from "./utils/currencies";
 import type { TValue } from "./utils";
@@ -366,22 +365,12 @@ type MoneyInputType = typeof MoneyInputComponent & {
   parseMoneyValue: typeof parseMoneyValue;
   isEmpty: typeof isEmpty;
   isHighPrecision: typeof isHighPrecision;
-  isTouched: typeof isTouched;
-  // Backwards compatibility helper methods
-  getAmountInputId: (id: string) => string;
-  getCurrencyDropdownId: (id: string) => string;
 };
 
 export const MoneyInput = MoneyInputComponent as MoneyInputType;
 
-// TODO: evaluate whether we need these, and whether they're used in the merchant center
-// Attach static methods
+// Core static methods preserved for Merchant Center compatibility
 MoneyInput.convertToMoneyValue = convertToMoneyValue;
 MoneyInput.parseMoneyValue = parseMoneyValue;
 MoneyInput.isEmpty = isEmpty;
 MoneyInput.isHighPrecision = isHighPrecision;
-MoneyInput.isTouched = isTouched;
-
-// Backwards compatibility helpers
-MoneyInput.getAmountInputId = (id: string) => `${id}-amount`;
-MoneyInput.getCurrencyDropdownId = (id: string) => `${id}-currency`;
