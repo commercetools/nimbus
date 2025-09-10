@@ -90,6 +90,87 @@ export const Default: Story = {
 };
 
 /**
+ * Dialog triggered by a custom Button component instead of the default Dialog.Trigger.
+ */
+export const ButtonAsTrigger: Story = {
+  args: {},
+  render: () => (
+    <Dialog.Root>
+      <Dialog.Trigger asChild>
+        <Button variant="solid" colorScheme="primary">
+          Open with Custom Button
+        </Button>
+      </Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Backdrop />
+        <Dialog.Header>
+          <Dialog.Title>Custom Button Trigger</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Dialog.Description>
+            This dialog is triggered by a custom Button component using the
+            asChild prop. The Button maintains its styling while gaining dialog
+            trigger functionality.
+          </Dialog.Description>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button variant="outline" slot="close">
+            Cancel
+          </Button>
+          <Button variant="solid" tone="primary" slot="close">
+            Confirm
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement.parentNode as HTMLElement);
+
+    await step("Opens dialog with custom button trigger", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open with Custom Button",
+      });
+      await userEvent.click(trigger);
+
+      const dialog = await canvas.findByRole("dialog", {
+        name: "Custom Button Trigger",
+      });
+      expect(dialog).toBeInTheDocument();
+    });
+
+    await step("Closes dialog on close button click", async () => {
+      const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+      await userEvent.click(closeButton);
+
+      await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    await step("Tests footer button interactions", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open with Custom Button",
+      });
+      await userEvent.click(trigger);
+
+      const dialog = await canvas.findByRole("dialog", {
+        name: "Custom Button Trigger",
+      });
+      expect(dialog).toBeInTheDocument();
+
+      const confirmButton = canvas.getByRole("button", { name: "Confirm" });
+      expect(confirmButton).toBeInTheDocument();
+
+      const cancelButton = canvas.getByRole("button", { name: "Cancel" });
+      expect(cancelButton).toBeInTheDocument();
+
+      const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+      await userEvent.click(closeButton);
+    });
+  },
+};
+
+/**
  * Dialog with different placement variants.
  */
 export const Placements: Story = {
