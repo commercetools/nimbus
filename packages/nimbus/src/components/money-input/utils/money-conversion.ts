@@ -1,5 +1,3 @@
-import { warning } from "./nimbus-utils";
-
 // Replace lodash/has with native implementation
 const has = (obj: Record<string, unknown>, key: string): boolean => {
   return Object.prototype.hasOwnProperty.call(obj, key);
@@ -50,27 +48,39 @@ export const parseMoneyValue = (
 ): TValue => {
   if (!moneyValue) return { currencyCode: "", amount: "" };
 
-  warning(
+  console.warn(
     typeof locale === "string",
     "MoneyInput.parseMoneyValue: A locale must be passed as the second argument"
   );
 
-  warning(
+  console.warn(
     typeof moneyValue === "object",
     "MoneyInput.parseMoneyValue: Value must be passed as an object or be undefined"
   );
 
-  warning(
+  console.warn(
     typeof moneyValue.currencyCode === "string",
     'MoneyInput.parseMoneyValue: Value must contain "currencyCode"'
   );
 
-  warning(
+  if (typeof moneyValue.currencyCode !== "string") {
+    throw new Error(
+      'MoneyInput.parseMoneyValue: Value must contain "currencyCode"'
+    );
+  }
+
+  console.warn(
     has(currencies, moneyValue.currencyCode),
     "MoneyInput.parseMoneyValue: Value must use known currency code"
   );
 
-  warning(
+  if (!has(currencies, moneyValue.currencyCode)) {
+    throw new Error(
+      "MoneyInput.parseMoneyValue: Value must use known currency code"
+    );
+  }
+
+  console.warn(
     // highPrecision or centPrecision values must be set
     typeof moneyValue.centAmount === "number" ||
       (typeof moneyValue.preciseAmount === "number" &&
@@ -95,7 +105,11 @@ export const isEmpty = (formValue: TValue) =>
   formValue.currencyCode.trim() === "";
 
 export const isHighPrecision = (formValue: TValue, locale: string): boolean => {
-  // Return false for empty values without warning in component context
+  console.warn(
+    !isEmpty(formValue),
+    "MoneyValue.isHighPrecision may not be called with an empty money value."
+  );
+
   if (isEmpty(formValue)) {
     return false;
   }

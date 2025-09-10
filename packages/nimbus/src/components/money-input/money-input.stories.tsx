@@ -488,3 +488,161 @@ export const EULocaleFormattingExample: Story = {
     expect(inputs[2]).toHaveValue("12.345,1235"); // GBP - truncated to 4 decimals by React Aria
   },
 };
+
+// Static Methods Testing Story
+export const StaticMethodsCompliance: Story = {
+  play: async () => {
+    // Helper to capture console warnings
+    const originalWarn = console.warn;
+    let capturedWarnings: unknown[][] = [];
+    console.warn = (...args: unknown[]) => {
+      capturedWarnings.push(args);
+      originalWarn.apply(console, args);
+    };
+
+    try {
+      // Test convertToMoneyValue
+      expect(
+        MoneyInput.convertToMoneyValue({ amount: "1", currencyCode: "" }, "en")
+      ).toBe(null);
+
+      expect(
+        MoneyInput.convertToMoneyValue(
+          { amount: "1", currencyCode: "FOO" as TCurrencyCode },
+          "en"
+        )
+      ).toBe(null);
+
+      const euroCent = MoneyInput.convertToMoneyValue(
+        { amount: "1.2", currencyCode: "EUR" },
+        "en"
+      );
+      expect(euroCent?.type).toBe("centPrecision");
+      expect(euroCent?.centAmount).toBe(120);
+
+      const euroHigh = MoneyInput.convertToMoneyValue(
+        { amount: "1.234", currencyCode: "EUR" },
+        "en"
+      );
+      expect(euroHigh?.type).toBe("highPrecision");
+      expect(euroHigh?.preciseAmount).toBe(1234);
+
+      // Test parseMoneyValue
+      expect(MoneyInput.parseMoneyValue(null as never, "en")).toEqual({
+        currencyCode: "",
+        amount: "",
+      });
+
+      const centResult = MoneyInput.parseMoneyValue(
+        {
+          type: "centPrecision",
+          centAmount: 1234,
+          currencyCode: "EUR",
+          fractionDigits: 2,
+        },
+        "en"
+      );
+      expect(centResult.amount).toBe("12.34");
+      expect(centResult.currencyCode).toBe("EUR");
+
+      const highResult = MoneyInput.parseMoneyValue(
+        {
+          type: "highPrecision",
+          currencyCode: "EUR",
+          centAmount: 1234,
+          fractionDigits: 5,
+          preciseAmount: 1234527,
+        },
+        "en"
+      );
+      expect(highResult.amount).toBe("12.34527");
+      expect(highResult.currencyCode).toBe("EUR");
+
+      // Test parseMoneyValue throws for missing currencyCode
+      capturedWarnings = [];
+      let threwError = false;
+      try {
+        MoneyInput.parseMoneyValue({ centAmount: 10 } as never, "en");
+      } catch (error: unknown) {
+        threwError = true;
+        expect((error as Error).message).toContain("currencyCode");
+      }
+      expect(threwError).toBe(true);
+      expect(
+        capturedWarnings.some((warning) =>
+          warning.some(
+            (arg: unknown) =>
+              typeof arg === "string" && arg.includes("currencyCode")
+          )
+        )
+      ).toBe(true);
+
+      // Test isEmpty
+      expect(MoneyInput.isEmpty({ amount: "5", currencyCode: "EUR" })).toBe(
+        false
+      );
+      expect(MoneyInput.isEmpty({ amount: "", currencyCode: "EUR" })).toBe(
+        true
+      );
+      expect(MoneyInput.isEmpty({ amount: "5", currencyCode: "" })).toBe(true);
+      expect(MoneyInput.isEmpty(null as never)).toBe(true);
+
+      // Test isHighPrecision
+      expect(
+        MoneyInput.isHighPrecision(
+          { amount: "2.001", currencyCode: "EUR" },
+          "en"
+        )
+      ).toBe(true);
+      expect(
+        MoneyInput.isHighPrecision(
+          { amount: "2.00", currencyCode: "EUR" },
+          "en"
+        )
+      ).toBe(false);
+
+      // Test isHighPrecision warning for empty values
+      capturedWarnings = [];
+      MoneyInput.isHighPrecision({ amount: "", currencyCode: "EUR" }, "en");
+      expect(
+        capturedWarnings.some((warning) =>
+          warning.some(
+            (arg: unknown) =>
+              typeof arg === "string" && arg.includes("empty money value")
+          )
+        )
+      ).toBe(true);
+
+      // Test locale-specific formatting
+      const swissResult = MoneyInput.parseMoneyValue(
+        {
+          type: "highPrecision",
+          currencyCode: "EUR",
+          centAmount: 1234,
+          fractionDigits: 3,
+          preciseAmount: 1234567,
+        },
+        "de-CH"
+      );
+      // Swiss locale should format differently than English (using right quote or other separator)
+      expect(swissResult.amount).toBe("1’234.567");
+
+      const spanishResult = MoneyInput.parseMoneyValue(
+        {
+          type: "highPrecision",
+          currencyCode: "EUR",
+          centAmount: 1234,
+          fractionDigits: 3,
+          preciseAmount: 1234567,
+        },
+        "es"
+      );
+      expect(spanishResult.amount).toContain(","); // Spanish locale uses comma
+    } finally {
+      console.warn = originalWarn;
+    }
+  },
+  render: () => {
+    return <>No UI, testing component's static methods</>;
+  },
+};

@@ -1,4 +1,3 @@
-import { warning } from "./nimbus-utils";
 import currencies from "./currencies";
 
 export type TCurrencyCode = keyof typeof currencies;
@@ -56,7 +55,7 @@ export const createMoneyValue = (
   // The user may enter a value with a comma, dot, or apostrophe as the decimal separator.
   if (rawAmount.length === 0 || rawAmount.trim() === "") return null;
 
-  warning(
+  console.warn(
     Boolean(locale) || currency.fractionDigits !== 0,
     `MoneyInput: A locale must be provided when currency has no fraction digits (${currencyCode})`
   );

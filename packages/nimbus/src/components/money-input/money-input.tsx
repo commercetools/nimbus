@@ -28,6 +28,7 @@ type TCustomEvent = {
     name?: string;
     value?: string | string[] | null;
   };
+  // TODO: Where did this come from? UI-Kit?
   persist?: () => void;
 };
 

@@ -625,10 +625,14 @@ export const CurrencySupport: Story = {
     const canvas = within(canvasElement);
 
     // Test that currency formatting works correctly
-    const usdInput = canvas.getByLabelText("USD currency input");
-    const eurInput = canvas.getByLabelText("EUR currency input");
-    const jpyInput = canvas.getByLabelText("JPY currency input");
-    const kwdInput = canvas.getByLabelText("KWD currency input");
+    const usdInput =
+      canvas.getByLabelText<HTMLInputElement>("USD currency input");
+    const eurInput =
+      canvas.getByLabelText<HTMLInputElement>("EUR currency input");
+    const jpyInput =
+      canvas.getByLabelText<HTMLInputElement>("JPY currency input");
+    const kwdInput =
+      canvas.getByLabelText<HTMLInputElement>("KWD currency input");
 
     // Verify inputs contain expected currency formatting elements
     await expect(usdInput.value).toContain("$");
@@ -701,9 +705,13 @@ export const HighPrecisionCurrency: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const usdHighInput = canvas.getByLabelText("USD high precision input");
-    const jpyHighInput = canvas.getByLabelText("JPY high precision input");
-    const usdStandardInput = canvas.getByLabelText(
+    const usdHighInput = canvas.getByLabelText<HTMLInputElement>(
+      "USD high precision input"
+    );
+    const jpyHighInput = canvas.getByLabelText<HTMLInputElement>(
+      "JPY high precision input"
+    );
+    const usdStandardInput = canvas.getByLabelText<HTMLInputElement>(
       "USD standard precision input"
     );
 
@@ -799,14 +807,14 @@ export const LocaleFormatting: Story = {
     const canvas = within(canvasElement);
 
     // US locale formatting (commas for thousands, periods for decimals)
-    const usUSD = canvas.getByLabelText("US locale USD");
-    const usEUR = canvas.getByLabelText("US locale EUR");
+    const usUSD = canvas.getByLabelText<HTMLInputElement>("US locale USD");
+    const usEUR = canvas.getByLabelText<HTMLInputElement>("US locale EUR");
     await expect(usUSD).toHaveValue("$1,234.56");
     await expect(usEUR).toHaveValue("€1,234.56");
 
     // German locale formatting (periods for thousands, comma for decimals)
-    const deUSD = canvas.getByLabelText("German locale USD");
-    const deEUR = canvas.getByLabelText("German locale EUR");
+    const deUSD = canvas.getByLabelText<HTMLInputElement>("German locale USD");
+    const deEUR = canvas.getByLabelText<HTMLInputElement>("German locale EUR");
     // The actual formatting might differ based on how React Aria formats USD in German locale
     // Let's verify the actual values instead of assuming exact format
     await expect(deUSD.value).toContain("1.234");
