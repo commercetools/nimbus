@@ -1,6 +1,8 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
 import { Modal as RaModal, Dialog as RaDialog } from "react-aria-components";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { DialogPositionerSlot, DialogContentSlot } from "../dialog.slots";
 import type { DialogContentProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -28,41 +30,41 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  * </Dialog.Root>
  * ```
  */
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
-  (props, ref) => {
-    const recipe = useSlotRecipe({ key: "dialog" });
-    const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
-    
-    const {
-      children,
-      isPortalled = true,
-      portalContainer,
-      hasBackdrop = true,
-      isDismissable = true,
-      isKeyboardDismissDisabled = false,
-      onClose,
-      ...restProps
-    } = restRecipeProps;
-    
-    const [styleProps, htmlProps] = extractStyleProps(restProps);
+export const DialogContent = (props: DialogContentProps) => {
+  const {
+    ref: forwardedRef,
+    children,
+    isPortalled = true,
+    portalContainer,
+    hasBackdrop = true,
+    isDismissable = true,
+    isKeyboardDismissDisabled = false,
+    onClose,
+    ...restProps
+  } = props;
 
-    return (
-      <RaModal
-        isDismissable={isDismissable}
-        isKeyboardDismissDisabled={isKeyboardDismissDisabled}
-      >
-        <DialogPositionerSlot {...recipeProps} {...styleProps}>
-          <DialogContentSlot 
-            ref={ref} 
-            asChild 
-            {...htmlProps}
-          >
-            <RaDialog>{children}</RaDialog>
-          </DialogContentSlot>
-        </DialogPositionerSlot>
-      </RaModal>
-    );
-  }
-);
+  const recipe = useSlotRecipe({ key: "dialog" });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
+
+  // create a local ref (because the consumer may not provide a forwardedRef)
+  const localRef = useRef<HTMLDivElement>(null);
+  // merge the local ref with a potentially forwarded ref
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  const [styleProps, htmlProps] = extractStyleProps(restRecipeProps);
+
+  return (
+    <RaModal
+      isDismissable={isDismissable}
+      isKeyboardDismissDisabled={isKeyboardDismissDisabled}
+    >
+      <DialogPositionerSlot {...recipeProps} {...styleProps}>
+        <DialogContentSlot asChild {...htmlProps}>
+          <RaDialog ref={ref}>{children}</RaDialog>
+        </DialogContentSlot>
+      </DialogPositionerSlot>
+    </RaModal>
+  );
+};
 
 DialogContent.displayName = "Dialog.Content";

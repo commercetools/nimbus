@@ -1,5 +1,7 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
 import { Heading as RaHeading } from "react-aria-components";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { DialogTitleSlot } from "../dialog.slots";
 import type { DialogTitleProps } from "../dialog.types";
 
@@ -19,18 +21,21 @@ import type { DialogTitleProps } from "../dialog.types";
  * </Dialog.Content>
  * ```
  */
-export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(
-  (props, ref) => {
-    const { children, ...restProps } = props;
+export const DialogTitle = (props: DialogTitleProps) => {
+  const { ref: forwardedRef, children, ...restProps } = props;
 
-    return (
-      <DialogTitleSlot ref={ref} asChild {...restProps}>
-        <RaHeading slot="title" level={2}>
-          {children}
-        </RaHeading>
-      </DialogTitleSlot>
-    );
-  }
-);
+  // create a local ref (because the consumer may not provide a forwardedRef)
+  const localRef = useRef<HTMLHeadingElement>(null);
+  // merge the local ref with a potentially forwarded ref
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  return (
+    <DialogTitleSlot asChild {...restProps}>
+      <RaHeading ref={ref} slot="title" level={2}>
+        {children}
+      </RaHeading>
+    </DialogTitleSlot>
+  );
+};
 
 DialogTitle.displayName = "Dialog.Title";

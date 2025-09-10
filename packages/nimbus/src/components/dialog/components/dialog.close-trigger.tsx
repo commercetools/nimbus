@@ -1,5 +1,7 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
 import { Button as RaButton } from "react-aria-components";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { Close } from "@commercetools/nimbus-icons";
 import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
@@ -27,24 +29,25 @@ import type { DialogCloseTriggerProps } from "../dialog.types";
  * </Dialog.Root>
  * ```
  */
-export const DialogCloseTrigger = forwardRef<
-  HTMLButtonElement,
-  DialogCloseTriggerProps
->((props, ref) => {
-  const { "aria-label": ariaLabel = "Close dialog", ...restProps } = props;
+export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
+  const {
+    ref: forwardedRef,
+    "aria-label": ariaLabel = "Close dialog",
+    ...restProps
+  } = props;
+
+  // create a local ref (because the consumer may not provide a forwardedRef)
+  const localRef = useRef<HTMLButtonElement>(null);
+  // merge the local ref with a potentially forwarded ref
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   return (
     <DialogCloseTriggerSlot asChild>
-      <RaButton
-        ref={ref}
-        slot="close"
-        aria-label={ariaLabel}
-        {...restProps}
-      >
+      <RaButton ref={ref} slot="close" aria-label={ariaLabel} {...restProps}>
         <Close role="img" />
       </RaButton>
     </DialogCloseTriggerSlot>
   );
-});
+};
 
 DialogCloseTrigger.displayName = "Dialog.CloseTrigger";

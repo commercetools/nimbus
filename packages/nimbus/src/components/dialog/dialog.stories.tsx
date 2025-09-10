@@ -79,7 +79,9 @@ export const Default: Story = {
       const trigger = canvas.getByRole("button", { name: "Open Dialog" });
       await userEvent.click(trigger);
 
-      const dialog = await canvas.findByRole("dialog", { name: "Dialog Title" });
+      const dialog = await canvas.findByRole("dialog", {
+        name: "Dialog Title",
+      });
       expect(dialog).toBeInTheDocument();
     });
 
@@ -124,20 +126,25 @@ export const Sizes: Story = {
     const sizes = ["XS", "SM", "MD", "LG", "XL"];
 
     for (const size of sizes) {
-      await step(`Opens ${size} dialog and verifies accessibility`, async () => {
-        const trigger = canvas.getByRole("button", { name: size });
-        await userEvent.click(trigger);
+      await step(
+        `Opens ${size} dialog and verifies accessibility`,
+        async () => {
+          const trigger = canvas.getByRole("button", { name: size });
+          await userEvent.click(trigger);
 
-        const dialog = await canvas.findByRole("dialog", {
-          name: `Size: ${size}`,
-        });
-        expect(dialog).toBeInTheDocument();
+          const dialog = await canvas.findByRole("dialog", {
+            name: `Size: ${size}`,
+          });
+          expect(dialog).toBeInTheDocument();
 
-        const closeButton = canvas.getByRole("button", { name: "Close dialog" });
-        await userEvent.click(closeButton);
+          const closeButton = canvas.getByRole("button", {
+            name: "Close dialog",
+          });
+          await userEvent.click(closeButton);
 
-        await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+          await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        }
+      );
     }
   },
 };
@@ -183,7 +190,9 @@ export const Placements: Story = {
         });
         expect(dialog).toBeInTheDocument();
 
-        const closeButton = canvas.getByRole("button", { name: "Close dialog" });
+        const closeButton = canvas.getByRole("button", {
+          name: "Close dialog",
+        });
         await userEvent.click(closeButton);
 
         await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
@@ -352,7 +361,8 @@ export const ControlledState: Story = {
             </Dialog.Header>
             <Dialog.Body>
               <Dialog.Description>
-                This dialog's open state is controlled by parent component state.
+                This dialog's open state is controlled by parent component
+                state.
               </Dialog.Description>
             </Dialog.Body>
             <Dialog.Footer>

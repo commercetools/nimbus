@@ -17,10 +17,10 @@ import type { DialogTriggerProps } from "../dialog.types";
  * ```
  */
 export const DialogTrigger = (props: DialogTriggerProps) => {
-  const { 
-    children, 
-    asChild, 
-    isDisabled, 
+  const {
+    children,
+    asChild,
+    isDisabled,
     // Extract button-specific props that might not work with React Aria Button
     value,
     type,
@@ -31,7 +31,7 @@ export const DialogTrigger = (props: DialogTriggerProps) => {
     formMethod,
     formNoValidate,
     formTarget,
-    ...restProps 
+    ...restProps
   } = props;
 
   // If asChild is true, wrap children directly in RaButton with asChild
@@ -47,7 +47,7 @@ export const DialogTrigger = (props: DialogTriggerProps) => {
   // Only pass React Aria compatible props to avoid type conflicts
   return (
     <DialogTriggerSlot asChild>
-      <RaButton 
+      <RaButton
         isDisabled={isDisabled}
         className={restProps.className}
         id={restProps.id}
