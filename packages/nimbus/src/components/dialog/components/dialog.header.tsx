@@ -1,4 +1,6 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { DialogHeaderSlot } from "../dialog.slots";
 import type { DialogHeaderProps } from "../dialog.types";
 
@@ -19,16 +21,19 @@ import type { DialogHeaderProps } from "../dialog.types";
  * </Dialog.Content>
  * ```
  */
-export const DialogHeader = forwardRef<HTMLElement, DialogHeaderProps>(
-  (props, ref) => {
-    const { children, ...restProps } = props;
+export const DialogHeader = (props: DialogHeaderProps) => {
+  const { ref: forwardedRef, children, ...restProps } = props;
 
-    return (
-      <DialogHeaderSlot ref={ref} {...restProps}>
-        {children}
-      </DialogHeaderSlot>
-    );
-  }
-);
+  // create a local ref (because the consumer may not provide a forwardedRef)
+  const localRef = useRef<HTMLElement>(null);
+  // merge the local ref with a potentially forwarded ref
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  return (
+    <DialogHeaderSlot ref={ref} {...restProps}>
+      {children}
+    </DialogHeaderSlot>
+  );
+};
 
 DialogHeader.displayName = "Dialog.Header";

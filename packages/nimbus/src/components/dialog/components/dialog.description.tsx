@@ -1,5 +1,7 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
 import { Text as RaText } from "react-aria-components";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { DialogDescriptionSlot } from "../dialog.slots";
 import type { DialogDescriptionProps } from "../dialog.types";
 
@@ -20,17 +22,21 @@ import type { DialogDescriptionProps } from "../dialog.types";
  * </Dialog.Content>
  * ```
  */
-export const DialogDescription = forwardRef<
-  HTMLParagraphElement,
-  DialogDescriptionProps
->((props, ref) => {
-  const { children, ...restProps } = props;
+export const DialogDescription = (props: DialogDescriptionProps) => {
+  const { ref: forwardedRef, children, ...restProps } = props;
+
+  // create a local ref (because the consumer may not provide a forwardedRef)
+  const localRef = useRef<HTMLParagraphElement>(null);
+  // merge the local ref with a potentially forwarded ref
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   return (
-    <DialogDescriptionSlot ref={ref} asChild {...restProps}>
-      <RaText slot="description">{children}</RaText>
+    <DialogDescriptionSlot asChild {...restProps}>
+      <RaText ref={ref} slot="description">
+        {children}
+      </RaText>
     </DialogDescriptionSlot>
   );
-});
+};
 
 DialogDescription.displayName = "Dialog.Description";

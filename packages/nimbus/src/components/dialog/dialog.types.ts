@@ -30,7 +30,6 @@ export interface DialogRootProps {
    * @default false
    */
   defaultOpen?: boolean;
-
 }
 
 /**
@@ -183,22 +182,13 @@ export interface DialogDescriptionProps extends ComponentProps<"p"> {
  * A button that closes the dialog when activated.
  * Displays an IconButton with an X icon by default.
  */
-export interface DialogCloseTriggerProps {
+export interface DialogCloseTriggerProps
+  extends Omit<ComponentProps<"button">, "value" | "onFocus" | "onBlur"> {
   /**
    * Accessible label for the close button
    * @default "Close dialog"
    */
   "aria-label"?: string;
-
-  /**
-   * Additional class name
-   */
-  className?: string;
-
-  /**
-   * Whether the button is disabled
-   */
-  disabled?: boolean;
 }
 
 /**
