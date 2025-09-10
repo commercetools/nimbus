@@ -4,6 +4,7 @@ packages:
 
 catalog:
   express-rate-limit: ^8.0.1
+  react-intl: ^7.1.11
 
 catalogMode: strict
 

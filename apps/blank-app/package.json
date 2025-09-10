@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "react-intl": "catalog:react",
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*"
   },
