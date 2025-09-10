@@ -24,6 +24,6 @@ export const baseWarnings = {
 
 export const baseErrors = {
   en: "that is certainly not a greeting",
-  ["zh-Hans"]: "这当然不是问候语",
+  // ["zh-Hans"]: "这当然不是问候语",
   de: "das ist sicher kein Gruß",
 };

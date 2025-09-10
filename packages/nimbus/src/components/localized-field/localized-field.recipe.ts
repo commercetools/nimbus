@@ -74,37 +74,41 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
     error: {
       gridArea: "error",
       color: "critical.11",
-      fontSize: "var(--localized-field-font-size)",
-      lineHeight: "var(--localized-field-line-height)",
     },
     toggleButtonContainer: { gridArea: "toggle" },
     // Individual Locale Field / Input slots
     localeFieldRoot: {
       gap: 0,
       gridTemplateAreas: localeFieldGrid,
+      // Fake `_focusWithin` on the label element, since formfield's `label` and `input` slots cannot be wrapped,
+      // and the root slot needs to display desc/warning/error, so the focus styling would be off if we used _focusWithin on it
+      "&:has(.nimbus-localized-field__localeFieldInput:focus)": {
+        "& .nimbus-localized-field__localeFieldLabel": {
+          outlineWidth: "var(--focus-ring-width)",
+          outlineColor: "var(--focus-ring-color)",
+          outlineStyle: "var(--focus-ring-style)",
+          outlineOffset: "var(--focus-ring-offset)",
+        },
+      },
     },
     localeFieldLabel: {
       display: "flex",
       borderLeftRadius: "200",
       backgroundColor: "neutral.1",
       boxShadow: `inset 0 0 0 {sizes.25} {colors.neutral.7}`,
-      // remove boxShadow on right side so that it looks like there is a 1px border betwee
-      clipPath: `inset(0 {sizes.25} 0 0)`,
+      // remove outline on right side so that it looks like there is a continuous outline around the label and input.
+      // This is because `FormField` does not allow wrapping the two in a div, so we cannot use `FocusWithin`.
+      clipPath: `inset(-4px -1px -4px -4px)`,
       marginInlineEnd: "-25",
       paddingInline: "400",
       alignItems: "center",
-      _focusWithin: {
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "var(--focus-ring-offset)",
-      },
     },
     localeFieldInput: {
       borderLeftRadius: 0,
+      // remove outline on left side so that it looks like there is a continuous outline around the label and input.
+      // This is because `FormField` does not allow wrapping the two in a div, so we cannot use `FocusWithin`.
+      clipPath: `inset(-4px -4px -4px -1px)`,
     },
-    localeFieldDescription: {},
-    localeFieldError: {},
   },
   variants: {
     size: {
