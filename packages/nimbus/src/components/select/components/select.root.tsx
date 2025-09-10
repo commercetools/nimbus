@@ -32,7 +32,17 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/select}
  */
 export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
-  ({ children, leadingElement, isLoading, isDisabled, ...props }, ref) => {
+  (
+    {
+      children,
+      leadingElement,
+      isLoading,
+      isDisabled,
+      isClearable = true,
+      ...props
+    },
+    ref
+  ) => {
     const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
     const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
     const [styleProps, restProps] = extractStyleProps(restRecipeProps);
@@ -66,9 +76,11 @@ export const SelectRoot = forwardRef<HTMLDivElement, SelectRootProps>(
               right="400"
               pointerEvents="none"
             >
-              <Flex width="600" my="auto">
-                <SelectClearButton />
-              </Flex>
+              {isClearable && (
+                <Flex width="600" my="auto">
+                  <SelectClearButton />
+                </Flex>
+              )}
 
               <Flex my="auto" w="600" h="600" pointerEvents="none">
                 <Box color="neutral.9" asChild m="auto" w="400" h="400">
