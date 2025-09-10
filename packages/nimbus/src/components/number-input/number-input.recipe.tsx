@@ -46,11 +46,13 @@ export const numberInputRecipe = defineSlotRecipe({
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
     trailingElement: {
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
     input: {
       display: "flex",

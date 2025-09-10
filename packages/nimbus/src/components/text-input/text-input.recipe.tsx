@@ -21,10 +21,6 @@ export const textInputSlotRecipe = defineSlotRecipe({
         layerStyle: "focusRing",
       },
 
-      "& input": {
-        outline: "none",
-      },
-
       _hover: {
         backgroundColor: "primary.2",
       },
@@ -45,12 +41,14 @@ export const textInputSlotRecipe = defineSlotRecipe({
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
 
     trailingElement: {
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
 
     input: {
@@ -58,7 +56,7 @@ export const textInputSlotRecipe = defineSlotRecipe({
       display: "block",
       flexGrow: 1,
       bg: "transparent",
-
+      outline: "none",
       fontSize: "inherit",
 
       _placeholder: {

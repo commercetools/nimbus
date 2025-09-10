@@ -66,11 +66,13 @@ export const multilineTextInputRecipe = defineSlotRecipe({
       overflow: "hidden",
       display: "flex",
       justifyContent: "flex-start",
+      color: "neutral.11",
     },
     trailingElement: {
       overflow: "hidden",
       display: "flex",
       justifyContent: "flex-start",
+      color: "neutral.11",
     },
     textarea: {
       flexGrow: 1,

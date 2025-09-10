@@ -50,11 +50,13 @@ export const timeInputRecipe = defineSlotRecipe({
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
     trailingElement: {
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
     segment: {
       fontVariantNumeric: "tabular-nums",

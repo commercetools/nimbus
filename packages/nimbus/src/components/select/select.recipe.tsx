@@ -57,6 +57,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
+      color: "neutral.11",
     },
     triggerLabel: {
       // *Magic*

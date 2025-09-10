@@ -67,7 +67,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       top: "50%",
       px: "200",
       transform: "translateY(-50%)",
-      color: "neutral.10",
+      color: "neutral.11",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
