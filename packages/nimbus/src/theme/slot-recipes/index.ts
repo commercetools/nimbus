@@ -15,6 +15,7 @@ import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
 import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
+import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -52,4 +53,5 @@ export const slotRecipes = {
   progressBar: progressBarSlotRecipe,
   menu: menuSlotRecipe,
   splitButton: splitButtonSlotRecipe,
+  localizedField: localizedFieldSlotRecipe,
 };

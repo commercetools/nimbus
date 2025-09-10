@@ -1,4 +1,4 @@
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo } from "react";
 import {
   Collection as RaCollection,
   Dialog as RaDialog,
@@ -9,6 +9,7 @@ import {
   ErrorOutline,
   HelpOutline,
   Language,
+  Payments,
 } from "@commercetools/nimbus-icons";
 import { Box, Button, IconButton } from "@/components";
 import { Popover } from "../../popover";
@@ -17,113 +18,134 @@ import {
   LocalizedFieldLabelSlot,
   LocalizedFieldInfoDialogSlot,
   LocalizedFieldFieldsContainerSlot,
-  LocalizedFieldToggleButtonContainerSlot,
   LocalizedFieldDescriptionSlot,
   LocalizedFieldErrorSlot,
+  LocalizedFieldToggleButtonContainerSlot,
 } from "../localized-field.slots";
-import type { LocalizedFieldProps } from "../localized-field.types";
+import type {
+  LocalizedFieldProps,
+  MergedLocaleFieldData,
+} from "../localized-field.types";
+
 import {
+  getHasInvalidLocalizedFields,
+  getLocaleFieldAttribute,
+  sortCurrencies,
   sortLocalesByDefaultLocaleLanguage,
-  getHasInvalidLocaleFields,
 } from "../utils/localized-field.utils";
 import { LocalizedFieldLocaleField } from "./localized-field.locale-field";
 
-/** internal type for object containing all data for a single locale */
-export type MergedLocaleFieldData = {
-  locale: string;
-  inputValue: string;
-  placeholder?: string;
-  description?: ReactNode;
-  warning?: ReactNode;
-  error?: ReactNode;
-};
-
 export const LocalizedField = ({
   type = "text",
-  defaultLocale,
-  valuesByLocale,
-  placeholdersByLocale,
-  descriptionsByLocale,
-  warningsByLocale,
-  errorsByLocale,
+  id,
+  name,
+  defaultLocaleOrCurrency,
+  valuesByLocaleOrCurrency,
+  placeholdersByLocaleOrCurrency,
+  descriptionsByLocaleOrCurrency,
+  warningsByLocaleOrCurrency,
+  errorsByLocaleOrCurrency,
   label,
   hint,
   description,
-  error,
   warning,
+  error,
+  touched,
   isRequired,
-  isInvalid,
   isDisabled,
   isReadOnly,
   onChange,
   onBlur,
   onFocus,
   defaultExpanded = false,
-  displayAllLocales = false,
+  displayAllLocalesOrCurrencies = false,
   size,
+  autoFocus,
+  ["data-track-component"]: dataTrackComponent,
+  ["data-testid"]: dataTestId,
+  ["data-test"]: dataTest,
   // DOM & Style props for wrapper container
   ...rest
 }: LocalizedFieldProps) => {
   const [expanded, setExpanded] = useState(
-    displayAllLocales ?? defaultExpanded
+    displayAllLocalesOrCurrencies ?? defaultExpanded
   );
   /** used to associate container with toggle button for `aria-controls` */
   const localeFieldsContainerId = useId();
 
+  const isInvalid: boolean = Boolean(error && touched);
+
   const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
     useField({
+      id,
       label,
-      description: warning ?? description,
+      description,
       errorMessage: error,
       isInvalid,
     });
-  const locales = Object.keys(valuesByLocale);
-  const allDataForLocales = useMemo(() => {
-    const sortedLocales = sortLocalesByDefaultLocaleLanguage(
-      defaultLocale,
-      locales
-    );
+  const localizationKeys = Object.keys(valuesByLocaleOrCurrency);
+  const allDataForFields = useMemo(() => {
+    const sortedFieldData =
+      type === "money"
+        ? sortCurrencies(defaultLocaleOrCurrency, localizationKeys)
+        : sortLocalesByDefaultLocaleLanguage(
+            defaultLocaleOrCurrency,
+            localizationKeys
+          );
 
-    return sortedLocales.reduce(
-      (allLocaleData: MergedLocaleFieldData[], locale) => {
+    return sortedFieldData.reduce(
+      (allFieldData: MergedLocaleFieldData[], localizationKey) => {
         const allDataForLocale = {
-          locale: locale,
-          inputValue: valuesByLocale[locale] as string,
-          placeholder: placeholdersByLocale?.[locale],
-          description: descriptionsByLocale?.[locale],
-          warning: warningsByLocale?.[locale],
-          error: errorsByLocale?.[locale],
+          localeOrCurrency: localizationKey,
+          inputValue: valuesByLocaleOrCurrency[localizationKey] as string,
+          placeholder: placeholdersByLocaleOrCurrency?.[localizationKey],
+          description: descriptionsByLocaleOrCurrency?.[localizationKey],
+          warning: warningsByLocaleOrCurrency?.[localizationKey],
+          error: errorsByLocaleOrCurrency?.[localizationKey],
+          // autoFocus default/first locale field
+          ...(localizationKey === defaultLocaleOrCurrency && autoFocus
+            ? { autoFocus }
+            : {}),
         };
-        if (expanded || (!expanded && locale === defaultLocale)) {
-          return [...allLocaleData, allDataForLocale];
+        if (
+          expanded ||
+          (!expanded && localizationKey === defaultLocaleOrCurrency)
+        ) {
+          return [...allFieldData, allDataForLocale];
         }
-        return allLocaleData;
+        return allFieldData;
       },
       []
     );
   }, [
-    valuesByLocale,
-    placeholdersByLocale,
-    descriptionsByLocale,
-    warningsByLocale,
-    errorsByLocale,
-    defaultLocale,
+    valuesByLocaleOrCurrency,
+    placeholdersByLocaleOrCurrency,
+    descriptionsByLocaleOrCurrency,
+    warningsByLocaleOrCurrency,
+    errorsByLocaleOrCurrency,
+    defaultLocaleOrCurrency,
     expanded,
   ]);
 
-  const groupHasInvalidLocaleFields = getHasInvalidLocaleFields(
-    errorsByLocale,
-    defaultLocale
+  const groupHasInvalidLocalizedFields = getHasInvalidLocalizedFields(
+    errorsByLocaleOrCurrency,
+    defaultLocaleOrCurrency
   );
 
   // If there are fields that are invalid, ensure that field group
   // shows all fields so that invalid field is visible
-  if (groupHasInvalidLocaleFields && !expanded) {
+  if (groupHasInvalidLocalizedFields && !expanded) {
     setExpanded(true);
   }
 
   return (
-    <LocalizedFieldRootSlot {...rest} {...fieldProps} type={type} size={size}>
+    <LocalizedFieldRootSlot
+      {...rest}
+      {...fieldProps}
+      type={type}
+      size={size}
+      name={name}
+    >
       {label && (
         <LocalizedFieldLabelSlot {...labelProps}>
           <Box as="span">{label}</Box>
@@ -171,12 +193,16 @@ export const LocalizedField = ({
         </LocalizedFieldLabelSlot>
       )}
       <LocalizedFieldFieldsContainerSlot id={localeFieldsContainerId}>
-        <RaCollection items={allDataForLocales}>
+        <RaCollection items={allDataForFields}>
           {(item) => {
             return (
               <LocalizedFieldLocaleField
                 {...item}
-                id={item.locale}
+                id={getLocaleFieldAttribute(
+                  fieldProps.id,
+                  item.localeOrCurrency
+                )}
+                name={getLocaleFieldAttribute(name, item.localeOrCurrency)}
                 onChange={onChange}
                 onBlur={onBlur}
                 onFocus={onFocus}
@@ -185,22 +211,32 @@ export const LocalizedField = ({
                 isInvalid={isInvalid}
                 size={size}
                 type={type}
+                data-test={getLocaleFieldAttribute(
+                  dataTest,
+                  item.localeOrCurrency
+                )}
+                data-testid={getLocaleFieldAttribute(
+                  dataTestId,
+                  item.localeOrCurrency
+                )}
+                data-track-component={getLocaleFieldAttribute(
+                  dataTrackComponent,
+                  item.localeOrCurrency
+                )}
               />
             );
           }}
         </RaCollection>
       </LocalizedFieldFieldsContainerSlot>
-      {description && !warning && (
-        <LocalizedFieldDescriptionSlot {...descriptionProps}>
-          {description}
+      {description && (
+        <LocalizedFieldDescriptionSlot
+          role={warning && touched ? "status" : undefined}
+          {...descriptionProps}
+        >
+          {warning && touched ? warning : description}
         </LocalizedFieldDescriptionSlot>
       )}
-      {warning && (
-        <LocalizedFieldDescriptionSlot role="status" {...descriptionProps}>
-          {warning}
-        </LocalizedFieldDescriptionSlot>
-      )}
-      {error && (
+      {error && touched && (
         <LocalizedFieldErrorSlot {...errorMessageProps}>
           <Box
             as={ErrorOutline}
@@ -212,26 +248,29 @@ export const LocalizedField = ({
           {error}
         </LocalizedFieldErrorSlot>
       )}
-      {!displayAllLocales && locales.length > 1 && (
+      {!displayAllLocalesOrCurrencies && localizationKeys.length > 1 && (
         <LocalizedFieldToggleButtonContainerSlot>
           <Button
             aria-labelledby={labelProps.id}
             aria-controls={localeFieldsContainerId}
             aria-expanded={expanded}
             onPress={() => setExpanded(!expanded)}
-            isDisabled={isDisabled || (expanded && groupHasInvalidLocaleFields)}
+            isDisabled={
+              isDisabled || (expanded && groupHasInvalidLocalizedFields)
+            }
             variant="ghost"
             size="2xs"
             colorPalette="primary"
           >
             <Box
-              as={Language}
+              as={type === "money" ? Payments : Language}
               display="inline-flex"
               boxSize="400"
               verticalAlign="text-bottom"
               mr="100"
             />
-            {expanded ? "Hide all" : "Show all"} languages
+            {expanded ? "Hide all" : "Show all"}{" "}
+            {type === "money" ? "currencies" : "languages"}
           </Button>
         </LocalizedFieldToggleButtonContainerSlot>
       )}

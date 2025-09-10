@@ -33,7 +33,7 @@ import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
  */
 export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
   (
-    { isInvalid, isRequired, isDisabled, isReadOnly, children, ...props },
+    { isInvalid, isRequired, isDisabled, isReadOnly, children, id, ...props },
     ref
   ) => {
     const [context, setContext] = useState<FormFieldContextPayloadType>({
@@ -49,6 +49,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
     });
 
     const useFieldArgs: Parameters<typeof useField>[0] = {
+      id,
       description: context.description,
       errorMessage: context.error,
     };

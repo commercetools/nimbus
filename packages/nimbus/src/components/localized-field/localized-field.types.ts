@@ -4,10 +4,30 @@ import type { LocalizedFieldRootSlotProps } from "./localized-field.slots";
 
 /**
  * Object that contains the translation of a string for each locale.
+ * Used to define values for "text", "multiLine", and "richText" input types.
  * The locale is specified as the key, and the string is specified as the value, e.g.:
  * { ['en-US']: 'hello', ['zh-Hans']: '你好’ }
  */
 export type LocalizedString = { [locale: string]: string };
+/**
+ * Object that contains a currency value for each currency.
+ * Used to define values for "money" input type
+ * The currency code is specified as the key,
+ * and an object containing the amount and currencyCode is specified as the value, e.g.:
+ * {
+ *  EUR: {
+ *    amount: '12.00'
+ *    currencyCode: 'EUR'
+ *   },
+ *  USD: {
+ *    amount: '10.00'
+ *    currencyCode: 'USD'
+ *   },
+ * }
+ */
+export type LocalizedCurrency = {
+  [currencyCode: string]: { amount: number; currencyCode: string };
+};
 /**
  * Object that maps field data to a specific locale.
  * The locale is specified as the key, and the data is specified as the value, e.g.:
@@ -15,75 +35,111 @@ export type LocalizedString = { [locale: string]: string };
  */
 export type LocaleFieldData = Record<string, ReactNode>;
 
+/**
+ * Standardized change event for localized fields to ensure cross browser consistency
+ */
+export type LocalizedFieldChangeEvent = {
+  target: {
+    id?: string;
+    name?: string;
+    locale?: string;
+    currency?: string;
+    value: string | number;
+  };
+};
+
 export interface LocalizedFieldProps
   extends Omit<LocalizedFieldRootSlotProps, "onChange" | "onBlur" | "onFocus"> {
   /**
-   * type of input displayed in locale fields
+   * Type of input displayed in locale fields
    * default: 'text'
    */
   type?: "text" | "multiLine" | "richText" | "money";
-  /** locale whose input field is displayed when field group is collapsed */
-  defaultLocale: string;
-  /** input values for each locale*/
-  valuesByLocale: LocalizedString;
-  /** input placeholders for each locale */
-  placeholdersByLocale?: LocalizedString;
-  /** field decriptions for each locale */
-  descriptionsByLocale?: LocaleFieldData;
-  /** field warnings for each locale */
-  warningsByLocale?: LocaleFieldData;
-  /** field errors for each locale */
-  errorsByLocale?: LocaleFieldData;
-  /** html name for field group (all locales) */
-  name: string;
   /**
-   * label for field group (all locales).
-   * if a label is not provided, you must provide an `aria-label`
+   * HTML `id` property for field group.
+   * Each locale field's `id` will be suffixed with its' locale, e.g.:
+   * `${id}.${lang}` i.e. `foo.en`
+   */
+  id?: string;
+  /**
+   * HTML `name` property for field group.
+   * Each locale field's `name` will be suffixed with its' locale, e.g.:
+   * `${name}.${lang}` i.e. `foo.en`
+   */
+  name?: string;
+  /** Locale or currency whose input field is displayed when field group is collapsed */
+  defaultLocaleOrCurrency: string;
+  /** Input values for each locale or currency */
+  valuesByLocaleOrCurrency: LocalizedString | LocalizedCurrency;
+  /** Input placeholders for each locale or currency */
+  placeholdersByLocaleOrCurrency?: LocalizedString;
+  /** Field decriptions for each locale or currency */
+  descriptionsByLocaleOrCurrency?: LocaleFieldData;
+  /** Field warnings for each locale or currency */
+  warningsByLocaleOrCurrency?: LocaleFieldData;
+  /** Field errors for each locale or currency */
+  errorsByLocaleOrCurrency?: LocaleFieldData;
+  /**
+   * Label for field group (all locales).
+   * If a label is not provided, you must provide an `aria-label`
    */
   label?: ReactNode;
-  /** hint/help tooltip (infoBox) for field group (all locales) */
+  /** Hint/help tooltip (infoBox) for field group (all locales) */
   hint?: ReactNode;
-  /** description for field group (all locales) */
+  /** Description for field group (all locales) */
   description?: ReactNode;
-  /** error for field group (all locales) */
-  error?: ReactNode;
-  /** warning for field group (all locales) */
+  /** Warning for field group (all locales) */
   warning?: ReactNode;
-  /** true if the field is a required field */
+  /** Error for field group (all locales) */
+  error?: ReactNode;
+  /**
+   * Indicates whether the field was touched.
+   * Errors will only be shown when the field was touched.
+   */
+  touched?: boolean;
+  /** True if the field is a required field */
   isRequired?: boolean;
-  /** true if all locale field inputs are invalid */
-  isInvalid?: boolean;
-  /** true if the field is disabled */
+  /** True if the field is disabled */
   isDisabled?: boolean;
-  /** true, if the field is read only  */
+  /** True if the field is read only  */
   isReadOnly?: boolean;
-  /** change handler for each locale's input */
-  onChange: (value: string | number, locale: string) => void;
-  /** blur handler for each locale's input */
+  /** Change handler for each locale's input */
+  onChange: (e: LocalizedFieldChangeEvent) => void;
+  /** Blur handler for each locale's input */
   onBlur?: (e: FocusEvent<Element, Element>, locale: string) => void;
-  /** focus handler for each locale's input */
+  /** Focus handler for each locale's input */
   onFocus?: (e: FocusEvent<Element, Element>, locale: string) => void;
   /**
-   * controls whether field group is expanded on mount.
-   * default: `false` (closed)
+   * Controls whether field group is expanded on mount.
+   * Default: `false` (closed)
    */
   defaultExpanded?: boolean;
   /**
-   * controls whether all locale input fields should be displayed.
-   * removes show/hide toggle controls and displays all locales if `true`.
-   * default: `false`
+   * Controls whether all locale or currency input fields should be displayed.
+   * Removes show/hide toggle controls and displays all locales if `true`.
+   * Default: `false`
    */
-  displayAllLocales?: boolean;
+  displayAllLocalesOrCurrencies?: boolean;
+  /**
+   * HTML `data-` attributes for locale fields.
+   * Each field's `data-` attribute will be suffixed with its' locale, e.g.:
+   * `${name}.${lang}` i.e. `foo.en`
+   */
+  ["data-test"]?: string;
+  ["data-testid"]?: string;
+  ["data-track-component"]?: string;
+  // TODO: do we need `hasHighPrecisionBadge` for type="money"
 }
 
 /** internal type for object containing all data for a single locale */
 export type MergedLocaleFieldData = {
-  locale: string;
+  localeOrCurrency: string;
   inputValue: string | number | undefined;
   placeholder?: string;
   description?: ReactNode;
   warning?: ReactNode;
   error?: ReactNode;
+  autoFocus?: boolean;
 };
 
 export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
@@ -93,10 +149,16 @@ export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
     | "onBlur"
     | "onFocus"
     | "id"
+    | "name"
+    | "label"
+    | "touched"
     | "isDisabled"
-    | "isInvalid"
     | "isReadOnly"
     | "type"
+    | "data-test"
+    | "data-testid"
+    | "data-track-component"
   > & {
+    isInvalid?: boolean;
     size: ConditionalValue<"md" | "sm" | undefined>;
   };
