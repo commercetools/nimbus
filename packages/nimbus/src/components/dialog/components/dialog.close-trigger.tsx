@@ -44,8 +44,15 @@ export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
 
   return (
     <DialogCloseTriggerSlot>
-      <IconButton ref={ref} slot="close" aria-label={ariaLabel} {...restProps}>
-        <Close role="img" />
+      <IconButton
+        ref={ref}
+        slot="close"
+        size="xs"
+        variant="ghost"
+        aria-label={ariaLabel}
+        {...restProps}
+      >
+        <Close />
       </IconButton>
     </DialogCloseTriggerSlot>
   );
