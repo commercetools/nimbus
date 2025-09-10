@@ -47,6 +47,42 @@
       "value": "Loading data"
     }
   ],
+  "Nimbus.LocalizedField.hideCurrencies": [
+    {
+      "type": 0,
+      "value": "Hide all Currencies"
+    }
+  ],
+  "Nimbus.LocalizedField.hideLanguages": [
+    {
+      "type": 0,
+      "value": "Hide all languages"
+    }
+  ],
+  "Nimbus.LocalizedField.infoBoxTriggerAriaLabel": [
+    {
+      "type": 0,
+      "value": "more info"
+    }
+  ],
+  "Nimbus.LocalizedField.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "This field is required. Provide at least one value."
+    }
+  ],
+  "Nimbus.LocalizedField.showCurrencies": [
+    {
+      "type": 0,
+      "value": "Show all Currencies"
+    }
+  ],
+  "Nimbus.LocalizedField.showLanguages": [
+    {
+      "type": 0,
+      "value": "Show all languages"
+    }
+  ],
   "Nimbus.NumberInput.decrement": [
     {
       "type": 0,

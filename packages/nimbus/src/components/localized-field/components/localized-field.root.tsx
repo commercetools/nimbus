@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useIntl } from "react-intl";
 import {
   Collection as RaCollection,
   Dialog as RaDialog,
@@ -13,6 +14,7 @@ import {
 } from "@commercetools/nimbus-icons";
 import { Box, Button, IconButton } from "@/components";
 import { Popover } from "../../popover";
+import messages from "../localized-field.i18n";
 import {
   LocalizedFieldRootSlot,
   LocalizedFieldLabelSlot,
@@ -25,6 +27,7 @@ import {
 import type {
   LocalizedFieldProps,
   MergedLocaleFieldData,
+  LocalizedCurrency,
 } from "../localized-field.types";
 
 import {
@@ -70,9 +73,14 @@ export const LocalizedField = ({
   const [expanded, setExpanded] = useState(
     displayAllLocalesOrCurrencies ?? defaultExpanded
   );
-  /** used to associate container with toggle button for `aria-controls` */
+
+  const { formatMessage } = useIntl();
+
+  // Used to associate container with toggle button for `aria-controls`
   const localeFieldsContainerId = useId();
 
+  // FieldGroup is invalid if a non-field-specific error is passed and the group has been touched
+  // When FieldGroup is invalid, all fields will display error styling without displaying a field-specific error message
   const isInvalid: boolean = Boolean(error && touched);
 
   const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
@@ -83,7 +91,11 @@ export const LocalizedField = ({
       errorMessage: error,
       isInvalid,
     });
+
+  // Array of locales/currencies to display as input fields
   const localizationKeys = Object.keys(valuesByLocaleOrCurrency);
+
+  // Merge all -ByLocaleOrCurrencies data for each field
   const allDataForFields = useMemo(() => {
     const sortedFieldData =
       type === "money"
@@ -97,7 +109,12 @@ export const LocalizedField = ({
       (allFieldData: MergedLocaleFieldData[], localizationKey) => {
         const allDataForLocale = {
           localeOrCurrency: localizationKey,
-          inputValue: valuesByLocaleOrCurrency[localizationKey] as string,
+          inputValue:
+            type === "money"
+              ? ((valuesByLocaleOrCurrency as LocalizedCurrency)[
+                  localizationKey
+                ].amount as string)
+              : (valuesByLocaleOrCurrency[localizationKey] as string),
           placeholder: placeholdersByLocaleOrCurrency?.[localizationKey],
           description: descriptionsByLocaleOrCurrency?.[localizationKey],
           warning: warningsByLocaleOrCurrency?.[localizationKey],
@@ -109,6 +126,7 @@ export const LocalizedField = ({
         };
         if (
           expanded ||
+          // Only display defaultLocaleOrInput field if fieldGroup is not expanded
           (!expanded && localizationKey === defaultLocaleOrCurrency)
         ) {
           return [...allFieldData, allDataForLocale];
@@ -171,7 +189,9 @@ export const LocalizedField = ({
                     transform="translate(50%, -50%)"
                   >
                     <IconButton
-                      aria-label="__MORE INFO"
+                      aria-label={formatMessage(
+                        messages.infoBoxTriggerAriaLabel
+                      )}
                       size="2xs"
                       tone="info"
                       variant="link"
@@ -198,19 +218,12 @@ export const LocalizedField = ({
             return (
               <LocalizedFieldLocaleField
                 {...item}
+                // Format field attributes to match uikit pattern
                 id={getLocaleFieldAttribute(
                   fieldProps.id,
                   item.localeOrCurrency
                 )}
                 name={getLocaleFieldAttribute(name, item.localeOrCurrency)}
-                onChange={onChange}
-                onBlur={onBlur}
-                onFocus={onFocus}
-                isDisabled={isDisabled}
-                isReadOnly={isReadOnly}
-                isInvalid={isInvalid}
-                size={size}
-                type={type}
                 data-test={getLocaleFieldAttribute(
                   dataTest,
                   item.localeOrCurrency
@@ -223,6 +236,14 @@ export const LocalizedField = ({
                   dataTrackComponent,
                   item.localeOrCurrency
                 )}
+                size={size}
+                type={type}
+                isDisabled={isDisabled}
+                isReadOnly={isReadOnly}
+                isInvalid={isInvalid}
+                onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}
               />
             );
           }}
@@ -269,8 +290,13 @@ export const LocalizedField = ({
               verticalAlign="text-bottom"
               mr="100"
             />
-            {expanded ? "Hide all" : "Show all"}{" "}
-            {type === "money" ? "currencies" : "languages"}
+            {type === "money"
+              ? expanded
+                ? formatMessage(messages.hideCurrencies)
+                : formatMessage(messages.showCurrencies)
+              : expanded
+                ? formatMessage(messages.hideLanguages)
+                : formatMessage(messages.showLanguages)}
           </Button>
         </LocalizedFieldToggleButtonContainerSlot>
       )}
