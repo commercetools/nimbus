@@ -1,5 +1,5 @@
 import React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within, userEvent, waitFor } from "storybook/test";
 import { Drawer } from "./drawer";
 
@@ -8,29 +8,6 @@ const meta = {
   component: Drawer.Root,
   parameters: {
     layout: "centered",
-    docs: {
-      description: {
-        component: `
-A drawer component optimized for edge-positioned sliding panels, perfect for navigation, filters, details, and mobile-first interfaces.
-
-Built on the Modal base component with automatic placement and animation mapping based on the \`side\` prop.
-
-**Key Features:**
-- Edge positioning: left, right, top, bottom
-- Automatic placement and motion preset mapping  
-- Drawer-specific sizes: narrow, wide, plus standard sizes
-- Full accessibility with React Aria Components
-- Portal rendering and focus management
-- Keyboard navigation and dismissal
-
-**Side Mapping:**
-- \`side="left"\` → placement="left", motionPreset="slide-in-left"
-- \`side="right"\` → placement="right", motionPreset="slide-in-right"  
-- \`side="top"\` → placement="top", motionPreset="slide-in-top"
-- \`side="bottom"\` → placement="bottom", motionPreset="slide-in-bottom"
-        `,
-      },
-    },
   },
   argTypes: {
     // Root props

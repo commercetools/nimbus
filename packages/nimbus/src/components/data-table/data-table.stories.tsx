@@ -136,7 +136,7 @@ const ProductDetailsModal = ({
 
   return (
     <Dialog.Root isOpen={isOpen}>
-      <Dialog.Content size="lg">
+      <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>{formData.name as string}</Dialog.Title>
         </Dialog.Header>

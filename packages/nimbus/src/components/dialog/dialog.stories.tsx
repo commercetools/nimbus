@@ -12,10 +12,6 @@ const meta: Meta<typeof Dialog.Content> = {
   },
   tags: ["autodocs"],
   argTypes: {
-    size: {
-      control: { type: "select" },
-      options: ["xs", "sm", "md", "lg", "xl", "cover", "full"],
-    },
     placement: {
       control: { type: "select" },
       options: ["center", "top", "bottom"],
@@ -67,7 +63,6 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: {
-    size: "md",
     placement: "center",
     scrollBehavior: "outside",
     motionPreset: "scale",
@@ -91,61 +86,6 @@ export const Default: Story = {
 
       await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
     });
-  },
-};
-
-/**
- * Dialog with different size variants.
- */
-export const Sizes: Story = {
-  args: {},
-  render: () => (
-    <Stack direction="row" flexWrap="wrap">
-      {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
-        <Dialog.Root key={size}>
-          <Dialog.Trigger>{size.toUpperCase()}</Dialog.Trigger>
-          <Dialog.Content size={size}>
-            <Dialog.Backdrop />
-            <Dialog.Header>
-              <Dialog.Title>Size: {size.toUpperCase()}</Dialog.Title>
-              <Dialog.CloseTrigger />
-            </Dialog.Header>
-            <Dialog.Body>
-              <Text>This dialog demonstrates the "{size}" size variant.</Text>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button>Close</Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Root>
-      ))}
-    </Stack>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement.parentNode as HTMLElement);
-    const sizes = ["XS", "SM", "MD", "LG", "XL"];
-
-    for (const size of sizes) {
-      await step(
-        `Opens ${size} dialog and verifies accessibility`,
-        async () => {
-          const trigger = canvas.getByRole("button", { name: size });
-          await userEvent.click(trigger);
-
-          const dialog = await canvas.findByRole("dialog", {
-            name: `Size: ${size}`,
-          });
-          expect(dialog).toBeInTheDocument();
-
-          const closeButton = canvas.getByRole("button", {
-            name: "Close dialog",
-          });
-          await userEvent.click(closeButton);
-
-          await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        }
-      );
-    }
   },
 };
 
@@ -211,7 +151,7 @@ export const ScrollBehavior: Story = {
       {(["inside", "outside"] as const).map((scrollBehavior) => (
         <Dialog.Root key={scrollBehavior}>
           <Dialog.Trigger>Scroll {scrollBehavior}</Dialog.Trigger>
-          <Dialog.Content scrollBehavior={scrollBehavior} size="xs">
+          <Dialog.Content scrollBehavior={scrollBehavior}>
             <Dialog.Backdrop />
             <Dialog.Header>
               <Dialog.Title>Scroll: {scrollBehavior}</Dialog.Title>
