@@ -44,7 +44,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     isDisabled,
     isReadOnly,
     isInvalid,
-    hasWarning,
     hasHighPrecisionBadge = true,
     isCurrencyInputDisabled,
     placeholder = "0.00",
@@ -193,7 +192,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
   const stateProps = {
     isInvalid,
-    hasWarning,
     isDisabled,
     isReadOnly,
     hasFocus,

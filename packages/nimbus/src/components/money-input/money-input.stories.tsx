@@ -91,7 +91,6 @@ export const BasicExample: Story = {
     isDisabled: false,
     isReadOnly: false,
     isInvalid: false,
-    hasWarning: false,
     hasHighPrecisionBadge: true,
   },
   play: async ({ canvasElement }) => {
@@ -223,18 +222,6 @@ export const ErrorState: Story = {
   ),
   args: {
     isInvalid: true,
-  },
-};
-
-export const WarningState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "999999.99", currencyCode: "USD" }}
-      {...args}
-    />
-  ),
-  args: {
-    hasWarning: true,
   },
 };
 

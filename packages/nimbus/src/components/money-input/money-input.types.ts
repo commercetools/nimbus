@@ -89,10 +89,6 @@ export interface MoneyInputProps {
    */
   isInvalid?: boolean;
   /**
-   * Control to indicate on the input if there are selected values that are potentially invalid
-   */
-  hasWarning?: boolean;
-  /**
    * Shows high precision badge in case current value uses high precision.
    */
   hasHighPrecisionBadge?: boolean;
