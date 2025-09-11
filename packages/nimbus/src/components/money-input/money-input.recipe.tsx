@@ -1,27 +1,59 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const moneyInputRecipe = defineSlotRecipe({
-  slots: ["root", "currencySelect", "amountInput", "badge"],
+  slots: [
+    "root",
+    "container",
+    "currencySelect",
+    "currencyLabel",
+    "amountInput",
+    "badge",
+  ],
   className: "money-input",
   base: {
     root: {
       width: "full",
       position: "relative",
-      display: "flex",
       fontFamily: "inherit",
+      "& .nimbus-select__trigger": {
+        width: "2800",
+        borderRightRadius: "0",
+        // Show all but the right shadow
+        boxShadow:
+          "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
+      },
+      "& .nimbus-number-input__root > input": {
+        borderLeftRadius: "0",
+      },
+    },
+    container: {
+      display: "inline-flex",
+      alignItems: "stretch",
+      position: "relative",
     },
     currencySelect: {
-      minWidth: "80px",
-      borderTopRightRadius: "0",
-      borderBottomRightRadius: "0",
-      borderRight: "0",
+      // Ensure focus ring is visible above amount input
+      "& [data-focused='true']": {
+        zIndex: 2,
+      },
+    },
+    currencyLabel: {
+      display: "flex",
+      height: "full",
+      borderLeftRadius: "200",
+      backgroundColor: "neutral.1",
+      boxShadow:
+        "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
+      paddingInline: "400",
+      alignItems: "center",
     },
     amountInput: {
-      width: "full",
-      borderTopLeftRadius: "0",
-      borderBottomLeftRadius: "0",
-      marginLeft: "0",
+      // Ensure focus ring is visible above currency select
+      "& [data-has-focus='true']": {
+        zIndex: 2,
+      },
     },
+    // TODO: tackle this once "trailing element" is save to be rebased on top of
     badge: {
       position: "absolute",
       top: "0",
@@ -55,89 +87,6 @@ export const moneyInputRecipe = defineSlotRecipe({
         },
         amountInput: {
           paddingRight: "spacing.40",
-        },
-      },
-    },
-    hasError: {
-      true: {
-        currencySelect: {
-          borderColor: "borderColorForInputWhenError",
-          _hover: {
-            borderColor: "borderColorForInputWhenError",
-          },
-        },
-        amountInput: {
-          borderColor: "borderColorForInputWhenError",
-          borderLeftColor: "borderColorForInputWhenError",
-        },
-      },
-    },
-    hasWarning: {
-      true: {
-        currencySelect: {
-          borderColor: "borderColorForInputWhenWarning",
-          _hover: {
-            borderColor: "borderColorForInputWhenWarning",
-          },
-        },
-        amountInput: {
-          borderColor: "borderColorForInputWhenWarning",
-          borderLeftColor: "borderColorForInputWhenWarning",
-        },
-      },
-    },
-    isDisabled: {
-      true: {
-        currencySelect: {
-          backgroundColor: "backgroundColorForInputWhenDisabled",
-          borderColor: "borderColorForInputWhenDisabled",
-          cursor: "not-allowed",
-        },
-        amountInput: {
-          backgroundColor: "backgroundColorForInputWhenDisabled",
-          borderColor: "borderColorForInputWhenDisabled",
-          cursor: "not-allowed",
-        },
-        badge: {
-          cursor: "not-allowed",
-        },
-      },
-    },
-    isReadOnly: {
-      true: {
-        currencySelect: {
-          backgroundColor: "backgroundColorForInputWhenReadonly",
-          borderColor: "borderColorForInputWhenReadonly",
-          cursor: "default",
-        },
-        amountInput: {
-          backgroundColor: "backgroundColorForInputWhenReadonly",
-          borderColor: "borderColorForInputWhenReadonly",
-          cursor: "default",
-        },
-        badge: {
-          cursor: "default",
-        },
-      },
-    },
-    hasFocus: {
-      true: {
-        currencySelect: {
-          borderColor: "borderColorForInputWhenFocused",
-        },
-        amountInput: {
-          borderColor: "borderColorForInputWhenFocused",
-          borderLeftColor: "borderColorForInputWhenFocused",
-        },
-      },
-    },
-    isCondensed: {
-      true: {
-        root: {
-          fontSize: "fontSize.20",
-        },
-        currencySelect: {
-          padding: "0 spacing.20",
         },
       },
     },

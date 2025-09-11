@@ -19,8 +19,16 @@ export type MoneyInputRootSlotProps = HTMLChakraProps<
   "div",
   MoneyInputSlotRecipeProps
 >;
+export type MoneyInputContainerSlotProps = HTMLChakraProps<
+  "div",
+  MoneyInputSlotRecipeProps
+>;
 export type MoneyInputCurrencySelectSlotProps = HTMLChakraProps<
   "div",
+  MoneyInputSlotRecipeProps
+>;
+export type MoneyInputCurrencyLabelSlotProps = HTMLChakraProps<
+  "label",
   MoneyInputSlotRecipeProps
 >;
 export type MoneyInputAmountInputSlotProps = HTMLChakraProps<
@@ -71,10 +79,6 @@ export interface MoneyInputRootProps
    * Called with the event of the input or dropdown when either the currency or the amount have changed.
    */
   onChange?: (event: TCustomEvent) => void;
-  /**
-   * Use this property to reduce the paddings of the component for a ui compact variant
-   */
-  isCondensed?: boolean;
   /**
    * Indicates that the input cannot be modified (e.g not authorized, or changes currently saving).
    */

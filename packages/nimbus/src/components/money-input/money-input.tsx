@@ -7,7 +7,9 @@ import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
   MoneyInputRootSlot,
+  MoneyInputContainerSlot,
   MoneyInputCurrencySelectSlot,
+  MoneyInputCurrencyLabelSlot,
   MoneyInputAmountInputSlot,
   MoneyInputBadgeSlot,
 } from "./money-input.slots";
@@ -21,16 +23,17 @@ import {
 import currenciesData from "../../utils/currencies";
 import type { TValue } from "./utils";
 
-// Custom event type for MoneyInput onChange handler
+// Custom event type for MoneyInput onChange handler that mimics DOM events for form compatibility
 type TCustomEvent = {
   target: {
     id?: string;
     name?: string;
     value?: string | string[] | null;
   };
-  // TODO: Where did this come from? UI-Kit?
-  persist?: () => void;
 };
+
+// TODO: we need to ensure that when a currency is selected, the digits align to fractionDigits, unless highPrecision is true
+// TODO: Form integration needs to work
 
 export interface MoneyInputProps {
   /**
@@ -62,10 +65,6 @@ export interface MoneyInputProps {
    */
   onChange?: (event: TCustomEvent) => void;
   /**
-   * Use this property to reduce the paddings of the component for a ui compact variant
-   */
-  isCondensed?: boolean;
-  /**
    * Indicates that the input cannot be modified (e.g not authorized, or changes currently saving).
    */
   isDisabled?: boolean;
@@ -76,7 +75,7 @@ export interface MoneyInputProps {
   /**
    * Indicates that input has errors
    */
-  hasError?: boolean;
+  isInvalid?: boolean;
   /**
    * Control to indicate on the input if there are selected values that are potentially invalid
    */
@@ -120,10 +119,9 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     onChange,
     onFocus,
     onBlur,
-    isCondensed,
     isDisabled,
     isReadOnly,
-    hasError,
+    isInvalid,
     hasWarning,
     hasHighPrecisionBadge = true,
     isCurrencyInputDisabled,
@@ -176,6 +174,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const [styleProps] = extractStyleProps(restProps);
 
   // Helper functions
+  // TODO: Evaluate if we can remove these helpers
   const getAmountInputId = () => `${id}-amount`;
   const getCurrencyDropdownId = () => `${id}-currency`;
   const getAmountInputName = () => (name ? `${name}.amount` : undefined);
@@ -187,7 +186,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     (newValue: number) => {
       const stringValue = newValue.toString();
       const event: TCustomEvent = {
-        persist: () => {},
         target: {
           id: getAmountInputId(),
           name: getAmountInputName(),
@@ -202,7 +200,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const handleAmountFocus = useCallback(() => {
     setAmountHasFocus(true);
     const event: TCustomEvent = {
-      persist: () => {},
       target: {
         id: getAmountInputId(),
         name: getAmountInputName(),
@@ -215,7 +212,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const handleAmountBlur = useCallback(() => {
     setAmountHasFocus(false);
     const event: TCustomEvent = {
-      persist: () => {},
       target: {
         id: getAmountInputId(),
         name: getAmountInputName(),
@@ -228,7 +224,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const handleCurrencyChange = useCallback(
     (currencyCode: string) => {
       const event: TCustomEvent = {
-        persist: () => {},
         target: {
           id: getCurrencyDropdownId(),
           name: getCurrencyDropdownName(),
@@ -243,7 +238,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const handleCurrencyFocus = useCallback(() => {
     setCurrencyHasFocus(true);
     const event: TCustomEvent = {
-      persist: () => {},
       target: {
         id: getCurrencyDropdownId(),
         name: getCurrencyDropdownName(),
@@ -256,7 +250,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const handleCurrencyBlur = useCallback(() => {
     setCurrencyHasFocus(false);
     const event: TCustomEvent = {
-      persist: () => {},
       target: {
         id: getCurrencyDropdownId(),
         name: getCurrencyDropdownName(),
@@ -276,86 +269,89 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   );
 
   const stateProps = {
-    hasError,
+    isInvalid,
     hasWarning,
     isDisabled,
     isReadOnly,
-    isCondensed,
     hasFocus,
   };
 
   return (
     <MoneyInputRootSlot {...recipeProps} {...styleProps} {...stateProps}>
-      {/* Currency Select or Label */}
-      <MoneyInputCurrencySelectSlot {...stateProps}>
-        {hasNoCurrencies ? (
-          <label htmlFor={getAmountInputId()} data-testid="currency-label">
-            {value.currencyCode}
-          </label>
-        ) : (
-          <Select.Root
-            selectedKey={value.currencyCode || null}
-            onSelectionChange={handleCurrencySelectionChange}
-            onFocus={handleCurrencyFocus}
-            onBlur={handleCurrencyBlur}
-            isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
-            isClearable={false}
-            placeholder=""
-            aria-label="Currency selection"
-            data-testid="currency-dropdown"
-          >
-            <Select.Options>
-              {currencies.map((currencyCode) => (
-                <Select.Option key={currencyCode} id={currencyCode}>
-                  {currencyCode}
-                </Select.Option>
-              ))}
-            </Select.Options>
-          </Select.Root>
-        )}
-      </MoneyInputCurrencySelectSlot>
+      <MoneyInputContainerSlot>
+        {/* Currency Select or Label */}
+        <MoneyInputCurrencySelectSlot {...stateProps}>
+          {/* // TODO: handle this fallback, it's wrong */}
+          {hasNoCurrencies ? (
+            <MoneyInputCurrencyLabelSlot asChild>
+              <label data-testid="currency-label">{value.currencyCode}</label>
+            </MoneyInputCurrencyLabelSlot>
+          ) : (
+            <Select.Root
+              selectedKey={value.currencyCode || null}
+              onSelectionChange={handleCurrencySelectionChange}
+              onFocus={handleCurrencyFocus}
+              onBlur={handleCurrencyBlur}
+              isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
+              isClearable={false}
+              placeholder=""
+              aria-label="Currency selection"
+              data-testid="currency-dropdown"
+            >
+              <Select.Options>
+                {currencies.map((currencyCode) => (
+                  <Select.Option key={currencyCode} id={currencyCode}>
+                    {currencyCode}
+                  </Select.Option>
+                ))}
+              </Select.Options>
+            </Select.Root>
+          )}
+        </MoneyInputCurrencySelectSlot>
 
-      {/* Amount Input - ARCHITECTURE NOTE: Dual Formatting Systems
+        {/* Amount Input - ARCHITECTURE NOTE: Dual Formatting Systems
 
-          MoneyInput uses TWO SEPARATE currency formatting systems:
+            MoneyInput uses TWO SEPARATE currency formatting systems:
 
-          1. NumberInput (THIS component below):
-             - Handles live user interaction and display formatting
-             - Uses React Aria + Intl.NumberFormat + getCurrencyFormatOptions()
-             - Provides real-time locale-aware input validation and formatting
-             - Powers the actual input field behavior users see
+            1. NumberInput (THIS component below):
+               - Handles live user interaction and display formatting
+               - Uses React Aria + Intl.NumberFormat + getCurrencyFormatOptions()
+               - Provides real-time locale-aware input validation and formatting
+               - Powers the actual input field behavior users see
 
-          2. MoneyInput Static Methods (convertToMoneyValue, parseMoneyValue, etc.):
-             - Uses custom parsing system with createMoneyValue() + TMoneyValue objects
-             - Maintains exact UI-Kit behavioral compatibility for Merchant Center
-             - Only triggered by explicit static method calls, NOT during user typing
+            2. MoneyInput Static Methods (convertToMoneyValue, parseMoneyValue, etc.):
+               - Uses custom parsing system with createMoneyValue() + TMoneyValue objects
+               - Maintains exact UI-Kit behavioral compatibility for Merchant Center
+               - Only triggered by explicit static method calls, NOT during user typing
 
-          These systems are INDEPENDENT and do NOT interact with each other.
-          This design preserves UI-Kit compatibility while leveraging modern React Aria input handling.
-      */}
-      <MoneyInputAmountInputSlot
-        ref={ref}
-        data-has-focus={hasFocus}
-        data-has-high-precision={
-          hasHighPrecisionBadge && isCurrentlyHighPrecision
-        }
-        {...stateProps}
-        asChild
-      >
-        <NumberInput
-          value={numericValue}
-          currency={value.currencyCode}
-          showCurrencySymbol={false} // Don't show symbol in input, only in currency dropdown
-          allowHighPrecision={true} // Enable high precision for all currencies in MoneyInput
-          onChange={handleAmountChange}
-          onFocus={handleAmountFocus}
-          onBlur={handleAmountBlur}
-          isDisabled={isDisabled}
-          isReadOnly={isReadOnly}
-          placeholder={placeholder}
-          autoFocus={autoFocus}
-        />
-      </MoneyInputAmountInputSlot>
+            These systems are INDEPENDENT and do NOT interact with each other.
+            This design preserves UI-Kit compatibility while leveraging modern React Aria input handling.
+        */}
+        <MoneyInputAmountInputSlot
+          ref={ref}
+          data-has-focus={hasFocus}
+          data-has-high-precision={
+            hasHighPrecisionBadge && isCurrentlyHighPrecision
+          }
+          {...stateProps}
+          asChild
+        >
+          <NumberInput
+            value={numericValue}
+            currency={value.currencyCode}
+            showCurrencySymbol={false} // Don't show symbol in input, only in currency dropdown
+            allowHighPrecision={true} // Enable high precision for all currencies in MoneyInput
+            onChange={handleAmountChange}
+            onFocus={handleAmountFocus}
+            onBlur={handleAmountBlur}
+            isDisabled={isDisabled}
+            isReadOnly={isReadOnly}
+            isInvalid={isInvalid}
+            placeholder={placeholder}
+            autoFocus={autoFocus}
+          />
+        </MoneyInputAmountInputSlot>
+      </MoneyInputContainerSlot>
 
       {/* High Precision Badge */}
       {hasHighPrecisionBadge && isCurrentlyHighPrecision && (

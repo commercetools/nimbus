@@ -91,9 +91,8 @@ export const BasicExample: Story = {
   args: {
     isDisabled: false,
     isReadOnly: false,
-    hasError: false,
+    isInvalid: false,
     hasWarning: false,
-    isCondensed: false,
     hasHighPrecisionBadge: true,
   },
   play: async ({ canvasElement }) => {
@@ -205,7 +204,7 @@ export const ErrorState: Story = {
     />
   ),
   args: {
-    hasError: true,
+    isInvalid: true,
   },
 };
 
