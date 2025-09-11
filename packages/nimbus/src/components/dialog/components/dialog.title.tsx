@@ -30,7 +30,7 @@ export const DialogTitle = (props: DialogTitleProps) => {
 
   return (
     <DialogTitleSlot asChild {...restProps}>
-      <Heading ref={ref} slot="title" level={2}>
+      <Heading ref={ref} slot="title" as="h2" textStyle="lg">
         {children}
       </Heading>
     </DialogTitleSlot>

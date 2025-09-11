@@ -97,13 +97,13 @@ Semantic sections for organizing dialog content with proper styling and spacing.
 - `children: React.ReactNode` - Section content
 - Standard HTML `header`, `div`, or `footer` attributes
 
-### Dialog.Title / Dialog.Description
+### Dialog.Title
 
-Accessible text elements that provide semantic meaning to screen readers.
+Accessible title element that provides semantic meaning to screen readers.
 
 **Props:**
-- `children: React.ReactNode` - Text content
-- Standard HTML `h2` or `p` attributes
+- `children: React.ReactNode` - Title text
+- Standard HTML `h2` attributes
 
 ### Dialog.CloseTrigger
 
@@ -134,10 +134,8 @@ const App = () => (
         <Dialog.CloseTrigger />
       </Dialog.Header>
       <Dialog.Body>
-        <Dialog.Description>
           This is a basic dialog with default settings. It includes a backdrop,
           title, description, and close button for a complete experience.
-        </Dialog.Description>
       </Dialog.Body>
       <Dialog.Footer>
         <Button variant="outline">Cancel</Button>
@@ -169,10 +167,8 @@ const App = () => (
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
-            <Dialog.Description>
               This dialog demonstrates the "{size}" size variant.
               Each size provides different maximum widths for various use cases.
-            </Dialog.Description>
           </Dialog.Body>
         </Dialog.Content>
       </Dialog.Root>
@@ -202,10 +198,8 @@ const App = () => (
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
-            <Dialog.Description>
               This dialog is positioned at "{placement}". Different placements 
               work better for different types of content and user flows.
-            </Dialog.Description>
           </Dialog.Body>
         </Dialog.Content>
       </Dialog.Root>
@@ -238,10 +232,8 @@ const App = () => {
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
-            <Dialog.Description>
               This dialog's state is controlled by the parent component.
               You can open/close it programmatically or through user interaction.
-            </Dialog.Description>
           </Dialog.Body>
           <Dialog.Footer>
             <Button variant="outline" onClick={() => setIsOpen(false)}>
@@ -280,9 +272,7 @@ const App = () => (
           </Dialog.Header>
           <Dialog.Body>
             <Stack>
-              <Dialog.Description>
                 This dialog tests "{scrollBehavior}" scroll behavior with lots of content.
-              </Dialog.Description>
               {Array.from({ length: 10 }, (_, i) => (
                 <Text key={i}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. 

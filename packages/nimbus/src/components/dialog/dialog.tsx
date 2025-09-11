@@ -6,7 +6,6 @@ import { DialogHeader } from "./components/dialog.header";
 import { DialogBody } from "./components/dialog.body";
 import { DialogFooter } from "./components/dialog.footer";
 import { DialogTitle } from "./components/dialog.title";
-import { DialogDescription } from "./components/dialog.description";
 import { DialogCloseTrigger } from "./components/dialog.close-trigger";
 
 // Re-export types
@@ -37,9 +36,7 @@ export type * from "./dialog.types";
  *       <Dialog.CloseTrigger>×</Dialog.CloseTrigger>
  *     </Dialog.Header>
  *     <Dialog.Body>
- *       <Dialog.Description>
- *         Dialog content goes here
- *       </Dialog.Description>
+ *       Dialog content goes here
  *     </Dialog.Body>
  *     <Dialog.Footer>
  *       <button>Cancel</button>
@@ -60,7 +57,6 @@ export const Dialog = {
   Body: DialogBody,
   Footer: DialogFooter,
   Title: DialogTitle,
-  Description: DialogDescription,
   CloseTrigger: DialogCloseTrigger,
 };
 
@@ -74,6 +70,5 @@ export {
   DialogBody as _DialogBody,
   DialogFooter as _DialogFooter,
   DialogTitle as _DialogTitle,
-  DialogDescription as _DialogDescription,
   DialogCloseTrigger as _DialogCloseTrigger,
 };

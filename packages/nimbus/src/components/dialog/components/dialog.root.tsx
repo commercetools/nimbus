@@ -28,24 +28,19 @@ import { DialogProvider } from "./dialog.context";
  */
 export const DialogRoot = (props: DialogRootProps) => {
   const recipe = useSlotRecipe({ key: "dialog" });
-  const [recipeProps, restProps] = recipe.splitVariantProps(props);
-
-  const {
-    children,
-    isOpen,
-    onOpenChange,
-    defaultOpen = false,
-    ...dialogTriggerProps
-  } = restProps;
+  // Extract recipe props
+  const [recipeProps] = recipe.splitVariantProps(props);
+  // Extract props that are usable on RaDialogTrigger
+  const { children, isOpen, onOpenChange, defaultOpen = false } = props;
 
   return (
-    <DialogProvider value={recipeProps}>
+    // Share all props (config + variant props) with the Dialog subcomponents
+    <DialogProvider value={props}>
       <DialogRootSlot {...recipeProps}>
         <RaDialogTrigger
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           defaultOpen={defaultOpen}
-          {...dialogTriggerProps}
         >
           {children}
         </RaDialogTrigger>

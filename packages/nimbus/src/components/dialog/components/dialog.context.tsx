@@ -1,12 +1,10 @@
-import { createContext, useContext } from "react";
-import type { RecipeVariantProps } from "@chakra-ui/react";
-import { dialogSlotRecipe } from "../dialog.recipe";
+import { createContext, useContext, useState } from "react";
+import type { DialogRootProps } from "../dialog.types";
 
 /**
  * Context value containing dialog configuration passed from Root to child components
  */
-export interface DialogContextValue
-  extends RecipeVariantProps<typeof dialogSlotRecipe> {
+export interface DialogContextValue extends DialogRootProps {
   // Add any additional context values here if needed in the future
 }
 
@@ -19,7 +17,7 @@ export const DialogContext = createContext<DialogContextValue | undefined>(
  * @returns Dialog configuration from context
  * @throws Error if used outside of Dialog.Root
  */
-export const useDialogContext = (): DialogContextValue => {
+export const useDialogRootContext = (): DialogContextValue => {
   const context = useContext(DialogContext);
   if (!context) {
     throw new Error("useDialogContext must be used within Dialog.Root");
@@ -37,7 +35,20 @@ export const DialogProvider = ({
   children: React.ReactNode;
   value: DialogContextValue;
 }) => {
+  const [useBackdrop, setUseBackdrop] = useState<boolean>(false);
+  const [backdropProps, setBackdropProps] = useState<object>();
+
   return (
-    <DialogContext.Provider value={value}>{children}</DialogContext.Provider>
+    <DialogContext.Provider
+      value={{
+        ...value,
+        useBackdrop,
+        backdropProps,
+        setUseBackdrop,
+        setBackdropProps,
+      }}
+    >
+      {children}
+    </DialogContext.Provider>
   );
 };
