@@ -1,6 +1,7 @@
 import { type ComponentProps } from "react";
 import { type RecipeVariantProps } from "@chakra-ui/react";
 import { dialogSlotRecipe } from "./dialog.recipe";
+import { type ModalOverlayProps } from "react-aria-components";
 
 /**
  * Props for the Dialog.Root component
@@ -24,16 +25,25 @@ export interface DialogRootProps
   isOpen?: boolean;
 
   /**
+   * Whether the dialog is open by default (uncontrolled mode)
+   * @default false
+   */
+  defaultOpen?: boolean;
+
+  isDismissable?: ModalOverlayProps["isDismissable"];
+  isKeyboardDismissDisabled?: ModalOverlayProps["isDismissable"];
+  shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
+
+  /**
    * Callback fired when the dialog open state changes
    * @param isOpen - Whether the dialog is now open
    */
   onOpenChange?: (isOpen: boolean) => void;
 
-  /**
-   * Whether the dialog is open by default (uncontrolled mode)
-   * @default false
+  /** A Title for the dialog, optional, as long as there is a Heading
+   * component used inside the Dialog.Content with a `slot`-property set to `title`.
    */
-  defaultOpen?: boolean;
+  "aria-label"?: string;
 }
 
 /**
@@ -71,40 +81,6 @@ export interface DialogContentProps extends ComponentProps<"div"> {
    * The dialog content
    */
   children: React.ReactNode;
-
-  /**
-   * Whether to render the dialog in a portal
-   * @default true
-   */
-  isPortalled?: boolean;
-
-  /**
-   * The container element for the portal
-   */
-  portalContainer?: HTMLElement | (() => HTMLElement);
-
-  /**
-   * Whether to show the backdrop overlay
-   * @default true
-   */
-  hasBackdrop?: boolean;
-
-  /**
-   * Whether the dialog should close when clicking outside
-   * @default true
-   */
-  isDismissable?: boolean;
-
-  /**
-   * Whether the dialog should close when pressing Escape
-   * @default true
-   */
-  isKeyboardDismissDisabled?: boolean;
-
-  /**
-   * Callback fired when the dialog requests to be closed
-   */
-  onClose?: () => void;
 }
 
 /**
@@ -112,12 +88,7 @@ export interface DialogContentProps extends ComponentProps<"div"> {
  *
  * The backdrop overlay that appears behind the dialog content.
  */
-export interface DialogBackdropProps extends ComponentProps<"div"> {
-  /**
-   * Custom styles for the backdrop
-   */
-  style?: React.CSSProperties;
-}
+export interface DialogBackdropProps extends ComponentProps<"div"> {}
 
 /**
  * Props for the Dialog.Header component
@@ -168,18 +139,6 @@ export interface DialogTitleProps extends ComponentProps<"h2"> {
 }
 
 /**
- * Props for the Dialog.Description component
- *
- * The accessible description element for the dialog.
- */
-export interface DialogDescriptionProps extends ComponentProps<"p"> {
-  /**
-   * The description text
-   */
-  children: React.ReactNode;
-}
-
-/**
  * Props for the Dialog.CloseTrigger component
  *
  * A button that closes the dialog when activated.
@@ -193,12 +152,6 @@ export interface DialogCloseTriggerProps
    */
   "aria-label"?: string;
 }
-
-/**
- * Placement variants for the dialog
- */
-export type DialogPlacement = "center" | "top" | "bottom";
-
 /**
  * Scroll behavior variants for the dialog
  */

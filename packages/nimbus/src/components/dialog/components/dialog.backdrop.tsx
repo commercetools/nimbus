@@ -1,9 +1,8 @@
-import { useRef } from "react";
-import { ModalOverlay as RaModalOverlay } from "react-aria-components";
-import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
-import { DialogBackdropSlot } from "../dialog.slots";
+import { useEffect } from "react";
 import type { DialogBackdropProps } from "../dialog.types";
+
+import { useDialogRootContext } from "./dialog.context";
+import type { DialogBackdropSlotProps } from "..";
 
 /**
  * # Dialog.Backdrop
@@ -15,26 +14,27 @@ import type { DialogBackdropProps } from "../dialog.types";
  * ```tsx
  * <Dialog.Root>
  *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+ *   <Dialog.Backdrop />
  *   <Dialog.Content>
- *     <Dialog.Backdrop />
  *     <Dialog.Header>...</Dialog.Header>
  *   </Dialog.Content>
  * </Dialog.Root>
  * ```
  */
-export const DialogBackdrop = (props: DialogBackdropProps) => {
-  const { ref: forwardedRef, style, ...restProps } = props;
+export const DialogBackdrop = (props: DialogBackdropSlotProps) => {
+  const { setUseBackdrop, setBackdropProps } = useDialogRootContext();
 
-  // create a local ref (because the consumer may not provide a forwardedRef)
-  const localRef = useRef<HTMLDivElement>(null);
-  // merge the local ref with a potentially forwarded ref
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  useEffect(() => {
+    setUseBackdrop(true);
+    setBackdropProps(props);
 
-  return (
-    <DialogBackdropSlot asChild style={style} {...restProps}>
-      <RaModalOverlay ref={ref} />
-    </DialogBackdropSlot>
-  );
+    return () => {
+      setUseBackdrop(false);
+      setBackdropProps(null);
+    };
+  }, [props]);
+
+  return null;
 };
 
 DialogBackdrop.displayName = "Dialog.Backdrop";

@@ -1,11 +1,19 @@
-import { useRef } from "react";
-import { Modal as RaModal, Dialog as RaDialog } from "react-aria-components";
+import { useMemo, useRef } from "react";
+import {
+  Modal as RaModal,
+  ModalOverlay as RaModalOverlay,
+  Dialog as RaDialog,
+} from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { DialogPositionerSlot, DialogContentSlot } from "../dialog.slots";
+import {
+  ModalSlot,
+  DialogContentSlot,
+  DialogBackdropSlot,
+} from "../dialog.slots";
 import type { DialogContentProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { useDialogContext } from "./dialog.context";
+import { useDialogRootContext } from "./dialog.context";
 
 /**
  * # Dialog.Content
@@ -31,23 +39,18 @@ import { useDialogContext } from "./dialog.context";
  * ```
  */
 export const DialogContent = (props: DialogContentProps) => {
-  const {
-    ref: forwardedRef,
-    children,
-    // TODO: Implement portal support
-    // isPortalled = true,
-    // portalContainer,
-    // TODO: Implement backdrop control
-    // hasBackdrop = true,
-    isDismissable = true,
-    isKeyboardDismissDisabled = false,
-    // TODO: Implement onClose callback
-    // onClose,
-    ...restProps
-  } = props;
+  const { ref: forwardedRef, children, ...restProps } = props;
 
   // Get recipe configuration from context instead of props
-  const contextRecipeProps = useDialogContext();
+  const {
+    useBackdrop,
+    backdropProps,
+    defaultOpen,
+    isDismissable,
+    isKeyboardDismissDisabled,
+    shouldCloseOnInteractOutside,
+    isOpen,
+  } = useDialogRootContext();
 
   // create a local ref (because the consumer may not provide a forwardedRef)
   const localRef = useRef<HTMLDivElement>(null);
@@ -56,17 +59,37 @@ export const DialogContent = (props: DialogContentProps) => {
 
   const [styleProps, htmlProps] = extractStyleProps(restProps);
 
+  const Wrapper = useMemo(() => {
+    console.log("useBackdrop", useBackdrop);
+    console.log("backdropProps", backdropProps);
+    if (useBackdrop) {
+      return ({ children }: { children: React.ReactNode }) => (
+        <DialogBackdropSlot {...backdropProps} asChild>
+          <RaModalOverlay>{children}</RaModalOverlay>
+        </DialogBackdropSlot>
+      );
+    }
+    return ({ children }) => <>{children}</>;
+  }, [useBackdrop, backdropProps]);
+
   return (
-    <DialogPositionerSlot {...contextRecipeProps} {...styleProps} asChild>
-      <RaModal
-        isDismissable={isDismissable}
-        isKeyboardDismissDisabled={isKeyboardDismissDisabled}
-      >
-        <DialogContentSlot asChild {...htmlProps}>
-          <RaDialog ref={ref}>{children}</RaDialog>
-        </DialogContentSlot>
-      </RaModal>
-    </DialogPositionerSlot>
+    <Wrapper>
+      <ModalSlot asChild>
+        <RaModal
+          defaultOpen={defaultOpen}
+          isDismissable={isDismissable}
+          isKeyboardDismissDisabled={isKeyboardDismissDisabled}
+          shouldCloseOnInteractOutside={shouldCloseOnInteractOutside}
+          isOpen={isOpen}
+        >
+          <DialogContentSlot asChild {...styleProps}>
+            <RaDialog {...htmlProps} ref={ref}>
+              {children}
+            </RaDialog>
+          </DialogContentSlot>
+        </RaModal>
+      </ModalSlot>
+    </Wrapper>
   );
 };
 

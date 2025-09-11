@@ -8,7 +8,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
   recipe: dialogSlotRecipe,
 });
 
-// Root slot - provides recipe context to all child components
+// Root slot - provides recipe context + config to all child components
 export type DialogRootSlotProps = HTMLChakraProps<"div">;
 export const DialogRootSlot = withProvider<HTMLDivElement, DialogRootSlotProps>(
   "div",
@@ -22,7 +22,7 @@ export const DialogTriggerSlot = withContext<
   DialogTriggerSlotProps
 >("button", "trigger");
 
-// Backdrop slot - overlay behind the dialog
+// Backdrop slot - overlay displayed behind the dialog
 export type DialogBackdropSlotProps = HTMLChakraProps<"div">;
 export const DialogBackdropSlot = withContext<
   HTMLDivElement,
@@ -30,11 +30,11 @@ export const DialogBackdropSlot = withContext<
 >("div", "backdrop");
 
 // Positioner slot - positions the dialog content
-export type DialogPositionerSlotProps = HTMLChakraProps<"div">;
-export const DialogPositionerSlot = withContext<
-  HTMLDivElement,
-  DialogPositionerSlotProps
->("div", "positioner");
+export type ModalSlotProps = HTMLChakraProps<"div">;
+export const ModalSlot = withContext<HTMLDivElement, ModalSlotProps>(
+  "div",
+  "positioner"
+);
 
 // Content slot - main dialog container
 export type DialogContentSlotProps = HTMLChakraProps<"div">;
@@ -70,13 +70,6 @@ export const DialogTitleSlot = withContext<
   HTMLHeadingElement,
   DialogTitleSlotProps
 >("h2", "title");
-
-// Description slot - accessible dialog description
-export type DialogDescriptionSlotProps = HTMLChakraProps<"p">;
-export const DialogDescriptionSlot = withContext<
-  HTMLParagraphElement,
-  DialogDescriptionSlotProps
->("p", "description");
 
 // Close trigger slot - div container for positioning close button
 export type DialogCloseTriggerSlotProps = HTMLChakraProps<"div">;

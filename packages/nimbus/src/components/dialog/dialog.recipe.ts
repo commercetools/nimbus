@@ -11,7 +11,6 @@ export const dialogSlotRecipe = defineSlotRecipe({
     "positioner",
     "content",
     "title",
-    "description",
     "closeTrigger",
     "header",
     "body",
@@ -96,16 +95,10 @@ export const dialogSlotRecipe = defineSlotRecipe({
       pt: "200",
       pb: "400",
     },
-    title: {
-      textStyle: "lg",
-      fontWeight: "semibold",
-    },
-    description: {
-      color: "fg.muted",
-    },
+    title: {},
     closeTrigger: {
       position: "absolute",
-      top: "400",
+      top: "500",
       right: "400",
       zIndex: 1,
     },

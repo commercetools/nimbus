@@ -13,6 +13,5 @@ export type {
   DialogBodySlotProps,
   DialogFooterSlotProps,
   DialogTitleSlotProps,
-  DialogDescriptionSlotProps,
   DialogCloseTriggerSlotProps,
 } from "./dialog.slots";
