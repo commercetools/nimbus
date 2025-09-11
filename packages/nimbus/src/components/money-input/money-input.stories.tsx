@@ -2,18 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 import { I18nProvider } from "react-aria";
-import { MoneyInput, type MoneyInputProps } from "./money-input";
-import type { TValue, TCurrencyCode } from "./money-input.types";
-
-// Custom event type for MoneyInput onChange handler
-type TCustomEvent = {
-  target: {
-    id?: string;
-    name?: string;
-    value?: string | string[] | null;
-  };
-  persist?: () => void;
-};
+import { Box, Text } from "@/components";
+import { MoneyInput } from "./money-input";
+import type {
+  TValue,
+  TCurrencyCode,
+  TCustomEvent,
+  MoneyInputProps,
+} from "./money-input.types";
 
 // Props for the MoneyInputExample wrapper component
 interface MoneyInputExampleProps extends Partial<MoneyInputProps> {
@@ -35,6 +31,9 @@ type Story = StoryObj<typeof MoneyInput>;
 
 // Default currencies for examples
 const DEFAULT_CURRENCIES = ["EUR", "USD", "GBP", "JPY", "AED", "KWD"];
+
+// Size variants for examples
+const inputSize = ["md", "sm"] as const;
 
 // Interactive wrapper component
 const MoneyInputExample = ({
@@ -119,6 +118,25 @@ export const BasicExample: Story = {
     // Check if value is formatted
     expect(amountInput).toHaveValue("1,234.56");
   },
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <Box display="flex" flexDirection="row" gap={8} alignItems="center">
+      {inputSize.map((size) => (
+        <Box key={String(size)}>
+          <Text mb={1} fontSize="sm" fontWeight="medium">
+            Size: {String(size)}
+          </Text>
+          <MoneyInputExample
+            initialValue={{ amount: "123.45", currencyCode: "USD" }}
+            size={size}
+            currencies={DEFAULT_CURRENCIES}
+          />
+        </Box>
+      ))}
+    </Box>
+  ),
 };
 
 export const WithInitialValue: Story = {
@@ -217,18 +235,6 @@ export const WarningState: Story = {
   ),
   args: {
     hasWarning: true,
-  },
-};
-
-export const CondensedSize: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "42.00", currencyCode: "JPY" }}
-      {...args}
-    />
-  ),
-  args: {
-    isCondensed: true,
   },
 };
 

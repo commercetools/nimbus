@@ -21,88 +21,10 @@ import {
   isEmpty,
 } from "./utils";
 import currenciesData from "../../utils/currencies";
-import type { TValue } from "./utils";
-
-// Custom event type for MoneyInput onChange handler that mimics DOM events for form compatibility
-type TCustomEvent = {
-  target: {
-    id?: string;
-    name?: string;
-    value?: string | string[] | null;
-  };
-};
+import type { TCustomEvent, MoneyInputProps } from "./money-input.types";
 
 // TODO: we need to ensure that when a currency is selected, the digits align to fractionDigits, unless highPrecision is true
 // TODO: Form integration needs to work
-
-export interface MoneyInputProps {
-  /**
-   * Used as HTML id property. An id is auto-generated when it is not specified.
-   */
-  id?: string;
-  /**
-   * The prefix used to create a HTML `name` property for the amount input field (`${name}.amount`) and the currency dropdown (`${name}.currencyCode`).
-   */
-  name?: string;
-  /**
-   * Value of the input. Consists of the currency code and an amount. `amount` is a string representing the amount. A dot has to be used as the decimal separator.
-   */
-  value: TValue;
-  /**
-   * List of possible currencies. When not provided or empty, the component renders a label with the value's currency instead of a dropdown.
-   */
-  currencies?: string[];
-  /**
-   * Called when input is blurred
-   */
-  onBlur?: (event: TCustomEvent) => void;
-  /**
-   * Called when input is focused
-   */
-  onFocus?: (event: TCustomEvent) => void;
-  /**
-   * Called with the event of the input or dropdown when either the currency or the amount have changed.
-   */
-  onChange?: (event: TCustomEvent) => void;
-  /**
-   * Indicates that the input cannot be modified (e.g not authorized, or changes currently saving).
-   */
-  isDisabled?: boolean;
-  /**
-   * Indicates that the field is displaying read-only content
-   */
-  isReadOnly?: boolean;
-  /**
-   * Indicates that input has errors
-   */
-  isInvalid?: boolean;
-  /**
-   * Control to indicate on the input if there are selected values that are potentially invalid
-   */
-  hasWarning?: boolean;
-  /**
-   * Shows high precision badge in case current value uses high precision.
-   */
-  hasHighPrecisionBadge?: boolean;
-  /**
-   * Indicates that the currency input cannot be modified.
-   */
-  isCurrencyInputDisabled?: boolean;
-  /**
-   * Placeholder text for the amount input
-   */
-  placeholder?: string;
-  /**
-   * Focus the input on initial render
-   */
-  autoFocus?: boolean;
-  /**
-   * Override the default tooltip content for high precision badge
-   *
-   * // TODO: this might not be necessary
-   */
-  tooltipContent?: string;
-}
 
 /**
  * # MoneyInput
@@ -128,6 +50,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     placeholder = "0.00",
     autoFocus,
     tooltipContent,
+    size,
     ...restProps
   } = props;
 
@@ -170,7 +93,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
   // Recipe setup
   const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
-  const [recipeProps] = recipe.splitVariantProps(restProps);
+  const [recipeProps] = recipe.splitVariantProps({ ...restProps, size });
   const [styleProps] = extractStyleProps(restProps);
 
   // Helper functions
@@ -297,6 +220,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
               placeholder=""
               aria-label="Currency selection"
               data-testid="currency-dropdown"
+              size={size}
             >
               <Select.Options>
                 {currencies.map((currencyCode) => (
@@ -349,6 +273,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
             isInvalid={isInvalid}
             placeholder={placeholder}
             autoFocus={autoFocus}
+            size={size}
           />
         </MoneyInputAmountInputSlot>
       </MoneyInputContainerSlot>

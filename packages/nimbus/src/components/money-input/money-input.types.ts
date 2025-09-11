@@ -1,10 +1,8 @@
-import { type ReactNode } from "react";
 import type {
   HTMLChakraProps,
   RecipeVariantProps,
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
-import type { BoxProps } from "@/components";
 import type { TValue } from "./utils";
 import type { moneyInputRecipe } from "./money-input.recipe";
 
@@ -40,17 +38,16 @@ export type MoneyInputBadgeSlotProps = HTMLChakraProps<
   MoneyInputSlotRecipeProps
 >;
 
-type TCustomEvent = {
+export type TCustomEvent = {
   target: {
     id?: string;
     name?: string;
     value?: string | string[] | null;
   };
-  persist?: () => void;
 };
 
-export interface MoneyInputRootProps
-  extends Omit<BoxProps, "onChange" | "onBlur" | "onFocus"> {
+// Main component API interface - clean interface without BoxProps extensions
+export interface MoneyInputProps {
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.
    */
@@ -90,7 +87,7 @@ export interface MoneyInputRootProps
   /**
    * Indicates that input has errors
    */
-  hasError?: boolean;
+  isInvalid?: boolean;
   /**
    * Control to indicate on the input if there are selected values that are potentially invalid
    */
@@ -104,33 +101,20 @@ export interface MoneyInputRootProps
    */
   isCurrencyInputDisabled?: boolean;
   /**
-   * Children components (AmountInput, CurrencySelect, Badge)
-   */
-  children: ReactNode;
-}
-
-export interface MoneyInputAmountInputProps {
-  /**
-   * Indicate if the value entered in the input is invalid.
-   */
-  "aria-invalid"?: boolean;
-  /**
-   * HTML ID of an element containing an error message related to the input.
-   */
-  "aria-errormessage"?: string;
-  /**
-   * Placeholder text for the input
+   * Placeholder text for the amount input
    */
   placeholder?: string;
   /**
    * Focus the input on initial render
    */
-  isAutofocussed?: boolean;
-}
-
-export interface MoneyInputBadgeProps {
+  autoFocus?: boolean;
+  // TODO: this might not be needed
   /**
-   * Override the default tooltip content
+   * Override the default tooltip content for high precision badge
    */
-  tooltipContent?: ReactNode;
+  tooltipContent?: string;
+  /**
+   * Size variant for the input
+   */
+  size?: RecipeVariantProps<typeof moneyInputRecipe>["size"];
 }
