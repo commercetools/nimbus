@@ -1,10 +1,9 @@
 import { useRef } from "react";
-import { Heading as RaHeading } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { DialogTitleSlot } from "../dialog.slots";
 import type { DialogTitleProps } from "../dialog.types";
-
+import { Heading } from "@/components";
 /**
  * # Dialog.Title
  *
@@ -31,9 +30,9 @@ export const DialogTitle = (props: DialogTitleProps) => {
 
   return (
     <DialogTitleSlot asChild {...restProps}>
-      <RaHeading ref={ref} slot="title" level={2}>
+      <Heading ref={ref} slot="title" level={2}>
         {children}
-      </RaHeading>
+      </Heading>
     </DialogTitleSlot>
   );
 };

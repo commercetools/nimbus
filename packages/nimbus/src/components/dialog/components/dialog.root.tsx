@@ -29,7 +29,7 @@ import { DialogProvider } from "./dialog.context";
 export const DialogRoot = (props: DialogRootProps) => {
   const recipe = useSlotRecipe({ key: "dialog" });
   const [recipeProps, restProps] = recipe.splitVariantProps(props);
-  
+
   const {
     children,
     isOpen,

@@ -57,16 +57,16 @@ export const DialogContent = (props: DialogContentProps) => {
   const [styleProps, htmlProps] = extractStyleProps(restProps);
 
   return (
-    <RaModal
-      isDismissable={isDismissable}
-      isKeyboardDismissDisabled={isKeyboardDismissDisabled}
-    >
-      <DialogPositionerSlot {...contextRecipeProps} {...styleProps}>
+    <DialogPositionerSlot {...contextRecipeProps} {...styleProps} asChild>
+      <RaModal
+        isDismissable={isDismissable}
+        isKeyboardDismissDisabled={isKeyboardDismissDisabled}
+      >
         <DialogContentSlot asChild {...htmlProps}>
           <RaDialog ref={ref}>{children}</RaDialog>
         </DialogContentSlot>
-      </DialogPositionerSlot>
-    </RaModal>
+      </RaModal>
+    </DialogPositionerSlot>
   );
 };
 
