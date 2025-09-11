@@ -29,6 +29,7 @@ import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
  * false typescript errors that are really hard to debug. */
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
+import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
 
 export const slotRecipes = {
@@ -51,5 +52,6 @@ export const slotRecipes = {
   combobox: comboBoxSlotRecipe,
   progressBar: progressBarSlotRecipe,
   menu: menuSlotRecipe,
+  textInput: textInputSlotRecipe,
   splitButton: splitButtonSlotRecipe,
 };

@@ -9,6 +9,7 @@ import { checkboxSlotRecipe } from "../checkbox/checkbox.recipe";
 export const comboBoxSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
+    "leadingElement",
     "value",
     "buttonGroup",
     "popover",
@@ -32,6 +33,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignSelf: "flex-start",
       maxWidth: "100%",
       borderRadius: "200",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _focusWithin: {
+        focusRing: "outside",
+      },
       _hover: {
         bg: "primary.2",
       },
@@ -56,13 +61,24 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         opacity: 0.5,
       },
     },
-    value: {
+    leadingElement: {
+      position: "absolute",
+      left: 0,
+      top: "50%",
+      px: "200",
+      transform: "translateY(-50%)",
+      color: "neutral.11",
       display: "flex",
-      focusRing: "outside",
+      alignItems: "center",
+      justifyContent: "center",
+      height: "100%",
+      overflow: "hidden",
+    },
+    value: {
+      display: "inline-flex",
+      flexGrow: 1,
+      flexShrink: 1,
       alignItems: "flex-start",
-      pr: "1600",
-      pl: "400",
-      py: "100",
       borderRadius: "200",
       color: "neutral.12",
       maxWidth: "100%",
@@ -70,7 +86,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _disabled: { pointerEvents: "none" },
       '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
@@ -98,6 +113,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     multiSelectInput: {
       "& input": {
+        flexGrow: 1,
+        flexShrink: 1,
         py: "300",
         px: "400",
         focusRing: "none",
@@ -152,6 +169,15 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         value: {
           minH: "800",
           textStyle: "sm",
+          pr: "1600",
+          pl: "800",
+          py: "100",
+        },
+        leadingElement: {
+          pl: "200",
+          pr: "50",
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       // Medium
@@ -159,6 +185,15 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         value: {
           minH: "1000",
           textStyle: "md",
+          pr: "1600",
+          pl: "800",
+          py: "100",
+        },
+        leadingElement: {
+          pl: "300",
+          pr: "100",
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },
@@ -167,9 +202,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       solid: {
         root: {
           width: "7200",
+          ...selectSlotRecipe.variants?.variant.outline.trigger,
         },
         value: {
-          ...selectSlotRecipe.variants?.variant.outline.trigger,
           width: "100%",
         },
       },
@@ -212,10 +247,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
             bg: "unset",
           },
           '&[data-focused="true"]': {
-            // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-            outlineWidth: "var(--focus-ring-width)",
-            outlineColor: "var(--focus-ring-color)",
-            outlineStyle: "var(--focus-ring-style)",
+            layerStyle: "focusRing",
+            // setting outlineOffset to 'none' overrides the encapsulated 'focusRing' offset
+            outlineOffset: "none",
             bg: "unset",
           },
           _hover: {

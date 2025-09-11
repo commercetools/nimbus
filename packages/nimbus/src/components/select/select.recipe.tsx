@@ -7,6 +7,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 export const selectSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
+    "leadingElement",
     "trigger",
     "triggerLabel",
     "options",
@@ -51,6 +52,12 @@ export const selectSlotRecipe = defineSlotRecipe({
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
       },
+    },
+    leadingElement: {
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
     },
     triggerLabel: {
       // *Magic*
@@ -148,8 +155,15 @@ export const selectSlotRecipe = defineSlotRecipe({
         root: {},
         trigger: {
           h: "800",
-          px: "400",
+          px: "300",
           textStyle: "sm",
+        },
+        triggerLabel: {
+          pl: 100,
+        },
+        leadingElement: {
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
@@ -158,6 +172,13 @@ export const selectSlotRecipe = defineSlotRecipe({
           h: "1000",
           px: "400",
           textStyle: "md",
+        },
+        triggerLabel: {
+          pl: 200,
+        },
+        leadingElement: {
+          minHeight: "500",
+          minWidth: "500",
         },
       }, // Medium
     },

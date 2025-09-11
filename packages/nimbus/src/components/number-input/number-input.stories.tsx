@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
+import { Box, Stack, Text, FormField, Icon } from "@/components";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof NumberInput> = {
   title: "components/NumberInput",
@@ -84,6 +85,8 @@ export const Variants: Story = {
           </Text>
           <NumberInput
             variant={variant}
+            leadingElement={<Icon as={AddReaction} />}
+            trailingElement={<Icon as={AddReaction} />}
             placeholder="123"
             aria-label={`Variant ${variant} number input`}
           />
@@ -219,6 +222,49 @@ export const AllCombinations: Story = {
       ))}
     </Stack>
   ),
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    placeholder: "Enter id",
+    leadingElement: <Icon as={AddReaction} />,
+    "aria-label": "Number input with leading element",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    placeholder: "Enter id",
+    trailingElement: <Icon as={AddReaction} />,
+    "aria-label": "Number input with trailing element",
+  },
+};
+
+export const WithLeadingAndTrailingElement: Story = {
+  args: {
+    placeholder: "Enter id",
+    leadingElement: <Icon as={AddReaction} />,
+    trailingElement: <Icon as={AddReaction} />,
+  },
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <NumberInput
+          size="sm"
+          placeholder="Enter id"
+          leadingElement={<Icon as={AddReaction} />}
+          trailingElement={<Icon as={AddReaction} />}
+          aria-label="Number input with leading and trailing elements"
+        />
+        <NumberInput
+          placeholder="Enter id"
+          leadingElement={<Icon as={AddReaction} />}
+          trailingElement={<Icon as={AddReaction} />}
+          aria-label="Number input with leading and trailing elements"
+        />
+      </Stack>
+    );
+  },
 };
 
 export const Controlled: Story = {

@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MultilineTextInput } from "./multiline-text-input";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
+import { Box, Stack, Text, FormField, Icon } from "@/components";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof MultilineTextInput> = {
   title: "components/MultilineTextInput",
@@ -83,6 +84,61 @@ export const Variants: Story = {
             placeholder={`${variant as string} textarea`}
           />
         ))}
+      </Stack>
+    );
+  },
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    leadingElement: <Text>Leading</Text>,
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    trailingElement: <Text>Trailing</Text>,
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+};
+
+export const WithBothElementsVariantsAndSizes: Story = {
+  args: {
+    placeholder: "multiline text input",
+    ["aria-label"]: "test-textarea",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column">
+        <Stack direction="row" gap="400" alignItems="flex-start">
+          {inputVariants.map((variant) => (
+            <MultilineTextInput
+              key={variant as string}
+              {...args}
+              variant={variant}
+              size="sm"
+              leadingElement={<Icon as={AddReaction} />}
+              trailingElement={<Icon as={AddReaction} />}
+              placeholder={`${variant as string} textarea`}
+            />
+          ))}
+        </Stack>
+        <Stack direction="row" gap="400" alignItems="flex-start">
+          {inputVariants.map((variant) => (
+            <MultilineTextInput
+              key={variant as string}
+              {...args}
+              variant={variant}
+              size="md"
+              leadingElement={<Icon as={AddReaction} boxSize="500" />}
+              trailingElement={<Icon as={AddReaction} boxSize="500" />}
+              placeholder={`${variant as string} textarea`}
+            />
+          ))}
+        </Stack>
       </Stack>
     );
   },
@@ -422,9 +478,13 @@ export const AutoGrow: Story = {
     );
 
     await step("Auto-grow with manual resize shows resize handle", async () => {
-      // Check that the default auto-grow textarea still has resize capability
-      const computedStyle = window.getComputedStyle(autoGrowTextarea);
+      // Check that the auto-grow textarea's root container has resize capability
+      const rootContainer = autoGrowTextarea.parentElement;
+      await expect(rootContainer).not.toBeNull();
+
+      const computedStyle = window.getComputedStyle(rootContainer!);
       await expect(computedStyle.resize).not.toBe("none");
+      await expect(computedStyle.resize).toBe("vertical");
     });
 
     await step("Limited auto-grow respects max height", async () => {
@@ -434,8 +494,12 @@ export const AutoGrow: Story = {
       const longText = Array(15).fill("This is a long line of text").join("\n");
       await userEvent.type(limitedTextarea, longText);
 
-      // Height should be limited to approximately 200px
-      await expect(limitedTextarea.clientHeight).toBeLessThanOrEqual(220); // Allow some margin
+      // Check the root container height since that's where maxHeight is applied
+      const rootContainer = limitedTextarea.parentElement;
+      await expect(rootContainer).not.toBeNull();
+
+      // Height should be limited by the maxHeight constraint on the root container
+      await expect(rootContainer!.clientHeight).toBeLessThanOrEqual(220); // Allow some margin
     });
 
     // Clean up

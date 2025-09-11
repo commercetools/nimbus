@@ -15,7 +15,7 @@ import messages from "./password-input.i18n";
  */
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, forwardedRef) => {
-    const { size = "md", isDisabled } = props;
+    const { size = "md", isDisabled, leadingElement, ...restProps } = props;
     const [showPassword, setShowPassword] = useState(false);
     const toggleVisibility = () => setShowPassword(!showPassword);
     const intl = useIntl();
@@ -32,7 +32,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             right: "400",
           }
         : {
-            top: "50",
+            top: "150",
             right: "400",
           };
 
@@ -44,9 +44,12 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         <TextInput
           width="full"
           ref={forwardedRef}
+          leadingElement={leadingElement}
           type={showPassword ? "text" : "password"}
-          {...props}
+          {...restProps}
+          size={size}
           pr={iconButtonSafeSpace}
+          gap={size === "md" ? "200" : "100"}
         />
         <Box position="absolute" {...iconPositionProps}>
           <Tooltip.Root>

@@ -1,5 +1,7 @@
 import {
   TimeInputRootSlot,
+  TimeInputLeadingElementSlot,
+  TimeInputTrailingElementSlot,
   TimeInputSegmentGroupSlot,
   TimeInputSegmentSlot,
 } from "./time-input.slots";
@@ -17,20 +19,33 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  */
 export const TimeInput = (props: TimeInputProps) => {
   const recipe = useRecipe({ recipe: timeInputRecipe });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
+  const { leadingElement, trailingElement, ...rest } = props;
+  const [recipeProps, remainingProps] = recipe.splitVariantProps({ ...rest });
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
   return (
     <TimeInputRootSlot asChild {...recipeProps} {...styleProps}>
       <TimeField {...otherProps}>
         <TimeInputSegmentGroupSlot asChild>
-          <DateInput>
-            {(segment) => (
-              <TimeInputSegmentSlot asChild>
-                <DateSegment segment={segment} />
-              </TimeInputSegmentSlot>
+          <>
+            {leadingElement && (
+              <TimeInputLeadingElementSlot>
+                {leadingElement}
+              </TimeInputLeadingElementSlot>
             )}
-          </DateInput>
+            <DateInput>
+              {(segment) => (
+                <TimeInputSegmentSlot asChild>
+                  <DateSegment segment={segment} />
+                </TimeInputSegmentSlot>
+              )}
+            </DateInput>
+            {trailingElement && (
+              <TimeInputTrailingElementSlot>
+                {trailingElement}
+              </TimeInputTrailingElementSlot>
+            )}
+          </>
         </TimeInputSegmentGroupSlot>
       </TimeField>
     </TimeInputRootSlot>

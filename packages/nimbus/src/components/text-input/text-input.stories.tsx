@@ -3,7 +3,13 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextInput } from "./text-input";
 import type { TextInputProps } from "./text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Box, Stack, Text } from "@/components";
+import { Box, Stack, Text, Icon } from "@/components";
+import {
+  Search,
+  Visibility,
+  AddReaction,
+  AddBox,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof TextInput> = {
   title: "components/TextInput",
@@ -285,6 +291,79 @@ export const Controlled: Story = {
         await expect(typeof call[0]).toBe("string");
       }
     });
+  },
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    placeholder: "Search...",
+    leadingElement: <Icon as={AddReaction} />,
+    "aria-label": "search-input",
+  },
+};
+
+export const WithTrailingElement: Story = {
+  args: {
+    placeholder: "Enter password",
+    trailingElement: <Icon as={Visibility} />,
+    "aria-label": "password-input",
+  },
+};
+
+export const WithBothElements: Story = {
+  args: {
+    placeholder: "Search for products",
+    leadingElement: <Icon as={AddReaction} />,
+    trailingElement: <Icon as={AddReaction} />,
+    "aria-label": "search-with-clear-input",
+  },
+};
+
+export const WithBothElementsDifferentSizes: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        {inputSize.map((size) => (
+          <TextInput
+            key={String(size)}
+            size={size}
+            placeholder={`Size ${size}`}
+            leadingElement={<Icon as={Search} />}
+            trailingElement={<Icon as={AddBox} />}
+            aria-label={`size-${size}-input`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const RTLSupport: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <Box>
+          <Text mb="200">LTR direction (left-to-right)</Text>
+          <TextInput
+            placeholder="Search in LTR"
+            leadingElement={<Icon as={Search} />}
+            trailingElement={<Icon as={AddBox} />}
+            aria-label="ltr-input"
+          />
+        </Box>
+        <Box dir="rtl" width="100%">
+          <Text mb="200" textAlign="right">
+            RTL direction (right-to-left)
+          </Text>
+          <TextInput
+            placeholder="Search in RTL"
+            leadingElement={<Icon as={Search} />}
+            trailingElement={<Icon as={AddBox} />}
+            aria-label="rtl-input"
+          />
+        </Box>
+      </Stack>
+    );
   },
 };
 

@@ -25,6 +25,7 @@ import { ComboBoxButtonGroup } from "./combobox.multi-select-button-group";
 import {
   ComboBoxPopoverSlot,
   ComboBoxMultiSelectInputSlot,
+  ComboBoxLeadingElementSlot,
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
 
@@ -61,6 +62,7 @@ export const MultiSelectRoot = <T extends object>({
   onSubmitCustomValue,
   renderEmptyState,
   ref,
+  leadingElement,
   ...props
 }: ComboBoxMultiSelect<T>) => {
   // Internal state for popover, enables opening on first focus
@@ -265,6 +267,11 @@ export const MultiSelectRoot = <T extends object>({
           data-open={isOpen}
           {...props}
         >
+          {leadingElement && (
+            <ComboBoxLeadingElementSlot>
+              {leadingElement}
+            </ComboBoxLeadingElementSlot>
+          )}
           <MultiSelectTagGroup
             items={items}
             selectedKeys={selectedKeys}

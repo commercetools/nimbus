@@ -7,27 +7,17 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 export const dateInputSlotRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
   className: "nimbus-date-input",
-  slots: ["root", "segmentGroup", "segment"],
+  slots: ["root", "leadingElement", "segmentGroup", "segment"],
 
   // Base styles applied to all instances of the component
   base: {
     root: {
-      display: "inline-block",
-    },
-    segmentGroup: {
-      display: "flex",
+      display: "inline-flex",
       borderRadius: "200",
-      bg: "transparent",
-      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-      width: "full",
       alignItems: "center",
-      userSelect: "none",
-      "&[data-focus-within='true']": {
-        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "var(--focus-ring-offset)",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _focusWithin: {
+        layerStyle: "focusRing",
       },
       "&[data-invalid='true']": {
         "--border-width": "sizes.50",
@@ -39,12 +29,21 @@ export const dateInputSlotRecipe = defineSlotRecipe({
         bg: "neutral.3",
       },
     },
+    segmentGroup: {
+      display: "flex",
+      flexGrow: 1,
+      borderRadius: "inherit",
+      bg: "transparent",
+      alignItems: "center",
+    },
+    leadingElement: {
+      color: "neutral.11",
+      display: "flex",
+      alignItems: "center",
+    },
     segment: {
       fontVariantNumeric: "tabular-nums",
-      outline: "0",
       px: "50",
-      borderRadius: "50",
-
       "&:empty": {
         border: "solid-25",
       },
@@ -89,23 +88,33 @@ export const dateInputSlotRecipe = defineSlotRecipe({
     // Size variants from smallest to largest
     size: {
       sm: {
-        segmentGroup: {
+        root: {
           h: 800,
           textStyle: "sm",
           px: 300,
+          gap: 50,
+        },
+        leadingElement: {
+          minHeight: "400",
+          minWidth: "400",
         },
       },
       md: {
-        segmentGroup: {
+        root: {
           h: 1000,
           textStyle: "md",
           px: 400,
+          gap: 100,
+        },
+        leadingElement: {
+          minHeight: "500",
+          minWidth: "500",
         },
       },
     },
     variant: {
       solid: {
-        segmentGroup: {
+        root: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
           backgroundColor: "neutral.1",
@@ -115,14 +124,14 @@ export const dateInputSlotRecipe = defineSlotRecipe({
         },
       },
       ghost: {
-        segmentGroup: {
+        root: {
           _hover: {
             backgroundColor: "primary.2",
           },
         },
       },
       plain: {
-        segmentGroup: {
+        root: {
           px: "0",
           outline: "none!",
           boxShadow: "none!",
