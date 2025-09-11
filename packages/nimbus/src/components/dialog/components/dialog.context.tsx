@@ -5,11 +5,14 @@ import { dialogSlotRecipe } from "../dialog.recipe";
 /**
  * Context value containing dialog configuration passed from Root to child components
  */
-export interface DialogContextValue extends RecipeVariantProps<typeof dialogSlotRecipe> {
+export interface DialogContextValue
+  extends RecipeVariantProps<typeof dialogSlotRecipe> {
   // Add any additional context values here if needed in the future
 }
 
-export const DialogContext = createContext<DialogContextValue | undefined>(undefined);
+export const DialogContext = createContext<DialogContextValue | undefined>(
+  undefined
+);
 
 /**
  * Hook to access dialog configuration from DialogContext
@@ -27,16 +30,14 @@ export const useDialogContext = (): DialogContextValue => {
 /**
  * Provider component that passes dialog configuration down to child components
  */
-export const DialogProvider = ({ 
-  children, 
-  value 
-}: { 
-  children: React.ReactNode; 
-  value: DialogContextValue; 
+export const DialogProvider = ({
+  children,
+  value,
+}: {
+  children: React.ReactNode;
+  value: DialogContextValue;
 }) => {
   return (
-    <DialogContext.Provider value={value}>
-      {children}
-    </DialogContext.Provider>
+    <DialogContext.Provider value={value}>{children}</DialogContext.Provider>
   );
 };

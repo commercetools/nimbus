@@ -64,7 +64,7 @@ export interface DialogTriggerProps extends ComponentProps<"button"> {
  * Props for the Dialog.Content component
  *
  * The main dialog content container that wraps the React Aria Dialog and Dialog.
- * Configuration (size, placement, motionPreset, etc.) is inherited from Dialog.Root via context.
+ * Configuration (size, placement, etc.) is inherited from Dialog.Root via context.
  */
 export interface DialogContentProps extends ComponentProps<"div"> {
   /**
@@ -203,14 +203,3 @@ export type DialogPlacement = "center" | "top" | "bottom";
  * Scroll behavior variants for the dialog
  */
 export type DialogScrollBehavior = "inside" | "outside";
-
-/**
- * Motion preset variants for dialog animations
- */
-export type DialogMotionPreset =
-  | "scale"
-  | "slide-in-bottom"
-  | "slide-in-top"
-  | "slide-in-left"
-  | "slide-in-right"
-  | "none";

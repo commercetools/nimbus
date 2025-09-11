@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { within, expect, userEvent } from "storybook/test";
 import { Dialog } from "./dialog";
-import { Button, Stack, Text, Heading } from "@/components";
+import { Button, Stack, Text } from "@/components";
 
 const meta: Meta<typeof Dialog.Root> = {
   title: "components/Overlay/Dialog",
@@ -19,17 +19,6 @@ const meta: Meta<typeof Dialog.Root> = {
     scrollBehavior: {
       control: { type: "select" },
       options: ["inside", "outside"],
-    },
-    motionPreset: {
-      control: { type: "select" },
-      options: [
-        "scale",
-        "slide-in-bottom",
-        "slide-in-top",
-        "slide-in-left",
-        "slide-in-right",
-        "none",
-      ],
     },
   },
   render: (args) => (
@@ -65,7 +54,6 @@ export const Default: Story = {
   args: {
     placement: "center",
     scrollBehavior: "outside",
-    motionPreset: "scale",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement.parentNode as HTMLElement);
@@ -278,44 +266,6 @@ export const ScrollBehavior: Story = {
       await userEvent.click(closeButton);
     });
   },
-};
-
-/**
- * Dialog with different motion presets for entrance animations.
- */
-export const MotionPresets: Story = {
-  args: {},
-  render: () => (
-    <Stack direction="row" flexWrap="wrap">
-      {(
-        [
-          "scale",
-          "slide-in-bottom",
-          "slide-in-top",
-          "slide-in-left",
-          "slide-in-right",
-          "none",
-        ] as const
-      ).map((preset) => (
-        <Dialog.Root key={preset} motionPreset={preset}>
-          <Dialog.Trigger>{preset}</Dialog.Trigger>
-          <Dialog.Content>
-            <Dialog.Backdrop />
-            <Dialog.Header>
-              <Dialog.Title>Motion: {preset}</Dialog.Title>
-              <Dialog.CloseTrigger />
-            </Dialog.Header>
-            <Dialog.Body>
-              <Text>This dialog uses "{preset}" animation preset.</Text>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button>Close</Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Root>
-      ))}
-    </Stack>
-  ),
 };
 
 /**
