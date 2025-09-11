@@ -29,6 +29,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
       top: 0,
       w: "100vw",
       h: "100dvh",
+      backdropFilter: "blur({sizes.100})",
       zIndex: "modal",
       "&[data-entering]": {
         animationName: "fade-in",
