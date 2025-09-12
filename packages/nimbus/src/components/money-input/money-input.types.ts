@@ -121,11 +121,6 @@ export interface MoneyInputProps
    * Focus the input on initial render
    */
   autoFocus?: boolean;
-  // TODO: this might not be needed
-  /**
-   * Override the default tooltip content for high precision badge
-   */
-  tooltipContent?: string;
   /**
    * Size variant for the input
    */

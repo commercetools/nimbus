@@ -22,6 +22,10 @@ import {
 } from "./utils";
 import type { TCustomEvent, MoneyInputProps } from "./money-input.types";
 
+// TODO: Ensure we have a nimbus-flavored API, then alias the MC-compatible consumer API to use
+// its underlying methods. The current event handling is fugly. There has to be a better way.
+// TODO: Fix the aria and console warnings popping up in the console in stories.
+
 /**
  * # MoneyInput
  *
@@ -45,7 +49,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     isCurrencyInputDisabled,
     placeholder = "0.00",
     autoFocus,
-    tooltipContent,
     size,
     ...restProps
   } = props;
@@ -263,9 +266,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         <MoneyInputBadgeSlot data-testid="high-precision-badge">
           <Tooltip.Root>
             <HighPrecision color={isDisabled ? "neutral.6" : "primary.9"} />
-            <Tooltip.Content>
-              {tooltipContent || "High Precision Price"}
-            </Tooltip.Content>
+            <Tooltip.Content>High Precision Price</Tooltip.Content>
           </Tooltip.Root>
         </MoneyInputBadgeSlot>
       )}

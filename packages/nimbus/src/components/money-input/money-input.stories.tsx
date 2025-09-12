@@ -1210,7 +1210,6 @@ export const FormFieldHighPrecision: Story = {
                 currencies={["KWD", "USD", "EUR", "JPY"]}
                 onChange={handleChange}
                 hasHighPrecisionBadge
-                tooltipContent="This shows high precision pricing support"
                 placeholder="0.000"
               />
             </FormField.Input>
