@@ -3,6 +3,7 @@ import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { DialogBodySlot } from "../dialog.slots";
 import type { DialogBodyProps } from "../dialog.types";
+import { useDialogRootContext } from "./dialog.context";
 
 /**
  * # Dialog.Body
@@ -29,8 +30,19 @@ export const DialogBody = (props: DialogBodyProps) => {
   // merge the local ref with a potentially forwarded ref
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
+  const { scrollBehavior } = useDialogRootContext();
+
+  const defaultProps = {
+    /**
+     * if scrollBehavior is set to "inside", set tabIndex to 0 to allow the body to
+     * receive focus, effectively enabling scrolling via keyboard
+     * arrow keys.
+     */
+    tabIndex: scrollBehavior === "inside" ? 0 : undefined,
+  };
+
   return (
-    <DialogBodySlot ref={ref} {...restProps}>
+    <DialogBodySlot ref={ref} {...defaultProps} {...restProps}>
       {children}
     </DialogBodySlot>
   );
