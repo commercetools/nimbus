@@ -8,7 +8,7 @@ export type {
   DialogRootSlotProps,
   DialogTriggerSlotProps,
   DialogContentSlotProps,
-  DialogBackdropSlotProps,
+  DialogModalOverlaySlotProps as DialogBackdropSlotProps,
   DialogHeaderSlotProps,
   DialogBodySlotProps,
   DialogFooterSlotProps,

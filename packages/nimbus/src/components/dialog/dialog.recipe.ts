@@ -7,8 +7,8 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 export const dialogSlotRecipe = defineSlotRecipe({
   slots: [
     "trigger",
-    "backdrop",
-    "positioner",
+    "modalOverlay",
+    "modal",
     "content",
     "title",
     "closeTrigger",
@@ -18,46 +18,24 @@ export const dialogSlotRecipe = defineSlotRecipe({
   ],
   className: "nimbus-dialog",
   base: {
-    backdrop: {
-      bg: {
-        _dark: "bg/50",
-        _light: "fg/50",
-      },
-      pos: "fixed",
-      left: 0,
-      top: 0,
-      w: "100vw",
-      h: "100dvh",
-      backdropFilter: "blur({sizes.100})",
-      zIndex: "modal",
-      "&[data-entering]": {
-        animationName: "fade-in",
-        animationDuration: "fast",
-      },
-      "&[data-exiting]": {
-        animationName: "fade-out",
-        animationDuration: "faster",
-      },
+    trigger: {
+      focusRing: "outside",
     },
-    positioner: {
-      display: "flex",
+    modalOverlay: {
       width: "100vw",
-      height: "100dvh",
-      position: "fixed",
-      left: 0,
-      top: 0,
-      "--dialog-z-index": "zIndex.modal",
-      zIndex: "calc(var(--dialog-z-index) + var(--layer-index, 0))",
+      height: "var(--visual-viewport-height)",
+      zIndex: 100,
+      background: "#00000080",
       justifyContent: "center",
-      overscrollBehaviorY: "none",
-      "&[data-entering]": {
-        animationDuration: "moderate",
-        animationName: "slide-from-bottom, scale-in, fade-in",
-      },
-      "&[data-exiting]": {
-        animationDuration: "faster",
-        animationName: "slide-to-top, scale-out, fade-out",
-      },
+      alignItems: "center",
+      display: "flex",
+      position: "fixed",
+      top: 0,
+      left: 0,
+    },
+    modal: {
+      outline: "none",
+      maxWidth: "100%",
     },
     content: {
       display: "flex",
@@ -98,7 +76,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
     title: {},
     closeTrigger: {
       position: "absolute",
-      top: "500",
+      top: "400",
       right: "400",
       zIndex: 1,
     },
@@ -106,7 +84,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
   variants: {
     placement: {
       center: {
-        positioner: {
+        modal: {
           alignItems: "center",
         },
         content: {
@@ -115,7 +93,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
         },
       },
       top: {
-        positioner: {
+        modal: {
           alignItems: "flex-start",
         },
         content: {
@@ -124,7 +102,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
         },
       },
       bottom: {
-        positioner: {
+        modal: {
           alignItems: "flex-end",
         },
         content: {
@@ -132,36 +110,10 @@ export const dialogSlotRecipe = defineSlotRecipe({
           mx: "auto",
         },
       },
-      left: {
-        positioner: {
-          alignItems: "stretch",
-          justifyContent: "flex-start",
-        },
-        content: {
-          "--dialog-base-margin": "0",
-          mx: "0",
-          my: "0",
-          height: "100%",
-          borderRadius: "0 200 200 0",
-        },
-      },
-      right: {
-        positioner: {
-          alignItems: "stretch",
-          justifyContent: "flex-end",
-        },
-        content: {
-          "--dialog-base-margin": "0",
-          mx: "0",
-          my: "0",
-          height: "100%",
-          borderRadius: "200 0 0 200",
-        },
-      },
     },
     scrollBehavior: {
       inside: {
-        positioner: {
+        modal: {
           overflow: "hidden",
         },
         content: {
@@ -169,12 +121,26 @@ export const dialogSlotRecipe = defineSlotRecipe({
         },
         body: {
           overflow: "auto",
+          focusVisibleRing: "outside",
         },
       },
       outside: {
-        positioner: {
+        modal: {
           overflow: "auto",
           pointerEvents: "auto",
+        },
+      },
+    },
+    variant: {
+      plain: {},
+      split: {
+        header: {
+          borderBottom: "solid-25",
+          borderColor: "colorPalette.3",
+        },
+        footer: {
+          borderTop: "solid-25",
+          borderColor: "colorPalette.3",
         },
       },
     },

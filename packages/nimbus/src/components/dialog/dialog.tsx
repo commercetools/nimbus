@@ -1,7 +1,6 @@
 import { DialogRoot } from "./components/dialog.root";
 import { DialogTrigger } from "./components/dialog.trigger";
 import { DialogContent } from "./components/dialog.content";
-import { DialogBackdrop } from "./components/dialog.backdrop";
 import { DialogHeader } from "./components/dialog.header";
 import { DialogBody } from "./components/dialog.body";
 import { DialogFooter } from "./components/dialog.footer";
@@ -52,7 +51,6 @@ export const Dialog = {
   Root: DialogRoot, // MUST BE FIRST - primary entry point
   Trigger: DialogTrigger,
   Content: DialogContent,
-  Backdrop: DialogBackdrop,
   Header: DialogHeader,
   Body: DialogBody,
   Footer: DialogFooter,
@@ -65,7 +63,6 @@ export {
   DialogRoot as _DialogRoot,
   DialogTrigger as _DialogTrigger,
   DialogContent as _DialogContent,
-  DialogBackdrop as _DialogBackdrop,
   DialogHeader as _DialogHeader,
   DialogBody as _DialogBody,
   DialogFooter as _DialogFooter,

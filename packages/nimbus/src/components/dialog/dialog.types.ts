@@ -2,6 +2,7 @@ import { type ComponentProps } from "react";
 import { type RecipeVariantProps } from "@chakra-ui/react";
 import { dialogSlotRecipe } from "./dialog.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
+import type { DialogModalOverlaySlotProps } from "./dialog.slots";
 
 /**
  * Props for the Dialog.Root component
@@ -76,7 +77,7 @@ export interface DialogTriggerProps extends ComponentProps<"button"> {
  * The main dialog content container that wraps the React Aria Dialog and Dialog.
  * Configuration (size, placement, etc.) is inherited from Dialog.Root via context.
  */
-export interface DialogContentProps extends ComponentProps<"div"> {
+export interface DialogContentProps extends DialogModalOverlaySlotProps {
   /**
    * The dialog content
    */

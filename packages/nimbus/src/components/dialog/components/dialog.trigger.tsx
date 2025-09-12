@@ -1,6 +1,7 @@
 import { Button as RaButton } from "react-aria-components";
 import { DialogTriggerSlot } from "../dialog.slots";
 import type { DialogTriggerProps } from "../dialog.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
  * # Dialog.Trigger
@@ -16,44 +17,27 @@ import type { DialogTriggerProps } from "../dialog.types";
  * </Dialog.Root>
  * ```
  */
-export const DialogTrigger = (props: DialogTriggerProps) => {
-  const {
-    children,
-    asChild,
-    isDisabled,
-    // Extract button-specific props that might not work with React Aria Button
-    value,
-    type,
-    form,
-    name,
-    formAction,
-    formEncType,
-    formMethod,
-    formNoValidate,
-    formTarget,
-    ...restProps
-  } = props;
-
+export const DialogTrigger = ({
+  children,
+  asChild,
+  ...props
+}: DialogTriggerProps) => {
   // If asChild is true, wrap children directly in RaButton with asChild
   if (asChild) {
     return (
-      <DialogTriggerSlot asChild disabled={isDisabled} {...restProps}>
+      <DialogTriggerSlot asChild {...props}>
         {children}
       </DialogTriggerSlot>
     );
   }
 
+  const [styleProps, restProps] = extractStyleProps(props);
+
   // Otherwise, wrap with both DialogTriggerSlot and RaButton
   // Only pass React Aria compatible props to avoid type conflicts
   return (
-    <DialogTriggerSlot asChild>
-      <RaButton
-        isDisabled={isDisabled}
-        className={restProps.className}
-        id={restProps.id}
-      >
-        {children}
-      </RaButton>
+    <DialogTriggerSlot {...styleProps} asChild>
+      <RaButton {...restProps}>{children}</RaButton>
     </DialogTriggerSlot>
   );
 };
