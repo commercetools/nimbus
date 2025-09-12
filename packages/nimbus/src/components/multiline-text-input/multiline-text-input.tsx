@@ -75,7 +75,12 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
   }, [adjustHeight, autoGrow, ref]);
 
   return (
-    <MultilineTextInputRootSlot {...recipeProps} {...styleProps} asChild>
+    <MultilineTextInputRootSlot
+      className={props?.className as string}
+      {...recipeProps}
+      {...styleProps}
+      asChild
+    >
       <TextArea ref={ref} rows={rows} {...inputProps} />
     </MultilineTextInputRootSlot>
   );
