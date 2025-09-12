@@ -1,11 +1,15 @@
 import { createContext, useContext, useState } from "react";
 import type { DialogRootProps } from "../dialog.types";
+import type { DialogModalOverlaySlotProps } from "../dialog.slots";
 
 /**
  * Context value containing dialog configuration passed from Root to child components
  */
 export interface DialogContextValue extends DialogRootProps {
-  // Add any additional context values here if needed in the future
+  useBackdrop: boolean;
+  backdropProps?: DialogModalOverlaySlotProps;
+  setUseBackdrop: (value: boolean) => void;
+  setBackdropProps: (props?: DialogModalOverlaySlotProps) => void;
 }
 
 export const DialogContext = createContext<DialogContextValue | undefined>(
@@ -35,20 +39,7 @@ export const DialogProvider = ({
   children: React.ReactNode;
   value: DialogContextValue;
 }) => {
-  const [useBackdrop, setUseBackdrop] = useState<boolean>(false);
-  const [backdropProps, setBackdropProps] = useState<object>();
-
   return (
-    <DialogContext.Provider
-      value={{
-        ...value,
-        useBackdrop,
-        backdropProps,
-        setUseBackdrop,
-        setBackdropProps,
-      }}
-    >
-      {children}
-    </DialogContext.Provider>
+    <DialogContext.Provider value={value}>{children}</DialogContext.Provider>
   );
 };

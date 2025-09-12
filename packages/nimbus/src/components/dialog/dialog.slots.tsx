@@ -23,17 +23,17 @@ export const DialogTriggerSlot = withContext<
 >("button", "trigger");
 
 // Backdrop slot - overlay displayed behind the dialog
-export type DialogBackdropSlotProps = HTMLChakraProps<"div">;
-export const DialogBackdropSlot = withContext<
+export type DialogModalOverlaySlotProps = HTMLChakraProps<"div">;
+export const DialogModalOverlaySlot = withContext<
   HTMLDivElement,
-  DialogBackdropSlotProps
->("div", "backdrop");
+  DialogModalOverlaySlotProps
+>("div", "modalOverlay");
 
-// Positioner slot - positions the dialog content
+// modal slot - positions the dialog content
 export type ModalSlotProps = HTMLChakraProps<"div">;
 export const ModalSlot = withContext<HTMLDivElement, ModalSlotProps>(
   "div",
-  "positioner"
+  "modal"
 );
 
 // Content slot - main dialog container

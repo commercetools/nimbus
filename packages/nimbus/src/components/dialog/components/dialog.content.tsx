@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import {
   Modal as RaModal,
   ModalOverlay as RaModalOverlay,
@@ -9,7 +9,7 @@ import { mergeRefs } from "@chakra-ui/react";
 import {
   ModalSlot,
   DialogContentSlot,
-  DialogBackdropSlot,
+  DialogModalOverlaySlot,
 } from "../dialog.slots";
 import type { DialogContentProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -43,53 +43,44 @@ export const DialogContent = (props: DialogContentProps) => {
 
   // Get recipe configuration from context instead of props
   const {
-    useBackdrop,
-    backdropProps,
     defaultOpen,
     isDismissable,
     isKeyboardDismissDisabled,
     shouldCloseOnInteractOutside,
     isOpen,
+    onOpenChange,
   } = useDialogRootContext();
+
+  const modalProps = {
+    defaultOpen,
+    isDismissable,
+    isKeyboardDismissDisabled,
+    shouldCloseOnInteractOutside,
+    isOpen,
+    onOpenChange,
+  };
 
   // create a local ref (because the consumer may not provide a forwardedRef)
   const localRef = useRef<HTMLDivElement>(null);
   // merge the local ref with a potentially forwarded ref
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  const [styleProps, htmlProps] = extractStyleProps(restProps);
+  const [styleProps] = extractStyleProps(restProps);
 
-  const Wrapper = useMemo(() => {
-    console.log("useBackdrop", useBackdrop);
-    console.log("backdropProps", backdropProps);
-    if (useBackdrop) {
-      return ({ children }: { children: React.ReactNode }) => (
-        <DialogBackdropSlot {...backdropProps} asChild>
-          <RaModalOverlay>{children}</RaModalOverlay>
-        </DialogBackdropSlot>
-      );
-    }
-    return ({ children }) => <>{children}</>;
-  }, [useBackdrop, backdropProps]);
-
+  console.log("isDismissable", isDismissable);
+  console.log("modalProps", modalProps);
   return (
-    <Wrapper>
-      <ModalSlot asChild>
-        <RaModal
-          defaultOpen={defaultOpen}
-          isDismissable={isDismissable}
-          isKeyboardDismissDisabled={isKeyboardDismissDisabled}
-          shouldCloseOnInteractOutside={shouldCloseOnInteractOutside}
-          isOpen={isOpen}
-        >
-          <DialogContentSlot asChild {...styleProps}>
-            <RaDialog {...htmlProps} ref={ref}>
-              {children}
-            </RaDialog>
-          </DialogContentSlot>
-        </RaModal>
-      </ModalSlot>
-    </Wrapper>
+    <DialogModalOverlaySlot asChild>
+      <RaModalOverlay data-mimimi-modal-overlay {...modalProps}>
+        <ModalSlot asChild>
+          <RaModal data-mimimi-modal>
+            <DialogContentSlot asChild {...styleProps}>
+              <RaDialog ref={ref}>{children}</RaDialog>
+            </DialogContentSlot>
+          </RaModal>
+        </ModalSlot>
+      </RaModalOverlay>
+    </DialogModalOverlaySlot>
   );
 };
 

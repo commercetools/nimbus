@@ -3,6 +3,7 @@ import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { DialogRootSlot } from "../dialog.slots";
 import type { DialogRootProps } from "../dialog.types";
 import { DialogProvider } from "./dialog.context";
+import { memo } from "react";
 
 /**
  * # Dialog.Root
@@ -26,7 +27,7 @@ import { DialogProvider } from "./dialog.context";
  * </Dialog.Root>
  * ```
  */
-export const DialogRoot = (props: DialogRootProps) => {
+export const DialogRoot = memo(function DialogRoot(props: DialogRootProps) {
   const recipe = useSlotRecipe({ key: "dialog" });
   // Extract recipe props
   const [recipeProps] = recipe.splitVariantProps(props);
@@ -47,6 +48,6 @@ export const DialogRoot = (props: DialogRootProps) => {
       </DialogRootSlot>
     </DialogProvider>
   );
-};
+});
 
 DialogRoot.displayName = "Dialog.Root";
