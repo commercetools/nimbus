@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 import { I18nProvider } from "react-aria";
-import { Box, Text } from "@/components";
+import { Box, FormField, Text } from "@/components";
 import { MoneyInput } from "./money-input";
 import type {
   TValue,
@@ -953,5 +953,294 @@ export const StaticMethodsCompliance: Story = {
   },
   render: () => {
     return <>No UI, testing component's static methods</>;
+  },
+};
+
+/**
+ * Basic FormField Integration
+ * Simple demonstration of MoneyInput within FormField with label and description
+ */
+export const FormFieldBasic: Story = {
+  render: () => {
+    const [value, setValue] = useState<TValue>({
+      amount: "",
+      currencyCode: "USD",
+    });
+
+    const handleChange = (event: TCustomEvent) => {
+      const target = event.target;
+      if (target.name?.endsWith(".amount")) {
+        setValue((prev) => ({ ...prev, amount: target.value as string }));
+      } else if (target.name?.endsWith(".currencyCode")) {
+        setValue((prev) => ({
+          ...prev,
+          currencyCode: target.value as TCurrencyCode,
+        }));
+      }
+    };
+
+    return (
+      <I18nProvider locale="en-US">
+        <Box maxWidth="400px">
+          <FormField.Root>
+            <FormField.Label>Product Price</FormField.Label>
+            <FormField.Input>
+              <MoneyInput
+                name="productPrice"
+                value={value}
+                currencies={["USD", "EUR", "GBP", "JPY"]}
+                onChange={handleChange}
+                placeholder="0.00"
+              />
+            </FormField.Input>
+            <FormField.Description>
+              Enter the product price with currency selection
+            </FormField.Description>
+          </FormField.Root>
+        </Box>
+      </I18nProvider>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Test basic structure
+    const label = canvas.getByText("Product Price");
+    const input = canvas.getByRole("textbox");
+    const description = canvas.getByText(/Enter the product price/);
+
+    expect(label).toBeInTheDocument();
+    expect(input).toBeInTheDocument();
+    expect(description).toBeInTheDocument();
+
+    // Test basic interaction
+    await userEvent.clear(input);
+    await userEvent.type(input, "123.45");
+    expect(input).toHaveValue("123.45");
+  },
+};
+
+/**
+ * FormField with Validation
+ * Shows MoneyInput with validation states, error messages, and required field behavior
+ */
+export const FormFieldValidation: Story = {
+  render: () => {
+    const [value, setValue] = useState<TValue>({
+      amount: "",
+      currencyCode: "EUR",
+    });
+    const [isInvalid, setIsInvalid] = useState(false);
+
+    const handleChange = (event: TCustomEvent) => {
+      const target = event.target;
+      if (target.name?.endsWith(".amount")) {
+        const amount = target.value as string;
+        setValue((prev) => ({ ...prev, amount }));
+        // Simple validation: require amount > 0
+        setIsInvalid(!amount || parseFloat(amount) <= 0);
+      } else if (target.name?.endsWith(".currencyCode")) {
+        setValue((prev) => ({
+          ...prev,
+          currencyCode: target.value as TCurrencyCode,
+        }));
+      }
+    };
+
+    return (
+      <I18nProvider locale="en-US">
+        <Box maxWidth="400px">
+          <FormField.Root isInvalid={isInvalid} isRequired>
+            <FormField.Label>Required Price (with validation)</FormField.Label>
+            <FormField.Input>
+              <MoneyInput
+                name="requiredPrice"
+                value={value}
+                currencies={["EUR", "USD", "GBP"]}
+                onChange={handleChange}
+                placeholder="0.00"
+              />
+            </FormField.Input>
+            <FormField.Description>
+              This field is required and must have a value greater than 0
+            </FormField.Description>
+            <FormField.Error>
+              {isInvalid && "Please enter a valid amount greater than 0"}
+            </FormField.Error>
+          </FormField.Root>
+        </Box>
+      </I18nProvider>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox");
+
+    // Test validation behavior
+    await userEvent.clear(input);
+    await userEvent.type(input, "0");
+    await userEvent.tab();
+
+    const errorMessage = canvas.queryByText(
+      /Please enter a valid amount greater than 0/
+    );
+    expect(errorMessage).toBeInTheDocument();
+
+    // Test aria-required attribute
+    expect(input).toHaveAttribute("aria-required");
+  },
+};
+
+/**
+ * FormField Read-only State
+ * Shows MoneyInput in read-only state within FormField
+ */
+export const FormFieldReadOnly: Story = {
+  render: () => {
+    const [value] = useState<TValue>({
+      amount: "250.75",
+      currencyCode: "GBP",
+    });
+
+    return (
+      <I18nProvider locale="en-US">
+        <Box maxWidth="400px">
+          <FormField.Root isReadOnly>
+            <FormField.Label>Read-only Price</FormField.Label>
+            <FormField.Input>
+              <MoneyInput
+                name="readonlyPrice"
+                value={value}
+                currencies={["GBP", "EUR", "USD"]}
+                onChange={() => {}}
+              />
+            </FormField.Input>
+            <FormField.Description>
+              This price is read-only and cannot be modified
+            </FormField.Description>
+          </FormField.Root>
+        </Box>
+      </I18nProvider>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox");
+
+    expect(input).toHaveAttribute("readonly");
+    expect(input).toHaveValue("250.75");
+  },
+};
+
+/**
+ * FormField Disabled State
+ * Shows MoneyInput in disabled state within FormField
+ */
+export const FormFieldDisabled: Story = {
+  render: () => {
+    const [value] = useState<TValue>({
+      amount: "100.00",
+      currencyCode: "JPY",
+    });
+
+    return (
+      <I18nProvider locale="en-US">
+        <Box maxWidth="400px">
+          <FormField.Root isDisabled>
+            <FormField.Label>Disabled Price</FormField.Label>
+            <FormField.Input>
+              <MoneyInput
+                name="disabledPrice"
+                value={value}
+                currencies={["JPY", "USD", "EUR"]}
+                onChange={() => {}}
+              />
+            </FormField.Input>
+            <FormField.Description>
+              This field is currently disabled
+            </FormField.Description>
+          </FormField.Root>
+        </Box>
+      </I18nProvider>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox");
+
+    expect(input).toBeDisabled();
+  },
+};
+
+/**
+ * FormField with High Precision and InfoBox
+ * Shows MoneyInput with high precision badge and InfoBox integration
+ */
+export const FormFieldHighPrecision: Story = {
+  render: () => {
+    const [value, setValue] = useState<TValue>({
+      amount: "",
+      currencyCode: "KWD",
+    });
+
+    const handleChange = (event: TCustomEvent) => {
+      const target = event.target;
+      if (target.name?.endsWith(".amount")) {
+        setValue((prev) => ({
+          ...prev,
+          amount: target.value as string,
+        }));
+      } else if (target.name?.endsWith(".currencyCode")) {
+        setValue((prev) => ({
+          ...prev,
+          currencyCode: target.value as TCurrencyCode,
+        }));
+      }
+    };
+
+    return (
+      <I18nProvider locale="en-US">
+        <Box maxWidth="400px">
+          <FormField.Root>
+            <FormField.Label>High Precision Price</FormField.Label>
+            <FormField.Input>
+              <MoneyInput
+                name="highPrecisionPrice"
+                value={value}
+                currencies={["KWD", "USD", "EUR", "JPY"]}
+                onChange={handleChange}
+                hasHighPrecisionBadge
+                tooltipContent="This shows high precision pricing support"
+                placeholder="0.000"
+              />
+            </FormField.Input>
+            <FormField.Description>
+              Enter amounts with high precision. Try entering more decimal
+              places than the currency standard.
+            </FormField.Description>
+            <FormField.InfoBox>
+              <strong>Currency Precision Guide:</strong>
+              <br />
+              • KWD: 3 decimal places (1.234)
+              <br />
+              • USD/EUR: 2 decimal places (1.23)
+              <br />
+              • JPY: 0 decimal places (123)
+              <br />• High precision values show a badge
+            </FormField.InfoBox>
+          </FormField.Root>
+        </Box>
+      </I18nProvider>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox");
+
+    // Enter high precision value
+    await userEvent.clear(input);
+    await userEvent.type(input, "123.4567");
+
+    expect(input).toHaveValue("123.4567");
   },
 };

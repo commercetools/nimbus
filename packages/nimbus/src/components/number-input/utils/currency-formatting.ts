@@ -1,4 +1,3 @@
-// TODO: should we move this to the main top level utils?
 import currencies from "../../../utils/currencies";
 import type { TCurrencyCode } from "./types";
 

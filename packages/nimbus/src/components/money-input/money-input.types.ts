@@ -102,6 +102,10 @@ export interface MoneyInputProps
    */
   isInvalid?: boolean;
   /**
+   * Indicates that the field is required
+   */
+  isRequired?: boolean;
+  /**
    * Shows high precision badge in case current value uses high precision.
    */
   hasHighPrecisionBadge?: boolean;

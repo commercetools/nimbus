@@ -3,7 +3,7 @@
 // This currency data is used by TWO INDEPENDENT formatting systems:
 //
 // 1. NumberInput System (live user interaction):
-//    - Uses getCurrencyFormatOptions(), getCurrencyStep()
+//    - Uses getCurrencyFormatOptions()
 //    - Powers React Aria NumberField formatting as users type
 //
 // 2. MoneyInput Static Methods System (API compatibility):

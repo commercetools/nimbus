@@ -1,12 +1,10 @@
-import { useRef, useState, useCallback, useId, useMemo } from "react";
+import { useRef, useState, useCallback, useId } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useLocale } from "react-aria";
 import { NumberInput, Select, Tooltip } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-// TODO: should we move this to the main top level utils?
-import { getCurrencyFormatOptions } from "@/components/number-input/utils";
 import {
   MoneyInputRootSlot,
   MoneyInputContainerSlot,
@@ -22,10 +20,7 @@ import {
   parseMoneyValue,
   isEmpty,
 } from "./utils";
-import currenciesData from "../../utils/currencies";
 import type { TCustomEvent, MoneyInputProps } from "./money-input.types";
-
-// TODO: Form integration needs to work
 
 /**
  * # MoneyInput
@@ -45,6 +40,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     isDisabled,
     isReadOnly,
     isInvalid,
+    isRequired,
     hasHighPrecisionBadge = true,
     isCurrencyInputDisabled,
     placeholder = "0.00",
@@ -70,31 +66,8 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   // Convert string value to number for NumberInput
   const numericValue = value.amount ? parseFloat(value.amount) : undefined;
 
-  // High precision detection using formatted display value (not raw input)
-  const isCurrentlyHighPrecision = useMemo(() => {
-    if (!value.currencyCode || !value.amount || !numericValue) return false;
-
-    // Safe currency lookup with proper type checking
-    const currencyData = currenciesData[value.currencyCode];
-    if (!currencyData) return false;
-
-    // Use the same formatting options as NumberInput to get display value
-    const formatOptions = getCurrencyFormatOptions(
-      value.currencyCode,
-      true,
-      false
-    );
-    const formatter = new Intl.NumberFormat(locale, formatOptions);
-
-    // Use formatToParts to detect actual decimal digits in formatted output
-    const parts = formatter.formatToParts(numericValue);
-    const fractionPart = parts.find((part) => part.type === "fraction");
-
-    if (!fractionPart) return false; // No decimals in formatted display
-
-    const displayPrecision = fractionPart.value.length;
-    return displayPrecision > currencyData.fractionDigits;
-  }, [value.amount, value.currencyCode, numericValue, locale]);
+  // High precision detection using raw input value
+  const isCurrentlyHighPrecision = isHighPrecision(value, locale);
 
   // Refs
   const localRef = useRef<HTMLInputElement>(null);
@@ -277,6 +250,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
             isDisabled={isDisabled}
             isReadOnly={isReadOnly}
             isInvalid={isInvalid}
+            isRequired={isRequired}
             placeholder={placeholder}
             autoFocus={autoFocus}
             size={size}
