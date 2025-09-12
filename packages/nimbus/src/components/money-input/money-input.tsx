@@ -1,10 +1,12 @@
 import { useRef, useState, useCallback, useId, useMemo } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useObjectRef } from "react-aria";
+import { useObjectRef, useLocale } from "react-aria";
 import { NumberInput, Select, Tooltip } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+// TODO: should we move this to the main top level utils?
+import { getCurrencyFormatOptions } from "@/components/number-input/utils";
 import {
   MoneyInputRootSlot,
   MoneyInputContainerSlot,
@@ -23,7 +25,6 @@ import {
 import currenciesData from "../../utils/currencies";
 import type { TCustomEvent, MoneyInputProps } from "./money-input.types";
 
-// TODO: we need to ensure that when a currency is selected, the digits align to fractionDigits, unless highPrecision is true
 // TODO: Form integration needs to work
 
 /**
@@ -57,6 +58,9 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const generatedId = useId();
   const id = providedId || generatedId;
 
+  // Get locale for formatting
+  const { locale } = useLocale();
+
   // State management
   const [currencyHasFocus, setCurrencyHasFocus] = useState(false);
   const [amountHasFocus, setAmountHasFocus] = useState(false);
@@ -66,25 +70,31 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   // Convert string value to number for NumberInput
   const numericValue = value.amount ? parseFloat(value.amount) : undefined;
 
-  // Implement enhanced high precision detection using raw input value
+  // High precision detection using formatted display value (not raw input)
   const isCurrentlyHighPrecision = useMemo(() => {
-    if (!value.currencyCode || !value.amount) return false;
+    if (!value.currencyCode || !value.amount || !numericValue) return false;
 
     // Safe currency lookup with proper type checking
     const currencyData = currenciesData[value.currencyCode];
     if (!currencyData) return false;
 
-    // Use the raw input value (amount string) to check precision
-    const amountStr = value.amount.toString().trim();
-    if (amountStr === "") return false;
+    // Use the same formatting options as NumberInput to get display value
+    const formatOptions = getCurrencyFormatOptions(
+      value.currencyCode,
+      true,
+      false
+    );
+    const formatter = new Intl.NumberFormat(locale, formatOptions);
 
-    // Parse the raw amount to count decimal places
-    const decimalIndex = amountStr.indexOf(".");
-    if (decimalIndex === -1) return false; // No decimals
+    // Use formatToParts to detect actual decimal digits in formatted output
+    const parts = formatter.formatToParts(numericValue);
+    const fractionPart = parts.find((part) => part.type === "fraction");
 
-    const actualPrecision = amountStr.length - decimalIndex - 1;
-    return actualPrecision > currencyData.fractionDigits;
-  }, [value.amount, value.currencyCode]);
+    if (!fractionPart) return false; // No decimals in formatted display
+
+    const displayPrecision = fractionPart.value.length;
+    return displayPrecision > currencyData.fractionDigits;
+  }, [value.amount, value.currencyCode, numericValue, locale]);
 
   // Refs
   const localRef = useRef<HTMLInputElement>(null);
@@ -96,7 +106,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const [styleProps] = extractStyleProps(restProps);
 
   // Helper functions
-  // TODO: Evaluate if we can remove these helpers
   const getAmountInputId = () => `${id}-amount`;
   const getCurrencyDropdownId = () => `${id}-currency`;
   const getAmountInputName = () => (name ? `${name}.amount` : undefined);
@@ -202,7 +211,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       <MoneyInputContainerSlot>
         {/* Currency Select or Label */}
         <MoneyInputCurrencySelectSlot {...stateProps}>
-          {/* // TODO: handle this fallback, it's wrong */}
           {hasNoCurrencies ? (
             <MoneyInputCurrencyLabelSlot asChild>
               <label data-testid="currency-label">{value.currencyCode}</label>

@@ -477,11 +477,124 @@ export const EULocaleFormattingExample: Story = {
     // German locale: periods for thousands, comma for decimals (1.234,567)
     expect(inputs[0]).toHaveValue("1.234,567"); // EUR - 3 decimals
     expect(inputs[1]).toHaveValue("98.765,4321"); // USD - 4 decimals
-    expect(inputs[2]).toHaveValue("12.345,1235"); // GBP - truncated to 4 decimals by React Aria
+    expect(inputs[2]).toHaveValue("12.345,123456"); // GBP - full precision preserved
   },
 };
 
 // Static Methods Testing Story
+export const CurrencyFormattingTest: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      <div>
+        <Text mb={2} fontSize="lg" fontWeight="bold">
+          Currency Formatting Test
+        </Text>
+        <Text mb={4} fontSize="sm" color="neutral.11">
+          Test that currencies format to proper decimal places on blur:
+          <br />
+          • USD/EUR: "99.9" should become "99.90"
+          <br />
+          • JPY: "99.5" should become "99"
+          <br />• High precision values should remain unchanged
+        </Text>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {/* USD Test */}
+        <Box>
+          <Text mb={1} fontSize="sm" fontWeight="medium">
+            USD (2 decimal places) - Try "99.9" and blur
+          </Text>
+          <MoneyInputExample
+            initialValue={{ amount: "99.9", currencyCode: "USD" }}
+            currencies={["USD"]}
+          />
+        </Box>
+
+        {/* EUR Test */}
+        <Box>
+          <Text mb={1} fontSize="sm" fontWeight="medium">
+            EUR (2 decimal places) - Try "123.4" and blur
+          </Text>
+          <MoneyInputExample
+            initialValue={{ amount: "123.4", currencyCode: "EUR" }}
+            currencies={["EUR"]}
+          />
+        </Box>
+
+        {/* JPY Test */}
+        <Box>
+          <Text mb={1} fontSize="sm" fontWeight="medium">
+            JPY (0 decimal places) - Try "99.0" and blur
+          </Text>
+          <MoneyInputExample
+            initialValue={{ amount: "99.0", currencyCode: "JPY" }}
+            currencies={["JPY"]}
+          />
+        </Box>
+
+        {/* High Precision Test */}
+        <Box>
+          <Text mb={1} fontSize="sm" fontWeight="medium">
+            USD High Precision - "99.12345" should stay unchanged
+          </Text>
+          <MoneyInputExample
+            initialValue={{ amount: "99.12345", currencyCode: "USD" }}
+            currencies={["USD"]}
+          />
+        </Box>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Test USD formatting: "99.9" → "99.90"
+    const usdInput = canvas.getAllByPlaceholderText("0.00")[0];
+
+    // Clear and type new value
+    await userEvent.clear(usdInput);
+    await userEvent.type(usdInput, "99.9");
+
+    // Blur to trigger formatting
+    await userEvent.tab();
+
+    // Wait for formatting
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Verify formatting
+    expect(usdInput).toHaveValue("99.90");
+
+    // Test EUR formatting: "123.4" → "123.40"
+    const eurInput = canvas.getAllByPlaceholderText("0.00")[1];
+
+    await userEvent.clear(eurInput);
+    await userEvent.type(eurInput, "123.4");
+    await userEvent.tab();
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    expect(eurInput).toHaveValue("123.40");
+
+    // Test JPY formatting: "99.0" → "99" (JPY has 0 fractionDigits)
+    const jpyInput = canvas.getAllByPlaceholderText("0.00")[2];
+
+    await userEvent.clear(jpyInput);
+    await userEvent.type(jpyInput, "99.0");
+    await userEvent.tab();
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    expect(jpyInput).toHaveValue("99");
+
+    // Test high precision remains unchanged
+    const highPrecisionInput = canvas.getAllByPlaceholderText("0.00")[3];
+    expect(highPrecisionInput).toHaveValue("99.12345");
+
+    // Verify high precision badge is shown
+    const highPrecisionBadge = canvas.getByTestId("high-precision-badge");
+    expect(highPrecisionBadge).toBeInTheDocument();
+  },
+};
+
 export const StaticMethodsCompliance: Story = {
   play: async () => {
     // Helper to capture console warnings

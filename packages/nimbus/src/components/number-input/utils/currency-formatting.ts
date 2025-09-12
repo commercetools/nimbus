@@ -1,3 +1,4 @@
+// TODO: should we move this to the main top level utils?
 import currencies from "../../../utils/currencies";
 import type { TCurrencyCode } from "./types";
 
@@ -19,96 +20,46 @@ import type { TCurrencyCode } from "./types";
 //
 // Both systems use the same shared currencies.ts data but serve different purposes.
 
+const HIGH_PRECISION_FRACTION_DIGITS = 10;
+
 /**
- * Creates format options for React Aria NumberField based on currency
- * Uses provided locale for consistent formatting across all currencies
+ * Creates format options for currency-aware number formatting
+ * Supports both currency symbol display and decimal-only formatting
+ * Handles high precision mode for extended decimal places
  */
 export const getCurrencyFormatOptions = (
-  currencyCode: TCurrencyCode | "",
-  allowHighPrecision: boolean = false
+  currencyCode: TCurrencyCode,
+  allowHighPrecision: boolean = false,
+  showCurrencySymbol: boolean = true
 ): Intl.NumberFormatOptions => {
-  if (!currencyCode) {
-    return {};
-  }
-
   const currency = currencies[currencyCode];
-  if (!currency) {
-    return {};
-  }
 
-  // For high precision mode, we need to allow more decimal places
-  // even for currencies that normally don't use them (like JPY)
+  // Calculate maximum fraction digits based on precision mode
   const maxFractionDigits = allowHighPrecision
-    ? Math.max(currency.fractionDigits, 10)
-    : currency.fractionDigits;
+    ? HIGH_PRECISION_FRACTION_DIGITS
+    : currency.fractionDigits; // Standard precision: use currency default
 
-  // Always use consistent formatting regardless of currency
-  // The locale parameter determines the formatting style, not the currency
-  return {
-    style: "currency",
-    currency: currencyCode,
-    minimumFractionDigits: currency.fractionDigits,
+  // Base formatting options that apply to both modes
+  const baseOptions: Intl.NumberFormatOptions = {
+    minimumFractionDigits: currency.fractionDigits, // Always respect currency minimum (e.g., 2 for USD, 0 for JPY)
     maximumFractionDigits: maxFractionDigits,
-    currencyDisplay: "symbol",
-  };
-};
-
-/**
- * Creates format options specifically for high-precision input (no currency symbol)
- * This allows more decimal places than the currency's standard fraction digits
- * Uses consistent formatting regardless of currency
- * Examples: USD (2) → allows 12.345+, JPY (0) → allows 1234.45+
- */
-export const getHighPrecisionFormatOptions = (
-  currencyCode: TCurrencyCode | ""
-): Intl.NumberFormatOptions => {
-  if (!currencyCode) {
-    return {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 10,
-      useGrouping: true,
-    };
-  }
-
-  const currency = currencies[currencyCode];
-
-  if (!currency) {
-    return {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 10,
-      useGrouping: true,
-    };
-  }
-
-  // Always use decimal formatting with consistent thousand/decimal separators
-  // The locale parameter determines the formatting style for all currencies
-  return {
-    style: "decimal", // Use decimal instead of currency to avoid symbol conflicts
-    minimumFractionDigits: 0, // Allow whole numbers (like 1234 for JPY)
-    maximumFractionDigits: Math.max(currency.fractionDigits + 6, 10), // Allow 6+ more decimals than standard
     useGrouping: true, // Keep thousand separators for readability (formatted per locale)
   };
-};
 
-/**
- * Gets the step value for a currency (e.g., 0.01 for USD, 1 for JPY)
- * In high precision mode, uses a much smaller step to allow more decimal places
- */
-export const getCurrencyStep = (
-  currencyCode: TCurrencyCode | "",
-  allowHighPrecision: boolean = false
-): number => {
-  if (!currencyCode) return 0.01;
-
-  const currency = currencies[currencyCode];
-  if (!currency) return 0.01;
-
-  // In high precision mode, use a very small step to allow many decimal places
-  // This enables USD: 12.345+ (beyond 2 decimals) and JPY: 1234.45+ (beyond 0 decimals)
-  if (allowHighPrecision) {
-    return 0.0001; // Allows up to 4+ decimal places for any currency
+  // Branch formatting based on symbol display requirement
+  if (showCurrencySymbol) {
+    // Currency style: shows symbol/code with currency-specific formatting
+    return {
+      ...baseOptions,
+      style: "currency",
+      currency: currencyCode,
+      currencyDisplay: "symbol",
+    };
+  } else {
+    // Decimal style: pure number formatting without currency symbols
+    return {
+      ...baseOptions,
+      style: "decimal", // Use decimal to avoid currency symbol conflicts
+    };
   }
-
-  // Standard mode: respect the currency's fraction digits
-  return 1 / Math.pow(10, currency.fractionDigits);
 };

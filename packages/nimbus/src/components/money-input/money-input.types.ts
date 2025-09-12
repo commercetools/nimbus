@@ -46,8 +46,21 @@ export type TCustomEvent = {
   };
 };
 
-// Main component API interface - clean interface without BoxProps extensions
-export interface MoneyInputProps {
+// Props to exclude from slot props that conflict with our custom event handling
+export type ExcludedSlotProps =
+  | "asChild"
+  | "onChange"
+  | "onBlur"
+  | "onFocus"
+  | "id"
+  | "name"
+  | "value"
+  // Consumers should not be able to set step, it causes issues with high precision
+  | "step";
+
+// Main component API interface - extends slot props to include style props
+export interface MoneyInputProps
+  extends Omit<MoneyInputRootSlotProps, ExcludedSlotProps> {
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.
    */

@@ -9,11 +9,7 @@ import {
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import {
-  getCurrencyFormatOptions,
-  getCurrencyStep,
-  getHighPrecisionFormatOptions,
-} from "./utils";
+import { getCurrencyFormatOptions } from "./utils";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,
@@ -35,6 +31,7 @@ export const NumberInput = (props: NumberInputProps) => {
     currency,
     showCurrencySymbol = true,
     allowHighPrecision = false,
+    step,
     ...restProps
   } = props;
   const { locale } = useLocale();
@@ -46,25 +43,12 @@ export const NumberInput = (props: NumberInputProps) => {
   const formatOptions = useMemo(() => {
     if (!currency) return undefined;
 
-    // For high precision mode without currency symbol (like MoneyInput),
-    // use decimal formatting to avoid conflicts with currency step values
-    if (allowHighPrecision && !showCurrencySymbol) {
-      return getHighPrecisionFormatOptions(currency);
-    }
-
-    // For currency display, use currency formatting with precision support
-    if (showCurrencySymbol) {
-      return getCurrencyFormatOptions(currency, allowHighPrecision);
-    }
-
-    return undefined;
+    return getCurrencyFormatOptions(
+      currency,
+      allowHighPrecision,
+      showCurrencySymbol
+    );
   }, [currency, locale, showCurrencySymbol, allowHighPrecision]);
-
-  // Get currency-appropriate step value
-  const currencyStep = useMemo(() => {
-    if (!currency) return undefined;
-    return getCurrencyStep(currency, allowHighPrecision);
-  }, [currency, allowHighPrecision]);
 
   // Split recipe props first
   const recipe = useSlotRecipe({ recipe: numberInputRecipe });
@@ -78,7 +62,43 @@ export const NumberInput = (props: NumberInputProps) => {
     ...functionalProps,
     locale: locale,
     formatOptions,
-    ...(currencyStep && { step: currencyStep }),
+    // CRITICAL: React Aria Step Behavior
+    //
+    // React Aria NumberField uses the `step` property for TWO distinct purposes:
+    // 1. Increment/Decrement Amount: How much to add/subtract when using buttons/arrow keys
+    // 2. Validation Constraint: A validation rule that snaps typed values to step boundaries on blur
+    //
+    // KEY BEHAVIOR DIFFERENCE:
+    // - WITH step (e.g., step: 1):
+    //   • On blur: calls snapValueToStep(12.345, min, max, 1) → rounds to 12
+    //   • High precision input (12.345) gets truncated to step boundary (12)
+    //   • Step validation overrides formatOptions.maximumFractionDigits
+    //
+    // - WITHOUT step (undefined/null):
+    //   • On blur: NO step validation occurs
+    //   • High precision input (12.345) is preserved
+    //   • Only formatOptions.maximumFractionDigits controls display precision
+    //   • Increment/decrement still works with default behavior (integer steps)
+    //
+    // ACTUAL CODE (React Aria's internal commit function):
+    // Source: react-spectrum/packages/@react-stately/numberfield/src/useNumberFieldState.ts
+    // Related issue: https://github.com/adobe/react-spectrum/issues/6359
+    // ```
+    // let clampedValue: number;
+    // if (step === undefined || isNaN(step)) {
+    //   // NO STEP: Only enforce min/max bounds, preserve precision
+    //   clampedValue = clamp(parsedValue, minValue, maxValue);
+    // } else {
+    //   // WITH STEP: Enforce min/max bounds AND snap to step boundaries (loses precision)
+    //   clampedValue = snapValueToStep(parsedValue, minValue, maxValue, step);
+    // }
+    // ```
+    //
+    // CONCLUSION: For high precision currency inputs, step should be undefined
+    // to prevent React Aria's step validation from truncating user input.
+    //
+    // Only use `step` if the consumer provides it.
+    step: step || undefined,
   };
 
   // Pass enhanced props to react-aria

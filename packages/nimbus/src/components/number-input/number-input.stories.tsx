@@ -619,6 +619,18 @@ export const CurrencySupport: Story = {
           aria-label="KWD currency input"
         />
       </Box>
+
+      <Box>
+        <Text mb={1} fontSize="sm" fontWeight="medium">
+          USD Currency - No symbol (decimal style)
+        </Text>
+        <NumberInput
+          currency="USD"
+          showCurrencySymbol={false}
+          defaultValue={1234.567}
+          aria-label="USD no symbol currency input"
+        />
+      </Box>
     </Stack>
   ),
   play: async ({ canvasElement }) => {
@@ -633,6 +645,9 @@ export const CurrencySupport: Story = {
       canvas.getByLabelText<HTMLInputElement>("JPY currency input");
     const kwdInput =
       canvas.getByLabelText<HTMLInputElement>("KWD currency input");
+    const usdNoSymbolInput = canvas.getByLabelText<HTMLInputElement>(
+      "USD no symbol currency input"
+    );
 
     // Verify inputs contain expected currency formatting elements
     await expect(usdInput.value).toContain("$");
@@ -646,6 +661,10 @@ export const CurrencySupport: Story = {
 
     await expect(kwdInput.value).toContain("KWD");
     await expect(kwdInput.value).toContain("42.123");
+
+    // USD without symbol should show decimal-only formatting with currency precision
+    await expect(usdNoSymbolInput.value).not.toContain("$");
+    await expect(usdNoSymbolInput.value).toBe("1,234.57"); // USD precision (2 decimals) without symbol
   },
 };
 
