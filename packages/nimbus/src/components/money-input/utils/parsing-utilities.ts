@@ -20,28 +20,6 @@ export type TValue = {
   currencyCode: TCurrencyCode | "";
 };
 
-// Parsing function - preserves exact logic from UI Kit (internal use only)
-const parseRawAmountToNumber = (rawAmount: string, locale: string) => {
-  let fractionsSeparator;
-
-  if (locale) {
-    fractionsSeparator = (2.5) // we need any number with fractions, so that we know what is the fraction
-      .toLocaleString(locale) // "symbol" for the provided locale
-      .replace(/\d/g, ""); // then we remove the numbers and keep the "symbol"
-  } else {
-    const lastDot = String(rawAmount).lastIndexOf(".");
-    const lastComma = String(rawAmount).lastIndexOf(",");
-    fractionsSeparator = lastComma > lastDot ? "," : ".";
-  }
-  fractionsSeparator = fractionsSeparator === "." ? "\\." : fractionsSeparator; // here we escape the '.' to use it as regex
-  // The raw amount with only one sparator
-  const normalizedAmount = String(rawAmount)
-    .replace(new RegExp(`[^-0-9${fractionsSeparator}]`, "g"), "") // we just keep the numbers and the fraction symbol
-    .replace(fractionsSeparator, "."); // then we change whatever `fractionsSeparator` was to `.` so we can parse it as float
-
-  return parseFloat(normalizedAmount);
-};
-
 // ARCHITECTURE NOTE: Static Methods Currency Parsing System
 //
 // This function is part of MoneyInput's STATIC METHODS system, which is SEPARATE
@@ -72,7 +50,7 @@ export const createMoneyValue = (
     Boolean(locale) || currency.fractionDigits !== 0,
     `MoneyInput: A locale must be provided when currency has no fraction digits (${currencyCode})`
   );
-  const amountAsNumber = parseRawAmountToNumber(rawAmount, locale);
+  const amountAsNumber = parseFloat(rawAmount);
   if (isNaN(amountAsNumber)) return null;
 
   // The cent amount is rounded to the currency's default number

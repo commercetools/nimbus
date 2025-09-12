@@ -1,7 +1,3 @@
-// Replace lodash/has with native implementation
-const has = (obj: Record<string, unknown>, key: string): boolean => {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-};
 import currencies from "../../../utils/currencies";
 import {
   createMoneyValue,
@@ -10,7 +6,12 @@ import {
   type TValue,
 } from "./parsing-utilities";
 
-// Static method implementations - preserve exact logic
+// Replace lodash/has with native implementation
+const has = (obj: Record<string, unknown>, key: string): boolean => {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+};
+
+// Static method implementations - preserve exact logic from UI Kit
 export const convertToMoneyValue = (value: TValue, locale: string) =>
   createMoneyValue(
     typeof value.amount === "string" ? value.amount.trim() : "",
