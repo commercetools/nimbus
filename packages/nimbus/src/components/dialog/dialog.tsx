@@ -1,72 +1,71 @@
-import { Dialog as ChakraDialog } from "@chakra-ui/react/dialog";
-import { Portal } from "@chakra-ui/react/portal";
+import { DialogRoot } from "./components/dialog.root";
+import { DialogTrigger } from "./components/dialog.trigger";
+import { DialogContent } from "./components/dialog.content";
+import { DialogHeader } from "./components/dialog.header";
+import { DialogBody } from "./components/dialog.body";
+import { DialogFooter } from "./components/dialog.footer";
+import { DialogTitle } from "./components/dialog.title";
+import { DialogCloseTrigger } from "./components/dialog.close-trigger";
 
-interface DialogContentProps extends ChakraDialog.ContentProps {
-  portalled?: boolean;
-  portalRef?: React.RefObject<HTMLElement>;
-  backdrop?: boolean;
-  ref?: React.Ref<HTMLDivElement>;
-}
-
-const DialogContent = function DialogContent(props: DialogContentProps) {
-  const {
-    children,
-    portalled = true,
-    portalRef,
-    backdrop = true,
-    ref,
-    ...rest
-  } = props;
-
-  return (
-    <Portal disabled={!portalled} container={portalRef}>
-      {backdrop && <ChakraDialog.Backdrop />}
-      <ChakraDialog.Positioner>
-        <ChakraDialog.Content ref={ref} {...rest} asChild={false}>
-          {children}
-        </ChakraDialog.Content>
-      </ChakraDialog.Positioner>
-    </Portal>
-  );
-};
-
-// Create a type-safe composite object with explicit component definitions
-interface DialogComponents {
-  Root: typeof ChakraDialog.Root;
-  Trigger: typeof ChakraDialog.Trigger;
-  Content: typeof DialogContent;
-  Backdrop: typeof ChakraDialog.Backdrop;
-  Positioner: typeof ChakraDialog.Positioner;
-  Title: typeof ChakraDialog.Title;
-  Description: typeof ChakraDialog.Description;
-  Body: typeof ChakraDialog.Body;
-  Footer: typeof ChakraDialog.Footer;
-  Header: typeof ChakraDialog.Header;
-  CloseTrigger: typeof ChakraDialog.CloseTrigger;
-  ActionTrigger: typeof ChakraDialog.ActionTrigger;
-}
+// Re-export types
+export type * from "./dialog.types";
 
 /**
- * # Dialog
+ * Dialog
+ * ============================================================
+ * A foundational dialog component for overlays that require user attention.
+ * Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
  *
- * displays a dialog
+ * Features:
+ * - Controlled and uncontrolled modes
+ * - Customizable placement, size, and animations
+ * - Focus management and keyboard navigation
+ * - Click-outside and Escape key dismissal
+ * - Portal rendering support
+ * - Backdrop overlay with animations
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/feedback/dialog}
+ * @example
+ * ```tsx
+ * <Dialog.Root>
+ *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+ *   <Dialog.Content size="md" placement="center">
+ *     <Dialog.Backdrop />
+ *     <Dialog.Header>
+ *       <Dialog.Title>Dialog Title</Dialog.Title>
+ *       <Dialog.CloseTrigger>×</Dialog.CloseTrigger>
+ *     </Dialog.Header>
+ *     <Dialog.Body>
+ *       Dialog content goes here
+ *     </Dialog.Body>
+ *     <Dialog.Footer>
+ *       <button>Cancel</button>
+ *       <button>Save</button>
+ *     </Dialog.Footer>
+ *   </Dialog.Content>
+ * </Dialog.Root>
+ * ```
  *
- * @experimental This component is experimental and may change or be removed in future versions.
+ * @see https://react-spectrum.adobe.com/react-aria/Dialog.html
  */
-// Export the Dialog composite with proper typing
-export const Dialog: DialogComponents = {
-  Root: ChakraDialog.Root,
-  Trigger: ChakraDialog.Trigger,
+export const Dialog = {
+  Root: DialogRoot, // MUST BE FIRST - primary entry point
+  Trigger: DialogTrigger,
   Content: DialogContent,
-  Backdrop: ChakraDialog.Backdrop,
-  Positioner: ChakraDialog.Positioner,
-  Title: ChakraDialog.Title,
-  Description: ChakraDialog.Description,
-  Body: ChakraDialog.Body,
-  Footer: ChakraDialog.Footer,
-  Header: ChakraDialog.Header,
-  CloseTrigger: ChakraDialog.CloseTrigger,
-  ActionTrigger: ChakraDialog.ActionTrigger,
+  Header: DialogHeader,
+  Body: DialogBody,
+  Footer: DialogFooter,
+  Title: DialogTitle,
+  CloseTrigger: DialogCloseTrigger,
+};
+
+// Internal exports for react-docgen
+export {
+  DialogRoot as _DialogRoot,
+  DialogTrigger as _DialogTrigger,
+  DialogContent as _DialogContent,
+  DialogHeader as _DialogHeader,
+  DialogBody as _DialogBody,
+  DialogFooter as _DialogFooter,
+  DialogTitle as _DialogTitle,
+  DialogCloseTrigger as _DialogCloseTrigger,
 };

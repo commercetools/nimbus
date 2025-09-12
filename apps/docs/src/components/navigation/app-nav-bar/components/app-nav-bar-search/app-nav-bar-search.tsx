@@ -53,8 +53,7 @@ export const AppNavBarSearch = () => {
         scrollBehavior="outside"
         size="xl"
       >
-        <Dialog.Backdrop />
-        <Dialog.Trigger>
+        <Dialog.Trigger asChild>
           <Box position="relative">
             <TextInput
               size="md"
@@ -63,6 +62,7 @@ export const AppNavBarSearch = () => {
               placeholder="Search for a component..."
               onFocus={(e) => e.target.blur()}
               aria-label="Search for a component"
+              readOnly
             />
 
             <Box position="absolute" top="150" right="250" color="neutral.11">
@@ -71,6 +71,7 @@ export const AppNavBarSearch = () => {
           </Box>
         </Dialog.Trigger>
         <Dialog.Content divideY="1px" backdropBlur="5px">
+          <Dialog.Backdrop />
           <Dialog.Header>
             <Dialog.Title fontWeight="600">
               Search the Documentation
