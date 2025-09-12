@@ -11,9 +11,9 @@ export const DEFAULT_FORBIDDEN_TAGS = [
   "link",
   "base",
   "meta",
-] as const;
+];
 
 /**
  * Protocols allowed in URL attributes
  */
-export const ALLOWED_PROTOCOLS = ["http:", "https:", "#", "//"] as const;
+export const ALLOWED_PROTOCOLS = ["http:", "https:", "#", "//"];

@@ -37,6 +37,7 @@ export function useInlineSvg(data: string) {
     const svgEl = doc.querySelector("svg");
 
     if (!svgEl) {
+      console.warn("InlineSvg: No SVG element found in markup");
       return {
         isValid: false,
         svgAttributes: {},
