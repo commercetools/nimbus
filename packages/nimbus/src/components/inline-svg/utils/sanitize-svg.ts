@@ -1,4 +1,5 @@
-import { DEFAULT_FORBIDDEN_TAGS, ALLOWED_PROTOCOLS } from "../constants";
+import DOMPurify from "dompurify";
+import { DEFAULT_FORBIDDEN_TAGS } from "../constants";
 
 /**
  * Configuration options for SVG sanitization
@@ -22,120 +23,6 @@ interface SanitizationOptions {
 }
 
 /**
- * Sanitizes a URL to prevent XSS attacks
- */
-function sanitizeUrl(url: string): string {
-  if (!url) return "";
-
-  const trimmed = url.trim();
-
-  // Allow fragment identifiers
-  if (trimmed.startsWith("#")) return trimmed;
-
-  // Parse and validate URL
-  try {
-    const parsed = new URL(trimmed);
-    if ((ALLOWED_PROTOCOLS as readonly string[]).includes(parsed.protocol)) {
-      return trimmed;
-    }
-  } catch {
-    // If it's not a valid URL, treat it as a relative path
-    if (!trimmed.includes(":")) {
-      return trimmed;
-    }
-  }
-
-  // Block any other protocols (javascript:, data:, etc.)
-  return "";
-}
-
-/**
- * Recursively sanitizes an SVG element and its children
- */
-function sanitizeElement(
-  element: Element,
-  options: SanitizationOptions = {}
-): Element | null {
-  const {
-    allowStyles = false,
-    forbiddenAttributes = [],
-    forbiddenTags = [],
-  } = options;
-
-  const tagName = element.tagName.toLowerCase();
-
-  // Check if tag is forbidden
-  const allForbiddenTags = [...DEFAULT_FORBIDDEN_TAGS, ...forbiddenTags];
-  if (allForbiddenTags.includes(tagName)) {
-    return null;
-  }
-
-  // Create a new element instead of cloning to ensure no attributes are copied
-  // Use the SVG namespace for SVG elements
-  const namespace = element.namespaceURI || "http://www.w3.org/2000/svg";
-  const cloned = document.createElementNS(namespace, element.tagName);
-
-  // Process attributes
-  const allForbiddenAttrs = [...forbiddenAttributes];
-  if (!allowStyles) {
-    allForbiddenAttrs.push("style");
-  }
-
-  for (const attr of Array.from(element.attributes)) {
-    const attrName = attr.name.toLowerCase();
-
-    // Remove forbidden attributes
-    let isForbidden = false;
-
-    // Check for event handlers (anything starting with "on")
-    if (attrName.startsWith("on")) {
-      isForbidden = true;
-    }
-
-    // Check for explicitly forbidden attributes
-    if (!isForbidden) {
-      for (const forbidden of allForbiddenAttrs) {
-        if (attrName === forbidden) {
-          isForbidden = true;
-          break;
-        }
-      }
-    }
-
-    // Skip forbidden attributes - don't add them to the cloned element
-    if (isForbidden) {
-      continue;
-    }
-
-    // Sanitize URLs in href and xlink:href attributes
-    if (attrName === "href" || attrName === "xlink:href") {
-      const sanitizedUrl = sanitizeUrl(attr.value);
-      if (sanitizedUrl) {
-        cloned.setAttribute(attr.name, sanitizedUrl);
-      }
-      continue;
-    }
-
-    // Copy safe attributes preserving original case for SVG compatibility
-    cloned.setAttribute(attr.name, attr.value);
-  }
-
-  // Recursively process children
-  for (const child of Array.from(element.childNodes)) {
-    if (child.nodeType === Node.TEXT_NODE) {
-      cloned.appendChild(child.cloneNode(true));
-    } else if (child.nodeType === Node.ELEMENT_NODE) {
-      const sanitizedChild = sanitizeElement(child as Element, options);
-      if (sanitizedChild) {
-        cloned.appendChild(sanitizedChild);
-      }
-    }
-  }
-
-  return cloned;
-}
-
-/**
  * Sanitizes SVG markup string to prevent XSS attacks
  * @param svgString - The SVG markup as a string
  * @param options - Optional sanitization configuration
@@ -145,37 +32,31 @@ export function sanitizeSvg(
   svgString: string,
   options: SanitizationOptions = {}
 ): string | null {
+  const {
+    allowStyles = false,
+    forbiddenAttributes = [],
+    forbiddenTags = [],
+  } = options;
+
   if (!svgString || typeof svgString !== "string") {
     return null;
   }
 
-  // Use DOMParser to parse the SVG
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(svgString.trim(), "image/svg+xml");
-
-  // Check for parsing errors
-  const parserError = doc.querySelector("parsererror");
-  if (parserError) {
-    console.warn("InlineSvg: Invalid SVG markup provided");
-    return null;
+  if (!canUseDOM()) {
+    return svgString;
   }
 
-  // Find the SVG element
-  const svgElement = doc.querySelector("svg");
-  if (!svgElement) {
-    console.warn("InlineSvg: No SVG element found in markup");
-    return null;
-  }
+  const allForbiddenTags = [...DEFAULT_FORBIDDEN_TAGS, ...forbiddenTags];
+  const allForbiddenAttributes = [
+    ...(allowStyles ? [] : ["style"]),
+    ...forbiddenAttributes,
+  ];
 
-  // Sanitize the SVG element
-  const sanitized = sanitizeElement(svgElement, options);
-  if (!sanitized) {
-    return null;
-  }
-
-  // Convert back to string
-  const serializer = new XMLSerializer();
-  return serializer.serializeToString(sanitized);
+  return DOMPurify.sanitize(svgString, {
+    USE_PROFILES: { svg: true, svgFilters: true },
+    FORBID_TAGS: allForbiddenTags,
+    FORBID_ATTR: allForbiddenAttributes,
+  });
 }
 
 /**

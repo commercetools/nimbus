@@ -23,7 +23,10 @@
       }
     }
   },
-  "files": ["dist", "package.json"],
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -32,10 +35,14 @@
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "dependencies": {
@@ -77,6 +84,7 @@
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.10.2",
+    "dompurify": "catalog:",
     "glob": "catalog:tooling",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
