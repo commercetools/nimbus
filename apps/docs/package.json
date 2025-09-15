@@ -24,7 +24,7 @@
     "@types/mdx": "^2.0.13",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/slug": "^5.0.9",
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "chokidar": "^4.0.1",
     "express": "^4.21.2",
     "express-rate-limit": "catalog:",
