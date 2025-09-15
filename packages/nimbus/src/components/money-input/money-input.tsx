@@ -2,6 +2,7 @@ import { useRef, useState, useCallback, useId } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useLocale } from "react-aria";
+import { useIntl, FormattedMessage } from "react-intl";
 import { NumberInput, Select, Tooltip } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -25,6 +26,7 @@ import type {
   MoneyInputProps,
   TCurrencyCode,
 } from "./money-input.types";
+import messages from "./money-input.i18n";
 
 /**
  * # MoneyInput
@@ -124,6 +126,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
   // Get locale for formatting
   const { locale } = useLocale();
+  const intl = useIntl();
 
   // State management
   const [currencyHasFocus, setCurrencyHasFocus] = useState(false);
@@ -289,7 +292,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
               placeholder=""
-              aria-label="Currency selection"
+              aria-label={intl.formatMessage(messages.currencySelection)}
               data-testid="currency-dropdown"
               size={size}
             >
@@ -340,7 +343,9 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         <MoneyInputBadgeSlot data-testid="high-precision-badge">
           <Tooltip.Root>
             <HighPrecision color={isDisabled ? "neutral.6" : "primary.9"} />
-            <Tooltip.Content>High Precision Price</Tooltip.Content>
+            <Tooltip.Content>
+              <FormattedMessage {...messages.highPrecisionPrice} />
+            </Tooltip.Content>
           </Tooltip.Root>
         </MoneyInputBadgeSlot>
       )}
