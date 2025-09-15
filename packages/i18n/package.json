@@ -20,10 +20,7 @@
     "access": "public"
   },
   "sideEffects": false,
-  "main": "dist/commercetools-nimbus-i18n.cjs.js",
-  "module": "dist/commercetools-nimbus-i18n.esm.js",
   "files": [
-    "dist",
     "data",
     "compiled-data"
   ],
