@@ -32,3 +32,22 @@ jobs:
         timeout-minutes: 5
         env:
           NODE_ENV: production
+
+      - name: Check for changeset
+        run: |
+          # Check if this PR needs a changeset by looking for changes that would release packages
+          CHANGESET_OUTPUT=$(pnpm changeset:status --since=origin/main 2>&1)
+
+          if echo "$CHANGESET_OUTPUT" | grep -q "NO packages"; then
+            echo "⚠️  No changeset detected for this PR"
+            echo ""
+            echo "📝 If your changes affect users, please create a changeset:"
+            echo "   pnpm changeset"
+            echo ""
+            echo "ℹ️  This is a reminder, not a requirement"
+            echo "   PRs can still be merged without changesets for non-user-facing changes"
+            exit 1
+          else
+            echo "✅ Changeset detected - thank you!"
+          fi
+        continue-on-error: true
