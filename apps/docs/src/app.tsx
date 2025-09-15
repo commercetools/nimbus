@@ -16,7 +16,7 @@ function App() {
 
   return (
     <RouterProvider>
-      <IntlProvider locale={navigator.language || "en"}>
+      <IntlProvider locale="en">
         <NimbusProvider router={{ navigate: setActiveRoute }} locale="en">
           <>
             <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
