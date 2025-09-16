@@ -49,6 +49,8 @@ export const formFieldRecipe = defineSlotRecipe({
       color: "critical.11",
       fontSize: "var(--form-field-font-size)",
       lineHeight: "var(--form-field-line-height)",
+      display: "flex",
+      gap: "100",
     },
     popover: {
       "--scrollbar-color": "colors.neutral.8",
