@@ -2,8 +2,14 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Stack, Text, FormField, Icon } from "@/components";
-import { AddReaction } from "@commercetools/nimbus-icons";
+import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
+import {
+  AddReaction,
+  Search,
+  Visibility,
+  AddBox,
+  Close,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof NumberInput> = {
   title: "components/NumberInput",
@@ -224,44 +230,101 @@ export const AllCombinations: Story = {
   ),
 };
 
-export const WithLeadingElement: Story = {
-  args: {
-    placeholder: "Enter id",
-    leadingElement: <Icon as={AddReaction} />,
-    "aria-label": "Number input with leading element",
-  },
-};
-
-export const WithTrailingElement: Story = {
-  args: {
-    placeholder: "Enter id",
-    trailingElement: <Icon as={AddReaction} />,
-    "aria-label": "Number input with trailing element",
-  },
-};
-
-export const WithLeadingAndTrailingElement: Story = {
-  args: {
-    placeholder: "Enter id",
-    leadingElement: <Icon as={AddReaction} />,
-    trailingElement: <Icon as={AddReaction} />,
-  },
+export const LeadingAndTrailingElements: Story = {
   render: () => {
+    const examples = [
+      {
+        label: "Leading Icon",
+        props: {
+          placeholder: "Search amount...",
+          leadingElement: <Search />,
+          "aria-label": "search-number-input",
+        },
+      },
+      {
+        label: "Trailing Icon",
+        props: {
+          placeholder: "Enter quantity",
+          trailingElement: <Visibility />,
+          "aria-label": "quantity-input",
+        },
+      },
+      {
+        label: "Both Icons",
+        props: {
+          placeholder: "Product price",
+          leadingElement: <Icon as={Search} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "price-input",
+        },
+      },
+      {
+        label: "IconButton Elements",
+        props: {
+          placeholder: "Advanced number input",
+          leadingElement: (
+            <IconButton
+              size="xs"
+              tone="primary"
+              variant="ghost"
+              aria-label="number options"
+            >
+              <Icon as={AddReaction} />
+            </IconButton>
+          ),
+          trailingElement: (
+            <IconButton
+              size="xs"
+              tone="primary"
+              variant="ghost"
+              aria-label="clear"
+            >
+              <Icon as={Close} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-number-input",
+        },
+      },
+    ];
+
     return (
-      <Stack direction="column" gap="400">
-        <NumberInput
-          size="sm"
-          placeholder="Enter id"
-          leadingElement={<Icon as={AddReaction} />}
-          trailingElement={<Icon as={AddReaction} />}
-          aria-label="Number input with leading and trailing elements"
-        />
-        <NumberInput
-          placeholder="Enter id"
-          leadingElement={<Icon as={AddReaction} />}
-          trailingElement={<Icon as={AddReaction} />}
-          aria-label="Number input with leading and trailing elements"
-        />
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <NumberInput
+                          {...example.props}
+                          size={size}
+                          variant={variant}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
       </Stack>
     );
   },

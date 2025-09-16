@@ -24,14 +24,10 @@ export const numberInputRecipe = defineSlotRecipe({
       display: "inline-flex",
       position: "relative",
       borderRadius: "200",
-      pr: "400",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _focusWithin: {
         layerStyle: "focusRing",
       },
-
-      focusVisibleRing: "outside",
-      focusRing: "outside",
 
       _disabled: {
         layerStyle: "disabled",
@@ -131,37 +127,39 @@ export const numberInputRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
+        root: {
+          pl: "300",
+          pr: "900", // inc+dec-button width + default padding
+          gap: "100",
+        },
         input: {
-          h: 800,
+          h: "800",
           textStyle: "sm",
-          px: 100,
-          pr: 100,
         },
         leadingElement: {
-          pl: 300,
-          pr: 100,
           minHeight: "400",
           minWidth: "400",
         },
         trailingElement: {
-          pr: 500,
           minHeight: "400",
           minWidth: "400",
         },
       },
       md: {
+        root: {
+          pl: "400",
+          pr: "1000", // inc+dec-button width + default padding
+          gap: "200",
+        },
         input: {
-          h: 1000,
+          h: "1000",
           textStyle: "md",
-          px: 200,
         },
         leadingElement: {
-          pl: 400,
           minHeight: "500",
           minWidth: "500",
         },
         trailingElement: {
-          pr: 600,
           minHeight: "500",
           minWidth: "500",
         },
