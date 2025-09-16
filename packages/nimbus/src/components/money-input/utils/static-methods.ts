@@ -1,4 +1,4 @@
-import currencies from "../../../utils/currencies";
+import currencies from "./currencies";
 import {
   createMoneyValue,
   getAmountAsNumberFromMoneyValue,

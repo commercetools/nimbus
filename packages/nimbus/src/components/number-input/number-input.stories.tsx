@@ -559,194 +559,6 @@ export const WithFormField: Story = {
   },
 };
 
-export const CurrencySupport: Story = {
-  render: () => (
-    <Stack align="flex-start" gap="400">
-      <Box>
-        <Text mb={2} fontSize="lg" fontWeight="bold">
-          Currency Formatting
-        </Text>
-        <Text mb={4} fontSize="sm" color="gray.600">
-          NumberInput can format values as currency with appropriate symbols and
-          precision
-        </Text>
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          USD Currency (with symbol)
-        </Text>
-        <NumberInput
-          currency="USD"
-          showCurrencySymbol={true}
-          defaultValue={1234.56}
-          aria-label="USD currency input"
-        />
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          EUR Currency (with symbol)
-        </Text>
-        <NumberInput
-          currency="EUR"
-          showCurrencySymbol={true}
-          defaultValue={999.99}
-          aria-label="EUR currency input"
-        />
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          JPY Currency - Zero decimals (with symbol)
-        </Text>
-        <NumberInput
-          currency="JPY"
-          showCurrencySymbol={true}
-          defaultValue={50000}
-          aria-label="JPY currency input"
-        />
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          KWD Currency - 3 decimals (with symbol)
-        </Text>
-        <NumberInput
-          currency="KWD"
-          showCurrencySymbol={true}
-          defaultValue={42.123}
-          aria-label="KWD currency input"
-        />
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          USD Currency - No symbol (decimal style)
-        </Text>
-        <NumberInput
-          currency="USD"
-          showCurrencySymbol={false}
-          defaultValue={1234.567}
-          aria-label="USD no symbol currency input"
-        />
-      </Box>
-    </Stack>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Test that currency formatting works correctly
-    const usdInput =
-      canvas.getByLabelText<HTMLInputElement>("USD currency input");
-    const eurInput =
-      canvas.getByLabelText<HTMLInputElement>("EUR currency input");
-    const jpyInput =
-      canvas.getByLabelText<HTMLInputElement>("JPY currency input");
-    const kwdInput =
-      canvas.getByLabelText<HTMLInputElement>("KWD currency input");
-    const usdNoSymbolInput = canvas.getByLabelText<HTMLInputElement>(
-      "USD no symbol currency input"
-    );
-
-    // Verify inputs contain expected currency formatting elements
-    await expect(usdInput.value).toContain("$");
-    await expect(usdInput.value).toContain("1,234.56");
-
-    await expect(eurInput.value).toContain("€");
-    await expect(eurInput.value).toContain("999.99");
-
-    await expect(jpyInput.value).toContain("¥");
-    await expect(jpyInput.value).toContain("50,000");
-
-    await expect(kwdInput.value).toContain("KWD");
-    await expect(kwdInput.value).toContain("42.123");
-
-    // USD without symbol should show decimal-only formatting with currency precision
-    await expect(usdNoSymbolInput.value).not.toContain("$");
-    await expect(usdNoSymbolInput.value).toBe("1,234.57"); // USD precision (2 decimals) without symbol
-  },
-};
-
-export const HighPrecisionCurrency: Story = {
-  render: () => (
-    <Stack align="flex-start" gap="400">
-      <Box>
-        <Text mb={2} fontSize="lg" fontWeight="bold">
-          High Precision Currency Support
-        </Text>
-        <Text mb={4} fontSize="sm" color="gray.600">
-          Allow high precision decimal input even for currencies that normally
-          don't support it
-        </Text>
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          USD - High precision enabled (normally 2 decimals)
-        </Text>
-        <NumberInput
-          currency="USD"
-          allowHighPrecision={true}
-          showCurrencySymbol={true}
-          defaultValue={12.3456789}
-          aria-label="USD high precision input"
-        />
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          JPY - High precision enabled (normally 0 decimals)
-        </Text>
-        <NumberInput
-          currency="JPY"
-          allowHighPrecision={true}
-          showCurrencySymbol={true}
-          defaultValue={1234.5678}
-          aria-label="JPY high precision input"
-        />
-      </Box>
-
-      <Box>
-        <Text mb={1} fontSize="sm" fontWeight="medium">
-          Standard precision for comparison
-        </Text>
-        <NumberInput
-          currency="USD"
-          allowHighPrecision={false}
-          showCurrencySymbol={true}
-          defaultValue={12.3456789}
-          aria-label="USD standard precision input"
-        />
-      </Box>
-    </Stack>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const usdHighInput = canvas.getByLabelText<HTMLInputElement>(
-      "USD high precision input"
-    );
-    const jpyHighInput = canvas.getByLabelText<HTMLInputElement>(
-      "JPY high precision input"
-    );
-    const usdStandardInput = canvas.getByLabelText<HTMLInputElement>(
-      "USD standard precision input"
-    );
-
-    // High precision inputs should preserve more decimals with currency symbols
-    await expect(usdHighInput.value).toContain("$");
-    await expect(usdHighInput.value).toContain("12.34"); // High precision preserves more decimals
-
-    await expect(jpyHighInput.value).toContain("¥");
-    await expect(jpyHighInput.value).toContain("1,234"); // JPY with decimals in high precision mode
-
-    // Standard precision should follow currency rules with symbols
-    await expect(usdStandardInput.value).toContain("$");
-    await expect(usdStandardInput.value).toContain("12.35"); // USD standard = 2 decimals
-  },
-};
-
 export const LocaleFormatting: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -766,24 +578,17 @@ export const LocaleFormatting: Story = {
         <Stack direction="row" align="flex-start" gap="300">
           <Box>
             <Text mb={1} fontSize="sm">
-              USD
+              Number A
             </Text>
-            <NumberInput
-              currency="USD"
-              showCurrencySymbol={true}
-              defaultValue={1234.56}
-              aria-label="US locale USD"
-            />
+            <NumberInput defaultValue={1234.56} aria-label="US locale number" />
           </Box>
           <Box>
             <Text mb={1} fontSize="sm">
-              EUR
+              Number B
             </Text>
             <NumberInput
-              currency="EUR"
-              showCurrencySymbol={true}
-              defaultValue={1234.56}
-              aria-label="US locale EUR"
+              defaultValue={9876.54}
+              aria-label="US locale number 2"
             />
           </Box>
         </Stack>
@@ -797,24 +602,20 @@ export const LocaleFormatting: Story = {
           <Stack direction="row" align="flex-start" gap="300">
             <Box>
               <Text mb={1} fontSize="sm">
-                USD
+                Number A
               </Text>
               <NumberInput
-                currency="USD"
-                showCurrencySymbol={true}
                 defaultValue={1234.56}
-                aria-label="German locale USD"
+                aria-label="German locale number"
               />
             </Box>
             <Box>
               <Text mb={1} fontSize="sm">
-                EUR
+                Number B
               </Text>
               <NumberInput
-                currency="EUR"
-                showCurrencySymbol={true}
-                defaultValue={1234.56}
-                aria-label="German locale EUR"
+                defaultValue={9876.54}
+                aria-label="German locale number 2"
               />
             </Box>
           </Stack>
@@ -826,19 +627,24 @@ export const LocaleFormatting: Story = {
     const canvas = within(canvasElement);
 
     // US locale formatting (commas for thousands, periods for decimals)
-    const usUSD = canvas.getByLabelText<HTMLInputElement>("US locale USD");
-    const usEUR = canvas.getByLabelText<HTMLInputElement>("US locale EUR");
-    await expect(usUSD).toHaveValue("$1,234.56");
-    await expect(usEUR).toHaveValue("€1,234.56");
+    const usNumber1 =
+      canvas.getByLabelText<HTMLInputElement>("US locale number");
+    const usNumber2 =
+      canvas.getByLabelText<HTMLInputElement>("US locale number 2");
+    await expect(usNumber1).toHaveValue("1,234.56");
+    await expect(usNumber2).toHaveValue("9,876.54");
 
     // German locale formatting (periods for thousands, comma for decimals)
-    const deUSD = canvas.getByLabelText<HTMLInputElement>("German locale USD");
-    const deEUR = canvas.getByLabelText<HTMLInputElement>("German locale EUR");
-    // The actual formatting might differ based on how React Aria formats USD in German locale
-    // Let's verify the actual values instead of assuming exact format
-    await expect(deUSD.value).toContain("1.234");
-    await expect(deUSD.value).toContain(",56");
-    await expect(deEUR.value).toContain("1.234");
-    await expect(deEUR.value).toContain(",56");
+    const deNumber1 = canvas.getByLabelText<HTMLInputElement>(
+      "German locale number"
+    );
+    const deNumber2 = canvas.getByLabelText<HTMLInputElement>(
+      "German locale number 2"
+    );
+    // German locale uses periods for thousands and commas for decimals
+    await expect(deNumber1.value).toContain("1.234");
+    await expect(deNumber1.value).toContain(",56");
+    await expect(deNumber2.value).toContain("9.876");
+    await expect(deNumber2.value).toContain(",54");
   },
 };

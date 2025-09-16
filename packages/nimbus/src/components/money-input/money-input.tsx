@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useId } from "react";
+import { useRef, useState, useCallback, useId, useMemo } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useLocale } from "react-aria";
@@ -6,6 +6,7 @@ import { useIntl, FormattedMessage } from "react-intl";
 import { NumberInput, Select, Tooltip } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import currenciesData from "./utils/currencies";
 import {
   MoneyInputRootSlot,
   MoneyInputContainerSlot,
@@ -139,6 +140,20 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
   // High precision detection using raw input value - default to en if locale is not provided
   const isCurrentlyHighPrecision = isHighPrecision(value, locale || "en");
+
+  // Create currency-aware format options for NumberInput
+  const formatOptions: Intl.NumberFormatOptions = useMemo(() => {
+    if (!value.currencyCode) return {};
+
+    // Decimal style: pure number formatting without currency symbols
+    // Handles high precision mode for extended decimal places
+    return {
+      minimumFractionDigits: currenciesData[value.currencyCode].fractionDigits, // Always respect currency minimum (e.g., 2 for USD, 0 for JPY)
+      maximumFractionDigits: 20, // Always use a maximum of 20 decimal places to match API precision
+      useGrouping: true, // Keep thousand separators for readability (formatted per locale)
+      style: "decimal", // Use decimal to avoid currency symbol conflicts
+    };
+  }, [value.currencyCode, locale]);
 
   // Refs
   const localRef = useRef<HTMLInputElement>(null);
@@ -319,9 +334,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         >
           <NumberInput
             value={numericValue}
-            currency={value.currencyCode}
-            showCurrencySymbol={false} // Don't show symbol in input, only in currency dropdown
-            allowHighPrecision={true} // Enable high precision for all currencies in MoneyInput
+            formatOptions={formatOptions}
             onChange={handleAmountChange}
             onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}

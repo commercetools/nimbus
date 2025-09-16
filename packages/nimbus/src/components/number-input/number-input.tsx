@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useNumberField, useLocale } from "react-aria";
@@ -9,7 +9,6 @@ import {
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { getCurrencyFormatOptions } from "./utils";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,
@@ -24,33 +23,14 @@ import messages from "./number-input.i18n";
  * # NumberInput
  *
  * A number input allows users to enter numerical values and adjust them incrementally.
- * When used with currency, the locale for formatting comes from React Aria's I18nProvider context.
+ * The locale for formatting comes from React Aria's I18nProvider context.
  */
 export const NumberInput = (props: NumberInputProps) => {
-  const {
-    size,
-    ref: forwardedRef,
-    currency,
-    showCurrencySymbol = currency ? true : false, // Default to true when currency is provided
-    allowHighPrecision = false,
-    step,
-    ...restProps
-  } = props;
+  const { size, ref: forwardedRef, step, ...restProps } = props;
   const { locale } = useLocale();
   const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  // Create currency-aware format options
-  const formatOptions = useMemo(() => {
-    if (!currency) return undefined;
-
-    return getCurrencyFormatOptions(
-      currency,
-      allowHighPrecision,
-      showCurrencySymbol
-    );
-  }, [currency, locale, showCurrencySymbol, allowHighPrecision]);
 
   // Split recipe props first
   const recipe = useSlotRecipe({ recipe: numberInputRecipe });
@@ -59,11 +39,10 @@ export const NumberInput = (props: NumberInputProps) => {
   // Extract style props
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
-  // Enhance functional props with currency-aware settings and localized aria-labels
+  // Enhance functional props with localized aria-labels
   const enhancedFunctionalProps = {
     ...functionalProps,
     locale: locale,
-    formatOptions,
     incrementAriaLabel: intl.formatMessage(messages.increment),
     decrementAriaLabel: intl.formatMessage(messages.decrement),
     // CRITICAL: React Aria Step Behavior
