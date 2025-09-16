@@ -47,6 +47,18 @@
       "value": "Loading data"
     }
   ],
+  "Nimbus.MoneyInput.currencySelection": [
+    {
+      "type": 0,
+      "value": "Currency selection"
+    }
+  ],
+  "Nimbus.MoneyInput.highPrecisionPrice": [
+    {
+      "type": 0,
+      "value": "High precision price"
+    }
+  ],
   "Nimbus.NumberInput.decrement": [
     {
       "type": 0,

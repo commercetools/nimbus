@@ -3,7 +3,7 @@ import type { TCurrencyCode } from "./types";
 
 // Currency formatting utilities for NumberInput live user interaction
 
-const HIGH_PRECISION_FRACTION_DIGITS = 10;
+const MAX_HIGH_PRECISION_FRACTION_DIGITS = 17;
 
 /**
  * Creates format options for currency-aware number formatting
@@ -19,7 +19,7 @@ export const getCurrencyFormatOptions = (
 
   // Calculate maximum fraction digits based on precision mode
   const maxFractionDigits = allowHighPrecision
-    ? HIGH_PRECISION_FRACTION_DIGITS
+    ? MAX_HIGH_PRECISION_FRACTION_DIGITS
     : currency.fractionDigits; // Standard precision: use currency default
 
   // Base formatting options that apply to both modes
