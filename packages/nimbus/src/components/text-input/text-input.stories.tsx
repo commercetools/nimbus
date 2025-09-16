@@ -297,7 +297,11 @@ export const Controlled: Story = {
 
 export const LeadingAndTrailingElements: Story = {
   render: () => {
-    const examples = [
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof TextInput>;
+      getProps?: (size: "sm" | "md") => React.ComponentProps<typeof TextInput>;
+    }> = [
       {
         label: "Leading Icon",
         props: {
@@ -325,11 +329,11 @@ export const LeadingAndTrailingElements: Story = {
       },
       {
         label: "IconButton Elements",
-        props: {
+        getProps: (size: "sm" | "md") => ({
           placeholder: "Advanced search",
           leadingElement: (
             <IconButton
-              size="xs"
+              size={size === "sm" ? "2xs" : "xs"}
               tone="primary"
               variant="ghost"
               aria-label="search options"
@@ -339,7 +343,7 @@ export const LeadingAndTrailingElements: Story = {
           ),
           trailingElement: (
             <IconButton
-              size="2xs"
+              size={size === "sm" ? "2xs" : "xs"}
               tone="primary"
               variant="ghost"
               aria-label="clear"
@@ -348,7 +352,7 @@ export const LeadingAndTrailingElements: Story = {
             </IconButton>
           ),
           "aria-label": "advanced-search-input",
-        },
+        }),
       },
     ];
 
@@ -373,7 +377,11 @@ export const LeadingAndTrailingElements: Story = {
                         <Text fontSize="xs" color="neutral.10">
                           {variant as string}
                         </Text>
-                        <TextInput {...example.props} size={size} variant={variant} />
+                        <TextInput
+                          {...(example.getProps ? example.getProps(size) : example.props)}
+                          size={size}
+                          variant={variant}
+                        />
                       </Stack>
                     ))}
                   </Stack>

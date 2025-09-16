@@ -232,7 +232,11 @@ export const AllCombinations: Story = {
 
 export const LeadingAndTrailingElements: Story = {
   render: () => {
-    const examples = [
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof NumberInput>;
+      getProps?: (size: "sm" | "md") => React.ComponentProps<typeof NumberInput>;
+    }> = [
       {
         label: "Leading Icon",
         props: {
@@ -260,11 +264,11 @@ export const LeadingAndTrailingElements: Story = {
       },
       {
         label: "IconButton Elements",
-        props: {
+        getProps: (size: "sm" | "md") => ({
           placeholder: "Advanced number input",
           leadingElement: (
             <IconButton
-              size="xs"
+              size={size === "sm" ? "2xs" : "xs"}
               tone="primary"
               variant="ghost"
               aria-label="number options"
@@ -274,7 +278,7 @@ export const LeadingAndTrailingElements: Story = {
           ),
           trailingElement: (
             <IconButton
-              size="xs"
+              size={size === "sm" ? "2xs" : "xs"}
               tone="primary"
               variant="ghost"
               aria-label="clear"
@@ -283,7 +287,7 @@ export const LeadingAndTrailingElements: Story = {
             </IconButton>
           ),
           "aria-label": "advanced-number-input",
-        },
+        }),
       },
     ];
 
@@ -313,7 +317,9 @@ export const LeadingAndTrailingElements: Story = {
                           {variant as string}
                         </Text>
                         <NumberInput
-                          {...example.props}
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
                           size={size}
                           variant={variant}
                         />
