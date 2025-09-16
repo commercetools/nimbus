@@ -38,14 +38,12 @@ export const textInputSlotRecipe = defineSlotRecipe({
     },
 
     leadingElement: {
-      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
     },
 
     trailingElement: {
-      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
@@ -72,32 +70,48 @@ export const textInputSlotRecipe = defineSlotRecipe({
         root: {
           height: "800",
           px: "300",
-          gap: "200",
+          gap: "100",
           textStyle: "sm",
         },
         leadingElement: {
           minHeight: "400",
           minWidth: "400",
+          _icon: {
+            minHeight: "400",
+            minWidth: "400",
+          },
         },
         trailingElement: {
           minHeight: "400",
           minWidth: "400",
+          _icon: {
+            minHeight: "400",
+            minWidth: "400",
+          },
         },
       },
       md: {
         root: {
           height: "1000",
           px: "400",
-          gap: "300",
+          gap: "200",
           textStyle: "md",
         },
         leadingElement: {
           minHeight: "500",
           minWidth: "500",
+          _icon: {
+            minHeight: "500",
+            minWidth: "500",
+          },
         },
         trailingElement: {
           minHeight: "500",
           minWidth: "500",
+          _icon: {
+            minHeight: "500",
+            minWidth: "500",
+          },
         },
       },
     },
