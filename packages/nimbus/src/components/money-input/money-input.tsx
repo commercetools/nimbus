@@ -3,7 +3,13 @@ import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useLocale } from "react-aria";
 import { useIntl, FormattedMessage } from "react-intl";
-import { NumberInput, Select, Tooltip, Box } from "@/components";
+import {
+  NumberInput,
+  Select,
+  Tooltip,
+  Box,
+  MakeElementFocusable,
+} from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import currenciesData from "./utils/currencies";
@@ -354,15 +360,17 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       {/* High Precision Badge */}
       {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
         <MoneyInputBadgeSlot data-testid="high-precision-badge">
-          <Tooltip.Root>
-            <Box
-              // TODO: this is a hack to position the badge correctly until we have trailingElement support
-              transform="translateX(-100px) translateY(2px)"
-              color={isDisabled ? "neutral.8" : "neutral.11"}
-            >
-              <HighPrecision />
-            </Box>
-            <Tooltip.Content>
+          <Tooltip.Root delay={0} closeDelay={0}>
+            <MakeElementFocusable>
+              <Box
+                // TODO: this is a hack to position the badge correctly until we have trailingElement support
+                transform="translateX(-100px) translateY(2px)"
+                color={isDisabled ? "neutral.8" : "neutral.11"}
+              >
+                <HighPrecision />
+              </Box>
+            </MakeElementFocusable>
+            <Tooltip.Content placement="top">
               <FormattedMessage {...messages.highPrecisionPrice} />
             </Tooltip.Content>
           </Tooltip.Root>
