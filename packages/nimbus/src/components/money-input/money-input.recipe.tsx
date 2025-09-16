@@ -70,6 +70,9 @@ export const moneyInputRecipe = defineSlotRecipe({
       sm: {
         root: {
           fontSize: "fontSize.20",
+          "& .nimbus-select__trigger": {
+            width: "2600",
+          },
         },
         currencySelect: {
           padding: "0 spacing.20",
@@ -81,6 +84,9 @@ export const moneyInputRecipe = defineSlotRecipe({
       md: {
         root: {
           fontSize: "fontSize.30",
+          "& .nimbus-select__trigger": {
+            width: "2800",
+          },
         },
         currencySelect: {
           padding: "0 spacing.25",

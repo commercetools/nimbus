@@ -180,7 +180,7 @@ export const HighPrecisionExample: Story = {
 export const DisabledState: Story = {
   render: (args) => (
     <MoneyInputExample
-      initialValue={{ amount: "100.00", currencyCode: "USD" }}
+      initialValue={{ amount: "100.005", currencyCode: "USD" }}
       aria-label="Money input example"
       {...args}
     />
