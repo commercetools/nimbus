@@ -999,6 +999,43 @@ export const ValidationBehavior: Story = {
 };
 
 /**
+ * Custom Width
+ * Demonstrates that DateInput accepts a width property
+ */
+export const CustomWidth: Story = {
+  args: {
+    ["aria-label"]: "Enter a date",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Width: 256px</Text>
+        <DateInput
+          {...args}
+          width="256px"
+          leadingElement={<Icon as={CalendarMonth} />}
+          trailingElement={<Icon as={Close} />}
+        />
+        <Text>Width: 512px</Text>
+        <DateInput
+          {...args}
+          width="512px"
+          leadingElement={<Icon as={CalendarMonth} />}
+          trailingElement={<Icon as={Close} />}
+        />
+        <Text>Width: full</Text>
+        <DateInput
+          {...args}
+          width="full"
+          leadingElement={<Icon as={CalendarMonth} />}
+          trailingElement={<Icon as={Close} />}
+        />
+      </Stack>
+    );
+  },
+};
+
+/**
  * Showcase German Locale
  * Demonstrates the DateInput component with German locale (de-DE)
  * showing different date formats, granularities, and cultural conventions

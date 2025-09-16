@@ -15,6 +15,7 @@ import { useRecipe } from "@chakra-ui/react/styled-system";
 import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateInputProps } from "./date-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { Box } from "@/components";
 
 /**
  * # DateInput
@@ -39,13 +40,15 @@ export const DateInput = (props: DateInputProps) => {
                 {leadingElement}
               </DateInputLeadingElementSlot>
             )}
-            <DateInputField>
-              {(segment) => (
-                <DateInputSegmentSlot asChild>
-                  <DateSegment segment={segment} />
-                </DateInputSegmentSlot>
-              )}
-            </DateInputField>
+            <Box flexGrow="1" asChild>
+              <DateInputField>
+                {(segment) => (
+                  <DateInputSegmentSlot asChild>
+                    <DateSegment segment={segment} />
+                  </DateInputSegmentSlot>
+                )}
+              </DateInputField>
+            </Box>
             {trailingElement && (
               <DateInputTrailingElementSlot>
                 {trailingElement}

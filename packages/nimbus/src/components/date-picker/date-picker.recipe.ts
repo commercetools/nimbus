@@ -53,22 +53,13 @@ export const datePickerSlotRecipe = defineSlotRecipe({
     // Size variants from smallest to largest
     size: {
       sm: {
-        group: {
-          "& .nimbus-date-input__root": {
-            mr: "1400",
-          },
-        },
+        group: {},
         trigger: {
           top: "50",
         },
       },
       md: {
-        group: {
-          "& .nimbus-date-input__root": {
-            // combine 2 tokens cause there is no token for this crooked value
-            mr: "calc({spacing.1600} + {spacing.200})",
-          },
-        },
+        group: {},
         trigger: {
           top: "100",
         },
