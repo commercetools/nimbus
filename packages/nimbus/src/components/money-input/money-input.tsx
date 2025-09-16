@@ -18,8 +18,8 @@ import {
 import { moneyInputRecipe } from "./money-input.recipe";
 import {
   isHighPrecision,
-  convertToMoneyValue,
-  parseMoneyValue,
+  transformFormInputToMoneyValue,
+  formatMoneyValueForDisplay,
   isEmpty,
 } from "./utils";
 import type {
@@ -371,8 +371,8 @@ MoneyInputComponent.displayName = "MoneyInput";
 // Create the main export with static methods
 type MoneyInputType = typeof MoneyInputComponent & {
   // Static methods preserved from UI Kit
-  convertToMoneyValue: typeof convertToMoneyValue;
-  parseMoneyValue: typeof parseMoneyValue;
+  convertToMoneyValue: typeof transformFormInputToMoneyValue;
+  parseMoneyValue: typeof formatMoneyValueForDisplay;
   isEmpty: typeof isEmpty;
   isHighPrecision: typeof isHighPrecision;
 };
@@ -380,7 +380,7 @@ type MoneyInputType = typeof MoneyInputComponent & {
 export const MoneyInput = MoneyInputComponent as MoneyInputType;
 
 // Static methods for UI-Kit compatibility and internal utilities
-MoneyInput.convertToMoneyValue = convertToMoneyValue;
-MoneyInput.parseMoneyValue = parseMoneyValue;
+MoneyInput.convertToMoneyValue = transformFormInputToMoneyValue;
+MoneyInput.parseMoneyValue = formatMoneyValueForDisplay;
 MoneyInput.isEmpty = isEmpty;
 MoneyInput.isHighPrecision = isHighPrecision;

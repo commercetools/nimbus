@@ -1,7 +1,7 @@
 import currencies from "./currencies";
 import {
-  createMoneyValue,
-  getAmountAsNumberFromMoneyValue,
+  parseStringToMoneyValue,
+  extractDecimalAmount,
   type TMoneyValue,
   type TValue,
 } from "./parsing-utilities";
@@ -12,14 +12,14 @@ const has = (obj: Record<string, unknown>, key: string): boolean => {
 };
 
 // Static method implementations - preserve exact logic from UI Kit
-export const convertToMoneyValue = (value: TValue, locale: string) =>
-  createMoneyValue(
+export const transformFormInputToMoneyValue = (value: TValue, locale: string) =>
+  parseStringToMoneyValue(
     typeof value.amount === "string" ? value.amount.trim() : "",
     locale,
     value.currencyCode
   );
 
-export const parseMoneyValue = (
+export const formatMoneyValueForDisplay = (
   moneyValue: TMoneyValue,
   locale: string
 ): TValue => {
@@ -66,7 +66,7 @@ export const parseMoneyValue = (
   );
 
   // Direct formatting without circular conversion
-  const amountAsNumber = getAmountAsNumberFromMoneyValue(moneyValue);
+  const amountAsNumber = extractDecimalAmount(moneyValue);
   const fractionDigits = moneyValue.preciseAmount
     ? moneyValue.fractionDigits
     : currencies[moneyValue.currencyCode].fractionDigits;
@@ -89,6 +89,6 @@ export const isHighPrecision = (formValue: TValue, locale: string): boolean => {
   if (isEmpty(formValue)) {
     return false;
   }
-  const moneyValue = convertToMoneyValue(formValue, locale);
+  const moneyValue = transformFormInputToMoneyValue(formValue, locale);
   return moneyValue?.type === "highPrecision";
 };

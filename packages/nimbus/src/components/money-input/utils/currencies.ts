@@ -7,7 +7,7 @@
 //    - Powers React Aria NumberField formatting as users type
 //
 // 2. MoneyInput Static Methods System (API compatibility):
-//    - Uses createMoneyValue() + TMoneyValue objects
+//    - Uses parseStringToMoneyValue() + TMoneyValue objects
 //    - Only triggered by explicit static method calls
 //
 // Both systems access this same data but for different purposes.

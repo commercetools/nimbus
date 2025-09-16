@@ -21,7 +21,7 @@ export type TValue = {
 };
 
 // Currency parsing utilities for MoneyInput static methods
-export const createMoneyValue = (
+export const parseStringToMoneyValue = (
   rawAmount: string,
   locale: string,
   currencyCode?: TCurrencyCode | ""
@@ -97,7 +97,7 @@ export const createMoneyValue = (
   };
 };
 
-export const createEmptyMoneyValue = (
+export const createNullMoneyValue = (
   currencyCode: TCurrencyCode
 ): TMoneyValue => ({
   type: "centPrecision",
@@ -106,7 +106,7 @@ export const createEmptyMoneyValue = (
   fractionDigits: 2,
 });
 
-export const getAmountAsNumberFromMoneyValue = (moneyValue: TMoneyValue) =>
+export const extractDecimalAmount = (moneyValue: TMoneyValue) =>
   moneyValue.type === "highPrecision"
     ? moneyValue.preciseAmount / 10 ** moneyValue.fractionDigits
     : moneyValue.centAmount /
