@@ -64,7 +64,12 @@ export const NumberInput = (props: NumberInputProps) => {
     "data-disabled": props.isDisabled,
   };
   return (
-    <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
+    <NumberInputRootSlot
+      {...stateProps}
+      {...recipeProps}
+      {...styleProps}
+      size={size}
+    >
       {leadingElement && (
         <NumberInputLeadingElementSlot>
           {leadingElement}
