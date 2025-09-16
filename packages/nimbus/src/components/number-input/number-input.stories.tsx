@@ -235,7 +235,9 @@ export const LeadingAndTrailingElements: Story = {
     const examples: Array<{
       label: string;
       props?: React.ComponentProps<typeof NumberInput>;
-      getProps?: (size: "sm" | "md") => React.ComponentProps<typeof NumberInput>;
+      getProps?: (
+        size: "sm" | "md"
+      ) => React.ComponentProps<typeof NumberInput>;
     }> = [
       {
         label: "Leading Icon",

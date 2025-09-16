@@ -373,12 +373,18 @@ export const LeadingAndTrailingElements: Story = {
                   </Text>
                   <Stack direction="row" gap="400" alignItems="center">
                     {inputVariants.map((variant) => (
-                      <Stack key={variant as string} direction="column" gap="100">
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
                         <Text fontSize="xs" color="neutral.10">
                           {variant as string}
                         </Text>
                         <TextInput
-                          {...(example.getProps ? example.getProps(size) : example.props)}
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
                           size={size}
                           variant={variant}
                         />
