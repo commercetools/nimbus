@@ -3,6 +3,7 @@ import {
   DateInputRootSlot,
   DateInputSegmentGroupSlot,
   DateInputSegmentSlot,
+  DateInputTrailingElementSlot,
 } from "./date-input.slots";
 
 import {
@@ -24,7 +25,7 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  */
 export const DateInput = (props: DateInputProps) => {
   const recipe = useRecipe({ recipe: dateInputSlotRecipe });
-  const { leadingElement, ...rest } = props;
+  const { leadingElement, trailingElement, ...rest } = props;
   const [recipeProps, recipeFreeProps] = recipe.splitVariantProps({ ...rest });
   const [styleProps, functionalProps] = extractStyleProps(recipeFreeProps);
 
@@ -45,6 +46,11 @@ export const DateInput = (props: DateInputProps) => {
                 </DateInputSegmentSlot>
               )}
             </DateInputField>
+            {trailingElement && (
+              <DateInputTrailingElementSlot>
+                {trailingElement}
+              </DateInputTrailingElementSlot>
+            )}
           </>
         </DateInputSegmentGroupSlot>
       </DateField>

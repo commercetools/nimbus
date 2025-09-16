@@ -7,7 +7,13 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 export const dateInputSlotRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
   className: "nimbus-date-input",
-  slots: ["root", "leadingElement", "segmentGroup", "segment"],
+  slots: [
+    "root",
+    "leadingElement",
+    "trailingElement",
+    "segmentGroup",
+    "segment",
+  ],
 
   // Base styles applied to all instances of the component
   base: {
@@ -41,9 +47,16 @@ export const dateInputSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
     },
+    trailingElement: {
+      color: "neutral.11",
+      display: "flex",
+      alignItems: "center",
+    },
     segment: {
+      outline: "none!",
+      borderRadius: "100",
       fontVariantNumeric: "tabular-nums",
-      px: "50",
+      p: "50",
       "&:empty": {
         border: "solid-25",
       },
@@ -89,26 +102,38 @@ export const dateInputSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          h: 800,
+          h: "800",
           textStyle: "sm",
-          px: 300,
-          gap: 50,
+          px: "300",
+          gap: "100",
         },
         leadingElement: {
-          minHeight: "400",
-          minWidth: "400",
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
         },
       },
       md: {
         root: {
-          h: 1000,
+          h: "1000",
           textStyle: "md",
-          px: 400,
-          gap: 100,
+          px: "400",
+          gap: "200",
         },
         leadingElement: {
-          minHeight: "500",
-          minWidth: "500",
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
         },
       },
     },
@@ -135,6 +160,7 @@ export const dateInputSlotRecipe = defineSlotRecipe({
           px: "0",
           outline: "none!",
           boxShadow: "none!",
+          bg: "transparent!",
         },
       },
     },
