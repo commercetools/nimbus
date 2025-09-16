@@ -353,6 +353,8 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
             size={size}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
+            // See the types file for why we don't use step
+            step={undefined}
           />
         </MoneyInputAmountInputSlot>
       </MoneyInputContainerSlot>

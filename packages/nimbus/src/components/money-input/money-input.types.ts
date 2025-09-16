@@ -55,7 +55,42 @@ export type ExcludedSlotProps =
   | "id"
   | "name"
   | "value"
-  // Consumers should not be able to set step, it causes issues with high precision
+  // CRITICAL: React Aria Step Behavior
+  //
+  // React Aria NumberField uses the `step` property for TWO distinct purposes:
+  // 1. Increment/Decrement Amount: How much to add/subtract when using buttons/arrow keys
+  // 2. Validation Constraint: A validation rule that snaps typed values to step boundaries on blur
+  //
+  // KEY BEHAVIOR DIFFERENCE:
+  // - WITH step (e.g., step: 1):
+  //   • On blur: calls snapValueToStep(12.345, min, max, 1) → rounds to 12
+  //   • High precision input (12.345) gets truncated to step boundary (12)
+  //   • Step validation overrides formatOptions.maximumFractionDigits
+  //
+  // - WITHOUT step (undefined/null):
+  //   • On blur: NO step validation occurs
+  //   • High precision input (12.345) is preserved
+  //   • Only formatOptions.maximumFractionDigits controls display precision
+  //   • Increment/decrement still works with default behavior (integer steps)
+  //
+  // ACTUAL CODE (React Aria's internal commit function):
+  // Source: react-spectrum/packages/@react-stately/numberfield/src/useNumberFieldState.ts
+  // Related issue: https://github.com/adobe/react-spectrum/issues/6359
+  // ```
+  // let clampedValue: number;
+  // if (step === undefined || isNaN(step)) {
+  //   // NO STEP: Only enforce min/max bounds, preserve precision
+  //   clampedValue = clamp(parsedValue, minValue, maxValue);
+  // } else {
+  //   // WITH STEP: Enforce min/max bounds AND snap to step boundaries (loses precision)
+  //   clampedValue = snapValueToStep(parsedValue, minValue, maxValue, step);
+  // }
+  // ```
+  //
+  // CONCLUSION: For high precision currency inputs, step should be undefined
+  // to prevent React Aria's step validation from truncating user input.
+  //
+  // It's best if we don't use step at all to preserve high precision.
   | "step";
 
 // Main component API interface - extends slot props to include style props
