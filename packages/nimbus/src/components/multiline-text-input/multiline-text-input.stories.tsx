@@ -4,13 +4,7 @@ import { MultilineTextInput } from "./multiline-text-input";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
-import {
-  AddReaction,
-  Search,
-  Visibility,
-  AddBox,
-  Close,
-} from "@commercetools/nimbus-icons";
+import { AddReaction, Search, AddBox } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof MultilineTextInput> = {
   title: "components/MultilineTextInput",

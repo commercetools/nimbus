@@ -1,7 +1,6 @@
 import {
   DatePickerRootSlot,
   DatePickerGroupSlot,
-  DatePickerTriggerSlot,
   DatePickerPopoverSlot,
   DatePickerCalendarSlot,
 } from "./date-picker.slots";

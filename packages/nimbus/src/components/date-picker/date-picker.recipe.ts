@@ -10,7 +10,6 @@ export const datePickerSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "group",
-    "trigger",
     "popover",
     "calendar",
     "calendarHeader",
@@ -26,11 +25,6 @@ export const datePickerSlotRecipe = defineSlotRecipe({
     },
     group: {
       position: "relative",
-    },
-    trigger: {
-      position: "absolute",
-      right: "400",
-      top: "100",
     },
     popover: {
       bg: "neutral.1",
@@ -54,15 +48,9 @@ export const datePickerSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         group: {},
-        trigger: {
-          top: "50",
-        },
       },
       md: {
         group: {},
-        trigger: {
-          top: "100",
-        },
       },
     },
     variant: {
