@@ -35,6 +35,9 @@ import {
   getLocaleFieldAttribute,
   sortCurrencies,
   sortLocalesByDefaultLocaleLanguage,
+  processGlobalError,
+  processLocaleValidationErrors,
+  mergeLocaleErrors,
 } from "../utils/localized-field.utils";
 import { LocalizedFieldLocaleField } from "./localized-field.locale-field";
 
@@ -48,11 +51,16 @@ export const LocalizedField = ({
   descriptionsByLocaleOrCurrency,
   warningsByLocaleOrCurrency,
   errorsByLocaleOrCurrency,
+  errorMessagesByLocaleOrCurrency,
   label,
   hint,
   description,
   warning,
   error,
+  // NEW: Formik-compatible error handling props
+  errors,
+  renderError,
+  customMessages,
   touched,
   isRequired,
   isDisabled,
@@ -79,16 +87,40 @@ export const LocalizedField = ({
   // Used to associate container with toggle button for `aria-controls`
   const localeFieldsContainerId = useId();
 
-  // FieldGroup is invalid if a non-field-specific error is passed and the group has been touched
-  // When FieldGroup is invalid, all fields will display error styling without displaying a field-specific error message
-  const isInvalid: boolean = Boolean(error && touched);
+  // UPDATED: Process global error through FieldErrors integration
+  const globalErrorContent = processGlobalError(
+    error,
+    errors,
+    renderError,
+    customMessages,
+    touched
+  );
+
+  // UPDATED: Process per-locale validation flags through FieldErrors
+  const processedLocaleValidationErrors = processLocaleValidationErrors(
+    errorsByLocaleOrCurrency,
+    renderError,
+    customMessages,
+    touched
+  );
+
+  // UPDATED: Merge locale errors with proper precedence
+  // 1. errorMessagesByLocaleOrCurrency (direct messages) - highest precedence
+  // 2. errorsByLocaleOrCurrency (validation flags → FieldErrors) - lower precedence
+  const mergedLocaleErrors = mergeLocaleErrors(
+    errorMessagesByLocaleOrCurrency,
+    processedLocaleValidationErrors
+  );
+
+  // UPDATED: FieldGroup is invalid if any global error exists
+  const isInvalid: boolean = Boolean(globalErrorContent);
 
   const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
     useField({
       id,
       label,
       description,
-      errorMessage: error,
+      errorMessage: globalErrorContent,
       isInvalid,
     });
 
@@ -118,7 +150,7 @@ export const LocalizedField = ({
           placeholder: placeholdersByLocaleOrCurrency?.[localizationKey],
           description: descriptionsByLocaleOrCurrency?.[localizationKey],
           warning: warningsByLocaleOrCurrency?.[localizationKey],
-          error: errorsByLocaleOrCurrency?.[localizationKey],
+          error: mergedLocaleErrors?.[localizationKey],
           // autoFocus default/first locale field
           ...(localizationKey === defaultLocaleOrCurrency && autoFocus
             ? { autoFocus }
@@ -140,13 +172,15 @@ export const LocalizedField = ({
     placeholdersByLocaleOrCurrency,
     descriptionsByLocaleOrCurrency,
     warningsByLocaleOrCurrency,
-    errorsByLocaleOrCurrency,
+    mergedLocaleErrors,
     defaultLocaleOrCurrency,
     expanded,
+    type,
+    autoFocus,
   ]);
 
   const groupHasInvalidLocalizedFields = getHasInvalidLocalizedFields(
-    errorsByLocaleOrCurrency,
+    mergedLocaleErrors,
     defaultLocaleOrCurrency
   );
 
@@ -257,7 +291,7 @@ export const LocalizedField = ({
           {warning && touched ? warning : description}
         </LocalizedFieldDescriptionSlot>
       )}
-      {error && touched && (
+      {globalErrorContent && (
         <LocalizedFieldErrorSlot {...errorMessageProps}>
           <Box
             as={ErrorOutline}
@@ -266,7 +300,7 @@ export const LocalizedField = ({
             verticalAlign="text-bottom"
             mr="100"
           />
-          {error}
+          {globalErrorContent}
         </LocalizedFieldErrorSlot>
       )}
       {!displayAllLocalesOrCurrencies && localizationKeys.length > 1 && (
