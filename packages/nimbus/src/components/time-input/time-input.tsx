@@ -11,7 +11,7 @@ import { useRecipe } from "@chakra-ui/react/styled-system";
 import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeInputProps } from "./time-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-
+import { Box } from "@/components";
 /**
  * TimeInput
  * ============================================================
@@ -33,13 +33,15 @@ export const TimeInput = (props: TimeInputProps) => {
                 {leadingElement}
               </TimeInputLeadingElementSlot>
             )}
-            <DateInput>
-              {(segment) => (
-                <TimeInputSegmentSlot asChild>
-                  <DateSegment segment={segment} />
-                </TimeInputSegmentSlot>
-              )}
-            </DateInput>
+            <Box flexGrow="1" asChild>
+              <DateInput>
+                {(segment) => (
+                  <TimeInputSegmentSlot asChild>
+                    <DateSegment segment={segment} />
+                  </TimeInputSegmentSlot>
+                )}
+              </DateInput>
+            </Box>
             {trailingElement && (
               <TimeInputTrailingElementSlot>
                 {trailingElement}

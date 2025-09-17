@@ -60,7 +60,9 @@ export const timeInputRecipe = defineSlotRecipe({
     },
     segment: {
       fontVariantNumeric: "tabular-nums",
-      px: "50",
+      outline: "none",
+      p: "50",
+      borderRadius: "50",
       "&:empty": {
         border: "1px solid",
       },
@@ -116,12 +118,14 @@ export const timeInputRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         leadingElement: {
-          minHeight: "400",
-          minWidth: "400",
+          "& svg": {
+            boxSize: "400",
+          },
         },
         trailingElement: {
-          minHeight: "400",
-          minWidth: "400",
+          "& svg": {
+            boxSize: "400",
+          },
         },
       },
       md: {
@@ -134,12 +138,14 @@ export const timeInputRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
-          minHeight: "500",
-          minWidth: "500",
+          "& svg": {
+            boxSize: "500",
+          },
         },
         trailingElement: {
-          minHeight: "500",
-          minWidth: "500",
+          "& svg": {
+            boxSize: "500",
+          },
         },
       },
     },
