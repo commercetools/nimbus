@@ -1,6 +1,11 @@
 import type { ReactNode, FocusEvent } from "react";
 import type { ConditionalValue } from "@chakra-ui/react/styled-system";
 import type { LocalizedFieldRootSlotProps } from "./localized-field.slots";
+import type {
+  TFieldErrors,
+  TErrorRenderer,
+  FieldErrorsProps,
+} from "../field-errors";
 
 /**
  * Object that contains the translation of a string for each locale.
@@ -77,8 +82,18 @@ export interface LocalizedFieldProps
   descriptionsByLocaleOrCurrency?: LocaleFieldData;
   /** Field warnings for each locale or currency */
   warningsByLocaleOrCurrency?: LocaleFieldData;
-  /** Field errors for each locale or currency */
-  errorsByLocaleOrCurrency?: LocaleFieldData;
+  /**
+   * Per-locale validation flags processed by FieldErrors component
+   * e.g. { en: { missing: true }, de: { invalid: true } }
+   * Each locale's validation flags will be processed through FieldErrors
+   */
+  errorsByLocaleOrCurrency?: Record<string, TFieldErrors>;
+  /**
+   * Direct error messages for each locale or currency (ReactNode content)
+   * e.g. { en: "Server error", de: "Serverfehler" }
+   * Takes precedence over errorsByLocaleOrCurrency validation flags
+   */
+  errorMessagesByLocaleOrCurrency?: LocaleFieldData;
   /**
    * Label for field group (all locales).
    * If a label is not provided, you must provide an `aria-label`
@@ -92,6 +107,26 @@ export interface LocalizedFieldProps
   warning?: ReactNode;
   /** Error for field group (all locales) */
   error?: ReactNode;
+
+  // === NEW: FORMIK-COMPATIBLE ERROR HANDLING ===
+  /**
+   * Formik-compatible validation flags (processed via FieldErrors)
+   * e.g. { missing: true, duplicate: true }
+   * These will be automatically processed to display appropriate error messages
+   */
+  errors?: TFieldErrors;
+
+  /**
+   * Custom error renderer function for validation flags
+   * Same pattern as UI-Kit LocalizedTextField
+   */
+  renderError?: TErrorRenderer;
+
+  /**
+   * Custom messages to override built-in FieldErrors messages
+   * e.g. { missing: "This field is required", duplicate: "Value already exists" }
+   */
+  customMessages?: FieldErrorsProps["customMessages"];
   /**
    * Indicates whether the field was touched.
    * Errors will only be shown when the field was touched.

@@ -1,7 +1,15 @@
 import { FormattedMessage } from "react-intl";
 import { FormField } from "@/components";
+import { FieldErrors } from "../../field-errors";
 import messages from "../localized-field.i18n";
 import type { LocalizedString } from "../localized-field.types";
+import type {
+  TFieldErrors,
+  TErrorRenderer,
+  FieldErrorsProps,
+} from "../../field-errors";
+import type { ReactNode } from "react";
+import type { LocaleFieldData } from "../localized-field.types";
 
 type LanguagesSplitByDefaultLocale = {
   related: string[];
@@ -142,4 +150,91 @@ export const isTouched = (touched?: TouchedLocalizedString): boolean => {
     return Object.values(touched).some(Boolean);
   }
   return false;
+};
+
+// === NEW: ERROR PROCESSING UTILITIES FOR FIELDERRORS INTEGRATION ===
+
+/**
+ * Process global error - handles both direct error messages and validation flags through FieldErrors
+ * @param error Direct error message (takes precedence)
+ * @param errors Validation flags to be processed by FieldErrors
+ * @param renderError Custom error renderer function
+ * @param customMessages Custom message overrides for built-in errors
+ * @param touched Whether the field has been touched (errors only show when touched)
+ * @returns Processed error content or null
+ */
+export const processGlobalError = (
+  error?: ReactNode,
+  errors?: TFieldErrors,
+  renderError?: TErrorRenderer,
+  customMessages?: FieldErrorsProps["customMessages"],
+  touched?: boolean
+): ReactNode => {
+  if (!touched) return null;
+
+  // Direct error message takes precedence
+  if (error) return error;
+
+  // Process validation flags through FieldErrors
+  if (errors && Object.values(errors).some(Boolean)) {
+    return (
+      <FieldErrors
+        errors={errors}
+        renderError={renderError}
+        customMessages={customMessages}
+      />
+    );
+  }
+
+  return null;
+};
+
+/**
+ * Process per-locale validation errors through FieldErrors component
+ * @param errorsByLocaleOrCurrency Per-locale validation flags
+ * @param renderError Custom error renderer function
+ * @param customMessages Custom message overrides for built-in errors
+ * @param touched Whether fields have been touched (errors only show when touched)
+ * @returns Processed error content per locale
+ */
+export const processLocaleValidationErrors = (
+  errorsByLocaleOrCurrency?: Record<string, TFieldErrors>,
+  renderError?: TErrorRenderer,
+  customMessages?: FieldErrorsProps["customMessages"],
+  touched?: boolean
+): LocaleFieldData => {
+  if (!touched || !errorsByLocaleOrCurrency) return {};
+
+  const processedErrors: LocaleFieldData = {};
+
+  Object.entries(errorsByLocaleOrCurrency).forEach(
+    ([locale, validationFlags]) => {
+      if (validationFlags && Object.values(validationFlags).some(Boolean)) {
+        processedErrors[locale] = (
+          <FieldErrors
+            errors={validationFlags}
+            renderError={renderError}
+            customMessages={customMessages}
+          />
+        );
+      }
+    }
+  );
+
+  return processedErrors;
+};
+
+/**
+ * Merge locale errors with proper precedence:
+ * 1. Direct messages (errorMessagesByLocaleOrCurrency) - highest precedence
+ * 2. Processed validation flags (errorsByLocaleOrCurrency) - lower precedence
+ */
+export const mergeLocaleErrors = (
+  directMessages?: LocaleFieldData,
+  processedValidationErrors?: LocaleFieldData
+): LocaleFieldData => {
+  return {
+    ...processedValidationErrors,
+    ...directMessages,
+  };
 };
