@@ -108,7 +108,7 @@ export const multilineTextInputRecipe = defineSlotRecipe({
           pt: "200",
           "& svg": {
             mt: "50",
-            boxSize: "400",
+            boxSize: "500",
           },
         },
       },

@@ -3,8 +3,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MultilineTextInput } from "./multiline-text-input";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Box, Stack, Text, FormField, Icon } from "@/components";
-import { AddReaction } from "@commercetools/nimbus-icons";
+import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
+import {
+  AddReaction,
+  Search,
+  Visibility,
+  AddBox,
+  Close,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof MultilineTextInput> = {
   title: "components/MultilineTextInput",
@@ -89,47 +95,84 @@ export const Variants: Story = {
   },
 };
 
-export const WithLeadingElement: Story = {
-  args: {
-    leadingElement: <Text>Leading</Text>,
-    placeholder: "multiline text input",
-    ["aria-label"]: "test-textarea",
-  },
-};
+export const LeadingElements: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof MultilineTextInput>;
+      getProps?: (
+        size: "sm" | "md"
+      ) => React.ComponentProps<typeof MultilineTextInput>;
+    }> = [
+      {
+        label: "Leading Icon",
+        props: {
+          placeholder: "Search...",
+          leadingElement: <Search />,
+          "aria-label": "search-textarea",
+        },
+      },
+      {
+        label: "Leading Icon Component",
+        props: {
+          placeholder: "Enter text...",
+          leadingElement: <Icon as={AddReaction} />,
+          "aria-label": "icon-textarea",
+        },
+      },
+      {
+        label: "Leading IconButton",
+        getProps: (size: "sm" | "md") => ({
+          placeholder: "Advanced input",
+          leadingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="input options"
+              mt="-100"
+            >
+              <Icon as={AddBox} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-textarea",
+        }),
+      },
+    ];
 
-
-export const WithLeadingElementVariantsAndSizes: Story = {
-  args: {
-    placeholder: "multiline text input",
-    ["aria-label"]: "test-textarea",
-  },
-  render: (args) => {
     return (
-      <Stack direction="column">
-        <Stack direction="row" gap="400" alignItems="flex-start">
-          {inputVariants.map((variant) => (
-            <MultilineTextInput
-              key={variant as string}
-              {...args}
-              variant={variant}
-              size="sm"
-              leadingElement={<Icon as={AddReaction} />}
-              placeholder={`${variant as string} textarea`}
-            />
-          ))}
-        </Stack>
-        <Stack direction="row" gap="400" alignItems="flex-start">
-          {inputVariants.map((variant) => (
-            <MultilineTextInput
-              key={variant as string}
-              {...args}
-              variant={variant}
-              size="md"
-              leadingElement={<Icon as={AddReaction} boxSize="500" />}
-              placeholder={`${variant as string} textarea`}
-            />
-          ))}
-        </Stack>
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={example.label}
+                  direction="row"
+                  gap="400"
+                  alignItems="flex-start"
+                >
+                  <Box minWidth="200">
+                    <Text textStyle="sm" color="neutral.11">
+                      {example.label}
+                    </Text>
+                  </Box>
+                  {inputVariants.map((variant) => (
+                    <Box key={variant as string} flex="1">
+                      <MultilineTextInput
+                        {...(example.getProps?.(size) || example.props)}
+                        variant={variant}
+                        size={size}
+                        placeholder={`${variant as string} textarea`}
+                      />
+                    </Box>
+                  ))}
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
       </Stack>
     );
   },
