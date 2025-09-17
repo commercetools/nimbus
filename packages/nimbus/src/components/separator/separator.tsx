@@ -1,12 +1,12 @@
 import { Separator as RaSeparator } from "react-aria-components";
 import { useRecipe } from "@chakra-ui/react";
-import { DividerRoot } from "./divider.slots";
-import type { DividerProps } from "./divider.types";
+import { SeparatorRoot } from "./separator.slots";
+import type { SeparatorProps } from "./separator.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { dividerRecipe } from "./divider.recipe";
+import { separatorRecipe } from "./separator.recipe.ts";
 
 /**
- * Divider
+ * Separator
  * ============================================================
  * A visual separator that divides content sections
  *
@@ -20,12 +20,12 @@ import { dividerRecipe } from "./divider.recipe";
  * - built with React Aria for accessibility
  */
 
-export const Divider = ({
+export const Separator = ({
   ref: forwardedRef,
   orientation = "horizontal",
   ...props
-}: DividerProps) => {
-  const recipe = useRecipe({ recipe: dividerRecipe });
+}: SeparatorProps) => {
+  const recipe = useRecipe({ recipe: separatorRecipe });
   const [recipeProps, variantFreeProps] = recipe.splitVariantProps({
     orientation,
     ...props,
@@ -36,10 +36,10 @@ export const Divider = ({
   });
 
   return (
-    <DividerRoot asChild {...recipeProps} {...styleProps}>
+    <SeparatorRoot asChild {...recipeProps} {...styleProps}>
       <RaSeparator ref={forwardedRef} {...functionalProps} />
-    </DividerRoot>
+    </SeparatorRoot>
   );
 };
 
-Divider.displayName = "Divider";
+Separator.displayName = "Separator";

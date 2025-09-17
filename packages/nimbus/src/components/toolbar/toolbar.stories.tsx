@@ -7,7 +7,7 @@ import {
   Box,
   Text,
   Menu,
-  Divider,
+  Separator,
   Group,
   ToggleButtonGroup,
 } from "@/components";
@@ -118,7 +118,7 @@ export const Vertical: Story = {
       >
         <Home />
       </IconButton>
-      <Divider />
+      <Separator />
       <IconButton
         size="xs"
         variant="ghost"
@@ -143,7 +143,7 @@ export const Vertical: Story = {
       >
         <Person />
       </IconButton>
-      <Divider />
+      <Separator />
       <IconButton
         size="xs"
         variant="ghost"
@@ -239,7 +239,7 @@ export const WithGroups: Story = {
                 <FolderOpen />
               </IconButton>
             </Group>
-            <Divider
+            <Separator
               orientation={o === "horizontal" ? "vertical" : "horizontal"}
               data-testid={`separator-1-${o}`}
             />
@@ -357,7 +357,7 @@ export const Variants: Story = {
                 <Save />
               </IconToggleButton>
             </ToggleButtonGroup.Root>
-            <Divider
+            <Separator
               orientation="vertical"
               data-testid={`separator-${variant}`}
             />
@@ -556,7 +556,7 @@ export const RichTextEditor: Story = {
                   </Menu.Content>
                 </Menu.Root>
               </Group>
-              <Divider
+              <Separator
                 orientation="vertical"
                 data-testid={`separator-1-${size}`}
               />
@@ -604,7 +604,7 @@ export const RichTextEditor: Story = {
                   <FormatStrikethrough />
                 </IconToggleButton>
               </ToggleButtonGroup.Root>
-              <Divider
+              <Separator
                 orientation="vertical"
                 data-testid={`separator-2-${size}`}
               />
@@ -646,7 +646,7 @@ export const RichTextEditor: Story = {
                   </IconToggleButton>
                 </ToggleButtonGroup.Root>
               </Group>
-              <Divider
+              <Separator
                 orientation="vertical"
                 data-testid={`separator-3-${size}`}
               />
@@ -677,7 +677,7 @@ export const RichTextEditor: Story = {
                   <FormatListNumbered />
                 </IconToggleButton>
               </ToggleButtonGroup.Root>
-              <Divider
+              <Separator
                 orientation="vertical"
                 data-testid={`separator-4-${size}`}
               />
