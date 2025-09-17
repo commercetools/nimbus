@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
@@ -12,6 +12,7 @@ import {
 } from "./multiline-text-input.slots";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
 import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
+import { useAutogrow } from "./hooks";
 
 /**
  * # Multiline Text Input
@@ -34,58 +35,23 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
-  const [styleProps, otherProps] = extractStyleProps(remainingProps);
-  const { inputProps } = useTextField<"textarea">(otherProps, ref);
+  const [styleProps, functionalProps] = extractStyleProps(remainingProps);
+  const { inputProps } = useTextField<"textarea">(functionalProps, ref);
 
-  // Auto-grow functionality
-  const adjustHeight = useCallback(() => {
-    const textarea = ref.current;
-    if (!textarea || !autoGrow) return;
+  // Use autogrow hook for auto-grow functionality
+  useAutogrow(ref, { enabled: autoGrow });
 
-    // Reset height to auto to get the correct scrollHeight
-    textarea.style.height = "auto";
-
-    // Calculate the new height based on content
-    const contentHeight = textarea.scrollHeight;
-
-    // Always resize to fit content (both growing and shrinking)
-    // This ensures the textarea always fits the content exactly
-    const newHeight = contentHeight;
-
-    // Apply maxHeight constraint if specified
-    const computedStyle = window.getComputedStyle(textarea);
-    const maxHeightPxValue = parseInt(computedStyle.maxHeight);
-    const finalHeight = maxHeightPxValue
-      ? Math.min(newHeight, maxHeightPxValue)
-      : newHeight;
-
-    // Set the new height
-    textarea.style.height = `${finalHeight}px`;
-  }, [autoGrow, ref]);
-
-  // Set up auto-grow behavior with event listeners
-  useEffect(() => {
-    const textarea = ref.current;
-    if (!textarea || !autoGrow) return;
-
-    // Initial adjustment
-    adjustHeight();
-
-    // Add input event listener for real-time adjustments
-    const handleInput = () => {
-      adjustHeight();
-    };
-
-    textarea.addEventListener("input", handleInput);
-
-    // Cleanup
-    return () => {
-      textarea.removeEventListener("input", handleInput);
-    };
-  }, [adjustHeight, autoGrow, ref]);
+  const additionalRootProps = {
+    "data-disabled": restProps.isDisabled ? "true" : undefined,
+    "data-invalid": restProps.isInvalid ? "true" : "false",
+  };
 
   return (
-    <MultilineTextInputRootSlot {...recipeProps} {...styleProps}>
+    <MultilineTextInputRootSlot
+      {...recipeProps}
+      {...styleProps}
+      {...additionalRootProps}
+    >
       <>
         {leadingElement && (
           <MultilineTextInputLeadingElementSlot>

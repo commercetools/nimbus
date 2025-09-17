@@ -21,7 +21,6 @@ export type MultilineTextInputLeadingElementProps = HTMLChakraProps<
   MultilineTextInputRecipeProps
 >;
 
-
 export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
   "textarea",
   MultilineTextInputRecipeProps
@@ -44,7 +43,6 @@ export const MultilineTextInputLeadingElementSlot = withContext<
   HTMLDivElement,
   MultilineTextInputLeadingElementProps
 >("div", "leadingElement");
-
 
 export const MultilineTextInputTextAreaSlot = withContext<
   HTMLTextAreaElement,
