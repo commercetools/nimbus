@@ -97,15 +97,8 @@ export const WithLeadingElement: Story = {
   },
 };
 
-export const WithTrailingElement: Story = {
-  args: {
-    trailingElement: <Text>Trailing</Text>,
-    placeholder: "multiline text input",
-    ["aria-label"]: "test-textarea",
-  },
-};
 
-export const WithBothElementsVariantsAndSizes: Story = {
+export const WithLeadingElementVariantsAndSizes: Story = {
   args: {
     placeholder: "multiline text input",
     ["aria-label"]: "test-textarea",
@@ -121,7 +114,6 @@ export const WithBothElementsVariantsAndSizes: Story = {
               variant={variant}
               size="sm"
               leadingElement={<Icon as={AddReaction} />}
-              trailingElement={<Icon as={AddReaction} />}
               placeholder={`${variant as string} textarea`}
             />
           ))}
@@ -134,7 +126,6 @@ export const WithBothElementsVariantsAndSizes: Story = {
               variant={variant}
               size="md"
               leadingElement={<Icon as={AddReaction} boxSize="500" />}
-              trailingElement={<Icon as={AddReaction} boxSize="500" />}
               placeholder={`${variant as string} textarea`}
             />
           ))}

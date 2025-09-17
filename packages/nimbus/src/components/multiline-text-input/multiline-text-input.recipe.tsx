@@ -8,23 +8,20 @@ import { designTokens } from "@commercetools/nimbus-tokens";
 export const multilineTextInputRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
   className: "nimbus-multiline-text-input",
-  slots: ["root", "leadingElement", "trailingElement", "textarea"],
+  slots: ["root", "leadingElement", "textarea"],
   // Base styles applied to all instances of the component
   base: {
     root: {
+      "--input-border-radius": "sizes.200",
       display: "inline-flex",
       overflowY: "auto",
       resize: "vertical",
-      borderRadius: "200",
+      borderRadius: "var(--input-border-radius)",
       colorPalette: "neutral",
       bg: "transparent",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _focusWithin: {
         layerStyle: "focusRing",
-      },
-
-      "& input": {
-        outline: "none",
       },
 
       focusVisibleRing: "outside",
@@ -48,11 +45,7 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         width: "400",
         height: "400",
       },
-      _placeholder: {
-        opacity: 0.5,
-        color: "currentColor",
-      },
-      _disabled: {
+      "&[data-disabled='true']": {
         layerStyle: "disabled",
         bg: "neutral.3",
       },
@@ -63,15 +56,7 @@ export const multilineTextInputRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
-      overflow: "hidden",
       display: "flex",
-      justifyContent: "flex-start",
-      color: "neutral.11",
-    },
-    trailingElement: {
-      overflow: "hidden",
-      display: "flex",
-      justifyContent: "flex-start",
       color: "neutral.11",
     },
     textarea: {
@@ -79,6 +64,12 @@ export const multilineTextInputRecipe = defineSlotRecipe({
       outline: "none",
       resize: "none",
       background: "transparent",
+      borderTopRightRadius: "200",
+      borderBottomRightRadius: "200",
+      _placeholder: {
+        opacity: 0.5,
+        color: "currentColor",
+      },
     },
   },
 
@@ -86,42 +77,39 @@ export const multilineTextInputRecipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          minH: 800,
+          minH: "800",
           textStyle: "sm",
-          px: 300,
-          py: 100,
+          gap: "100",
+          pl: "300",
         },
         textarea: {
-          px: 100,
+          pr: "300",
+          py: "100",
         },
         leadingElement: {
-          py: "100",
-          minHeight: "400",
-          minWidth: "400",
-        },
-        trailingElement: {
-          py: "100",
-          minHeight: "400",
-          minWidth: "400",
+          pt: "200",
+          "& svg": {
+            boxSize: "400",
+          },
         },
       },
       md: {
         root: {
-          minH: 1000,
+          minH: "1000",
           textStyle: "md",
-          px: 400,
-          py: 200,
+          gap: "200",
+          pl: "400",
         },
         textarea: {
-          px: 200,
+          py: "200",
+          pr: "400",
         },
         leadingElement: {
-          minHeight: "500",
-          minWidth: "500",
-        },
-        trailingElement: {
-          minHeight: "500",
-          minWidth: "500",
+          pt: "200",
+          "& svg": {
+            mt: "50",
+            boxSize: "400",
+          },
         },
       },
     },

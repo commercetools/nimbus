@@ -8,7 +8,6 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
   MultilineTextInputRootSlot,
   MultilineTextInputLeadingElementSlot,
-  MultilineTextInputTrailingElementSlot,
   MultilineTextInputTextAreaSlot,
 } from "./multiline-text-input.slots";
 import type { MultilineTextInputProps } from "./multiline-text-input.types";
@@ -25,7 +24,6 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
   const {
     ref: forwardedRef,
     leadingElement,
-    trailingElement,
     rows = 1,
     autoGrow = false,
     ...restProps
@@ -97,11 +95,6 @@ export const MultilineTextInput = (props: MultilineTextInputProps) => {
         <MultilineTextInputTextAreaSlot asChild>
           <TextArea ref={ref} rows={rows} {...inputProps} />
         </MultilineTextInputTextAreaSlot>
-        {trailingElement && (
-          <MultilineTextInputTrailingElementSlot>
-            {trailingElement}
-          </MultilineTextInputTrailingElementSlot>
-        )}
       </>
     </MultilineTextInputRootSlot>
   );
