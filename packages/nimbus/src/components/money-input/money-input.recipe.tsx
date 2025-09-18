@@ -15,18 +15,12 @@ export const moneyInputRecipe = defineSlotRecipe({
       width: "full",
       position: "relative",
       fontFamily: "inherit",
-      "--trigger-border-color": "colors.neutral.7",
-      "--trigger-border-width": "sizes.25",
       "& .nimbus-select__trigger": {
         width: "2800",
         borderRightRadius: "0",
         // Show all but the right shadow
         boxShadow:
-          "inset 0 var(--trigger-border-width) 0 0 var(--trigger-border-color), inset 0 calc(var(--trigger-border-width) * -1) 0 0 var(--trigger-border-color), inset var(--trigger-border-width) 0 0 0 var(--trigger-border-color)",
-      },
-      "& .nimbus-select__root[data-invalid='true']": {
-        "--trigger-border-color": "colors.critical.7",
-        "--trigger-border-width": "sizes.50",
+          "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
       },
       "& .nimbus-number-input__root > input": {
         borderLeftRadius: "0",

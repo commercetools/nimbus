@@ -1,7 +1,6 @@
-import { useRef, useCallback, useMemo } from "react";
-import { mergeRefs } from "@chakra-ui/react";
+import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useId, useLocale, useObjectRef } from "react-aria";
+import { useId, useLocale } from "react-aria";
 import { useIntl, FormattedMessage } from "react-intl";
 import {
   NumberInput,
@@ -134,11 +133,11 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const { locale } = useLocale();
   const intl = useIntl();
 
-  // State management
-  const hasNoCurrencies = !currencies || currencies.length === 0;
-
   // Convert string value to number for NumberInput
   const numericValue = value.amount ? parseFloat(value.amount) : undefined;
+
+  // Detect whether the currency select or currency label should display
+  const hasNoCurrencies = !currencies || currencies.length === 0;
 
   // High precision detection using raw input value - default to en if locale is not provided
   const isCurrentlyHighPrecision = isHighPrecision(value, locale || "en");
@@ -156,10 +155,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       style: "decimal", // Use decimal to avoid currency symbol conflicts
     };
   }, [value.currencyCode, locale]);
-
-  // Refs
-  const localRef = useRef<HTMLInputElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, null));
 
   // Recipe setup
   const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
@@ -296,7 +291,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
               onBlur={handleCurrencyBlur}
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
-              isInvalid={isInvalid}
               placeholder=""
               aria-label={intl.formatMessage(messages.currencySelectLabel)}
               size={size}
@@ -314,7 +308,6 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
         {/* Amount Input - NumberInput handles live user interaction */}
         <MoneyInputAmountInputSlot
-          ref={ref}
           data-has-high-precision={
             hasHighPrecisionBadge && isCurrentlyHighPrecision
           }
