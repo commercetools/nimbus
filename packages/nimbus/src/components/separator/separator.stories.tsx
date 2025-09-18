@@ -1,38 +1,38 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Divider } from "./divider";
+import { Separator } from "./separator";
 import { Box, Stack } from "@/components";
 import { within, expect } from "storybook/test";
 
-const meta: Meta<typeof Divider> = {
-  title: "components/Divider",
-  component: Divider,
+const meta: Meta<typeof Separator> = {
+  title: "components/Separator",
+  component: Separator,
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Divider>;
+type Story = StoryObj<typeof Separator>;
 
 export const Base: Story = {
   args: {
-    ["data-testid"]: "divider-test",
+    ["data-testid"]: "separator-test",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const divider = canvas.getByTestId("divider-test");
+    const separator = canvas.getByTestId("separator-test");
 
     await step("Has correct role", async () => {
-      await expect(divider).toHaveAttribute("role", "separator");
+      await expect(separator).toHaveAttribute("role", "separator");
     });
 
     await step(
       "Has no aria-orientation (uses default, horizontal)",
       async () => {
-        await expect(divider).not.toHaveAttribute("aria-orientation");
+        await expect(separator).not.toHaveAttribute("aria-orientation");
       }
     );
 
     await step("Is not focusable", async () => {
-      await expect(divider).not.toHaveAttribute("tabindex");
+      await expect(separator).not.toHaveAttribute("tabindex");
     });
   },
 };
@@ -40,13 +40,13 @@ export const Base: Story = {
 export const Horizontal: Story = {
   args: {
     orientation: "horizontal",
-    ["data-testid"]: "horizontal-divider",
+    ["data-testid"]: "horizontal-separator",
   },
   render: (args) => (
     <Box>
-      <Box p="100">Content above the divider</Box>
-      <Divider {...args} />
-      <Box p="100">Content below the divider</Box>
+      <Box p="100">Content above the separator</Box>
+      <Separator {...args} />
+      <Box p="100">Content below the separator</Box>
     </Box>
   ),
 };
@@ -54,21 +54,21 @@ export const Horizontal: Story = {
 export const Vertical: Story = {
   args: {
     orientation: "vertical",
-    ["data-testid"]: "vertical-divider",
+    ["data-testid"]: "vertical-separator",
   },
   render: (args) => (
     <Stack direction="row" height="2000" alignItems="center">
       <Box p="100">Content left</Box>
-      <Divider {...args} />
+      <Separator {...args} />
       <Box p="100">Content right</Box>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const divider = canvas.getByTestId("vertical-divider");
+    const separator = canvas.getByTestId("vertical-separator");
 
     await step("Has correct aria-orientation for vertical", async () => {
-      await expect(divider).toHaveAttribute("aria-orientation", "vertical");
+      await expect(separator).toHaveAttribute("aria-orientation", "vertical");
     });
   },
 };
@@ -77,13 +77,13 @@ export const Orientations: Story = {
   render: () => (
     <Stack gap="400">
       <Box>
-        <Box p="100">Content above horizontal divider</Box>
-        <Divider orientation="horizontal" />
-        <Box p="100">Content below horizontal divider</Box>
+        <Box p="100">Content above horizontal separator</Box>
+        <Separator orientation="horizontal" />
+        <Box p="100">Content below horizontal separator</Box>
       </Box>
       <Stack direction="row" height="2000" alignItems="center">
         <Box p="100">Content left</Box>
-        <Divider orientation="vertical" />
+        <Separator orientation="vertical" />
         <Box p="100">Content right</Box>
       </Stack>
     </Stack>
@@ -105,7 +105,7 @@ export const MultipleBackgrounds: Story = {
         <Box fontSize="sm" color="neutral.12" mb="100">
           White background
         </Box>
-        <Divider colorPalette="neutral" />
+        <Separator colorPalette="neutral" />
       </Box>
       <Box
         flex="1"
@@ -120,7 +120,7 @@ export const MultipleBackgrounds: Story = {
         <Box fontSize="sm" color="neutral.12" mb="100">
           Slate background
         </Box>
-        <Divider />
+        <Separator />
       </Box>
       <Box
         flex="1"
@@ -135,7 +135,7 @@ export const MultipleBackgrounds: Story = {
         <Box fontSize="sm" color="neutral.12" mb="100">
           Positive background
         </Box>
-        <Divider />
+        <Separator />
       </Box>
     </Stack>
   ),

@@ -1,6 +1,6 @@
 ---
-id: Layout-Divider
-title: Divider
+id: Layout-Separator
+title: Separator
 description: A visual divider that separates content sections.
 documentState: ReviewedInternal
 documentAudiences: []
@@ -8,17 +8,21 @@ order: 999
 menu:
   - Components
   - Layout
-  - Divider
+  - Separator
 tags:
   - document
 ---
-# Divider
 
-A divider provides a visual separator between sections of content, improving readability and creating clear boundaries in layouts.
+# Separator
+
+A divider provides a visual separator between sections of content, improving
+readability and creating clear boundaries in layouts.
 
 ## Overview
 
-Dividers are fundamental UI elements used to break up content, improve readability, and guide the user's eye. They provide semantic meaning through proper accessibility attributes while maintaining consistent visual styling.
+Separators are fundamental UI elements used to break up content, improve
+readability, and guide the user's eye. They provide semantic meaning through
+proper accessibility attributes while maintaining consistent visual styling.
 
 ### Basic Usage
 
@@ -30,7 +34,7 @@ const App = () => (
     <Box p="4">
       Content above the divider
     </Box>
-    <Divider />
+    <Separator />
     <Box p="4">
       Content below the divider
     </Box>
@@ -38,7 +42,7 @@ const App = () => (
 )
 ```
 
-### Vertical Dividers
+### Vertical Separators
 
 Use vertical dividers to separate side-by-side content:
 
@@ -48,7 +52,7 @@ const App = () => (
     <Box p="4">
       Left content
     </Box>
-    <Divider orientation="vertical" />
+    <Separator orientation="vertical" />
     <Box p="4">
       Right content
     </Box>
@@ -65,19 +69,19 @@ const App = () => (
   <Stack gap="6">
     <Box>
       <Text fontSize="sm" color="gray.600">Default</Text>
-      <Divider />
+      <Separator />
     </Box>
     <Box>
       <Text fontSize="sm" color="gray.600">Custom color</Text>
-      <Divider borderColor="red.300" />
+      <Separator borderColor="red.300" />
     </Box>
     <Box>
       <Text fontSize="sm" color="gray.600">Thicker divider</Text>
-      <Divider borderTopWidth="2px" />
+      <Separator borderTopWidth="2px" />
     </Box>
     <Box>
       <Text fontSize="sm" color="gray.600">Dashed style</Text>
-      <Divider borderStyle="dashed" borderColor="blue.400" />
+      <Separator borderStyle="dashed" borderColor="blue.400" />
     </Box>
   </Stack>
 )
@@ -97,7 +101,7 @@ const App = () => (
       <Input placeholder="Name" mt="2" />
       <Input placeholder="Email" mt="2" />
     </Box>
-    <Divider />
+    <Separator />
     <Box p="4">
       <Heading size="md">Account Settings</Heading>
       <Input placeholder="Password" type="password" mt="2" />
@@ -116,10 +120,10 @@ const App = () => (
   <Box maxWidth="xs" border="1px" borderColor="gray.200" borderRadius="md">
     <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>New File</Box>
     <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>Open File</Box>
-    <Divider />
+    <Separator />
     <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>Save</Box>
     <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>Save As...</Box>
-    <Divider />
+    <Separator />
     <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }} color="red.600">Delete</Box>
   </Box>
 )
@@ -135,7 +139,7 @@ const App = () => (
     <Box p="4" bg="blue.50" minWidth="200px">
       Sidebar
     </Box>
-    <Divider orientation="vertical" />
+    <Separator orientation="vertical" />
     <Box p="4" bg="green.50" flex="1">
       Main content area
     </Box>
@@ -147,17 +151,19 @@ const App = () => (
 
 - The divider automatically receives `role="separator"` for screen readers
 - Proper `aria-orientation` is set based on the orientation prop
-- Dividers are not focusable by default, maintaining proper tab order
+- Separators are not focusable by default, maintaining proper tab order
 - Semantic meaning is preserved for assistive technologies
 
 ## API Reference
 
 ### Props
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
+| Name          | Type                         | Default        | Description                    |
+| ------------- | ---------------------------- | -------------- | ------------------------------ |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | The orientation of the divider |
 
-The component also accepts all standard Chakra UI styling props for customization (e.g., `borderColor`, `borderWidth`, `borderStyle`, etc.).
+The component also accepts all standard Chakra UI styling props for
+customization (e.g., `borderColor`, `borderWidth`, `borderStyle`, etc.).
 
-*This component is built with React Aria for accessibility and uses Chakra UI's styling system.* 
+_This component is built with React Aria for accessibility and uses Chakra UI's
+styling system._

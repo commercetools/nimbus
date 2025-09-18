@@ -44,13 +44,11 @@ The basic SplitButton with a primary action and dropdown menu items.
 
 ```jsx-live
 const App = () => {
-  const { Save } = icons;
-
   return (
     <SplitButton
       onAction={(actionId) => alert(`Action: ${actionId}`)}
       aria-label="More save options"
-      icon={<Save />}
+      icon={<Icons.Save />}
     >
       <Menu.Item id="save">Save</Menu.Item>
       <Menu.Item id="save-publish">Save and Publish</Menu.Item>
@@ -66,13 +64,11 @@ A typical document management scenario with various file operations.
 
 ```jsx-live
 const App = () => {
-  const { Share } = icons;
-
   return (
     <SplitButton
       onAction={(actionId) => alert(`Action: ${actionId}`)}
       aria-label="More document actions"
-      icon={<Share />}
+      icon={<Icons.Share />}
     >
       <Menu.Item id="share">Share Document</Menu.Item>
       <Menu.Item id="copy-link">Copy Link</Menu.Item>
@@ -91,13 +87,11 @@ highlighted.
 
 ```jsx-live
 const App = () => {
-  const { Edit } = icons;
-
   return (
     <SplitButton
       onAction={(actionId) => alert(`Action: ${actionId}`)}
       aria-label="More task actions"
-      icon={<Edit />}
+      icon={<Icons.Edit />}
     >
       <Menu.Item id="complete">Complete Task</Menu.Item>
       <Menu.Item id="edit">Edit Task</Menu.Item>
@@ -279,7 +273,7 @@ const App = () => (
     <Menu.Item id="password">Change Password</Menu.Item>
     <Menu.Item id="export">Export My Data</Menu.Item>
     <Menu.Item id="deactivate">Deactivate Account</Menu.Item>
-    <Divider />
+    <Separator />
     <Menu.Item id="delete" isCritical>Delete Account</Menu.Item>
   </SplitButton>
 );

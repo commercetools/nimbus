@@ -24,7 +24,7 @@ export type * from "./split-button.types";
  * executes the first enabled Menu.Item action, while the dropdown trigger opens a menu
  * with all available options.
  *
- * Use with Menu.Item, Menu.Section, and Divider components for content.
+ * Use with Menu.Item, Menu.Section, and Separator components for content.
  */
 export const SplitButton = (props: SplitButtonProps) => {
   const {
