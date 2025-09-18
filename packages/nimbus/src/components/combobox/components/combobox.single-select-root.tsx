@@ -8,6 +8,7 @@ import { ComboBoxOptions } from "./combobox.options";
 import { ComboBoxLeadingElementSlot } from "../combobox.slots";
 import { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button-group";
 import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
+import { ComboBoxLeadingElement } from "./combobox.leading-element";
 
 export const SingleSelectRoot = <T extends object>({
   children,
@@ -49,9 +50,7 @@ export const SingleSelectRoot = <T extends object>({
       ref={ref}
     >
       {leadingElement && (
-        <ComboBoxLeadingElementSlot>
-          {leadingElement}
-        </ComboBoxLeadingElementSlot>
+        <ComboBoxLeadingElement>{leadingElement}</ComboBoxLeadingElement>
       )}
       <SingleSelectInput
         ref={inputRef}

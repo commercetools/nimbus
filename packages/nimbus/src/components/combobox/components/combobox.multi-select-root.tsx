@@ -25,9 +25,9 @@ import { ComboBoxButtonGroup } from "./combobox.multi-select-button-group";
 import {
   ComboBoxPopoverSlot,
   ComboBoxMultiSelectInputSlot,
-  ComboBoxLeadingElementSlot,
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
+import { ComboBoxLeadingElement } from "./combobox.leading-element";
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -268,9 +268,7 @@ export const MultiSelectRoot = <T extends object>({
           {...props}
         >
           {leadingElement && (
-            <ComboBoxLeadingElementSlot>
-              {leadingElement}
-            </ComboBoxLeadingElementSlot>
+            <ComboBoxLeadingElement>{leadingElement}</ComboBoxLeadingElement>
           )}
           <MultiSelectTagGroup
             items={items}
