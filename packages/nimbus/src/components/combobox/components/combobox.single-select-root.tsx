@@ -5,7 +5,6 @@ import {
 } from "react-aria-components";
 import { SingleSelectInput } from "./combobox.single-select-input";
 import { ComboBoxOptions } from "./combobox.options";
-import { ComboBoxLeadingElementSlot } from "../combobox.slots";
 import { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button-group";
 import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
 import { ComboBoxLeadingElement } from "./combobox.leading-element";

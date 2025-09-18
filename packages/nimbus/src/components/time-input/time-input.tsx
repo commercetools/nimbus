@@ -11,7 +11,6 @@ import { useRecipe } from "@chakra-ui/react/styled-system";
 import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeInputProps } from "./time-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { Box } from "@/components";
 /**
  * TimeInput
  * ============================================================
@@ -26,29 +25,25 @@ export const TimeInput = (props: TimeInputProps) => {
   return (
     <TimeInputRootSlot asChild {...recipeProps} {...styleProps}>
       <TimeField {...otherProps}>
+        {leadingElement && (
+          <TimeInputLeadingElementSlot>
+            {leadingElement}
+          </TimeInputLeadingElementSlot>
+        )}
         <TimeInputSegmentGroupSlot asChild>
-          <>
-            {leadingElement && (
-              <TimeInputLeadingElementSlot>
-                {leadingElement}
-              </TimeInputLeadingElementSlot>
+          <DateInput>
+            {(segment) => (
+              <TimeInputSegmentSlot asChild>
+                <DateSegment segment={segment} />
+              </TimeInputSegmentSlot>
             )}
-            <Box flexGrow="1" asChild>
-              <DateInput>
-                {(segment) => (
-                  <TimeInputSegmentSlot asChild>
-                    <DateSegment segment={segment} />
-                  </TimeInputSegmentSlot>
-                )}
-              </DateInput>
-            </Box>
-            {trailingElement && (
-              <TimeInputTrailingElementSlot>
-                {trailingElement}
-              </TimeInputTrailingElementSlot>
-            )}
-          </>
+          </DateInput>
         </TimeInputSegmentGroupSlot>
+        {trailingElement && (
+          <TimeInputTrailingElementSlot>
+            {trailingElement}
+          </TimeInputTrailingElementSlot>
+        )}
       </TimeField>
     </TimeInputRootSlot>
   );

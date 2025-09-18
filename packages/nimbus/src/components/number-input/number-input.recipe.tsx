@@ -176,12 +176,6 @@ export const numberInputRecipe = defineSlotRecipe({
           "--border-color": "colors.neutral.7",
           backgroundColor: "neutral.1",
         },
-        input: {
-          /* "&[data-invalid='true']": {
-            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-            "--border-width": "sizes.50",
-          }, */
-        },
         incrementButton: {
           "&[data-invalid='true']": {
             borderTop: "2px solid var(--border-color)",
@@ -217,12 +211,6 @@ export const numberInputRecipe = defineSlotRecipe({
           _hover: {
             backgroundColor: "primary.2",
           },
-        },
-        input: {
-          /* "&[data-invalid='true']": {
-            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-            "--border-width": "sizes.50",
-          }, */
         },
         incrementButton: {
           "&[data-invalid='true']": {

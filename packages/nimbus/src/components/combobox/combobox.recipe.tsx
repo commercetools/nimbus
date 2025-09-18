@@ -26,6 +26,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
+      "--leading-element-width": "sizes.200",
       colorPalette: "primary",
       focusRing: "outside",
       display: "inline-flex",
@@ -156,9 +157,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     size: {
       // Small
       sm: {
-        root: {
-          "--leading-element-width": "sizes.200",
-        },
         value: {
           minH: "800",
           textStyle: "sm",
@@ -171,9 +169,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       },
       // Medium
       md: {
-        root: {
-          "--leading-element-width": "sizes.200",
-        },
         value: {
           minH: "1000",
           textStyle: "md",

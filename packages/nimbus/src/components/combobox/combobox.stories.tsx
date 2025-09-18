@@ -1113,7 +1113,9 @@ export const LeadingAndTrailingElements: Story = {
     const examples: Array<{
       label: string;
       props?: Partial<ComboBoxRootProps<{ id: number; name: string }>>;
-      getProps?: (size: "sm" | "md") => Partial<ComboBoxRootProps<{ id: number; name: string }>>;
+      getProps?: (
+        size: "sm" | "md"
+      ) => Partial<ComboBoxRootProps<{ id: number; name: string }>>;
     }> = [
       {
         label: "Without Leading Element",
@@ -1185,7 +1187,9 @@ export const LeadingAndTrailingElements: Story = {
           <Text fontWeight="semibold">Multi-Select Variants</Text>
           {inputSize.map((size) => (
             <Stack key={`multi-${size as string}`} direction="column" gap="300">
-              <Text fontSize="sm" color="neutral.11">Size: {size as string}</Text>
+              <Text fontSize="sm" color="neutral.11">
+                Size: {size as string}
+              </Text>
               <Stack direction="column" gap="300">
                 <Stack direction="column" gap="200">
                   <Text fontSize="sm" color="neutral.11">

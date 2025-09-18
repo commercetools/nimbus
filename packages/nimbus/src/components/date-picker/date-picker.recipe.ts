@@ -46,12 +46,8 @@ export const datePickerSlotRecipe = defineSlotRecipe({
   variants: {
     // Size variants from smallest to largest
     size: {
-      sm: {
-        group: {},
-      },
-      md: {
-        group: {},
-      },
+      sm: {},
+      md: {},
     },
     variant: {
       // those need to exist, as the date-input has and needs those variants

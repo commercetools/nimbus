@@ -41,19 +41,17 @@ export const timeInputRecipe = defineSlotRecipe({
     },
     segmentGroup: {
       display: "flex",
-      flex: "0 0 auto",
+      flex: "1 0 auto",
       borderRadius: "inherit",
       bg: "transparent",
       alignItems: "center",
     },
     leadingElement: {
-      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
     },
     trailingElement: {
-      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       color: "neutral.11",

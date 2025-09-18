@@ -74,19 +74,13 @@ export const textInputSlotRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         leadingElement: {
-          minHeight: "400",
-          minWidth: "400",
-          _icon: {
-            minHeight: "400",
-            minWidth: "400",
+          "& > svg": {
+            boxSize: "400",
           },
         },
         trailingElement: {
-          minHeight: "400",
-          minWidth: "400",
-          _icon: {
-            minHeight: "400",
-            minWidth: "400",
+          "& > svg": {
+            boxSize: "400",
           },
         },
       },
@@ -98,19 +92,13 @@ export const textInputSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
-          minHeight: "500",
-          minWidth: "500",
-          _icon: {
-            minHeight: "500",
-            minWidth: "500",
+          "& > svg": {
+            boxSize: "500",
           },
         },
         trailingElement: {
-          minHeight: "500",
-          minWidth: "500",
-          _icon: {
-            minHeight: "500",
-            minWidth: "500",
+          "& > svg": {
+            boxSize: "500",
           },
         },
       },

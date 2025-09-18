@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
@@ -31,29 +31,45 @@ export const TextInput = (props: TextInputProps) => {
   const recipe = useSlotRecipe({ recipe: textInputSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
 
+  const rootRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
   const { inputProps } = useTextField(otherProps, ref);
 
-  // Focus the input when clicking on the wrapper
-  const handleWrapperClick = () => {
-    // TODO: reliably ignore interactive elements
-    localRef.current?.focus();
-  };
-
   const stateProps = {
     "data-disabled": inputProps.disabled ? "true" : undefined,
     "data-invalid": inputProps["aria-invalid"] ? "true" : "false",
   };
 
+  // Using a useEffect instead of "onClick" on the element, to preserve
+  // the `onClick` prop for consumers.
+  useEffect(() => {
+    const handleRootClick = (event: MouseEvent) => {
+      // Only focus if the click is inside the root element,
+      // not on the input itself, and not on an interactive element
+      if (
+        rootRef.current &&
+        rootRef.current.contains(event.target as Node) &&
+        localRef.current &&
+        event.target !== localRef.current
+      ) {
+        localRef.current.focus();
+      }
+    };
+    document.addEventListener("click", handleRootClick);
+    return () => {
+      document.removeEventListener("click", handleRootClick);
+    };
+  }, []);
+
   return (
     <TextInputRootSlot
+      ref={rootRef}
       {...recipeProps}
       {...styleProps}
       {...stateProps}
-      onClick={handleWrapperClick}
     >
       {leadingElement && (
         <TextInputLeadingElementSlot>
