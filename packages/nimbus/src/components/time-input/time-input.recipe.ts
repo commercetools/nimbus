@@ -7,27 +7,28 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 export const timeInputRecipe = defineSlotRecipe({
   // Unique class name prefix for the component
   className: "nimbus-time-input",
-  slots: ["root", "segmentGroup", "segment"],
+  slots: [
+    "root",
+    "leadingElement",
+    "trailingElement",
+    "segmentGroup",
+    "segment",
+  ],
 
   // Base styles applied to all instances of the component
   base: {
     root: {
-      display: "inline-block",
-    },
-    segmentGroup: {
-      display: "flex",
+      display: "inline-flex",
       borderRadius: "200",
-      bg: "transparent",
-      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-      width: "100%",
       alignItems: "center",
-
-      "&[data-focus-within='true']": {
-        // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "var(--focus-ring-offset)",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _focusWithin: {
+        layerStyle: "focusRing",
+      },
+      focusVisibleRing: "outside",
+      focusRing: "outside",
+      "& input": {
+        outline: "none",
       },
       "&[data-invalid='true']": {
         "--border-color": "colors.critical.7",
@@ -38,12 +39,28 @@ export const timeInputRecipe = defineSlotRecipe({
         bg: "neutral.3",
       },
     },
+    segmentGroup: {
+      display: "flex",
+      flex: "1 0 auto",
+      borderRadius: "inherit",
+      bg: "transparent",
+      alignItems: "center",
+    },
+    leadingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+    },
+    trailingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+    },
     segment: {
       fontVariantNumeric: "tabular-nums",
-      outline: "0",
-      px: "50",
+      outline: "none",
+      p: "50",
       borderRadius: "50",
-
       "&:empty": {
         border: "1px solid",
       },
@@ -90,23 +107,49 @@ export const timeInputRecipe = defineSlotRecipe({
     // Size variants from smallest to largest
     size: {
       sm: {
-        segmentGroup: {
+        root: {
           h: 800,
-          textStyle: "sm",
+          gap: 100,
           px: 300,
+        },
+        segment: {
+          textStyle: "sm",
+        },
+        leadingElement: {
+          "& svg": {
+            boxSize: "400",
+          },
+        },
+        trailingElement: {
+          "& svg": {
+            boxSize: "400",
+          },
         },
       },
       md: {
-        segmentGroup: {
+        root: {
           h: 1000,
-          textStyle: "md",
+          gap: 200,
           px: 400,
+        },
+        segment: {
+          textStyle: "md",
+        },
+        leadingElement: {
+          "& svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
+          "& svg": {
+            boxSize: "500",
+          },
         },
       },
     },
     variant: {
       solid: {
-        segmentGroup: {
+        root: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
           backgroundColor: "neutral.1",
@@ -116,7 +159,7 @@ export const timeInputRecipe = defineSlotRecipe({
         },
       },
       ghost: {
-        segmentGroup: {
+        root: {
           _hover: {
             backgroundColor: "primary.2",
           },

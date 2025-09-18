@@ -12,6 +12,8 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,
+  NumberInputLeadingElementSlot,
+  NumberInputTrailingElementSlot,
   NumberInputIncrementButtonSlot,
   NumberInputDecrementButtonSlot,
 } from "./number-input.slots";
@@ -27,7 +29,13 @@ import messages from "./number-input.i18n";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
  */
 export const NumberInput = (props: NumberInputProps) => {
-  const { size, ref: forwardedRef, ...restProps } = props;
+  const {
+    size,
+    leadingElement,
+    trailingElement,
+    ref: forwardedRef,
+    ...restProps
+  } = props;
   const { locale } = useLocale();
   const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
@@ -56,13 +64,28 @@ export const NumberInput = (props: NumberInputProps) => {
     "data-disabled": props.isDisabled,
   };
   return (
-    <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
+    <NumberInputRootSlot
+      {...stateProps}
+      {...recipeProps}
+      {...styleProps}
+      size={size}
+    >
+      {leadingElement && (
+        <NumberInputLeadingElementSlot>
+          {leadingElement}
+        </NumberInputLeadingElementSlot>
+      )}
       <NumberInputInputSlot
         ref={ref}
         {...inputProps}
         {...stateProps}
         size={size}
       />
+      {trailingElement && (
+        <NumberInputTrailingElementSlot>
+          {trailingElement}
+        </NumberInputTrailingElementSlot>
+      )}
       <Box
         position="absolute"
         top="0"

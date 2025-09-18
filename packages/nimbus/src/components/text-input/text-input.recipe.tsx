@@ -1,65 +1,118 @@
-import { defineRecipe } from "@chakra-ui/react/styled-system";
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 /**
  * Recipe configuration for the TextInput component.
- * Defines the styling variants and base styles using Chakra UI's recipe system.
+ * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  */
-export const textInputRecipe = defineRecipe({
+export const textInputSlotRecipe = defineSlotRecipe({
+  slots: ["root", "leadingElement", "input", "trailingElement"],
   // Unique class name prefix for the component
   className: "nimbus-text-input",
 
   // Base styles applied to all instances of the component
   base: {
-    display: "block",
-    borderRadius: "200",
-    colorPalette: "neutral",
-    focusVisibleRing: "outside",
-    bg: "transparent",
-    outline: "none",
-    boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-    _placeholder: {
-      opacity: 0.5,
-      color: "currentColor",
+    root: {
+      display: "inline-flex",
+      cursor: "text",
+      borderRadius: "200",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      alignItems: "center",
+      _focusWithin: {
+        layerStyle: "focusRing",
+      },
+
+      _hover: {
+        backgroundColor: "primary.2",
+      },
+
+      "&[data-invalid='true']": {
+        "--border-color": "colors.critical.7",
+        "--border-width": "sizes.50",
+        color: "critical.11",
+      },
+
+      _disabled: {
+        bg: "neutral.3",
+        layerStyle: "disabled",
+      },
     },
-    _disabled: {
-      layerStyle: "disabled",
-      bg: "neutral.3",
+
+    leadingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
     },
-    "&[data-invalid='true']": {
-      "--border-color": "colors.critical.7",
-      "--border-width": "sizes.50",
-      color: "critical.11",
+
+    trailingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+    },
+
+    input: {
+      cursor: "inherit",
+      display: "block",
+      flexGrow: 1,
+      bg: "transparent",
+      outline: "none",
+      fontSize: "inherit",
+
+      _placeholder: {
+        opacity: 0.5,
+        color: "currentColor",
+      },
     },
   },
 
   variants: {
     size: {
       sm: {
-        h: 800,
-        textStyle: "sm",
-        px: 300,
+        root: {
+          height: "800",
+          px: "300",
+          gap: "100",
+          textStyle: "sm",
+        },
+        leadingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
       },
       md: {
-        h: 1000,
-        textStyle: "md",
-        px: 400,
+        root: {
+          height: "1000",
+          px: "400",
+          gap: "200",
+          textStyle: "md",
+        },
+        leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
       },
     },
 
     variant: {
       solid: {
-        "--border-width": "sizes.25",
-        "--border-color": "colors.neutral.7",
-        backgroundColor: "primary.1",
-        _hover: {
-          backgroundColor: "primary.2",
+        root: {
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
+          backgroundColor: "primary.1",
         },
       },
-      ghost: {
-        _hover: {
-          backgroundColor: "primary.2",
-        },
-      },
+      ghost: {},
     },
   },
 

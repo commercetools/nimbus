@@ -1,28 +1,40 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import {
   type HTMLChakraProps,
   type RecipeVariantProps,
-  type UnstyledProp,
-  createRecipeContext,
+  createSlotRecipeContext,
 } from "@chakra-ui/react/styled-system";
 
-import { textInputRecipe } from "./text-input.recipe";
+import { textInputSlotRecipe } from "./text-input.recipe";
 
-export interface TextInputRecipeProps
-  extends RecipeVariantProps<typeof textInputRecipe>,
-    UnstyledProp {}
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "textInput",
+});
 
-export type TextInputRootSlotProps = HTMLChakraProps<
-  "input",
-  TextInputRecipeProps
->;
+export interface TextInputRootProps
+  extends HTMLChakraProps<
+    "div",
+    RecipeVariantProps<typeof textInputSlotRecipe>
+  > {}
+export const TextInputRootSlot = withProvider<
+  HTMLDivElement,
+  TextInputRootProps
+>("div", "root");
 
-const { withContext } = createRecipeContext({ recipe: textInputRecipe });
+interface TextInputLeadingElementProps extends HTMLChakraProps<"div"> {}
+export const TextInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  TextInputLeadingElementProps
+>("div", "leadingElement");
 
-/**
- * Root component that provides the styling context for the TextInput component.
- * Uses Chakra UI's recipe context system for consistent styling across instances.
- */
-export const TextInputRootSlot = withContext<
+interface TextInputInputProps extends HTMLChakraProps<"input"> {}
+export const TextInputInputSlot = withContext<
   HTMLInputElement,
-  TextInputRootSlotProps
->("input");
+  TextInputInputProps
+>("input", "input");
+
+interface TextInputTrailingElementProps extends HTMLChakraProps<"div"> {}
+export const TextInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  TextInputTrailingElementProps
+>("div", "trailingElement");

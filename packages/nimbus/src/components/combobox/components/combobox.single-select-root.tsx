@@ -7,6 +7,7 @@ import { SingleSelectInput } from "./combobox.single-select-input";
 import { ComboBoxOptions } from "./combobox.options";
 import { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button-group";
 import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
+import { ComboBoxLeadingElement } from "./combobox.leading-element";
 
 export const SingleSelectRoot = <T extends object>({
   children,
@@ -18,6 +19,7 @@ export const SingleSelectRoot = <T extends object>({
   renderEmptyState,
   shouldFocusWrap = true,
   isLoading,
+  leadingElement,
   ref,
   ...rest
 }: ComboBoxSingleSelectRootProps<T>) => {
@@ -46,6 +48,9 @@ export const SingleSelectRoot = <T extends object>({
       {...rest}
       ref={ref}
     >
+      {leadingElement && (
+        <ComboBoxLeadingElement>{leadingElement}</ComboBoxLeadingElement>
+      )}
       <SingleSelectInput
         ref={inputRef}
         placeholder={placeholder}

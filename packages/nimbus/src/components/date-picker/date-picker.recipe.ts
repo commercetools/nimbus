@@ -10,7 +10,6 @@ export const datePickerSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "group",
-    "trigger",
     "popover",
     "calendar",
     "calendarHeader",
@@ -26,11 +25,6 @@ export const datePickerSlotRecipe = defineSlotRecipe({
     },
     group: {
       position: "relative",
-    },
-    trigger: {
-      position: "absolute",
-      right: "400",
-      top: "100",
     },
     popover: {
       bg: "neutral.1",
@@ -52,27 +46,8 @@ export const datePickerSlotRecipe = defineSlotRecipe({
   variants: {
     // Size variants from smallest to largest
     size: {
-      sm: {
-        group: {
-          "& .nimbus-date-input__root": {
-            mr: "1400",
-          },
-        },
-        trigger: {
-          top: "50",
-        },
-      },
-      md: {
-        group: {
-          "& .nimbus-date-input__root": {
-            // combine 2 tokens cause there is no token for this crooked value
-            mr: "calc({spacing.1600} + {spacing.200})",
-          },
-        },
-        trigger: {
-          top: "100",
-        },
-      },
+      sm: {},
+      md: {},
     },
     variant: {
       // those need to exist, as the date-input has and needs those variants

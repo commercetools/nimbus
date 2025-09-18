@@ -9,40 +9,64 @@ export const numberInputRecipe = defineSlotRecipe({
   className: "nimbus-number-input",
 
   // Define the slots for this multi-part component
-  slots: ["root", "input", "incrementButton", "decrementButton"],
+  slots: [
+    "root",
+    "leadingElement",
+    "trailingElement",
+    "input",
+    "incrementButton",
+    "decrementButton",
+  ],
 
   // Base styles applied to all instances of the component
   base: {
     root: {
-      display: "inline-block",
+      display: "inline-flex",
       position: "relative",
-      // Apply input hover styles when buttons are hovered
-      "&:has(button:hover) input": {
-        backgroundColor: "primary.2",
-      },
-    },
-    input: {
-      "--border-width": "sizes.25",
-      "--border-color": "colors.neutral.7",
-      display: "block",
       borderRadius: "200",
-      colorPalette: "neutral",
-      focusVisibleRing: "outside",
-      bg: "transparent",
-      outline: "none",
-      appearance: "textfield",
-      width: "full",
-      _placeholder: {
-        opacity: 0.5,
-        color: "currentColor",
+      boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _focusWithin: {
+        layerStyle: "focusRing",
       },
-      "&[data-disabled='true']": {
+
+      '&[data-disabled="true"]': {
         layerStyle: "disabled",
         bg: "neutral.3",
       },
       "&[data-invalid='true']": {
+        "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
         color: "critical.11",
+      },
+    },
+    leadingElement: {
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+    },
+    trailingElement: {
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+    },
+    input: {
+      display: "flex",
+      flexGrow: 1,
+      flexShrink: 1,
+      borderRadius: "inherit",
+      colorPalette: "neutral",
+      bg: "transparent",
+      outline: "none",
+      appearance: "textfield",
+      _placeholder: {
+        opacity: 0.5,
+        color: "currentColor",
+      },
+
+      "&[data-disabled='true']": {
+        cursor: "not-allowed",
       },
     },
     incrementButton: {
@@ -55,17 +79,13 @@ export const numberInputRecipe = defineSlotRecipe({
       justifyContent: "center",
       cursor: "button",
       bg: "transparent",
-      _hover: {
-        bg: "primary.2",
-      },
       _active: {
         bg: "neutral.4",
       },
       "&[data-disabled='true']": {
-        opacity: 0.5,
         cursor: "not-allowed",
       },
-      "& svg": {
+      _icon: {
         fill: "primary.9",
       },
       borderTopRightRadius: "200",
@@ -83,18 +103,14 @@ export const numberInputRecipe = defineSlotRecipe({
       justifyContent: "center",
       cursor: "button",
       bg: "transparent",
-      _hover: {
-        bg: "primary.2",
-      },
       _active: {
         bg: "neutral.4",
       },
       "&[data-disabled='true']": {
-        opacity: 0.5,
         cursor: "not-allowed",
       },
-      "& svg": {
-        fill: "primary.9",
+      _icon: {
+        color: "primary.9",
       },
       borderBottomRightRadius: "200",
       "&[data-invalid='true']": {
@@ -106,19 +122,45 @@ export const numberInputRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
+        root: {
+          pl: "300",
+          pr: "900", // inc+dec-button width + default padding
+          gap: "100",
+        },
         input: {
-          h: 800,
+          h: "800",
           textStyle: "sm",
-          px: 300,
-          paddingRight: 800,
+        },
+        leadingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
         },
       },
       md: {
+        root: {
+          pl: "400",
+          pr: "1000", // inc+dec-button width + default padding
+          gap: "200",
+        },
         input: {
-          h: 1000,
+          h: "1000",
           textStyle: "md",
-          px: 400,
-          paddingRight: 800,
+        },
+        leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
         },
       },
     },
@@ -126,21 +168,13 @@ export const numberInputRecipe = defineSlotRecipe({
     variant: {
       solid: {
         root: {
-          // Apply input hover styles when buttons are hovered for solid variant
-          "&:has(button:hover) input": {
-            backgroundColor: "primary.2",
-          },
-        },
-        input: {
-          "&[data-invalid='true']": {
-            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-            "--border-width": "sizes.50",
-          },
-          boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-          backgroundColor: "neutral.1",
+          // Apply hover effect to root, button color is deeper when hovered
           _hover: {
             backgroundColor: "primary.2",
           },
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
+          backgroundColor: "neutral.1",
         },
         incrementButton: {
           "&[data-invalid='true']": {
@@ -153,7 +187,7 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 -0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
         decrementButton: {
@@ -167,22 +201,13 @@ export const numberInputRecipe = defineSlotRecipe({
           // Half-pixel shadow to create the illusion of a complete border when paired with the other button
           boxShadow: "inset 0 0.5px 0 0 var(--border-color)",
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
       },
       ghost: {
         root: {
           // Apply input hover styles when buttons are hovered for ghost variant
-          "&:has(button:hover) input": {
-            backgroundColor: "primary.2",
-          },
-        },
-        input: {
-          "&[data-invalid='true']": {
-            boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
-            "--border-width": "sizes.50",
-          },
           _hover: {
             backgroundColor: "primary.2",
           },
@@ -193,7 +218,7 @@ export const numberInputRecipe = defineSlotRecipe({
             borderRight: "2px solid var(--border-color)",
           },
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
         decrementButton: {
@@ -202,7 +227,7 @@ export const numberInputRecipe = defineSlotRecipe({
             borderRight: "2px solid var(--border-color)",
           },
           _hover: {
-            backgroundColor: "primaryAlpha.3",
+            backgroundColor: "primaryAlpha.4",
           },
         },
       },

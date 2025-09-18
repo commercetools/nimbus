@@ -3,7 +3,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextInput } from "./text-input";
 import type { TextInputProps } from "./text-input.types";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Box, Stack, Text } from "@/components";
+import { Box, Stack, Text, Icon, IconButton } from "@/components";
+import {
+  Search,
+  Visibility,
+  AddReaction,
+  AddBox,
+  Close,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof TextInput> = {
   title: "components/TextInput",
@@ -15,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof TextInput>;
 
 const inputVariants: TextInputProps["variant"][] = ["solid", "ghost"];
-const inputSize: TextInputProps["size"][] = ["md", "sm"];
+const inputSize = ["md", "sm"] as const;
 
 export const Base: Story = {
   args: {
@@ -285,6 +292,141 @@ export const Controlled: Story = {
         await expect(typeof call[0]).toBe("string");
       }
     });
+  },
+};
+
+export const LeadingAndTrailingElements: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof TextInput>;
+      getProps?: (size: "sm" | "md") => React.ComponentProps<typeof TextInput>;
+    }> = [
+      {
+        label: "Leading Icon",
+        props: {
+          placeholder: "Search...",
+          leadingElement: <Search />,
+          "aria-label": "search-input",
+        },
+      },
+      {
+        label: "Trailing Icon",
+        props: {
+          placeholder: "Enter password",
+          trailingElement: <Visibility />,
+          "aria-label": "password-input",
+        },
+      },
+      {
+        label: "Both Icons",
+        props: {
+          placeholder: "Search for products",
+          leadingElement: <Icon as={Search} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "search-with-clear-input",
+        },
+      },
+      {
+        label: "IconButton Elements",
+        getProps: (size: "sm" | "md") => ({
+          placeholder: "Advanced search",
+          leadingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="search options"
+            >
+              <Icon as={AddReaction} />
+            </IconButton>
+          ),
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="clear"
+            >
+              <Icon as={Close} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-search-input",
+        }),
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <TextInput
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
+                          size={size}
+                          variant={variant}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+export const RTLSupport: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <Box>
+          <Text mb="200">LTR direction (left-to-right)</Text>
+          <TextInput
+            placeholder="Search in LTR"
+            leadingElement={<Icon as={Search} />}
+            trailingElement={<Icon as={AddBox} />}
+            aria-label="ltr-input"
+          />
+        </Box>
+        <Box dir="rtl" width="100%">
+          <Text mb="200" textAlign="right">
+            RTL direction (right-to-left)
+          </Text>
+          <TextInput
+            placeholder="Search in RTL"
+            leadingElement={<Icon as={Search} />}
+            trailingElement={<Icon as={AddBox} />}
+            aria-label="rtl-input"
+          />
+        </Box>
+      </Stack>
+    );
   },
 };
 

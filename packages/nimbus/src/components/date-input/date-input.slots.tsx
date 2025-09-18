@@ -36,6 +36,16 @@ export const DateInputRootSlot = withProvider<
   DateInputRootProps
 >("div", "root");
 
+export const DateInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "leadingElement");
+
+export const DateInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "trailingElement");
+
 /**
  * Slot component for the DateField part of the DateInput.
  */

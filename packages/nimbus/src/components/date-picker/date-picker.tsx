@@ -1,7 +1,6 @@
 import {
   DatePickerRootSlot,
   DatePickerGroupSlot,
-  DatePickerTriggerSlot,
   DatePickerPopoverSlot,
   DatePickerCalendarSlot,
 } from "./date-picker.slots";
@@ -18,7 +17,7 @@ import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { datePickerSlotRecipe } from "./date-picker.recipe";
 import type { DatePickerProps } from "./date-picker.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { DateInput, Calendar, IconButton } from "@/components";
+import { DateInput, Calendar, IconButton, Box } from "@/components";
 import { DatePickerTimeInput } from "./components/date-picker.time-input";
 import { DatePickerCustomContext } from "./components/date-picker.custom-context";
 
@@ -64,27 +63,29 @@ export const DatePicker = (props: DatePickerProps) => {
                 width="full"
                 hideTimeZone={hideTimeZone}
                 hourCycle={hourCycle}
+                trailingElement={
+                  <Box>
+                    {/* @ts-expect-error react aria is adding the aria-label prop */}
+                    <IconButton
+                      tone="primary"
+                      variant="ghost"
+                      size={overlayButtonSize}
+                      slot="clear"
+                    >
+                      <Close />
+                    </IconButton>
+                    {/* @ts-expect-error react aria is adding the aria-label prop */}
+                    <IconButton
+                      tone="primary"
+                      variant="ghost"
+                      size={overlayButtonSize}
+                      slot="calendarToggle"
+                    >
+                      <CalendarMonth />
+                    </IconButton>
+                  </Box>
+                }
               />
-              <DatePickerTriggerSlot>
-                {/* @ts-expect-error react aria is adding the aria-label prop */}
-                <IconButton
-                  tone="primary"
-                  variant="ghost"
-                  size={overlayButtonSize}
-                  slot="clear"
-                >
-                  <Close />
-                </IconButton>
-                {/* @ts-expect-error react aria is adding the aria-label prop */}
-                <IconButton
-                  tone="primary"
-                  variant="ghost"
-                  size={overlayButtonSize}
-                  slot="calendarToggle"
-                >
-                  <CalendarMonth />
-                </IconButton>
-              </DatePickerTriggerSlot>
             </Group>
           </DatePickerGroupSlot>
           <DatePickerPopoverSlot asChild>

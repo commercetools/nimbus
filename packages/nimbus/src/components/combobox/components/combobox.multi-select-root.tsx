@@ -27,6 +27,7 @@ import {
   ComboBoxMultiSelectInputSlot,
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
+import { ComboBoxLeadingElement } from "./combobox.leading-element";
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -61,6 +62,7 @@ export const MultiSelectRoot = <T extends object>({
   onSubmitCustomValue,
   renderEmptyState,
   ref,
+  leadingElement,
   ...props
 }: ComboBoxMultiSelect<T>) => {
   // Internal state for popover, enables opening on first focus
@@ -265,6 +267,9 @@ export const MultiSelectRoot = <T extends object>({
           data-open={isOpen}
           {...props}
         >
+          {leadingElement && (
+            <ComboBoxLeadingElement>{leadingElement}</ComboBoxLeadingElement>
+          )}
           <MultiSelectTagGroup
             items={items}
             selectedKeys={selectedKeys}

@@ -1,5 +1,7 @@
 import {
   TimeInputRootSlot,
+  TimeInputLeadingElementSlot,
+  TimeInputTrailingElementSlot,
   TimeInputSegmentGroupSlot,
   TimeInputSegmentSlot,
 } from "./time-input.slots";
@@ -9,7 +11,6 @@ import { useRecipe } from "@chakra-ui/react/styled-system";
 import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeInputProps } from "./time-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-
 /**
  * TimeInput
  * ============================================================
@@ -17,12 +18,18 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
  */
 export const TimeInput = (props: TimeInputProps) => {
   const recipe = useRecipe({ recipe: timeInputRecipe });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
+  const { leadingElement, trailingElement, ...rest } = props;
+  const [recipeProps, remainingProps] = recipe.splitVariantProps({ ...rest });
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
   return (
     <TimeInputRootSlot asChild {...recipeProps} {...styleProps}>
       <TimeField {...otherProps}>
+        {leadingElement && (
+          <TimeInputLeadingElementSlot>
+            {leadingElement}
+          </TimeInputLeadingElementSlot>
+        )}
         <TimeInputSegmentGroupSlot asChild>
           <DateInput>
             {(segment) => (
@@ -32,6 +39,11 @@ export const TimeInput = (props: TimeInputProps) => {
             )}
           </DateInput>
         </TimeInputSegmentGroupSlot>
+        {trailingElement && (
+          <TimeInputTrailingElementSlot>
+            {trailingElement}
+          </TimeInputTrailingElementSlot>
+        )}
       </TimeField>
     </TimeInputRootSlot>
   );
