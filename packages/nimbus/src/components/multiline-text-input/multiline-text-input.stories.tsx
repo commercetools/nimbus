@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<typeof MultilineTextInput>;
 
 const inputVariants: MultilineTextInputProps["variant"][] = ["solid", "ghost"];
-const inputSize: MultilineTextInputProps["size"][] = ["md", "sm"];
+const inputSize = ["md", "sm"] as const;
 
 export const Base: Story = {
   args: {

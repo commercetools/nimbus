@@ -1,17 +1,17 @@
 import type { TimeInputRootProps } from "./time-input.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { timeInputRecipe } from "./time-input.recipe";
-import type { TimeFieldStateOptions } from "react-stately";
+import type { TimeFieldProps } from "react-aria-components";
 import type { TimeValue } from "react-aria";
 
 /**
- * Properties from TimeFieldStateOptions that would conflict with similarly named
+ * Properties from TimeFieldProps that would conflict with similarly named
  * properties in TimeInputRootProps. We use this to prevent TypeScript interface
- * merging conflicts by prioritizing the TimeFieldStateOptions implementation.
+ * merging conflicts by prioritizing the TimeFieldProps implementation.
  *
  * Examples include: value, defaultValue, onChange, onBlur, onFocus, etc.
  */
-type ConflictingFieldStateProps = keyof TimeFieldStateOptions<TimeValue>;
+type ConflictingFieldStateProps = keyof TimeFieldProps<TimeValue>;
 
 /**
  * Additional properties we want to exclude from the TimeInput component.
@@ -41,7 +41,7 @@ type ExcludedProps =
  */
 export interface TimeInputProps
   extends Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
-    Omit<TimeFieldStateOptions<TimeValue>, ExcludedProps>,
+    Omit<TimeFieldProps<TimeValue>, ExcludedProps>,
     RecipeVariantProps<typeof timeInputRecipe> {
   /**
    * Optional element to display at the start of the input

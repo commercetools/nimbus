@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof TextInput>;
 
 const inputVariants: TextInputProps["variant"][] = ["solid", "ghost"];
-const inputSize: TextInputProps["size"][] = ["md", "sm"];
+const inputSize = ["md", "sm"] as const;
 
 export const Base: Story = {
   args: {
