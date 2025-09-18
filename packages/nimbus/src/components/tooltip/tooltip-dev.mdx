@@ -1,7 +1,7 @@
 ---
 id: Components-tooltip-dev
 title: Tooltip Engineering Guidelines
-description: Engineering guideline for migrating from UI Kit to Nimbus Tooltip component
+description: Engineering guideline for using the Nimbus Tooltip component
 documentState: InitialDraft
 order: 999
 menu:
@@ -14,11 +14,15 @@ tags:
   - migration
 ---
 
-# Tooltip Engineering Guidelines
+# Tooltip Component
 
 Tooltips is a compound component that displays informative text when users hover over or focus on an element.
 
-⚠️ Before you get started, make sure your application entry point is wrapped with a Nimbus provider.
+## Component Anatomy [Optional for simple components]
+
+Component Anatomy here - image with parts and description as can be seen on [combobox](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5311-13804&p=f&m=dev) for example
+
+![](/images/tooltip/tooltip.png)
 
 ## Component Usage
 
@@ -32,71 +36,71 @@ import { Tooltip } from '@commercetools/nimbus';
 
 A minimal, copy-and-paste example of the tooltip in its simplest form: edit the placement in code code interface to different positions of choice (top, left, right, etc) 
 
-```jsx-live
+```jsx-live-dev
 // Example: A basic tooltip
 const App = () => (
-<Tooltip.Root>
+<Tooltip.Root placement="top">
   <Button>Hover me</Button>
-    <Tooltip.Content placement="top">This is a helpful tooltip</Tooltip.Content>
+    <Tooltip.Content
+      placement="top"
+      maxWidth="300px"
+      backgroundColor="blue"
+      color="white"
+    >
+      This is a helpful tooltip
+    </Tooltip.Content>
 </Tooltip.Root>
 )
 ```
 
-### Common usage and Variations
+### Common props and Variations
 
-#### 1. Placement Options
-Control where the tooltip appears relative to its trigger:
+#### Placement Options
+Control where the tooltip appears relative to its trigger: change the placement to any of these options to reposition the tooltip:
+```"top" | "top left" | "top right" | "top start" | "top end" | "bottom" | "bottom left" | "bottom right" | "bottom start" | "bottom end" | "left" | "left top" | "left bottom" | "right" | "right top" | "right bottom" | "start" | "start top" | "start bottom" | "end" | "end top" | "end bottom"```
 
-```jsx-live
+```jsx-live-dev
 const App = () => (
-  <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
 <Tooltip.Root>
-      <Button>Top placement</Button>
+      <Button>Tooltip placement</Button>
       <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
 </Tooltip.Root>
-<Tooltip.Root>
-      <Button>Bottom placement</Button>
-      <Tooltip.Content placement="bottom">Tooltip on bottom</Tooltip.Content>
-</Tooltip.Root>
-<Tooltip.Root>
-      <Button>Left placement</Button>
-      <Tooltip.Content placement="left">Tooltip on left</Tooltip.Content>
-</Tooltip.Root>
-<Tooltip.Root>
-      <Button>Right placement</Button>
-      <Tooltip.Content placement="right">Tooltip on right</Tooltip.Content>
-</Tooltip.Root>
-  </Stack>
 )
 ```
 
-#### 2. Timing Control
-Customize show and hide delays:
+#### Offset Options
 
-```jsx-live
+Control the tooltip offset:
+```offset```
+
+```jsx-live-dev
 const App = () => (
-<Tooltip.Root delay={500} closeDelay={300}>
-  <Button>Delayed tooltip</Button>
-  <Tooltip.Content>Appears after 500ms, closes after 300ms</Tooltip.Content>
+<Tooltip.Root>
+      <Button>Tooltip placement</Button>
+      <Tooltip.Content offset={50}>Tooltip on top</Tooltip.Content>
 </Tooltip.Root>
 )
 ```
 
-#### 3. Controlled State
-Programmatically control tooltip visibility: click on button to see tooltip
+```....Add example snippets for each relevant component prop```
 
-```jsx-live
-const App = () => {
-const [isOpen, setIsOpen] = useState(false);
+### API Changes
 
- return( <Tooltip.Root isOpen={isOpen} >
-  <Button onClick={() => setIsOpen(!isOpen)}>
-    Controlled tooltip
-  </Button>
-  <Tooltip.Content>This tooltip is controlled by state</Tooltip.Content>
-</Tooltip.Root>
-)}
-```
+| UI Kit Component | Nimbus Component | Notes |
+|------------------|------------------|-------|
+| `<Tooltip>` | `<Tooltip.Root>` + `<Tooltip.Content>` | Now uses compound component pattern |
+| `title` prop | `<Tooltip.Content>` children | Text content now goes as children |
+| `isOpen` prop | `isOpen` prop | ✅ Same API |
+| `onClose` | `onOpenChange` | ⚠️ Renamed, now receives boolean parameter |
+| `horizontalConstraint` | Not supported | ❌ Removed - use CSS or container sizing |
+
+
+#### Deprecated props
+- `onClose` → `onOpenChange`: Now receives `(isOpen: boolean) => void` instead of `() => void`
+- `title` prop → Content as children: Text now goes inside `<Tooltip.Content>`
+- `delay` and `closeDelay`: More granular control over timing
+- `horizontalConstraint`: Use CSS width constraints on content instead
+- `tone`: Styling is now handled through design tokens
 
 ## Testing Strategies and Best Practices
 
@@ -123,217 +127,13 @@ const renderWithProviders = (ui: React.ReactElement) =>
   render(ui, { wrapper: TestWrapper });
 ```
 
-### Storybook Integration for Testing
+#### 2. Storybook Integration for Testing
 
 Use the [Nimbus storybook Tooltip component story](https://nimbus-storybook-6l4m4g78g-commercetools.vercel.app/?path=/docs/components-tooltip-tooltip--docs) as a playground for visual testing of the component. 
 
-## Styling Guide and Theming Methodology
+#### 3. Regression tests
 
-### Understanding Nimbus Styling Architecture
-
-Nimbus uses a **design token-based** styling system built on top of Chakra UI's system, providing consistent theming across all components while maintaining flexibility for customization.
-
-#### Core Styling Concepts
-
-1. **Design Tokens**: Predefined values for colors, spacing, typography, etc.
-2. **Semantic Tokens**: Context-aware tokens that adapt to themes (light/dark)
-3. **Component Variants**: Predefined styling variations for components
-
-### Design Token System
-
-#### Color Tokens
-```jsx
-  // Available color palettes
-    colorPalette: {
-      surface: 'var(--colors-color-palette-surface)',
-      foreground: 'var(--colors-color-palette-foreground)', 
-      muted: 'var(--colors-color-palette-muted)',
-      border: 'var(--colors-color-palette-border)',
-      accent: 'var(--colors-color-palette-accent)'
-  };
-
-    <Tooltip.Root>
-      <Button>Hover me</Button>
-      <Tooltip.Content 
-        bg="colorPalette.surface" 
-        color="colorPalette.foreground"
-        borderColor="colorPalette.border"
-      >
-        Using semantic color tokens: {colorTokens.colorPalette.surface}
-      </Tooltip.Content>
-    </Tooltip.Root>
-```
-
-#### Spacing Tokens
-```tsx
-// Nimbus spacing scale (based on 4px grid)
-<Tooltip.Content 
-  padding="400"    // 16px
-  margin="200"     // 8px
-  gap="300"        // 12px
->
-  Consistently spaced content
-</Tooltip.Content>
-
-// Available spacing tokens
-const spacingScale = {
-  '100': '4px',   // xs
-  '200': '8px',   // sm  
-  '300': '12px',  // md
-  '400': '16px',  // lg
-  '500': '20px',  // xl
-  '600': '24px',  // 2xl
-  // ... continues up to '1600'
-};
-```
-
-#### Typography Tokens
-```tsx
-<Tooltip.Content 
-  fontSize="sm"         // 14px
-  fontWeight="medium"   // 500
-  lineHeight="normal"   // 1.5
->
-  Properly scaled text
-</Tooltip.Content>
-```
-
-### Component Styling Patterns
-
-#### Style Props (Recommended)
-Use Chakra-style props for simple customizations:
-
-```tsx
-<Tooltip.Root>
-  <Button>Styled tooltip trigger</Button>
-  <Tooltip.Content 
-    bg="blue.500"
-    color="white"
-    fontSize="sm"
-    fontWeight="medium"
-    borderRadius="md"
-    boxShadow="lg"
-    padding="300"
-    maxWidth="200px"
-  >
-    Custom styled tooltip
-  </Tooltip.Content>
-</Tooltip.Root>
-```
-
-
-## Migration Guide (UI Kit to Nimbus)
-
-### Component Mapping
-
-| UI Kit Component | Nimbus Component | Notes |
-|------------------|------------------|-------|
-| `<Tooltip>` | `<Tooltip.Root>` + `<Tooltip.Content>` | Now uses compound component pattern |
-| `title` prop | `<Tooltip.Content>` children | Text content now goes as children |
-| `isOpen` prop | `isOpen` prop | ✅ Same API |
-| `onClose` | `onOpenChange` | ⚠️ Renamed, now receives boolean parameter |
-| `horizontalConstraint` | Not supported | ❌ Removed - use CSS or container sizing |
-
-### API Changes
-
-#### Props Renamed or Changed
-- `onClose` → `onOpenChange`: Now receives `(isOpen: boolean) => void` instead of `() => void`
-- `title` prop → Content as children: Text now goes inside `<Tooltip.Content>`
-- `delay` and `closeDelay`: More granular control over timing
-
-#### Props Removed
-- `horizontalConstraint`: Use CSS width constraints on content instead
-- `tone`: Styling is now handled through design tokens
-
-#### New Props Available
-- `placement`: More placement options with modifiers
-- `defaultOpen`: Set initial state without controlled component
-
-### Code Mod Instructions
-
-If a code mod exists for Tooltip migration, run:
-
-```bash
-npx nimbus-codemods migrate-tooltip
-```
-
-### Manual Migration Steps
-
-For manual migration, follow these steps:
-
-#### Step 1: Replace Component Structure
-**Before (UI Kit):**
-```tsx
-<Tooltip title="Helpful information" isOpen={isOpen} onClose={handleClose}>
-  <Button>Hover me</Button>
-</Tooltip>
-```
-
-**After (Nimbus):**
-```tsx
-<Tooltip.Root isOpen={isOpen} onOpenChange={setIsOpen}>
-  <Button>Hover me</Button>
-  <Tooltip.Content>Helpful information</Tooltip.Content>
-</Tooltip.Root>
-```
-
-#### Step 2: Update Event Handlers
-**Before:**
-```tsx
-const handleClose = () => {
-  setIsOpen(false);
-};
-```
-
-**After:**
-```tsx
-const handleOpenChange = (isOpen: boolean) => {
-  setIsOpen(isOpen);
-};
-```
-
-#### Step 3: Handle Removed Props
-For `horizontalConstraint`, wrap with a container or use CSS:
-
-**Before:**
-```tsx
-<Tooltip title="Long text content..." horizontalConstraint="m">
-  <Button>Button</Button>
-</Tooltip>
-```
-
-**After:**
-```tsx
-<Tooltip.Root>
-  <Button>Button</Button>
-  <Tooltip.Content style={{ maxWidth: '200px' }}>
-    Long text content...
-  </Tooltip.Content>
-</Tooltip.Root>
-```
-
-## ⚠️ Caveats and Best Practices For Migration
-
-### Testing Requirements
-- **Run Tests After Migration**: Always run your test suites after migrating to ensure components function as expected
-- **Update Test Patterns**: Switch from UI Kit testing patterns to Nimbus patterns shown in this guide
-- **Provider Requirements**: Ensure tests include both `NimbusProvider` and `IntlProvider`
-
-### Common Pitfalls
-- **Event Handler Updates**: Remember `onClose` is now `onOpenChange` with different signature
-- **Compound Component Pattern**: Both `Tooltip.Root` and `Tooltip.Content` are required
-
-
-**Additional Resources:**
-- [React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
-- [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
-- [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
-
-### API Reference
-
-<PropsTable id="Tooltip" />
-
-### Accessibility Standards
+### 4. Accessibility Standards
 
 Nimbus Tooltip automatically handles most accessibility requirements, but developers should be aware of these standards:
 
@@ -345,42 +145,44 @@ Nimbus Tooltip automatically handles most accessibility requirements, but develo
 
 ### Essential Patterns
 - **Compound Components**: Always use `<Tooltip.Root>` + `<Tooltip.Content>`
-- **Provider Requirements**: Wrap app with `NimbusProvider` and `IntlProvider`  
 - **Testing**: Include both providers in test wrapper
 - **Accessibility**: Built-in ARIA support, keyboard navigation included
 - **Performance**: Memoize handlers and styles for optimal performance
 
-### Migration Checklist
-- [ ] Replace UI Kit `<Tooltip title="...">` with `<Tooltip.Root>` + `<Tooltip.Content>`
-- [ ] Update `onClose` handlers to `onOpenChange`
-- [ ] Remove `horizontalConstraint`.
-- [ ] Test hover, focus, and keyboard interactions
-- [ ] Verify accessibility features
-
 ### Common Code Patterns
+
+#### Hooks
 ```tsx
-// Basic Pattern
-<Tooltip.Root>
-  <Button>Trigger</Button>
-  <Tooltip.Content>Content</Tooltip.Content>
-</Tooltip.Root>
+// Custom Hook Pattern
+const useTooltip = (content: string, options = {}) => { ...};
 
-// With Custom Styling
-<Tooltip.Content 
-  placement="top"
-  maxWidth="300px"
-  bg="blue.500"
-  color="white"
->
-  Styled content
-</Tooltip.Content>
+// Using the Custom Hook
+const MyComponent = () => {
+  const { tooltipProps, contentProps } = useTooltip(
+    "This action will save your changes",
+    { placement: "bottom", delay: 300 }
+  );
 
-// Testing Pattern
-const TestWrapper = ({ children }) => (
-  <IntlProvider locale="en" messages={{}}>
-    <NimbusProvider>{children}</NimbusProvider>
-  </IntlProvider>
-);
+  return (
+    <Tooltip.Root {...tooltipProps}>
+      <Button>Save</Button>
+      <Tooltip.Content {...contentProps} />
+    </Tooltip.Root>
+  );
+};
 ```
 
-**Need Help?** Join `#nimbus-migration` on Slack or check the [Nimbus Storybook](https://nimbus.commercetools.com/?path=/story/components-tooltip) for live examples.
+
+### API Reference
+
+<PropsTable id="Tooltip" />
+
+<br/>
+
+### Need Help?
+Join `#nimbus-migration` on Slack or check the [Nimbus Storybook](https://nimbus.commercetools.com/?path=/story/components-tooltip) for live examples.
+
+**Additional Resources:**
+- [React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
+- [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+- [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)

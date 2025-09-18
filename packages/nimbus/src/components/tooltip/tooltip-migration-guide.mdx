@@ -1,0 +1,176 @@
+---
+id: Components-tooltip-migration
+title: Tooltip Migration Guideline
+description: Engineering guideline for migrating from UI Kit to Nimbus Tooltip component
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Feedback
+  - TooltipMigration
+tags:
+  - component
+  - engineering
+  - migration
+---
+
+# Tooltip Migration Guideline (Uikit to Nimbus)
+
+## Basic requirement
+
+Migration requirements like ensuring the right codemod exists, where to find it or put it etc. 
+
+
+### Code Mod Instructions
+
+If a code mod exists for Tooltip migration, run:
+
+```bash
+npx nimbus-codemods migrate-tooltip
+```
+
+### Manual Migration Steps
+
+For manual migration, follow these steps:
+
+#### Step 1: Replace Component Structure
+**Before (UI Kit):**
+```tsx
+<Tooltip title="Helpful information" isOpen={isOpen} onClose={handleClose}>
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+**After (Nimbus):**
+```tsx
+<Tooltip.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+  <Button>Hover me</Button>
+  <Tooltip.Content>Helpful information</Tooltip.Content>
+</Tooltip.Root>
+```
+
+#### Step 2: Update Event Handlers
+**Before:**
+```tsx
+const handleClose = () => {
+  setIsOpen(false);
+};
+```
+
+**After:**
+```tsx
+const handleOpenChange = (isOpen: boolean) => {
+  setIsOpen(isOpen);
+};
+```
+
+#### Step 3: Handle Removed Props
+For `horizontalConstraint`, wrap with a container or use CSS:
+
+**Before:**
+```tsx
+<Tooltip title="Long text content..." horizontalConstraint="m">
+  <Button>Button</Button>
+</Tooltip>
+```
+
+**After:**
+```tsx
+<Tooltip.Root>
+  <Button>Button</Button>
+  <Tooltip.Content style={{ maxWidth: '200px' }}>
+    Long text content...
+  </Tooltip.Content>
+</Tooltip.Root>
+```
+
+### API Changes and Component Mapping
+
+These are the possible changes for this component after a successful migration to Nimbus
+
+| UI Kit Component | Nimbus Component | Notes |
+|------------------|------------------|-------|
+| `<Tooltip>` | `<Tooltip.Root>` + `<Tooltip.Content>` | Now uses compound component pattern |
+| `title` prop | `<Tooltip.Content>` children | Text content now goes as children |
+| `isOpen` prop | `isOpen` prop | ✅ Same API |
+| `onClose` | `onOpenChange` | ⚠️ Renamed, now receives boolean parameter |
+| `horizontalConstraint` | Not supported | ❌ Removed - use CSS or container sizing |
+
+#### Props Renamed or Changed
+- `onClose` → `onOpenChange`: Now receives `(isOpen: boolean) => void` instead of `() => void`
+- `title` prop → Content as children: Text now goes inside `<Tooltip.Content>`
+- `delay` and `closeDelay`: More granular control over timing
+
+#### Props Removed
+- `horizontalConstraint`: Use CSS width constraints on content instead
+- `tone`: Styling is now handled through design tokens
+
+#### New Props Introduced
+- `placement`: More placement options with modifiers
+- `defaultOpen`: Set initial state without controlled component
+
+
+## Testing Strategies and Best Practices After Migration
+
+#### 1. Unit Testing with React Testing Library
+
+List all possible test adjustments to be made to unit tests, regression tests etc
+
+**Recommended Testing Library Setup:**
+```tsx
+import { render, screen, userEvent } from '@testing-library/react';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { IntlProvider } from 'react-intl';
+import { Tooltip, Button } from '@commercetools/nimbus';
+
+// Test wrapper with required providers
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <IntlProvider locale="en" messages={{}} defaultLocale="en">
+    <NimbusProvider>
+      {children}
+    </NimbusProvider>
+  </IntlProvider>
+);
+
+// Custom render function
+const renderWithProviders = (ui: React.ReactElement) => 
+  render(ui, { wrapper: TestWrapper });
+```
+
+## ⚠️ Caveats and Best Practices For Migration
+
+### Testing Requirements
+- **Run Tests After Migration**: Always run your test suites after migrating to ensure components function as expected
+- **Update Test Patterns**: Switch from UI Kit testing patterns to Nimbus patterns shown in this guide
+- **Provider Requirements**: Ensure tests include both `NimbusProvider` and `IntlProvider`
+
+### Common Pitfalls
+- **Event Handler Updates**: Remember `onClose` is now `onOpenChange` with different signature
+- **Compound Component Pattern**: Both `Tooltip.Root` and `Tooltip.Content` are required
+
+
+**Additional Resources:**
+- [React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
+- [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+- [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
+
+### API Reference
+
+<PropsTable id="Tooltip" />
+
+## Quick Reference Summary
+
+### Essential Patterns
+- **Compound Components**: Always use `<Tooltip.Root>` + `<Tooltip.Content>`
+- **Testing**: Include both providers in test wrapper
+- **Accessibility**: Built-in ARIA support, keyboard navigation included
+
+### Migration Checklist
+- [ ] Replace UI Kit `<Tooltip title="...">` with `<Tooltip.Root>` + `<Tooltip.Content>`
+- [ ] Update `onClose` handlers to `onOpenChange`
+- [ ] Remove `horizontalConstraint`.
+- [ ] Test hover, focus, and keyboard interactions
+- [ ] Verify accessibility features
+
+### Need Help?
+Join `#nimbus-migration` on Slack or check the [Nimbus Storybook](https://nimbus.commercetools.com/?path=/story/components-tooltip) for live examples.
