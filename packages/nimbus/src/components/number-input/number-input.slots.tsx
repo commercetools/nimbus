@@ -4,7 +4,11 @@ import {
   type UnstyledProp,
   createSlotRecipeContext,
 } from "@chakra-ui/react/styled-system";
-import { Button as RaButton } from "react-aria-components";
+import {
+  Button as RaButton,
+  Input as RaInput,
+  type InputProps as RaInputProps,
+} from "react-aria-components";
 import type { AriaButtonProps } from "react-aria";
 
 import { numberInputRecipe } from "./number-input.recipe";
@@ -16,12 +20,15 @@ export interface NumberInputRecipeProps
 export type NumberInputRootSlotProps = HTMLChakraProps<
   "div",
   NumberInputRecipeProps
->;
+> & {
+  name?: string;
+};
 
 export type NumberInputInputSlotProps = HTMLChakraProps<
   "input",
   NumberInputRecipeProps
->;
+> &
+  RaInputProps;
 
 export type NumberInputIncrementButtonSlotProps = HTMLChakraProps<
   "button",
@@ -55,7 +62,7 @@ export const NumberInputRootSlot = withProvider<
 export const NumberInputInputSlot = withContext<
   HTMLInputElement,
   NumberInputInputSlotProps
->("input", "input");
+>(RaInput, "input");
 
 /**
  * Increment button slot for NumberInput component.

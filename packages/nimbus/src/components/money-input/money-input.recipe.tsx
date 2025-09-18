@@ -33,7 +33,7 @@ export const moneyInputRecipe = defineSlotRecipe({
     },
     currencySelect: {
       // Ensure focus ring is visible above amount input
-      "& [data-focused='true']": {
+      _focusWithin: {
         zIndex: 2,
       },
     },
@@ -49,7 +49,7 @@ export const moneyInputRecipe = defineSlotRecipe({
     },
     amountInput: {
       // Ensure focus ring is visible above currency select
-      "& [data-has-focus='true']": {
+      _focusWithin: {
         zIndex: 2,
       },
     },

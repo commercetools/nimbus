@@ -12,6 +12,13 @@ const has = (obj: Record<string, unknown>, key: string): boolean => {
 };
 
 // Static method implementations - preserve exact logic from UI Kit
+export function getMoneyGroupAttribute(
+  attr?: string,
+  inputType?: string
+): string | undefined {
+  return attr && inputType ? `${attr}.${inputType}` : undefined;
+}
+
 export const transformFormInputToMoneyValue = (value: TValue, locale: string) =>
   parseStringToMoneyValue(
     typeof value.amount === "string" ? value.amount.trim() : "",

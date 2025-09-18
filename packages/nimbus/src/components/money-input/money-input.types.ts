@@ -3,6 +3,7 @@ import type {
   RecipeVariantProps,
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
+import type { GroupProps } from "@/components";
 import type { TValue, TCurrencyCode } from "./utils";
 import type { moneyInputRecipe } from "./money-input.recipe";
 
@@ -16,7 +17,8 @@ export interface MoneyInputSlotRecipeProps
 export type MoneyInputRootSlotProps = HTMLChakraProps<
   "div",
   MoneyInputSlotRecipeProps
->;
+> &
+  GroupProps;
 export type MoneyInputContainerSlotProps = HTMLChakraProps<
   "div",
   MoneyInputSlotRecipeProps

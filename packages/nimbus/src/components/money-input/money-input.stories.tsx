@@ -4,6 +4,7 @@ import { expect, userEvent, within, waitFor } from "storybook/test";
 import { I18nProvider } from "react-aria";
 import { Box, FormField, Text } from "@/components";
 import { MoneyInput } from "./money-input";
+
 import type {
   TValue,
   TCurrencyCode,
@@ -66,7 +67,7 @@ const MoneyInputExample = ({
         onChange={handleChange}
         name="money-input"
         placeholder="0.00"
-        aria-label="Money input example"
+        aria-label="Money Input Example"
         {...props}
       />
 
@@ -98,22 +99,29 @@ export const BasicExample: Story = {
     const canvas = within(canvasElement);
 
     // Test currency selection
-    const currencySelect = canvas.getByTestId("currency-dropdown");
+    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
     await userEvent.click(currencySelect);
 
     // Select EUR
-    const eurOption = await canvas.findByText("EUR");
-    await userEvent.click(eurOption);
+    const eurOption = await Array.from(
+      document.querySelectorAll('[role="option"]')
+    ).find((opt) => opt.textContent === "EUR");
+    expect(eurOption).toBeInTheDocument();
+    await userEvent.click(eurOption!);
+
+    await expect(eurOption).not.toBeInTheDocument();
 
     // Test amount input
-    const amountInput = canvas.getByPlaceholderText("0.00");
+    const amountInput = canvas.getByRole("textbox", {
+      name: /Amount/i,
+    });
     await userEvent.type(amountInput, "1234.56");
 
     // Blur to trigger formatting
     await userEvent.tab();
 
     // Wait a bit for the formatting to complete
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Check if value is formatted
     expect(amountInput).toHaveValue("1,234.56");
@@ -169,7 +177,7 @@ export const HighPrecisionExample: Story = {
 
     // Verify that the high precision badge appears for the initial value
     // Initial value "42.12345" EUR should show high precision (5 > 2 decimal places)
-    const highPrecisionBadge = canvas.getByTestId("high-precision-badge");
+    const highPrecisionBadge = canvas.getByLabelText(/High Precision Price/i);
     expect(highPrecisionBadge).toBeInTheDocument();
 
     // With consistent formatting, all currencies now use the same decimal separator
@@ -191,8 +199,10 @@ export const DisabledState: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const amountInput = canvas.getByPlaceholderText("0.00");
-    const currencySelect = canvas.getByTestId("currency-dropdown");
+    const amountInput = canvas.getByRole("textbox", {
+      name: /Amount/i,
+    });
+    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
 
     expect(amountInput).toBeDisabled();
     // Check that the Select component is disabled (may use different attributes)
@@ -214,7 +224,9 @@ export const ReadOnlyState: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const amountInput = canvas.getByDisplayValue("250.75");
+    const amountInput = canvas.getByRole("textbox", {
+      name: "Amount",
+    });
     expect(amountInput).toHaveAttribute("readonly");
   },
 };
@@ -245,8 +257,7 @@ export const NoCurrenciesList: Story = {
     const canvas = within(canvasElement);
 
     // Should show currency label instead of dropdown
-    const currencyLabel = canvas.getByTestId("currency-label");
-    expect(currencyLabel).toHaveTextContent("USD");
+    await canvas.findByLabelText("USD");
   },
 };
 
@@ -305,7 +316,7 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
     // and consistent high precision badge behavior
 
     // Check that all three high precision badges are present
-    const badges = canvas.getAllByTestId("high-precision-badge");
+    const badges = canvas.getAllByLabelText(/High precision price/i);
     expect(badges).toHaveLength(3);
 
     // All should show high precision for 1234.567 (3 decimals > 2 standard for USD/EUR/GBP)
@@ -324,13 +335,16 @@ export const CurrencySwitchingTest: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const amountInput = canvas.getByPlaceholderText("0.00");
-    const currencyDropdown = canvas.getByTestId("currency-dropdown");
-    const currencyButton = currencyDropdown.querySelector("button");
+    const amountInput = await canvas.findByRole("textbox", {
+      name: /Amount/i,
+    });
+    const currencySelect = await canvas.findByRole("button", {
+      name: /Currency/i,
+    });
 
     // Step 1: Select USD and enter 100.50, confirm it formats as such
     // First, select USD (component starts with empty currency)
-    await userEvent.click(currencyButton!);
+    await userEvent.click(currencySelect!);
     const listbox = document.querySelector('[role="listbox"]');
     expect(listbox).toBeInTheDocument();
 
@@ -341,13 +355,13 @@ export const CurrencySwitchingTest: Story = {
     );
     await userEvent.click(usdOption!);
 
-    expect(currencyButton).toHaveTextContent("USD"); // Verify USD is selected
+    expect(currencySelect).toHaveTextContent("USD"); // Verify USD is selected
     await userEvent.type(amountInput, "100.50");
     await userEvent.click(document.body); // Blur to format
     expect(amountInput).toHaveValue("100.50"); // USD (2 fraction digits) should preserve .50
 
     // Step 2: Select JPY and confirm the amount now reads as 100.5
-    await userEvent.click(currencyButton!);
+    await userEvent.click(currencySelect!);
     const options2 = document.querySelectorAll('[role="option"]');
     const jpyOption = Array.from(options2).find(
       (opt) => opt.textContent === "JPY"
@@ -355,11 +369,11 @@ export const CurrencySwitchingTest: Story = {
     await userEvent.click(jpyOption!);
 
     // Verify JPY is selected first, then check formatting
-    expect(currencyButton).toHaveTextContent("JPY");
+    expect(currencySelect).toHaveTextContent("JPY");
     expect(amountInput).toHaveValue("100.5"); // JPY (0 fraction digits) should remove trailing zero
 
     // Step 3: Select EUR and confirm the amount reads 100.50
-    await userEvent.click(currencyButton!);
+    await userEvent.click(currencySelect!);
     const options3 = document.querySelectorAll('[role="option"]');
     const eurOption = Array.from(options3).find(
       (opt) => opt.textContent === "EUR"
@@ -367,7 +381,7 @@ export const CurrencySwitchingTest: Story = {
     await userEvent.click(eurOption!);
 
     // Verify EUR is selected first, then check formatting
-    expect(currencyButton).toHaveTextContent("EUR");
+    expect(currencySelect).toHaveTextContent("EUR");
     expect(amountInput).toHaveValue("100.50"); // EUR (2 fraction digits) should restore .50
   },
 };
@@ -413,11 +427,13 @@ export const EULocaleFormattingExample: Story = {
     const canvas = within(canvasElement);
 
     // All should show high precision badges since they exceed standard fraction digits
-    const badges = canvas.getAllByTestId("high-precision-badge");
+    const badges = canvas.getAllByLabelText(/high precision price/i);
     expect(badges).toHaveLength(3);
 
     // With German locale I18nProvider, React Aria formats with German conventions
-    const inputs = canvas.getAllByPlaceholderText("0.00");
+    const inputs = await canvas.findAllByRole("textbox", {
+      name: /Amount/i,
+    });
 
     // Verify the inputs exist and are working
     expect(inputs).toHaveLength(3);
@@ -503,7 +519,11 @@ export const CurrencyFormattingTest: Story = {
     const canvas = within(canvasElement);
 
     // Test USD formatting: "99.9" → "99.90"
-    const usdInput = canvas.getAllByPlaceholderText("0.00")[0];
+    const usdInput = await within(
+      await canvas.findByLabelText(/USD currency formatting test/i)
+    ).findByRole("textbox", {
+      name: /Amount/i,
+    });
 
     // Clear and type new value
     await userEvent.clear(usdInput);
@@ -519,7 +539,11 @@ export const CurrencyFormattingTest: Story = {
     expect(usdInput).toHaveValue("99.90");
 
     // Test EUR formatting: "123.4" → "123.40"
-    const eurInput = canvas.getAllByPlaceholderText("0.00")[1];
+    const eurInput = await within(
+      await canvas.findByLabelText(/EUR currency formatting test/i)
+    ).findByRole("textbox", {
+      name: /Amount/i,
+    });
 
     await userEvent.clear(eurInput);
     await userEvent.type(eurInput, "123.4");
@@ -529,7 +553,11 @@ export const CurrencyFormattingTest: Story = {
     expect(eurInput).toHaveValue("123.40");
 
     // Test JPY formatting: "99.0" → "99" (JPY has 0 fractionDigits)
-    const jpyInput = canvas.getAllByPlaceholderText("0.00")[2];
+    const jpyInput = await within(
+      await canvas.findByLabelText(/JPY currency formatting test/i)
+    ).findByRole("textbox", {
+      name: /Amount/i,
+    });
 
     await userEvent.clear(jpyInput);
     await userEvent.type(jpyInput, "99.0");
@@ -539,11 +567,15 @@ export const CurrencyFormattingTest: Story = {
     expect(jpyInput).toHaveValue("99");
 
     // Test high precision remains unchanged
-    const highPrecisionInput = canvas.getAllByPlaceholderText("0.00")[3];
+    const highPrecisionInput = await within(
+      await canvas.findByLabelText(/high precision formatting test/i)
+    ).findByRole("textbox", {
+      name: /Amount/i,
+    });
     expect(highPrecisionInput).toHaveValue("99.12345");
 
     // Verify high precision badge is shown
-    const highPrecisionBadge = canvas.getByTestId("high-precision-badge");
+    const highPrecisionBadge = canvas.getByLabelText(/high precision price/i);
     expect(highPrecisionBadge).toBeInTheDocument();
   },
 };
@@ -869,6 +901,13 @@ export const StaticMethodsCompliance: Story = {
         "en"
       );
       expect(emptyResult).toBe(false);
+
+      // ========== getAmountInputId Tests ==========
+      expect(MoneyInput.getAmountInputId("id")).toBe("id.amount");
+      expect(MoneyInput.getAmountInputId(undefined)).toBe(undefined);
+      // ========== getCurrencyDropdownId Tests ==========
+      expect(MoneyInput.getCurrencyDropdownId("id")).toBe("id.currencyCode");
+      expect(MoneyInput.getCurrencyDropdownId(undefined)).toBe(undefined);
     } finally {
       console.warn = originalWarn;
     }
@@ -1213,7 +1252,9 @@ export const ModernApiTest: Story = {
     expect(eventsDisplay).toHaveTextContent("No events yet");
 
     // Test: Events should NOT fire during typing (before blur)
-    const amountInput = canvas.getByPlaceholderText("0.00");
+    const amountInput = canvas.getByRole("textbox", {
+      name: /Amount/i,
+    });
     await userEvent.clear(amountInput);
     await userEvent.type(amountInput, "123.45");
 
@@ -1231,11 +1272,10 @@ export const ModernApiTest: Story = {
     });
 
     // Test: Currency change fires immediately (unlike amount changes)
-    const currencyDropdown = canvas.getByTestId("currency-dropdown");
-    const currencyButton = currencyDropdown.querySelector("button");
+    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
 
     // Click the Select button to open dropdown
-    await userEvent.click(currencyButton!);
+    await userEvent.click(currencySelect!);
 
     // Find the EUR option using proper Nimbus Select patterns
     const listbox = document.querySelector('[role="listbox"]');

@@ -58,12 +58,18 @@ export const NumberInput = (props: NumberInputProps) => {
   };
 
   return (
-    <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
+    <NumberInputRootSlot
+      {...recipeProps}
+      {...styleProps}
+      size={size}
+      className={props?.className as string}
+    >
       <NumberInputInputSlot
         ref={ref}
         {...inputProps}
         {...stateProps}
-        size={size}
+        // https://github.com/adobe/react-spectrum/issues/4744
+        name={props.name}
       />
       <Box
         position="absolute"

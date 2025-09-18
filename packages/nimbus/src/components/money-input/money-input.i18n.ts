@@ -1,10 +1,15 @@
 import { defineMessages } from "react-intl";
 
 export default defineMessages({
-  currencySelection: {
-    id: "Nimbus.MoneyInput.currencySelection",
+  currencySelectLabel: {
+    id: "Nimbus.MoneyInput.currencySelectLabel",
     description: "aria-label for currency selection dropdown",
-    defaultMessage: "Currency selection",
+    defaultMessage: "Currency",
+  },
+  amountInputLabel: {
+    id: "Nimbus.MoneyInput.amountInputLabel",
+    description: "aria-label for amount input",
+    defaultMessage: "Amount",
   },
   highPrecisionPrice: {
     id: "Nimbus.MoneyInput.highPrecisionPrice",

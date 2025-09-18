@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
+import { Group } from "@/components";
 import type {
   MoneyInputRootSlotProps,
   MoneyInputContainerSlotProps,
@@ -16,7 +17,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
 export const MoneyInputRootSlot = withProvider<
   HTMLDivElement,
   MoneyInputRootSlotProps
->("div", "root");
+>(Group, "root");
 
 export const MoneyInputContainerSlot = withContext<
   HTMLDivElement,

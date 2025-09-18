@@ -1,7 +1,7 @@
-import { useRef, useState, useCallback, useId, useMemo } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useObjectRef, useLocale } from "react-aria";
+import { useId, useLocale, useObjectRef } from "react-aria";
 import { useIntl, FormattedMessage } from "react-intl";
 import {
   NumberInput,
@@ -23,6 +23,7 @@ import {
 } from "./money-input.slots";
 import { moneyInputRecipe } from "./money-input.recipe";
 import {
+  getMoneyGroupAttribute,
   isHighPrecision,
   transformFormInputToMoneyValue,
   formatMoneyValueForDisplay,
@@ -103,7 +104,7 @@ import messages from "./money-input.i18n";
  */
 export const MoneyInputComponent = (props: MoneyInputProps) => {
   const {
-    id: providedId,
+    id,
     name,
     value,
     currencies = [],
@@ -122,23 +123,18 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     placeholder = "0.00",
     autoFocus,
     size,
-    "aria-label": ariaLabel,
-    "aria-labelledby": ariaLabelledBy,
     ...restProps
   } = props;
 
   // Generate IDs
-  const generatedId = useId();
-  const id = providedId || generatedId;
+  const defaultGroupId = useId();
+  const groupId = id ?? defaultGroupId;
 
   // Get locale for formatting
   const { locale } = useLocale();
   const intl = useIntl();
 
   // State management
-  const [currencyHasFocus, setCurrencyHasFocus] = useState(false);
-  const [amountHasFocus, setAmountHasFocus] = useState(false);
-  const hasFocus = currencyHasFocus || amountHasFocus;
   const hasNoCurrencies = !currencies || currencies.length === 0;
 
   // Convert string value to number for NumberInput
@@ -173,12 +169,11 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   });
   const [styleProps, remainingProps] = extractStyleProps(recipeRestProps);
 
-  // Helper functions
-  const getAmountInputId = () => `${id}-amount`;
-  const getCurrencyDropdownId = () => `${id}-currency`;
-  const getAmountInputName = () => (name ? `${name}.amount` : undefined);
-  const getCurrencyDropdownName = () =>
-    name ? `${name}.currencyCode` : undefined;
+  // Id's and Names for each group input type
+  const amountInputId = getMoneyGroupAttribute(groupId, "amount");
+  const currencySelectId = getMoneyGroupAttribute(groupId, "currencyCode");
+  const amountInputName = getMoneyGroupAttribute(name, "amount");
+  const currencySelectName = getMoneyGroupAttribute(name, "currencyCode");
 
   // Event handlers - NumberInput will preserve decimal precision with new settings
   const handleAmountChange = useCallback(
@@ -188,8 +183,8 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       // Support legacy API
       const event: TCustomEvent = {
         target: {
-          id: getAmountInputId(),
-          name: getAmountInputName(),
+          id: amountInputId,
+          name: amountInputName,
           value: stringValue,
         },
       };
@@ -200,15 +195,14 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onAmountChange?.(stringValue);
     },
-    [onChange, onValueChange, onAmountChange, value, id, name]
+    [onChange, onValueChange, onAmountChange, value, groupId, name]
   );
 
   const handleAmountFocus = useCallback(() => {
-    setAmountHasFocus(true);
     const event: TCustomEvent = {
       target: {
-        id: getAmountInputId(),
-        name: getAmountInputName(),
+        id: amountInputId,
+        name: amountInputName,
         value: value.amount,
       },
     };
@@ -216,11 +210,10 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   }, [onFocus, value.amount, id, name]);
 
   const handleAmountBlur = useCallback(() => {
-    setAmountHasFocus(false);
     const event: TCustomEvent = {
       target: {
-        id: getAmountInputId(),
-        name: getAmountInputName(),
+        id: amountInputId,
+        name: amountInputName,
         value: value.amount,
       },
     };
@@ -232,8 +225,8 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       // Support legacy API
       const event: TCustomEvent = {
         target: {
-          id: getCurrencyDropdownId(),
-          name: getCurrencyDropdownName(),
+          id: currencySelectId,
+          name: currencySelectName,
           value: currencyCode,
         },
       };
@@ -251,11 +244,10 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   );
 
   const handleCurrencyFocus = useCallback(() => {
-    setCurrencyHasFocus(true);
     const event: TCustomEvent = {
       target: {
-        id: getCurrencyDropdownId(),
-        name: getCurrencyDropdownName(),
+        id: currencySelectId,
+        name: currencySelectName,
         value: value.currencyCode,
       },
     };
@@ -263,11 +255,10 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   }, [onFocus, value.currencyCode, id, name]);
 
   const handleCurrencyBlur = useCallback(() => {
-    setCurrencyHasFocus(false);
     const event: TCustomEvent = {
       target: {
-        id: getCurrencyDropdownId(),
-        name: getCurrencyDropdownName(),
+        id: currencySelectId,
+        name: currencySelectName,
         value: value.currencyCode,
       },
     };
@@ -283,29 +274,22 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
     [handleCurrencyChange]
   );
 
-  const stateProps = {
-    isInvalid,
-    isDisabled,
-    isReadOnly,
-    hasFocus,
-  };
+  const noCurrenciesLabelId = useId();
+  const highPrecisionBadgeId = useId();
 
   return (
-    <MoneyInputRootSlot
-      {...recipeProps}
-      {...styleProps}
-      {...stateProps}
-      {...remainingProps}
-    >
+    <MoneyInputRootSlot {...recipeProps} {...styleProps} {...remainingProps}>
       <MoneyInputContainerSlot>
         {/* Currency Select or Label */}
-        <MoneyInputCurrencySelectSlot {...stateProps}>
+        <MoneyInputCurrencySelectSlot>
           {hasNoCurrencies ? (
             <MoneyInputCurrencyLabelSlot asChild>
-              <label data-testid="currency-label">{value.currencyCode}</label>
+              <label id={noCurrenciesLabelId}>{value.currencyCode}</label>
             </MoneyInputCurrencyLabelSlot>
           ) : (
             <Select.Root
+              id={currencySelectId}
+              name={currencySelectName}
               selectedKey={value.currencyCode || null}
               onSelectionChange={handleCurrencySelectionChange}
               onFocus={handleCurrencyFocus}
@@ -313,8 +297,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
               placeholder=""
-              aria-label={intl.formatMessage(messages.currencySelection)}
-              data-testid="currency-dropdown"
+              aria-label={intl.formatMessage(messages.currencySelectLabel)}
               size={size}
             >
               <Select.Options>
@@ -331,14 +314,14 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         {/* Amount Input - NumberInput handles live user interaction */}
         <MoneyInputAmountInputSlot
           ref={ref}
-          data-has-focus={hasFocus}
           data-has-high-precision={
             hasHighPrecisionBadge && isCurrentlyHighPrecision
           }
-          {...stateProps}
           asChild
         >
           <NumberInput
+            id={amountInputId}
+            name={amountInputName}
             value={numericValue}
             formatOptions={formatOptions}
             onChange={handleAmountChange}
@@ -351,8 +334,12 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
             placeholder={placeholder}
             autoFocus={autoFocus}
             size={size}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledBy}
+            //base accessible name: "Amount"
+            aria-label={intl.formatMessage(messages.amountInputLabel)}
+            // accessible name when hasNoCurrencies=true: "<CURRENCY_CODE> Amount"
+            aria-labelledby={noCurrenciesLabelId}
+            // accessible name when high precision: "High Precision Amount"
+            aria-describedby={highPrecisionBadgeId}
             // See the types file for why we don't use step
             step={undefined}
           />
@@ -361,16 +348,17 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
 
       {/* High Precision Badge */}
       {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
-        <MoneyInputBadgeSlot data-testid="high-precision-badge">
+        <MoneyInputBadgeSlot>
           <Tooltip.Root delay={0} closeDelay={0}>
             <MakeElementFocusable>
               <Box
+                as={HighPrecision}
+                id={highPrecisionBadgeId}
+                color={isDisabled ? "neutral.8" : "neutral.11"}
+                aria-label={intl.formatMessage(messages.highPrecisionPrice)}
                 // TODO: this is a hack to position the badge correctly until we have trailingElement support
                 transform="translateX(-100px) translateY(2px)"
-                color={isDisabled ? "neutral.8" : "neutral.11"}
-              >
-                <HighPrecision />
-              </Box>
+              />
             </MakeElementFocusable>
             <Tooltip.Content placement="top">
               <FormattedMessage {...messages.highPrecisionPrice} />
@@ -391,11 +379,16 @@ type MoneyInputType = typeof MoneyInputComponent & {
   parseMoneyValue: typeof formatMoneyValueForDisplay;
   isEmpty: typeof isEmpty;
   isHighPrecision: typeof isHighPrecision;
+  getAmountInputId: (id?: string) => string | undefined;
+  getCurrencyDropdownId: (id?: string) => string | undefined;
 };
 
 export const MoneyInput = MoneyInputComponent as MoneyInputType;
 
 // Static methods for UI-Kit compatibility and internal utilities
+MoneyInput.getAmountInputId = (id) => getMoneyGroupAttribute(id, "amount");
+MoneyInput.getCurrencyDropdownId = (id) =>
+  getMoneyGroupAttribute(id, "currencyCode");
 MoneyInput.convertToMoneyValue = transformFormInputToMoneyValue;
 MoneyInput.parseMoneyValue = formatMoneyValueForDisplay;
 MoneyInput.isEmpty = isEmpty;
