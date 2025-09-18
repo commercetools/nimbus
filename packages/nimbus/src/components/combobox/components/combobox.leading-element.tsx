@@ -15,8 +15,6 @@ export const ComboBoxLeadingElement = ({
 
     const updateWidth = () => {
       const width = element.offsetWidth;
-      console.log("width", width);
-      // Find the root ComboBox element by looking for data-part="root"
       const rootElement = element.closest(".nimbus-combobox__root");
       if (rootElement instanceof HTMLElement) {
         rootElement.style.setProperty("--leading-element-width", `${width}px`);
