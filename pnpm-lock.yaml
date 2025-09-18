@@ -379,8 +379,8 @@ importers:
         specifier: ^15.0.1
         version: 15.0.1
       remark-flexible-toc:
-        specifier: ^1.2.0
-        version: 1.2.0(unified@11.0.5)
+        specifier: ^1.2.1
+        version: 1.2.1(unified@11.0.5)
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.1
@@ -5409,8 +5409,8 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
-  remark-flexible-toc@1.2.0:
-    resolution: {integrity: sha512-EqUIcYL5GRLzzrdXnwaGdvFqSxbQ9l08d+QQE6Jw4vCuKwADMzM0t9qXb32p0G28X57lZryBAgSPDBnEDePcOg==}
+  remark-flexible-toc@1.2.1:
+    resolution: {integrity: sha512-0/xmniPRYL/rmPFbOwU5di8zHNH19Vlv+sJUGQAvJYHcLFdC5e7F5tJ+CI3bRoS/sU6QtSqc4pPYtKmRaM4jLw==}
     peerDependencies:
       unified: ^11
 
@@ -12678,7 +12678,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-flexible-toc@1.2.0(unified@11.0.5):
+  remark-flexible-toc@1.2.1(unified@11.0.5):
     dependencies:
       '@types/mdast': 4.0.4
       github-slugger: 2.0.0
