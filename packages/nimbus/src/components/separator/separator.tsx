@@ -3,7 +3,7 @@ import { useRecipe } from "@chakra-ui/react";
 import { SeparatorRoot } from "./separator.slots";
 import type { SeparatorProps } from "./separator.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { separatorRecipe } from "./separator.recipe.ts";
+import { separatorRecipe } from "./separator.recipe";
 
 /**
  * Separator

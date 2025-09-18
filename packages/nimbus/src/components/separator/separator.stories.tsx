@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Separator } from "./separator.tsx";
+import { Separator } from "./separator";
 import { Box, Stack } from "@/components";
 import { within, expect } from "storybook/test";
 

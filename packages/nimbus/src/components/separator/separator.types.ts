@@ -4,7 +4,7 @@ import type {
   HTMLChakraProps,
   RecipeVariantProps,
 } from "@chakra-ui/react/styled-system";
-import { separatorRecipe } from "./separator.recipe.ts";
+import { separatorRecipe } from "./separator.recipe";
 import type { SeparatorProps as RaSeparatorProps } from "react-aria-components";
 
 /**
