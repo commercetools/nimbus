@@ -296,6 +296,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
               onBlur={handleCurrencyBlur}
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
+              isInvalid={isInvalid}
               placeholder=""
               aria-label={intl.formatMessage(messages.currencySelectLabel)}
               size={size}
