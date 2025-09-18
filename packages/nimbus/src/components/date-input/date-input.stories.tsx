@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DateInput } from "./date-input";
 import type { DateInputProps } from "./date-input.types";
-import { Button, FormField, Stack, Text, Icon } from "@/components";
+import { Button, FormField, Stack, Text, Icon, IconButton } from "@/components";
 import {
   CalendarDate,
   CalendarDateTime,
@@ -10,7 +10,14 @@ import {
 import { useState } from "react";
 import type { DateValue } from "react-aria";
 import { I18nProvider } from "react-aria";
-import { CalendarMonth } from "@commercetools/nimbus-icons";
+import {
+  CalendarMonth,
+  Close,
+  Search,
+  Visibility,
+  AddBox,
+  AddReaction,
+} from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -222,57 +229,103 @@ export const VariantsSizesAndStates: Story = {
 };
 
 /**
- * Showcase State Variants
- * Demonstrates isDisabled, isReadOnly, isRequired, and isInvalid properties
- * for both style variants and sizes
+ * Showcase Leading and Trailing Elements
+ * Demonstrates DateInput with various leading and trailing element configurations
+ * including IconButton examples for different sizes and variants
  */
-export const LeadingIconVariantsSizesAndStates: Story = {
+export const LeadingAndTrailingElements: Story = {
   render: (args: DateInputProps) => {
-    const states = [
-      { label: "Default", props: {} },
-      { label: "Disabled", props: { isDisabled: true } },
-      { label: "Read Only", props: { isReadOnly: true } },
-      { label: "Required", props: { isRequired: true } },
-      { label: "Invalid", props: { isInvalid: true } },
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof DateInput>;
+      getProps?: (size: "sm" | "md") => React.ComponentProps<typeof DateInput>;
+    }> = [
+      {
+        label: "Leading Icon",
+        props: {
+          leadingElement: <Search />,
+          "aria-label": "search-date-input",
+        },
+      },
+      {
+        label: "Trailing Icon",
+        props: {
+          trailingElement: <Visibility />,
+          "aria-label": "date-input-with-trailing",
+        },
+      },
+      {
+        label: "Both Icons",
+        props: {
+          leadingElement: <Icon as={CalendarMonth} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "date-input-with-both-icons",
+        },
+      },
+      {
+        label: "IconButton Elements",
+        getProps: (size: "sm" | "md") => ({
+          leadingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="date options"
+            >
+              <Icon as={AddReaction} />
+            </IconButton>
+          ),
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="clear"
+            >
+              <Icon as={Close} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-date-input",
+        }),
+      },
     ];
 
     const variants = ["solid", "ghost", "plain"] as const;
     const sizes = ["sm", "md"] as const;
 
     return (
-      <Stack direction="column" gap="600" alignItems="start">
-        {states.map((state) => (
-          <Stack
-            key={state.label}
-            direction="column"
-            gap="200"
-            alignItems="start"
-          >
-            <Stack direction="column" gap="400" alignItems="start">
-              <Text fontWeight="700">{state.label}</Text>
-              {variants.map((variant) => (
+      <Stack direction="column" gap="600">
+        {sizes.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
                 <Stack
-                  key={variant}
+                  key={`${size as string}-${example.label}`}
                   direction="column"
                   gap="200"
-                  alignItems="start"
                 >
-                  <Stack direction="row" gap="400" alignItems="start">
-                    {sizes.map((size) => (
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {variants.map((variant) => (
                       <Stack
-                        key={size}
+                        key={variant as string}
                         direction="column"
                         gap="100"
-                        alignItems="start"
                       >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
                         <DateInput
                           {...args}
-                          {...state.props}
-                          variant={variant}
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
                           size={size}
-                          leadingElement={<Icon as={CalendarMonth} />}
+                          variant={variant}
                           defaultValue={new CalendarDate(2025, 6, 15)}
-                          aria-label={`${state.label} ${variant} ${size} date input`}
                         />
                       </Stack>
                     ))}
@@ -940,6 +993,43 @@ export const ValidationBehavior: Story = {
               : "No date"}
           </Text>
         </Stack>
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Custom Width
+ * Demonstrates that DateInput accepts a width property
+ */
+export const CustomWidth: Story = {
+  args: {
+    ["aria-label"]: "Enter a date",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="start">
+        <Text>Width: 256px</Text>
+        <DateInput
+          {...args}
+          width="256px"
+          leadingElement={<Icon as={CalendarMonth} />}
+          trailingElement={<Icon as={Close} />}
+        />
+        <Text>Width: 512px</Text>
+        <DateInput
+          {...args}
+          width="512px"
+          leadingElement={<Icon as={CalendarMonth} />}
+          trailingElement={<Icon as={Close} />}
+        />
+        <Text>Width: full</Text>
+        <DateInput
+          {...args}
+          width="full"
+          leadingElement={<Icon as={CalendarMonth} />}
+          trailingElement={<Icon as={Close} />}
+        />
       </Stack>
     );
   },

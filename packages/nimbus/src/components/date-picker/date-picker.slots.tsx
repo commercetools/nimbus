@@ -37,20 +37,12 @@ export const DatePickerRootSlot = withProvider<
 >("div", "root");
 
 /**
- * Slot component for the input group containing the DateInput and trigger button.
+ * Slot component for the input group containing the DateInput.
  */
 export const DatePickerGroupSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "group");
-
-/**
- * Slot component for the trigger button that opens the calendar popover.
- */
-export const DatePickerTriggerSlot = withContext<
-  HTMLDivElement,
-  HTMLChakraProps<"div">
->("div", "trigger");
 
 /**
  * Slot component for the popover container.

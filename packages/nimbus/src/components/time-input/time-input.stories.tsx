@@ -1,12 +1,26 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TimeInput } from "./time-input";
-import { Box, Button, FormField, Stack, Text, Icon } from "@/components";
+import {
+  Box,
+  Button,
+  FormField,
+  Stack,
+  Text,
+  Icon,
+  IconButton,
+} from "@/components";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import type { TimeValue } from "react-aria";
 import { I18nProvider } from "react-aria";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { AddReaction } from "@commercetools/nimbus-icons";
+import {
+  AddReaction,
+  Search,
+  Visibility,
+  AddBox,
+  Close,
+} from "@commercetools/nimbus-icons";
 
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
@@ -362,50 +376,123 @@ export const Variants: Story = {
   },
 };
 
-export const WithLeadingElement: Story = {
-  args: {
-    leadingElement: <AddReaction />,
-    "aria-label": "time-input",
-  },
-};
+/**
+ * Showcase Leading and Trailing Elements
+ * Demonstrates TimeInput with various leading and trailing element configurations
+ * including IconButton examples for different sizes and variants
+ */
+export const LeadingAndTrailingElements: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof TimeInput>;
+      getProps?: (size: "sm" | "md") => React.ComponentProps<typeof TimeInput>;
+    }> = [
+      {
+        label: "Leading Icon",
+        props: {
+          leadingElement: <Search />,
+          "aria-label": "time-input-with-leading-icon",
+          hideTimeZone: true,
+        },
+      },
+      {
+        label: "Trailing Icon",
+        props: {
+          trailingElement: <Visibility />,
+          "aria-label": "time-input-with-trailing-icon",
+          hideTimeZone: true,
+        },
+      },
+      {
+        label: "Both Icons",
+        props: {
+          leadingElement: <Icon as={Search} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "time-input-with-both-icons",
+          hideTimeZone: true,
+        },
+      },
+      {
+        label: "IconButton Elements",
+        getProps: (size: "sm" | "md") => ({
+          leadingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="time options"
+            >
+              <Icon as={AddReaction} />
+            </IconButton>
+          ),
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="clear"
+            >
+              <Icon as={Close} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-time-input",
+          hideTimeZone: true,
+        }),
+      },
+      {
+        label: "Custom Width (256px) with Both Icons",
+        props: {
+          leadingElement: <Icon as={Search} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "custom-width-time-input",
+          hideTimeZone: true,
+          width: "256px",
+        },
+      },
+    ];
 
-export const WithTrailingElement: Story = {
-  args: {
-    trailingElement: <AddReaction />,
-    "aria-label": "time-input",
-  },
-};
-
-export const WithBothElementsAndSizes: Story = {
-  render: (args) => {
+    const sizes = ["sm", "md"] as const;
     const variants = ["ghost", "solid"] as const;
 
     return (
-      <Stack direction="column">
-        Variants and Sizes
-        {variants.map((variant) => (
-          <Stack key={variant}>
-            <Box>
-              <Text>{variant}</Text>
-              <TimeInput
-                size="sm"
-                aria-label={`${variant}-variant TimeInput`}
-                {...args}
-                variant={variant}
-                leadingElement={<Icon as={AddReaction} />}
-                trailingElement={<Icon as={AddReaction} />}
-              />
-            </Box>
-            <Box>
-              <TimeInput
-                size="md"
-                aria-label={`${variant}-variant TimeInput`}
-                {...args}
-                variant={variant}
-                leadingElement={<Icon as={AddReaction} boxSize="500" />}
-                trailingElement={<Icon as={AddReaction} boxSize="500" />}
-              />
-            </Box>
+      <Stack direction="column" gap="600">
+        {sizes.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {variants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <TimeInput
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
+                          size={size}
+                          variant={variant}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
           </Stack>
         ))}
       </Stack>

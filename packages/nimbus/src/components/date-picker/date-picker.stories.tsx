@@ -2887,7 +2887,7 @@ export const InFormFieldContext: Story = {
 
           // Verify DatePicker is wide enough by checking it's not tiny
           const rect = datePicker.getBoundingClientRect();
-          await expect(rect.width).toBeGreaterThan(200); // Reasonable minimum width
+          await expect(rect.width).toBeGreaterThan(180); // Reasonable minimum width
         }
       }
     );

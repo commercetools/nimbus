@@ -24,20 +24,17 @@ export const numberInputRecipe = defineSlotRecipe({
       display: "inline-flex",
       position: "relative",
       borderRadius: "200",
-      pr: "400",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _focusWithin: {
         layerStyle: "focusRing",
       },
 
-      focusVisibleRing: "outside",
-      focusRing: "outside",
-
-      _disabled: {
+      '&[data-disabled="true"]': {
         layerStyle: "disabled",
         bg: "neutral.3",
       },
       "&[data-invalid='true']": {
+        "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
         color: "critical.11",
       },
@@ -67,13 +64,9 @@ export const numberInputRecipe = defineSlotRecipe({
         opacity: 0.5,
         color: "currentColor",
       },
+
       "&[data-disabled='true']": {
-        layerStyle: "disabled",
-        bg: "neutral.3",
-      },
-      "&[data-invalid='true']": {
-        "--border-color": "colors.critical.7",
-        color: "critical.11",
+        cursor: "not-allowed",
       },
     },
     incrementButton: {
@@ -90,10 +83,9 @@ export const numberInputRecipe = defineSlotRecipe({
         bg: "neutral.4",
       },
       "&[data-disabled='true']": {
-        opacity: 0.5,
         cursor: "not-allowed",
       },
-      "& svg": {
+      _icon: {
         fill: "primary.9",
       },
       borderTopRightRadius: "200",
@@ -115,11 +107,10 @@ export const numberInputRecipe = defineSlotRecipe({
         bg: "neutral.4",
       },
       "&[data-disabled='true']": {
-        opacity: 0.5,
         cursor: "not-allowed",
       },
-      "& svg": {
-        fill: "primary.9",
+      _icon: {
+        color: "primary.9",
       },
       borderBottomRightRadius: "200",
       "&[data-invalid='true']": {
@@ -131,39 +122,45 @@ export const numberInputRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
+        root: {
+          pl: "300",
+          pr: "900", // inc+dec-button width + default padding
+          gap: "100",
+        },
         input: {
-          h: 800,
+          h: "800",
           textStyle: "sm",
-          px: 100,
-          pr: 100,
         },
         leadingElement: {
-          pl: 300,
-          pr: 100,
-          minHeight: "400",
-          minWidth: "400",
+          "& > svg": {
+            boxSize: "400",
+          },
         },
         trailingElement: {
-          pr: 500,
-          minHeight: "400",
-          minWidth: "400",
+          "& > svg": {
+            boxSize: "400",
+          },
         },
       },
       md: {
+        root: {
+          pl: "400",
+          pr: "1000", // inc+dec-button width + default padding
+          gap: "200",
+        },
         input: {
-          h: 1000,
+          h: "1000",
           textStyle: "md",
-          px: 200,
         },
         leadingElement: {
-          pl: 400,
-          minHeight: "500",
-          minWidth: "500",
+          "& > svg": {
+            boxSize: "500",
+          },
         },
         trailingElement: {
-          pr: 600,
-          minHeight: "500",
-          minWidth: "500",
+          "& > svg": {
+            boxSize: "500",
+          },
         },
       },
     },
@@ -180,10 +177,10 @@ export const numberInputRecipe = defineSlotRecipe({
           backgroundColor: "neutral.1",
         },
         input: {
-          "&[data-invalid='true']": {
+          /* "&[data-invalid='true']": {
             boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
             "--border-width": "sizes.50",
-          },
+          }, */
         },
         incrementButton: {
           "&[data-invalid='true']": {
@@ -222,10 +219,10 @@ export const numberInputRecipe = defineSlotRecipe({
           },
         },
         input: {
-          "&[data-invalid='true']": {
+          /* "&[data-invalid='true']": {
             boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
             "--border-width": "sizes.50",
-          },
+          }, */
         },
         incrementButton: {
           "&[data-invalid='true']": {
