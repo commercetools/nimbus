@@ -11,34 +11,35 @@ interface UseCollapsibleAnimationOptions {
   isExpanded: boolean;
   /** Minimum height when collapsed (default: 0) */
   minHeight?: number;
-  /** Animation duration in milliseconds (default: 200) */
-  animationDuration?: number;
 }
 
 /**
- * Custom hook for collapsible animation that handles height measurement and animation styles
+ * Custom hook for collapsible animation that handles height measurement and dynamic styles
  *
  * This hook provides automatic height measurement using ResizeObserver and returns
- * the complete animation styles needed for smooth collapsible animations.
+ * only the dynamic styles and data attributes needed for slot-based collapsible animations.
+ * Static styles (transition, overflow, visibility) are handled by the recipe system.
  *
  * @param children - The content whose height should be measured (used as dependency for re-measurement)
  * @param options - Configuration options for the animation
- * @returns Object containing animation styles and content ref
+ * @returns Object containing dynamic styles, data attributes, and content ref
  *
  * @example
  * ```tsx
- * const { containerStyle, contentRef } = useCollapsibleAnimation(children, {
+ * const { dynamicStyles, dataAttributes, contentRef } = useCollapsibleAnimation(children, {
  *   isExpanded: true,
- *   minHeight: 0,
- *   animationDuration: 200
+ *   minHeight: 0
  * });
  *
  * return (
- *   <div style={containerStyle}>
+ *   <CollapsibleMotionContentSlot
+ *     {...dataAttributes}
+ *     style={dynamicStyles}
+ *   >
  *     <div ref={contentRef}>
  *       {children}
  *     </div>
- *   </div>
+ *   </CollapsibleMotionContentSlot>
  * );
  * ```
  */
@@ -46,7 +47,7 @@ export function useCollapsibleAnimation(
   children: ReactNode,
   options: UseCollapsibleAnimationOptions
 ) {
-  const { isExpanded, minHeight = 0, animationDuration = 200 } = options;
+  const { isExpanded, minHeight = 0 } = options;
   const [measuredHeight, setMeasuredHeight] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -75,19 +76,30 @@ export function useCollapsibleAnimation(
     return () => observer.disconnect();
   }, [children]);
 
-  // Calculate current height for animation
-  const currentHeight = isExpanded ? measuredHeight || "auto" : minHeight;
+  // TODO: minheight is not working as expected
+  // Calculate current height for animation - this is the only truly dynamic value
+  const currentHeight = isExpanded
+    ? measuredHeight !== null
+      ? `${measuredHeight}px`
+      : "auto"
+    : typeof minHeight === "number"
+      ? `${minHeight}px`
+      : minHeight;
 
-  // Container styles for animation
-  const containerStyle: CSSProperties = {
+  // Only dynamic inline styles that can't be handled by recipe
+  const dynamicStyles: CSSProperties = {
     height: currentHeight,
-    transition: `height ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    overflow: "hidden",
-    visibility: minHeight === 0 && !isExpanded ? "hidden" : "visible",
   };
 
+  // Data attributes for recipe-based conditional styling
+  const dataAttributes = {
+    "data-expanded": isExpanded ? "true" : "false",
+    "data-min-height": minHeight.toString(),
+  } as const;
+
   return {
-    containerStyle,
+    dynamicStyles,
+    dataAttributes,
     contentRef,
   };
 }

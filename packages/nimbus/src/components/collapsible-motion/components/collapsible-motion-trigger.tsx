@@ -1,5 +1,7 @@
 import React, { forwardRef } from "react";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useCollapsibleMotionContext } from "./collapsible-motion-context";
+import { CollapsibleMotionTriggerSlot } from "../collapsible-motion.slots";
 
 /**
  * Props for CollapsibleMotion.Trigger component
@@ -45,37 +47,33 @@ export const CollapsibleMotionTrigger = forwardRef<
   { children, onClick, ...props },
   forwardedRef
 ) {
-  const { buttonProps, toggle } = useCollapsibleMotionContext();
+  const { buttonProps, isDisabled, toggle } = useCollapsibleMotionContext();
+
+  // Separate Chakra UI style props from functional props
+  const [styleProps, functionalProps] = extractStyleProps(props);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Don't toggle if button is disabled
+    if (isDisabled) return;
+
     // Call the toggle function from context
     toggle();
     // Call custom onClick if provided
     onClick?.(event);
   };
 
-  // If children is a single React element, clone it with the button props
-  if (React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement, {
-      ref: forwardedRef,
-      ...buttonProps,
-      ...props,
-      onClick: handleClick,
-      // Preserve existing props from the child
-      ...(children.props || {}),
-    });
-  }
-
-  // Fallback: wrap in button if children is not a valid React element
   return (
-    <button
+    <CollapsibleMotionTriggerSlot
       ref={forwardedRef}
+      {...styleProps}
+      {...functionalProps}
       {...buttonProps}
-      {...props}
+      disabled={isDisabled}
       onClick={handleClick}
+      asChild
     >
       {children}
-    </button>
+    </CollapsibleMotionTriggerSlot>
   );
 });
 

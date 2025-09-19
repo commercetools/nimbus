@@ -4,6 +4,7 @@ import {
   type CSSProperties,
   type RefObject,
 } from "react";
+import type { AriaButtonProps } from "react-aria";
 
 /**
  * Context value interface for CollapsibleMotion compound components
@@ -13,14 +14,17 @@ export interface CollapsibleMotionContextValue {
   toggle: () => void;
   /** Whether the collapsible is currently expanded */
   isExpanded: boolean;
+  /** Whether the collapsible is disabled */
+  isDisabled: boolean;
   /** Button props from React Aria for accessibility */
-  buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    "aria-expanded"?: string | boolean;
-    "aria-controls"?: string;
-    disabled?: boolean;
+  buttonProps: AriaButtonProps<"button">;
+  /** Dynamic styles for the content container (height only) */
+  dynamicStyles: CSSProperties;
+  /** Data attributes for recipe-based conditional styling */
+  dataAttributes: {
+    readonly "data-expanded": "true" | "false";
+    readonly "data-min-height": string;
   };
-  /** Animation styles for the container */
-  containerStyle: CSSProperties;
   /** Ref for the content element (for height measurement) */
   contentRef: RefObject<HTMLDivElement | null>;
   /** Panel props from React Aria for accessibility */
@@ -38,9 +42,6 @@ export const CollapsibleMotionContext = createContext<
 
 /**
  * Custom hook to consume CollapsibleMotion context
- *
- * @throws {Error} When used outside of CollapsibleMotion.Root
- * @returns The CollapsibleMotion context value
  */
 export function useCollapsibleMotionContext(): CollapsibleMotionContextValue {
   const context = useContext(CollapsibleMotionContext);

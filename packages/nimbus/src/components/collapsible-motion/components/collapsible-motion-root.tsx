@@ -1,13 +1,20 @@
 import { useRef, forwardRef } from "react";
 import { useDisclosure } from "react-aria";
 import { useDisclosureState } from "react-stately";
+import { useSlotRecipe } from "@chakra-ui/react";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useCollapsibleAnimation } from "../hooks/use-collapsible-animation";
 import { CollapsibleMotionContext } from "./collapsible-motion-context";
+import {
+  CollapsibleMotionRootSlot,
+  type CollapsibleMotionRecipeProps,
+} from "../collapsible-motion.slots";
 
 /**
  * Props for CollapsibleMotion.Root component
  */
-export interface CollapsibleMotionRootProps {
+export interface CollapsibleMotionRootProps
+  extends CollapsibleMotionRecipeProps {
   /**
    * The child components (Trigger and Content)
    */
@@ -29,12 +36,6 @@ export interface CollapsibleMotionRootProps {
   onExpandedChange?: (isExpanded: boolean) => void;
 
   /**
-   * Duration of the expand/collapse animation in milliseconds
-   * @default 200
-   */
-  animationDuration?: number;
-
-  /**
    * The minimum height of the content when collapsed (in pixels)
    * @default 0
    */
@@ -43,7 +44,7 @@ export interface CollapsibleMotionRootProps {
   /**
    * Whether the collapsible is disabled
    */
-  disabled?: boolean;
+  isDisabled?: boolean;
 
   /**
    * Data attributes for testing and analytics
@@ -56,45 +57,6 @@ export interface CollapsibleMotionRootProps {
  *
  * This component contains all the state management logic and provides context to
  * CollapsibleMotion.Trigger and CollapsibleMotion.Content components.
- *
- * ## Features
- * - 🎨 Smooth height animations with CSS transitions
- * - ♿ Proper ARIA attributes for accessibility
- * - 🎛️ Both controlled and uncontrolled modes
- * - 🎯 Focus management for screen readers
- * - 📱 Responsive and mobile-friendly
- * - ⚡ High performance with ResizeObserver
- *
- * ## Usage
- *
- * ### Basic Usage
- * ```tsx
- * <CollapsibleMotion.Root>
- *   <CollapsibleMotion.Trigger>
- *     <Button>Toggle Content</Button>
- *   </CollapsibleMotion.Trigger>
- *   <CollapsibleMotion.Content>
- *     <Box p={4}>This content will expand and collapse smoothly</Box>
- *   </CollapsibleMotion.Content>
- * </CollapsibleMotion.Root>
- * ```
- *
- * ### Controlled Usage
- * ```tsx
- * const [expanded, setExpanded] = useState(false);
- *
- * <CollapsibleMotion.Root
- *   isExpanded={expanded}
- *   onExpandedChange={setExpanded}
- * >
- *   <CollapsibleMotion.Trigger>
- *     <Button>Toggle Content</Button>
- *   </CollapsibleMotion.Trigger>
- *   <CollapsibleMotion.Content>
- *     <Box p={4}>Controlled collapsible content</Box>
- *   </CollapsibleMotion.Content>
- * </CollapsibleMotion.Root>
- * ```
  */
 export const CollapsibleMotionRoot = forwardRef<
   HTMLDivElement,
@@ -105,13 +67,21 @@ export const CollapsibleMotionRoot = forwardRef<
     defaultExpanded = false,
     isExpanded: controlledExpanded,
     onExpandedChange,
-    animationDuration = 200,
     minHeight = 0,
-    disabled = false,
+    isDisabled = false,
+    animationSpeed,
     ...props
   },
   forwardedRef
 ) {
+  // Use recipe context for slot styling
+  const recipe = useSlotRecipe({ key: "collapsibleMotion" });
+  const [recipeProps, remainingProps] = recipe.splitVariantProps({
+    animationSpeed,
+    ...props,
+  });
+  const [styleProps, functionalProps] = extractStyleProps(remainingProps);
+
   // Use React Aria's disclosure state management
   const disclosureState = useDisclosureState({
     defaultExpanded,
@@ -119,24 +89,26 @@ export const CollapsibleMotionRoot = forwardRef<
     onExpandedChange,
   });
 
-  // Animation styles using custom hook
-  const { containerStyle, contentRef } = useCollapsibleAnimation(children, {
-    isExpanded: disclosureState.isExpanded,
-    minHeight,
-    animationDuration,
-  });
+  // Animation styles using custom hook (now returns dynamic styles + data attributes)
+  const { dynamicStyles, dataAttributes, contentRef } = useCollapsibleAnimation(
+    children,
+    {
+      isExpanded: disclosureState.isExpanded,
+      minHeight,
+    }
+  );
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Use React Aria's disclosure hook for ARIA props
   const { buttonProps, panelProps } = useDisclosure(
-    { isDisabled: disabled },
+    { isDisabled },
     disclosureState,
     panelRef
   );
 
   // Toggle function that respects disabled state
   const toggle = () => {
-    if (disabled) return;
+    if (isDisabled) return;
     disclosureState.toggle();
   };
 
@@ -144,8 +116,10 @@ export const CollapsibleMotionRoot = forwardRef<
   const contextValue = {
     toggle,
     isExpanded: disclosureState.isExpanded,
+    isDisabled,
     buttonProps,
-    containerStyle,
+    dynamicStyles,
+    dataAttributes,
     contentRef,
     panelProps,
     panelRef,
@@ -153,9 +127,14 @@ export const CollapsibleMotionRoot = forwardRef<
 
   return (
     <CollapsibleMotionContext.Provider value={contextValue}>
-      <div ref={forwardedRef} {...props}>
-        {children}
-      </div>
+      <CollapsibleMotionRootSlot
+        ref={forwardedRef}
+        {...recipeProps}
+        {...styleProps}
+        asChild
+      >
+        <div {...functionalProps}>{children}</div>
+      </CollapsibleMotionRootSlot>
     </CollapsibleMotionContext.Provider>
   );
 });

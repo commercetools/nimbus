@@ -144,11 +144,11 @@ export const WithMinHeight: Story = {
 };
 
 /**
- * Example with custom animation duration
+ * Example with custom animation speed
  */
 export const CustomAnimationDuration: Story = {
   render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false} animationDuration={800}>
+    <CollapsibleMotion.Root defaultExpanded={false} animationSpeed="slow">
       <CollapsibleMotion.Trigger>
         <Button mb={4}>Toggle Content (Slow Animation)</Button>
       </CollapsibleMotion.Trigger>
@@ -184,7 +184,7 @@ export const CustomAnimationDuration: Story = {
  */
 export const Disabled: Story = {
   render: () => (
-    <CollapsibleMotion.Root disabled={true} defaultExpanded={false}>
+    <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>
       <CollapsibleMotion.Trigger>
         <Button mb={4}>Toggle Content (Disabled)</Button>
       </CollapsibleMotion.Trigger>
