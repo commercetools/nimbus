@@ -67,8 +67,6 @@ export const DialogContent = (props: DialogContentProps) => {
 
   const [styleProps] = extractStyleProps(restProps);
 
-  console.log("isDismissable", isDismissable);
-  console.log("modalProps", modalProps);
   return (
     <DialogModalOverlaySlot asChild>
       <RaModalOverlay data-mimimi-modal-overlay {...modalProps}>

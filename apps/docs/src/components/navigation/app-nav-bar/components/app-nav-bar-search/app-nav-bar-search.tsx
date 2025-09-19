@@ -40,20 +40,19 @@ export const AppNavBarSearch = () => {
     if (selectedItem) {
       setOpen(false);
       setActiveRoute(selectedItem.route);
+      setQuery("");
     }
   };
 
   return (
     <Flex grow="1">
       <Dialog.Root
-        open={open}
+        isOpen={open}
         placement="top"
-        motionPreset="slide-in-bottom"
         onOpenChange={() => setOpen(!open)}
-        scrollBehavior="outside"
-        size="xl"
+        scrollBehavior="inside"
       >
-        <Dialog.Trigger asChild>
+        <Dialog.Trigger>
           <Box position="relative">
             <TextInput
               size="md"
@@ -62,7 +61,6 @@ export const AppNavBarSearch = () => {
               placeholder="Search for a component..."
               onFocus={(e) => e.target.blur()}
               aria-label="Search for a component"
-              readOnly
             />
 
             <Box position="absolute" top="150" right="250" color="neutral.11">
@@ -71,7 +69,6 @@ export const AppNavBarSearch = () => {
           </Box>
         </Dialog.Trigger>
         <Dialog.Content divideY="1px" backdropBlur="5px">
-          <Dialog.Backdrop />
           <Dialog.Header>
             <Dialog.Title fontWeight="600">
               Search the Documentation
@@ -100,7 +97,7 @@ export const AppNavBarSearch = () => {
                   asChild
                 >
                   {/** TODO: TextInput should actually work here, try again once it's fixed*/}
-                  <Input placeholder="Type to search..." />
+                  <Input autoFocus placeholder="Type to search..." />
                 </Box>
               </Flex>
               <Box mx="-600" borderTop="1px solid" borderColor="neutral.6">
