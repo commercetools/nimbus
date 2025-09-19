@@ -115,17 +115,13 @@ export const dataTableRecipe = defineSlotRecipe({
               opacity: 1,
             },
           },
+          "& .data-table-row[data-disabled='true']": {
+            opacity: 0.8,
+          },
         },
       },
       "& .data-table-row[data-selected='true']": {
-        background: "{colors.primary.4}",
-        "& [data-slot='selection']": {
-          backgroundColor: "inherit",
-        },
-        "& [data-slot='expand']": {
-          backgroundColor: "inherit",
-        },
-        "& [data-slot='pin-row-cell']": {
+        "& .data-table-sticky-cell": {
           backgroundColor: "inherit",
         },
       },
