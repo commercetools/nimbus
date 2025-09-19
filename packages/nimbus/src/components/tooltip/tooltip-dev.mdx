@@ -62,8 +62,8 @@ Control where the tooltip appears relative to its trigger: change the placement 
 ```jsx-live-dev
 const App = () => (
 <Tooltip.Root>
-      <Button>Tooltip placement</Button>
-      <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
+  <Button>Tooltip placement</Button>
+  <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
 </Tooltip.Root>
 )
 ```
@@ -76,8 +76,8 @@ Control the tooltip offset:
 ```jsx-live-dev
 const App = () => (
 <Tooltip.Root>
-      <Button>Tooltip placement</Button>
-      <Tooltip.Content offset={50}>Tooltip on top</Tooltip.Content>
+  <Button>Tooltip placement</Button>
+  <Tooltip.Content offset={50}>Tooltip on top</Tooltip.Content>
 </Tooltip.Root>
 )
 ```
@@ -105,6 +105,10 @@ const App = () => (
 ## Testing Strategies and Best Practices
 
 #### 1. Unit Testing with React Testing Library
+> [!CAUTION]\
+> **Note**
+>
+> - if you are using app-kit as your initial setup and for your entry point, then the provider is already available. You won't be needing the setup below..  
 
 **Recommended Testing Library Setup:**
 ```tsx
@@ -144,10 +148,7 @@ Nimbus Tooltip automatically handles most accessibility requirements, but develo
 ## Quick Reference Summary
 
 ### Essential Patterns
-- **Compound Components**: Always use `<Tooltip.Root>` + `<Tooltip.Content>`
-- **Testing**: Include both providers in test wrapper
-- **Accessibility**: Built-in ARIA support, keyboard navigation included
-- **Performance**: Memoize handlers and styles for optimal performance
+For essential patterns and guidelines, see the [Tooltip design guideline]((https://Nimbus-docs/components/feedback/tooltip))
 
 ### Common Code Patterns
 
@@ -183,6 +184,7 @@ const MyComponent = () => {
 Join `#nimbus-migration` on Slack or check the [Nimbus Storybook](https://nimbus.commercetools.com/?path=/story/components-tooltip) for live examples.
 
 **Additional Resources:**
+- [Tooltip design guideline](https://Nimbus-docs/components/feedback/tooltip)
 - [React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
 - [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
 - [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
