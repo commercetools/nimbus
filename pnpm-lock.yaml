@@ -168,7 +168,7 @@ overrides:
   '@babel/runtime': ^7.28.4
   prismjs: ^1.30.0
   typescript: ~5.9.2
-  react-aria: 3.43.1
+  react-aria: 3.43.2
   react-aria-components: 1.12.1
   react-stately: 3.41.0
   '@react-aria/interactions': 3.25.5
@@ -355,8 +355,8 @@ importers:
         specifier: catalog:react
         version: 19.1.0
       react-aria:
-        specifier: 3.43.1
-        version: 3.43.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 3.43.2
+        version: 3.43.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-aria-components:
         specifier: 1.12.1
         version: 1.12.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -485,8 +485,8 @@ importers:
         specifier: catalog:react
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-aria:
-        specifier: 3.43.1
-        version: 3.43.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 3.43.2
+        version: 3.43.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-aria-components:
         specifier: 1.12.1
         version: 1.12.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -5293,8 +5293,8 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  react-aria@3.43.1:
-    resolution: {integrity: sha512-/PmZGiw+Ya/YtzXmiLW4ALD4SMuDnbwhMaVh33VCduTl8vVujIUzUTIi5g4C+YHLDs/Z4edsN3aQsPMqFfg1xA==}
+  react-aria@3.43.2:
+    resolution: {integrity: sha512-CfaXi3S69SeOkpp6pGc1w5FH8OvGPFphiMrO2tNSlqpYIecgk3gKoXjkqaAr6N+O1gasLMfAAF9sxtvS141qWg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -12436,12 +12436,12 @@ snapshots:
       '@swc/helpers': 0.5.15
       client-only: 0.0.1
       react: 19.1.0
-      react-aria: 3.43.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-aria: 3.43.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-dom: 19.1.0(react@19.1.0)
       react-stately: 3.41.0(react@19.1.0)
       use-sync-external-store: 1.5.0(react@19.1.0)
 
-  react-aria@3.43.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-aria@3.43.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@internationalized/string': 3.2.7
       '@react-aria/breadcrumbs': 3.5.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
