@@ -1,5 +1,30 @@
 # @commercetools/nimbus
 
+## 2.0.0
+
+### Minor Changes
+
+- [#436](https://github.com/commercetools/nimbus/pull/436)
+  [`3810148`](https://github.com/commercetools/nimbus/commit/3810148a76d6cf740656c26ca3be057c7952c296)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Create MoneyInput component
+  and component custom icon
+
+- [#382](https://github.com/commercetools/nimbus/pull/382)
+  [`014f9be`](https://github.com/commercetools/nimbus/commit/014f9be6ec4decb47e249f2d1c5e7f643815540f)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - InlineSvg component added
+
+### Patch Changes
+
+- [#439](https://github.com/commercetools/nimbus/pull/439)
+  [`ffe580f`](https://github.com/commercetools/nimbus/commit/ffe580f75ba2b73c1c9888c7a9ec9b8124a6e40c)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Added IntlProvider
+  wrapper to docs
+
+- Updated dependencies
+  [[`3810148`](https://github.com/commercetools/nimbus/commit/3810148a76d6cf740656c26ca3be057c7952c296)]:
+  - @commercetools/nimbus-icons@2.0.0
+  - @commercetools/nimbus-tokens@2.0.0
+
 ## 1.0.1
 
 ### Minor Changes

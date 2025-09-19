@@ -9,12 +9,7 @@
     "directory": "packages/i18n"
   },
   "homepage": "https://nimbus-documentation.vercel.app/home",
-  "keywords": [
-    "typescript",
-    "design-system",
-    "react",
-    "nimbus"
-  ],
+  "keywords": ["typescript", "design-system", "react", "nimbus"],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -22,11 +17,7 @@
   "sideEffects": false,
   "main": "dist/commercetools-nimbus-i18n.cjs.js",
   "module": "dist/commercetools-nimbus-i18n.esm.js",
-  "files": [
-    "dist",
-    "data",
-    "compiled-data"
-  ],
+  "files": ["dist", "data", "compiled-data"],
   "scripts": {
     "compile-data": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast data compiled-data"
   }
