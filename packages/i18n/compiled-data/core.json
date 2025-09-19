@@ -47,10 +47,16 @@
       "value": "Loading data"
     }
   ],
-  "Nimbus.MoneyInput.currencySelection": [
+  "Nimbus.MoneyInput.amountInputLabel": [
     {
       "type": 0,
-      "value": "Currency selection"
+      "value": "Amount"
+    }
+  ],
+  "Nimbus.MoneyInput.currencySelectLabel": [
+    {
+      "type": 0,
+      "value": "Currency"
     }
   ],
   "Nimbus.MoneyInput.highPrecisionPrice": [
