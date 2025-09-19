@@ -176,6 +176,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         textStyle: "sm",
         fontSize: "300",
         height: "1000",
+        zIndex: 14,
         "& .data-table-column-divider": {
           display: "none",
           position: "absolute",
