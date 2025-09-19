@@ -26,8 +26,8 @@ export const CollapsibleMotionTrigger = forwardRef<
     // Don't toggle if button is disabled
     if (isDisabled) return;
 
-    // Call the toggle function from context
-    toggle();
+    // Call React Aria's onClick handler first (if it exists)
+    buttonProps.onClick?.(event);
     // Call custom onClick if provided
     onClick?.(event);
   };
