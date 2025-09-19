@@ -1,0 +1,383 @@
+---
+id: money-input
+title: MoneyInput
+description: A sophisticated input component for monetary values with currency selection, locale-aware formatting, and high-precision support.
+menu:
+  - Components
+  - Inputs
+  - MoneyInput
+tags:
+  - inputs
+  - forms
+  - currency
+  - money
+  - financial
+---
+
+# MoneyInput
+
+A controlled input component for money values that combines currency selection with amount input, supporting both standard and high-precision monetary values.
+
+## Features
+
+- **Dual Interface**: Currency dropdown + amount text input
+- **Precision Support**: Both `centPrecision` and `highPrecision` monetary values
+- **Locale-Aware**: Intelligent number parsing and formatting based on user locale
+- **220+ Currencies**: Complete ISO 4217 currency support with proper fraction digits
+- **Validation**: Comprehensive error states and input validation
+- **Accessibility**: Full WCAG 2.1 AA compliance with React Aria integration
+- **High Precision Badge**: Visual indicator for values exceeding standard currency precision
+
+## Basic Usage
+
+```jsx-live
+function BasicExample() {
+  const [value, setValue] = React.useState({ amount: "", currencyCode: "" });
+
+  const handleChange = (event) => {
+    if (!event.target.name) return;
+
+    if (event.target.name.endsWith(".amount")) {
+      setValue(prev => ({ ...prev, amount: event.target.value }));
+    }
+
+    if (event.target.name.endsWith(".currencyCode")) {
+      setValue(prev => ({ ...prev, currencyCode: event.target.value }));
+    }
+  };
+
+  return (
+    <MoneyInput.Root
+      value={value}
+      currencies={["EUR", "USD", "GBP", "JPY"]}
+      onChange={handleChange}
+      name="basic-example"
+      hasHighPrecisionBadge
+    >
+      <MoneyInput.CurrencySelect />
+      <MoneyInput.AmountInput placeholder="0.00" />
+      <MoneyInput.Badge />
+    </MoneyInput.Root>
+  );
+}
+```
+
+## Compound Components
+
+The MoneyInput follows Nimbus compound component patterns:
+
+- **`MoneyInput.Root`** - Container with state management and context
+- **`MoneyInput.CurrencySelect`** - Currency dropdown selection
+- **`MoneyInput.AmountInput`** - Amount text input with formatting
+- **`MoneyInput.Badge`** - High precision indicator with tooltip
+
+## High Precision Support
+
+The component automatically detects and handles high precision values that exceed a currency's standard fraction digits:
+
+```jsx-live
+function HighPrecisionExample() {
+  const [value, setValue] = React.useState({ 
+    amount: "42.12345", 
+    currencyCode: "EUR" 
+  });
+
+  const handleChange = (event) => {
+    if (!event.target.name) return;
+
+    if (event.target.name.endsWith(".amount")) {
+      setValue(prev => ({ ...prev, amount: event.target.value }));
+    }
+
+    if (event.target.name.endsWith(".currencyCode")) {
+      setValue(prev => ({ ...prev, currencyCode: event.target.value }));
+    }
+  };
+
+  return (
+    <MoneyInput.Root
+      value={value}
+      currencies={["EUR", "USD", "GBP"]}
+      onChange={handleChange}
+      name="high-precision"
+      hasHighPrecisionBadge
+    >
+      <MoneyInput.CurrencySelect />
+      <MoneyInput.AmountInput placeholder="0.00" />
+      <MoneyInput.Badge />
+    </MoneyInput.Root>
+  );
+}
+```
+
+## Currency-Specific Formatting
+
+Different currencies have different fraction digits. The component handles this automatically:
+
+```jsx-live
+function CurrencyFormattingExample() {
+  const [eurValue, setEurValue] = React.useState({ amount: "100.50", currencyCode: "EUR" });
+  const [jpyValue, setJpyValue] = React.useState({ amount: "100", currencyCode: "JPY" });
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div>
+        <label style={{ display: "block", marginBottom: "4px" }}>EUR (2 fraction digits)</label>
+        <MoneyInput.Root
+          value={eurValue}
+          currencies={["EUR"]}
+          onChange={(e) => {
+            const field = e.target.name.split(".")[1];
+            setEurValue(prev => ({ ...prev, [field]: e.target.value }));
+          }}
+          name="eur"
+        >
+          <MoneyInput.CurrencySelect />
+          <MoneyInput.AmountInput placeholder="0.00" />
+        </MoneyInput.Root>
+      </div>
+      
+      <div>
+        <label style={{ display: "block", marginBottom: "4px" }}>JPY (0 fraction digits)</label>
+        <MoneyInput.Root
+          value={jpyValue}
+          currencies={["JPY"]}
+          onChange={(e) => {
+            const field = e.target.name.split(".")[1];
+            setJpyValue(prev => ({ ...prev, [field]: e.target.value }));
+          }}
+          name="jpy"
+        >
+          <MoneyInput.CurrencySelect />
+          <MoneyInput.AmountInput placeholder="0" />
+        </MoneyInput.Root>
+      </div>
+    </div>
+  );
+}
+```
+
+## States
+
+### Disabled State
+
+```jsx-live
+function DisabledExample() {
+  const [value] = React.useState({ amount: "100.00", currencyCode: "USD" });
+
+  return (
+    <MoneyInput.Root
+      value={value}
+      currencies={["USD", "EUR"]}
+      name="disabled-example"
+      isDisabled
+    >
+      <MoneyInput.CurrencySelect />
+      <MoneyInput.AmountInput placeholder="0.00" />
+    </MoneyInput.Root>
+  );
+}
+```
+
+### Error State
+
+```jsx-live
+function ErrorExample() {
+  const [value] = React.useState({ amount: "invalid", currencyCode: "EUR" });
+
+  return (
+    <MoneyInput.Root
+      value={value}
+      currencies={["EUR", "USD"]}
+      name="error-example"
+      hasError
+    >
+      <MoneyInput.CurrencySelect />
+      <MoneyInput.AmountInput placeholder="0.00" />
+    </MoneyInput.Root>
+  );
+}
+```
+
+### Read-Only State
+
+```jsx-live
+function ReadOnlyExample() {
+  const [value] = React.useState({ amount: "250.75", currencyCode: "GBP" });
+
+  return (
+    <MoneyInput.Root
+      value={value}
+      currencies={["GBP", "USD"]}
+      name="readonly-example"
+      isReadOnly
+    >
+      <MoneyInput.CurrencySelect />
+      <MoneyInput.AmountInput />
+    </MoneyInput.Root>
+  );
+}
+```
+
+## Static Methods
+
+The MoneyInput component provides several static methods for working with money values:
+
+### convertToMoneyValue
+
+Converts input value to API money format:
+
+```typescript
+const inputValue = { amount: "42.50", currencyCode: "EUR" };
+const moneyValue = MoneyInput.convertToMoneyValue(inputValue, "en-US");
+// Returns: { type: "centPrecision", currencyCode: "EUR", centAmount: 4250, fractionDigits: 2 }
+```
+
+### parseMoneyValue
+
+Converts API money format to input value:
+
+```typescript
+const moneyValue = {
+  type: "centPrecision",
+  currencyCode: "EUR",
+  centAmount: 4250,
+  fractionDigits: 2
+};
+const inputValue = MoneyInput.parseMoneyValue(moneyValue, "en-US");
+// Returns: { amount: "42.50", currencyCode: "EUR" }
+```
+
+### isEmpty
+
+Checks if money value is empty:
+
+```typescript
+MoneyInput.isEmpty({ amount: "", currencyCode: "" }); // true
+MoneyInput.isEmpty({ amount: "42.50", currencyCode: "EUR" }); // false
+```
+
+### isHighPrecision
+
+Checks if value uses high precision:
+
+```typescript
+const value = { amount: "42.12345", currencyCode: "EUR" };
+MoneyInput.isHighPrecision(value, "en-US"); // true (EUR has 2 fraction digits, value has 5)
+```
+
+## Form Integration
+
+The component integrates seamlessly with form libraries:
+
+```jsx-live
+function FormExample() {
+  const [formData, setFormData] = React.useState({
+    price: { amount: "", currencyCode: "" },
+    discount: { amount: "", currencyCode: "" },
+  });
+
+  const handleFieldChange = (fieldName) => (event) => {
+    if (event.target.name?.startsWith(fieldName)) {
+      const property = event.target.name.split(".")[1];
+      setFormData(prev => ({
+        ...prev,
+        [fieldName]: { ...prev[fieldName], [property]: event.target.value }
+      }));
+    }
+  };
+
+  return (
+    <form style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div>
+        <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold" }}>
+          Product Price
+        </label>
+        <MoneyInput.Root
+          value={formData.price}
+          currencies={["EUR", "USD", "GBP"]}
+          onChange={handleFieldChange("price")}
+          name="price"
+          hasHighPrecisionBadge
+        >
+          <MoneyInput.CurrencySelect />
+          <MoneyInput.AmountInput placeholder="0.00" />
+          <MoneyInput.Badge />
+        </MoneyInput.Root>
+      </div>
+      
+      <div>
+        <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold" }}>
+          Discount
+        </label>
+        <MoneyInput.Root
+          value={formData.discount}
+          currencies={["EUR", "USD", "GBP"]}
+          onChange={handleFieldChange("discount")}
+          name="discount"
+        >
+          <MoneyInput.CurrencySelect />
+          <MoneyInput.AmountInput placeholder="0.00" />
+        </MoneyInput.Root>
+      </div>
+      
+      <pre style={{ 
+        padding: "8px", 
+        backgroundColor: "#f5f5f5", 
+        borderRadius: "4px",
+        fontSize: "12px" 
+      }}>
+        {JSON.stringify(formData, null, 2)}
+      </pre>
+    </form>
+  );
+}
+```
+
+## Migration from UI Kit
+
+If you're migrating from `@commercetools-uikit/money-input`, here are the key changes:
+
+### Before (UI Kit)
+```typescript
+import MoneyInput from '@commercetools-uikit/money-input';
+
+<MoneyInput
+  value={value}
+  currencies={currencies}
+  onChange={onChange}
+  hasHighPrecisionBadge
+/>
+```
+
+### After (Nimbus)
+```typescript
+import { MoneyInput } from '@commercetools/nimbus';
+
+<MoneyInput.Root
+  value={value}
+  currencies={currencies}
+  onChange={onChange}
+  hasHighPrecisionBadge
+>
+  <MoneyInput.CurrencySelect />
+  <MoneyInput.AmountInput placeholder="0.00" />
+  <MoneyInput.Badge />
+</MoneyInput.Root>
+```
+
+### Key Changes
+1. **Compound Structure**: Use `MoneyInput.Root` with child components
+2. **Explicit Components**: Add `CurrencySelect`, `AmountInput`, and `Badge` as needed
+3. **Same Static Methods**: All static methods (`convertToMoneyValue`, `parseMoneyValue`, etc.) work identically
+4. **Same Props**: Most props work the same way, just moved to the Root component
+
+<PropsTable id="MoneyInputRoot" />
+
+## Accessibility
+
+- **Keyboard Navigation**: Full keyboard support for both currency selection and amount input
+- **Screen Reader**: Comprehensive ARIA attributes and labels
+- **Focus Management**: Proper focus handling between currency and amount fields
+- **High Contrast**: Supports high contrast mode
+- **WCAG 2.1 AA**: Fully compliant with accessibility standards

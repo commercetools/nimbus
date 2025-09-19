@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { I18nProvider } from "react-aria";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
 import { Box, Stack, Text, FormField } from "@/components";
@@ -555,5 +556,95 @@ export const WithFormField: Story = {
         await userEvent.clear(basicInput);
       }
     );
+  },
+};
+
+export const LocaleFormatting: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      <Box>
+        <Text mb={2} fontSize="lg" fontWeight="bold">
+          Locale-based Number Formatting
+        </Text>
+        <Text mb={4} fontSize="sm" color="gray.600">
+          NumberInput respects I18nProvider locale for consistent formatting
+        </Text>
+      </Box>
+
+      <Box>
+        <Text mb={2} fontSize="md" fontWeight="medium">
+          US Locale (en-US) - Default
+        </Text>
+        <Stack direction="row" align="flex-start" gap="300">
+          <Box>
+            <Text mb={1} fontSize="sm">
+              Number A
+            </Text>
+            <NumberInput defaultValue={1234.56} aria-label="US locale number" />
+          </Box>
+          <Box>
+            <Text mb={1} fontSize="sm">
+              Number B
+            </Text>
+            <NumberInput
+              defaultValue={9876.54}
+              aria-label="US locale number 2"
+            />
+          </Box>
+        </Stack>
+      </Box>
+
+      <I18nProvider locale="de-DE">
+        <Box>
+          <Text mb={2} fontSize="md" fontWeight="medium">
+            German Locale (de-DE) - Periods for thousands, comma for decimals
+          </Text>
+          <Stack direction="row" align="flex-start" gap="300">
+            <Box>
+              <Text mb={1} fontSize="sm">
+                Number A
+              </Text>
+              <NumberInput
+                defaultValue={1234.56}
+                aria-label="German locale number"
+              />
+            </Box>
+            <Box>
+              <Text mb={1} fontSize="sm">
+                Number B
+              </Text>
+              <NumberInput
+                defaultValue={9876.54}
+                aria-label="German locale number 2"
+              />
+            </Box>
+          </Stack>
+        </Box>
+      </I18nProvider>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // US locale formatting (commas for thousands, periods for decimals)
+    const usNumber1 =
+      canvas.getByLabelText<HTMLInputElement>("US locale number");
+    const usNumber2 =
+      canvas.getByLabelText<HTMLInputElement>("US locale number 2");
+    await expect(usNumber1).toHaveValue("1,234.56");
+    await expect(usNumber2).toHaveValue("9,876.54");
+
+    // German locale formatting (periods for thousands, comma for decimals)
+    const deNumber1 = canvas.getByLabelText<HTMLInputElement>(
+      "German locale number"
+    );
+    const deNumber2 = canvas.getByLabelText<HTMLInputElement>(
+      "German locale number 2"
+    );
+    // German locale uses periods for thousands and commas for decimals
+    await expect(deNumber1.value).toContain("1.234");
+    await expect(deNumber1.value).toContain(",56");
+    await expect(deNumber2.value).toContain("9.876");
+    await expect(deNumber2.value).toContain(",54");
   },
 };

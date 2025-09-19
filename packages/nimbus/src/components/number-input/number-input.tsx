@@ -23,8 +23,7 @@ import messages from "./number-input.i18n";
  * # NumberInput
  *
  * A number input allows users to enter numerical values and adjust them incrementally.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/number-input}
+ * The locale for formatting comes from React Aria's I18nProvider context.
  */
 export const NumberInput = (props: NumberInputProps) => {
   const { size, ref: forwardedRef, ...restProps } = props;
@@ -40,28 +39,37 @@ export const NumberInput = (props: NumberInputProps) => {
   // Extract style props
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
-  // Pass only functional props to react-aria with localized aria-labels
-  const ariaProps = {
+  // Enhance functional props with localized aria-labels
+  const enhancedFunctionalProps = {
     ...functionalProps,
+    locale: locale,
     incrementAriaLabel: intl.formatMessage(messages.increment),
     decrementAriaLabel: intl.formatMessage(messages.decrement),
   };
 
-  const state = useNumberFieldState({ locale, ...ariaProps });
+  // Pass enhanced props to react-aria
+  const state = useNumberFieldState(enhancedFunctionalProps);
   const { inputProps, incrementButtonProps, decrementButtonProps } =
-    useNumberField(ariaProps, state, ref);
+    useNumberField(enhancedFunctionalProps, state, ref);
 
   const stateProps = {
     "data-invalid": props.isInvalid,
     "data-disabled": props.isDisabled,
   };
+
   return (
-    <NumberInputRootSlot {...recipeProps} {...styleProps} size={size}>
+    <NumberInputRootSlot
+      {...recipeProps}
+      {...styleProps}
+      size={size}
+      className={props?.className as string}
+    >
       <NumberInputInputSlot
         ref={ref}
         {...inputProps}
         {...stateProps}
-        size={size}
+        // https://github.com/adobe/react-spectrum/issues/4744
+        name={props.name}
       />
       <Box
         position="absolute"
