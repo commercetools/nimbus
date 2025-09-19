@@ -2,7 +2,7 @@
 id: Layout-Separator
 title: Separator
 description: A visual divider that separates content sections.
-documentState: ReviewedInternal
+documentState: InitialDraft
 documentAudiences: []
 order: 999
 menu:
@@ -15,155 +15,134 @@ tags:
 
 # Separator
 
-A divider provides a visual separator between sections of content, improving
-readability and creating clear boundaries in layouts.
+A separator is a visual or semantic line that groups and divides content,
+establishing rhythm and hierarchy within a layout.
 
 ## Overview
 
-Separators are fundamental UI elements used to break up content, improve
-readability, and guide the user's eye. They provide semantic meaning through
-proper accessibility attributes while maintaining consistent visual styling.
+Separators enhance clarity by visually breaking up content. They can be
+horizontal or vertical.
 
-### Basic Usage
+### Resources
 
-The simplest use case is a horizontal divider to separate content blocks:
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-25167)
+
+## Variables
+
+Get familiar with the features.
+
+### Label options
+
+#### Horizontal
+
+Horizontal separators can be used to divide content or tools. It can span the
+entire page width or small areas.
 
 ```jsx-live
 const App = () => (
-  <Box>
-    <Box p="4">
-      Content above the divider
-    </Box>
+  <Box width="1600">
     <Separator />
-    <Box p="4">
-      Content below the divider
-    </Box>
   </Box>
 )
 ```
 
-### Vertical Separators
+#### Vertical
 
-Use vertical dividers to separate side-by-side content:
+Vertical separators can be used to divide columns of content or tools.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="row" alignItems="center" gap="4">
-    <Box p="4">
-      Left content
-    </Box>
+  <Box height="1600">
     <Separator orientation="vertical" />
-    <Box p="4">
-      Right content
-    </Box>
-  </Stack>
-)
-```
-
-### Custom Styling
-
-You can customize the divider using any Chakra UI styling props:
-
-```jsx-live
-const App = () => (
-  <Stack gap="6">
-    <Box>
-      <Text fontSize="sm" color="gray.600">Default</Text>
-      <Separator />
-    </Box>
-    <Box>
-      <Text fontSize="sm" color="gray.600">Custom color</Text>
-      <Separator borderColor="red.300" />
-    </Box>
-    <Box>
-      <Text fontSize="sm" color="gray.600">Thicker divider</Text>
-      <Separator borderTopWidth="2px" />
-    </Box>
-    <Box>
-      <Text fontSize="sm" color="gray.600">Dashed style</Text>
-      <Separator borderStyle="dashed" borderColor="blue.400" />
-    </Box>
-  </Stack>
-)
-```
-
-## Common Use Cases
-
-### Form Sections
-
-Use dividers to separate logical sections within forms:
-
-```jsx-live
-const App = () => (
-  <Box maxWidth="md">
-    <Box p="4">
-      <Heading size="md">Personal Information</Heading>
-      <Input placeholder="Name" mt="2" />
-      <Input placeholder="Email" mt="2" />
-    </Box>
-    <Separator />
-    <Box p="4">
-      <Heading size="md">Account Settings</Heading>
-      <Input placeholder="Password" type="password" mt="2" />
-      <Input placeholder="Confirm Password" type="password" mt="2" />
-    </Box>
   </Box>
 )
 ```
 
-### Menu Separators
+#### Supports radix colors
 
-Group related menu items with dividers:
-
-```jsx-live
-const App = () => (
-  <Box maxWidth="xs" border="1px" borderColor="gray.200" borderRadius="md">
-    <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>New File</Box>
-    <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>Open File</Box>
-    <Separator />
-    <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>Save</Box>
-    <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }}>Save As...</Box>
-    <Separator />
-    <Box p="3" cursor="pointer" _hover={{ bg: "gray.50" }} color="red.600">Delete</Box>
-  </Box>
-)
-```
-
-### Layout Separators
-
-Create visual boundaries in complex layouts:
+The default color is `neutral` but can be customized with supported token
+colors.
 
 ```jsx-live
-const App = () => (
-  <Stack direction="row" height="200px">
-    <Box p="4" bg="blue.50" minWidth="200px">
-      Sidebar
-    </Box>
-    <Separator orientation="vertical" />
-    <Box p="4" bg="green.50" flex="1">
-      Main content area
-    </Box>
-  </Stack>
-)
+const App = () => {
+  const customColors = ['slate', 'positive', 'teal', 'pink', 'mint'];
+
+ return (
+    <Flex height="1600" flexDirection="horizontal" gap="200">
+      {customColors.map((color) => (
+        <Separator key={color} orientation="vertical" colorPalette={color} />
+      ))}
+    </Flex>
+  );
+}
 ```
+
+## Guidelines
+
+Design guidelines offer a set of standardized rules and recommendations that
+ensure consistency, usability, and accessibility across all design elements and
+interactions.
+
+### Best practices
+
+- **Be subtle:** Separators should be noticeable but not visually jarring.
+- **Prioritize white space:** Use separators only when white space alone is
+  insufficient to define content groups.
+- **Use sparingly:** Overuse of separators creates visual noise and diminishes
+  their impact.
+- **Place logically:** Position separators to reinforce content relationships
+  and hierarchy.
+
+### Usage
+
+Separators help organize content and guide the user's eye.
+
+> [!TIP]\
+> When to use
+
+- Separate distinct sections of content on a page.
+- Divide items in a list, especially when items are similar.
+- Group related components within a panel or dialog.
+- Separate elements in a toolbar or navigation menu.
+- Indicate where content might expand or collapse.
+
+> [!CAUTION]\
+> When not to use
+
+- Separate individual items when white space provides sufficient visual
+  distinction.
+- Overuse within a small area, which can lead to visual clutter.
+- As a primary decorative element.
+- When a component already has inherent visual separation (e.g., card borders).
+
+## Properties
+
+<PropsTable id="Separator" />
 
 ## Accessibility
 
-- The divider automatically receives `role="separator"` for screen readers
-- Proper `aria-orientation` is set based on the orientation prop
-- Separators are not focusable by default, maintaining proper tab order
-- Semantic meaning is preserved for assistive technologies
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
 
-## API Reference
+```jsx-live
+const App = () => (
+  <Box width="1600">
+    <Separator />
+  </Box>
+)
+```
 
-### Props
+### Accessibility standards
 
-| Name          | Type                         | Default        | Description                    |
-| ------------- | ---------------------------- | -------------- | ------------------------------ |
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | The orientation of the divider |
+**Role attribute:** The component applies `role="separator"` to define it as a
+non-focusable, decorative divider.
 
-The component also accepts all standard Chakra UI styling props for
-customization (e.g., `borderColor`, `borderWidth`, `borderStyle`, etc.).
+**Semantic separation:** Ensure separators genuinely aid in content organization
+for all users, including those relying on assistive technologies.
 
-_This component is built with React Aria for accessibility and uses Chakra UI's
-styling system._
+**Visual contrast:** While decorative, ensure the separator has sufficient
+contrast against its background to be perceivable by users with low vision,
+aligning with WCAG 2.1 1.4.11 for non-text contrast (3:1 contrast ratio).
