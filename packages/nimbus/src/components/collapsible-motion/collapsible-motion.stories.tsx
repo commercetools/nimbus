@@ -6,9 +6,9 @@ import { Button } from "../button";
 import { Text } from "../text";
 import { Box } from "../box";
 
-const meta: Meta<typeof CollapsibleMotion> = {
+const meta: Meta<typeof CollapsibleMotion.Root> = {
   title: "Components/Layout/CollapsibleMotion",
-  component: CollapsibleMotion,
+  component: CollapsibleMotion.Root,
   parameters: {
     docs: {
       description: {
@@ -24,25 +24,23 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Basic uncontrolled example with render prop pattern
+ * Basic uncontrolled example with compound component pattern
  */
 export const Basic: Story = {
   render: () => (
-    <CollapsibleMotion
-      defaultExpanded={false}
-      renderTrigger={({ toggle, isExpanded, buttonProps }) => (
-        <Button {...buttonProps} onClick={toggle} mb={4}>
-          {isExpanded ? "Collapse" : "Expand"} Content
-        </Button>
-      )}
-    >
-      <Box p={4} bg="gray.50" borderRadius="md">
-        <Text>
-          This is collapsible content that will smoothly expand and collapse.
-          The animation uses CSS transitions for optimal performance.
-        </Text>
-      </Box>
-    </CollapsibleMotion>
+    <CollapsibleMotion.Root defaultExpanded={false}>
+      <CollapsibleMotion.Trigger>
+        <Button mb={4}>Toggle Content</Button>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Box p={4} bg="gray.50" borderRadius="md">
+          <Text>
+            This is collapsible content that will smoothly expand and collapse.
+            The animation uses CSS transitions for optimal performance.
+          </Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -75,22 +73,22 @@ export const Controlled: Story = {
         <Button onClick={() => setIsExpanded(!isExpanded)} mb={4}>
           {isExpanded ? "Collapse" : "Expand"} Content (External Control)
         </Button>
-        <CollapsibleMotion
+        <CollapsibleMotion.Root
           isExpanded={isExpanded}
           onExpandedChange={setIsExpanded}
-          renderTrigger={({ toggle, buttonProps }) => (
-            <Button {...buttonProps} onClick={toggle} mb={4}>
-              Toggle Content (Internal Control)
-            </Button>
-          )}
         >
-          <Box p={4} bg="blue.50" borderRadius="md">
-            <Text>
-              This is controlled collapsible content. The parent component
-              manages the expanded state and can react to changes.
-            </Text>
-          </Box>
-        </CollapsibleMotion>
+          <CollapsibleMotion.Trigger>
+            <Button mb={4}>Toggle Content (Internal Control)</Button>
+          </CollapsibleMotion.Trigger>
+          <CollapsibleMotion.Content>
+            <Box p={4} bg="blue.50" borderRadius="md">
+              <Text>
+                This is controlled collapsible content. The parent component
+                manages the expanded state and can react to changes.
+              </Text>
+            </Box>
+          </CollapsibleMotion.Content>
+        </CollapsibleMotion.Root>
       </div>
     );
   },
@@ -114,26 +112,23 @@ export const Controlled: Story = {
  */
 export const WithMinHeight: Story = {
   render: () => (
-    <CollapsibleMotion
-      defaultExpanded={false}
-      minHeight={60}
-      renderTrigger={({ toggle, isExpanded, buttonProps }) => (
-        <Button {...buttonProps} onClick={toggle} mb={4}>
-          {isExpanded ? "Collapse" : "Expand"} Content
-        </Button>
-      )}
-    >
-      <Box p={4} border="2px solid pink" minH="200px">
-        <Text mb={4}>
-          This content has a minimum height of 60px when collapsed, so it's
-          never completely hidden.
-        </Text>
-        <Text>
-          This allows for partial visibility of content even when collapsed,
-          which can be useful for preview purposes.
-        </Text>
-      </Box>
-    </CollapsibleMotion>
+    <CollapsibleMotion.Root defaultExpanded={false} minHeight={60}>
+      <CollapsibleMotion.Trigger>
+        <Button mb={4}>Toggle Content</Button>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Box p={4} border="2px solid pink" minH="200px">
+          <Text mb={4}>
+            This content has a minimum height of 60px when collapsed, so it's
+            never completely hidden.
+          </Text>
+          <Text>
+            This allows for partial visibility of content even when collapsed,
+            which can be useful for preview purposes.
+          </Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -153,26 +148,23 @@ export const WithMinHeight: Story = {
  */
 export const CustomAnimationDuration: Story = {
   render: () => (
-    <CollapsibleMotion
-      defaultExpanded={false}
-      animationDuration={800}
-      renderTrigger={({ toggle, buttonProps }) => (
-        <Button {...buttonProps} onClick={toggle} mb={4}>
-          Toggle Content (Slow Animation)
-        </Button>
-      )}
-    >
-      <Box p={4} bg="purple.50" borderRadius="md">
-        <Text mb={4}>
-          This content uses a custom animation duration of 800ms, making the
-          expand/collapse animation slower and more noticeable.
-        </Text>
-        <Text>
-          You can customize the animation duration to match your design
-          requirements.
-        </Text>
-      </Box>
-    </CollapsibleMotion>
+    <CollapsibleMotion.Root defaultExpanded={false} animationDuration={800}>
+      <CollapsibleMotion.Trigger>
+        <Button mb={4}>Toggle Content (Slow Animation)</Button>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Box p={4} bg="purple.50" borderRadius="md">
+          <Text mb={4}>
+            This content uses a custom animation duration of 800ms, making the
+            expand/collapse animation slower and more noticeable.
+          </Text>
+          <Text>
+            You can customize the animation duration to match your design
+            requirements.
+          </Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -192,21 +184,18 @@ export const CustomAnimationDuration: Story = {
  */
 export const Disabled: Story = {
   render: () => (
-    <CollapsibleMotion
-      disabled={true}
-      defaultExpanded={false}
-      renderTrigger={({ toggle, buttonProps }) => (
-        <Button {...buttonProps} onClick={toggle} mb={4}>
-          Toggle Content (Disabled)
-        </Button>
-      )}
-    >
-      <Box p={4} bg="red.50" borderRadius="md">
-        <Text>
-          This content is disabled and cannot be expanded or collapsed.
-        </Text>
-      </Box>
-    </CollapsibleMotion>
+    <CollapsibleMotion.Root disabled={true} defaultExpanded={false}>
+      <CollapsibleMotion.Trigger>
+        <Button mb={4}>Toggle Content (Disabled)</Button>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Box p={4} bg="red.50" borderRadius="md">
+          <Text>
+            This content is disabled and cannot be expanded or collapsed.
+          </Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -266,25 +255,23 @@ export const DynamicContent: Story = {
           </Button>
         </div>
 
-        <CollapsibleMotion
-          defaultExpanded={true}
-          renderTrigger={({ toggle, isExpanded, buttonProps }) => (
-            <Button {...buttonProps} onClick={toggle} mb={4}>
-              {isExpanded ? "Collapse" : "Expand"} Dynamic Content
-            </Button>
-          )}
-        >
-          <Box p={4} bg="orange.50" borderRadius="md">
-            <Text>{contentMap[contentLength]}</Text>
-          </Box>
-        </CollapsibleMotion>
+        <CollapsibleMotion.Root defaultExpanded={true}>
+          <CollapsibleMotion.Trigger>
+            <Button mb={4}>Toggle Dynamic Content</Button>
+          </CollapsibleMotion.Trigger>
+          <CollapsibleMotion.Content>
+            <Box p={4} bg="orange.50" borderRadius="md">
+              <Text>{contentMap[contentLength]}</Text>
+            </Box>
+          </CollapsibleMotion.Content>
+        </CollapsibleMotion.Root>
       </div>
     );
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const longButton = canvas.getByText("Long");
-    const toggleButton = canvas.getByText(/Dynamic Content/);
+    const toggleButton = canvas.getByText(/Toggle Dynamic Content/);
 
     // Change content to long
     await userEvent.click(longButton);
@@ -306,27 +293,25 @@ export const DynamicContent: Story = {
  */
 export const AccessibilityTest: Story = {
   render: () => (
-    <CollapsibleMotion
-      defaultExpanded={false}
-      renderTrigger={({ toggle, buttonProps }) => (
-        <Button {...buttonProps} onClick={toggle} mb={4}>
-          Accessible Toggle Button
-        </Button>
-      )}
-    >
-      <Box p={4} bg="teal.50" borderRadius="md">
-        <Text mb={4}>
-          This example demonstrates proper accessibility features:
-        </Text>
-        <ul>
-          <li>Proper ARIA attributes (aria-expanded, aria-controls)</li>
-          <li>Focus management for screen readers</li>
-          <li>Keyboard navigation support</li>
-          <li>Content is not focusable when collapsed</li>
-          <li>ResizeObserver for efficient content measurement</li>
-        </ul>
-      </Box>
-    </CollapsibleMotion>
+    <CollapsibleMotion.Root defaultExpanded={false}>
+      <CollapsibleMotion.Trigger>
+        <Button mb={4}>Accessible Toggle Button</Button>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Box p={4} bg="teal.50" borderRadius="md">
+          <Text mb={4}>
+            This example demonstrates proper accessibility features:
+          </Text>
+          <ul>
+            <li>Proper ARIA attributes (aria-expanded, aria-controls)</li>
+            <li>Focus management for screen readers</li>
+            <li>Keyboard navigation support</li>
+            <li>Content is not focusable when collapsed</li>
+            <li>ResizeObserver for efficient content measurement</li>
+          </ul>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

@@ -1,7 +1,13 @@
+// Re-export compound component interfaces
+export type { CollapsibleMotionRootProps } from "./components/collapsible-motion-root";
+export type { CollapsibleMotionTriggerProps } from "./components/collapsible-motion-trigger";
+export type { CollapsibleMotionContentProps } from "./components/collapsible-motion-content";
+export type { CollapsibleMotionContextValue } from "./components/collapsible-motion-context";
+
 /**
- * Props for the simplified CollapsibleMotion component
+ * Props for the render prop version of CollapsibleMotion (backward compatibility)
  */
-export interface CollapsibleMotionProps {
+export interface CollapsibleMotionRenderPropProps {
   /**
    * The content to be collapsed/expanded
    */
