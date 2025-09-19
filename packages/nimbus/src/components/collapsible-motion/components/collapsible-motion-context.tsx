@@ -1,23 +1,5 @@
-import { createContext, useContext, type RefObject } from "react";
-import type { AriaButtonProps } from "react-aria";
-
-/**
- * Context value interface for CollapsibleMotion compound components
- */
-export interface CollapsibleMotionContextValue {
-  /** Function to toggle the expanded state */
-  toggle: () => void;
-  /** Whether the collapsible is currently expanded */
-  isExpanded: boolean;
-  /** Whether the collapsible is disabled */
-  isDisabled: boolean;
-  /** Button props from React Aria for accessibility */
-  buttonProps: AriaButtonProps<"button">;
-  /** Panel props from React Aria for accessibility */
-  panelProps: React.HTMLAttributes<HTMLDivElement>;
-  /** Panel ref for React Aria (needs to be attached to the panel container) */
-  panelRef: RefObject<HTMLDivElement | null>;
-}
+import { createContext, useContext } from "react";
+import type { CollapsibleMotionContextValue } from "../collapsible-motion.types";
 
 /**
  * React Context for sharing CollapsibleMotion state between compound components

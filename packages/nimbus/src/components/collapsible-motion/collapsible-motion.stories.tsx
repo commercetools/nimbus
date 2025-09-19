@@ -112,7 +112,7 @@ export const Controlled: Story = {
  */
 export const WithMinHeight: Story = {
   render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false} minHeight={60}>
+    <CollapsibleMotion.Root defaultExpanded={false}>
       <CollapsibleMotion.Trigger>
         <Button mb={4}>Toggle Content</Button>
       </CollapsibleMotion.Trigger>

@@ -28,5 +28,3 @@ export const collapsibleMotionSlotRecipe = defineSlotRecipe({
     },
   },
 });
-
-export type CollapsibleMotionSlotRecipe = typeof collapsibleMotionSlotRecipe;

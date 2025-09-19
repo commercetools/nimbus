@@ -3,52 +3,8 @@ import { useDisclosure } from "react-aria";
 import { useDisclosureState } from "react-stately";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { CollapsibleMotionContext } from "./collapsible-motion-context";
-import {
-  CollapsibleMotionRootSlot,
-  type CollapsibleMotionRecipeProps,
-} from "../collapsible-motion.slots";
-
-/**
- * Props for CollapsibleMotion.Root component
- */
-export interface CollapsibleMotionRootProps
-  extends CollapsibleMotionRecipeProps {
-  /**
-   * The child components (Trigger and Content)
-   */
-  children: React.ReactNode;
-
-  /**
-   * Whether the content is expanded by default (uncontrolled mode)
-   */
-  defaultExpanded?: boolean;
-
-  /**
-   * Whether the content is expanded (controlled mode)
-   */
-  isExpanded?: boolean;
-
-  /**
-   * Callback fired when the expanded state changes
-   */
-  onExpandedChange?: (isExpanded: boolean) => void;
-
-  /**
-   * The minimum height of the content when collapsed (in pixels)
-   * @default 0
-   */
-  minHeight?: number;
-
-  /**
-   * Whether the collapsible is disabled
-   */
-  isDisabled?: boolean;
-
-  /**
-   * Data attributes for testing and analytics
-   */
-  [key: `data-${string}`]: unknown;
-}
+import { CollapsibleMotionRootSlot } from "../collapsible-motion.slots";
+import type { CollapsibleMotionRootProps } from "../collapsible-motion.types";
 
 /**
  * CollapsibleMotion.Root - The root container component that manages state and provides context

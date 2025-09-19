@@ -4,17 +4,7 @@ import { mergeRefs } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useCollapsibleMotionContext } from "./collapsible-motion-context";
 import { CollapsibleMotionContentSlot } from "../collapsible-motion.slots";
-
-/**
- * Props for CollapsibleMotion.Content component
- */
-export interface CollapsibleMotionContentProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * The content to be collapsed/expanded
-   */
-  children: React.ReactNode;
-}
+import type { CollapsibleMotionContentProps } from "../collapsible-motion.types";
 
 /**
  * CollapsibleMotion.Content - The collapsible content container
