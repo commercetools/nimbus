@@ -3,13 +3,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LocalizedField, type LocalizedFieldChangeEvent } from "./index";
-import {
-  baseValues,
-  baseDescriptions,
-  baseErrors,
-  basePlaceholders,
-  baseWarnings,
-} from "./test-data";
+import { baseLocaleData, baseCurrencyData } from "./test-data";
 
 const meta: Meta<typeof LocalizedField> = {
   title: "components/LocalizedField",
@@ -35,23 +29,13 @@ type Story = StoryObj<typeof LocalizedField>;
 
 export const Base: Story = {
   render: () => {
-    const [localeValues, setLocaleValues] = useState(baseValues);
+    const [localeValues, setLocaleValues] = useState(baseLocaleData.values);
     const [touched, setTouched] = useState(false);
     const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
       setTouched(true);
-      const newValue = e.target.locale
-        ? { [String(e.target.locale)]: e.target.value }
-        : e.target.currency
-          ? {
-              [String(e.target.currency)]: {
-                currencyCode: e.target.currency,
-                amount: e.target.value,
-              },
-            }
-          : undefined;
       setLocaleValues({
         ...localeValues,
-        ...newValue,
+        [String(e.target.locale)]: e.target.value,
       });
     };
     return (
@@ -64,10 +48,10 @@ export const Base: Story = {
         onChange={handleSetLocalizedValue}
         onFocus={() => setTouched(true)}
         valuesByLocaleOrCurrency={localeValues}
-        placeholdersByLocaleOrCurrency={basePlaceholders}
-        // descriptionsByLocaleOrCurrency={baseDescriptions}
-        errorsByLocaleOrCurrency={baseErrors}
-        // warningsByLocaleOrCurrency={baseWarnings}
+        placeholdersByLocaleOrCurrency={baseLocaleData.placeholders}
+        // descriptionsByLocaleOrCurrency={baseLocaleData.descriptions}
+        errorsByLocaleOrCurrency={baseLocaleData.errors}
+        // warningsByLocaleOrCurrency={baseLocaleData.warnings}
         label="greetings"
         hint="its a greeting"
         description="a polite word or sign of welcome or recognition."
@@ -80,23 +64,13 @@ export const Base: Story = {
 
 export const MultiLine: Story = {
   render: () => {
-    const [localeValues, setLocaleValues] = useState(baseValues);
+    const [localeValues, setLocaleValues] = useState(baseLocaleData.values);
     const [touched, setTouched] = useState(false);
     const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
       setTouched(true);
-      const newValue = e.target.locale
-        ? { [String(e.target.locale)]: e.target.value }
-        : e.target.currency
-          ? {
-              [String(e.target.currency)]: {
-                currencyCode: e.target.currency,
-                amount: e.target.value,
-              },
-            }
-          : undefined;
       setLocaleValues({
         ...localeValues,
-        ...newValue,
+        [String(e.target.locale)]: e.target.value,
       });
     };
     return (
@@ -109,54 +83,10 @@ export const MultiLine: Story = {
         onChange={handleSetLocalizedValue}
         onFocus={() => setTouched(true)}
         valuesByLocaleOrCurrency={localeValues}
-        placeholdersByLocaleOrCurrency={basePlaceholders}
-        // descriptionsByLocaleOrCurrency={baseDescriptions}
-        errorsByLocaleOrCurrency={baseErrors}
-        // warningsByLocaleOrCurrency={baseWarnings}
-        label="greetings"
-        hint="its a greeting"
-        description="a polite word or sign of welcome or recognition."
-        // warning="youve been warned"
-        // error="youre wrong"
-      />
-    );
-  },
-};
-
-export const Money: Story = {
-  render: () => {
-    const [localeValues, setLocaleValues] = useState(baseValues);
-    const [touched, setTouched] = useState(false);
-    const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
-      setTouched(true);
-      const newValue = e.target.locale
-        ? { [String(e.target.locale)]: e.target.value }
-        : e.target.currency
-          ? {
-              [String(e.target.currency)]: {
-                currencyCode: e.target.currency,
-                amount: e.target.value,
-              },
-            }
-          : undefined;
-      setLocaleValues({
-        ...localeValues,
-        ...newValue,
-      });
-    };
-    return (
-      <LocalizedField
-        type="money"
-        name="localize greetings"
-        id="greetingsfield"
-        defaultLocaleOrCurrency="en"
-        touched={touched}
-        onChange={handleSetLocalizedValue}
-        onFocus={() => setTouched(true)}
-        valuesByLocaleOrCurrency={localeValues}
-        placeholdersByLocaleOrCurrency={basePlaceholders}
-        // descriptionsByLocaleOrCurrency={baseDescriptions}
-        errorsByLocaleOrCurrency={baseErrors}
+        placeholdersByLocaleOrCurrency={baseLocaleData.placeholders}
+        // descriptionsByLocaleOrCurrency={baseLocaleData.descriptions}
+        errorsByLocaleOrCurrency={baseLocaleData.errors}
+        // warningsByLocaleOrCurrency={baseLocaleData.warnings}
         // warningsByLocaleOrCurrency={baseWarnings}
         label="greetings"
         hint="its a greeting"
@@ -170,23 +100,13 @@ export const Money: Story = {
 
 export const RichText: Story = {
   render: () => {
-    const [localeValues, setLocaleValues] = useState(baseValues);
+    const [localeValues, setLocaleValues] = useState(baseLocaleData.values);
     const [touched, setTouched] = useState(false);
     const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
       setTouched(true);
-      const newValue = e.target.locale
-        ? { [String(e.target.locale)]: e.target.value }
-        : e.target.currency
-          ? {
-              [String(e.target.currency)]: {
-                currencyCode: e.target.currency,
-                amount: e.target.value,
-              },
-            }
-          : undefined;
       setLocaleValues({
         ...localeValues,
-        ...newValue,
+        [String(e.target.locale)]: e.target.value,
       });
     };
     return (
@@ -199,13 +119,55 @@ export const RichText: Story = {
         onChange={handleSetLocalizedValue}
         onFocus={() => setTouched(true)}
         valuesByLocaleOrCurrency={localeValues}
-        placeholdersByLocaleOrCurrency={basePlaceholders}
-        // descriptionsByLocaleOrCurrency={baseDescriptions}
-        errorsByLocaleOrCurrency={baseErrors}
+        placeholdersByLocaleOrCurrency={baseLocaleData.placeholders}
+        // descriptionsByLocaleOrCurrency={baseLocaleData.descriptions}
+        errorsByLocaleOrCurrency={baseLocaleData.errors}
+        // warningsByLocaleOrCurrency={baseLocaleData.warnings}
         // warningsByLocaleOrCurrency={baseWarnings}
         label="greetings"
         hint="its a greeting"
         description="a polite word or sign of welcome or recognition."
+        // warning="youve been warned"
+        // error="youre wrong"
+      />
+    );
+  },
+};
+
+export const Money: Story = {
+  render: () => {
+    const [currencyValues, setCurrencyValues] = useState(
+      baseCurrencyData.values
+    );
+    const [touched, setTouched] = useState(false);
+    const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
+      console.log(e);
+      setTouched(true);
+      setCurrencyValues({
+        ...currencyValues,
+        [String(e.target.currency)]: {
+          currencyCode: e.target.currency,
+          amount: e.target.value,
+        },
+      });
+    };
+    return (
+      <LocalizedField
+        type="money"
+        name="localize product price"
+        id="productPriceField"
+        defaultLocaleOrCurrency="EUR"
+        touched={touched}
+        onChange={handleSetLocalizedValue}
+        onFocus={() => setTouched(true)}
+        valuesByLocaleOrCurrency={currencyValues}
+        placeholdersByLocaleOrCurrency={baseCurrencyData.placeholders}
+        // descriptionsByLocaleOrCurrency={baseCurrencyData.descriptions}
+        // errorsByLocaleOrCurrency={baseCurrencyData.errors}
+        // warningsByLocaleOrCurrency={baseCurrencyData.warnings}
+        label="Price"
+        hint="whatever price you want this product to have, enter it here"
+        description="Price of the product"
         // warning="youve been warned"
         // error="youre wrong"
       />

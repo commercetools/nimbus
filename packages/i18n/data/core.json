@@ -31,6 +31,30 @@
     "developer_comment": "Default loading message for loading spinners",
     "string": "Loading data"
   },
+  "Nimbus.LocalizedField.hideCurrencies": {
+    "developer_comment": "Label for hiding all currency inputs when toggle button is pressed",
+    "string": "Hide all Currencies"
+  },
+  "Nimbus.LocalizedField.hideLanguages": {
+    "developer_comment": "Label for hiding all language inputs when toggle button is pressed",
+    "string": "Hide all languages"
+  },
+  "Nimbus.LocalizedField.infoBoxTriggerAriaLabel": {
+    "developer_comment": "aria label for button that triggers more info dialog",
+    "string": "more info"
+  },
+  "Nimbus.LocalizedField.missingRequiredField": {
+    "developer_comment": "Error message for missing required value",
+    "string": "This field is required. Provide at least one value."
+  },
+  "Nimbus.LocalizedField.showCurrencies": {
+    "developer_comment": "Label for showing all currency inputs when toggle button is pressed",
+    "string": "Show all Currencies"
+  },
+  "Nimbus.LocalizedField.showLanguages": {
+    "developer_comment": "Label for showing all language inputs when toggle button is pressed",
+    "string": "Show all languages"
+  },
   "Nimbus.MoneyInput.amountInputLabel": {
     "developer_comment": "aria-label for amount input",
     "string": "Amount"
