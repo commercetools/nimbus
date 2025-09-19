@@ -16,7 +16,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     "cell",
     "footer",
     "selectionCell",
-    "detailsButton",
     "expandButton",
     "nestedIcon",
     "headerSortIcon",
@@ -46,21 +45,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         color: "neutral.11",
         focusRing: "outside",
         hyphens: "auto",
-        "&[data-slot='expand']": {
-          padding: 0,
-        },
-        "&[data-slot='pin-row-cell']": {
+        "& [data-slot='pin-row-cell']": {
           alignItems: "center",
           justifyContent: "center",
-        },
-        "& .nimbus-table-cell-copy-button": {
-          display: "none",
-        },
-        "& .nimbus-table-cell-pin-button": {
-          display: "none",
-        },
-        "& .nimbus-table-cell-pin-button-pinned": {
-          display: "inherit",
+          position: "sticky",
+          right: 0,
+          zIndex: 10,
+          backgroundColor: "white",
         },
       },
       "& .data-table-row": {
@@ -72,37 +63,97 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "&:last-child": {
           borderBottom: "none",
         },
+        "& [data-slot='pin-row-cell']": {
+          position: "sticky",
+          right: 0,
+          zIndex: 3,
+          "& [data-slot='nimbus-table-cell-pin-button']": {
+            opacity: 0,
+          },
+          "& [data-slot='nimbus-table-cell-pin-button-pinned']": {
+            opacity: 1,
+          },
+        },
+        "& .data-table-sticky-cell": {
+          backgroundColor: "white",
+          position: "sticky",
+          left: 0,
+        },
+        "& [data-slot='selection']": {
+          zIndex: 11,
+        },
+        "& [data-slot='expand']": {
+          zIndex: 12,
+        },
+        // When selection column is present, move expand column to the right
+        "& [data-slot='selection'] ~ [data-slot='expand']": {
+          left: "72px", // Width of selection column
+        },
         _hover: {
           backgroundColor: "{colors.primary.3}",
           transition: "background-color 100ms ease",
           transform: "translate3d(0, 0, 0)",
-          "& .data-table-row-details-button": {
-            opacity: 1,
+          "& .data-table-sticky-cell": {
+            transition: "background-color 100ms ease",
+            backgroundColor: "inherit",
+            position: "sticky",
           },
-          "& .nimbus-table-cell-copy-button": {
-            display: "inherit",
+          "& [data-slot='selection']": {
+            zIndex: 11,
           },
-          "& .nimbus-table-cell-pin-button": {
-            display: "inherit",
+          "& [data-slot='expand']": {
+            zIndex: 12,
           },
-        },
-        "& .data-table-row-details-button": {
-          opacity: 0,
-        },
-        "& .data-table-row-details-button:focus": {
-          opacity: 1,
+          // When selection column is present, move expand column to the right on hover
+          "& [data-slot='selection'] ~ [data-slot='expand']": {
+            left: "72px", // Width of selection column
+          },
+          "& [data-slot='pin-row-cell']": {
+            right: 0,
+            zIndex: 10,
+            "& [data-slot='nimbus-table-cell-pin-button']": {
+              opacity: 1,
+            },
+          },
+          "& .data-table-row[data-disabled='true']": {
+            opacity: 0.8,
+          },
         },
       },
       "& .data-table-row[data-selected='true']": {
-        background: "{colors.primary.4}",
+        "& .data-table-sticky-cell": {
+          backgroundColor: "inherit",
+        },
       },
       "& .data-table-row[data-disabled='true']": {
         // layerStyle: "disabled",
         opacity: 0.8,
         cursor: "not-allowed",
+        backgroundColor: "inherit",
       },
       "& .data-table-row-pinned": {
         boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
+        "& .data-table-sticky-cell": {
+          backgroundColor: "white",
+          position: "sticky",
+          left: 0,
+          zIndex: 3,
+        },
+        "& [data-slot='selection']": {
+          clipPath: "inset(2px 0 2px 2px)",
+        },
+        "& [data-slot='expand']": {
+          clipPath: "inset(2px 0)",
+        },
+        // When selection column is present in pinned rows, move expand column
+        "& [data-slot='selection'] ~ [data-slot='expand']": {
+          left: "72px", // Width of selection column
+        },
+        "& [data-slot='pin-row-cell']": {
+          backgroundColor: "white",
+          position: "sticky",
+          clipPath: "inset(2px 2px 2px 0)",
+        },
         "&.data-table-row-pinned-first": {
           boxShadow:
             "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)",
@@ -226,18 +277,48 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           flexShrink: 0,
         },
       },
-      "&.selection-column-header, &.expand-column-header": {
+      "&.selection-column-header": {
         cursor: "default",
         paddingTop: "100",
         paddingBottom: "100",
         paddingLeft: "600",
         paddingRight: "600",
+        position: "sticky",
+        left: 0,
+        zIndex: 13,
+        backgroundColor: "colorPalette.2",
         "&:hover": {
-          backgroundColor: "transparent",
+          backgroundColor: "colorPalette.2",
         },
       },
       "&.expand-column-header": {
+        cursor: "default",
         padding: "0",
+        position: "sticky",
+        left: 0, // Default position when no selection column
+        zIndex: 12,
+        backgroundColor: "colorPalette.2",
+        "&:hover": {
+          backgroundColor: "colorPalette.2",
+        },
+      },
+      // When selection column is present, adjust expand column header position
+      "&.selection-column-header + &.expand-column-header": {
+        left: "72px", // Width of selection column
+      },
+      "&.pin-rows-column-header": {
+        cursor: "default",
+        paddingTop: "100",
+        paddingBottom: "100",
+        paddingLeft: "600",
+        paddingRight: "600",
+        position: "sticky",
+        right: 0,
+        zIndex: 11,
+        backgroundColor: "colorPalette.2",
+        "&:hover": {
+          backgroundColor: "colorPalette.2",
+        },
       },
       "&[aria-sort]": {
         fontWeight: 600,
@@ -258,9 +339,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 200ms ease",
         transform: "translate3d(0, 0, 0)",
-        "& .nimbus-data-table__detailsButton": {
-          opacity: 1,
-        },
       },
       "& td, div": {
         userSelect: "none",
@@ -292,17 +370,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       focusRing: "outside",
       hyphens: "auto",
       height: "100%",
-      _hover: {
-        "& .nimbus-table-cell-copy-button:not([data-disabled='true'])": {
-          display: "inherit",
-        },
-      },
       "&[data-slot='expand']": {
         padding: 0,
-      },
-      "& .nimbus-table-cell-copy-button": {
-        display: "none",
-        ml: "100",
       },
       "&[data-nested-cell]": {
         boxShadow: "inset 2px 0 0 {colors.primary.10}",
@@ -312,18 +381,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       width: "100%",
     },
     selectionCell: {},
-    detailsButton: {
-      margin: "auto",
-      colorPalette: "primary",
-      opacity: 0,
-      focusRing: "outside",
-      _focus: {
-        opacity: 1,
-      },
-      "&[data-disabled='true']": {
-        opacity: 0,
-      },
-    },
     nestedIcon: {},
     headerSortIcon: {
       transition: "transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)",
