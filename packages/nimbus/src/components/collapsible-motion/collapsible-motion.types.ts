@@ -46,9 +46,9 @@ export interface CollapsibleMotionProps {
   renderTrigger?: (props: {
     toggle: () => void;
     isExpanded: boolean;
-    buttonProps: {
-      "aria-expanded": boolean;
-      "aria-controls": string;
+    buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+      "aria-expanded"?: string | boolean;
+      "aria-controls"?: string;
       disabled?: boolean;
     };
   }) => React.ReactNode;

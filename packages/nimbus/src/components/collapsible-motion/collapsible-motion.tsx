@@ -1,6 +1,8 @@
-import { useState, useRef, useEffect, forwardRef } from "react";
-import { useId } from "react";
+import { useRef, forwardRef } from "react";
 import type { CollapsibleMotionProps } from "./collapsible-motion.types";
+import { useDisclosure } from "react-aria";
+import { useDisclosureState } from "react-stately";
+import { useCollapsibleAnimation } from "./hooks/use-collapsible-animation";
 
 /**
  * CollapsibleMotion - A simple, performant component for smooth collapsible content
@@ -66,74 +68,53 @@ export const CollapsibleMotion = forwardRef<
   },
   forwardedRef
 ) {
-  // State management - controlled vs uncontrolled
-  const [uncontrolledExpanded, setUncontrolledExpanded] =
-    useState(defaultExpanded);
-  const isControlled = controlledExpanded !== undefined;
-  const isExpanded = isControlled ? controlledExpanded : uncontrolledExpanded;
+  // Use React Aria's disclosure state management
+  const disclosureState = useDisclosureState({
+    defaultExpanded,
+    isExpanded: controlledExpanded,
+    onExpandedChange,
+  });
 
-  // Content measurement
-  const [measuredHeight, setMeasuredHeight] = useState(0);
-  const contentRef = useRef<HTMLDivElement>(null);
+  // Animation styles using custom hook
+  const { containerStyle, contentRef } = useCollapsibleAnimation(children, {
+    isExpanded: disclosureState.isExpanded,
+    minHeight,
+    animationDuration,
+  });
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // Generate unique ID for ARIA attributes
-  const panelId = `collapsible-panel-${useId()}`;
+  // Use React Aria's disclosure hook for ARIA props
+  const { buttonProps, panelProps } = useDisclosure(
+    { isDisabled: disabled },
+    disclosureState,
+    panelRef
+  );
 
-  // Toggle function
+  // React Aria handles ARIA attributes automatically via panelProps
+
+  // Toggle function that respects disabled state
   const toggle = () => {
     if (disabled) return;
-
-    const newExpanded = !isExpanded;
-
-    if (isControlled) {
-      onExpandedChange?.(newExpanded);
-    } else {
-      setUncontrolledExpanded(newExpanded);
-    }
-  };
-
-  // Measure content height using ResizeObserver
-  useEffect(() => {
-    if (!contentRef.current) return;
-
-    const observer = new ResizeObserver((entries) => {
-      if (entries[0]) {
-        setMeasuredHeight(entries[0].contentRect.height);
-      }
-    });
-
-    observer.observe(contentRef.current);
-    return () => observer.disconnect();
-  }, [children]); // Re-measure when children change
-
-  // Calculate current height for animation
-  const currentHeight = isExpanded ? measuredHeight || "auto" : minHeight;
-
-  // ARIA props for trigger button
-  const buttonProps = {
-    "aria-expanded": isExpanded,
-    "aria-controls": panelId,
-    disabled: disabled || undefined,
-  };
-
-  // Container styles for animation
-  const containerStyle: React.CSSProperties = {
-    height: currentHeight,
-    transition: `height ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    overflow: "hidden",
-    visibility: minHeight === 0 && !isExpanded ? "hidden" : "visible",
+    disclosureState.toggle();
   };
 
   return (
     <div ref={forwardedRef} {...props}>
-      {renderTrigger?.({ toggle, isExpanded, buttonProps })}
+      {renderTrigger?.({
+        toggle,
+        isExpanded: disclosureState.isExpanded,
+        buttonProps,
+      })}
 
       <div
-        id={panelId}
-        style={containerStyle}
-        aria-hidden={!isExpanded}
+        ref={panelRef}
+        {...panelProps}
+        style={{
+          ...containerStyle,
+          ...panelProps.style,
+        }}
         // Prevent focus on content when collapsed for accessibility
-        tabIndex={isExpanded ? undefined : -1}
+        tabIndex={disclosureState.isExpanded ? undefined : -1}
       >
         <div ref={contentRef}>{children}</div>
       </div>
