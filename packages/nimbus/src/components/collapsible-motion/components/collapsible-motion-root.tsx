@@ -1,9 +1,7 @@
 import { useRef, forwardRef } from "react";
 import { useDisclosure } from "react-aria";
 import { useDisclosureState } from "react-stately";
-import { useSlotRecipe } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { useCollapsibleAnimation } from "../hooks/use-collapsible-animation";
 import { CollapsibleMotionContext } from "./collapsible-motion-context";
 import {
   CollapsibleMotionRootSlot,
@@ -67,20 +65,13 @@ export const CollapsibleMotionRoot = forwardRef<
     defaultExpanded = false,
     isExpanded: controlledExpanded,
     onExpandedChange,
-    minHeight = 0,
     isDisabled = false,
-    animationSpeed,
     ...props
   },
   forwardedRef
 ) {
   // Use recipe context for slot styling
-  const recipe = useSlotRecipe({ key: "collapsibleMotion" });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps({
-    animationSpeed,
-    ...props,
-  });
-  const [styleProps, functionalProps] = extractStyleProps(remainingProps);
+  const [styleProps, functionalProps] = extractStyleProps(props);
 
   // Use React Aria's disclosure state management
   const disclosureState = useDisclosureState({
@@ -89,14 +80,6 @@ export const CollapsibleMotionRoot = forwardRef<
     onExpandedChange,
   });
 
-  // Animation styles using custom hook (now returns dynamic styles + data attributes)
-  const { dynamicStyles, dataAttributes, contentRef } = useCollapsibleAnimation(
-    children,
-    {
-      isExpanded: disclosureState.isExpanded,
-      minHeight,
-    }
-  );
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Use React Aria's disclosure hook for ARIA props
@@ -118,21 +101,13 @@ export const CollapsibleMotionRoot = forwardRef<
     isExpanded: disclosureState.isExpanded,
     isDisabled,
     buttonProps,
-    dynamicStyles,
-    dataAttributes,
-    contentRef,
     panelProps,
     panelRef,
   };
 
   return (
     <CollapsibleMotionContext.Provider value={contextValue}>
-      <CollapsibleMotionRootSlot
-        ref={forwardedRef}
-        {...recipeProps}
-        {...styleProps}
-        asChild
-      >
+      <CollapsibleMotionRootSlot ref={forwardedRef} {...styleProps} asChild>
         <div {...functionalProps}>{children}</div>
       </CollapsibleMotionRootSlot>
     </CollapsibleMotionContext.Provider>

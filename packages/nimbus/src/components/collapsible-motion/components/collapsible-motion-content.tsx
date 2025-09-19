@@ -17,10 +17,10 @@ export interface CollapsibleMotionContentProps
 }
 
 /**
- * CollapsibleMotion.Content - The collapsible content with smooth animations
+ * CollapsibleMotion.Content - The collapsible content container
  *
- * This component renders the content that will expand and collapse with smooth height animations.
- * It automatically handles the animation styles and accessibility attributes.
+ * This component renders the content that will expand and collapse.
+ * It handles accessibility attributes through React Aria.
  */
 export const CollapsibleMotionContent = forwardRef<
   HTMLDivElement,
@@ -29,14 +29,7 @@ export const CollapsibleMotionContent = forwardRef<
   { children, tabIndex, ...props },
   forwardedRef
 ) {
-  const {
-    dynamicStyles,
-    dataAttributes,
-    contentRef,
-    panelProps,
-    panelRef,
-    isExpanded,
-  } = useCollapsibleMotionContext();
+  const { panelProps, panelRef, isExpanded } = useCollapsibleMotionContext();
 
   // Separate Chakra UI style props from functional props
   const [styleProps, functionalProps] = extractStyleProps(props);
@@ -49,19 +42,14 @@ export const CollapsibleMotionContent = forwardRef<
     <CollapsibleMotionContentSlot
       ref={ref}
       {...panelProps}
-      {...dataAttributes}
       {...styleProps}
       {...functionalProps}
-      // TODO: use chakra syntax
-      style={{
-        ...dynamicStyles,
-      }}
       // Prevent focus on content when collapsed for accessibility
       // Allow custom tabIndex to override if provided
       tabIndex={tabIndex !== undefined ? tabIndex : isExpanded ? undefined : -1}
       asChild
     >
-      <div ref={contentRef}>{children}</div>
+      <div>{children}</div>
     </CollapsibleMotionContentSlot>
   );
 });

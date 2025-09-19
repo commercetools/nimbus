@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  type CSSProperties,
-  type RefObject,
-} from "react";
+import { createContext, useContext, type RefObject } from "react";
 import type { AriaButtonProps } from "react-aria";
 
 /**
@@ -18,15 +13,6 @@ export interface CollapsibleMotionContextValue {
   isDisabled: boolean;
   /** Button props from React Aria for accessibility */
   buttonProps: AriaButtonProps<"button">;
-  /** Dynamic styles for the content container (height only) */
-  dynamicStyles: CSSProperties;
-  /** Data attributes for recipe-based conditional styling */
-  dataAttributes: {
-    readonly "data-expanded": "true" | "false";
-    readonly "data-min-height": string;
-  };
-  /** Ref for the content element (for height measurement) */
-  contentRef: RefObject<HTMLDivElement | null>;
   /** Panel props from React Aria for accessibility */
   panelProps: React.HTMLAttributes<HTMLDivElement>;
   /** Panel ref for React Aria (needs to be attached to the panel container) */

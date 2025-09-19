@@ -1,5 +1,9 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+// TODO:
+// Just removed the animation logic
+// Need to add it back, cleanly
+// THEN, support minHeight
 export const collapsibleMotionSlotRecipe = defineSlotRecipe({
   slots: ["root", "trigger", "content"],
   className: "collapsibleMotion",
@@ -18,24 +22,9 @@ export const collapsibleMotionSlotRecipe = defineSlotRecipe({
       },
     },
 
-    // Content slot - the animated container
+    // Content slot - basic container
     content: {
-      // Static animation styles that don't change
-      "--animation-duration": "durations.moderate",
-      transition:
-        "height var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1)",
-      overflow: "hidden",
-
-      // State-based visibility rules
-      // When collapsed with no minHeight, hide content completely
-      "&[data-expanded='false'][data-min-height='0']": {
-        visibility: "hidden",
-      },
-
-      // When collapsed but has minHeight, keep content visible
-      "&[data-expanded='false']:not([data-min-height='0'])": {
-        visibility: "visible",
-      },
+      // TODO: No animation styles - will be implemented later
     },
   },
 });
