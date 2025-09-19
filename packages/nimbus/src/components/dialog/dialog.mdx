@@ -81,14 +81,6 @@ The main dialog content container that wraps React Aria's Dialog and Dialog. Han
 - `onClose?: () => void` - Callback when dialog requests to close
 - Plus all standard HTML `div` attributes
 
-### Dialog.Backdrop
-
-The backdrop overlay that appears behind the dialog content. Provides click-outside-to-close behavior.
-
-**Props:**
-- Standard HTML `div` attributes
-- `style?: React.CSSProperties` - Custom styles
-
 ### Dialog.Header / Dialog.Body / Dialog.Footer
 
 Semantic sections for organizing dialog content with proper styling and spacing.
@@ -128,7 +120,6 @@ const App = () => (
       <Button>Open Dialog</Button>
     </Dialog.Trigger>
     <Dialog.Content>
-      <Dialog.Backdrop />
       <Dialog.Header>
         <Dialog.Title>Dialog Title</Dialog.Title>
         <Dialog.CloseTrigger />
@@ -161,7 +152,6 @@ const App = () => (
           </Button>
         </Dialog.Trigger>
         <Dialog.Content size={size}>
-          <Dialog.Backdrop />
           <Dialog.Header>
             <Dialog.Title>Size: {size}</Dialog.Title>
             <Dialog.CloseTrigger />
@@ -192,7 +182,6 @@ const App = () => (
           </Button>
         </Dialog.Trigger>
         <Dialog.Content placement={placement}>
-          <Dialog.Backdrop />
           <Dialog.Header>
             <Dialog.Title>Placement: {placement}</Dialog.Title>
             <Dialog.CloseTrigger />
@@ -226,7 +215,6 @@ const App = () => {
       
       <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
         <Dialog.Content>
-          <Dialog.Backdrop />
           <Dialog.Header>
             <Dialog.Title>Controlled Dialog</Dialog.Title>
             <Dialog.CloseTrigger />
@@ -265,7 +253,6 @@ const App = () => (
           </Button>
         </Dialog.Trigger>
         <Dialog.Content scrollBehavior={scrollBehavior} size="sm">
-          <Dialog.Backdrop />
           <Dialog.Header>
             <Dialog.Title>Scroll: {scrollBehavior}</Dialog.Title>
             <Dialog.CloseTrigger />

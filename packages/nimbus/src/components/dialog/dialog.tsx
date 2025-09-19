@@ -29,7 +29,6 @@ export type * from "./dialog.types";
  * <Dialog.Root>
  *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
  *   <Dialog.Content size="md" placement="center">
- *     <Dialog.Backdrop />
  *     <Dialog.Header>
  *       <Dialog.Title>Dialog Title</Dialog.Title>
  *       <Dialog.CloseTrigger>×</Dialog.CloseTrigger>
