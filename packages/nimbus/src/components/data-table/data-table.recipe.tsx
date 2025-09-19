@@ -64,6 +64,8 @@ export const dataTableRecipe = defineSlotRecipe({
           borderBottom: "none",
         },
         "& [data-slot='pin-row-cell']": {
+          position: "sticky",
+          right: 0,
           zIndex: 3,
           "& [data-slot='nimbus-table-cell-pin-button']": {
             opacity: 0,
@@ -72,16 +74,15 @@ export const dataTableRecipe = defineSlotRecipe({
             opacity: 1,
           },
         },
-        "& [data-slot='selection']": {
+        "& .data-table-sticky-cell": {
           backgroundColor: "white",
           position: "sticky",
           left: 0,
+        },
+        "& [data-slot='selection']": {
           zIndex: 11,
         },
         "& [data-slot='expand']": {
-          backgroundColor: "white",
-          position: "sticky",
-          left: 0, // Default position when no selection column
           zIndex: 12,
         },
         // When selection column is present, move expand column to the right
@@ -92,16 +93,15 @@ export const dataTableRecipe = defineSlotRecipe({
           backgroundColor: "{colors.primary.3}",
           transition: "background-color 100ms ease",
           transform: "translate3d(0, 0, 0)",
-          "& [data-slot='selection']": {
-            backgroundColor: "{colors.primary.3}",
+          "& .data-table-sticky-cell": {
+            transition: "background-color 100ms ease",
+            backgroundColor: "inherit",
             position: "sticky",
-            left: 0,
+          },
+          "& [data-slot='selection']": {
             zIndex: 11,
           },
           "& [data-slot='expand']": {
-            backgroundColor: "{colors.primary.3}",
-            position: "sticky",
-            left: 0, // Default position when no selection column
             zIndex: 12,
           },
           // When selection column is present, move expand column to the right on hover
@@ -109,8 +109,6 @@ export const dataTableRecipe = defineSlotRecipe({
             left: "72px", // Width of selection column
           },
           "& [data-slot='pin-row-cell']": {
-            backgroundColor: "{colors.primary.3}",
-            position: "sticky",
             right: 0,
             zIndex: 10,
             "& [data-slot='nimbus-table-cell-pin-button']": {
@@ -122,47 +120,33 @@ export const dataTableRecipe = defineSlotRecipe({
       "& .data-table-row[data-selected='true']": {
         background: "{colors.primary.4}",
         "& [data-slot='selection']": {
-          backgroundColor: "{colors.primary.4}",
+          backgroundColor: "inherit",
         },
         "& [data-slot='expand']": {
-          backgroundColor: "{colors.primary.4}",
+          backgroundColor: "inherit",
         },
         "& [data-slot='pin-row-cell']": {
-          backgroundColor: "{colors.primary.4}",
+          backgroundColor: "inherit",
         },
       },
       "& .data-table-row[data-disabled='true']": {
         // layerStyle: "disabled",
         opacity: 0.8,
         cursor: "not-allowed",
-        "& [data-slot='selection']": {
-          backgroundColor: "white",
-          opacity: 0.8,
-        },
-        "& [data-slot='expand']": {
-          backgroundColor: "white",
-          opacity: 0.8,
-        },
-        "& [data-slot='pin-row-cell']": {
-          backgroundColor: "white",
-          opacity: 0.8,
-        },
+        backgroundColor: "inherit",
       },
       "& .data-table-row-pinned": {
         boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
-
-        "& [data-slot='selection']": {
+        "& .data-table-sticky-cell": {
           backgroundColor: "white",
           position: "sticky",
           left: 0,
           zIndex: 3,
-          clipPath: "inset(2px 0)",
+        },
+        "& [data-slot='selection']": {
+          clipPath: "inset(2px 0 2px 2px)",
         },
         "& [data-slot='expand']": {
-          backgroundColor: "white",
-          position: "sticky",
-          left: 0, // Default position when no selection column
-          zIndex: 3,
           clipPath: "inset(2px 0)",
         },
         // When selection column is present in pinned rows, move expand column
@@ -172,9 +156,7 @@ export const dataTableRecipe = defineSlotRecipe({
         "& [data-slot='pin-row-cell']": {
           backgroundColor: "white",
           position: "sticky",
-          right: 0,
-          zIndex: 3,
-          clipPath: "inset(2px 0)",
+          clipPath: "inset(2px 2px 2px 0)",
         },
         "&.data-table-row-pinned-first": {
           boxShadow:

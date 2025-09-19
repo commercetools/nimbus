@@ -336,7 +336,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
            * need to be in the same order in the header and row components*/}
           {/* Selection checkbox cell if selection is enabled */}
           {selectionBehavior === "toggle" && (
-            <DataTableCell data-slot="selection" isDisabled={isDisabled}>
+            <DataTableCell
+              className="data-table-sticky-cell"
+              data-slot="selection"
+              isDisabled={isDisabled}
+            >
               <Box
                 display="flex"
                 alignItems="center"
@@ -355,7 +359,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
 
           {/* Expand/collapse cell if expand column is shown */}
           {showExpandColumn && (
-            <DataTableCell data-slot="expand" isDisabled={isDisabled}>
+            <DataTableCell
+              className="data-table-sticky-cell"
+              data-slot="expand"
+              isDisabled={isDisabled}
+            >
               {hasNestedContent ? (
                 <DataTableExpandButton
                   w="100%"
@@ -401,7 +409,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
               );
             }}
           </RaCollection>
-          <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
+          <DataTableCell
+            className={"data-table-sticky-cell"}
+            data-slot="pin-row-cell"
+            isDisabled={isDisabled}
+          >
             <Box
               data-slot={
                 isPinned
