@@ -97,9 +97,7 @@ export const Default: Story = {
  * Dialog triggered by a custom Button component instead of the default Dialog.Trigger.
  */
 export const ButtonAsTrigger: Story = {
-  args: {
-    defaultOpen: true,
-  },
+  args: {},
   render: (args) => (
     <Dialog.Root {...args}>
       <Dialog.Trigger asChild>
