@@ -9,9 +9,10 @@ import {
   TextInput,
   PasswordInput,
   FormField,
-  Checkbox,
-  LoadingSpinner,
   Select,
+  Kbd,
+  Code,
+  Separator,
 } from "@/components";
 
 const meta: Meta<typeof Dialog.Root> = {
@@ -86,7 +87,9 @@ export const Default: Story = {
         </Dialog.Body>
         <Dialog.Footer>
           <Button slot="close">Cancel</Button>
-          <Button slot="close">Save</Button>
+          <Button slot="close" variant="solid" tone="primary">
+            Save
+          </Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>
@@ -132,6 +135,41 @@ export const ButtonAsTrigger: Story = {
 };
 
 /**
+ * Dialog content with different size variations.
+ */
+export const SizeVariations: Story = {
+  args: {},
+  render: () => (
+    <Stack direction="row" flexWrap="wrap">
+      {(["sm", "md", "7200", "512px", "full"] as const).map((size) => (
+        <Dialog.Root key={size}>
+          <Dialog.Trigger>{size} size</Dialog.Trigger>
+          <Dialog.Content width={size}>
+            <Dialog.Header>
+              <Dialog.Title>Size: {size}</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Text>
+                Apply the desired width to the <Code>Dialog.Content</Code>{" "}
+                component, since it's a style-prop, so you can use all
+                size-tokens but also custom values.
+                <br />
+                <br />
+                <Code>{`<Dialog.Content width="${size}">`}</Code>
+              </Text>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button slot="close">Close</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
  * Dialog with different placement variants.
  */
 export const Placements: Story = {
@@ -169,11 +207,7 @@ export const ScrollBehavior: Story = {
   render: () => (
     <Stack direction="row">
       {(["inside", "outside"] as const).map((scrollBehavior) => (
-        <Dialog.Root
-          key={scrollBehavior}
-          scrollBehavior={scrollBehavior}
-          variant="split"
-        >
+        <Dialog.Root key={scrollBehavior} scrollBehavior={scrollBehavior}>
           <Dialog.Trigger>Scroll {scrollBehavior}</Dialog.Trigger>
 
           <Dialog.Content>
@@ -181,6 +215,7 @@ export const ScrollBehavior: Story = {
               <Dialog.Title>Terms and conditions</Dialog.Title>
               <Dialog.CloseTrigger />
             </Dialog.Header>
+            <Separator />
             <Dialog.Body>
               <Stack>
                 <Text>
@@ -197,6 +232,7 @@ export const ScrollBehavior: Story = {
                 ))}
               </Stack>
             </Dialog.Body>
+            <Separator />
             <Dialog.Footer>
               <Button ml="auto" slot="close" autoFocus>
                 Nonono
@@ -246,102 +282,9 @@ export const ControlledState: Story = {
 };
 
 /**
- * Dialog containing a login form to demonstrate practical usage with form fields.
- */
-export const LoginForm: Story = {
-  args: {},
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleLogin = () => {
-      setIsLoading(true);
-      // Simulate login API call
-      setTimeout(() => {
-        setIsLoading(false);
-        alert(`Login attempt with username: ${username}`);
-      }, 1000);
-    };
-
-    return (
-      <div>
-        <Dialog.Root
-          isOpen={isOpen}
-          isKeyboardDismissDisabled
-          onOpenChange={(v) => {
-            console.log("onOpenChange", v);
-            setIsOpen(v);
-          }}
-        >
-          <Dialog.Trigger>Sign In</Dialog.Trigger>
-          <Dialog.Content width="sm">
-            <Dialog.Header>
-              <Dialog.Title>Sign In to Your Account</Dialog.Title>
-              <Dialog.CloseTrigger slot="close" />
-            </Dialog.Header>
-            <Dialog.Body>
-              <Stack width="100%">
-                <FormField.Root>
-                  <FormField.Label>Username</FormField.Label>
-                  <FormField.Input width="100%">
-                    <TextInput
-                      autoFocus
-                      width="100%"
-                      placeholder="Enter your username"
-                      value={username}
-                      onChange={setUsername}
-                      isRequired
-                    />
-                  </FormField.Input>
-                </FormField.Root>
-                <FormField.Root display="block" width="100%">
-                  <FormField.Label>Password</FormField.Label>
-                  <FormField.Input
-                    css={{
-                      "& > div": {
-                        width: "100%",
-                      },
-                    }}
-                  >
-                    <PasswordInput
-                      display="block"
-                      width="100%"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={setPassword}
-                      isRequired
-                    />
-                  </FormField.Input>
-                </FormField.Root>
-              </Stack>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button variant="outline" tone="primary" slot="close">
-                Cancel
-              </Button>
-              <Button
-                variant="solid"
-                tone="primary"
-                isDisabled={!username || !password || isLoading}
-                onClick={handleLogin}
-              >
-                {isLoading && <LoadingSpinner tone="white" />}
-                {isLoading ? "Signing In" : "Sign In"}
-              </Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Root>
-      </div>
-    );
-  },
-};
-
-/**
  * Dialog with various form inputs inside to demonstrate complex form layouts.
  */
-export const InputsInside: Story = {
+export const LoginForm: Story = {
   args: {},
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -351,7 +294,7 @@ export const InputsInside: Story = {
 
     const handleSubmit = () => {
       alert(
-        `Username: ${username}, Password: ${password}, Reason: ${loginReason}`
+        `Username: ${username}, Password: ********, Reason: ${loginReason}`
       );
       setIsOpen(false);
     };
@@ -448,26 +391,81 @@ export const InputsInside: Story = {
 };
 
 /**
- * Dialog with dismissable behavior variants.
+ * Dialog with complex dismissal scenario combinations.
  */
-export const OverlayClickCloses: Story = {
-  args: {
-    isDismissable: true,
-  },
-  render: (args) => (
-    <Stack direction="row">
-      <Dialog.Root {...args}>
-        <Dialog.Trigger>Dismissable Dialog</Dialog.Trigger>
+export const ComplexDismissalScenarios: Story = {
+  args: {},
+  render: () => (
+    <Stack direction="column" gap="400">
+      {/* Scenario 1: Dismissable but no keyboard dismiss */}
+      <Dialog.Root isDismissable={true} isKeyboardDismissDisabled={true}>
+        <Dialog.Trigger>Backdrop ✓, Keyboard ✗</Dialog.Trigger>
         <Dialog.Content>
           <Dialog.Header>
-            <Dialog.Title>Dismissable Dialog</Dialog.Title>
+            <Dialog.Title>Backdrop Only Dismissal</Dialog.Title>
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
-            <Text>
-              This dialog can be dismissed by clicking the backdrop or pressing
-              Escape.
-            </Text>
+            <Stack>
+              <Text>This dialog can be dismissed by:</Text>
+              <Text>• Clicking outside (backdrop)</Text>
+              <Text>• Using the close button</Text>
+              <Text>
+                • <strong>NOT</strong> by pressing <Kbd>Esc</Kbd>
+              </Text>
+            </Stack>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close">Close</Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+
+      {/* Scenario 2: Not dismissable but keyboard works */}
+      <Dialog.Root isDismissable={false} isKeyboardDismissDisabled={false}>
+        <Dialog.Trigger>Backdrop ✗, Keyboard ✓</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Keyboard Only Dismissal</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack>
+              <Text>This dialog can be dismissed by:</Text>
+              <Text>
+                • Pressing <Kbd>Esc</Kbd>
+              </Text>
+              <Text>• Using the close button</Text>
+              <Text>
+                • <strong>NOT</strong> by clicking outside
+              </Text>
+            </Stack>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close">Close</Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+
+      {/* Scenario 3: Neither dismissable nor keyboard */}
+      <Dialog.Root isDismissable={false} isKeyboardDismissDisabled={true}>
+        <Dialog.Trigger>Backdrop ✗, Keyboard ✗</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Modal Dialog (No Dismissal)</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack>
+              <Text>This dialog can only be closed by:</Text>
+              <Text>• Using the close button</Text>
+              <Text>
+                • <strong>NOT</strong> by clicking outside
+              </Text>
+              <Text>
+                • <strong>NOT</strong> by pressing <Kbd>Esc</Kbd>
+              </Text>
+            </Stack>
           </Dialog.Body>
           <Dialog.Footer>
             <Button slot="close">Close</Button>
@@ -477,168 +475,3 @@ export const OverlayClickCloses: Story = {
     </Stack>
   ),
 };
-
-// /**
-//  * Dialog with keyboard dismiss disabled.
-//  */
-// export const KeyboardDismissDisabled: Story = {
-//   args: {},
-//   render: () => (
-//     <Dialog.Root isKeyboardDismissDisabled={true}>
-//       <Dialog.Trigger>Keyboard Dismiss Disabled</Dialog.Trigger>
-//       <Dialog.Content>
-//
-//         <Dialog.Header>
-//           <Dialog.Title>Keyboard Dismiss Disabled</Dialog.Title>
-//           <Dialog.CloseTrigger />
-//         </Dialog.Header>
-//         <Dialog.Body>
-//           <Text>
-//             This dialog cannot be dismissed using the Escape key, but backdrop
-//             clicks still work.
-//           </Text>
-//         </Dialog.Body>
-//         <Dialog.Footer>
-//           <Button>Close</Button>
-//         </Dialog.Footer>
-//       </Dialog.Content>
-//     </Dialog.Root>
-//   ),
-// };
-
-// /**
-//  * Dialog with outside interaction behavior control.
-//  */
-// export const OutsideInteractionBehavior: Story = {
-//   args: {},
-//   render: () => (
-//     <Stack direction="row">
-//       <Dialog.Root shouldCloseOnInteractOutside={() => true}>
-//         <Dialog.Trigger>Closes on Outside Click</Dialog.Trigger>
-//         <Dialog.Content>
-//
-//           <Dialog.Header>
-//             <Dialog.Title>Closes on Outside Click</Dialog.Title>
-//             <Dialog.CloseTrigger />
-//           </Dialog.Header>
-//           <Dialog.Body>
-//             <Text>This dialog will close when clicking outside.</Text>
-//           </Dialog.Body>
-//           <Dialog.Footer>
-//             <Button>Close</Button>
-//           </Dialog.Footer>
-//         </Dialog.Content>
-//       </Dialog.Root>
-
-//       <Dialog.Root shouldCloseOnInteractOutside={() => false}>
-//         <Dialog.Trigger>Ignores Outside Click</Dialog.Trigger>
-//         <Dialog.Content>
-//           <Dialog.Header>
-//             <Dialog.Title>Ignores Outside Click</Dialog.Title>
-//             <Dialog.CloseTrigger />
-//           </Dialog.Header>
-//           <Dialog.Body>
-//             <Text>This dialog will not close when clicking outside.</Text>
-//           </Dialog.Body>
-//           <Dialog.Footer>
-//             <Button>Close</Button>
-//           </Dialog.Footer>
-//         </Dialog.Content>
-//       </Dialog.Root>
-//     </Stack>
-//   ),
-// };
-
-// /**
-//  * Dialog with disabled trigger state.
-//  */
-// export const DisabledTrigger: Story = {
-//   args: {},
-//   render: () => (
-//     <Stack direction="row">
-//       <Dialog.Root>
-//         <Dialog.Trigger isDisabled={false}>Enabled Trigger</Dialog.Trigger>
-//         <Dialog.Content>
-//           <Dialog.Header>
-//             <Dialog.Title>Dialog with Enabled Trigger</Dialog.Title>
-//             <Dialog.CloseTrigger />
-//           </Dialog.Header>
-//           <Dialog.Body>
-//             <Text>This dialog was opened with an enabled trigger.</Text>
-//           </Dialog.Body>
-//           <Dialog.Footer>
-//             <Button>Close</Button>
-//           </Dialog.Footer>
-//         </Dialog.Content>
-//       </Dialog.Root>
-
-//       <Dialog.Root>
-//         <Dialog.Trigger isDisabled={true}>Disabled Trigger</Dialog.Trigger>
-//         <Dialog.Content>
-//           <Dialog.Header>
-//             <Dialog.Title>Dialog with Disabled Trigger</Dialog.Title>
-//             <Dialog.CloseTrigger />
-//           </Dialog.Header>
-//           <Dialog.Body>
-//             <Text>
-//               This dialog cannot be opened because the trigger is disabled.
-//             </Text>
-//           </Dialog.Body>
-//           <Dialog.Footer>
-//             <Button>Close</Button>
-//           </Dialog.Footer>
-//         </Dialog.Content>
-//       </Dialog.Root>
-//     </Stack>
-//   ),
-// };
-
-// /**
-//  * Dialog with custom aria-label for accessibility.
-//  */
-// export const AriaLabel: Story = {
-//   args: {},
-//   render: () => (
-//     <Stack direction="row">
-//       <Dialog.Root aria-label="Settings Dialog">
-//         <Dialog.Trigger>Dialog with aria-label</Dialog.Trigger>
-//         <Dialog.Content>
-//
-//           <Dialog.Header>
-//             <Dialog.CloseTrigger />
-//           </Dialog.Header>
-//           <Dialog.Body>
-//             <Text>
-//               This dialog has an aria-label set on the root component instead of
-//               using a Dialog.Title. This is useful when the dialog doesn't have
-//               a visible title or when you want custom labeling.
-//             </Text>
-//           </Dialog.Body>
-//           <Dialog.Footer>
-//             <Button>Close</Button>
-//           </Dialog.Footer>
-//         </Dialog.Content>
-//       </Dialog.Root>
-
-//       <Dialog.Root>
-//         <Dialog.Trigger>Dialog with Title</Dialog.Trigger>
-//         <Dialog.Content>
-//
-//           <Dialog.Header>
-//             <Dialog.Title>Dialog with Visible Title</Dialog.Title>
-//             <Dialog.CloseTrigger />
-//           </Dialog.Header>
-//           <Dialog.Body>
-//             <Text>
-//               This dialog uses a Dialog.Title component for accessibility
-//               labeling.
-//             </Text>
-//           </Dialog.Body>
-//           <Dialog.Footer>
-//             <Button>Close</Button>
-//           </Dialog.Footer>
-//         </Dialog.Content>
-//       </Dialog.Root>
-//     </Stack>
-//   ),
-// };

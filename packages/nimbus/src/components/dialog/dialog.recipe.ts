@@ -53,6 +53,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
       zIndex: "calc(var(--dialog-z-index) + var(--layer-index, 0))",
       justifyContent: "center",
       overscrollBehaviorY: "none",
+      pointerEvents: "none",
       "&[data-entering]": {
         animationDuration: "moderate",
         animationName: "slide-from-bottom, scale-in, fade-in",
@@ -76,6 +77,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
       boxShadow: "6",
       width: "lg",
       maxW: "full",
+      pointerEvents: "auto",
     },
     header: {
       flex: 0,
@@ -152,20 +154,6 @@ export const dialogSlotRecipe = defineSlotRecipe({
       outside: {
         modal: {
           overflow: "auto",
-          pointerEvents: "auto",
-        },
-      },
-    },
-    variant: {
-      plain: {},
-      split: {
-        header: {
-          borderBottom: "solid-25",
-          borderColor: "colorPalette.3",
-        },
-        footer: {
-          borderTop: "solid-25",
-          borderColor: "colorPalette.3",
         },
       },
     },

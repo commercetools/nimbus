@@ -33,7 +33,7 @@ export interface DialogRootProps
 
   isDismissable?: ModalOverlayProps["isDismissable"];
   isKeyboardDismissDisabled?: ModalOverlayProps["isDismissable"];
-  shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
+  //shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
 
   /**
    * Callback fired when the dialog open state changes
