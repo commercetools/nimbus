@@ -80,32 +80,43 @@ export const Button = () => (
 
 ### Extracting Messages
 
-Extract all messages from component files:
+Extract all messages from component files and compile them:
 
 ```bash
 pnpm extract-intl
 ```
 
-This scans all `.i18n.ts` files, updates `packages/i18n/data/core.json`, and
-also runs the `compile-i18n` script.
+This command performs two operations in sequence:
 
-### Compiling Messages
+1. **Extracts** translation messages from all `.i18n.ts` files throughout the
+   codebase
+2. **Compiles** the extracted messages into optimized AST format for
+   distribution
 
-Compile the raw JSON data into optimized AST format:
+The process:
 
-```bash
-pnpm compile-i18n
-```
+- Scans all `.i18n.ts` files and updates `packages/i18n/data/core.json`
+- Converts files in `data/` to optimized versions in `compiled-data/`
 
-This converts files in `data/` to optimized versions in `compiled-data/`.
+> [!IMPORTANT]  
+> Run `extract-intl` before merging your changes so that Transifex knows about
+> new translation keys that need to be translated.
 
 ### Building Translation Data
 
-Compile the raw translation data into optimized format:
+The i18n package has its own build process that compiles translation data:
 
 ```bash
-pnpm compile-i18n
+pnpm --filter @commercetools-nimbus/i18n build
 ```
+
+This converts files in `data/` to optimized versions in `compiled-data/` for
+distribution.
+
+> [!NOTE]  
+> The i18n build process is automatically run during the main build process
+> (`pnpm build`) via `build:packages`, so compiled translation data is always
+> up-to-date in built packages.
 
 ## File Structure
 
@@ -113,7 +124,48 @@ pnpm compile-i18n
 
 ## Translation Workflow
 
-//TODO
+The i18n workflow involves two main scenarios: development (adding new keys) and
+building (compiling for distribution).
+
+### Development Workflow
+
+When developers add new translation keys to components:
+
+```mermaid
+
+    A[Developer adds .i18n.ts files] --> B[Run: pnpm extract-intl]
+    B --> C[Extract keys to core.json]
+    C --> D[Compile to compiled-data/]
+    D --> E[Commit changes]
+    E --> F[Transifex gets new keys]
+```
+
+### Build Workflow
+
+When building the project for distribution:
+
+```mermaid
+    A[Run: pnpm build] --> B[build:packages runs]
+    B --> C[i18n package build script]
+    C --> D[Compile existing data]
+    D --> E[Ready for distribution]
+```
+
+### Script Interaction
+
+| Script                 | Purpose            | When to Use                      | What it Does                                                                           |
+| ---------------------- | ------------------ | -------------------------------- | -------------------------------------------------------------------------------------- |
+| `extract-intl`         | Extract + Compile  | When adding new translation keys | 1. Scans `.i18n.ts` files<br>2. Updates `core.json`<br>3. Compiles to `compiled-data/` |
+| `build` (i18n package) | Compile only       | Automatically during build       | Compiles existing translation data                                                     |
+| `build:packages`       | Build all packages | During main build                | Runs `build` script in all packages including i18n                                     |
+
+### Key Points
+
+- **Extract workflow**: Use `extract-intl` when adding new translation keys
+- **Build workflow**: Compilation happens automatically during `pnpm build`
+- **No manual compilation**: The build system handles compilation automatically
+- **Transifex integration**: New keys are available for translation after
+  running `extract-intl`
 
 ## Integration with App-Kit
 

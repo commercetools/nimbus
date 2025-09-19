@@ -25,6 +25,6 @@
     "compiled-data"
   ],
   "scripts": {
-    "compile-data": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast data compiled-data"
+    "build": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast data compiled-data"
   }
 }
