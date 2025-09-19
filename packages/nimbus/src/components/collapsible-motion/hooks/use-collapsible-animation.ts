@@ -19,29 +19,6 @@ interface UseCollapsibleAnimationOptions {
  * This hook provides automatic height measurement using ResizeObserver and returns
  * only the dynamic styles and data attributes needed for slot-based collapsible animations.
  * Static styles (transition, overflow, visibility) are handled by the recipe system.
- *
- * @param children - The content whose height should be measured (used as dependency for re-measurement)
- * @param options - Configuration options for the animation
- * @returns Object containing dynamic styles, data attributes, and content ref
- *
- * @example
- * ```tsx
- * const { dynamicStyles, dataAttributes, contentRef } = useCollapsibleAnimation(children, {
- *   isExpanded: true,
- *   minHeight: 0
- * });
- *
- * return (
- *   <CollapsibleMotionContentSlot
- *     {...dataAttributes}
- *     style={dynamicStyles}
- *   >
- *     <div ref={contentRef}>
- *       {children}
- *     </div>
- *   </CollapsibleMotionContentSlot>
- * );
- * ```
  */
 export function useCollapsibleAnimation(
   children: ReactNode,

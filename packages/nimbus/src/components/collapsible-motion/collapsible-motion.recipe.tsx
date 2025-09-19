@@ -21,6 +21,7 @@ export const collapsibleMotionSlotRecipe = defineSlotRecipe({
     // Content slot - the animated container
     content: {
       // Static animation styles that don't change
+      "--animation-duration": "durations.moderate",
       transition:
         "height var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1)",
       overflow: "hidden",
@@ -35,37 +36,7 @@ export const collapsibleMotionSlotRecipe = defineSlotRecipe({
       "&[data-expanded='false']:not([data-min-height='0'])": {
         visibility: "visible",
       },
-
-      // When expanded, always visible
-      "&[data-expanded='true']": {
-        visibility: "visible",
-      },
     },
-  },
-
-  variants: {
-    // Animation speed variants using CSS custom properties
-    animationSpeed: {
-      fast: {
-        content: {
-          "--animation-duration": "100ms",
-        },
-      },
-      normal: {
-        content: {
-          "--animation-duration": "200ms",
-        },
-      },
-      slow: {
-        content: {
-          "--animation-duration": "300ms",
-        },
-      },
-    },
-  },
-
-  defaultVariants: {
-    animationSpeed: "normal",
   },
 });
 

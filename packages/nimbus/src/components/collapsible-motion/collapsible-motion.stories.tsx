@@ -144,42 +144,6 @@ export const WithMinHeight: Story = {
 };
 
 /**
- * Example with custom animation speed
- */
-export const CustomAnimationDuration: Story = {
-  render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false} animationSpeed="slow">
-      <CollapsibleMotion.Trigger>
-        <Button mb={4}>Toggle Content (Slow Animation)</Button>
-      </CollapsibleMotion.Trigger>
-      <CollapsibleMotion.Content>
-        <Box p={4} bg="purple.50" borderRadius="md">
-          <Text mb={4}>
-            This content uses a custom animation duration of 800ms, making the
-            expand/collapse animation slower and more noticeable.
-          </Text>
-          <Text>
-            You can customize the animation duration to match your design
-            requirements.
-          </Text>
-        </Box>
-      </CollapsibleMotion.Content>
-    </CollapsibleMotion.Root>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole("button");
-
-    // Test slower animation
-    await userEvent.click(button);
-    expect(button).toHaveAttribute("aria-expanded", "true");
-
-    // Wait for custom duration to complete
-    await new Promise((resolve) => setTimeout(resolve, 900));
-  },
-};
-
-/**
  * Example showing disabled state
  */
 export const Disabled: Story = {
@@ -229,7 +193,7 @@ export const DynamicContent: Story = {
 
     return (
       <div>
-        <div style={{ marginBottom: "16px" }}>
+        <Box mb="16px">
           <Button
             onClick={() => setContentLength("short")}
             mr={2}
@@ -253,7 +217,7 @@ export const DynamicContent: Story = {
           >
             Long
           </Button>
-        </div>
+        </Box>
 
         <CollapsibleMotion.Root defaultExpanded={true}>
           <CollapsibleMotion.Trigger>

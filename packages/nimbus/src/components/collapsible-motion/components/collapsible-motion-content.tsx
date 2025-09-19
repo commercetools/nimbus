@@ -26,7 +26,7 @@ export const CollapsibleMotionContent = forwardRef<
   HTMLDivElement,
   CollapsibleMotionContentProps
 >(function CollapsibleMotionContent(
-  { children, style, tabIndex, ...props },
+  { children, tabIndex, ...props },
   forwardedRef
 ) {
   const {
@@ -55,8 +55,6 @@ export const CollapsibleMotionContent = forwardRef<
       // TODO: use chakra syntax
       style={{
         ...dynamicStyles,
-        ...panelProps.style,
-        ...style,
       }}
       // Prevent focus on content when collapsed for accessibility
       // Allow custom tabIndex to override if provided
