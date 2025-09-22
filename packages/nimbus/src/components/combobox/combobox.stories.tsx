@@ -1125,7 +1125,7 @@ export const LeadingElements: Story = {
         },
       },
       {
-        label: "With Leading Icon",
+        label: "With Leading Element",
         props: {
           placeholder: "Search items...",
           leadingElement: <Search />,
@@ -1193,7 +1193,7 @@ export const LeadingElements: Story = {
               <Stack direction="column" gap="300">
                 <Stack direction="column" gap="200">
                   <Text fontSize="sm" color="neutral.11">
-                    With Leading Icon
+                    With Leading Element
                   </Text>
                   <Stack direction="row" gap="400" alignItems="center">
                     {inputVariants.map((variant) => (
