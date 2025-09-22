@@ -1,4 +1,6 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { DataTableBody } from "./components/data-table.body";
 import { DataTableCell } from "./components/data-table.cell";
 import { DataTableColumn } from "./components/data-table.column";
@@ -19,10 +21,17 @@ import {
 import type { DataTableProps } from "./data-table.types";
 
 // Default DataTable component that provides the standard structure
-const DataTableBase = forwardRef<
-  HTMLDivElement,
-  DataTableProps & { footer?: React.ReactNode }
->(function DataTable({ footer, ...props }, ref) {
+const DataTableBase = function DataTable({
+  ref: forwardedRef,
+  footer,
+  ...props
+}: DataTableProps & {
+  footer?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+}) {
+  const localRef = useRef<HTMLDivElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
   return (
     <DataTableRoot ref={ref} {...props}>
       <DataTableTable aria-label="Data Table">
@@ -32,7 +41,7 @@ const DataTableBase = forwardRef<
       {footer && <DataTableFooter>{footer}</DataTableFooter>}
     </DataTableRoot>
   );
-});
+};
 
 // Create the DataTable namespace object as an object literal
 export const DataTable = Object.assign(DataTableBase, {
