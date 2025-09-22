@@ -58,7 +58,7 @@ export const RichTextEditor = function RichTextEditor({
   isReadOnly = EDITOR_DEFAULTS.isReadOnly,
   autoFocus = EDITOR_DEFAULTS.autoFocus,
   toolbar,
-  ...props
+  //...props
 }: RichTextEditorProps) {
   const localRef = useRef<RichTextEditorRef>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
