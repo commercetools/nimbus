@@ -110,6 +110,10 @@ type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
  */
 export interface DataTableProps<T extends object = Record<string, unknown>>
   extends DataTableVariantProps {
+  /**
+   * React ref to be forwarded to the root element
+   */
+  ref?: React.Ref<HTMLDivElement>;
   columns: DataTableColumnItem<T>[];
   unstyled?: boolean;
   data: DataTableRowItem<T>[];
@@ -132,7 +136,6 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   onRowClick?: (row: DataTableRowItem<T>) => void;
   onDetailsClick?: (row: DataTableRowItem<T>) => void;
   renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
-  ref?: Ref<HTMLDivElement>;
   children?: ReactNode;
   density?: DataTableDensity;
   isTruncated?: boolean;
