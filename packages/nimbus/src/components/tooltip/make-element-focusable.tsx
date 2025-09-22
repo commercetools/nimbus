@@ -1,6 +1,5 @@
 import {
   cloneElement,
-  forwardRef,
   useRef,
   type PropsWithChildren,
   isValidElement,
@@ -13,6 +12,14 @@ import {
 } from "react-aria";
 
 import { mergeRefs } from "@chakra-ui/react";
+
+export interface MakeElementFocusableProps
+  extends PropsWithChildren<FocusableOptions<HTMLElement>> {
+  /**
+   * React ref to be forwarded to the underlying element
+   */
+  ref?: React.Ref<HTMLElement>;
+}
 
 /**
  * MakeElementFocusable
@@ -34,24 +41,26 @@ import { mergeRefs } from "@chakra-ui/react";
  * - [React Aria Components Issue re:Tooltip with custom trigger](https://github.com/adobe/react-spectrum/issues/5733#issuecomment-1918691983)
  * - [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)
  */
-export const MakeElementFocusable = forwardRef<
-  HTMLElement,
-  PropsWithChildren<FocusableOptions<HTMLElement>>
->(function MakeElementFocusable(props, forwardedRef) {
+export const MakeElementFocusable = function MakeElementFocusable({
+  ref: forwardedRef,
+  children,
+  ...props
+}: MakeElementFocusableProps) {
   const localRef = useRef<HTMLElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const { focusableProps } = useFocusable(props, ref);
-  if (isValidElement(props.children)) {
+
+  if (isValidElement(children)) {
     return cloneElement(
-      props.children,
+      children,
       mergeProps(
         focusableProps,
-        props.children.props as PropsWithChildren<
-          FocusableOptions<HTMLElement>
-        >,
+        children.props as PropsWithChildren<FocusableOptions<HTMLElement>>,
         { ref: ref }
       )
     );
   }
-});
+
+  return null;
+};
 MakeElementFocusable.displayName = "MakeElementFocusable";

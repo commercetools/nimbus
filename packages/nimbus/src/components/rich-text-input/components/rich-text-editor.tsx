@@ -2,11 +2,12 @@ import {
   useMemo,
   useCallback,
   useImperativeHandle,
-  forwardRef,
-  type ForwardedRef,
+  useRef,
   type FocusEventHandler,
   type ReactNode,
 } from "react";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { createEditor, type Descendant } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
@@ -35,6 +36,10 @@ export interface RichTextEditorProps {
   isReadOnly?: boolean;
   autoFocus?: boolean;
   toolbar?: ReactNode;
+  /**
+   * React ref to be forwarded to the editor
+   */
+  ref?: React.Ref<RichTextEditorRef>;
 }
 
 export interface RichTextEditorRef {
@@ -42,21 +47,21 @@ export interface RichTextEditorRef {
   resetValue: (html: string) => void;
 }
 
-export const RichTextEditor = forwardRef<
-  RichTextEditorRef,
-  RichTextEditorProps
->((props, forwardedRef: ForwardedRef<RichTextEditorRef>) => {
-  const {
-    value,
-    onChange,
-    onFocus,
-    onBlur,
-    placeholder = EDITOR_DEFAULTS.placeholder,
-    isDisabled = EDITOR_DEFAULTS.isDisabled,
-    isReadOnly = EDITOR_DEFAULTS.isReadOnly,
-    autoFocus = EDITOR_DEFAULTS.autoFocus,
-    toolbar,
-  } = props;
+export const RichTextEditor = function RichTextEditor({
+  ref: forwardedRef,
+  value,
+  onChange,
+  onFocus,
+  onBlur,
+  placeholder = EDITOR_DEFAULTS.placeholder,
+  isDisabled = EDITOR_DEFAULTS.isDisabled,
+  isReadOnly = EDITOR_DEFAULTS.isReadOnly,
+  autoFocus = EDITOR_DEFAULTS.autoFocus,
+  toolbar,
+  //...props
+}: RichTextEditorProps) {
+  const localRef = useRef<RichTextEditorRef>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   // Create editor with plugins
   const editor = useMemo(() => {
@@ -89,7 +94,7 @@ export const RichTextEditor = forwardRef<
 
   // Expose methods through ref
   useImperativeHandle(
-    forwardedRef,
+    ref,
     () => ({
       focus: () => focusEditor(editor),
       resetValue: (html: string) => resetEditor(editor, html),
@@ -136,6 +141,6 @@ export const RichTextEditor = forwardRef<
       </RichTextInputEditableSlot>
     </Slate>
   );
-});
+};
 
 RichTextEditor.displayName = "RichTextEditor";
