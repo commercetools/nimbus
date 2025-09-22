@@ -17,121 +17,71 @@ figmaLink: >-
 
 # Menu
 
-A menu is a list of options or actions that appears when a user interacts with a
-trigger element, providing contextual actions in a compact interface.
+A temporary surface that displays a list of choices or actions. It typically
+appears when a user interacts with an element like a button or icon, or performs
+a specific action.
 
 ## Overview
 
-Menus provide users with a list of actions or options, typically accessed
-through a button or icon button trigger. They help organize secondary actions
-and reduce visual clutter by keeping options hidden until needed.
+Menus present short, actionable items in a vertical list, ensuring easy
+navigation and selection. They display below the trigger with a 8px space. To
+close a menu, a user makes a selection, or in the case several selections may be
+made, after a confirm button or a click off the active area.
 
 ### Resources
 
 Deep dive on details and access design library.
 
+[React ARIA](https://react-spectrum.adobe.com/react-aria/Menu.html)
+[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)
 [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)
 
-### Variables
+## Guidelines
 
-Get familiar with the features.
+Menu guidelines focus on providing temporary, contextual information or actions
+in a clear and accessible manner, ensuring they are easily triggered, navigable
+via keyboard, and don't disrupt the user's primary workflow.
 
-## Basic Usage
+### Best practices
 
-The basic menu consists of a trigger (usually a button) and content that appears
-when activated.
+- **Clear trigger:** Make the trigger element visually distinct and interactive.
+  Use consistent icons or labels for dropdown triggers.
+- **Logical content:** Order options logically (alphabetical, frequency, etc.).
+  Keep content concise and actionable.
+- **Easy interaction:** If interaction involves a single selection, close the
+  popover upon selection. Keep the popover open if more complicated content
+  needs several selections.
+- **Responsive behavior:** Adapt the dropdown's position and size to different
+  screen sizes. Ensure it works well on touch devices.
+- **Visual feedback:** Highlight the selected option. Use clear hover states.
+- **Keyboard navigation:** Allow users to navigate options with arrow keys.
+  Enable selection with Enter/Spacebar. Enable closing the popover with the
+  Escape key.
+- **ARIA attributes:** Use `aria-haspopup`, `aria-expanded`, and `aria-label`
+  for screen reader support. Manage focus correctly when the popover opens and
+  closes.
+- **Avoid nested dropdowns:** Keep the structure simple and avoid nested menus.
+- **Contextual placement:** Position the dropdown near the trigger element
+  without obscuring important content.
+- **Limit content:** Keep the content to simple actions, or short text.
+- **Use sections correctly:** Use sections only if you have more than 2 groups
+  to organize. It is unneeded to have sections if the information is collected
+  together.
+
+#### Common popover content
+
+These are some of the most seen uses of popover content. These are included in
+the figma library components to make designing common shared uses easier.
+
+**Simple List**
+
+Allows the user select one option, add a search to allow users to make selection
+easier if there are many options. For options 5 or fewer, a search is not
+needed.
 
 ```jsx-live
 const App = () => (
   <Menu.Root>
-    <Menu.Trigger>
-      Actions
-      <Icons.KeyboardArrowDown />
-    </Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="copy">Copy</Menu.Item>
-      <Menu.Item id="paste">Paste</Menu.Item>
-      <Menu.Item id="delete">Delete</Menu.Item>
-    </Menu.Content>
-  </Menu.Root>
-)
-```
-
-### Menu with Descriptions and Keyboard Shortcuts
-
-Enhance menu items with descriptions and keyboard shortcuts for better user
-experience.
-
-```jsx-live
-const App = () => (
-  <Menu.Root>
-    <Menu.Trigger>
-      Edit Menu
-    </Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="undo">
-        <Text slot="label">Undo</Text>
-        <Text slot="description">Undo the last action</Text>
-        <Kbd slot="keyboard">⌘Z</Kbd>
-      </Menu.Item>
-      <Menu.Item id="redo">
-        <Text slot="label">Redo</Text>
-        <Text slot="description">Redo the last undone action</Text>
-        <Kbd slot="keyboard">⌘Y</Kbd>
-      </Menu.Item>
-      <Separator />
-      <Menu.Item id="cut">
-        <Text slot="label">Cut</Text>
-        <Text slot="description">Cut the selected text</Text>
-        <Kbd slot="keyboard">⌘X</Kbd>
-      </Menu.Item>
-      <Menu.Item id="copy">
-        <Text slot="label">Copy</Text>
-        <Text slot="description">Copy the selected text</Text>
-        <Kbd slot="keyboard">⌘C</Kbd>
-      </Menu.Item>
-      <Menu.Item id="paste">
-        <Text slot="label">Paste</Text>
-        <Text slot="description">Paste from clipboard</Text>
-        <Kbd slot="keyboard">⌘V</Kbd>
-      </Menu.Item>
-    </Menu.Content>
-  </Menu.Root>
-)
-```
-
-### Trigger Variations
-
-Menus can be triggered by different components using the `asChild` prop.
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400">
-    {/* Default button trigger */}
-    <Menu.Root>
-      <Menu.Trigger>Default Trigger</Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="action1">Action 1</Menu.Item>
-        <Menu.Item id="action2">Action 2</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-
-    {/* Custom button trigger */}
-    <Menu.Root>
-      <Menu.Trigger asChild>
-        <Button variant="solid" colorPalette="primary">
-          <Icons.KeyboardArrowDown />
-          Primary Button
-        </Button>
-      </Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="action1">Action 1</Menu.Item>
-        <Menu.Item id="action2">Action 2</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-
-    {/* Icon button trigger */}
-    <Menu.Root>
       <Menu.Trigger asChild>
         <IconButton
           variant="ghost"
@@ -141,339 +91,21 @@ const App = () => (
           <Icons.MoreVert />
         </IconButton>
       </Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="edit">Edit</Menu.Item>
-        <Menu.Item id="duplicate">Duplicate</Menu.Item>
-        <Separator />
-        <Menu.Item id="delete" isCritical>Delete</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-  </Stack>
-)
-```
-
-### Menu Sections
-
-Organize related menu items into sections with optional labels.
-
-```jsx-live
-const App = () => (
-  <Menu.Root>
-    <Menu.Trigger asChild>
-      <Button variant="outline" colorPalette="primary">
-        <Icons.Settings />
-        Settings
-      </Button>
-    </Menu.Trigger>
     <Menu.Content>
-      <Menu.Section label="Account">
-        <Menu.Item id="profile">
-          <Icon slot="icon"><Icons.AccountCircle /></Icon>
-          <Text slot="label">Profile</Text>
-        </Menu.Item>
-        <Menu.Item id="preferences">
-          <Icon slot="icon"><Icons.Settings /></Icon>
-          <Text slot="label">Preferences</Text>
-        </Menu.Item>
-      </Menu.Section>
-
-      <Separator />
-
-      <Menu.Section label="Support">
-        <Menu.Item id="help">
-          <Icon slot="icon"><Icons.Help /></Icon>
-          <Text slot="label">Help & Feedback</Text>
-        </Menu.Item>
-        <Menu.Item id="docs">
-          <Icon slot="icon"><Icons.InsertDriveFile /></Icon>
-          <Text slot="label">Documentation</Text>
-        </Menu.Item>
-      </Menu.Section>
-
-      <Separator />
-
-      <Menu.Item id="logout" isCritical>
-        <Icon slot="icon"><Icons.Logout /></Icon>
-        <Text slot="label">Sign Out</Text>
-      </Menu.Item>
+      <Menu.Item id="menu-item-1">Menu Item</Menu.Item>
+      <Menu.Item id="menu-item-2">Menu Item</Menu.Item>
+      <Menu.Item id="menu-item-3">Menu Item</Menu.Item>
+      <Menu.Item id="menu-item-4">Menu Item</Menu.Item>
+      <Menu.Item id="menu-item-5">Menu Item</Menu.Item>
     </Menu.Content>
   </Menu.Root>
-)
+);
 ```
 
-### Single Selection
+**Action List**
 
-Menus support single selection mode where only one item can be selected at a
-time.
-
-```jsx-live
-const App = () => {
-  const [selectedView, setSelectedView] = React.useState("list");
-
-  return (
-    <Stack direction="horizontal" gap="400" alignItems="center">
-      <Menu.Root
-        selectionMode="single"
-        selectedKeys={new Set([selectedView])}
-        onSelectionChange={(keys) => {
-          if (keys !== "all") {
-            setSelectedView(Array.from(keys)[0]);
-          }
-        }}
-      >
-        <Menu.Trigger asChild>
-          <Button variant="outline" colorPalette="primary">
-            <Icons.ViewList />
-            View: {selectedView}
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Section label="View Options">
-            <Menu.Item id="list">
-              <Icon slot="icon"><Icons.ViewList /></Icon>
-              <Text slot="label">List View</Text>
-              <Text slot="description">Compact list layout</Text>
-            </Menu.Item>
-            <Menu.Item id="grid">
-              <Icon slot="icon"><Icons.ViewModule /></Icon>
-              <Text slot="label">Grid View</Text>
-              <Text slot="description">Visual grid layout</Text>
-            </Menu.Item>
-            <Menu.Item id="board">
-              <Icon slot="icon"><Icons.Dashboard /></Icon>
-              <Text slot="label">Board View</Text>
-              <Text slot="description">Kanban board layout</Text>
-            </Menu.Item>
-          </Menu.Section>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Text color="neutral.11">Current view: {selectedView}</Text>
-    </Stack>
-  );
-}
-```
-
-### Multiple Selection
-
-Menus also support multiple selection mode with checkboxes.
-
-```jsx-live
-const App = () => {
-  const [selectedOptions, setSelectedOptions] = React.useState(
-    new Set(["notifications", "updates"])
-  );
-
-  return (
-    <Stack direction="horizontal" gap="400" alignItems="center">
-      <Menu.Root
-        selectionMode="multiple"
-        selectedKeys={selectedOptions}
-        onSelectionChange={(keys) => {
-          if (keys !== "all") {
-            setSelectedOptions(new Set(Array.from(keys)));
-          }
-        }}
-      >
-        <Menu.Trigger asChild>
-          <Button variant="outline" colorPalette="primary">
-            <Icons.Notifications />
-            Notification Settings
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          <Menu.Section label="Email Notifications">
-            <Menu.Item id="notifications">
-              <Text slot="label">General Notifications</Text>
-              <Text slot="description">Receive general updates</Text>
-            </Menu.Item>
-            <Menu.Item id="updates">
-              <Text slot="label">Product Updates</Text>
-              <Text slot="description">New features and improvements</Text>
-            </Menu.Item>
-            <Menu.Item id="marketing">
-              <Text slot="label">Marketing Emails</Text>
-              <Text slot="description">Promotions and offers</Text>
-            </Menu.Item>
-            <Menu.Item id="security">
-              <Text slot="label">Security Alerts</Text>
-              <Text slot="description">Important security notifications</Text>
-            </Menu.Item>
-          </Menu.Section>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Box padding="200" background="neutral.3" borderRadius="md">
-        <Text fontSize="sm">
-          Active: {Array.from(selectedOptions).join(", ") || "None"}
-        </Text>
-      </Box>
-    </Stack>
-  );
-}
-```
-
-### Mixed Selection
-
-Combine different selection modes within a single menu by applying selection
-settings to individual sections.
-
-```jsx-live
-const App = () => {
-  const [textStyles, setTextStyles] = React.useState(
-    new Set(["bold"])
-  );
-  const [alignment, setAlignment] = React.useState("left");
-
-  return (
-    <Stack direction="horizontal" gap="400" alignItems="flex-start">
-      <Menu.Root>
-        <Menu.Trigger asChild>
-          <Button variant="solid" colorPalette="primary">
-            Editor Settings
-          </Button>
-        </Menu.Trigger>
-        <Menu.Content>
-          {/* Section with no selection - regular actions */}
-          <Menu.Section label="Actions">
-            <Menu.Item id="cut">
-              <Text slot="label">Cut</Text>
-              <Kbd slot="keyboard">⌘X</Kbd>
-            </Menu.Item>
-            <Menu.Item id="copy">
-              <Text slot="label">Copy</Text>
-              <Kbd slot="keyboard">⌘C</Kbd>
-            </Menu.Item>
-            <Menu.Item id="paste">
-              <Text slot="label">Paste</Text>
-              <Kbd slot="keyboard">⌘V</Kbd>
-            </Menu.Item>
-          </Menu.Section>
-
-          <Separator />
-
-          {/* Section with multiple selection */}
-          <Menu.Section
-            selectionMode="multiple"
-            selectedKeys={textStyles}
-            onSelectionChange={(keys) => {
-              if (keys !== "all") {
-                setTextStyles(new Set(Array.from(keys)));
-              }
-            }}
-            label="Text Style"
-          >
-            <Menu.Item id="bold">
-              <Text slot="label">Bold</Text>
-              <Kbd slot="keyboard">⌘B</Kbd>
-            </Menu.Item>
-            <Menu.Item id="italic">
-              <Text slot="label">Italic</Text>
-              <Kbd slot="keyboard">⌘I</Kbd>
-            </Menu.Item>
-            <Menu.Item id="underline">
-              <Text slot="label">Underline</Text>
-              <Kbd slot="keyboard">⌘U</Kbd>
-            </Menu.Item>
-          </Menu.Section>
-
-          <Separator />
-
-          {/* Section with single selection */}
-          <Menu.Section
-            selectionMode="single"
-            selectedKeys={new Set([alignment])}
-            onSelectionChange={(keys) => {
-              if (keys !== "all") {
-                setAlignment(Array.from(keys)[0]);
-              }
-            }}
-            label="Text Alignment"
-          >
-            <Menu.Item id="left">
-              <Text slot="label">Left</Text>
-            </Menu.Item>
-            <Menu.Item id="center">
-              <Text slot="label">Center</Text>
-            </Menu.Item>
-            <Menu.Item id="right">
-              <Text slot="label">Right</Text>
-            </Menu.Item>
-          </Menu.Section>
-        </Menu.Content>
-      </Menu.Root>
-
-      <Box padding="300" background="neutral.3" borderRadius="md" minWidth="200px">
-        <Stack gap="200">
-          <Text fontSize="sm" fontWeight="600">Current Selection:</Text>
-          <Text fontSize="sm">
-            Styles: {Array.from(textStyles).join(", ") || "None"}
-          </Text>
-          <Text fontSize="sm">Alignment: {alignment}</Text>
-        </Stack>
-      </Box>
-    </Stack>
-  );
-}
-```
-
-### Placement Options
-
-Control where the menu appears relative to its trigger.
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400" wrap="wrap">
-    <Menu.Root placement="top">
-      <Menu.Trigger asChild>
-        <Button variant="outline" size="xs">Top</Button>
-      </Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="item1">Item 1</Menu.Item>
-        <Menu.Item id="item2">Item 2</Menu.Item>
-        <Menu.Item id="item3">Item 3</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-
-    <Menu.Root placement="bottom">
-      <Menu.Trigger asChild>
-        <Button variant="outline" size="xs">Bottom</Button>
-      </Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="item1">Item 1</Menu.Item>
-        <Menu.Item id="item2">Item 2</Menu.Item>
-        <Menu.Item id="item3">Item 3</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-
-    <Menu.Root placement="left">
-      <Menu.Trigger asChild>
-        <Button variant="outline" size="xs">Left</Button>
-      </Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="item1">Item 1</Menu.Item>
-        <Menu.Item id="item2">Item 2</Menu.Item>
-        <Menu.Item id="item3">Item 3</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-
-    <Menu.Root placement="right">
-      <Menu.Trigger asChild>
-        <Button variant="outline" size="xs">Right</Button>
-      </Menu.Trigger>
-      <Menu.Content>
-        <Menu.Item id="item1">Item 1</Menu.Item>
-        <Menu.Item id="item2">Item 2</Menu.Item>
-        <Menu.Item id="item3">Item 3</Menu.Item>
-      </Menu.Content>
-    </Menu.Root>
-  </Stack>
-)
-```
-
-### Submenus
-
-Create nested menus for organizing complex hierarchies.
+Include icons, offer tips or shortcuts, color coding for semantic clues, and
+sectioning. For options 5 or fewer, a search is not needed.
 
 ```jsx-live
 const App = () => (
@@ -484,223 +116,269 @@ const App = () => (
         File Menu
       </Button>
     </Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="new">
-        <Icon slot="icon"><Icons.InsertDriveFile /></Icon>
-        <Text slot="label">New File</Text>
-        <Kbd slot="keyboard">⌘N</Kbd>
-      </Menu.Item>
-      <Menu.Item id="open">
-        <Icon slot="icon"><Icons.FolderOpen /></Icon>
-        <Text slot="label">Open</Text>
-        <Kbd slot="keyboard">⌘O</Kbd>
-      </Menu.Item>
-
-      <Separator />
-
-      <Menu.SubmenuTrigger>
-        <Menu.Item>
-          <Icon slot="icon"><Icons.Share /></Icon>
-          <Text slot="label">Share</Text>
-        </Menu.Item>
-        <Menu.Submenu>
-          <Menu.Item id="share-link">
-            <Text slot="label">Copy Link</Text>
-          </Menu.Item>
-          <Menu.Item id="share-email">
-            <Text slot="label">Email</Text>
-          </Menu.Item>
-          <Menu.Item id="share-social">
-            <Text slot="label">Social Media</Text>
-          </Menu.Item>
-        </Menu.Submenu>
-      </Menu.SubmenuTrigger>
-
-      <Separator />
-
-      <Menu.Item id="save">
-        <Icon slot="icon"><Icons.Save /></Icon>
-        <Text slot="label">Save</Text>
-        <Kbd slot="keyboard">⌘S</Kbd>
-      </Menu.Item>
-      <Menu.Item id="save-as">
-        <Icon slot="icon"><Icons.SaveAs /></Icon>
-        <Text slot="label">Save As...</Text>
-        <Kbd slot="keyboard">⌘⇧S</Kbd>
-      </Menu.Item>
-    </Menu.Content>
-  </Menu.Root>
-)
-```
-
-## Guidelines
-
-Menus provide a space-efficient way to display a list of actions or options,
-appearing on demand when users interact with a trigger element.
-
-### Best Practices
-
-- **Clear Organization:** Group related items with sections and separators
-- **Descriptive Labels:** Use clear, action-oriented labels for menu items
-- **Keyboard Shortcuts:** Display keyboard shortcuts when available
-- **Visual Hierarchy:** Use icons and descriptions to enhance scannability
-- **Predictable Placement:** Position menus consistently to avoid covering
-  important content
-- **Appropriate Triggers:** Choose triggers that clearly indicate a menu will
-  appear
-
-### Usage
-
-> [!TIP]\
-> When to use
-
-- Organizing secondary actions that don't need to be visible at all times
-- Providing contextual actions for specific items or areas
-- Offering a set of mutually exclusive options (single selection)
-- Allowing users to toggle multiple settings (multiple selection)
-- Creating space-efficient interfaces with many actions
-- Implementing dropdown navigation or settings menus
-
-> [!CAUTION]\
-> When not to use
-
-- For primary actions that should always be visible
-- When there are only 2-3 options (consider buttons or toggles instead)
-- For navigation between pages (use proper navigation components)
-- When immediate action visibility is critical for user flow
-- For complex forms or multi-step processes
-
-### Writing Guidelines
-
-- Use sentence case for all menu items
-- Start with action verbs when appropriate (e.g., "Save file", "Delete item")
-- Keep labels concise but descriptive
-- Use consistent terminology throughout your application
-- Include descriptive text for complex or ambiguous actions
-- Avoid using punctuation in menu items
-
-### Critical Actions
-
-Use the `isCritical` prop to highlight destructive or irreversible actions.
-
-```jsx-live
-const App = () => (
-  <Menu.Root>
-    <Menu.Trigger asChild>
-      <IconButton variant="ghost" aria-label="Item actions">
-        <Icons.MoreVert />
-      </IconButton>
-    </Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="edit">
-        <Icon slot="icon"><Icons.Edit /></Icon>
-        <Text slot="label">Edit</Text>
-      </Menu.Item>
+   <Menu.Content>
       <Menu.Item id="duplicate">
         <Icon slot="icon"><Icons.ContentCopy /></Icon>
         <Text slot="label">Duplicate</Text>
+        <Kbd slot="keyboard">⌘T</Kbd>
       </Menu.Item>
-      <Menu.Item id="archive">
-        <Icon slot="icon"><Icons.Backup /></Icon>
-        <Text slot="label">Archive</Text>
+      <Menu.Item id="rename">
+        <Icon slot="icon"><Icons.Create /></Icon>
+        <Text slot="label">Rename</Text>
+        <Kbd slot="keyboard">⌘R</Kbd>
+      </Menu.Item>
+      <Menu.Item id="share">
+        <Icon slot="icon"><Icons.IosShare /></Icon>
+        <Text slot="label">Share</Text>
+        <Kbd slot="keyboard">⌘W</Kbd>
+      </Menu.Item>
+      <Menu.Item id="pin">
+        <Icon slot="icon"><Icons.PushPin /></Icon>
+        <Text slot="label">Pin</Text>
+        <Kbd slot="keyboard">⌘P</Kbd>
       </Menu.Item>
       <Separator />
       <Menu.Item id="delete" isCritical>
         <Icon slot="icon"><Icons.Delete /></Icon>
         <Text slot="label">Delete</Text>
-        <Text slot="description">This action cannot be undone</Text>
+        <Kbd slot="keyboard">⌘D</Kbd>
       </Menu.Item>
     </Menu.Content>
   </Menu.Root>
-)
+);
 ```
 
-## Specs
+**Section List**
 
-### Features
+Lets the user perform a one time action. Features optional section titles and
+descriptions. For options 5 or fewer, a search is not needed.
 
-- **Keyboard Navigation:** Full keyboard support with arrow keys, Enter, and
-  Escape
-- **Selection Modes:** Support for single and multiple selection with visual
-  indicators
-- **Flexible Triggers:** Can be triggered by any interactive element using
-  `asChild`
-- **Sections & Separators:** Organize items into logical groups
-- **Submenus:** Support for nested menu structures
-- **Rich Content:** Items can include icons, descriptions, and keyboard
-  shortcuts
-- **Accessibility:** Built-in ARIA attributes and screen reader support
-- **Controlled/Uncontrolled:** Works in both controlled and uncontrolled modes
+```jsx-live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="primary">
+        Actions
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Section label="Import">
+        <Menu.Item id="import-csv">Import from CSV</Menu.Item>
+        <Menu.Item id="import-drive">Import from Drive</Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Export">
+        <Menu.Item id="export-csv">Export to CSV</Menu.Item>
+        <Menu.Item id="export-drive">Export to Drive</Menu.Item>
+      </Menu.Section>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
-### Properties
+**Custom content**
+
+Provide a different experience to suit what your user needs within a popover.
+Make sure that this content is best suited for smaller areas. Options are very
+customizable to suit your needs.
+
+## Usage
+
+Menus are essential to hold actions and tools in a compact and handy area of the
+UI for a user. Make sure to use them correctly to allow the user to work more
+efficiently and not to overwhelm. Recognizing experience patterns in your
+product will also help in creating successful interactions for your users.
+
+> [!TIP]\
+> When to use
+
+- **Short, actionable lists:** Lists of options for filtering, sorting, or
+  selecting specific actions. Menu items that are clearly labeled and easily
+  understood.
+- **Simple form elements:** Basic form inputs like radio buttons or checkboxes
+  for quick selections.
+- **Contextual actions:** Actions related to the item or element that triggered
+  the dropdown. Quick links to related settings or preferences.
+
+> [!CAUTION]\
+> When not to use
+
+- **Long paragraphs of text:** Menus are not suitable for displaying large
+  amounts of text. Keep content concise and focused.
+- **Complex forms or interactions:** Avoid placing complex forms or multi-step
+  processes within a menu dropdown. These should be handled on dedicated pages
+  or modals.
+- **Critical information:** Do not rely on menu dropdown to display essential
+  information that users need to see immediately. Important content should be
+  readily visible on the page.
+- **Unrelated content:** Ensure that the content of the menu is directly related
+  to the trigger element. Avoid including unrelated or irrelevant information.
+- **Nested dropdown:** Nested drop down within menu can be confusing and
+  difficult to navigate.
+- **Content that changes the page layout:** Avoid content that will cause the
+  page to reflow when the menu opens.
+
+### Solid-styled widths
+
+These placements are more regular, they have either a maximum width of 268px or
+form wide. The menu width should match the width of the field itself.
+
+> [!TIP]\
+> **Do**
+>
+> - The form is at maximum size (when not in a full page form) and the menu
+>   matches the width of the field.
+> - Longer options flow to the next lines, and when chosen, those longer texts
+>   are truncated so the user can still see the icons clearly.
+
+![](/images/menu/menu-width-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not have different widths for select inputs.
+> - Do not change the width of the field to match the content once selected.
+
+![](/images/menu/menu-width-dont.png)
+
+### Icons within action lists
+
+Having icons can make actions easier for a user to select quickly, especially
+for common and repetitive actions across products. Make sure to keep aligned
+with familiar patterns to ensure user recognition. Actions can also be organized
+with sections.
+
+> [!TIP]\
+> **Do**
+>
+> - Use common icons and clear and concise labels that are easily understood by
+>   users.
+> - Use destructive-styled icons for the actions that apply.
+
+![](/images/menu/menu-icons-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not use uncommon icons, and do not shorten labels of actions unless it is
+>   common and user tested.
+> - Do not use destructive styled actions for actions that are not destructive
+
+![](/images/menu/menu-icons-dont.png)
+
+### Keep menu items concise
+
+Keep menu items short and concise. Long menu items that cause text to wrap
+multiple lines are discouraged. If text wrapping becomes a frequent concern,
+consider revising the text or use alternative UI patterns that will give your
+content more space.
+
+> [!TIP]\
+> **Do**
+>
+> - Use a short and easily understandable label. Describe, do not use labels as
+>   instructions.
+> - Text can flow to three lines, but truncate further text.
+
+![](/images/menu/menu-concise-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Keep content short or make sure that the location has enough room to display
+>   content with more space.
+> - Don’t use additional labels or explainers when unneeded.
+> - Do not encourage lengthly text for drop down experiences. Text can flow to
+>   three lines, but truncate further text.
+> - Punctuation is not needed.
+
+![](/images/menu/menu-concise-dont.png)
+
+### Organize dropdown content when possible
+
+Use grouping structures if all items in a list can be grouped for a better user
+experience. By default, organize by alphabetical order.
+
+> [!TIP]\
+> **Do**
+>
+> - Use labels within popover/drop downs to organize content.
+> - If actions lists become bulky and hard to scan, consider another experience
+>   for the user.
+
+![](/images/menu/menu-organize-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't bury frequently used actions within a dropdown or menu; instead,
+>   prioritize them at the top and group related actions together to facilitate
+>   quick user selection.
+
+![](/images/menu/menu-organize-dont.png)
+
+## Properties
 
 <PropsTable id="Menu" />
 
 ## Accessibility
 
-The Menu component is built with accessibility in mind, providing full keyboard
-navigation and screen reader support.
-
-### Keyboard Interactions
-
-- **Arrow Keys:** Navigate between menu items
-- **Enter/Space:** Select the focused item
-- **Escape:** Close the menu
-- **Tab:** Move focus out of the menu
-- **Home/End:** Jump to first/last item
-- **Type-ahead:** Type to focus matching items
-
-### ARIA Attributes
-
-The component automatically applies appropriate ARIA attributes:
-
-- `role="menu"` on the menu container
-- `role="menuitem"`, `role="menuitemcheckbox"`, or `role="menuitemradio"` on
-  items
-- `aria-expanded` on the trigger
-- `aria-checked` for selectable items
-- `aria-disabled` for disabled items
-
-### Focus Management
-
-- Focus is trapped within the menu when open
-- Focus returns to the trigger when the menu closes
-- First item receives focus when menu opens with keyboard
-- Focus follows mouse hover for better user experience
-
-### Screen Reader Support
+A dropdown popover is a temporary, compact list of options or actions that
+appears on user interaction, designed for quick selections and efficient
+navigation.
 
 ```jsx-live
 const App = () => (
   <Menu.Root>
-    <Menu.Trigger aria-label="User account menu">
-      <Icons.AccountCircle />
-      Account
-      <Icons.KeyboardArrowDown />
+    <Menu.Trigger asChild>
+      <Button variant="solid" colorPalette="primary">
+        <Icons.FolderOpen />
+        File Menu
+      </Button>
     </Menu.Trigger>
-    <Menu.Content>
-      <Menu.Section aria-label="Account settings">
-        <Menu.Item id="profile">
-          <Text slot="label">View Profile</Text>
-          <Text slot="description">View and edit your profile information</Text>
-        </Menu.Item>
-        <Menu.Item id="settings">
-          <Text slot="label">Account Settings</Text>
-          <Text slot="description">Manage your account preferences</Text>
-        </Menu.Item>
-      </Menu.Section>
+   <Menu.Content>
+      <Menu.Item id="duplicate">
+        <Icon slot="icon"><Icons.ContentCopy /></Icon>
+        <Text slot="label">Duplicate</Text>
+        <Kbd slot="keyboard">⌘T</Kbd>
+      </Menu.Item>
+      <Menu.Item id="rename">
+        <Icon slot="icon"><Icons.Create /></Icon>
+        <Text slot="label">Rename</Text>
+        <Kbd slot="keyboard">⌘R</Kbd>
+      </Menu.Item>
+      <Menu.Item id="share">
+        <Icon slot="icon"><Icons.IosShare /></Icon>
+        <Text slot="label">Share</Text>
+        <Kbd slot="keyboard">⌘W</Kbd>
+      </Menu.Item>
+      <Menu.Item id="pin">
+        <Icon slot="icon"><Icons.PushPin /></Icon>
+        <Text slot="label">Pin</Text>
+        <Kbd slot="keyboard">⌘P</Kbd>
+      </Menu.Item>
       <Separator />
-      <Menu.Item id="signout" isCritical>
-        <Text slot="label">Sign Out</Text>
-        <Text slot="description">Sign out of your account</Text>
+      <Menu.Item id="delete" isCritical>
+        <Icon slot="icon"><Icons.Delete /></Icon>
+        <Text slot="label">Delete</Text>
+        <Kbd slot="keyboard">⌘D</Kbd>
       </Menu.Item>
     </Menu.Content>
   </Menu.Root>
-)
+);
 ```
 
-### Resources
+### Accessibility standards
 
-- [React Aria Menu](https://react-spectrum.adobe.com/react-aria/Menu.html)
-- [WAI-ARIA Menu Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)
-- [Adobe Spectrum Menu](https://spectrum.adobe.com/page/menu/)
+**Keyboard Navigation:** Ensure users can open, navigate (arrow keys), select
+(Enter/Space), and close (Esc) the menu using only the keyboard.
+
+**ARIA Roles & States:** Properly apply ARIA roles (e.g., role="menu",
+role="menuitem", aria-haspopup") and states (e.g., aria-expanded, aria-checked)
+to convey semantic meaning.
+
+**Focus Management:** Confirm focus correctly moves into the menu when opened,
+cycles within it, and returns to the trigger when closed.
+
+**Contrast & Visibility:** Verify sufficient color contrast for menu items and a
+clear visual focus indicator for selected/hovered items.
