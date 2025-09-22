@@ -3,7 +3,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { I18nProvider } from "react-aria";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
+import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
+import {
+  AddReaction,
+  Search,
+  Visibility,
+  AddBox,
+  Close,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof NumberInput> = {
   title: "components/NumberInput",
@@ -85,6 +92,8 @@ export const Variants: Story = {
           </Text>
           <NumberInput
             variant={variant}
+            leadingElement={<Icon as={AddReaction} />}
+            trailingElement={<Icon as={AddReaction} />}
             placeholder="123"
             aria-label={`Variant ${variant} number input`}
           />
@@ -220,6 +229,114 @@ export const AllCombinations: Story = {
       ))}
     </Stack>
   ),
+};
+
+export const LeadingAndTrailingElements: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof NumberInput>;
+      getProps?: (
+        size: "sm" | "md"
+      ) => React.ComponentProps<typeof NumberInput>;
+    }> = [
+      {
+        label: "Leading Icon",
+        props: {
+          placeholder: "Search amount...",
+          leadingElement: <Search />,
+          "aria-label": "search-number-input",
+        },
+      },
+      {
+        label: "Trailing Icon",
+        props: {
+          placeholder: "Enter quantity",
+          trailingElement: <Visibility />,
+          "aria-label": "quantity-input",
+        },
+      },
+      {
+        label: "Both Icons",
+        props: {
+          placeholder: "Product price",
+          leadingElement: <Icon as={Search} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "price-input",
+        },
+      },
+      {
+        label: "IconButton Elements",
+        getProps: (size: "sm" | "md") => ({
+          placeholder: "Advanced number input",
+          leadingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="number options"
+            >
+              <Icon as={AddReaction} />
+            </IconButton>
+          ),
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="clear"
+            >
+              <Icon as={Close} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-number-input",
+        }),
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <NumberInput
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
+                          size={size}
+                          variant={variant}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
 };
 
 export const Controlled: Story = {

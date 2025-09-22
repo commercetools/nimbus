@@ -18,8 +18,11 @@ import {
   Flex,
   RadioInput,
   Button,
+  Icon,
 } from "@/components";
 import { ComboBox } from "./combobox";
+import type { ComboBoxRootProps } from "./combobox.types";
+import { AddReaction, Search } from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -904,6 +907,7 @@ export const ControlledState: Story = {
                 inputValue={singleInputValue}
                 onInputChange={handleSingleInputChange}
                 placeholder="Select an animal..."
+                leadingElement={<Icon as={AddReaction} />}
               >
                 {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
               </ComboBox.Root>
@@ -1095,6 +1099,163 @@ export const AllVariantsAndSizes: Story = {
             ))}
           </Stack>
         ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Leading and Trailing Elements
+ * Display of ComboBox with leading and trailing elements in various configurations
+ */
+export const LeadingElements: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props?: Partial<ComboBoxRootProps<{ id: number; name: string }>>;
+      getProps?: (
+        size: "sm" | "md"
+      ) => Partial<ComboBoxRootProps<{ id: number; name: string }>>;
+    }> = [
+      {
+        label: "Without Leading Element",
+        props: {
+          placeholder: "Select items...",
+          "aria-label": "basic-combobox",
+        },
+      },
+      {
+        label: "With Leading Element",
+        props: {
+          placeholder: "Search items...",
+          leadingElement: <Search />,
+          "aria-label": "search-combobox",
+        },
+      },
+    ];
+
+    const inputSize = ["sm", "md"] as const;
+    const inputVariants = ["solid", "ghost"] as const;
+
+    return (
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <ComboBox.Root
+                          defaultItems={options}
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
+                          size={size}
+                          variant={variant}
+                        >
+                          {(item) => (
+                            <ComboBox.Option>{item.name}</ComboBox.Option>
+                          )}
+                        </ComboBox.Root>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+
+        <Stack direction="column" gap="400">
+          <Text fontWeight="semibold">Multi-Select Variants</Text>
+          {inputSize.map((size) => (
+            <Stack key={`multi-${size as string}`} direction="column" gap="300">
+              <Text fontSize="sm" color="neutral.11">
+                Size: {size as string}
+              </Text>
+              <Stack direction="column" gap="300">
+                <Stack direction="column" gap="200">
+                  <Text fontSize="sm" color="neutral.11">
+                    With Leading Element
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={`multi-with-icon-${variant as string}`}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <ComboBox.Root
+                          defaultItems={options}
+                          selectionMode="multiple"
+                          size={size}
+                          variant={variant}
+                          placeholder="Search multiple items..."
+                          leadingElement={<Search />}
+                          aria-label={`multi-with-icon-${variant as string}-${size as string}`}
+                        >
+                          {(item) => (
+                            <ComboBox.Option>{item.name}</ComboBox.Option>
+                          )}
+                        </ComboBox.Root>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+                <Stack direction="column" gap="200">
+                  <Text fontSize="sm" color="neutral.11">
+                    Without Leading Element
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={`multi-without-icon-${variant as string}`}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <ComboBox.Root
+                          defaultItems={options}
+                          selectionMode="multiple"
+                          size={size}
+                          variant={variant}
+                          placeholder="Select multiple items..."
+                          aria-label={`multi-without-icon-${variant as string}-${size as string}`}
+                        >
+                          {(item) => (
+                            <ComboBox.Option>{item.name}</ComboBox.Option>
+                          )}
+                        </ComboBox.Root>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              </Stack>
+            </Stack>
+          ))}
+        </Stack>
       </Stack>
     );
   },

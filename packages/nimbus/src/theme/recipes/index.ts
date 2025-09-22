@@ -7,7 +7,6 @@ import { headingRecipe } from "@/components/heading/heading.recipe";
 import { kbdRecipe } from "@/components/kbd/kbd.recipe";
 import { linkRecipe } from "@/components/link/link.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
-import { textInputRecipe } from "@/components/text-input/text-input.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { toggleButtonRecipe } from "@/components/toggle-button/toggle-button.recipe";
 import { toolbarRecipe } from "@/components/toolbar/toolbar.recipe";
@@ -21,7 +20,6 @@ export const recipes = {
   kbd: kbdRecipe,
   link: linkRecipe,
   tooltip: tooltipRecipe,
-  textInput: textInputRecipe,
   radioInput: radioInputSlotRecipe,
   toggleButton: toggleButtonRecipe,
   toolbar: toolbarRecipe,

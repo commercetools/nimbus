@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Select } from "./select";
-import { Text, Stack, Box } from "@/components";
+import { Text, Stack, Box, Icon } from "@/components";
 import type { Key } from "react-aria";
 import { useState } from "react";
 import { type SelectRootProps } from "./select.types";
 import { userEvent, within, expect, fn } from "storybook/test";
+import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
 
 import { useAsyncList } from "react-stately";
 
@@ -238,6 +239,7 @@ export const AsyncLoading: Story = {
           isLoading={isLoading}
           selectedKey={animal}
           onSelectionChange={setAnimal as SelectRootProps["onSelectionChange"]}
+          leadingElement={<Icon as={AddReaction} />}
           aria-label="Select your new pet"
           data-testid="select"
         >
@@ -908,6 +910,89 @@ export const VariantsAndSizes: Story = {
                 ))}
               </Stack>
             ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Leading Element Examples
+ * Demonstrates different leadingElement configurations with Select component
+ */
+export const LeadingElement: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props: Partial<React.ComponentProps<typeof Select.Root>>;
+    }> = [
+      {
+        label: "Leading Icon - Search",
+        props: {
+          leadingElement: <Search />,
+          "aria-label": "search-select",
+        },
+      },
+      {
+        label: "Leading Icon - Custom Icon",
+        props: {
+          leadingElement: <Icon as={AddReaction} />,
+          "aria-label": "reaction-select",
+        },
+      },
+      {
+        label: "Leading Icon - Visibility",
+        props: {
+          leadingElement: <Icon as={Visibility} />,
+          "aria-label": "visibility-select",
+        },
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {selectSizes.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {selectVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <Select.Root
+                          {...example.props}
+                          size={size}
+                          variant={variant}
+                        >
+                          <Select.Options>
+                            <Select.Option id="option1">Option 1</Select.Option>
+                            <Select.Option id="option2">Option 2</Select.Option>
+                            <Select.Option id="option3">Option 3</Select.Option>
+                            <Select.Option id="option4">Option 4</Select.Option>
+                          </Select.Options>
+                        </Select.Root>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
           </Stack>
         ))}
       </Stack>

@@ -1,4 +1,7 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
 import type {
   ComboBoxRootProps,
   ComboBoxValueSlotProps,
@@ -11,9 +14,10 @@ import type {
   ComboBoxOptionIndicatorSlotProps,
   ComboBoxOptionContentSlotProps,
 } from "./combobox.types";
+import { comboBoxSlotRecipe } from "./combobox.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "combobox",
+  recipe: comboBoxSlotRecipe,
 });
 
 // ComboBox Root
@@ -21,6 +25,11 @@ export const ComboBoxRootSlot = withProvider<
   HTMLDivElement,
   ComboBoxRootProps<object>
 >("div", "root");
+
+export const ComboBoxLeadingElementSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "leadingElement");
 
 // Value - Input (single) or TagList (multi)
 export const ComboBoxValueSlot = withContext<
