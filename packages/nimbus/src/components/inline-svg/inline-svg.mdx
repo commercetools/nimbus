@@ -28,7 +28,7 @@ The `InlineSvg` component allows you to render arbitrary SVG markup as an icon w
 - **Performance**: Memoized sanitization for optimal re-renders
 - **Zero External Dependencies**: Uses native browser APIs for parsing and sanitization
 
-## Basic Usage
+## Basic usage
 
 ```jsx-live
 const App = () => {
@@ -46,7 +46,7 @@ const App = () => {
 
 ## Sizes
 
-### Predefined Sizes
+### Predefined sizes
 
 The component supports all standard icon sizes through the `size` prop:
 
@@ -71,7 +71,7 @@ const App = () => {
 };
 ```
 
-### Custom Sizes
+### Custom sizes
 
 For custom sizing, you can use the `boxSize`, `width`, or `height` props with any valid CSS value or design token:
 
@@ -203,25 +203,25 @@ const App = () => {
 
 The SVG is rendered with `role="presentation"` as it's intended for decorative use. If you need accessible SVGs, include `<title>` and `<desc>` elements directly in your SVG markup - they will be preserved during sanitization.
 
-## Security Considerations
+## Security considerations
 
 The component provides comprehensive XSS protection:
 
-### What Gets Removed
+### What gets removed
 
 - All JavaScript execution vectors (`<script>`, event handlers)
 - Style injection attempts (`<style>` tags, style attributes)
 - Dangerous protocols in URLs (`javascript:`, `data:`, etc.)
 - Potentially dangerous elements (`<iframe>`, `<embed>`, etc.)
 
-### What Gets Preserved
+### What gets preserved
 
 - SVG structure elements (`<g>`, `<path>`, `<circle>`, etc.)
 - Visual attributes (fill, stroke, transform, etc.)
 - Accessibility elements (`<title>`, `<desc>`)
 - Safe URLs (http:, https:, relative paths, fragments)
 
-## Best Practices
+## Best practices
 
 1. **Always provide a title** for non-decorative SVGs
 2. **Use design tokens** for colors to maintain consistency

@@ -19,7 +19,7 @@ tags:
 
 The `NimbusProvider` component provides the foundational context for all Nimbus components, including theming, internationalization, and optional client-side routing configuration.
 
-## Basic Usage
+## Basic usage
 
 Without configuration, the `NimbusProvider` will provide the default theme and color mode (light)
 and infer the locale from the browser.
@@ -36,7 +36,7 @@ function App() {
 }
 ```
 
-## Set up Locale
+## Set up locale
 
 The `NimbusProvider` supports internationalization through the `locale` prop. You can specify a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to set the locale for all Nimbus components.
 
@@ -55,11 +55,11 @@ function App() {
 If no locale is provided, it defaults to the user's browser locale.
 
 
-## Set up Router
+## Set up router
 
 The `NimbusProvider` can be configured with client-side routing to enable seamless navigation for all Nimbus components that support links (like `Link`, `Button` with href, etc.).
 
-### React Router
+### React router
 
 ```tsx
 import { useNavigate, useHref } from 'react-router-dom';
@@ -81,7 +81,7 @@ function App() {
 }
 ```
 
-### Next.js App Router
+### Next.js app router
 
 ```tsx
 'use client';
@@ -103,7 +103,7 @@ function ClientProviders({ children }) {
 }
 ```
 
-### Next.js with Base Path
+### Next.js with base path
 
 ```tsx
 'use client';

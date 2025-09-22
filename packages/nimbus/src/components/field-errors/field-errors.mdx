@@ -33,7 +33,7 @@ Unlike standalone UI components, FieldErrors is designed to integrate with form
 state management and reduce the burden of localizing and displaying validation
 errors across multiple applications.
 
-## Basic Usage
+## Basic usage
 
 The simplest usage renders built-in error messages for common validation scenarios:
 
@@ -73,11 +73,11 @@ const App = () => {
 };
 ```
 
-## Built-in Error Types
+## Built-in error types
 
 FieldErrors includes comprehensive built-in error types organized by category:
 
-### Basic Validation Errors
+### Basic validation errors
 
 ```jsx-live
 const App = () => (
@@ -100,7 +100,7 @@ const App = () => (
 );
 ```
 
-### Length Validation Errors
+### Length validation errors
 
 ```jsx-live
 const App = () => (
@@ -118,7 +118,7 @@ const App = () => (
 );
 ```
 
-### Format Validation Errors
+### Format validation errors
 
 ```jsx-live
 const App = () => (
@@ -136,7 +136,7 @@ const App = () => (
 );
 ```
 
-### Numeric Validation Errors
+### Numeric validation errors
 
 ```jsx-live
 const App = () => (
@@ -169,7 +169,7 @@ const App = () => (
 );
 ```
 
-### Server/Async Validation Errors
+### Server/async validation errors
 
 ```jsx-live
 const App = () => (
@@ -192,7 +192,7 @@ const App = () => (
 );
 ```
 
-## Custom Error Messages
+## Custom error messages
 
 For application-specific validation rules, use the `renderError` prop to provide
 custom error messages:
@@ -232,7 +232,7 @@ const App = () => {
 };
 ```
 
-## Hierarchical Error Handling
+## Hierarchical error handling
 
 FieldErrors supports a three-tier error handling system for maximum flexibility:
 
@@ -273,7 +273,7 @@ const App = () => {
 };
 ```
 
-## Custom Messages for Built-in Types
+## Custom messages for built-in types
 
 Override the default messages for built-in error types while maintaining their
 validation logic:
@@ -334,7 +334,7 @@ const App = () => (
 );
 ```
 
-## Form Integration Example
+## Form integration example
 
 Real-world example showing integration with form state:
 
@@ -479,7 +479,7 @@ The Nimbus version adds optional enhancements while maintaining compatibility:
 - Maintains focus management integration with form fields
 - Supports high contrast and reduced motion preferences
 
-## Best Practices
+## Best practices
 
 ### Do's
 - Use built-in error types for common validation scenarios
@@ -493,7 +493,7 @@ The Nimbus version adds optional enhancements while maintaining compatibility:
 - Don't show all errors at once - respect the `isVisible` pattern
 - Don't forget to handle the `null` return case in custom renderers
 
-## Related Components
+## Related components
 
 - **FormField** - Wrapper for form inputs with integrated error display
 - **TextInput** - Text input component that works with FieldErrors
