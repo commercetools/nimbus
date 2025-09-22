@@ -1,6 +1,6 @@
 import { ColumnResizer, Column as RaColumn } from "react-aria-components";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
-import { Divider, Flex } from "@/components";
+import { Flex, Separator } from "@/components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useDataTableContext } from "./data-table.context";
 import {
@@ -50,7 +50,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
               tabIndex={isColumnResizable || allowsSorting ? -1 : 0}
               className="nimbus-data-table__column-container"
             >
-              <Divider
+              <Separator
                 orientation="vertical"
                 className="data-table-column-divider"
               />

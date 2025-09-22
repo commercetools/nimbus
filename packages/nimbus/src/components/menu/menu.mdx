@@ -1,7 +1,8 @@
 ---
 id: Components-Menu
 title: Menu
-description: A menu displays a list of actions or options that a user can choose.
+description:
+  A menu displays a list of actions or options that a user can choose.
 lifecycleState: Alpha
 order: 999
 menu:
@@ -12,16 +13,18 @@ tags:
   - component
 figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569
-
 ---
 
 # Menu
 
-A menu is a list of options or actions that appears when a user interacts with a trigger element, providing contextual actions in a compact interface.
+A menu is a list of options or actions that appears when a user interacts with a
+trigger element, providing contextual actions in a compact interface.
 
 ## Overview
 
-Menus provide users with a list of actions or options, typically accessed through a button or icon button trigger. They help organize secondary actions and reduce visual clutter by keeping options hidden until needed.
+Menus provide users with a list of actions or options, typically accessed
+through a button or icon button trigger. They help organize secondary actions
+and reduce visual clutter by keeping options hidden until needed.
 
 ### Resources
 
@@ -35,7 +38,8 @@ Get familiar with the features.
 
 ## Basic Usage
 
-The basic menu consists of a trigger (usually a button) and content that appears when activated.
+The basic menu consists of a trigger (usually a button) and content that appears
+when activated.
 
 ```jsx-live
 const App = () => (
@@ -55,7 +59,8 @@ const App = () => (
 
 ### Menu with Descriptions and Keyboard Shortcuts
 
-Enhance menu items with descriptions and keyboard shortcuts for better user experience.
+Enhance menu items with descriptions and keyboard shortcuts for better user
+experience.
 
 ```jsx-live
 const App = () => (
@@ -74,7 +79,7 @@ const App = () => (
         <Text slot="description">Redo the last undone action</Text>
         <Kbd slot="keyboard">⌘Y</Kbd>
       </Menu.Item>
-      <Divider />
+      <Separator />
       <Menu.Item id="cut">
         <Text slot="label">Cut</Text>
         <Text slot="description">Cut the selected text</Text>
@@ -139,7 +144,7 @@ const App = () => (
       <Menu.Content>
         <Menu.Item id="edit">Edit</Menu.Item>
         <Menu.Item id="duplicate">Duplicate</Menu.Item>
-        <Divider />
+        <Separator />
         <Menu.Item id="delete" isCritical>Delete</Menu.Item>
       </Menu.Content>
     </Menu.Root>
@@ -171,9 +176,9 @@ const App = () => (
           <Text slot="label">Preferences</Text>
         </Menu.Item>
       </Menu.Section>
-      
-      <Divider />
-      
+
+      <Separator />
+
       <Menu.Section label="Support">
         <Menu.Item id="help">
           <Icon slot="icon"><Icons.Help /></Icon>
@@ -184,9 +189,9 @@ const App = () => (
           <Text slot="label">Documentation</Text>
         </Menu.Item>
       </Menu.Section>
-      
-      <Divider />
-      
+
+      <Separator />
+
       <Menu.Item id="logout" isCritical>
         <Icon slot="icon"><Icons.Logout /></Icon>
         <Text slot="label">Sign Out</Text>
@@ -198,12 +203,13 @@ const App = () => (
 
 ### Single Selection
 
-Menus support single selection mode where only one item can be selected at a time.
+Menus support single selection mode where only one item can be selected at a
+time.
 
 ```jsx-live
 const App = () => {
   const [selectedView, setSelectedView] = React.useState("list");
-  
+
   return (
     <Stack direction="horizontal" gap="400" alignItems="center">
       <Menu.Root
@@ -241,7 +247,7 @@ const App = () => {
           </Menu.Section>
         </Menu.Content>
       </Menu.Root>
-      
+
       <Text color="neutral.11">Current view: {selectedView}</Text>
     </Stack>
   );
@@ -257,7 +263,7 @@ const App = () => {
   const [selectedOptions, setSelectedOptions] = React.useState(
     new Set(["notifications", "updates"])
   );
-  
+
   return (
     <Stack direction="horizontal" gap="400" alignItems="center">
       <Menu.Root
@@ -296,7 +302,7 @@ const App = () => {
           </Menu.Section>
         </Menu.Content>
       </Menu.Root>
-      
+
       <Box padding="200" background="neutral.3" borderRadius="md">
         <Text fontSize="sm">
           Active: {Array.from(selectedOptions).join(", ") || "None"}
@@ -309,7 +315,8 @@ const App = () => {
 
 ### Mixed Selection
 
-Combine different selection modes within a single menu by applying selection settings to individual sections.
+Combine different selection modes within a single menu by applying selection
+settings to individual sections.
 
 ```jsx-live
 const App = () => {
@@ -317,7 +324,7 @@ const App = () => {
     new Set(["bold"])
   );
   const [alignment, setAlignment] = React.useState("left");
-  
+
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
       <Menu.Root>
@@ -342,9 +349,9 @@ const App = () => {
               <Kbd slot="keyboard">⌘V</Kbd>
             </Menu.Item>
           </Menu.Section>
-          
-          <Divider />
-          
+
+          <Separator />
+
           {/* Section with multiple selection */}
           <Menu.Section
             selectionMode="multiple"
@@ -369,9 +376,9 @@ const App = () => {
               <Kbd slot="keyboard">⌘U</Kbd>
             </Menu.Item>
           </Menu.Section>
-          
-          <Divider />
-          
+
+          <Separator />
+
           {/* Section with single selection */}
           <Menu.Section
             selectionMode="single"
@@ -395,7 +402,7 @@ const App = () => {
           </Menu.Section>
         </Menu.Content>
       </Menu.Root>
-      
+
       <Box padding="300" background="neutral.3" borderRadius="md" minWidth="200px">
         <Stack gap="200">
           <Text fontSize="sm" fontWeight="600">Current Selection:</Text>
@@ -427,7 +434,7 @@ const App = () => (
         <Menu.Item id="item3">Item 3</Menu.Item>
       </Menu.Content>
     </Menu.Root>
-    
+
     <Menu.Root placement="bottom">
       <Menu.Trigger asChild>
         <Button variant="outline" size="xs">Bottom</Button>
@@ -438,7 +445,7 @@ const App = () => (
         <Menu.Item id="item3">Item 3</Menu.Item>
       </Menu.Content>
     </Menu.Root>
-    
+
     <Menu.Root placement="left">
       <Menu.Trigger asChild>
         <Button variant="outline" size="xs">Left</Button>
@@ -449,7 +456,7 @@ const App = () => (
         <Menu.Item id="item3">Item 3</Menu.Item>
       </Menu.Content>
     </Menu.Root>
-    
+
     <Menu.Root placement="right">
       <Menu.Trigger asChild>
         <Button variant="outline" size="xs">Right</Button>
@@ -488,9 +495,9 @@ const App = () => (
         <Text slot="label">Open</Text>
         <Kbd slot="keyboard">⌘O</Kbd>
       </Menu.Item>
-      
-      <Divider />
-      
+
+      <Separator />
+
       <Menu.SubmenuTrigger>
         <Menu.Item>
           <Icon slot="icon"><Icons.Share /></Icon>
@@ -508,9 +515,9 @@ const App = () => (
           </Menu.Item>
         </Menu.Submenu>
       </Menu.SubmenuTrigger>
-      
-      <Divider />
-      
+
+      <Separator />
+
       <Menu.Item id="save">
         <Icon slot="icon"><Icons.Save /></Icon>
         <Text slot="label">Save</Text>
@@ -528,7 +535,8 @@ const App = () => (
 
 ## Guidelines
 
-Menus provide a space-efficient way to display a list of actions or options, appearing on demand when users interact with a trigger element.
+Menus provide a space-efficient way to display a list of actions or options,
+appearing on demand when users interact with a trigger element.
 
 ### Best Practices
 
@@ -536,8 +544,10 @@ Menus provide a space-efficient way to display a list of actions or options, app
 - **Descriptive Labels:** Use clear, action-oriented labels for menu items
 - **Keyboard Shortcuts:** Display keyboard shortcuts when available
 - **Visual Hierarchy:** Use icons and descriptions to enhance scannability
-- **Predictable Placement:** Position menus consistently to avoid covering important content
-- **Appropriate Triggers:** Choose triggers that clearly indicate a menu will appear
+- **Predictable Placement:** Position menus consistently to avoid covering
+  important content
+- **Appropriate Triggers:** Choose triggers that clearly indicate a menu will
+  appear
 
 ### Usage
 
@@ -594,7 +604,7 @@ const App = () => (
         <Icon slot="icon"><Icons.Backup /></Icon>
         <Text slot="label">Archive</Text>
       </Menu.Item>
-      <Divider />
+      <Separator />
       <Menu.Item id="delete" isCritical>
         <Icon slot="icon"><Icons.Delete /></Icon>
         <Text slot="label">Delete</Text>
@@ -609,12 +619,16 @@ const App = () => (
 
 ### Features
 
-- **Keyboard Navigation:** Full keyboard support with arrow keys, Enter, and Escape
-- **Selection Modes:** Support for single and multiple selection with visual indicators
-- **Flexible Triggers:** Can be triggered by any interactive element using `asChild`
+- **Keyboard Navigation:** Full keyboard support with arrow keys, Enter, and
+  Escape
+- **Selection Modes:** Support for single and multiple selection with visual
+  indicators
+- **Flexible Triggers:** Can be triggered by any interactive element using
+  `asChild`
 - **Sections & Separators:** Organize items into logical groups
 - **Submenus:** Support for nested menu structures
-- **Rich Content:** Items can include icons, descriptions, and keyboard shortcuts
+- **Rich Content:** Items can include icons, descriptions, and keyboard
+  shortcuts
 - **Accessibility:** Built-in ARIA attributes and screen reader support
 - **Controlled/Uncontrolled:** Works in both controlled and uncontrolled modes
 
@@ -624,7 +638,8 @@ const App = () => (
 
 ## Accessibility
 
-The Menu component is built with accessibility in mind, providing full keyboard navigation and screen reader support.
+The Menu component is built with accessibility in mind, providing full keyboard
+navigation and screen reader support.
 
 ### Keyboard Interactions
 
@@ -638,8 +653,10 @@ The Menu component is built with accessibility in mind, providing full keyboard 
 ### ARIA Attributes
 
 The component automatically applies appropriate ARIA attributes:
+
 - `role="menu"` on the menu container
-- `role="menuitem"`, `role="menuitemcheckbox"`, or `role="menuitemradio"` on items
+- `role="menuitem"`, `role="menuitemcheckbox"`, or `role="menuitemradio"` on
+  items
 - `aria-expanded` on the trigger
 - `aria-checked` for selectable items
 - `aria-disabled` for disabled items
@@ -672,7 +689,7 @@ const App = () => (
           <Text slot="description">Manage your account preferences</Text>
         </Menu.Item>
       </Menu.Section>
-      <Divider />
+      <Separator />
       <Menu.Item id="signout" isCritical>
         <Text slot="label">Sign Out</Text>
         <Text slot="description">Sign out of your account</Text>

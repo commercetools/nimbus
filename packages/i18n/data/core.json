@@ -31,6 +31,18 @@
     "developer_comment": "Default loading message for loading spinners",
     "string": "Loading data"
   },
+  "Nimbus.MoneyInput.amountInputLabel": {
+    "developer_comment": "aria-label for amount input",
+    "string": "Amount"
+  },
+  "Nimbus.MoneyInput.currencySelectLabel": {
+    "developer_comment": "aria-label for currency selection dropdown",
+    "string": "Currency"
+  },
+  "Nimbus.MoneyInput.highPrecisionPrice": {
+    "developer_comment": "tooltip text for high precision price badge",
+    "string": "High precision price"
+  },
   "Nimbus.NumberInput.decrement": {
     "developer_comment": "aria-label for the decrement button in number input",
     "string": "Decrement"

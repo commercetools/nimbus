@@ -1,11 +1,11 @@
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
 /**
- * Recipe configuration for the Divider component.
+ * Recipe configuration for the Separator component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
-export const dividerRecipe = defineRecipe({
-  className: "nimbus-divider",
+export const separatorRecipe = defineRecipe({
+  className: "nimbus-separator",
 
   // Base styles applied to all instances of the component
   base: {
