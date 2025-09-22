@@ -3,9 +3,10 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 const fieldGroupGrid = `
 "label"
 "fields"
+"toggle"
 "description"
 "error"
-"toggle"
+
 `;
 
 const localeFieldGrid = `

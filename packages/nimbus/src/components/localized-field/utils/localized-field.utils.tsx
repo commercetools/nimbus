@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import { FormField } from "@/components";
+import { FormField, type TCurrencyCode } from "@/components";
 import messages from "../localized-field.i18n";
 import type { LocalizedString } from "../localized-field.types";
 
@@ -66,8 +66,8 @@ export const sortLocalesByDefaultLocaleLanguage = (
 };
 
 export const sortCurrencies = (
-  defaultCurrency: string,
-  allCurrencies: string[]
+  defaultCurrency: TCurrencyCode,
+  allCurrencies: TCurrencyCode[]
 ) => {
   const remainingCurrencies = allCurrencies.filter(
     (currency) => currency !== defaultCurrency

@@ -12,7 +12,7 @@ import {
   Language,
   Payments,
 } from "@commercetools/nimbus-icons";
-import { Box, Button, IconButton } from "@/components";
+import { Box, Button, IconButton, type TCurrencyCode } from "@/components";
 import { Popover } from "../../popover";
 import messages from "../localized-field.i18n";
 import {
@@ -93,13 +93,18 @@ export const LocalizedField = ({
     });
 
   // Array of locales/currencies to display as input fields
-  const localizationKeys = Object.keys(valuesByLocaleOrCurrency);
+  const localizationKeys: string[] | TCurrencyCode[] = Object.keys(
+    valuesByLocaleOrCurrency
+  );
 
   // Merge all -ByLocaleOrCurrencies data for each field
   const allDataForFields = useMemo(() => {
     const sortedFieldData =
       type === "money"
-        ? sortCurrencies(defaultLocaleOrCurrency, localizationKeys)
+        ? sortCurrencies(
+            defaultLocaleOrCurrency as TCurrencyCode,
+            localizationKeys as TCurrencyCode[]
+          )
         : sortLocalesByDefaultLocaleLanguage(
             defaultLocaleOrCurrency,
             localizationKeys
@@ -111,9 +116,7 @@ export const LocalizedField = ({
           localeOrCurrency: localizationKey,
           inputValue:
             type === "money"
-              ? ((valuesByLocaleOrCurrency as LocalizedCurrency)[
-                  localizationKey
-                ].amount as string)
+              ? (valuesByLocaleOrCurrency as LocalizedCurrency)[localizationKey]
               : (valuesByLocaleOrCurrency[localizationKey] as string),
           placeholder: placeholdersByLocaleOrCurrency?.[localizationKey],
           description: descriptionsByLocaleOrCurrency?.[localizationKey],
@@ -180,25 +183,19 @@ export const LocalizedField = ({
                   height="1ch"
                   ml="200"
                 >
-                  <Box
-                    as="span"
-                    display="inline-flex"
+                  <IconButton
+                    aria-label={formatMessage(messages.infoBoxTriggerAriaLabel)}
+                    className="nimbus-localized-field__info-box-trigger"
+                    size="2xs"
+                    tone="info"
+                    variant="link"
                     position="absolute"
                     top="50%"
                     right="50%"
                     transform="translate(50%, -50%)"
                   >
-                    <IconButton
-                      aria-label={formatMessage(
-                        messages.infoBoxTriggerAriaLabel
-                      )}
-                      size="2xs"
-                      tone="info"
-                      variant="link"
-                    >
-                      <HelpOutline />
-                    </IconButton>
-                  </Box>
+                    <HelpOutline />
+                  </IconButton>
                 </Box>
                 <Popover padding={0}>
                   <LocalizedFieldInfoDialogSlot asChild>
@@ -244,31 +241,12 @@ export const LocalizedField = ({
                 onChange={onChange}
                 onBlur={onBlur}
                 onFocus={onFocus}
+                touched={touched}
               />
             );
           }}
         </RaCollection>
       </LocalizedFieldFieldsContainerSlot>
-      {description && (
-        <LocalizedFieldDescriptionSlot
-          role={warning && touched ? "status" : undefined}
-          {...descriptionProps}
-        >
-          {warning && touched ? warning : description}
-        </LocalizedFieldDescriptionSlot>
-      )}
-      {error && touched && (
-        <LocalizedFieldErrorSlot {...errorMessageProps}>
-          <Box
-            as={ErrorOutline}
-            display="inline-flex"
-            boxSize="400"
-            verticalAlign="text-bottom"
-            mr="100"
-          />
-          {error}
-        </LocalizedFieldErrorSlot>
-      )}
       {!displayAllLocalesOrCurrencies && localizationKeys.length > 1 && (
         <LocalizedFieldToggleButtonContainerSlot>
           <Button
@@ -299,6 +277,26 @@ export const LocalizedField = ({
                 : formatMessage(messages.showLanguages)}
           </Button>
         </LocalizedFieldToggleButtonContainerSlot>
+      )}
+      {(description || (warning && touched)) && (
+        <LocalizedFieldDescriptionSlot
+          role={warning && touched ? "status" : undefined}
+          {...descriptionProps}
+        >
+          {warning && touched ? warning : description}
+        </LocalizedFieldDescriptionSlot>
+      )}
+      {error && touched && (
+        <LocalizedFieldErrorSlot {...errorMessageProps}>
+          <Box
+            as={ErrorOutline}
+            display="inline-flex"
+            boxSize="400"
+            verticalAlign="text-bottom"
+            mr="100"
+          />
+          {error}
+        </LocalizedFieldErrorSlot>
       )}
     </LocalizedFieldRootSlot>
   );

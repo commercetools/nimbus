@@ -2,10 +2,14 @@ import { useCallback } from "react";
 import {
   FormField,
   TextInput,
-  NumberInput,
+  MoneyInput,
+  type TCustomEvent,
   MultilineTextInput,
   RichTextInput,
+  type TValue,
+  type TCurrencyCode,
 } from "@/components";
+
 import {
   LocalizedFieldLocaleFieldRootSlot,
   LocalizedFieldLocaleFieldInputSlot,
@@ -29,9 +33,14 @@ export const LocalizedFieldLocaleField = ({
   isReadOnly,
   isDisabled,
   isInvalid,
+  touched,
   ...otherProps
 }: LocalizedFieldLocaleFieldProps) => {
-  let InputComponent;
+  let InputComponent:
+    | typeof TextInput
+    | typeof MultilineTextInput
+    | typeof MoneyInput
+    | typeof RichTextInput;
   switch (type) {
     case "text":
     default:
@@ -41,7 +50,7 @@ export const LocalizedFieldLocaleField = ({
       InputComponent = MultilineTextInput;
       break;
     case "money":
-      InputComponent = NumberInput;
+      InputComponent = MoneyInput;
       break;
     case "richText":
       InputComponent = RichTextInput;
@@ -49,20 +58,28 @@ export const LocalizedFieldLocaleField = ({
   }
 
   const handleChange = useCallback(
-    (value: string | number) => {
-      onChange({
-        target: {
-          id,
-          name,
-          locale: type !== "money" ? localeOrCurrency : undefined,
-          currency: type === "money" ? localeOrCurrency : undefined,
-          value,
-        },
-      });
+    (value: string | TCustomEvent | undefined) => {
+      // The `MoneyInput` onChange event value is a custom value,
+      // and the `MoneyInput` modifies the input id and name since it is in a `group`,
+      // so we need to build a separate return object for the MoneInput to return
+      // the expected values
+      const isMoneyInputEvent = typeof value === "object";
+      const changeValue = {
+        target: isMoneyInputEvent
+          ? {
+              id: value.target.id,
+              name: value.target.name,
+              locale: undefined,
+              currency: localeOrCurrency as TCurrencyCode,
+              value: value.target.value,
+            }
+          : { id, name, locale: localeOrCurrency, currency: undefined, value },
+      };
+      onChange(changeValue);
     },
     [id, name, localeOrCurrency, onChange]
   );
-
+  console.log(description, warning);
   return (
     <LocalizedFieldLocaleFieldRootSlot asChild>
       <FormField.Root
@@ -73,7 +90,10 @@ export const LocalizedFieldLocaleField = ({
         size={size}
         id={id}
       >
-        <LocalizedFieldLocaleFieldLabelSlot asChild>
+        <LocalizedFieldLocaleFieldLabelSlot
+          display={type === "money" ? "none" : undefined}
+          asChild
+        >
           <FormField.Label>
             {localeOrCurrency.toLocaleUpperCase()}
           </FormField.Label>
@@ -83,27 +103,28 @@ export const LocalizedFieldLocaleField = ({
             <InputComponent
               {...otherProps}
               size={size}
-              locale={localeOrCurrency}
-              currency={localeOrCurrency}
-              // @ts-expect-error: the 'value' should be a string for everything but the number/money input, which must be a number
-              // in its' infinite wisdom, ts interprets the union type as 'undefined' because of course it does
-              value={inputValue}
+              value={inputValue as string & TValue}
               onChange={handleChange}
-              onBlur={(e: React.FocusEvent) => onBlur?.(e, localeOrCurrency)}
-              onFocus={(e: React.FocusEvent) => onFocus?.(e, localeOrCurrency)}
+              onBlur={(e: React.FocusEvent | TCustomEvent) =>
+                onBlur?.(e, localeOrCurrency)
+              }
+              onFocus={(e: React.FocusEvent | TCustomEvent) =>
+                onFocus?.(e, localeOrCurrency)
+              }
               isDisabled={isDisabled}
               isReadOnly={isReadOnly}
               isInvalid={isInvalid || !!error}
             />
           </LocalizedFieldLocaleFieldInputSlot>
         </FormField.Input>
-        {description && !warning && (
-          <FormField.Description>{description}</FormField.Description>
+        {(description || (warning && touched)) && (
+          <FormField.Description
+            role={warning && touched ? "status" : undefined}
+          >
+            {warning && touched ? warning : description}
+          </FormField.Description>
         )}
-        {warning && (
-          <FormField.Description role="status">{warning}</FormField.Description>
-        )}
-        {error && <FormField.Error>{error}</FormField.Error>}
+        {error && touched && <FormField.Error>{error}</FormField.Error>}
       </FormField.Root>
     </LocalizedFieldLocaleFieldRootSlot>
   );
