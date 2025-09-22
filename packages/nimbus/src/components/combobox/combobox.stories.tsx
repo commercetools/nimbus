@@ -1108,7 +1108,7 @@ export const AllVariantsAndSizes: Story = {
  * Leading and Trailing Elements
  * Display of ComboBox with leading and trailing elements in various configurations
  */
-export const LeadingAndTrailingElements: Story = {
+export const LeadingElements: Story = {
   render: () => {
     const examples: Array<{
       label: string;
