@@ -38,7 +38,7 @@ Deep dive on details and access design library.
 
 Get familiar with the features.
 
-## Basic Usage
+## Basic usage
 
 The basic SplitButton with a primary action and dropdown menu items.
 
@@ -58,7 +58,7 @@ const App = () => {
 }
 ```
 
-### Document Management Actions
+### Document management actions
 
 A typical document management scenario with various file operations.
 
@@ -80,7 +80,7 @@ const App = () => {
 }
 ```
 
-### Task Actions with Critical Action
+### Task actions with critical action
 
 Common task management actions showing how critical (destructive) actions are
 highlighted.
@@ -104,7 +104,7 @@ const App = () => {
 }
 ```
 
-### Organized Menu Sections
+### Organized menu sections
 
 Use Menu.Section to organize related actions into groups.
 
@@ -132,7 +132,7 @@ const App = () => (
 )
 ```
 
-### Size Variants
+### Size variants
 
 The component supports different sizes to match your interface scale.
 
@@ -155,7 +155,7 @@ const App = () => (
 )
 ```
 
-### Style Variants
+### Style variants
 
 Choose from different visual styles to match your design system.
 
@@ -178,7 +178,7 @@ const App = () => (
 )
 ```
 
-### Disabled States
+### Disabled states
 
 You can disable the entire component or individual menu items.
 
@@ -198,7 +198,7 @@ const App = () => (
 )
 ```
 
-## How It Works
+## How it works
 
 The SplitButton component provides a split-action interface:
 
@@ -216,7 +216,7 @@ The SplitButton provides a space-efficient way to present a primary action
 alongside related secondary actions, maintaining visual hierarchy while offering
 comprehensive functionality.
 
-### Best Practices
+### Best practices
 
 - **Order Actions by Priority**: Place the most common or important action first
   in your Menu.Items
@@ -249,7 +249,7 @@ comprehensive functionality.
 - For simple binary choices (use a toggle or two separate buttons)
 - When the primary action isn't clearly more important than alternatives
 
-### Writing Guidelines
+### Writing guidelines
 
 - Use sentence case for all button and menu item labels
 - Start with strong action verbs (e.g., "Save Document", "Export Data")
@@ -258,7 +258,7 @@ comprehensive functionality.
 - Avoid redundant words between primary and dropdown actions
 - Include clarifying text for potentially destructive actions
 
-### Critical Actions
+### Critical actions
 
 Use the `isCritical` prop on Menu.Item to highlight destructive or irreversible
 actions.
@@ -308,7 +308,7 @@ The SplitButton component is built with accessibility in mind, providing full
 keyboard navigation and screen reader support for both the primary action and
 dropdown functionality.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 - **Tab**: Navigate to the primary button, then to the dropdown trigger
 - **Enter/Space**: Activate the focused button or open the dropdown
@@ -316,7 +316,7 @@ dropdown functionality.
 - **Escape**: Close the dropdown menu and return focus to trigger
 - **Home/End**: Jump to first/last dropdown item
 
-### ARIA Attributes
+### ARIA attributes
 
 The component automatically applies appropriate ARIA attributes:
 
@@ -327,7 +327,7 @@ The component automatically applies appropriate ARIA attributes:
 - `role="menuitem"` on individual menu items
 - `aria-label` support for custom accessibility labels
 
-### Focus Management
+### Focus management
 
 - Focus moves logically from primary button to dropdown trigger
 - When dropdown opens, focus moves to the first menu item
@@ -335,7 +335,7 @@ The component automatically applies appropriate ARIA attributes:
 - Focus returns to the dropdown trigger when the menu closes
 - Disabled states properly prevent focus and interaction
 
-### Screen Reader Support
+### Screen reader support
 
 The component provides comprehensive screen reader support:
 

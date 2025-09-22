@@ -28,7 +28,7 @@ A controlled input component for money values that combines currency selection w
 - **Accessibility**: Full WCAG 2.1 AA compliance with React Aria integration
 - **High Precision Badge**: Visual indicator for values exceeding standard currency precision
 
-## Basic Usage
+## Basic usage
 
 ```jsx-live
 function BasicExample() {
@@ -62,7 +62,7 @@ function BasicExample() {
 }
 ```
 
-## Compound Components
+## Compound components
 
 The MoneyInput follows Nimbus compound component patterns:
 
@@ -71,7 +71,7 @@ The MoneyInput follows Nimbus compound component patterns:
 - **`MoneyInput.AmountInput`** - Amount text input with formatting
 - **`MoneyInput.Badge`** - High precision indicator with tooltip
 
-## High Precision Support
+## High precision support
 
 The component automatically detects and handles high precision values that exceed a currency's standard fraction digits:
 
@@ -110,7 +110,7 @@ function HighPrecisionExample() {
 }
 ```
 
-## Currency-Specific Formatting
+## Currency-specific formatting
 
 Different currencies have different fraction digits. The component handles this automatically:
 
@@ -159,7 +159,7 @@ function CurrencyFormattingExample() {
 
 ## States
 
-### Disabled State
+### Disabled state
 
 ```jsx-live
 function DisabledExample() {
@@ -179,7 +179,7 @@ function DisabledExample() {
 }
 ```
 
-### Error State
+### Error state
 
 ```jsx-live
 function ErrorExample() {
@@ -199,7 +199,7 @@ function ErrorExample() {
 }
 ```
 
-### Read-Only State
+### Read-only state
 
 ```jsx-live
 function ReadOnlyExample() {
@@ -219,7 +219,7 @@ function ReadOnlyExample() {
 }
 ```
 
-## Static Methods
+## Static methods
 
 The MoneyInput component provides several static methods for working with money values:
 
@@ -266,7 +266,7 @@ const value = { amount: "42.12345", currencyCode: "EUR" };
 MoneyInput.isHighPrecision(value, "en-US"); // true (EUR has 2 fraction digits, value has 5)
 ```
 
-## Form Integration
+## Form integration
 
 The component integrates seamlessly with form libraries:
 
@@ -342,7 +342,7 @@ If you're migrating from `@commercetools-uikit/money-input`, here are the key ch
 ```typescript
 import MoneyInput from '@commercetools-uikit/money-input';
 
-<MoneyInput
+<MoneyInput 
   value={value}
   currencies={currencies}
   onChange={onChange}
@@ -366,7 +366,7 @@ import { MoneyInput } from '@commercetools/nimbus';
 </MoneyInput.Root>
 ```
 
-### Key Changes
+### Key changes
 1. **Compound Structure**: Use `MoneyInput.Root` with child components
 2. **Explicit Components**: Add `CurrencySelect`, `AmountInput`, and `Badge` as needed
 3. **Same Static Methods**: All static methods (`convertToMoneyValue`, `parseMoneyValue`, etc.) work identically
