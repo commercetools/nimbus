@@ -20,7 +20,7 @@ catalogs:
     '@babel/runtime': ^7.28.4
     '@babel/preset-typescript': ^7.27.1
     '@eslint/js': ^9.35.0
-    eslint: ^9.35.0
+    eslint: ^9.36.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.4
     eslint-plugin-react-hooks: ^5.2.0
