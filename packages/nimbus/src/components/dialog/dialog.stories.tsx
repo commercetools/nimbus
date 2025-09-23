@@ -53,15 +53,6 @@ const meta: Meta<typeof Dialog.Root> = {
       description:
         "Accessible label for the dialog when not using Dialog.Title",
     },
-    onOpenChange: {
-      action: "onOpenChange",
-      description: "Callback fired when the dialog open state changes",
-    },
-    shouldCloseOnInteractOutside: {
-      control: false,
-      description:
-        "Function to determine whether dialog should close on outside interaction",
-    },
   },
 };
 
@@ -73,27 +64,29 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: {},
-  render: (args) => (
-    <Dialog.Root {...args}>
-      <Dialog.Trigger>Accepts anything as trigger</Dialog.Trigger>
 
-      <Dialog.Content>
-        <Dialog.Header>
-          <Dialog.Title>Dialog Title</Dialog.Title>
-          <Dialog.CloseTrigger autoFocus />
-        </Dialog.Header>
-        <Dialog.Body>
-          <Text>This is the default dialog with basic functionality.</Text>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Button slot="close">Cancel</Button>
-          <Button slot="close" variant="solid" tone="primary">
-            Save
-          </Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  ),
+  render: (args) => {
+    return (
+      <Dialog.Root {...args}>
+        <Dialog.Trigger>Accepts anything as trigger</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Dialog Title</Dialog.Title>
+            <Dialog.CloseTrigger autoFocus />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>This is the default dialog with basic functionality.</Text>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close">Cancel</Button>
+            <Button slot="close" variant="solid" tone="primary">
+              Save
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+  },
 };
 
 /**
@@ -262,7 +255,6 @@ export const ControlledState: Story = {
           Open Controlled Dialog
         </Switch>
         <Text>Dialog is {isOpen ? "open" : "closed"}</Text>
-
         <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
           <Dialog.Content>
             <Dialog.Header>

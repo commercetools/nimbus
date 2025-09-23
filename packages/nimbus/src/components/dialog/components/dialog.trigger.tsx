@@ -2,6 +2,7 @@ import { Button as RaButton } from "react-aria-components";
 import { DialogTriggerSlot } from "../dialog.slots";
 import type { DialogTriggerProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { chakra } from "@chakra-ui/react/styled-system";
 
 /**
  * # Dialog.Trigger
@@ -25,9 +26,9 @@ export const DialogTrigger = ({
   // If asChild is true, wrap children directly in RaButton with asChild
   if (asChild) {
     return (
-      <DialogTriggerSlot asChild {...props}>
+      <chakra.button asChild {...props}>
         {children}
-      </DialogTriggerSlot>
+      </chakra.button>
     );
   }
 

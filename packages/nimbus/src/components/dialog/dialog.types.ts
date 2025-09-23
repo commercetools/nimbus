@@ -31,9 +31,25 @@ export interface DialogRootProps
    */
   defaultOpen?: boolean;
 
+  /**
+   * Whether the dialog can be dismissed by clicking the backdrop or pressing Escape.
+   * If true, clicking outside the dialog or pressing Escape will close it.
+   * @default true
+   */
   isDismissable?: ModalOverlayProps["isDismissable"];
-  isKeyboardDismissDisabled?: ModalOverlayProps["isDismissable"];
-  //shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
+
+  /**
+   * Whether keyboard dismissal (Escape key) is disabled.
+   * If true, pressing Escape will NOT close the dialog.
+   * @default false
+   */
+  isKeyboardDismissDisabled?: ModalOverlayProps["isKeyboardDismissDisabled"];
+
+  /**
+   * Function to determine whether the dialog should close when interacting outside.
+   * Receives the event and returns true to allow closing, false to prevent.
+   */
+  shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
 
   /**
    * Callback fired when the dialog open state changes
@@ -82,15 +98,12 @@ export interface DialogContentProps extends DialogModalOverlaySlotProps {
    * The dialog content
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the dialog content
+   */
+  ref?: React.RefObject<HTMLDivElement>;
 }
-
-/**
- * Props for the Dialog.Backdrop component
- *
- * The backdrop overlay that appears behind the dialog content.
- */
-export interface DialogBackdropProps extends ComponentProps<"div"> {}
-
 /**
  * Props for the Dialog.Header component
  *

@@ -69,9 +69,9 @@ export const DialogContent = (props: DialogContentProps) => {
 
   return (
     <DialogModalOverlaySlot asChild>
-      <RaModalOverlay data-mimimi-modal-overlay {...modalProps}>
+      <RaModalOverlay {...modalProps}>
         <ModalSlot asChild>
-          <RaModal data-mimimi-modal>
+          <RaModal>
             <DialogContentSlot asChild {...styleProps}>
               <RaDialog ref={ref}>{children}</RaDialog>
             </DialogContentSlot>
