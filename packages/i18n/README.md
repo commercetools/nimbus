@@ -49,6 +49,17 @@ Examples:
 
 ### Adding New Messages
 
+TL;DR version:
+
+- Create a new `.i18n.ts` file in the component's directory and add the new
+  message(s) to it.
+- Be specific with the message description, these are used to help translators
+  understand the context of the message.
+- Run `pnpm extract-intl` to update the `core.json` file.
+- Test in Storybook to ensure the locale is working as expected.
+
+---
+
 1. Create or update a component's `.i18n.ts` file:
 
 ```typescript
