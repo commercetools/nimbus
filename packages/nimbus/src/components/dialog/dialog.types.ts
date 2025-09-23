@@ -3,6 +3,7 @@ import { type RecipeVariantProps } from "@chakra-ui/react";
 import { dialogSlotRecipe } from "./dialog.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
 import type { DialogModalOverlaySlotProps } from "./dialog.slots";
+import type { IconButtonProps } from "@/components";
 
 /**
  * Props for the Dialog.Root component
@@ -159,7 +160,7 @@ export interface DialogTitleProps extends ComponentProps<"h2"> {
  * Displays an IconButton with an X icon by default.
  */
 export interface DialogCloseTriggerProps
-  extends Omit<ComponentProps<"button">, "value" | "onFocus" | "onBlur"> {
+  extends Omit<IconButtonProps, "aria-label"> {
   /**
    * Accessible label for the close button
    * @default "Close dialog"
