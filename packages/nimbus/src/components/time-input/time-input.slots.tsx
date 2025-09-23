@@ -21,6 +21,12 @@ interface TimeInputRecipeProps extends RecipeProps<"div">, UnstyledProp {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TimeInputRootProps
   extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface TimeInputLeadingElementProps
+  extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface TimeInputTrailingElementProps
+  extends HTMLChakraProps<"div", TimeInputRecipeProps> {}
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -35,6 +41,16 @@ export const TimeInputRootSlot = withProvider<
   HTMLDivElement,
   TimeInputRootProps
 >("div", "root");
+
+export const TimeInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  TimeInputLeadingElementProps
+>("div", "leadingElement");
+
+export const TimeInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  TimeInputTrailingElementProps
+>("div", "trailingElement");
 
 /**
  * Slot component for the TimeField part of the TimeInput.

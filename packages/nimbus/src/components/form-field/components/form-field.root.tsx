@@ -178,8 +178,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                 as={ErrorOutline}
                 display="inline-flex"
                 boxSize="400"
-                verticalAlign="text-bottom"
-                mr="100"
+                verticalAlign="middle"
               />
               {context.error}
             </FormFieldErrorSlot>

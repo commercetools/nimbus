@@ -12,6 +12,8 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,
+  NumberInputLeadingElementSlot,
+  NumberInputTrailingElementSlot,
   NumberInputIncrementButtonSlot,
   NumberInputDecrementButtonSlot,
 } from "./number-input.slots";
@@ -26,7 +28,13 @@ import messages from "./number-input.i18n";
  * The locale for formatting comes from React Aria's I18nProvider context.
  */
 export const NumberInput = (props: NumberInputProps) => {
-  const { size, ref: forwardedRef, ...restProps } = props;
+  const {
+    size,
+    leadingElement,
+    trailingElement,
+    ref: forwardedRef,
+    ...restProps
+  } = props;
   const { locale } = useLocale();
   const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
@@ -59,11 +67,17 @@ export const NumberInput = (props: NumberInputProps) => {
 
   return (
     <NumberInputRootSlot
+      className={props?.className as string}
+      {...stateProps}
       {...recipeProps}
       {...styleProps}
       size={size}
-      className={props?.className as string}
     >
+      {leadingElement && (
+        <NumberInputLeadingElementSlot>
+          {leadingElement}
+        </NumberInputLeadingElementSlot>
+      )}
       <NumberInputInputSlot
         ref={ref}
         {...inputProps}
@@ -71,6 +85,11 @@ export const NumberInput = (props: NumberInputProps) => {
         // https://github.com/adobe/react-spectrum/issues/4744
         name={props.name}
       />
+      {trailingElement && (
+        <NumberInputTrailingElementSlot>
+          {trailingElement}
+        </NumberInputTrailingElementSlot>
+      )}
       <Box
         position="absolute"
         top="0"

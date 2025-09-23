@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Stack } from "@/components";
+import { Box, Stack, Icon } from "@/components";
 import { PasswordInput } from "./password-input";
 import { useState } from "react";
 import { within, expect, userEvent } from "storybook/test";
 import { Text } from "@/components";
+import { AddReaction } from "@commercetools/nimbus-icons";
 
 export default {
   title: "Components/PasswordInput",
@@ -72,6 +73,32 @@ export const WithSizes: Story = {
       </Box>
       <Box>
         <PasswordInput size="md" {...args} />
+      </Box>
+    </Stack>
+  ),
+};
+
+export const WithLeadingElement: Story = {
+  args: {
+    ["aria-label"]: "Enter your password",
+    placeholder: "Password",
+    leadingElement: <Icon as={AddReaction} />,
+  },
+  render: (args) => (
+    <Stack gap="600">
+      Sizes
+      <Box>
+        <PasswordInput size="sm" {...args} />
+      </Box>
+      <Box>
+        <PasswordInput size="md" {...args} />
+      </Box>
+      Variants
+      <Box>
+        <PasswordInput variant="solid" {...args} />
+      </Box>
+      <Box>
+        <PasswordInput variant="ghost" {...args} />
       </Box>
     </Stack>
   ),

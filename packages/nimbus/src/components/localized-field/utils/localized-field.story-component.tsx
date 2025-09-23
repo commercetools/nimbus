@@ -7,7 +7,14 @@ import type {
   LocalizedString,
   LocalizedCurrency,
 } from "../localized-field.types";
-import { Accordion, Checkbox, Group, Text, Stack } from "@/components";
+import {
+  Accordion,
+  Checkbox,
+  Group,
+  Text,
+  Stack,
+  Separator,
+} from "@/components";
 
 export type LocalizedFieldTypes = "text" | "multiLine" | "richText" | "money";
 
@@ -291,9 +298,9 @@ export function LocalizedFieldStoryComponent(
               ? `${props.name}.${type}`
               : undefined;
 
-          console.log(state[type]);
           return (
-            <Stack key={type}>
+            <Stack key={type} role="group" aria-label={`${type} group`}>
+              <Separator />
               <Accordion.Root size="sm">
                 <Accordion.Item>
                   <Accordion.Header>{`${type} input controls`}</Accordion.Header>

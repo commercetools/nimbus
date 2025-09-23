@@ -22,9 +22,6 @@ export const moneyInputRecipe = defineSlotRecipe({
         boxShadow:
           "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
       },
-      "& .nimbus-number-input__root > input": {
-        borderLeftRadius: "0",
-      },
     },
     container: {
       display: "inline-flex",
@@ -48,6 +45,7 @@ export const moneyInputRecipe = defineSlotRecipe({
       alignItems: "center",
     },
     amountInput: {
+      borderLeftRadius: "0",
       // Ensure focus ring is visible above currency select
       _focusWithin: {
         zIndex: 2,

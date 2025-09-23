@@ -9,4 +9,12 @@ export const layerStyles: LayerStylesType = defineLayerStyles({
       cursor: "not-allowed",
     },
   },
+  focusRing: {
+    value: {
+      outlineWidth: "var(--focus-ring-width)",
+      outlineColor: "var(--focus-ring-color)",
+      outlineStyle: "var(--focus-ring-style)",
+      outlineOffset: "var(--focus-ring-offset)",
+    },
+  },
 });

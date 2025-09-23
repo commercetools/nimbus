@@ -6,4 +6,5 @@ import type { TextInputProps } from "../text-input/text-input.types";
  * We want to keep this as an explicit interface to allow for future additions
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PasswordInputProps extends Omit<TextInputProps, "type"> {}
+export interface PasswordInputProps
+  extends Omit<TextInputProps, "type" | "trailingElement"> {}
