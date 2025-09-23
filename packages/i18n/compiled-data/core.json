@@ -50,7 +50,7 @@
   "Nimbus.LocalizedField.hideCurrencies": [
     {
       "type": 0,
-      "value": "Hide all Currencies"
+      "value": "Hide all currencies"
     }
   ],
   "Nimbus.LocalizedField.hideLanguages": [
@@ -74,7 +74,7 @@
   "Nimbus.LocalizedField.showCurrencies": [
     {
       "type": 0,
-      "value": "Show all Currencies"
+      "value": "Show all currencies"
     }
   ],
   "Nimbus.LocalizedField.showLanguages": [

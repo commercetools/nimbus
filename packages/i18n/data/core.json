@@ -33,7 +33,7 @@
   },
   "Nimbus.LocalizedField.hideCurrencies": {
     "developer_comment": "Label for hiding all currency inputs when toggle button is pressed",
-    "string": "Hide all Currencies"
+    "string": "Hide all currencies"
   },
   "Nimbus.LocalizedField.hideLanguages": {
     "developer_comment": "Label for hiding all language inputs when toggle button is pressed",
@@ -49,7 +49,7 @@
   },
   "Nimbus.LocalizedField.showCurrencies": {
     "developer_comment": "Label for showing all currency inputs when toggle button is pressed",
-    "string": "Show all Currencies"
+    "string": "Show all currencies"
   },
   "Nimbus.LocalizedField.showLanguages": {
     "developer_comment": "Label for showing all language inputs when toggle button is pressed",

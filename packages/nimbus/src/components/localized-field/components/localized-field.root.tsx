@@ -12,7 +12,13 @@ import {
   Language,
   Payments,
 } from "@commercetools/nimbus-icons";
-import { Box, Button, IconButton, type TCurrencyCode } from "@/components";
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  type TCurrencyCode,
+} from "@/components";
 import { Popover } from "../../popover";
 import messages from "../localized-field.i18n";
 import {
@@ -168,46 +174,33 @@ export const LocalizedField = ({
       name={name}
     >
       {label && (
-        <LocalizedFieldLabelSlot {...labelProps}>
-          <Box as="span">{label}</Box>
-          {isRequired && <sup aria-hidden="true">*</sup>}
-          {
-            /**TODO: should this component be reusable between the FormField and here? */
-            hint && (
-              <RaDialogTrigger>
-                <Box
-                  as="span"
-                  display="inline-block"
-                  position="relative"
-                  width="1ch"
-                  height="1ch"
-                  ml="200"
-                >
-                  <IconButton
-                    aria-label={formatMessage(messages.infoBoxTriggerAriaLabel)}
-                    className="nimbus-localized-field__info-box-trigger"
-                    size="2xs"
-                    tone="info"
-                    variant="link"
-                    position="absolute"
-                    top="50%"
-                    right="50%"
-                    transform="translate(50%, -50%)"
-                  >
-                    <HelpOutline />
-                  </IconButton>
-                </Box>
-                <Popover padding={0}>
-                  <LocalizedFieldInfoDialogSlot asChild>
-                    <RaDialog>
-                      <Box p="300">{hint}</Box>
-                    </RaDialog>
-                  </LocalizedFieldInfoDialogSlot>
-                </Popover>
-              </RaDialogTrigger>
-            )
-          }
-        </LocalizedFieldLabelSlot>
+        <Stack direction="row" gap="0">
+          <LocalizedFieldLabelSlot {...labelProps}>
+            {label}
+            {isRequired && <sup aria-hidden="true">*</sup>}
+          </LocalizedFieldLabelSlot>
+          {hint && (
+            <RaDialogTrigger>
+              <IconButton
+                aria-label={formatMessage(messages.infoBoxTriggerAriaLabel)}
+                aria-describedby={labelProps.id}
+                size="2xs"
+                tone="info"
+                variant="link"
+              >
+                <HelpOutline />
+              </IconButton>
+
+              <Popover padding={0}>
+                <LocalizedFieldInfoDialogSlot asChild>
+                  <RaDialog>
+                    <Box p="300">{hint}</Box>
+                  </RaDialog>
+                </LocalizedFieldInfoDialogSlot>
+              </Popover>
+            </RaDialogTrigger>
+          )}
+        </Stack>
       )}
       <LocalizedFieldFieldsContainerSlot id={localeFieldsContainerId}>
         <RaCollection items={allDataForFields}>
@@ -250,8 +243,8 @@ export const LocalizedField = ({
       {!displayAllLocalesOrCurrencies && localizationKeys.length > 1 && (
         <LocalizedFieldToggleButtonContainerSlot>
           <Button
-            aria-labelledby={labelProps.id}
             aria-controls={localeFieldsContainerId}
+            aria-describedby={labelProps.id}
             aria-expanded={expanded}
             onPress={() => setExpanded(!expanded)}
             isDisabled={

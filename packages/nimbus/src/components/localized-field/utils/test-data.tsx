@@ -36,6 +36,8 @@ export const baseMoneyContextFields = {
   error: "that value is wrong",
 };
 
+export const baseLocales = ["en", "zh-Hans", "de"];
+
 export const baseLocaleData: LocalizedStoryData = {
   values: {
     en: "hello",
@@ -63,6 +65,8 @@ export const baseLocaleData: LocalizedStoryData = {
     de: "Das ist sicher kein Gruß",
   },
 };
+
+export const baseCurrencies = ["USD", "CNY", "EUR"];
 
 export const baseCurrencyData: LocalizedStoryData = {
   values: {

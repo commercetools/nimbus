@@ -394,6 +394,7 @@ export function LocalizedFieldStoryComponent(
                 id={id}
                 name={name}
                 type={type} // text is the default type
+                label={`${fieldProps?.label} - ${type}`}
                 defaultLocaleOrCurrency={
                   fieldProps?.defaultLocaleOrCurrency ||
                   (type === "money" ? "USD" : "en")

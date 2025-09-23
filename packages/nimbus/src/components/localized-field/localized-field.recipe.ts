@@ -46,6 +46,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       color: "neutral.11",
       fontSize: "var(--localized-field-font-size)",
       lineHeight: "var(--localized-field-line-height)",
+      position: "relative",
     },
     infoDialog: {
       bg: "neutral.1",

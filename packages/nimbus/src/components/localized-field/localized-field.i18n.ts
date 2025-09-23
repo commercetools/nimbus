@@ -27,12 +27,12 @@ export default defineMessages({
     id: "Nimbus.LocalizedField.showCurrencies",
     description:
       "Label for showing all currency inputs when toggle button is pressed",
-    defaultMessage: "Show all Currencies",
+    defaultMessage: "Show all currencies",
   },
   hideCurrencies: {
     id: "Nimbus.LocalizedField.hideCurrencies",
     description:
       "Label for hiding all currency inputs when toggle button is pressed",
-    defaultMessage: "Hide all Currencies",
+    defaultMessage: "Hide all currencies",
   },
 });

@@ -1,9 +1,16 @@
-// TODO: remove this once out of dev
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { LocalizedField, type LocalizedFieldChangeEvent } from "./index";
-import { baseStoryProps } from "./utils/test-data";
+import { within } from "storybook/test";
+import type { TValue } from "@/components";
+import { LocalizedField } from "./index";
+import { baseStoryProps, baseLocales, baseCurrencies } from "./utils/test-data";
+import {
+  checkFieldIsCollapsed,
+  getFieldContainerForType,
+  toggleExpandField,
+  checkFieldIsExpanded,
+  checkAndUpdateLocaleFieldValue,
+  checkAndUpdateRichTextLocaleFieldValue,
+} from "./utils/test-utils";
 import { LocalizedFieldStoryComponent } from "./utils/localized-field.story-component";
 
 const meta: Meta<typeof LocalizedField> = {
@@ -32,117 +39,132 @@ export const Base: Story = {
   render: () => {
     return <LocalizedFieldStoryComponent {...baseStoryProps} />;
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const textField = await getFieldContainerForType(canvas, "text");
+    await step("Text Field", async () => {
+      await step(
+        "Field mounts in a collapsed state by default",
+        async () => await checkFieldIsCollapsed(textField, "text", "en")
+      );
+      await step("Field expands to display multiple locales", async () => {
+        await toggleExpandField(textField, "text");
+        await checkFieldIsExpanded(textField, "text", baseLocales, "en");
+      });
+      await step(
+        "Field supports displaying and updating multiple locales",
+        async () => {
+          for await (const locale of baseLocales) {
+            const currentValue = baseStoryProps.text.fieldData.values[
+              locale
+            ] as string;
+            const placeholderValue =
+              baseStoryProps.text.fieldData.placeholders?.[locale];
+            await checkAndUpdateLocaleFieldValue(
+              textField,
+              locale,
+              currentValue,
+              placeholderValue
+            );
+          }
+        }
+      );
+    });
+    const multiLineField = await getFieldContainerForType(canvas, "multiLine");
+    await step("MultiLine Field", async () => {
+      await step(
+        "Field mounts in a collapsed state by default",
+        async () =>
+          await checkFieldIsCollapsed(multiLineField, "multiLine", "en")
+      );
+      await step("Field expands to display multiple locales", async () => {
+        await toggleExpandField(multiLineField, "multiLine");
+        await checkFieldIsExpanded(
+          multiLineField,
+          "multiLine",
+          baseLocales,
+          "en"
+        );
+      });
+      await step(
+        "Field supports displaying and updating multiple locales",
+        async () => {
+          for await (const locale of baseLocales) {
+            const currentValue = baseStoryProps.multiLine.fieldData.values[
+              locale
+            ] as string;
+            const placeholderValue =
+              baseStoryProps.multiLine.fieldData.placeholders?.[locale];
+            await checkAndUpdateLocaleFieldValue(
+              multiLineField,
+              locale,
+              currentValue,
+              placeholderValue
+            );
+          }
+        }
+      );
+    });
+    const richTextField = await getFieldContainerForType(canvas, "richText");
+    await step("RichText Field", async () => {
+      await step(
+        "Field mounts in a collapsed state by default",
+        async () => await checkFieldIsCollapsed(richTextField, "richText", "en")
+      );
+      await step("Field expands to display multiple locales", async () => {
+        await toggleExpandField(richTextField, "richText");
+        await checkFieldIsExpanded(
+          richTextField,
+          "richText",
+          baseLocales,
+          "en"
+        );
+      });
+      await step(
+        "Field supports displaying and updating multiple locales",
+        async () => {
+          for await (const locale of baseLocales) {
+            const currentValue = baseStoryProps.richText.fieldData.values[
+              locale
+            ] as string;
+            await checkAndUpdateRichTextLocaleFieldValue(
+              richTextField,
+              locale,
+              currentValue
+            );
+          }
+        }
+      );
+    });
+    const moneyField = await getFieldContainerForType(canvas, "money");
+    await step("Money Field", async () => {
+      await step(
+        "Field mounts in a collapsed state by default",
+        async () => await checkFieldIsCollapsed(moneyField, "money", "USD")
+      );
+      await step("Field expands to display multiple locales", async () => {
+        await toggleExpandField(moneyField, "money");
+        await checkFieldIsExpanded(moneyField, "money", baseCurrencies, "USD");
+      });
+      await step(
+        "Field supports displaying and updating multiple locales",
+        async () => {
+          for await (const currency of baseCurrencies) {
+            const currentValue = (
+              baseStoryProps.money.fieldData.values[currency] as TValue
+            ).amount;
+            const placeholderValue =
+              baseStoryProps.money.fieldData.placeholders?.[currency];
+            await checkAndUpdateLocaleFieldValue(
+              moneyField,
+              currency,
+              currentValue,
+              placeholderValue
+            );
+          }
+        }
+      );
+    });
+    await step("Field Expansion and Collapse", async () => {});
+  },
 };
-
-// export const MultiLine: Story = {
-//   render: () => {
-//     const [localeValues, setLocaleValues] = useState(baseLocaleData.values);
-//     const [touched, setTouched] = useState(false);
-//     const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
-//       setTouched(true);
-//       setLocaleValues({
-//         ...localeValues,
-//         [String(e.target.locale)]: e.target.value,
-//       });
-//     };
-//     return (
-//       <LocalizedField
-//         type="multiLine"
-//         name="localize greetings"
-//         id="greetingsfield"
-//         defaultLocaleOrCurrency="en"
-//         touched={touched}
-//         onChange={handleSetLocalizedValue}
-//         onFocus={() => setTouched(true)}
-//         valuesByLocaleOrCurrency={localeValues}
-//         placeholdersByLocaleOrCurrency={baseLocaleData.placeholders}
-//         // descriptionsByLocaleOrCurrency={baseLocaleData.descriptions}
-//         errorsByLocaleOrCurrency={baseLocaleData.errors}
-//         // warningsByLocaleOrCurrency={baseLocaleData.warnings}
-//         // warningsByLocaleOrCurrency={baseWarnings}
-//         label="greetings"
-//         hint="its a greeting"
-//         description="a polite word or sign of welcome or recognition."
-//         // warning="youve been warned"
-//         // error="youre wrong"
-//       />
-//     );
-//   },
-// };
-
-// export const RichText: Story = {
-//   render: () => {
-//     const [localeValues, setLocaleValues] = useState(baseLocaleData.values);
-//     const [touched, setTouched] = useState(false);
-//     const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
-//       setTouched(true);
-//       setLocaleValues({
-//         ...localeValues,
-//         [String(e.target.locale)]: e.target.value,
-//       });
-//     };
-//     return (
-//       <LocalizedField
-//         type="richText"
-//         name="localize greetings"
-//         id="greetingsfield"
-//         defaultLocaleOrCurrency="en"
-//         touched={touched}
-//         onChange={handleSetLocalizedValue}
-//         onFocus={() => setTouched(true)}
-//         valuesByLocaleOrCurrency={localeValues}
-//         placeholdersByLocaleOrCurrency={baseLocaleData.placeholders}
-//         // descriptionsByLocaleOrCurrency={baseLocaleData.descriptions}
-//         errorsByLocaleOrCurrency={baseLocaleData.errors}
-//         // warningsByLocaleOrCurrency={baseLocaleData.warnings}
-//         // warningsByLocaleOrCurrency={baseWarnings}
-//         label="greetings"
-//         hint="its a greeting"
-//         description="a polite word or sign of welcome or recognition."
-//         // warning="youve been warned"
-//         // error="youre wrong"
-//       />
-//     );
-//   },
-// };
-
-// export const Money: Story = {
-//   render: () => {
-//     const [currencyValues, setCurrencyValues] = useState(
-//       baseCurrencyData.values
-//     );
-//     const [touched, setTouched] = useState(false);
-//     const handleSetLocalizedValue = (e: LocalizedFieldChangeEvent) => {
-//       console.log(e);
-//       setTouched(true);
-//       setCurrencyValues({
-//         ...currencyValues,
-//         [String(e.target.currency)]: {
-//           currencyCode: e.target.currency,
-//           amount: e.target.value,
-//         },
-//       });
-//     };
-//     return (
-//       <LocalizedField
-//         type="money"
-//         name="localize product price"
-//         id="productPriceField"
-//         defaultLocaleOrCurrency="EUR"
-//         touched={touched}
-//         onChange={handleSetLocalizedValue}
-//         onFocus={() => setTouched(true)}
-//         valuesByLocaleOrCurrency={currencyValues}
-//         placeholdersByLocaleOrCurrency={baseCurrencyData.placeholders}
-//         descriptionsByLocaleOrCurrency={baseCurrencyData.descriptions}
-//         // errorsByLocaleOrCurrency={baseCurrencyData.errors}
-//         // warningsByLocaleOrCurrency={baseCurrencyData.warnings}
-//         label="Price"
-//         hint="whatever price you want this product to have, enter it here"
-//         description="Price of the product"
-//         // warning="youve been warned"
-//         // error="that value is wrong"
-//       />
-//     );
-//   },
-// };
