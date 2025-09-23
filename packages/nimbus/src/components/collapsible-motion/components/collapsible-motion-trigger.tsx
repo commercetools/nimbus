@@ -1,6 +1,5 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { mergeProps } from "react-aria";
-import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useCollapsibleMotionContext } from "./collapsible-motion-context";
 import { CollapsibleMotionTriggerSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionTriggerProps } from "../collapsible-motion.types";
@@ -17,11 +16,8 @@ export const CollapsibleMotionTrigger = forwardRef<
 >(({ children, onClick, ...props }, forwardedRef) => {
   const { buttonProps, isDisabled } = useCollapsibleMotionContext();
 
-  // Separate Chakra UI style props from functional props
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   // Use mergeProps to properly compose event handlers like React Aria does
-  const componentProps = mergeProps(styleProps, functionalProps, buttonProps, {
+  const componentProps = mergeProps(props, buttonProps, {
     disabled: isDisabled,
     onClick, // Consumer's custom onClick handler
   });
