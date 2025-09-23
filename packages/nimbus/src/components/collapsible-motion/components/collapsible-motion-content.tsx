@@ -1,7 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useCollapsibleMotionContext } from "./collapsible-motion-context";
 import { CollapsibleMotionContentSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionContentProps } from "../collapsible-motion.types";
@@ -18,21 +17,12 @@ export const CollapsibleMotionContent = forwardRef<
 >(({ children, ...props }, forwardedRef) => {
   const { panelProps, panelRef } = useCollapsibleMotionContext();
 
-  // Separate Chakra UI style props from functional props
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   // Create a local ref and merge with both panelRef (for React Aria) and forwardedRef (for user)
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, panelRef, forwardedRef));
 
   return (
-    <CollapsibleMotionContentSlot
-      ref={ref}
-      {...panelProps}
-      {...styleProps}
-      {...functionalProps}
-      asChild
-    >
+    <CollapsibleMotionContentSlot ref={ref} {...panelProps} {...props} asChild>
       <div>{children}</div>
     </CollapsibleMotionContentSlot>
   );
