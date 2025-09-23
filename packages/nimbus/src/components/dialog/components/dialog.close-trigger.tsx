@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { Button as RaButton } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { Close } from "@commercetools/nimbus-icons";

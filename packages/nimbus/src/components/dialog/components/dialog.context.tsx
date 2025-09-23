@@ -1,10 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 import type { DialogRootProps } from "../dialog.types";
 
 /**
  * Context value containing dialog configuration passed from Root to child components
  */
-export interface DialogContextValue extends DialogRootProps {}
+export type DialogContextValue = DialogRootProps;
 
 export const DialogContext = createContext<DialogContextValue | undefined>(
   undefined
