@@ -108,6 +108,48 @@ export const Controlled: Story = {
 };
 
 /**
+ * Controlled example where no trigger is supplied
+ */
+export const ControlledNoTrigger: Story = {
+  render: () => {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    return (
+      <div>
+        <Button onClick={() => setIsExpanded(!isExpanded)} mb={4}>
+          {isExpanded ? "Collapse" : "Expand"} Content (External Control)
+        </Button>
+        <CollapsibleMotion.Root
+          isExpanded={isExpanded}
+          onExpandedChange={setIsExpanded}
+        >
+          <CollapsibleMotion.Content>
+            <Box p={4} bg="blue.50" borderRadius="md">
+              <Text>
+                This is controlled collapsible content. The parent component
+                manages the expanded state and can react to changes.
+              </Text>
+            </Box>
+          </CollapsibleMotion.Content>
+        </CollapsibleMotion.Root>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify controlled state works with external button
+    const externalButton = canvas.getByText(/Expand Content/);
+    await userEvent.click(externalButton);
+
+    //expect content to be visible
+    expect(
+      canvas.getByText(/This is controlled collapsible content/)
+    ).toBeVisible();
+  },
+};
+
+/**
  * Example with custom minimum height when collapsed
  *
  * TODO: This does not work yet but is here as a reminder. We need to wait for RAC to release support for this PR: https://github.com/adobe/react-spectrum/pull/8867
