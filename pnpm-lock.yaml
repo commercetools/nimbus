@@ -69,8 +69,8 @@ catalogs:
       specifier: ^9.1.5
       version: 9.1.5
     '@storybook/addon-vitest':
-      specifier: ^9.1.5
-      version: 9.1.5
+      specifier: ^9.1.8
+      version: 9.1.8
     '@storybook/react-vite':
       specifier: ^9.1.5
       version: 9.1.5
@@ -538,7 +538,7 @@ importers:
         version: 9.1.5(@types/react@19.1.8)(storybook@9.1.5(@testing-library/dom@10.4.0)(msw@2.7.0(@types/node@24.3.1)(typescript@5.9.2))(prettier@3.6.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0)))
       '@storybook/addon-vitest':
         specifier: catalog:tooling
-        version: 9.1.5(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.1.5(@testing-library/dom@10.4.0)(msw@2.7.0(@types/node@24.3.1)(typescript@5.9.2))(prettier@3.6.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0)))(vitest@3.2.4)
+        version: 9.1.8(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.1.5(@testing-library/dom@10.4.0)(msw@2.7.0(@types/node@24.3.1)(typescript@5.9.2))(prettier@3.6.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0)))(vitest@3.2.4)
       '@storybook/react-vite':
         specifier: catalog:tooling
         version: 9.1.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.50.1)(storybook@9.1.5(@testing-library/dom@10.4.0)(msw@2.7.0(@types/node@24.3.1)(typescript@5.9.2))(prettier@3.6.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0)))(typescript@5.9.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0))
@@ -2199,12 +2199,12 @@ packages:
     peerDependencies:
       storybook: ^9.1.5
 
-  '@storybook/addon-vitest@9.1.5':
-    resolution: {integrity: sha512-4Hb6lcQvy9bxBt74PEZyLJB1hkn1P7hmSf/cw4JXEMe590Pixwk/9qw3eqqVSrDy5umysPuZn1h5sdk/AI11hA==}
+  '@storybook/addon-vitest@9.1.8':
+    resolution: {integrity: sha512-F1AgGpIuDxrGXErMRTfF9zUXvGSUgQPbAXggs74p9vz0855nlRMEny1cYY9BtktVr4JGyq+Mz2774hCt9HR3KQ==}
     peerDependencies:
       '@vitest/browser': ^3.0.0
       '@vitest/runner': ^3.0.0
-      storybook: ^9.1.5
+      storybook: ^9.1.8
       vitest: ^3.0.0
     peerDependenciesMeta:
       '@vitest/browser':
@@ -8620,7 +8620,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@storybook/addon-vitest@9.1.5(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.1.5(@testing-library/dom@10.4.0)(msw@2.7.0(@types/node@24.3.1)(typescript@5.9.2))(prettier@3.6.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0)))(vitest@3.2.4)':
+  '@storybook/addon-vitest@9.1.8(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.1.5(@testing-library/dom@10.4.0)(msw@2.7.0(@types/node@24.3.1)(typescript@5.9.2))(prettier@3.6.2)(vite@7.1.5(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.5)(yaml@2.7.0)))(vitest@3.2.4)':
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/icons': 1.4.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
