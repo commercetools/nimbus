@@ -5,7 +5,9 @@ export const collapsibleMotionSlotRecipe = defineSlotRecipe({
   className: "collapsibleMotion",
   base: {
     root: {},
-    trigger: {},
+    trigger: {
+      cursor: "pointer",
+    },
     // Content slot - basic container
     content: {
       // TODO: No animation styles - will be implemented later once RAC releases support for this PR: https://github.com/adobe/react-spectrum/pull/8867

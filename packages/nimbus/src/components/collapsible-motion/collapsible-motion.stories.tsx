@@ -29,11 +29,11 @@ type Story = StoryObj<typeof meta>;
 export const Basic: Story = {
   render: () => (
     <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger>
-        <Button mb={4}>Toggle Content</Button>
+      <CollapsibleMotion.Trigger asChild>
+        <Button>Toggle Content</Button>
       </CollapsibleMotion.Trigger>
       <CollapsibleMotion.Content>
-        <Box p={4} bg="gray.50" borderRadius="md">
+        <Box>
           <Text>
             This is collapsible content that will smoothly expand and collapse.
             The animation uses CSS transitions for optimal performance.
@@ -70,18 +70,18 @@ export const Controlled: Story = {
 
     return (
       <div>
-        <Button onClick={() => setIsExpanded(!isExpanded)} mb={4}>
+        <Button onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? "Collapse" : "Expand"} Content (External Control)
         </Button>
         <CollapsibleMotion.Root
           isExpanded={isExpanded}
           onExpandedChange={setIsExpanded}
         >
-          <CollapsibleMotion.Trigger>
-            <Button mb={4}>Toggle Content (Internal Control)</Button>
+          <CollapsibleMotion.Trigger asChild>
+            <Button>Toggle Content (Internal Control)</Button>
           </CollapsibleMotion.Trigger>
           <CollapsibleMotion.Content>
-            <Box p={4} bg="blue.50" borderRadius="md">
+            <Box>
               <Text>
                 This is controlled collapsible content. The parent component
                 manages the expanded state and can react to changes.
@@ -116,7 +116,7 @@ export const ControlledNoTrigger: Story = {
 
     return (
       <div>
-        <Button onClick={() => setIsExpanded(!isExpanded)} mb={4}>
+        <Button onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? "Collapse" : "Expand"} Content (External Control)
         </Button>
         <CollapsibleMotion.Root
@@ -124,7 +124,7 @@ export const ControlledNoTrigger: Story = {
           onExpandedChange={setIsExpanded}
         >
           <CollapsibleMotion.Content>
-            <Box p={4} bg="blue.50" borderRadius="md">
+            <Box>
               <Text>
                 This is controlled collapsible content. The parent component
                 manages the expanded state and can react to changes.
@@ -157,12 +157,12 @@ export const ControlledNoTrigger: Story = {
 export const WithMinHeight: Story = {
   render: () => (
     <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger>
-        <Button mb={4}>Toggle Content</Button>
+      <CollapsibleMotion.Trigger asChild>
+        <Button>Toggle Content</Button>
       </CollapsibleMotion.Trigger>
       <CollapsibleMotion.Content>
-        <Box p={4} border="2px solid pink" minH="200px">
-          <Text mb={4}>
+        <Box border="2px solid pink">
+          <Text>
             This content has a minimum height of 60px when collapsed, so it's
             never completely hidden.
           </Text>
@@ -193,11 +193,11 @@ export const WithMinHeight: Story = {
 export const Disabled: Story = {
   render: () => (
     <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>
-      <CollapsibleMotion.Trigger>
-        <Button mb={4}>Toggle Content (Disabled)</Button>
+      <CollapsibleMotion.Trigger asChild>
+        <Button>Toggle Content (Disabled)</Button>
       </CollapsibleMotion.Trigger>
       <CollapsibleMotion.Content>
-        <Box p={4} bg="red.50" borderRadius="md">
+        <Box>
           <Text>
             This content is disabled and cannot be expanded or collapsed.
           </Text>
@@ -237,10 +237,9 @@ export const DynamicContent: Story = {
 
     return (
       <div>
-        <Box mb="16px">
+        <Box>
           <Button
             onClick={() => setContentLength("short")}
-            mr={2}
             variant={contentLength === "short" ? "solid" : "outline"}
             size="xs"
           >
@@ -248,7 +247,6 @@ export const DynamicContent: Story = {
           </Button>
           <Button
             onClick={() => setContentLength("medium")}
-            mr={2}
             variant={contentLength === "medium" ? "solid" : "outline"}
             size="xs"
           >
@@ -264,11 +262,11 @@ export const DynamicContent: Story = {
         </Box>
 
         <CollapsibleMotion.Root defaultExpanded={true}>
-          <CollapsibleMotion.Trigger>
-            <Button mb={4}>Toggle Dynamic Content</Button>
+          <CollapsibleMotion.Trigger asChild>
+            <Button>Toggle Dynamic Content</Button>
           </CollapsibleMotion.Trigger>
           <CollapsibleMotion.Content>
-            <Box p={4} bg="orange.50" borderRadius="md">
+            <Box>
               <Text>{contentMap[contentLength]}</Text>
             </Box>
           </CollapsibleMotion.Content>
@@ -296,20 +294,40 @@ export const DynamicContent: Story = {
   },
 };
 
+// Test case for non-button trigger
+export const NonButtonTrigger: Story = {
+  render: () => (
+    <CollapsibleMotion.Root defaultExpanded={false}>
+      <CollapsibleMotion.Trigger>
+        <pre>Non-button trigger</pre>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Text>This is the content of the collapsible motion.</Text>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByText(/Non-button trigger/);
+    await userEvent.click(button);
+    expect(
+      canvas.getByText(/This is the content of the collapsible motion/)
+    ).toBeVisible();
+  },
+};
+
 /**
  * Accessibility test - demonstrates proper ARIA attributes and focus management
  */
 export const AccessibilityTest: Story = {
   render: () => (
     <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger>
-        <Button mb={4}>Accessible Toggle Button</Button>
+      <CollapsibleMotion.Trigger asChild>
+        <Button>Accessible Toggle Button</Button>
       </CollapsibleMotion.Trigger>
       <CollapsibleMotion.Content>
-        <Box p={4} bg="teal.50" borderRadius="md">
-          <Text mb={4}>
-            This example demonstrates proper accessibility features:
-          </Text>
+        <Box>
+          <Text>This example demonstrates proper accessibility features:</Text>
           <ul>
             <li>Proper ARIA attributes (aria-expanded, aria-controls)</li>
             <li>Focus management for screen readers</li>

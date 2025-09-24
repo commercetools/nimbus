@@ -111,6 +111,11 @@ export interface CollapsibleMotionTriggerProps
    * The trigger element content (typically text or icons)
    */
   children: React.ReactNode;
+  /**
+   * Whether to render as a child element (use children directly as the trigger)
+   * @default false
+   */
+  asChild?: boolean;
 }
 
 /**
