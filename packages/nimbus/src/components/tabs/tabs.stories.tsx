@@ -1,5 +1,6 @@
 import { Tabs } from "./tabs";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -10,9 +11,9 @@ const meta: Meta<typeof Tabs.Root> = {
   title: "components/Tabs",
   component: Tabs.Root,
   argTypes: {
-    direction: {
+    orientation: {
       control: "select",
-      options: ["horizontal", "vertical"],
+      options: ["horizontal", "vertical left", "vertical right"],
       description: "Direction of the tabs layout",
     },
     placement: {
@@ -92,18 +93,106 @@ const simpleTabs = [
 
 export const Base: Story = {
   args: {
-    direction: "horizontal",
-    placement: "start",
+    orientation: "horizontal",
     size: "md",
+    "data-testid": "base-tabs",
+    onSelectionChange: fn(),
   },
   render: (args) => <Tabs {...args} tabs={simpleTabs} />,
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders tabs component with correct structure", async () => {
+      const tabsContainer = canvas.getByTestId("base-tabs");
+      await expect(tabsContainer).toBeInTheDocument();
+
+      // Check that all tabs are rendered
+      const tab1 = canvas.getByRole("tab", { name: "Founding of Rome" });
+      const tab2 = canvas.getByRole("tab", { name: "Monarchy and Republic" });
+      const tab3 = canvas.getByRole("tab", { name: "Empire" });
+
+      await expect(tab1).toBeInTheDocument();
+      await expect(tab2).toBeInTheDocument();
+      await expect(tab3).toBeInTheDocument();
+    });
+
+    await step("First tab is selected by default", async () => {
+      const firstTab = canvas.getByRole("tab", { name: "Founding of Rome" });
+      await expect(firstTab).toHaveAttribute("aria-selected", "true");
+
+      // Check that first panel is visible
+      const firstPanel = canvas.getByRole("tabpanel");
+      await expect(firstPanel).toBeInTheDocument();
+      await expect(firstPanel).toHaveTextContent(
+        "Arma virumque cano, Troiae qui primus ab oris."
+      );
+    });
+
+    await step("Can switch tabs by clicking", async () => {
+      const secondTab = canvas.getByRole("tab", {
+        name: "Monarchy and Republic",
+      });
+
+      await userEvent.click(secondTab);
+
+      await expect(secondTab).toHaveAttribute("aria-selected", "true");
+
+      // Check that second panel content is now visible
+      const activePanel = canvas.getByRole("tabpanel");
+      await expect(activePanel).toHaveTextContent(
+        "Senatus Populusque Romanus."
+      );
+
+      // Verify selection change callback was called
+      await expect(args.onSelectionChange).toHaveBeenCalled();
+    });
+
+    await step("Supports keyboard navigation", async () => {
+      const firstTab = canvas.getByRole("tab", { name: "Founding of Rome" });
+
+      // Focus first tab and navigate with arrow keys
+      firstTab.focus();
+      await expect(firstTab).toHaveFocus();
+
+      // Navigate to next tab with arrow key
+      await userEvent.keyboard("{ArrowRight}");
+      const secondTab = canvas.getByRole("tab", {
+        name: "Monarchy and Republic",
+      });
+      await expect(secondTab).toHaveFocus();
+
+      // Navigate to third tab
+      await userEvent.keyboard("{ArrowRight}");
+      const thirdTab = canvas.getByRole("tab", { name: "Empire" });
+      await expect(thirdTab).toHaveFocus();
+
+      // Activate with Enter key
+      await userEvent.keyboard("{Enter}");
+      await expect(thirdTab).toHaveAttribute("aria-selected", "true");
+    });
+
+    await step("Has correct accessibility attributes", async () => {
+      const tabList = canvas.getByRole("tablist");
+      await expect(tabList).toBeInTheDocument();
+
+      // Check ARIA attributes
+      const tabs = canvas.getAllByRole("tab");
+      tabs.forEach(async (tab: HTMLElement) => {
+        await expect(tab).toHaveAttribute("aria-selected");
+      });
+
+      const panel = canvas.getByRole("tabpanel");
+      await expect(panel).toHaveAttribute("aria-labelledby");
+    });
+  },
 };
 
-export const BaseWithManualStructureData: Story = {
+export const CompoundComposition: Story = {
   args: {
-    direction: "horizontal",
+    orientation: "horizontal",
     placement: "start",
     size: "md",
+    "data-testid": "manual-tabs",
   },
   render: (args) => (
     <>
@@ -121,41 +210,116 @@ export const BaseWithManualStructureData: Story = {
       </Tabs.Root>
     </>
   ),
-};
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-export const HorizontalStart: Story = {
-  args: {
-    direction: "horizontal",
-    placement: "start",
-  },
-  render: (args) => {
-    return <Tabs {...args} tabs={navigationTabs} />;
-  },
-};
+    await step("Manual structure renders correctly", async () => {
+      const tabsContainer = canvas.getByTestId("manual-tabs");
+      await expect(tabsContainer).toBeInTheDocument();
 
-export const HorizontalEnd: Story = {
-  args: {
-    direction: "horizontal",
-    placement: "end",
-  },
-  render: (args) => {
-    return <Tabs {...args} tabs={navigationTabs} />;
+      // Check that manually defined tabs are rendered
+      const tab1 = canvas.getByRole("tab", { name: "Tab 1" });
+      const tab2 = canvas.getByRole("tab", { name: "Tab 2" });
+      const tab3 = canvas.getByRole("tab", { name: "Tab 3" });
+
+      await expect(tab1).toBeInTheDocument();
+      await expect(tab2).toBeInTheDocument();
+      await expect(tab3).toBeInTheDocument();
+    });
+
+    await step("Manual structure supports tab switching", async () => {
+      const tab2 = canvas.getByRole("tab", { name: "Tab 2" });
+
+      await userEvent.click(tab2);
+      await expect(tab2).toHaveAttribute("aria-selected", "true");
+
+      const activePanel = canvas.getByRole("tabpanel");
+      await expect(activePanel).toHaveTextContent("Content 2");
+    });
+
+    await step("Compound components work independently", async () => {
+      // Test that the compound component approach maintains proper separation
+      const tabList = canvas.getByRole("tablist");
+      const panels = canvas.getByRole("tabpanel").parentElement;
+
+      await expect(tabList).toBeInTheDocument();
+      await expect(panels).toBeInTheDocument();
+    });
   },
 };
 
 export const VerticalStart: Story = {
   args: {
-    direction: "vertical",
+    orientation: "vertical left",
     placement: "start",
+    "data-testid": "vertical-tabs",
   },
   render: (args) => {
     return <Tabs {...args} height="300px" tabs={navigationTabs} />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Vertical tabs render correctly", async () => {
+      const tabsContainer = canvas.getByTestId("vertical-tabs");
+      await expect(tabsContainer).toBeInTheDocument();
+
+      // Check that tabs are rendered
+      await expect(
+        canvas.getByRole("tab", { name: "Home" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "About" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Contact" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Vertical tabs support proper keyboard navigation", async () => {
+      const homeTab = canvas.getByRole("tab", { name: "Home" });
+
+      // Focus first tab
+      homeTab.focus();
+      await expect(homeTab).toHaveFocus();
+
+      // Vertical tabs should use ArrowDown/ArrowUp for navigation
+      await userEvent.keyboard("{ArrowDown}");
+      const aboutTab = canvas.getByRole("tab", { name: "About" });
+      await expect(aboutTab).toHaveFocus();
+
+      // Navigate up should go back
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(homeTab).toHaveFocus();
+    });
+
+    await step("Vertical tabs have correct orientation attribute", async () => {
+      const tabList = canvas.getByRole("tablist");
+      await expect(tabList).toHaveAttribute(
+        "aria-orientation",
+        "vertical left"
+      );
+    });
+
+    await step("Vertical layout renders JSX content correctly", async () => {
+      const homeTab = canvas.getByRole("tab", { name: "Home" });
+
+      await userEvent.click(homeTab);
+      await expect(homeTab).toHaveAttribute("aria-selected", "true");
+
+      // Check that complex JSX content renders properly
+      const panel = canvas.getByRole("tabpanel");
+      await expect(panel).toHaveTextContent("Home Page");
+      await expect(panel).toHaveTextContent(
+        "Welcome to our homepage! This is where you'll find our latest updates."
+      );
+    });
   },
 };
 
 export const VerticalEnd: Story = {
   args: {
-    direction: "vertical",
+    orientation: "vertical right",
     placement: "end",
   },
   render: (args) => {
@@ -163,8 +327,198 @@ export const VerticalEnd: Story = {
   },
 };
 
+export const WithDisabledKeys: Story = {
+  args: {
+    "data-testid": "disabled-keys-tabs",
+    disabledKeys: ["disabled1", "disabled2"],
+    onSelectionChange: fn(),
+  },
+  render: (args) => {
+    const withDisabledTabs = [
+      {
+        id: "enabled1",
+        title: "Enabled Tab",
+        content: "This tab is enabled and can be clicked.",
+      },
+      {
+        id: "disabled1",
+        title: "Disabled Tab",
+        content: "This content should not be accessible.",
+      },
+      {
+        id: "enabled2",
+        title: "Another Enabled Tab",
+        content: "This tab is also enabled.",
+      },
+      {
+        id: "disabled2",
+        title: "Another Disabled Tab",
+        content: "This content is also not accessible.",
+      },
+    ];
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+        <div>
+          <h3>Tabs with DisabledKeys Array</h3>
+          <br />
+          <Tabs {...args} tabs={withDisabledTabs} />
+        </div>
+      </div>
+    );
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tabs with disabledKeys render correctly", async () => {
+      const tabsContainer = canvas.getByTestId("disabled-keys-tabs");
+      await expect(tabsContainer).toBeInTheDocument();
+
+      // Check all tabs are rendered
+      const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
+      const disabledTab1 = canvas.getByRole("tab", { name: "Disabled Tab" });
+      const enabledTab2 = canvas.getByRole("tab", {
+        name: "Another Enabled Tab",
+      });
+      const disabledTab2 = canvas.getByRole("tab", {
+        name: "Another Disabled Tab",
+      });
+
+      await expect(enabledTab1).toBeInTheDocument();
+      await expect(disabledTab1).toBeInTheDocument();
+      await expect(enabledTab2).toBeInTheDocument();
+      await expect(disabledTab2).toBeInTheDocument();
+    });
+
+    await step("DisabledKeys tabs have correct ARIA attributes", async () => {
+      const disabledTab1 = canvas.getByRole("tab", { name: "Disabled Tab" });
+      const disabledTab2 = canvas.getByRole("tab", {
+        name: "Another Disabled Tab",
+      });
+      const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
+      const enabledTab2 = canvas.getByRole("tab", {
+        name: "Another Enabled Tab",
+      });
+
+      // Disabled tabs should have aria-disabled="true"
+      await expect(disabledTab1).toHaveAttribute("aria-disabled", "true");
+      await expect(disabledTab2).toHaveAttribute("aria-disabled", "true");
+
+      // Enabled tabs should not have aria-disabled or have it as "false"
+      await expect(enabledTab1).not.toHaveAttribute("aria-disabled", "true");
+      await expect(enabledTab2).not.toHaveAttribute("aria-disabled", "true");
+    });
+
+    await step("DisabledKeys tabs have disabled visual styling", async () => {
+      const disabledTab1 = canvas.getByRole("tab", { name: "Disabled Tab" });
+      const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
+
+      const disabledStyle = window.getComputedStyle(disabledTab1);
+      const enabledStyle = window.getComputedStyle(enabledTab1);
+
+      // Disabled tab should have reduced opacity
+      await expect(parseFloat(disabledStyle.opacity)).toBeLessThan(
+        parseFloat(enabledStyle.opacity)
+      );
+    });
+
+    await step("DisabledKeys tabs cannot be clicked or activated", async () => {
+      const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
+      const disabledTab1 = canvas.getByRole("tab", { name: "Disabled Tab" });
+
+      // First enabled tab should be selected by default
+      await expect(enabledTab1).toHaveAttribute("aria-selected", "true");
+
+      // Try to click disabled tab - should not change selection
+      await userEvent.click(disabledTab1);
+
+      // Selection should remain on first enabled tab
+      await expect(enabledTab1).toHaveAttribute("aria-selected", "true");
+      await expect(disabledTab1).toHaveAttribute("aria-selected", "false");
+
+      // Callback should not have been called for disabled tab click
+      await expect(args.onSelectionChange).not.toHaveBeenCalledWith(
+        "disabled1"
+      );
+    });
+
+    await step(
+      "DisabledKeys tabs are skipped during keyboard navigation",
+      async () => {
+        const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
+        const enabledTab2 = canvas.getByRole("tab", {
+          name: "Another Enabled Tab",
+        });
+
+        // Focus first enabled tab
+        enabledTab1.focus();
+        await expect(enabledTab1).toHaveFocus();
+
+        // Navigate right should skip disabled tabs and focus next enabled tab
+        await userEvent.keyboard("{ArrowRight}");
+        await expect(enabledTab2).toHaveFocus();
+
+        // Navigate left should skip disabled tabs and go back to first enabled
+        await userEvent.keyboard("{ArrowLeft}");
+        await expect(enabledTab1).toHaveFocus();
+      }
+    );
+
+    await step(
+      "Enabled tabs still work normally with disabledKeys",
+      async () => {
+        const enabledTab2 = canvas.getByRole("tab", {
+          name: "Another Enabled Tab",
+        });
+
+        // Click enabled tab
+        await userEvent.click(enabledTab2);
+        await expect(enabledTab2).toHaveAttribute("aria-selected", "true");
+
+        // Check that content is displayed
+        const activePanel = canvas.getByRole("tabpanel");
+        await expect(activePanel).toHaveTextContent(
+          "This tab is also enabled."
+        );
+
+        // Verify selection change callback was called with correct key
+        await expect(args.onSelectionChange).toHaveBeenCalledWith("enabled2");
+      }
+    );
+
+    await step(
+      "DisabledKeys array prevents access to specific tab IDs",
+      async () => {
+        // Verify that the specific IDs in disabledKeys array are disabled
+        const disabledTab1 = canvas.getByRole("tab", {
+          name: "Disabled Tab",
+        });
+        const disabledTab2 = canvas.getByRole("tab", {
+          name: "Another Disabled Tab",
+        });
+
+        // Both tabs with IDs in disabledKeys should be disabled
+        await expect(disabledTab1).toHaveAttribute("aria-disabled", "true");
+        await expect(disabledTab2).toHaveAttribute("aria-disabled", "true");
+
+        // Try to activate with Enter key - should not work
+        disabledTab1.focus();
+        await userEvent.keyboard("{Enter}");
+        await expect(disabledTab1).toHaveAttribute("aria-selected", "false");
+
+        disabledTab2.focus();
+        await userEvent.keyboard("{Space}");
+        await expect(disabledTab2).toHaveAttribute("aria-selected", "false");
+      }
+    );
+  },
+};
+
 export const Disabled: Story = {
-  render: () => {
+  args: {
+    "data-testid": "disabled-tabs",
+  },
+  render: (args) => {
     const withDisabledTabs = [
       {
         id: "enabled1",
@@ -195,10 +549,76 @@ export const Disabled: Story = {
         <div>
           <h3>Tabs with Disabled State</h3>
           <br />
-          <Tabs tabs={withDisabledTabs} />
+          <Tabs {...args} tabs={withDisabledTabs} />
         </div>
       </div>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Disabled tabs have correct ARIA attributes", async () => {
+      const disabledTab = canvas.getByRole("tab", { name: "Disabled Tab" });
+      const anotherDisabledTab = canvas.getByRole("tab", {
+        name: "Another Disabled Tab",
+      });
+
+      await expect(disabledTab).toHaveAttribute("aria-disabled", "true");
+      await expect(anotherDisabledTab).toHaveAttribute("aria-disabled", "true");
+    });
+
+    await step("Disabled tabs have visual styling (opacity)", async () => {
+      const disabledTab = canvas.getByRole("tab", { name: "Disabled Tab" });
+
+      // Check that disabled styling is applied (this tests the layerStyle: "disabled")
+      const computedStyle = window.getComputedStyle(disabledTab);
+      // The opacity should be reduced for disabled tabs
+      await expect(parseFloat(computedStyle.opacity)).toBeLessThan(1);
+    });
+
+    await step("Disabled tabs cannot be clicked", async () => {
+      const enabledTab = canvas.getByRole("tab", { name: "Enabled Tab" });
+      const disabledTab = canvas.getByRole("tab", { name: "Disabled Tab" });
+
+      // First tab should be selected by default
+      await expect(enabledTab).toHaveAttribute("aria-selected", "true");
+
+      // Try to click disabled tab
+      await userEvent.click(disabledTab);
+
+      // Selection should not change
+      await expect(enabledTab).toHaveAttribute("aria-selected", "true");
+      await expect(disabledTab).toHaveAttribute("aria-selected", "false");
+    });
+
+    await step("Disabled tabs are skipped in keyboard navigation", async () => {
+      const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
+      const enabledTab2 = canvas.getByRole("tab", {
+        name: "Another Enabled Tab",
+      });
+
+      // Focus first enabled tab
+      enabledTab1.focus();
+      await expect(enabledTab1).toHaveFocus();
+
+      // Navigate with arrow key should skip disabled tabs
+      await userEvent.keyboard("{ArrowRight}");
+
+      // Should focus the next enabled tab, skipping disabled ones
+      await expect(enabledTab2).toHaveFocus();
+    });
+
+    await step("Can still interact with enabled tabs", async () => {
+      const enabledTab2 = canvas.getByRole("tab", {
+        name: "Another Enabled Tab",
+      });
+
+      await userEvent.click(enabledTab2);
+      await expect(enabledTab2).toHaveAttribute("aria-selected", "true");
+
+      const activePanel = canvas.getByRole("tabpanel");
+      await expect(activePanel).toHaveTextContent("This tab is also enabled.");
+    });
   },
 };
 
@@ -260,21 +680,78 @@ export const Sizes: Story = {
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div>
+        <div data-testid="small-tabs">
           <h3>Small (sm)</h3>
           <Tabs size="sm" tabs={smallTabs} />
         </div>
 
-        <div>
+        <div data-testid="medium-tabs">
           <h3>Medium (md) - Default</h3>
           <Tabs size="md" tabs={mediumTabs} />
         </div>
 
-        <div>
+        <div data-testid="large-tabs">
           <h3>Large (lg)</h3>
           <Tabs size="lg" tabs={largeTabs} />
         </div>
       </div>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All size variants render correctly", async () => {
+      const smallTabs = canvas.getByTestId("small-tabs");
+      const mediumTabs = canvas.getByTestId("medium-tabs");
+      const largeTabs = canvas.getByTestId("large-tabs");
+
+      await expect(smallTabs).toBeInTheDocument();
+      await expect(mediumTabs).toBeInTheDocument();
+      await expect(largeTabs).toBeInTheDocument();
+
+      // Check that tabs are rendered in each size variant
+      await expect(
+        canvas.getByRole("tab", { name: "Small Tab 1" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Medium Tab 1" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Large Tab 1" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Size variants have different styling", async () => {
+      const smallTab = canvas.getByRole("tab", { name: "Small Tab 1" });
+      const mediumTab = canvas.getByRole("tab", { name: "Medium Tab 1" });
+      const largeTab = canvas.getByRole("tab", { name: "Large Tab 1" });
+
+      const smallStyle = window.getComputedStyle(smallTab);
+      const mediumStyle = window.getComputedStyle(mediumTab);
+      const largeStyle = window.getComputedStyle(largeTab);
+
+      // Check that font sizes are different (should be 12px, 14px, 16px)
+      const smallFontSize = parseFloat(smallStyle.fontSize);
+      const mediumFontSize = parseFloat(mediumStyle.fontSize);
+      const largeFontSize = parseFloat(largeStyle.fontSize);
+
+      await expect(smallFontSize).toBeLessThan(mediumFontSize);
+      await expect(mediumFontSize).toBeLessThan(largeFontSize);
+    });
+
+    await step("All size variants are functional", async () => {
+      // Test that each size variant can switch tabs
+      const smallTab2 = canvas.getByRole("tab", { name: "Small Tab 2" });
+      await userEvent.click(smallTab2);
+      await expect(smallTab2).toHaveAttribute("aria-selected", "true");
+
+      const mediumTab2 = canvas.getByRole("tab", { name: "Medium Tab 2" });
+      await userEvent.click(mediumTab2);
+      await expect(mediumTab2).toHaveAttribute("aria-selected", "true");
+
+      const largeTab2 = canvas.getByRole("tab", { name: "Large Tab 2" });
+      await userEvent.click(largeTab2);
+      await expect(largeTab2).toHaveAttribute("aria-selected", "true");
+    });
   },
 };

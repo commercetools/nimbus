@@ -15,7 +15,8 @@ export const TabsRoot = forwardRef<HTMLDivElement, TabsProps>(
   (
     {
       children,
-      direction = "horizontal",
+      orientation = "horizontal",
+      disabledKeys,
       placement = "start",
       size = "md",
       tabs,
@@ -27,13 +28,13 @@ export const TabsRoot = forwardRef<HTMLDivElement, TabsProps>(
       <TabsProvider tabs={tabs as TabItemProps[]}>
         <TabsRootSlot
           asChild
-          direction={direction}
+          orientation={orientation}
           placement={placement}
           size={size}
           ref={ref}
           {...props}
         >
-          <RATabs>{children}</RATabs>
+          <RATabs disabledKeys={disabledKeys}>{children}</RATabs>
         </TabsRootSlot>
       </TabsProvider>
     );

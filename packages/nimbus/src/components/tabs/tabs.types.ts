@@ -36,7 +36,7 @@ export interface TabsProps extends TabsRootProps, TabsVariantProps {
    * Direction of the tabs layout
    * @default "horizontal"
    */
-  direction?: "horizontal" | "vertical";
+  orientation?: "horizontal" | "vertical left" | "vertical right";
   /**
    * Placement of the tab list relative to panels
    * @default "start"

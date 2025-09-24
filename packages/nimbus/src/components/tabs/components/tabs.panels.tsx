@@ -21,7 +21,7 @@ export const TabPanels = forwardRef<HTMLDivElement, TabPanelsProps>(
           <RaCollection items={tabs as TabItemProps[]}>
             {(tab: TabItemProps) => (
               <TabPanel key={tab.id} id={tab.id}>
-                {tab.content as React.ReactNode}
+                {tab.content}
               </TabPanel>
             )}
           </RaCollection>

@@ -70,9 +70,58 @@ export const tabsSlotRecipe = defineSlotRecipe({
   },
 
   variants: {
-    direction: {
-      horizontal: {},
-      vertical: {},
+    orientation: {
+      horizontal: {
+        root: {
+          flexDirection: "column",
+        },
+        list: {
+          borderBottom: "1px solid",
+        },
+        tab: {
+          borderBottom: "2px solid transparent",
+          marginRight: "-1px",
+          _selected: {
+            borderBottomColor: "primary.9",
+          },
+        },
+      },
+      "vertical left": {
+        root: {
+          flexDirection: "row",
+        },
+        list: {
+          flexDirection: "column",
+          borderColor: "neutral.6",
+          borderRight: "1px solid",
+        },
+        tab: {
+          borderRight: "2px solid transparent",
+          marginRight: "-1px",
+          justifyContent: "flex-start",
+          _selected: {
+            borderRightColor: "primary.9",
+          },
+        },
+      },
+      "vertical right": {
+        root: {
+          flexDirection: "row",
+        },
+        list: {
+          flexDirection: "column",
+          borderColor: "neutral.6",
+          borderLeft: "1px solid",
+        },
+        tab: {
+          borderLeft: "2px solid transparent",
+          marginRight: "-1px",
+          justifyContent: "flex-start",
+          _selected: {
+            borderLeftColor: "primary.9",
+          },
+        },
+      },
     },
     placement: {
       start: {},
@@ -109,106 +158,59 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
   },
 
-  // Compound variants for different direction/placement combinations
+  // Compound variants for different orientation/placement combinations
   compoundVariants: [
-    // Horizontal + Start (default)
+    // Horizontal (default)
     {
-      direction: "horizontal",
-      placement: "start",
+      orientation: "horizontal",
       css: {
         root: {
           flexDirection: "column",
-        },
-        list: {
-          flexDirection: "row",
-          borderBottom: "1px solid",
-          borderColor: "neutral.6",
-        },
-        tab: {
-          borderBottom: "2px solid transparent",
-          borderRadius: "md md 0 0",
-          marginBottom: "-1px",
-          _selected: {
-            borderBottomColor: "primary.9",
-          },
-        },
-      },
-    },
-    // // Horizontal + End
-    {
-      direction: "horizontal",
-      placement: "end",
-      css: {
-        root: {
-          flexDirection: "column-reverse",
-        },
-        list: {
-          flexDirection: "row",
-          borderTop: "1px solid",
-          borderColor: "neutral.6",
-        },
-        tab: {
-          borderTop: "2px solid transparent",
-          borderRadius: "0 0 md md",
-          marginTop: "-1px",
-          _selected: {
-            borderTopColor: "primary.9",
-          },
         },
       },
     },
     // Vertical + Start
     {
-      direction: "vertical",
+      orientation: "vertical left",
       placement: "start",
       css: {
         root: {
           flexDirection: "row",
         },
-        list: {
-          flexDirection: "column",
-          borderRight: "1px solid",
-          borderColor: "neutral.6",
-        },
-        tab: {
-          borderRight: "2px solid transparent",
-          borderRadius: "md 0 0 md",
-          marginRight: "-1px",
-          justifyContent: "flex-start",
-          _selected: {
-            borderRightColor: "primary.9",
-          },
+      },
+    },
+    {
+      orientation: "vertical right",
+      placement: "start",
+      css: {
+        root: {
+          flexDirection: "row",
         },
       },
     },
     // Vertical + End
     {
-      direction: "vertical",
+      orientation: "vertical right",
       placement: "end",
       css: {
         root: {
           flexDirection: "row-reverse",
         },
-        list: {
-          flexDirection: "column",
-          borderLeft: "1px solid",
-          borderColor: "neutral.6",
-        },
-        tab: {
-          borderLeft: "2px solid transparent",
-          borderRadius: "0 md md 0",
-          marginLeft: "-1px",
-          justifyContent: "flex-start",
-          _selected: {
-            borderLeftColor: "primary.7",
-          },
+      },
+    },
+    {
+      orientation: "vertical left",
+      placement: "end",
+      css: {
+        root: {
+          flexDirection: "row-reverse",
         },
       },
     },
   ],
 
   defaultVariants: {
-    direction: "horizontal",
+    orientation: "horizontal",
     placement: "start",
     size: "md",
   },

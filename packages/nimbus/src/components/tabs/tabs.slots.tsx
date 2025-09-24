@@ -17,9 +17,8 @@ export interface TabsRootProps
   onSelectionChange?: (key: string | number) => void;
   isDisabled?: boolean;
   disabledKeys?: Iterable<string | number>;
-  orientation?: "horizontal" | "vertical";
   keyboardActivation?: "automatic" | "manual";
-  direction?: "horizontal" | "vertical";
+  orientation?: "horizontal" | "vertical left" | "vertical right";
   placement?: "start" | "end";
   size?: "sm" | "md" | "lg";
 }
