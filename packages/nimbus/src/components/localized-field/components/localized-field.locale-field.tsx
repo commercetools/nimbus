@@ -23,13 +23,14 @@ export const LocalizedFieldLocaleField = ({
   localeOrCurrency,
   id,
   name,
-  inputValue = "",
+  inputValue: inputValueFromProps,
   description,
   warning,
   error,
   onChange,
   onBlur,
   onFocus,
+  isRequired,
   isReadOnly,
   isDisabled,
   isInvalid,
@@ -57,6 +58,17 @@ export const LocalizedFieldLocaleField = ({
       break;
   }
 
+  const getInputValue = () => {
+    if (type === "money") {
+      return inputValueFromProps
+        ? (inputValueFromProps as TValue)
+        : ({ amount: "", currencyCode: localeOrCurrency } as TValue);
+    }
+    return inputValueFromProps ? inputValueFromProps : "";
+  };
+
+  const inputValue = getInputValue();
+
   const handleChange = useCallback(
     (value: string | TCustomEvent | undefined) => {
       // The `MoneyInput` onChange event value is a custom value,
@@ -79,7 +91,7 @@ export const LocalizedFieldLocaleField = ({
     },
     [id, name, localeOrCurrency, onChange]
   );
-  console.log(description, warning);
+
   return (
     <LocalizedFieldLocaleFieldRootSlot asChild>
       <FormField.Root
@@ -99,7 +111,10 @@ export const LocalizedFieldLocaleField = ({
           </FormField.Label>
         </LocalizedFieldLocaleFieldLabelSlot>
         <FormField.Input>
-          <LocalizedFieldLocaleFieldInputSlot asChild>
+          <LocalizedFieldLocaleFieldInputSlot
+            aria-required={isRequired}
+            asChild
+          >
             <InputComponent
               {...otherProps}
               size={size}
@@ -111,6 +126,7 @@ export const LocalizedFieldLocaleField = ({
               onFocus={(e: React.FocusEvent | TCustomEvent) =>
                 onFocus?.(e, localeOrCurrency)
               }
+              isRequired={isRequired}
               isDisabled={isDisabled}
               isReadOnly={isReadOnly}
               isInvalid={isInvalid || !!error}

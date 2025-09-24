@@ -90,8 +90,8 @@ export const formatMoneyValueForDisplay = (
 export const isEmpty = (formValue: TValue) => {
   return (
     !formValue ||
-    formValue.amount.trim() === "" ||
-    formValue.currencyCode.trim() === ""
+    formValue?.amount?.trim() === "" ||
+    formValue?.currencyCode?.trim() === ""
   );
 };
 

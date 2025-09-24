@@ -42,6 +42,13 @@ interface LocalizedFieldStoryComponentProps {
   multiLine?: FieldTypeProps;
   richText?: FieldTypeProps;
   money?: FieldTypeProps;
+  showControls?: boolean;
+  size?: LocalizedFieldProps["size"];
+  displayAllLocalesOrCurrencies?: LocalizedFieldProps["displayAllLocalesOrCurrencies"];
+  defaultExpanded?: LocalizedFieldProps["defaultExpanded"];
+  isRequired?: LocalizedFieldProps["isRequired"];
+  isDisabled?: LocalizedFieldProps["isDisabled"];
+  isReadOnly?: LocalizedFieldProps["isReadOnly"];
 }
 
 // State shape for the reducer
@@ -214,6 +221,7 @@ function localizedFieldReducer(
 export function LocalizedFieldStoryComponent(
   props: LocalizedFieldStoryComponentProps
 ) {
+  const { showControls = false } = props;
   const [state, dispatch] = useReducer(
     localizedFieldReducer,
     props,
@@ -300,112 +308,127 @@ export function LocalizedFieldStoryComponent(
 
           return (
             <Stack key={type} role="group" aria-label={`${type} group`}>
-              <Separator />
-              <Accordion.Root size="sm">
-                <Accordion.Item>
-                  <Accordion.Header>{`${type} input controls`}</Accordion.Header>
-                  <Accordion.Content>
-                    <Stack direction="row">
-                      <Group aria-labelledby={forFieldId}>
-                        <Stack>
-                          <Text as="label" id={forFieldId}>
-                            For Field (All)
-                          </Text>
-                          <Checkbox
-                            isSelected={state[type]?.showDescription}
-                            onChange={(isSelected) =>
-                              handleSetShowField(
-                                type,
-                                "SET_SHOW_DESCRIPTION",
-                                isSelected
-                              )
-                            }
-                          >
-                            Show Description
-                          </Checkbox>
-                          <Checkbox
-                            isSelected={state[type]?.showWarning}
-                            onChange={(isSelected) =>
-                              handleSetShowField(
-                                type,
-                                "SET_SHOW_WARNING",
-                                isSelected
-                              )
-                            }
-                          >
-                            Show Warning
-                          </Checkbox>
-                          <Checkbox
-                            isSelected={state[type]?.showError}
-                            onChange={(isSelected) =>
-                              handleSetShowField(
-                                type,
-                                "SET_SHOW_ERROR",
-                                isSelected
-                              )
-                            }
-                          >
-                            Show Error
-                          </Checkbox>
-                        </Stack>
-                      </Group>
-                      <Group aria-labelledby={forLocaleId}>
-                        <Stack>
-                          <Text as="label" id={forLocaleId}>
-                            For Each Locale Input
-                          </Text>
-                          <Checkbox
-                            isSelected={state[type]?.showLocaleDescriptions}
-                            onChange={(isSelected) => {
-                              handleSetShowField(
-                                type,
-                                "SET_SHOW_LOCALE_DESCRIPTIONS",
-                                isSelected
-                              );
-                            }}
-                          >
-                            Show Descriptions
-                          </Checkbox>
-                          <Checkbox
-                            isSelected={state[type]?.showLocaleWarnings}
-                            onChange={(isSelected) =>
-                              handleSetShowField(
-                                type,
-                                "SET_SHOW_LOCALE_WARNINGS",
-                                isSelected
-                              )
-                            }
-                          >
-                            Show Warnings
-                          </Checkbox>
-                          <Checkbox
-                            isSelected={state[type]?.showLocaleErrors}
-                            onChange={(isSelected) =>
-                              handleSetShowField(
-                                type,
-                                "SET_SHOW_LOCALE_ERRORS",
-                                isSelected
-                              )
-                            }
-                          >
-                            Show Errors
-                          </Checkbox>
-                        </Stack>
-                      </Group>
-                    </Stack>
-                  </Accordion.Content>
-                </Accordion.Item>
-              </Accordion.Root>
+              {showControls && (
+                <Accordion.Root size="sm">
+                  <Accordion.Item>
+                    <Accordion.Header>{`${type} field controls`}</Accordion.Header>
+                    <Accordion.Content>
+                      <Stack direction="row">
+                        <Group aria-labelledby={forFieldId}>
+                          <Stack>
+                            <Text as="label" id={forFieldId}>
+                              For Field (All)
+                            </Text>
+                            <Checkbox
+                              aria-label="Show Description"
+                              isSelected={state[type]?.showDescription}
+                              onChange={(isSelected) =>
+                                handleSetShowField(
+                                  type,
+                                  "SET_SHOW_DESCRIPTION",
+                                  isSelected
+                                )
+                              }
+                            >
+                              Show Description
+                            </Checkbox>
+                            <Checkbox
+                              aria-label="Show Warning"
+                              isSelected={state[type]?.showWarning}
+                              onChange={(isSelected) =>
+                                handleSetShowField(
+                                  type,
+                                  "SET_SHOW_WARNING",
+                                  isSelected
+                                )
+                              }
+                            >
+                              Show Warning
+                            </Checkbox>
+                            <Checkbox
+                              aria-label="Show Error"
+                              isSelected={state[type]?.showError}
+                              onChange={(isSelected) =>
+                                handleSetShowField(
+                                  type,
+                                  "SET_SHOW_ERROR",
+                                  isSelected
+                                )
+                              }
+                            >
+                              Show Error
+                            </Checkbox>
+                          </Stack>
+                        </Group>
+                        <Group aria-labelledby={forLocaleId}>
+                          <Stack>
+                            <Text as="label" id={forLocaleId}>
+                              For Each Locale Input
+                            </Text>
+                            <Checkbox
+                              aria-label="Show Descriptions"
+                              isSelected={state[type]?.showLocaleDescriptions}
+                              onChange={(isSelected) => {
+                                handleSetShowField(
+                                  type,
+                                  "SET_SHOW_LOCALE_DESCRIPTIONS",
+                                  isSelected
+                                );
+                              }}
+                            >
+                              Show Descriptions
+                            </Checkbox>
+                            <Checkbox
+                              aria-label="Show Warnings"
+                              isSelected={state[type]?.showLocaleWarnings}
+                              onChange={(isSelected) =>
+                                handleSetShowField(
+                                  type,
+                                  "SET_SHOW_LOCALE_WARNINGS",
+                                  isSelected
+                                )
+                              }
+                            >
+                              Show Warnings
+                            </Checkbox>
+                            <Checkbox
+                              aria-label="Show Errors"
+                              isSelected={state[type]?.showLocaleErrors}
+                              onChange={(isSelected) =>
+                                handleSetShowField(
+                                  type,
+                                  "SET_SHOW_LOCALE_ERRORS",
+                                  isSelected
+                                )
+                              }
+                            >
+                              Show Errors
+                            </Checkbox>
+                          </Stack>
+                        </Group>
+                      </Stack>
+                    </Accordion.Content>
+                  </Accordion.Item>
+                </Accordion.Root>
+              )}
               <LocalizedField
                 {...fieldProps}
                 id={id}
                 name={name}
                 type={type} // text is the default type
                 label={`${fieldProps?.label} - ${type}`}
+                size={props.size}
+                isRequired={props.isRequired}
+                isDisabled={props.isDisabled}
+                isReadOnly={props.isReadOnly}
                 defaultLocaleOrCurrency={
                   fieldProps?.defaultLocaleOrCurrency ||
                   (type === "money" ? "USD" : "en")
                 }
+                displayAllLocalesOrCurrencies={
+                  props.displayAllLocalesOrCurrencies
+                }
+                defaultExpanded={props.defaultExpanded}
                 touched={state[type]?.touched}
                 onChange={(e) => handleChange(e, type)}
                 onFocus={() => handleFocus(type)}
@@ -436,6 +459,7 @@ export function LocalizedFieldStoryComponent(
                 }
                 error={state[type]?.showError ? fieldProps?.error : undefined}
               />
+              <Separator />
             </Stack>
           );
         })}

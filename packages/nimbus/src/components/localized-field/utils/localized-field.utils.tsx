@@ -1,5 +1,12 @@
 import { FormattedMessage } from "react-intl";
-import { FormField, type TCurrencyCode } from "@/components";
+import {
+  FormField,
+  type TCurrencyCode,
+  type TValue,
+  type TMoneyValue,
+  type TFieldErrors,
+  MoneyInput,
+} from "@/components";
 import messages from "../localized-field.i18n";
 import type { LocalizedString } from "../localized-field.types";
 
@@ -9,6 +16,10 @@ type LanguagesSplitByDefaultLocale = {
 };
 
 type TouchedLocalizedString = { [locale: string]: boolean };
+
+type CustomFormikErrors<Values> = {
+  [K in keyof Values]?: TFieldErrors;
+};
 
 export const RequiredValueErrorMessage = () => (
   <FormField.Error>
@@ -108,7 +119,7 @@ export const createLocalizedString = (
 export const isEmpty = (localizedString?: LocalizedString): boolean => {
   if (!localizedString) return true;
   return Object.values(localizedString).every(
-    (value: string) => !value || value.trim().length === 0
+    (value?: string) => !value || value?.trim().length === 0
   );
 };
 
@@ -142,4 +153,57 @@ export const isTouched = (touched?: TouchedLocalizedString): boolean => {
     return Object.values(touched).some(Boolean);
   }
   return false;
+};
+
+/**
+ * Use this function to convert the Formik `errors` object type to
+ * our custom field errors type.
+ * This is primarly useful when using TypeScript.
+ */
+export function toFieldErrors<FormValues>(
+  errors: unknown
+): CustomFormikErrors<FormValues> {
+  return errors as CustomFormikErrors<FormValues>;
+}
+
+export const convertToMoneyValues = (
+  values: TValue[],
+  currency: string
+): Array<TMoneyValue | null> =>
+  Object.values(values).map<TMoneyValue | null>((value) => {
+    return MoneyInput.convertToMoneyValue(value, currency);
+  });
+
+export const parseMoneyValues = (
+  moneyValues: TMoneyValue[] = [],
+  locale: string
+): Record<TCurrencyCode, TValue> =>
+  moneyValues.reduce<Record<TCurrencyCode, TValue>>(
+    (allValues, moneyValue) => {
+      const value = MoneyInput.parseMoneyValue(moneyValue, locale);
+      return {
+        ...allValues,
+        [value.currencyCode]: value,
+      };
+    },
+    {} as Record<TCurrencyCode, TValue>
+  );
+
+export const getHighPrecisionCurrencies = (
+  values: Record<TCurrencyCode, TValue>,
+  locale: string
+): TCurrencyCode[] => {
+  const typedCurrencyCodes = Object.keys(values) as TCurrencyCode[];
+  return typedCurrencyCodes.filter((currencyCode) =>
+    MoneyInput.isHighPrecision(values[currencyCode], locale)
+  );
+};
+
+export const getEmptyCurrencies = (
+  values: Record<TCurrencyCode, TValue>
+): TCurrencyCode[] => {
+  const typedCurrencyCodes = Object.keys(values) as TCurrencyCode[];
+  return typedCurrencyCodes.filter((currencyCode) =>
+    MoneyInput.isEmpty(values[currencyCode])
+  );
 };

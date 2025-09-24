@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import { FieldErrorsRoot } from "./field-errors.slots";
+import { FieldErrorsRoot, FieldErrorsMessage } from "./field-errors.slots";
 import { messages } from "./field-errors.i18n";
 import type { FieldErrorsProps } from "./field-errors.types";
 import { FieldErrorTypes } from "./field-errors.types";
@@ -137,25 +137,37 @@ export const FieldErrors = ({
         // Try custom error renderer first
         const customErrorElement = renderError?.(key, error);
         if (customErrorElement) {
-          return <div key={key}>{customErrorElement}</div>;
+          return (
+            <FieldErrorsMessage key={key}>
+              {customErrorElement}
+            </FieldErrorsMessage>
+          );
         }
 
         // Try default error renderer second
         const defaultErrorElement = renderDefaultError?.(key, error);
         if (defaultErrorElement) {
-          return <div key={key}>{defaultErrorElement}</div>;
+          return (
+            <FieldErrorsMessage key={key}>
+              {defaultErrorElement}
+            </FieldErrorsMessage>
+          );
         }
 
         // Try custom messages for built-in error types first
         const customMessage = getCustomMessage(key, customMessages);
         if (customMessage) {
-          return <div key={key}>{customMessage}</div>;
+          return (
+            <FieldErrorsMessage key={key}>{customMessage}</FieldErrorsMessage>
+          );
         }
 
         // Fall back to built-in localized messages
         const builtInMessage = getBuiltInMessage(key);
         if (builtInMessage) {
-          return <div key={key}>{builtInMessage}</div>;
+          return (
+            <FieldErrorsMessage key={key}>{builtInMessage}</FieldErrorsMessage>
+          );
         }
 
         // If no renderer handles it, render nothing

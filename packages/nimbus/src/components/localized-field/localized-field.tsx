@@ -6,6 +6,11 @@ import {
   omitEmptyTranslations,
   isTouched,
   RequiredValueErrorMessage,
+  toFieldErrors,
+  convertToMoneyValues,
+  parseMoneyValues,
+  getHighPrecisionCurrencies,
+  getEmptyCurrencies,
 } from "./utils/localized-field.utils";
 
 export const LocalizedField = Object.assign(LocalizedFieldRoot, {
@@ -17,4 +22,9 @@ export const LocalizedField = Object.assign(LocalizedFieldRoot, {
   createLocalizedString,
   omitEmptyTranslations,
   RequiredValueErrorMessage,
+  toFieldErrors,
+  convertToMoneyValues,
+  parseMoneyValues,
+  getHighPrecisionCurrencies,
+  getEmptyCurrencies,
 });

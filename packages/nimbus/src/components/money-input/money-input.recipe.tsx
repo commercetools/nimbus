@@ -35,6 +35,8 @@ export const moneyInputRecipe = defineSlotRecipe({
       },
     },
     currencyLabel: {
+      color: "neutral.11",
+      fontWeight: "500",
       display: "flex",
       height: "full",
       borderLeftRadius: "200",
@@ -78,6 +80,10 @@ export const moneyInputRecipe = defineSlotRecipe({
         amountInput: {
           paddingRight: "spacing.30",
         },
+        currencyLabel: {
+          fontSize: "300",
+          lineHeight: "450",
+        },
       },
       md: {
         root: {
@@ -91,6 +97,10 @@ export const moneyInputRecipe = defineSlotRecipe({
         },
         amountInput: {
           paddingRight: "spacing.40",
+        },
+        currencyLabel: {
+          fontSize: "350",
+          lineHeight: "500",
         },
       },
     },

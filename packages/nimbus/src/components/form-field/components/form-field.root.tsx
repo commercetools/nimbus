@@ -179,6 +179,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                 display="inline-flex"
                 boxSize="400"
                 verticalAlign="middle"
+                alignSelf="center"
               />
               {context.error}
             </FormFieldErrorSlot>

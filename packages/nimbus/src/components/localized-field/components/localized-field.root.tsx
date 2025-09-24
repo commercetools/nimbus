@@ -15,6 +15,8 @@ import {
 import {
   Box,
   Button,
+  FieldErrors,
+  Icon,
   IconButton,
   Stack,
   type TCurrencyCode,
@@ -58,7 +60,11 @@ export const LocalizedField = ({
   hint,
   description,
   warning,
+  warnings,
+  renderWarning,
   error,
+  errors,
+  renderError,
   touched,
   isRequired,
   isDisabled,
@@ -77,17 +83,28 @@ export const LocalizedField = ({
   ...rest
 }: LocalizedFieldProps) => {
   const [expanded, setExpanded] = useState(
-    displayAllLocalesOrCurrencies ?? defaultExpanded
+    displayAllLocalesOrCurrencies || defaultExpanded
   );
 
   const { formatMessage } = useIntl();
 
-  // Used to associate container with toggle button for `aria-controls`
+  // Used to associate more info dialog with fieldset via `aria-controls`
   const localeFieldsContainerId = useId();
+  // Used to associate more info dialog with fieldset via `aria-details`
+  const moreDetailsButtonId = useId();
+
+  // Either `error` exists, or there are `true` fields in the UI Kit compat `errors` object
+  const hasError: boolean = Boolean(
+    error || (errors && Object.values(errors).some(Boolean))
+  );
+  // Either `warning` exists, or there are `true` fields in the UI Kit compat `warnings` object
+  const hasWarning: boolean = Boolean(
+    warning || (warnings && Object.values(warnings).some(Boolean))
+  );
 
   // FieldGroup is invalid if a non-field-specific error is passed and the group has been touched
   // When FieldGroup is invalid, all fields will display error styling without displaying a field-specific error message
-  const isInvalid: boolean = Boolean(error && touched);
+  const isInvalid: boolean = Boolean(hasError && touched);
 
   const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
     useField({
@@ -164,11 +181,11 @@ export const LocalizedField = ({
   if (groupHasInvalidLocalizedFields && !expanded) {
     setExpanded(true);
   }
-
   return (
     <LocalizedFieldRootSlot
       {...rest}
       {...fieldProps}
+      aria-details={hint ? moreDetailsButtonId : undefined}
       type={type}
       size={size}
       name={name}
@@ -182,8 +199,8 @@ export const LocalizedField = ({
           {hint && (
             <RaDialogTrigger>
               <IconButton
+                id={moreDetailsButtonId}
                 aria-label={formatMessage(messages.infoBoxTriggerAriaLabel)}
-                aria-describedby={labelProps.id}
                 size="2xs"
                 tone="info"
                 variant="link"
@@ -228,6 +245,7 @@ export const LocalizedField = ({
                 )}
                 size={size}
                 type={type}
+                isRequired={isRequired}
                 isDisabled={isDisabled}
                 isReadOnly={isReadOnly}
                 isInvalid={isInvalid}
@@ -273,22 +291,41 @@ export const LocalizedField = ({
       )}
       {(description || (warning && touched)) && (
         <LocalizedFieldDescriptionSlot
-          role={warning && touched ? "status" : undefined}
+          role={hasWarning && touched ? "status" : undefined}
+          color={hasWarning && touched ? "warning.11" : undefined}
           {...descriptionProps}
         >
-          {warning && touched ? warning : description}
+          {/** Warnings are for compat with UI Kit localized fields */}
+          {hasWarning && touched ? (
+            <>
+              <Icon alignSelf="center" colorPalette="warning">
+                <ErrorOutline />
+              </Icon>
+              <Stack color="warning.11">
+                {warning}
+                <FieldErrors
+                  errors={warnings}
+                  renderError={renderWarning}
+                  colorPalette="warning"
+                />
+              </Stack>
+            </>
+          ) : (
+            description
+          )}
         </LocalizedFieldDescriptionSlot>
       )}
-      {error && touched && (
+      {isInvalid && (
         <LocalizedFieldErrorSlot {...errorMessageProps}>
-          <Box
-            as={ErrorOutline}
-            display="inline-flex"
-            boxSize="400"
-            verticalAlign="text-bottom"
-            mr="100"
-          />
-          {error}
+          <Icon alignSelf="center">
+            <ErrorOutline />
+          </Icon>
+          <Stack>
+            {error}
+            {errors && (
+              <FieldErrors errors={errors} renderError={renderError} />
+            )}
+          </Stack>
         </LocalizedFieldErrorSlot>
       )}
     </LocalizedFieldRootSlot>

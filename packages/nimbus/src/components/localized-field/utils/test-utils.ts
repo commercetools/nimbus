@@ -1,5 +1,5 @@
 import type { BoundFunctions, Queries } from "@testing-library/react";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, within, waitFor } from "storybook/test";
 
 export const getFieldContainerForType = async (
   canvas: BoundFunctions<Queries>,
@@ -33,13 +33,22 @@ export const getInputForLocaleField = async (
     name: new RegExp(localeOrCurrency, "i"),
   });
 
+export const getRichTextContainerForLocaleField = async (
+  field: HTMLElement,
+  localeOrCurrency: string
+) =>
+  await within(field).findByRole("group", {
+    name: new RegExp(localeOrCurrency, "i"),
+  });
+
 export const getRichTextInputForLocaleField = async (
   field: HTMLElement,
   localeOrCurrency: string
 ) => {
-  const richTextContainer = await within(field).findByRole("group", {
-    name: new RegExp(localeOrCurrency, "i"),
-  });
+  const richTextContainer = await getRichTextContainerForLocaleField(
+    field,
+    localeOrCurrency
+  );
   return await within(richTextContainer).findByRole("textbox", {
     name: /rich text editor/i,
   });
@@ -59,7 +68,7 @@ export const checkFieldIsCollapsed = async (
   expect(toggleButton).toHaveAccessibleDescription(
     new RegExp(`- ${type}`, "i")
   );
-  // Check that there is a single visible within the field
+  // Check that there is a single input visible within the field
   const allInputs = await within(field).findAllByRole("textbox");
   expect(allInputs.length).toBe(1);
   // Check that visible input is for the default locale/currency
@@ -187,11 +196,108 @@ export const checkAndUpdateRichTextLocaleFieldValue = async (
     field,
     localeOrCurrency
   );
+
   // Check input value is correct
   expect(fieldInput).toHaveTextContent(currentValue);
   // Check that input value can be updated
   const updateValue = getUpdateValue(localeOrCurrency);
+  // The rich text field -really- hates being updated programatically
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  fieldInput.focus();
   // Clearing the slate editor and getting the focus element is really annoying, and the richtext stories cover it, so no placeholder tests here
   await userEvent.type(fieldInput!, updateValue!);
-  expect(fieldInput).toHaveTextContent(updateValue!);
+  await waitFor(() => expect(fieldInput).toHaveTextContent(updateValue!));
+};
+
+export const toggleFieldContolCheckbox = async (
+  canvas: BoundFunctions<Queries>,
+  type: string,
+  control: string
+) => {
+  const fieldGroup = (await canvas.findByRole("group", {
+    name: new RegExp(`${type} group`),
+  })) as HTMLElement;
+  const accordionButton = await within(fieldGroup).findByRole("button", {
+    name: new RegExp(`${type} field controls`),
+  });
+  // Open the controls
+  if (accordionButton.ariaExpanded === "false") {
+    await userEvent.click(accordionButton);
+  }
+
+  const checkbox = fieldGroup
+    .querySelector(`[aria-label="${control}"]`)
+    ?.closest("label");
+  expect(checkbox).toBeInTheDocument();
+  userEvent.click(checkbox!);
+};
+
+export const checkFieldDetailsDialog = async (
+  field: HTMLElement,
+  documentBody: HTMLElement,
+  infoBoxValue: string
+) => {
+  const infoBoxButton = await within(field).getByRole("button", {
+    name: "more info",
+  });
+  await userEvent.click(infoBoxButton);
+  await within(documentBody).getByText(infoBoxValue);
+  await userEvent.click(documentBody);
+};
+
+export const checkFieldDescription = async (
+  field: HTMLElement,
+  descriptionValue: string
+) => {
+  const descriptionElement = await within(field).findByText(descriptionValue);
+  expect(
+    Array.from(field.ariaDescribedByElements!).some(
+      (el) => el === descriptionElement
+    )
+  ).toBe(true);
+};
+
+export const checkFieldError = async (
+  field: HTMLElement,
+  errorValue: string
+) => {
+  const errorElement = await within(field).findByText(errorValue);
+  expect(
+    Array.from(field.ariaDescribedByElements!).some((el) => el === errorElement)
+  ).toBe(true);
+};
+
+export const checkLocaleFieldDescription = async (
+  field: HTMLElement,
+  localeOrCurrency: string,
+  descriptionValue: string
+) => {
+  const descriptionElement = await within(field).findByText(descriptionValue);
+  const localeFieldInput = await getInputForLocaleField(
+    field,
+    localeOrCurrency
+  );
+  expect(
+    Array.from(localeFieldInput.ariaDescribedByElements!).some(
+      (el) => el === descriptionElement
+    )
+  );
+};
+
+export const checkLocaleFieldError = async (
+  field: HTMLElement,
+  localeOrCurrency: string,
+  errorValue: string
+) => {
+  const errorElement = await within(field).findByText(errorValue);
+  const localeFieldInput = await getInputForLocaleField(
+    field,
+    localeOrCurrency
+  );
+  expect(localeFieldInput.ariaInvalid).toBe("true");
+  expect(
+    Array.from(localeFieldInput.ariaDescribedByElements!).some(
+      (el) => el === errorElement
+    )
+  ).toBe(true);
 };

@@ -9,7 +9,7 @@ import type { TValue, TCustomEvent, TCurrencyCode } from "@/components";
  * The locale is specified as the key, and the string is specified as the value, e.g.:
  * { ['en-US']: 'hello', ['zh-Hans']: '你好’ }
  */
-export type LocalizedString = { [locale: string]: string };
+export type LocalizedString = { [locale: string]: string | undefined };
 /**
  * Object that contains a currency value for each currency.
  * Used to define values for "money" input type
@@ -27,7 +27,7 @@ export type LocalizedString = { [locale: string]: string };
  * }
  */
 export type LocalizedCurrency = {
-  [currencyCode: string]: TValue;
+  [currencyCode: string]: TValue | undefined;
 };
 /**
  * Object that maps field data to a specific locale.
@@ -91,8 +91,34 @@ export interface LocalizedFieldProps
   description?: ReactNode;
   /** Warning for field group (all locales) */
   warning?: ReactNode;
+  /**
+   * For compatibility with UI Kit FieldWarnings
+   * A map of warnings. Warning messages for known warnings are rendered automatically.
+   * <br/>
+   * Unknown warnings will be forwarded to renderWarning.
+   */
+  warnings?: Record<string, boolean>;
+  /**
+   * For compatibility with UI Kit FieldWarnings
+   * Called with custom warnings, as renderWarning(key, warning). This function can return a message which will be wrapped in a WarningMessage.
+   * <br />
+   * It can also return null to show no warning.
+   */
+  renderWarning?: (key: string, warning?: boolean) => ReactNode;
   /** Error for field group (all locales) */
   error?: ReactNode;
+  /**
+   * For compatibility with UI Kit FieldErrors
+   * A map of errors. Error messages for known errors are rendered automatically.
+   * <br />
+   * Unknown errors will be forwarded to `renderError`
+   */
+  errors?: Record<string, boolean>;
+  /**
+   * For compatibility with UI Kit FieldErrors
+   * Called with custom errors. This function can return a message which will be wrapped in an ErrorMessage. It can also return null to show no error.
+   */
+  renderError?: (key: string, error?: boolean) => ReactNode;
   /**
    * Indicates whether the field was touched.
    * Errors will only be shown when the field was touched.
@@ -159,6 +185,7 @@ export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
     | "name"
     | "label"
     | "touched"
+    | "isRequired"
     | "isDisabled"
     | "isReadOnly"
     | "type"

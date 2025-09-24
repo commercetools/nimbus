@@ -97,23 +97,174 @@ export const baseCurrencyData: LocalizedStoryData = {
 };
 
 export const baseStoryProps = {
-  id: "baseLocalizedGreetings",
-  name: "base localized greetings",
+  id: "localizedFieldBase",
+  name: "base localized field story",
   types: allFieldTypes,
   text: {
     fieldData: baseLocaleData,
-    fieldProps: baseContextFields,
+    fieldProps: {
+      label: baseContextFields.label,
+    },
   },
   multiLine: {
     fieldData: baseLocaleData,
-    fieldProps: baseContextFields,
+    fieldProps: {
+      label: baseContextFields.label,
+    },
   },
   richText: {
     fieldData: baseLocaleData,
-    fieldProps: baseContextFields,
+    fieldProps: {
+      label: baseContextFields.label,
+    },
   },
   money: {
     fieldData: baseCurrencyData,
-    fieldProps: baseMoneyContextFields,
+    fieldProps: {
+      label: baseMoneyContextFields.label,
+    },
+  },
+};
+
+export const emptyValuesStoryProps = {
+  id: "localizedFieldEmptyValues",
+  name: "localized field empty values story",
+  types: allFieldTypes,
+  text: {
+    fieldData: {
+      ...baseLocaleData,
+      values: {
+        en: undefined,
+        ["zh-Hans"]: undefined,
+        de: undefined,
+      },
+    },
+    fieldProps: {
+      label: baseContextFields.label,
+    },
+  },
+  multiLine: {
+    fieldData: {
+      ...baseLocaleData,
+      values: {
+        en: undefined,
+        ["zh-Hans"]: undefined,
+        de: undefined,
+      },
+    },
+    fieldProps: {
+      label: baseContextFields.label,
+    },
+  },
+  richText: {
+    fieldData: {
+      ...baseLocaleData,
+      values: {
+        en: undefined,
+        ["zh-Hans"]: undefined,
+        de: undefined,
+      },
+    },
+    fieldProps: {
+      label: baseContextFields.label,
+    },
+  },
+  money: {
+    fieldData: {
+      ...baseCurrencyData,
+      values: {
+        USD: undefined,
+        CNY: undefined,
+        EUR: undefined,
+      },
+    },
+    fieldProps: {
+      label: baseMoneyContextFields.label,
+    },
+  },
+};
+
+export const singleValueStoryProps = {
+  id: "localizedFieldSingleValue",
+  name: "localized field single value story",
+  types: allFieldTypes,
+  text: {
+    fieldData: {
+      ...baseLocaleData,
+      values: {
+        en: baseLocaleData.values.en,
+      },
+    },
+    fieldProps: {
+      label: baseContextFields.label,
+    },
+  },
+  multiLine: {
+    fieldData: {
+      ...baseLocaleData,
+      values: {
+        en: baseLocaleData.values.en,
+      } as LocalizedString,
+    },
+    fieldProps: {
+      label: baseContextFields.label,
+    },
+  },
+  richText: {
+    fieldData: {
+      ...baseLocaleData,
+      values: {
+        en: baseLocaleData.values.en,
+      },
+    },
+    fieldProps: {
+      label: baseContextFields.label,
+    },
+  },
+  money: {
+    fieldData: {
+      ...baseCurrencyData,
+      values: {
+        USD: baseCurrencyData.values.USD,
+      } as LocalizedCurrency,
+    },
+    fieldProps: {
+      label: baseMoneyContextFields.label,
+    },
+  },
+};
+
+export const hintStoryProps = {
+  id: "localizedFieldHintDialog",
+  name: "localized field hint dialog story",
+  types: allFieldTypes,
+
+  text: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      hint: baseContextFields.hint,
+    },
+  },
+  multiLine: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      hint: baseContextFields.hint,
+    },
+  },
+  richText: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      hint: baseContextFields.hint,
+    },
+  },
+  money: {
+    fieldData: baseCurrencyData,
+    fieldProps: {
+      label: baseMoneyContextFields.label,
+      hint: baseMoneyContextFields.hint,
+    },
   },
 };
