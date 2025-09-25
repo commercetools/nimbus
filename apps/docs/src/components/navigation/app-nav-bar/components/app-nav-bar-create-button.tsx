@@ -1,5 +1,13 @@
 import { Info, Add } from "@commercetools/nimbus-icons";
-import { Button, Dialog, TextInput, Stack, Text } from "@commercetools/nimbus";
+import {
+  Button,
+  Dialog,
+  TextInput,
+  Stack,
+  Flex,
+  Text,
+  Icon,
+} from "@commercetools/nimbus";
 import { useCreateDocument } from "@/hooks/useCreateDocument";
 
 /**
@@ -21,7 +29,7 @@ export const AppNavBarCreateButton = () => {
   } = useCreateDocument();
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
         <Button colorPalette="primary" size="xs" variant="ghost">
           <Add />
@@ -29,12 +37,12 @@ export const AppNavBarCreateButton = () => {
         </Button>
       </Dialog.Trigger>
       <Dialog.Content divideY="1px">
-        <Dialog.Backdrop />
         <Dialog.Header>
           <Dialog.Title>Create New Document</Dialog.Title>
-          <Dialog.Description>
+          <Text color="neutral.11" textStyle="sm">
             Fill in the details to create a new document.
-          </Dialog.Description>
+          </Text>
+          <Dialog.CloseTrigger />
         </Dialog.Header>
         <Dialog.Body>
           {!isLoading ? (
@@ -75,23 +83,20 @@ export const AppNavBarCreateButton = () => {
                   placeholder="What people will click, no pressure."
                   autoComplete="off"
                 />
-                <Stack
+                <Flex
                   colorPalette="info"
                   direction="row"
-                  alignItems="center"
                   bg="colorPalette.3"
                   p="400"
                   gap="400"
-                  mt="200"
+                  borderRadius="200"
                 >
-                  <Text color="colorPalette.11">
-                    <Info size="2em" />
-                  </Text>
+                  <Icon fontSize="1.5em" as={Info} color="colorPalette.11" />
                   <Text color="colorPalette.11">
                     The new document item will become a child of the current
                     document.
                   </Text>
-                </Stack>
+                </Flex>
               </Stack>
             </Stack>
           ) : (
