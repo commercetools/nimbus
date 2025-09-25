@@ -15,8 +15,8 @@ function App() {
   const [, setActiveRoute] = useAtom(activeRouteAtom);
 
   return (
-    <IntlProvider locale="en" messages={{}}>
-      <RouterProvider>
+    <RouterProvider>
+      <IntlProvider locale="en">
         <NimbusProvider router={{ navigate: setActiveRoute }}>
           <>
             <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
@@ -69,8 +69,8 @@ function App() {
             </Flex>
           </>
         </NimbusProvider>
-      </RouterProvider>
-    </IntlProvider>
+      </IntlProvider>
+    </RouterProvider>
   );
 }
 
