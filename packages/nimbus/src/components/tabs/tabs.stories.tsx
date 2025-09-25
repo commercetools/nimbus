@@ -1,6 +1,7 @@
 import { Tabs } from "./tabs";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
+import { Box } from "../box";
 
 /**
  * Storybook metadata configuration
@@ -38,10 +39,10 @@ export default meta;
 type Story = StoryObj<typeof Tabs.Root>;
 
 const Content = (props: { title: string; body: string }) => (
-  <>
+  <Box px="300">
     <h3>{props.title}</h3>
     <p>{props.body}</p>
-  </>
+  </Box>
 );
 
 const navigationTabs = [
@@ -190,7 +191,6 @@ export const Base: Story = {
 export const CompoundComposition: Story = {
   args: {
     orientation: "horizontal",
-    placement: "start",
     size: "md",
     "data-testid": "manual-tabs",
   },
@@ -255,7 +255,7 @@ export const VerticalStart: Story = {
     "data-testid": "vertical-tabs",
   },
   render: (args) => {
-    return <Tabs {...args} height="300px" tabs={navigationTabs} />;
+    return <Tabs {...args} tabs={navigationTabs} />;
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -323,7 +323,7 @@ export const VerticalEnd: Story = {
     placement: "end",
   },
   render: (args) => {
-    return <Tabs {...args} height="300px" tabs={navigationTabs} />;
+    return <Tabs {...args} tabs={navigationTabs} />;
   },
 };
 

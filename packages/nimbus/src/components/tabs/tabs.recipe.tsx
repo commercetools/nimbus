@@ -77,6 +77,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
         list: {
           borderBottom: "1px solid",
+          borderColor: "neutral.6",
         },
         tab: {
           borderBottom: "2px solid transparent",
@@ -92,8 +93,8 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
         list: {
           flexDirection: "column",
-          borderColor: "neutral.6",
           borderRight: "1px solid",
+          borderColor: "neutral.6",
         },
         tab: {
           borderRight: "2px solid transparent",
@@ -110,8 +111,8 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
         list: {
           flexDirection: "column",
-          borderColor: "neutral.6",
           borderLeft: "1px solid",
+          borderColor: "neutral.6",
         },
         tab: {
           borderLeft: "2px solid transparent",
