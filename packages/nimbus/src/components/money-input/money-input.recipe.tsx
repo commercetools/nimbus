@@ -45,6 +45,9 @@ export const moneyInputRecipe = defineSlotRecipe({
         "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
       paddingInline: "400",
       alignItems: "center",
+      "&[data-disabled='true']": {
+        opacity: "0.5",
+      },
     },
     amountInput: {
       borderLeftRadius: "0",

@@ -278,7 +278,10 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
         {/* Currency Select or Label */}
         <MoneyInputCurrencySelectSlot>
           {hasNoCurrencies ? (
-            <MoneyInputCurrencyLabelSlot asChild>
+            <MoneyInputCurrencyLabelSlot
+              {...(isDisabled && { "data-disabled": isDisabled })}
+              asChild
+            >
               <label id={noCurrenciesLabelId}>{value.currencyCode}</label>
             </MoneyInputCurrencyLabelSlot>
           ) : (

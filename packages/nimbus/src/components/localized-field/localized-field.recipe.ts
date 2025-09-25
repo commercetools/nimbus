@@ -110,6 +110,9 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       marginInlineEnd: "-25",
       paddingInline: "400",
       alignItems: "center",
+      "&[data-disabled='true']": {
+        opacity: "0.5",
+      },
     },
     localeFieldInput: {
       borderLeftRadius: 0,

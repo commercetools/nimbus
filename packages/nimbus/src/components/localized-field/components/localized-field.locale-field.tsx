@@ -104,6 +104,7 @@ export const LocalizedFieldLocaleField = ({
       >
         <LocalizedFieldLocaleFieldLabelSlot
           display={type === "money" ? "none" : undefined}
+          {...(isDisabled && { "data-disabled": isDisabled })}
           asChild
         >
           <FormField.Label>

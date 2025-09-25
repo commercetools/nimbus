@@ -141,7 +141,13 @@ function localizedFieldReducer(
           ...state[action.payload.fieldType],
           value: {
             ...state[action.payload.fieldType]?.value,
-            [action.payload.localeOrCurrency]: action.payload.value,
+            [action.payload.localeOrCurrency]:
+              action.payload.fieldType === "money"
+                ? {
+                    amount: action.payload.value,
+                    currencyCode: action.payload.localeOrCurrency,
+                  }
+                : action.payload.value,
           },
         },
       };
