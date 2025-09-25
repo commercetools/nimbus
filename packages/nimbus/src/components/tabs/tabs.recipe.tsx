@@ -28,7 +28,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      fontWeight: "medium",
+      fontWeight: "500",
       padding: "300 400",
       transition: "all 150ms ease",
       paddingTop: "var(--padding-top)",
@@ -38,9 +38,6 @@ export const tabsSlotRecipe = defineSlotRecipe({
       fontSize: "var(--font-size)",
       _hover: {
         color: "primary.11",
-      },
-      _pressed: {
-        backgroundColor: "neutral.4",
       },
       _selected: {
         color: "primary.9",
