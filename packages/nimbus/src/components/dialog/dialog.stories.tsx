@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import { userEvent, within, expect, waitFor } from "storybook/test";
 import { useState } from "react";
 import { Dialog } from "./dialog";
 import {
