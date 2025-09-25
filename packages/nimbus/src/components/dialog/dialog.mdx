@@ -1,8 +1,10 @@
 ---
 id: Components-Dialog
 title: Dialog
-description: A foundational dialog component for overlays that require user attention and interaction.
-lifecycleState: Stable
+description: >-
+  A foundational dialog component for overlays that require user attention and
+  interaction.
+lifecycleState: Beta
 order: 999
 menu:
   - Components
@@ -15,6 +17,7 @@ tags:
   - interactive
 figmaLink: >-
   https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
+
 ---
 
 # Dialog
@@ -43,81 +46,17 @@ Deep dive on details and access design library.
 [ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
 [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
 
-## API
+## Variables
 
-The Dialog component is structured as a compound component with multiple parts that work together:
-
-### Dialog.Root
-
-The root component that provides context and state management for the dialog. Uses React Aria's DialogTrigger for accessibility and keyboard interaction.
-
-**Props:**
-- `isOpen?: boolean` - Controls the open state (controlled mode)  
-- `onOpenChange?: (isOpen: boolean) => void` - Callback when dialog state changes
-- `defaultOpen?: boolean` - Initial open state (uncontrolled mode, default: false)
-- `isDisabled?: boolean` - Whether the dialog trigger is disabled (default: false)
-
-### Dialog.Trigger
-
-The trigger element that opens the dialog when activated. Uses React Aria's Button for accessibility.
-
-**Props:**
-- Standard HTML `button` attributes
-- All React Aria `Button` props
-
-### Dialog.Content
-
-The main dialog content container that wraps React Aria's Dialog and Dialog. Handles portalling, backdrop, positioning, and content styling.
-
-**Props:**
-- `size?: "xs" | "sm" | "md" | "lg" | "xl" | "cover" | "full"` - Dialog size (default: "md")
-- `placement?: "center" | "top" | "bottom"` - Dialog position (default: "center")
-- `scrollBehavior?: "inside" | "outside"` - Scroll behavior (default: "outside") 
-- `isPortalled?: boolean` - Whether to render in a portal (default: true)
-- `portalContainer?: HTMLElement | (() => HTMLElement)` - Portal container
-- `hasBackdrop?: boolean` - Whether to show backdrop overlay (default: true)
-- `isDismissable?: boolean` - Whether clicking outside closes dialog (default: true)
-- `isKeyboardDismissDisabled?: boolean` - Whether Escape key is disabled (default: false)
-- `onClose?: () => void` - Callback when dialog requests to close
-- Plus all standard HTML `div` attributes
-
-### Dialog.Header / Dialog.Body / Dialog.Footer
-
-Semantic sections for organizing dialog content with proper styling and spacing.
-
-**Props:**
-- `children: React.ReactNode` - Section content
-- Standard HTML `header`, `div`, or `footer` attributes
-
-### Dialog.Title
-
-Accessible title element that provides semantic meaning to screen readers.
-
-**Props:**
-- `children: React.ReactNode` - Title text
-- Standard HTML `h2` attributes
-
-### Dialog.CloseTrigger
-
-A button that closes the dialog when activated. Can be used multiple times within a dialog.
-
-**Props:**
-- `aria-label?: string` - Accessible label (default: "Close dialog")
-- Standard HTML `button` attributes
-
-## Usage
-
-The Dialog component follows a compound pattern where all parts work together to create a complete dialog experience.
+Get familiar with the features.
 
 ### Basic Usage
-
-The simplest dialog implementation with all essential parts:
 
 ```jsx-live
 const App = () => (
   <Dialog.Root>
     <Dialog.Trigger>
-      <Button>Open Dialog</Button>
+      Anything can be a trigger
     </Dialog.Trigger>
     <Dialog.Content>
       <Dialog.Header>
@@ -129,7 +68,7 @@ const App = () => (
           title, description, and close button for a complete experience.
       </Dialog.Body>
       <Dialog.Footer>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline" slot="close">Cancel</Button>
         <Button>Save</Button>
       </Dialog.Footer>
     </Dialog.Content>
@@ -137,64 +76,107 @@ const App = () => (
 )
 ```
 
-### Size Variants
+### Size
 
-Control the dialog width with size variants:
+Control the dialog width by applying  `width` prop on the Content component,
+it's a regular style-prop, so you can use all size-tokens but also custom values.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="row" wrap>
-    {["xs", "sm", "md", "lg", "xl"].map((size) => (
-      <Dialog.Root key={size}>
-        <Dialog.Trigger>
-          <Button variant="outline" size="sm">
-            {size.toUpperCase()}
-          </Button>
-        </Dialog.Trigger>
-        <Dialog.Content size={size}>
-          <Dialog.Header>
-            <Dialog.Title>Size: {size}</Dialog.Title>
-            <Dialog.CloseTrigger />
-          </Dialog.Header>
-          <Dialog.Body>
-              This dialog demonstrates the "{size}" size variant.
-              Each size provides different maximum widths for various use cases.
-          </Dialog.Body>
-        </Dialog.Content>
-      </Dialog.Root>
-    ))}
-  </Stack>
+  <Dialog.Root >
+    <Dialog.Trigger asChild>
+      <Button>Open Large Dialog</Button>
+    </Dialog.Trigger>
+    <Dialog.Content width="3xl">
+      <Dialog.Header>
+        <Dialog.Title>Large Dialog</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+        This dialog uses a custom width. You can change the width by
+        adjusting the width prop on Dialog.Root to values like "xs", "sm",
+        "md", "lg", "xl", or "full", but also raw css values.
+      </Dialog.Body>
+    </Dialog.Content>
+  </Dialog.Root>
 )
 ```
 
 ### Placement Options
 
-Position the dialog at different locations:
+Position the dialog at different locations using the `placement` prop:
 
 ```jsx-live
-const App = () => (
-  <Stack direction="row">
-    {["center", "top", "bottom"].map((placement) => (
-      <Dialog.Root key={placement}>
-        <Dialog.Trigger>
-          <Button variant="outline">
-            {placement}
-          </Button>
-        </Dialog.Trigger>
-        <Dialog.Content placement={placement}>
-          <Dialog.Header>
-            <Dialog.Title>Placement: {placement}</Dialog.Title>
-            <Dialog.CloseTrigger />
-          </Dialog.Header>
-          <Dialog.Body>
-              This dialog is positioned at "{placement}". Different placements 
-              work better for different types of content and user flows.
-          </Dialog.Body>
-        </Dialog.Content>
-      </Dialog.Root>
-    ))}
-  </Stack>
-)
+const App = () => {
+  const placements = [
+    { value: "center", label: "Center (default)", description: "Centered in the viewport, works well for most use cases" },
+    { value: "top", label: "Top", description: "Appears at the top, useful for notifications or alerts" },
+    { value: "bottom", label: "Bottom", description: "Appears at the bottom, good for mobile-friendly sheets or action panels" }
+  ];
+
+  return (
+    <Stack direction="row" gap="400">
+      {placements.map((placement) => (
+        <Dialog.Root key={placement.value} placement={placement.value}>
+          <Dialog.Trigger asChild>
+            <Button>{placement.label}</Button>
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>{placement.label} Placement</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              {placement.description}
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Scroll Behavior
+
+Handle long content with different scrolling approaches using the `scrollBehavior` prop:
+
+```jsx-live
+const App = () => {
+  const scrollBehaviors = [
+    { value: "outside", label: "Outside (default)", description: "Default scroll behavior, entire dialog scrolls" },
+    { value: "inside", label: "Inside", description: "Contained scrolling within the dialog body" }
+  ];
+
+  return (
+    <Stack direction="row" gap="400">
+      {scrollBehaviors.map((behavior) => (
+        <Dialog.Root key={behavior.value} scrollBehavior={behavior.value}>
+          <Dialog.Trigger asChild>
+            <Button>{behavior.label}</Button>
+          </Dialog.Trigger>
+          <Dialog.Content width="sm">
+            <Dialog.Header>
+              <Dialog.Title>{behavior.label} Scrolling</Dialog.Title>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body>
+              <Stack>
+                <Text>{behavior.description}</Text>
+                {Array.from({ length: 20 }, (_, i) => (
+                  <Text key={i}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  </Text>
+                ))}
+              </Stack>
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Root>
+      ))}
+    </Stack>
+  );
+}
 ```
 
 ### Controlled State
@@ -238,42 +220,6 @@ const App = () => {
 }
 ```
 
-### Scroll Behavior
-
-Handle long content with different scrolling approaches:
-
-```jsx-live
-const App = () => (
-  <Stack direction="row">
-    {["inside", "outside"].map((scrollBehavior) => (
-      <Dialog.Root key={scrollBehavior}>
-        <Dialog.Trigger>
-          <Button variant="outline">
-            Scroll {scrollBehavior}
-          </Button>
-        </Dialog.Trigger>
-        <Dialog.Content scrollBehavior={scrollBehavior} size="sm">
-          <Dialog.Header>
-            <Dialog.Title>Scroll: {scrollBehavior}</Dialog.Title>
-            <Dialog.CloseTrigger />
-          </Dialog.Header>
-          <Dialog.Body>
-            <Stack>
-                This dialog tests "{scrollBehavior}" scroll behavior with lots of content.
-              {Array.from({ length: 10 }, (_, i) => (
-                <Text key={i}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                  Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </Text>
-              ))}
-            </Stack>
-          </Dialog.Body>
-        </Dialog.Content>
-      </Dialog.Root>
-    ))}
-  </Stack>
-)
-```
 
 ## Guidelines
 
@@ -282,27 +228,29 @@ Use dialogs strategically to enhance user workflow without disrupting the experi
 ### Best Practices
 
 - **Use dialogs sparingly**: Only when you need to interrupt the user's flow for critical actions
-- **Keep content focused**: Dialogs should have a single, clear purpose  
+- **Keep content focused**: Dialogs should have a single, clear purpose
 - **Provide clear actions**: Always include obvious ways to proceed or dismiss
 - **Make dismissal easy**: Support Escape key, close buttons, and click-outside behavior
 - **Maintain focus flow**: Focus should move logically through interactive elements
 - **Size appropriately**: Choose sizes that fit your content without overwhelming the viewport
 - **Consider mobile**: Ensure dialogs work well on small screens
 
-### When to Use
+> [!TIP]\
+> When to use
 
-✅ **Good use cases:**
-- Confirming destructive actions (delete confirmations)
-- Collecting focused input (forms, settings)
-- Displaying critical alerts or warnings  
-- Showing detailed information without navigation
-- Authentication flows (login, signup)
+- **Confirming destructive actions**: Delete confirmations and critical warnings
+- **Collecting focused input**: Forms, settings, and data entry that requires attention
+- **Displaying critical alerts**: Important information that requires immediate user attention
+- **Showing detailed information**: Content that doesn't require navigation to a new page
+- **Authentication flows**: Login, signup, and security-related interactions
 
-❌ **Avoid for:**
-- Complex multi-step workflows (use pages instead)
-- Non-critical information (use inline content)
-- Navigation (use proper routing)
-- Content that needs to be referenced while working
+> [!CAUTION]\
+> When not to use
+
+- **Complex multi-step workflows**: Use pages instead for lengthy processes
+- **Non-critical information**: Use inline content for supplementary information
+- **Navigation**: Use proper routing instead of dialogs for moving between sections
+- **Content that needs to be referenced**: Avoid for information users need while working elsewhere
 
 ## Specs
 

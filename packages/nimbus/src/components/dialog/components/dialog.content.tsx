@@ -7,9 +7,9 @@ import {
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import {
-  ModalSlot,
-  DialogContentSlot,
   DialogModalOverlaySlot,
+  DialogModalSlot,
+  DialogContentSlot,
 } from "../dialog.slots";
 import type { DialogContentProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
@@ -70,13 +70,13 @@ export const DialogContent = (props: DialogContentProps) => {
   return (
     <DialogModalOverlaySlot asChild>
       <RaModalOverlay {...modalProps}>
-        <ModalSlot asChild>
+        <DialogModalSlot asChild>
           <RaModal>
             <DialogContentSlot asChild {...styleProps}>
               <RaDialog ref={ref}>{children}</RaDialog>
             </DialogContentSlot>
           </RaModal>
-        </ModalSlot>
+        </DialogModalSlot>
       </RaModalOverlay>
     </DialogModalOverlaySlot>
   );

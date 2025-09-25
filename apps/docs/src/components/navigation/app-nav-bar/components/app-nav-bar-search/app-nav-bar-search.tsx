@@ -3,6 +3,7 @@ import {
   Box,
   useHotkeys,
   Dialog,
+  Separator,
   TextInput,
   Text,
   Kbd,
@@ -68,12 +69,12 @@ export const AppNavBarSearch = () => {
             </Box>
           </Box>
         </Dialog.Trigger>
-        <Dialog.Content divideY="1px" backdropBlur="5px">
+        <Dialog.Content width="3xl">
           <Dialog.Header>
-            <Dialog.Title fontWeight="600">
-              Search the Documentation
-            </Dialog.Title>
+            <Dialog.Title>Search the Documentation</Dialog.Title>
+            <Dialog.CloseTrigger />
           </Dialog.Header>
+          <Separator />
           <Dialog.Body>
             <ComboBox
               inputValue={query}
@@ -100,7 +101,8 @@ export const AppNavBarSearch = () => {
                   <Input autoFocus placeholder="Type to search..." />
                 </Box>
               </Flex>
-              <Box mx="-600" borderTop="1px solid" borderColor="neutral.6">
+              <Box mx="-600">
+                <Separator />
                 <ListBox items={results} selectionMode="single">
                   {(item) => (
                     <Flex

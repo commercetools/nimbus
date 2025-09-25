@@ -30,11 +30,11 @@ export const DialogModalOverlaySlot = withContext<
 >("div", "modalOverlay");
 
 // modal slot - positions the dialog content
-export type ModalSlotProps = HTMLChakraProps<"div">;
-export const ModalSlot = withContext<HTMLDivElement, ModalSlotProps>(
-  "div",
-  "modal"
-);
+export type DialogModalSlotProps = HTMLChakraProps<"div">;
+export const DialogModalSlot = withContext<
+  HTMLDivElement,
+  DialogModalSlotProps
+>("div", "modal");
 
 // Content slot - main dialog container
 export type DialogContentSlotProps = HTMLChakraProps<"div">;
