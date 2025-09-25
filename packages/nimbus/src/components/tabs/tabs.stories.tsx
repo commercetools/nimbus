@@ -1,6 +1,7 @@
 import { Tabs } from "./tabs";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
+import { SentimentSatisfied } from "@commercetools/nimbus-icons";
 import { Box } from "../box";
 
 /**
@@ -198,9 +199,15 @@ export const CompoundComposition: Story = {
     <>
       <Tabs.Root {...args}>
         <Tabs.List>
-          <Tabs.Tab id="1">Tab 1</Tabs.Tab>
-          <Tabs.Tab id="2">Tab 2</Tabs.Tab>
-          <Tabs.Tab id="3">Tab 3</Tabs.Tab>
+          <Tabs.Tab id="1">
+            <SentimentSatisfied /> Tab 1 <SentimentSatisfied />
+          </Tabs.Tab>
+          <Tabs.Tab id="2">
+            <SentimentSatisfied /> Tab 2 <SentimentSatisfied />
+          </Tabs.Tab>
+          <Tabs.Tab id="3">
+            <SentimentSatisfied /> Tab 3 <SentimentSatisfied />
+          </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panels>
           <Tabs.Panel id="1">Content 1</Tabs.Panel>
