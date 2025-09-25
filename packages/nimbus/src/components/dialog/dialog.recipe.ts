@@ -23,8 +23,8 @@ export const dialogSlotRecipe = defineSlotRecipe({
     },
     modalOverlay: {
       bg: {
-        _dark: "bg/50",
-        _light: "fg/50",
+        _dark: "bg/20",
+        _light: "fg/20",
       },
       pos: "fixed",
       left: 0,
