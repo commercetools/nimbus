@@ -28,6 +28,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      gap: "200",
       fontWeight: "500",
       padding: "300 400",
       transition: "all 150ms ease",
