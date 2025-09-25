@@ -67,6 +67,7 @@ export const AsWarning: Story = {
     },
     isVisible: true,
     colorPalette: "warning",
+    role: "status",
   },
 };
 

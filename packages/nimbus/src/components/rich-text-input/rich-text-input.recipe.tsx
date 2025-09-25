@@ -14,7 +14,9 @@ export const richTextInputRecipe = defineSlotRecipe({
       colorPalette: "slate",
       borderColor: "colorPalette.7",
       backgroundColor: "colorPalette.contrast",
-
+      _focusWithin: {
+        layerStyle: "focusRing",
+      },
       // Invalid state styling
       "&[data-invalid='true']": {
         borderWidth: "{sizes.50}",

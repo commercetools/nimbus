@@ -180,3 +180,6 @@ export const FieldErrors = ({
 // Static properties for backwards compatibility with UI-Kit
 FieldErrors.displayName = "FieldErrors";
 FieldErrors.errorTypes = FieldErrorTypes;
+// Static properties for string conversion, mostly for testing
+FieldErrors.getBuiltInMessage = getBuiltInMessage;
+FieldErrors.getCustomMessage = getCustomMessage;

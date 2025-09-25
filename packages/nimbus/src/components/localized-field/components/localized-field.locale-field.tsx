@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import {
   FormField,
+  Icon,
   TextInput,
   MoneyInput,
   type TCustomEvent,
@@ -9,7 +10,7 @@ import {
   type TValue,
   type TCurrencyCode,
 } from "@/components";
-
+import { WarningAmber } from "@commercetools/nimbus-icons";
 import {
   LocalizedFieldLocaleFieldRootSlot,
   LocalizedFieldLocaleFieldInputSlot,
@@ -137,8 +138,21 @@ export const LocalizedFieldLocaleField = ({
         {(description || (warning && touched)) && (
           <FormField.Description
             role={warning && touched ? "status" : undefined}
+            color={warning && touched ? "warning.11" : undefined}
+            display="flex"
+            gap="100"
+            alignItems="center"
           >
-            {warning && touched ? warning : description}
+            {warning && touched ? (
+              <>
+                <Icon colorPalette="warning">
+                  <WarningAmber />
+                </Icon>
+                {warning}
+              </>
+            ) : (
+              description
+            )}
           </FormField.Description>
         )}
         {error && touched && <FormField.Error>{error}</FormField.Error>}

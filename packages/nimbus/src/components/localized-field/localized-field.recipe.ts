@@ -74,6 +74,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       lineHeight: "var(--localized-field-line-height)",
       display: "flex",
       gap: "100",
+      alignItems: "center",
     },
     error: {
       gridArea: "error",
@@ -82,6 +83,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       lineHeight: "var(--localized-field-line-height)",
       display: "flex",
       gap: "100",
+      alignItems: "center",
     },
     toggleButtonContainer: { gridArea: "toggle" },
     // Individual Locale Field / Input slots
@@ -90,7 +92,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       gridTemplateAreas: localeFieldGrid,
       // Fake `_focusWithin` on the label element, since formfield's `label` and `input` slots cannot be wrapped,
       // and the root slot needs to display desc/warning/error, so the focus styling would be off if we used _focusWithin on it
-      "&:has(.nimbus-localized-field__localeFieldInput:focus)": {
+      "&:has(.nimbus-localized-field__localeFieldInput:focus-within)": {
         "& .nimbus-localized-field__localeFieldLabel": {
           outlineWidth: "var(--focus-ring-width)",
           outlineColor: "var(--focus-ring-color)",

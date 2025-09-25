@@ -1,16 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { within, expect } from "storybook/test";
+import { within, expect, userEvent } from "storybook/test";
 import { Stack, Text, type TValue } from "@/components";
 import { LocalizedField } from "./index";
 import {
   baseLocales,
   baseCurrencies,
+  baseWarningRenderer,
+  baseErrorRenderer,
   baseContextFields,
   baseMoneyContextFields,
   baseStoryProps,
   emptyValuesStoryProps,
   singleValueStoryProps,
   hintStoryProps,
+  descriptionsAndWarningsStoryProps,
+  errorsAndValidationStoryProps,
 } from "./utils/test-data";
 import {
   checkFieldIsCollapsed,
@@ -23,12 +27,15 @@ import {
   checkFieldIsExpanded,
   checkAndUpdateLocaleFieldValue,
   checkAndUpdateRichTextLocaleFieldValue,
+  checkFieldItemNotRendered,
+  checkAllFieldItemsNotRendered,
   checkFieldDetailsDialog,
-  // toggleFieldContolCheckbox,
-  // checkFieldDescription,
-  // checkFieldError,
-  // checkLocaleFieldDescription,
-  // checkLocaleFieldError,
+  toggleFieldContolCheckbox,
+  closeFieldControls,
+  checkFieldDescription,
+  checkFieldError,
+  checkLocaleFieldDescription,
+  checkLocaleFieldError,
 } from "./utils/test-utils";
 import { LocalizedFieldStoryComponent } from "./utils/localized-field.story-component";
 
@@ -314,8 +321,9 @@ export const Disabled: Story = {
     await step("Text Field", async () => {
       const textField = await getFieldContainerForType(canvas, "text");
       await step("Field toggle button is disabled", async () => {
-        const toggleButton = await getExpandButtonForField(textField, "text");
-        expect(toggleButton).toHaveAttribute("aria-disabled", "true");
+        expect(
+          await getExpandButtonForField(textField, "text")
+        ).toHaveAttribute("aria-disabled", "true");
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -335,11 +343,9 @@ export const Disabled: Story = {
         "multiLine"
       );
       await step("Field toggle button is disabled", async () => {
-        const toggleButton = await getExpandButtonForField(
-          multiLineField,
-          "multiLine"
-        );
-        expect(toggleButton).toHaveAttribute("aria-disabled", "true");
+        expect(
+          await getExpandButtonForField(multiLineField, "multiLine")
+        ).toHaveAttribute("aria-disabled", "true");
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -356,11 +362,9 @@ export const Disabled: Story = {
     await step("RichText Field", async () => {
       const richTextField = await getFieldContainerForType(canvas, "richText");
       await step("Field toggle button is disabled", async () => {
-        const toggleButton = await getExpandButtonForField(
-          richTextField,
-          "richText"
-        );
-        expect(toggleButton).toHaveAttribute("aria-disabled", "true");
+        expect(
+          await getExpandButtonForField(richTextField, "richText")
+        ).toHaveAttribute("aria-disabled", "true");
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -380,8 +384,9 @@ export const Disabled: Story = {
     await step("Money Field", async () => {
       const moneyField = await getFieldContainerForType(canvas, "money");
       await step("Field toggle button is disabled", async () => {
-        const toggleButton = await getExpandButtonForField(moneyField, "money");
-        expect(toggleButton).toHaveAttribute("aria-disabled", "true");
+        expect(
+          await getExpandButtonForField(moneyField, "money")
+        ).toHaveAttribute("aria-disabled", "true");
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -568,10 +573,11 @@ export const SingleLocaleOrCurrency: Story = {
         await getInputForLocaleField(textField, "en");
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(textField).queryByRole("button", {
-          name: /all languages/i,
-        });
-        expect(toggleButton).not.toBeInTheDocument();
+        expect(
+          await within(textField).queryByRole("button", {
+            name: /all languages/i,
+          })
+        ).not.toBeInTheDocument();
       });
     });
     await step("MultiLine Field", async () => {
@@ -587,13 +593,11 @@ export const SingleLocaleOrCurrency: Story = {
         await getInputForLocaleField(multiLineField, "en");
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(multiLineField).queryByRole(
-          "button",
-          {
+        expect(
+          await within(multiLineField).queryByRole("button", {
             name: /all languages/i,
-          }
-        );
-        expect(toggleButton).not.toBeInTheDocument();
+          })
+        ).not.toBeInTheDocument();
       });
     });
     await step("RichText Field", async () => {
@@ -606,10 +610,11 @@ export const SingleLocaleOrCurrency: Story = {
         await getRichTextInputForLocaleField(richTextField, "en");
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(richTextField).queryByRole("button", {
-          name: /all languages/i,
-        });
-        expect(toggleButton).not.toBeInTheDocument();
+        expect(
+          await within(richTextField).queryByRole("button", {
+            name: /all languages/i,
+          })
+        ).not.toBeInTheDocument();
       });
     });
     await step("Money Field", async () => {
@@ -622,10 +627,11 @@ export const SingleLocaleOrCurrency: Story = {
         await getInputForLocaleField(moneyField, "USD");
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(moneyField).queryByRole("button", {
-          name: /all currencies/i,
-        });
-        expect(toggleButton).not.toBeInTheDocument();
+        expect(
+          await within(moneyField).queryByRole("button", {
+            name: /all currencies/i,
+          })
+        ).not.toBeInTheDocument();
       });
     });
   },
@@ -697,10 +703,11 @@ export const DisplayAllLocalesOrCurrencies: Story = {
         }
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(textField).queryByRole("button", {
-          name: /all languages/i,
-        });
-        expect(toggleButton).not.toBeInTheDocument();
+        expect(
+          await within(textField).queryByRole("button", {
+            name: /all languages/i,
+          })
+        ).not.toBeInTheDocument();
       });
     });
     await step("MultiLine Field", async () => {
@@ -715,13 +722,11 @@ export const DisplayAllLocalesOrCurrencies: Story = {
         }
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(multiLineField).queryByRole(
-          "button",
-          {
+        expect(
+          await within(multiLineField).queryByRole("button", {
             name: /all languages/i,
-          }
-        );
-        expect(toggleButton).not.toBeInTheDocument();
+          })
+        ).not.toBeInTheDocument();
       });
     });
     await step("RichText Field", async () => {
@@ -733,10 +738,11 @@ export const DisplayAllLocalesOrCurrencies: Story = {
         }
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(richTextField).queryByRole("button", {
-          name: /all languages/i,
-        });
-        expect(toggleButton).not.toBeInTheDocument();
+        expect(
+          await within(richTextField).queryByRole("button", {
+            name: /all languages/i,
+          })
+        ).not.toBeInTheDocument();
       });
     });
     await step("Money Field", async () => {
@@ -748,10 +754,11 @@ export const DisplayAllLocalesOrCurrencies: Story = {
         }
       });
       await step("Toggle expand button is not displayed", async () => {
-        const toggleButton = await within(moneyField).queryByRole("button", {
-          name: /all currencies/i,
-        });
-        expect(toggleButton).not.toBeInTheDocument();
+        expect(
+          await within(moneyField).queryByRole("button", {
+            name: /all currencies/i,
+          })
+        ).not.toBeInTheDocument();
       });
     });
   },
@@ -823,35 +830,527 @@ export const HintDialog: Story = {
 
 export const DescriptionsAndWarnings: Story = {
   render: () => {
-    return <LocalizedFieldStoryComponent {...emptyValuesStoryProps} />;
+    return (
+      <LocalizedFieldStoryComponent
+        {...descriptionsAndWarningsStoryProps}
+        showControls
+      />
+    );
   },
-  // play: async ({ canvasElement, step }) => {
-  //   const canvas = within(canvasElement);
-  //   await step("Text Field", async () => {
-  //     const textField = await getFieldContainerForType(canvas, "text");
-  //     // await step("Field displays description", async () => {
-  //     //   await toggleFieldContolCheckbox(canvas, "text", "Show Description");
-  //     //   await checkFieldDescription(textField, baseContextFields.description);
-  //     // });
-  //   });
-  //   await step("MultiLine Field", async () => {
-  //     const multiLineField = await getFieldContainerForType(
-  //       canvas,
-  //       "multiLine"
-  //     );
-  //   });
-  //   await step("RichText Field", async () => {
-  //     const richTextField = await getFieldContainerForType(canvas, "richText");
-  //   });
-  //   await step("Money Field", async () => {
-  //     const moneyField = await getFieldContainerForType(canvas, "money");
-  //   });
-  // },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const legacyWarning = baseWarningRenderer("custom");
+    await step("Text Field", async () => {
+      const textField = await getFieldContainerForType(canvas, "text");
+      await step("Descriptions and warnings for field group", async () => {
+        await step("Field displays description", async () => {
+          await toggleFieldContolCheckbox(canvas, "text", "Show Description");
+          await checkFieldDescription(textField, baseContextFields.description);
+        });
+        await step(
+          "If a warning is set, field displays warning instead of description once a localeField is touched",
+          async () => {
+            await checkAllFieldItemsNotRendered(
+              textField,
+              legacyWarning!,
+              baseContextFields.warning
+            );
+            const localeField = await getInputForLocaleField(textField, "en");
+            // Make sure input's event handlers are initialized
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            // Focusing input sets `touched` to `true`
+            await localeField.focus();
+            // Make sure description field is set as field's aria-describedby element
+            await checkFieldDescription(textField, legacyWarning!);
+            // Make sure description field has proper role and accessible name
+            await within(textField).findByRole("status", {
+              name: new RegExp(`${legacyWarning}`, "i"),
+            });
+            // Ensure description text is not rendered
+            await checkAllFieldItemsNotRendered(
+              textField,
+              baseContextFields.description
+            );
+          }
+        );
+        await step(
+          "Both warning and legacy warnings display when component is touched",
+          async () => {
+            await toggleFieldContolCheckbox(canvas, "text", "Show Warning");
+            await checkFieldDescription(textField, baseContextFields.warning);
+            // Make sure description field has proper role and accessible name
+            await within(textField).findByRole("status", {
+              name: new RegExp(
+                `${baseContextFields.warning} ${legacyWarning}`,
+                "i"
+              ),
+            });
+          }
+        );
+        await step(
+          "When isTouched is set to false, warnings are not rendered and are replaced by description",
+          async () => {
+            // Toggling the Show Warning checkbox to false sets isTouched to false
+            await toggleFieldContolCheckbox(canvas, "text", "Show Warning");
+            // Ensure description text is displayed
+            await checkFieldDescription(
+              textField,
+              baseContextFields.description
+            );
+            // Ensure there is no element with a role of status in field
+            expect(
+              await within(textField).queryByRole("status")
+            ).not.toBeInTheDocument();
+            // ensure that the warning text isn't displayed
+            await checkAllFieldItemsNotRendered(
+              textField,
+              legacyWarning!,
+              baseContextFields.warning
+            );
+          }
+        );
+        // cleanup
+        await toggleFieldContolCheckbox(canvas, "text", "Show Description");
+      });
+      await step("Descriptions and warnings for locale fields", async () => {
+        await step("Locale fields display description", async () => {
+          await toggleExpandField(textField, "text");
+          await toggleFieldContolCheckbox(canvas, "text", "Show Descriptions");
+          for await (const locale of baseLocales) {
+            await checkLocaleFieldDescription(
+              textField,
+              locale,
+              baseStoryProps.text.fieldData.descriptions?.[locale] as string
+            );
+          }
+        });
+        await step(
+          "If warning is set Locale fields display warnings instead of descriptions once a localeField is touched",
+          async () => {
+            const localeField = await getInputForLocaleField(textField, "en");
+            await toggleFieldContolCheckbox(canvas, "text", "Show Warnings");
+            await localeField.focus();
+            for await (const locale of baseLocales) {
+              await checkLocaleFieldDescription(
+                textField,
+                locale,
+                baseStoryProps.text.fieldData.warnings?.[locale] as string
+              );
+            }
+          }
+        );
+        // Cleanup
+        await toggleFieldContolCheckbox(canvas, "text", "Show Warnings");
+        await toggleFieldContolCheckbox(canvas, "text", "Show Descriptions");
+        await closeFieldControls(canvas, "text");
+      });
+    });
+    await step("MultiLine Field", async () => {
+      const multiLineField = await getFieldContainerForType(
+        canvas,
+        "multiLine"
+      );
+      await step("Descriptions and warnings for field group", async () => {
+        await step("Field displays description", async () => {
+          await toggleFieldContolCheckbox(
+            canvas,
+            "multiLine",
+            "Show Description"
+          );
+          await checkFieldDescription(
+            multiLineField,
+            baseContextFields.description
+          );
+        });
+        await step(
+          "If a warning is set, field displays warning instead of description once a localeField is touched",
+          async () => {
+            await checkAllFieldItemsNotRendered(
+              multiLineField,
+              legacyWarning!,
+              baseContextFields.warning
+            );
+            const localeField = await getInputForLocaleField(
+              multiLineField,
+              "en"
+            );
+            // Make sure input's event handlers are initialized
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            // Focusing input sets `touched` to `true`
+            await localeField.focus();
+            // Make sure description field is set as field's aria-describedby element
+            await checkFieldDescription(multiLineField, legacyWarning!);
+            // Make sure description field has proper role and accessible name
+            await within(multiLineField).findByRole("status", {
+              name: new RegExp(`${legacyWarning}`, "i"),
+            });
+            // Ensure description text is not rendered
+            await checkAllFieldItemsNotRendered(
+              multiLineField,
+              baseContextFields.description
+            );
+          }
+        );
+        await step(
+          "Both warning and legacy warnings display when component is touched",
+          async () => {
+            await toggleFieldContolCheckbox(
+              canvas,
+              "multiLine",
+              "Show Warning"
+            );
+            await checkFieldDescription(
+              multiLineField,
+              baseContextFields.warning
+            );
+            // Make sure description field has proper role and accessible name
+            await within(multiLineField).findByRole("status", {
+              name: new RegExp(
+                `${baseContextFields.warning} ${legacyWarning}`,
+                "i"
+              ),
+            });
+          }
+        );
+        await step(
+          "When isTouched is set to false, warnings are not rendered and are replaced by description",
+          async () => {
+            // Toggling the Show Warning checkbox to false sets isTouched to false
+            await toggleFieldContolCheckbox(
+              canvas,
+              "multiLine",
+              "Show Warning"
+            );
+            // Ensure description text is displayed
+            await checkFieldDescription(
+              multiLineField,
+              baseContextFields.description
+            );
+            // Ensure there is no element with a role of status in field
+            expect(
+              await within(multiLineField).queryByRole("status")
+            ).not.toBeInTheDocument();
+            // ensure that the warning text isn't displayed
+            await checkAllFieldItemsNotRendered(
+              multiLineField,
+              legacyWarning!,
+              baseContextFields.warning
+            );
+          }
+        );
+        // cleanup
+        await toggleFieldContolCheckbox(
+          canvas,
+          "multiLine",
+          "Show Description"
+        );
+      });
+      await step("Descriptions and warnings for locale fields", async () => {
+        await step("Locale fields display description", async () => {
+          await toggleExpandField(multiLineField, "multiLine");
+          await toggleFieldContolCheckbox(
+            canvas,
+            "multiLine",
+            "Show Descriptions"
+          );
+          for await (const locale of baseLocales) {
+            await checkLocaleFieldDescription(
+              multiLineField,
+              locale,
+              baseStoryProps.multiLine.fieldData.descriptions?.[
+                locale
+              ] as string
+            );
+          }
+        });
+        await step(
+          "If warning is set Locale fields display warnings instead of descriptions once a localeField is touched",
+          async () => {
+            const localeField = await getInputForLocaleField(
+              multiLineField,
+              "en"
+            );
+            await toggleFieldContolCheckbox(
+              canvas,
+              "multiLine",
+              "Show Warnings"
+            );
+            await localeField.focus();
+            for await (const locale of baseLocales) {
+              await checkLocaleFieldDescription(
+                multiLineField,
+                locale,
+                baseStoryProps.multiLine.fieldData.warnings?.[locale] as string
+              );
+            }
+          }
+        );
+        // Cleanup
+        await toggleFieldContolCheckbox(canvas, "multiLine", "Show Warnings");
+        await toggleFieldContolCheckbox(
+          canvas,
+          "multiLine",
+          "Show Descriptions"
+        );
+        await closeFieldControls(canvas, "multiLine");
+      });
+    });
+    await step("RichText Field", async () => {
+      const richTextField = await getFieldContainerForType(canvas, "richText");
+      await step("Descriptions and warnings for field group", async () => {
+        await step("Field displays description", async () => {
+          await toggleFieldContolCheckbox(
+            canvas,
+            "richText",
+            "Show Description"
+          );
+          await checkFieldDescription(
+            richTextField,
+            baseContextFields.description
+          );
+        });
+        await step(
+          "If a warning is set, field displays warning instead of description once a localeField is touched",
+          async () => {
+            await checkAllFieldItemsNotRendered(
+              richTextField,
+              legacyWarning!,
+              baseContextFields.warning
+            );
+            const localeField = await getRichTextInputForLocaleField(
+              richTextField,
+              "en"
+            );
+            // Make sure input's event handlers are initialized
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            // Focusing input sets `touched` to `true`
+            await localeField.focus();
+            // Make sure description field is set as field's aria-describedby element
+            await checkFieldDescription(richTextField, legacyWarning!);
+            // Make sure description field has proper role and accessible name
+            await within(richTextField).findByRole("status", {
+              name: new RegExp(`${legacyWarning}`, "i"),
+            });
+            // Ensure description text is not rendered
+            await checkAllFieldItemsNotRendered(
+              richTextField,
+              baseContextFields.description
+            );
+          }
+        );
+        await step(
+          "Both warning and legacy warnings display when component is touched",
+          async () => {
+            await toggleFieldContolCheckbox(canvas, "richText", "Show Warning");
+            await checkFieldDescription(
+              richTextField,
+              baseContextFields.warning
+            );
+            // Make sure description field has proper role and accessible name
+            await within(richTextField).findByRole("status", {
+              name: new RegExp(
+                `${baseContextFields.warning} ${legacyWarning}`,
+                "i"
+              ),
+            });
+          }
+        );
+        await step(
+          "When isTouched is set to false, warnings are not rendered and are replaced by description",
+          async () => {
+            // Toggling the Show Warning checkbox to false sets isTouched to false
+            await toggleFieldContolCheckbox(canvas, "richText", "Show Warning");
+            // Ensure description text is displayed
+            await checkFieldDescription(
+              richTextField,
+              baseContextFields.description
+            );
+            // Ensure there is no element with a role of status in field
+            expect(
+              await within(richTextField).queryByRole("status")
+            ).not.toBeInTheDocument();
+            // ensure that the warning text isn't displayed
+            await checkAllFieldItemsNotRendered(
+              richTextField,
+              legacyWarning!,
+              baseContextFields.warning
+            );
+          }
+        );
+        // cleanup
+        await toggleFieldContolCheckbox(canvas, "richText", "Show Description");
+      });
+      await step("Descriptions and warnings for locale fields", async () => {
+        await step("Locale fields display description", async () => {
+          await toggleExpandField(richTextField, "richText");
+          await toggleFieldContolCheckbox(
+            canvas,
+            "richText",
+            "Show Descriptions"
+          );
+          for await (const locale of baseLocales) {
+            await checkLocaleFieldDescription(
+              richTextField,
+              locale,
+              baseStoryProps.richText.fieldData.descriptions?.[
+                locale
+              ] as string,
+              "richText"
+            );
+          }
+        });
+        await step(
+          "If warning is set Locale fields display warnings instead of descriptions once a localeField is touched",
+          async () => {
+            const localeField = await getRichTextContainerForLocaleField(
+              richTextField,
+              "en"
+            );
+            await toggleFieldContolCheckbox(
+              canvas,
+              "richText",
+              "Show Warnings"
+            );
+            await localeField.focus();
+            for await (const locale of baseLocales) {
+              await checkLocaleFieldDescription(
+                richTextField,
+                locale,
+                baseStoryProps.richText.fieldData.warnings?.[locale] as string,
+                "richText"
+              );
+            }
+          }
+        );
+        // Cleanup
+        await toggleFieldContolCheckbox(canvas, "richText", "Show Warnings");
+        await toggleFieldContolCheckbox(
+          canvas,
+          "richText",
+          "Show Descriptions"
+        );
+        await closeFieldControls(canvas, "richText");
+      });
+    });
+    await step("Money Field", async () => {
+      const moneyField = await getFieldContainerForType(canvas, "money");
+      await step("Descriptions and warnings for field group", async () => {
+        await step("Field displays description", async () => {
+          await toggleFieldContolCheckbox(canvas, "money", "Show Description");
+          await checkFieldDescription(
+            moneyField,
+            baseMoneyContextFields.description
+          );
+        });
+        await step(
+          "If a warning is set, field displays warning instead of description once a localeField is touched",
+          async () => {
+            await checkAllFieldItemsNotRendered(
+              moneyField,
+              legacyWarning!,
+              baseMoneyContextFields.warning
+            );
+            const localeField = await getInputForLocaleField(moneyField, "USD");
+            // Make sure input's event handlers are initialized
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            // Focusing input sets `touched` to `true`
+            await localeField.focus();
+            // Make sure description field is set as field's aria-describedby element
+            await checkFieldDescription(moneyField, legacyWarning!);
+            // Make sure description field has proper role and accessible name
+            await within(moneyField).findByRole("status", {
+              name: new RegExp(`${legacyWarning}`, "i"),
+            });
+            // Ensure description text is not rendered
+            await checkAllFieldItemsNotRendered(
+              moneyField,
+              baseMoneyContextFields.description
+            );
+          }
+        );
+        await step(
+          "Both warning and legacy warnings display when component is touched",
+          async () => {
+            await toggleFieldContolCheckbox(canvas, "money", "Show Warning");
+            await checkFieldDescription(moneyField, baseContextFields.warning);
+            // Make sure description field has proper role and accessible name
+            await within(moneyField).findByRole("status", {
+              name: new RegExp(
+                `${baseMoneyContextFields.warning} ${legacyWarning}`,
+                "i"
+              ),
+            });
+          }
+        );
+        await step(
+          "When isTouched is set to false, warnings are not rendered and are replaced by description",
+          async () => {
+            // Toggling the Show Warning checkbox to false sets isTouched to false
+            await toggleFieldContolCheckbox(canvas, "money", "Show Warning");
+            // Ensure description text is displayed
+            await checkFieldDescription(
+              moneyField,
+              baseMoneyContextFields.description
+            );
+            // Ensure there is no element with a role of status in field
+            expect(
+              await within(moneyField).queryByRole("status")
+            ).not.toBeInTheDocument();
+            // ensure that the warning text isn't displayed
+            await checkAllFieldItemsNotRendered(
+              moneyField,
+              legacyWarning!,
+              baseMoneyContextFields.warning
+            );
+          }
+        );
+        // cleanup
+        await toggleFieldContolCheckbox(canvas, "money", "Show Description");
+      });
+      await step("Descriptions and warnings for locale fields", async () => {
+        await step("Locale fields display description", async () => {
+          await toggleExpandField(moneyField, "money");
+          await toggleFieldContolCheckbox(canvas, "money", "Show Descriptions");
+          for await (const currency of baseCurrencies) {
+            await checkLocaleFieldDescription(
+              moneyField,
+              currency,
+              baseStoryProps.money.fieldData.descriptions?.[currency] as string
+            );
+          }
+        });
+        await step(
+          "If warning is set Locale fields display warnings instead of descriptions once a localeField is touched",
+          async () => {
+            const localeField = await getInputForLocaleField(moneyField, "USD");
+            await toggleFieldContolCheckbox(canvas, "money", "Show Warnings");
+            await localeField.focus();
+            for await (const currency of baseCurrencies) {
+              await checkLocaleFieldDescription(
+                moneyField,
+                currency,
+                baseStoryProps.money.fieldData.warnings?.[currency] as string
+              );
+            }
+          }
+        );
+        // Cleanup
+        await toggleFieldContolCheckbox(canvas, "money", "Show Warnings");
+        await toggleFieldContolCheckbox(canvas, "money", "Show Descriptions");
+        await closeFieldControls(canvas, "money");
+      });
+    });
+  },
 };
 
 export const ErrorsAndValidation: Story = {
   render: () => {
-    return <LocalizedFieldStoryComponent {...emptyValuesStoryProps} />;
+    return (
+      <LocalizedFieldStoryComponent
+        {...errorsAndValidationStoryProps}
+        showControls
+      />
+    );
   },
   // play: async ({ canvasElement, step }) => {
   //   const canvas = within(canvasElement);

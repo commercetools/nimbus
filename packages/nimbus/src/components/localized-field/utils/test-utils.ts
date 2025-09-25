@@ -232,6 +232,29 @@ export const toggleFieldContolCheckbox = async (
   userEvent.click(checkbox!);
 };
 
+export const closeFieldControls = async (
+  canvas: BoundFunctions<Queries>,
+  type: string
+) => {
+  const fieldGroup = (await canvas.findByRole("group", {
+    name: new RegExp(`${type} group`),
+  })) as HTMLElement;
+  const accordionButton = await within(fieldGroup).findByRole("button", {
+    name: new RegExp(`${type} field controls`),
+  });
+  // Open the controls
+  if (accordionButton.ariaExpanded === "true") {
+    await userEvent.click(accordionButton);
+  }
+};
+
+export const checkFieldItemNotRendered = async (
+  field: HTMLElement,
+  textValue: string
+) => {
+  expect(await within(field).queryByText(textValue)).not.toBeInTheDocument();
+};
+
 export const checkFieldDetailsDialog = async (
   field: HTMLElement,
   documentBody: HTMLElement,
@@ -250,9 +273,14 @@ export const checkFieldDescription = async (
   descriptionValue: string
 ) => {
   const descriptionElement = await within(field).findByText(descriptionValue);
+  // We use `FieldErrors` to display legacy Formik/UI Kit warnings in the description container
+  // The `FieldErrors` component adds wrapper divs, which are associated to the description container with aria-labelledby
+  // So in order to find the actual container, we need to check if the element with the text value has a parent with a status role
+  const descriptionElementForFieldErrors =
+    descriptionElement.closest('[role="status"]');
   expect(
     Array.from(field.ariaDescribedByElements!).some(
-      (el) => el === descriptionElement
+      (el) => el === (descriptionElementForFieldErrors ?? descriptionElement)
     )
   ).toBe(true);
 };
@@ -262,6 +290,7 @@ export const checkFieldError = async (
   errorValue: string
 ) => {
   const errorElement = await within(field).findByText(errorValue);
+  // TODO: also check aria-invalid
   expect(
     Array.from(field.ariaDescribedByElements!).some((el) => el === errorElement)
   ).toBe(true);
@@ -270,13 +299,20 @@ export const checkFieldError = async (
 export const checkLocaleFieldDescription = async (
   field: HTMLElement,
   localeOrCurrency: string,
-  descriptionValue: string
+  descriptionValue: string,
+  type?: string
 ) => {
   const descriptionElement = await within(field).findByText(descriptionValue);
-  const localeFieldInput = await getInputForLocaleField(
-    field,
-    localeOrCurrency
-  );
+  let localeFieldInput;
+  if (type === "richText") {
+    localeFieldInput = await getRichTextContainerForLocaleField(
+      field,
+      localeOrCurrency
+    );
+  } else {
+    localeFieldInput = await getInputForLocaleField(field, localeOrCurrency);
+  }
+
   expect(
     Array.from(localeFieldInput.ariaDescribedByElements!).some(
       (el) => el === descriptionElement
@@ -300,4 +336,18 @@ export const checkLocaleFieldError = async (
       (el) => el === errorElement
     )
   ).toBe(true);
+};
+
+export const checkAllFieldItemsNotRendered = async (
+  field: HTMLElement,
+  legacyValue: string,
+  baseValue?: string
+) => {
+  const fieldItemValues = [legacyValue, baseValue];
+  for await (const value of fieldItemValues) {
+    if (value) {
+      expect(typeof value).toEqual("string");
+      await checkFieldItemNotRendered(field, value!);
+    }
+  }
 };

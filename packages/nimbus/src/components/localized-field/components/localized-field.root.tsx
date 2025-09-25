@@ -11,6 +11,7 @@ import {
   HelpOutline,
   Language,
   Payments,
+  WarningAmber,
 } from "@commercetools/nimbus-icons";
 import {
   Box,
@@ -181,6 +182,7 @@ export const LocalizedField = ({
   if (groupHasInvalidLocalizedFields && !expanded) {
     setExpanded(true);
   }
+
   return (
     <LocalizedFieldRootSlot
       {...rest}
@@ -289,25 +291,31 @@ export const LocalizedField = ({
           </Button>
         </LocalizedFieldToggleButtonContainerSlot>
       )}
-      {(description || (warning && touched)) && (
+      {(description || (hasWarning && touched)) && (
         <LocalizedFieldDescriptionSlot
           role={hasWarning && touched ? "status" : undefined}
           color={hasWarning && touched ? "warning.11" : undefined}
+          // In order to associate the warnings from both the warning and legacy warnings props with the fieldset,
+          // we must associate, them to this element with aria-labelledby
+          aria-labelledby={`${descriptionProps.id}-warning`}
           {...descriptionProps}
         >
           {/** Warnings are for compat with UI Kit localized fields */}
           {hasWarning && touched ? (
             <>
-              <Icon alignSelf="center" colorPalette="warning">
-                <ErrorOutline />
+              <Icon colorPalette="warning">
+                <WarningAmber />
               </Icon>
-              <Stack color="warning.11">
+              <Stack gap="0" id={`${descriptionProps.id}-warning`}>
                 {warning}
-                <FieldErrors
-                  errors={warnings}
-                  renderError={renderWarning}
-                  colorPalette="warning"
-                />
+                {warnings && hasWarning && (
+                  <FieldErrors
+                    errors={warnings}
+                    renderError={renderWarning}
+                    colorPalette="warning"
+                    role={undefined}
+                  />
+                )}
               </Stack>
             </>
           ) : (
@@ -316,13 +324,18 @@ export const LocalizedField = ({
         </LocalizedFieldDescriptionSlot>
       )}
       {isInvalid && (
-        <LocalizedFieldErrorSlot {...errorMessageProps}>
-          <Icon alignSelf="center">
+        <LocalizedFieldErrorSlot
+          // In order to associate the errors from both the error and legacy errors props with the fieldset,
+          // we must associate them to this element with aria-labelledby.
+          aria-labelledby={`${descriptionProps.id}-error`}
+          {...errorMessageProps}
+        >
+          <Icon>
             <ErrorOutline />
           </Icon>
-          <Stack>
+          <Stack gap="0" id={`${descriptionProps.id}-error`}>
             {error}
-            {errors && (
+            {errors && hasError && (
               <FieldErrors errors={errors} renderError={renderError} />
             )}
           </Stack>

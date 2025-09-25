@@ -9,7 +9,7 @@ export const moneyInputRecipe = defineSlotRecipe({
     "amountInput",
     "badge",
   ],
-  className: "money-input",
+  className: "nimbus-money-input",
   base: {
     root: {
       width: "full",
@@ -21,6 +21,21 @@ export const moneyInputRecipe = defineSlotRecipe({
         // Show all but the right shadow
         boxShadow:
           "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
+      },
+      "&:has(.nimbus-money-input__container:focus-within)": {
+        "& .nimbus-money-input__currencyLabel": {
+          // add outline to label so that it looks like focus outline is around entire input
+          outlineWidth: "var(--focus-ring-width)",
+          outlineColor: "var(--focus-ring-color)",
+          outlineStyle: "var(--focus-ring-style)",
+          outlineOffset: "var(--focus-ring-offset)",
+          // remove outline on right side of label so that it looks like there is a continuous outline around the label and input.
+          clipPath: `inset(-4px -1px -4px -4px)`,
+        },
+        "& .nimbus-money-input__amountInput": {
+          // remove outline on left side of input so that it looks like there is a continuous outline around the label and input.
+          clipPath: `inset(-4px -4px -4px -1px)`,
+        },
       },
     },
     container: {

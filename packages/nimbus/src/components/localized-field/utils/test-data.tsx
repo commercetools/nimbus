@@ -20,12 +20,38 @@ export const allFieldTypes: LocalizedFieldTypes[] = [
   "money",
 ];
 
+export const baseWarningRenderer = (key: string) => {
+  switch (key) {
+    case "custom":
+      return "UI Kit/Formik legacy warning";
+    default:
+      return null;
+  }
+};
+
+export const baseErrorRenderer = (key: string) => {
+  switch (key) {
+    case "custom":
+      return "UI Kit/Formik legacy error";
+    default:
+      return null;
+  }
+};
+
 export const baseContextFields = {
   label: "Greetings",
   hint: "Whatever greeting you'd like to display, enter it here",
   description: "A polite word or sign of welcome or recognition",
   warning: "youve been warned",
+  warnings: {
+    custom: true,
+  },
+  renderWarning: baseWarningRenderer,
   error: "that value is wrong",
+  errors: {
+    custom: true,
+  },
+  renderError: baseErrorRenderer,
 };
 
 export const baseMoneyContextFields = {
@@ -33,7 +59,15 @@ export const baseMoneyContextFields = {
   hint: "Whatever price you want this product to have, enter it here",
   description: "Price of the product",
   warning: "youve been warned",
+  warnings: {
+    custom: true,
+  },
+  renderWarning: baseWarningRenderer,
   error: "that value is wrong",
+  errors: {
+    custom: true,
+  },
+  renderError: baseWarningRenderer,
 };
 
 export const baseLocales = ["en", "zh-Hans", "de"];
@@ -265,6 +299,100 @@ export const hintStoryProps = {
     fieldProps: {
       label: baseMoneyContextFields.label,
       hint: baseMoneyContextFields.hint,
+    },
+  },
+};
+
+export const descriptionsAndWarningsStoryProps = {
+  id: "localizedFieldDescriptionsAndWarnings",
+  name: "localized field descriptions and warnings story",
+  types: allFieldTypes,
+
+  text: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      description: baseContextFields.description,
+      warning: baseContextFields.warning,
+      warnings: baseContextFields.warnings,
+      renderWarning: baseContextFields.renderWarning,
+    },
+  },
+  multiLine: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      description: baseContextFields.description,
+      warning: baseContextFields.warning,
+      warnings: baseContextFields.warnings,
+      renderWarning: baseContextFields.renderWarning,
+    },
+  },
+  richText: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      description: baseContextFields.description,
+      warning: baseContextFields.warning,
+      warnings: baseContextFields.warnings,
+      renderWarning: baseContextFields.renderWarning,
+    },
+  },
+  money: {
+    fieldData: baseCurrencyData,
+    fieldProps: {
+      label: baseMoneyContextFields.label,
+      description: baseMoneyContextFields.description,
+      warning: baseMoneyContextFields.warning,
+      warnings: baseMoneyContextFields.warnings,
+      renderWarning: baseMoneyContextFields.renderWarning,
+    },
+  },
+};
+
+export const errorsAndValidationStoryProps = {
+  id: "localizedFieldErrorsAndValidations",
+  name: "localized field errors and validations story",
+  types: allFieldTypes,
+
+  text: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      description: baseContextFields.description,
+      error: baseContextFields.error,
+      errors: baseContextFields.errors,
+      renderWarning: baseContextFields.renderWarning,
+    },
+  },
+  multiLine: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      description: baseContextFields.description,
+      error: baseContextFields.error,
+      errors: baseContextFields.errors,
+      renderError: baseContextFields.renderError,
+    },
+  },
+  richText: {
+    fieldData: baseLocaleData,
+    fieldProps: {
+      label: baseContextFields.label,
+      description: baseContextFields.description,
+      error: baseContextFields.error,
+      errors: baseContextFields.errors,
+      renderError: baseContextFields.renderError,
+    },
+  },
+  money: {
+    fieldData: baseCurrencyData,
+    fieldProps: {
+      label: baseMoneyContextFields.label,
+      description: baseMoneyContextFields.description,
+      error: baseMoneyContextFields.error,
+      errors: baseMoneyContextFields.errors,
+      renderError: baseMoneyContextFields.renderError,
     },
   },
 };

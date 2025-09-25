@@ -120,6 +120,12 @@ const getInitialState = (
               ? (fieldData.values as LocalizedCurrency)
               : (fieldData.values as LocalizedString),
           touched: false,
+          showDescription: false,
+          showWarning: false,
+          showError: false,
+          showLocaleDescriptions: false,
+          showLocaleWarnings: false,
+          showLocaleErrors: false,
           ...rest,
         },
       };
@@ -463,7 +469,11 @@ export function LocalizedFieldStoryComponent(
                 warning={
                   state[type]?.showWarning ? fieldProps?.warning : undefined
                 }
+                warnings={fieldProps?.warnings}
+                renderWarning={fieldProps?.renderWarning}
                 error={state[type]?.showError ? fieldProps?.error : undefined}
+                errors={fieldProps?.errors}
+                renderError={fieldProps?.renderError}
               />
               <Separator />
             </Stack>
