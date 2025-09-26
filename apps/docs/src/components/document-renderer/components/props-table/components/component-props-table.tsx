@@ -1,102 +1,95 @@
-import { Box, Code, Table, Text } from "@commercetools/nimbus";
-import { useAtomValue } from "jotai";
-import { typesAtom } from "../../../../../atoms/types.ts";
-import { ReactNode, useMemo } from "react";
+import { Table, Text, Code } from "@commercetools/nimbus";
+import { useMemo } from "react";
+import typesData from "../../../../../data/types.json";
 import { MdxStringRenderer } from "../../../mdx-string-renderer.tsx";
 import { DefaultValue } from "./default-value.tsx";
 
-interface PropItem {
-  name: string;
-  type?: {
-    name?: string;
-  };
-  description: string;
-  required: boolean;
-  defaultValue: ReactNode | { value?: string | number | boolean | null };
+interface ComponentPropsTableProps {
+  componentName: string;
+  props?: PropData[];
 }
 
-export const ComponentPropsTable = ({ id }: { id: string }) => {
-  const typesArr = useAtomValue(typesAtom);
-  const propsTableData = useMemo(() => {
-    return typesArr.find((v) => v.displayName === id);
-  }, [typesArr, id]);
+interface PropData {
+  name: string;
+  type: { name: string };
+  defaultValue?: { value: string };
+  required: boolean;
+  description?: string;
+}
 
-  const propsArr = useMemo<PropItem[]>(() => {
-    if (!propsTableData?.props) return [];
+interface ComponentData {
+  displayName: string;
+  description?: string;
+  props?: Record<string, PropData>;
+}
 
-    return Object.keys(propsTableData.props).map((key) => {
-      // Using type assertion to safely access properties
-      const prop =
-        propsTableData.props[key as keyof typeof propsTableData.props];
-      return {
-        ...prop,
-      } as PropItem;
-    });
-  }, [propsTableData]);
-
-  // If the component with the given ID is not found, display an error message
-  if (!propsTableData) {
-    return (
-      <Box padding="400" backgroundColor="critical.subtle" borderRadius="4">
-        <Text color="critical.emphasized">
-          Error: Component with ID "{id}" not found.
-        </Text>
-      </Box>
+export const ComponentPropsTable = ({
+  componentName,
+  props: filteredProps,
+}: ComponentPropsTableProps) => {
+  const componentTypesData = useMemo(() => {
+    return (typesData as ComponentData[]).find(
+      (c) => c.displayName === componentName
     );
+  }, [componentName]);
+
+  if (!componentTypesData) {
+    return <div>No component data found for {componentName}</div>;
+  }
+
+  // Use provided props or fall back to all props
+  const propsArr =
+    filteredProps || Object.values(componentTypesData.props || {});
+
+  if (propsArr.length === 0) {
+    return null;
   }
 
   return (
-    <Box>
-      {propsArr.length > 0 ? (
-        <Table.Root variant="outline">
-          <Table.ColumnGroup>
-            <Table.Column width="1/4" />
-            <Table.Column width="2/4" />
-            <Table.Column width="1/4" />
-          </Table.ColumnGroup>
-          <Table.Header>
-            <Table.Row>
-              <Table.ColumnHeader>name</Table.ColumnHeader>
-              <Table.ColumnHeader>type / description</Table.ColumnHeader>
-              <Table.ColumnHeader>default</Table.ColumnHeader>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {propsArr.map((item) => (
-              <Table.Row key={[id, item.name].join("-")}>
-                <Table.Cell display="flex" justifyContent="flex-start">
-                  <Text fontWeight="600">
-                    {item.name}
-                    {item.required ? (
-                      <Box
-                        as="sup"
-                        title="required"
-                        display="inline-block"
-                        color="critical.10"
-                        cursor="help"
-                      >
-                        *
-                      </Box>
-                    ) : (
-                      ""
-                    )}
-                  </Text>
-                </Table.Cell>
-                <Table.Cell>
-                  <Code mb="200">{item.type?.name || "unknown"}</Code>
-                  <MdxStringRenderer content={item.description} />
-                </Table.Cell>
-
-                <Table.Cell display="flex" justifyContent="flex-start">
-                  <DefaultValue value={item.defaultValue} />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Root>
-      ) : (
-        <Text>No props found for this component.</Text>
-      )}
-    </Box>
+    <Table.Root variant="outline">
+      <Table.ColumnGroup>
+        <Table.Column width="1/4" />
+        <Table.Column width="1/4" />
+        <Table.Column width="1/8" />
+        <Table.Column width="3/8" />
+      </Table.ColumnGroup>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Name</Table.ColumnHeader>
+          <Table.ColumnHeader>Type</Table.ColumnHeader>
+          <Table.ColumnHeader>Default</Table.ColumnHeader>
+          <Table.ColumnHeader>Description</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {propsArr.map((prop) => (
+          <Table.Row key={prop.name}>
+            <Table.Cell>
+              <Text>
+                {prop.name}
+                {prop.required && <sup>*</sup>}
+              </Text>
+            </Table.Cell>
+            <Table.Cell>
+              <Code size="xs">{prop.type.name}</Code>
+            </Table.Cell>
+            <Table.Cell>
+              {prop.defaultValue ? (
+                <DefaultValue value={prop.defaultValue} />
+              ) : (
+                "—"
+              )}
+            </Table.Cell>
+            <Table.Cell>
+              {prop.description ? (
+                <MdxStringRenderer content={prop.description} />
+              ) : (
+                "—"
+              )}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
   );
 };

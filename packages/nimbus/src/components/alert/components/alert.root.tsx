@@ -43,7 +43,7 @@ export const AlertContext = createContext<AlertContextValue | undefined>(
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/alert}
  */
-export const AlertRoot: AlertRootComponent = (props) => {
+export const AlertRoot: AlertRootComponent = (props: AlertProps) => {
   const { ref, children, ...restProps } = props;
   const [titleNode, setTitle] = useState<ReactNode>(null);
   const [descriptionNode, setDescription] = useState<ReactNode>(null);

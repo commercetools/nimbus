@@ -48,12 +48,27 @@ type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<
   RecipeProps<"button">
 >;
 
-/** Combined props for the button element (Chakra styles + Aria behavior). */
-export type ToggleButtonGroupButtonProps = ToggleButtonGroupButtonSlotProps &
-  AriaToggleButtonProps & {
-    ref?: React.Ref<typeof RacToggleButton>;
-  };
+// /** Combined props for the button element (Chakra styles + Aria behavior). */
+// export type ToggleButtonGroupButtonProps = ToggleButtonGroupButtonSlotProps &
+//   AriaToggleButtonProps & {
+//     ref?: React.Ref<typeof RacToggleButton>;
+//   };
+//
+// /** Type signature for the `ToggleButtonGroup.Button` sub-component. */
+// export type ToggleButtonGroupButtonComponent =
+//   React.FC<ToggleButtonGroupButtonProps>;
 
-/** Type signature for the `ToggleButtonGroup.Button` sub-component. */
-export type ToggleButtonGroupButtonComponent =
-  React.FC<ToggleButtonGroupButtonProps>;
+export interface ToggleButtonGroupRootProps
+  extends HTMLChakraProps<"div">,
+    AriaToggleButtonGroupProps,
+    RecipeVariantProps<typeof buttonGroupRecipe> {
+  children: ReactNode;
+  ref?: React.Ref<typeof RacToggleButtonGroup>;
+}
+
+export interface ToggleButtonGroupButtonProps
+  extends HTMLChakraProps<"button">,
+    AriaToggleButtonProps {
+  children: ReactNode;
+  ref?: React.Ref<typeof RacToggleButton>;
+}

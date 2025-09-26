@@ -139,7 +139,9 @@ export const PropsTable = ({ id }: { id: string }) => {
               </Box>
             )}
 
-          {selectedComponent && <ComponentPropsTable id={selectedComponent} />}
+          {selectedComponent && (
+            <ComponentPropsTable id={selectedComponent} grouped={true} />
+          )}
           {/* <pre>{JSON.stringify(exportInfo, null, 2)}</pre> */}
         </Box>
       )}
