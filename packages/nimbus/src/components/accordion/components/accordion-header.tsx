@@ -8,12 +8,14 @@ import { Flex } from "@/components";
 import { KeyboardArrowRight } from "@commercetools/nimbus-icons";
 import { Button as RaButton } from "react-aria-components";
 import type { AccordionHeaderProps } from "../accordion.types";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 
 export const AccordionHeader = ({
   children,
   ref,
   ...props
 }: AccordionHeaderProps) => {
+  const [styleProps, restProps] = extractStyleProps(props);
   // Extract HeaderRightContent if present
   const headerContent = useMemo(() => {
     const main: React.ReactNode[] = [];
@@ -39,9 +41,10 @@ export const AccordionHeader = ({
       alignItems="center"
       borderBottom="solid-25"
       borderColor="neutral.4"
+      {...styleProps}
     >
       <AccordionTriggerSlot ref={ref} slot="trigger" asChild>
-        <RaButton {...props}>
+        <RaButton {...restProps}>
           <KeyboardArrowRight />
           <AccordionTitleSlot>{headerContent.main}</AccordionTitleSlot>
         </RaButton>

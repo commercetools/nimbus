@@ -197,3 +197,41 @@ export const DefaultExpandedKeys: Story = {
     });
   },
 };
+
+export const WithStyleProps: Story = {
+  render: () => (
+    <Accordion.Root>
+      <Accordion.Item
+        value="styled-item"
+        backgroundColor="warning.2"
+        padding="400"
+        margin="300"
+        borderRadius="md"
+        border="1px solid"
+        borderColor="warning.6"
+      >
+        <Accordion.Header
+          backgroundColor="info.5"
+          padding="300"
+          borderRadius="sm"
+          margin="200"
+        >
+          Item with Style Props
+        </Accordion.Header>
+        <Accordion.Content
+          padding="800"
+          fontWeight="500"
+          border="1px solid pink"
+        >
+          Content with custom styling using Chakra style props
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value="normal-item">
+        <Accordion.Header>Normal Item (no style props)</Accordion.Header>
+        <Accordion.Content>
+          Normal content without custom styling
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  ),
+};

@@ -1,4 +1,7 @@
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
+import type {
+  RecipeVariantProps,
+  HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
 import { accordionSlotRecipe } from "./accordion.recipe";
 import type { ReactNode, Ref } from "react";
 import type {
@@ -7,6 +10,20 @@ import type {
   DisclosurePanelProps as RaDisclosurePanelProps,
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
+
+/**
+ * For use in components that use the polymorphic `as` and `asChild` props
+ * internally, but do not make them available to the consumer.
+ *
+ * Long rambling background:
+ * React-Aria's components cannot be configured to use `as` and `asChild` internally,
+ * and cannot be directly styled by chakra's styledSystem. Therefore components
+ * from `react-aria-components` should be wrapped in a chakra `withContext`
+ * root component to set the styles onto the `r-a-c` component using `asChild`.
+ * This means that we need to allow polymorphism internally, but should not
+ * allow it in the external props api since it would not work.
+ */
+type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
 
 /**
  * Props for the Accordion Root component.
@@ -24,7 +41,10 @@ export interface AccordionRootProps
 /**
  * Props for individual Accordion Item components.
  */
-export interface AccordionItemProps extends RaDisclosureProps {
+export interface AccordionItemProps
+  extends ExcludePolymorphicFromProps<
+    RaDisclosureProps & HTMLChakraProps<"div">
+  > {
   /** The accordion item content (Header and Content components) */
   children: ReactNode;
   /** Unique value for this item (used for controlled state) */
@@ -37,7 +57,8 @@ export interface AccordionItemProps extends RaDisclosureProps {
  * Props for Accordion Header component.
  * Displays the clickable header that expands/collapses content.
  */
-export interface AccordionHeaderProps extends RaButtonProps {
+export interface AccordionHeaderProps
+  extends ExcludePolymorphicFromProps<RaButtonProps & HTMLChakraProps<"div">> {
   /** The header content to display */
   children: ReactNode;
   /** Ref to the header element */
@@ -48,7 +69,10 @@ export interface AccordionHeaderProps extends RaButtonProps {
  * Props for Accordion Content component.
  * Contains the collapsible content area.
  */
-export interface AccordionContentProps extends RaDisclosurePanelProps {
+export interface AccordionContentProps
+  extends ExcludePolymorphicFromProps<
+    RaDisclosurePanelProps & HTMLChakraProps<"div">
+  > {
   /** The content to display when expanded */
   children: ReactNode;
   /** Ref to the content element */
