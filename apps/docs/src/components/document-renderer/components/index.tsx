@@ -34,7 +34,7 @@ import {
   Strong,
 } from "./base-tags";
 import { Frontpage } from "./frontpage";
-import { PropsTable } from "./props-table";
+import { PropsTable, GroupedPropsTable } from "./props-table";
 
 export const components: MDXComponents = {
   h1: H1,
@@ -73,6 +73,7 @@ export const components: MDXComponents = {
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
   PropsTable: PropsTable,
+  GroupedPropsTable: GroupedPropsTable,
   ColorScales: ColorScales,
   IconSearch,
   SpacingTokenDemo,
