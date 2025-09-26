@@ -1,3 +1,4 @@
-import type { PopoverProps } from "react-aria-components";
+import type { PopoverProps as RaPopoverProps } from "react-aria-components";
+import type { PopoverSlotProps } from "./popover.slots";
 
-export type PopoverRootSlotProps = PopoverProps;
+export type PopoverProps = RaPopoverProps & PopoverSlotProps;

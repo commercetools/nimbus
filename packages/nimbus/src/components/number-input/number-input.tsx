@@ -67,6 +67,7 @@ export const NumberInput = (props: NumberInputProps) => {
 
   return (
     <NumberInputRootSlot
+      className={props?.className as string}
       {...stateProps}
       {...recipeProps}
       {...styleProps}

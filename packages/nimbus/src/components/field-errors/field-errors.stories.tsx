@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Button, FormField, Stack, TextInput } from "@/components";
 import { FieldErrors } from "./field-errors";
-import { Stack } from "../stack";
-import { FormField } from "../form-field";
-import { TextInput } from "../text-input";
-import { Button } from "../button";
 import React from "react";
 import { userEvent, within, expect } from "storybook/test";
 
@@ -59,6 +56,18 @@ export const Base: Story = {
       await expect(errorMessage).toBeInTheDocument();
       await expect(errorMessage).toBeVisible();
     });
+  },
+};
+
+export const AsWarning: Story = {
+  args: {
+    id: "field-errors-base",
+    errors: {
+      missing: true,
+    },
+    isVisible: true,
+    colorPalette: "warning",
+    role: "status",
   },
 };
 
@@ -189,11 +198,11 @@ export const WithCustomErrorRenderer: Story = {
     renderError: (key: string) => {
       switch (key) {
         case "duplicate":
-          return "This value is already in use. It must be unique.";
+          return "This value is already in use. It must be unique. I am rendered by renderError.";
         case "minLength":
-          return "This value is too short. Minimum 3 characters required.";
+          return "This value is too short. Minimum 3 characters required. I am rendered by renderError.";
         case "maxLength":
-          return "This value is too long. Maximum 50 characters allowed.";
+          return "This value is too long. Maximum 50 characters allowed. I am rendered by renderError.";
         default:
           // Return null to fall back to built-in or default error handling
           return null;
@@ -209,16 +218,18 @@ export const WithCustomErrorRenderer: Story = {
 
       // Check custom error messages are rendered
       await expect(
-        canvas.getByText("This value is already in use. It must be unique.")
-      ).toBeInTheDocument();
-      await expect(
         canvas.getByText(
-          "This value is too short. Minimum 3 characters required."
+          "This value is already in use. It must be unique. I am rendered by renderError."
         )
       ).toBeInTheDocument();
       await expect(
         canvas.getByText(
-          "This value is too long. Maximum 50 characters allowed."
+          "This value is too short. Minimum 3 characters required. I am rendered by renderError."
+        )
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByText(
+          "This value is too long. Maximum 50 characters allowed. I am rendered by renderError."
         )
       ).toBeInTheDocument();
 

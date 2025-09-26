@@ -4,6 +4,7 @@ import {
   forwardRef,
   isValidElement,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import type { FormFieldProps } from "../form-field.types";
@@ -33,7 +34,7 @@ import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
  */
 export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
   (
-    { isInvalid, isRequired, isDisabled, isReadOnly, children, ...props },
+    { isInvalid, isRequired, isDisabled, isReadOnly, children, id, ...props },
     ref
   ) => {
     const [context, setContext] = useState<FormFieldContextPayloadType>({
@@ -48,20 +49,25 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       isReadOnly,
     });
 
-    const useFieldArgs: Parameters<typeof useField>[0] = {
-      description: context.description,
-      errorMessage: context.error,
-    };
+    const useFieldArgs: Parameters<typeof useField>[0] = useMemo(() => {
+      const args: Parameters<typeof useField>[0] = {
+        id,
+        description: context.description,
+        errorMessage: context.error,
+      };
 
-    if (context.label) {
-      useFieldArgs.label = context.label;
-    } else {
-      // Context will always start out null, so we need to stub out some aria attributes
-      // FIXME: This is a hack to get the form field to work, but it's not the best solution
-      // FIXME: We should find a better way to handle this by redesigning the FormField component's structure
-      useFieldArgs["aria-label"] = "empty-label";
-      useFieldArgs["aria-labelledby"] = "empty-label";
-    }
+      if (context.label) {
+        args.label = context.label;
+      } else {
+        // Context will always start out null, so we need to stub out some aria attributes
+        // FIXME: This is a hack to get the form field to work, but it's not the best solution
+        // FIXME: We should find a better way to handle this by redesigning the FormField component's structure
+        args["aria-label"] = "empty-label";
+        args["aria-labelledby"] = "empty-label";
+      }
+
+      return args;
+    }, [id, context.description, context.error, context.label]);
 
     const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
       useField(useFieldArgs);
@@ -76,16 +82,21 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
       }));
     }, [isInvalid, isRequired, isDisabled, isReadOnly]);
 
-    const inputProps = {
-      ...fieldProps,
-      isInvalid,
-      isRequired,
-      isDisabled,
-      isReadOnly,
-    };
+    const inputProps = useMemo(
+      () => ({
+        ...fieldProps,
+        isInvalid,
+        isRequired,
+        isDisabled,
+        isReadOnly,
+      }),
+      [fieldProps, isInvalid, isRequired, isDisabled, isReadOnly]
+    );
+
+    const contextValue = useMemo(() => ({ context, setContext }), [context]);
 
     return (
-      <FormFieldContext.Provider value={{ context, setContext }}>
+      <FormFieldContext.Provider value={contextValue}>
         <FormFieldRootSlot ref={ref} {...props}>
           {context.label && (
             <FormFieldLabelSlot {...context.labelSlotProps}>
@@ -162,6 +173,7 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
                 display="inline-flex"
                 boxSize="400"
                 verticalAlign="middle"
+                alignSelf="center"
               />
               {context.error}
             </FormFieldErrorSlot>

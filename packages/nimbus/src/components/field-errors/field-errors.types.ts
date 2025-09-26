@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { HTMLChakraProps } from "@chakra-ui/react";
 
 /**
  * Error object type - compatible with UI-Kit FieldErrors
@@ -11,10 +12,16 @@ export type TFieldErrors = Record<string, boolean>;
  */
 export type TErrorRenderer = (key: string, error?: boolean) => ReactNode;
 
+export interface FieldErrorsRootProps extends HTMLChakraProps<"div"> {
+  id?: string;
+  role?: string;
+  children?: ReactNode;
+}
+
 /**
  * Props for FieldErrors component
  */
-export interface FieldErrorsProps {
+export interface FieldErrorsProps extends FieldErrorsRootProps {
   /**
    * ID of the error field for accessibility
    */

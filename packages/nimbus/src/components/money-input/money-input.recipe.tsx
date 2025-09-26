@@ -9,7 +9,7 @@ export const moneyInputRecipe = defineSlotRecipe({
     "amountInput",
     "badge",
   ],
-  className: "money-input",
+  className: "nimbus-money-input",
   base: {
     root: {
       width: "full",
@@ -22,8 +22,20 @@ export const moneyInputRecipe = defineSlotRecipe({
         boxShadow:
           "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
       },
-      "& .nimbus-number-input__root > input": {
-        borderLeftRadius: "0",
+      "&:has(.nimbus-money-input__container:focus-within)": {
+        "& .nimbus-money-input__currencyLabel": {
+          // add outline to label so that it looks like focus outline is around entire input
+          outlineWidth: "var(--focus-ring-width)",
+          outlineColor: "var(--focus-ring-color)",
+          outlineStyle: "var(--focus-ring-style)",
+          outlineOffset: "var(--focus-ring-offset)",
+          // remove outline on right side of label so that it looks like there is a continuous outline around the label and input.
+          clipPath: `inset(-4px -1px -4px -4px)`,
+        },
+        "& .nimbus-money-input__amountInput": {
+          // remove outline on left side of input so that it looks like there is a continuous outline around the label and input.
+          clipPath: `inset(-4px -4px -4px -1px)`,
+        },
       },
     },
     container: {
@@ -38,6 +50,8 @@ export const moneyInputRecipe = defineSlotRecipe({
       },
     },
     currencyLabel: {
+      color: "neutral.11",
+      fontWeight: "500",
       display: "flex",
       height: "full",
       borderLeftRadius: "200",
@@ -46,8 +60,12 @@ export const moneyInputRecipe = defineSlotRecipe({
         "inset 0 1px 0 0 {colors.neutral.7}, inset 0 -1px 0 0 {colors.neutral.7}, inset 1px 0 0 0 {colors.neutral.7}",
       paddingInline: "400",
       alignItems: "center",
+      "&[data-disabled='true']": {
+        opacity: "0.5",
+      },
     },
     amountInput: {
+      borderLeftRadius: "0",
       // Ensure focus ring is visible above currency select
       _focusWithin: {
         zIndex: 2,
@@ -80,6 +98,10 @@ export const moneyInputRecipe = defineSlotRecipe({
         amountInput: {
           paddingRight: "spacing.30",
         },
+        currencyLabel: {
+          fontSize: "300",
+          lineHeight: "450",
+        },
       },
       md: {
         root: {
@@ -93,6 +115,10 @@ export const moneyInputRecipe = defineSlotRecipe({
         },
         amountInput: {
           paddingRight: "spacing.40",
+        },
+        currencyLabel: {
+          fontSize: "350",
+          lineHeight: "500",
         },
       },
     },

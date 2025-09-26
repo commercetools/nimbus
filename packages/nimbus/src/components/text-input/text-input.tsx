@@ -67,6 +67,7 @@ export const TextInput = (props: TextInputProps) => {
   return (
     <TextInputRootSlot
       ref={rootRef}
+      className={props?.className as string}
       {...recipeProps}
       {...styleProps}
       {...stateProps}

@@ -14,6 +14,15 @@ export const FormFieldLabel = ({
       label: children,
       labelSlotProps,
     }));
+
+    // Cleanup: clear label when component unmounts
+    return () => {
+      setContext((prevContext) => ({
+        ...prevContext,
+        label: null,
+        labelSlotProps: undefined,
+      }));
+    };
   }, [children, setContext]);
 
   return null;

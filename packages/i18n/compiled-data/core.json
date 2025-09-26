@@ -41,10 +41,136 @@
       "value": "Clear input value"
     }
   ],
+  "Nimbus.FieldErrors.duplicateValue": [
+    {
+      "type": 0,
+      "value": "This value is already in use. It must be unique."
+    }
+  ],
+  "Nimbus.FieldErrors.emptyValue": [
+    {
+      "type": 0,
+      "value": "This field cannot be empty."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidFormat": [
+    {
+      "type": 0,
+      "value": "Please enter a valid format."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidFractionalNumber": [
+    {
+      "type": 0,
+      "value": "A whole number is required."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidFromServer": [
+    {
+      "type": 0,
+      "value": "Server validation failed. Please check your input."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidNegativeNumber": [
+    {
+      "type": 0,
+      "value": "Negative number is not supported."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidValue": [
+    {
+      "type": 0,
+      "value": "The provided value is invalid."
+    }
+  ],
+  "Nimbus.FieldErrors.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "This field is required. Provide a value."
+    }
+  ],
+  "Nimbus.FieldErrors.resourceNotFound": [
+    {
+      "type": 0,
+      "value": "The requested resource was not found."
+    }
+  ],
+  "Nimbus.FieldErrors.valueAboveMaximum": [
+    {
+      "type": 0,
+      "value": "Value must be less than or equal to the maximum."
+    }
+  ],
+  "Nimbus.FieldErrors.valueBelowMinimum": [
+    {
+      "type": 0,
+      "value": "Value must be greater than or equal to the minimum."
+    }
+  ],
+  "Nimbus.FieldErrors.valueBlocked": [
+    {
+      "type": 0,
+      "value": "This value is not allowed."
+    }
+  ],
+  "Nimbus.FieldErrors.valueOutOfRange": [
+    {
+      "type": 0,
+      "value": "Value must be within the acceptable range."
+    }
+  ],
+  "Nimbus.FieldErrors.valueTooLong": [
+    {
+      "type": 0,
+      "value": "This value is too long."
+    }
+  ],
+  "Nimbus.FieldErrors.valueTooShort": [
+    {
+      "type": 0,
+      "value": "This value is too short."
+    }
+  ],
   "Nimbus.LoadingSpinner.default": [
     {
       "type": 0,
       "value": "Loading data"
+    }
+  ],
+  "Nimbus.LocalizedField.hideCurrencies": [
+    {
+      "type": 0,
+      "value": "Hide all currencies"
+    }
+  ],
+  "Nimbus.LocalizedField.hideLanguages": [
+    {
+      "type": 0,
+      "value": "Hide all languages"
+    }
+  ],
+  "Nimbus.LocalizedField.infoBoxTriggerAriaLabel": [
+    {
+      "type": 0,
+      "value": "more info"
+    }
+  ],
+  "Nimbus.LocalizedField.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "This field is required. Provide at least one value."
+    }
+  ],
+  "Nimbus.LocalizedField.showCurrencies": [
+    {
+      "type": 0,
+      "value": "Show all currencies"
+    }
+  ],
+  "Nimbus.LocalizedField.showLanguages": [
+    {
+      "type": 0,
+      "value": "Show all languages"
     }
   ],
   "Nimbus.MoneyInput.amountInputLabel": [
