@@ -16,7 +16,7 @@ tags:
 
 Makes content accessible to screen readers but hides it visually.
 
-## Basic Usage
+## Basic usage
 
 Just wrap the content you want to hide visually, but keep accessible to screen
 readers, with the `VisuallyHidden` component.
@@ -25,7 +25,7 @@ readers, with the `VisuallyHidden` component.
 const App = () => <VisuallyHidden>I am VisuallyHidden!</VisuallyHidden>;
 ```
 
-## Focusable Content
+## Focusable content
 
 If the content you want to hide visually contains focusable elements, add the
 `isFocusable` property to the `VisuallyHidden` component. The content then
@@ -40,7 +40,7 @@ const App = () => (
 );
 ```
 
-## Inline Content
+## Inline content
 
 `VisuallyHidden` uses a `<div>` element by default to render into the DOM. If
 you need to hide inline content, you can use the `as` prop to render a `<span>`

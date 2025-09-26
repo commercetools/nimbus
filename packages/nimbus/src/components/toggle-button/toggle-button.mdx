@@ -30,9 +30,9 @@ Deep dive on details and access design library.
 
 [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)
 
-### Basic Usage
+### Basic usage
 
-#### Controlled Toggle Button
+#### Controlled toggle button
 
 When you need to control the toggle state externally, use the `isSelected` and `onChange` props.
 
@@ -53,7 +53,7 @@ const App = () => {
 };
 ```
 
-#### Uncontrolled Toggle Button
+#### Uncontrolled toggle button
 
 For simple cases where you don't need to control the state, use `defaultSelected` to set the initial state.
 
@@ -65,7 +65,7 @@ const App = () => (
 );
 ```
 
-### With Icons
+### With icons
 
 Toggle buttons work well with icons to provide clear visual context for the action.
 
@@ -132,7 +132,7 @@ const App = () => (
 
 ### Variant
 
-#### Outline (Default)
+#### Outline (default)
 
 The default variant with a clear border that changes when selected.
 
@@ -174,7 +174,7 @@ const App = () => (
 
 ### Tone
 
-#### Primary (Default)
+#### Primary (default)
 
 The default tone for most toggle buttons.
 
@@ -246,14 +246,14 @@ const App = () => (
 
 Toggle buttons should be used when you need to represent a binary state that users can control. They provide immediate visual feedback and are particularly effective for actions like favorites, bookmarks, or feature toggles.
 
-### Writing Guidelines
+### Writing guidelines
 
 - Use clear, action-oriented labels that describe what will be toggled
 - Keep labels concise and descriptive
 - Use sentence case (capitalize the first word, lowercase for the rest)
 - Consider how the label reads in both selected and unselected states
 
-### Preferred Usage Patterns
+### Preferred usage patterns
 
 | **Use Case** | **Example** | **Description** |
 | --- | --- | --- |
@@ -282,7 +282,7 @@ Toggle buttons should be used when you need to represent a binary state that use
 - **Temporary actions:** Use regular buttons for one-time actions
 - **Complex workflows:** Use multi-step processes or wizards
 
-### Icons in Toggle Buttons
+### Icons in toggle buttons
 
 Icons help users quickly understand the toggle action and provide visual context.
 
@@ -341,7 +341,7 @@ const App = () => (
 );
 ```
 
-### Disabled State
+### Disabled state
 
 Toggle buttons can be disabled when the action is not available.
 
@@ -366,7 +366,7 @@ const App = () => (
 
 The ToggleButton component is built on React Aria Components and provides comprehensive keyboard and screen reader support. It uses proper ARIA attributes to communicate the toggle state to assistive technologies.
 
-#### Keyboard Interaction
+#### Keyboard interaction
 
 - **Tab:** Moves focus to the toggle button
 - **Enter/Space:** Toggles the button state
@@ -381,7 +381,7 @@ const App = () => (
 );
 ```
 
-### Accessibility Standards
+### Accessibility standards
 
 #### 1. Perceivable:
 

@@ -36,7 +36,7 @@ Deep dive on details and access design library.
 
 Get familiar with the features.
 
-## Basic Usage
+## Basic usage
 
 The basic menu consists of a trigger (usually a button) and content that appears
 when activated.
@@ -57,7 +57,7 @@ const App = () => (
 )
 ```
 
-### Menu with Descriptions and Keyboard Shortcuts
+### Menu with descriptions and keyboard shortcuts
 
 Enhance menu items with descriptions and keyboard shortcuts for better user
 experience.
@@ -100,7 +100,7 @@ const App = () => (
 )
 ```
 
-### Trigger Variations
+### Trigger variations
 
 Menus can be triggered by different components using the `asChild` prop.
 
@@ -152,7 +152,7 @@ const App = () => (
 )
 ```
 
-### Menu Sections
+### Menu sections
 
 Organize related menu items into sections with optional labels.
 
@@ -201,7 +201,7 @@ const App = () => (
 )
 ```
 
-### Single Selection
+### Single selection
 
 Menus support single selection mode where only one item can be selected at a
 time.
@@ -254,7 +254,7 @@ const App = () => {
 }
 ```
 
-### Multiple Selection
+### Multiple selection
 
 Menus also support multiple selection mode with checkboxes.
 
@@ -313,7 +313,7 @@ const App = () => {
 }
 ```
 
-### Mixed Selection
+### Mixed selection
 
 Combine different selection modes within a single menu by applying selection
 settings to individual sections.
@@ -417,7 +417,7 @@ const App = () => {
 }
 ```
 
-### Placement Options
+### Placement options
 
 Control where the menu appears relative to its trigger.
 
@@ -477,7 +477,7 @@ Create nested menus for organizing complex hierarchies.
 
 ```jsx-live
 const App = () => (
-  <Menu.Root>
+  <Menu.Root> 
     <Menu.Trigger asChild>
       <Button variant="solid" colorPalette="primary">
         <Icons.FolderOpen />
@@ -538,7 +538,7 @@ const App = () => (
 Menus provide a space-efficient way to display a list of actions or options,
 appearing on demand when users interact with a trigger element.
 
-### Best Practices
+### Best practices
 
 - **Clear Organization:** Group related items with sections and separators
 - **Descriptive Labels:** Use clear, action-oriented labels for menu items
@@ -570,7 +570,7 @@ appearing on demand when users interact with a trigger element.
 - When immediate action visibility is critical for user flow
 - For complex forms or multi-step processes
 
-### Writing Guidelines
+### Writing guidelines
 
 - Use sentence case for all menu items
 - Start with action verbs when appropriate (e.g., "Save file", "Delete item")
@@ -579,7 +579,7 @@ appearing on demand when users interact with a trigger element.
 - Include descriptive text for complex or ambiguous actions
 - Avoid using punctuation in menu items
 
-### Critical Actions
+### Critical actions
 
 Use the `isCritical` prop to highlight destructive or irreversible actions.
 
@@ -641,7 +641,7 @@ const App = () => (
 The Menu component is built with accessibility in mind, providing full keyboard
 navigation and screen reader support.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 - **Arrow Keys:** Navigate between menu items
 - **Enter/Space:** Select the focused item
@@ -650,7 +650,7 @@ navigation and screen reader support.
 - **Home/End:** Jump to first/last item
 - **Type-ahead:** Type to focus matching items
 
-### ARIA Attributes
+### ARIA attributes
 
 The component automatically applies appropriate ARIA attributes:
 
@@ -661,14 +661,14 @@ The component automatically applies appropriate ARIA attributes:
 - `aria-checked` for selectable items
 - `aria-disabled` for disabled items
 
-### Focus Management
+### Focus management
 
 - Focus is trapped within the menu when open
 - Focus returns to the trigger when the menu closes
 - First item receives focus when menu opens with keyboard
 - Focus follows mouse hover for better user experience
 
-### Screen Reader Support
+### Screen reader support
 
 ```jsx-live
 const App = () => (
