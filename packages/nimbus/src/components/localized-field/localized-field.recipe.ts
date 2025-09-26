@@ -66,6 +66,15 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       gap: "200",
+
+      // Animation for when container expands to show more fields
+      '&[data-expanded="true"]': {
+        "& > *:not(:first-child)": {
+          animationName: "slide-from-top",
+          animationDuration: "slow",
+          animationTimingFunction: "ease-in-smooth",
+        },
+      },
     },
     description: {
       gridArea: "description",

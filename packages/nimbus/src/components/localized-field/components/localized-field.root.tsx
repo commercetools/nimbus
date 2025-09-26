@@ -232,8 +232,10 @@ export const LocalizedField = ({
           )}
         </Stack>
       )}
-      {/** TODO: animate open/close */}
-      <LocalizedFieldFieldsContainerSlot id={localeFieldsContainerId}>
+      <LocalizedFieldFieldsContainerSlot
+        id={localeFieldsContainerId}
+        data-expanded={expanded}
+      >
         <RaCollection items={allDataForFields}>
           {(item) => {
             return (
@@ -268,6 +270,7 @@ export const LocalizedField = ({
           }}
         </RaCollection>
       </LocalizedFieldFieldsContainerSlot>
+
       {!displayAllLocalesOrCurrencies && localizationKeys.length > 1 && (
         <LocalizedFieldToggleButtonContainerSlot>
           <Button
