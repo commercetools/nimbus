@@ -96,8 +96,9 @@ export const LocalizedField = ({
 
   // Either `error` exists, or there are `true` fields in the UI Kit compat `errors` object
   const hasError: boolean = Boolean(
-    error || (errors && Object.values(errors).some(Boolean))
+    error || (errors && Object.values(errors).some((error) => error === true))
   );
+
   // Either `warning` exists, or there are `true` fields in the UI Kit compat `warnings` object
   const hasWarning: boolean = Boolean(
     warning || (warnings && Object.values(warnings).some(Boolean))
@@ -105,7 +106,7 @@ export const LocalizedField = ({
 
   // FieldGroup is invalid if a non-field-specific error is passed and the group has been touched
   // When FieldGroup is invalid, all fields will display error styling without displaying a field-specific error message
-  const isInvalid: boolean = Boolean(hasError && touched);
+  const isInvalid: boolean = !!(hasError && touched);
 
   const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
     useField({
@@ -150,6 +151,10 @@ export const LocalizedField = ({
           ...(localizationKey === defaultLocaleOrCurrency && autoFocus
             ? { autoFocus }
             : {}),
+          isInvalid,
+          isRequired,
+          isDisabled,
+          isReadOnly,
         };
         if (
           expanded ||
@@ -170,6 +175,10 @@ export const LocalizedField = ({
     errorsByLocaleOrCurrency,
     defaultLocaleOrCurrency,
     expanded,
+    isInvalid,
+    isRequired,
+    isDisabled,
+    isReadOnly,
   ]);
 
   const groupHasInvalidLocalizedFields = getHasInvalidLocalizedFields(
@@ -177,9 +186,11 @@ export const LocalizedField = ({
     defaultLocaleOrCurrency
   );
 
+  const shouldExpandInvalidFields =
+    (groupHasInvalidLocalizedFields || hasError) && touched;
   // If there are fields that are invalid, ensure that field group
   // shows all fields so that invalid field is visible
-  if (groupHasInvalidLocalizedFields && !expanded) {
+  if (shouldExpandInvalidFields && !expanded) {
     setExpanded(true);
   }
 
@@ -221,12 +232,19 @@ export const LocalizedField = ({
           )}
         </Stack>
       )}
+      {/** TODO: animate open/close */}
       <LocalizedFieldFieldsContainerSlot id={localeFieldsContainerId}>
         <RaCollection items={allDataForFields}>
           {(item) => {
             return (
               <LocalizedFieldLocaleField
                 {...item}
+                size={size}
+                type={type}
+                onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}
+                touched={touched}
                 // Format field attributes to match uikit pattern
                 id={getLocaleFieldAttribute(
                   fieldProps.id,
@@ -245,16 +263,6 @@ export const LocalizedField = ({
                   dataTrackComponent,
                   item.localeOrCurrency
                 )}
-                size={size}
-                type={type}
-                isRequired={isRequired}
-                isDisabled={isDisabled}
-                isReadOnly={isReadOnly}
-                isInvalid={isInvalid}
-                onChange={onChange}
-                onBlur={onBlur}
-                onFocus={onFocus}
-                touched={touched}
               />
             );
           }}
@@ -267,9 +275,7 @@ export const LocalizedField = ({
             aria-describedby={labelProps.id}
             aria-expanded={expanded}
             onPress={() => setExpanded(!expanded)}
-            isDisabled={
-              isDisabled || (expanded && groupHasInvalidLocalizedFields)
-            }
+            isDisabled={isDisabled || (shouldExpandInvalidFields && expanded)}
             variant="ghost"
             size="2xs"
             colorPalette="primary"
@@ -327,16 +333,21 @@ export const LocalizedField = ({
         <LocalizedFieldErrorSlot
           // In order to associate the errors from both the error and legacy errors props with the fieldset,
           // we must associate them to this element with aria-labelledby.
-          aria-labelledby={`${descriptionProps.id}-error`}
+          aria-labelledby={`${errorMessageProps.id}-error`}
+          role="alert"
           {...errorMessageProps}
         >
           <Icon>
             <ErrorOutline />
           </Icon>
-          <Stack gap="0" id={`${descriptionProps.id}-error`}>
+          <Stack gap="0" id={`${errorMessageProps.id}-error`}>
             {error}
             {errors && hasError && (
-              <FieldErrors errors={errors} renderError={renderError} />
+              <FieldErrors
+                errors={errors}
+                renderError={renderError}
+                role={undefined}
+              />
             )}
           </Stack>
         </LocalizedFieldErrorSlot>

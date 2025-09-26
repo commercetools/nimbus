@@ -9,6 +9,8 @@ import {
   baseErrorRenderer,
   baseContextFields,
   baseMoneyContextFields,
+  baseLocaleData,
+  baseCurrencyData,
   baseStoryProps,
   emptyValuesStoryProps,
   singleValueStoryProps,
@@ -1352,22 +1354,653 @@ export const ErrorsAndValidation: Story = {
       />
     );
   },
-  // play: async ({ canvasElement, step }) => {
-  //   const canvas = within(canvasElement);
-  //   await step("Text Field", async () => {
-  //     const textField = await getFieldContainerForType(canvas, "text");
-  //   });
-  //   await step("MultiLine Field", async () => {
-  //     const multiLineField = await getFieldContainerForType(
-  //       canvas,
-  //       "multiLine"
-  //     );
-  //   });
-  //   await step("RichText Field", async () => {
-  //     const richTextField = await getFieldContainerForType(canvas, "richText");
-  //   });
-  //   await step("Money Field", async () => {
-  //     const moneyField = await getFieldContainerForType(canvas, "money");
-  //   });
-  // },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const legacyError = baseErrorRenderer("custom");
+    await step("Text Field", async () => {
+      const textField = await getFieldContainerForType(canvas, "text");
+      await step("Field only renders error/errors when touched", async () => {
+        // Enable the "Show Error" checkbox to make group-level errors available
+        await toggleFieldContolCheckbox(canvas, "text", "Show Error");
+        // Verify errors are NOT visible initially (before touched)
+        await checkFieldItemNotRendered(textField, baseContextFields.error);
+        await checkFieldItemNotRendered(textField, legacyError!);
+        // Focus on the default locale input to trigger touched state
+        const defaultInput = await getInputForLocaleField(textField, "en");
+        // Make sure input's event handlers are initialized
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        await defaultInput.focus();
+        // Verify group-level errors ARE now visible after being touched
+        await checkFieldError(textField, baseContextFields.error);
+        await checkFieldError(textField, legacyError!);
+        // Close field controls for cleanup
+        await closeFieldControls(canvas, "text");
+      });
+      await step(
+        "Component auto-expands when validation errors exist in all locale fields and toggle button is in an expanded and disabled state",
+        async () => {
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(textField, "text", baseLocales, "en");
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(textField, "text");
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+          // Verify locale-specific inputs have correct aria attributes but do not show an error message
+          for await (const locale of baseLocales) {
+            // Verify input has correct aria attributes
+            const localeInput = await getInputForLocaleField(textField, locale);
+            expect(localeInput).toHaveAttribute("aria-invalid", "true");
+            // Verify input has no error messages
+            await checkAllFieldItemsNotRendered(
+              textField,
+              baseLocaleData.errors![locale] as string
+            );
+          }
+        }
+      );
+      await step(
+        "When error/errors are changed to undefined, error message is not displayed, all inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Error" checkbox to remove group-level errors
+          await toggleFieldContolCheckbox(canvas, "text", "Show Error");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify group-level errors are NOT visible
+          await checkFieldItemNotRendered(textField, baseContextFields.error);
+          await checkFieldItemNotRendered(textField, legacyError!);
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const locale of baseLocales) {
+            const localeInput = await getInputForLocaleField(textField, locale);
+            expect(localeInput).not.toHaveAttribute("aria-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(textField, "text");
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(textField, "text", "en");
+        }
+      );
+      await step(
+        "Component auto-expands when locale-specific validation errors exist in non-default locales",
+        async () => {
+          // Toggle the "Show Errors" checkbox to enable locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "text", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(textField, "text", baseLocales, "en");
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(textField, "text");
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+        }
+      );
+      await step(
+        "Error messages are rendered and correct aria attributes exist on locale fields where errors are set",
+        async () => {
+          // Verify default locale field does NOT have invalid state (no error set)
+          const defaultInput = await getInputForLocaleField(textField, "en");
+          expect(defaultInput).not.toHaveAttribute("aria-invalid", "true");
+          // Verify non-default locale fields have correct aria attributes and error messages
+          await checkLocaleFieldError(
+            textField,
+            "zh-Hans",
+            baseLocaleData.errors!["zh-Hans"] as string
+          );
+          await checkLocaleFieldError(
+            textField,
+            "de",
+            baseLocaleData.errors!["de"] as string
+          );
+        }
+      );
+      await step(
+        "When locale-specific errors are changed to undefined, locale field error message is not displayed, inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Errors" checkbox to remove locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "text", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify locale-specific error messages are NOT visible
+          await checkFieldItemNotRendered(
+            textField,
+            baseLocaleData.errors!["zh-Hans"] as string
+          );
+          await checkFieldItemNotRendered(
+            textField,
+            baseLocaleData.errors!["de"] as string
+          );
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const locale of baseLocales) {
+            const localeInput = await getInputForLocaleField(textField, locale);
+            expect(localeInput).not.toHaveAttribute("aria-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(textField, "text");
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(textField, "text", "en");
+        }
+      );
+      // Close controls for cleanup
+      await closeFieldControls(canvas, "text");
+    });
+
+    await step("MultiLine Field", async () => {
+      const multiLineField = await getFieldContainerForType(
+        canvas,
+        "multiLine"
+      );
+      await step("Field only renders error/errors when touched", async () => {
+        // Enable the "Show Error" checkbox to make group-level errors available
+        await toggleFieldContolCheckbox(canvas, "multiLine", "Show Error");
+        // Verify errors are NOT visible initially (before touched)
+        await checkFieldItemNotRendered(
+          multiLineField,
+          baseContextFields.error
+        );
+        await checkFieldItemNotRendered(multiLineField, legacyError!);
+        // Focus on the default locale input to trigger touched state
+        const defaultInput = await getInputForLocaleField(multiLineField, "en");
+        await defaultInput.focus();
+        // Verify group-level errors ARE now visible after being touched
+        await checkFieldError(multiLineField, baseContextFields.error);
+        await checkFieldError(multiLineField, legacyError!);
+        // Close field controls for cleanup
+        await closeFieldControls(canvas, "multiLine");
+      });
+      await step(
+        "Component auto-expands when validation errors exist in all locale fields and toggle button is in an expanded and disabled state",
+        async () => {
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(
+            multiLineField,
+            "multiLine",
+            baseLocales,
+            "en"
+          );
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(
+            multiLineField,
+            "multiLine"
+          );
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+          // Verify locale-specific inputs have correct aria attributes but do not show an error message
+          for await (const locale of baseLocales) {
+            // Verify input has correct aria attributes
+            const localeInput = await getInputForLocaleField(
+              multiLineField,
+              locale
+            );
+            expect(localeInput).toHaveAttribute("aria-invalid", "true");
+            // Verify input has no error messages
+            await checkAllFieldItemsNotRendered(
+              multiLineField,
+              baseLocaleData.errors![locale] as string
+            );
+          }
+        }
+      );
+      await step(
+        "When error/errors are changed to undefined, error message is not displayed, all inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Error" checkbox to remove group-level errors
+          await toggleFieldContolCheckbox(canvas, "multiLine", "Show Error");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify group-level errors are NOT visible
+          await checkFieldItemNotRendered(
+            multiLineField,
+            baseContextFields.error
+          );
+          await checkFieldItemNotRendered(multiLineField, legacyError!);
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const locale of baseLocales) {
+            const localeInput = await getInputForLocaleField(
+              multiLineField,
+              locale
+            );
+            expect(localeInput).not.toHaveAttribute("aria-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(
+            multiLineField,
+            "multiLine"
+          );
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(multiLineField, "multiLine", "en");
+        }
+      );
+      await step(
+        "Component auto-expands when locale-specific validation errors exist in non-default locales",
+        async () => {
+          // Toggle the "Show Errors" checkbox to enable locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "multiLine", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(
+            multiLineField,
+            "multiLine",
+            baseLocales,
+            "en"
+          );
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(
+            multiLineField,
+            "multiLine"
+          );
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+        }
+      );
+      await step(
+        "Error messages are rendered and correct aria attributes exist on locale fields where errors are set",
+        async () => {
+          // Verify default locale field does NOT have invalid state (no error set)
+          const defaultInput = await getInputForLocaleField(
+            multiLineField,
+            "en"
+          );
+          expect(defaultInput).not.toHaveAttribute("aria-invalid", "true");
+          // Verify non-default locale fields have correct aria attributes and error messages
+          await checkLocaleFieldError(
+            multiLineField,
+            "zh-Hans",
+            baseLocaleData.errors!["zh-Hans"] as string
+          );
+          await checkLocaleFieldError(
+            multiLineField,
+            "de",
+            baseLocaleData.errors!["de"] as string
+          );
+        }
+      );
+      await step(
+        "When locale-specific errors are changed to undefined, locale field error message is not displayed, inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Errors" checkbox to remove locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "multiLine", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify locale-specific error messages are NOT visible
+          await checkFieldItemNotRendered(
+            multiLineField,
+            baseLocaleData.errors!["zh-Hans"] as string
+          );
+          await checkFieldItemNotRendered(
+            multiLineField,
+            baseLocaleData.errors!["de"] as string
+          );
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const locale of baseLocales) {
+            const localeInput = await getInputForLocaleField(
+              multiLineField,
+              locale
+            );
+            expect(localeInput).not.toHaveAttribute("aria-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(
+            multiLineField,
+            "multiLine"
+          );
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(multiLineField, "multiLine", "en");
+        }
+      );
+      // Close controls for cleanup
+      await closeFieldControls(canvas, "multiLine");
+    });
+
+    await step("RichText Field", async () => {
+      const richTextField = await getFieldContainerForType(canvas, "richText");
+      await step("Field only renders error/errors when touched", async () => {
+        // Enable the "Show Error" checkbox to make group-level errors available
+        await toggleFieldContolCheckbox(canvas, "richText", "Show Error");
+        // Verify errors are NOT visible initially (before touched)
+        await checkFieldItemNotRendered(richTextField, baseContextFields.error);
+        await checkFieldItemNotRendered(richTextField, legacyError!);
+        // Focus on the default locale rich text input to trigger touched state
+        const defaultInput = await getRichTextInputForLocaleField(
+          richTextField,
+          "en"
+        );
+        await defaultInput.focus();
+        // Verify group-level errors ARE now visible after being touched
+        await checkFieldError(richTextField, baseContextFields.error);
+        await checkFieldError(richTextField, legacyError!);
+      });
+      await step(
+        "Component auto-expands when validation errors exist in all locale fields and toggle button is in an expanded and disabled state",
+        async () => {
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(
+            richTextField,
+            "richText",
+            baseLocales,
+            "en"
+          );
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(
+            richTextField,
+            "richText"
+          );
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+          // Verify locale-specific inputs have correct aria attributes but do not show an error message
+          for await (const locale of baseLocales) {
+            // Verify input has correct aria attributes
+            const localeInput = await getRichTextContainerForLocaleField(
+              richTextField,
+              locale
+            );
+            expect(localeInput).toHaveAttribute("data-invalid", "true");
+            // Verify input has no error messages
+            await checkAllFieldItemsNotRendered(
+              richTextField,
+              baseLocaleData.errors![locale] as string
+            );
+          }
+        }
+      );
+      await step(
+        "When error/errors are changed to undefined, error message is not displayed, all inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Error" checkbox to remove group-level errors
+          await toggleFieldContolCheckbox(canvas, "richText", "Show Error");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify group-level errors are NOT visible
+          await checkFieldItemNotRendered(
+            richTextField,
+            baseContextFields.error
+          );
+          await checkFieldItemNotRendered(richTextField, legacyError!);
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const locale of baseLocales) {
+            const localeInput = await getRichTextContainerForLocaleField(
+              richTextField,
+              locale
+            );
+            expect(localeInput).not.toHaveAttribute("data-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(
+            richTextField,
+            "richText"
+          );
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(richTextField, "richText", "en");
+        }
+      );
+      await step(
+        "Component auto-expands when locale-specific validation errors exist in non-default locales",
+        async () => {
+          // Toggle the "Show Errors" checkbox to enable locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "richText", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(
+            richTextField,
+            "richText",
+            baseLocales,
+            "en"
+          );
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(
+            richTextField,
+            "richText"
+          );
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+        }
+      );
+      await step(
+        "Error messages are rendered and correct aria attributes exist on locale fields where errors are set",
+        async () => {
+          // Verify default locale field does NOT have invalid state (no error set)
+          const defaultInput = await getRichTextContainerForLocaleField(
+            richTextField,
+            "en"
+          );
+          expect(defaultInput).not.toHaveAttribute("data-invalid", "true");
+          // Verify non-default locale fields have correct aria attributes and error messages
+          for await (const locale of baseLocales) {
+            if (locale !== "en") {
+              // Verify locale-specific error messages are rendered
+              await checkLocaleFieldError(
+                richTextField,
+                locale,
+                baseLocaleData.errors![locale] as string,
+                "richText"
+              );
+            }
+          }
+        }
+      );
+      await step(
+        "When locale-specific errors are changed to undefined, locale field error message is not displayed, inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Errors" checkbox to remove locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "richText", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify locale-specific error messages are NOT visible
+          await checkFieldItemNotRendered(
+            richTextField,
+            baseLocaleData.errors!["zh-Hans"] as string
+          );
+          await checkFieldItemNotRendered(
+            richTextField,
+            baseLocaleData.errors!["de"] as string
+          );
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const locale of baseLocales) {
+            const localeInput = await getRichTextContainerForLocaleField(
+              richTextField,
+              locale
+            );
+            expect(localeInput).not.toHaveAttribute("data-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(
+            richTextField,
+            "richText"
+          );
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(richTextField, "richText", "en");
+        }
+      );
+      // Close controls for cleanup
+      await closeFieldControls(canvas, "richText");
+    });
+
+    await step("Money Field", async () => {
+      const moneyField = await getFieldContainerForType(canvas, "money");
+      await step("Field only renders error/errors when touched", async () => {
+        // Enable the "Show Error" checkbox to make group-level errors available
+        await toggleFieldContolCheckbox(canvas, "money", "Show Error");
+        // Verify errors are NOT visible initially (before touched)
+        await checkFieldItemNotRendered(
+          moneyField,
+          baseMoneyContextFields.error
+        );
+        await checkFieldItemNotRendered(moneyField, legacyError!);
+        // Focus on the default currency input to trigger touched state
+        const defaultInput = await getInputForLocaleField(moneyField, "USD");
+        await defaultInput.focus();
+        // Verify group-level errors ARE now visible after being touched
+        await checkFieldError(moneyField, baseMoneyContextFields.error);
+        await checkFieldError(moneyField, legacyError!);
+        // Close field controls for cleanup
+        await closeFieldControls(canvas, "money");
+      });
+      await step(
+        "Component auto-expands when validation errors exist in all locale fields and toggle button is in an expanded and disabled state",
+        async () => {
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(
+            moneyField,
+            "money",
+            baseCurrencies,
+            "USD"
+          );
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(
+            moneyField,
+            "money"
+          );
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+          // Verify locale-specific inputs have correct aria attributes but do not show an error message
+          for await (const currency of baseCurrencies) {
+            // Verify input has correct aria attributes
+            const localeInput = await getInputForLocaleField(
+              moneyField,
+              currency
+            );
+            expect(localeInput).toHaveAttribute("aria-invalid", "true");
+            // Verify input has no error messages
+            await checkAllFieldItemsNotRendered(
+              moneyField,
+              baseCurrencyData.errors![currency] as string
+            );
+          }
+        }
+      );
+      await step(
+        "When error/errors are changed to undefined, error message is not displayed, all inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Error" checkbox to remove group-level errors
+          await toggleFieldContolCheckbox(canvas, "money", "Show Error");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify group-level errors are NOT visible
+          await checkFieldItemNotRendered(
+            moneyField,
+            baseMoneyContextFields.error
+          );
+          await checkFieldItemNotRendered(moneyField, legacyError!);
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const currency of baseCurrencies) {
+            const localeInput = await getInputForLocaleField(
+              moneyField,
+              currency
+            );
+            expect(localeInput).not.toHaveAttribute("aria-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(
+            moneyField,
+            "money"
+          );
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(moneyField, "money", "USD");
+        }
+      );
+      await step(
+        "Component auto-expands when locale-specific validation errors exist in non-default locales",
+        async () => {
+          // Toggle the "Show Errors" checkbox to enable locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "money", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify field is auto-expanded due to locale-specific errors
+          await checkFieldIsExpanded(
+            moneyField,
+            "money",
+            baseCurrencies,
+            "USD"
+          );
+          // Verify toggle button is expanded and disabled
+          const toggleButton = await getExpandButtonForField(
+            moneyField,
+            "money"
+          );
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          expect(toggleButton).toBeDisabled();
+        }
+      );
+      await step(
+        "Error messages are rendered and correct aria attributes exist on locale fields where errors are set",
+        async () => {
+          // Verify default currency field does NOT have invalid state (no error set)
+          const defaultInput = await getInputForLocaleField(moneyField, "USD");
+          expect(defaultInput).not.toHaveAttribute("aria-invalid", "true");
+          // Verify non-default currency fields have correct aria attributes and error messages
+          for await (const currency of baseCurrencies) {
+            if (currency !== "USD") {
+              // Verify locale-specific error messages are rendered
+              await checkLocaleFieldError(
+                moneyField,
+                currency,
+                baseCurrencyData.errors![currency] as string
+              );
+            }
+          }
+        }
+      );
+      await step(
+        "When locale-specific errors are changed to undefined, locale field error message is not displayed, inputs do not have invalid attributes, and toggle button is enabled and clickable",
+        async () => {
+          // Disable the "Show Errors" checkbox to remove locale-specific errors
+          await toggleFieldContolCheckbox(canvas, "money", "Show Errors");
+          // Give toggle time to render
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          // Verify locale-specific error messages are NOT visible
+          for await (const currency of baseCurrencies) {
+            if (currency !== "USD") {
+              await checkFieldItemNotRendered(
+                moneyField,
+                baseCurrencyData.errors![currency] as string
+              );
+            }
+          }
+          // Verify locale-specific inputs do not have invalid attributes
+          for await (const currency of baseCurrencies) {
+            const localeInput = await getInputForLocaleField(
+              moneyField,
+              currency
+            );
+            expect(localeInput).not.toHaveAttribute("aria-invalid", "true");
+          }
+          // Verify toggle button is enabled and clickable
+          const toggleButton = await getExpandButtonForField(
+            moneyField,
+            "money"
+          );
+          expect(toggleButton).not.toBeDisabled();
+          expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+          // Click the toggle button to close the field
+          await userEvent.click(toggleButton);
+          await checkFieldIsCollapsed(moneyField, "money", "USD");
+        }
+      );
+      // Close controls for cleanup
+      await closeFieldControls(canvas, "money");
+    });
+  },
 };

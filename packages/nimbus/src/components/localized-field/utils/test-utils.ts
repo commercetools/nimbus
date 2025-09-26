@@ -290,9 +290,14 @@ export const checkFieldError = async (
   errorValue: string
 ) => {
   const errorElement = await within(field).findByText(errorValue);
-  // TODO: also check aria-invalid
+  // We use `FieldErrors` to display legacy Formik/UI Kit warnings in the description container
+  // The `FieldErrors` component adds wrapper divs, which are associated to the description container with aria-labelledby
+  // So in order to find the actual container, we need to check if the element with the text value has a parent with a status role
+  const errorElementForFieldErrors = errorElement.closest('[role="alert"]');
   expect(
-    Array.from(field.ariaDescribedByElements!).some((el) => el === errorElement)
+    Array.from(field.ariaDescribedByElements!).some(
+      (el) => el === (errorElementForFieldErrors ?? errorElement)
+    )
   ).toBe(true);
 };
 
@@ -323,16 +328,30 @@ export const checkLocaleFieldDescription = async (
 export const checkLocaleFieldError = async (
   field: HTMLElement,
   localeOrCurrency: string,
-  errorValue: string
+  errorValue: string,
+  type?: string
 ) => {
   const errorElement = await within(field).findByText(errorValue);
-  const localeFieldInput = await getInputForLocaleField(
-    field,
-    localeOrCurrency
-  );
-  expect(localeFieldInput.ariaInvalid).toBe("true");
+  let localeFieldInput;
+  if (type === "richText") {
+    localeFieldInput = await getRichTextContainerForLocaleField(
+      field,
+      localeOrCurrency
+    );
+    expect(localeFieldInput).toHaveAttribute("data-invalid", "true");
+  } else {
+    localeFieldInput = await getInputForLocaleField(field, localeOrCurrency);
+    expect(localeFieldInput.ariaInvalid).toBe("true");
+  }
+
+  if (localeFieldInput.ariaDescribedByElements?.length === 0) {
+    // The money input is a group, which is where the aria-describedby attribute is set (not the text input)
+    localeFieldInput = localeFieldInput.closest("[role='group']");
+    expect(localeFieldInput).toBeInTheDocument();
+  }
+
   expect(
-    Array.from(localeFieldInput.ariaDescribedByElements!).some(
+    Array.from(localeFieldInput!.ariaDescribedByElements!).some(
       (el) => el === errorElement
     )
   ).toBe(true);

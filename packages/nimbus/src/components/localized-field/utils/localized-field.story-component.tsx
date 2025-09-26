@@ -292,8 +292,11 @@ export function LocalizedFieldStoryComponent(
         },
       });
       if (
-        dispatchType !== "SET_SHOW_DESCRIPTION" &&
-        dispatchType !== "SET_SHOW_LOCALE_DESCRIPTIONS"
+        ![
+          "SET_SHOW_DESCRIPTION",
+          "SET_SHOW_LOCALE_DESCRIPTIONS",
+          "SET_SHOW_ERROR",
+        ].includes(dispatchType)
       ) {
         dispatch({
           type: "SET_TOUCHED",
@@ -469,10 +472,12 @@ export function LocalizedFieldStoryComponent(
                 warning={
                   state[type]?.showWarning ? fieldProps?.warning : undefined
                 }
+                // State does not control this for testing that errors/warnings display only when `touched` is true
+                // i.e. this warning will render if an input gains focus/calls a change event
                 warnings={fieldProps?.warnings}
                 renderWarning={fieldProps?.renderWarning}
                 error={state[type]?.showError ? fieldProps?.error : undefined}
-                errors={fieldProps?.errors}
+                errors={state[type]?.showError ? fieldProps?.errors : undefined}
                 renderError={fieldProps?.renderError}
               />
               <Separator />

@@ -47,7 +47,7 @@ export const baseContextFields = {
     custom: true,
   },
   renderWarning: baseWarningRenderer,
-  error: "that value is wrong",
+  error: "this error applies to all inputs",
   errors: {
     custom: true,
   },
@@ -63,11 +63,11 @@ export const baseMoneyContextFields = {
     custom: true,
   },
   renderWarning: baseWarningRenderer,
-  error: "that value is wrong",
+  error: "this error applies to all inputs",
   errors: {
     custom: true,
   },
-  renderError: baseWarningRenderer,
+  renderError: baseErrorRenderer,
 };
 
 export const baseLocales = ["en", "zh-Hans", "de"];
@@ -94,7 +94,6 @@ export const baseLocaleData: LocalizedStoryData = {
     de: "Das ist vielleicht keine Begrüßung",
   },
   errors: {
-    en: "That is certainly not a greeting",
     ["zh-Hans"]: "这当然不是问候语",
     de: "Das ist sicher kein Gruß",
   },
@@ -124,7 +123,6 @@ export const baseCurrencyData: LocalizedStoryData = {
     EUR: "Der Preis scheint nicht ganz richtig zu sein",
   },
   errors: {
-    USD: "that is certainly not a greeting",
     CNY: "这个价格肯定是错误的",
     EUR: "Der Preis ist definitiv falsch",
   },
@@ -362,7 +360,7 @@ export const errorsAndValidationStoryProps = {
       description: baseContextFields.description,
       error: baseContextFields.error,
       errors: baseContextFields.errors,
-      renderWarning: baseContextFields.renderWarning,
+      renderError: baseContextFields.renderError,
     },
   },
   multiLine: {

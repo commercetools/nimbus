@@ -98,7 +98,7 @@ export const LocalizedFieldLocaleField = ({
       <FormField.Root
         isDisabled={isDisabled}
         isReadOnly={isReadOnly}
-        isInvalid={isInvalid || !!error}
+        isInvalid={(isInvalid || !!error) && touched}
         direction="row"
         size={size}
         id={id}
@@ -131,7 +131,7 @@ export const LocalizedFieldLocaleField = ({
               isRequired={isRequired}
               isDisabled={isDisabled}
               isReadOnly={isReadOnly}
-              isInvalid={isInvalid || !!error}
+              isInvalid={(isInvalid || !!error) && touched}
             />
           </LocalizedFieldLocaleFieldInputSlot>
         </FormField.Input>
