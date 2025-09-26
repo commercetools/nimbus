@@ -37,23 +37,17 @@ export const FormFieldRoot = forwardRef<HTMLDivElement, FormFieldProps>(
     { isInvalid, isRequired, isDisabled, isReadOnly, children, id, ...props },
     ref
   ) => {
-    const initialContext = useMemo(
-      () => ({
-        label: null,
-        description: null,
-        error: null,
-        info: null,
-        input: null,
-        isInvalid,
-        isRequired,
-        isDisabled,
-        isReadOnly,
-      }),
-      [isInvalid, isRequired, isDisabled, isReadOnly]
-    );
-
-    const [context, setContext] =
-      useState<FormFieldContextPayloadType>(initialContext);
+    const [context, setContext] = useState<FormFieldContextPayloadType>({
+      label: null,
+      description: null,
+      error: null,
+      info: null,
+      input: null,
+      isInvalid,
+      isRequired,
+      isDisabled,
+      isReadOnly,
+    });
 
     const useFieldArgs: Parameters<typeof useField>[0] = useMemo(() => {
       const args: Parameters<typeof useField>[0] = {
