@@ -317,9 +317,14 @@ export const checkLocaleFieldDescription = async (
   } else {
     localeFieldInput = await getInputForLocaleField(field, localeOrCurrency);
   }
+  if (localeFieldInput.ariaDescribedByElements?.length === 0) {
+    // The money input is a group, which is where the aria-describedby attribute is set (not the text input)
+    localeFieldInput = localeFieldInput.closest("[role='group']");
+    expect(localeFieldInput).toBeInTheDocument();
+  }
 
   expect(
-    Array.from(localeFieldInput.ariaDescribedByElements!).some(
+    Array.from(localeFieldInput!.ariaDescribedByElements!).some(
       (el) => el === descriptionElement
     )
   );

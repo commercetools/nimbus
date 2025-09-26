@@ -266,10 +266,15 @@ export function LocalizedFieldStoryComponent(
   );
 
   const handleFocus = useCallback((type: LocalizedFieldTypes) => {
-    dispatch({
-      type: "SET_TOUCHED",
-      payload: { fieldType: type!, value: true },
-    });
+    // The richText component updates the value to an html string, so it will call SET_TOUCHED twice,
+    // which causes the editor to lose focus due to this open slate issue:
+    // https://github.com/ianstormtaylor/slate/issues/3634
+    if (type !== "richText") {
+      dispatch({
+        type: "SET_TOUCHED",
+        payload: { fieldType: type!, value: true },
+      });
+    }
   }, []);
 
   const handleSetShowField = useCallback(

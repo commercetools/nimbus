@@ -69,7 +69,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
 
       // Animation for when container expands to show more fields
       '&[data-expanded="true"]': {
-        "& > *:not(:first-child)": {
+        "& > *:not(:first-of-type)": {
           animationName: "slide-from-top",
           animationDuration: "slow",
           animationTimingFunction: "ease-in-smooth",
