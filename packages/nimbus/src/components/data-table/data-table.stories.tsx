@@ -55,8 +55,8 @@ type ModalState = {
 
 const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
   <Dialog.Root
-    open={isOpen}
-    onOpenChange={({ open }) => !open && onClose && onClose()}
+    isOpen={isOpen}
+    onOpenChange={(open) => !open && onClose && onClose()}
   >
     <Dialog.Content>
       <Dialog.Header>
@@ -135,8 +135,8 @@ const ProductDetailsModal = ({
   };
 
   return (
-    <Dialog.Root open={isOpen}>
-      <Dialog.Content maxWidth="600px">
+    <Dialog.Root isOpen={isOpen}>
+      <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>{formData.name as string}</Dialog.Title>
         </Dialog.Header>
