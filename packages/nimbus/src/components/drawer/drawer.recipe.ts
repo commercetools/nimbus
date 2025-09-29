@@ -132,19 +132,25 @@ export const drawerSlotRecipe = defineSlotRecipe({
       top: {
         modal: {
           alignItems: "flex-start",
+          justifyContent: "stretch",
         },
         content: {
-          "--drawer-base-margin": "spacing.1600",
-          mx: "auto",
+          "--drawer-base-margin": 0,
+          mx: 0,
+          width: "100vw",
+          borderRadius: 0,
         },
       },
       bottom: {
         modal: {
           alignItems: "flex-end",
+          justifyContent: "stretch",
         },
         content: {
-          "--drawer-base-margin": "spacing.1600",
-          mx: "auto",
+          "--drawer-base-margin": 0,
+          mx: 0,
+          width: "100vw",
+          borderRadius: 0,
         },
       },
     },
