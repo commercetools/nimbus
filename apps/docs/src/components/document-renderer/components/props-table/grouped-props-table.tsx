@@ -1,7 +1,6 @@
 import {
   Box,
   Text,
-  Stack,
   Button,
   Icon,
   ToggleButtonGroup,
@@ -142,7 +141,10 @@ interface PropData {
 interface ComponentData {
   displayName: string;
   description?: string;
-  props?: Record<string, PropData>;
+  props?: Record<string, PropData | undefined>;
+  tags?: Record<string, string | undefined>;
+  filePath: string;
+  methods: unknown[];
 }
 
 interface ExportInfo {
@@ -182,7 +184,8 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
       basicType === "object" &&
       exportItem !== null &&
       !isArray &&
-      ("$$typeof" in (exportItem as any) || "render" in (exportItem as any));
+      ("$$typeof" in (exportItem as Record<string, unknown>) ||
+        "render" in (exportItem as Record<string, unknown>));
 
     const isCompoundComponent =
       basicType === "object" &&
@@ -228,10 +231,11 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
   // Fetch prop data for the selected component
   const componentData = useMemo(() => {
     if (!selectedComponent) return null;
-    return (typesData as ComponentData[]).find(
+    return (typesData as unknown as ComponentData[]).find(
       (c) => c.displayName === selectedComponent
     );
   }, [selectedComponent]);
+
   // Group props according to PROP_GROUPS
   const groupedProps = useMemo(() => {
     if (!componentData?.props) {
@@ -239,7 +243,7 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
     }
 
     // Clone props to avoid mutation
-    let remainingProps = { ...componentData.props };
+    const remainingProps = { ...componentData.props };
     const groups: Record<string, Record<string, PropData>> = {};
 
     // Initialize groups
@@ -443,8 +447,8 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
         <Text mb="400">{componentData.description}</Text>
       )}
 
-      {!groupedProps.ungrouped.length === 0 &&
-        !groupedProps.groups.length === 0 &&
+      {Object.keys(groupedProps.ungrouped).length === 0 &&
+        Object.keys(groupedProps.groups).length === 0 &&
         "No props available for this component."}
 
       {/* Ungrouped props in a regular table */}
