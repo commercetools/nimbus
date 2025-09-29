@@ -30,12 +30,6 @@ const meta: Meta<typeof Drawer.Root> = {
       control: { type: "boolean" },
       description: "Whether to show the backdrop overlay behind the drawer",
     },
-    scrollBehavior: {
-      control: { type: "select" },
-      options: ["inside", "outside"],
-      description:
-        "Whether scrolling happens inside the drawer body or on the entire page",
-    },
     isOpen: {
       control: { type: "boolean" },
       description: "Whether the drawer is open (controlled mode)",
@@ -394,61 +388,55 @@ export const BackdropVariants: Story = {
 };
 
 /**
- * Drawer with scrollable content to test scroll behavior variants.
- * Tests keyboard accessibility when scrollBehavior="inside" is selected.
+ * Drawer with scrollable content to demonstrate scroll behavior.
+ * Tests keyboard accessibility and focus management within the drawer body.
  */
-export const ScrollBehavior: Story = {
+export const ScrollableContent: Story = {
   args: {},
   render: () => (
-    <Stack direction="row">
-      {(["inside", "outside"] as const).map((scrollBehavior) => (
-        <Drawer.Root key={scrollBehavior} scrollBehavior={scrollBehavior}>
-          <Drawer.Trigger>Scroll {scrollBehavior}</Drawer.Trigger>
-
-          <Drawer.Content>
-            <Drawer.Header>
-              <Drawer.Title>Terms and conditions</Drawer.Title>
-              <Drawer.CloseTrigger />
-            </Drawer.Header>
-            <Separator />
-            <Drawer.Body data-testid={`drawer-body-${scrollBehavior}`}>
-              <Stack>
-                <Text>
-                  This drawer tests "{scrollBehavior}" scroll behavior with lots
-                  of content.
-                </Text>
-                <Text fontWeight="semibold">
-                  {scrollBehavior === "inside"
-                    ? "The drawer body is keyboard focusable and scrollable with arrow keys."
-                    : "The entire page scrolls when content overflows."}
-                </Text>
-                {Array.from({ length: 20 }, (_, i) => (
-                  <Text key={i}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris. This is paragraph {i + 1} of scrollable
-                    content.
-                  </Text>
-                ))}
-                <Text fontWeight="semibold" id={`scroll-end-${scrollBehavior}`}>
-                  End of scrollable content for {scrollBehavior} behavior.
-                </Text>
-              </Stack>
-            </Drawer.Body>
-            <Separator />
-            <Drawer.Footer>
-              <Button ml="auto" slot="close">
-                Decline
-              </Button>
-              <Button mr="auto" tone="primary" variant="solid">
-                Accept
-              </Button>
-            </Drawer.Footer>
-          </Drawer.Content>
-        </Drawer.Root>
-      ))}
-    </Stack>
+    <Drawer.Root>
+      <Drawer.Trigger>Open Scrollable Drawer</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Scrollable Content</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Separator />
+        <Drawer.Body data-testid="scrollable-drawer-body">
+          <Stack>
+            <Text fontWeight="semibold">
+              The drawer body is keyboard focusable and scrollable with arrow
+              keys.
+            </Text>
+            <Text>
+              Use Tab to focus the drawer body, then use arrow keys, Page
+              Up/Down, Home/End to scroll through the content.
+            </Text>
+            {Array.from({ length: 25 }, (_, i) => (
+              <Text key={i}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                This is paragraph {i + 1} of scrollable content.
+              </Text>
+            ))}
+            <Text fontWeight="semibold" color="primary.500">
+              End of scrollable content. You can scroll back to the top using
+              Home key.
+            </Text>
+          </Stack>
+        </Drawer.Body>
+        <Separator />
+        <Drawer.Footer>
+          <Button variant="outline" slot="close">
+            Cancel
+          </Button>
+          <Button variant="solid" tone="primary" slot="close">
+            Confirm
+          </Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
   ),
 
   play: async ({ canvasElement, step }) => {
@@ -457,227 +445,84 @@ export const ScrollBehavior: Story = {
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
 
-    await step("Test 'scroll inside' keyboard accessibility", async () => {
-      // Test scroll inside drawer
-      const scrollInsideTrigger = canvas.getByRole("button", {
-        name: "Scroll inside",
+    await step("Open drawer and verify scroll setup", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Scrollable Drawer",
       });
-      await userEvent.click(scrollInsideTrigger);
+      await userEvent.click(trigger);
 
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
       });
 
-      // Verify drawer body is focusable (tabIndex=0) for scroll inside
-      const drawerBody = canvas.getByTestId("drawer-body-inside");
+      // Verify drawer body is focusable for keyboard scrolling
+      const drawerBody = canvas.getByTestId("scrollable-drawer-body");
       expect(drawerBody).toHaveAttribute("tabIndex", "0");
+    });
 
-      // Test keyboard navigation to drawer body
-      await userEvent.tab(); // Move to Close button
-      await userEvent.tab(); // Move to Drawer.Body
+    await step("Test keyboard navigation to drawer body", async () => {
+      const drawerBody = canvas.getByTestId("scrollable-drawer-body");
+
+      // Tab to reach the drawer body (skip close button, cancel, confirm)
+      await userEvent.tab(); // Close button
+      await userEvent.tab(); // Cancel button
+      await userEvent.tab(); // Confirm button
+      await userEvent.tab(); // Drawer body
+
       await waitFor(() => {
-        // Verify drawer body is focusable and accessible
-        expect(drawerBody).toBeInTheDocument();
         expect(drawerBody).toHaveAttribute("tabIndex", "0");
       });
+    });
 
-      // Test keyboard scrolling with arrow keys
-      // Get initial scroll position - re-query to ensure we have the current state
-      const initialDrawerBody = canvas.getByTestId("drawer-body-inside");
-      const initialScrollTop = initialDrawerBody?.scrollTop || 0;
+    await step("Test keyboard scrolling functionality", async () => {
+      const drawerBody = canvas.getByTestId("scrollable-drawer-body");
 
-      // Scroll down with arrow keys
+      // Get initial scroll position
+      const initialScrollTop = drawerBody?.scrollTop || 0;
+
+      // Test arrow key scrolling
       await userEvent.keyboard("{ArrowDown}");
       await userEvent.keyboard("{ArrowDown}");
       await userEvent.keyboard("{ArrowDown}");
 
-      // Verify scrolling occurred
-      // Note: In some test environments, scrollTop might not update immediately
-      // or might be subject to environment differences. We check both scroll position
-      // change and ensure the element remains focused (indicating key handling works)
-      await waitFor(
-        () => {
-          // Re-query the element to ensure we have the current state
-          const currentDrawerBody = canvas.getByTestId("drawer-body-inside");
-          const currentScrollTop = currentDrawerBody?.scrollTop || 0;
-
-          // Check that keyboard interaction is working by verifying the drawer body
-          // is still focusable and the arrow keys didn't cause navigation away from the drawer
-          expect(currentDrawerBody).toBeInTheDocument();
-          expect(currentDrawerBody).toHaveAttribute("tabIndex", "0");
-
-          // Then check for scroll position change (if supported in this environment)
-          // If scroll position doesn't change due to environment limitations,
-          // the focus check above already validates keyboard interaction works
-          if (currentScrollTop > 0 || initialScrollTop > 0) {
-            expect(currentScrollTop).toBeGreaterThanOrEqual(initialScrollTop);
-          }
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Test Page Down key
+      // Test Page Down
       await userEvent.keyboard("{PageDown}");
-      await waitFor(
-        () => {
-          const currentDrawerBody = canvas.getByTestId("drawer-body-inside");
-          // Verify keyboard navigation is working by confirming drawer still exists and is interactive
-          expect(currentDrawerBody).toBeInTheDocument();
-          expect(currentDrawerBody).toHaveAttribute("tabIndex", "0");
-        },
-        { timeout: 3000, interval: 100 }
-      );
 
-      // Test Home key to scroll to top
-      await userEvent.keyboard("{Home}");
-      await waitFor(
-        () => {
-          const currentDrawerBody = canvas.getByTestId("drawer-body-inside");
-          expect(currentDrawerBody).toBeInTheDocument();
-          expect(currentDrawerBody).toHaveAttribute("tabIndex", "0");
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Test End key to scroll to bottom
-      await userEvent.keyboard("{End}");
-      await waitFor(
-        () => {
-          const currentDrawerBody = canvas.getByTestId("drawer-body-inside");
-          expect(currentDrawerBody).toBeInTheDocument();
-          expect(currentDrawerBody).toHaveAttribute("tabIndex", "0");
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Close drawer
-      await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
-    });
-
-    await step("Test 'scroll outside' behavior comparison", async () => {
-      // Test scroll outside drawer
-      const scrollOutsideTrigger = canvas.getByRole("button", {
-        name: "Scroll outside",
-      });
-      await userEvent.click(scrollOutsideTrigger);
-
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-
-      // Verify drawer body is NOT focusable (no tabIndex) for scroll outside
-      const drawerBody = canvas.getByTestId("drawer-body-outside");
-      expect(drawerBody).not.toHaveAttribute("tabIndex");
-
-      // Test that Tab doesn't focus the drawer body - it should be skipped entirely
-      // Focus order for scroll outside: Close button -> Decline button -> Accept button (drawer body is skipped)
-      await userEvent.tab(); // Move to Decline button
-      const declineButton = canvas.getByRole("button", { name: "Decline" });
-      await waitFor(() => {
-        // Verify decline button is accessible
-        expect(declineButton).toBeInTheDocument();
-        expect(declineButton).toHaveAttribute("type", "button");
-      });
-
-      await userEvent.tab(); // Should skip drawer body and go to Accept button
-      const acceptButton = canvas.getByRole("button", { name: "Accept" });
-      await waitFor(() => {
-        // Verify accept button is accessible
-        expect(acceptButton).toBeInTheDocument();
-        expect(acceptButton).toHaveAttribute("type", "button");
-      });
-
-      // Verify drawer body is never focused by tabbing once more (should cycle or stop)
-      await userEvent.tab();
-      await waitFor(() => {
-        // Drawer body should still NOT have tabIndex for scroll outside behavior
-        expect(drawerBody).not.toHaveAttribute("tabIndex");
-      });
-
-      // Close drawer
-      await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
-    });
-
-    await step("Test focus restoration after keyboard scrolling", async () => {
-      // Re-open scroll inside drawer
-      const scrollInsideTrigger = canvas.getByRole("button", {
-        name: "Scroll inside",
-      });
-      await userEvent.click(scrollInsideTrigger);
-
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-
-      // Tab to drawer body and scroll
-      const drawerBody = canvas.getByTestId("drawer-body-inside");
-      await userEvent.tab(); // Move to Decline button
-      await userEvent.tab(); // Move to Accept button
-      await userEvent.tab(); // Move to drawer body
-      await userEvent.keyboard("{PageDown}"); // Scroll
-
-      // Verify drawer body remains accessible during scrolling
+      // Verify the drawer body maintains focus and scrolling capability
       await waitFor(() => {
         expect(drawerBody).toBeInTheDocument();
         expect(drawerBody).toHaveAttribute("tabIndex", "0");
       });
 
-      // Close drawer and verify focus restoration
+      // Test Home key (scroll to top)
+      await userEvent.keyboard("{Home}");
+
+      // Test End key (scroll to bottom)
+      await userEvent.keyboard("{End}");
+
+      await waitFor(() => {
+        expect(drawerBody).toBeInTheDocument();
+        expect(drawerBody).toHaveAttribute("tabIndex", "0");
+      });
+    });
+
+    await step("Close drawer and verify focus restoration", async () => {
       await userEvent.keyboard("{Escape}");
+
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
       });
 
-      // Verify focus restoration (focus should return to original trigger)
-      // Note: Focus restoration may vary by test environment
+      // Verify focus returns to trigger
+      const trigger = canvas.getByRole("button", {
+        name: "Open Scrollable Drawer",
+      });
       await waitFor(
         () => {
-          // Check if trigger is at least accessible and in document
-          expect(scrollInsideTrigger).toBeInTheDocument();
-          expect(scrollInsideTrigger).toHaveAttribute("type", "button");
+          expect(trigger).toHaveFocus();
         },
         { timeout: 1000 }
       );
-    });
-
-    await step("Test scroll indicators and visual feedback", async () => {
-      // Test that focus ring is visible when drawer body is focused
-      const scrollInsideTrigger = canvas.getByRole("button", {
-        name: "Scroll inside",
-      });
-      await userEvent.click(scrollInsideTrigger);
-
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-
-      const drawerBody = canvas.getByTestId("drawer-body-inside");
-
-      // Tab to drawer body
-      await userEvent.tab(); // Move to Decline button
-      await userEvent.tab(); // Move to Accept button
-      await userEvent.tab(); // Move to drawer body
-      await waitFor(() => {
-        // Verify drawer body is accessible for keyboard interaction
-        expect(drawerBody).toBeInTheDocument();
-        expect(drawerBody).toHaveAttribute("tabIndex", "0");
-      });
-
-      // Verify drawer body is properly configured for focus and scroll
-      expect(drawerBody).toHaveAttribute("tabIndex", "0");
-
-      // Close drawer
-      const closeButton = canvas.getByRole("button", { name: /close/i });
-      await userEvent.click(closeButton);
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
     });
   },
 };
@@ -792,15 +637,8 @@ export const LoginForm: Story = {
 
                 <FormField.Root display="block" width="100%">
                   <FormField.Label>Password</FormField.Label>
-                  <FormField.Input
-                    css={{
-                      "& > div": {
-                        width: "100%",
-                      },
-                    }}
-                  >
+                  <FormField.Input>
                     <PasswordInput
-                      display="block"
                       width="100%"
                       placeholder="Enter your password"
                       value={password}

@@ -41,6 +41,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
       justifyContent: "center",
       overscrollBehaviorY: "none",
       pointerEvents: "none",
+      overflow: "hidden",
     },
     content: {
       display: "flex",
@@ -57,6 +58,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
       width: "lg",
       maxW: "full",
       pointerEvents: "auto",
+      maxH: "calc(100% - 7.5rem)",
     },
     header: {
       flex: 0,
@@ -69,6 +71,8 @@ export const drawerSlotRecipe = defineSlotRecipe({
       px: "600",
       pt: "200",
       pb: "600",
+      overflow: "auto",
+      focusVisibleRing: "outside",
     },
     footer: {
       display: "flex",
@@ -114,6 +118,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
           "--drawer-base-margin": 0,
           mx: 0,
           height: "100vh",
+          maxH: "100vh",
           borderRadius: 0,
         },
       },
@@ -126,6 +131,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
           "--drawer-base-margin": 0,
           mx: 0,
           height: "100vh",
+          maxH: "100vh",
           borderRadius: 0,
         },
       },
@@ -154,28 +160,8 @@ export const drawerSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    scrollBehavior: {
-      inside: {
-        modal: {
-          overflow: "hidden",
-        },
-        content: {
-          maxH: "calc(100% - 7.5rem)",
-        },
-        body: {
-          overflow: "auto",
-          focusVisibleRing: "outside",
-        },
-      },
-      outside: {
-        modal: {
-          overflow: "auto",
-        },
-      },
-    },
   },
   defaultVariants: {
-    scrollBehavior: "outside",
     placement: "right",
     showBackdrop: false,
   },

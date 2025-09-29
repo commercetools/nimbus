@@ -173,7 +173,3 @@ export interface DrawerCloseTriggerProps
    */
   "aria-label"?: string;
 }
-/**
- * Scroll behavior variants for the drawer
- */
-export type DrawerScrollBehavior = "inside" | "outside";

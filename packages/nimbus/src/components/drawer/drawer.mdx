@@ -137,47 +137,6 @@ const App = () => {
 }
 ```
 
-### Scroll Behavior
-
-Handle long content with different scrolling approaches using the `scrollBehavior` prop:
-
-```jsx-live
-const App = () => {
-  const scrollBehaviors = [
-    { value: "outside", label: "Outside (default)", description: "Default scroll behavior, entire drawer scrolls" },
-    { value: "inside", label: "Inside", description: "Contained scrolling within the drawer body" }
-  ];
-
-  return (
-    <Stack direction="row" gap="400">
-      {scrollBehaviors.map((behavior) => (
-        <Drawer.Root key={behavior.value} scrollBehavior={behavior.value}>
-          <Drawer.Trigger asChild>
-            <Button>{behavior.label}</Button>
-          </Drawer.Trigger>
-          <Drawer.Content width="sm">
-            <Drawer.Header>
-              <Drawer.Title>{behavior.label} Scrolling</Drawer.Title>
-              <Drawer.CloseTrigger />
-            </Drawer.Header>
-            <Drawer.Body>
-              <Stack>
-                <Text>{behavior.description}</Text>
-                {Array.from({ length: 20 }, (_, i) => (
-                  <Text key={i}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </Text>
-                ))}
-              </Stack>
-            </Drawer.Body>
-          </Drawer.Content>
-        </Drawer.Root>
-      ))}
-    </Stack>
-  );
-}
-```
 
 ### Controlled State
 
