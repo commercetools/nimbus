@@ -1,0 +1,302 @@
+---
+id: Components-Drawer
+title: Drawer
+description: >-
+  A foundational drawer component for overlays that require user attention and
+  interaction.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Drawer
+tags:
+  - component
+  - overlay
+  - dialog
+  - interactive
+figmaLink: >-
+  https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
+
+---
+
+# Drawer
+
+A foundational drawer component for overlays that require user attention and interaction. Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
+
+## Overview
+
+Drawers are overlay windows that appear on top of the main content to display important information, gather user input, or require user decisions. They temporarily disable the main interface until the user completes an action or dismisses the drawer.
+
+### Key Features
+
+- **Accessibility First**: Built with React Aria Components for WCAG 2.1 AA compliance
+- **Flexible Positioning**: Support for center, top, and bottom placements  
+- **Responsive Sizing**: Multiple size variants from xs to full-screen
+- **Smooth Animations**: Customizable motion presets for entrance/exit
+- **Focus Management**: Automatic focus trapping and restoration
+- **Keyboard Navigation**: Full keyboard support including Escape to close
+- **Scroll Handling**: Options for inside or outside scrolling behavior
+
+### Resources
+
+Deep dive on details and access design library.
+
+[React Aria Drawer Docs](https://react-spectrum.adobe.com/react-aria/Drawer.html)
+[ARIA Drawer Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+[Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
+
+## Variables
+
+Get familiar with the features.
+
+### Basic Usage
+
+```jsx-live
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger>
+      Anything can be a trigger
+    </Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Drawer Title</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+          This is a basic dialog with default settings. It includes a backdrop,
+          title, description, and close button for a complete experience.
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button>Save</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+### Size
+
+Control the drawer width by applying  `width` prop on the Content component,
+it's a regular style-prop, so you can use all size-tokens but also custom values.
+
+```jsx-live
+const App = () => (
+  <Drawer.Root >
+    <Drawer.Trigger asChild>
+      <Button>Open Large Drawer</Button>
+    </Drawer.Trigger>
+    <Drawer.Content width="3xl">
+      <Drawer.Header>
+        <Drawer.Title>Large Drawer</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        This drawer uses a custom width. You can change the width by
+        adjusting the width prop on Drawer.Root to values like "xs", "sm",
+        "md", "lg", "xl", or "full", but also raw css values.
+      </Drawer.Body>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+### Placement Options
+
+Position the drawer at different locations using the `placement` prop:
+
+```jsx-live
+const App = () => {
+  const placements = [
+    { value: "center", label: "Center (default)", description: "Centered in the viewport, works well for most use cases" },
+    { value: "top", label: "Top", description: "Appears at the top, useful for notifications or alerts" },
+    { value: "bottom", label: "Bottom", description: "Appears at the bottom, good for mobile-friendly sheets or action panels" }
+  ];
+
+  return (
+    <Stack direction="row" gap="400">
+      {placements.map((placement) => (
+        <Drawer.Root key={placement.value} placement={placement.value}>
+          <Drawer.Trigger asChild>
+            <Button>{placement.label}</Button>
+          </Drawer.Trigger>
+          <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>{placement.label} Placement</Drawer.Title>
+              <Drawer.CloseTrigger />
+            </Drawer.Header>
+            <Drawer.Body>
+              {placement.description}
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Root>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Scroll Behavior
+
+Handle long content with different scrolling approaches using the `scrollBehavior` prop:
+
+```jsx-live
+const App = () => {
+  const scrollBehaviors = [
+    { value: "outside", label: "Outside (default)", description: "Default scroll behavior, entire drawer scrolls" },
+    { value: "inside", label: "Inside", description: "Contained scrolling within the drawer body" }
+  ];
+
+  return (
+    <Stack direction="row" gap="400">
+      {scrollBehaviors.map((behavior) => (
+        <Drawer.Root key={behavior.value} scrollBehavior={behavior.value}>
+          <Drawer.Trigger asChild>
+            <Button>{behavior.label}</Button>
+          </Drawer.Trigger>
+          <Drawer.Content width="sm">
+            <Drawer.Header>
+              <Drawer.Title>{behavior.label} Scrolling</Drawer.Title>
+              <Drawer.CloseTrigger />
+            </Drawer.Header>
+            <Drawer.Body>
+              <Stack>
+                <Text>{behavior.description}</Text>
+                {Array.from({ length: 20 }, (_, i) => (
+                  <Text key={i}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  </Text>
+                ))}
+              </Stack>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Root>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Controlled State
+
+Use external state to control the dialog programmatically:
+
+```jsx-live
+const App = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  
+  return (
+    <Stack>
+      <Button onClick={() => setIsOpen(true)}>
+        Open Controlled Drawer
+      </Button>
+      
+      <Text>Drawer is currently: {isOpen ? "open" : "closed"}</Text>
+      
+      <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Controlled Drawer</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+              This drawer's state is controlled by the parent component.
+              You can open/close it programmatically or through user interaction.
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button variant="outline" onClick={() => setIsOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => setIsOpen(false)}>
+              Save
+            </Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    </Stack>
+  );
+}
+```
+
+
+## Guidelines
+
+Use drawers strategically to enhance user workflow without disrupting the experience.
+
+### Best Practices
+
+- **Use drawers sparingly**: Only when you need to interrupt the user's flow for critical actions
+- **Keep content focused**: Drawers should have a single, clear purpose
+- **Provide clear actions**: Always include obvious ways to proceed or dismiss
+- **Make dismissal easy**: Support Escape key, close buttons, and click-outside behavior
+- **Maintain focus flow**: Focus should move logically through interactive elements
+- **Size appropriately**: Choose sizes that fit your content without overwhelming the viewport
+- **Consider mobile**: Ensure drawers work well on small screens
+
+> [!TIP]\
+> When to use
+
+- **Confirming destructive actions**: Delete confirmations and critical warnings
+- **Collecting focused input**: Forms, settings, and data entry that requires attention
+- **Displaying critical alerts**: Important information that requires immediate user attention
+- **Showing detailed information**: Content that doesn't require navigation to a new page
+- **Authentication flows**: Login, signup, and security-related interactions
+
+> [!CAUTION]\
+> When not to use
+
+- **Complex multi-step workflows**: Use pages instead for lengthy processes
+- **Non-critical information**: Use inline content for supplementary information
+- **Navigation**: Use proper routing instead of drawers for moving between sections
+- **Content that needs to be referenced**: Avoid for information users need while working elsewhere
+
+## Specs
+
+<PropsTable id="Drawer" />
+
+## Accessibility
+
+The Drawer component follows WCAG 2.1 AA guidelines and implements proper modal dialog patterns.
+
+### Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus to next focusable element within drawer |
+| `Shift + Tab` | Move focus to previous focusable element within drawer |
+| `Escape` | Close the drawer (unless disabled) |
+| `Enter/Space` | Activate focused button or trigger |
+
+### Screen Reader Support
+
+- **Role identification**: Drawer has `dialog` role with proper labeling
+- **Focus management**: Focus moves to drawer on open, returns to trigger on close
+- **Focus containment**: Tab navigation stays within drawer boundaries
+- **Accessible names**: Title and description properly associate with drawer
+- **State announcements**: Screen readers announce when drawer opens/closes
+
+### WCAG Compliance
+
+#### 1. Perceivable
+- **1.3.1 Info and Relationships**: Proper semantic structure with header, body, footer
+- **1.4.3 Contrast**: All text meets minimum contrast requirements  
+- **1.4.11 Non-text Contrast**: Focus indicators and UI components meet contrast standards
+
+#### 2. Operable  
+- **2.1.1 Keyboard**: Full keyboard navigation support
+- **2.1.2 No Keyboard Trap**: Focus contained but escapable via Escape key
+- **2.4.3 Focus Order**: Logical focus progression through dialog elements
+- **2.4.7 Focus Visible**: Clear focus indicators on all interactive elements
+
+#### 3. Understandable
+- **3.2.1 On Focus**: No unexpected context changes when focusing elements
+- **3.2.2 On Input**: Predictable behavior for all user interactions
+- **3.3.2 Labels or Instructions**: Clear labeling and instructions where needed
+
+#### 4. Robust
+- **4.1.2 Name, Role, Value**: Proper semantic markup and ARIA attributes
+- **4.1.3 Status Messages**: Appropriate announcements for state changes
+
+The Drawer component ensures that all users, regardless of their abilities or assistive technologies, can effectively interact with drawer content.
