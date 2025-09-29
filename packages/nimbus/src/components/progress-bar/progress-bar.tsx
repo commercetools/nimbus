@@ -18,21 +18,7 @@ import type { ProgressBarProps } from "./progress-bar.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
- * ProgressBar
- * ============================================================
- * Displays progress towards completion of a task or process
- *
- * Features:
- *
- * - Supports both determinate (with value) and indeterminate (loading) states
- * - Two visual variants: solid (gradient) and contrast (monochromatic)
- * - Three layouts: minimal, inline, and stacked
- * - Configurable value formatting with internationalization support
- * - Full accessibility support with ARIA attributes
- * - Allows forwarding refs to the underlying DOM element
- * - Accepts all native HTML div attributes
- * - Supports variants, sizes, etc. configured in the recipe
- * - Allows overriding styles by using style-props
+ * Displays progress towards completion of a task or process.
  */
 export const ProgressBar = (props: ProgressBarProps) => {
   const {

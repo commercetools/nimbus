@@ -4,8 +4,6 @@ import type { BadgeProps } from "./badge.types";
 import { mergeRefs } from "@chakra-ui/react";
 import { useObjectRef, mergeProps } from "react-aria";
 /**
- * # Badge
- *
  * Briefly highlights or categorizes associated UI elements with concise visual cues for status or metadata.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/data-display/badge}

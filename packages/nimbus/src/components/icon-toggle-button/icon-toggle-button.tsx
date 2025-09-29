@@ -2,8 +2,6 @@ import { ToggleButton } from "@/components/toggle-button";
 import type { IconToggleButtonProps } from "./icon-toggle-button.types";
 
 /**
- * # IconToggleButton
- * ============================================================
  * A toggle button with only an icon as child. It is based
  * on the regular `ToggleButton` component, but with a few adjustments.
  *

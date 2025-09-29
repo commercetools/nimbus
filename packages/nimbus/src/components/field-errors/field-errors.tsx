@@ -103,8 +103,6 @@ const getBuiltInMessage = (key: string): React.ReactNode => {
 };
 
 /**
- * # FieldErrors
- *
  * Renders error messages based on error object configuration.
  * Provides backwards compatibility with UI-Kit FieldErrors while integrating
  * with Nimbus design system patterns.

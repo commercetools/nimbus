@@ -14,8 +14,6 @@ tags:
   - component
 ---
 
-import { RichTextInput } from "./rich-text-input";
-
 # RichTextInput
 
 A rich text input component that provides users with formatting tools to create
@@ -41,10 +39,8 @@ italic, underline, lists, headings, and links.
 
 ### Basic usage
 
-```tsx
-import { RichTextInput } from "@commercetools/nimbus";
-
-function BasicExample() {
+```jsx-live
+const App = () => {
   const [value, setValue] = useState("");
 
   return (
@@ -59,10 +55,8 @@ function BasicExample() {
 
 ### Uncontrolled usage
 
-```tsx
-import { RichTextInput } from "@commercetools/nimbus";
-
-function UncontrolledExample() {
+```jsx-live
+const App = () => {
   return (
     <RichTextInput
       defaultValue="<p>Initial content with <strong>formatting</strong></p>"
@@ -74,11 +68,10 @@ function UncontrolledExample() {
 
 ### Form integration
 
-```tsx
-import { RichTextInput } from "@commercetools/nimbus";
+```jsx-live
 import { useForm } from "react-hook-form";
 
-function FormExample() {
+const App = () => {
   const { control, handleSubmit } = useForm();
 
   return (
@@ -137,21 +130,7 @@ The rich text input supports standard keyboard shortcuts for formatting:
 
 ### Props
 
-| Prop           | Type                      | Default     | Description                                        |
-| -------------- | ------------------------- | ----------- | -------------------------------------------------- |
-| `value`        | `string`                  | -           | The HTML value of the rich text input (controlled) |
-| `defaultValue` | `string`                  | -           | The default HTML value (uncontrolled)              |
-| `onChange`     | `(value: string) => void` | -           | Called when the value changes                      |
-| `onFocus`      | `FocusEventHandler`       | -           | Called when the input is focused                   |
-| `onBlur`       | `FocusEventHandler`       | -           | Called when the input is blurred                   |
-| `placeholder`  | `string`                  | -           | Placeholder text to show when empty                |
-| `isDisabled`   | `boolean`                 | `false`     | Whether the input is disabled                      |
-| `isReadOnly`   | `boolean`                 | `false`     | Whether the input is read-only                     |
-| `hasError`     | `boolean`                 | `false`     | Whether the input has an error state               |
-| `hasWarning`   | `boolean`                 | `false`     | Whether the input has a warning state              |
-| `autoFocus`    | `boolean`                 | `false`     | Whether to focus the input when it mounts          |
-| `size`         | `"sm" \| "md" \| "lg"`    | `"md"`      | Size variant of the input                          |
-| `variant`      | `"outline" \| "filled"`   | `"outline"` | Visual variant of the input                        |
+<GroupedPropsTable componentName="RichTextInput" />
 
 ### Utility functions
 
@@ -192,7 +171,9 @@ The RichTextInput component is built with accessibility in mind:
 
 ## Examples
 
-<RichTextInput placeholder="Try typing and using the formatting tools!" />
+```jsx-live
+const App = () => <RichTextInput placeholder="Try typing and using the formatting tools!" />
+```
 
 The component automatically handles complex rich text editing scenarios while
 maintaining a clean and accessible interface.

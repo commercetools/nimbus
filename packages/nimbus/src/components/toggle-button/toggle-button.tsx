@@ -6,8 +6,6 @@ import { ToggleButtonRoot } from "./toggle-button.slots";
 import type { ToggleButtonProps } from "./toggle-button.types";
 
 /**
- * # ToggleButton
- *
  * A toggleable button component that can be pressed to switch between
  * selected and unselected states.
  *

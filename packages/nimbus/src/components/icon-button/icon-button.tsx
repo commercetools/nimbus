@@ -5,9 +5,7 @@ import type { IconButtonProps } from "./icon-button.types";
 import { Button } from "@/components";
 
 /**
- * # IconButton
- *
- * displays a button with an icon only as child
+ * Displays a button with an icon only as child
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/iconbutton}
  */

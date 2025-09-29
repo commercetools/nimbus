@@ -10,8 +10,6 @@ import {
 } from "./checkbox.slots";
 
 /**
- * # Checkbox
- *
  * Displays a checkbox.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/checkbox}

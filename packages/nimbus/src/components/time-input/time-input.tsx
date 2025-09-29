@@ -12,9 +12,7 @@ import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeInputProps } from "./time-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 /**
- * TimeInput
- * ============================================================
- * allows entering a time in the currently selected locale
+ * Allows entering a time in the currently selected locale
  */
 export const TimeInput = (props: TimeInputProps) => {
   const recipe = useRecipe({ recipe: timeInputRecipe });

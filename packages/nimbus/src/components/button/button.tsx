@@ -6,8 +6,6 @@ import { ButtonRoot } from "./button.slots.tsx";
 import type { ButtonProps } from "./button.types.ts";
 
 /**
- * # Button
- *
  * Displays a Button.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}

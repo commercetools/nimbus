@@ -16,8 +16,6 @@ import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
 export type * from "./split-button.types";
 
 /**
- * # SplitButton
- *
  * A split-button component that combines a primary action button with a dropdown menu.
  *
  * Shows a primary action button + dropdown trigger. The primary button automatically

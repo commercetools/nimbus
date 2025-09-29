@@ -15,8 +15,6 @@ import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
 import { useAutogrow } from "./hooks";
 
 /**
- * # Multiline Text Input
- *
  * A multiline text input component for capturing longer text content.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/forms/multiline-text-input}

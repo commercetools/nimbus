@@ -14,8 +14,6 @@ import {
 import type { TextInputProps } from "./text-input.types";
 
 /**
- * # TextInput
- *
  * An input component that takes in a text as input
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/textinput}

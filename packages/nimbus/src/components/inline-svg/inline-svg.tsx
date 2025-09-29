@@ -3,8 +3,6 @@ import { InlineSvgRootSlot } from "./inline-svg.slots";
 import { useInlineSvg } from "./hooks";
 
 /**
- * # InlineSvg
- *
  * Renders arbitrary SVG markup as an icon with built-in XSS protection.
  * The component sanitizes the provided SVG string to remove potentially
  * dangerous elements and attributes before rendering.

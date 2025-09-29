@@ -10,9 +10,7 @@ const pointerPath =
   "M12 1.5C13.3789 1.5 14.7443 1.77159 16.0182 2.29927C17.2921 2.82694 18.4496 3.60036 19.4246 4.57538C20.3996 5.55039 21.1731 6.70791 21.7007 7.98183C22.2284 9.25574 22.5 10.6211 22.5 12";
 
 /**
- * # LoadingSpinner
- *
- * Indicates ongoing processes or loading states
+ *  Indicates ongoing processes or loading states
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/loadingspinner}
  */
