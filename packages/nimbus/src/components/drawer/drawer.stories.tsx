@@ -23,8 +23,12 @@ const meta: Meta<typeof Drawer.Root> = {
   argTypes: {
     placement: {
       control: { type: "select" },
-      options: ["center", "top", "bottom"],
+      options: ["left", "right", "top", "bottom"],
       description: "Position of the drawer relative to the viewport",
+    },
+    showBackdrop: {
+      control: { type: "boolean" },
+      description: "Whether to show the backdrop overlay behind the drawer",
     },
     scrollBehavior: {
       control: { type: "select" },
@@ -329,7 +333,7 @@ export const Placements: Story = {
   args: {},
   render: () => (
     <Stack direction="row" flexWrap="wrap">
-      {(["center", "top", "bottom"] as const).map((placement) => (
+      {(["left", "right", "top", "bottom"] as const).map((placement) => (
         <Drawer.Root key={placement} placement={placement}>
           <Drawer.Trigger>{placement}</Drawer.Trigger>
           <Drawer.Content>
@@ -339,6 +343,43 @@ export const Placements: Story = {
             </Drawer.Header>
             <Drawer.Body>
               <Text>This drawer is positioned at "{placement}".</Text>
+            </Drawer.Body>
+            <Drawer.Footer>
+              <Button slot="close" autoFocus>
+                Close
+              </Button>
+            </Drawer.Footer>
+          </Drawer.Content>
+        </Drawer.Root>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * Drawer with different backdrop variants.
+ */
+export const BackdropVariants: Story = {
+  args: {},
+  render: () => (
+    <Stack direction="row" flexWrap="wrap">
+      {([true, false] as const).map((showBackdrop) => (
+        <Drawer.Root key={String(showBackdrop)} showBackdrop={showBackdrop}>
+          <Drawer.Trigger>
+            Backdrop: {showBackdrop ? "enabled" : "disabled"}
+          </Drawer.Trigger>
+          <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>
+                Backdrop: {showBackdrop ? "Enabled" : "Disabled"}
+              </Drawer.Title>
+              <Drawer.CloseTrigger />
+            </Drawer.Header>
+            <Drawer.Body>
+              <Text>
+                This drawer {showBackdrop ? "has" : "does not have"} a backdrop
+                overlay.
+              </Text>
             </Drawer.Body>
             <Drawer.Footer>
               <Button slot="close" autoFocus>

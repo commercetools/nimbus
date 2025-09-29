@@ -22,25 +22,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
       focusRing: "outside",
     },
     modalOverlay: {
-      bg: {
-        _dark: "bg/20",
-        _light: "fg/20",
-      },
       pos: "fixed",
       left: 0,
       top: 0,
       w: "100vw",
       h: "100dvh",
-      backdropFilter: "blur({sizes.100})",
       zIndex: "modal",
-      "&[data-entering]": {
-        animationName: "fade-in",
-        animationDuration: "fast",
-      },
-      "&[data-exiting]": {
-        animationName: "fade-out",
-        animationDuration: "faster",
-      },
     },
     modal: {
       display: "flex",
@@ -54,14 +41,6 @@ export const drawerSlotRecipe = defineSlotRecipe({
       justifyContent: "center",
       overscrollBehaviorY: "none",
       pointerEvents: "none",
-      "&[data-entering]": {
-        animationDuration: "moderate",
-        animationName: "slide-from-bottom, scale-in, fade-in",
-      },
-      "&[data-exiting]": {
-        animationDuration: "faster",
-        animationName: "slide-to-top, scale-out, fade-out",
-      },
     },
     content: {
       display: "flex",
@@ -109,14 +88,45 @@ export const drawerSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
+    showBackdrop: {
+      true: {
+        modalOverlay: {
+          bg: {
+            _dark: "bg/20",
+            _light: "fg/20",
+          },
+          backdropFilter: "blur({sizes.100})",
+        },
+      },
+      false: {
+        modalOverlay: {
+          bg: "transparent",
+        },
+      },
+    },
     placement: {
-      center: {
+      left: {
         modal: {
-          alignItems: "center",
+          justifyContent: "flex-start",
+          alignItems: "stretch",
         },
         content: {
-          "--drawer-base-margin": "auto",
-          mx: "auto",
+          "--drawer-base-margin": 0,
+          mx: 0,
+          height: "100vh",
+          borderRadius: 0,
+        },
+      },
+      right: {
+        modal: {
+          justifyContent: "flex-end",
+          alignItems: "stretch",
+        },
+        content: {
+          "--drawer-base-margin": 0,
+          mx: 0,
+          height: "100vh",
+          borderRadius: 0,
         },
       },
       top: {
@@ -160,6 +170,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
   },
   defaultVariants: {
     scrollBehavior: "outside",
-    placement: "center",
+    placement: "right",
+    showBackdrop: false,
   },
 });

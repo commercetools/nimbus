@@ -58,6 +58,12 @@ export interface DrawerRootProps
    */
   onOpenChange?: (isOpen: boolean) => void;
 
+  /**
+   * Whether to show the backdrop overlay behind the drawer
+   * @default false
+   */
+  showBackdrop?: boolean;
+
   /** A Title for the drawer, optional, as long as there is a Heading
    * component used inside the Drawer.Content with a `slot`-property set to `title`.
    */
