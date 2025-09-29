@@ -414,21 +414,18 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
     });
   };
 
-  if (!exportInfo.exists || !selectedComponent || !componentData) {
-    return (
-      <Text color="danger">
-        Component '{componentName}' not found or has no props.
-      </Text>
-    );
-  }
-
   return (
     <Box>
       {/* Component selection for compound components */}
       {exportInfo.isCompoundComponent &&
         exportInfo.componentTypes &&
         exportInfo.componentTypes.length > 0 && (
-          <ToggleButtonGroup.Root tone="primary" variant="ghost" my="400">
+          <ToggleButtonGroup.Root
+            tone="primary"
+            variant="ghost"
+            my="400"
+            defaultSelectedKeys={[exportInfo.componentTypes[0]]}
+          >
             {exportInfo.componentTypes.map((cid) => (
               <ToggleButtonGroup.Button
                 key={cid}
@@ -445,6 +442,10 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
       {showDescription && componentData.description && (
         <Text mb="400">{componentData.description}</Text>
       )}
+
+      {!groupedProps.ungrouped.length === 0 &&
+        !groupedProps.groups.length === 0 &&
+        "No props available for this component."}
 
       {/* Ungrouped props in a regular table */}
       {renderUngroupedProps()}

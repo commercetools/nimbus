@@ -22,8 +22,6 @@ import { numberInputRecipe } from "./number-input.recipe";
 import { useIntl } from "react-intl";
 import messages from "./number-input.i18n";
 /**
- * # NumberInput
- *
  * A number input allows users to enter numerical values and adjust them incrementally.
  * The locale for formatting comes from React Aria's I18nProvider context.
  */

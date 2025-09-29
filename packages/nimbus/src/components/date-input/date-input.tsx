@@ -18,9 +18,7 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 import { Box } from "@/components";
 
 /**
- * # DateInput
- *
- * allows entering a date
+ * Allows entering a date
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dateinput}
  */

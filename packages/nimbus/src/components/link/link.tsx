@@ -5,8 +5,6 @@ import { useLink, useObjectRef, mergeProps } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 
 /**
- * # Link
- *
  * To allow a user to navigate to a different page or resource
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/link}
