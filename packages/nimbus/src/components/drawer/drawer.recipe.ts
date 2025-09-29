@@ -28,6 +28,17 @@ export const drawerSlotRecipe = defineSlotRecipe({
       w: "100vw",
       h: "100dvh",
       zIndex: "modal",
+
+      "&[data-entering]": {
+        animation: "fade-in",
+        animationDuration: "slow",
+        animationTimingFunction: "ease-in-smooth",
+      },
+      "&[data-exiting]": {
+        animation: "fade-out",
+        animationDuration: "moderate",
+        animationTimingFunction: "ease-in-out",
+      },
     },
     modal: {
       display: "flex",
@@ -42,6 +53,15 @@ export const drawerSlotRecipe = defineSlotRecipe({
       overscrollBehaviorY: "none",
       pointerEvents: "none",
       overflow: "hidden",
+
+      "&[data-entering]": {
+        animationDuration: "slow",
+        animationTimingFunction: "ease-in-smooth",
+      },
+      "&[data-exiting]": {
+        animationDuration: "moderate",
+        animationTimingFunction: "ease-in-out",
+      },
     },
     content: {
       display: "flex",
@@ -113,6 +133,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
         modal: {
           justifyContent: "flex-start",
           alignItems: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-left-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-left-full",
+          },
         },
         content: {
           "--drawer-base-margin": 0,
@@ -126,6 +152,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
         modal: {
           justifyContent: "flex-end",
           alignItems: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-right-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-right-full",
+          },
         },
         content: {
           "--drawer-base-margin": 0,
@@ -139,6 +171,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
         modal: {
           alignItems: "flex-start",
           justifyContent: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-top-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-top-full",
+          },
         },
         content: {
           "--drawer-base-margin": 0,
@@ -151,6 +189,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
         modal: {
           alignItems: "flex-end",
           justifyContent: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-bottom-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-bottom-full",
+          },
         },
         content: {
           "--drawer-base-margin": 0,

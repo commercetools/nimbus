@@ -328,7 +328,7 @@ export const Placements: Story = {
   render: () => (
     <Stack direction="row" flexWrap="wrap">
       {(["left", "right", "top", "bottom"] as const).map((placement) => (
-        <Drawer.Root key={placement} placement={placement}>
+        <Drawer.Root key={placement} placement={placement} showBackdrop>
           <Drawer.Trigger>{placement}</Drawer.Trigger>
           <Drawer.Content>
             <Drawer.Header>
