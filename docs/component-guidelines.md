@@ -168,6 +168,7 @@ component-name/
 ├── component-name.types.ts        # TypeScript interfaces
 ├── component-name.slots.tsx       # Slot components (if needed)
 ├── component-name.recipe.ts       # Styling recipes (if needed)
+├── component-name.i18n.ts         # i18n messages (if needed)
 ├── component-name.stories.tsx     # Storybook stories (required)
 ├── component-name.mdx            # Documentation (required)
 ├── components/                    # Compound parts (if compound)
@@ -191,20 +192,23 @@ component-name/
 1. **Compound components include `.Root`** as the first property in the
    namespace object
 2. **Hooks belong in `hooks/` folder** for organization
-3. **Slot files export both components AND TypeScript types**
+3. **Slot files export both components AND their TypeScript types**
 4. **Interactive components include play functions** in stories
 5. **Recipe registration is needed** in theme configuration
 
 ### Naming Conventions
 
-| File Type | Pattern                        | Example              |
-| --------- | ------------------------------ | -------------------- |
-| Component | `{component-name}.tsx`         | `button.tsx`         |
-| Types     | `{component-name}.types.ts`    | `button.types.ts`    |
-| Slots     | `{ComponentName}Slot`          | `ButtonSlot`         |
-| Props     | `{ComponentName}Props`         | `ButtonProps`        |
-| Hooks     | `use{Functionality}`           | `useButton`          |
-| Stories   | `{component-name}.stories.tsx` | `button.stories.tsx` |
+| File Type     | Pattern                        | Example              |
+| ------------- | ------------------------------ | -------------------- |
+| Component     | `{component-name}.tsx`         | `button.tsx`         |
+| Types         | `{component-name}.types.ts`    | `button.types.ts`    |
+| Recipe        | `{component-name}.recipe.ts`   | `button.recipe.ts`   |
+| Slots         | `{ComponentName}Slot`          | `ButtonSlot`         |
+| Props         | `{ComponentName}Props`         | `ButtonProps`        |
+| Hooks         | `use{Functionality}`           | `useButton`          |
+| i18n          | `{component-name}.i18n.ts`     | `button.i18n.ts`     |
+| Stories       | `{component-name}.stories.tsx` | `button.stories.tsx` |
+| Documentation | `{component-name}.mdx`         | `button.mdx`         |
 
 ### Import Conventions
 
