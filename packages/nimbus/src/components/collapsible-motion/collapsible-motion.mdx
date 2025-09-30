@@ -1,41 +1,47 @@
 ---
-id: collapsible-motion
+id: Components-CollapsibleMotion
 title: CollapsibleMotion
 description: A compound component for creating smooth collapsible content with accessibility support
+order: 999
 menu:
   - Components
   - Layout
-category: layout
-tags: ["collapsible", "accordion", "disclosure", "animation", "accessibility"]
+  - CollapsibleMotion
+tags: ["component", "collapsible", "accordion", "disclosure", "animation", "accessibility"]
 ---
 
 # CollapsibleMotion
 
 A modern, accessible implementation of collapsible content with smooth height animations. Built with React Aria for accessibility and Chakra UI for consistent theming.
 
-## Features
+## Overview
 
-- 🎨 Smooth height animations with customizable duration
-- ♿ Full accessibility support with proper ARIA attributes
-- 🎛️ Both controlled and uncontrolled modes
-- 🎯 Focus management for screen readers
-- 📱 Responsive and mobile-friendly
-- 🎨 Chakra UI theming integration
+CollapsibleMotion is a compound component that provides smooth, accessible collapsible content with height animations. It combines React Aria's accessibility features with Chakra UI's theming system to deliver a robust foundation for disclosure patterns, accordions, and expandable content sections.
 
-## Import
+### Key Features
 
-```jsx-live
-import { CollapsibleMotion } from "@nimbus/components";
-```
+- **Smooth height animations**: Customizable duration with automatic content measurement
+- **Full accessibility support**: Proper ARIA attributes and screen reader compatibility
+- **Controlled and uncontrolled modes**: Flexible state management options
+- **Focus management**: Content visibility handled properly for screen readers
+- **Responsive design**: Works seamlessly across all screen sizes
+- **Chakra UI integration**: Consistent theming with the design system
 
-## Usage
+### Resources
+
+Deep dive on details and access design library.
+
+- [React ARIA Disclosure Docs](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)
+- [ARIA Disclosure Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
+
+## Variables
 
 ### Basic Usage
 
 The simplest way to use CollapsibleMotion is in uncontrolled mode with default settings:
 
 ```jsx-live
-function BasicExample() {
+const App = () => {
   return (
     <CollapsibleMotion.Root defaultExpanded={false}>
       <Button mb={4}>Toggle Content</Button>
@@ -49,7 +55,7 @@ function BasicExample() {
       </CollapsibleMotion.Content>
     </CollapsibleMotion.Root>
   );
-}
+};
 ```
 
 ### Controlled Mode
@@ -57,7 +63,7 @@ function BasicExample() {
 For more complex scenarios, you can control the expanded state from a parent component:
 
 ```jsx-live
-function ControlledExample() {
+const App = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -84,7 +90,7 @@ function ControlledExample() {
       </CollapsibleMotion.Root>
     </div>
   );
-}
+};
 ```
 
 ### Custom Animation Settings
@@ -92,7 +98,7 @@ function ControlledExample() {
 You can customize the minimum height and animation duration:
 
 ```jsx-live
-function CustomAnimationExample() {
+const App = () => {
   return (
     <CollapsibleMotion.Root defaultExpanded={false}>
       <Button mb={4}>Toggle Content</Button>
@@ -113,7 +119,7 @@ function CustomAnimationExample() {
       </CollapsibleMotion.Content>
     </CollapsibleMotion.Root>
   );
-}
+};
 ```
 
 ### Dynamic Content
@@ -121,7 +127,7 @@ function CustomAnimationExample() {
 CollapsibleMotion automatically handles content that changes size:
 
 ```jsx-live
-function DynamicContentExample() {
+const App = () => {
   const [content, setContent] = useState('short');
 
   const contentMap = {
@@ -159,20 +165,45 @@ function DynamicContentExample() {
       </CollapsibleMotion.Root>
     </div>
   );
-}
+};
 ```
 
 ## Accessibility
 
-CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets:
+CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets WCAG 2.1 AA standards.
 
-- **ARIA Attributes**: Automatically applies `aria-expanded` and `aria-controls` to trigger buttons
-- **Focus Management**: Content is not focusable when collapsed, improving screen reader experience
-- **Keyboard Navigation**: Works with standard keyboard interactions when used with focusable triggers
-- **Screen Reader Support**: Proper semantic markup and state announcements
+### Keyboard Navigation
+
+| Key     | Action                             |
+| ------- | ---------------------------------- |
+| `Tab`   | Move focus to/from trigger element |
+| `Space` | Activate trigger when focused      |
+| `Enter` | Activate trigger when focused      |
+
+### Screen Reader Support
+
+- Automatically applies proper ARIA attributes (`aria-expanded`, `aria-controls`)
+- Content is not focusable when collapsed, improving screen reader experience
+- Announces state changes when expanding or collapsing
+- Proper semantic markup for assistive technologies
+
+### WCAG Compliance
+
+#### 2. Operable
+
+- **2.1.1 Keyboard**: Full keyboard navigation support through standard button interactions
+- **2.4.7 Focus Visible**: Clear focus indicators on trigger elements
+
+#### 3. Understandable
+
+- **3.2.1 On Focus**: No unexpected context changes when focusing elements
+
+#### 4. Robust
+
+- **4.1.2 Name, Role, Value**: Proper ARIA attributes (`aria-expanded`, `aria-controls`) communicate state and relationships
 
 ```jsx-live
-function AccessibilityExample() {
+const App = () => {
   return (
     <CollapsibleMotion.Root defaultExpanded={false}>
       <Button mb={4}>
@@ -193,7 +224,7 @@ function AccessibilityExample() {
       </CollapsibleMotion.Content>
     </CollapsibleMotion.Root>
   );
-}
+};
 ```
 
 ## Integration with Other Components
@@ -201,7 +232,7 @@ function AccessibilityExample() {
 CollapsibleMotion works well with other Nimbus components to create rich interactive experiences:
 
 ```jsx-live
-function IntegrationExample() {
+const App = () => {
   const [expandedSections, setExpandedSections] = useState(new Set());
 
   const toggleSection = (section) => {
@@ -246,10 +277,10 @@ function IntegrationExample() {
       ))}
     </Stack>
   );
-}
+};
 ```
 
-## API Reference
+## Specs
 
 <PropsTable id="CollapsibleMotionRoot" />
 
