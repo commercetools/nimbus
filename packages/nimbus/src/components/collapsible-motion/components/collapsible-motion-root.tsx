@@ -1,7 +1,6 @@
 import { useRef, forwardRef } from "react";
 import { useDisclosure } from "react-aria";
 import { useDisclosureState } from "react-stately";
-import { extractStyleProps } from "@/utils/extractStyleProps";
 import { CollapsibleMotionContext } from "./collapsible-motion-context";
 import { CollapsibleMotionRootSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionRootProps } from "../collapsible-motion.types";
@@ -27,9 +26,6 @@ export const CollapsibleMotionRoot = forwardRef<
     },
     forwardedRef
   ) => {
-    // Use recipe context for slot styling
-    const [styleProps, functionalProps] = extractStyleProps(props);
-
     // Use React Aria's disclosure state management
     const disclosureState = useDisclosureState({
       defaultExpanded,
@@ -57,8 +53,8 @@ export const CollapsibleMotionRoot = forwardRef<
 
     return (
       <CollapsibleMotionContext.Provider value={contextValue}>
-        <CollapsibleMotionRootSlot ref={forwardedRef} {...styleProps} asChild>
-          <div {...functionalProps}>{children}</div>
+        <CollapsibleMotionRootSlot ref={forwardedRef} {...props}>
+          {children}
         </CollapsibleMotionRootSlot>
       </CollapsibleMotionContext.Provider>
     );
