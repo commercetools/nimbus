@@ -11,19 +11,25 @@ markdown content with live code examples.
 
 ## When to Use
 
-**Always required** - Every component must have MDX documentation that:
+**Always required** - Every public-facing component in the Nimbus design system
+must have MDX documentation that:
 
-- Explains the component's purpose
-- Shows usage examples with live code
-- Documents props and API
-- Provides accessibility information
-- Links to design resources
+- Explains the component's purpose and when to use it
+- Shows usage examples with live code (using `jsx-live` blocks)
+- Documents props and API (using `<PropsTable>` component)
+- Provides accessibility information (keyboard navigation, ARIA attributes, WCAG
+  compliance)
+- Links to design resources (Figma, React Aria docs when applicable)
+
+**Note**: Internal utility components or non-exported components don't require
+MDX documentation.
 
 ## File Structure
 
 ### Required Frontmatter
 
-Based on analysis of existing component MDX files, all files must include these frontmatter fields:
+Based on analysis of existing component MDX files, all files must include these
+frontmatter fields:
 
 ```yaml
 ---
@@ -67,11 +73,13 @@ Based on analysis of existing component MDX files, follow this structure:
 ```markdown
 # Component Name
 
-Brief introduction paragraph explaining what the component is and when to use it.
+Brief introduction paragraph explaining what the component is and when to use
+it.
 
 ## Overview
 
-Detailed explanation of the component's purpose, behavior, and primary use cases.
+Detailed explanation of the component's purpose, behavior, and primary use
+cases.
 
 ### Key Features (Optional)
 
@@ -83,8 +91,7 @@ Detailed explanation of the component's purpose, behavior, and primary use cases
 
 Deep dive on details and access design library.
 
-[Figma library](figmaLink)
-[React ARIA Docs](reactAriaLink) # If applicable
+[Figma library](figmaLink) [React ARIA Docs](reactAriaLink) # If applicable
 [ARIA Pattern](ariaPatternLink) # If applicable
 
 ## Variables (or Examples)
@@ -93,29 +100,28 @@ Get familiar with the features.
 
 ### Basic Usage
 
-\`\`\`jsx-live
-const App = () => (
-  <ComponentName>
-    Basic example
-  </ComponentName>
-)
-\`\`\`
+\`\`\`jsx-live const App = () => ( <ComponentName> Basic example
+</ComponentName> ) \`\`\`
 
 ### Size Variants (If applicable)
 
-#### Medium
-This is the default size.
+Demonstrate all sizes in a single code block for easy comparison:
 
-\`\`\`jsx-live
-const App = () => <ComponentName size="md">Medium</ComponentName>
-\`\`\`
+\`\`\`jsx-live const App = () => (
+<Stack direction="row" gap="400" alignItems="center">
+<ComponentName size="sm">Small</ComponentName>
+<ComponentName size="md">Medium</ComponentName>
+<ComponentName size="lg">Large</ComponentName> </Stack> ) \`\`\`
 
-#### Small
-For condensed areas.
+### Visual Variants (If applicable)
 
-\`\`\`jsx-live
-const App = () => <ComponentName size="sm">Small</ComponentName>
-\`\`\`
+Demonstrate all visual variants in a single code block for easy comparison:
+
+\`\`\`jsx-live const App = () => (
+<Stack direction="row" gap="400" alignItems="center">
+<ComponentName variant="solid">Solid</ComponentName>
+<ComponentName variant="outline">Outline</ComponentName>
+<ComponentName variant="ghost">Ghost</ComponentName> </Stack> ) \`\`\`
 
 ## Guidelines (Optional but recommended)
 
@@ -131,11 +137,13 @@ Use this component strategically to enhance user workflow.
 
 > [!TIP]\
 > When to use
+
 - **Use case 1:** Description
 - **Use case 2:** Description
 
 > [!CAUTION]\
 > When not to use
+
 - **Avoid case 1:** Description
 - **Avoid case 2:** Description
 
@@ -164,18 +172,22 @@ This component follows WCAG 2.1 AA guidelines.
 ### WCAG Compliance (For complex components)
 
 #### 1. Perceivable
+
 - **1.3.1 Info and Relationships**: Proper semantic structure
 - **1.4.3 Contrast**: Text meets contrast requirements
 
 #### 2. Operable
+
 - **2.1.1 Keyboard**: Full keyboard navigation
 - **2.4.7 Focus Visible**: Clear focus indicators
 
 #### 3. Understandable
+
 - **3.2.1 On Focus**: No unexpected context changes
 - **3.3.2 Labels**: Clear labeling and instructions
 
 #### 4. Robust
+
 - **4.1.2 Name, Role, Value**: Proper semantic markup
 ```
 
@@ -183,69 +195,53 @@ This component follows WCAG 2.1 AA guidelines.
 
 ### jsx-live Block Requirements
 
-**CRITICAL**: All interactive examples must use `jsx-live` blocks:
+**CRITICAL**: All interactive examples must use `jsx-live` blocks. These blocks
+render live, interactive React components in the documentation site.
 
 ```markdown
-✅ CORRECT - jsx-live block
-\`\`\`jsx-live
-const App = () => (
-  <Button variant="solid">Click me</Button>
-)
+\`\`\`jsx-live const App = () => ( <Button variant="solid">Click me</Button> )
 \`\`\`
-
-❌ INCORRECT - No Storybook imports allowed
 ```
+
+**Key points**:
+
+- All Nimbus components (Button, Stack, Icons, etc.) are available globally - no
+  imports needed
+- Each jsx-live block should define an `App` component
+- The code executes in the browser and renders as a live component
+- Use regular markdown code blocks (with language tags like `jsx` or `tsx`) only
+  for non-interactive code examples
+
+**Note**: MDX files are for documentation. Use `.stories.tsx` files for
+Storybook content.
 
 ### Code Example Patterns
 
 #### Simple Component Example
+
 ```markdown
-\`\`\`jsx-live
-const App = () => (
-  <Badge colorPalette="primary" size="md">
-    <Icons.SentimentSatisfied />
-    Badge
-    <Icons.SentimentSatisfied />
-  </Badge>
-)
+\`\`\`jsx-live const App = () => ( <Badge colorPalette="primary" size="md">
+<Icons.SentimentSatisfied /> Badge <Icons.SentimentSatisfied /> </Badge> )
 \`\`\`
 ```
 
 #### Interactive State Example
-```markdown
-\`\`\`jsx-live
-const App = () => {
-  const [count, setCount] = useState(0);
 
-  return (
-    <Stack direction="column" gap="400">
-      <Text>Count: {count}</Text>
-      <Button onClick={() => setCount(count + 1)}>
-        Increment
-      </Button>
-    </Stack>
-  );
-}
+```markdown
+\`\`\`jsx-live const App = () => { const [count, setCount] = useState(0);
+
+return ( <Stack direction="column" gap="400"> <Text>Count: {count}</Text>
+<Button onClick={() => setCount(count + 1)}> Increment </Button> </Stack> ); }
 \`\`\`
 ```
 
 #### Compound Component Example
+
 ```markdown
-\`\`\`jsx-live
-const App = () => (
-  <Menu.Root>
-    <Menu.Trigger>
-      Actions
-      <Icons.KeyboardArrowDown />
-    </Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="copy">Copy</Menu.Item>
-      <Menu.Item id="paste">Paste</Menu.Item>
-      <Menu.Item id="delete">Delete</Menu.Item>
-    </Menu.Content>
-  </Menu.Root>
-)
-\`\`\`
+\`\`\`jsx-live const App = () => ( <Menu.Root> <Menu.Trigger> Actions
+<Icons.KeyboardArrowDown /> </Menu.Trigger> <Menu.Content> <Menu.Item
+id="copy">Copy</Menu.Item> <Menu.Item id="paste">Paste</Menu.Item> <Menu.Item
+id="delete">Delete</Menu.Item> </Menu.Content> </Menu.Root> ) \`\`\`
 ```
 
 ### Code Formatting Standards
@@ -263,7 +259,8 @@ const App = () => (
 ```markdown
 ## Guidelines
 
-Text input guidelines focus on creating clear, accessible, and user-friendly fields.
+Text input guidelines focus on creating clear, accessible, and user-friendly
+fields.
 
 ### Best practices
 
@@ -302,7 +299,7 @@ Some components use GitHub-style alert blocks:
 ### Using PropsTable
 
 The PropsTable component automatically extracts props from your TypeScript
-definitions:
+definitions and displays them in a formatted table:
 
 ```markdown
 ## Specs
@@ -310,7 +307,19 @@ definitions:
 <PropsTable id="ComponentName" />
 ```
 
-The `id` must match the component's export name.
+**The `id` parameter**:
+
+- For simple components: Use the component's export name (e.g., `"Button"`)
+- For compound components: Use the base namespace name (e.g., `"Menu"` not
+  `"Menu.Root"`)
+- The ID is case-sensitive and must match exactly
+- If the component isn't found, PropsTable will display an error message in the
+  docs
+
+**Requirements**:
+
+- Component must have a TypeScript interface exported in the types file
+- Props interface should follow naming convention: `{ComponentName}Props`
 
 ### Manual Props Tables (if needed)
 
@@ -363,11 +372,14 @@ This component is built with React Aria and follows WCAG 2.1 AA guidelines.
 ### Frontmatter Variations
 
 #### Simple Component (Badge)
+
 ```yaml
 ---
 id: Components-Badge
 title: Badge
-description: Briefly highlights or categorizes associated UI elements with concise visual cues for status or metadata.
+description:
+  Briefly highlights or categorizes associated UI elements with concise visual
+  cues for status or metadata.
 documentState: InitialDraft
 order: 999
 menu:
@@ -380,11 +392,14 @@ tags:
 ```
 
 #### Complex Component (Dialog)
+
 ```yaml
 ---
 id: Components-Dialog
 title: Dialog
-description: A foundational dialog component for overlays that require user attention and interaction.
+description:
+  A foundational dialog component for overlays that require user attention and
+  interaction.
 lifecycleState: Stable
 order: 999
 menu:
@@ -402,6 +417,7 @@ figmaLink: >-
 ```
 
 #### Component with Multiple States (Text Input)
+
 ```yaml
 ---
 id: Components-TextInput
@@ -421,6 +437,9 @@ tags:
 ### Content Structure Patterns
 
 #### Variables Section (Common Pattern)
+
+This section demonstrates component variants and options. Example structure:
+
 ```markdown
 ## Variables
 
@@ -429,53 +448,66 @@ Get familiar with the features.
 ### Size
 
 #### Medium
+
 This is the default size for text inputs.
 
-\\`\\`\\`jsx-live
-const App = () => <TextInput size=\"md\" value=\"input value\"/>
-\\`\\`\\`
+[jsx-live code block here showing medium size]
 
 #### Small
+
 Available for the times a more condensed text input is needed.
 
-\\`\\`\\`jsx-live
-const App = () => <TextInput size=\"sm\" value=\"input value\"/>
-\\`\\`\\`
+[jsx-live code block here showing small size]
 ```
 
+See actual MDX files in the codebase (e.g., `text-input.mdx`, `button.mdx`) for
+complete working examples.
+
 #### API Documentation Section
+
 ```markdown
 ## API
 
-The Dialog component is structured as a compound component with multiple parts that work together:
+The Dialog component is structured as a compound component with multiple parts
+that work together:
 
 ### Dialog.Root
 
 The root component that provides context and state management for the dialog.
 
 **Props:**
-- `isOpen?: boolean` - Controls the open state (controlled mode)
-- `onOpenChange?: (isOpen: boolean) => void` - Callback when dialog state changes
-```
 
+- `isOpen?: boolean` - Controls the open state (controlled mode)
+- `onOpenChange?: (isOpen: boolean) => void` - Callback when dialog state
+  changes
+```
 
 ## Available MDX Features
 
 ### Components Available Without Imports
 
-- `<PropsTable id="ComponentName" />` - Auto-generated props table from TypeScript definitions
+These components work automatically in MDX files without import statements:
+
+- `<PropsTable id="ComponentName" />` - Auto-generated props table from
+  TypeScript definitions
+- All Nimbus components (Button, Stack, Icons, etc.) - Available globally
 - Standard markdown formatting - Links, lists, tables, bold, italic, code
-- Tables - For keyboard navigation, specs, and data presentation
+- Markdown tables - For keyboard navigation, specs, and data presentation
 
 ### Code Blocks
 
-- `jsx-live` - Interactive React components that render in the browser
-- Standard code blocks with syntax highlighting
+- `jsx-live` - **Required for all interactive examples** - Renders live React
+  components in the browser
+- Standard code blocks - For non-interactive code examples with syntax
+  highlighting
 
-### GitHub-Style Features (If Supported)
+### GitHub-Style Features
+
+Supported in the Nimbus documentation site:
 
 - Alert blocks: `> [!TIP]`, `> [!CAUTION]`, `> [!WARNING]`, `> [!NOTE]`
 - Task lists: `- [ ]` and `- [x]`
+- Line breaks in alerts: Use `\` at end of line
 
 ### Markdown Extensions
 
@@ -492,6 +524,7 @@ The root component that provides context and state management for the dialog.
 ## Validation Checklist
 
 ### Required Elements
+
 - [ ] MDX file exists with `.mdx` extension
 - [ ] **Required frontmatter fields**: id, title, description, order, menu, tags
 - [ ] Unique `id` field following `Components-{ComponentName}` pattern
@@ -501,14 +534,20 @@ The root component that provides context and state management for the dialog.
 - [ ] Overview section explaining component purpose
 
 ### Content Requirements
+
 - [ ] **Interactive examples using `jsx-live` blocks only**
 - [ ] **NO Storybook-specific imports**
 - [ ] Resources section with relevant external links
 - [ ] Variables/Examples section showing component variations
+- [ ] **Sizes demonstrated in a single code block** (not separate blocks per
+      size)
+- [ ] **Variants demonstrated in a single code block** (not separate blocks per
+      variant)
 - [ ] Code examples with proper formatting and indentation
 - [ ] Realistic, production-ready code examples
 
 ### Documentation Standards
+
 - [ ] Props documentation using `<PropsTable id="ComponentName" />`
 - [ ] Guidelines section (optional but recommended)
 - [ ] Accessibility section with WCAG compliance details
@@ -517,6 +556,7 @@ The root component that provides context and state management for the dialog.
 - [ ] External resource links (Figma, React Aria, ARIA patterns)
 
 ### Quality Checks
+
 - [ ] All code examples are functional and realistic
 - [ ] Proper component hierarchy demonstrated
 - [ ] Accessibility features properly documented
