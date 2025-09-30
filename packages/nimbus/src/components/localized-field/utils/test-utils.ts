@@ -339,11 +339,17 @@ export const checkFieldError = async (
   field: HTMLElement,
   errorValue: string
 ) => {
-  // Use simple RegExp for flexible text matching - no escaping needed for simple text
-  const errorElement = await within(field).findByText(
-    new RegExp(errorValue, "i"),
-    {},
-    { timeout: 3000 } // Reasonable timeout for CI
+  // Wait for error to appear - in CI the error might not be rendered immediately
+  const errorElement = await waitFor(
+    async () => {
+      // Try to find the error text using RegExp for flexible matching
+      return await within(field).findByText(
+        new RegExp(errorValue, "i"),
+        {},
+        { timeout: 200 } // Short timeout per attempt
+      );
+    },
+    { timeout: 2000 } // Overall timeout for CI stability
   );
 
   // We use `FieldErrors` to display legacy Formik/UI Kit warnings in the description container
@@ -399,11 +405,16 @@ export const checkLocaleFieldError = async (
   errorValue: string,
   type?: string
 ) => {
-  // Use RegExp for flexible text matching
-  const errorElement = await within(field).findByText(
-    new RegExp(errorValue, "i"),
-    {},
-    { timeout: 3000 }
+  // Wait for error to appear - in CI the error might not be rendered immediately
+  const errorElement = await waitFor(
+    async () => {
+      return await within(field).findByText(
+        new RegExp(errorValue, "i"),
+        {},
+        { timeout: 200 } // Short timeout per attempt
+      );
+    },
+    { timeout: 2000 } // Overall timeout for CI stability
   );
 
   let localeFieldInput;
