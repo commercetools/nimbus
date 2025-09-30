@@ -70,10 +70,21 @@ Export all utility functions from a centralized index file for clean imports.
 - Date picker configuration values
 - Form validation rules and limits
 
-### Enums and Types
-- Component size options (`sm`, `md`, `lg`)
-- Status indicators (`idle`, `loading`, `success`, `error`)
-- Keyboard key constants for consistent event handling
+### Constant Values and Lookup Tables
+
+Constants should contain **values**, not type definitions. Type definitions belong in the types file.
+
+**Constants Examples:**
+- Keyboard key constants (`ENTER_KEY = 'Enter'`, `ESCAPE_KEY = 'Escape'`)
+- Validation limits (`MAX_FILE_SIZE = 5000000`, `MIN_PASSWORD_LENGTH = 8`)
+- HTTP status codes or error codes
+- Lookup tables for data transformation
+- Arrays of valid options (when needed for validation/iteration)
+
+**Note:** Component variants (size, visual style) are defined in:
+- **Recipe files** for styling variants
+- **Types files** for type definitions like `type Size = 'sm' | 'md' | 'lg'`
+- **Not in constants** unless you need an array of valid values for validation/iteration purposes
 
 ### Default Values
 - Default option arrays for select components
