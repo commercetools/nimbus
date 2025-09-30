@@ -1,6 +1,10 @@
 import type { SearchInputRootProps } from "./search-input.slots";
 import type { SearchFieldProps } from "react-aria-components";
 
+/**
+ * Props for the SearchInput component.
+ * Built on React Aria's SearchField for accessibility.
+ */
 export interface SearchInputProps
   extends Omit<SearchFieldProps, "ref">,
     Omit<SearchInputRootProps, keyof SearchFieldProps | "as" | "asChild"> {

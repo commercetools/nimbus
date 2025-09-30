@@ -22,19 +22,21 @@ export const SearchInputRootSlot = withProvider<
   SearchInputRootProps
 >("div", "root");
 
-interface SearchInputLeadingElementProps extends HTMLChakraProps<"div"> {}
+export interface SearchInputLeadingElementProps
+  extends HTMLChakraProps<"div"> {}
 export const SearchInputLeadingElementSlot = withContext<
   HTMLDivElement,
   SearchInputLeadingElementProps
 >("div", "leadingElement");
 
-interface SearchInputInputProps extends HTMLChakraProps<"input"> {}
+export interface SearchInputInputProps extends HTMLChakraProps<"input"> {}
 export const SearchInputInputSlot = withContext<
   HTMLInputElement,
   SearchInputInputProps
 >("input", "input");
 
-interface SearchInputClearButtonProps extends HTMLChakraProps<"button"> {}
+export interface SearchInputClearButtonProps
+  extends HTMLChakraProps<"button"> {}
 export const SearchInputClearButtonSlot = withContext<
   HTMLButtonElement,
   SearchInputClearButtonProps
