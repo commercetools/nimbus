@@ -1,5 +1,7 @@
-import { forwardRef } from "react";
+import { useRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
+import { useObjectRef } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useDataTableContext } from "./data-table.context";
 import {
@@ -7,10 +9,13 @@ import {
   type DataTableTableSlotProps,
 } from "../data-table.slots";
 
-export const DataTableTable = forwardRef<
-  HTMLTableElement,
-  DataTableTableSlotProps
->(function DataTableTable({ children, ...props }, ref) {
+export const DataTableTable = function DataTableTable({
+  ref: forwardedRef,
+  children,
+  ...props
+}: DataTableTableSlotProps) {
+  const localRef = useRef<HTMLTableElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const {
     sortDescriptor,
     onSortChange,
@@ -61,6 +66,6 @@ export const DataTableTable = forwardRef<
       </RaTable>
     </DataTableTableSlot>
   );
-});
+};
 
 DataTableTable.displayName = "DataTable.Table";
