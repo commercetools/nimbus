@@ -2,13 +2,12 @@ import { Close } from "@commercetools/nimbus-icons";
 import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
 import { IconButton } from "@/components";
+import { messages } from "../dialog.i18n";
+import { useIntl } from "react-intl";
 
 export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
-  const {
-    ref: forwardedRef,
-    "aria-label": ariaLabel = "Close dialog",
-    ...restProps
-  } = props;
+  const { ref: forwardedRef, "aria-label": ariaLabel, ...restProps } = props;
+  const intl = useIntl();
 
   return (
     <DialogCloseTriggerSlot>
@@ -17,7 +16,7 @@ export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
         slot="close"
         size="xs"
         variant="ghost"
-        aria-label={ariaLabel}
+        aria-label={ariaLabel || intl.formatMessage(messages.closeTrigger)}
         {...restProps}
       >
         <Close />

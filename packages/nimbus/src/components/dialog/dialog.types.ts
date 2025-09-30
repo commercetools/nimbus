@@ -64,8 +64,9 @@ export interface DialogRootProps
    */
   onOpenChange?: (isOpen: boolean) => void;
 
-  /** A Title for the dialog, optional, as long as there is a Heading
-   * component used inside the Dialog.Content with a `slot`-property set to `title`.
+  /** A Title for the dialog, optional, as long as the Dialog.Title component is user
+   * or there is a Heading component used inside the Dialog with
+   * a `slot`-property set to `title`.
    */
   "aria-label"?: string;
 }
