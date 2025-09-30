@@ -55,50 +55,44 @@ export const Default: Story = {
 };
 
 /**
- * Variants - visual permutations
+ * Variants - all visual permutations
  */
-export const Primary: Story = {
+export const Variants: Story = {
   args: {
-    variant: "primary",
-    children: "Primary Variant",
+    children: "ComponentName",
   },
-};
-
-export const Secondary: Story = {
-  args: {
-    variant: "secondary",
-    children: "Secondary Variant",
-  },
-};
-
-export const Ghost: Story = {
-  args: {
-    variant: "ghost",
-    children: "Ghost Variant",
+  render: (args) => {
+    const variants = ["primary", "secondary", "ghost"];
+    return (
+      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        {variants.map((variant) => (
+          <ComponentName key={variant} {...args} variant={variant}>
+            {variant}
+          </ComponentName>
+        ))}
+      </div>
+    );
   },
 };
 
 /**
- * Sizes
+ * Sizes - all size options
  */
-export const Small: Story = {
+export const Sizes: Story = {
   args: {
-    size: "sm",
-    children: "Small Size",
+    children: "ComponentName",
   },
-};
-
-export const Medium: Story = {
-  args: {
-    size: "md",
-    children: "Medium Size",
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: "lg",
-    children: "Large Size",
+  render: (args) => {
+    const sizes = ["sm", "md", "lg"];
+    return (
+      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        {sizes.map((size) => (
+          <ComponentName key={size} {...args} size={size}>
+            {size}
+          </ComponentName>
+        ))}
+      </div>
+    );
   },
 };
 
@@ -199,44 +193,6 @@ export const ComplexExample: Story = {
         </ComponentName>
       </div>
     );
-  },
-};
-```
-
-## Compound Component Stories
-
-For compound components, add stories like this:
-
-```tsx
-export const CompoundExample: Story = {
-  render: () => (
-    <ComponentName.Root>
-      <ComponentName.Trigger>Open</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Option 1</ComponentName.Item>
-        <ComponentName.Item value="2">Option 2</ComponentName.Item>
-        <ComponentName.Item value="3">Option 3</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Open dropdown", async () => {
-      const trigger = canvas.getByText("Open");
-      await userEvent.click(trigger);
-
-      // Wait for content to appear
-      await expect(canvas.getByText("Option 1")).toBeInTheDocument();
-    });
-
-    await step("Select option", async () => {
-      const option = canvas.getByText("Option 2");
-      await userEvent.click(option);
-
-      // Verify selection
-      // Add assertions based on expected behavior
-    });
   },
 };
 ```

@@ -43,42 +43,4 @@ export interface ComponentNameProps
    */
   customProp?: string;
 }
-
-// Add other type definitions as needed
-
-/**
- * Options for useComponentName hook
- */
-export interface UseComponentNameOptions {
-  /**
-   * Initial value
-   * @default ''
-   */
-  defaultValue?: string;
-
-  /**
-   * Callback when value changes
-   */
-  onChange?: (value: string) => void;
-}
-
-/**
- * Return type for useComponentName hook
- */
-export interface UseComponentNameReturn {
-  /**
-   * Current value
-   */
-  value: string;
-
-  /**
-   * Set new value
-   */
-  setValue: (value: string) => void;
-
-  /**
-   * Whether the component is valid
-   */
-  isValid: boolean;
-}
 ```
