@@ -31,28 +31,32 @@ bridge React Aria components with the Nimbus styling system.
 
 **This is non-negotiable** - Slot files must export:
 
-1. The slot components themselves
-2. Their TypeScript type definitions
+1. The slot component itself
+2. Its TypeScript type definition
+
+**The type name MUST equal the component name plus "Props" suffix:**
 
 ```typescript
-// ✅ CORRECT - exports both components and types
-export type ButtonSlotProps = HTMLChakraProps<"button">;
-export const ButtonSlot = withContext<HTMLButtonElement, ButtonSlotProps>(
+// ✅ CORRECT - Multi-slot component
+export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
+export const MenuTriggerSlot = withContext<
+  HTMLButtonElement,
+  MenuTriggerSlotProps
+>("button", "trigger");
+
+// ✅ CORRECT - Single-slot component
+export type ButtonRootProps = HTMLChakraProps<"button">;
+export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
   "button",
   "root"
 );
-
-// Missing type exports - both types and components must be exported
-// Type not exported!
 ```
-
-> **Note**: The actual Button component in the codebase uses `ButtonRoot` instead of `ButtonSlot` as the component name. This is a historical naming convention. New components should follow the `{ComponentName}Slot` pattern for consistency.
 
 ## File Structure
 
 ### Standard Recipe Slots
 
-For components with standard recipes:
+For components with standard recipes (single-slot):
 
 ```typescript
 // button.slots.tsx
@@ -66,9 +70,9 @@ const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
 });
 
-// CRITICAL: Export both type AND component
-export type ButtonSlotProps = HTMLChakraProps<"button">;
-export const ButtonSlot = withContext<HTMLButtonElement, ButtonSlotProps>(
+// Export both type and component - type name = component name + "Props"
+export type ButtonRootProps = HTMLChakraProps<"button">;
+export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
   "button",
   "root"
 );
@@ -165,14 +169,17 @@ Slot components use the `asChild` prop to pass styles to React Aria components:
 ```typescript
 // In component implementation
 import { Button as RaButton } from 'react-aria-components';
+import { ButtonRootSlot } from './button.slots';
 
 export const Button = (props: ButtonProps) => {
+  // Note: Actual Button implementation is more complex with useButton hook
+  // This is a simplified example showing the asChild pattern
   return (
-    <ButtonSlot asChild>
+    <ButtonRootSlot asChild>
       <RaButton {...props}>
         {props.children}
       </RaButton>
-    </ButtonSlot>
+    </ButtonRootSlot>
   );
 };
 ```
@@ -234,21 +241,22 @@ export type RestrictedSlotProps = ComponentProps<"button"> & {
 
 ### Slot Component Names
 
-Follow this pattern consistently:
-
-| Slot Type   | Pattern                     | Example           |
-| ----------- | --------------------------- | ----------------- |
-| Single slot | `{ComponentName}Slot`       | `ButtonSlot`      |
-| Root slot   | `{ComponentName}RootSlot`   | `MenuRootSlot`    |
-| Child slot  | `{ComponentName}{Part}Slot` | `MenuTriggerSlot` |
+| Component Type  | Pattern                     | Example           |
+| --------------- | --------------------------- | ----------------- |
+| Single-slot     | `{ComponentName}Root`       | `ButtonRoot`      |
+| Multi-slot root | `{ComponentName}RootSlot`   | `MenuRootSlot`    |
+| Multi-slot part | `{ComponentName}{Part}Slot` | `MenuTriggerSlot` |
 
 ### Type Names
 
-| Type Purpose | Pattern                          | Example             |
-| ------------ | -------------------------------- | ------------------- |
-| Slot props   | `{SlotName}Props`                | `ButtonSlotProps`   |
-| Root props   | `{ComponentName}RootSlotProps`   | `MenuRootSlotProps` |
-| Child props  | `{ComponentName}{Part}SlotProps` | `MenuItemSlotProps` |
+**Type name = Component name + "Props"**
+
+| Component Type  | Component Name    | Type Name              |
+| --------------- | ----------------- | ---------------------- |
+| Single-slot     | `ButtonRoot`      | `ButtonRootProps`      |
+| Multi-slot root | `MenuRootSlot`    | `MenuRootSlotProps`    |
+| Multi-slot part | `MenuTriggerSlot` | `MenuTriggerSlotProps` |
+| Multi-slot part | `MenuItemSlot`    | `MenuItemSlotProps`    |
 
 ## Common Patterns from Nimbus
 
@@ -266,91 +274,13 @@ const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
 });
 
-export type ButtonSlotProps = HTMLChakraProps<"button">;
-export const ButtonSlot = withContext<HTMLButtonElement, ButtonSlotProps>(
+// Export both type and component
+export type ButtonRootProps = HTMLChakraProps<"button">;
+export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
   "button",
   "root"
 );
 ```
-
-### Complex Slots (Select)
-
-```typescript
-// select.slots.tsx
-const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: selectSlotRecipe,
-});
-
-// Multiple slot exports with types
-export type SelectRootSlotProps = HTMLChakraProps<"div">;
-export const SelectRootSlot = withProvider<HTMLDivElement, SelectRootSlotProps>(
-  "div",
-  "root"
-);
-
-export type SelectTriggerSlotProps = HTMLChakraProps<"button">;
-export const SelectTriggerSlot = withContext<
-  HTMLButtonElement,
-  SelectTriggerSlotProps
->("button", "trigger");
-
-export type SelectContentSlotProps = HTMLChakraProps<"div">;
-export const SelectContentSlot = withContext<
-  HTMLDivElement,
-  SelectContentSlotProps
->("div", "content");
-```
-
-## Advanced Patterns
-
-### Conditional Slot Usage
-
-```typescript
-// Component can optionally use slots
-export const Component = ({ useSlot = true, ...props }) => {
-  if (useSlot) {
-    return (
-      <ComponentSlot asChild>
-        <RaComponent {...props} />
-      </ComponentSlot>
-    );
-  }
-
-  return <RaComponent {...props} />;
-};
-```
-
-### Slot Composition
-
-```typescript
-// Composing multiple slot contexts
-export const ComplexComponent = (props) => {
-  return (
-    <OuterSlot>
-      <InnerSlot asChild>
-        <RaComponent {...props} />
-      </InnerSlot>
-    </OuterSlot>
-  );
-};
-```
-
-
-## Debugging Slot Issues
-
-### Common Problems
-
-1. **No styles applied**: Check recipe registration
-2. **Context not propagating**: Ensure withProvider is used on root
-3. **TypeScript errors**: Verify types are exported
-4. **asChild not working**: Check React Aria component compatibility
-
-### DevTools Inspection
-
-Check for CSS classes in browser DevTools:
-
-- Should see `nimbus-{component}` class
-- Should see variant classes like `nimbus-button--variant-solid`
 
 ## Related Guidelines
 
@@ -361,14 +291,16 @@ Check for CSS classes in browser DevTools:
 ## Validation Checklist
 
 - [ ] Slot file exists with `.tsx` extension
-- [ ] **Both components AND types exported**
+- [ ] **Slot components exported** (types can be in slots file or types file)
 - [ ] Types use `HTMLChakraProps` or appropriate interface
-- [ ] Naming follows `{ComponentName}Slot` pattern
-- [ ] Type names follow `{ComponentName}SlotProps` pattern
-- [ ] Root slot uses `withProvider`
-- [ ] Child slots use `withContext`
+- [ ] Naming follows appropriate pattern (see Naming Conventions table)
+- [ ] Type names follow `{ComponentName}[Part]Props` or
+      `{ComponentName}[Part]SlotProps` pattern
+- [ ] Root slot uses `withProvider` (for multi-slot components)
+- [ ] Child slots use `withContext` (for multi-slot components)
+- [ ] Single-slot components use `withContext`
 - [ ] Recipe imported and used in context creation
-- [ ] `asChild` pattern used with React Aria
+- [ ] `asChild` pattern used with React Aria when needed
 - [ ] Slot names match recipe slot definitions
 
 ---
