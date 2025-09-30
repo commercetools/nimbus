@@ -7,25 +7,22 @@
 ## Purpose
 
 The `hooks/` directory contains component-specific React hooks that encapsulate
-complex logic, state management, and side effects. Hooks promote code reuse and
-separation of concerns.
+complex logic, state management, and side effects. Organizing hooks in a dedicated
+folder keeps component implementations clean and logic well-organized.
 
 ## When to Use
 
-### Create a Hook When:
+Create a hook when you need to:
 
-- **Complex logic** needs to be reused across components
-- **State management** becomes complex (multiple states, reducers)
-- **Side effects** need coordination (subscriptions, timers, API calls)
-- **Keyboard handling** or event management is complex
-- **Computed values** require memoization
-- **Cross-component communication** is needed
+- Encapsulate complex state management logic
+- Coordinate multiple React hooks (useState, useEffect, useMemo)
+- Process or transform data with memoization
+- Reuse logic across multiple component files
 
-### When Hooks Aren't Needed:
+**Don't create a hook if:**
 
-- Logic is simple and used only once
-- Standard React hooks suffice (useState, useEffect)
-- Logic belongs in a utility function (pure, no React features)
+- Logic is simple and used once - keep it inline
+- Logic has no React dependencies - use a utility function instead
 
 ## Critical Rule: Hooks Location
 
@@ -53,62 +50,39 @@ component-name/
 
 ### Basic Hook Structure
 
-````typescript
+```typescript
 // hooks/use-component-name.ts
 import { useState, useCallback, useMemo } from "react";
-import type {
-  UseComponentNameOptions,
-  UseComponentNameReturn,
-} from "../component-name.types";
 
 /**
- * Hook for managing component-name state and behavior
+ * Hook description
  *
  * @param options - Configuration options
- * @returns Methods and state for component control
+ * @returns State and methods
  *
  * @example
  * ```tsx
- * const { value, setValue, isValid } = useComponentName({
- *   defaultValue: 'initial',
- *   onChange: (val) => console.log(val)
- * });
+ * const { value, setValue } = useComponentName({ defaultValue: 'initial' });
  * ```
  */
-export function useComponentName(
-  options: UseComponentNameOptions = {}
-): UseComponentNameReturn {
-  const { defaultValue = "", onChange, validator } = options;
+export function useComponentName(options) {
+  // Hook implementation
+  const [state, setState] = useState(options.defaultValue);
 
-  const [value, setValue] = useState(defaultValue);
+  const handleChange = useCallback((newValue) => {
+    setState(newValue);
+    options.onChange?.(newValue);
+  }, [options.onChange]);
 
-  const isValid = useMemo(() => {
-    if (!validator) return true;
-    return validator(value);
-  }, [value, validator]);
-
-  const handleChange = useCallback(
-    (newValue: string) => {
-      setValue(newValue);
-      onChange?.(newValue);
-    },
-    [onChange]
-  );
-
-  return {
-    value,
-    setValue: handleChange,
-    isValid,
-  };
+  return { value: state, setValue: handleChange };
 }
-````
+```
 
 ### Hooks Index File
 
 ```typescript
 // hooks/index.ts
 export { useComponentName } from "./use-component-name";
-export { useKeyboardNavigation } from "./use-keyboard-navigation";
 ```
 
 ## Naming Conventions
@@ -135,212 +109,101 @@ Use kebab-case with `use-` prefix:
 
 ## Type Definitions
 
-### Options and Return Types
+Define types based on visibility:
 
-Define **public** hook types in the component's types file, **internal** hook
-types colocated with the hook:
+**Public hooks** (exported for consumers): Define types in `component-name.types.ts`
 
 ```typescript
-// component-name.types.ts (PUBLIC HOOK TYPES - exported for consumers)
+// component-name.types.ts
 export interface UseComponentNameOptions {
-  /**
-   * Initial value
-   * @default ''
-   */
   defaultValue?: string;
   onChange?: (value: string) => void;
-  validator?: (value: string) => boolean;
 }
 
 export interface UseComponentNameReturn {
   value: string;
   setValue: (value: string) => void;
-  isValid: boolean;
-}
-
-// hooks/use-internal-processing.ts (INTERNAL HOOK TYPES - colocated)
-interface InternalProcessingState {
-  processing: boolean;
-  cache: Map<string, CacheEntry>;
-  retryCount: number;
 }
 ```
 
-## Common Hook Patterns
-
-### State Management Hook
+**Internal hooks** (not exported): Define types inline in the hook file
 
 ```typescript
-// hooks/use-menu-state.ts
-export function useMenuState(options: UseMenuStateOptions = {}) {
-  const { defaultOpen = false, onOpenChange } = options;
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+// hooks/use-internal-helper.ts
+interface InternalState {
+  // Internal types here
+}
 
-  const open = useCallback(() => {
-    setIsOpen(true);
-    onOpenChange?.(true);
-  }, [onOpenChange]);
-
-  const close = useCallback(() => {
-    setIsOpen(false);
-    onOpenChange?.(false);
-  }, [onOpenChange]);
-
-  const toggle = useCallback(() => {
-    setIsOpen((prev) => {
-      const next = !prev;
-      onOpenChange?.(next);
-      return next;
-    });
-  }, [onOpenChange]);
-
-  return { isOpen, open, close, toggle };
+export function useInternalHelper() {
+  // Implementation
 }
 ```
 
-### Keyboard Navigation Hook
+## Common Patterns
+
+### Complex State Management
+
+Used for coordinating multiple states with controlled/uncontrolled modes:
 
 ```typescript
-// hooks/use-keyboard-navigation.ts
-export function useKeyboardNavigation({
-  items,
-  onSelect,
-  orientation = "vertical",
-}: UseKeyboardNavigationOptions) {
-  const [focusedIndex, setFocusedIndex] = useState(0);
+// hooks/use-pagination.ts
+export function usePagination({ totalItems, currentPage, onPageChange }) {
+  const [internalPage, setInternalPage] = useState(1);
+  const isControlled = currentPage !== undefined;
+  const page = isControlled ? currentPage : internalPage;
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "ArrowDown":
-          if (orientation === "vertical") {
-            event.preventDefault();
-            setFocusedIndex((prev) => Math.min(prev + 1, items.length - 1));
-          }
-          break;
-        case "Enter":
-        case " ":
-          event.preventDefault();
-          onSelect?.(items[focusedIndex]);
-          break;
-      }
-    },
-    [items, focusedIndex, onSelect, orientation]
-  );
-
-  return { focusedIndex, handleKeyDown, setFocusedIndex };
-}
-```
-
-### Async Data Hook
-
-```typescript
-// hooks/use-async-data.ts
-export function useAsyncData<T>({
-  fetchFn,
-  dependencies = [],
-}: UseAsyncDataOptions<T>) {
-  const [data, setData] = useState<T>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    setError(undefined);
-    try {
-      const result = await fetchFn();
-      setData(result);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
+  const goToPage = useCallback((newPage: number) => {
+    if (!isControlled) {
+      setInternalPage(newPage);
     }
-  }, [fetchFn]);
+    onPageChange?.(newPage);
+  }, [isControlled, onPageChange]);
 
-  useEffect(() => {
-    fetch();
-  }, dependencies);
-
-  return { data, loading, error, refetch: fetch };
+  return { page, goToPage };
 }
 ```
 
-## Examples from Nimbus
-
-### Pagination Hook
-
-```typescript
-// pagination/hooks/use-pagination.ts
-export function usePagination({
-  totalPages,
-  currentPage = 1,
-  onChange,
-}: UsePaginationOptions) {
-  const [page, setPage] = useState(currentPage);
-
-  const goToPage = useCallback(
-    (newPage: number) => {
-      const validPage = Math.max(1, Math.min(newPage, totalPages));
-      setPage(validPage);
-      onChange?.(validPage);
-    },
-    [totalPages, onChange]
-  );
-
-  const next = useCallback(() => goToPage(page + 1), [page, goToPage]);
-  const previous = useCallback(() => goToPage(page - 1), [page, goToPage]);
-
-  return {
-    page,
-    goToPage,
-    next,
-    previous,
-    hasNext: page < totalPages,
-    hasPrevious: page > 1,
-  };
-}
-```
 
 ## JSDoc Requirements
 
-Every hook must have comprehensive JSDoc:
+Document hooks with:
 
-````typescript
+- Brief description of what the hook does
+- `@param` for parameters
+- `@returns` for return value
+- `@example` showing usage
+
+```typescript
 /**
- * Hook for managing component state and behavior
+ * Manages pagination state and navigation
  *
- * @param options - Configuration options for the hook
- * @returns Object containing state and methods
+ * @param options - Pagination configuration
+ * @returns Pagination state and navigation functions
  *
  * @example
  * ```tsx
- * const { value, setValue } = useComponentName({
- *   defaultValue: 'initial',
- *   onChange: (val) => console.log(val)
- * });
+ * const { page, goToPage } = usePagination({ totalItems: 100 });
  * ```
  */
-````
+```
 
 ## Testing Hooks
 
-Use `@testing-library/react-hooks`:
+Test hooks using Storybook's play functions by using them in a component:
 
 ```typescript
-import { renderHook, act } from "@testing-library/react-hooks";
-import { useCounter } from "./use-counter";
-
-describe("useCounter", () => {
-  it("should increment counter", () => {
-    const { result } = renderHook(() => useCounter());
-
-    act(() => {
-      result.current.increment();
-    });
-
-    expect(result.current.count).toBe(1);
-  });
-});
+// component-name.stories.tsx
+export const InteractiveTest: Story = {
+  render: () => {
+    const { value, setValue } = useComponentName({ defaultValue: 'test' });
+    return <div onClick={() => setValue('clicked')}>{value}</div>;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByText('test'));
+    await expect(canvas.getByText('clicked')).toBeInTheDocument();
+  },
+};
 ```
 
 ## Related Guidelines
@@ -351,16 +214,14 @@ describe("useCounter", () => {
 
 ## Validation Checklist
 
-- [ ] Hook in `hooks/` subfolder
-- [ ] File name uses `use-` prefix with kebab-case
-- [ ] Function name uses `use` prefix with camelCase
-- [ ] Types defined in component types file
-- [ ] JSDoc documentation complete
-- [ ] Example usage in JSDoc
-- [ ] Proper cleanup for side effects
-- [ ] Memoization used where appropriate
-- [ ] Dependencies correctly specified
-- [ ] Exported from hooks/index.ts
+- [ ] Hook in `hooks/` subfolder (never in root)
+- [ ] File name: `use-*` with kebab-case
+- [ ] Function name: `use*` with camelCase
+- [ ] Public types in component types file, internal types colocated
+- [ ] JSDoc with description, @param, @returns, @example
+- [ ] Exported from `hooks/index.ts`
+- [ ] Dependencies array correct for useCallback/useMemo/useEffect
+- [ ] Cleanup functions for side effects (if applicable)
 
 ---
 
