@@ -9,26 +9,21 @@ component-name, componentName
  * Replace: ComponentName, component-name, componentName
  */
 
-import { type ComponentProps, type ReactNode } from "react";
-import { type RecipeVariantProps } from "@chakra-ui/react";
-import { componentNameSlotRecipe } from "./component-name.recipe";
-
-// Base variant props from slot recipe
-type ComponentNameVariantProps = RecipeVariantProps<
-  typeof componentNameSlotRecipe
->;
+import { type ReactNode } from "react";
+import {
+  type ComponentNameRootSlotProps,
+  type ComponentNameTriggerSlotProps,
+  type ComponentNameContentSlotProps,
+  type ComponentNameItemSlotProps,
+  type ComponentNameSeparatorSlotProps,
+  type ComponentNameLabelSlotProps,
+} from "./component-name.slots";
 
 /**
  * Props for the ComponentName.Root component
+ * Root component handles configuration and state management
  */
-export interface ComponentNameRootProps
-  extends ComponentProps<"div">, // Change element type as needed
-    ComponentNameVariantProps {
-  /**
-   * Component content
-   */
-  children?: ReactNode;
-
+export interface ComponentNameRootProps extends ComponentNameRootSlotProps {
   /**
    * Whether the component is disabled
    * @default false
@@ -36,7 +31,7 @@ export interface ComponentNameRootProps
   isDisabled?: boolean;
 
   /**
-   * Whether the component is open/expanded
+   * Whether the component is open/expanded (controlled)
    * @default false
    */
   isOpen?: boolean;
@@ -52,7 +47,7 @@ export interface ComponentNameRootProps
    */
   onOpenChange?: (isOpen: boolean) => void;
 
-  // Add component-specific props here
+  // Add component-specific configuration props here
   /**
    * Selected value (controlled)
    */
@@ -72,13 +67,7 @@ export interface ComponentNameRootProps
 /**
  * Props for the ComponentName.Trigger component
  */
-export interface ComponentNameTriggerProps extends ComponentProps<"button"> {
-  // Change element type as needed
-  /**
-   * Trigger content
-   */
-  children?: ReactNode;
-
+export interface ComponentNameTriggerProps extends ComponentNameTriggerSlotProps {
   /**
    * Whether the trigger is disabled
    * @default false
@@ -99,13 +88,7 @@ export interface ComponentNameTriggerProps extends ComponentProps<"button"> {
 /**
  * Props for the ComponentName.Content component
  */
-export interface ComponentNameContentProps extends ComponentProps<"div"> {
-  // Change element type as needed
-  /**
-   * Content children
-   */
-  children?: ReactNode;
-
+export interface ComponentNameContentProps extends ComponentNameContentSlotProps {
   /**
    * Placement of the content relative to trigger
    * @default 'bottom-start'
@@ -135,13 +118,7 @@ export interface ComponentNameContentProps extends ComponentProps<"div"> {
 /**
  * Props for the ComponentName.Item component
  */
-export interface ComponentNameItemProps extends ComponentProps<"div"> {
-  // Change element type as needed
-  /**
-   * Item content
-   */
-  children?: ReactNode;
-
+export interface ComponentNameItemProps extends ComponentNameItemSlotProps {
   /**
    * Item value for selection
    */
@@ -180,7 +157,7 @@ export interface ComponentNameItemProps extends ComponentProps<"div"> {
 /**
  * Props for the ComponentName.Separator component
  */
-export interface ComponentNameSeparatorProps extends ComponentProps<"hr"> {
+export interface ComponentNameSeparatorProps extends ComponentNameSeparatorSlotProps {
   /**
    * Separator orientation
    * @default 'horizontal'
@@ -191,11 +168,8 @@ export interface ComponentNameSeparatorProps extends ComponentProps<"hr"> {
 /**
  * Props for the ComponentName.Label component
  */
-export interface ComponentNameLabelProps extends ComponentProps<"div"> {
-  /**
-   * Label content
-   */
-  children?: ReactNode;
+export interface ComponentNameLabelProps extends ComponentNameLabelSlotProps {
+  // Component-specific props only
 }
 
 // Hook types (if component has hooks)
@@ -313,14 +287,14 @@ export interface ComponentNameContextValue {
   isDisabled: boolean;
 
   /**
-   * Component variant
+   * Component variant (from slot recipe)
    */
-  variant?: ComponentNameVariantProps["variant"];
+  variant?: ComponentNameRootSlotProps["variant"];
 
   /**
-   * Component size
+   * Component size (from slot recipe)
    */
-  size?: ComponentNameVariantProps["size"];
+  size?: ComponentNameRootSlotProps["size"];
 }
 ```
 
@@ -344,13 +318,13 @@ examples.
 
 ## Key Requirements
 
-1. **Variant Props**: Import and extend `RecipeVariantProps` from slot recipe
-2. **Element Types**: Use appropriate HTML element types for each component
-3. **Controlled/Uncontrolled**: Support both modes with `value`/`defaultValue`
-   patterns
-4. **Accessibility**: Include ARIA props like `aria-label`, `aria-describedby`
-5. **Event Handlers**: Include appropriate event handlers for interactions
-6. **Content Props**: Use `ReactNode` for flexible content acceptance
+1. **Extend Slot Props**: All component prop interfaces must extend their corresponding slot props from `*.slots.tsx` (e.g., `ComponentNameRootSlotProps`)
+2. **Slot Props Include**: HTML element props (via `HTMLChakraProps<Element>`) and recipe variant props (via `RecipeVariantProps`)
+3. **Component Props Only Define**: Component-specific behavioral and configuration props (not styling or HTML element props)
+4. **Controlled/Uncontrolled**: Support both modes with `value`/`defaultValue` patterns on Root component
+5. **Accessibility**: Include ARIA props like `aria-label`, `aria-describedby` as needed
+6. **Event Handlers**: Include appropriate event handlers for interactions
 7. **JSDoc Documentation**: Document all props with descriptions and defaults
 8. **Hook Types**: Include hook option and return types if component uses hooks
 9. **Context Types**: Include context value types if component uses context
+10. **Import Pattern**: Always import slot props types from `./component-name.slots`
