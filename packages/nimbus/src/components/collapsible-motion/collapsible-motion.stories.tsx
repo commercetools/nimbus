@@ -409,3 +409,32 @@ export const AccessibilityTest: Story = {
     }
   },
 };
+
+/**
+ * Example with custom animation of CollapsibleMotion.Content
+ */
+export const CustomAnimation: Story = {
+  render: () => (
+    <div>
+      <CollapsibleMotion.Root defaultExpanded={true}>
+        <CollapsibleMotion.Trigger asChild>
+          <Button mb="400">Toggle Content</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content
+          animationName={{
+            _open: "ping, gradient-shimmer, fade-in",
+            _closed: "progress-indeterminate, fade-out",
+          }}
+          animationDuration="slowest"
+        >
+          <Box p="400" bg="neutral.2" borderRadius="md">
+            <Text>
+              This is collapsible content that will ping in, and slide out.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <hr />
+    </div>
+  ),
+};
