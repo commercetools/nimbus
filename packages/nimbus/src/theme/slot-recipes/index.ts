@@ -31,6 +31,7 @@ import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.re
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -54,4 +55,5 @@ export const slotRecipes = {
   menu: menuSlotRecipe,
   textInput: textInputSlotRecipe,
   splitButton: splitButtonSlotRecipe,
+  collapsibleMotion: collapsibleMotionSlotRecipe,
 };
