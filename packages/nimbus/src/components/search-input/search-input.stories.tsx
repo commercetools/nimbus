@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SearchInput } from "./search-input";
-import { userEvent, within, expect, fn } from "storybook/test";
+import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { Box, Stack, Text, FormField } from "@/components";
 
 const meta: Meta<typeof SearchInput> = {
@@ -378,16 +378,45 @@ export const ClearButton: Story = {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("searchbox");
 
+    await step("Clear button is always in DOM (even when empty)", async () => {
+      const clearButton = canvas.getByRole("button");
+      await expect(clearButton).toBeInTheDocument();
+    });
+
+    await step("Clear button is hidden when input is empty", async () => {
+      const clearButton = canvas.getByRole("button", { hidden: true });
+      const computedStyle = window.getComputedStyle(clearButton);
+      await expect(computedStyle.opacity).toBe("0");
+      await expect(computedStyle.pointerEvents).toBe("none");
+    });
+
     await step("Clear button appears when typing", async () => {
       await userEvent.type(input, "search");
       const clearButton = canvas.getByRole("button");
-      await expect(clearButton).toBeInTheDocument();
+
+      // Wait for transition to complete
+      await waitFor(() => {
+        const computedStyle = window.getComputedStyle(clearButton);
+        expect(computedStyle.opacity).toBe("1");
+        expect(computedStyle.pointerEvents).toBe("auto");
+      });
     });
 
     await step("Clear button clears the input", async () => {
       const clearButton = canvas.getByRole("button");
       await userEvent.click(clearButton);
       await expect(input).toHaveValue("");
+    });
+
+    await step("Clear button is hidden again after clearing", async () => {
+      const clearButton = canvas.getByRole("button", { hidden: true });
+
+      // Wait for transition to complete
+      await waitFor(() => {
+        const computedStyle = window.getComputedStyle(clearButton);
+        expect(computedStyle.opacity).toBe("0");
+        expect(computedStyle.pointerEvents).toBe("none");
+      });
     });
   },
 };

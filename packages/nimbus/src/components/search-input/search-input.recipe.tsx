@@ -77,7 +77,7 @@ export const searchInputSlotRecipe = defineSlotRecipe({
       border: "none",
       borderRadius: "100",
       outline: "none",
-      transitionProperty: "colors",
+      transitionProperty: "opacity",
       transitionDuration: "fast",
 
       _hover: {

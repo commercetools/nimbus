@@ -42,19 +42,25 @@ export const SearchInput = (props: SearchInputProps) => {
 
   return (
     <RaSearchField {...functionalProps}>
-      <SearchInputRootSlot {...recipeProps} {...styleProps} {...stateProps}>
-        <SearchInputLeadingElementSlot>
-          <Search />
-        </SearchInputLeadingElementSlot>
-        <SearchInputInputSlot asChild>
-          <RaInput ref={ref} />
-        </SearchInputInputSlot>
-        <SearchInputClearButtonSlot asChild>
-          <RaButton>
-            <Close />
-          </RaButton>
-        </SearchInputClearButtonSlot>
-      </SearchInputRootSlot>
+      {({ state }) => (
+        <SearchInputRootSlot {...recipeProps} {...styleProps} {...stateProps}>
+          <SearchInputLeadingElementSlot>
+            <Search />
+          </SearchInputLeadingElementSlot>
+          <SearchInputInputSlot asChild>
+            <RaInput ref={ref} />
+          </SearchInputInputSlot>
+          <SearchInputClearButtonSlot
+            opacity={state.value ? 1 : 0}
+            pointerEvents={state.value ? "auto" : "none"}
+            asChild
+          >
+            <RaButton>
+              <Close />
+            </RaButton>
+          </SearchInputClearButtonSlot>
+        </SearchInputRootSlot>
+      )}
     </RaSearchField>
   );
 };
