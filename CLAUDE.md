@@ -269,7 +269,17 @@ tasks:
 - **Leverage** sequential-thinking for breaking down complex tasks into
   manageable steps
 - These tools are pre-configured and ready to use - no additional setup required
-- proactively use available agents
+
+### Agent-Driven Development Workflow
+
+**Use specialized agents proactively in an iterative cycle for all component development:**
+
+1. **Research Phase** (nimbus-researcher): Gather requirements, patterns, library documentation, and architectural guidance before writing any code
+2. **Implementation Phase** (nimbus-coder): Write code strictly according to the guidelines and patterns identified in research
+3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus standards and guidelines
+4. **Iteration**: If review identifies non-compliance or improvement areas, return to implementation phase and repeat until all standards are met
+
+Invoke agents autonomously when task complexity warrants it - don't wait for explicit user requests. The goal is to leverage automation intelligently by recognizing when a task's scope or requirements align with an agent's capabilities.
 
 ## Development Workflow Best Practices
 
