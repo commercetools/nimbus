@@ -108,7 +108,7 @@ export interface CollapsibleMotionRootProps
  * Extends button HTML attributes for direct button rendering
  */
 export interface CollapsibleMotionTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends HTMLChakraProps<"button"> {
   /**
    * The trigger element content (typically text or icons)
    */
