@@ -70,6 +70,16 @@ The Root component receives all theme and component configuration:
 </Menu.Root>
 ```
 
+### Important: Root Implementation Patterns Vary
+
+While all compound components must have a Root component, **the internal implementation varies significantly**:
+
+- **React Aria Components**: Root may wrap React Aria providers (Menu wraps MenuTrigger, Select wraps Select)
+- **Custom Context**: Root may provide custom context without React Aria (Alert, Card)
+- **Hybrid**: Root may combine both patterns (ComboBox)
+
+The examples in this document show different patterns to illustrate this diversity. When implementing a new compound component, choose the pattern that best fits your requirements.
+
 ## File Structure
 
 ### Directory Organization
@@ -91,19 +101,32 @@ menu/
 
 ### Root Component Implementation
 
+Root components vary significantly based on their requirements. Here are common patterns:
+
+#### Pattern 1: React Aria Component Wrapper (Menu Example)
+
+Used when leveraging React Aria's built-in state management:
+
 ```typescript
 // components/menu.root.tsx
+import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { MenuTrigger as RaMenuTrigger } from 'react-aria-components';
 import { MenuRootSlot } from '../menu.slots';
 import type { MenuRootProps } from '../menu.types';
+import { extractStyleProps } from '@/utils/extractStyleProps';
 
 export const MenuRoot = (props: MenuRootProps) => {
-  const { children, variant, size, ...restProps } = props;
+  // Standard pattern: Split recipe variants
+  const recipe = useSlotRecipe({ key: 'menu' });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+
+  // Standard pattern: Extract style props
+  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
   return (
-    <MenuRootSlot variant={variant} size={size}>
-      <RaMenuTrigger {...restProps}>
-        {children}
+    <MenuRootSlot {...recipeProps} {...styleProps} asChild>
+      <RaMenuTrigger {...functionalProps}>
+        {functionalProps.children}
       </RaMenuTrigger>
     </MenuRootSlot>
   );
@@ -112,21 +135,92 @@ export const MenuRoot = (props: MenuRootProps) => {
 MenuRoot.displayName = 'Menu.Root';
 ```
 
+#### Pattern 2: Custom Context Provider (Alert Example)
+
+Used when React Aria is not needed or for layout-only components:
+
+```typescript
+// components/alert.root.tsx
+import { createContext, useMemo, useState } from 'react';
+import { useSlotRecipe } from '@chakra-ui/react/styled-system';
+import { AlertRootSlot } from '../alert.slots';
+import type { AlertRootProps } from '../alert.types';
+import { extractStyleProps } from '@/utils/extractStyleProps';
+
+export const AlertContext = createContext<AlertContextValue | undefined>(undefined);
+
+export const AlertRoot = (props: AlertRootProps) => {
+  // Standard pattern: First split recipe variants
+  const recipe = useSlotRecipe({ key: 'alert' });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+
+  // Standard pattern: Second extract style props from remaining
+  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
+
+  // State management for coordinating child components
+  const [titleNode, setTitle] = useState<ReactNode>(null);
+
+  const contextValue = useMemo(() => ({ setTitle }), []);
+
+  return (
+    <AlertContext.Provider value={contextValue}>
+      <AlertRootSlot {...recipeProps} {...styleProps} role="alert">
+        {functionalProps.children}
+      </AlertRootSlot>
+    </AlertContext.Provider>
+  );
+};
+
+AlertRoot.displayName = 'Alert.Root';
+```
+
+### Standard Prop Handling Pattern
+
+**Root components follow this sequential pattern:**
+
+1. **First: Split recipe variants** using `useSlotRecipe` and `splitVariantProps` (if component has recipes)
+2. **Second: Extract style props** from remaining props using `extractStyleProps`
+3. **Forward recipe props + style props** to slot components
+4. **Forward functional props** to React Aria or underlying components
+
+**Sub-components follow this pattern:**
+
+1. **Extract style props** using `extractStyleProps`
+2. **Forward style props** to slot components
+3. **Forward functional props** to React Aria or underlying components
+
+This ensures consistent behavior across the design system and proper prop forwarding.
+
 ### Sub-Component Implementation
+
+Sub-components should support flexible composition and avoid hardcoding content:
 
 ```typescript
 // components/menu.trigger.tsx
-import { Button as RaButton } from 'react-aria-components';
+import { Button } from 'react-aria-components';
 import { MenuTriggerSlot } from '../menu.slots';
 import type { MenuTriggerProps } from '../menu.types';
+import { extractStyleProps } from '@/utils/extractStyleProps';
 
-export const MenuTrigger = (props: MenuTriggerProps) => {
+export const MenuTrigger = ({ children, asChild, ref, ...props }: MenuTriggerProps) => {
+  // Standard pattern: Extract and forward style props
+  const [styleProps, restProps] = extractStyleProps(props);
+
+  // Support asChild pattern for custom trigger elements
+  if (asChild) {
+    return (
+      <MenuTriggerSlot ref={ref} asChild {...styleProps}>
+        {children}
+      </MenuTriggerSlot>
+    );
+  }
+
+  // Default: wrap children in an unstyled button
   return (
-    <MenuTriggerSlot asChild>
-      <RaButton {...props}>
-        {props.children}
-        <ChevronDownIcon />
-      </RaButton>
+    <MenuTriggerSlot asChild {...styleProps}>
+      <Button ref={ref} {...restProps}>
+        {children}
+      </Button>
     </MenuTriggerSlot>
   );
 };
@@ -159,21 +253,34 @@ MenuItem.displayName = "Menu.Item";
 
 ### Using React Aria State
 
+React Aria components often handle state management internally. Here's a simplified example:
+
 ```typescript
-// components/select.root.tsx
+// components/select.root.tsx - Simplified for clarity
+import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { Select as RaSelect } from 'react-aria-components';
+import { SelectRootSlot } from '../select.slots';
+import type { SelectRootProps } from '../select.types';
+import { extractStyleProps } from '@/utils/extractStyleProps';
 
 export const SelectRoot = (props: SelectRootProps) => {
+  // Standard pattern: Split recipe variants
+  const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+
+  // Standard pattern: Extract style props
+  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
+
   const {
     children,
     value,
     onSelectionChange,
     defaultSelectedKey,
     ...restProps
-  } = props;
+  } = functionalProps;
 
   return (
-    <SelectRootSlot>
+    <SelectRootSlot asChild {...recipeProps} {...styleProps}>
       <RaSelect
         selectedKey={value}
         onSelectionChange={onSelectionChange}
@@ -186,6 +293,8 @@ export const SelectRoot = (props: SelectRootProps) => {
   );
 };
 ```
+
+**Note**: Actual implementations may be significantly more complex with conditional rendering, multiple internal slots, loading states, and custom validation logic. See the actual `select.root.tsx` for a production example.
 
 ### Custom Context for State Sharing
 
@@ -235,96 +344,10 @@ export const MenuRoot = (props) => {
 </Popover.Root>
 ```
 
-### Required Structure Enforcement
+## Type Definitions
 
-```typescript
-// components/tabs.root.tsx
-export const TabsRoot = ({ children, ...props }) => {
-  // Validate children structure if needed
-  const tabList = Children.find(children, TabsList);
-  const tabPanels = Children.find(children, TabsPanels);
-
-  if (!tabList || !tabPanels) {
-    throw new Error('Tabs.Root requires Tabs.List and Tabs.Panels');
-  }
-
-  return (
-    <TabsRootSlot {...props}>
-      {children}
-    </TabsRootSlot>
-  );
-};
-```
-
-## Type Patterns
-
-### Root Props
-
-```typescript
-// menu.types.ts
-export interface MenuRootProps {
-  children: React.ReactNode;
-  variant?: "solid" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
-  isOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
-  defaultOpen?: boolean;
-}
-```
-
-### Sub-Component Props
-
-```typescript
-export interface MenuItemProps {
-  children: React.ReactNode;
-  onAction?: () => void;
-  isDisabled?: boolean;
-  value: string;
-}
-```
-
-## Examples from Nimbus
-
-### Menu Component
-
-```typescript
-// menu.tsx - Main file with exports only
-export const Menu = {
-  Root: MenuRoot,
-  Trigger: MenuTrigger,
-  Content: MenuContent,
-  Item: MenuItem,
-  Section: MenuSection,
-  Submenu: MenuSubmenu,
-  SubmenuTrigger: MenuSubmenuTrigger,
-};
-
-// components/menu.root.tsx - Implementation
-export const MenuRoot = (props: MenuRootProps) => {
-  return (
-    <MenuRootSlot {...props}>
-      <RaMenuTrigger>
-        {props.children}
-      </RaMenuTrigger>
-    </MenuRootSlot>
-  );
-};
-```
-
-### Select Component
-
-```typescript
-// select.tsx
-export const Select = {
-  Root: SelectRoot,
-  Trigger: SelectTrigger,
-  Content: SelectContent,
-  Option: SelectOption,
-  Group: SelectGroup,
-  Label: SelectLabel,
-};
-```
-
+For comprehensive type patterns and examples for compound components, see:
+- **[Type Definitions Guidelines](./types.md)** - Props interfaces for Root and sub-components
 
 ## When to Use Compound vs Single
 
@@ -351,16 +374,30 @@ export const Select = {
 
 ## Validation Checklist
 
+### Structure
 - [ ] `components/` directory exists
 - [ ] Main file contains exports only
 - [ ] **`.Root` component exists and is first property**
 - [ ] Root component in `components/component-name.root.tsx`
 - [ ] All sub-components in separate files
-- [ ] Display names set for all components
 - [ ] Components index file exports all parts
-- [ ] Root accepts variant/size/theme props
+
+### Standard Patterns
+- [ ] **Root uses `useSlotRecipe` and `splitVariantProps`** (for recipe-based components)
+- [ ] **All components use `extractStyleProps`** to separate style props
+- [ ] **Style props forwarded to slot components**
+- [ ] **Functional props forwarded to React Aria or underlying components**
+- [ ] Display names set for all components (Pattern: `ComponentName.PartName`)
+
+### Props & Types
+- [ ] Root accepts variant/size/theme props via recipe
 - [ ] Props interfaces defined in types file
+- [ ] Proper prop destructuring and forwarding
+
+### Integration
 - [ ] React Aria integration where needed
+- [ ] Context provided by Root if state sharing required
+- [ ] Refs properly forwarded with `useObjectRef` if needed
 
 ---
 
