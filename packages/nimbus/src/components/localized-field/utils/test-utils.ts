@@ -1,6 +1,39 @@
 import type { BoundFunctions, Queries } from "@testing-library/react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 
+// Create a wrapper that ensures accessibility computations work in Storybook context
+export const withStableDocument = async <T>(
+  element: HTMLElement,
+  operation: () => Promise<T>
+): Promise<T> => {
+  // Ensure we're working with a stable document context
+  const doc = element.ownerDocument;
+
+  // Validate the document has getElementById before accessibility computation
+  if (typeof doc?.getElementById !== "function") {
+    throw new Error(
+      "Document context is not ready for accessibility computations"
+    );
+  }
+
+  // Perform the operation that may trigger accessibility computation
+  try {
+    return await operation();
+  } catch (error) {
+    // If we get the getElementById error, it means the accessibility computation
+    // is happening in the wrong document context
+    if (
+      error instanceof TypeError &&
+      error.message.includes("getElementById")
+    ) {
+      // Wait a bit and retry once to allow document context to stabilize
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      return await operation();
+    }
+    throw error;
+  }
+};
+
 export const getFieldContainerForType = async (
   canvas: BoundFunctions<Queries>,
   type: string
@@ -14,10 +47,13 @@ export const getExpandButtonForField = async (
   type: string
 ) => {
   const matchString = type === "money" ? " all currencies" : "all languages";
-  const toggleButton = await within(field).findByRole("button", {
-    name: new RegExp(matchString, "i"),
+
+  return await withStableDocument(field, async () => {
+    const toggleButton = await within(field).findByRole("button", {
+      name: new RegExp(matchString, "i"),
+    });
+    return toggleButton as HTMLElement;
   });
-  return toggleButton as HTMLElement;
 };
 
 export const toggleExpandField = async (field: HTMLElement, type: string) => {
@@ -28,19 +64,26 @@ export const toggleExpandField = async (field: HTMLElement, type: string) => {
 export const getInputForLocaleField = async (
   field: HTMLElement,
   localeOrCurrency: string
-) =>
-  await within(field).findByRole("textbox", {
-    name: new RegExp(localeOrCurrency, "i"),
+) => {
+  return await withStableDocument(field, async () => {
+    return await within(field).findByRole("textbox", {
+      name: new RegExp(localeOrCurrency, "i"),
+    });
   });
+};
 
 export const getRichTextContainerForLocaleField = async (
   field: HTMLElement,
   localeOrCurrency: string
-) =>
-  await within(field).findByRole("group", {
-    name: new RegExp(localeOrCurrency, "i"),
-  });
+) => {
+  // Use CSS selector to find group with ID containing richText.{locale}
+  const container = field.querySelector(
+    `[role="group"][id*="richText.${localeOrCurrency}"]`
+  );
+  expect(container).toBeInTheDocument();
 
+  return container as HTMLElement;
+};
 export const getRichTextInputForLocaleField = async (
   field: HTMLElement,
   localeOrCurrency: string
@@ -49,8 +92,11 @@ export const getRichTextInputForLocaleField = async (
     field,
     localeOrCurrency
   );
-  return await within(richTextContainer).findByRole("textbox", {
-    name: /rich text editor/i,
+
+  return await withStableDocument(richTextContainer, async () => {
+    return await within(richTextContainer).findByRole("textbox", {
+      name: /rich text editor/i,
+    });
   });
 };
 
@@ -115,22 +161,21 @@ export const checkFieldIsExpanded = async (
       .filter((locale) => locale !== defaultLocaleOrCurrency)
       .sort(),
   ];
-  for (let i = 0; i < expectedSortedOrder.length; i++) {
-    const expectedLocaleOrCurrency = expectedSortedOrder[i];
+
+  let i = 0;
+  for await (const localeOrCurrency of expectedSortedOrder) {
     let inputForLocale;
     if (type === "richText") {
       inputForLocale = await getRichTextInputForLocaleField(
         field,
-        expectedLocaleOrCurrency
+        localeOrCurrency
       );
     } else {
-      inputForLocale = await getInputForLocaleField(
-        field,
-        expectedLocaleOrCurrency
-      );
+      inputForLocale = await getInputForLocaleField(field, localeOrCurrency);
     }
 
     expect(allInputs[i]).toBe(inputForLocale);
+    i++;
   }
 };
 
@@ -217,19 +262,22 @@ export const toggleFieldContolCheckbox = async (
   const fieldGroup = (await canvas.findByRole("group", {
     name: new RegExp(`${type} group`),
   })) as HTMLElement;
-  const accordionButton = await within(fieldGroup).findByRole("button", {
-    name: new RegExp(`${type} field controls`),
-  });
-  // Open the controls
-  if (accordionButton.ariaExpanded === "false") {
-    await userEvent.click(accordionButton);
-  }
 
-  const checkbox = fieldGroup
-    .querySelector(`[aria-label="${control}"]`)
-    ?.closest("label");
-  expect(checkbox).toBeInTheDocument();
-  userEvent.click(checkbox!);
+  return await withStableDocument(fieldGroup, async () => {
+    const accordionButton = await within(fieldGroup).findByRole("button", {
+      name: new RegExp(`${type} field controls`),
+    });
+    // Open the controls
+    if (accordionButton.ariaExpanded === "false") {
+      await userEvent.click(accordionButton);
+    }
+
+    const checkbox = fieldGroup
+      .querySelector(`[aria-label="${control}"]`)
+      ?.closest("label");
+    expect(checkbox).toBeInTheDocument();
+    userEvent.click(checkbox!);
+  });
 };
 
 export const closeFieldControls = async (
@@ -239,20 +287,24 @@ export const closeFieldControls = async (
   const fieldGroup = (await canvas.findByRole("group", {
     name: new RegExp(`${type} group`),
   })) as HTMLElement;
-  const accordionButton = await within(fieldGroup).findByRole("button", {
-    name: new RegExp(`${type} field controls`),
+
+  return await withStableDocument(fieldGroup, async () => {
+    const accordionButton = await within(fieldGroup).findByRole("button", {
+      name: new RegExp(`${type} field controls`),
+    });
+    // Open the controls
+    if (accordionButton.ariaExpanded === "true") {
+      await userEvent.click(accordionButton);
+    }
   });
-  // Open the controls
-  if (accordionButton.ariaExpanded === "true") {
-    await userEvent.click(accordionButton);
-  }
 };
 
 export const checkFieldItemNotRendered = async (
   field: HTMLElement,
   textValue: string
 ) => {
-  expect(await within(field).queryByText(textValue)).not.toBeInTheDocument();
+  const fieldItem = within(field).queryByText(textValue);
+  expect(fieldItem).toBeNull();
 };
 
 export const checkFieldDetailsDialog = async (
@@ -260,12 +312,14 @@ export const checkFieldDetailsDialog = async (
   documentBody: HTMLElement,
   infoBoxValue: string
 ) => {
-  const infoBoxButton = await within(field).getByRole("button", {
-    name: "more info",
+  return await withStableDocument(field, async () => {
+    const infoBoxButton = await within(field).getByRole("button", {
+      name: "more info",
+    });
+    await userEvent.click(infoBoxButton);
+    await within(documentBody).getByText(infoBoxValue);
+    await userEvent.click(documentBody);
   });
-  await userEvent.click(infoBoxButton);
-  await within(documentBody).getByText(infoBoxValue);
-  await userEvent.click(documentBody);
 };
 
 export const checkFieldDescription = async (
@@ -309,6 +363,7 @@ export const checkLocaleFieldDescription = async (
 ) => {
   const descriptionElement = await within(field).findByText(descriptionValue);
   let localeFieldInput;
+
   if (type === "richText") {
     localeFieldInput = await getRichTextContainerForLocaleField(
       field,
@@ -371,7 +426,7 @@ export const checkAllFieldItemsNotRendered = async (
   for await (const value of fieldItemValues) {
     if (value) {
       expect(typeof value).toEqual("string");
-      await checkFieldItemNotRendered(field, value!);
+      await checkFieldItemNotRendered(field, value ?? "");
     }
   }
 };

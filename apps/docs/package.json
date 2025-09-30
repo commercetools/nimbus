@@ -31,7 +31,7 @@
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
-    "jotai": "^2.14.0",
+    "jotai": "^2.15.0",
     "js-yaml": "^4.1.0",
     "lodash": "catalog:utils",
     "prism-react-renderer": "^2.4.0",
@@ -51,7 +51,7 @@
     "to-vfile": "^8.0.0",
     "vite-plugin-markdown": "^2.2.0",
     "vite-tsconfig-paths": "^5.1.3",
-    "zod": "^4.1.5"
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@eslint/js": "catalog:tooling",

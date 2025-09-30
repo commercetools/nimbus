@@ -17,4 +17,8 @@ export interface FormFieldProps extends FormFieldRootSlotProps {
   isReadOnly?: boolean;
   /** id passed to the field's input component*/
   id?: string;
+  /**
+   * React ref to be forwarded to the root element
+   */
+  ref?: React.Ref<HTMLDivElement>;
 }

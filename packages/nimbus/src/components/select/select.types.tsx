@@ -25,6 +25,10 @@ export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
   leadingElement?: ReactNode;
   /** Whether the select should show a clear button when a value is selected */
   isClearable?: boolean;
+  /**
+   * React ref to be forwarded to the root element
+   */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 // Fix the incompatible event handler types by using a more specific type
