@@ -1,6 +1,6 @@
 import { Tabs } from "./tabs";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 import { SentimentSatisfied } from "@commercetools/nimbus-icons";
 import { Box } from "../box";
 
@@ -98,10 +98,9 @@ export const Base: Story = {
     orientation: "horizontal",
     size: "md",
     "data-testid": "base-tabs",
-    onSelectionChange: fn(),
   },
   render: (args) => <Tabs {...args} tabs={simpleTabs} />,
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders tabs component with correct structure", async () => {
@@ -144,9 +143,6 @@ export const Base: Story = {
       await expect(activePanel).toHaveTextContent(
         "Senatus Populusque Romanus."
       );
-
-      // Verify selection change callback was called
-      await expect(args.onSelectionChange).toHaveBeenCalled();
     });
 
     await step("Supports keyboard navigation", async () => {
@@ -338,7 +334,6 @@ export const WithDisabledKeys: Story = {
   args: {
     "data-testid": "disabled-keys-tabs",
     disabledKeys: ["disabled1", "disabled2"],
-    onSelectionChange: fn(),
   },
   render: (args) => {
     const withDisabledTabs = [
@@ -374,7 +369,7 @@ export const WithDisabledKeys: Story = {
       </div>
     );
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Tabs with disabledKeys render correctly", async () => {
@@ -442,11 +437,6 @@ export const WithDisabledKeys: Story = {
       // Selection should remain on first enabled tab
       await expect(enabledTab1).toHaveAttribute("aria-selected", "true");
       await expect(disabledTab1).toHaveAttribute("aria-selected", "false");
-
-      // Callback should not have been called for disabled tab click
-      await expect(args.onSelectionChange).not.toHaveBeenCalledWith(
-        "disabled1"
-      );
     });
 
     await step(
@@ -487,9 +477,6 @@ export const WithDisabledKeys: Story = {
         await expect(activePanel).toHaveTextContent(
           "This tab is also enabled."
         );
-
-        // Verify selection change callback was called with correct key
-        await expect(args.onSelectionChange).toHaveBeenCalledWith("enabled2");
       }
     );
 

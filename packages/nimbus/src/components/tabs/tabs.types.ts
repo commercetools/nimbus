@@ -1,12 +1,69 @@
-import type {
-  TabsRootSlotProps,
-  TabsListSlotProps,
-  TabsTabSlotProps,
-  TabsPanelsSlotProps,
-  TabsPanelSlotProps,
-} from "./tabs.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { tabsSlotRecipe } from "./tabs.recipe";
+
+import {
+  type HTMLChakraProps,
+  type RecipeVariantProps,
+} from "@chakra-ui/react/styled-system";
+
+/**
+ * Root props interface that extends React Aria's tabs props with our recipe props.
+ */
+export interface TabsRootSlotProps
+  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+  /**
+   * The children of the Tabs component.
+   */
+  children?: React.ReactNode;
+  /**
+   * The selected key of the Tabs component.
+   */
+  selectedKey?: string | number;
+  /**
+   * The default selected key of the Tabs component.
+   */
+  defaultSelectedKey?: string | number;
+  /**
+   * The disabled keys of the Tabs component.
+   */
+  disabledKeys?: Iterable<string | number>;
+  /**
+   * The keyboard activation of the Tabs component.
+   */
+  keyboardActivation?: "automatic" | "manual";
+  /**
+   * The orientation of the Tabs component.
+   */
+  orientation?: "horizontal" | "vertical left" | "vertical right";
+  /**
+   * The placement of the Tabs component.
+   */
+  placement?: "start" | "end";
+  /**
+   * The size of the Tabs component.
+   */
+  size?: "sm" | "md" | "lg";
+}
+
+export interface TabsListSlotProps
+  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+  children?: React.ReactNode;
+}
+
+export interface TabsTabSlotProps
+  extends HTMLChakraProps<"button", RecipeVariantProps<typeof tabsSlotRecipe>> {
+  id?: string;
+  isDisabled?: boolean;
+}
+
+export interface TabsPanelsSlotProps
+  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+  children?: React.ReactNode;
+}
+
+export interface TabsPanelSlotProps
+  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+  id?: string;
+}
 
 /**
  * Tabs recipe variant props for direction and placement configuration
@@ -19,9 +76,21 @@ type TabsVariantProps = RecipeVariantProps<typeof tabsSlotRecipe> & {
  * Props for individual tab item component
  */
 export interface TabItemProps {
+  /**
+   * The id of the tab item
+   */
   id: string;
+  /**
+   * The title of the tab item
+   */
   title: React.ReactNode;
+  /**
+   * The content of the tab item
+   */
   content: React.ReactNode;
+  /**
+   * Whether the tab item is disabled
+   */
   isDisabled?: boolean;
 }
 
