@@ -17,8 +17,11 @@ keeping implementation details encapsulated.
 
 - Component props interfaces (public API)
 - Variant and option types (consumed by users)
-- Public hook return types (if a hook is exported)
 - Shared/reusable types across component parts
+
+**Note:** Hook types can be defined either in the component's types file or
+colocated in the hook file itself, depending on whether the hook is primarily
+an internal implementation detail or a public API exported for consumers.
 
 ## Type Visibility and Organization
 
@@ -188,8 +191,8 @@ export interface UseButtonReturn {
   /* ... */
 }
 
-// Use RecipeVariantProps instead of explicit variant declarations
-// Recipe variants are automatically inferred from the recipe
+// Note: Recipe variants (variant, size, tone) are automatically inherited
+// when extending slot props - no explicit declarations needed
 ```
 
 ## Extending Base Interfaces
@@ -224,13 +227,19 @@ export interface BoxProps extends BoxSlotProps {
 
 ### Recipe Variant Props
 
-**Prefer automatic inference over explicit declarations:**
+**Recipe variants are automatically inherited through slot props:**
+
+Slot props automatically include recipe variants through Chakra UI's `RecipeProps`
+type. When your component props interface extends a slot props interface, it
+inherits all recipe variants (like `variant`, `size`, `tone`) without needing
+explicit declarations.
 
 ```typescript
-import { type RecipeVariantProps } from "@chakra-ui/react";
-import { buttonRecipe } from "./button.recipe";
+import { type ButtonSlotProps } from "./button.slots";
 
-// ✅ Good - extends slot props (which include recipe variants)
+// ✅ Good - extends slot props (which automatically include recipe variants)
+// ButtonSlotProps extends RecipeProps<"button">, so ButtonProps inherits
+// all recipe variants like variant, size, tone, etc.
 export interface ButtonProps extends ButtonSlotProps {
   // Component-specific props only
   isLoading?: boolean;
@@ -266,11 +275,11 @@ export interface TabsProps extends TabsSlotProps {
 
 ### Required Documentation
 
-Interface and type definitions do not necessarily need JSDoc annotations, but
-**every property within them must be documented**:
+**JSDoc is required for every property within interfaces and types**, but JSDoc
+on the interface/type definition itself is optional:
 
 ```typescript
-// JSDoc on interface is optional (but recommended for complex interfaces)
+// JSDoc on the interface definition is optional (but recommended for complex interfaces)
 export interface ButtonProps extends ButtonSlotProps {
   /**
    * Whether the button is in a loading state
@@ -306,13 +315,13 @@ export interface UsePaginationOptions {
 
 ### Documentation Standards
 
-- **Required:** JSDoc for every property within interfaces/types
-- **Optional:** JSDoc for the interface/type definition itself
+- **Required:** JSDoc comments for every property within interfaces/types
+- **Optional:** JSDoc comments for the interface/type definition itself
 - Add `@default` tag for props with defaults
 - Use `@example` for complex props
 - Add `@deprecated` for legacy props
 - Include `@see` for related documentation
-- Consider adding interface-level JSDoc when:
+- Consider adding interface-level JSDoc comments when:
   - The interface is complex or has non-obvious usage
   - It's part of a public API
   - Additional context would help developers
@@ -460,11 +469,11 @@ export interface UseDatePickerReturn {
 - [ ] **Internal types colocated with their usage**
 - [ ] All public props interfaces exported
 - [ ] Props follow naming convention (`{ComponentName}Props`)
-- [ ] Extends appropriate base interface
-- [ ] **Recipe variants inferred via `RecipeVariantProps` (not explicit)**
+- [ ] Extends appropriate base interface (slot props for recipe-based components)
+- [ ] **Recipe variants automatically inherited through slot props (not explicit)**
 - [ ] **Explicit variant declarations only when functional overlap exists**
-- [ ] **JSDoc for all properties within interfaces/types**
-- [ ] JSDoc for interfaces/types when they are complex or public-facing
+- [ ] **JSDoc comments for all properties within interfaces/types**
+- [ ] JSDoc comments for interfaces/types when they are complex or public-facing
       (optional)
 - [ ] Default values documented with `@default`
 - [ ] Event handlers properly typed
