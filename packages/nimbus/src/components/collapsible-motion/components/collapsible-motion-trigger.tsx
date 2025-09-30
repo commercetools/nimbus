@@ -16,13 +16,12 @@ import { extractStyleProps } from "@/utils/extractStyleProps";
 export const CollapsibleMotionTrigger = forwardRef<
   HTMLButtonElement,
   CollapsibleMotionTriggerProps
->(({ children, onClick, asChild, ...props }, forwardedRef) => {
+>(({ children, asChild, ...props }, forwardedRef) => {
   const { buttonProps, isDisabled } = useCollapsibleMotionContext();
 
   // Use mergeProps to properly compose event handlers like React Aria does
   const componentProps = mergeProps(props, buttonProps, {
     disabled: isDisabled,
-    onClick, // Consumer's custom onClick handler
   });
 
   // If asChild is true, wrap children directly in a button with asChild

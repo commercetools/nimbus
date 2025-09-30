@@ -74,7 +74,7 @@ export const Controlled: Story = {
 
     return (
       <div>
-        <Button onClick={() => setIsExpanded(!isExpanded)} mb="400">
+        <Button onPress={() => setIsExpanded(!isExpanded)} mb="400">
           {isExpanded ? "Collapse" : "Expand"} Content (External Control)
         </Button>
         <CollapsibleMotion.Root
@@ -121,7 +121,7 @@ export const ControlledNoTrigger: Story = {
 
     return (
       <div>
-        <Button onClick={() => setIsExpanded(!isExpanded)} mb="400">
+        <Button onPress={() => setIsExpanded(!isExpanded)} mb="400">
           {isExpanded ? "Collapse" : "Expand"} Content (External Control)
         </Button>
         <CollapsibleMotion.Root
@@ -262,7 +262,7 @@ export const DynamicContent: Story = {
       <div>
         <Box mb="400">
           <Button
-            onClick={() => setContentLength("short")}
+            onPress={() => setContentLength("short")}
             variant={contentLength === "short" ? "solid" : "outline"}
             size="xs"
             mr="200"
@@ -270,7 +270,7 @@ export const DynamicContent: Story = {
             Short
           </Button>
           <Button
-            onClick={() => setContentLength("medium")}
+            onPress={() => setContentLength("medium")}
             variant={contentLength === "medium" ? "solid" : "outline"}
             size="xs"
             mr="200"
@@ -278,7 +278,7 @@ export const DynamicContent: Story = {
             Medium
           </Button>
           <Button
-            onClick={() => setContentLength("long")}
+            onPress={() => setContentLength("long")}
             variant={contentLength === "long" ? "solid" : "outline"}
             size="xs"
           >
