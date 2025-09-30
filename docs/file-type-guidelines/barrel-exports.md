@@ -28,46 +28,20 @@ export * from "./component-name";
 export * from "./component-name.types";
 ```
 
-### Named Export Pattern
-
-```typescript
-// index.ts
-export { ComponentName } from "./component-name";
-export type * from "./component-name.types";
-```
-
-### Selective Export Pattern (Hiding Internals)
-
-```typescript
-// index.ts
-// Export only public API
-export { Button } from "./button";
-export type { ButtonProps, ButtonVariant } from "./button.types";
-```
-
 ## Examples from Nimbus
 
-### Simple Component (Button)
+### Simple Component
 
 ```typescript
-// packages/nimbus/src/components/button/index.ts
-export * from "./button.tsx";
-export * from "./button.types.ts";
+// packages/nimbus/src/components/badge/index.ts
+export * from "./badge";
+export * from "./badge.types";
 ```
 
-### Complex Component (RichTextInput)
+### Compound Component
 
 ```typescript
-// packages/nimbus/src/components/rich-text-input/index.ts
-export { RichTextInput } from "./rich-text-input";
-export type * from "./rich-text-input.types";
-// Note: Internal hooks, utils, and components are NOT exported
-```
-
-### Compound Component (Menu)
-
-```typescript
-// packages/nimbus/src/components/menu/index.tsx
+// packages/nimbus/src/components/menu/index.ts
 export * from "./menu";
 export * from "./menu.types";
 ```
@@ -81,36 +55,45 @@ export * from "./menu.types";
 
 ### Import Extensions
 
-Current Nimbus patterns show inconsistency:
+The TypeScript configuration allows both styles
+(`allowImportingTsExtensions: true`), but the codebase shows a clear preference:
 
-- Some use extensions: `export * from "./button.tsx"`
-- Others don't: `export * from "./menu"`
+- **Dominant pattern (~80%)**: Omit extensions - `export * from "./menu"`
+- **Legacy pattern (~20%)**: Include extensions - `export * from "./button.tsx"`
 
-**Recommendation**: Be consistent within your component. Either always include
-extensions or never include them.
+**Recommendation**: Prefer omitting extensions to match the majority of the
+codebase. Only include extensions if you have specific tooling requirements or
+are updating an existing component that uses them.
 
 ## Best Practices
 
-1. **Export both implementation and types**
+1. **Omit file extensions in imports** (preferred)
 
    ```typescript
    export * from "./component-name";
    export * from "./component-name.types";
    ```
 
-2. **Use `type` modifier for type-only exports**
+2. **Export both implementation and types**
+
+   ```typescript
+   export * from "./component-name";
+   export * from "./component-name.types";
+   ```
+
+3. **Use `type` modifier for type-only exports**
 
    ```typescript
    export type * from "./component-name.types";
    ```
 
-3. **Keep barrel exports minimal**
+4. **Keep barrel exports minimal**
    - Only export what consumers need
    - Hide internal implementation details
 
-4. **Maintain consistent patterns**
+5. **Maintain consistent patterns**
    - Use the same export style across your component
-   - Follow existing patterns in the codebase
+   - Follow the dominant codebase pattern (omit extensions)
 
 ## Module Boundary Enforcement
 
@@ -127,25 +110,6 @@ export type { SelectProps, SelectOption } from "./select.types";
 // - ./components/select-internal-part.tsx
 ```
 
-### ESLint Rule Enforcement
-
-Consider enforcing module boundaries with ESLint:
-
-```javascript
-// .eslintrc.js
-{
-  rules: {
-    'no-restricted-imports': ['error', {
-      patterns: [
-        // Prevent direct imports, force through index
-        '@/components/*/!(index)*'
-      ]
-    }]
-  }
-}
-```
-
-
 ## Related Guidelines
 
 - [Main Component](./main-component.md) - What to export from main file
@@ -160,9 +124,10 @@ Consider enforcing module boundaries with ESLint:
 - [ ] Exports TypeScript types
 - [ ] Only exports public API (no internal utilities)
 - [ ] Uses consistent export pattern
-- [ ] File extension appropriate (.ts for exports only)
+- [ ] File extension appropriate (.ts for exports only, .tsx if JSX present)
+- [ ] **Omits file extensions in imports** (preferred pattern)
 - [ ] No circular dependencies
-- [ ] Follows team conventions for extensions in imports
+- [ ] Uses `export type *` for type-only exports when appropriate
 
 ---
 
