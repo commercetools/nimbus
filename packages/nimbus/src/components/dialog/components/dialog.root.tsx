@@ -5,28 +5,6 @@ import { DialogRootSlot } from "../dialog.slots";
 import type { DialogRootProps } from "../dialog.types";
 import { DialogProvider } from "./dialog.context";
 
-/**
- * # Dialog.Root
- *
- * The root component that provides context and state management for the dialog.
- * Uses React Aria's DialogTrigger for accessibility and keyboard interaction.
- *
- * This component must wrap all dialog parts (Trigger, Content, etc.) and provides
- * the dialog open/close state and variant styling context.
- *
- * @example
- * ```tsx
- * <Dialog.Root>
- *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
- *   <Dialog.Content>
- *     <Dialog.Header>
- *       <Dialog.Title>Dialog Title</Dialog.Title>
- *     </Dialog.Header>
- *     <Dialog.Body>Dialog content</Dialog.Body>
- *   </Dialog.Content>
- * </Dialog.Root>
- * ```
- */
 export const DialogRoot = function DialogRoot(props: DialogRootProps) {
   const recipe = useSlotRecipe({ key: "dialog" });
   // Extract recipe props

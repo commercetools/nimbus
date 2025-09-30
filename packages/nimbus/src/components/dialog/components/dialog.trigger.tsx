@@ -4,20 +4,6 @@ import type { DialogTriggerProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { chakra } from "@chakra-ui/react/styled-system";
 
-/**
- * # Dialog.Trigger
- *
- * The trigger element that opens the dialog when activated.
- * Uses React Aria's Button for accessibility and keyboard support.
- *
- * @example
- * ```tsx
- * <Dialog.Root>
- *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
- *   <Dialog.Content>...</Dialog.Content>
- * </Dialog.Root>
- * ```
- */
 export const DialogTrigger = ({
   ref: forwardedRef,
   children,

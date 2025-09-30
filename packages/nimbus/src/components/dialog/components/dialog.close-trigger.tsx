@@ -3,29 +3,6 @@ import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
 import { IconButton } from "@/components";
 
-/**
- * # Dialog.CloseTrigger
- *
- * A button that closes the dialog when activated.
- * Displays an IconButton with a close (X) icon by default.
- *
- * The component automatically handles the close behavior through React Aria's
- * context, so no additional onPress handler is needed.
- *
- * @example
- * ```tsx
- * <Dialog.Root>
- *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
- *   <Dialog.Content>
- *     <Dialog.Header>
- *       <Dialog.Title>Title</Dialog.Title>
- *       <Dialog.CloseTrigger aria-label="Close dialog" />
- *     </Dialog.Header>
- *     <Dialog.Body>Content</Dialog.Body>
- *   </Dialog.Content>
- * </Dialog.Root>
- * ```
- */
 export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
   const {
     ref: forwardedRef,
