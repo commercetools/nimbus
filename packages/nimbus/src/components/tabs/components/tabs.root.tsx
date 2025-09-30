@@ -1,6 +1,5 @@
-import { forwardRef } from "react";
 import { Tabs as RATabs } from "react-aria-components";
-import { TabsRoot as TabsRootSlot } from "../tabs.slots";
+import { TabsRootSlot } from "../tabs.slots";
 import { TabsProvider } from "./tabs.context";
 import type { TabsProps, TabItemProps } from "../tabs.types";
 
@@ -11,34 +10,30 @@ import type { TabsProps, TabItemProps } from "../tabs.types";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/tabs}
  */
-export const TabsRoot = forwardRef<HTMLDivElement, TabsProps>(
-  (
-    {
-      children,
-      orientation = "horizontal",
-      disabledKeys,
-      placement = "start",
-      size = "md",
-      tabs,
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <TabsProvider tabs={tabs as TabItemProps[]}>
-        <TabsRootSlot
-          asChild
-          orientation={orientation}
-          placement={placement}
-          size={size}
-          ref={ref}
-          {...props}
-        >
-          <RATabs disabledKeys={disabledKeys}>{children}</RATabs>
-        </TabsRootSlot>
-      </TabsProvider>
-    );
-  }
-);
+export const TabsRoot = ({
+  children,
+  orientation = "horizontal",
+  disabledKeys,
+  placement = "start",
+  size = "md",
+  tabs,
+  ...props
+}: TabsProps) => {
+  return (
+    <TabsProvider tabs={tabs as TabItemProps[]}>
+      <TabsRootSlot
+        asChild
+        orientation={orientation}
+        placement={placement}
+        size={size}
+        {...props}
+      >
+        <RATabs disabledKeys={disabledKeys} {...tabs}>
+          {children}
+        </RATabs>
+      </TabsRootSlot>
+    </TabsProvider>
+  );
+};
 
 TabsRoot.displayName = "Tabs.Root";

@@ -56,3 +56,4 @@ export * from "./toolbar";
 export * from "./rich-text-input";
 export * from "./data-table";
 export * from "./pagination";
+export * from "./tabs";

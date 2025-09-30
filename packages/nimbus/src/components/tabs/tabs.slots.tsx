@@ -9,7 +9,7 @@ import { tabsSlotRecipe } from "./tabs.recipe";
 /**
  * Root props interface that extends React Aria's tabs props with our recipe props.
  */
-export interface TabsRootProps
+export interface TabsRootSlotProps
   extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
   children?: React.ReactNode;
   selectedKey?: string | number;
@@ -23,23 +23,23 @@ export interface TabsRootProps
   size?: "sm" | "md" | "lg";
 }
 
-export interface TabsListProps
+export interface TabsListSlotProps
   extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
   children?: React.ReactNode;
 }
 
-export interface TabsTabProps
+export interface TabsTabSlotProps
   extends HTMLChakraProps<"button", RecipeVariantProps<typeof tabsSlotRecipe>> {
   id?: string;
   isDisabled?: boolean;
 }
 
-export interface TabsPanelsProps
+export interface TabsPanelsSlotProps
   extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
   children?: React.ReactNode;
 }
 
-export interface TabsPanelProps
+export interface TabsPanelSlotProps
   extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
   id?: string;
 }
@@ -52,27 +52,27 @@ const { withProvider, withContext } = createSlotRecipeContext({
  * Root component that provides the styling context for the Tabs component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const TabsRoot = withProvider<HTMLDivElement, TabsRootProps>(
+export const TabsRootSlot = withProvider<HTMLDivElement, TabsRootSlotProps>(
   "div",
   "root"
 );
 
-export const TabList = withContext<HTMLDivElement, TabsListProps>(
+export const TabsListSlot = withContext<HTMLDivElement, TabsListSlotProps>(
   "div",
   "list"
 );
 
-export const TabsTab = withContext<HTMLButtonElement, TabsTabProps>(
+export const TabsTabSlot = withContext<HTMLButtonElement, TabsTabSlotProps>(
   "button",
   "tab"
 );
 
-export const TabPanels = withContext<HTMLDivElement, TabsPanelsProps>(
+export const TabsPanelsSlot = withContext<HTMLDivElement, TabsPanelsSlotProps>(
   "div",
   "panels"
 );
 
-export const TabPanel = withContext<HTMLDivElement, TabsPanelProps>(
+export const TabsPanelSlot = withContext<HTMLDivElement, TabsPanelSlotProps>(
   "div",
   "panel"
 );

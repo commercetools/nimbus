@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { TabsRoot } from "./components/tabs.root";
 import { TabList } from "./components/tabs.list";
 import { Tab } from "./components/tabs.tab";
@@ -6,16 +5,14 @@ import { TabPanels } from "./components/tabs.panels";
 import { TabPanel } from "./components/tabs.panel";
 import type { TabsProps } from "./tabs.types";
 
-const TabsBase = forwardRef<HTMLDivElement, TabsProps>(
-  ({ tabs, ...props }, ref) => {
-    return (
-      <TabsRoot ref={ref} tabs={tabs} {...props}>
-        <TabList />
-        <TabPanels />
-      </TabsRoot>
-    );
-  }
-);
+const TabsBase = ({ tabs, ...props }: TabsProps) => {
+  return (
+    <TabsRoot tabs={tabs} {...props}>
+      <TabList />
+      <TabPanels />
+    </TabsRoot>
+  );
+};
 
 TabsBase.displayName = "Tabs";
 

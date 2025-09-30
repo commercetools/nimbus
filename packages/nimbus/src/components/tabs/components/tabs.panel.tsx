@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TabPanel as RATabPanel } from "react-aria-components";
-import { TabPanel as TabPanelSlot } from "../tabs.slots";
+import { TabsPanelSlot } from "../tabs.slots";
 import type { TabPanelProps } from "../tabs.types";
 
 /**
@@ -10,10 +10,15 @@ import type { TabPanelProps } from "../tabs.types";
  */
 export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(
   ({ children, ...props }, ref) => {
+    // Ensure TabPanel always has children
+    if (!children) {
+      throw new Error("Tabs.Panel: children prop is required");
+    }
+
     return (
-      <TabPanelSlot asChild ref={ref} {...props}>
+      <TabsPanelSlot asChild ref={ref} {...props}>
         <RATabPanel>{children}</RATabPanel>
-      </TabPanelSlot>
+      </TabsPanelSlot>
     );
   }
 );

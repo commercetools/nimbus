@@ -1,9 +1,9 @@
 import type {
-  TabsRootProps,
-  TabsListProps,
-  TabsTabProps,
-  TabsPanelsProps,
-  TabsPanelProps,
+  TabsRootSlotProps,
+  TabsListSlotProps,
+  TabsTabSlotProps,
+  TabsPanelsSlotProps,
+  TabsPanelSlotProps,
 } from "./tabs.slots";
 import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { tabsSlotRecipe } from "./tabs.recipe";
@@ -29,7 +29,7 @@ export interface TabItemProps {
  * Main props interface for the Tabs root component.
  * Combines React Aria tabs props with our styling variants.
  */
-export interface TabsProps extends TabsRootProps, TabsVariantProps {
+export interface TabsProps extends TabsRootSlotProps, TabsVariantProps {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
   /**
@@ -57,7 +57,7 @@ export interface TabsProps extends TabsRootProps, TabsVariantProps {
 /**
  * Props for individual tab list component
  */
-export interface TabListProps extends TabsListProps {
+export interface TabListProps extends TabsListSlotProps {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -66,7 +66,7 @@ export interface TabListProps extends TabsListProps {
 /**
  * Props for individual tab component
  */
-export interface TabProps extends TabsTabProps {
+export interface TabProps extends TabsTabSlotProps {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   isDisabled?: boolean;
@@ -75,7 +75,7 @@ export interface TabProps extends TabsTabProps {
 /**
  * Props for tab panels container component
  */
-export interface TabPanelsProps extends TabsPanelsProps {
+export interface TabPanelsProps extends TabsPanelsSlotProps {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -84,7 +84,7 @@ export interface TabPanelsProps extends TabsPanelsProps {
 /**
  * Props for individual tab panel component
  */
-export interface TabPanelProps extends TabsPanelProps {
+export interface TabPanelProps extends TabsPanelSlotProps {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
