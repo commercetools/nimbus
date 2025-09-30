@@ -124,10 +124,7 @@ export const ControlledNoTrigger: Story = {
         <Button onPress={() => setIsExpanded(!isExpanded)} mb="400">
           {isExpanded ? "Collapse" : "Expand"} Content (External Control)
         </Button>
-        <CollapsibleMotion.Root
-          isExpanded={isExpanded}
-          onExpandedChange={setIsExpanded}
-        >
+        <CollapsibleMotion.Root isExpanded={isExpanded}>
           <CollapsibleMotion.Content>
             <Box p="400" bg="greenAlpha.2" borderRadius="md">
               <Text>
