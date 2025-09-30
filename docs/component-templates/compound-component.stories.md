@@ -13,6 +13,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within, expect } from "storybook/test";
 import { useState } from "react";
 import { ComponentName } from "./component-name";
+import { Stack } from "@/components";
 
 const meta: Meta<typeof ComponentName.Root> = {
   title: "Components/{CATEGORY}/ComponentName",
@@ -67,116 +68,71 @@ export const Default: Story = {
 };
 
 /**
- * Variants - visual permutations
+ * Variants - visual permutations combined in single story
  */
-export const Outline: Story = {
-  args: {
-    variant: "outline",
+export const Variants: Story = {
+  render: (args) => {
+    const variants = ["outline", "filled", "ghost"];
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {variants.map((variant) => (
+          <ComponentName.Root key={variant} {...args} variant={variant}>
+            <ComponentName.Trigger>{variant} variant</ComponentName.Trigger>
+            <ComponentName.Content>
+              <ComponentName.Item value="1">Item 1</ComponentName.Item>
+              <ComponentName.Item value="2">Item 2</ComponentName.Item>
+            </ComponentName.Content>
+          </ComponentName.Root>
+        ))}
+      </Stack>
+    );
   },
-  render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Outline Variant</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
-};
-
-export const Filled: Story = {
-  args: {
-    variant: "filled",
-  },
-  render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Filled Variant</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
-};
-
-export const Ghost: Story = {
-  args: {
-    variant: "ghost",
-  },
-  render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Ghost Variant</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
 };
 
 /**
- * Sizes
+ * Sizes - combined in single story
  */
-export const Small: Story = {
-  args: {
-    size: "sm",
+export const Sizes: Story = {
+  render: (args) => {
+    const sizes = ["sm", "md", "lg"];
+    return (
+      <Stack direction="column" gap="400" alignItems="flex-start">
+        {sizes.map((size) => (
+          <ComponentName.Root key={size} {...args} size={size}>
+            <ComponentName.Trigger>Size {size}</ComponentName.Trigger>
+            <ComponentName.Content>
+              <ComponentName.Item value="1">Item 1</ComponentName.Item>
+              <ComponentName.Item value="2">Item 2</ComponentName.Item>
+            </ComponentName.Content>
+          </ComponentName.Root>
+        ))}
+      </Stack>
+    );
   },
-  render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Small Size</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Small Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Small Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
-};
-
-export const Medium: Story = {
-  args: {
-    size: "md",
-  },
-  render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Medium Size</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Medium Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Medium Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
-};
-
-export const Large: Story = {
-  args: {
-    size: "lg",
-  },
-  render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Large Size</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Large Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Large Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
-  ),
 };
 
 /**
- * States
+ * States - combined when possible
  */
-export const Disabled: Story = {
-  args: {
-    isDisabled: true,
-  },
+export const States: Story = {
   render: (args) => (
-    <ComponentName.Root {...args}>
-      <ComponentName.Trigger>Disabled ComponentName</ComponentName.Trigger>
-      <ComponentName.Content>
-        <ComponentName.Item value="1">Item 1</ComponentName.Item>
-        <ComponentName.Item value="2">Item 2</ComponentName.Item>
-      </ComponentName.Content>
-    </ComponentName.Root>
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <ComponentName.Root {...args}>
+        <ComponentName.Trigger>Default State</ComponentName.Trigger>
+        <ComponentName.Content>
+          <ComponentName.Item value="1">Item 1</ComponentName.Item>
+          <ComponentName.Item value="2">Item 2</ComponentName.Item>
+        </ComponentName.Content>
+      </ComponentName.Root>
+
+      <ComponentName.Root {...args} isDisabled>
+        <ComponentName.Trigger>Disabled State</ComponentName.Trigger>
+        <ComponentName.Content>
+          <ComponentName.Item value="1">Item 1</ComponentName.Item>
+          <ComponentName.Item value="2">Item 2</ComponentName.Item>
+        </ComponentName.Content>
+      </ComponentName.Root>
+    </Stack>
   ),
 };
 
