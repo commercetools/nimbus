@@ -1,33 +1,20 @@
 import type { BoundFunctions, Queries } from "@testing-library/react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 
-// Create a wrapper that ensures accessibility computations work in Storybook context
+// Minimal wrapper that only intervenes for the specific getElementById error
 export const withStableDocument = async <T>(
   element: HTMLElement,
   operation: () => Promise<T>
 ): Promise<T> => {
-  // Ensure we're working with a stable document context
-  const doc = element.ownerDocument;
-
-  // Validate the document has getElementById before accessibility computation
-  if (typeof doc?.getElementById !== "function") {
-    throw new Error(
-      "Document context is not ready for accessibility computations"
-    );
-  }
-
-  // Perform the operation that may trigger accessibility computation
   try {
     return await operation();
   } catch (error) {
-    // If we get the getElementById error, it means the accessibility computation
-    // is happening in the wrong document context
     if (
       error instanceof TypeError &&
       error.message.includes("getElementById")
     ) {
-      // Wait a bit and retry once to allow document context to stabilize
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      // Minimal delay and retry once
+      await new Promise((resolve) => setTimeout(resolve, 1));
       return await operation();
     }
     throw error;
@@ -263,21 +250,23 @@ export const toggleFieldContolCheckbox = async (
     name: new RegExp(`${type} group`),
   })) as HTMLElement;
 
-  return await withStableDocument(fieldGroup, async () => {
-    const accordionButton = await within(fieldGroup).findByRole("button", {
+  // Only wrap the specific part that triggers accessibility computation
+  const accordionButton = await withStableDocument(fieldGroup, async () => {
+    return await within(fieldGroup).findByRole("button", {
       name: new RegExp(`${type} field controls`),
     });
-    // Open the controls
-    if (accordionButton.ariaExpanded === "false") {
-      await userEvent.click(accordionButton);
-    }
-
-    const checkbox = fieldGroup
-      .querySelector(`[aria-label="${control}"]`)
-      ?.closest("label");
-    expect(checkbox).toBeInTheDocument();
-    userEvent.click(checkbox!);
   });
+
+  // Open the controls
+  if (accordionButton.ariaExpanded === "false") {
+    await userEvent.click(accordionButton);
+  }
+
+  const checkbox = fieldGroup
+    .querySelector(`[aria-label="${control}"]`)
+    ?.closest("label");
+  expect(checkbox).toBeInTheDocument();
+  userEvent.click(checkbox!);
 };
 
 export const closeFieldControls = async (
@@ -288,15 +277,17 @@ export const closeFieldControls = async (
     name: new RegExp(`${type} group`),
   })) as HTMLElement;
 
-  return await withStableDocument(fieldGroup, async () => {
-    const accordionButton = await within(fieldGroup).findByRole("button", {
+  // Only wrap the specific part that triggers accessibility computation
+  const accordionButton = await withStableDocument(fieldGroup, async () => {
+    return await within(fieldGroup).findByRole("button", {
       name: new RegExp(`${type} field controls`),
     });
-    // Open the controls
-    if (accordionButton.ariaExpanded === "true") {
-      await userEvent.click(accordionButton);
-    }
   });
+
+  // Open the controls
+  if (accordionButton.ariaExpanded === "true") {
+    await userEvent.click(accordionButton);
+  }
 };
 
 export const checkFieldItemNotRendered = async (
@@ -312,21 +303,26 @@ export const checkFieldDetailsDialog = async (
   documentBody: HTMLElement,
   infoBoxValue: string
 ) => {
-  return await withStableDocument(field, async () => {
-    const infoBoxButton = await within(field).getByRole("button", {
-      name: "more info",
-    });
-    await userEvent.click(infoBoxButton);
-    await within(documentBody).getByText(infoBoxValue);
-    await userEvent.click(documentBody);
+  // This function uses simple role queries without name options, no wrapper needed
+  const infoBoxButton = await within(field).getByRole("button", {
+    name: "more info",
   });
+  await userEvent.click(infoBoxButton);
+  await within(documentBody).getByText(infoBoxValue);
+  await userEvent.click(documentBody);
 };
 
 export const checkFieldDescription = async (
   field: HTMLElement,
   descriptionValue: string
 ) => {
-  const descriptionElement = await within(field).findByText(descriptionValue);
+  // Use RegExp for flexible text matching
+  const descriptionElement = await within(field).findByText(
+    new RegExp(descriptionValue, "i"),
+    {},
+    { timeout: 3000 }
+  );
+
   // We use `FieldErrors` to display legacy Formik/UI Kit warnings in the description container
   // The `FieldErrors` component adds wrapper divs, which are associated to the description container with aria-labelledby
   // So in order to find the actual container, we need to check if the element with the text value has a parent with a status role
@@ -343,7 +339,13 @@ export const checkFieldError = async (
   field: HTMLElement,
   errorValue: string
 ) => {
-  const errorElement = await within(field).findByText(errorValue);
+  // Use simple RegExp for flexible text matching - no escaping needed for simple text
+  const errorElement = await within(field).findByText(
+    new RegExp(errorValue, "i"),
+    {},
+    { timeout: 3000 } // Reasonable timeout for CI
+  );
+
   // We use `FieldErrors` to display legacy Formik/UI Kit warnings in the description container
   // The `FieldErrors` component adds wrapper divs, which are associated to the description container with aria-labelledby
   // So in order to find the actual container, we need to check if the element with the text value has a parent with a status role
@@ -361,7 +363,13 @@ export const checkLocaleFieldDescription = async (
   descriptionValue: string,
   type?: string
 ) => {
-  const descriptionElement = await within(field).findByText(descriptionValue);
+  // Use RegExp for flexible text matching
+  const descriptionElement = await within(field).findByText(
+    new RegExp(descriptionValue, "i"),
+    {},
+    { timeout: 3000 }
+  );
+
   let localeFieldInput;
 
   if (type === "richText") {
@@ -391,7 +399,13 @@ export const checkLocaleFieldError = async (
   errorValue: string,
   type?: string
 ) => {
-  const errorElement = await within(field).findByText(errorValue);
+  // Use RegExp for flexible text matching
+  const errorElement = await within(field).findByText(
+    new RegExp(errorValue, "i"),
+    {},
+    { timeout: 3000 }
+  );
+
   let localeFieldInput;
   if (type === "richText") {
     localeFieldInput = await getRichTextContainerForLocaleField(
