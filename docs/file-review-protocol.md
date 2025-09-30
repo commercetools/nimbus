@@ -9,11 +9,15 @@ Determine the file type by extension and location:
 
 - `*.mdx` → Documentation file
 - `*.stories.tsx` → Storybook stories
-- `*.recipe.tsx` → Chakra UI recipe
+- `*.recipe.ts` → Chakra UI recipe
 - `*.slots.tsx` → Slot components
 - `*.types.ts` → Type definitions
+- `*.i18n.ts` → Internationalization messages
+- `{component-name}.tsx` → Main component file
+- `index.ts` → Barrel exports (public API)
 - `*/utils/*.ts` → Utility functions
 - `*/hooks/*.ts` → React hooks
+- `*/constants/*.ts` → Constants and configuration
 
 ## Step 2: Load Corresponding Guidelines
 
@@ -24,9 +28,12 @@ IMMEDIATELY read the appropriate guidelines document:
 - Recipes → `/docs/file-type-guidelines/recipes.md`
 - Slots → `/docs/file-type-guidelines/slots.md`
 - Types → `/docs/file-type-guidelines/types.md`
-- Utils → `/docs/file-type-guidelines/utils-and-constants.md`
+- i18n → `/docs/file-type-guidelines/i18n.md`
+- Main components → `/docs/file-type-guidelines/main-component.md`
+- Barrel exports (index.ts) → `/docs/file-type-guidelines/barrel-exports.md`
+- Context files → `/docs/file-type-guidelines/context-files.md`
+- Utils/Constants → `/docs/file-type-guidelines/utils-and-constants.md`
 - Hooks → `/docs/file-type-guidelines/hooks.md`
-- Components → `/docs/file-type-guidelines/main-component.md`
 
 ## Step 3: Run Validation Checklist
 
@@ -42,7 +49,6 @@ ALWAYS provide structural compliance feedback FIRST:
 - ⚠️ Warnings for non-critical issues
 
 ONLY AFTER completing steps 1-4 should you provide content or quality feedback.
-
 
 ## Example Review Response Format
 
