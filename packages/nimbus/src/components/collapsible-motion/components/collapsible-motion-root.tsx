@@ -49,6 +49,7 @@ export const CollapsibleMotionRoot = forwardRef<
     // Context value to provide to child components
     const contextValue = {
       isDisabled,
+      isExpanded: disclosureState.isExpanded,
       buttonProps,
       panelProps,
       panelRef,

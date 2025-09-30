@@ -1,6 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs, Presence } from "@chakra-ui/react";
 import { useCollapsibleMotionContext } from "./collapsible-motion-context";
 import { CollapsibleMotionContentSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionContentProps } from "../collapsible-motion.types";
@@ -15,15 +15,24 @@ export const CollapsibleMotionContent = forwardRef<
   HTMLDivElement,
   CollapsibleMotionContentProps
 >(({ children, ...props }, forwardedRef) => {
-  const { panelProps, panelRef } = useCollapsibleMotionContext();
+  const { panelProps, isExpanded } = useCollapsibleMotionContext();
 
-  // Create a local ref and merge with both panelRef (for React Aria) and forwardedRef (for user)
+  // Create a local ref and merge with forwardedRef (for user)
   const localRef = useRef<HTMLDivElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, panelRef, forwardedRef));
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   return (
-    <CollapsibleMotionContentSlot ref={ref} {...panelProps} {...props} asChild>
-      <div>{children}</div>
+    <CollapsibleMotionContentSlot ref={ref} {...props} {...panelProps} asChild>
+      <Presence
+        present={isExpanded}
+        animationName={{
+          _open: "slide-from-top, fade-in",
+          _closed: "slide-to-top, fade-out",
+        }}
+        animationDuration="fast"
+      >
+        {children}
+      </Presence>
     </CollapsibleMotionContentSlot>
   );
 });

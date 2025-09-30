@@ -50,6 +50,8 @@ export type CollapsibleMotionRootSlotProps = HTMLChakraProps<
 export interface CollapsibleMotionContextValue {
   /** Whether the collapsible is disabled */
   isDisabled: boolean;
+  /** Whether the content is currently expanded */
+  isExpanded: boolean;
   /** Button props from React Aria for accessibility */
   buttonProps: AriaButtonProps<"button">;
   /** Panel props from React Aria for accessibility */

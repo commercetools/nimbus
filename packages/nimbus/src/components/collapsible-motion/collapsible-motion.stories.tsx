@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { within, userEvent, expect } from "storybook/test";
+import { within, userEvent, expect, waitFor } from "storybook/test";
 import { CollapsibleMotion } from "./collapsible-motion";
 import { Button } from "../button";
 import { Text } from "../text";
@@ -28,19 +28,23 @@ type Story = StoryObj<typeof meta>;
  */
 export const Basic: Story = {
   render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger asChild>
-        <Button mb="400">Toggle Content</Button>
-      </CollapsibleMotion.Trigger>
-      <CollapsibleMotion.Content>
-        <Box p="400" bg="neutral.2" borderRadius="md">
-          <Text>
-            This is collapsible content that will smoothly expand and collapse.
-            The animation uses CSS transitions for optimal performance.
-          </Text>
-        </Box>
-      </CollapsibleMotion.Content>
-    </CollapsibleMotion.Root>
+    <div>
+      <CollapsibleMotion.Root defaultExpanded={false}>
+        <CollapsibleMotion.Trigger asChild>
+          <Button mb="400">Toggle Content</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="neutral.2" borderRadius="md">
+            <Text>
+              This is collapsible content that will smoothly expand and
+              collapse. The animation uses CSS transitions for optimal
+              performance.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <hr />
+    </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -88,6 +92,7 @@ export const Controlled: Story = {
               </Text>
             </Box>
           </CollapsibleMotion.Content>
+          <hr />
         </CollapsibleMotion.Root>
       </div>
     );
@@ -132,6 +137,7 @@ export const ControlledNoTrigger: Story = {
             </Box>
           </CollapsibleMotion.Content>
         </CollapsibleMotion.Root>
+        <hr />
       </div>
     );
   },
@@ -142,10 +148,15 @@ export const ControlledNoTrigger: Story = {
     const externalButton = canvas.getByText(/Expand Content/);
     await userEvent.click(externalButton);
 
-    //expect content to be visible
-    expect(
-      canvas.getByText(/This is controlled collapsible content/)
-    ).toBeVisible();
+    // Wait for animation to complete
+    await waitFor(
+      () => {
+        expect(
+          canvas.getByText(/This is controlled collapsible content/)
+        ).toBeVisible();
+      },
+      { timeout: 1000 }
+    );
   },
 };
 
@@ -156,29 +167,32 @@ export const ControlledNoTrigger: Story = {
  */
 export const WithMinHeight: Story = {
   render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger asChild>
-        <Button mb="400">Toggle Content</Button>
-      </CollapsibleMotion.Trigger>
-      <CollapsibleMotion.Content>
-        <Box
-          p="400"
-          border="2px solid"
-          borderColor="pink.5"
-          borderRadius="md"
-          bg="pink.1"
-        >
-          <Text mb="200">
-            This content has a minimum height of 60px when collapsed, so it's
-            never completely hidden.
-          </Text>
-          <Text>
-            This allows for partial visibility of content even when collapsed,
-            which can be useful for preview purposes.
-          </Text>
-        </Box>
-      </CollapsibleMotion.Content>
-    </CollapsibleMotion.Root>
+    <div>
+      <CollapsibleMotion.Root defaultExpanded={false}>
+        <CollapsibleMotion.Trigger asChild>
+          <Button mb="400">Toggle Content</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box
+            p="400"
+            border="2px solid"
+            borderColor="pink.5"
+            borderRadius="md"
+            bg="pink.1"
+          >
+            <Text mb="200">
+              This content has a minimum height of 60px when collapsed, so it's
+              never completely hidden.
+            </Text>
+            <Text>
+              This allows for partial visibility of content even when collapsed,
+              which can be useful for preview purposes.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <hr />
+    </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -198,18 +212,21 @@ export const WithMinHeight: Story = {
  */
 export const Disabled: Story = {
   render: () => (
-    <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>
-      <CollapsibleMotion.Trigger asChild>
-        <Button mb="400">Toggle Content (Disabled)</Button>
-      </CollapsibleMotion.Trigger>
-      <CollapsibleMotion.Content>
-        <Box p="400" bg="neutral.3" borderRadius="md">
-          <Text>
-            This content is disabled and cannot be expanded or collapsed.
-          </Text>
-        </Box>
-      </CollapsibleMotion.Content>
-    </CollapsibleMotion.Root>
+    <div>
+      <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>
+        <CollapsibleMotion.Trigger asChild>
+          <Button mb="400">Toggle Content (Disabled)</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="neutral.3" borderRadius="md">
+            <Text>
+              This content is disabled and cannot be expanded or collapsed.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <hr />
+    </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -279,6 +296,7 @@ export const DynamicContent: Story = {
             </Box>
           </CollapsibleMotion.Content>
         </CollapsibleMotion.Root>
+        <hr />
       </div>
     );
   },
@@ -297,34 +315,49 @@ export const DynamicContent: Story = {
     await userEvent.click(toggleButton);
     expect(toggleButton).toHaveAttribute("aria-expanded", "true");
 
-    // Verify long content is visible
-    expect(canvas.getByText(/This is very long content/)).toBeVisible();
+    // Wait for animation and verify long content is visible
+    await waitFor(
+      () => {
+        expect(canvas.getByText(/This is very long content/)).toBeVisible();
+      },
+      { timeout: 1000 }
+    );
   },
 };
 
 // Test case for non-button trigger
 export const NonButtonTrigger: Story = {
   render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger>
-        <Box mb="400" p="200" bg="gray.1" borderRadius="sm" as="pre">
-          Non-button trigger
-        </Box>
-      </CollapsibleMotion.Trigger>
-      <CollapsibleMotion.Content>
-        <Box p="400" bg="purple.1" borderRadius="md">
-          <Text>This is the content of the collapsible motion.</Text>
-        </Box>
-      </CollapsibleMotion.Content>
-    </CollapsibleMotion.Root>
+    <div>
+      <CollapsibleMotion.Root defaultExpanded={false}>
+        <CollapsibleMotion.Trigger>
+          <Box mb="400" p="200" bg="gray.1" borderRadius="sm" as="pre">
+            Non-button trigger
+          </Box>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="purple.1" borderRadius="md">
+            <Text>This is the content of the collapsible motion.</Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <hr />
+    </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByText(/Non-button trigger/);
     await userEvent.click(button);
-    expect(
-      canvas.getByText(/This is the content of the collapsible motion/)
-    ).toBeVisible();
+
+    // Wait for animation to complete
+    await waitFor(
+      () => {
+        expect(
+          canvas.getByText(/This is the content of the collapsible motion/)
+        ).toBeVisible();
+      },
+      { timeout: 1000 }
+    );
   },
 };
 
@@ -333,25 +366,28 @@ export const NonButtonTrigger: Story = {
  */
 export const AccessibilityTest: Story = {
   render: () => (
-    <CollapsibleMotion.Root defaultExpanded={false}>
-      <CollapsibleMotion.Trigger asChild>
-        <Button mb="400">Accessible Toggle Button</Button>
-      </CollapsibleMotion.Trigger>
-      <CollapsibleMotion.Content>
-        <Box p="400" bg="teal.1" borderRadius="md">
-          <Text mb="400" fontWeight="bold">
-            This example demonstrates proper accessibility features:
-          </Text>
-          <ul>
-            <li>Proper ARIA attributes (aria-expanded, aria-controls)</li>
-            <li>Focus management for screen readers</li>
-            <li>Keyboard navigation support</li>
-            <li>Content is not focusable when collapsed</li>
-            <li>ResizeObserver for efficient content measurement</li>
-          </ul>
-        </Box>
-      </CollapsibleMotion.Content>
-    </CollapsibleMotion.Root>
+    <div>
+      <CollapsibleMotion.Root defaultExpanded={false}>
+        <CollapsibleMotion.Trigger asChild>
+          <Button mb="400">Accessible Toggle Button</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="teal.1" borderRadius="md">
+            <Text mb="400" fontWeight="bold">
+              This example demonstrates proper accessibility features:
+            </Text>
+            <ul>
+              <li>Proper ARIA attributes (aria-expanded, aria-controls)</li>
+              <li>Focus management for screen readers</li>
+              <li>Keyboard navigation support</li>
+              <li>Content is not focusable when collapsed</li>
+              <li>ResizeObserver for efficient content measurement</li>
+            </ul>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <hr />
+    </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
