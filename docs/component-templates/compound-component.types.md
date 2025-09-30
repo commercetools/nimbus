@@ -13,114 +13,57 @@ import { type ReactNode } from "react";
 import {
   type ComponentNameRootSlotProps,
   type ComponentNameTriggerSlotProps,
-  type ComponentNameContentSlotProps,
   type ComponentNameItemSlotProps,
-  type ComponentNameSeparatorSlotProps,
-  type ComponentNameLabelSlotProps,
+  // Import other slot props as needed...
 } from "./component-name.slots";
+
+// =============================================================================
+// Component Props
+// =============================================================================
 
 /**
  * Props for the ComponentName.Root component
- * Root component handles configuration and state management
+ * Root handles all configuration, variants, and state management
  */
 export interface ComponentNameRootProps extends ComponentNameRootSlotProps {
   /**
-   * Whether the component is disabled
-   * @default false
-   */
-  isDisabled?: boolean;
-
-  /**
-   * Whether the component is open/expanded (controlled)
-   * @default false
+   * Whether the component is open (controlled)
    */
   isOpen?: boolean;
 
   /**
-   * Default open state (uncontrolled mode)
+   * Default open state (uncontrolled)
    * @default false
    */
   defaultIsOpen?: boolean;
 
-  /**
-   * Callback when open state changes
-   */
   onOpenChange?: (isOpen: boolean) => void;
-
-  // Add component-specific configuration props here
-  /**
-   * Selected value (controlled)
-   */
   value?: string;
-
-  /**
-   * Default selected value (uncontrolled)
-   */
   defaultValue?: string;
-
-  /**
-   * Callback when selection changes
-   */
   onChange?: (value: string) => void;
+  // Add more configuration/state props...
 }
 
 /**
- * Props for the ComponentName.Trigger component
+ * Props for ComponentName.Trigger
+ * Sub-components only define behavioral props
  */
 export interface ComponentNameTriggerProps extends ComponentNameTriggerSlotProps {
-  /**
-   * Whether the trigger is disabled
-   * @default false
-   */
-  isDisabled?: boolean;
-
   /**
    * ARIA label for accessibility
    */
   "aria-label"?: string;
 
-  /**
-   * Custom trigger icon
-   */
   icon?: ReactNode;
+  // Add more behavioral props...
 }
 
 /**
- * Props for the ComponentName.Content component
- */
-export interface ComponentNameContentProps extends ComponentNameContentSlotProps {
-  /**
-   * Placement of the content relative to trigger
-   * @default 'bottom-start'
-   */
-  placement?:
-    | "top"
-    | "bottom"
-    | "left"
-    | "right"
-    | "top-start"
-    | "bottom-start"
-    | "left-start"
-    | "right-start";
-
-  /**
-   * Whether to portalize the content
-   * @default true
-   */
-  portalized?: boolean;
-
-  /**
-   * Custom portal container
-   */
-  portalContainer?: HTMLElement;
-}
-
-/**
- * Props for the ComponentName.Item component
+ * Props for ComponentName.Item
  */
 export interface ComponentNameItemProps extends ComponentNameItemSlotProps {
   /**
-   * Item value for selection
+   * Unique item value
    */
   value: string;
 
@@ -130,201 +73,61 @@ export interface ComponentNameItemProps extends ComponentNameItemSlotProps {
    */
   isDisabled?: boolean;
 
-  /**
-   * Whether the item is selected
-   * @default false
-   */
-  isSelected?: boolean;
-
-  /**
-   * Callback when item is selected
-   */
   onSelect?: (value: string) => void;
-
-  /**
-   * Leading icon or element
-   */
-  startContent?: ReactNode;
-
-  /**
-   * Trailing icon or element
-   */
-  endContent?: ReactNode;
+  // Add more item-specific props...
 }
 
-// Optional: Additional component types as needed
+// Add additional component prop interfaces following the same pattern...
 
-/**
- * Props for the ComponentName.Separator component
- */
-export interface ComponentNameSeparatorProps extends ComponentNameSeparatorSlotProps {
-  /**
-   * Separator orientation
-   * @default 'horizontal'
-   */
-  orientation?: "horizontal" | "vertical";
-}
+// =============================================================================
+// Hook Types (if component exports custom hooks)
+// =============================================================================
 
-/**
- * Props for the ComponentName.Label component
- */
-export interface ComponentNameLabelProps extends ComponentNameLabelSlotProps {
-  // Component-specific props only
-}
-
-// Hook types (if component has hooks)
-
-/**
- * Options for useComponentName hook
- */
 export interface UseComponentNameOptions {
-  /**
-   * Initial open state
-   * @default false
-   */
   defaultIsOpen?: boolean;
-
-  /**
-   * Callback when open state changes
-   */
   onOpenChange?: (isOpen: boolean) => void;
-
-  /**
-   * Initial selected value
-   */
-  defaultValue?: string;
-
-  /**
-   * Callback when selection changes
-   */
-  onChange?: (value: string) => void;
-
-  /**
-   * Whether the component is controlled
-   */
-  isControlled?: boolean;
+  // Add hook-specific options...
 }
 
-/**
- * Return type for useComponentName hook
- */
 export interface UseComponentNameReturn {
-  /**
-   * Whether the component is open
-   */
   isOpen: boolean;
-
-  /**
-   * Open the component
-   */
   open: () => void;
-
-  /**
-   * Close the component
-   */
   close: () => void;
-
-  /**
-   * Toggle the component
-   */
   toggle: () => void;
-
-  /**
-   * Current selected value
-   */
-  value?: string;
-
-  /**
-   * Set selected value
-   */
-  setValue: (value: string) => void;
-
-  /**
-   * Whether a value is selected
-   */
-  hasSelection: boolean;
-
-  /**
-   * Clear the selection
-   */
-  clearSelection: () => void;
+  // Add hook-specific return values...
 }
 
-// Context types (if component uses context)
+// =============================================================================
+// Context Types (if component uses context for state sharing)
+// =============================================================================
 
-/**
- * Context value for ComponentName provider
- */
 export interface ComponentNameContextValue {
-  /**
-   * Whether the component is open
-   */
   isOpen: boolean;
-
-  /**
-   * Open the component
-   */
   onOpen: () => void;
-
-  /**
-   * Close the component
-   */
   onClose: () => void;
-
-  /**
-   * Current selected value
-   */
   value?: string;
-
-  /**
-   * Select a value
-   */
   onSelect: (value: string) => void;
-
-  /**
-   * Whether the component is disabled
-   */
-  isDisabled: boolean;
-
-  /**
-   * Component variant (from slot recipe)
-   */
+  // Reference slot props for variants/sizes
   variant?: ComponentNameRootSlotProps["variant"];
-
-  /**
-   * Component size (from slot recipe)
-   */
   size?: ComponentNameRootSlotProps["size"];
 }
 ```
 
-## Type Design Guidelines
+## Pattern Summary
 
-When creating interfaces for compound components:
+**The Type Hierarchy:**
+```
+SlotProps (from *.slots.tsx)
+  ├─ HTMLChakraProps<Element> (HTML element props)
+  └─ RecipeVariantProps (variant, size, etc.)
+       ↓ extends
+ComponentProps (*.types.ts)
+  └─ Behavioral props only (state, callbacks, config)
+```
 
-- **Root components**: Extend their slot props (which include
-  `HTMLChakraProps<Element>` and variant props) and React Aria props
-- **Child components**: Extend their slot props (which include
-  `HTMLChakraProps<Element>`) and React Aria props
-- **State management**: Include controlled/uncontrolled patterns with optional
-  state props and change handlers
-- **Content flexibility**: Use `ReactNode` for content props to support flexible
-  composition
-- **Event patterns**: Include specific event handlers relevant to each
-  component's interactions
-
-Reference existing component types in the codebase for concrete implementation
-examples.
-
-## Key Requirements
-
-1. **Extend Slot Props**: All component prop interfaces must extend their corresponding slot props from `*.slots.tsx` (e.g., `ComponentNameRootSlotProps`)
-2. **Slot Props Include**: HTML element props (via `HTMLChakraProps<Element>`) and recipe variant props (via `RecipeVariantProps`)
-3. **Component Props Only Define**: Component-specific behavioral and configuration props (not styling or HTML element props)
-4. **Controlled/Uncontrolled**: Support both modes with `value`/`defaultValue` patterns on Root component
-5. **Accessibility**: Include ARIA props like `aria-label`, `aria-describedby` as needed
-6. **Event Handlers**: Include appropriate event handlers for interactions
-7. **JSDoc Documentation**: Document all props with descriptions and defaults
-8. **Hook Types**: Include hook option and return types if component uses hooks
-9. **Context Types**: Include context value types if component uses context
-10. **Import Pattern**: Always import slot props types from `./component-name.slots`
+**Key Principles:**
+1. **Always extend slot props** - Never extend raw `ComponentProps<Element>`
+2. **Root handles configuration** - Variants, sizes, state management on Root only
+3. **Sub-components are behavioral** - Only define interaction/behavior props
+4. **Controlled/Uncontrolled** - Support both with `value`/`defaultValue` patterns
+5. **Document everything** - All props need JSDoc with `@default` tags
