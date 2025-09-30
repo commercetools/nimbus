@@ -19,6 +19,7 @@ import { chakra } from "@chakra-ui/react/styled-system";
  * ```
  */
 export const DialogTrigger = ({
+  ref: forwardedRef,
   children,
   asChild,
   ...props
@@ -26,7 +27,7 @@ export const DialogTrigger = ({
   // If asChild is true, wrap children directly in RaButton with asChild
   if (asChild) {
     return (
-      <chakra.button asChild {...props}>
+      <chakra.button ref={forwardedRef} asChild {...props}>
         {children}
       </chakra.button>
     );
@@ -38,7 +39,9 @@ export const DialogTrigger = ({
   // Only pass React Aria compatible props to avoid type conflicts
   return (
     <DialogTriggerSlot {...styleProps} asChild>
-      <RaButton {...restProps}>{children}</RaButton>
+      <RaButton ref={forwardedRef} {...restProps}>
+        {children}
+      </RaButton>
     </DialogTriggerSlot>
   );
 };

@@ -36,7 +36,7 @@ export const DialogRoot = function DialogRoot(props: DialogRootProps) {
 
   const content = <DialogRootSlot {...recipeProps}>{children}</DialogRootSlot>;
 
-  // Check if any child is a Dialog.Trigger component
+  // Check if any direct child is a Dialog.Trigger component
   // React Aria's DialogTrigger needs a pressable child, so we only use it when there's a trigger
   const hasDialogTrigger = React.Children.toArray(children).some((child) => {
     if (React.isValidElement(child) && typeof child.type === "function") {
@@ -63,7 +63,7 @@ export const DialogRoot = function DialogRoot(props: DialogRootProps) {
           {content}
         </RaDialogTrigger>
       ) : (
-        // When no Dialog.Trigger, skip DialogTrigger to avoid the warning
+        // When no Dialog.Trigger, skip using RaDialogTrigger to avoid console.warning's
         content
       )}
     </DialogProvider>

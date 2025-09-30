@@ -97,8 +97,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
       justifyContent: "flex-end",
       gap: "300",
       px: "600",
-      pt: "200",
-      pb: "400",
+      py: "400",
     },
     title: {},
     closeTrigger: {

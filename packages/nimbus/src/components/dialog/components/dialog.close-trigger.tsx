@@ -1,6 +1,3 @@
-import { useRef } from "react";
-import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
 import { Close } from "@commercetools/nimbus-icons";
 import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
@@ -36,15 +33,10 @@ export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
     ...restProps
   } = props;
 
-  // create a local ref (because the consumer may not provide a forwardedRef)
-  const localRef = useRef<HTMLButtonElement>(null);
-  // merge the local ref with a potentially forwarded ref
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
   return (
     <DialogCloseTriggerSlot>
       <IconButton
-        ref={ref}
+        ref={forwardedRef}
         slot="close"
         size="xs"
         variant="ghost"

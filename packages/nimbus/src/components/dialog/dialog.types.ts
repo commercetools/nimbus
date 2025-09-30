@@ -1,8 +1,14 @@
-import { type ComponentProps } from "react";
 import { type RecipeVariantProps } from "@chakra-ui/react";
 import { dialogSlotRecipe } from "./dialog.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
-import type { DialogModalOverlaySlotProps } from "./dialog.slots";
+import type {
+  DialogModalOverlaySlotProps,
+  DialogTriggerSlotProps,
+  DialogHeaderSlotProps,
+  DialogBodySlotProps,
+  DialogFooterSlotProps,
+  DialogTitleSlotProps,
+} from "./dialog.slots";
 import type { IconButtonProps } from "@/components";
 
 /**
@@ -69,7 +75,7 @@ export interface DialogRootProps
  *
  * The trigger element that opens the dialog when activated.
  */
-export interface DialogTriggerProps extends ComponentProps<"button"> {
+export interface DialogTriggerProps extends DialogTriggerSlotProps {
   /**
    * The trigger content
    */
@@ -86,6 +92,10 @@ export interface DialogTriggerProps extends ComponentProps<"button"> {
    * @default false
    */
   isDisabled?: boolean;
+  /**
+   * The ref to the trigger html-button
+   */
+  ref?: React.RefObject<HTMLButtonElement>;
 }
 
 /**
@@ -110,11 +120,16 @@ export interface DialogContentProps extends DialogModalOverlaySlotProps {
  *
  * The header section of the dialog content.
  */
-export interface DialogHeaderProps extends ComponentProps<"header"> {
+export interface DialogHeaderProps extends DialogHeaderSlotProps {
   /**
    * The header content
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the dialog header
+   */
+  ref?: React.Ref<HTMLElement>;
 }
 
 /**
@@ -122,11 +137,16 @@ export interface DialogHeaderProps extends ComponentProps<"header"> {
  *
  * The main body content section of the dialog.
  */
-export interface DialogBodyProps extends ComponentProps<"div"> {
+export interface DialogBodyProps extends DialogBodySlotProps {
   /**
    * The body content
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the dialog body
+   */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 /**
@@ -134,11 +154,16 @@ export interface DialogBodyProps extends ComponentProps<"div"> {
  *
  * The footer section of the dialog, typically containing action buttons.
  */
-export interface DialogFooterProps extends ComponentProps<"footer"> {
+export interface DialogFooterProps extends DialogFooterSlotProps {
   /**
    * The footer content (usually buttons)
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the dialog footer
+   */
+  ref?: React.Ref<HTMLElement>;
 }
 
 /**
@@ -146,11 +171,16 @@ export interface DialogFooterProps extends ComponentProps<"footer"> {
  *
  * The accessible title element for the dialog.
  */
-export interface DialogTitleProps extends ComponentProps<"h2"> {
+export interface DialogTitleProps extends DialogTitleSlotProps {
   /**
    * The title text
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the dialog title
+   */
+  ref?: React.Ref<HTMLHeadingElement>;
 }
 
 /**

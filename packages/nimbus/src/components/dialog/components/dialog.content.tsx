@@ -1,11 +1,8 @@
-import { useRef } from "react";
 import {
   Modal as RaModal,
   ModalOverlay as RaModalOverlay,
   Dialog as RaDialog,
 } from "react-aria-components";
-import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
 import {
   DialogModalOverlaySlot,
   DialogModalSlot,
@@ -60,11 +57,6 @@ export const DialogContent = (props: DialogContentProps) => {
     onOpenChange,
   };
 
-  // create a local ref (because the consumer may not provide a forwardedRef)
-  const localRef = useRef<HTMLDivElement>(null);
-  // merge the local ref with a potentially forwarded ref
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
   const [styleProps] = extractStyleProps(restProps);
 
   return (
@@ -73,7 +65,7 @@ export const DialogContent = (props: DialogContentProps) => {
         <DialogModalSlot asChild>
           <RaModal>
             <DialogContentSlot asChild {...styleProps}>
-              <RaDialog ref={ref}>{children}</RaDialog>
+              <RaDialog ref={forwardedRef}>{children}</RaDialog>
             </DialogContentSlot>
           </RaModal>
         </DialogModalSlot>

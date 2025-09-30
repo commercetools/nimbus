@@ -803,7 +803,7 @@ export const LoginForm: Story = {
                 variant="solid"
                 tone="primary"
                 isDisabled={!username || !password || !loginReason}
-                onClick={handleSubmit}
+                onPress={handleSubmit}
               >
                 Submit
               </Button>

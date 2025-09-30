@@ -1,6 +1,3 @@
-import { useRef } from "react";
-import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
 import { DialogBodySlot } from "../dialog.slots";
 import type { DialogBodyProps } from "../dialog.types";
 import { useDialogRootContext } from "./dialog.context";
@@ -24,12 +21,6 @@ import { useDialogRootContext } from "./dialog.context";
  */
 export const DialogBody = (props: DialogBodyProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
-
-  // create a local ref (because the consumer may not provide a forwardedRef)
-  const localRef = useRef<HTMLDivElement>(null);
-  // merge the local ref with a potentially forwarded ref
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
   const { scrollBehavior } = useDialogRootContext();
 
   const defaultProps = {
@@ -42,7 +33,7 @@ export const DialogBody = (props: DialogBodyProps) => {
   };
 
   return (
-    <DialogBodySlot ref={ref} {...defaultProps} {...restProps}>
+    <DialogBodySlot ref={forwardedRef} {...defaultProps} {...restProps}>
       {children}
     </DialogBodySlot>
   );
