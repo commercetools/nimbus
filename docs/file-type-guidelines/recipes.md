@@ -5,9 +5,11 @@
 
 ## Purpose
 
-Recipe files (`{component-name}.recipe.ts`) define component styling variants,
+Recipe files `{component-name}.recipe.ts` define component styling variants,
 sizes, and visual states using Chakra UI's recipe system. They enable
 consistent, theme-aware styling across components.
+
+**File Extension:** Use `.ts` for pure TypeScript recipes.
 
 ## When to Use
 
@@ -37,7 +39,7 @@ export const buttonRecipe = defineRecipe({
     justifyContent: "center",
     fontWeight: "500",
     borderRadius: "200",
-    transitionProperty: "colors",
+    transitionProperty: "color",
     transitionDuration: "fast",
     cursor: "pointer",
 
@@ -72,17 +74,14 @@ export const buttonRecipe = defineRecipe({
     },
     size: {
       sm: {
-        height: "8",
         paddingX: "300",
         fontSize: "350",
       },
       md: {
-        height: "10",
         paddingX: "400",
         fontSize: "400",
       },
       lg: {
-        height: "12",
         paddingX: "500",
         fontSize: "450",
       },
@@ -100,7 +99,7 @@ export const buttonRecipe = defineRecipe({
 For components with multiple styled parts:
 
 ```typescript
-// menu.recipe.tsx
+// menu.recipe.ts
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 export const menuSlotRecipe = defineSlotRecipe({
@@ -146,7 +145,6 @@ export const menuSlotRecipe = defineSlotRecipe({
       sm: {
         trigger: {
           fontSize: "350",
-          height: "8",
         },
         item: {
           fontSize: "350",
@@ -155,7 +153,6 @@ export const menuSlotRecipe = defineSlotRecipe({
       md: {
         trigger: {
           fontSize: "400",
-          height: "10",
         },
         item: {
           fontSize: "400",
@@ -260,12 +257,34 @@ defaultVariants: {
 ```typescript
 // ✅ Good - uses design tokens
 base: {
-  padding: "400",           // Spacing token
-  fontSize: "400",          // Typography token
-  fontWeight: "500",        // Font weight token
-  color: "fg",              // Semantic color (foreground)
-  backgroundColor: "bg",    // Semantic color (background)
-  borderRadius: "200",      // Radius token
+  padding: "400",                // Spacing token
+  fontSize: "400",               // Typography token
+  fontWeight: "500",             // Font weight token
+  color: "fg",                   // Semantic color (foreground)
+  backgroundColor: "bg",         // Semantic color (background)
+  borderRadius: "200",           // Radius token
+}
+
+// ✅ Color palette usage examples
+variants: {
+  tone: {
+    primary: {
+      backgroundColor: "primary.9",      // Semantic palette
+      color: "primary.contrast",
+    },
+    critical: {
+      backgroundColor: "critical.9",     // Semantic palette
+      color: "critical.contrast",
+    },
+    brand: {
+      backgroundColor: "ctviolet.9",     // Brand palette
+      color: "ctviolet.contrast",
+    },
+    decorative: {
+      backgroundColor: "blue.9",         // System palette
+      color: "blue.contrast",
+    },
+  },
 }
 
 ```
@@ -273,13 +292,27 @@ base: {
 ### Token Categories
 
 - **Spacing**: `100`, `200`, `300`, `400`, `500`, `600`, etc.
-- **Semantic Colors**: `fg` (foreground text), `bg` (background), `border` (with variants)
-- **Color Palettes**: `primary.1` through `primary.12`, `neutral.1` through `neutral.12`, `critical.1` through `critical.12`, etc.
-- **Typography (fontSize)**: `250`, `300`, `350`, `400`, `450`, `500`, `600`, `750`, `900`, etc.
-- **Typography (fontWeight)**: `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`
+- **Semantic Colors**: `fg` (foreground text), `bg` (background), `border` (with
+  variants)
+- **Color Palettes** (all use steps `1` through `12` + `contrast`):
+  - **Semantic**: `primary`, `neutral`, `info`, `positive`, `warning`,
+    `critical`
+  - **Brand**: `ctviolet`, `ctteal`, `ctyellow`
+  - **System** (25 colors): `tomato`, `red`, `ruby`, `crimson`, `pink`, `plum`,
+    `purple`, `violet`, `iris`, `indigo`, `blue`, `cyan`, `teal`, `jade`,
+    `green`, `grass`, `bronze`, `gold`, `brown`, `orange`, `amber`, `yellow`,
+    `lime`, `mint`, `sky`
+  - **Blacks & Whites**: `blackAlpha`, `whiteAlpha` (do not adapt to color mode)
+  - **Interchangeability**: All color scales are interchangeable based on
+    contrast (e.g., `red.9` = `blue.9` = `primary.9` in contrast level)
+- **Typography (fontSize)**: `250`, `300`, `350`, `400`, `450`, `500`, `600`,
+  `750`, `900`, etc.
+- **Typography (fontWeight)**: `100`, `200`, `300`, `400`, `500`, `600`, `700`,
+  `800`, `900`
 - **Radii**: `50`, `100`, `150`, `200`, `300`, `400`, `500`, `600`, `full`
-- **Shadows**: `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`
-- **Transitions (duration)**: `fastest`, `faster`, `fast`, `moderate`, `slow`, `slower`, `slowest`
+- **Shadows**: `1`, `2`, `3`, `4`, `5`, `6`
+- **Transitions (duration)**: `fastest`, `faster`, `fast`, `moderate`, `slow`,
+  `slower`, `slowest`
 
 ## State Modifiers
 
@@ -424,9 +457,9 @@ export const buttonRecipe = defineRecipe({
       },
     },
     size: {
-      sm: { height: "8", paddingX: "300", fontSize: "350" },
-      md: { height: "10", paddingX: "400", fontSize: "400" },
-      lg: { height: "12", paddingX: "500", fontSize: "450" },
+      sm: { paddingX: "300", fontSize: "350" },
+      md: { paddingX: "400", fontSize: "400" },
+      lg: { paddingX: "500", fontSize: "450" },
     },
   },
   defaultVariants: {
@@ -466,7 +499,7 @@ export const menuSlotRecipe = defineSlotRecipe({
 
 ## Validation Checklist
 
-- [ ] Recipe file exists with `.ts` or `.tsx` extension
+- [ ] Recipe file exists with `.ts` extension (or `.tsx` if JSX is used)
 - [ ] Correct recipe type (standard vs slot)
 - [ ] `className` with "nimbus-" prefix
 - [ ] Base styles defined
