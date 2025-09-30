@@ -24,11 +24,11 @@ export const componentNameRecipe = defineRecipe({
     gap: "200",
 
     // Typography
-    fontSize: "md",
-    fontWeight: "medium",
+    fontSize: "400",
+    fontWeight: "500",
 
     // Colors
-    color: "text.primary",
+    color: "fg",
     backgroundColor: "transparent",
 
     // Borders & Radius
@@ -46,12 +46,12 @@ export const componentNameRecipe = defineRecipe({
 
     // States
     _hover: {
-      backgroundColor: "gray.50",
+      backgroundColor: "neutral.2",
     },
 
     _focus: {
       outline: "2px solid",
-      outlineColor: "primary.500",
+      outlineColor: "primary.9",
       outlineOffset: "2px",
     },
 
@@ -68,35 +68,35 @@ export const componentNameRecipe = defineRecipe({
   variants: {
     variant: {
       primary: {
-        backgroundColor: "primary.500",
-        color: "white",
-        borderColor: "primary.500",
+        backgroundColor: "primary.9",
+        color: "primary.contrast",
+        borderColor: "primary.9",
 
         _hover: {
-          backgroundColor: "primary.600",
-          borderColor: "primary.600",
+          backgroundColor: "primary.10",
+          borderColor: "primary.10",
         },
 
         _active: {
-          backgroundColor: "primary.700",
-          borderColor: "primary.700",
+          backgroundColor: "primary.11",
+          borderColor: "primary.11",
         },
       },
       secondary: {
-        borderColor: "gray.300",
-        color: "text.primary",
+        borderColor: "neutral.6",
+        color: "fg",
 
         _hover: {
-          backgroundColor: "gray.100",
-          borderColor: "gray.400",
+          backgroundColor: "neutral.3",
+          borderColor: "neutral.7",
         },
       },
       ghost: {
-        color: "primary.500",
+        color: "primary.11",
         borderColor: "transparent",
 
         _hover: {
-          backgroundColor: "primary.50",
+          backgroundColor: "primary.2",
         },
       },
     },
@@ -104,19 +104,19 @@ export const componentNameRecipe = defineRecipe({
       sm: {
         height: "8",
         paddingX: "300",
-        fontSize: "sm",
+        fontSize: "350",
         gap: "100",
       },
       md: {
         height: "10",
         paddingX: "400",
-        fontSize: "md",
+        fontSize: "400",
         gap: "200",
       },
       lg: {
         height: "12",
         paddingX: "500",
-        fontSize: "lg",
+        fontSize: "450",
         gap: "300",
       },
     },

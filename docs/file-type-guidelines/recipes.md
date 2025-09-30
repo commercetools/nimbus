@@ -35,7 +35,7 @@ export const buttonRecipe = defineRecipe({
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    fontWeight: "medium",
+    fontWeight: "500",
     borderRadius: "200",
     transitionProperty: "colors",
     transitionDuration: "fast",
@@ -49,24 +49,24 @@ export const buttonRecipe = defineRecipe({
   variants: {
     variant: {
       solid: {
-        backgroundColor: "primary.500",
-        color: "white",
+        backgroundColor: "primary.9",
+        color: "primary.contrast",
         _hover: {
-          backgroundColor: "primary.600",
+          backgroundColor: "primary.10",
         },
       },
       outline: {
         borderWidth: "1px",
-        borderColor: "primary.500",
-        color: "primary.500",
+        borderColor: "primary.9",
+        color: "primary.11",
         _hover: {
-          backgroundColor: "primary.50",
+          backgroundColor: "primary.2",
         },
       },
       ghost: {
-        color: "primary.500",
+        color: "primary.11",
         _hover: {
-          backgroundColor: "primary.50",
+          backgroundColor: "primary.2",
         },
       },
     },
@@ -74,17 +74,17 @@ export const buttonRecipe = defineRecipe({
       sm: {
         height: "8",
         paddingX: "300",
-        fontSize: "sm",
+        fontSize: "350",
       },
       md: {
         height: "10",
         paddingX: "400",
-        fontSize: "md",
+        fontSize: "400",
       },
       lg: {
         height: "12",
         paddingX: "500",
-        fontSize: "lg",
+        fontSize: "450",
       },
     },
   },
@@ -117,21 +117,18 @@ export const menuSlotRecipe = defineSlotRecipe({
       cursor: "pointer",
     },
     content: {
-      backgroundColor: "white",
+      backgroundColor: "bg",
       borderRadius: "200",
       boxShadow: "lg",
       padding: "200",
       minWidth: "200px",
-      _dark: {
-        backgroundColor: "gray.800",
-      },
     },
     item: {
       padding: "200 300",
       borderRadius: "100",
       cursor: "pointer",
       _hover: {
-        backgroundColor: "gray.100",
+        backgroundColor: "neutral.3",
       },
       _disabled: {
         opacity: 0.5,
@@ -140,7 +137,7 @@ export const menuSlotRecipe = defineSlotRecipe({
     },
     separator: {
       height: "1px",
-      backgroundColor: "gray.200",
+      backgroundColor: "neutral.6",
       marginY: "100",
     },
   },
@@ -148,20 +145,20 @@ export const menuSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         trigger: {
-          fontSize: "sm",
+          fontSize: "350",
           height: "8",
         },
         item: {
-          fontSize: "sm",
+          fontSize: "350",
         },
       },
       md: {
         trigger: {
-          fontSize: "md",
+          fontSize: "400",
           height: "10",
         },
         item: {
-          fontSize: "md",
+          fontSize: "400",
         },
       },
     },
@@ -189,12 +186,12 @@ base: {
   gap: "200",
 
   // Typography
-  fontSize: "md",
-  fontWeight: "medium",
+  fontSize: "400",
+  fontWeight: "500",
 
   // Colors
-  color: "text.primary",
-  backgroundColor: "background",
+  color: "fg",
+  backgroundColor: "bg",
 
   // Borders
   borderRadius: "200",
@@ -206,11 +203,11 @@ base: {
 
   // States
   _hover: {
-    backgroundColor: "gray.50",
+    backgroundColor: "neutral.2",
   },
   _focus: {
     outline: "2px solid",
-    outlineColor: "primary.500",
+    outlineColor: "primary.9",
     outlineOffset: "2px",
   },
   _disabled: {
@@ -264,21 +261,25 @@ defaultVariants: {
 // ✅ Good - uses design tokens
 base: {
   padding: "400",           // Spacing token
-  fontSize: "md",          // Typography token
-  color: "text.primary",   // Semantic color
-  borderRadius: "200",     // Radius token
+  fontSize: "400",          // Typography token
+  fontWeight: "500",        // Font weight token
+  color: "fg",              // Semantic color (foreground)
+  backgroundColor: "bg",    // Semantic color (background)
+  borderRadius: "200",      // Radius token
 }
 
 ```
 
 ### Token Categories
 
-- **Spacing**: `100`, `200`, `300`, `400`, `500`
-- **Colors**: `primary.500`, `gray.100`, `text.primary`
-- **Typography**: `sm`, `md`, `lg`, `fontSize.heading`
-- **Radii**: `100`, `200`, `300`, `full`
-- **Shadows**: `sm`, `md`, `lg`, `xl`
-- **Transitions**: `fast`, `normal`, `slow`
+- **Spacing**: `100`, `200`, `300`, `400`, `500`, `600`, etc.
+- **Semantic Colors**: `fg` (foreground text), `bg` (background), `border` (with variants)
+- **Color Palettes**: `primary.1` through `primary.12`, `neutral.1` through `neutral.12`, `critical.1` through `critical.12`, etc.
+- **Typography (fontSize)**: `250`, `300`, `350`, `400`, `450`, `500`, `600`, `750`, `900`, etc.
+- **Typography (fontWeight)**: `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`
+- **Radii**: `50`, `100`, `150`, `200`, `300`, `400`, `500`, `600`, `full`
+- **Shadows**: `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`
+- **Transitions (duration)**: `fastest`, `faster`, `fast`, `moderate`, `slow`, `slower`, `slowest`
 
 ## State Modifiers
 
@@ -288,14 +289,14 @@ base: {
 base: {
   // Hover state
   _hover: {
-    backgroundColor: "gray.50",
+    backgroundColor: "neutral.2",
     transform: "translateY(-1px)",
   },
 
   // Focus state
   _focus: {
     outline: "2px solid",
-    outlineColor: "primary.500",
+    outlineColor: "primary.9",
   },
 
   // Active state
@@ -312,7 +313,7 @@ base: {
 
   // Focus visible (keyboard focus)
   _focusVisible: {
-    boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)",
+    focusRing: "outside",
   },
 }
 ```
@@ -323,7 +324,7 @@ base: {
 base: {
   // Custom data attributes
   _data-[state=open]: {
-    backgroundColor: "primary.50",
+    backgroundColor: "primary.2",
   },
 
   _data-[orientation=horizontal]: {
@@ -386,7 +387,7 @@ export const buttonRecipe = defineRecipe({
       size: "lg",
       css: {
         // Styles for (outline OR ghost) + large
-        fontWeight: "semibold",
+        fontWeight: "600",
       },
     },
   ],
@@ -405,7 +406,7 @@ export const buttonRecipe = defineRecipe({
     alignItems: "center",
     justifyContent: "center",
     gap: "200",
-    fontWeight: "medium",
+    fontWeight: "500",
     borderRadius: "200",
     transitionProperty: "colors",
     transitionDuration: "fast",
@@ -423,9 +424,9 @@ export const buttonRecipe = defineRecipe({
       },
     },
     size: {
-      sm: { height: "8", paddingX: "300", fontSize: "sm" },
-      md: { height: "10", paddingX: "400", fontSize: "md" },
-      lg: { height: "12", paddingX: "500", fontSize: "lg" },
+      sm: { height: "8", paddingX: "300", fontSize: "350" },
+      md: { height: "10", paddingX: "400", fontSize: "400" },
+      lg: { height: "12", paddingX: "500", fontSize: "450" },
     },
   },
   defaultVariants: {
@@ -445,12 +446,12 @@ export const menuSlotRecipe = defineSlotRecipe({
     root: { position: "relative" },
     trigger: { cursor: "pointer" },
     content: {
-      backgroundColor: "white",
+      backgroundColor: "bg",
       boxShadow: "lg",
     },
     item: {
       padding: "200 300",
-      _hover: { backgroundColor: "gray.50" },
+      _hover: { backgroundColor: "neutral.2" },
     },
   },
   // ... variants

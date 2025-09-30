@@ -31,18 +31,18 @@ export const componentNameSlotRecipe = defineSlotRecipe({
       gap: "200",
 
       // Typography
-      fontSize: "md",
-      fontWeight: "medium",
+      fontSize: "400",
+      fontWeight: "500",
 
       // Colors
-      color: "text.primary",
+      color: "fg",
       backgroundColor: "transparent",
 
       // Borders & Radius
       borderRadius: "200",
       borderWidth: "1px",
       borderStyle: "solid",
-      borderColor: "gray.300",
+      borderColor: "neutral.6",
 
       // Transitions
       transitionProperty: "colors, box-shadow",
@@ -53,13 +53,13 @@ export const componentNameSlotRecipe = defineSlotRecipe({
 
       // States
       _hover: {
-        backgroundColor: "gray.50",
-        borderColor: "gray.400",
+        backgroundColor: "neutral.2",
+        borderColor: "neutral.7",
       },
 
       _focus: {
         outline: "2px solid",
-        outlineColor: "primary.500",
+        outlineColor: "primary.9",
         outlineOffset: "2px",
       },
 
@@ -70,12 +70,12 @@ export const componentNameSlotRecipe = defineSlotRecipe({
       },
 
       _active: {
-        backgroundColor: "gray.100",
+        backgroundColor: "neutral.3",
       },
 
       // Aria states
       _expanded: {
-        backgroundColor: "gray.100",
+        backgroundColor: "neutral.3",
       },
     },
     content: {
@@ -89,13 +89,13 @@ export const componentNameSlotRecipe = defineSlotRecipe({
       minWidth: "200px",
 
       // Colors
-      backgroundColor: "white",
+      backgroundColor: "bg",
 
       // Borders & Radius
       borderRadius: "300",
       borderWidth: "1px",
       borderStyle: "solid",
-      borderColor: "gray.200",
+      borderColor: "neutral.6",
 
       // Shadow
       boxShadow: "lg",
@@ -126,10 +126,10 @@ export const componentNameSlotRecipe = defineSlotRecipe({
       gap: "200",
 
       // Typography
-      fontSize: "sm",
+      fontSize: "350",
 
       // Colors
-      color: "text.primary",
+      color: "fg",
 
       // Borders & Radius
       borderRadius: "200",
@@ -139,17 +139,17 @@ export const componentNameSlotRecipe = defineSlotRecipe({
 
       // States
       _hover: {
-        backgroundColor: "gray.50",
+        backgroundColor: "neutral.2",
       },
 
       _focus: {
-        backgroundColor: "primary.50",
+        backgroundColor: "primary.2",
         outline: "none",
       },
 
       _selected: {
-        backgroundColor: "primary.100",
-        color: "primary.700",
+        backgroundColor: "primary.3",
+        color: "primary.11",
       },
 
       _disabled: {
@@ -163,18 +163,18 @@ export const componentNameSlotRecipe = defineSlotRecipe({
     variant: {
       outline: {
         trigger: {
-          borderColor: "gray.300",
+          borderColor: "neutral.6",
           _hover: {
-            borderColor: "gray.400",
+            borderColor: "neutral.7",
           },
         },
       },
       filled: {
         trigger: {
-          backgroundColor: "gray.100",
+          backgroundColor: "neutral.3",
           borderColor: "transparent",
           _hover: {
-            backgroundColor: "gray.200",
+            backgroundColor: "neutral.4",
           },
         },
       },
@@ -182,7 +182,7 @@ export const componentNameSlotRecipe = defineSlotRecipe({
         trigger: {
           borderColor: "transparent",
           _hover: {
-            backgroundColor: "gray.100",
+            backgroundColor: "neutral.3",
           },
         },
       },
@@ -192,7 +192,7 @@ export const componentNameSlotRecipe = defineSlotRecipe({
         trigger: {
           height: "8",
           paddingX: "300",
-          fontSize: "sm",
+          fontSize: "350",
           gap: "100",
         },
         content: {
@@ -201,14 +201,14 @@ export const componentNameSlotRecipe = defineSlotRecipe({
         item: {
           paddingX: "200",
           paddingY: "100",
-          fontSize: "xs",
+          fontSize: "300",
         },
       },
       md: {
         trigger: {
           height: "10",
           paddingX: "400",
-          fontSize: "md",
+          fontSize: "400",
           gap: "200",
         },
         content: {
@@ -217,14 +217,14 @@ export const componentNameSlotRecipe = defineSlotRecipe({
         item: {
           paddingX: "200",
           paddingY: "150",
-          fontSize: "sm",
+          fontSize: "350",
         },
       },
       lg: {
         trigger: {
           height: "12",
           paddingX: "500",
-          fontSize: "lg",
+          fontSize: "450",
           gap: "300",
         },
         content: {
@@ -233,7 +233,7 @@ export const componentNameSlotRecipe = defineSlotRecipe({
         item: {
           paddingX: "300",
           paddingY: "200",
-          fontSize: "md",
+          fontSize: "400",
         },
       },
     },
