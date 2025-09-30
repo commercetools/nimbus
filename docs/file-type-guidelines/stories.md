@@ -140,8 +140,9 @@ export const InteractiveExample: Story = {
 
     await step("Initial state", async () => {
       // Verify initial render
-      expect(canvas.getByRole("button")).toBeInTheDocument();
-      expect(canvas.getByRole("button")).not.toBeDisabled();
+      const button = canvas.getByRole("button");
+      expect(button).toBeInTheDocument();
+      expect(button).not.toBeDisabled();
     });
 
     await step("User interaction", async () => {
@@ -150,16 +151,19 @@ export const InteractiveExample: Story = {
       await userEvent.click(button);
 
       // Verify state change
-      await expect(canvas.getByText("Clicked!")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.getByText("Clicked!")).toBeInTheDocument();
+      });
     });
 
     await step("Keyboard navigation", async () => {
       // Test keyboard interaction
+      const button = canvas.getByRole("button");
       await userEvent.tab();
       expect(button).toHaveFocus();
 
       await userEvent.keyboard("{Enter}");
-      // Verify action
+      // Verify action occurred
     });
 
     await step("Edge cases", async () => {
@@ -184,12 +188,12 @@ export const FormInput: Story = {
       const input = canvas.getByRole("textbox");
       await userEvent.clear(input);
       await userEvent.type(input, "Test value");
-      await expect(input).toHaveValue("Test value");
+      expect(input).toHaveValue("Test value");
     });
 
     await step("Submit form", async () => {
       await userEvent.keyboard("{Enter}");
-      // Verify submission
+      // Verify submission (implementation depends on form behavior)
     });
   },
 };
@@ -207,7 +211,9 @@ export const SelectionTest: Story = {
       await userEvent.click(trigger);
 
       // Wait for menu to appear
-      await expect(canvas.getByRole("menu")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.getByRole("menu")).toBeInTheDocument();
+      });
     });
 
     await step("Select option", async () => {
@@ -215,7 +221,9 @@ export const SelectionTest: Story = {
       await userEvent.click(option);
 
       // Verify selection
-      await expect(trigger).toHaveTextContent("Option 1");
+      await waitFor(() => {
+        expect(canvas.getByRole("button")).toHaveTextContent("Option 1");
+      });
     });
   },
 };
@@ -231,11 +239,15 @@ export const PaginationTest: Story = {
     await step("Navigate pages", async () => {
       // Click next
       await userEvent.click(canvas.getByRole("button", { name: "Next" }));
-      await expect(canvas.getByText("Page 2")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.getByText("Page 2")).toBeInTheDocument();
+      });
 
       // Click previous
       await userEvent.click(canvas.getByRole("button", { name: "Previous" }));
-      await expect(canvas.getByText("Page 1")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.getByText("Page 1")).toBeInTheDocument();
+      });
     });
 
     await step("Direct page input", async () => {
@@ -244,16 +256,22 @@ export const PaginationTest: Story = {
       await userEvent.type(input, "5");
       await userEvent.keyboard("{Enter}");
 
-      await expect(canvas.getByText("Page 5")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.getByText("Page 5")).toBeInTheDocument();
+      });
     });
 
     await step("Boundary testing", async () => {
-      // Test first page
-      const prevButton = canvas.getByRole("button", { name: "Previous" });
-      await expect(prevButton).toBeDisabled();
+      // Test first page - should be on page 1
+      await waitFor(() => {
+        expect(canvas.getByText("Page 1")).toBeInTheDocument();
+      });
 
-      // Navigate to last page
-      // Test last page constraints
+      const prevButton = canvas.getByRole("button", { name: "Previous" });
+      expect(prevButton).toBeDisabled();
+
+      // Navigate to last page and test constraints
+      // (implementation depends on component)
     });
   },
 };
@@ -261,15 +279,10 @@ export const PaginationTest: Story = {
 
 ## Async Testing Patterns
 
-### Avoiding Race Conditions
+### When to Use `waitFor`
 
-```typescript
-// Proper async handling to avoid race conditions
-await userEvent.click(trigger);
-await waitFor(() => {
-  expect(canvas.getByRole("menu")).toBeInTheDocument();
-});
-```
+Use `waitFor` when asserting elements that appear asynchronously after user
+interactions:
 
 ### Portal Content Testing
 
@@ -281,9 +294,11 @@ export const PortalContent: Story = {
     // Open portal content
     await userEvent.click(canvas.getByRole("button"));
 
-    // Search in document body for portal content
-    const portalContent = within(document.body);
-    await expect(portalContent.getByRole("dialog")).toBeInTheDocument();
+    // Wait for portal content to appear in document body
+    await waitFor(() => {
+      const portalContent = within(document.body);
+      expect(portalContent.getByRole("dialog")).toBeInTheDocument();
+    });
   },
 };
 ```
@@ -356,8 +371,8 @@ export const Interactive: Story = {
 
     await userEvent.click(button);
 
-    // Verify click handled
-    await expect(args.onClick).toHaveBeenCalledTimes(1);
+    // Verify click handled (synchronous check)
+    expect(args.onClick).toHaveBeenCalledTimes(1);
   },
 };
 ```
@@ -380,17 +395,19 @@ export const MenuInteraction: Story = {
 
     await step("Open menu", async () => {
       await userEvent.click(canvas.getByRole("button"));
-      await expect(canvas.getByRole("menu")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(canvas.getByRole("menu")).toBeInTheDocument();
+      });
     });
 
     await step("Select item", async () => {
-      await userEvent.click(canvas.getByRole("menuitem", { name: "Edit" }));
-      // Verify selection
+      const editItem = canvas.getByRole("menuitem", { name: "Edit" });
+      await userEvent.click(editItem);
+      // Verify selection (implementation depends on component behavior)
     });
   },
 };
 ```
-
 
 ## Related Guidelines
 
