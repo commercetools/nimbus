@@ -47,7 +47,7 @@ graph TD
 | **Focus management** (trap, restoration)           | ✅ Yes          | React Aria focus hooks          |
 | **ARIA attributes** not handled by Nimbus          | ✅ Yes          | React Aria Components           |
 | **Composing existing Nimbus components**           | ❌ No           | Use Nimbus components directly  |
-| **Simple HTML with no interaction**                | ❌ No           | Use plain HTML/Chakra           |
+| **Simple HTML with no interaction**                | ❌ No           | Use basic HTML elements         |
 
 ### React Aria Decision Priority
 
@@ -75,26 +75,27 @@ import { Select as RaSelect } from "react-aria-components";
 | **Variants/sizes** needed                        | ✅ Yes         | Standard or Slot    |
 | **Single DOM element**                           | ✅ Yes         | Standard Recipe     |
 | **Multiple DOM elements**                        | ✅ Yes         | Slot Recipe         |
-| **Composition of styled Nimbus components**      | ❌ No          | Use existing styles |
+| **Pure composition with existing styled components** | ❌ No      | Use existing styles |
 | **No new visual styling**                        | ❌ No          | No recipe needed    |
 
 ### Examples
 
 ```typescript
-// Needs recipe - new visual styling
+// Example 1: Needs recipe - component with new visual styling
+// First create cardRecipe with custom styling, then use CardSlot
 export const CustomCard = () => {
   return (
-    <CardSlot>  {/* Custom styling */}
+    <CardSlot>  {/* CardSlot wraps your cardRecipe styling */}
       <div>Content</div>
     </CardSlot>
   );
 };
 
-// No recipe needed - composing existing styled components
+// Example 2: No recipe needed - pure composition of existing styled components
 // Note: This is a hypothetical example to illustrate the pattern
 export const SearchField = () => {
   return (
-    <Stack direction="row">
+    <Stack direction="row">  {/* Stack already has styling from Nimbus */}
       <TextInput placeholder="Search..." />  {/* Already styled */}
       <Button>Search</Button>  {/* Already styled */}
     </Stack>
@@ -161,7 +162,7 @@ export const Menu = {
 | **Main component**  | Root (exports only)    | Compound component     |
 | **Implementations** | `components/`          | Compound components    |
 | **Hooks**           | `hooks/`               | ALWAYS (never in root) |
-| **Context**         | Root or `contexts/`    | State sharing needed   |
+| **Context**         | Root (`{component}-context.tsx`) | State sharing needed |
 | **Utils**           | `utils/`               | Pure functions         |
 | **Constants**       | `constants/`           | Static values          |
 
@@ -232,7 +233,7 @@ button/
 menu/
 ├── menu.tsx (exports only)
 ├── menu.types.ts
-├── menu.recipe.tsx
+├── menu.recipe.ts
 ├── menu.slots.tsx
 ├── menu-context.tsx
 ├── components/
@@ -259,9 +260,9 @@ menu/
 date-picker/
 ├── date-picker.tsx
 ├── date-picker.types.ts
-├── date-picker.recipe.tsx
+├── date-picker.recipe.ts
 ├── date-picker.slots.tsx
-├── date-picker.custom-context.tsx
+├── date-picker-context.tsx
 ├── components/
 │   ├── date-picker.root.tsx
 │   ├── date-picker.input.tsx
