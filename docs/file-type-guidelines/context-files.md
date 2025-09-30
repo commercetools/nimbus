@@ -32,14 +32,22 @@ complex compositions.
 
 ### Standard Context Pattern
 
+**Note:** This is an illustrative example showing context patterns. Accordion in Nimbus uses React Aria's DisclosureGroup which handles state internally.
+
 ```typescript
-// accordion-context.tsx
-import { createContext, useContext, useState } from 'react';
+// Example context pattern (illustrative)
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 interface AccordionContextValue {
   expandedItems: Set<string>;
   toggleItem: (id: string) => void;
   allowMultiple: boolean;
+}
+
+interface AccordionProviderProps {
+  children: ReactNode;
+  allowMultiple?: boolean;
+  defaultExpanded?: string[];
 }
 
 const AccordionContext = createContext<AccordionContextValue | undefined>(
@@ -107,67 +115,87 @@ export function useAccordionContext() {
 
 ### Custom React Aria Context
 
+For components that extend React Aria with additional functionality, use React Aria's `Provider` with context slots:
+
 ```typescript
 // date-picker.custom-context.tsx
-import { DatePickerStateProvider } from 'react-aria-components';
-import { useDatePickerState } from 'react-stately';
-import type { DatePickerCustomContextProps } from './date-picker.types';
+import { useContext } from "react";
+import {
+  Provider,
+  ButtonContext,
+  DatePickerStateContext,
+  TimeFieldContext,
+  useSlottedContext,
+} from "react-aria-components";
+import type { PressEvent, TimeValue } from "react-aria";
+import { useIntl } from "react-intl";
+import messages from "../date-picker.i18n";
 
 /**
  * Custom context wrapper for React Aria DatePicker
- * Provides additional state management on top of React Aria
+ * Extends React Aria contexts with additional slots and functionality
  */
-export function DatePickerCustomContext({
+export const DatePickerCustomContext = ({
   children,
-  value,
-  onChange,
-  minDate,
-  maxDate,
-  locale = 'en-US',
-  ...props
-}: DatePickerCustomContextProps) {
-  // Use React Aria state
-  const state = useDatePickerState({
-    value,
-    onChange,
-    minValue: minDate,
-    maxValue: maxDate,
-    ...props,
-  });
+}: {
+  children: React.ReactNode;
+}) => {
+  const intl = useIntl();
 
-  // Add custom logic
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [highlightedDate, setHighlightedDate] = useState<Date>();
+  // Access existing React Aria contexts
+  const buttonContext = useSlottedContext(ButtonContext) || {};
+  const datePickerState = useContext(DatePickerStateContext);
+  const noInputValue = datePickerState?.dateValue === null;
 
-  // Custom methods
-  const goToToday = () => {
-    state.setValue(new Date());
-    setHighlightedDate(new Date());
+  const { timeValue, setTimeValue, granularity } = datePickerState!;
+  const isDatePickerDisabled = buttonContext?.isDisabled;
+
+  // Define custom slot configurations
+  const buttonSlots = {
+    calendarToggle: {
+      ...buttonContext,
+      onPress: (event: PressEvent) => {
+        const activeElement = document?.activeElement as HTMLElement | null;
+        if (activeElement) {
+          activeElement.blur();
+        }
+        buttonContext.onPress?.(event);
+      },
+    },
+    clear: {
+      onPress: () => datePickerState?.setValue(null),
+      "aria-label": intl.formatMessage(messages.clearInput),
+      isDisabled: isDatePickerDisabled,
+      style: noInputValue ? { display: "none" } : undefined,
+      "aria-hidden": noInputValue ? true : undefined,
+    },
   };
 
-  const clearDate = () => {
-    state.setValue(null);
-    setHighlightedDate(undefined);
+  const timeInputSlots = {
+    timeInput: {
+      value: timeValue,
+      onChange: (value: TimeValue | null) => {
+        if (value !== null) {
+          setTimeValue(value);
+        }
+      },
+      granularity: granularity === "day" ? undefined : granularity,
+      "aria-label": intl.formatMessage(messages.enterTime),
+    },
   };
 
+  // Provide enhanced contexts with slots
   return (
-    <DatePickerStateProvider value={state}>
-      <DatePickerCustomContextProvider
-        value={{
-          isCalendarOpen,
-          setIsCalendarOpen,
-          highlightedDate,
-          setHighlightedDate,
-          goToToday,
-          clearDate,
-          locale,
-        }}
-      >
-        {children}
-      </DatePickerCustomContextProvider>
-    </DatePickerStateProvider>
+    <Provider
+      values={[
+        [ButtonContext, { slots: buttonSlots }],
+        [TimeFieldContext, { slots: timeInputSlots }],
+      ]}
+    >
+      {children}
+    </Provider>
   );
-}
+};
 ```
 
 ## Context Patterns
@@ -176,31 +204,27 @@ export function DatePickerCustomContext({
 
 ```typescript
 // menu-context.tsx
-interface MenuContextValue {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  activeItem?: string;
-  setActiveItem: (id: string) => void;
-}
+import { createContext, useContext } from "react";
+import type { MenuRootProps } from "./menu.types";
+import type { MenuTriggerProps as RaMenuTriggerProps } from "react-aria-components";
+
+// Context contains Menu props (excluding MenuTrigger-specific props)
+export type MenuContextValue = Omit<
+  MenuRootProps,
+  keyof RaMenuTriggerProps | "children" | "trigger"
+>;
 
 const MenuContext = createContext<MenuContextValue | undefined>(undefined);
 
-export const MenuProvider = ({ children }: { children: ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState<string>();
+export const MenuProvider = MenuContext.Provider;
 
-  return (
-    <MenuContext.Provider
-      value={{
-        isOpen,
-        setIsOpen,
-        activeItem,
-        setActiveItem,
-      }}
-    >
-      {children}
-    </MenuContext.Provider>
-  );
+/**
+ * Hook to access menu context
+ * Note: Returns undefined if used outside MenuProvider (optional pattern)
+ */
+export const useMenuContext = () => {
+  const context = useContext(MenuContext);
+  return context;
 };
 ```
 
@@ -208,11 +232,23 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
 ```typescript
 // tabs-context.tsx
+import { createContext, useState, type ReactNode } from "react";
+
 interface TabsContextValue {
   selectedTab: string;
   setSelectedTab: (id: string) => void;
   orientation: 'horizontal' | 'vertical';
 }
+
+interface TabsProviderProps {
+  children: ReactNode;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  orientation?: 'horizontal' | 'vertical';
+}
+
+const TabsContext = createContext<TabsContextValue | undefined>(undefined);
 
 export function TabsProvider({
   children,
@@ -249,88 +285,49 @@ export function TabsProvider({
 
 ### Complex State Management
 
+For components with complex state, keep context simple and move business logic to the component implementation:
+
 ```typescript
 // data-table-context.tsx
-interface DataTableContextValue {
-  data: any[];
-  columns: ColumnDef[];
-  sorting: SortingState;
-  setSorting: (sorting: SortingState) => void;
-  selection: SelectionState;
-  setSelection: (selection: SelectionState) => void;
-  pagination: PaginationState;
-  setPagination: (pagination: PaginationState) => void;
-  filters: FilterState[];
-  setFilters: (filters: FilterState[]) => void;
-}
+import { createContext, useContext } from "react";
+import type { DataTableContextValue } from "../data-table.types";
 
-export function DataTableProvider({
-  children,
-  data,
-  columns,
-  enableSorting = true,
-  enableSelection = false,
-  enablePagination = true,
-  enableFilters = false,
-}: DataTableProviderProps) {
-  // Multiple state management
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [selection, setSelection] = useState<SelectionState>(new Set());
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [filters, setFilters] = useState<FilterState[]>([]);
+export const DataTableContext = createContext<DataTableContextValue<
+  Record<string, unknown>
+> | null>(null);
 
-  // Computed values
-  const processedData = useMemo(() => {
-    let result = [...data];
+DataTableContext.displayName = "DataTableContext";
 
-    // Apply filters
-    if (enableFilters && filters.length > 0) {
-      result = applyFilters(result, filters);
-    }
+/**
+ * Hook to access data table context
+ * @throws Error if used outside DataTable.Root
+ */
+export const useDataTableContext = <
+  T extends object = Record<string, unknown>,
+>(): DataTableContextValue<T> => {
+  const context = useContext(
+    DataTableContext
+  ) as DataTableContextValue<T> | null;
 
-    // Apply sorting
-    if (enableSorting && sorting.length > 0) {
-      result = applySorting(result, sorting);
-    }
+  if (!context) {
+    throw new Error("DataTable components must be used within DataTable.Root");
+  }
 
-    // Apply pagination
-    if (enablePagination) {
-      const start = pagination.pageIndex * pagination.pageSize;
-      result = result.slice(start, start + pagination.pageSize);
-    }
-
-    return result;
-  }, [data, filters, sorting, pagination, enableFilters, enableSorting, enablePagination]);
-
-  return (
-    <DataTableContext.Provider
-      value={{
-        data: processedData,
-        columns,
-        sorting,
-        setSorting: enableSorting ? setSorting : noop,
-        selection,
-        setSelection: enableSelection ? setSelection : noop,
-        pagination,
-        setPagination: enablePagination ? setPagination : noop,
-        filters,
-        setFilters: enableFilters ? setFilters : noop,
-      }}
-    >
-      {children}
-    </DataTableContext.Provider>
-  );
-}
+  return context;
+};
 ```
+
+**Note:** Complex data processing (filtering, sorting, pagination) is typically handled in the component implementation or via external libraries like TanStack Table, not in the context provider.
 
 ## Hook Pattern for Context
 
-### Basic Hook
+### Basic Hook (with error throwing)
+
+Use this pattern when context **must** be present:
 
 ```typescript
+import { useContext } from "react";
+
 /**
  * Hook to access component context
  * @throws Error if used outside provider
@@ -348,15 +345,42 @@ export function useComponentContext() {
 }
 ```
 
-### Hook with Selector
+### Optional Hook (without error throwing)
+
+Use this pattern when context is **optional** or has sensible defaults:
 
 ```typescript
+import { useContext } from "react";
+
+/**
+ * Hook to access component context
+ * Returns undefined if used outside provider
+ */
+export function useComponentContext() {
+  const context = useContext(ComponentContext);
+  return context; // Can be undefined
+}
+```
+
+### Hook with Selector (Advanced)
+
+For performance optimization with large contexts:
+
+```typescript
+import { useContext } from "react";
+
+interface ComponentContextValue {
+  isOpen: boolean;
+  data: any[];
+  // ... other values
+}
+
 /**
  * Hook with optional selector for performance
  */
-export function useComponentContext<T>(
+export function useComponentContext<T = ComponentContextValue>(
   selector?: (context: ComponentContextValue) => T
-): T | ComponentContextValue {
+): T {
   const context = useContext(ComponentContext);
 
   if (context === undefined) {
@@ -365,20 +389,25 @@ export function useComponentContext<T>(
     );
   }
 
-  return selector ? selector(context) : context;
+  return selector ? selector(context) : (context as T);
 }
 
-// Usage
+// Usage - select only what you need
 const isOpen = useComponentContext((ctx) => ctx.isOpen);
+const fullContext = useComponentContext();
 ```
 
 ## Integration with Components
 
 ### Root Component Integration
 
+Illustrative example of how a root component might integrate a context provider:
+
 ```typescript
-// components/accordion.root.tsx
+// components/accordion.root.tsx (illustrative example)
 import { AccordionProvider } from '../accordion-context';
+import { AccordionRootSlot } from '../accordion.slots';
+import type { AccordionRootProps } from '../accordion.types';
 
 export const AccordionRoot = (props: AccordionRootProps) => {
   const {
@@ -403,9 +432,13 @@ export const AccordionRoot = (props: AccordionRootProps) => {
 
 ### Child Component Usage
 
+Illustrative example of how a child component might consume context:
+
 ```typescript
-// components/accordion.item.tsx
+// components/accordion.item.tsx (illustrative example)
 import { useAccordionContext } from '../accordion-context';
+import { AccordionItemSlot } from '../accordion.slots';
+import type { AccordionItemProps } from '../accordion.types';
 
 export const AccordionItem = (props: AccordionItemProps) => {
   const { id, children } = props;
@@ -442,80 +475,20 @@ component-name.custom-context.tsx  // For React Aria wrappers
 component-name-provider.tsx    // Standalone provider
 ```
 
-## Examples from Nimbus
-
-### Accordion Context
-
-```typescript
-// accordion-context.tsx
-export function AccordionProvider({
-  children,
-  allowMultiple = false,
-}: AccordionProviderProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-
-  const toggleItem = useCallback((id: string) => {
-    setExpandedItems(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        if (!allowMultiple) next.clear();
-        next.add(id);
-      }
-      return next;
-    });
-  }, [allowMultiple]);
-
-  return (
-    <AccordionContext.Provider value={{ expandedItems, toggleItem }}>
-      {children}
-    </AccordionContext.Provider>
-  );
-}
-```
-
-### Form Field Context
-
-```typescript
-// form-field-context.tsx
-interface FormFieldContextValue {
-  id: string;
-  isRequired: boolean;
-  isInvalid: boolean;
-  isDisabled: boolean;
-  errorMessage?: string;
-}
-
-export const FormFieldProvider = ({
-  children,
-  ...props
-}: FormFieldProviderProps) => {
-  const id = useId();
-
-  return (
-    <FormFieldContext.Provider
-      value={{
-        id,
-        isRequired: props.isRequired || false,
-        isInvalid: props.isInvalid || false,
-        isDisabled: props.isDisabled || false,
-        errorMessage: props.errorMessage,
-      }}
-    >
-      {children}
-    </FormFieldContext.Provider>
-  );
-};
-```
-
 ## Performance Considerations
 
 ### Memoize Context Value
 
 ```typescript
+import { useMemo, useState, type ReactNode } from "react";
+
 // ✅ Good - memoized value
-export function Provider({ children, ...props }) {
+export function Provider({
+  children,
+  ...props
+}: {
+  children: ReactNode;
+}) {
   const [state, setState] = useState();
 
   const value = useMemo(
@@ -533,32 +506,7 @@ export function Provider({ children, ...props }) {
     </Context.Provider>
   );
 }
-
 ```
-
-### Split Contexts
-
-```typescript
-// Split read and write contexts for performance
-const StateContext = createContext();
-const DispatchContext = createContext();
-
-export function Provider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  return (
-    <StateContext.Provider value={state}>
-      <DispatchContext.Provider value={dispatch}>
-        {children}
-      </DispatchContext.Provider>
-    </StateContext.Provider>
-  );
-}
-
-export const useState = () => useContext(StateContext);
-export const useDispatch = () => useContext(DispatchContext);
-```
-
 
 ## Related Guidelines
 
@@ -569,15 +517,16 @@ export const useDispatch = () => useContext(DispatchContext);
 
 ## Validation Checklist
 
-- [ ] Context file with appropriate naming pattern
+- [ ] Context file with appropriate naming pattern (`{component}-context.tsx` or `{component}.custom-context.tsx`)
 - [ ] Provider component exported
 - [ ] Hook for accessing context
-- [ ] Error handling in hook
-- [ ] Context value memoized
+- [ ] Error handling in hook (optional - throw if context must be present, return undefined if optional)
+- [ ] Context value memoized (when appropriate for performance)
 - [ ] TypeScript interfaces defined
-- [ ] JSDoc documentation
+- [ ] JSDoc documentation for context and hooks
 - [ ] Controlled/uncontrolled support (if applicable)
-- [ ] Integration with root component
+- [ ] Integration with root component (if applicable)
+- [ ] All imports included in code examples
 - [ ] Performance optimizations considered
 
 ---
