@@ -1,0 +1,219 @@
+---
+id: Components-SelectableSearchInput
+title: SelectableSearchInput
+description: Combines a select dropdown with a search input for filtered search functionality.
+order: 999
+menu:
+  - Components
+  - Inputs
+  - SelectableSearchInput
+tags:
+  - component
+  - input
+  - search
+  - select
+---
+
+# SelectableSearchInput
+
+A combined input component that integrates a select dropdown with a search input field, enabling users to filter search by category or field type.
+
+## Overview
+
+SelectableSearchInput provides a unified control for scenarios where users need to specify both what they're searching for (via the search input) and where to search (via the select dropdown). Common use cases include:
+
+- Filtering search results by field (name, email, etc.)
+- Category-specific search
+- Advanced search interfaces
+
+### Key Features
+
+- **Unified Value**: Single value object containing both text and selected option
+- **Flexible Options**: Support for flat lists and grouped options
+- **Keyboard Accessible**: Full keyboard navigation support
+- **Controlled Only**: Predictable state management with controlled API
+
+## Variables
+
+Get familiar with the component features.
+
+### Basic Usage
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({
+    text: '',
+    option: 'all',
+  });
+
+  const options = [
+    { label: 'All Fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+  ];
+
+  return (
+    <SelectableSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={(val) => console.log('Search:', val)}
+      options={options}
+      searchPlaceholder="Enter search term..."
+    />
+  );
+};
+```
+
+### Size Variants
+
+```jsx-live
+const App = () => {
+  const [valueSm, setValueSm] = useState({ text: '', option: 'all' });
+  const [valueMd, setValueMd] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All', value: 'all' },
+    { label: 'Name', value: 'name' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <SelectableSearchInput
+        size="sm"
+        value={valueSm}
+        onValueChange={setValueSm}
+        onSubmit={console.log}
+        options={options}
+      />
+      <SelectableSearchInput
+        size="md"
+        value={valueMd}
+        onValueChange={setValueMd}
+        onSubmit={console.log}
+        options={options}
+      />
+    </Stack>
+  );
+};
+```
+
+### Grouped Options
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'email' });
+
+  const groupedOptions = [
+    {
+      label: 'Contact Info',
+      options: [
+        { label: 'Email', value: 'email' },
+        { label: 'Phone', value: 'phone' },
+      ],
+    },
+    {
+      label: 'Personal',
+      options: [
+        { label: 'Name', value: 'name' },
+        { label: 'Address', value: 'address' },
+      ],
+    },
+  ];
+
+  return (
+    <SelectableSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={console.log}
+      options={groupedOptions}
+    />
+  );
+};
+```
+
+### States
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: 'test', option: 'all' });
+
+  const options = [
+    { label: 'All', value: 'all' },
+    { label: 'Name', value: 'name' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <SelectableSearchInput
+        value={{ text: '', option: 'all' }}
+        onValueChange={setValue}
+        onSubmit={console.log}
+        options={options}
+        searchPlaceholder="Disabled..."
+        isDisabled
+      />
+      <SelectableSearchInput
+        value={value}
+        onValueChange={setValue}
+        onSubmit={console.log}
+        options={options}
+        searchPlaceholder="Invalid state..."
+        isInvalid
+      />
+    </Stack>
+  );
+};
+```
+
+## Guidelines
+
+Use this component when users need to filter search by specific fields or categories.
+
+### Best Practices
+
+- **Clear Options**: Provide descriptive labels for select options
+- **Appropriate Placeholder**: Use placeholder text that guides users
+- **Handle Empty States**: Use `SelectableSearchInput.isEmpty()` to check for empty search
+- **Submit Feedback**: Provide visual feedback after search submission
+
+## Specs
+
+<PropsTable id="SelectableSearchInput" />
+
+### Static Methods
+
+**`SelectableSearchInput.isEmpty(value)`**
+
+Returns `true` if the search text is empty or contains only whitespace.
+
+```tsx
+const value = { text: '  ', option: 'all' };
+SelectableSearchInput.isEmpty(value); // true
+```
+
+## Accessibility
+
+This component follows WCAG 2.1 AA guidelines and uses React Aria for keyboard navigation.
+
+### Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between select, search input, and buttons |
+| `Enter` (select) | Open dropdown |
+| `Enter` (search) | Submit search |
+| `Arrow Up/Down` | Navigate dropdown options |
+| `Escape` | Close dropdown |
+
+### ARIA Attributes
+
+- `aria-controls`: Links select to search input
+- `aria-label`: Provides accessible names for both inputs
+- `aria-describedby`: Links to error or description text
+- `aria-invalid`: Indicates error state
+
+### Screen Reader Support
+
+- Select announces current selection and available options
+- Search input announces text changes
+- Submit and clear actions are properly announced
