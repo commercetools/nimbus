@@ -35,6 +35,7 @@ export const multilineTextInputRecipe = defineSlotRecipe({
             <rect width="1.03391" height="8.27125" transform="matrix(0.716448 0.69764 -0.716448 0.69764 5.87891 -0.0262451)" fill="currentColor"/>
           </mask>
           <g mask="url(#mask0_4610_25787)">
+          // TODO: fix this
             <rect width="8" height="8" fill="${designTokens.color["semantic-palettes"].primary.light[9]}"/>
           </g>
         </svg>

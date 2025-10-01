@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { parseMdx } from "./doc-generation/parse-mdx";
 import { flog, parseTypes } from "./doc-generation/parse-types";
+import { injectRecipeProps } from "./doc-generation/inject-recipe-props";
 
 // Directory to watch
 const directoryToWatch: string = "./../../packages";
@@ -39,6 +40,9 @@ export const build = async () => {
 
   // wait a bit, cause it's cheaper than fixing the code
   await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  // Inject recipe variant props into types.json
+  await injectRecipeProps();
 
   flog("✨ Documentation files created ✨");
 };
