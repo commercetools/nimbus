@@ -7,9 +7,9 @@ import { DevOnly } from "./components/utils/dev-only.tsx";
 import { DocumentMetaSettings } from "./components/document-meta-settings/document-meta-settings.tsx";
 import { StickySidebar } from "./components/navigation/sticky-sidebar.tsx";
 import { RouterProvider } from "./components/router";
+import { IntlProvider } from "react-intl";
 import { useAtom } from "jotai";
 import { activeRouteAtom } from "./atoms/route";
-import { IntlProvider } from "react-intl";
 
 function App() {
   const [, setActiveRoute] = useAtom(activeRouteAtom);

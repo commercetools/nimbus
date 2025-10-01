@@ -10,6 +10,10 @@ export const Code = (props: CodeProps) => {
   const { className, children, ...rest } = props;
 
   if (className) {
+    if (className.includes("-live-dev")) {
+      return <LiveCodeEditor {...props} defaultActiveTab="editor" />;
+    }
+
     if (className.includes("-live")) {
       return <LiveCodeEditor {...props} />;
     }
