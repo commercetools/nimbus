@@ -3,6 +3,8 @@ import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { useState } from "react";
 import { SelectableSearchInput } from "./selectable-search-input";
 import { Stack } from "@/components/stack";
+import { FormField } from "@/components/form-field";
+import { Box } from "@/components/box";
 import type { SelectableSearchInputValue } from "./selectable-search-input.types";
 
 const meta: Meta<typeof SelectableSearchInput> = {
@@ -336,6 +338,133 @@ export const AutoFocusBehavior: Story = {
       await waitFor(() => {
         expect(searchInput).toHaveFocus();
       });
+    });
+  },
+};
+
+export const WithFormField: Story = {
+  args: { isInvalid: true },
+  render: (args) => {
+    const [value, setValue] = useState<SelectableSearchInputValue>({
+      text: "",
+      option: "all",
+    });
+
+    return (
+      <Box width="600px">
+        <FormField.Root isInvalid={args.isInvalid} data-testid="form-field">
+          <FormField.Label>Search Products</FormField.Label>
+          <FormField.Input>
+            <SelectableSearchInput
+              value={value}
+              onValueChange={setValue}
+              onSubmit={(val) => console.log("Search:", val)}
+              options={defaultOptions}
+              selectPlaceholder="Field"
+              searchPlaceholder="Enter search term..."
+              data-testid="selectable-search"
+            />
+          </FormField.Input>
+          <FormField.Description>
+            Select a field to search in and enter your search term.
+          </FormField.Description>
+          <FormField.Error>
+            Please enter a valid search term (minimum 3 characters).
+          </FormField.Error>
+          <FormField.InfoBox>
+            The search will look for matches in the selected field. Use "All
+            Fields" to search across all product data.
+          </FormField.InfoBox>
+        </FormField.Root>
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All elements are rendered correctly", async () => {
+      const selectableSearch = canvas.getByTestId("selectable-search");
+      const label = canvas.getByText(/Search Products/);
+      const description = canvas.getByText(/Select a field to search in/);
+      const error = canvas.getByText(/Please enter a valid search term/);
+
+      await expect(selectableSearch).toBeInTheDocument();
+      await expect(label).toBeInTheDocument();
+      await expect(description).toBeInTheDocument();
+      await expect(error).toBeInTheDocument();
+    });
+
+    await step(
+      "ARIA relationships: Both Select and SearchInput are properly labeled and described",
+      async () => {
+        const label = canvas.getByText(/Search Products/);
+        const description = canvas.getByText(/Select a field to search in/);
+        const error = canvas.getByText(/Please enter a valid search term/);
+
+        // Get the Select trigger button (first interactive element)
+        const selectTrigger = canvas.getByRole("button", {
+          name: /all fields/i,
+        });
+
+        // Get the SearchInput (searchbox role)
+        const searchInput = canvas.getByRole("searchbox");
+
+        // Verify Select trigger has proper ARIA connections
+        await expect(selectTrigger.getAttribute("aria-labelledby")).toContain(
+          label.id
+        );
+        await expect(selectTrigger.getAttribute("aria-describedby")).toContain(
+          description.id
+        );
+        await expect(selectTrigger.getAttribute("aria-describedby")).toContain(
+          error.id
+        );
+
+        // Verify SearchInput has proper ARIA connections
+        await expect(searchInput.getAttribute("aria-labelledby")).toContain(
+          label.id
+        );
+        await expect(searchInput.getAttribute("aria-describedby")).toContain(
+          description.id
+        );
+        await expect(searchInput.getAttribute("aria-describedby")).toContain(
+          error.id
+        );
+      }
+    );
+
+    await step("Component interaction: Select option then search", async () => {
+      // Open select dropdown
+      const selectTrigger = canvas.getByRole("button", {
+        name: /all fields/i,
+      });
+      await userEvent.click(selectTrigger);
+
+      // Wait for dropdown to appear
+      await waitFor(() => {
+        const menu = within(document.body).getByRole("listbox");
+        expect(menu).toBeInTheDocument();
+      });
+
+      // Select "Email" option
+      const emailOption = within(document.body).getByRole("option", {
+        name: "Email",
+      });
+      await userEvent.click(emailOption);
+
+      // Verify selection changed
+      await waitFor(() => {
+        expect(
+          canvas.getByRole("button", { name: /email/i })
+        ).toBeInTheDocument();
+      });
+
+      // Type in search input
+      const searchInput = canvas.getByRole("searchbox");
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "test@example.com");
+
+      expect(searchInput).toHaveValue("test@example.com");
     });
   },
 };

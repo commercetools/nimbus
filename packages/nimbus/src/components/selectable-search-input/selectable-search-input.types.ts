@@ -113,12 +113,6 @@ export interface SelectableSearchInputProps
   isClearable?: boolean;
 
   /**
-   * Whether to show the submit button
-   * @default true
-   */
-  showSubmitButton?: boolean;
-
-  /**
    * Whether the component is disabled
    * @default false
    */
