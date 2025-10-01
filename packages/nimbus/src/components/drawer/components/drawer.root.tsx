@@ -4,11 +4,12 @@ import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { DrawerRootSlot } from "../drawer.slots";
 import type { DrawerRootProps } from "../drawer.types";
 import { DrawerProvider } from "./drawer.context";
+import { drawerSlotRecipe } from "../drawer.recipe";
 
 export const DrawerRoot = function DrawerRoot(props: DrawerRootProps) {
-  const recipe = useSlotRecipe({ key: "drawer" });
+  const recipe = useSlotRecipe({ recipe: drawerSlotRecipe });
   // Extract recipe props
-  const [recipeProps] = recipe.splitVariantProps(props as any);
+  const [recipeProps] = recipe.splitVariantProps(props);
   // Extract props that are usable on RaDialogTrigger
   const { children, isOpen, onOpenChange, defaultOpen = false } = props;
 
