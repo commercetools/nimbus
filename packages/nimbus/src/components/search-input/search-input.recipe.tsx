@@ -5,7 +5,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  */
 export const searchInputSlotRecipe = defineSlotRecipe({
-  slots: ["root", "leadingElement", "input", "clearButton"],
+  slots: ["root", "leadingElement", "input"],
   // Unique class name prefix for the component
   className: "nimbus-search-input",
 
@@ -66,37 +66,7 @@ export const searchInputSlotRecipe = defineSlotRecipe({
         display: "none",
       },
     },
-
-    clearButton: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      color: "neutral.11",
-      bg: "transparent",
-      border: "none",
-      borderRadius: "100",
-      outline: "none",
-      transitionProperty: "opacity",
-      transitionDuration: "fast",
-
-      _hover: {
-        color: "neutral.12",
-        backgroundColor: "neutral.4",
-      },
-
-      _focusVisible: {
-        layerStyle: "focusRing",
-      },
-
-      _disabled: {
-        opacity: 0.5,
-        cursor: "not-allowed",
-        pointerEvents: "none",
-      },
-    },
   },
-
   variants: {
     size: {
       sm: {
@@ -111,13 +81,6 @@ export const searchInputSlotRecipe = defineSlotRecipe({
             boxSize: "400",
           },
         },
-        clearButton: {
-          width: "600",
-          height: "600",
-          "& > svg": {
-            boxSize: "350",
-          },
-        },
       },
       md: {
         root: {
@@ -129,13 +92,6 @@ export const searchInputSlotRecipe = defineSlotRecipe({
         leadingElement: {
           "& > svg": {
             boxSize: "500",
-          },
-        },
-        clearButton: {
-          width: "700",
-          height: "700",
-          "& > svg": {
-            boxSize: "400",
           },
         },
       },

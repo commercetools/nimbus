@@ -34,10 +34,3 @@ export const SearchInputInputSlot = withContext<
   HTMLInputElement,
   SearchInputInputProps
 >("input", "input");
-
-export interface SearchInputClearButtonProps
-  extends HTMLChakraProps<"button"> {}
-export const SearchInputClearButtonSlot = withContext<
-  HTMLButtonElement,
-  SearchInputClearButtonProps
->("button", "clearButton");
