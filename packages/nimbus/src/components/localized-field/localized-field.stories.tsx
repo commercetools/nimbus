@@ -1696,6 +1696,8 @@ export const ErrorsAndValidation: Story = {
           richTextField,
           "en"
         );
+        // Give richText input time to initialize event handlers
+        await new Promise((resolve) => setTimeout(resolve, 100));
         await defaultInput.focus();
         // Verify group-level errors ARE now visible after being touched
         await checkFieldError(richTextField, baseContextFields.error);
