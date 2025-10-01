@@ -63,11 +63,12 @@ order of update priority** (safest first):
 
 **� REACT (Highest Risk - Update Last):**
 
-- **React core: `react`, `react-dom`, `@types/react*` & (FROZEN - DO NOT
-  UPDATE)**
-- UI frameworks: `@chakra-ui/*`, `@emotion/react` (FROZEN - DO NOT UPDATE),
-  `next-themes`
-- React Aria: `react-aria*`, `react-stately`, `@react-aria/*`
+- **React runtime (FROZEN)**: `react`, `react-dom`, `@types/react`,
+  `@types/react-dom` - **DO NOT UPDATE** (consumers control version)
+- **Emotion (FROZEN)**: `@emotion/react` - **DO NOT UPDATE** (peer dependency,
+  consumers control version)
+- **UI frameworks (updateable)**: `@chakra-ui/*`, `next-themes`
+- **React Aria (updateable)**: `react-aria*`, `react-stately`, `@react-aria/*`
 
 ### **Phase 3: Progressive Updates with Safety Checks**
 
@@ -84,11 +85,14 @@ For each dependency group (or the specified target group):
    - Only update to latest minor/patch versions (no major bumps)
    - Respect semver constraints (e.g., `^7.28.0` can go to `^7.29.1` but not
      `^8.0.0`)
-   - **CRITICAL: React/React-DOM Constraint** - Since this is a React UI
-     library, `react`, `react-dom`, `@types/react`, and `@types/react-dom`
-     versions are **FROZEN** at their current versions. If any package update
-     would require upgrading these core React packages, **HALT IMMEDIATELY** and
-     report the conflict. UI library consumers must control React versions.
+   - **CRITICAL: React Runtime Constraint** - Since this is a React UI library,
+     the **runtime packages** `react`, `react-dom`, and `@emotion/react` are
+     **FROZEN** at their current versions. UI library consumers must control
+     these peer dependency versions. However, `@types/react`,
+     `@types/react-dom`, `@chakra-ui/*`, and React Aria packages **CAN and
+     SHOULD be updated** to their latest minor/patch versions. If any package
+     update would require upgrading `react`, `react-dom`, or `@emotion/react`
+     runtime packages, **HALT IMMEDIATELY** and report the conflict.
 
 3. **Update Workspace Catalog:**
    - Modify `pnpm-workspace.yaml` catalog entries with new versions
@@ -225,9 +229,14 @@ If user wants to preview changes first, show:
    lodash: 4.17.21 � 4.17.22
    Build & tests passed 
 
-� REACT GROUP (8 packages):
-   react: 19.0.0 � 19.0.1
-   @chakra-ui/react: 3.26.0 � 3.27.2
+� REACT GROUP (5 packages updated, 3 frozen):
+   @types/react: 19.1.8 → 19.1.16
+   @types/react-dom: 19.1.6 → 19.1.9
+   @chakra-ui/react: 3.26.0 → 3.27.2
+   react-aria: 3.42.0 → 3.43.2
+   ⏸ react: 19.0.0 (FROZEN)
+   ⏸ react-dom: 19.0.0 (FROZEN)
+   ⏸ @emotion/react: 11.14.0 (FROZEN)
    Build & tests passed 
 
 =� SUMMARY:
