@@ -2,7 +2,6 @@ import { TabList as RATabList } from "react-aria-components";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { TabsListSlot } from "../tabs.slots";
 import { Tab } from "./tabs.tab";
-import { useTabsContextOptional } from "./tabs.context";
 import type { TabListProps, TabItemProps } from "../tabs.types";
 
 /**
@@ -10,13 +9,7 @@ import type { TabListProps, TabItemProps } from "../tabs.types";
  *
  * A container for the tab buttons that allows users to switch between different panels.
  */
-export const TabList = ({
-  tabs: tabsProp,
-  children,
-  ...props
-}: TabListProps) => {
-  const context = useTabsContextOptional();
-  const tabs = tabsProp || context?.tabs;
+export const TabList = ({ tabs, children, ...props }: TabListProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Ensure RATabList always has children - either from tabs or provided children

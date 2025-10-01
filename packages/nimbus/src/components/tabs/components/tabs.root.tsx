@@ -1,7 +1,8 @@
 import { Tabs as RATabs } from "react-aria-components";
 import { TabsRootSlot } from "../tabs.slots";
-import { TabsProvider } from "./tabs.context";
-import type { TabsProps, TabItemProps } from "../tabs.types";
+import type { TabsProps } from "../tabs.types";
+import { TabList } from "./tabs.list";
+import { TabPanels } from "./tabs.panels";
 
 /**
  * # Tabs
@@ -20,19 +21,22 @@ export const TabsRoot = ({
   ...props
 }: TabsProps) => {
   return (
-    <TabsProvider tabs={tabs as TabItemProps[]}>
-      <TabsRootSlot
-        asChild
-        orientation={orientation}
-        placement={placement}
-        size={size}
-        {...props}
-      >
-        <RATabs disabledKeys={disabledKeys} {...tabs}>
-          {children}
-        </RATabs>
-      </TabsRootSlot>
-    </TabsProvider>
+    <TabsRootSlot
+      asChild
+      orientation={orientation}
+      placement={placement}
+      size={size}
+      {...props}
+    >
+      <RATabs disabledKeys={disabledKeys} {...tabs}>
+        {children || (
+          <>
+            <TabList tabs={tabs} />
+            <TabPanels tabs={tabs} />
+          </>
+        )}
+      </RATabs>
+    </TabsRootSlot>
   );
 };
 

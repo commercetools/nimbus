@@ -99,7 +99,7 @@ export const Base: Story = {
     size: "md",
     "data-testid": "base-tabs",
   },
-  render: (args) => <Tabs {...args} tabs={simpleTabs} />,
+  render: (args) => <Tabs.Root {...args} tabs={simpleTabs} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -258,7 +258,7 @@ export const VerticalStart: Story = {
     "data-testid": "vertical-tabs",
   },
   render: (args) => {
-    return <Tabs {...args} tabs={navigationTabs} />;
+    return <Tabs.Root {...args} tabs={navigationTabs} />;
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -326,7 +326,7 @@ export const VerticalEnd: Story = {
     placement: "end",
   },
   render: (args) => {
-    return <Tabs {...args} tabs={navigationTabs} />;
+    return <Tabs.Root {...args} tabs={navigationTabs} />;
   },
 };
 
@@ -364,7 +364,7 @@ export const WithDisabledKeys: Story = {
         <div>
           <h3>Tabs with DisabledKeys Array</h3>
           <br />
-          <Tabs {...args} tabs={withDisabledTabs} />
+          <Tabs.Root {...args} tabs={withDisabledTabs} />
         </div>
       </div>
     );
@@ -543,7 +543,7 @@ export const Disabled: Story = {
         <div>
           <h3>Tabs with Disabled State</h3>
           <br />
-          <Tabs {...args} tabs={withDisabledTabs} />
+          <Tabs.Root {...args} tabs={withDisabledTabs} />
         </div>
       </div>
     );
@@ -676,17 +676,17 @@ export const Sizes: Story = {
       <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
         <div data-testid="small-tabs">
           <h3>Small (sm)</h3>
-          <Tabs size="sm" tabs={smallTabs} />
+          <Tabs.Root size="sm" tabs={smallTabs} />
         </div>
 
         <div data-testid="medium-tabs">
           <h3>Medium (md) - Default</h3>
-          <Tabs size="md" tabs={mediumTabs} />
+          <Tabs.Root size="md" tabs={mediumTabs} />
         </div>
 
         <div data-testid="large-tabs">
           <h3>Large (lg)</h3>
-          <Tabs size="lg" tabs={largeTabs} />
+          <Tabs.Root size="lg" tabs={largeTabs} />
         </div>
       </div>
     );
