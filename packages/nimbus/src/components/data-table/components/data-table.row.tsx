@@ -336,7 +336,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
            * need to be in the same order in the header and row components*/}
           {/* Selection checkbox cell if selection is enabled */}
           {selectionBehavior === "toggle" && (
-            <DataTableCell data-slot="selection" isDisabled={isDisabled}>
+            <DataTableCell
+              className="data-table-sticky-cell"
+              data-slot="selection"
+              isDisabled={isDisabled}
+            >
               <Box
                 display="flex"
                 alignItems="center"
@@ -355,7 +359,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
 
           {/* Expand/collapse cell if expand column is shown */}
           {showExpandColumn && (
-            <DataTableCell data-slot="expand" isDisabled={isDisabled}>
+            <DataTableCell
+              className="data-table-sticky-cell"
+              data-slot="expand"
+              isDisabled={isDisabled}
+            >
               {hasNestedContent ? (
                 <DataTableExpandButton
                   w="100%"
@@ -401,13 +409,17 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
               );
             }}
           </RaCollection>
-          <DataTableCell data-slot="pin-row-cell" isDisabled={isDisabled}>
+          <DataTableCell
+            className={"data-table-sticky-cell"}
+            data-slot="pin-row-cell"
+            isDisabled={isDisabled}
+          >
             <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              w="100%"
-              h="100%"
+              data-slot={
+                isPinned
+                  ? "nimbus-table-cell-pin-button-pinned"
+                  : "nimbus-table-cell-pin-button"
+              }
             >
               <Tooltip.Root>
                 <IconButton
@@ -416,7 +428,6 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   variant="ghost"
                   aria-label={isPinned ? "Unpin row" : "Pin row"}
                   colorPalette="primary"
-                  className={`nimbus-table-cell-pin-button ${isPinned ? "nimbus-table-cell-pin-button-pinned" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     togglePin(row.id);

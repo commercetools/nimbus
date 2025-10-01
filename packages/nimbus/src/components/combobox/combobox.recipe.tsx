@@ -10,6 +10,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "value",
+    "leadingElement",
     "buttonGroup",
     "popover",
     "multiSelectInput",
@@ -25,6 +26,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
+      "--leading-element-width": "sizes.200",
       colorPalette: "primary",
       focusRing: "outside",
       display: "inline-flex",
@@ -55,6 +57,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       "& [data-placeholder]": {
         opacity: 0.5,
       },
+    },
+    leadingElement: {
+      position: "absolute",
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
     },
     value: {
       display: "flex",
@@ -152,6 +160,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         value: {
           minH: "800",
           textStyle: "sm",
+          pl: "calc(var(--leading-element-width) + {sizes.100})",
+        },
+        leadingElement: {
+          minH: "800",
+          pl: "300",
         },
       },
       // Medium
@@ -159,6 +172,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         value: {
           minH: "1000",
           textStyle: "md",
+          pl: "calc(var(--leading-element-width) + {sizes.200})",
+        },
+        leadingElement: {
+          minH: "1000",
+          pl: "400",
         },
       },
     },

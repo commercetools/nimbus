@@ -3,6 +3,7 @@ import {
   Box,
   useHotkeys,
   Dialog,
+  Separator,
   TextInput,
   Text,
   Kbd,
@@ -40,20 +41,18 @@ export const AppNavBarSearch = () => {
     if (selectedItem) {
       setOpen(false);
       setActiveRoute(selectedItem.route);
+      setQuery("");
     }
   };
 
   return (
     <Flex grow="1">
       <Dialog.Root
-        open={open}
+        isOpen={open}
         placement="top"
-        motionPreset="slide-in-bottom"
         onOpenChange={() => setOpen(!open)}
-        scrollBehavior="outside"
-        size="xl"
+        scrollBehavior="inside"
       >
-        <Dialog.Backdrop />
         <Dialog.Trigger>
           <Box position="relative">
             <TextInput
@@ -70,12 +69,12 @@ export const AppNavBarSearch = () => {
             </Box>
           </Box>
         </Dialog.Trigger>
-        <Dialog.Content divideY="1px" backdropBlur="5px">
+        <Dialog.Content width="3xl">
           <Dialog.Header>
-            <Dialog.Title fontWeight="600">
-              Search the Documentation
-            </Dialog.Title>
+            <Dialog.Title>Search the Documentation</Dialog.Title>
+            <Dialog.CloseTrigger />
           </Dialog.Header>
+          <Separator />
           <Dialog.Body>
             <ComboBox
               inputValue={query}
@@ -99,10 +98,11 @@ export const AppNavBarSearch = () => {
                   asChild
                 >
                   {/** TODO: TextInput should actually work here, try again once it's fixed*/}
-                  <Input placeholder="Type to search..." />
+                  <Input autoFocus placeholder="Type to search..." />
                 </Box>
               </Flex>
-              <Box mx="-600" borderTop="1px solid" borderColor="neutral.6">
+              <Box mx="-600">
+                <Separator />
                 <ListBox items={results} selectionMode="single">
                   {(item) => (
                     <Flex

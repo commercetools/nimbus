@@ -1,0 +1,148 @@
+---
+id: Layout-Separator
+title: Separator
+description: A visual divider that separates content sections.
+documentState: InitialDraft
+documentAudiences: []
+order: 999
+menu:
+  - Components
+  - Layout
+  - Separator
+tags:
+  - document
+---
+
+# Separator
+
+A separator is a visual or semantic line that groups and divides content,
+establishing rhythm and hierarchy within a layout.
+
+## Overview
+
+Separators enhance clarity by visually breaking up content. They can be
+horizontal or vertical.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-25167)
+
+## Variables
+
+Get familiar with the features.
+
+### Label options
+
+#### Horizontal
+
+Horizontal separators can be used to divide content or tools. It can span the
+entire page width or small areas.
+
+```jsx-live
+const App = () => (
+  <Box width="1600">
+    <Separator />
+  </Box>
+)
+```
+
+#### Vertical
+
+Vertical separators can be used to divide columns of content or tools.
+
+```jsx-live
+const App = () => (
+  <Box height="1600">
+    <Separator orientation="vertical" />
+  </Box>
+)
+```
+
+#### Supports radix colors
+
+The default color is `neutral` but can be customized with supported token
+colors.
+
+```jsx-live
+const App = () => {
+  const customColors = ['slate', 'positive', 'teal', 'pink', 'mint'];
+
+ return (
+    <Flex height="1600" flexDirection="horizontal" gap="200">
+      {customColors.map((color) => (
+        <Separator key={color} orientation="vertical" colorPalette={color} />
+      ))}
+    </Flex>
+  );
+}
+```
+
+## Guidelines
+
+Design guidelines offer a set of standardized rules and recommendations that
+ensure consistency, usability, and accessibility across all design elements and
+interactions.
+
+### Best practices
+
+- **Be subtle:** Separators should be noticeable but not visually jarring.
+- **Prioritize white space:** Use separators only when white space alone is
+  insufficient to define content groups.
+- **Use sparingly:** Overuse of separators creates visual noise and diminishes
+  their impact.
+- **Place logically:** Position separators to reinforce content relationships
+  and hierarchy.
+
+### Usage
+
+Separators help organize content and guide the user's eye.
+
+> [!TIP]\
+> When to use
+
+- Separate distinct sections of content on a page.
+- Divide items in a list, especially when items are similar.
+- Group related components within a panel or dialog.
+- Separate elements in a toolbar or navigation menu.
+- Indicate where content might expand or collapse.
+
+> [!CAUTION]\
+> When not to use
+
+- Separate individual items when white space provides sufficient visual
+  distinction.
+- Overuse within a small area, which can lead to visual clutter.
+- As a primary decorative element.
+- When a component already has inherent visual separation (e.g., card borders).
+
+## Properties
+
+<PropsTable id="Separator" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Box width="1600">
+    <Separator />
+  </Box>
+)
+```
+
+### Accessibility standards
+
+**Role attribute:** The component applies `role="separator"` to define it as a
+non-focusable, decorative divider.
+
+**Semantic separation:** Ensure separators genuinely aid in content organization
+for all users, including those relying on assistive technologies.
+
+**Visual contrast:** While decorative, ensure the separator has sufficient
+contrast against its background to be perceivable by users with low vision,
+aligning with WCAG 2.1 1.4.11 for non-text contrast (3:1 contrast ratio).

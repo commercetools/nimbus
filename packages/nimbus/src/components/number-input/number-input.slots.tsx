@@ -4,7 +4,11 @@ import {
   type UnstyledProp,
   createSlotRecipeContext,
 } from "@chakra-ui/react/styled-system";
-import { Button as RaButton } from "react-aria-components";
+import {
+  Button as RaButton,
+  Input as RaInput,
+  type InputProps as RaInputProps,
+} from "react-aria-components";
 import type { AriaButtonProps } from "react-aria";
 
 import { numberInputRecipe } from "./number-input.recipe";
@@ -16,12 +20,25 @@ export interface NumberInputRecipeProps
 export type NumberInputRootSlotProps = HTMLChakraProps<
   "div",
   NumberInputRecipeProps
+> & {
+  name?: string;
+};
+
+export type NumberInputLeadingElementSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
+>;
+
+export type NumberInputTrailingElementSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
 >;
 
 export type NumberInputInputSlotProps = HTMLChakraProps<
   "input",
   NumberInputRecipeProps
->;
+> &
+  RaInputProps;
 
 export type NumberInputIncrementButtonSlotProps = HTMLChakraProps<
   "button",
@@ -36,7 +53,7 @@ export type NumberInputDecrementButtonSlotProps = HTMLChakraProps<
   AriaButtonProps;
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  key: "numberInput",
+  recipe: numberInputRecipe,
 });
 
 /**
@@ -48,6 +65,16 @@ export const NumberInputRootSlot = withProvider<
   NumberInputRootSlotProps
 >("div", "root");
 
+export const NumberInputLeadingElementSlot = withContext<
+  HTMLDivElement,
+  NumberInputLeadingElementSlotProps
+>("div", "leadingElement");
+
+export const NumberInputTrailingElementSlot = withContext<
+  HTMLDivElement,
+  NumberInputTrailingElementSlotProps
+>("div", "trailingElement");
+
 /**
  * Input slot for NumberInput component.
  * Receives the styled classes for the actual input element.
@@ -55,7 +82,7 @@ export const NumberInputRootSlot = withProvider<
 export const NumberInputInputSlot = withContext<
   HTMLInputElement,
   NumberInputInputSlotProps
->("input", "input");
+>(RaInput, "input");
 
 /**
  * Increment button slot for NumberInput component.

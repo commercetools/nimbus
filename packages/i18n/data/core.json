@@ -27,9 +27,81 @@
     "developer_comment": "aria-label for clear input button in date picker",
     "string": "Clear input value"
   },
+  "Nimbus.FieldErrors.duplicateValue": {
+    "developer_comment": "Error message for duplicate value validation",
+    "string": "This value is already in use. It must be unique."
+  },
+  "Nimbus.FieldErrors.emptyValue": {
+    "developer_comment": "Error message for empty value when content is required",
+    "string": "This field cannot be empty."
+  },
+  "Nimbus.FieldErrors.invalidFormat": {
+    "developer_comment": "Error message for format validation",
+    "string": "Please enter a valid format."
+  },
+  "Nimbus.FieldErrors.invalidFractionalNumber": {
+    "developer_comment": "Error message when fractional number is used",
+    "string": "A whole number is required."
+  },
+  "Nimbus.FieldErrors.invalidFromServer": {
+    "developer_comment": "Error message for server-side validation errors",
+    "string": "Server validation failed. Please check your input."
+  },
+  "Nimbus.FieldErrors.invalidNegativeNumber": {
+    "developer_comment": "Error message when negative number is used",
+    "string": "Negative number is not supported."
+  },
+  "Nimbus.FieldErrors.invalidValue": {
+    "developer_comment": "Error message for invalid value or format",
+    "string": "The provided value is invalid."
+  },
+  "Nimbus.FieldErrors.missingRequiredField": {
+    "developer_comment": "Error message for missing required value",
+    "string": "This field is required. Provide a value."
+  },
+  "Nimbus.FieldErrors.resourceNotFound": {
+    "developer_comment": "Error message when a resource is not found",
+    "string": "The requested resource was not found."
+  },
+  "Nimbus.FieldErrors.valueAboveMaximum": {
+    "developer_comment": "Error message for values above maximum threshold",
+    "string": "Value must be less than or equal to the maximum."
+  },
+  "Nimbus.FieldErrors.valueBelowMinimum": {
+    "developer_comment": "Error message for values below minimum threshold",
+    "string": "Value must be greater than or equal to the minimum."
+  },
+  "Nimbus.FieldErrors.valueBlocked": {
+    "developer_comment": "Error message for blocked or restricted values",
+    "string": "This value is not allowed."
+  },
+  "Nimbus.FieldErrors.valueOutOfRange": {
+    "developer_comment": "Error message for values outside acceptable range",
+    "string": "Value must be within the acceptable range."
+  },
+  "Nimbus.FieldErrors.valueTooLong": {
+    "developer_comment": "Error message for maximum length validation",
+    "string": "This value is too long."
+  },
+  "Nimbus.FieldErrors.valueTooShort": {
+    "developer_comment": "Error message for minimum length validation",
+    "string": "This value is too short."
+  },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
     "string": "Loading data"
+  },
+  "Nimbus.MoneyInput.amountInputLabel": {
+    "developer_comment": "aria-label for amount input",
+    "string": "Amount"
+  },
+  "Nimbus.MoneyInput.currencySelectLabel": {
+    "developer_comment": "aria-label for currency selection dropdown",
+    "string": "Currency"
+  },
+  "Nimbus.MoneyInput.highPrecisionPrice": {
+    "developer_comment": "tooltip text for high precision price badge",
+    "string": "High precision price"
   },
   "Nimbus.NumberInput.decrement": {
     "developer_comment": "aria-label for the decrement button in number input",

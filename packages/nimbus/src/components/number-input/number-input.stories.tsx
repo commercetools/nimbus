@@ -1,8 +1,16 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { I18nProvider } from "react-aria";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
+import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
+import {
+  AddReaction,
+  Search,
+  Visibility,
+  AddBox,
+  Close,
+} from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof NumberInput> = {
   title: "components/NumberInput",
@@ -84,6 +92,8 @@ export const Variants: Story = {
           </Text>
           <NumberInput
             variant={variant}
+            leadingElement={<Icon as={AddReaction} />}
+            trailingElement={<Icon as={AddReaction} />}
             placeholder="123"
             aria-label={`Variant ${variant} number input`}
           />
@@ -219,6 +229,114 @@ export const AllCombinations: Story = {
       ))}
     </Stack>
   ),
+};
+
+export const LeadingAndTrailingElements: Story = {
+  render: () => {
+    const examples: Array<{
+      label: string;
+      props?: React.ComponentProps<typeof NumberInput>;
+      getProps?: (
+        size: "sm" | "md"
+      ) => React.ComponentProps<typeof NumberInput>;
+    }> = [
+      {
+        label: "Leading Icon",
+        props: {
+          placeholder: "Search amount...",
+          leadingElement: <Search />,
+          "aria-label": "search-number-input",
+        },
+      },
+      {
+        label: "Trailing Icon",
+        props: {
+          placeholder: "Enter quantity",
+          trailingElement: <Visibility />,
+          "aria-label": "quantity-input",
+        },
+      },
+      {
+        label: "Both Icons",
+        props: {
+          placeholder: "Product price",
+          leadingElement: <Icon as={Search} />,
+          trailingElement: <Icon as={AddBox} />,
+          "aria-label": "price-input",
+        },
+      },
+      {
+        label: "IconButton Elements",
+        getProps: (size: "sm" | "md") => ({
+          placeholder: "Advanced number input",
+          leadingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="number options"
+            >
+              <Icon as={AddReaction} />
+            </IconButton>
+          ),
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              tone="primary"
+              variant="ghost"
+              aria-label="clear"
+            >
+              <Icon as={Close} />
+            </IconButton>
+          ),
+          "aria-label": "advanced-number-input",
+        }),
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <NumberInput
+                          {...(example.getProps
+                            ? example.getProps(size)
+                            : example.props)}
+                          size={size}
+                          variant={variant}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
 };
 
 export const Controlled: Story = {
@@ -555,5 +673,95 @@ export const WithFormField: Story = {
         await userEvent.clear(basicInput);
       }
     );
+  },
+};
+
+export const LocaleFormatting: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      <Box>
+        <Text mb={2} fontSize="lg" fontWeight="bold">
+          Locale-based Number Formatting
+        </Text>
+        <Text mb={4} fontSize="sm" color="gray.600">
+          NumberInput respects I18nProvider locale for consistent formatting
+        </Text>
+      </Box>
+
+      <Box>
+        <Text mb={2} fontSize="md" fontWeight="medium">
+          US Locale (en-US) - Default
+        </Text>
+        <Stack direction="row" align="flex-start" gap="300">
+          <Box>
+            <Text mb={1} fontSize="sm">
+              Number A
+            </Text>
+            <NumberInput defaultValue={1234.56} aria-label="US locale number" />
+          </Box>
+          <Box>
+            <Text mb={1} fontSize="sm">
+              Number B
+            </Text>
+            <NumberInput
+              defaultValue={9876.54}
+              aria-label="US locale number 2"
+            />
+          </Box>
+        </Stack>
+      </Box>
+
+      <I18nProvider locale="de-DE">
+        <Box>
+          <Text mb={2} fontSize="md" fontWeight="medium">
+            German Locale (de-DE) - Periods for thousands, comma for decimals
+          </Text>
+          <Stack direction="row" align="flex-start" gap="300">
+            <Box>
+              <Text mb={1} fontSize="sm">
+                Number A
+              </Text>
+              <NumberInput
+                defaultValue={1234.56}
+                aria-label="German locale number"
+              />
+            </Box>
+            <Box>
+              <Text mb={1} fontSize="sm">
+                Number B
+              </Text>
+              <NumberInput
+                defaultValue={9876.54}
+                aria-label="German locale number 2"
+              />
+            </Box>
+          </Stack>
+        </Box>
+      </I18nProvider>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // US locale formatting (commas for thousands, periods for decimals)
+    const usNumber1 =
+      canvas.getByLabelText<HTMLInputElement>("US locale number");
+    const usNumber2 =
+      canvas.getByLabelText<HTMLInputElement>("US locale number 2");
+    await expect(usNumber1).toHaveValue("1,234.56");
+    await expect(usNumber2).toHaveValue("9,876.54");
+
+    // German locale formatting (periods for thousands, comma for decimals)
+    const deNumber1 = canvas.getByLabelText<HTMLInputElement>(
+      "German locale number"
+    );
+    const deNumber2 = canvas.getByLabelText<HTMLInputElement>(
+      "German locale number 2"
+    );
+    // German locale uses periods for thousands and commas for decimals
+    await expect(deNumber1.value).toContain("1.234");
+    await expect(deNumber1.value).toContain(",56");
+    await expect(deNumber2.value).toContain("9.876");
+    await expect(deNumber2.value).toContain(",54");
   },
 };

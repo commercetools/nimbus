@@ -1,42 +1,48 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+/**
+ * Dialog recipe - styling for Dialog component overlays
+ * Supports center positioning, various sizes, and motion presets for accessible dialog experiences
+ */
 export const dialogSlotRecipe = defineSlotRecipe({
   slots: [
     "trigger",
-    "backdrop",
-    "positioner",
+    "modalOverlay",
+    "modal",
     "content",
     "title",
-    "description",
     "closeTrigger",
     "header",
     "body",
     "footer",
-    "backdrop",
   ],
   className: "nimbus-dialog",
   base: {
-    backdrop: {
+    trigger: {
+      focusRing: "outside",
+    },
+    modalOverlay: {
       bg: {
-        _dark: "bg/50",
-        _light: "fg/50",
+        _dark: "bg/20",
+        _light: "fg/20",
       },
       pos: "fixed",
       left: 0,
       top: 0,
       w: "100vw",
       h: "100dvh",
+      backdropFilter: "blur({sizes.100})",
       zIndex: "modal",
-      _open: {
+      "&[data-entering]": {
         animationName: "fade-in",
-        animationDuration: "slow",
+        animationDuration: "fast",
       },
-      _closed: {
+      "&[data-exiting]": {
         animationName: "fade-out",
-        animationDuration: "moderate",
+        animationDuration: "faster",
       },
     },
-    positioner: {
+    modal: {
       display: "flex",
       width: "100vw",
       height: "100dvh",
@@ -47,12 +53,20 @@ export const dialogSlotRecipe = defineSlotRecipe({
       zIndex: "calc(var(--dialog-z-index) + var(--layer-index, 0))",
       justifyContent: "center",
       overscrollBehaviorY: "none",
+      pointerEvents: "none",
+      "&[data-entering]": {
+        animationDuration: "moderate",
+        animationName: "slide-from-bottom, scale-in, fade-in",
+      },
+      "&[data-exiting]": {
+        animationDuration: "faster",
+        animationName: "slide-to-top, scale-out, fade-out",
+      },
     },
     content: {
       display: "flex",
       flexDirection: "column",
       position: "relative",
-      width: "100%",
       outline: 0,
       borderRadius: "200",
       textStyle: "sm",
@@ -60,13 +74,10 @@ export const dialogSlotRecipe = defineSlotRecipe({
       "--dialog-z-index": "zIndex.modal",
       zIndex: "calc(var(--dialog-z-index) + var(--layer-index, 0))",
       bg: "bg",
-      boxShadow: "lg",
-      _open: {
-        animationDuration: "moderate",
-      },
-      _closed: {
-        animationDuration: "faster",
-      },
+      boxShadow: "6",
+      width: "lg",
+      maxW: "full",
+      pointerEvents: "auto",
     },
     header: {
       flex: 0,
@@ -86,21 +97,20 @@ export const dialogSlotRecipe = defineSlotRecipe({
       justifyContent: "flex-end",
       gap: "300",
       px: "600",
-      pt: "200",
-      pb: "400",
+      py: "400",
     },
-    title: {
-      textStyle: "lg",
-      fontWeight: "semibold",
-    },
-    description: {
-      color: "fg.muted",
+    title: {},
+    closeTrigger: {
+      position: "absolute",
+      top: "400",
+      right: "400",
+      zIndex: 1,
     },
   },
   variants: {
     placement: {
       center: {
-        positioner: {
+        modal: {
           alignItems: "center",
         },
         content: {
@@ -109,7 +119,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
         },
       },
       top: {
-        positioner: {
+        modal: {
           alignItems: "flex-start",
         },
         content: {
@@ -118,7 +128,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
         },
       },
       bottom: {
-        positioner: {
+        modal: {
           alignItems: "flex-end",
         },
         content: {
@@ -129,7 +139,7 @@ export const dialogSlotRecipe = defineSlotRecipe({
     },
     scrollBehavior: {
       inside: {
-        positioner: {
+        modal: {
           overflow: "hidden",
         },
         content: {
@@ -137,118 +147,18 @@ export const dialogSlotRecipe = defineSlotRecipe({
         },
         body: {
           overflow: "auto",
+          focusVisibleRing: "outside",
         },
       },
       outside: {
-        positioner: {
+        modal: {
           overflow: "auto",
-          pointerEvents: "auto",
         },
       },
-    },
-    size: {
-      xs: {
-        content: {
-          maxW: "sm",
-        },
-      },
-      sm: {
-        content: {
-          maxW: "md",
-        },
-      },
-      md: {
-        content: {
-          maxW: "lg",
-        },
-      },
-      lg: {
-        content: {
-          maxW: "2xl",
-        },
-      },
-      xl: {
-        content: {
-          maxW: "4xl",
-        },
-      },
-      cover: {
-        positioner: {
-          padding: "1000",
-        },
-        content: {
-          width: "100%",
-          height: "100%",
-          "--dialog-margin": "0",
-        },
-      },
-      full: {
-        content: {
-          maxW: "100vw",
-          minH: "100vh",
-          "--dialog-margin": "0",
-          borderRadius: "0",
-        },
-      },
-    },
-    motionPreset: {
-      scale: {
-        content: {
-          _open: {
-            animationName: "scale-in, fade-in",
-          },
-          _closed: {
-            animationName: "scale-out, fade-out",
-          },
-        },
-      },
-      "slide-in-bottom": {
-        content: {
-          _open: {
-            animationName: "slide-from-bottom, fade-in",
-          },
-          _closed: {
-            animationName: "slide-to-bottom, fade-out",
-          },
-        },
-      },
-      "slide-in-top": {
-        content: {
-          _open: {
-            animationName: "slide-from-top, fade-in",
-          },
-          _closed: {
-            animationName: "slide-to-top, fade-out",
-          },
-        },
-      },
-      "slide-in-left": {
-        content: {
-          _open: {
-            animationName: "slide-from-left, fade-in",
-          },
-          _closed: {
-            animationName: "slide-to-left, fade-out",
-          },
-        },
-      },
-      "slide-in-right": {
-        content: {
-          _open: {
-            animationName: "slide-from-right, fade-in",
-          },
-          _closed: {
-            animationName: "slide-to-right, fade-out",
-          },
-        },
-      },
-      none: {},
     },
   },
   defaultVariants: {
-    size: "md",
     scrollBehavior: "outside",
-    placement: "top",
-    motionPreset: "scale",
+    placement: "center",
   },
 });

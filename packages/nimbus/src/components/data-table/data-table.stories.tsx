@@ -55,8 +55,8 @@ type ModalState = {
 
 const InfoModal = ({ isOpen, onClose, title, children }: ModalState) => (
   <Dialog.Root
-    open={isOpen}
-    onOpenChange={({ open }) => !open && onClose && onClose()}
+    isOpen={isOpen}
+    onOpenChange={(open) => !open && onClose && onClose()}
   >
     <Dialog.Content>
       <Dialog.Header>
@@ -135,8 +135,8 @@ const ProductDetailsModal = ({
   };
 
   return (
-    <Dialog.Root open={isOpen}>
-      <Dialog.Content maxWidth="600px">
+    <Dialog.Root isOpen={isOpen}>
+      <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>{formData.name as string}</Dialog.Title>
         </Dialog.Header>
@@ -1819,8 +1819,15 @@ export const RowPinning: Story = {
         // Pin button should exist in DOM but be hidden via CSS
         const pinButton = within(firstDataRow).getByLabelText(/pin row/i);
         expect(pinButton).toBeInTheDocument();
-        expect(pinButton).toHaveClass("nimbus-table-cell-pin-button");
-        expect(pinButton).not.toHaveClass(
+
+        // Check the wrapper element has the correct data-slot attribute
+        const pinButtonWrapper = pinButton.parentElement;
+        expect(pinButtonWrapper).toHaveAttribute(
+          "data-slot",
+          "nimbus-table-cell-pin-button"
+        );
+        expect(pinButtonWrapper).not.toHaveAttribute(
+          "data-slot",
           "nimbus-table-cell-pin-button-pinned"
         );
       }
@@ -1850,10 +1857,16 @@ export const RowPinning: Story = {
       await waitFor(async () => {
         // Row should now have pinned styling
         expect(firstDataRow).toHaveClass("data-table-row-pinned");
-        // Pin button should show "unpin" state and have pinned class
+        // Pin button should show "unpin" state and have pinned data-slot
         const unpinButton = within(firstDataRow).getByLabelText(/unpin row/i);
         expect(unpinButton).toBeInTheDocument();
-        expect(unpinButton).toHaveClass("nimbus-table-cell-pin-button-pinned");
+
+        // Check the wrapper element has the pinned data-slot attribute
+        const unpinButtonWrapper = unpinButton.parentElement;
+        expect(unpinButtonWrapper).toHaveAttribute(
+          "data-slot",
+          "nimbus-table-cell-pin-button-pinned"
+        );
       });
     });
 
@@ -1865,9 +1878,13 @@ export const RowPinning: Story = {
       expect(firstDataRow).toHaveClass("data-table-row-pinned");
       expect(firstDataRow).toHaveClass("data-table-row-pinned-single");
 
-      // Pin button should be visible with pinned class
+      // Pin button should be visible with pinned data-slot attribute
       const pinButton = within(firstDataRow).getByLabelText(/unpin row/i);
-      expect(pinButton).toHaveClass("nimbus-table-cell-pin-button-pinned");
+      const pinButtonWrapper = pinButton.parentElement;
+      expect(pinButtonWrapper).toHaveAttribute(
+        "data-slot",
+        "nimbus-table-cell-pin-button-pinned"
+      );
     });
 
     await step("Can pin multiple rows", async () => {

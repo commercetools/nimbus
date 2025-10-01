@@ -54,6 +54,11 @@ export interface ComboBoxMultiSelect<T extends object>
   itemValue?: string;
   placeholder?: string;
   ref?: Ref<HTMLDivElement>;
+  /**
+   * Optional element to display at the start of the input
+   * Will respect text direction (left in LTR, right in RTL)
+   */
+  leadingElement?: ReactNode;
   size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
 }
 /** Base Chakra styling props for the root `div` slot when single select*/
@@ -68,6 +73,11 @@ export interface ComboBoxSingleSelectRootProps<T extends object>
   extends ComboBoxSingleSelectRootSlotProps<T>,
     ComboBoxWithCustomChildren<T> {
   ref?: Ref<HTMLDivElement>;
+  /**
+   * Optional element to display at the start of the input
+   * Will respect text direction (left in LTR, right in RTL)
+   */
+  leadingElement?: ReactNode;
 }
 /** Base Chakra styling props for the root `div` slot when multi select*/
 export interface ComboBoxMultiSelectRootSlotProps<T extends object>
@@ -107,6 +117,11 @@ export type ComboBoxMultiSelectValueProps<T extends object> = {
   ref?: Ref<HTMLDivElement>;
   containerRef?: RefObject<HTMLDivElement | null>;
   size?: RecipeVariantProps<typeof comboBoxSlotRecipe>["size"];
+  /**
+   * Optional element to display at the start of the input
+   * Will respect text direction (left in LTR, right in RTL)
+   */
+  leadingElement?: ReactNode;
 };
 
 // ============================================================

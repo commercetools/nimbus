@@ -3,7 +3,7 @@ import {
   Toolbar,
   Menu,
   VisuallyHidden,
-  Divider,
+  Separator,
   ToggleButtonGroup,
   IconToggleButton,
   IconButton,
@@ -102,7 +102,7 @@ export const RichTextToolbar = ({
         </Menu.Root>
       </Group>
 
-      <Divider orientation="vertical" />
+      <Separator orientation="vertical" />
 
       {/* Text Formatting Toggles */}
       <ToggleButtonGroup.Root
@@ -162,7 +162,7 @@ export const RichTextToolbar = ({
       {/* Formatting Menu for additional options */}
       <FormattingMenu isDisabled={isDisabled} />
 
-      <Divider orientation="vertical" />
+      <Separator orientation="vertical" />
 
       {/* Lists & Indentation */}
       <ToggleButtonGroup.Root

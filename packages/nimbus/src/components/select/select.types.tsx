@@ -18,8 +18,17 @@ export interface SelectRootProps extends SelectRootSlotProps, RaSelectProps {
   isLoading?: boolean;
   /** Children must be ReactNode, no render props/functions allowed */
   children: ReactNode;
+  /**
+   * Optional element to display at the start of the input
+   * Will respect text direction (left in LTR, right in RTL)
+   */
+  leadingElement?: ReactNode;
   /** Whether the select should show a clear button when a value is selected */
   isClearable?: boolean;
+  /**
+   * React ref to be forwarded to the root element
+   */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 // Fix the incompatible event handler types by using a more specific type

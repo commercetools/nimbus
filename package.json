@@ -11,16 +11,15 @@
     ]
   },
   "scripts": {
-    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs && pnpm run compile-i18n",
+    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
     "build:packages": "pnpm -r --filter './packages/*' build",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "changeset": "changeset",
     "changeset:version-and-format": "changeset version && prettier --write --parser json '**/package.json' && pnpm install --lockfile-only",
     "changeset:status": "changeset status --verbose",
-    "compile-i18n": "pnpm --filter @commercetools-nimbus/i18n compile-data",
     "component:new": "pnpm hygen component new",
-    "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/*.i18n.ts'",
+    "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/*.i18n.ts' && pnpm --filter @commercetools-nimbus/i18n build",
     "generate:tokens": "pnpm --filter @commercetools/nimbus-tokens run build",
     "lint": "eslint .",
     "typecheck": "pnpm -r --filter './packages/*' --bail=false typecheck || true",
@@ -60,7 +59,7 @@
   "devDependencies": {
     "@babel/core": "catalog:tooling",
     "@changesets/changelog-github": "0.5.1",
-    "@changesets/cli": "2.29.6",
+    "@changesets/cli": "2.29.7",
     "@eslint/js": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",
     "eslint": "catalog:tooling",

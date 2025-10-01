@@ -58,7 +58,7 @@ export const menuSlotRecipe = defineSlotRecipe({
       "&:focus": {
         outline: "none",
       },
-      // Target direct descendant Divider components
+      // Target direct descendant Separator components
       '& > [role="separator"]': {
         mx: "-200",
         my: "200",
