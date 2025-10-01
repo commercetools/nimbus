@@ -56,6 +56,7 @@ export const SearchInput = (props: SearchInputProps) => {
             slot="null"
             size="2xs"
             variant="ghost"
+            tone="primary"
             aria-label={intl.formatMessage(messages.clearInput)}
             onPress={() => state.setValue("")}
             opacity={state.value ? 1 : 0}
