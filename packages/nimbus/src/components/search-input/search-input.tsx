@@ -60,6 +60,7 @@ export const SearchInput = (props: SearchInputProps) => {
             onPress={() => state.setValue("")}
             opacity={state.value ? 1 : 0}
             pointerEvents={state.value ? "auto" : "none"}
+            isDisabled={props.isDisabled || props.isReadOnly}
           >
             <Close />
           </IconButton>

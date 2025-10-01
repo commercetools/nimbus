@@ -98,6 +98,7 @@ export const Variants: Story = {
 export const Disabled: Story = {
   args: {
     isDisabled: true,
+    defaultValue: "Some search text",
   },
   render: (args) => {
     return (
@@ -129,7 +130,18 @@ export const Disabled: Story = {
 
     await step("Cannot type text when disabled", async () => {
       await userEvent.type(input, "Test");
-      await expect(input).toHaveValue("");
+      await expect(input).toHaveValue("Some search text");
+    });
+
+    await step("Clear button is disabled when input is disabled", async () => {
+      // Get the parent container of the input to scope the button query
+      const searchFieldContainer = input.closest(".react-aria-SearchField");
+      if (!searchFieldContainer)
+        throw new Error("Could not find SearchField container");
+
+      const containerScope = within(searchFieldContainer as HTMLElement);
+      const clearButton = containerScope.getByRole("button", { hidden: true });
+      await expect(clearButton).toBeDisabled();
     });
   },
 };
@@ -193,6 +205,11 @@ export const ReadOnly: Story = {
       await userEvent.click(input);
       await userEvent.type(input, "new text");
       await expect(input).toHaveValue("Read-only search");
+    });
+
+    await step("Clear button is disabled when input is readonly", async () => {
+      const clearButton = canvas.getByRole("button");
+      await expect(clearButton).toBeDisabled();
     });
   },
 };
