@@ -14,6 +14,15 @@ export const FormFieldDescription = ({
       description: children,
       descriptionSlotProps,
     }));
+
+    // Cleanup: clear description when component unmounts
+    return () => {
+      setContext((prevContext) => ({
+        ...prevContext,
+        description: null,
+        descriptionSlotProps: undefined,
+      }));
+    };
   }, [children, setContext]);
 
   return null;
