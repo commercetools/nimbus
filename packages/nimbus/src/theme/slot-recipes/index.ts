@@ -16,6 +16,12 @@ import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recip
 import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
 import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
+import { draggableListSlotRecipe } from "@/components/draggable-list/draggable-list.recipe";
+import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
+import { menuSlotRecipe } from "@/components/menu/menu.recipe";
+import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
+import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -28,12 +34,6 @@ import { localizedFieldSlotRecipe } from "@/components/localized-field/localized
  *
  * Silent failure results in there being no generated types for slot recipes, and causes all kinds of
  * false typescript errors that are really hard to debug. */
-import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
-import { menuSlotRecipe } from "@/components/menu/menu.recipe";
-import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
-import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
-import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
-
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
   list: listSlotRecipe,
@@ -58,4 +58,5 @@ export const slotRecipes = {
   splitButton: splitButtonSlotRecipe,
   localizedField: localizedFieldSlotRecipe,
   collapsibleMotion: collapsibleMotionSlotRecipe,
+  draggableList: draggableListSlotRecipe,
 };
