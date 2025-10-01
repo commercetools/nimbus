@@ -15,7 +15,6 @@ import { useRecipe } from "@chakra-ui/react/styled-system";
 import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateInputProps } from "./date-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { Box } from "@/components";
 
 /**
  * # DateInput
@@ -33,29 +32,27 @@ export const DateInput = (props: DateInputProps) => {
   return (
     <DateInputRootSlot {...recipeProps} {...styleProps} asChild>
       <DateField {...functionalProps}>
-        <DateInputSegmentGroupSlot asChild>
-          <>
-            {leadingElement && (
-              <DateInputLeadingElementSlot>
-                {leadingElement}
-              </DateInputLeadingElementSlot>
-            )}
-            <Box flexGrow="1" asChild>
-              <DateInputField>
-                {(segment) => (
-                  <DateInputSegmentSlot asChild>
-                    <DateSegment segment={segment} />
-                  </DateInputSegmentSlot>
-                )}
-              </DateInputField>
-            </Box>
-            {trailingElement && (
-              <DateInputTrailingElementSlot>
-                {trailingElement}
-              </DateInputTrailingElementSlot>
-            )}
-          </>
-        </DateInputSegmentGroupSlot>
+        <>
+          {leadingElement && (
+            <DateInputLeadingElementSlot>
+              {leadingElement}
+            </DateInputLeadingElementSlot>
+          )}
+          <DateInputSegmentGroupSlot asChild>
+            <DateInputField>
+              {(segment) => (
+                <DateInputSegmentSlot asChild>
+                  <DateSegment segment={segment} />
+                </DateInputSegmentSlot>
+              )}
+            </DateInputField>
+          </DateInputSegmentGroupSlot>
+          {trailingElement && (
+            <DateInputTrailingElementSlot>
+              {trailingElement}
+            </DateInputTrailingElementSlot>
+          )}
+        </>
       </DateField>
     </DateInputRootSlot>
   );

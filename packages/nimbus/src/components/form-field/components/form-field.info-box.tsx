@@ -16,6 +16,14 @@ export const FormFieldInfoBox = ({ children }: FormFieldInfoBoxProps) => {
       ...prevContext,
       info: children,
     }));
+
+    // Cleanup: clear info when component unmounts
+    return () => {
+      setContext((prevContext) => ({
+        ...prevContext,
+        info: null,
+      }));
+    };
   }, [children, setContext]);
 
   return null;

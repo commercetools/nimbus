@@ -87,10 +87,13 @@ export const formatMoneyValueForDisplay = (
   return { amount, currencyCode: moneyValue.currencyCode };
 };
 
-export const isEmpty = (formValue: TValue) =>
-  !formValue ||
-  formValue.amount.trim() === "" ||
-  formValue.currencyCode.trim() === "";
+export const isEmpty = (formValue: TValue) => {
+  return (
+    !formValue ||
+    formValue?.amount?.trim() === "" ||
+    formValue?.currencyCode?.trim() === ""
+  );
+};
 
 export const isHighPrecision = (formValue: TValue, locale: string): boolean => {
   if (isEmpty(formValue)) {

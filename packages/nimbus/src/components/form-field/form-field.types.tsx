@@ -15,6 +15,8 @@ export interface FormFieldProps extends FormFieldRootSlotProps {
   isDisabled?: boolean;
   /** true, if the field is read only  */
   isReadOnly?: boolean;
+  /** id passed to the field's input component*/
+  id?: string;
   /**
    * React ref to be forwarded to the root element
    */
