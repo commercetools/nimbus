@@ -63,7 +63,6 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: {},
-
   render: (args) => {
     return (
       <Drawer.Root {...args}>

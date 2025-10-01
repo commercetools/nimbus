@@ -1,8 +1,14 @@
-import { type ComponentProps } from "react";
 import { type RecipeVariantProps } from "@chakra-ui/react";
 import { drawerSlotRecipe } from "./drawer.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
-import type { DrawerModalOverlaySlotProps } from "./drawer.slots";
+import type {
+  DrawerModalOverlaySlotProps,
+  DrawerTriggerSlotProps,
+  DrawerHeaderSlotProps,
+  DrawerBodySlotProps,
+  DrawerFooterSlotProps,
+  DrawerTitleSlotProps,
+} from "./drawer.slots";
 import type { IconButtonProps } from "@/components";
 
 /**
@@ -64,8 +70,9 @@ export interface DrawerRootProps
    */
   showBackdrop?: boolean;
 
-  /** A Title for the drawer, optional, as long as there is a Heading
-   * component used inside the Drawer.Content with a `slot`-property set to `title`.
+  /** A Title for the drawer, optional, as long as the Drawer.Title component is used
+   * or there is a Heading component used inside the Drawer with
+   * a `slot`-property set to `title`.
    */
   "aria-label"?: string;
 }
@@ -75,7 +82,7 @@ export interface DrawerRootProps
  *
  * The trigger element that opens the drawer when activated.
  */
-export interface DrawerTriggerProps extends ComponentProps<"button"> {
+export interface DrawerTriggerProps extends DrawerTriggerSlotProps {
   /**
    * The trigger content
    */
@@ -92,6 +99,10 @@ export interface DrawerTriggerProps extends ComponentProps<"button"> {
    * @default false
    */
   isDisabled?: boolean;
+  /**
+   * The ref to the trigger html-button
+   */
+  ref?: React.RefObject<HTMLButtonElement>;
 }
 
 /**
@@ -116,11 +127,16 @@ export interface DrawerContentProps extends DrawerModalOverlaySlotProps {
  *
  * The header section of the drawer content.
  */
-export interface DrawerHeaderProps extends ComponentProps<"header"> {
+export interface DrawerHeaderProps extends DrawerHeaderSlotProps {
   /**
    * The header content
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the drawer header
+   */
+  ref?: React.Ref<HTMLElement>;
 }
 
 /**
@@ -128,11 +144,16 @@ export interface DrawerHeaderProps extends ComponentProps<"header"> {
  *
  * The main body content section of the drawer.
  */
-export interface DrawerBodyProps extends ComponentProps<"div"> {
+export interface DrawerBodyProps extends DrawerBodySlotProps {
   /**
    * The body content
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the drawer body
+   */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 /**
@@ -140,11 +161,16 @@ export interface DrawerBodyProps extends ComponentProps<"div"> {
  *
  * The footer section of the drawer, typically containing action buttons.
  */
-export interface DrawerFooterProps extends ComponentProps<"footer"> {
+export interface DrawerFooterProps extends DrawerFooterSlotProps {
   /**
    * The footer content (usually buttons)
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the drawer footer
+   */
+  ref?: React.Ref<HTMLElement>;
 }
 
 /**
@@ -152,11 +178,16 @@ export interface DrawerFooterProps extends ComponentProps<"footer"> {
  *
  * The accessible title element for the drawer.
  */
-export interface DrawerTitleProps extends ComponentProps<"h2"> {
+export interface DrawerTitleProps extends DrawerTitleSlotProps {
   /**
    * The title text
    */
   children: React.ReactNode;
+
+  /**
+   * The ref to the drawer title
+   */
+  ref?: React.Ref<HTMLHeadingElement>;
 }
 
 /**
