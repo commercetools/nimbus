@@ -1,9 +1,20 @@
 import chokidar from "chokidar";
+import debounce from "lodash/debounce";
 import { parseMdx } from "./parse-mdx";
 import { parseTypes } from "./parse-types";
+import { injectRecipeProps } from "./inject-recipe-props";
 
 // Directory to watch
 const directoryToWatch: string = "./../../packages";
+
+// Debounced recipe props injection - runs after types.json has been updated
+const debouncedInjectRecipeProps = debounce(async () => {
+  try {
+    await injectRecipeProps();
+  } catch (error) {
+    console.error("Error injecting recipe props:", error);
+  }
+}, 1000); // Wait 1s after last type change to ensure types.json is written
 
 const handleFileChange = async (filePath: string) => {
   const ext = filePath.split(".").pop();
@@ -13,6 +24,8 @@ const handleFileChange = async (filePath: string) => {
       break;
     case ext === "ts" || ext === "tsx":
       await parseTypes(filePath);
+      // Trigger recipe props injection after types are parsed
+      debouncedInjectRecipeProps();
       break;
     default:
       break;
@@ -49,7 +62,7 @@ watcher
   .on("add", (filePath: string) => handleFileChange(filePath))
   .on("change", (filePath: string) => handleFileChange(filePath))
   .on("unlink", (filePath: string) => handleFileChange(filePath))
-  .on("error", (error: Error) => console.log("Error watching files:", error));
+  .on("error", (error: unknown) => console.log("Error watching files:", error));
 
 // Creating a watcher for the object
 const clr = "\x1b[33m%s\x1b[0m";
