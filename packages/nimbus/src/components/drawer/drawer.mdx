@@ -31,7 +31,7 @@ Drawers are overlay windows that appear on top of the main content to display im
 ### Key Features
 
 - **Accessibility First**: Built with React Aria Components for WCAG 2.1 AA compliance
-- **Flexible Positioning**: Support for center, top, and bottom placements  
+- **Flexible Positioning**: Support for left, right, top, and bottom placements  
 - **Responsive Sizing**: Multiple size variants from xs to full-screen
 - **Smooth Animations**: Customizable motion presets for entrance/exit
 - **Focus Management**: Automatic focus trapping and restoration
@@ -108,30 +108,37 @@ Position the drawer at different locations using the `placement` prop:
 
 ```jsx-live
 const App = () => {
+  const [showBackdrop, setShowBackdrop] = useState(true);
+
   const placements = [
-    { value: "center", label: "Center (default)", description: "Centered in the viewport, works well for most use cases" },
-    { value: "top", label: "Top", description: "Appears at the top, useful for notifications or alerts" },
-    { value: "bottom", label: "Bottom", description: "Appears at the bottom, good for mobile-friendly sheets or action panels" }
+    { value: "left", label: "Left", description: "Slides in from the left side, ideal for navigation panels or filters" },
+    { value: "right", label: "Right (default)", description: "Slides in from the right side, commonly used for details panels and forms" },
+    { value: "top", label: "Top", description: "Slides in from the top, useful for notifications or alerts" },
+    { value: "bottom", label: "Bottom", description: "Slides in from the bottom, good for mobile-friendly sheets or action panels" }
   ];
 
   return (
-    <Stack direction="row" gap="400">
-      {placements.map((placement) => (
-        <Drawer.Root key={placement.value} placement={placement.value}>
-          <Drawer.Trigger asChild>
-            <Button>{placement.label}</Button>
-          </Drawer.Trigger>
-          <Drawer.Content>
-            <Drawer.Header>
-              <Drawer.Title>{placement.label} Placement</Drawer.Title>
-              <Drawer.CloseTrigger />
-            </Drawer.Header>
-            <Drawer.Body>
-              {placement.description}
-            </Drawer.Body>
-          </Drawer.Content>
-        </Drawer.Root>
-      ))}
+    <Stack direction="column" gap="400">
+      <Checkbox isSelected={showBackdrop} onChange={setShowBackdrop}>Show backdrop</Checkbox>
+
+      <Stack direction="row" gap="400" wrap="wrap">
+        {placements.map((placement) => (
+          <Drawer.Root key={placement.value} placement={placement.value} showBackdrop={showBackdrop}>
+            <Drawer.Trigger asChild>
+              <Button>{placement.label}</Button>
+            </Drawer.Trigger>
+            <Drawer.Content>
+              <Drawer.Header>
+                <Drawer.Title>{placement.label} Placement</Drawer.Title>
+                <Drawer.CloseTrigger />
+              </Drawer.Header>
+              <Drawer.Body>
+                {placement.description}
+              </Drawer.Body>
+            </Drawer.Content>
+          </Drawer.Root>
+        ))}
+      </Stack>
     </Stack>
   );
 }
