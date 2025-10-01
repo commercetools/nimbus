@@ -1,5 +1,54 @@
 # @commercetools/nimbus
 
+## 2.0.0
+
+### Minor Changes
+
+- [#454](https://github.com/commercetools/nimbus/pull/454)
+  [`5544175`](https://github.com/commercetools/nimbus/commit/5544175895bb994a2fae174cdc471755f27a6ea8)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Add the DateInput
+  component to the documentation.
+
+- [#416](https://github.com/commercetools/nimbus/pull/416)
+  [`1e9f91c`](https://github.com/commercetools/nimbus/commit/1e9f91c90cd69443ae728bdb73449de4be52e930)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Nimbus components - add
+  LocalizedField component
+
+- [#428](https://github.com/commercetools/nimbus/pull/428)
+  [`345c857`](https://github.com/commercetools/nimbus/commit/345c85757e11e7a852fed80aeaa547ca1a12af0c)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Dialog component added
+
+- [#477](https://github.com/commercetools/nimbus/pull/477)
+  [`02d2f67`](https://github.com/commercetools/nimbus/commit/02d2f67f6d0fa9583d6c0cf4133ec1cf65521780)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - create SearchInput
+  component
+
+- [#436](https://github.com/commercetools/nimbus/pull/436)
+  [`3810148`](https://github.com/commercetools/nimbus/commit/3810148a76d6cf740656c26ca3be057c7952c296)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Create MoneyInput component
+  and component custom icon
+
+- [#382](https://github.com/commercetools/nimbus/pull/382)
+  [`014f9be`](https://github.com/commercetools/nimbus/commit/014f9be6ec4decb47e249f2d1c5e7f643815540f)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - InlineSvg component added
+
+### Patch Changes
+
+- [#439](https://github.com/commercetools/nimbus/pull/439)
+  [`ffe580f`](https://github.com/commercetools/nimbus/commit/ffe580f75ba2b73c1c9888c7a9ec9b8124a6e40c)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Added IntlProvider
+  wrapper to docs
+
+- [#460](https://github.com/commercetools/nimbus/pull/460)
+  [`a64a858`](https://github.com/commercetools/nimbus/commit/a64a858498592264e3bf00a3467f366bf17fe30d)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - create CollapsibleMotion
+  component
+
+- Updated dependencies
+  [[`3810148`](https://github.com/commercetools/nimbus/commit/3810148a76d6cf740656c26ca3be057c7952c296)]:
+  - @commercetools/nimbus-icons@2.0.0
+  - @commercetools/nimbus-tokens@2.0.0
+
 ## 1.0.1
 
 ### Minor Changes
