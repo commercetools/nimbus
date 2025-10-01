@@ -135,9 +135,18 @@ For each dependency group (or the specified target group):
 3. **Generate Update Summary:**
    - List all updated packages with before/after versions
    - Report any packages that were skipped (major version changes)
+   - Identify packages that are already at latest versions
    - Display total update count by category
+   - Note: Keep frozen packages and "already at latest" packages separate in the PR body
 
 4. **Create Pull Request:**
+
+   **Important:** Replace all placeholder values in the PR body template:
+   - `[package]: [old] → [new]` with actual package updates
+   - `[version]` with actual frozen versions
+   - `[X]` with actual counts (packages, tests)
+   - `[List ...]` sections with actual lists
+   - Remove "Additional Changes" section if no non-dependency changes were made
 
    ```bash
    # Push branch to origin
@@ -149,23 +158,81 @@ For each dependency group (or the specified target group):
      --body "$(cat <<'EOF'
    ## Summary
 
-   This PR updates workspace dependencies to their latest minor and patch versions while maintaining compatibility.
+   This PR updates workspace catalog dependencies to their latest minor and patch versions while maintaining compatibility and respecting version constraints.
 
-   ### Updated Dependencies
+   ## 🔧 Tooling Dependencies Updated
 
-   [DEPENDENCY_SUMMARY]
+   [List all tooling packages that were updated with before → after versions]
 
-   ### Changes Made
-   - Updated catalog dependencies in pnpm-workspace.yaml
-   - Regenerated pnpm-lock.yaml
-   - All builds and tests pass
+   **Build & Development Tools:**
+   - [package]: [old] → [new] (minor/patch)
 
-   ### Testing
-   - ✅ Build integrity verified (`pnpm build:packages`)
-   - ✅ Full test suite passes (`pnpm test`)
-   - ✅ Complete build passes (`pnpm build`)
+   **Storybook Ecosystem:**
+   - [package]: [old] → [new]
 
-   🤖 Generated with [Claude Code](https://claude.ai/code)
+   **Additional Lockfile Updates:**
+   - [package]: [old] → [new]
+
+   ## ⚛️ React Ecosystem Status
+
+   **⚠️ Frozen Packages (Consumer Control)**
+
+   As a UI library, consumers must control these peer dependency versions:
+   - `react`: [version]
+   - `react-dom`: [version]
+   - `@types/react`: [version] (frozen to match React runtime)
+   - `@types/react-dom`: [version] (frozen to match React runtime)
+   - `@emotion/react`: [version]
+
+   **✅ Already at Latest**
+
+   These packages are at their latest versions:
+   - [List packages that are current but updateable in future]
+
+   ## 📊 Update Strategy
+
+   Dependencies were updated in risk-ordered groups with validation checkpoints:
+
+   1. **Tooling Group** (lowest risk): Build tools, linters, test frameworks
+   2. **React Group** (controlled): All packages either frozen or already current
+   3. **Utils Group** (if updated): Utility libraries
+
+   Each group was:
+   - ✅ Updated independently
+   - ✅ Verified with `pnpm build:packages`
+   - ✅ Tested with full suite (all tests passed)
+   - ✅ Committed as checkpoint
+
+   ## 🧪 Testing
+
+   - ✅ **Build integrity verified**: `pnpm build:packages` passes
+   - ✅ **Full test suite passes**: `pnpm test` ([X] tests, all passed)
+   - ✅ **Complete build passes**: `pnpm build` (includes docs)
+   - ✅ **No breaking changes detected**
+
+   ## 📝 Additional Changes
+
+   [List any non-dependency changes, such as formatting updates]
+
+   ## 📝 Summary
+
+   - ✅ **[X] packages updated** (tooling/utils/etc.)
+   - ⏸️ **5 packages frozen** (React core + types + Emotion)
+   - ✅ **[X] packages already current** (Chakra UI, React Aria, etc.)
+   - ✅ **0 packages failed**
+   - ✅ **100% test pass rate** ([X]/[X] tests)
+
+   ## 🔍 Review Notes
+
+   This is a low-risk update focused on:
+   1. **Patch updates** for bug fixes and security improvements
+   2. **Minor updates** for new features (backward compatible)
+   3. **React packages frozen** to allow consumer control
+   4. **All changes backward compatible** within semver constraints
+
+   ---
+
+   🤖 Generated with [Claude Code](https://claude.ai/claude-code)
    EOF
    )"
    ```
