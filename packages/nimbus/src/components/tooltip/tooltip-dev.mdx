@@ -82,7 +82,7 @@ const App = () => (
 )
 ```
 
-```....Add example snippets for each relevant component prop```
+```...Add example snippets for each relevant component prop```
 
 ### API Changes
 
@@ -139,7 +139,11 @@ Use the [Nimbus storybook Tooltip component story](https://nimbus-storybook-6l4m
 
 ### 4. Accessibility Standards
 
-Nimbus Tooltip automatically handles most accessibility requirements, but developers should be aware of these standards:
+Nimbus Tooltip automatically handles most accessibility requirements, but developers should be aware of these basic requirements:
+- Add `aria-label` to enable proper definition of the alert component.
+- Ensure `aria-describedby` is present for error messages.
+- Include `role="alert"` for critical notifications.
+
 
 #### Implementation Notes
 - Screen reader compatible with proper ARIA attributes
