@@ -47,10 +47,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
         layerStyle: "disabled",
       },
       _focusVisible: {
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "2px",
+        layerStyle: "focusRing",
       },
     },
     panels: {
@@ -59,10 +56,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
     panel: {
       _focusVisible: {
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "2px",
+        layerStyle: "focusRing",
       },
     },
   },
