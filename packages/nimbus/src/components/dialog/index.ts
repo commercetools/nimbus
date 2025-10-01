@@ -1,1 +1,2 @@
-export * from "./dialog.tsx";
+export { Dialog } from "./dialog";
+export type * from "./dialog.types";

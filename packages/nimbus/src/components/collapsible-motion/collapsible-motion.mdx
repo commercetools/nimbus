@@ -1,0 +1,315 @@
+---
+id: Components-CollapsibleMotion
+title: CollapsibleMotion
+description: A compound component for creating smooth collapsible content with accessibility support
+order: 999
+menu:
+  - Components
+  - Layout
+  - CollapsibleMotion
+tags: ["component", "collapsible", "accordion", "disclosure", "animation", "accessibility"]
+---
+
+# CollapsibleMotion
+
+A modern, accessible implementation of collapsible content with smooth height animations. Built with React Aria for accessibility and Chakra UI for consistent theming.
+
+## Overview
+
+CollapsibleMotion is a compound component that provides smooth, accessible collapsible content with height animations. It combines React Aria's accessibility features with Chakra UI's theming system to deliver a robust foundation for disclosure patterns, accordions, and expandable content sections.
+
+### Key Features
+
+- **Smooth height animations**: Customizable duration with automatic content measurement
+- **Full accessibility support**: Proper ARIA attributes and screen reader compatibility
+- **Controlled and uncontrolled modes**: Flexible state management options
+- **Focus management**: Content visibility handled properly for screen readers
+- **Responsive design**: Works seamlessly across all screen sizes
+- **Chakra UI integration**: Consistent theming with the design system
+
+### Resources
+
+Deep dive on details and access design library.
+
+- [React ARIA Disclosure Docs](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)
+- [ARIA Disclosure Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
+
+## Variables
+
+### Basic Usage
+
+The simplest way to use CollapsibleMotion is in uncontrolled mode with default settings:
+
+```jsx-live
+const App = () => {
+  return (
+    <CollapsibleMotion.Root defaultExpanded={false}>
+      <Button mb={4}>Toggle Content</Button>
+      <CollapsibleMotion.Content>
+        <Box p={4} bg="gray.50" borderRadius="md">
+          <Text>
+            This content will smoothly expand and collapse when the button is clicked.
+            The animation uses the default duration of 200ms.
+          </Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
+  );
+};
+```
+
+### Controlled Mode
+
+For more complex scenarios, you can control the expanded state from a parent component:
+
+```jsx-live
+const App = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div>
+      <Button
+        onClick={() => setIsExpanded(!isExpanded)}
+        mb={4}
+      >
+        {isExpanded ? 'Collapse' : 'Expand'} Content
+      </Button>
+
+      <CollapsibleMotion.Root
+        isExpanded={isExpanded}
+        onExpandedChange={setIsExpanded}
+      >
+        <CollapsibleMotion.Content>
+          <Box p={4} bg="blue.50" borderRadius="md">
+            <Text>
+              This content is controlled by the parent component's state.
+              The parent can react to changes and implement custom logic.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+    </div>
+  );
+};
+```
+
+### Custom Animation Settings
+
+You can customize the minimum height and animation duration:
+
+```jsx-live
+const App = () => {
+  return (
+    <CollapsibleMotion.Root defaultExpanded={false}>
+      <Button mb={4}>Toggle Content</Button>
+      <CollapsibleMotion.Content
+        minHeight={40}
+        animationDuration={500}
+      >
+        <Box p={6} bg="green.50" borderRadius="md" minH="150px">
+          <Text mb={4}>
+            This content has a minimum height of 40px when collapsed
+            and uses a slower animation duration of 500ms.
+          </Text>
+          <Text>
+            The minimum height allows for partial visibility of content
+            even when collapsed, which can be useful for previews.
+          </Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
+  );
+};
+```
+
+### Dynamic Content
+
+CollapsibleMotion automatically handles content that changes size:
+
+```jsx-live
+const App = () => {
+  const [content, setContent] = useState('short');
+
+  const contentMap = {
+    short: "Short content",
+    long: "This is much longer content that demonstrates how the component automatically adjusts to content changes. The component re-measures the content height when it changes and handles the animation smoothly."
+  };
+
+  return (
+    <div>
+      <Box mb={4}>
+        <Button
+          onClick={() => setContent('short')}
+          mr={2}
+          variant={content === 'short' ? 'solid' : 'outline'}
+          size="sm"
+        >
+          Short
+        </Button>
+        <Button
+          onClick={() => setContent('long')}
+          variant={content === 'long' ? 'solid' : 'outline'}
+          size="sm"
+        >
+          Long
+        </Button>
+      </Box>
+
+      <CollapsibleMotion.Root defaultExpanded={true}>
+        <Button mb={4}>Toggle Dynamic Content</Button>
+        <CollapsibleMotion.Content>
+          <Box p={4} bg="orange.50" borderRadius="md">
+            <Text>{contentMap[content]}</Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+    </div>
+  );
+};
+```
+
+## Accessibility
+
+CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets WCAG 2.1 AA standards.
+
+### Keyboard Navigation
+
+| Key     | Action                             |
+| ------- | ---------------------------------- |
+| `Tab`   | Move focus to/from trigger element |
+| `Space` | Activate trigger when focused      |
+| `Enter` | Activate trigger when focused      |
+
+### Screen Reader Support
+
+- Automatically applies proper ARIA attributes (`aria-expanded`, `aria-controls`)
+- Content is not focusable when collapsed, improving screen reader experience
+- Announces state changes when expanding or collapsing
+- Proper semantic markup for assistive technologies
+
+### WCAG Compliance
+
+#### 2. Operable
+
+- **2.1.1 Keyboard**: Full keyboard navigation support through standard button interactions
+- **2.4.7 Focus Visible**: Clear focus indicators on trigger elements
+
+#### 3. Understandable
+
+- **3.2.1 On Focus**: No unexpected context changes when focusing elements
+
+#### 4. Robust
+
+- **4.1.2 Name, Role, Value**: Proper ARIA attributes (`aria-expanded`, `aria-controls`) communicate state and relationships
+
+```jsx-live
+const App = () => {
+  return (
+    <CollapsibleMotion.Root defaultExpanded={false}>
+      <Button mb={4}>
+        Accessible Toggle Button
+      </Button>
+      <CollapsibleMotion.Content>
+        <Box p={4} bg="teal.50" borderRadius="md">
+          <Text mb={2} fontWeight="bold">
+            Accessibility Features:
+          </Text>
+          <ul>
+            <li>Proper ARIA attributes (aria-expanded, aria-controls)</li>
+            <li>Focus management for screen readers</li>
+            <li>Keyboard navigation support</li>
+            <li>Content is not focusable when collapsed</li>
+          </ul>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
+  );
+};
+```
+
+## Integration with Other Components
+
+CollapsibleMotion works well with other Nimbus components to create rich interactive experiences:
+
+```jsx-live
+const App = () => {
+  const [expandedSections, setExpandedSections] = useState(new Set());
+
+  const toggleSection = (section) => {
+    const newSections = new Set(expandedSections);
+    if (newSections.has(section)) {
+      newSections.delete(section);
+    } else {
+      newSections.add(section);
+    }
+    setExpandedSections(newSections);
+  };
+
+  return (
+    <Stack spacing={4}>
+      {['personal', 'billing', 'preferences'].map(section => (
+        <Box key={section} border="1px solid" borderColor="gray.200" borderRadius="md">
+          <CollapsibleMotion.Root
+            isExpanded={expandedSections.has(section)}
+            onExpandedChange={() => toggleSection(section)}
+          >
+            <Button
+              w="full"
+              variant="ghost"
+              justifyContent="space-between"
+              p={4}
+              rightIcon={expandedSections.has(section) ? '−' : '+'}
+            >
+              {section.charAt(0).toUpperCase() + section.slice(1)} Information
+            </Button>
+
+            <CollapsibleMotion.Content>
+              <Box p={4} borderTop="1px solid" borderColor="gray.200">
+                <Text>
+                  Content for {section} section. This demonstrates how
+                  CollapsibleMotion can be integrated with other components
+                  to create accordion-like interfaces.
+                </Text>
+              </Box>
+            </CollapsibleMotion.Content>
+          </CollapsibleMotion.Root>
+        </Box>
+      ))}
+    </Stack>
+  );
+};
+```
+
+## Specs
+
+<PropsTable id="CollapsibleMotionRoot" />
+
+<PropsTable id="CollapsibleMotionContent" />
+
+## Best Practices
+
+### Performance
+
+- **Content Measurement**: The component automatically measures content height, but avoid deeply nested or complex layouts within collapsible content when possible
+- **Animation Duration**: Use reasonable animation durations (100-500ms) to balance smoothness with perceived performance
+- **Dynamic Content**: The component handles content changes efficiently, but minimize frequent content updates during animations
+
+### Accessibility
+
+- **Trigger Elements**: Always provide clear, descriptive trigger buttons or elements
+- **Content Structure**: Use semantic HTML within collapsible content
+- **Focus Indicators**: Ensure trigger elements have clear focus indicators
+- **Screen Reader Testing**: Test with actual screen readers to verify the experience
+
+### Styling
+
+- **Consistent Animations**: Use consistent animation durations across your application
+- **Visual Feedback**: Provide clear visual feedback for expanded/collapsed states
+- **Responsive Design**: Consider how collapsible content behaves on different screen sizes
+
+## Related Components
+
+- **Accordion**: For managing multiple collapsible sections
+- **Disclosure**: For simpler show/hide functionality without animations
+- **Modal**: For larger content that should overlay the page
+- **Drawer**: For slide-out content panels

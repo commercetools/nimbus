@@ -20,6 +20,7 @@ export * from "./text";
 export * from "./tooltip";
 export * from "./nimbus-provider";
 export * from "./checkbox";
+export * from "./collapsible-motion";
 export * from "./stack";
 export * from "./visually-hidden";
 export * from "./text-input";
