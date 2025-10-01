@@ -95,7 +95,7 @@ const App = () => {
 }
 ```
 
-### Removing Tags
+### Removing tags
 
 The onRemove prop can be used to allow the user to remove tags. In the below example, an additional Button element is rendered when a tag group allows removing. The user can also press the backspace key while a tag is focused to remove the tag from the group. 
 Removal in TagGroup.TagList is handled easiest by React-Aria's [`Selection` component](https://react-spectrum.adobe.com/react-aria/selection.html).
@@ -120,13 +120,13 @@ const App = () => {
 }
 ```
 
-### Selecting Tags
+### Selecting tags
 
 TagGroup supports multiple selection modes. By default, selection is disabled, however this can be changed using the selectionMode prop. Use defaultSelectedKeys to provide a default set of selected items (uncontrolled) and selectedKeys to set the selected items (controlled). The value of the selected keys must match the id prop of the items.
 
 It is not possible for tags to be both removable and selectable.  If the `selectionMode` prop is set, tags cannot be removed and the removal button will not display.
 
-#### Single Selection
+#### Single selection
 ```jsx-live
 const App = () => {
     const [selected, setSelected] = useState(new Set([]));
@@ -156,7 +156,7 @@ const App = () => {
 ```
 
 
-#### Multiple Selection
+#### Multiple selection
 ```jsx-live
 const App = () => {
     const [selected, setSelected] = useState(new Set([]));
@@ -184,7 +184,7 @@ const App = () => {
     );
 }
 ```
-### Empty State
+### Empty state
 
 The Tag List component can render a message if the tag group is empty.
 

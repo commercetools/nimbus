@@ -70,6 +70,7 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         opacity: 0.5,
         color: "currentColor",
       },
+      "&[data-disabled='true']": { cursor: "not-allowed" },
     },
   },
 

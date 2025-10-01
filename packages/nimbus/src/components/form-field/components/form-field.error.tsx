@@ -14,6 +14,15 @@ export const FormFieldError = ({
       error: children,
       errorSlotProps,
     }));
+
+    // Cleanup: clear error when component unmounts
+    return () => {
+      setContext((prevContext) => ({
+        ...prevContext,
+        error: null,
+        errorSlotProps: undefined,
+      }));
+    };
   }, [children, setContext]);
 
   return null;

@@ -58,3 +58,4 @@ export * from "./rich-text-input";
 export * from "./data-table";
 export * from "./pagination";
 export * from "./drawer";
+export * from "./localized-field";
