@@ -41,6 +41,12 @@
       "value": "Clear input value"
     }
   ],
+  "Nimbus.Dialog.closeTrigger": [
+    {
+      "type": 0,
+      "value": "Close dialog"
+    }
+  ],
   "Nimbus.FieldErrors.duplicateValue": [
     {
       "type": 0,
@@ -213,6 +219,36 @@
     {
       "type": 0,
       "value": "Show password"
+    }
+  ],
+  "Nimbus.ScopedSearchInput.clearButton": [
+    {
+      "type": 0,
+      "value": "Clear search"
+    }
+  ],
+  "Nimbus.ScopedSearchInput.searchLabel": [
+    {
+      "type": 0,
+      "value": "Search"
+    }
+  ],
+  "Nimbus.ScopedSearchInput.selectLabel": [
+    {
+      "type": 0,
+      "value": "Filter by"
+    }
+  ],
+  "Nimbus.ScopedSearchInput.submitButton": [
+    {
+      "type": 0,
+      "value": "Submit search"
+    }
+  ],
+  "Nimbus.SearchInput.clearInput": [
+    {
+      "type": 0,
+      "value": "Clear search input"
     }
   ],
   "Nimbus.Select.clearSelection": [

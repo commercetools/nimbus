@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { useState } from "react";
-import { SelectableSearchInput } from "./selectable-search-input";
+import { ScopedSearchInput } from "./scoped-search-input";
 import { Stack } from "@/components/stack";
 import { FormField } from "@/components/form-field";
 import { Box } from "@/components/box";
-import type { SelectableSearchInputValue } from "./selectable-search-input.types";
+import type { ScopedSearchInputValue } from "./scoped-search-input.types";
 
-const meta: Meta<typeof SelectableSearchInput> = {
-  title: "Components/SelectableSearchInput",
-  component: SelectableSearchInput,
+const meta: Meta<typeof ScopedSearchInput> = {
+  title: "Components/ScopedSearchInput",
+  component: ScopedSearchInput,
   parameters: {
     layout: "padded",
   },
@@ -51,13 +51,13 @@ const groupedOptions = [
 
 export const Default: Story = {
   render: () => {
-    const [value, setValue] = useState<SelectableSearchInputValue>({
+    const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
 
     return (
-      <SelectableSearchInput
+      <ScopedSearchInput
         value={value}
         onValueChange={setValue}
         onSubmit={(val) => console.log("Submit:", val)}
@@ -71,18 +71,18 @@ export const Default: Story = {
 
 export const SizeVariants: Story = {
   render: () => {
-    const [valueSm, setValueSm] = useState<SelectableSearchInputValue>({
+    const [valueSm, setValueSm] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
-    const [valueMd, setValueMd] = useState<SelectableSearchInputValue>({
+    const [valueMd, setValueMd] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
 
     return (
       <Stack direction="column" gap="400" alignItems="flex-start">
-        <SelectableSearchInput
+        <ScopedSearchInput
           size="sm"
           value={valueSm}
           onValueChange={setValueSm}
@@ -90,7 +90,7 @@ export const SizeVariants: Story = {
           options={defaultOptions}
           searchPlaceholder="Small size..."
         />
-        <SelectableSearchInput
+        <ScopedSearchInput
           size="md"
           value={valueMd}
           onValueChange={setValueMd}
@@ -105,13 +105,13 @@ export const SizeVariants: Story = {
 
 export const GroupedOptions: Story = {
   render: () => {
-    const [value, setValue] = useState<SelectableSearchInputValue>({
+    const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
       option: "email",
     });
 
     return (
-      <SelectableSearchInput
+      <ScopedSearchInput
         value={value}
         onValueChange={setValue}
         onSubmit={console.log}
@@ -124,21 +124,21 @@ export const GroupedOptions: Story = {
 
 export const States: Story = {
   render: () => {
-    const [value, setValue] = useState<SelectableSearchInputValue>({
+    const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
 
     return (
       <Stack direction="column" gap="400" alignItems="flex-start">
-        <SelectableSearchInput
+        <ScopedSearchInput
           value={value}
           onValueChange={setValue}
           onSubmit={console.log}
           options={defaultOptions}
           searchPlaceholder="Normal state..."
         />
-        <SelectableSearchInput
+        <ScopedSearchInput
           value={value}
           onValueChange={setValue}
           onSubmit={console.log}
@@ -146,7 +146,7 @@ export const States: Story = {
           searchPlaceholder="Disabled..."
           isDisabled
         />
-        <SelectableSearchInput
+        <ScopedSearchInput
           value={value}
           onValueChange={setValue}
           onSubmit={console.log}
@@ -154,7 +154,7 @@ export const States: Story = {
           searchPlaceholder="Read-only..."
           isReadOnly
         />
-        <SelectableSearchInput
+        <ScopedSearchInput
           value={{ text: "error", option: "all" }}
           onValueChange={setValue}
           onSubmit={console.log}
@@ -169,13 +169,13 @@ export const States: Story = {
 
 export const InteractiveTest: Story = {
   render: () => {
-    const [value, setValue] = useState<SelectableSearchInputValue>({
+    const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
 
     return (
-      <SelectableSearchInput
+      <ScopedSearchInput
         value={value}
         onValueChange={setValue}
         onSubmit={fn()}
@@ -237,13 +237,13 @@ export const InteractiveTest: Story = {
 
 export const AutoFocusBehavior: Story = {
   render: () => {
-    const [value, setValue] = useState<SelectableSearchInputValue>({
+    const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
 
     return (
-      <SelectableSearchInput
+      <ScopedSearchInput
         value={value}
         onValueChange={setValue}
         onSubmit={console.log}
@@ -345,7 +345,7 @@ export const AutoFocusBehavior: Story = {
 export const WithFormField: Story = {
   args: { isInvalid: true },
   render: (args) => {
-    const [value, setValue] = useState<SelectableSearchInputValue>({
+    const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
       option: "all",
     });
@@ -355,14 +355,14 @@ export const WithFormField: Story = {
         <FormField.Root isInvalid={args.isInvalid} data-testid="form-field">
           <FormField.Label>Search Products</FormField.Label>
           <FormField.Input>
-            <SelectableSearchInput
+            <ScopedSearchInput
               value={value}
               onValueChange={setValue}
               onSubmit={(val) => console.log("Search:", val)}
               options={defaultOptions}
               selectPlaceholder="Field"
               searchPlaceholder="Enter search term..."
-              data-testid="selectable-search"
+              data-testid="scoped-search"
             />
           </FormField.Input>
           <FormField.Description>
@@ -383,12 +383,12 @@ export const WithFormField: Story = {
     const canvas = within(canvasElement);
 
     await step("All elements are rendered correctly", async () => {
-      const selectableSearch = canvas.getByTestId("selectable-search");
+      const scopedSearch = canvas.getByTestId("scoped-search");
       const label = canvas.getByText(/Search Products/);
       const description = canvas.getByText(/Select a field to search in/);
       const error = canvas.getByText(/Please enter a valid search term/);
 
-      await expect(selectableSearch).toBeInTheDocument();
+      await expect(scopedSearch).toBeInTheDocument();
       await expect(label).toBeInTheDocument();
       await expect(description).toBeInTheDocument();
       await expect(error).toBeInTheDocument();

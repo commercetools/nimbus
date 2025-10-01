@@ -1,8 +1,8 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-export const selectableSearchInputSlotRecipe = defineSlotRecipe({
+export const scopedSearchInputSlotRecipe = defineSlotRecipe({
   slots: ["root", "container", "selectWrapper", "searchWrapper"],
-  className: "nimbus-selectable-search-input",
+  className: "nimbus-scoped-search-input",
   base: {
     root: {
       display: "inline-block",

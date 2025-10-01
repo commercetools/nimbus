@@ -1,12 +1,12 @@
 ---
-id: Components-SelectableSearchInput
-title: SelectableSearchInput
+id: Components-ScopedSearchInput
+title: ScopedSearchInput
 description: Combines a select dropdown with a search input for filtered search functionality.
 order: 999
 menu:
   - Components
   - Inputs
-  - SelectableSearchInput
+  - ScopedSearchInput
 tags:
   - component
   - input
@@ -14,13 +14,13 @@ tags:
   - select
 ---
 
-# SelectableSearchInput
+# ScopedSearchInput
 
 A combined input component that integrates a select dropdown with a search input field, enabling users to filter search by category or field type.
 
 ## Overview
 
-SelectableSearchInput provides a unified control for scenarios where users need to specify both what they're searching for (via the search input) and where to search (via the select dropdown). Common use cases include:
+ScopedSearchInput provides a unified control for scenarios where users need to specify both what they're searching for (via the search input) and where to search (via the select dropdown). Common use cases include:
 
 - Filtering search results by field (name, email, etc.)
 - Category-specific search
@@ -53,7 +53,7 @@ const App = () => {
   ];
 
   return (
-    <SelectableSearchInput
+    <ScopedSearchInput
       value={value}
       onValueChange={setValue}
       onSubmit={(val) => console.log('Search:', val)}
@@ -78,14 +78,14 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400" alignItems="flex-start">
-      <SelectableSearchInput
+      <ScopedSearchInput
         size="sm"
         value={valueSm}
         onValueChange={setValueSm}
         onSubmit={console.log}
         options={options}
       />
-      <SelectableSearchInput
+      <ScopedSearchInput
         size="md"
         value={valueMd}
         onValueChange={setValueMd}
@@ -121,7 +121,7 @@ const App = () => {
   ];
 
   return (
-    <SelectableSearchInput
+    <ScopedSearchInput
       value={value}
       onValueChange={setValue}
       onSubmit={console.log}
@@ -144,7 +144,7 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400" alignItems="flex-start">
-      <SelectableSearchInput
+      <ScopedSearchInput
         value={{ text: '', option: 'all' }}
         onValueChange={setValue}
         onSubmit={console.log}
@@ -152,7 +152,7 @@ const App = () => {
         searchPlaceholder="Disabled..."
         isDisabled
       />
-      <SelectableSearchInput
+      <ScopedSearchInput
         value={value}
         onValueChange={setValue}
         onSubmit={console.log}
@@ -173,22 +173,22 @@ Use this component when users need to filter search by specific fields or catego
 
 - **Clear Options**: Provide descriptive labels for select options
 - **Appropriate Placeholder**: Use placeholder text that guides users
-- **Handle Empty States**: Use `SelectableSearchInput.isEmpty()` to check for empty search
+- **Handle Empty States**: Use `ScopedSearchInput.isEmpty()` to check for empty search
 - **Submit Feedback**: Provide visual feedback after search submission
 
 ## Specs
 
-<PropsTable id="SelectableSearchInput" />
+<PropsTable id="ScopedSearchInput" />
 
 ### Static Methods
 
-**`SelectableSearchInput.isEmpty(value)`**
+**`ScopedSearchInput.isEmpty(value)`**
 
 Returns `true` if the search text is empty or contains only whitespace.
 
 ```tsx
 const value = { text: '  ', option: 'all' };
-SelectableSearchInput.isEmpty(value); // true
+ScopedSearchInput.isEmpty(value); // true
 ```
 
 ## Accessibility

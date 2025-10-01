@@ -4,22 +4,22 @@ import { useIntl } from "react-intl";
 import { Select } from "@/components/select";
 import { SearchInput } from "@/components/search-input";
 import { extractStyleProps } from "@/utils/extractStyleProps";
-import { selectableSearchInputSlotRecipe } from "./selectable-search-input.recipe";
+import { scopedSearchInputSlotRecipe } from "./scoped-search-input.recipe";
 import {
-  SelectableSearchInputRootSlot,
-  SelectableSearchInputContainerSlot,
-  SelectableSearchInputSelectWrapperSlot,
-  SelectableSearchInputSearchWrapperSlot,
-} from "./selectable-search-input.slots";
+  ScopedSearchInputRootSlot,
+  ScopedSearchInputContainerSlot,
+  ScopedSearchInputSelectWrapperSlot,
+  ScopedSearchInputSearchWrapperSlot,
+} from "./scoped-search-input.slots";
 import type {
-  SelectableSearchInputProps,
-  SelectableSearchInputOption,
-  SelectableSearchInputOptionGroup,
-} from "./selectable-search-input.types";
+  ScopedSearchInputProps,
+  ScopedSearchInputOption,
+  ScopedSearchInputOptionGroup,
+} from "./scoped-search-input.types";
 import { isEmpty } from "./utils/helpers";
-import messages from "./selectable-search-input.i18n";
+import messages from "./scoped-search-input.i18n";
 
-export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
+export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
   const {
     value,
     onValueChange,
@@ -45,7 +45,7 @@ export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
   const intl = useIntl();
 
   // Split recipe props
-  const recipe = useSlotRecipe({ recipe: selectableSearchInputSlotRecipe });
+  const recipe = useSlotRecipe({ recipe: scopedSearchInputSlotRecipe });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
 
   // Extract style props
@@ -106,14 +106,14 @@ export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
   };
 
   return (
-    <SelectableSearchInputRootSlot
+    <ScopedSearchInputRootSlot
       {...recipeProps}
       {...styleProps}
       {...remainingProps}
     >
-      <SelectableSearchInputContainerSlot>
+      <ScopedSearchInputContainerSlot>
         {/* Select Dropdown (Left) */}
-        <SelectableSearchInputSelectWrapperSlot asChild>
+        <ScopedSearchInputSelectWrapperSlot asChild>
           <Select.Root
             id={selectId}
             selectedKey={value.option}
@@ -133,16 +133,16 @@ export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
               {options.map(
                 (
                   item:
-                    | SelectableSearchInputOption
-                    | SelectableSearchInputOptionGroup
+                    | ScopedSearchInputOption
+                    | ScopedSearchInputOptionGroup
                 ) => {
                   // Check if it's an option group
                   if ("options" in item) {
-                    const group = item as SelectableSearchInputOptionGroup;
+                    const group = item as ScopedSearchInputOptionGroup;
                     return (
                       <Select.OptionGroup key={group.label} label={group.label}>
                         {group.options.map(
-                          (opt: SelectableSearchInputOption) => (
+                          (opt: ScopedSearchInputOption) => (
                             <Select.Option
                               key={opt.value}
                               id={opt.value}
@@ -156,7 +156,7 @@ export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
                     );
                   }
                   // Regular option
-                  const option = item as SelectableSearchInputOption;
+                  const option = item as ScopedSearchInputOption;
                   return (
                     <Select.Option
                       key={option.value}
@@ -170,10 +170,10 @@ export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
               )}
             </Select.Options>
           </Select.Root>
-        </SelectableSearchInputSelectWrapperSlot>
+        </ScopedSearchInputSelectWrapperSlot>
 
         {/* Search Input (Right) */}
-        <SelectableSearchInputSearchWrapperSlot asChild>
+        <ScopedSearchInputSearchWrapperSlot asChild>
           <SearchInput
             ref={searchInputRef}
             id={searchId}
@@ -190,14 +190,14 @@ export const SelectableSearchInput = (props: SelectableSearchInputProps) => {
             size={recipeProps.size}
             {...sharedStates}
           />
-        </SelectableSearchInputSearchWrapperSlot>
-      </SelectableSearchInputContainerSlot>
-    </SelectableSearchInputRootSlot>
+        </ScopedSearchInputSearchWrapperSlot>
+      </ScopedSearchInputContainerSlot>
+    </ScopedSearchInputRootSlot>
   );
 };
 
 // Static methods
-SelectableSearchInput.isEmpty = isEmpty;
+ScopedSearchInput.isEmpty = isEmpty;
 
 // Display name
-SelectableSearchInput.displayName = "SelectableSearchInput";
+ScopedSearchInput.displayName = "ScopedSearchInput";

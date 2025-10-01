@@ -1,9 +1,9 @@
-import type { SelectableSearchInputRootSlotProps } from "./selectable-search-input.slots";
+import type { ScopedSearchInputRootSlotProps } from "./scoped-search-input.slots";
 
 /**
- * Value structure for SelectableSearchInput
+ * Value structure for ScopedSearchInput
  */
-export interface SelectableSearchInputValue {
+export interface ScopedSearchInputValue {
   /**
    * The text in the search input
    */
@@ -17,7 +17,7 @@ export interface SelectableSearchInputValue {
 /**
  * Option definition for the select dropdown
  */
-export interface SelectableSearchInputOption {
+export interface ScopedSearchInputOption {
   /**
    * Display label for the option
    */
@@ -35,7 +35,7 @@ export interface SelectableSearchInputOption {
 /**
  * Option group definition for grouped options
  */
-export interface SelectableSearchInputOptionGroup {
+export interface ScopedSearchInputOptionGroup {
   /**
    * Group label
    */
@@ -43,23 +43,23 @@ export interface SelectableSearchInputOptionGroup {
   /**
    * Options in this group
    */
-  options: SelectableSearchInputOption[];
+  options: ScopedSearchInputOption[];
 }
 
-export interface SelectableSearchInputProps
+export interface ScopedSearchInputProps
   extends Omit<
-    SelectableSearchInputRootSlotProps,
+    ScopedSearchInputRootSlotProps,
     "value" | "onSubmit" | "as" | "asChild"
   > {
   /**
    * The current value (controlled)
    */
-  value: SelectableSearchInputValue;
+  value: ScopedSearchInputValue;
 
   /**
    * Callback when the unified value changes
    */
-  onValueChange?: (value: SelectableSearchInputValue) => void;
+  onValueChange?: (value: ScopedSearchInputValue) => void;
 
   /**
    * Callback when the text input changes
@@ -74,7 +74,7 @@ export interface SelectableSearchInputProps
   /**
    * Callback when search is submitted (Enter key or submit button)
    */
-  onSubmit: (value: SelectableSearchInputValue) => void;
+  onSubmit: (value: ScopedSearchInputValue) => void;
 
   /**
    * Callback when reset/clear is triggered
@@ -84,7 +84,7 @@ export interface SelectableSearchInputProps
   /**
    * Options for the select dropdown
    */
-  options: SelectableSearchInputOption[] | SelectableSearchInputOptionGroup[];
+  options: ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[];
 
   /**
    * Placeholder text for the select dropdown
