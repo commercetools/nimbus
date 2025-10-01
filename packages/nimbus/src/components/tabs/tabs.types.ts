@@ -33,7 +33,7 @@ export interface TabsRootSlotProps
   /**
    * The orientation of the Tabs component.
    */
-  orientation?: "horizontal" | "vertical left" | "vertical right";
+  orientation?: "horizontal" | "vertical";
   /**
    * The placement of the Tabs component.
    */
@@ -105,7 +105,7 @@ export interface TabsProps extends TabsRootSlotProps, TabsVariantProps {
    * Direction of the tabs layout
    * @default "horizontal"
    */
-  orientation?: "horizontal" | "vertical left" | "vertical right";
+  orientation?: "horizontal" | "vertical";
   /**
    * Placement of the tab list relative to panels
    * @default "start"

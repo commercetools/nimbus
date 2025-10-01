@@ -36,6 +36,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
       paddingBottom: "var(--tabs-padding-bottom)",
       paddingLeft: "var(--tabs-padding-left)",
       fontSize: "var(--tabs-font-size)",
+      overflowX: "auto",
       _hover: {
         color: "primary.11",
       },
@@ -78,38 +79,15 @@ export const tabsSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      "vertical left": {
+      vertical: {
         root: {
           flexDirection: "row",
         },
         list: {
           flexDirection: "column",
-          borderRight: "{spacing.25} {colors.neutral.6} solid",
         },
         tab: {
-          borderRight: "{spacing.50} solid transparent",
-          marginRight: "-25",
           justifyContent: "flex-start",
-          _selected: {
-            borderRightColor: "primary.9",
-          },
-        },
-      },
-      "vertical right": {
-        root: {
-          flexDirection: "row",
-        },
-        list: {
-          flexDirection: "column",
-          borderLeft: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderLeft: "{spacing.50} solid transparent",
-          marginRight: "-25",
-          justifyContent: "flex-start",
-          _selected: {
-            borderLeftColor: "primary.9",
-          },
         },
       },
     },
@@ -150,50 +128,60 @@ export const tabsSlotRecipe = defineSlotRecipe({
 
   // Compound variants for different orientation/placement combinations
   compoundVariants: [
-    // Horizontal (default)
+    // Horizontal + Start (default)
     {
       orientation: "horizontal",
+      placement: "start",
       css: {
-        root: {
-          flexDirection: "column",
+        list: {
+          justifyContent: "flex-start",
         },
       },
     },
-    // Vertical + Start
+    // Horizontal + End
     {
-      orientation: "vertical left",
+      orientation: "horizontal",
+      placement: "end",
+      css: {
+        list: {
+          justifyContent: "flex-end",
+        },
+      },
+    },
+    // Vertical + Start (tabs on left, border on left)
+    {
+      orientation: "vertical",
       placement: "start",
       css: {
         root: {
           flexDirection: "row",
         },
-      },
-    },
-    {
-      orientation: "vertical right",
-      placement: "start",
-      css: {
-        root: {
-          flexDirection: "row",
+        list: {
+          borderLeft: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          borderLeft: "{spacing.50} solid transparent",
+          marginLeft: "-25",
+          _selected: {
+            borderLeftColor: "primary.9",
+          },
         },
       },
     },
-    // Vertical + End
+    // Vertical + End (tabs on right, border on right)
     {
-      orientation: "vertical right",
+      orientation: "vertical",
       placement: "end",
       css: {
-        root: {
-          flexDirection: "row-reverse",
+        list: {
+          borderRight: "{spacing.25} {colors.neutral.6} solid",
         },
-      },
-    },
-    {
-      orientation: "vertical left",
-      placement: "end",
-      css: {
-        root: {
-          flexDirection: "row-reverse",
+        tab: {
+          borderRight: "{spacing.50} solid transparent",
+          marginRight: "-25",
+          _selected: {
+            borderRightColor: "primary.9",
+          },
         },
       },
     },

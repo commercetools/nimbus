@@ -15,13 +15,14 @@ const meta: Meta<typeof Tabs.Root> = {
   argTypes: {
     orientation: {
       control: "select",
-      options: ["horizontal", "vertical left", "vertical right"],
+      options: ["horizontal", "vertical"],
       description: "Direction of the tabs layout",
     },
     placement: {
       control: "select",
       options: ["start", "end"],
-      description: "Placement of the tab list relative to panels",
+      description:
+        "Placement of the tab list relative to panels. For vertical orientation, 'start' places tabs on the left with border on the left, 'end' places tabs on the right with border on the right. For horizontal orientation, controls alignment of tabs within the tab list.",
     },
     size: {
       control: "select",
@@ -247,9 +248,9 @@ export const CompoundComposition: Story = {
   },
 };
 
-export const VerticalStart: Story = {
+export const VerticalOrientation: Story = {
   args: {
-    orientation: "vertical left",
+    orientation: "vertical",
     placement: "start",
     "data-testid": "vertical-tabs",
   },
@@ -294,10 +295,7 @@ export const VerticalStart: Story = {
 
     await step("Vertical tabs have correct orientation attribute", async () => {
       const tabList = canvas.getByRole("tablist");
-      await expect(tabList).toHaveAttribute(
-        "aria-orientation",
-        "vertical left"
-      );
+      await expect(tabList).toHaveAttribute("aria-orientation", "vertical");
     });
 
     await step(
@@ -316,16 +314,6 @@ export const VerticalStart: Story = {
         );
       }
     );
-  },
-};
-
-export const VerticalEnd: Story = {
-  args: {
-    orientation: "vertical right",
-    placement: "end",
-  },
-  render: (args) => {
-    return <Tabs.Root {...args} tabs={navigationTabs} />;
   },
 };
 
