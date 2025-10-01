@@ -39,9 +39,9 @@ export default meta;
  */
 type Story = StoryObj<typeof Tabs.Root>;
 
-const Content = (props: { title: string; body: string }) => (
+const Content = (props: { tabLabel: string; body: string }) => (
   <Box px="300">
-    <h3>{props.title}</h3>
+    <h3>{props.tabLabel}</h3>
     <p>{props.body}</p>
   </Box>
 );
@@ -49,30 +49,30 @@ const Content = (props: { title: string; body: string }) => (
 const navigationTabs = [
   {
     id: "home",
-    title: "Home",
-    content: (
+    tabLabel: "Home",
+    panelContent: (
       <Content
-        title="Home Page"
+        tabLabel="Home Page"
         body="Welcome to our homepage! This is where you'll find our latest updates."
       />
     ),
   },
   {
     id: "about",
-    title: "About",
-    content: (
+    tabLabel: "About",
+    panelContent: (
       <Content
-        title="About Us"
+        tabLabel="About Us"
         body="Learn more about our company and our mission."
       />
     ),
   },
   {
     id: "contact",
-    title: "Contact",
-    content: (
+    tabLabel: "Contact",
+    panelContent: (
       <Content
-        title="Contact Information"
+        tabLabel="Contact Information"
         body="Get in touch with us through various channels."
       />
     ),
@@ -82,15 +82,15 @@ const navigationTabs = [
 const simpleTabs = [
   {
     id: "1",
-    title: "Founding of Rome",
-    content: "Arma virumque cano, Troiae qui primus ab oris.",
+    tabLabel: "Founding of Rome",
+    panelContent: "Arma virumque cano, Troiae qui primus ab oris.",
   },
   {
     id: "2",
-    title: "Monarchy and Republic",
-    content: "Senatus Populusque Romanus.",
+    tabLabel: "Monarchy and Republic",
+    panelContent: "Senatus Populusque Romanus.",
   },
-  { id: "3", title: "Empire", content: "Alea jacta est." },
+  { id: "3", tabLabel: "Empire", panelContent: "Alea jacta est." },
 ];
 
 export const Base: Story = {
@@ -104,26 +104,28 @@ export const Base: Story = {
     const canvas = within(canvasElement);
 
     await step("Renders tabs component with correct structure", async () => {
-      const tabsContainer = canvas.getByTestId("base-tabs");
-      await expect(tabsContainer).toBeInTheDocument();
+      await canvas.findByTestId("base-tabs");
 
       // Check that all tabs are rendered
-      const tab1 = canvas.getByRole("tab", { name: "Founding of Rome" });
-      const tab2 = canvas.getByRole("tab", { name: "Monarchy and Republic" });
-      const tab3 = canvas.getByRole("tab", { name: "Empire" });
+      const tab1 = await canvas.findByRole("tab", { name: "Founding of Rome" });
+      const tab2 = await canvas.findByRole("tab", {
+        name: "Monarchy and Republic",
+      });
+      const tab3 = await canvas.findByRole("tab", { name: "Empire" });
 
-      await expect(tab1).toBeInTheDocument();
-      await expect(tab2).toBeInTheDocument();
-      await expect(tab3).toBeInTheDocument();
+      expect(tab1).toBeInTheDocument();
+      expect(tab2).toBeInTheDocument();
+      expect(tab3).toBeInTheDocument();
     });
 
     await step("First tab is selected by default", async () => {
-      const firstTab = canvas.getByRole("tab", { name: "Founding of Rome" });
+      const firstTab = await canvas.findByRole("tab", {
+        name: "Founding of Rome",
+      });
       await expect(firstTab).toHaveAttribute("aria-selected", "true");
 
       // Check that first panel is visible
-      const firstPanel = canvas.getByRole("tabpanel");
-      await expect(firstPanel).toBeInTheDocument();
+      const firstPanel = await canvas.findByRole("tabpanel");
       await expect(firstPanel).toHaveTextContent(
         "Arma virumque cano, Troiae qui primus ab oris."
       );
@@ -138,7 +140,7 @@ export const Base: Story = {
 
       await expect(secondTab).toHaveAttribute("aria-selected", "true");
 
-      // Check that second panel content is now visible
+      // Check that second panel panelContent is now visible
       const activePanel = canvas.getByRole("tabpanel");
       await expect(activePanel).toHaveTextContent(
         "Senatus Populusque Romanus."
@@ -170,8 +172,7 @@ export const Base: Story = {
     });
 
     await step("Has correct accessibility attributes", async () => {
-      const tabList = canvas.getByRole("tablist");
-      await expect(tabList).toBeInTheDocument();
+      await canvas.findByRole("tablist");
 
       // Check ARIA attributes
       const tabs = canvas.getAllByRole("tab");
@@ -179,7 +180,7 @@ export const Base: Story = {
         await expect(tab).toHaveAttribute("aria-selected");
       });
 
-      const panel = canvas.getByRole("tabpanel");
+      const panel = await canvas.findByRole("tabpanel");
       await expect(panel).toHaveAttribute("aria-labelledby");
     });
   },
@@ -217,17 +218,12 @@ export const CompoundComposition: Story = {
     const canvas = within(canvasElement);
 
     await step("Manual structure renders correctly", async () => {
-      const tabsContainer = canvas.getByTestId("manual-tabs");
-      await expect(tabsContainer).toBeInTheDocument();
+      await canvas.findByTestId("manual-tabs");
 
       // Check that manually defined tabs are rendered
-      const tab1 = canvas.getByRole("tab", { name: "Tab 1" });
-      const tab2 = canvas.getByRole("tab", { name: "Tab 2" });
-      const tab3 = canvas.getByRole("tab", { name: "Tab 3" });
-
-      await expect(tab1).toBeInTheDocument();
-      await expect(tab2).toBeInTheDocument();
-      await expect(tab3).toBeInTheDocument();
+      await canvas.findByRole("tab", { name: "Tab 1" });
+      await canvas.findByRole("tab", { name: "Tab 2" });
+      await canvas.findByRole("tab", { name: "Tab 3" });
     });
 
     await step("Manual structure supports tab switching", async () => {
@@ -280,7 +276,7 @@ export const VerticalStart: Story = {
     });
 
     await step("Vertical tabs support proper keyboard navigation", async () => {
-      const homeTab = canvas.getByRole("tab", { name: "Home" });
+      const homeTab = await canvas.findByRole("tab", { name: "Home" });
 
       // Focus first tab
       homeTab.focus();
@@ -288,7 +284,7 @@ export const VerticalStart: Story = {
 
       // Vertical tabs should use ArrowDown/ArrowUp for navigation
       await userEvent.keyboard("{ArrowDown}");
-      const aboutTab = canvas.getByRole("tab", { name: "About" });
+      const aboutTab = await canvas.findByRole("tab", { name: "About" });
       await expect(aboutTab).toHaveFocus();
 
       // Navigate up should go back
@@ -304,19 +300,22 @@ export const VerticalStart: Story = {
       );
     });
 
-    await step("Vertical layout renders JSX content correctly", async () => {
-      const homeTab = canvas.getByRole("tab", { name: "Home" });
+    await step(
+      "Vertical layout renders JSX panelContent correctly",
+      async () => {
+        const homeTab = canvas.getByRole("tab", { name: "Home" });
 
-      await userEvent.click(homeTab);
-      await expect(homeTab).toHaveAttribute("aria-selected", "true");
+        await userEvent.click(homeTab);
+        await expect(homeTab).toHaveAttribute("aria-selected", "true");
 
-      // Check that complex JSX content renders properly
-      const panel = canvas.getByRole("tabpanel");
-      await expect(panel).toHaveTextContent("Home Page");
-      await expect(panel).toHaveTextContent(
-        "Welcome to our homepage! This is where you'll find our latest updates."
-      );
-    });
+        // Check that complex JSX panelContent renders properly
+        const panel = canvas.getByRole("tabpanel");
+        await expect(panel).toHaveTextContent("Home Page");
+        await expect(panel).toHaveTextContent(
+          "Welcome to our homepage! This is where you'll find our latest updates."
+        );
+      }
+    );
   },
 };
 
@@ -339,23 +338,23 @@ export const WithDisabledKeys: Story = {
     const withDisabledTabs = [
       {
         id: "enabled1",
-        title: "Enabled Tab",
-        content: "This tab is enabled and can be clicked.",
+        tabLabel: "Enabled Tab",
+        panelContent: "This tab is enabled and can be clicked.",
       },
       {
         id: "disabled1",
-        title: "Disabled Tab",
-        content: "This content should not be accessible.",
+        tabLabel: "Disabled Tab",
+        panelContent: "This panelContent should not be accessible.",
       },
       {
         id: "enabled2",
-        title: "Another Enabled Tab",
-        content: "This tab is also enabled.",
+        tabLabel: "Another Enabled Tab",
+        panelContent: "This tab is also enabled.",
       },
       {
         id: "disabled2",
-        title: "Another Disabled Tab",
-        content: "This content is also not accessible.",
+        tabLabel: "Another Disabled Tab",
+        panelContent: "This panelContent is also not accessible.",
       },
     ];
 
@@ -472,7 +471,7 @@ export const WithDisabledKeys: Story = {
         await userEvent.click(enabledTab2);
         await expect(enabledTab2).toHaveAttribute("aria-selected", "true");
 
-        // Check that content is displayed
+        // Check that panelContent is displayed
         const activePanel = canvas.getByRole("tabpanel");
         await expect(activePanel).toHaveTextContent(
           "This tab is also enabled."
@@ -516,24 +515,24 @@ export const Disabled: Story = {
     const withDisabledTabs = [
       {
         id: "enabled1",
-        title: "Enabled Tab",
-        content: "This tab is enabled and can be clicked.",
+        tabLabel: "Enabled Tab",
+        panelContent: "This tab is enabled and can be clicked.",
       },
       {
         id: "disabled1",
-        title: "Disabled Tab",
-        content: "This content should not be accessible.",
+        tabLabel: "Disabled Tab",
+        panelContent: "This panelContent should not be accessible.",
         isDisabled: true,
       },
       {
         id: "enabled2",
-        title: "Another Enabled Tab",
-        content: "This tab is also enabled.",
+        tabLabel: "Another Enabled Tab",
+        panelContent: "This tab is also enabled.",
       },
       {
         id: "disabled2",
-        title: "Another Disabled Tab",
-        content: "This content is also not accessible.",
+        tabLabel: "Another Disabled Tab",
+        panelContent: "This panelContent is also not accessible.",
         isDisabled: true,
       },
     ];
@@ -621,54 +620,57 @@ export const Sizes: Story = {
     const smallTabs = [
       {
         id: "small1",
-        title: "Small Tab 1",
-        content: "Small tab content with 4px 12px padding and 12px font",
+        tabLabel: "Small Tab 1",
+        panelContent:
+          "Small tab panelContent with 4px 12px padding and 12px font",
       },
       {
         id: "small2",
-        title: "Small Tab 2",
-        content: "Small tab panel 2",
+        tabLabel: "Small Tab 2",
+        panelContent: "Small tab panel 2",
       },
       {
         id: "small3",
-        title: "Small Tab 3",
-        content: "Small tab panel 3",
+        tabLabel: "Small Tab 3",
+        panelContent: "Small tab panel 3",
       },
     ];
 
     const mediumTabs = [
       {
         id: "medium1",
-        title: "Medium Tab 1",
-        content: "Medium tab content with 8px 16px padding and 14px font",
+        tabLabel: "Medium Tab 1",
+        panelContent:
+          "Medium tab panelContent with 8px 16px padding and 14px font",
       },
       {
         id: "medium2",
-        title: "Medium Tab 2",
-        content: "Medium tab panel 2",
+        tabLabel: "Medium Tab 2",
+        panelContent: "Medium tab panel 2",
       },
       {
         id: "medium3",
-        title: "Medium Tab 3",
-        content: "Medium tab panel 3",
+        tabLabel: "Medium Tab 3",
+        panelContent: "Medium tab panel 3",
       },
     ];
 
     const largeTabs = [
       {
         id: "large1",
-        title: "Large Tab 1",
-        content: "Large tab content with 12px 24px padding and 16px font",
+        tabLabel: "Large Tab 1",
+        panelContent:
+          "Large tab panelContent with 12px 24px padding and 16px font",
       },
       {
         id: "large2",
-        title: "Large Tab 2",
-        content: "Large tab panel 2",
+        tabLabel: "Large Tab 2",
+        panelContent: "Large tab panel 2",
       },
       {
         id: "large3",
-        title: "Large Tab 3",
-        content: "Large tab panel 3",
+        tabLabel: "Large Tab 3",
+        panelContent: "Large tab panel 3",
       },
     ];
 

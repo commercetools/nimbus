@@ -6,7 +6,7 @@ import type { TabPanelProps } from "../tabs.types";
 /**
  * # TabPanel
  *
- * An individual tab panel that displays content when its corresponding tab is selected.
+ * An individual tab panel that displays panelContent when its corresponding tab is selected.
  */
 export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(
   ({ children, ...props }, ref) => {

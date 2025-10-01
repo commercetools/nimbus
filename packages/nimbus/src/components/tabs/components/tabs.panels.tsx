@@ -6,7 +6,7 @@ import type { TabItemProps, TabPanelsProps } from "../tabs.types";
 /**
  * # TabPanels
  *
- * A container for the tab panels that displays content based on the selected tab.
+ * A container for the tab panels that displays panelContent based on the selected tab.
  */
 export const TabPanels = ({ tabs, children, ...props }: TabPanelsProps) => {
   // Ensure TabPanels always has children - either from tabs or provided children
@@ -22,7 +22,7 @@ export const TabPanels = ({ tabs, children, ...props }: TabPanelsProps) => {
         <RaCollection items={tabs as TabItemProps[]}>
           {(tab: TabItemProps) => (
             <TabPanel key={tab.id} id={tab.id}>
-              {tab.content}
+              {tab.panelContent}
             </TabPanel>
           )}
         </RaCollection>

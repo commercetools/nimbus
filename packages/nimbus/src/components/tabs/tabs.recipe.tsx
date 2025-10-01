@@ -68,12 +68,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
           flexDirection: "column",
         },
         list: {
-          borderBottom: "1px solid",
-          borderColor: "neutral.6",
+          borderBottom: "{spacing.25} {colors.neutral.6} solid",
         },
         tab: {
-          borderBottom: "2px solid transparent",
-          marginRight: "-1px",
+          borderBottom: "{spacing.50} solid transparent",
+          marginRight: "-25",
           _selected: {
             borderBottomColor: "primary.9",
           },
@@ -85,12 +84,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
         list: {
           flexDirection: "column",
-          borderRight: "1px solid",
-          borderColor: "neutral.6",
+          borderRight: "{spacing.25} {colors.neutral.6} solid",
         },
         tab: {
-          borderRight: "2px solid transparent",
-          marginRight: "-1px",
+          borderRight: "{spacing.50} solid transparent",
+          marginRight: "-25",
           justifyContent: "flex-start",
           _selected: {
             borderRightColor: "primary.9",
@@ -103,12 +101,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
         list: {
           flexDirection: "column",
-          borderLeft: "1px solid",
-          borderColor: "neutral.6",
+          borderLeft: "{spacing.25} {colors.neutral.6} solid",
         },
         tab: {
-          borderLeft: "2px solid transparent",
-          marginRight: "-1px",
+          borderLeft: "{spacing.50} solid transparent",
+          marginRight: "-25",
           justifyContent: "flex-start",
           _selected: {
             borderLeftColor: "primary.9",

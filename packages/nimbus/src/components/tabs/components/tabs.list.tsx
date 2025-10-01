@@ -25,7 +25,7 @@ export const TabList = ({ tabs, children, ...props }: TabListProps) => {
         {tabs
           ? (tab: TabItemProps) => (
               <Tab key={tab.id} id={tab.id} isDisabled={tab.isDisabled}>
-                {tab.title}
+                {tab.tabLabel}
               </Tab>
             )
           : children}

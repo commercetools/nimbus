@@ -81,13 +81,13 @@ export interface TabItemProps {
    */
   id: string;
   /**
-   * The title of the tab item
+   * The tabLabel of the tab item
    */
-  title: React.ReactNode;
+  tabLabel: React.ReactNode;
   /**
-   * The content of the tab item
+   * The panelContent of the tab item
    */
-  content: React.ReactNode;
+  panelContent: React.ReactNode;
   /**
    * Whether the tab item is disabled
    */
