@@ -84,24 +84,6 @@ const App = () => (
 
 ```...Add example snippets for each relevant component prop```
 
-### API Changes
-
-| UI Kit Component | Nimbus Component | Notes |
-|------------------|------------------|-------|
-| `<Tooltip>` | `<Tooltip.Root>` + `<Tooltip.Content>` | Now uses compound component pattern |
-| `title` prop | `<Tooltip.Content>` children | Text content now goes as children |
-| `isOpen` prop | `isOpen` prop | ✅ Same API |
-| `onClose` | `onOpenChange` | ⚠️ Renamed, now receives boolean parameter |
-| `horizontalConstraint` | Not supported | ❌ Removed - use CSS or container sizing |
-
-
-#### Deprecated props
-- `onClose` → `onOpenChange`: Now receives `(isOpen: boolean) => void` instead of `() => void`
-- `title` prop → Content as children: Text now goes inside `<Tooltip.Content>`
-- `delay` and `closeDelay`: More granular control over timing
-- `horizontalConstraint`: Use CSS width constraints on content instead
-- `tone`: Styling is now handled through design tokens
-
 ## Testing Strategies and Best Practices
 
 #### 1. Unit Testing with React Testing Library
@@ -137,24 +119,19 @@ Use the [Nimbus storybook Tooltip component story](https://nimbus-storybook-6l4m
 
 #### 3. Regression tests
 
-### 4. Accessibility Standards
+### 4. Accessibility requirements
 
 Nimbus Tooltip automatically handles most accessibility requirements, but developers should be aware of these basic requirements:
 - Add `aria-label` to enable proper definition of the alert component.
 - Ensure `aria-describedby` is present for error messages.
 - Include `role="alert"` for critical notifications.
 
-
-#### Implementation Notes
-- Screen reader compatible with proper ARIA attributes
-- Keyboard navigation support built-in
-
 ## Quick Reference Summary
 
-### Essential Patterns
+### Design Guidelines
 For essential patterns and guidelines, see the [Tooltip design guideline]((https://Nimbus-docs/components/feedback/tooltip))
 
-### Common Code Patterns
+### Code Patterns
 
 #### Hooks
 ```tsx
