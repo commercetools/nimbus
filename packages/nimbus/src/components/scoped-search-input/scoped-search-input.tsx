@@ -132,26 +132,22 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             <Select.Options>
               {options.map(
                 (
-                  item:
-                    | ScopedSearchInputOption
-                    | ScopedSearchInputOptionGroup
+                  item: ScopedSearchInputOption | ScopedSearchInputOptionGroup
                 ) => {
                   // Check if it's an option group
                   if ("options" in item) {
                     const group = item as ScopedSearchInputOptionGroup;
                     return (
                       <Select.OptionGroup key={group.label} label={group.label}>
-                        {group.options.map(
-                          (opt: ScopedSearchInputOption) => (
-                            <Select.Option
-                              key={opt.value}
-                              id={opt.value}
-                              isDisabled={opt.isDisabled}
-                            >
-                              {opt.label}
-                            </Select.Option>
-                          )
-                        )}
+                        {group.options.map((opt: ScopedSearchInputOption) => (
+                          <Select.Option
+                            key={opt.value}
+                            id={opt.value}
+                            isDisabled={opt.isDisabled}
+                          >
+                            {opt.label}
+                          </Select.Option>
+                        ))}
                       </Select.OptionGroup>
                     );
                   }
