@@ -97,14 +97,6 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
     handleTextChange("");
   }, [onReset, handleTextChange]);
 
-  // Shared states for both inputs
-  const sharedStates = {
-    isDisabled,
-    isReadOnly,
-    isInvalid,
-    isRequired,
-  };
-
   return (
     <ScopedSearchInputRootSlot
       {...recipeProps}
@@ -117,7 +109,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
           <Select.Root
             id={selectId}
             selectedKey={value.option}
-            onSelectionChange={handleOptionChange}
+            onSelectionChange={isReadOnly ? undefined : handleOptionChange}
             placeholder={selectPlaceholder}
             aria-label={
               selectAriaLabel || intl.formatMessage(messages.selectLabel)
@@ -127,7 +119,8 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             aria-labelledby={ariaLabelledby}
             size={recipeProps.size}
             isClearable={false}
-            {...sharedStates}
+            isDisabled={isDisabled}
+            isRequired={isRequired}
           >
             <Select.Options>
               {options.map(
@@ -184,7 +177,10 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}
             size={recipeProps.size}
-            {...sharedStates}
+            isDisabled={isDisabled}
+            isReadOnly={isReadOnly}
+            isInvalid={isInvalid}
+            isRequired={isRequired}
           />
         </ScopedSearchInputSearchWrapperSlot>
       </ScopedSearchInputContainerSlot>
