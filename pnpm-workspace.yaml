@@ -51,9 +51,9 @@ catalogs:
     '@vueless/storybook-dark-mode': ^9.0.9
   react:
     '@types/react': ^19.0.0
-    '@types/react-dom': ^19.0.0
+    '@types/react-dom': ^19.2.0
     react: ^19.0.0
-    react-dom: ^19.0.0
+    react-dom: ^19.2.0
     '@emotion/react': ^11.14.0
     '@emotion/is-prop-valid': ^1.4.0
     '@chakra-ui/cli': ^3.27.0
