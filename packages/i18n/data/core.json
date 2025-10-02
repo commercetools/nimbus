@@ -27,6 +27,10 @@
     "developer_comment": "aria-label for clear input button in date picker",
     "string": "Clear input value"
   },
+  "Nimbus.Dialog.closeTrigger": {
+    "developer_comment": "aria-label for the default close trigger button",
+    "string": "Close dialog"
+  },
   "Nimbus.FieldErrors.duplicateValue": {
     "developer_comment": "Error message for duplicate value validation",
     "string": "This value is already in use. It must be unique."
@@ -142,6 +146,26 @@
   "Nimbus.PasswordInput.show": {
     "developer_comment": "aria-label & tooltip for show password button",
     "string": "Show password"
+  },
+  "Nimbus.ScopedSearchInput.clearButton": {
+    "developer_comment": "aria-label for clear button",
+    "string": "Clear search"
+  },
+  "Nimbus.ScopedSearchInput.searchLabel": {
+    "developer_comment": "Default aria-label for search input",
+    "string": "Search"
+  },
+  "Nimbus.ScopedSearchInput.selectLabel": {
+    "developer_comment": "Default aria-label for select dropdown",
+    "string": "Filter by"
+  },
+  "Nimbus.ScopedSearchInput.submitButton": {
+    "developer_comment": "aria-label for submit button",
+    "string": "Submit search"
+  },
+  "Nimbus.SearchInput.clearInput": {
+    "developer_comment": "aria-label for search input clear button",
+    "string": "Clear search input"
   },
   "Nimbus.Select.clearSelection": {
     "developer_comment": "aria-label for select clear button",
