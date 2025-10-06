@@ -98,6 +98,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
 
   return (
     <RichTextInputRootSlot
+      role="group"
       {...recipeProps}
       {...styleProps}
       {...functionalProps}

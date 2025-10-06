@@ -14,7 +14,9 @@ export const richTextInputRecipe = defineSlotRecipe({
       colorPalette: "slate",
       borderColor: "colorPalette.7",
       backgroundColor: "colorPalette.contrast",
-
+      _focusWithin: {
+        layerStyle: "focusRing",
+      },
       // Invalid state styling
       "&[data-invalid='true']": {
         borderWidth: "{sizes.50}",
@@ -33,6 +35,7 @@ export const richTextInputRecipe = defineSlotRecipe({
       padding: "400",
       minHeight: "inherit",
       outline: "none",
+      color: "colorPalette.12",
 
       // Disabled state styling for editable
       "[data-disabled='true'] &": {
@@ -40,6 +43,9 @@ export const richTextInputRecipe = defineSlotRecipe({
         opacity: "0.5",
       },
 
+      "& [data-slate-placeholder]": {
+        opacity: "0.5!",
+      },
       // Styling for user-facing editor text
       "& p": {
         textStyle: "md",

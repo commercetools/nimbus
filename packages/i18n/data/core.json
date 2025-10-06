@@ -27,6 +27,10 @@
     "developer_comment": "aria-label for clear input button in date picker",
     "string": "Clear input value"
   },
+  "Nimbus.Dialog.closeTrigger": {
+    "developer_comment": "aria-label for the default close trigger button",
+    "string": "Close dialog"
+  },
   "Nimbus.FieldErrors.duplicateValue": {
     "developer_comment": "Error message for duplicate value validation",
     "string": "This value is already in use. It must be unique."
@@ -91,6 +95,30 @@
     "developer_comment": "Default loading message for loading spinners",
     "string": "Loading data"
   },
+  "Nimbus.LocalizedField.hideCurrencies": {
+    "developer_comment": "Label for hiding all currency inputs when toggle button is pressed",
+    "string": "Hide all currencies"
+  },
+  "Nimbus.LocalizedField.hideLanguages": {
+    "developer_comment": "Label for hiding all language inputs when toggle button is pressed",
+    "string": "Hide all languages"
+  },
+  "Nimbus.LocalizedField.infoBoxTriggerAriaLabel": {
+    "developer_comment": "aria label for button that triggers more info dialog",
+    "string": "more info"
+  },
+  "Nimbus.LocalizedField.missingRequiredField": {
+    "developer_comment": "Error message for missing required value",
+    "string": "This field is required. Provide at least one value."
+  },
+  "Nimbus.LocalizedField.showCurrencies": {
+    "developer_comment": "Label for showing all currency inputs when toggle button is pressed",
+    "string": "Show all currencies"
+  },
+  "Nimbus.LocalizedField.showLanguages": {
+    "developer_comment": "Label for showing all language inputs when toggle button is pressed",
+    "string": "Show all languages"
+  },
   "Nimbus.MoneyInput.amountInputLabel": {
     "developer_comment": "aria-label for amount input",
     "string": "Amount"
@@ -118,6 +146,26 @@
   "Nimbus.PasswordInput.show": {
     "developer_comment": "aria-label & tooltip for show password button",
     "string": "Show password"
+  },
+  "Nimbus.ScopedSearchInput.clearButton": {
+    "developer_comment": "aria-label for clear button",
+    "string": "Clear search"
+  },
+  "Nimbus.ScopedSearchInput.searchLabel": {
+    "developer_comment": "Default aria-label for search input",
+    "string": "Search"
+  },
+  "Nimbus.ScopedSearchInput.selectLabel": {
+    "developer_comment": "Default aria-label for select dropdown",
+    "string": "Filter by"
+  },
+  "Nimbus.ScopedSearchInput.submitButton": {
+    "developer_comment": "aria-label for submit button",
+    "string": "Submit search"
+  },
+  "Nimbus.SearchInput.clearInput": {
+    "developer_comment": "aria-label for search input clear button",
+    "string": "Clear search input"
   },
   "Nimbus.Select.clearSelection": {
     "developer_comment": "aria-label for select clear button",

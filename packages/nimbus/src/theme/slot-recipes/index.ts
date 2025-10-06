@@ -15,6 +15,10 @@ import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
 import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
 import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
+import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
+import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
+import { searchInputSlotRecipe } from "@/components/search-input/search-input.recipe";
+import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/scoped-search-input.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -31,6 +35,7 @@ import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.re
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
@@ -54,4 +59,9 @@ export const slotRecipes = {
   menu: menuSlotRecipe,
   textInput: textInputSlotRecipe,
   splitButton: splitButtonSlotRecipe,
+  tabs: tabsSlotRecipe,
+  localizedField: localizedFieldSlotRecipe,
+  collapsibleMotion: collapsibleMotionSlotRecipe,
+  searchInput: searchInputSlotRecipe,
+  scopedSearchInput: scopedSearchInputSlotRecipe,
 };

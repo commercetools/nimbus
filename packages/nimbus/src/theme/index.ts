@@ -5,6 +5,7 @@ import {
 } from "@chakra-ui/react";
 import { animationStyles } from "./animation-styles";
 import { breakpoints } from "./breakpoints";
+import { conditions } from "./conditions";
 import { globalCss } from "./global-css";
 import { keyframes } from "./keyframes";
 import { layerStyles } from "./layer-styles";
@@ -19,6 +20,7 @@ const themeConfig = defineConfig({
   cssVarsPrefix: "nimbus",
   cssVarsRoot: ":where(:root, :host)",
   globalCss,
+  conditions,
   theme: {
     breakpoints,
     keyframes,

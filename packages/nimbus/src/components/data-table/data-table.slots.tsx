@@ -44,6 +44,10 @@ export type DataTableTableSlotProps = Omit<
   "translate"
 > & {
   translate?: "yes" | "no";
+  /**
+   * React ref to be forwarded to the table element
+   */
+  ref?: React.Ref<HTMLTableElement>;
 };
 export const DataTableTableSlot = withContext<
   HTMLTableElement,
