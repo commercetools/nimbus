@@ -18,6 +18,7 @@ import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
 import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
 import { searchInputSlotRecipe } from "@/components/search-input/search-input.recipe";
+import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/scoped-search-input.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -62,4 +63,5 @@ export const slotRecipes = {
   localizedField: localizedFieldSlotRecipe,
   collapsibleMotion: collapsibleMotionSlotRecipe,
   searchInput: searchInputSlotRecipe,
+  scopedSearchInput: scopedSearchInputSlotRecipe,
 };
