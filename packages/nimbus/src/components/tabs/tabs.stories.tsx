@@ -266,13 +266,13 @@ export const VerticalOrientation: Story = {
 
       // Check that tabs are rendered
       await expect(
-        canvas.getByRole("tab", { name: "Home" })
+        await canvas.findByRole("tab", { name: "Home" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "About" })
+        await canvas.findByRole("tab", { name: "About" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "Contact" })
+        await canvas.findByRole("tab", { name: "Contact" })
       ).toBeInTheDocument();
     });
 
@@ -364,12 +364,16 @@ export const WithDisabledKeys: Story = {
       await expect(tabsContainer).toBeInTheDocument();
 
       // Check all tabs are rendered
-      const enabledTab1 = canvas.getByRole("tab", { name: "Enabled Tab" });
-      const disabledTab1 = canvas.getByRole("tab", { name: "Disabled Tab" });
-      const enabledTab2 = canvas.getByRole("tab", {
+      const enabledTab1 = await canvas.findByRole("tab", {
+        name: "Enabled Tab",
+      });
+      const disabledTab1 = await canvas.findByRole("tab", {
+        name: "Disabled Tab",
+      });
+      const enabledTab2 = await canvas.findByRole("tab", {
         name: "Another Enabled Tab",
       });
-      const disabledTab2 = canvas.getByRole("tab", {
+      const disabledTab2 = await canvas.findByRole("tab", {
         name: "Another Disabled Tab",
       });
 
@@ -539,8 +543,10 @@ export const Disabled: Story = {
     const canvas = within(canvasElement);
 
     await step("Disabled tabs have correct ARIA attributes", async () => {
-      const disabledTab = canvas.getByRole("tab", { name: "Disabled Tab" });
-      const anotherDisabledTab = canvas.getByRole("tab", {
+      const disabledTab = await canvas.findByRole("tab", {
+        name: "Disabled Tab",
+      });
+      const anotherDisabledTab = await canvas.findByRole("tab", {
         name: "Another Disabled Tab",
       });
 
@@ -695,13 +701,13 @@ export const Sizes: Story = {
 
       // Check that tabs are rendered in each size variant
       await expect(
-        canvas.getByRole("tab", { name: "Small Tab 1" })
+        await canvas.findByRole("tab", { name: "Small Tab 1" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "Medium Tab 1" })
+        await canvas.findByRole("tab", { name: "Medium Tab 1" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "Large Tab 1" })
+        await canvas.findByRole("tab", { name: "Large Tab 1" })
       ).toBeInTheDocument();
     });
 
