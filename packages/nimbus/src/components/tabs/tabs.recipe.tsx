@@ -31,7 +31,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
       fontWeight: "500",
       padding: "300 400",
       transition: "all 150ms ease",
-      paddingTop: "var(--taps-adding-top)",
+      paddingTop: "var(--tabs-padding-top)",
       paddingRight: "var(--tabs-padding-right)",
       paddingBottom: "var(--tabs-padding-bottom)",
       paddingLeft: "var(--tabs-padding-left)",
