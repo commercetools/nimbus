@@ -21,13 +21,13 @@ export const SelectClearButton = () => {
   return (
     <ClearPressResponder>
       <IconButton
+        pointerEvents="all"
         size="2xs"
-        slot={null}
         variant="ghost"
         aria-label={intl.formatMessage(messages.clearSelection)}
         aria-labelledby=""
         onPress={onPressRequest}
-        pointerEvents="all"
+        slot={null}
       >
         <CloseIcon />
       </IconButton>

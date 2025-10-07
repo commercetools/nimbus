@@ -36,9 +36,9 @@ export interface SelectOptionsProps<T>
   extends RaListBoxProps<T>,
     Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}
 
-export interface SelectOptionProps<T>
+export interface SelectOptionProps
   extends Omit<
-      RaListBoxItemProps<T>,
+      RaListBoxItemProps,
       | "onClick"
       | "translate"
       | "onBlur"
@@ -48,7 +48,7 @@ export interface SelectOptionProps<T>
       | "onMouseDown"
       | "onMouseUp"
     >,
-    Omit<SelectOptionSlotProps, keyof RaListBoxItemProps<T>> {
+    Omit<SelectOptionSlotProps, keyof RaListBoxItemProps> {
   /**
    * React ref to be forwarded to the option element
    */

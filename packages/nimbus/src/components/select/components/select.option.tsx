@@ -3,10 +3,8 @@ import { SelectOptionSlot } from "./../select.slots";
 import type { SelectOptionProps } from "../select.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
-export const SelectOption = <T extends object>({
-  ref,
-  ...restProps
-}: SelectOptionProps<T>) => {
+export const SelectOption = (props: SelectOptionProps) => {
+  const { ref, ...restProps } = props;
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (

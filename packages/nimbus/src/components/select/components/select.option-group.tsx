@@ -23,7 +23,7 @@ export const SelectOptionGroup = <T extends object>(
   }
 
   return (
-    <chakra.div {...styleProps} asChild>
+    <chakra.section {...styleProps} asChild>
       <RaListBoxSection ref={ref} {...functionalProps}>
         <SelectOptionGroupSlot asChild>
           <RaHeader>{label}</RaHeader>
@@ -42,7 +42,7 @@ export const SelectOptionGroup = <T extends object>(
           (children as ReactNode)
         )}
       </RaListBoxSection>
-    </chakra.div>
+    </chakra.section>
   );
 };
 
