@@ -14,6 +14,7 @@ export * from "./image";
 export * from "./kbd";
 export * from "./link";
 export * from "./list";
+export * from "./draggable-list";
 export * from "./simple-grid";
 export * from "./table";
 export * from "./text";
