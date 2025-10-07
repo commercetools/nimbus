@@ -7,17 +7,7 @@ import { SelectOptionGroup as _SelectOptionGroup } from "./components/select.opt
  * Select
  * ============================================================
  * A versatile select component for choosing one or more options from a list.
- * Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
- *
- * Features:
- * - Single and multiple selection modes
- * - Searchable with filtering support
- * - Keyboard navigation and shortcuts
- * - Loading states and async data
- * - Grouped options
- * - Clear button functionality
- * - Customizable variants and sizes
- * - Portal rendering for dropdown
+ * Features full keyboard accessibility and WCAG 2.1 AA compliance.
  *
  * @example
  * ```tsx
@@ -30,15 +20,13 @@ import { SelectOptionGroup as _SelectOptionGroup } from "./components/select.opt
  * </Select.Root>
  * ```
  *
- * @see https://react-spectrum.adobe.com/react-aria/Select.html
+ * @see https://nimbus-documentation.vercel.app/components/inputs/select
  */
 export const Select = {
   /**
    * # Select.Root
    *
    * The root component that provides context and state management for the select.
-   * Uses React Aria's Select for accessibility and keyboard interaction.
-   *
    * This component must wrap all select parts (Options, Option, etc.) and provides
    * the select state, variant styling context, and selection management.
    *
