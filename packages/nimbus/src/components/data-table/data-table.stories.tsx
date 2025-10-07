@@ -462,7 +462,7 @@ export const Base: Story = {
       await userEvent.click(checkbox);
 
       await waitFor(() => {
-        expect(checkbox).toHaveAttribute("data-selected");
+        expect(checkbox).toBeChecked();
       });
     });
 
@@ -475,12 +475,8 @@ export const Base: Story = {
       await userEvent.click(within(thirdDataRow).getByRole("checkbox"));
 
       await waitFor(() => {
-        expect(within(secondDataRow).getByRole("checkbox")).toHaveAttribute(
-          "data-selected"
-        );
-        expect(within(thirdDataRow).getByRole("checkbox")).toHaveAttribute(
-          "data-selected"
-        );
+        expect(within(secondDataRow).getByRole("checkbox")).toBeChecked();
+        expect(within(thirdDataRow).getByRole("checkbox")).toBeChecked();
       });
     });
 
@@ -494,7 +490,7 @@ export const Base: Story = {
         const allCheckboxes = canvas.getAllByRole("checkbox");
         const rowCheckboxes = allCheckboxes.slice(1);
         rowCheckboxes.forEach((checkbox) => {
-          expect(checkbox).toHaveAttribute("data-selected");
+          expect(checkbox).toBeChecked();
         });
       });
     });
@@ -1021,7 +1017,7 @@ export const ClickableRows: Story = {
 
           // Verify checkbox is checked (the click worked on the checkbox)
           await waitFor(() => {
-            expect(checkbox).toHaveAttribute("data-selected");
+            expect(checkbox).toBeChecked();
           });
         }
       }
@@ -1036,7 +1032,7 @@ export const ClickableRows: Story = {
 
       // Wait for the state to update
       await waitFor(() => {
-        expect(clickableCheckbox).not.toHaveAttribute("data-selected");
+        expect(clickableCheckbox).not.toBeChecked();
       });
 
       // Try clicking a row
@@ -1062,7 +1058,7 @@ export const ClickableRows: Story = {
       // Re-enable clickable rows for subsequent tests
       await userEvent.click(clickableCheckbox);
       await waitFor(() => {
-        expect(clickableCheckbox).toHaveAttribute("data-selected");
+        expect(clickableCheckbox).toBeChecked();
       });
     });
 
