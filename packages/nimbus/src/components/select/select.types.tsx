@@ -48,7 +48,12 @@ export interface SelectOptionProps<T>
       | "onMouseDown"
       | "onMouseUp"
     >,
-    Omit<SelectOptionSlotProps, keyof RaListBoxItemProps<T>> {}
+    Omit<SelectOptionSlotProps, keyof RaListBoxItemProps<T>> {
+  /**
+   * React ref to be forwarded to the option element
+   */
+  ref?: React.Ref<HTMLDivElement>;
+}
 
 export interface SelectOptionGroupProps<T>
   extends RaListBoxSectionProps<T>,
