@@ -21,3 +21,17 @@ export const DraggableListItemSlot = withContext<
   HTMLDivElement,
   DraggableListItemSlotProps
 >("div", "item");
+
+// Item content slot - content displayed in draggable item
+export type DraggableListItemContentSlotProps = HTMLChakraProps<"div">;
+export const DraggableListItemContentSlot = withContext<
+  HTMLDivElement,
+  DraggableListItemSlotProps
+>("div", "itemContent");
+
+// Empty list slot - when there are no items in list
+export type DraggableListEmptySlotProps = HTMLChakraProps<"div">;
+export const DraggableListEmptySlot = withContext<
+  HTMLDivElement,
+  DraggableListItemSlotProps
+>("div", "empty");
