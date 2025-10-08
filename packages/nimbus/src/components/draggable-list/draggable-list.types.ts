@@ -14,9 +14,11 @@ import type { DraggableListItemSlotProps } from "./draggable-list.slots";
 /**
  * Base data shape for draggable list items
  *
- * `key` and `label` values are defined for use with legacy UI Kit column manager drag and drop
+ * @property key - Unique identifier for the item (required for default rendering)
+ * @property label - Display content for the item (required for default rendering)
  *
- * If either`key` or `label` are not defined, you must handle the `Children` of the DraggableListRoot yourself
+ * If either `key` or `label` are not defined, you must provide custom children
+ * to the DraggableList.Root component.
  */
 export type DraggableListItemData = {
   key?: string;
@@ -26,9 +28,10 @@ export type DraggableListItemData = {
 /**
  * Props for the DraggableList.Root component
  *
- * The root component provides styling context and drag-and-drop state management
+ * The root component that provides context and state management for the draggable list.
+ * Uses React Aria's GridList for accessibility and drag-and-drop functionality.
  *
- * @param T Type for item data displayed in the list, i.e. the `items` prop's type is `T[]`
+ * @template T - Type for item data displayed in the list. Items array type is `T[]`.
  */
 export interface DraggableListRootProps<T extends DraggableListItemData>
   extends Omit<
@@ -42,21 +45,34 @@ export interface DraggableListRootProps<T extends DraggableListItemData>
       >,
       "children" | "slot"
     > {
-  /** If `children` is not declared, each item must have both a `key` and a `label` value */
+  /**
+   * Array of items to display in the list.
+   * If `children` is not provided, each item must have both `key` and `label` properties.
+   */
   items?: T[];
-  /** Callback that is called any time the list is updated by any drag and drop event or removal of an item */
+  /**
+   * Callback fired when the list is updated by drag-and-drop or item removal
+   * @param updatedItems - The new array of items after the update
+   */
   onUpdateItems?: (updatedItems: T[]) => void;
+  /**
+   * Ref to the root container element
+   */
   ref?: RefObject<HTMLDivElement>;
   /**
-   * Controls whether a 'remove' button is displayed in each item
-   * if an item is removed, the updated list is returned by the `onUpdateItems` function
+   * Whether to show a remove button for each item.
+   * When an item is removed, `onUpdateItems` is called with the updated list.
+   * @default false
    */
   removableItems?: boolean;
-  /** If `children` is not declared, each item must have both a `key` and a `label` value */
+  /**
+   * Custom render function for list items.
+   * If not provided, items will be rendered using their `key` and `label` properties.
+   */
   children?: GridListProps<T>["children"];
   /**
-   *  Renders when list is empty
-   *  @default "drop items here"
+   * Content to display when the list is empty
+   * @default "drop items here"
    */
   renderEmptyState?: ReactNode;
 }
@@ -64,9 +80,10 @@ export interface DraggableListRootProps<T extends DraggableListItemData>
 /**
  * Props for the DraggableList.Item component
  *
- * The item component renders each item in the list
+ * The item component renders each individual item in the draggable list.
+ * Supports drag-and-drop interaction and optional removal.
  *
- * @param T Type for item's data object
+ * @template T - Type for the item's data object
  */
 export interface DraggableListItemProps<T extends DraggableListItemData>
   extends Omit<
@@ -74,12 +91,22 @@ export interface DraggableListItemProps<T extends DraggableListItemData>
       "className" | "onClick" | "style" | "translate"
     >,
     Omit<DraggableListItemSlotProps, "children"> {
+  /**
+   * The unique identifier for the item
+   */
   id?: string;
+  /**
+   * Ref to the item container element
+   */
   ref?: RefObject<HTMLDivElement>;
+  /**
+   * The content to display for this item
+   */
   children?: ReactNode;
   /**
-   * Optional callback invoked when remove button is pressed
-   * Remove button is only rendered if this callback is declared
+   * Callback fired when the remove button is pressed.
+   * The remove button is only rendered when this callback is provided.
+   * @param key - The key of the item being removed
    */
   onRemoveItem?: (key: Key) => void;
 }

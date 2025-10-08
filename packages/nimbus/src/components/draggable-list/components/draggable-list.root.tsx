@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from "react";
+import { useIntl } from "react-intl";
 import {
   GridList,
   isTextDropItem,
@@ -7,6 +8,7 @@ import {
 } from "react-aria-components";
 import { useListData } from "react-stately";
 import { extractStyleProps } from "@/utils/extractStyleProps";
+import { messages } from "../draggable-list.i18n";
 import {
   DraggableListRootSlot,
   DraggableListEmptySlot,
@@ -27,23 +29,19 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   items = [],
   onUpdateItems,
   removableItems,
-  // TODO: intl string
-  renderEmptyState = "drop items here",
+  renderEmptyState: renderEmptyStateFromProps,
   ...restProps
 }: DraggableListRootProps<T>) => {
+  const { formatMessage } = useIntl();
+  const renderEmptyState =
+    renderEmptyStateFromProps ?? formatMessage(messages.emptyMessage);
+
   const list = useListData({ initialItems: items });
 
   // Notify parent whenever list.items changes
   useEffect(() => {
     onUpdateItems?.(list.items);
   }, [list.items, onUpdateItems]);
-
-  const handleRemoveItem = useCallback(
-    (key: Key) => {
-      list.remove(key);
-    },
-    [list.remove]
-  );
 
   const { dragAndDropHooks } = useDragAndDrop<T>({
     // Provide item data to drag'n'drop handler
@@ -99,6 +97,13 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
       }
     },
   });
+
+  const handleRemoveItem = useCallback(
+    (key: Key) => {
+      list.remove(key);
+    },
+    [list.remove]
+  );
 
   const [styleProps, functionalProps] = extractStyleProps(restProps);
   return (

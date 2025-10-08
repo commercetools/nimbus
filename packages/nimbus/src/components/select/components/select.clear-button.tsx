@@ -14,7 +14,6 @@ export const SelectClearButton = () => {
   }
 
   const onPressRequest = () => {
-    console.log("onPressRequest");
     state?.setSelectedKey(null);
   };
 

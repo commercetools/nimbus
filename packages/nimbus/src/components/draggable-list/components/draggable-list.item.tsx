@@ -1,6 +1,8 @@
+import { useIntl } from "react-intl";
 import { GridListItem } from "react-aria-components";
 import { Close, DragIndicator } from "@commercetools/nimbus-icons";
 import { Checkbox, IconButton } from "@/components";
+import { messages } from "../draggable-list.i18n";
 import {
   DraggableListItemSlot,
   DraggableListItemContentSlot,
@@ -17,6 +19,8 @@ export const DraggableListItem = <T extends DraggableListItemData>({
   textValue: textValueFromProps,
   ...restProps
 }: DraggableListItemProps<T>) => {
+  const { formatMessage } = useIntl();
+
   const defaultTextValue = typeof children === "string" ? children : undefined;
   return (
     <DraggableListItemSlot {...restProps} asChild>
@@ -35,15 +39,14 @@ export const DraggableListItem = <T extends DraggableListItemData>({
               </IconButton>
             )}
             {selectionMode === "multiple" && selectionBehavior === "toggle" && (
-              <Checkbox slot="selection" />
+              <Checkbox flex="0 0 auto" slot="selection" />
             )}
             <DraggableListItemContentSlot>
               {children}
             </DraggableListItemContentSlot>
             {onRemoveItem && (
               <IconButton
-                // TODO: intl label here
-                aria-label="remove item"
+                aria-label={formatMessage(messages.removeButtonLabel)}
                 size="2xs"
                 variant="ghost"
                 onPress={id ? () => onRemoveItem(id) : undefined}
