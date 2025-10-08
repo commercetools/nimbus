@@ -113,7 +113,10 @@ export interface DraggableListItemProps<T extends DraggableListItemData>
 }
 
 /**
- * Data Shape for DraggableList.Field
+ * Data shape for items used in DraggableList.Field
+ *
+ * Extends DraggableListItemData with required key and label properties.
+ * This ensures all items have the necessary data for default rendering in form fields.
  *
  * @property key - Unique identifier for the item (required)
  * @property label - Display content for the item (required)
@@ -126,15 +129,33 @@ export interface DraggableListFieldItemData extends DraggableListItemData {
 /**
  * Props for the DraggableList.Field component
  *
- * This component renders the `DraggableList` within a `FormField`
+ * A form field wrapper for DraggableList that combines the draggable list
+ * functionality with form field labeling, description, and error handling.
  *
- * It is only configurable via props, and does not accept children
+ * This component is configured via props only and does not accept children.
+ * Items are rendered using their `key` and `label` properties.
+ *
+ * @template T - Type for item data, must extend DraggableListFieldItemData
  */
 export interface DraggableListFieldProps<T extends DraggableListFieldItemData>
   extends Omit<DraggableListRootProps<T>, "children" | "direction">,
     Omit<FormFieldProps, "slot"> {
+  /**
+   * The form field label (required)
+   *
+   * If a visible label is not necessary, use `DraggableList.Root`
+   */
   label: ReactNode;
+  /**
+   * Optional description text displayed below the label
+   */
   description?: ReactNode;
+  /**
+   * Error message to display when validation fails
+   */
   error?: ReactNode;
+  /**
+   * Optional info box content for additional context
+   */
   infoBox?: ReactNode;
 }

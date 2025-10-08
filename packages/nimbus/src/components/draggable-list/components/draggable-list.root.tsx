@@ -7,6 +7,7 @@ import {
   type Key,
 } from "react-aria-components";
 import { useListData } from "react-stately";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { messages } from "../draggable-list.i18n";
 import {
@@ -113,9 +114,12 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     );
   }
 
+  const recipe = useSlotRecipe({ key: "draggableList" });
+  // Extract recipe props
+  const [recipeProps] = recipe.splitVariantProps(restProps);
   const [styleProps, functionalProps] = extractStyleProps(restProps);
   return (
-    <DraggableListRootSlot {...styleProps} asChild>
+    <DraggableListRootSlot {...styleProps} {...recipeProps} asChild>
       <GridList
         ref={ref}
         {...functionalProps}

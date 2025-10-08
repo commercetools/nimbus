@@ -15,6 +15,7 @@ export const DraggableListField = <T extends DraggableListFieldItemData>({
   isDisabled,
   isReadOnly,
   id,
+  items,
   ...restProps
 }: DraggableListFieldProps<T>) => {
   return (
@@ -28,7 +29,8 @@ export const DraggableListField = <T extends DraggableListFieldItemData>({
       <FormField.Label>{label}</FormField.Label>
       <FormField.Input>
         <DraggableListRoot
-          disabledKeys={isDisabled ? "all" : undefined}
+          disabledKeys={isDisabled ? items?.map((item) => item.key) : undefined}
+          items={items}
           {...restProps}
         />
       </FormField.Input>

@@ -21,7 +21,6 @@ export const DraggableListItem = <T extends DraggableListItemData>({
   ...restProps
 }: DraggableListItemProps<T>) => {
   const { formatMessage } = useIntl();
-  console.log(restProps);
   const defaultTextValue = typeof children === "string" ? children : undefined;
   const [styleProps, functionalProps] = extractStyleProps(restProps);
   return (
