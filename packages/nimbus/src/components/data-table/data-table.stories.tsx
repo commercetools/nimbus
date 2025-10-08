@@ -1576,14 +1576,29 @@ export const WithFooter: Story = {
         align="center"
         gap="400"
         mt="400"
+        p="400"
+        bg="neutral.2"
+        borderRadius="md"
+        border="1px solid"
+        borderColor="neutral.6"
+        data-testid="footer-content"
       >
-        <Text fontWeight="bold">Total: {data.length} items</Text>
-        <Stack direction="row" gap="300" align="center">
-          <Button size="xs" variant="outline">
+        <Text fontWeight="bold" data-testid="total-items">
+          Total: {data.length} items
+        </Text>
+        <Stack
+          direction="row"
+          gap="300"
+          align="center"
+          data-testid="pagination-controls"
+        >
+          <Button size="xs" variant="outline" data-testid="prev-button">
             Previous
           </Button>
-          <Text px="300">Page 1 of 1</Text>
-          <Button size="xs" variant="outline">
+          <Text px="300" data-testid="page-info">
+            Page 1 of 1
+          </Text>
+          <Button size="xs" variant="outline" data-testid="next-button">
             Next
           </Button>
         </Stack>
@@ -1607,6 +1622,7 @@ export const WithFooter: Story = {
           selectionMode="multiple"
           footer={footerContent}
           onRowClick={() => {}}
+          data-testid="footer-table"
         />
 
         <Box mt="400" p="400" bg="neutral.2" borderRadius="md">
@@ -1623,6 +1639,30 @@ export const WithFooter: Story = {
         </Box>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Footer renders correctly", async () => {
+      const table = await canvas.findByTestId("footer-table");
+      expect(table).toBeInTheDocument();
+
+      const footerContent = canvas.getByTestId("footer-content");
+      expect(footerContent).toBeInTheDocument();
+    });
+
+    await step("Footer displays correct content", async () => {
+      const totalItems = canvas.getByTestId("total-items");
+      expect(totalItems).toHaveTextContent(`Total: ${data.length} items`);
+
+      const pageInfo = canvas.getByTestId("page-info");
+      expect(pageInfo).toHaveTextContent("Page 1 of 1");
+
+      const prevButton = canvas.getByTestId("prev-button");
+      const nextButton = canvas.getByTestId("next-button");
+      expect(prevButton).toBeInTheDocument();
+      expect(nextButton).toBeInTheDocument();
+    });
   },
 };
 
