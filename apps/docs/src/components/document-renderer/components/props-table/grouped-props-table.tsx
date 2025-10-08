@@ -9,10 +9,15 @@ import {
   KeyboardArrowRight,
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
+import * as nimbus from "@commercetools/nimbus";
 import { useEffect, useState, useMemo } from "react";
 import { ComponentPropsTable } from "./components/component-props-table.tsx";
+import type {
+  ComponentData,
+  ExportInfo,
+  PropData,
+} from "./props-table.types.ts";
 import typesData from "../../../../data/types.json";
-import * as nimbus from "@commercetools/nimbus";
 
 // Define prop groups similar to React Aria
 const PROP_GROUPS = {
@@ -130,30 +135,6 @@ interface GroupedPropTableProps {
   showDescription?: boolean;
 }
 
-interface PropData {
-  name: string;
-  type: { name: string };
-  defaultValue?: { value: string };
-  required: boolean;
-  description?: string;
-}
-
-interface ComponentData {
-  displayName: string;
-  description?: string;
-  props?: Record<string, PropData | undefined>;
-  tags?: Record<string, string | undefined>;
-  filePath: string;
-  methods: unknown[];
-}
-
-interface ExportInfo {
-  exists: boolean;
-  isComponent: boolean;
-  isCompoundComponent: boolean;
-  componentTypes?: string[];
-}
-
 export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
   componentName,
   showDescription = true,
@@ -228,6 +209,55 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
     }
   }, [componentName, exportInfo]);
 
+  const shouldIncludeProp = (
+    propName: string,
+    prop: PropData,
+    groupName: string,
+    allProps: Record<string, PropData>
+  ): boolean => {
+    if (propName === "id" && prop.type.name !== "string") return false;
+
+    if (propName === "value") {
+      if (groupName === "Value" && !allProps.defaultValue) return false;
+      if (groupName === "Forms" && prop.type.name !== "string") return false;
+    }
+
+    if (
+      propName === "type" &&
+      groupName === "Forms" &&
+      !prop.description?.includes("form")
+    ) {
+      return false;
+    }
+
+    if (
+      propName === "children" &&
+      groupName === "Content" &&
+      !allProps.items &&
+      !allProps.columns
+    ) {
+      return false;
+    }
+
+    if (
+      propName === "className" &&
+      groupName === "Styling" &&
+      prop.type.name !== "string"
+    ) {
+      return false;
+    }
+
+    if (
+      propName === "style" &&
+      groupName === "Styling" &&
+      !prop.type.name.includes("CSSProperties")
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
   // Fetch prop data for the selected component
   const componentData = useMemo(() => {
     if (!selectedComponent) return null;
@@ -242,8 +272,18 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
       return { ungrouped: {}, groups: {} };
     }
 
-    // Clone props to avoid mutation
-    const remainingProps = { ...componentData.props };
+    // Filter undefined values once at the start
+    const validProps = Object.entries(componentData.props).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {} as Record<string, PropData>
+    );
+
+    const remainingProps = { ...validProps };
     const groups: Record<string, Record<string, PropData>> = {};
 
     // Initialize groups
@@ -255,70 +295,21 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
     for (const [groupName, patterns] of Object.entries(PROP_GROUPS)) {
       for (const pattern of patterns) {
         if (typeof pattern === "string") {
-          // Handle string prop names
-          if (remainingProps[pattern]) {
-            const prop = remainingProps[pattern];
-            let shouldInclude = true;
+          const prop = remainingProps[pattern];
+          if (!prop) continue;
 
-            // Apply React Aria's filtering rules
-            // Skip id if it's not a string type
-            if (pattern === "id" && prop.type.name !== "string") {
-              shouldInclude = false;
-            }
+          const shouldInclude = shouldIncludeProp(
+            pattern,
+            prop,
+            groupName,
+            remainingProps
+          );
 
-            // Skip value based on group and conditions
-            if (pattern === "value") {
-              if (groupName === "Value" && !remainingProps.defaultValue) {
-                shouldInclude = false;
-              } else if (groupName === "Forms" && prop.type.name !== "string") {
-                shouldInclude = false;
-              }
-            }
-
-            // Skip type in Forms group if description doesn't include 'form'
-            if (
-              pattern === "type" &&
-              groupName === "Forms" &&
-              !prop.description?.includes("form")
-            ) {
-              shouldInclude = false;
-            }
-
-            // Skip children in Content group if no items/columns
-            if (
-              pattern === "children" &&
-              groupName === "Content" &&
-              !remainingProps.items &&
-              !remainingProps.columns
-            ) {
-              shouldInclude = false;
-            }
-
-            // Skip className if it's not a string type in Styling group
-            if (
-              pattern === "className" &&
-              groupName === "Styling" &&
-              prop.type.name !== "string"
-            ) {
-              shouldInclude = false;
-            }
-
-            // Skip style if it doesn't include CSSProperties
-            if (
-              pattern === "style" &&
-              groupName === "Styling" &&
-              !prop.type.name.includes("CSSProperties")
-            ) {
-              shouldInclude = false;
-            }
-
-            if (shouldInclude) {
-              groups[groupName][pattern] = prop;
-              delete remainingProps[pattern];
-            }
+          if (shouldInclude) {
+            groups[groupName][pattern] = prop;
+            delete remainingProps[pattern];
           }
         } else if (pattern instanceof RegExp) {
-          // Handle RegExp patterns
           for (const propName of Object.keys(remainingProps)) {
             if (pattern.test(propName)) {
               groups[groupName][propName] = remainingProps[propName];
@@ -367,57 +358,6 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
     return null;
   }
 
-  const renderUngroupedProps = () => {
-    const ungroupedProps = Object.values(groupedProps.ungrouped);
-    if (ungroupedProps.length === 0) return null;
-
-    return (
-      <ComponentPropsTable
-        componentName={selectedComponent!}
-        props={ungroupedProps}
-      />
-    );
-  };
-
-  // Render helper for grouped props
-  const renderGroupedProps = () => {
-    return Object.entries(groupedProps.groups).map(([groupName, props]) => {
-      const filteredProps = Object.values(props);
-      const isExpanded = expandedGroups.has(groupName);
-
-      return (
-        <Box key={groupName} mt="400">
-          <Button
-            variant="ghost"
-            onPress={() => toggleGroup(groupName)}
-            justifyContent="flex-start"
-            aria-expanded={isExpanded}
-          >
-            {isExpanded ? (
-              <Icon>
-                <KeyboardArrowDown />
-              </Icon>
-            ) : (
-              <Icon>
-                <KeyboardArrowRight />
-              </Icon>
-            )}
-            <Text fontWeight="semibold">{groupName}</Text>
-          </Button>
-
-          {isExpanded && (
-            <Box mt="200">
-              <ComponentPropsTable
-                componentName={selectedComponent}
-                props={filteredProps}
-              />
-            </Box>
-          )}
-        </Box>
-      );
-    });
-  };
-
   return (
     <Box>
       {/* Component selection for compound components */}
@@ -447,15 +387,43 @@ export const GroupedPropsTable: React.FC<GroupedPropTableProps> = ({
         <Text mb="400">{componentData.description}</Text>
       )}
 
-      {Object.keys(groupedProps.ungrouped).length === 0 &&
-        Object.keys(groupedProps.groups).length === 0 &&
-        "No props available for this component."}
-
       {/* Ungrouped props in a regular table */}
-      {renderUngroupedProps()}
+      <ComponentPropsTable props={Object.values(groupedProps.ungrouped)} />
 
       {/* Grouped props in collapsible sections */}
-      {renderGroupedProps()}
+      {Object.entries(groupedProps.groups).map(([groupName, props]) => {
+        const filteredProps = Object.values(props);
+        const isExpanded = expandedGroups.has(groupName);
+
+        return (
+          <Box key={groupName} mt="400">
+            <Button
+              variant="ghost"
+              size="xs"
+              onPress={() => toggleGroup(groupName)}
+              justifyContent="flex-start"
+              aria-expanded={isExpanded}
+            >
+              {isExpanded ? (
+                <Icon>
+                  <KeyboardArrowDown />
+                </Icon>
+              ) : (
+                <Icon>
+                  <KeyboardArrowRight />
+                </Icon>
+              )}
+              <Text fontWeight="semibold">{groupName}</Text>
+            </Button>
+
+            {isExpanded && (
+              <Box mt="200">
+                <ComponentPropsTable props={filteredProps} />
+              </Box>
+            )}
+          </Box>
+        );
+      })}
     </Box>
   );
 };
