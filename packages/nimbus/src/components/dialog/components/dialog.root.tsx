@@ -5,7 +5,7 @@ import { DialogRootSlot } from "../dialog.slots";
 import type { DialogRootProps } from "../dialog.types";
 import { DialogProvider } from "./dialog.context";
 
-export const DialogRoot = function DialogRoot(props: DialogRootProps) {
+export const DialogRoot = (props: DialogRootProps) => {
   const recipe = useSlotRecipe({ key: "dialog" });
   // Extract recipe props
   const [recipeProps] = recipe.splitVariantProps(props);

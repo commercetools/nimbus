@@ -6,7 +6,7 @@ import type { DrawerRootProps } from "../drawer.types";
 import { DrawerProvider } from "./drawer.context";
 import { drawerSlotRecipe } from "../drawer.recipe";
 
-export const DrawerRoot = function DrawerRoot(props: DrawerRootProps) {
+export const DrawerRoot = (props: DrawerRootProps) => {
   const recipe = useSlotRecipe({ recipe: drawerSlotRecipe });
   // Extract recipe props
   const [recipeProps] = recipe.splitVariantProps(props);
