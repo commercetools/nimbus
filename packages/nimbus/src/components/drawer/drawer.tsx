@@ -7,9 +7,6 @@ import { DrawerFooter } from "./components/drawer.footer";
 import { DrawerTitle } from "./components/drawer.title";
 import { DrawerCloseTrigger } from "./components/drawer.close-trigger";
 
-// Re-export types
-export type * from "./drawer.types";
-
 /**
  * Drawer
  * ============================================================
