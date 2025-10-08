@@ -2,6 +2,7 @@ import { useIntl } from "react-intl";
 import { GridListItem } from "react-aria-components";
 import { Close, DragIndicator } from "@commercetools/nimbus-icons";
 import { Checkbox, IconButton } from "@/components";
+import { extractStyleProps } from "@/utils/extractStyleProps";
 import { messages } from "../draggable-list.i18n";
 import {
   DraggableListItemSlot,
@@ -20,11 +21,16 @@ export const DraggableListItem = <T extends DraggableListItemData>({
   ...restProps
 }: DraggableListItemProps<T>) => {
   const { formatMessage } = useIntl();
-
+  console.log(restProps);
   const defaultTextValue = typeof children === "string" ? children : undefined;
+  const [styleProps, functionalProps] = extractStyleProps(restProps);
   return (
-    <DraggableListItemSlot {...restProps} asChild>
-      <GridListItem id={id} textValue={textValueFromProps ?? defaultTextValue}>
+    <DraggableListItemSlot {...styleProps} asChild>
+      <GridListItem
+        id={id}
+        textValue={textValueFromProps ?? defaultTextValue}
+        {...functionalProps}
+      >
         {({ allowsDragging, selectionBehavior, selectionMode }) => (
           <>
             {allowsDragging && (

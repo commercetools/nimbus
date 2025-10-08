@@ -21,8 +21,6 @@ import { DraggableListItem } from "./draggable-list.item";
 
 const DRAGGABLE_LIST_DATA_FORMAT = "nimbus-draggable-list-item";
 
-// TODO: list item data type matches ui kit?
-
 export const DraggableListRoot = <T extends DraggableListItemData>({
   children,
   ref,
@@ -104,6 +102,16 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     },
     [list.remove]
   );
+
+  if (
+    !children &&
+    items?.length > 0 &&
+    (!items?.[0]?.key || !items?.[0]?.label)
+  ) {
+    throw new Error(
+      'Nimbus DraggableList: when "children" is not provided, items must have both "key" and "label" properties'
+    );
+  }
 
   const [styleProps, functionalProps] = extractStyleProps(restProps);
   return (

@@ -1,5 +1,6 @@
 import { DraggableListRoot } from "./components/draggable-list.root";
 import { DraggableListItem } from "./components/draggable-list.item";
+import { DraggableListField } from "./components/draggable-list.field";
 
 /**
  * DraggableList
@@ -82,10 +83,32 @@ export const DraggableList = {
    * ```
    */
   Item: DraggableListItem,
+  /**
+   * # DraggableList.Field
+   *
+   * A standalone form field component for DraggableList that integrates with form libraries.
+   * Provides label, error handling, and hint text support for draggable lists.
+   *
+   * This component is configured entirely through props and does not accept children.
+   * All draggable list configuration is passed via the `items` prop and related properties.
+   *
+   * @example
+   * ```tsx
+   * <DraggableList.Field
+   *   label="Priority Order"
+   *   description="Drag items to reorder"
+   *   error={errors.priorities}
+   *   items={items}
+   *   aria-label="Priority list"
+   * />
+   * ```
+   */
+  Field: DraggableListField,
 };
 
 // Internal exports for react-docgen
 export {
   DraggableListRoot as _DraggableListRoot,
   DraggableListItem as _DraggableListItem,
+  DraggableListField as _DraggableListField,
 };

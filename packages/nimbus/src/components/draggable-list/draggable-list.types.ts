@@ -1,8 +1,9 @@
-import type { ReactNode, RefObject } from "react";
+import type { ReactNode, Ref } from "react";
 import type {
   HTMLChakraProps,
   RecipeVariantProps,
 } from "@chakra-ui/react/styled-system";
+import type { FormFieldProps } from "@/components";
 import type {
   GridListProps,
   GridListItemProps,
@@ -58,7 +59,7 @@ export interface DraggableListRootProps<T extends DraggableListItemData>
   /**
    * Ref to the root container element
    */
-  ref?: RefObject<HTMLDivElement>;
+  ref?: Ref<HTMLDivElement>;
   /**
    * Whether to show a remove button for each item.
    * When an item is removed, `onUpdateItems` is called with the updated list.
@@ -98,7 +99,7 @@ export interface DraggableListItemProps<T extends DraggableListItemData>
   /**
    * Ref to the item container element
    */
-  ref?: RefObject<HTMLDivElement>;
+  ref?: Ref<HTMLDivElement>;
   /**
    * The content to display for this item
    */
@@ -109,4 +110,31 @@ export interface DraggableListItemProps<T extends DraggableListItemData>
    * @param key - The key of the item being removed
    */
   onRemoveItem?: (key: Key) => void;
+}
+
+/**
+ * Data Shape for DraggableList.Field
+ *
+ * @property key - Unique identifier for the item (required)
+ * @property label - Display content for the item (required)
+ */
+export interface DraggableListFieldItemData extends DraggableListItemData {
+  key: string;
+  label: string;
+}
+
+/**
+ * Props for the DraggableList.Field component
+ *
+ * This component renders the `DraggableList` within a `FormField`
+ *
+ * It is only configurable via props, and does not accept children
+ */
+export interface DraggableListFieldProps<T extends DraggableListFieldItemData>
+  extends Omit<DraggableListRootProps<T>, "children" | "direction">,
+    Omit<FormFieldProps, "slot"> {
+  label: ReactNode;
+  description?: ReactNode;
+  error?: ReactNode;
+  infoBox?: ReactNode;
 }

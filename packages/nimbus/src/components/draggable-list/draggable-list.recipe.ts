@@ -20,7 +20,7 @@ export const draggableListSlotRecipe = defineSlotRecipe({
 
       "& >.react-aria-DropIndicator": {
         "&[data-drop-target]": {
-          outline: "1px solid {colors.primary.7}",
+          outline: "{sizes.25} solid {colors.primary.7}",
         },
 
         "&@supports not selector(:has(.react-aria-DropIndicator))": {
@@ -40,9 +40,9 @@ export const draggableListSlotRecipe = defineSlotRecipe({
       alignSelf: "center",
     },
     item: {
-      colorPalette: "neutral",
       borderRadius: "200",
-      background: "colorPalette.3",
+      background: "neutral.3",
+      display: "flex",
       _focus: {
         layerStyle: "focusRing",
       },
@@ -51,6 +51,9 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         "&[data-dragging='true']": {
           cursor: "grabbing",
         },
+      },
+      "&[data-disabled]": {
+        layerStyle: "disabled",
       },
       "& > [role='gridcell']": {
         display: "flex!",
@@ -61,7 +64,7 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         fontSize: "350",
         lineHeight: "400",
         focusVisibleRing: "outside",
-        color: "colorPalette.12",
+        color: "neutral.12",
       },
     },
     itemContent: {
@@ -75,5 +78,8 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         item: { minH: "800" },
       },
     },
+  },
+  defaultVariants: {
+    size: "md",
   },
 });

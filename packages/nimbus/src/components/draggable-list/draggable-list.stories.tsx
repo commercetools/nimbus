@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Flex } from "@/components";
 import { DraggableList } from "./draggable-list";
+import type { DraggableListFieldItemData } from "./draggable-list.types";
 import { items } from "./utils/draggable-list.test-data";
 
 const meta: Meta<typeof DraggableList.Root> = {
@@ -21,6 +22,10 @@ export const Base: Story = {
           aria-label="example drop target"
           width="2xs"
           removableItems
+        />
+        <DraggableList.Field
+          label="Example field"
+          items={items as DraggableListFieldItemData[]}
         />
       </Flex>
     );
