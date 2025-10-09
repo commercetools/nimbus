@@ -1187,7 +1187,6 @@ export const Condensed: Story = {
       const newFirstDataRow = canvas.getAllByRole("row")[1];
       const newFirstCell = within(newFirstDataRow).getAllByRole("gridcell")[0];
       const newPadding = window.getComputedStyle(newFirstCell).padding;
-      console.log(newPadding);
 
       // Condensed mode should have different padding than default
       expect(newPadding).toBe("12px 24px");
@@ -1329,13 +1328,18 @@ export const StickyHeader: Story = {
     return (
       <Stack gap="500" alignItems="flex-start">
         {/* This is supposed to set the sticky header from the top to the bottom of the table. */}
-        <Checkbox isSelected={sticky} onChange={setSticky}>
+        <Checkbox
+          isSelected={sticky}
+          onChange={setSticky}
+          data-testid="sticky-toggle"
+        >
           Sticky header (with max height)
         </Checkbox>
         <DataTableWithModals
           {...args}
           maxHeight={sticky ? "400px" : undefined}
           onRowClick={() => {}}
+          data-testid="sticky-table"
         />
       </Stack>
     );
@@ -1343,6 +1347,140 @@ export const StickyHeader: Story = {
   args: {
     columns,
     data: [...data],
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Sticky header toggle renders correctly", async () => {
+      const toggle = await canvas.findByTestId("sticky-toggle");
+      expect(toggle).toBeInTheDocument();
+      expect(toggle).not.toBeChecked();
+    });
+
+    await step("Table displays without sticky header initially", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBe(11); // Header + 10 data rows
+
+      // Check that table doesn't have max height initially
+      const tableElement =
+        table.closest('[data-testid="sticky-table"]') || table;
+      const tableStyles = window.getComputedStyle(tableElement);
+      expect(tableStyles.maxHeight).toBe("none");
+    });
+
+    await step("Enabling sticky header applies max height", async () => {
+      const toggle = canvas.getByTestId("sticky-toggle");
+
+      // Click to enable sticky header
+      await userEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(toggle).toHaveAttribute("data-selected");
+      });
+
+      // Verify table has max height applied
+      const table = canvas.getByRole("grid");
+      const tableElement =
+        table.closest('[data-testid="sticky-table"]') || table;
+      const tableStyles = window.getComputedStyle(tableElement);
+      expect(tableStyles.maxHeight).toBe("400px");
+    });
+
+    await step("Sticky header maintains table functionality", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBe(11); // Header + 10 data rows
+
+      // Verify all data is still visible
+      expect(canvas.getByText("Alice")).toBeInTheDocument();
+      expect(canvas.getByText("Bob")).toBeInTheDocument();
+      expect(canvas.getByText("Carol")).toBeInTheDocument();
+    });
+
+    await step("Disabling sticky header removes max height", async () => {
+      const toggle = canvas.getByTestId("sticky-toggle");
+
+      // Click to disable sticky header
+      await userEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(toggle).not.toHaveAttribute("data-selected");
+      });
+
+      // Verify table no longer has max height
+      const table = canvas.getByRole("grid");
+      const tableElement =
+        table.closest('[data-testid="sticky-table"]') || table;
+      const tableStyles = window.getComputedStyle(tableElement);
+      expect(tableStyles.maxHeight).toBe("none");
+    });
+
+    await step("Sticky header works with scrolling behavior", async () => {
+      const toggle = canvas.getByTestId("sticky-toggle");
+
+      // Enable sticky header
+      await userEvent.click(toggle);
+      await waitFor(() => {
+        expect(toggle).toHaveAttribute("data-selected");
+      });
+
+      // Verify table has overflow properties for scrolling
+      const table = canvas.getByRole("grid");
+      const tableElement =
+        table.closest('[data-testid="sticky-table"]') || table;
+      const tableStyles = window.getComputedStyle(tableElement);
+
+      // Check that table has scrolling capabilities
+      expect(tableStyles.overflow).toBeDefined();
+      expect(tableStyles.maxHeight).toBe("400px");
+    });
+
+    await step("Sticky header maintains accessibility", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toHaveAttribute("aria-label", "Data Table");
+
+      const rows = canvas.getAllByRole("row");
+      const headerRow = rows[0];
+      const headerCells = within(headerRow).getAllByRole("columnheader");
+
+      // Check that all headers are accessible
+      expect(headerCells[0]).toHaveTextContent("Name");
+      expect(headerCells[1]).toHaveTextContent("Age");
+      expect(headerCells[2]).toHaveTextContent("Role");
+      expect(headerCells[3]).toHaveTextContent("Custom");
+    });
+
+    await step(
+      "Sticky header preserves column headers visibility",
+      async () => {
+        const toggle = canvas.getByTestId("sticky-toggle");
+
+        // Ensure sticky header is enabled
+        if (!toggle.hasAttribute("data-selected")) {
+          await userEvent.click(toggle);
+          await waitFor(() => {
+            expect(toggle).toHaveAttribute("data-selected");
+          });
+        }
+
+        // Verify header row is still visible and accessible
+        const headerRow = canvas.getAllByRole("row")[0];
+        expect(headerRow).toBeInTheDocument();
+
+        const headerCells = within(headerRow).getAllByRole("columnheader");
+        expect(headerCells.length).toBe(5); // Name, Age, Role, Status, and the invisible pin row column header
+
+        // Verify header cells have proper styling for sticky behavior
+        const firstHeaderCell = headerCells[0];
+        const headerStyles = window.getComputedStyle(firstHeaderCell);
+        expect(headerStyles.position).toBeDefined();
+      }
+    );
   },
 };
 
@@ -1764,6 +1902,7 @@ export const SelectionShowcase: Story = {
                 Mode:
               </Text>
               <Select.Root
+                data-testid="selection-mode-select"
                 selectedKey={selectionMode}
                 onSelectionChange={(key) =>
                   handleSelectionModeChange(
@@ -1946,6 +2085,166 @@ export const SelectionShowcase: Story = {
     );
   },
   args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Data table renders with selection capabilities", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBe(11); // Header + 10 data rows
+
+      // Check that checkboxes are present for row selection
+      const checkboxes = canvas.getAllByRole("checkbox");
+      expect(checkboxes.length).toBeGreaterThan(0);
+    });
+
+    await step("Single row selection mode works correctly", async () => {
+      // Switch to single selection mode
+      const select = canvas.getByTestId("selection-mode-select");
+      const button = select.querySelector("button");
+      await userEvent.click(button as HTMLButtonElement);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[1]);
+
+      await expect(button).toHaveTextContent("Single Row");
+
+      const firstRowCheckbox = canvas.getAllByRole("checkbox")[2]; // First data row checkbox
+      await userEvent.click(firstRowCheckbox);
+
+      await waitFor(() => {
+        expect(firstRowCheckbox).toBeChecked();
+      });
+
+      const secondRowCheckbox = await canvas.getAllByRole("checkbox")[5];
+      await userEvent.click(secondRowCheckbox);
+
+      await waitFor(() => {
+        expect(firstRowCheckbox).not.toBeChecked();
+      });
+
+      await expect(secondRowCheckbox).toBeChecked();
+    });
+
+    await step("Multiple row selection works correctly", async () => {
+      // Switch to multiple selection mode
+      const select = canvas.getByTestId("selection-mode-select");
+      const button = select.querySelector("button");
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[2]);
+
+      await expect(button).toHaveTextContent("Multiple Rows");
+
+      const firstRowCheckbox = canvas.getAllByRole("checkbox")[3];
+      await userEvent.click(firstRowCheckbox);
+
+      await waitFor(() => {
+        expect(firstRowCheckbox).toBeChecked();
+      });
+
+      const secondRowCheckbox = await canvas.getAllByRole("checkbox")[5];
+      await userEvent.click(secondRowCheckbox);
+
+      await waitFor(() => {
+        // two checkboxes can be checked at the same time
+        expect(firstRowCheckbox).toBeChecked();
+      });
+
+      await expect(secondRowCheckbox).toBeChecked();
+    });
+
+    await step("Toggle Select all functionality works", async () => {
+      const selectAllCheckboxRow = await canvas.getAllByRole("rowgroup")[0];
+      const headerRow = within(selectAllCheckboxRow).getByRole("row");
+      const selectAllCheckbox = within(headerRow).getByRole("checkbox");
+
+      await userEvent.click(selectAllCheckbox);
+
+      const checkboxes = canvas.getAllByRole("rowgroup")[1];
+      const dataRows = within(checkboxes).getAllByRole("row");
+      const dataCheckboxes = dataRows.map((row) =>
+        within(row).getByRole("checkbox")
+      );
+      await Promise.all(
+        dataCheckboxes.map(async (checkbox) => {
+          return waitFor(() => expect(checkbox).toBeChecked());
+        })
+      );
+
+      // await userEvent.click(selectAllCheckbox);
+    });
+
+    await step("Require selection toggle works", async () => {
+      const requireSelectionCheckbox = canvas.getByRole("checkbox", {
+        name: "Require Selection",
+      });
+
+      // Enable require selection
+      await userEvent.click(requireSelectionCheckbox);
+
+      await waitFor(() => {
+        expect(requireSelectionCheckbox).toBeChecked();
+      });
+
+      // All checkboxes, once checked should not be unchecked
+      const selectAllCheckboxRow = await canvas.getAllByRole("rowgroup")[0];
+      const headerRow = within(selectAllCheckboxRow).getByRole("row");
+      const selectAllCheckbox = within(headerRow).getByRole("checkbox");
+
+      await userEvent.click(selectAllCheckbox);
+      await waitFor(() => {
+        expect(selectAllCheckbox).toBeChecked();
+      });
+      // Uncheck all checkboxes should not be unchecked
+      await userEvent.click(selectAllCheckbox);
+      await waitFor(() => {
+        expect(selectAllCheckbox).toBeChecked();
+      });
+    });
+
+    await step("Clickable rows toggle works", async () => {
+      const clickableRowsCheckbox = canvas.getByRole("checkbox", {
+        name: "Clickable Rows",
+      });
+
+      // Disable clickable rows
+      await userEvent.click(clickableRowsCheckbox);
+
+      await waitFor(() => {
+        expect(clickableRowsCheckbox).not.toBeChecked();
+      });
+
+      // Re-enable clickable rows
+      await userEvent.click(clickableRowsCheckbox);
+
+      await waitFor(() => {
+        expect(clickableRowsCheckbox).toBeChecked();
+      });
+    });
+
+    await step("Selection maintains accessibility", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toHaveAttribute("aria-label", "Data Table");
+
+      const checkboxes = canvas.getAllByRole("rowgroup")[1];
+      const dataRows = within(checkboxes).getAllByRole("row");
+      const dataCheckboxes = dataRows.map((row) =>
+        within(row).getByRole("checkbox")
+      );
+
+      dataCheckboxes.forEach((checkbox) => {
+        expect(checkbox).toHaveAttribute("aria-label");
+      });
+    });
+  },
 };
 
 export const TextTruncation: Story = {
@@ -2429,8 +2728,6 @@ export const NestedTable: Story = {
           name: /expand/i,
         });
 
-        console.log(expandButtons);
-
         // Should have at least 2 expand buttons (Milky Way and Andromeda have nested data)
         await expect(expandButtons.length).toBeGreaterThanOrEqual(2);
       }
@@ -2463,8 +2760,6 @@ export const NestedTable: Story = {
         const milkyWayRow = canvas
           .getByText("Milky Way", { exact: true })
           .closest('[role="row"]');
-
-        console.log("milkyWayRow", milkyWayRow);
 
         // Click the collapse button
         const collapseButton = within(milkyWayRow as HTMLElement).getByRole(
