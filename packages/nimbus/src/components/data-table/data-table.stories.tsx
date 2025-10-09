@@ -1561,19 +1561,6 @@ export const TextTruncation: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // await step(
-    //   "Displays full long text content when truncation is disabled",
-    //   async () => {
-    //     // Check that the full description text is visible (at least partially)
-    //     const longDescription = canvas.getByText((content, element) => {
-    //       return element?.textContent?.includes(
-    //         "This is a very long description that should be truncated"
-    //       );
-    //     });
-    //     await expect(longDescription).toBeInTheDocument();
-    //   }
-    // );
-
     await step(
       "Applies truncation styles to cells when truncation is enabled",
       async () => {
