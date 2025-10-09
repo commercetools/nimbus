@@ -1876,8 +1876,8 @@ export const SelectionShowcase: Story = {
     await step("Single row selection mode works correctly", async () => {
       // Switch to single selection mode
       const select = canvas.getByTestId("selection-mode-select");
-      const button = select.querySelector("button") as HTMLButtonElement;
-      await userEvent.click(button);
+      const button = select.querySelector("button");
+      await userEvent.click(button as HTMLButtonElement)
       const listbox = document.querySelector('[role="listbox"]');
       await expect(listbox).toBeInTheDocument();
 
