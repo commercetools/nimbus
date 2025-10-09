@@ -4,22 +4,58 @@ import {
 } from "@chakra-ui/react/heading";
 import { HeadingContext, useContextProps } from "react-aria-components";
 
+type HeadingRecipeVariantProps = {
+  /**
+   * Size variant
+   * @default "xl"
+   */
+  size?:
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "6xl"
+    | "7xl";
+};
+
 /**
  * Props for the Heading component.
  *
  * @property {React.Ref<HTMLHeadingElement>} [ref] - Ref to the underlying heading element.
  * @property {string | null | undefined} [slot] - Slot attribute for custom element slotting.
  */
-export interface HeadingProps extends Omit<ChakraHeadingProps, "slot"> {
-  /**
-   * Ref to the underlying heading element.
-   */
-  ref?: React.Ref<HTMLHeadingElement>;
-  /**
-   * Slot attribute for custom element slotting.
-   */
-  slot?: string | null | undefined;
-}
+export type HeadingProps = HeadingRecipeVariantProps &
+  Omit<ChakraHeadingProps, "slot"> & {
+    /**
+     * Ref to the underlying heading element.
+     */
+    ref?: React.Ref<HTMLHeadingElement>;
+    /**
+     * Slot attribute for custom element slotting.
+     */
+    slot?: string | null | undefined;
+    /**
+     * Size variant
+     * @default "xl"
+     */
+    size?:
+      | "xs"
+      | "sm"
+      | "md"
+      | "lg"
+      | "xl"
+      | "2xl"
+      | "3xl"
+      | "4xl"
+      | "5xl"
+      | "6xl"
+      | "7xl";
+  };
 
 /**
  * # Heading

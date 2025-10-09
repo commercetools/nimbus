@@ -1,30 +1,28 @@
-import type {
-  HTMLChakraProps,
-  RecipeProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import { alertRecipe } from "./alert.recipe";
+import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
-import type { PropsWithChildren } from "react";
 
 // ============================================================
 // Root Component (`<Alert>`)
 // ============================================================
 
 /** Base Chakra styling props for the root `div` slot. */
-export type AlertRootProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+export type AlertRootProps = HTMLChakraProps<"div">;
 
-/** Combined root props including Chakra styles and recipe variants. */
-type AlertVariantProps = AlertRootProps &
-  RecipeVariantProps<typeof alertRecipe>;
+type AlertRecipeVariantProps = {
+  /** Tone variant */
+  tone?: "critical" | "info" | "warning" | "positive";
+  /** Variant variant */
+  variant?: "flat" | "outlined";
+};
 
 /** Final external props for the `<Alert>` component (variants + children + data-* attrs). */
-export type AlertProps = PropsWithChildren<AlertVariantProps> & {
+// TODO: Why do we need to omit the tone and variant props to have the types parse correctly?
+export type AlertProps = Omit<AlertRootProps, "tone" | "variant"> & {
   // Allow passthrough of data-* attributes
   [key: `data-${string}`]: unknown;
   ref?: React.Ref<HTMLDivElement>;
-};
+} & AlertRecipeVariantProps;
 
 /** Type signature for the main `Alert` component. */
 export type AlertRootComponent = React.FC<AlertProps>;
@@ -34,7 +32,7 @@ export type AlertRootComponent = React.FC<AlertProps>;
 // ============================================================
 
 /** Base Chakra styling props for the `icon` slot (`div`). */
-export type AlertIconProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+export type AlertIconProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // Title Sub-Component (`<Alert.Title>`)
@@ -59,7 +57,7 @@ export type AlertDescriptionProps = Omit<TextProps, "ref"> & {
 // ============================================================
 
 /** Base Chakra styling props for the `actions` slot (`div`). */
-export type AlertActionsProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+export type AlertActionsProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // DismissButton Sub-Component (`<Alert.DismissButton>`)

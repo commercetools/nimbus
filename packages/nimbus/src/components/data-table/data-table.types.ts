@@ -1,5 +1,4 @@
 import type { ReactNode, FC, Ref } from "react";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type {
   SortDirection as RaSortDirection,
   TableHeaderProps as RaTableHeaderProps,
@@ -9,7 +8,6 @@ import type {
   CellProps as RaCellProps,
   Selection,
 } from "react-aria-components";
-import { dataTableSlotRecipe } from "./data-table.recipe";
 import type {
   DataTableRootProps,
   DataTableHeaderSlotProps,
@@ -19,42 +17,44 @@ import type {
   DataTableCellSlotProps,
 } from "./data-table.slots";
 
-export interface DataTableContextValue<
-  T extends object = Record<string, unknown>,
-> {
-  columns: DataTableColumnItem<T>[];
-  data: DataTableRowItem<T>[];
-  visibleColumns?: string[];
-  renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
-  search?: string;
-  sortDescriptor?: SortDescriptor;
-  selectedKeys?: Selection;
-  defaultSelectedKeys?: Selection;
-  expanded: Record<string, boolean>;
-  allowsSorting?: boolean;
-  selectionMode?: "none" | "single" | "multiple";
-  disallowEmptySelection?: boolean;
-  isRowClickable?: boolean;
-  maxHeight?: string | number;
-  isTruncated?: boolean;
-  density?: "default" | "condensed";
-  nestedKey?: string;
-  onSortChange?: (descriptor: SortDescriptor) => void;
-  onSelectionChange?: (keys: Selection) => void;
-  onRowClick?: (row: DataTableRowItem<T>) => void;
-  toggleExpand: (id: string) => void;
-  activeColumns: DataTableColumnItem<T>[];
-  filteredRows: DataTableRowItem<T>[];
-  sortedRows: DataTableRowItem<T>[];
-  showExpandColumn: boolean;
-  showSelectionColumn: boolean;
-  disabledKeys?: Selection;
-  onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
-  isResizable?: boolean;
-  pinnedRows: Set<string>;
-  onPinToggle?: (rowId: string) => void;
-  togglePin: (id: string) => void;
-}
+export type DataTableContextValue<T extends object = Record<string, unknown>> =
+  {
+    columns: DataTableColumnItem<T>[];
+    data: DataTableRowItem<T>[];
+    visibleColumns?: string[];
+    renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
+    search?: string;
+    sortDescriptor?: SortDescriptor;
+    selectedKeys?: Selection;
+    defaultSelectedKeys?: Selection;
+    expanded: Record<string, boolean>;
+    allowsSorting?: boolean;
+    selectionMode?: "none" | "single" | "multiple";
+    disallowEmptySelection?: boolean;
+    isRowClickable?: boolean;
+    maxHeight?: string | number;
+    isTruncated?: boolean;
+    density?: "default" | "condensed";
+    nestedKey?: string;
+    onSortChange?: (descriptor: SortDescriptor) => void;
+    onSelectionChange?: (keys: Selection) => void;
+    onRowClick?: (row: DataTableRowItem<T>) => void;
+    toggleExpand: (id: string) => void;
+    activeColumns: DataTableColumnItem<T>[];
+    filteredRows: DataTableRowItem<T>[];
+    sortedRows: DataTableRowItem<T>[];
+    showExpandColumn: boolean;
+    showSelectionColumn: boolean;
+    disabledKeys?: Selection;
+    onRowAction?: (
+      row: DataTableRowItem<T>,
+      action: "click" | "select"
+    ) => void;
+    isResizable?: boolean;
+    pinnedRows: Set<string>;
+    onPinToggle?: (rowId: string) => void;
+    togglePin: (id: string) => void;
+  };
 
 export type SortDirection = RaSortDirection;
 
@@ -95,21 +95,36 @@ export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
 
 export type DataTableDensity = "default" | "condensed";
 
+type DataTableRecipeVariantProps = {
+  /**
+   * Truncated variant
+   * @default false
+   */
+  truncated?: boolean;
+  /**
+   * Density variant
+   * @default "default"
+   */
+  density?: "default" | "condensed";
+};
+
 /**
  * Combines the root props with Chakra UI's recipe variant props.
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
 type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
-  RecipeVariantProps<typeof dataTableSlotRecipe>;
+  DataTableRecipeVariantProps;
 
 /**
  * Main props interface for the DataTable component.
  * Extends DataTableVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface DataTableProps<T extends object = Record<string, unknown>>
-  extends DataTableVariantProps {
+export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
+  DataTableVariantProps,
+  "truncated"
+> & {
   /**
    * React ref to be forwarded to the root element
    */
@@ -146,7 +161,7 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
-}
+};
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
 export type DataTableHeaderProps<T extends DataTableColumnItem> =

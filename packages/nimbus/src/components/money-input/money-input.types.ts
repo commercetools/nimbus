@@ -1,44 +1,24 @@
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-  UnstyledProp,
-} from "@chakra-ui/react/styled-system";
-import type { GroupProps } from "@/components";
+import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
 import type { TValue, TCurrencyCode } from "./utils";
-import type { moneyInputRecipe } from "./money-input.recipe";
 
 export type { TValue, TCurrencyCode, TMoneyValue } from "./utils";
 
-// Slot prop types
-export interface MoneyInputSlotRecipeProps
-  extends RecipeVariantProps<typeof moneyInputRecipe>,
-    UnstyledProp {}
+type MoneyInputRecipeVariantProps = {
+  /**
+   * Size variant for the input
+   * @default "md"
+   */
+  size?: "sm" | "md";
+};
 
-export type MoneyInputRootSlotProps = HTMLChakraProps<
-  "div",
-  MoneyInputSlotRecipeProps
-> &
-  GroupProps;
-export type MoneyInputContainerSlotProps = HTMLChakraProps<
-  "div",
-  MoneyInputSlotRecipeProps
->;
-export type MoneyInputCurrencySelectSlotProps = HTMLChakraProps<
-  "div",
-  MoneyInputSlotRecipeProps
->;
-export type MoneyInputCurrencyLabelSlotProps = HTMLChakraProps<
-  "label",
-  MoneyInputSlotRecipeProps
->;
-export type MoneyInputAmountInputSlotProps = HTMLChakraProps<
-  "input",
-  MoneyInputSlotRecipeProps
->;
-export type MoneyInputBadgeSlotProps = HTMLChakraProps<
-  "div",
-  MoneyInputSlotRecipeProps
->;
+// Slot prop types
+export type MoneyInputRootSlotProps = MoneyInputRecipeVariantProps &
+  HTMLChakraProps<"div">;
+export type MoneyInputContainerSlotProps = HTMLChakraProps<"div">;
+export type MoneyInputCurrencySelectSlotProps = HTMLChakraProps<"div">;
+export type MoneyInputCurrencyLabelSlotProps = HTMLChakraProps<"label">;
+export type MoneyInputAmountInputSlotProps = HTMLChakraProps<"input">;
+export type MoneyInputBadgeSlotProps = HTMLChakraProps<"div">;
 
 export type TCustomEvent = {
   target: {
@@ -96,8 +76,10 @@ export type ExcludedSlotProps =
   | "step";
 
 // Main component API interface - extends slot props to include style props
-export interface MoneyInputProps
-  extends Omit<MoneyInputRootSlotProps, ExcludedSlotProps> {
+export type MoneyInputProps = Omit<
+  MoneyInputRootSlotProps,
+  ExcludedSlotProps
+> & {
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.
    */
@@ -174,8 +156,4 @@ export interface MoneyInputProps
    * Focus the input on initial render
    */
   autoFocus?: boolean;
-  /**
-   * Size variant for the input
-   */
-  size?: RecipeVariantProps<typeof moneyInputRecipe>["size"];
-}
+};
