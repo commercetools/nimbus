@@ -1,5 +1,4 @@
 import type { ReactNode, FocusEvent } from "react";
-import type { ConditionalValue } from "@chakra-ui/react/styled-system";
 import type { LocalizedFieldRootSlotProps } from "./localized-field.slots";
 import type { TValue, TCustomEvent, TCurrencyCode } from "../money-input";
 
@@ -183,7 +182,8 @@ export type MergedLocaleFieldData = {
   autoFocus?: boolean;
 };
 
-export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
+export type LocalizedFieldLocaleFieldProps = LocalizedFieldRecipeVariantProps &
+  MergedLocaleFieldData &
   Pick<
     LocalizedFieldProps,
     | "onChange"
@@ -202,5 +202,4 @@ export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
     | "data-track-component"
   > & {
     isInvalid?: boolean;
-    size: ConditionalValue<"md" | "sm" | undefined>;
   };

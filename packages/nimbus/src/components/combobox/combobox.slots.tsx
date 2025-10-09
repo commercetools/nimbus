@@ -3,7 +3,6 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import type {
-  ComboBoxRootProps,
   ComboBoxValueSlotProps,
   ComboBoxButtonGroupSlotProps,
   ComboBoxPopoverSlotProps,
@@ -23,7 +22,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
 // ComboBox Root
 export const ComboBoxRootSlot = withProvider<
   HTMLDivElement,
-  ComboBoxRootProps<object>
+  HTMLChakraProps<"div">
 >("div", "root");
 
 export const ComboBoxLeadingElementSlot = withContext<
