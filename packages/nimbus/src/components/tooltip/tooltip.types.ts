@@ -31,9 +31,8 @@ type TooltipVariantProps = ExcludePolymorphicFromProps<
 >;
 
 /**
- * Main props interface for the Tooltip components
+ * Main props type for the Tooltip components
  * Extends TooltipVariantProps to include root props, variant props,
  * and react-aria props, while adding support for React children.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TooltipProps extends PropsWithChildren<TooltipVariantProps> {}
+export type TooltipProps = PropsWithChildren<TooltipVariantProps>;

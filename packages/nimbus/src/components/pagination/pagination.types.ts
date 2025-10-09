@@ -1,4 +1,4 @@
-export interface PaginationProps {
+export type PaginationProps = {
   /** Total number of items */
   totalItems: number;
   /** Current page (1-based) */
@@ -17,4 +17,4 @@ export interface PaginationProps {
   enablePageInput?: boolean;
   /** Enables the page size selector dropdown */
   enablePageSizeSelector?: boolean;
-}
+};

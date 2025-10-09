@@ -18,10 +18,9 @@ export type RangeValue<T> = {
  */
 type ExcludedProps = "as" | "style" | "createCalendar";
 
-export interface RangeCalendarProps<T extends DateValue>
-  extends Omit<
-      RangeCalendarRootSlotProps,
-      keyof AriaRangeCalendarProps<DateValue> | ExcludedProps
-    >,
-    Omit<AriaRangeCalendarProps<T>, ExcludedProps>,
-    RecipeVariantProps<typeof rangeCalendarSlotRecipe> {}
+export type RangeCalendarProps<T extends DateValue> = Omit<
+  RangeCalendarRootSlotProps,
+  keyof AriaRangeCalendarProps<DateValue> | ExcludedProps
+> &
+  Omit<AriaRangeCalendarProps<T>, ExcludedProps> &
+  RecipeVariantProps<typeof rangeCalendarSlotRecipe>;

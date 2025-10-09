@@ -17,8 +17,7 @@ type TimeInputRecipeVariantProps = {
 
 /**
  * Properties from TimeFieldProps that would conflict with similarly named
- * properties in TimeInputRootProps. We use this to prevent TypeScript interface
- * merging conflicts by prioritizing the TimeFieldProps implementation.
+ * properties in TimeInputRootProps.
  *
  * Examples include: value, defaultValue, onChange, onBlur, onFocus, etc.
  */
@@ -44,7 +43,7 @@ type ExcludedProps =
   | "asChild";
 
 /**
- * Main props interface for the TimeInput component.
+ * Main props type for the TimeInput component.
  *
  * We use Omit to remove:
  * 1. Conflicting props from TimeInputRootProps to avoid TypeScript errors

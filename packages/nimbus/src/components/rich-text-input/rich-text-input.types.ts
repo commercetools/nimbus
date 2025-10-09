@@ -3,8 +3,10 @@ import type { RichTextInputRootSlotProps } from "./rich-text-input.slots";
 
 type DefaultExcludedProps = "css" | "asChild" | "as" | "onChange";
 
-export interface RichTextInputProps
-  extends Omit<RichTextInputRootSlotProps, DefaultExcludedProps | "children"> {
+export type RichTextInputProps = Omit<
+  RichTextInputRootSlotProps,
+  DefaultExcludedProps | "children"
+> & {
   /**
    * The ref for the rich text input component
    */
@@ -59,4 +61,4 @@ export interface RichTextInputProps
    * Whether to focus the input when it mounts
    */
   autoFocus?: boolean;
-}
+};
