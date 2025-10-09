@@ -27,6 +27,7 @@ export const SelectClearButton = () => {
         aria-label={intl.formatMessage(messages.clearSelection)}
         aria-labelledby=""
         onPress={onPressRequest}
+        slot={null}
       >
         <CloseIcon />
       </IconButton>

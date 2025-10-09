@@ -4,7 +4,7 @@ import { Text, Stack, Box, Icon } from "@/components";
 import type { Key } from "react-aria";
 import { useState } from "react";
 import { type SelectRootProps } from "./select.types";
-import { userEvent, within, expect, fn } from "storybook/test";
+import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
 
 import { useAsyncList } from "react-stately";
@@ -358,6 +358,44 @@ export const Clearable: Story = {
           '[aria-label="Clear selection"]'
         );
         await expect(clearButton).not.toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Keyboard navigation to clear button clears the selection",
+      async () => {
+        const clearableSelect = canvas.getByTestId("clearable-select");
+        const selectButton = clearableSelect.querySelector("button");
+
+        // Verify initial selection
+        await expect(selectButton).toHaveTextContent("Apple");
+
+        // Find and activate the clear button with keyboard
+        const clearButton = clearableSelect.querySelector(
+          '[aria-label="Clear selection"]'
+        ) as HTMLElement;
+
+        // Use type to properly simulate keyboard interaction (handles focus + keypress)
+        await userEvent.type(clearButton, "{Enter}");
+
+        // Wait for the selection to be cleared
+        await waitFor(
+          () => {
+            expect(selectButton).toHaveTextContent("Select an item");
+          },
+          { timeout: 1000 }
+        );
+
+        // Verify clear button disappears after clearing (it only renders when there's a selection)
+        await waitFor(
+          () => {
+            const clearButtonAfter = clearableSelect.querySelector(
+              '[aria-label="Clear selection"]'
+            );
+            expect(clearButtonAfter).not.toBeInTheDocument();
+          },
+          { timeout: 1000 }
+        );
       }
     );
   },
