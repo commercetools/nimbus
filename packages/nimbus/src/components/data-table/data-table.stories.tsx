@@ -1530,7 +1530,11 @@ export const TextTruncation: Story = {
 
     return (
       <Stack gap="500" alignItems="flex-start">
-        <Checkbox isSelected={isTruncated} onChange={setIsTruncated}>
+        <Checkbox
+          isSelected={isTruncated}
+          onChange={setIsTruncated}
+          data-testid="truncation-checkbox"
+        >
           Enable text truncation
         </Checkbox>
         <Box
@@ -1553,6 +1557,54 @@ export const TextTruncation: Story = {
     columns: truncationColumns,
     data: longTextData,
     allowsSorting: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // await step(
+    //   "Displays full long text content when truncation is disabled",
+    //   async () => {
+    //     // Check that the full description text is visible (at least partially)
+    //     const longDescription = canvas.getByText((content, element) => {
+    //       return element?.textContent?.includes(
+    //         "This is a very long description that should be truncated"
+    //       );
+    //     });
+    //     await expect(longDescription).toBeInTheDocument();
+    //   }
+    // );
+
+    await step(
+      "Applies truncation styles to cells when truncation is enabled",
+      async () => {
+        const checkbox = canvas.getByTestId("truncation-checkbox");
+        await userEvent.click(checkbox);
+
+        const descriptionCell = canvas.getAllByRole("rowheader", {
+          name: /description/i,
+        });
+
+        const innerDiv = descriptionCell[0].querySelector("div");
+
+        // Check if the inner div has the data-truncated attribute -
+        // This is the best we can do for now since technically the dom has the full text, we cannot compare texts to see if it is truncated.
+        // VRT would be a better assertion here.
+        expect(innerDiv).toHaveAttribute("data-truncated", "true");
+      }
+    );
+
+    await step("Disables truncation when checkbox is unchecked", async () => {
+      const checkbox = canvas.getByTestId("truncation-checkbox");
+      await userEvent.click(checkbox);
+
+      const descriptionCell = canvas.getAllByRole("rowheader", {
+        name: /description/i,
+      });
+
+      const innerDiv = descriptionCell[0].querySelector("div");
+
+      expect(innerDiv).toHaveAttribute("data-truncated", "false");
+    });
   },
 };
 
