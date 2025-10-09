@@ -1675,6 +1675,7 @@ export const SelectionShowcase: Story = {
                 Mode:
               </Text>
               <Select.Root
+                data-testid="selection-mode-select"
                 selectedKey={selectionMode}
                 onSelectionChange={(key) =>
                   handleSelectionModeChange(
@@ -1857,6 +1858,167 @@ export const SelectionShowcase: Story = {
     );
   },
   args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Data table renders with selection capabilities", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBe(11); // Header + 10 data rows
+
+      // Check that checkboxes are present for row selection
+      const checkboxes = canvas.getAllByRole("checkbox");
+      expect(checkboxes.length).toBeGreaterThan(0);
+    });
+
+    await step("Single row selection mode works correctly", async () => {
+      // Switch to single selection mode
+      const select = canvas.getByTestId("selection-mode-select");
+      const button = select.querySelector("button");
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[1]);
+
+      await expect(button).toHaveTextContent("Single Row");
+
+      const firstRowCheckbox = canvas.getAllByRole("checkbox")[2]; // First data row checkbox
+      await userEvent.click(firstRowCheckbox);
+
+      await waitFor(() => {
+        expect(firstRowCheckbox).toBeChecked();
+      });
+
+      const secondRowCheckbox = await canvas.getAllByRole("checkbox")[5];
+      await userEvent.click(secondRowCheckbox);
+
+      await waitFor(() => {
+        expect(firstRowCheckbox).not.toBeChecked();
+      });
+
+      await expect(secondRowCheckbox).toBeChecked();
+    });
+
+    await step("Multiple row selection works correctly", async () => {
+      // Switch to multiple selection mode
+      const select = canvas.getByTestId("selection-mode-select");
+      const button = select.querySelector("button");
+      await userEvent.click(button!);
+      const listbox = document.querySelector('[role="listbox"]');
+      await expect(listbox).toBeInTheDocument();
+
+      const options = document.querySelectorAll('[role="option"]');
+      await userEvent.click(options[2]);
+
+      await expect(button).toHaveTextContent("Multiple Rows");
+
+      const firstRowCheckbox = canvas.getAllByRole("checkbox")[3];
+      await userEvent.click(firstRowCheckbox);
+
+      await waitFor(() => {
+        expect(firstRowCheckbox).toBeChecked();
+      });
+
+      const secondRowCheckbox = await canvas.getAllByRole("checkbox")[5];
+      await userEvent.click(secondRowCheckbox);
+
+      await waitFor(() => {
+        // two checkboxes can be checked at the same time
+        expect(firstRowCheckbox).toBeChecked();
+      });
+
+      await expect(secondRowCheckbox).toBeChecked();
+    });
+
+    await step("Toggle Select all functionality works", async () => {
+      const selectAllCheckboxRow = await canvas.getAllByRole("rowgroup")[0];
+      const headerRow = within(selectAllCheckboxRow).getByRole("row");
+      const selectAllCheckbox = within(headerRow).getByRole("checkbox");
+
+      await userEvent.click(selectAllCheckbox);
+
+      const checkboxes = canvas.getAllByRole("rowgroup")[1];
+      const dataRows = within(checkboxes).getAllByRole("row");
+      const dataCheckboxes = dataRows.map((row) =>
+        within(row).getByRole("checkbox")
+      );
+      await Promise.all(
+        dataCheckboxes.map(async (checkbox) => {
+          return waitFor(() => expect(checkbox).toBeChecked());
+        })
+      );
+
+      // await userEvent.click(selectAllCheckbox);
+    });
+
+    await step("Require selection toggle works", async () => {
+      const requireSelectionCheckbox = canvas.getByRole("checkbox", {
+        name: "Require Selection",
+      });
+
+      // Enable require selection
+      await userEvent.click(requireSelectionCheckbox);
+
+      await waitFor(() => {
+        expect(requireSelectionCheckbox).toBeChecked();
+      });
+
+      // All checkboxes, once checked should not be unchecked
+      const selectAllCheckboxRow = await canvas.getAllByRole("rowgroup")[0];
+      const headerRow = within(selectAllCheckboxRow).getByRole("row");
+      const selectAllCheckbox = within(headerRow).getByRole("checkbox");
+
+      await userEvent.click(selectAllCheckbox);
+      await waitFor(() => {
+        expect(selectAllCheckbox).toBeChecked();
+      });
+      // Uncheck all checkboxes should not be unchecked
+      await userEvent.click(selectAllCheckbox);
+      await waitFor(() => {
+        expect(selectAllCheckbox).toBeChecked();
+      });
+    });
+
+    await step("Clickable rows toggle works", async () => {
+      const clickableRowsCheckbox = canvas.getByRole("checkbox", {
+        name: "Clickable Rows",
+      });
+
+      // Disable clickable rows
+      await userEvent.click(clickableRowsCheckbox);
+
+      await waitFor(() => {
+        expect(clickableRowsCheckbox).not.toBeChecked();
+      });
+
+      // Re-enable clickable rows
+      await userEvent.click(clickableRowsCheckbox);
+
+      await waitFor(() => {
+        expect(clickableRowsCheckbox).toBeChecked();
+      });
+    });
+
+    await step("Selection maintains accessibility", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toHaveAttribute("aria-label", "Data Table");
+
+      const checkboxes = canvas.getAllByRole("rowgroup")[1];
+      const dataRows = within(checkboxes).getAllByRole("row");
+      const dataCheckboxes = dataRows.map((row) =>
+        within(row).getByRole("checkbox")
+      );
+
+      // const checkboxes = canvas.getAllByRole("checkbox");
+      dataCheckboxes.forEach((checkbox) => {
+        expect(checkbox).toHaveAttribute("aria-label");
+      });
+    });
+  },
 };
 
 export const TextTruncation: Story = {
