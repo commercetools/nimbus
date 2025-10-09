@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { DateRangePickerField } from "./date-range-picker.field";
+import { DateRangePickerField } from "./date-range-picker-field";
 import { now, getLocalTimeZone } from "@internationalized/date";
 import type { DateRange } from "react-aria";
 

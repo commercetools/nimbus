@@ -1,7 +1,7 @@
-import { forwardRef, useId } from "react";
-import { DateRangePicker } from "./date-range-picker";
+import { forwardRef } from "react";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { FormField, FieldErrors, Stack } from "@/components";
-import type { DateRangePickerFieldProps } from "./date-range-picker.field.types";
+import type { DateRangePickerFieldProps } from "./date-range-picker-field.types";
 
 /**
  * # DateRangePickerField
@@ -30,8 +30,7 @@ export const DateRangePickerField = forwardRef<
   DateRangePickerFieldProps
 >(function DateRangePickerField(
   {
-    // Field props
-    id: providedId,
+    id,
     label,
     description,
     info,
@@ -43,15 +42,10 @@ export const DateRangePickerField = forwardRef<
     isReadOnly = false,
     direction = "column",
     size = "md",
-
-    // DateRangePicker props
     ...dateRangePickerProps
   },
   ref
 ) {
-  const generatedId = useId();
-  const id = providedId || generatedId;
-
   // Determine if we should show errors
   const hasErrors = touched && errors && Object.values(errors).some(Boolean);
 
@@ -66,7 +60,7 @@ export const DateRangePickerField = forwardRef<
         isDisabled={isDisabled}
         isReadOnly={isReadOnly}
       >
-        <FormField.Label>{label}</FormField.Label>
+        {label && <FormField.Label>{label}</FormField.Label>}
         <FormField.Input>
           <DateRangePicker
             id={id}
@@ -83,13 +77,14 @@ export const DateRangePickerField = forwardRef<
 
         {info && <FormField.InfoBox>{info}</FormField.InfoBox>}
       </FormField.Root>
-
       {hasErrors && (
-        <FieldErrors
-          id={`${id}-errors`}
-          errors={errors}
-          renderError={renderError}
-        />
+        <FormField.Error>
+          <FieldErrors
+            id={`${id}-errors`}
+            errors={errors}
+            renderError={renderError}
+          />
+        </FormField.Error>
       )}
     </Stack>
   );
