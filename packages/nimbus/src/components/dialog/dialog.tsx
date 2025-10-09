@@ -41,7 +41,7 @@ import { DialogCloseTrigger } from "./components/dialog.close-trigger";
  * </Dialog.Root>
  * ```
  *
- * @see https://react-spectrum.adobe.com/react-aria/Dialog.html
+ * @see https://nimbus-documentation.vercel.app/components/feedback/dialog
  */
 export const Dialog = {
   /**

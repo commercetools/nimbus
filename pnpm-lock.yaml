@@ -379,8 +379,8 @@ importers:
         specifier: ^15.0.1
         version: 15.0.1
       remark-flexible-toc:
-        specifier: ^1.2.1
-        version: 1.2.1(unified@11.0.5)
+        specifier: ^1.2.3
+        version: 1.2.3(unified@11.0.5)
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.1
@@ -400,8 +400,8 @@ importers:
         specifier: ^5.1.3
         version: 5.1.4(typescript@5.9.3)(vite@7.1.9(@types/node@24.3.1)(terser@5.39.0)(tsx@4.20.6)(yaml@2.7.0))
       zod:
-        specifier: ^4.1.11
-        version: 4.1.11
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@eslint/js':
         specifier: catalog:tooling
@@ -5462,8 +5462,8 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
-  remark-flexible-toc@1.2.1:
-    resolution: {integrity: sha512-0/xmniPRYL/rmPFbOwU5di8zHNH19Vlv+sJUGQAvJYHcLFdC5e7F5tJ+CI3bRoS/sU6QtSqc4pPYtKmRaM4jLw==}
+  remark-flexible-toc@1.2.3:
+    resolution: {integrity: sha512-GA9+wUpFRXZ5Hh6xsEyZc1+E1lD8DgQS3CHn2qJNbB3M/zlPUgSvNp7+SagdYsWwW8MwaVZc4XjFuo6pcJdYjw==}
     peerDependencies:
       unified: ^11
 
@@ -6339,8 +6339,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.1.11:
-    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
+  zod@4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -12805,7 +12805,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-flexible-toc@1.2.1(unified@11.0.5):
+  remark-flexible-toc@1.2.3(unified@11.0.5):
     dependencies:
       '@types/mdast': 4.0.4
       github-slugger: 2.0.0
@@ -13764,6 +13764,6 @@ snapshots:
 
   zod@3.25.76: {}
 
-  zod@4.1.11: {}
+  zod@4.1.12: {}
 
   zwitch@2.0.4: {}

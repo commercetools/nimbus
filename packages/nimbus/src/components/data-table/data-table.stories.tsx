@@ -850,12 +850,239 @@ export const SearchAndHighlight: Story = {
           placeholder="Search..."
           width="1/3"
           aria-label="search-rows"
+          data-testid="search-input"
         />
-        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
+        <DataTableWithModals
+          {...args}
+          search={search}
+          onRowClick={() => {}}
+          data-testid="search-table"
+        />
       </Stack>
     );
   },
   args: { columns, data },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Search input renders correctly", async () => {
+      const searchInput = await canvas.findByTestId("search-input");
+      expect(searchInput).toBeInTheDocument();
+      expect(searchInput).toHaveAttribute("placeholder", "Search...");
+    });
+
+    await step("Table displays all rows initially", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const rows = canvas.getAllByRole("row");
+      // 1 header row + 10 data rows from the test data
+      expect(rows.length).toBe(11);
+    });
+
+    await step("Searching filters rows to matching results", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search for "Alice"
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Alice");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // 1 header row + 1 matching data row
+        expect(rows.length).toBe(2);
+      });
+
+      // Verify Alice row is visible
+      expect(canvas.getByText("Alice")).toBeInTheDocument();
+
+      // Verify other names are not visible
+      expect(canvas.queryByText("Bob")).not.toBeInTheDocument();
+      expect(canvas.queryByText("Carol")).not.toBeInTheDocument();
+    });
+
+    await step("Search is case-insensitive", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search with lowercase
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "alice");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Alice")).toBeInTheDocument();
+      });
+
+      // Search with uppercase
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "ALICE");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Alice")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search matches partial text", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search for partial match "vel"
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "vel");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // Should match "Developer" role - Emma and Henry
+        expect(rows.length).toBeGreaterThan(1);
+      });
+
+      // Verify at least one match is visible
+      const cells = canvas.getAllByRole("rowheader");
+      const hasDeveloperMatch = cells.some((cell) =>
+        cell.textContent?.includes("Developer")
+      );
+      expect(hasDeveloperMatch).toBeTruthy();
+    });
+
+    await step("Search across multiple columns", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search for age "30"
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "30");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // Should match rows with age 30
+        expect(rows.length).toBeGreaterThan(1);
+      });
+
+      // Clear and search for role
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Manager");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // Should match Manager role
+        expect(rows.length).toBeGreaterThan(1);
+      });
+    });
+
+    await step("Clearing search shows all rows", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // First search
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Admin");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        expect(rows.length).toBeLessThan(11);
+      });
+
+      // Clear search
+      await userEvent.clear(searchInput);
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // All rows should be visible again
+        expect(rows.length).toBe(11);
+      });
+    });
+
+    await step("Search with no matches shows empty table", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search for something that doesn't exist
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "XYZ123NonExistent");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // Only header row should be present
+        expect(rows.length).toBe(2);
+      });
+
+      // Verify empty state (no data rows)
+      expect(canvas.getByText("No Data")).toBeInTheDocument();
+    });
+
+    await step("Highlighted text is present in search results", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search for "Ali"
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Ali");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        expect(rows.length).toBe(2); // Header + Alice row
+      });
+
+      // Check that the highlighted text is wrapped in a <mark> element
+      const highlightedText = canvas.getByText("Ali");
+      expect(highlightedText).toBeInTheDocument();
+      expect(highlightedText.tagName).toBe("MARK");
+
+      // Verify the full name "Alice" is still accessible as combined text
+      const aliceCell = highlightedText.closest("div");
+      expect(aliceCell).toHaveTextContent("Alice");
+
+      // Verify there's a mark element for the matched portion
+      const markElements = canvas.getAllByText("Ali");
+      expect(markElements.length).toBeGreaterThan(0);
+      markElements.forEach((mark) => {
+        expect(mark.tagName).toBe("MARK");
+      });
+    });
+
+    await step("Multiple search terms narrow results", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Search for a specific combination
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Admin");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        const adminRowCount = rows.length;
+        expect(adminRowCount).toBeGreaterThan(1);
+      });
+
+      // Now search for something more specific
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Alice");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        // Should be fewer rows than Admin search
+        expect(rows.length).toBe(2); // Header + Alice row
+      });
+    });
+
+    await step("Search persists across interactions", async () => {
+      const searchInput = canvas.getByTestId("search-input");
+
+      // Set search term
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, "Developer");
+
+      await waitFor(() => {
+        const rows = canvas.getAllByRole("row");
+        expect(rows.length).toBeGreaterThan(1);
+      });
+
+      // Click on a cell (interaction)
+      const firstVisibleRow = canvas.getAllByRole("row")[1];
+      const firstCell = within(firstVisibleRow).getAllByRole("gridcell")[0];
+      await userEvent.click(firstCell);
+
+      // Search should still be active
+      await waitFor(() => {
+        expect(searchInput).toHaveValue("Developer");
+        const rows = canvas.getAllByRole("row");
+        expect(rows.length).toBeGreaterThan(1);
+      });
+    });
+  },
 };
 
 export const AdjustableColumns: Story = {
@@ -2026,7 +2253,11 @@ export const TextTruncation: Story = {
 
     return (
       <Stack gap="500" alignItems="flex-start">
-        <Checkbox isSelected={isTruncated} onChange={setIsTruncated}>
+        <Checkbox
+          isSelected={isTruncated}
+          onChange={setIsTruncated}
+          data-testid="truncation-checkbox"
+        >
           Enable text truncation
         </Checkbox>
         <Box
@@ -2050,6 +2281,41 @@ export const TextTruncation: Story = {
     data: longTextData,
     allowsSorting: true,
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Applies truncation styles to cells when truncation is enabled",
+      async () => {
+        const checkbox = canvas.getByTestId("truncation-checkbox");
+        await userEvent.click(checkbox);
+
+        const descriptionCell = canvas.getAllByRole("rowheader", {
+          name: /description/i,
+        });
+
+        const innerDiv = descriptionCell[0].querySelector("div");
+
+        // Check if the inner div has the data-truncated attribute -
+        // This is the best we can do for now since technically the dom has the full text, we cannot compare texts to see if it is truncated.
+        // VRT would be a better assertion here.
+        expect(innerDiv).toHaveAttribute("data-truncated", "true");
+      }
+    );
+
+    await step("Disables truncation when checkbox is unchecked", async () => {
+      const checkbox = canvas.getByTestId("truncation-checkbox");
+      await userEvent.click(checkbox);
+
+      const descriptionCell = canvas.getAllByRole("rowheader", {
+        name: /description/i,
+      });
+
+      const innerDiv = descriptionCell[0].querySelector("div");
+
+      expect(innerDiv).toHaveAttribute("data-truncated", "false");
+    });
+  },
 };
 
 export const MultilineHeaders: Story = {
@@ -2072,14 +2338,29 @@ export const WithFooter: Story = {
         align="center"
         gap="400"
         mt="400"
+        p="400"
+        bg="neutral.2"
+        borderRadius="md"
+        border="1px solid"
+        borderColor="neutral.6"
+        data-testid="footer-content"
       >
-        <Text fontWeight="bold">Total: {data.length} items</Text>
-        <Stack direction="row" gap="300" align="center">
-          <Button size="xs" variant="outline">
+        <Text fontWeight="bold" data-testid="total-items">
+          Total: {data.length} items
+        </Text>
+        <Stack
+          direction="row"
+          gap="300"
+          align="center"
+          data-testid="pagination-controls"
+        >
+          <Button size="xs" variant="outline" data-testid="prev-button">
             Previous
           </Button>
-          <Text px="300">Page 1 of 1</Text>
-          <Button size="xs" variant="outline">
+          <Text px="300" data-testid="page-info">
+            Page 1 of 1
+          </Text>
+          <Button size="xs" variant="outline" data-testid="next-button">
             Next
           </Button>
         </Stack>
@@ -2103,6 +2384,7 @@ export const WithFooter: Story = {
           selectionMode="multiple"
           footer={footerContent}
           onRowClick={() => {}}
+          data-testid="footer-table"
         />
 
         <Box mt="400" p="400" bg="neutral.2" borderRadius="md">
@@ -2119,6 +2401,30 @@ export const WithFooter: Story = {
         </Box>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Footer renders correctly", async () => {
+      const table = await canvas.findByTestId("footer-table");
+      expect(table).toBeInTheDocument();
+
+      const footerContent = canvas.getByTestId("footer-content");
+      expect(footerContent).toBeInTheDocument();
+    });
+
+    await step("Footer displays correct content", async () => {
+      const totalItems = canvas.getByTestId("total-items");
+      expect(totalItems).toHaveTextContent(`Total: ${data.length} items`);
+
+      const pageInfo = canvas.getByTestId("page-info");
+      expect(pageInfo).toHaveTextContent("Page 1 of 1");
+
+      const prevButton = canvas.getByTestId("prev-button");
+      const nextButton = canvas.getByTestId("next-button");
+      expect(prevButton).toBeInTheDocument();
+      expect(nextButton).toBeInTheDocument();
+    });
   },
 };
 
@@ -2396,6 +2702,151 @@ export const NestedTable: Story = {
     nestedKey: "sky", // Custom nested key
     allowsSorting: true,
     isResizable: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders parent table with correct structure", async () => {
+      // Verify column headers
+      await expect(canvas.getByText("Galaxy/Object")).toBeInTheDocument();
+      await expect(canvas.getByText("Type")).toBeInTheDocument();
+      await expect(canvas.getByText("Distance")).toBeInTheDocument();
+    });
+
+    await step("Displays all parent rows correctly", async () => {
+      // Verify the three galaxy rows are visible
+      await expect(canvas.getByText("Milky Way")).toBeInTheDocument();
+      await expect(canvas.getByText("Andromeda")).toBeInTheDocument();
+      await expect(canvas.getByText("Abrakadabra")).toBeInTheDocument();
+    });
+
+    await step(
+      "Shows expand buttons for rows with nested content",
+      async () => {
+        // Find all expand/collapse buttons (chevron buttons)
+        const expandButtons = canvas.getAllByRole("button", {
+          name: /expand/i,
+        });
+
+        console.log(expandButtons);
+
+        // Should have at least 2 expand buttons (Milky Way and Andromeda have nested data)
+        await expect(expandButtons.length).toBeGreaterThanOrEqual(2);
+      }
+    );
+
+    await step("Expands parent row to show nested table", async () => {
+      // Find the Milky Way row and its expand button
+      const milkyWayRow = canvas.getByText("Milky Way").closest('[role="row"]');
+      await expect(milkyWayRow).toBeInTheDocument();
+
+      // Find and click the expand button in the Milky Way row
+      const expandButton = within(milkyWayRow as HTMLElement).getByRole(
+        "button",
+        {
+          name: /expand/i,
+        }
+      );
+      await userEvent.click(expandButton);
+
+      // Wait for nested content to appear
+      await waitFor(async () => {
+        // Look for the heading that appears in nested content
+        await expect(canvas.getByText("Milky Way Details")).toBeInTheDocument();
+      });
+    });
+    await step(
+      "Collapses nested table when clicking expand button again",
+      async () => {
+        // Find the Milky Way row again
+        const milkyWayRow = canvas
+          .getByText("Milky Way", { exact: true })
+          .closest('[role="row"]');
+
+        console.log("milkyWayRow", milkyWayRow);
+
+        // Click the collapse button
+        const collapseButton = within(milkyWayRow as HTMLElement).getByRole(
+          "button",
+          {
+            name: /collapse/i,
+          }
+        );
+        await userEvent.click(collapseButton);
+
+        // Wait for nested content to disappear
+        await waitFor(async () => {
+          await expect(
+            canvas.queryByText("Milky Way Details")
+          ).not.toBeInTheDocument();
+        });
+
+        // Verify nested data is no longer visible
+        await expect(
+          canvas.queryByText("Alpha Centauri")
+        ).not.toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "Multiple nested tables can be expanded simultaneously",
+      async () => {
+        const andromedaRow = canvas
+          .getByText("Andromeda")
+          .closest('[role="row"]');
+
+        const andromedaRowExpandButton = within(
+          andromedaRow as HTMLElement
+        ).getByRole("button", {
+          name: /expand/i,
+        });
+        await userEvent.click(andromedaRowExpandButton);
+
+        // Expand Milky Way again while Andromeda is still expanded
+        const milkyWayRow = canvas
+          .getByText("Milky Way")
+          .closest('[role="row"]');
+
+        const milkyWayExpandButton = within(
+          milkyWayRow as HTMLElement
+        ).getByRole("button", {
+          name: /expand/i,
+        });
+        await userEvent.click(milkyWayExpandButton);
+
+        // Wait for both nested tables to be visible
+        await waitFor(async () => {
+          await expect(
+            canvas.getByText("Milky Way Details")
+          ).toBeInTheDocument();
+          await expect(
+            canvas.getByText("Andromeda Details")
+          ).toBeInTheDocument();
+        });
+      }
+    );
+
+    await step(
+      "Row without nested content does not show expand button",
+      async () => {
+        // Abrakadabra doesn't have nested content
+        const abrakadabraRow = canvas
+          .getByText("Abrakadabra")
+          .closest('[role="row"]');
+        await expect(abrakadabraRow).toBeInTheDocument();
+
+        // Try to find an expand button - it should not exist or be limited
+        const buttons = within(abrakadabraRow as HTMLElement).queryAllByRole(
+          "button",
+          {
+            name: /expand/i,
+          }
+        );
+
+        // There should be no expand button
+        expect(buttons.length).toBe(0);
+      }
+    );
   },
 };
 

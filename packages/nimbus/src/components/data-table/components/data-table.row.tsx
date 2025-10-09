@@ -389,6 +389,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 <DataTableCell isDisabled={isDisabled} key={col.id}>
                   <Box
                     className={isTruncated ? "truncated-cell" : ""}
+                    data-truncated={isTruncated ? "true" : "false"}
                     display="inline-block"
                     h="100%"
                     minW="0"
