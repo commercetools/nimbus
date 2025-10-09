@@ -38,6 +38,7 @@ export default defineConfig(async () => {
         }),
       ],
       test: {
+        name: "storybook",
         setupFiles: ["./.storybook/vitest.setup.ts"],
         // make vitest fn's available globally (no need to import them)
         globals: true,

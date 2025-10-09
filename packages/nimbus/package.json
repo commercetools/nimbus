@@ -103,7 +103,7 @@
     "build": "pnpm run build-theme-typings && pnpm run build:lib",
     "build:lib": "vite build",
     "dev": "vite build --watch",
-    "test": "vitest --workspace vitest.workspace.ts --run",
+    "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
