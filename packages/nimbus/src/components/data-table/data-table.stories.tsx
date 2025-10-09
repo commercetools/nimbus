@@ -2728,8 +2728,6 @@ export const NestedTable: Story = {
           name: /expand/i,
         });
 
-        console.log(expandButtons);
-
         // Should have at least 2 expand buttons (Milky Way and Andromeda have nested data)
         await expect(expandButtons.length).toBeGreaterThanOrEqual(2);
       }
@@ -2762,8 +2760,6 @@ export const NestedTable: Story = {
         const milkyWayRow = canvas
           .getByText("Milky Way", { exact: true })
           .closest('[role="row"]');
-
-        console.log("milkyWayRow", milkyWayRow);
 
         // Click the collapse button
         const collapseButton = within(milkyWayRow as HTMLElement).getByRole(
