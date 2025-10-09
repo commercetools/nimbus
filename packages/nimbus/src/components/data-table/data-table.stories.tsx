@@ -1877,7 +1877,7 @@ export const SelectionShowcase: Story = {
       // Switch to single selection mode
       const select = canvas.getByTestId("selection-mode-select");
       const button = select.querySelector("button");
-      await userEvent.click(button!);
+      await userEvent.click(button as HTMLButtonElement);
       const listbox = document.querySelector('[role="listbox"]');
       await expect(listbox).toBeInTheDocument();
 
@@ -2013,7 +2013,6 @@ export const SelectionShowcase: Story = {
         within(row).getByRole("checkbox")
       );
 
-      // const checkboxes = canvas.getAllByRole("checkbox");
       dataCheckboxes.forEach((checkbox) => {
         expect(checkbox).toHaveAttribute("aria-label");
       });
