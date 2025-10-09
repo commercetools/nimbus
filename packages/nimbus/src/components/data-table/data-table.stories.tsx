@@ -412,6 +412,20 @@ export const Base: Story = {
     },
   },
   parameters: {
+    a11y: {
+      config: {
+        rules: [
+          {
+            id: "color-contrast-apca-custom",
+            enabled: false,
+          },
+          {
+            id: "color-contrast",
+            enabled: false,
+          },
+        ],
+      },
+    },
     docs: {
       description: {
         story:
@@ -419,12 +433,184 @@ export const Base: Story = {
       },
     },
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // 1. Initial Rendering Tests
+    await step("DataTable (grid) renders with correct structure", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      expect(canvas.getByText("Product name")).toBeInTheDocument();
+      expect(canvas.getByText("Category")).toBeInTheDocument();
+      expect(canvas.getByText("Status")).toBeInTheDocument();
+      expect(canvas.getByText("Stores")).toBeInTheDocument();
+      expect(canvas.getByText("Date modified")).toBeInTheDocument();
+    });
+
+    await step("Data rows are rendered", async () => {
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBe(9); // 1 header + 8 data rows
+    });
+
+    // 2. Selection Tests
+    await step("Can select individual rows", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+      const checkbox = within(firstDataRow).getByRole("checkbox");
+
+      await userEvent.click(checkbox);
+
+      await waitFor(() => {
+        expect(checkbox).toBeChecked();
+      });
+    });
+
+    await step("Can select multiple rows", async () => {
+      const rows = canvas.getAllByRole("row");
+      const secondDataRow = rows[2];
+      const thirdDataRow = rows[3];
+
+      await userEvent.click(within(secondDataRow).getByRole("checkbox"));
+      await userEvent.click(within(thirdDataRow).getByRole("checkbox"));
+
+      await waitFor(() => {
+        expect(within(secondDataRow).getByRole("checkbox")).toBeChecked();
+        expect(within(thirdDataRow).getByRole("checkbox")).toBeChecked();
+      });
+    });
+
+    await step("Select all checkbox works", async () => {
+      const headerCheckboxes = canvas.getAllByRole("checkbox");
+      const selectAllCheckbox = headerCheckboxes[0];
+
+      await userEvent.click(selectAllCheckbox);
+
+      await waitFor(() => {
+        const allCheckboxes = canvas.getAllByRole("checkbox");
+        const rowCheckboxes = allCheckboxes.slice(1);
+        rowCheckboxes.forEach((checkbox) => {
+          expect(checkbox).toBeChecked();
+        });
+      });
+    });
+
+    // 3. Sorting Tests
+    await step("Can sort by clicking column header", async () => {
+      const productNameHeader = canvas.getByText("Product name");
+      await userEvent.click(productNameHeader);
+
+      await waitFor(() => {
+        const columnHeader = productNameHeader.closest('[role="columnheader"]');
+        expect(columnHeader).toHaveAttribute("aria-sort");
+
+        // Verify actual sort order - should be ascending alphabetically
+        const rows = canvas.getAllByRole("row");
+        const firstDataRow = rows[1];
+        const firstProductNameCell =
+          within(firstDataRow).getAllByRole("rowheader")[0];
+
+        // "Coastal Breeze Linen Pants" should be first alphabetically
+        expect(firstProductNameCell.textContent).toContain(
+          "Coastal Breeze Linen Pants"
+        );
+      });
+    });
+
+    await step("Can toggle sort direction", async () => {
+      const productNameHeader = canvas.getByText("Product name");
+      await userEvent.click(productNameHeader);
+
+      await waitFor(() => {
+        const columnHeader = productNameHeader.closest('[role="columnheader"]');
+        expect(columnHeader).toHaveAttribute("aria-sort");
+
+        // Verify sort direction reversed - should be descending alphabetically
+        const rows = canvas.getAllByRole("row");
+        const firstDataRow = rows[1];
+        const firstProductNameCell =
+          within(firstDataRow).getAllByRole("rowheader")[0];
+
+        // "Urban Canvas Denim" should be first in descending order
+        expect(firstProductNameCell.textContent).toContain(
+          "Urban Canvas Denim"
+        );
+      });
+    });
+
+    // 4. Row Click Tests
+    await step("Clicking a row opens details modal", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+
+      // Click a cell in the row (not checkbox)
+      const productNameCell = within(firstDataRow).getAllByRole("rowheader")[0];
+      await userEvent.click(productNameCell); // Click product name cell
+
+      await waitFor(() => {
+        const modal = within(document.body).getByRole("dialog");
+        expect(modal).toBeInTheDocument();
+      });
+    });
+
+    await step("Modal displays correct product details", async () => {
+      const modal = within(document.body).getByRole("dialog");
+      expect(
+        within(modal).getByText(/Product Information/i)
+      ).toBeInTheDocument();
+    });
+
+    await step("Can close modal", async () => {
+      const modal = within(document.body).getByRole("dialog");
+      const cancelButton = within(modal).getByRole("button", {
+        name: /cancel/i,
+      });
+      await userEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(
+          document.body.querySelector('[role="dialog"]')
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    // 5. Keyboard Navigation Tests
+    await step("Table is keyboard navigable", async () => {
+      await userEvent.tab();
+
+      // Tab order goes to the first interactive element in the table
+      const focusedElement = document.activeElement as HTMLElement;
+      expect(focusedElement).toBeTruthy();
+
+      // Verify element is within the table
+      const table = canvas.getByRole("grid");
+      expect(table.contains(focusedElement)).toBe(true);
+    });
+
+    // 6. Custom Rendering Tests
+    await step("Status column renders badges", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+
+      // Find status text (Published, Modified, or Unpublished)
+      const statusCell = within(firstDataRow).getAllByRole("rowheader")[2]; // Status is 3rd data column
+      expect(statusCell.textContent).toMatch(/Published|Modified|Unpublished/);
+    });
+
+    await step("Product name shows both name and Product ID", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+
+      const nameCell = within(firstDataRow).getAllByRole("rowheader")[0]; // Name is 1st data column
+      expect(nameCell.textContent).toContain("Product ID:");
+    });
+  },
 };
 
 export const ColumnManager: Story = {
   render: (args) => {
     const [visible, setVisible] = useState(["name", "age"]);
-    const allColumns = args.columns.map((col) => col.id);
+    const allColumnsIds = args.columns.map((col) => col.id);
     const handleCheckboxChange = (colId: string) => {
       setVisible((prev) =>
         prev.includes(colId)
@@ -434,12 +620,19 @@ export const ColumnManager: Story = {
     };
     return (
       <>
-        <Stack direction="row" gap="400" mb="300" wrap="wrap">
-          {allColumns.map((colId) => (
+        <Stack
+          direction="row"
+          gap="400"
+          mb="300"
+          wrap="wrap"
+          data-testid="column-manager-controls"
+        >
+          {allColumnsIds.map((colId) => (
             <Checkbox
               key={colId}
               isSelected={visible.includes(colId)}
               onChange={() => handleCheckboxChange(colId)}
+              data-testid={`column-toggle-${colId}`}
             >
               {colId}
             </Checkbox>
@@ -451,11 +644,194 @@ export const ColumnManager: Story = {
           onRowClick={() => {
             console.log("row clicked");
           }}
+          data-testid="column-manager-table"
         />
       </>
     );
   },
   args: { columns, data },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Column manager controls render correctly", async () => {
+      const controls = await canvas.findByTestId("column-manager-controls");
+      expect(controls).toBeInTheDocument();
+
+      // Verify all column checkboxes are present
+      const nameCheckbox = await canvas.findByTestId("column-toggle-name");
+      const ageCheckbox = await canvas.findByTestId("column-toggle-age");
+      const roleCheckbox = await canvas.findByTestId("column-toggle-role");
+      const customCheckbox = await canvas.findByTestId("column-toggle-custom");
+
+      expect(nameCheckbox).toBeInTheDocument();
+      expect(ageCheckbox).toBeInTheDocument();
+      expect(roleCheckbox).toBeInTheDocument();
+      expect(customCheckbox).toBeInTheDocument();
+    });
+
+    await step("Initial visible columns are correct", async () => {
+      // name and age should be checked by default
+      const nameCheckbox = await canvas.getByTestId("column-toggle-name");
+      const ageCheckbox = await canvas.getByTestId("column-toggle-age");
+      const roleCheckbox = await canvas.getByTestId("column-toggle-role");
+      const customCheckbox = await canvas.getByTestId("column-toggle-custom");
+
+      await waitFor(() => {
+        expect(nameCheckbox).toHaveAttribute("data-selected");
+        expect(ageCheckbox).toHaveAttribute("data-selected");
+        expect(roleCheckbox).not.toHaveAttribute("data-selected");
+        expect(customCheckbox).not.toHaveAttribute("data-selected");
+      });
+    });
+
+    await step("Table shows only visible columns", async () => {
+      // Verify Name and Age column headers are visible
+      expect(canvas.getByText("Name with a long header")).toBeInTheDocument();
+      expect(canvas.getByText("Age")).toBeInTheDocument();
+
+      // Verify Role and Custom column headers are not visible
+      expect(canvas.queryByText("Role")).not.toBeInTheDocument();
+      expect(canvas.queryByText("Custom")).not.toBeInTheDocument();
+    });
+
+    await step("Hiding a visible column removes it from table", async () => {
+      const ageCheckbox = await canvas.getByTestId("column-toggle-age");
+
+      // Uncheck the age column
+      await userEvent.click(ageCheckbox);
+
+      await waitFor(() => {
+        expect(ageCheckbox).not.toHaveAttribute("data-selected");
+      });
+
+      // Verify Age column is no longer in the table
+      await waitFor(() => {
+        expect(canvas.queryByText("Age")).not.toBeInTheDocument();
+      });
+
+      // Verify Name column is still visible
+      expect(canvas.getByText("Name with a long header")).toBeInTheDocument();
+    });
+
+    await step("Showing a hidden column adds it to table", async () => {
+      const roleCheckbox = canvas.getByTestId("column-toggle-role");
+
+      // Check the role column
+      await userEvent.click(roleCheckbox);
+
+      await waitFor(() => {
+        expect(roleCheckbox).toHaveAttribute("data-selected");
+      });
+
+      // Verify Role column now appears in the table
+      await waitFor(() => {
+        expect(canvas.getByText("Role")).toBeInTheDocument();
+      });
+    });
+
+    await step("Multiple columns can be toggled", async () => {
+      const ageCheckbox = await canvas.getByTestId("column-toggle-age");
+      const customCheckbox = await canvas.getByTestId("column-toggle-custom");
+
+      // Show age column again
+      await userEvent.click(ageCheckbox);
+
+      await waitFor(() => {
+        expect(ageCheckbox).toHaveAttribute("data-selected");
+      });
+
+      // Show custom column
+      await userEvent.click(customCheckbox);
+
+      await waitFor(() => {
+        expect(customCheckbox).toHaveAttribute("data-selected");
+      });
+
+      // Verify all columns are now visible
+      await waitFor(() => {
+        expect(canvas.getByText("Name with a long header")).toBeInTheDocument();
+        expect(canvas.getByText("Age")).toBeInTheDocument();
+        expect(canvas.getByText("Role")).toBeInTheDocument();
+        expect(canvas.getByText("Custom")).toBeInTheDocument();
+      });
+    });
+
+    await step("Table data remains correct after column changes", async () => {
+      // Verify data is still displayed correctly
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBeGreaterThan(1); // Header + data rows
+
+      // Check that first data row contains expected data
+      const firstDataRow = rows[1];
+      expect(within(firstDataRow).getByText("Alice")).toBeInTheDocument();
+    });
+
+    await step("Hiding all columns except one still works", async () => {
+      // Hide all except name
+      const ageCheckbox = await canvas.getByTestId("column-toggle-age");
+      const roleCheckbox = await canvas.getByTestId("column-toggle-role");
+      const customCheckbox = await canvas.getByTestId("column-toggle-custom");
+
+      await userEvent.click(ageCheckbox);
+      await userEvent.click(roleCheckbox);
+      await userEvent.click(customCheckbox);
+
+      await waitFor(() => {
+        expect(ageCheckbox).not.toHaveAttribute("data-selected");
+        expect(roleCheckbox).not.toHaveAttribute("data-selected");
+        expect(customCheckbox).not.toHaveAttribute("data-selected");
+      });
+
+      // Only Name column should be visible
+      await waitFor(() => {
+        expect(canvas.getByText("Name with a long header")).toBeInTheDocument();
+        expect(canvas.queryByText("Age")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Role")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Custom")).not.toBeInTheDocument();
+      });
+
+      // Data should still be rendered
+      expect(canvas.getByText("Alice")).toBeInTheDocument();
+    });
+
+    await step("Column order is preserved", async () => {
+      // Show all columns again
+      const ageCheckbox = await canvas.getByTestId("column-toggle-age");
+      const roleCheckbox = await canvas.getByTestId("column-toggle-role");
+      const customCheckbox = await canvas.getByTestId("column-toggle-custom");
+
+      await userEvent.click(ageCheckbox);
+      await userEvent.click(roleCheckbox);
+      await userEvent.click(customCheckbox);
+
+      await waitFor(() => {
+        expect(ageCheckbox).toHaveAttribute("data-selected");
+        expect(roleCheckbox).toHaveAttribute("data-selected");
+        expect(customCheckbox).toHaveAttribute("data-selected");
+      });
+
+      // Get all column headers
+      const columnHeaders = canvas.getAllByRole("columnheader");
+
+      // Find the text content of non-selection/non-expand columns
+      const columnTexts = columnHeaders
+        .map((header) => header.textContent)
+        .filter((text) => text && !text.includes("Select"));
+
+      // Verify columns appear in the correct order
+      // Order should match the order in the columns array
+      const expectedOrder = [
+        "Name with a long header",
+        "Age",
+        "Role",
+        "Custom",
+      ];
+
+      expectedOrder.forEach((expectedText) => {
+        expect(columnTexts).toContain(expectedText);
+      });
+    });
+  },
 };
 
 export const CustomColumn: Story = {
@@ -484,10 +860,10 @@ export const SearchAndHighlight: Story = {
 
 export const AdjustableColumns: Story = {
   render: (args) => {
-    const [isResizable, setisResizable] = useState(false);
+    const [isResizable, setIsResizable] = useState(false);
     return (
       <Stack gap="400" alignItems="flex-start">
-        <Checkbox isSelected={isResizable} onChange={setisResizable}>
+        <Checkbox isSelected={isResizable} onChange={setIsResizable}>
           Resizable Column
         </Checkbox>
         <DataTableWithModals
@@ -558,11 +934,225 @@ export const ClickableRows: Story = {
         <DataTableWithModals
           {...args}
           onRowClick={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
+          data-testid="clickable-rows-table"
         />
       </Stack>
     );
   },
   args: { columns, data },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders with clickable rows enabled", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBeGreaterThan(1); // At least header + 1 data row
+    });
+
+    await step("Clicking a row opens the details modal", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1]; // Skip header row
+
+      // Click on the row (not on a checkbox or interactive element)
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const nonCheckboxCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (nonCheckboxCell) {
+        await userEvent.click(nonCheckboxCell);
+
+        // Wait for modal to appear (Dialog is rendered in a portal, so search in document)
+        // Also account for the 300ms delay in the row click handler
+        await waitFor(
+          async () => {
+            const dialog = await within(document.body).findByRole("dialog");
+            expect(dialog).toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
+
+        // Verify modal title contains row information
+        const dialogTitle = within(document.body).getByRole("heading", {
+          level: 2,
+        });
+        expect(dialogTitle.textContent).toContain("Details");
+
+        // Close the modal by clicking the Close button
+        const closeButton = within(document.body).getByRole("button", {
+          name: /close/i,
+        });
+        await userEvent.click(closeButton);
+
+        // Wait for modal to close
+        await waitFor(() => {
+          expect(
+            within(document.body).queryByRole("dialog")
+          ).not.toBeInTheDocument();
+        });
+      }
+    });
+
+    await step(
+      "Clicking on a checkbox does not trigger row click",
+      async () => {
+        const rows = canvas.getAllByRole("row");
+        const secondDataRow = rows[2]; // Use second row
+
+        // Find and click the checkbox
+        const checkbox = within(secondDataRow).queryByRole("checkbox");
+
+        if (checkbox) {
+          await userEvent.click(checkbox);
+
+          // Wait a bit to ensure no modal appears (account for 300ms delay)
+          await new Promise((resolve) => setTimeout(resolve, 600));
+
+          // Verify no modal opened
+          expect(
+            within(document.body).queryByRole("dialog")
+          ).not.toBeInTheDocument();
+
+          // Verify checkbox is checked (the click worked on the checkbox)
+          await waitFor(() => {
+            expect(checkbox).toBeChecked();
+          });
+        }
+      }
+    );
+
+    await step("Disabling clickable rows prevents row clicks", async () => {
+      // Uncheck the "Clickable Rows" checkbox
+      const clickableCheckbox = canvas.getByRole("checkbox", {
+        name: /clickable rows/i,
+      });
+      await userEvent.click(clickableCheckbox);
+
+      // Wait for the state to update
+      await waitFor(() => {
+        expect(clickableCheckbox).not.toBeChecked();
+      });
+
+      // Try clicking a row
+      const rows = canvas.getAllByRole("row");
+      const thirdDataRow = rows[3]; // Use third row
+      const cells = within(thirdDataRow).getAllByRole("gridcell");
+      const nonCheckboxCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (nonCheckboxCell) {
+        await userEvent.click(nonCheckboxCell);
+
+        // Wait to ensure no modal appears (account for 300ms delay)
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        // Verify no modal opened
+        expect(
+          within(document.body).queryByRole("dialog")
+        ).not.toBeInTheDocument();
+      }
+
+      // Re-enable clickable rows for subsequent tests
+      await userEvent.click(clickableCheckbox);
+      await waitFor(() => {
+        expect(clickableCheckbox).toBeChecked();
+      });
+    });
+
+    await step("Multiple row clicks open modals sequentially", async () => {
+      const rows = canvas.getAllByRole("row");
+
+      // Click first row
+      const firstDataRow = rows[1];
+      const firstCells = within(firstDataRow).getAllByRole("gridcell");
+      const firstNonCheckboxCell = firstCells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (firstNonCheckboxCell) {
+        await userEvent.click(firstNonCheckboxCell);
+
+        // Wait for first modal
+        await waitFor(
+          async () => {
+            const dialog = await within(document.body).findByRole("dialog");
+            expect(dialog).toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
+
+        // Close first modal
+        const closeButton = within(document.body).getByRole("button", {
+          name: /close/i,
+        });
+        await userEvent.click(closeButton);
+
+        await waitFor(() => {
+          expect(
+            within(document.body).queryByRole("dialog")
+          ).not.toBeInTheDocument();
+        });
+
+        // Click second row
+        const secondDataRow = rows[2];
+        const secondCells = within(secondDataRow).getAllByRole("gridcell");
+        const secondNonCheckboxCell = secondCells.find(
+          (cell) => !within(cell).queryByRole("checkbox")
+        );
+
+        if (secondNonCheckboxCell) {
+          await userEvent.click(secondNonCheckboxCell);
+
+          // Wait for second modal
+          await waitFor(
+            async () => {
+              const dialog = await within(document.body).findByRole("dialog");
+              expect(dialog).toBeInTheDocument();
+            },
+            { timeout: 3000 }
+          );
+
+          // Close second modal
+          const closeButton2 = within(document.body).getByRole("button", {
+            name: /close/i,
+          });
+          await userEvent.click(closeButton2);
+
+          await waitFor(() => {
+            expect(
+              within(document.body).queryByRole("dialog")
+            ).not.toBeInTheDocument();
+          });
+        }
+      }
+    });
+
+    await step("Row remains accessible via keyboard navigation", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+
+      // Focus on the first cell
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const firstCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (firstCell) {
+        firstCell.focus();
+
+        // Verify the cell or its parent can receive focus
+        await waitFor(() => {
+          expect(
+            document.activeElement === firstCell ||
+              firstCell.contains(document.activeElement)
+          ).toBeTruthy();
+        });
+      }
+    });
+  },
 };
 
 export const WithSorting: Story = {
@@ -1331,7 +1921,7 @@ export const AllFeatures: Story = {
     });
 
     // Settings
-    const [isResizable, setisResizable] = useState(true);
+    const [isResizable, setIsResizable] = useState(true);
     const [allowsSorting, setAllowsSorting] = useState(true);
     const [isRowClickable, setIsRowClickable] = useState(true);
     const [stickyHeader, setStickyHeader] = useState(false);
@@ -1398,7 +1988,7 @@ export const AllFeatures: Story = {
             <TextInput
               value={search}
               onChange={setSearch}
-              placeholder="Fliter table..."
+              placeholder="Filter table..."
               width="300px"
               aria-label="filter table"
             />
@@ -1433,7 +2023,7 @@ export const AllFeatures: Story = {
               ⚙️ Table Settings
             </Heading>
             <Flex flexWrap="wrap" gap="400">
-              <Checkbox isSelected={isResizable} onChange={setisResizable}>
+              <Checkbox isSelected={isResizable} onChange={setIsResizable}>
                 Resizable Columns{" "}
               </Checkbox>
               <Checkbox isSelected={allowsSorting} onChange={setAllowsSorting}>

@@ -16,7 +16,10 @@ import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recip
 import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-range-picker.recipe";
 import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
 import { drawerSlotRecipe } from "@/components/drawer/drawer.recipe";
+import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
+import { searchInputSlotRecipe } from "@/components/search-input/search-input.recipe";
+import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/scoped-search-input.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -58,6 +61,9 @@ export const slotRecipes = {
   textInput: textInputSlotRecipe,
   splitButton: splitButtonSlotRecipe,
   drawer: drawerSlotRecipe,
+  tabs: tabsSlotRecipe,
   localizedField: localizedFieldSlotRecipe,
   collapsibleMotion: collapsibleMotionSlotRecipe,
+  searchInput: searchInputSlotRecipe,
+  scopedSearchInput: scopedSearchInputSlotRecipe,
 };
