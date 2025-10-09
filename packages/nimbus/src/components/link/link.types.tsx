@@ -1,7 +1,12 @@
 import type { LinkRootProps } from "./link.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import type { AriaLinkOptions } from "react-aria";
-import { linkRecipe } from "./link.recipe";
+
+type LinkRecipeVariantProps = {
+  /** Size variant */
+  size?: "xs" | "sm" | "md";
+  /** FontColor variant */
+  fontColor?: "primary" | "inherit";
+};
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.
@@ -11,9 +16,9 @@ import { linkRecipe } from "./link.recipe";
  * Differences between LinkRootProps and LinkVariantProps necessitate
  * the use of Omit and Pick to ensure the correct props are passed
  */
-type LinkVariantProps = Omit<LinkRootProps, "onFocus" | "onBlur" | "onClick"> &
-  Pick<AriaLinkOptions, "onFocus" | "onBlur" | "onClick"> &
-  RecipeVariantProps<typeof linkRecipe> & {
+type LinkVariantProps = LinkRecipeVariantProps &
+  Omit<LinkRootProps, "onFocus" | "onBlur" | "onClick"> &
+  Pick<AriaLinkOptions, "onFocus" | "onBlur" | "onClick"> & {
     [key: `data-${string}`]: string;
   };
 /**
@@ -21,7 +26,7 @@ type LinkVariantProps = Omit<LinkRootProps, "onFocus" | "onBlur" | "onClick"> &
  * Extends LinkVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface LinkProps extends LinkVariantProps {
+export type LinkProps = LinkVariantProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLAnchorElement>;
-}
+};

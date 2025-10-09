@@ -1,8 +1,19 @@
 import type { TimeInputRootProps } from "./time-input.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeFieldProps } from "react-aria-components";
 import type { TimeValue } from "react-aria";
+
+type TimeInputRecipeVariantProps = {
+  /**
+   * Size variant
+   * @default "md"
+   */
+  size?: "sm" | "md";
+  /**
+   * Variant variant
+   * @default "solid"
+   */
+  variant?: "solid" | "ghost";
+};
 
 /**
  * Properties from TimeFieldProps that would conflict with similarly named
@@ -39,18 +50,17 @@ type ExcludedProps =
  * 1. Conflicting props from TimeInputRootProps to avoid TypeScript errors
  * 2. Explicitly excluded props that we don't want users to access
  */
-export interface TimeInputProps
-  extends Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
-    Omit<TimeFieldProps<TimeValue>, ExcludedProps>,
-    RecipeVariantProps<typeof timeInputRecipe> {
-  /**
-   * Optional element to display at the start of the input
-   * Will respect text direction (left in LTR, right in RTL)
-   */
-  leadingElement?: React.ReactNode;
-  /**
-   * Optional element to display at the end of the input
-   * Will respect text direction (right in LTR, left in RTL)
-   */
-  trailingElement?: React.ReactNode;
-}
+export type TimeInputProps = TimeInputRecipeVariantProps &
+  Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps> &
+  Omit<TimeFieldProps<TimeValue>, ExcludedProps> & {
+    /**
+     * Optional element to display at the start of the input
+     * Will respect text direction (left in LTR, right in RTL)
+     */
+    leadingElement?: React.ReactNode;
+    /**
+     * Optional element to display at the end of the input
+     * Will respect text direction (right in LTR, left in RTL)
+     */
+    trailingElement?: React.ReactNode;
+  };

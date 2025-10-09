@@ -1,31 +1,34 @@
 import type {
   HTMLChakraProps,
-  RecipeVariantProps,
   RecipeProps,
 } from "@chakra-ui/react/styled-system";
-import { radioInputSlotRecipe } from "./radio-input.recipe";
 import type {
   RadioGroupProps as RaRadioGroupProps,
   RadioProps as RaRadioProps,
 } from "react-aria-components";
+
 type RadioGroupProps = Omit<RaRadioGroupProps, "children"> & {
   children?: React.ReactNode;
 };
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface RadioInputRootSlotProps
-  extends HTMLChakraProps<
-    "div",
-    RecipeVariantProps<typeof radioInputSlotRecipe>
-  > {}
 
-export interface RadioInputRootProps
-  extends RadioGroupProps,
-    Omit<RadioInputRootSlotProps, keyof RadioGroupProps> {}
+type RadioInputRecipeVariantProps = {
+  /**
+   * Orientation variant
+   * @default "vertical"
+   */
+  orientation?: "horizontal" | "vertical";
+};
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface RadioInputOptionSlotProps
-  extends HTMLChakraProps<"span", RecipeProps<"option">> {}
+export type RadioInputRootSlotProps = HTMLChakraProps<"div">;
 
-export interface RadioInputOptionProps
-  extends RaRadioProps,
-    Omit<RadioInputOptionSlotProps, keyof RaRadioProps> {}
+export type RadioInputRootProps = RadioInputRecipeVariantProps &
+  RadioGroupProps &
+  Omit<RadioInputRootSlotProps, keyof RadioGroupProps>;
+
+export type RadioInputOptionSlotProps = HTMLChakraProps<
+  "span",
+  RecipeProps<"option">
+>;
+
+export type RadioInputOptionProps = RaRadioProps &
+  Omit<RadioInputOptionSlotProps, keyof RaRadioProps>;

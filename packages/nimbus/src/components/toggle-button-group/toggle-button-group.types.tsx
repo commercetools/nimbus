@@ -1,9 +1,7 @@
 import type {
   HTMLChakraProps,
   RecipeProps,
-  RecipeVariantProps,
 } from "@chakra-ui/react/styled-system";
-import { buttonGroupRecipe } from "./toggle-button-group.recipe";
 import type {
   AriaToggleButtonGroupProps,
   AriaToggleButtonProps,
@@ -12,7 +10,18 @@ import {
   ToggleButton as RacToggleButton,
   ToggleButtonGroup as RacToggleButtonGroup,
 } from "react-aria-components";
-import type { PropsWithChildren } from "react";
+
+type ToggleButtonGroupRecipeVariantProps = {
+  /**
+   * Size variant
+   * @default "md"
+   */
+  size?: "xs" | "md";
+  /**
+   * Tone variant
+   */
+  tone?: "primary" | "critical" | "neutral";
+};
 
 // ============================================================
 // Root Component (`<ToggleButtonGroup>`)
@@ -26,12 +35,11 @@ type ToggleButtonGroupRootSlotProps = HTMLChakraProps<
 
 /** Combined props for the root element (Chakra styles + Aria behavior + Recipe variants). */
 type ToggleButtonGroupRootProps = ToggleButtonGroupRootSlotProps &
-  AriaToggleButtonGroupProps &
-  RecipeVariantProps<typeof buttonGroupRecipe>;
+  AriaToggleButtonGroupProps;
 
 /** Final external props for the `<ToggleButtonGroup>` component, including `children`. */
-export type ToggleButtonGroupProps =
-  PropsWithChildren<ToggleButtonGroupRootProps> & {
+export type ToggleButtonGroupProps = ToggleButtonGroupRecipeVariantProps &
+  Omit<ToggleButtonGroupRootProps, "size" | "tone"> & {
     ref?: React.Ref<typeof RacToggleButtonGroup>;
   };
 
