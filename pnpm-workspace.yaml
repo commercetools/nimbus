@@ -23,7 +23,7 @@ catalogs:
     eslint: ^9.37.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.4
-    eslint-plugin-react-hooks: ^5.2.0
+    eslint-plugin-react-hooks: ^7.0.0
     eslint-plugin-react-refresh: ^0.4.23
     prettier: ^3.6.2
     '@preconstruct/cli': ^2.8.12
