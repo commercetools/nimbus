@@ -620,13 +620,13 @@ importers:
       '@svgr/cli':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.9.3)
-      '@types/node':
-        specifier: catalog:utils
-        version: 24.7.1
     devDependencies:
       '@svgr/plugin-jsx':
         specifier: ^8.1.0
         version: 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
+      '@types/node':
+        specifier: catalog:utils
+        version: 24.7.1
       '@types/react':
         specifier: catalog:react
         version: 19.1.16

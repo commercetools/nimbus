@@ -27,11 +27,11 @@
   },
   "dependencies": {
     "@material-design-icons/svg": "^0.14.15",
-    "@svgr/cli": "^8.1.0",
-    "@types/node": "catalog:utils"
+    "@svgr/cli": "^8.1.0"
   },
   "devDependencies": {
     "@svgr/plugin-jsx": "^8.1.0",
+    "@types/node": "catalog:utils",
     "@types/react": "catalog:react",
     "react": "catalog:react",
     "typescript": "catalog:tooling"
