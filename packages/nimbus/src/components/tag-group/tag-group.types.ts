@@ -1,6 +1,7 @@
 import type {
   HTMLChakraProps,
   RecipeProps,
+  SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
 import type { FC, Ref } from "react";
 import {
@@ -11,13 +12,7 @@ import {
   type TagProps as RaTagProps,
 } from "react-aria-components";
 
-type TagGroupRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "lg"
-   */
-  size?: "sm" | "md" | "lg";
-};
+type TagGroupRecipeVariantProps = SlotRecipeProps<"taggroup">;
 
 // ============================================================
 // Root Component (`<TagGroup.Root>`)

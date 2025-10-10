@@ -12,17 +12,19 @@ import type {
   ComboBoxOptionGroupProps,
   ComboBoxOptionIndicatorSlotProps,
   ComboBoxOptionContentSlotProps,
+  ComboBoxMultiSelectRootSlotProps,
+  ComboBoxSingleSelectRootSlotProps,
 } from "./combobox.types";
-import { comboBoxSlotRecipe } from "./combobox.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: comboBoxSlotRecipe,
+  key: "combobox",
 });
 
 // ComboBox Root
 export const ComboBoxRootSlot = withProvider<
   HTMLDivElement,
-  HTMLChakraProps<"div">
+  | ComboBoxMultiSelectRootSlotProps<object>
+  | ComboBoxSingleSelectRootSlotProps<object>
 >("div", "root");
 
 export const ComboBoxLeadingElementSlot = withContext<
