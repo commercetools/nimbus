@@ -493,9 +493,6 @@ importers:
       react-hotkeys-hook:
         specifier: ^4.6.1
         version: 4.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react-intl:
-        specifier: catalog:react
-        version: 7.1.13(react@19.1.0)(typescript@5.9.3)
       react-stately:
         specifier: 3.42.0
         version: 3.42.0(react@19.1.0)
@@ -593,6 +590,9 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 19.1.0(react@19.1.0)
+      react-intl:
+        specifier: catalog:react
+        version: 7.1.13(react@19.1.0)(typescript@5.9.3)
       rollup-plugin-tree-shakeable:
         specifier: catalog:tooling
         version: 2.0.0
