@@ -9,13 +9,49 @@ import type {
   Selection,
 } from "react-aria-components";
 import type {
-  DataTableRootProps,
-  DataTableHeaderSlotProps,
-  DataTableColumnSlotProps,
-  DataTableBodySlotProps,
-  DataTableRowSlotProps,
-  DataTableCellSlotProps,
-} from "./data-table.slots";
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type DataTableSlotRecipeProps = SlotRecipeProps<"datatable"> &
+  UnstyledProp & {
+    truncated?: boolean;
+    density?: "default" | "condensed";
+  };
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+
+export type DataTableRootProps = HTMLChakraProps<
+  "div",
+  DataTableSlotRecipeProps
+>;
+
+// Wrapper slot for react aria `Table` component
+export type DataTableTableSlotProps = Omit<
+  HTMLChakraProps<"table">,
+  "translate"
+> & {
+  translate?: "yes" | "no";
+  /**
+   * React ref to be forwarded to the table element
+   */
+  ref?: React.Ref<HTMLTableElement>;
+};
+
+export type DataTableHeaderSlotProps = HTMLChakraProps<"tr">;
+export type DataTableColumnSlotProps = HTMLChakraProps<"th">;
+export type DataTableBodySlotProps = HTMLChakraProps<"tbody">;
+export type DataTableRowSlotProps = HTMLChakraProps<"tr">;
+export type DataTableCellSlotProps = HTMLChakraProps<"td">;
 
 export type DataTableContextValue<T extends object = Record<string, unknown>> =
   {

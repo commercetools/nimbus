@@ -4,10 +4,8 @@ import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 import { useDataTableContext } from "./data-table.context";
-import {
-  DataTableTableSlot,
-  type DataTableTableSlotProps,
-} from "../data-table.slots";
+import { DataTableTableSlot } from "../data-table.slots";
+import type { DataTableTableSlotProps } from "../data-table.types";
 
 export const DataTableTable = function DataTableTable({
   ref: forwardedRef,
