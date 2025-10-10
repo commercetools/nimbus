@@ -14,7 +14,8 @@ export const draggableListSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       padding: "200",
-      border: "{sizes.25} solid {colors.neutral.3}",
+      border: "{sizes.25} solid",
+      borderColor: "colorPalette.3",
       borderRadius: "200",
       gap: "200",
 
@@ -32,7 +33,7 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         alignItems: "center",
         justifyContent: "center",
         fontStyle: "italic",
-        color: "neutral.11",
+        color: "colorPalette.11",
       },
     },
     empty: {
@@ -41,7 +42,7 @@ export const draggableListSlotRecipe = defineSlotRecipe({
     },
     item: {
       borderRadius: "200",
-      background: "neutral.3",
+      background: "colorPalette.3",
       display: "flex",
       _focus: {
         layerStyle: "focusRing",
@@ -65,7 +66,7 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         fontSize: "350",
         lineHeight: "400",
         focusVisibleRing: "outside",
-        color: "neutral.12",
+        color: "colorPalette.12",
       },
     },
     itemContent: {

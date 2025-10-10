@@ -415,9 +415,24 @@ export const DisabledItems: Story = {
 export const CustomChildren: Story = {
   render: () => {
     const customItems = [
-      { key: "a", label: "Custom A", metadata: "extra data" },
-      { key: "b", label: "Custom B", metadata: "more info" },
-      { key: "c", label: "Custom C", metadata: "additional" },
+      {
+        key: "a",
+        label: "Custom A",
+        metadata: "extra data",
+        colorPalette: "sky",
+      },
+      {
+        key: "b",
+        label: "Custom B",
+        metadata: "more info",
+        colorPalette: "yellow",
+      },
+      {
+        key: "c",
+        label: "Custom C",
+        metadata: "additional",
+        colorPalette: "pink",
+      },
     ];
 
     return (
@@ -427,6 +442,7 @@ export const CustomChildren: Story = {
             key={item.key}
             id={item.key}
             textValue={item.label}
+            colorPalette={item.colorPalette}
           >
             <div>
               <strong>{item.label}</strong>
@@ -710,5 +726,52 @@ export const FieldWithInfoBox: Story = {
         /This is additional information about this field/i
       );
     });
+  },
+};
+
+export const CustomColors: Story = {
+  render: () => {
+    const colorPalettes = [
+      "sky",
+      "mint",
+      "lime",
+      "yellow",
+      "orange",
+      "gold",
+      "bronze",
+      "grass",
+      "green",
+      "jade",
+      "teal",
+      "cyan",
+      "blue",
+      "indigo",
+      "iris",
+      "violet",
+      "purple",
+      "plum",
+      "pink",
+      "crimson",
+      "ruby",
+    ];
+    return (
+      <Flex flexWrap="wrap" gap="400">
+        {colorPalettes.map((palette) => {
+          const itemsForPalette = fieldItems.map((item) => ({
+            ...item,
+            key: `${palette}-${item.key}`,
+          }));
+          return (
+            <DraggableList.Field
+              key={palette}
+              label={palette}
+              items={itemsForPalette}
+              width="3200"
+              colorPalette={palette}
+            />
+          );
+        })}
+      </Flex>
+    );
   },
 };
