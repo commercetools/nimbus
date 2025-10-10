@@ -1,8 +1,20 @@
 import type { DateValue } from "@internationalized/date";
 import type { CalendarProps as AriaCalendarProps } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import type { calendarSlotRecipe } from "./calendar.recipe";
-import type { CalendarRootSlotProps } from "./calendar.slots";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+export type CalendarRootSlotProps = HTMLChakraProps<
+  "div",
+  SlotRecipeProps<"calendar">
+>;
+
+export type CalendarHeaderSlotProps = HTMLChakraProps<"div">;
+export type CalendarGridsSlotProps = HTMLChakraProps<"div">;
+export type CalendarMonthTitleSlotProps = HTMLChakraProps<"div">;
+export type CalendarGridSlotProps = HTMLChakraProps<"table">;
+export type CalendarGridHeaderSlotProps = HTMLChakraProps<"thead">;
+export type CalendarHeaderCellSlotProps = HTMLChakraProps<"th">;
+export type CalendarGridBodySlotProps = HTMLChakraProps<"tbody">;
+export type CalendarCellSlotProps = HTMLChakraProps<"td">;
 
 /**
  * Additional properties we want to exclude from the TimeInput component.
@@ -14,5 +26,4 @@ export type CalendarProps<T extends DateValue> = Omit<
   CalendarRootSlotProps,
   keyof AriaCalendarProps<DateValue> | ExcludedProps
 > &
-  Omit<AriaCalendarProps<T>, ExcludedProps> &
-  RecipeVariantProps<typeof calendarSlotRecipe>;
+  Omit<AriaCalendarProps<T>, ExcludedProps>;
