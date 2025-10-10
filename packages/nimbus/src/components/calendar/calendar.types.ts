@@ -10,10 +10,9 @@ import type { CalendarRootSlotProps } from "./calendar.slots";
  */
 type ExcludedProps = "as" | "asChild" | "style" | "createCalendar";
 
-export interface CalendarProps<T extends DateValue>
-  extends Omit<
-      CalendarRootSlotProps,
-      keyof AriaCalendarProps<DateValue> | ExcludedProps
-    >,
-    Omit<AriaCalendarProps<T>, ExcludedProps>,
-    RecipeVariantProps<typeof calendarSlotRecipe> {}
+export type CalendarProps<T extends DateValue> = Omit<
+  CalendarRootSlotProps,
+  keyof AriaCalendarProps<DateValue> | ExcludedProps
+> &
+  Omit<AriaCalendarProps<T>, ExcludedProps> &
+  RecipeVariantProps<typeof calendarSlotRecipe>;

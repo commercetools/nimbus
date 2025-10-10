@@ -35,7 +35,7 @@ export const ComboBoxRoot = <T extends object>({
       {...recipeProps}
       {...styleProps}
     >
-      <Component ref={ref} size={recipeProps.size} {...restProps}>
+      <Component ref={ref} size={props.size} {...restProps}>
         {children}
       </Component>
     </ComboBoxRootSlot>

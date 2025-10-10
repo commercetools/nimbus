@@ -1,10 +1,7 @@
 import type { HTMLAttributes } from "react";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { avatarRecipe } from "./avatar.recipe.tsx";
 import type { AvatarRootProps } from "./avatar.slots";
-export interface AvatarComponentProps
-  extends HTMLAttributes<HTMLDivElement>,
-    RecipeVariantProps<typeof avatarRecipe> {
+
+export type AvatarComponentProps = HTMLAttributes<HTMLDivElement> & {
   /**
    * The first name used to show initials
    */
@@ -25,10 +22,21 @@ export interface AvatarComponentProps
    * If the avatar is disabled
    */
   isDisabled?: boolean;
-}
+};
 
-type FunctionalAvatarProps = AvatarRootProps & AvatarComponentProps;
-export interface AvatarProps extends FunctionalAvatarProps {
+type AvatarRecipeVariantProps = {
+  /**
+   * Size variant
+   * @default "md"
+   */
+  size?: "md" | "xs" | "2xs";
+};
+
+type FunctionalAvatarProps = AvatarRootProps &
+  AvatarComponentProps &
+  AvatarRecipeVariantProps;
+
+export type AvatarProps = FunctionalAvatarProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};

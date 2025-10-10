@@ -40,6 +40,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
     id,
     "aria-describedby": ariaDescribedby,
     "aria-labelledby": ariaLabelledby,
+    size,
   } = props;
 
   const intl = useIntl();
@@ -117,7 +118,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             aria-controls={searchId}
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}
-            size={recipeProps.size}
+            size={size}
             isClearable={false}
             isDisabled={isDisabled}
             isRequired={isRequired}
@@ -176,7 +177,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             }
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}
-            size={recipeProps.size}
+            size={size}
             isDisabled={isDisabled}
             isReadOnly={isReadOnly}
             isInvalid={isInvalid}

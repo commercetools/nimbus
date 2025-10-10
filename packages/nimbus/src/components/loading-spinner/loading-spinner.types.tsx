@@ -1,6 +1,17 @@
 import type { LoadingSpinnerRootProps } from "./loading-spinner.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { loadingSpinnerRecipe } from "./loading-spinner.recipe";
+
+type LoadingSpinnerRecipeVariantProps = {
+  /**
+   * Size variant
+   * @default "sm"
+   */
+  size?: "2xs" | "xs" | "sm" | "md" | "lg";
+  /**
+   * Tone variant
+   * @default "primary"
+   */
+  tone?: "primary" | "white";
+};
 
 /**
  * Combines the root props with Chakra UI's recipe variant props and Aria's progress bar props.
@@ -9,7 +20,7 @@ import { loadingSpinnerRecipe } from "./loading-spinner.recipe";
  * and styling variants from the recipe.
  */
 type LoadingSpinnerVariantProps = LoadingSpinnerRootProps &
-  RecipeVariantProps<typeof loadingSpinnerRecipe> & {
+  LoadingSpinnerRecipeVariantProps & {
     [key: `data-${string}`]: string;
   };
 

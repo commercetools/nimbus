@@ -58,7 +58,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
             <Group>
               <DateInput
                 slot="start"
-                size={size}
+                size={props.size}
                 variant="plain"
                 width="auto"
                 hideTimeZone={hideTimeZone}
@@ -76,7 +76,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
               </Text>
               <DateInput
                 slot="end"
-                size={size}
+                size={props.size}
                 variant="plain"
                 width="auto"
                 hideTimeZone={hideTimeZone}
