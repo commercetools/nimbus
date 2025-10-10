@@ -1,18 +1,12 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-  type RecipeVariantProps,
 } from "@chakra-ui/react/styled-system";
-import { accordionSlotRecipe } from "./accordion.recipe";
+import type { AccordionRootSlotProps } from "./accordion.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "accordion",
 });
-
-export type AccordionRootSlotProps = HTMLChakraProps<
-  "div",
-  RecipeVariantProps<typeof accordionSlotRecipe>
->;
 
 export const AccordionRootSlot = withProvider<
   HTMLDivElement,
