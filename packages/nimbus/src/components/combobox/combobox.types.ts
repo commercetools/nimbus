@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import type { ReactNode, Ref, RefObject } from "react";
 import type {
   HTMLChakraProps,
   RecipeProps,
-} from "@chakra-ui/react/styled-system";
+  SlotRecipeProps,
+} from "@chakra-ui/react";
 import type {
   ComboBoxProps as RaComboBoxProps,
   AutocompleteProps as RaAutoCompleteProps,
@@ -13,23 +13,7 @@ import type {
 } from "react-aria-components";
 import type React from "react";
 
-type ComboBoxRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
-  /**
-   * Variant variant
-   * @default "solid"
-   */
-  variant?: "solid" | "ghost";
-  /**
-   * SelectionMode variant
-   * @default "single"
-   */
-  selectionMode?: "multiple" | "single" | "none";
-};
+type ComboBoxRecipeVariantProps = SlotRecipeProps<"combobox">;
 
 // ============================================================
 // Root Component (`<ComboBox.Root>`)
@@ -155,10 +139,10 @@ export type ComboBoxButtonGroupSlotProps = HTMLChakraProps<
 >;
 /** component prop interface */
 export type ComboBoxButtonGroupProps = {
-  selectedKeys?: ComboBoxMultiSelectRootProps<{}>["selectedKeys"];
-  onSelectionChange?: ComboBoxMultiSelectRootProps<{}>["onSelectionChange"];
-  onInputChange?: ComboBoxMultiSelectRootProps<{}>["onInputChange"];
-  onOpenChange?: ComboBoxSingleSelectRootProps<{}>["onOpenChange"];
+  selectedKeys?: ComboBoxMultiSelectRootProps<object>["selectedKeys"];
+  onSelectionChange?: ComboBoxMultiSelectRootProps<object>["onSelectionChange"];
+  onInputChange?: ComboBoxMultiSelectRootProps<object>["onInputChange"];
+  onOpenChange?: ComboBoxSingleSelectRootProps<object>["onOpenChange"];
   containerRef?: RefObject<HTMLDivElement | null>;
   isOpen?: boolean;
   isLoading?: boolean;
