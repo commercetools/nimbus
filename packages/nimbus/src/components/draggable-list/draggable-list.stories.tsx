@@ -60,6 +60,9 @@ export const Base: Story = {
       async () => {
         // Item renders a grid
         const grid = await canvas.findByRole("grid", { name: /base list/i });
+        // Ensure that items are rendered.
+        // The first tick paints the empty state, so we need to make sure they have been loaded
+        await new Promise((resolve) => setTimeout(resolve, 10));
         const itemNodes = await within(grid).findAllByRole("gridcell");
         // Grid renders 5 items
         expect(itemNodes.length).toBe(5);
@@ -107,7 +110,9 @@ export const DragAndDrop: Story = {
 
     await step("Test that items can be dragged", async () => {
       const grid = await canvas.findByRole("grid", { name: /dnd list/i });
-
+      // Ensure that items are rendered.
+      // The first tick paints the empty state, so we need to make sure they have been loaded
+      await new Promise((resolve) => setTimeout(resolve, 10));
       // Get first item to drag
       const firstItem = items[0]; // key: "1"
 
@@ -207,6 +212,9 @@ export const CrossListDragAndDrop: Story = {
       const targetGrid = await canvas.findByRole("grid", {
         name: /target list/i,
       });
+      // Ensure that items are rendered.
+      // The first tick paints the empty state, so we need to make sure they have been loaded
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       const sourceItems = await within(sourceGrid).findAllByRole("row");
       const targetItems = await within(targetGrid).findAllByRole("row");
@@ -287,6 +295,9 @@ export const RemovableItems: Story = {
       const grid = await canvas.findByRole("grid", {
         name: /removable list/i,
       });
+      // Ensure that items are rendered.
+      // The first tick paints the empty state, so we need to make sure they have been loaded
+      await new Promise((resolve) => setTimeout(resolve, 10));
       const rows = await within(grid).findAllByRole("row");
 
       for await (const row of rows) {
@@ -435,9 +446,15 @@ export const CustomChildren: Story = {
       });
 
       // Check for custom metadata content
-      await within(grid).findByText(/extra data/i);
-      await within(grid).findByText(/more info/i);
-      await within(grid).findByText(/additional/i);
+      await within(
+        await within(grid).findByRole("row", { name: /custom a/i })
+      ).findByText(/extra data/i);
+      await within(
+        await within(grid).findByRole("row", { name: /custom b/i })
+      ).findByText(/more info/i);
+      await within(
+        await within(grid).findByRole("row", { name: /custom c/i })
+      ).findByText(/additional/i);
     });
 
     await step("Verify drag and drop works with custom children", async () => {
@@ -467,17 +484,21 @@ export const ControlledMode: Story = {
   render: () => {
     const ControlledComponent = () => {
       const [listItems, setListItems] = useState(items);
-      const onUpdateItems = fn(setListItems);
 
       return (
-        <Flex direction="column" gap={400}>
+        <>
           <DraggableList.Root
             aria-label="controlled list"
             items={listItems}
-            onUpdateItems={onUpdateItems}
+            onUpdateItems={setListItems}
           />
-          <div data-testid="item-count">Items: {listItems.length}</div>
-        </Flex>
+          <Flex mt="400" direction="column" gap={100}>
+            <div data-testid="item-count">Items: {listItems.length}</div>
+            <div data-testid="item-order">
+              Order: {listItems.map((item) => item.key).join(" ")}
+            </div>
+          </Flex>
+        </>
       );
     };
 
@@ -487,27 +508,32 @@ export const ControlledMode: Story = {
     const canvas = within(canvasElement);
 
     await step("Verify controlled state updates", async () => {
-      const grid = await canvas.findByRole("grid", {
-        name: /controlled list/i,
-      });
-      const countDisplay = await canvas.findByTestId("item-count");
-
-      expect(countDisplay).toHaveTextContent("Items: 5");
-
+      // Verify Items in state have expected initial count and order
+      expect(await canvas.findByTestId("item-count")).toHaveTextContent(
+        "Items: 5"
+      );
+      expect(await canvas.findByTestId("item-order")).toHaveTextContent(
+        "Order: 1 2 3 4 5"
+      );
+      // Ensure that items are rendered.
+      // The first tick paints the empty state, so we need to make sure they have been loaded
+      await new Promise((resolve) => setTimeout(resolve, 10));
       // Drag first item (Item 1) down 1 position (1 arrow press)
       await dragItem(canvas, items[0].label as string, 1);
-
       // Wait for reorder
       await waitFor(
         async () => {
-          const updatedRows = await within(grid).findAllByRole("row");
-          expect(updatedRows[0]).toHaveAttribute("data-key", "2");
+          // Order has changed (1 is after 2)
+          expect(await canvas.findByTestId("item-order")).toHaveTextContent(
+            "Order: 2 1 3 4 5"
+          );
+          // Item count should remain the same
+          expect(await canvas.findByTestId("item-count")).toHaveTextContent(
+            "Items: 5"
+          );
         },
         { timeout: 2000 }
       );
-
-      // Item count should remain the same
-      expect(countDisplay).toHaveTextContent("Items: 5");
     });
   },
 };
