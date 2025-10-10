@@ -61,3 +61,4 @@ export * from "./pagination";
 export * from "./drawer";
 export * from "./tabs";
 export * from "./localized-field";
+export * from "./text-input-field";
