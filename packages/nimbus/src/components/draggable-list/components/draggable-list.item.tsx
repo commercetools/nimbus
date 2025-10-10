@@ -39,6 +39,7 @@ export const DraggableListItem = <T extends DraggableListItemData>({
                 size="2xs"
                 variant="ghost"
                 flex="0 0 auto"
+                colorPalette="neutral"
               >
                 <DragIndicator />
               </IconButton>
@@ -56,6 +57,7 @@ export const DraggableListItem = <T extends DraggableListItemData>({
                 variant="ghost"
                 onPress={id ? () => onRemoveItem(id) : undefined}
                 flex="0 0 auto"
+                colorPalette="neutral"
               >
                 <Close />
               </IconButton>

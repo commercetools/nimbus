@@ -766,7 +766,8 @@ export const CustomColors: Story = {
               key={palette}
               label={palette}
               items={itemsForPalette}
-              width="3200"
+              removableItems
+              width="3600"
               colorPalette={palette}
             />
           );

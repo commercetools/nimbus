@@ -9,7 +9,7 @@ export const draggableListSlotRecipe = defineSlotRecipe({
   className: "nimbus-draggable-list",
   base: {
     root: {
-      colorPalette: "neutral",
+      colorPalette: "primary",
       width: "2xs",
       display: "flex",
       flexDirection: "column",
@@ -66,7 +66,6 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         fontSize: "350",
         lineHeight: "400",
         focusVisibleRing: "outside",
-        color: "colorPalette.12",
       },
     },
     itemContent: {
