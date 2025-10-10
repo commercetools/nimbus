@@ -1,4 +1,4 @@
-import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type {
   DisclosureGroupProps as RaDisclosureGroupProps,
@@ -6,6 +6,13 @@ import type {
   DisclosurePanelProps as RaDisclosurePanelProps,
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
+
+type AccordionRecipeProps = SlotRecipeProps<"accordion">;
+
+export type AccordionRootSlotProps = HTMLChakraProps<
+  "div",
+  AccordionRecipeProps
+>;
 
 /**
  * For use in components that use the polymorphic `as` and `asChild` props
@@ -21,17 +28,12 @@ import type {
  */
 type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
 
-type AccordionRecipeVariantProps = {
-  /** Size variant */
-  size?: "md" | "sm";
-};
-
 /**
  * Props for the Accordion Root component.
  * Controls the overall accordion container and behavior.
  */
-export type AccordionRootProps = RaDisclosureGroupProps &
-  AccordionRecipeVariantProps & {
+export type AccordionRootProps = AccordionRootSlotProps &
+  RaDisclosureGroupProps & {
     /** The accordion items to display */
     children: ReactNode;
     /** Ref to the root element */
