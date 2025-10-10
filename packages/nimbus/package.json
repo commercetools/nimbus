@@ -83,7 +83,7 @@
     "@vitest/coverage-v8": "catalog:tooling",
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",
-    "axe-core": "^4.10.2",
+    "axe-core": "^4.11.0",
     "dompurify": "catalog:",
     "glob": "catalog:tooling",
     "playwright": "catalog:tooling",
