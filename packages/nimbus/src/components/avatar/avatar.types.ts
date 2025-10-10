@@ -1,5 +1,13 @@
 import type { HTMLAttributes } from "react";
-import type { AvatarRootProps } from "./avatar.slots";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+type AvatarRecipeProps = RecipeProps<"avatar"> & UnstyledProp;
+
+export type AvatarRootProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 
 export type AvatarComponentProps = HTMLAttributes<HTMLDivElement> & {
   /**

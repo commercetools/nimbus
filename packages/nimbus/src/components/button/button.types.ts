@@ -16,7 +16,10 @@ type ButtonRecipeProps = RecipeProps<"button"> & UnstyledProp;
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-export type ButtonRootProps = Omit<HTMLChakraProps<"button">, "slot"> & {
+export type ButtonRootProps = Omit<
+  HTMLChakraProps<"button", ButtonRecipeProps>,
+  "slot"
+> & {
   // insure that the `ButtonRoot` component doesn't give a type error
   slot?: string | null | undefined;
 };
@@ -27,8 +30,7 @@ type FunctionalButtonProps = AriaButtonProps &
     [key: `data-${string}`]: unknown;
   };
 
-export type ButtonProps = ButtonRecipeProps &
-  ButtonRootProps &
+export type ButtonProps = ButtonRootProps &
   FunctionalButtonProps & {
     // we need 'null' as a valid slot value for use with components from react-aria-components,
     // in react-aria slots "An explicit null value indicates that the local props completely override all props received from a parent."
