@@ -36,8 +36,6 @@ import type {
 import messages from "./money-input.i18n";
 
 /**
- * # MoneyInput
- *
  * A specialized input component for entering monetary amounts with currency selection.
  * Supports high precision values and automatic locale-based formatting.
  *

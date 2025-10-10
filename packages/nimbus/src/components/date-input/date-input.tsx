@@ -17,9 +17,7 @@ import type { DateInputProps } from "./date-input.types";
 import { extractStyleProps } from "@/utils/extractStyleProps";
 
 /**
- * # DateInput
- *
- * allows entering a date
+ * Allows entering a date
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dateinput}
  */

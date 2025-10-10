@@ -14,7 +14,7 @@ import { useAtomValue } from "jotai";
 import { useState } from "react";
 import React from "react";
 import { nimbusExportsAtom, NimbusExportItem } from "./atom";
-import { PropsTable } from "@/components/document-renderer/components/props-table";
+import { GroupedPropsTable } from "@/components/document-renderer/components/props-table";
 import { documentationAtom } from "@/atoms/documentation";
 import { CheckCircle, HighlightOff } from "@commercetools/nimbus-icons";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
@@ -173,7 +173,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                         <Table.Row>
                           <Table.Cell colSpan={5}>
                             <Box py="m" px="s">
-                              <PropsTable id={item.name} />
+                              <GroupedPropsTable componentName={item.name} />
                             </Box>
                           </Table.Cell>
                         </Table.Row>

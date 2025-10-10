@@ -9,14 +9,14 @@ type DefaultValueProps = {
  */
 export const DefaultValue = ({ value }: DefaultValueProps) => {
   if (value === null || value === undefined) {
-    return <>-</>;
+    return <>—</>;
   }
 
   if (typeof value === "object" && value !== null && "value" in value) {
     // Handle case where value is an object with a value property
     const innerValue = value.value;
     if (innerValue === null || innerValue === undefined) {
-      return <>-</>;
+      return <>—</>;
     }
 
     return typeof innerValue === "object" ? (

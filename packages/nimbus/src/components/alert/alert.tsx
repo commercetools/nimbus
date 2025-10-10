@@ -5,8 +5,6 @@ import { AlertDismissButton } from "./components/alert.dismiss-button";
 import { AlertRoot } from "./components/alert.root";
 
 /**
- * Alert
- * ============================================================
  * Provides feedback to the user about the status of an action or system event
  */
 export const Alert = {

@@ -1,8 +1,8 @@
 import { ToggleButtonGroupButton as ToggleButtonGroupButtonSlot } from "../toggle-button-group.slots";
-import type { ToggleButtonGroupButtonComponent } from "../toggle-button-group.types";
+import type { ToggleButtonGroupButtonProps } from "../toggle-button-group.types";
 
-export const ToggleButtonGroupButton: ToggleButtonGroupButtonComponent = (
-  props
+export const ToggleButtonGroupButton = (
+  props: ToggleButtonGroupButtonProps
 ) => {
   const { ref, children, ...rest } = props;
   return (
@@ -11,5 +11,3 @@ export const ToggleButtonGroupButton: ToggleButtonGroupButtonComponent = (
     </ToggleButtonGroupButtonSlot>
   );
 };
-
-ToggleButtonGroupButton.displayName = "ToggleButtonGroup.Button";

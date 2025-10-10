@@ -7,8 +7,6 @@ import { FormattedMessage, useIntl } from "react-intl";
 import messages from "./password-input.i18n";
 
 /**
- * # PasswordInput
- *
  * A password input is a text field that hides entered characters for secure password entry.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/passwordinput}

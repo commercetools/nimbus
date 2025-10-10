@@ -159,29 +159,29 @@ const App = () => {
 #### Multiple selection
 ```jsx-live
 const App = () => {
-    const [selected, setSelected] = useState(new Set([]));
-    const animalOptions = [
-      { id: "koala", name: "Koala" },
-      { id: "kangaroo", name: "Kangaroo" },
-    ];
-    return (
-      <>
-        <TagGroup.Root
-          aria-label="selectable animals"
-          selectionMode="multiple"
-          selectedKeys={selected}
-          onSelectionChange={setSelected}
-        >
-          <TagGroup.TagList items={animalOptions}>
-            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-          </TagGroup.TagList>
-        </TagGroup.Root>
-        <Text as="p">
-          Current selection:{" "}
-          {selected === "all" ? "all" : [...selected].join(", ")}
-        </Text>
-      </>
-    );
+  const [selected, setSelected] = useState(new Set([]));
+  const animalOptions = [
+    { id: "koala", name: "Koala" },
+    { id: "kangaroo", name: "Kangaroo" },
+  ];
+  return (
+    <>
+      <TagGroup.Root
+        aria-label="selectable animals"
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <TagGroup.TagList items={animalOptions}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+      <Text as="p">
+        Current selection:{" "}
+        {selected === "all" ? "all" : [...selected].join(", ")}
+      </Text>
+    </>
+  );
 }
 ```
 ### Empty state
@@ -204,6 +204,6 @@ const App = () => {
 }
 ```
 
-## Props
+## Properties
 
-<PropsTable id="TagGroup" />
+<GroupedPropsTable componentName="TagGroup" />

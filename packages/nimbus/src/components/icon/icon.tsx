@@ -2,9 +2,7 @@ import { IconRootSlot } from "./icon.slots";
 import type { IconProps } from "./icon.types";
 
 /**
- * # Icon
- *
- * displays icon components
+ * Displays Icon components
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/icon}
  */

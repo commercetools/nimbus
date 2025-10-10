@@ -27,9 +27,7 @@ import { Box, IconButton } from "@/components";
 import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
 
 /**
- * # FormField
- *
- * displays miscellaneous inputs in a FormField context
+ * Displays miscellaneous inputs in a FormField context
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/formfield}
  */
