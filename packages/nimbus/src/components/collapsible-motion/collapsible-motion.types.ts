@@ -1,27 +1,16 @@
 import type { ReactNode, RefObject } from "react";
 import type { AriaButtonProps } from "react-aria";
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import type { collapsibleMotionSlotRecipe } from "./collapsible-motion.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================================
 // BASE TYPES
 // ============================================================================
 
 /**
- * Type definition for the CollapsibleMotion slot recipe
- * This is the foundation for all recipe-based styling
- */
-export type CollapsibleMotionSlotRecipe = typeof collapsibleMotionSlotRecipe;
-
-/**
  * Recipe variant props extracted from the slot recipe
  * These control the visual variants available in the recipe system
  */
-export type CollapsibleMotionRecipeProps =
-  RecipeVariantProps<CollapsibleMotionSlotRecipe>;
+export type CollapsibleMotionRecipeProps = SlotRecipeProps<"collapsibleMotion">;
 
 // ============================================================================
 // SLOT TYPES
@@ -69,7 +58,7 @@ export type CollapsibleMotionContextValue = {
  * The main container that manages disclosure state and provides context to child components
  * Extends recipe props to inherit styling variants
  */
-export type CollapsibleMotionRootProps = CollapsibleMotionRecipeProps & {
+export type CollapsibleMotionRootProps = CollapsibleMotionRootSlotProps & {
   /**
    * The child components (Trigger and Content)
    */
