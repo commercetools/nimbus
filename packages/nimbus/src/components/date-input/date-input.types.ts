@@ -1,6 +1,30 @@
-import type { DateInputRootProps } from "./date-input.slots";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 import type { DateValue } from "react-aria";
 import type { DateFieldProps } from "react-aria-components";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type DateInputRecipeProps = SlotRecipeProps<"dateInput"> & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ *
+ * We exclude props that conflict with React Aria's DateFieldProps:
+ * - onChange: HTML's FormEventHandler vs React Aria's (value: DateValue | null) => void
+ * - value/defaultValue: HTML's string[] vs React Aria's DateValue | null
+ */
+export type DateInputRootProps = Omit<
+  HTMLChakraProps<"div", DateInputRecipeProps>,
+  "onChange" | "value" | "defaultValue"
+>;
 
 /**
  * Additional properties we want to exclude from the DateInput component.
@@ -21,13 +45,6 @@ type ExcludedProps =
   | "as"
   | "asChild";
 
-type DateInputRecipeVariantProps = {
-  /** Size variant */
-  size?: "sm" | "md";
-  /** Variant variant */
-  variant?: "solid" | "ghost" | "plain";
-};
-
 /**
  * Main props interface for the DateInput component.
  *
@@ -36,7 +53,7 @@ type DateInputRecipeVariantProps = {
  * 2. Merge with DateInputRootProps, excluding conflicting keys
  * 3. Add recipe variant props
  */
-export type DateInputProps = DateInputRecipeVariantProps &
+export type DateInputProps = DateInputRootProps &
   DateFieldProps<DateValue> &
   Omit<DateInputRootProps, keyof DateFieldProps<DateValue> | ExcludedProps> & {
     /**
