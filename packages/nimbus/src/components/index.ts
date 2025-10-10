@@ -60,3 +60,4 @@ export * from "./data-table";
 export * from "./pagination";
 export * from "./tabs";
 export * from "./localized-field";
+export * from "./text-input-field";
