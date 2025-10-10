@@ -1,28 +1,22 @@
-import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
+
+type AlertRecipeProps = SlotRecipeProps<"alert">;
 
 // ============================================================
 // Root Component (`<Alert>`)
 // ============================================================
 
 /** Base Chakra styling props for the root `div` slot. */
-export type AlertRootProps = HTMLChakraProps<"div">;
-
-type AlertRecipeVariantProps = {
-  /** Tone variant */
-  tone?: "critical" | "info" | "warning" | "positive";
-  /** Variant variant */
-  variant?: "flat" | "outlined";
-};
+export type AlertRootProps = HTMLChakraProps<"div", AlertRecipeProps>;
 
 /** Final external props for the `<Alert>` component (variants + children + data-* attrs). */
-// TODO: Why do we need to omit the tone and variant props to have the types parse correctly?
-export type AlertProps = Omit<AlertRootProps, "tone" | "variant"> & {
+export type AlertProps = AlertRootProps & {
   // Allow passthrough of data-* attributes
   [key: `data-${string}`]: unknown;
   ref?: React.Ref<HTMLDivElement>;
-} & AlertRecipeVariantProps;
+};
 
 /** Type signature for the main `Alert` component. */
 export type AlertRootComponent = React.FC<AlertProps>;
