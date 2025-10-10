@@ -1,4 +1,4 @@
-import { type RecipeVariantProps } from "@chakra-ui/react";
+import { type RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { dialogSlotRecipe } from "./dialog.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
 import type {
