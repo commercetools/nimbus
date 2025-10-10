@@ -1,6 +1,31 @@
 import type { DateInputProps } from "../date-input";
 import type { DatePickerStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type DatePickerRecipeProps = SlotRecipeProps<"datePicker"> & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ *
+ * We exclude props that conflict with React Aria's DatePickerStateOptions:
+ * - onChange: HTML's FormEventHandler vs React Aria's (value: DateValue | null) => void
+ * - value/defaultValue: HTML's string[] vs React Aria's DateValue | null
+ */
+export type DatePickerRootProps = Omit<
+  HTMLChakraProps<"div", DatePickerRecipeProps>,
+  "onChange" | "value" | "defaultValue"
+>;
 
 /**
  * Properties from DatePickerStateOptions that would conflict with similarly named
@@ -30,13 +55,6 @@ type ExcludedProps =
   // exclude variant to avoid conflict with recipe variant
   | "variant";
 
-type DatePickerRecipeVariantProps = {
-  /** Size variant */
-  size?: "sm" | "md";
-  /** Variant variant */
-  variant?: "solid" | "ghost";
-};
-
 /**
  * Main props interface for the DatePicker component.
  *
@@ -44,7 +62,7 @@ type DatePickerRecipeVariantProps = {
  * 1. Conflicting props from DateInputProps to avoid TypeScript errors
  * 2. Explicitly excluded props that we don't want users to access
  */
-export type DatePickerProps = DatePickerRecipeVariantProps &
+export type DatePickerProps = DatePickerRootProps &
   Omit<DateInputProps, ConflictingPickerStateProps | ExcludedProps> &
   Omit<DatePickerStateOptions<DateValue>, ExcludedProps> & {
     /**
@@ -67,13 +85,6 @@ export type DatePickerProps = DatePickerRecipeVariantProps &
      * This prop is forwarded to both the main date input and footer time input.
      */
     hideTimeZone?: boolean;
-    /**
-     * Size variant
-     * @default "md"
-     */
-    size?: "sm" | "md";
-    /** Variant variant */
-    variant?: "solid" | "ghost";
   };
 
 /**
