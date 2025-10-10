@@ -14,73 +14,192 @@ tags:
 
 # Icon
 
-displays icon components
+An icon is a small graphical symbol used to represent an object, action, or idea
+within a user interface.
 
-## Examples
+## Overview
 
-Below are examples showcasing the different ways to use the `Icon` component.
+Nimbus uses the Material Design icon library and adds custom SVG icons.
 
-### Basic usage
+### Resources
 
-The most basic way to use the `Icon` component is by passing the desired icon as a child. The icon will inherit the current font-size and -color by default.
+Deep dive on details and access design library.
 
-```jsx-live
-const App = () => (
-  <Icon>
-    <Icons.Bathtub />
-  </Icon>
-);
-```
+[Material Design Icon Library](https://www.figma.com/community/file/1014241558898418245)
 
-### Using the `as` prop
+## Variables
 
-As a shorthand, you can pass the icon component directly to the `as` prop.
+Get familiar with the features.
 
-```jsx-live
-const App = () => <Icon as={Icons.Bathtub} />;
-```
+### Visual options
 
-### Predefined sizes
-
-The `Icon` component comes with a set of predefined sizes that can be applied using the `size` prop.
-
-```jsx-live
-const App = () => (
-  <Stack direction="row" gap="400" alignItems="center">
-    <Icon as={Icons.Bathtub} size="2xs" />
-    <Icon as={Icons.Bathtub} size="xs" />
-    <Icon as={Icons.Bathtub} size="sm" />
-    <Icon as={Icons.Bathtub} size="md" />
-    <Icon as={Icons.Bathtub} size="lg" />
-    <Icon as={Icons.Bathtub} size="xl" />
-  </Stack>
-);
-```
-
-### Custom size
-
-You can apply a custom size to the `Icon` using the `boxSize` style prop.
-
-```jsx-live
-const App = () => <Icon as={Icons.Bathtub} boxSize="3200" />;
-```
-
-### Custom color
-
-A custom color can be applied using the `color` style prop.
+#### Default and in color
 
 ```jsx-live
 const App = () => (
   <Stack direction="row">
-    <Icon as={Icons.Bathtub} size="xl" color="primary.11" />
-    <Icon as={Icons.Bathtub} size="xl" color="info.11" />
-    <Icon as={Icons.Bathtub} size="xl" color="positive.11" />
-    <Icon as={Icons.Bathtub} size="xl" color="warning.11" />
-    <Icon as={Icons.Bathtub} size="xl" color="critical.11" />
+    <Icon size="xs"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xs" color="primary.11"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xs" color="info.11"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xs" color="positive.11"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xs" color="warning.11"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xs" color="critical.11"><Icons.SentimentSatisfied /></Icon>
   </Stack>
 );
 ```
 
-## Props
+#### Custom SVG
+
+```jsx-live
+const App = () => {
+  const blackLogo = `<svg width="31" height="36" viewBox="0 0 31 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 26.6043V10.7769C0 10.3383 0.473841 10.0655 0.853697 10.2835L14.5611 18.1965C14.9136 18.4002 15.1303 18.7761 15.1303 19.1821V35.0094C15.1303 35.448 14.6564 35.7208 14.2766 35.5028L0.569131 27.5898C0.216688 27.3862 0 27.0102 0 26.6043Z" fill="currentColor"/>
+    <path d="M1.77896 7.94303L15.2723 0.152726C15.6248 -0.0509085 16.0582 -0.0509085 16.4106 0.152726L29.904 7.94303C30.3778 8.21716 30.3778 8.90116 29.904 9.17528L16.4106 16.9656C16.0582 17.1692 15.6248 17.1692 15.2723 16.9656L1.77896 9.17528C1.30512 8.90116 1.30512 8.21716 1.77896 7.94303Z" fill="currentColor"/>
+    <path d="M16.5532 35.0107V20.3334C16.5532 19.8948 17.0271 19.622 17.4069 19.84L29.9043 27.0559C30.3781 27.3301 30.3781 28.0141 29.9043 28.2882L17.4069 35.5041C17.0271 35.7234 16.5532 35.4493 16.5532 35.0107Z" fill="currentColor"/>
+  </svg>`;
+
+  const colorLogo = `<svg width="31" height="36" viewBox="0 0 31 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.259521 26.6043V10.7769C0.259521 10.3383 0.733362 10.0655 1.11322 10.2835L14.8207 18.1965C15.1731 18.4002 15.3898 18.7761 15.3898 19.1821V35.0094C15.3898 35.448 14.916 35.7208 14.5361 35.5028L0.828653 27.5898C0.476209 27.3862 0.259521 27.0102 0.259521 26.6043Z" fill="#6359FF"/>
+    <path d="M2.03849 7.94303L15.5319 0.152726C15.8843 -0.0509085 16.3177 -0.0509085 16.6701 0.152726L30.1635 7.94303C30.6373 8.21716 30.6373 8.90116 30.1635 9.17528L16.6701 16.9656C16.3177 17.1692 15.8843 17.1692 15.5319 16.9656L2.03849 9.17528C1.56465 8.90116 1.56465 8.21716 2.03849 7.94303Z" fill="#FFC806"/>
+    <path d="M16.8127 35.0107V20.3334C16.8127 19.8948 17.2866 19.622 17.6664 19.84L30.1638 27.0559C30.6377 27.3301 30.6377 28.0141 30.1638 28.2882L17.6664 35.5041C17.2866 35.7234 16.8127 35.4493 16.8127 35.0107Z" fill="#0BBFBF"/>
+  </svg>`;
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Icon size="xs"><InlineSvg data={blackLogo} /></Icon>
+      <Icon size="xs"><InlineSvg data={colorLogo} /></Icon>
+    </Stack>
+  );
+};
+```
+
+#### Predefined sizes
+
+The `Icon` component comes with a set of predefined sizes that can be applied
+using the `size` prop.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Icon size="2xs"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xs"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="sm"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="md"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="lg"><Icons.SentimentSatisfied /></Icon>
+    <Icon size="xl"><Icons.SentimentSatisfied /></Icon>
+  </Stack>
+);
+```
+
+#### Custom size
+
+You can apply a custom size to the `Icon` using the `boxSize` style prop.
+
+```jsx-live
+const App = () => <Icon boxSize="3200"><Icons.SentimentSatisfied /></Icon>;
+```
+
+## Guidelines
+
+Icon guidelines establish principles for designing and using consistent,
+recognizable, and accessible graphical symbols. They ensure icons clearly convey
+meaning, maintain visual harmony, and function effectively across various
+contexts and screen sizes while adhering to accessibility standards.
+
+### Best practices
+
+- **Clarity & Recognition:**
+  - **Be intuitive:** Design icons that are instantly recognizable and clearly
+    convey their meaning without needing extensive explanation.
+  - **Supplement with text:** If an icon's meaning might be ambiguous, pair it
+    with a text label, especially for critical actions.
+- **Consistency & Style:**
+  - **Maintain visual harmony:** Ensure all icons adhere to a consistent visual
+    style (e.g., line weight, fill vs. outline, corner radius, perspective).
+  - **Use consistently:** Always use the same icon to represent the same action
+    or concept throughout the entire product.
+  - **Ensure proper alignment:** Pay attention to pixel grid alignment for
+    crispness, especially at smaller sizes.
+- **Usability & Interaction:**
+  - **Provide clear states:** Design distinct visual states for interactive
+    icons (e.g., hover, focus, active, disabled).
+  - **Ensure sufficient target size:** Make clickable icons large enough for
+    easy interaction, especially on touch devices (minimum 44x44px target area).
+- **Accessibility:**
+  - **Always provide text alternatives:** Use alt text for `<img>` tags or
+    aria-label for interactive SVG icons to convey their meaning to screen
+    readers.
+  - **Ensure sufficient contrast:** Verify that icons have enough color contrast
+    against their background.
+  - **Don't rely solely on icons:** Critical information should not be conveyed
+    only by an icon; always have a text equivalent or context.
+- **Scalability & Optimization:**
+  - **Design for scalability:** Create icons in a vector format (like SVG) to
+    ensure they look sharp at any size.
+  - **Optimize performance:** Minimize icon file sizes to ensure fast loading
+    times.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **To supplement text labels:** When paired with text, icons enhance
+  comprehension, add visual interest, and aid scannability, especially for
+  common actions (e.g., a "Save" icon next to the word "Save").
+- **For universally recognized actions:** When an icon's meaning is clear
+  without any text label (e.g., "Print," "Search," "Home," "Trash/Delete").
+  These are excellent for saving space.
+- **To indicate state or status:** Showing the status of an item (e.g., a "lock"
+  icon for private, an "eye" icon for visible, a "check" icon for completed).
+- **For brand recognition & aesthetics:** To reinforce brand identity or add a
+  consistent visual style where the icon is purely decorative or supplementary
+  to already clear text.
+- **In space-constrained areas:** In toolbars, navigation bars, or other areas
+  where screen real estate is minimal, provided the icons are highly intuitive.
+- **To aid users with reading/language difficulties:** Icons can serve as
+  powerful visual cues for users who struggle with text-heavy interfaces or who
+  are not fluent in the interface's language.
+
+> [!CAUTION]\
+> When not to use
+
+- **As the sole indicator for ambiguous actions:** If an icon's meaning isn't
+  immediately obvious or could be misinterpreted, do not use it without a text
+  label or a tooltip. This is a common accessibility and usability pitfall.
+- **For critical information without redundancy:** Never rely only on an icon to
+  convey crucial information (e.g., an error, a warning) that a user must
+  understand. Always pair it with text or color.
+- **Over-decorating:** Using too many icons purely for aesthetic reasons can
+  lead to visual clutter and distract users from important content or actions.
+- **Inconsistent usage:** Using the same icon for different meanings in
+  different parts of the application, or different icons for the same meaning.
+  This creates confusion.
+- **Unscalable or low-resolution icons:** Using raster images that pixelate when
+  scaled up, or icons that lose clarity at small sizes.
+- **Overly complex or detailed icons:** Icons should be simple and easy to
+  understand at a glance. Too much detail makes them hard to interpret,
+  especially at smaller sizes.
+- **Obscuring important content:** Placing icons in a way that blocks or
+  detracts from the main content.
+- **Neglecting accessibility attributes:** Not providing alt text or aria-labels
+  for icons used as interactive elements or conveying meaning, leaving screen
+  reader users without context.
+
+## Properties
 
 <PropsTable id="Icon" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+### Accessibility Standards
+
+Icons can be a powerful bridge for merchants navigating interfaces with reading,
+language, attention, or low vision challenges. For those icons appearing without
+accompanying text, however, developers must proactively apply an
+`accessibilityLabel` prop to provide an `aria-label`, spoken description that
+screen readers can convey to users.
