@@ -1,33 +1,33 @@
 import type { ReactNode } from "react";
-import type {
-  SelectOptionsSlotProps,
-  SelectOptionSlotProps,
-  SelectRootSlotProps,
-  SelectOptionGroupSlotProps,
-} from "./select.slots";
-
 import {
   type SelectProps as RaSelectProps,
   type ListBoxProps as RaListBoxProps,
   type ListBoxItemProps as RaListBoxItemProps,
   type ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-type SelectRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
-  /**
-   * Variant variant
-   * @default "outline"
-   */
-  variant?: "outline" | "ghost";
+export type SelectRecipeProps = {
+  size?: SlotRecipeProps<"select">["size"];
+  variant?: SlotRecipeProps<"select">["variant"];
 };
 
-export type SelectRootProps = SelectRecipeVariantProps &
-  SelectRootSlotProps &
+export type SelectRootSlotProps = HTMLChakraProps<
+  "div",
+  SelectRecipeProps & RaSelectProps<object>
+>;
+
+export type SelectTriggerSlotProps = HTMLChakraProps<"button">;
+
+export type SelectTriggerLabelSlotProps = HTMLChakraProps<"span">;
+
+export type SelectOptionsSlotProps = HTMLChakraProps<"div">;
+
+export type SelectOptionSlotProps = HTMLChakraProps<"div">;
+
+export type SelectOptionGroupSlotProps = HTMLChakraProps<"div">;
+
+export type SelectRootProps = SelectRootSlotProps &
   RaSelectProps & {
     /** set to true if Select is currently busy with something */
     isLoading?: boolean;
