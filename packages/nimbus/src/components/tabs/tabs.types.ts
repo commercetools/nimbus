@@ -1,17 +1,15 @@
-import { tabsSlotRecipe } from "./tabs.recipe";
+import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
-import {
-  type HTMLChakraProps,
-  type RecipeVariantProps,
-} from "@chakra-ui/react";
+type TabsRecipeProps = {
+  orientation?: SlotRecipeProps<"tabs">["orientation"];
+  placement?: SlotRecipeProps<"tabs">["placement"];
+  size?: SlotRecipeProps<"tabs">["size"];
+};
 
 /**
  * Root props type that extends React Aria's tabs props with our recipe props.
  */
-export type TabsRootSlotProps = HTMLChakraProps<
-  "div",
-  RecipeVariantProps<typeof tabsSlotRecipe>
-> & {
+export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
   /**
    * The children of the Tabs component.
    */
@@ -32,45 +30,27 @@ export type TabsRootSlotProps = HTMLChakraProps<
    * The keyboard activation of the Tabs component.
    */
   keyboardActivation?: "automatic" | "manual";
-  /**
-   * The orientation of the Tabs component.
-   */
-  orientation?: "horizontal" | "vertical";
-  /**
-   * The placement of the Tabs component.
-   */
-  placement?: "start" | "end";
-  /**
-   * The size of the Tabs component.
-   */
-  size?: "sm" | "md" | "lg";
 };
 
-export type TabsListSlotProps = HTMLChakraProps<
-  "div",
-  RecipeVariantProps<typeof tabsSlotRecipe>
-> & {
+export type TabsListSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
   children?: React.ReactNode;
 };
 
-export type TabsTabSlotProps = HTMLChakraProps<
-  "button",
-  RecipeVariantProps<typeof tabsSlotRecipe>
-> & {
+export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps> & {
   id?: string;
   isDisabled?: boolean;
 };
 
 export type TabsPanelsSlotProps = HTMLChakraProps<
   "div",
-  RecipeVariantProps<typeof tabsSlotRecipe>
+  SlotRecipeProps<"tabs">
 > & {
   children?: React.ReactNode;
 };
 
 export type TabsPanelSlotProps = HTMLChakraProps<
   "div",
-  RecipeVariantProps<typeof tabsSlotRecipe>
+  SlotRecipeProps<"tabs">
 > & {
   id?: string;
 };
@@ -78,7 +58,7 @@ export type TabsPanelSlotProps = HTMLChakraProps<
 /**
  * Tabs recipe variant props for direction and placement configuration
  */
-type TabsVariantProps = RecipeVariantProps<typeof tabsSlotRecipe> & {
+type TabsVariantProps = SlotRecipeProps<"tabs"> & {
   [key: `data-${string}`]: unknown;
 };
 
@@ -112,25 +92,6 @@ export type TabsProps = TabsRootSlotProps &
   TabsVariantProps & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
-    /**
-     * Direction of the tabs layout
-     * @default "horizontal"
-     */
-    orientation?: "horizontal" | "vertical";
-    /**
-     * Placement of the tab list relative to panels
-     * @default "start"
-     */
-    placement?: "start" | "end";
-    /**
-     * Size of the tabs affecting padding and font size
-     * @default "md"
-     */
-    size?: "sm" | "md" | "lg";
-    /**
-     * Array of tab items for collection rendering
-     * When provided, tabs will be rendered automatically from this data
-     */
     tabs?: TabItemProps[];
   };
 
