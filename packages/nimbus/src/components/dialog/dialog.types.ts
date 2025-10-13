@@ -1,28 +1,30 @@
 import { type RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { dialogSlotRecipe } from "./dialog.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
-import type {
-  DialogModalOverlaySlotProps,
-  DialogTriggerSlotProps,
-  DialogHeaderSlotProps,
-  DialogBodySlotProps,
-  DialogFooterSlotProps,
-  DialogTitleSlotProps,
-} from "./dialog.slots";
 import type { IconButtonProps } from "../icon-button";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-type DialogRecipeVariantProps = {
-  /**
-   * Placement variant
-   * @default "center"
-   */
-  placement?: "center" | "top" | "bottom";
-  /**
-   * ScrollBehavior variant
-   * @default "outside"
-   */
-  scrollBehavior?: "inside" | "outside";
-};
+type DialogRecipeProps = SlotRecipeProps<"dialog">;
+
+export type DialogRootSlotProps = HTMLChakraProps<"div", DialogRecipeProps>;
+
+export type DialogTriggerSlotProps = HTMLChakraProps<"button">;
+
+export type DialogModalOverlaySlotProps = HTMLChakraProps<"div">;
+
+export type DialogModalSlotProps = HTMLChakraProps<"div">;
+
+export type DialogContentSlotProps = HTMLChakraProps<"div">;
+
+export type DialogHeaderSlotProps = HTMLChakraProps<"header">;
+
+export type DialogBodySlotProps = HTMLChakraProps<"div">;
+
+export type DialogFooterSlotProps = HTMLChakraProps<"footer">;
+
+export type DialogTitleSlotProps = HTMLChakraProps<"h2">;
+
+export type DialogCloseTriggerSlotProps = HTMLChakraProps<"div">;
 
 /**
  * Props for the Dialog.Root component
@@ -33,7 +35,7 @@ type DialogRecipeVariantProps = {
  * This component handles configuration through recipe variants that are passed
  * down to child components via context.
  */
-export type DialogRootProps = DialogRecipeVariantProps & {
+export type DialogRootProps = DialogRootSlotProps & {
   /**
    * The children components (Trigger, Content, etc.)
    */
