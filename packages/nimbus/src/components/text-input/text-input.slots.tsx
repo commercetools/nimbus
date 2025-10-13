@@ -3,7 +3,7 @@ import {
   type HTMLChakraProps,
   type RecipeVariantProps,
   createSlotRecipeContext,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 
 import { textInputSlotRecipe } from "./text-input.recipe";
 

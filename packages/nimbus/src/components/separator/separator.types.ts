@@ -3,7 +3,7 @@ import type {
   UnstyledProp,
   HTMLChakraProps,
   RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 import { separatorRecipe } from "./separator.recipe";
 import type { SeparatorProps as RaSeparatorProps } from "react-aria-components";
 

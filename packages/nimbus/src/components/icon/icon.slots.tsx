@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react/styled-system";
+import { createRecipeContext } from "@chakra-ui/react";
 import type { IconRootSlotProps } from "./icon.types";
 
 const { withContext } = createRecipeContext({ key: "icon" });

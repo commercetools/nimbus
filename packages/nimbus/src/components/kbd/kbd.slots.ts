@@ -3,7 +3,7 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createRecipeContext,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props

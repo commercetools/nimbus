@@ -3,7 +3,7 @@ import { tabsSlotRecipe } from "./tabs.recipe";
 import {
   type HTMLChakraProps,
   type RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 
 /**
  * Root props type that extends React Aria's tabs props with our recipe props.

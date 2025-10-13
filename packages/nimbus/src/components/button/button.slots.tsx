@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react/styled-system";
+import { createRecipeContext } from "@chakra-ui/react";
 import { buttonRecipe } from "./button.recipe";
 import shouldForwardProp from "@emotion/is-prop-valid";
 import { system } from "@/theme";

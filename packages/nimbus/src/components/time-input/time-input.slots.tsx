@@ -3,7 +3,7 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createSlotRecipeContext,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 
 import { timeInputRecipe } from "./time-input.recipe";
 

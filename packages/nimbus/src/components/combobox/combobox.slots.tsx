@@ -1,7 +1,7 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 import type {
   ComboBoxValueSlotProps,
   ComboBoxButtonGroupSlotProps,

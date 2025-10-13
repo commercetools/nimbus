@@ -3,7 +3,7 @@ import {
   createSlotRecipeContext,
   type WithProviderOptions,
   type WithContextOptions,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 
 import {
   TagGroup as RaTagGroup,

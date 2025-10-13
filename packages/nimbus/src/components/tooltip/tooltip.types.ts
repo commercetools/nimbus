@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import type { TooltipProps as RATooltipProps } from "react-aria-components";
 import type { TooltipRootProps } from "./tooltip.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
+import type { RecipeVariantProps } from "@chakra-ui/react";
 import { tooltipRecipe } from "./tooltip.recipe";
 
 /**

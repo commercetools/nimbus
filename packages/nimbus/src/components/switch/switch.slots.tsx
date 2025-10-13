@@ -3,7 +3,7 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
   type RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 import { switchSlotRecipe } from "./switch.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({

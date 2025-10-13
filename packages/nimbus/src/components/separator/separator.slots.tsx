@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react/styled-system";
+import { createRecipeContext } from "@chakra-ui/react";
 
 import { separatorRecipe } from "./separator.recipe";
 import type { SeparatorRootProps } from "./separator.types";
