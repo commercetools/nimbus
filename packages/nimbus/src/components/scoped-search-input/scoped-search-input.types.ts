@@ -1,12 +1,19 @@
-import type { ScopedSearchInputRootSlotProps } from "./scoped-search-input.slots";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-type ScopedSearchInputRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
+type ScopedSearchInputRecipeProps = {
+  size?: SlotRecipeProps<"scopedSearchInput">["size"];
 };
+
+export type ScopedSearchInputRootSlotProps = HTMLChakraProps<
+  "div",
+  ScopedSearchInputRecipeProps
+>;
+
+export type ScopedSearchInputContainerSlotProps = HTMLChakraProps<"div">;
+
+export type ScopedSearchInputSelectWrapperSlotProps = HTMLChakraProps<"div">;
+
+export type ScopedSearchInputSearchWrapperSlotProps = HTMLChakraProps<"div">;
 
 /**
  * Value structure for ScopedSearchInput
@@ -54,108 +61,107 @@ export type ScopedSearchInputOptionGroup = {
   options: ScopedSearchInputOption[];
 };
 
-export type ScopedSearchInputProps = ScopedSearchInputRecipeVariantProps &
-  Omit<
-    ScopedSearchInputRootSlotProps,
-    "value" | "onSubmit" | "as" | "asChild"
-  > & {
-    /**
-     * The current value (controlled)
-     */
-    value: ScopedSearchInputValue;
+export type ScopedSearchInputProps = Omit<
+  ScopedSearchInputRootSlotProps,
+  "value" | "onSubmit" | "as" | "asChild"
+> & {
+  /**
+   * The current value (controlled)
+   */
+  value: ScopedSearchInputValue;
 
-    /**
-     * Callback when the unified value changes
-     */
-    onValueChange?: (value: ScopedSearchInputValue) => void;
+  /**
+   * Callback when the unified value changes
+   */
+  onValueChange?: (value: ScopedSearchInputValue) => void;
 
-    /**
-     * Callback when the text input changes
-     */
-    onTextChange?: (text: string) => void;
+  /**
+   * Callback when the text input changes
+   */
+  onTextChange?: (text: string) => void;
 
-    /**
-     * Callback when the select option changes
-     */
-    onOptionChange?: (option: string) => void;
+  /**
+   * Callback when the select option changes
+   */
+  onOptionChange?: (option: string) => void;
 
-    /**
-     * Callback when search is submitted (Enter key or submit button)
-     */
-    onSubmit: (value: ScopedSearchInputValue) => void;
+  /**
+   * Callback when search is submitted (Enter key or submit button)
+   */
+  onSubmit: (value: ScopedSearchInputValue) => void;
 
-    /**
-     * Callback when reset/clear is triggered
-     */
-    onReset?: () => void;
+  /**
+   * Callback when reset/clear is triggered
+   */
+  onReset?: () => void;
 
-    /**
-     * Options for the select dropdown
-     */
-    options: ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[];
+  /**
+   * Options for the select dropdown
+   */
+  options: ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[];
 
-    /**
-     * Placeholder text for the select dropdown
-     */
-    selectPlaceholder?: string;
+  /**
+   * Placeholder text for the select dropdown
+   */
+  selectPlaceholder?: string;
 
-    /**
-     * Placeholder text for the search input
-     */
-    searchPlaceholder?: string;
+  /**
+   * Placeholder text for the search input
+   */
+  searchPlaceholder?: string;
 
-    /**
-     * Accessible label for the select dropdown
-     */
-    selectAriaLabel?: string;
+  /**
+   * Accessible label for the select dropdown
+   */
+  selectAriaLabel?: string;
 
-    /**
-     * Accessible label for the search input
-     */
-    searchAriaLabel?: string;
+  /**
+   * Accessible label for the search input
+   */
+  searchAriaLabel?: string;
 
-    /**
-     * Whether to show the clear button in the search input
-     * @default true
-     */
-    isClearable?: boolean;
+  /**
+   * Whether to show the clear button in the search input
+   * @default true
+   */
+  isClearable?: boolean;
 
-    /**
-     * Whether the component is disabled
-     * @default false
-     */
-    isDisabled?: boolean;
+  /**
+   * Whether the component is disabled
+   * @default false
+   */
+  isDisabled?: boolean;
 
-    /**
-     * Whether the component is read-only
-     * @default false
-     */
-    isReadOnly?: boolean;
+  /**
+   * Whether the component is read-only
+   * @default false
+   */
+  isReadOnly?: boolean;
 
-    /**
-     * Whether the component is in an invalid state
-     * @default false
-     */
-    isInvalid?: boolean;
+  /**
+   * Whether the component is in an invalid state
+   * @default false
+   */
+  isInvalid?: boolean;
 
-    /**
-     * Whether the component is required
-     * @default false
-     */
-    isRequired?: boolean;
+  /**
+   * Whether the component is required
+   * @default false
+   */
+  isRequired?: boolean;
 
-    /**
-     * ID for the component (used for ARIA relationships)
-     */
-    id?: string;
+  /**
+   * ID for the component (used for ARIA relationships)
+   */
+  id?: string;
 
-    /**
-     * ID of element describing the component
-     */
-    "aria-describedby"?: string;
+  /**
+   * ID of element describing the component
+   */
+  "aria-describedby"?: string;
 
-    /**
-     * ID of element labeling the component
-     */
-    "aria-labelledby"?: string;
-  };
+  /**
+   * ID of element labeling the component
+   */
+  "aria-labelledby"?: string;
+};
