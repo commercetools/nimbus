@@ -4,12 +4,24 @@ import type {
   MenuProps as RaMenuProps,
 } from "react-aria-components";
 import type { ButtonProps } from "../button";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+type SplitButtonRecipeProps = SlotRecipeProps<"splitButton">;
+
+export type SplitButtonRootSlotProps = HTMLChakraProps<
+  "div",
+  SplitButtonRecipeProps
+>;
+
+export type SplitButtonButtonGroupSlotProps = HTMLChakraProps<"div">;
+
+export type SplitButtonPrimaryButtonSlotProps = HTMLChakraProps<"button">;
+
+export type SplitButtonTriggerSlotProps = HTMLChakraProps<"button">;
 
 // Main component props
-export type SplitButtonProps = Pick<
-  ButtonProps,
-  "size" | "tone" | "variant" | "isDisabled"
-> &
+export type SplitButtonProps = SplitButtonRecipeProps &
+  Pick<ButtonProps, "size" | "tone" | "variant" | "isDisabled"> &
   Omit<RaMenuTriggerProps, "trigger" | "children"> &
   Required<Pick<RaMenuProps<object>, "onAction">> & {
     /**
