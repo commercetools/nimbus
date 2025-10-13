@@ -11,7 +11,10 @@ import type {
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-type DatePickerRecipeProps = SlotRecipeProps<"datePicker"> & UnstyledProp;
+type DatePickerRecipeProps = {
+  size?: SlotRecipeProps<"datePicker">["size"];
+  variant?: SlotRecipeProps<"datePicker">["variant"];
+} & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.

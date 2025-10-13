@@ -4,7 +4,10 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-export type FormFieldRecipeProps = SlotRecipeProps<"formField">;
+export type FormFieldRecipeProps = {
+  size?: SlotRecipeProps<"formField">["size"];
+  direction?: SlotRecipeProps<"formField">["direction"];
+};
 
 export type FormFieldRootSlotProps = HTMLChakraProps<
   "div",

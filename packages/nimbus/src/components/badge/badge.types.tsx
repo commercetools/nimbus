@@ -8,7 +8,9 @@ import type {
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the span element.
  */
-export type BadgeRecipeProps = RecipeProps<"badge"> & UnstyledProp;
+export type BadgeRecipeProps = {
+  size?: RecipeProps<"badge">["size"];
+} & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.

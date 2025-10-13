@@ -9,7 +9,10 @@ import type { AriaLinkOptions } from "react-aria";
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the a element.
  */
-type LinkRecipeProps = RecipeProps<"link"> & UnstyledProp;
+type LinkRecipeProps = {
+  size?: RecipeProps<"link">["size"];
+  fontColor?: RecipeProps<"link">["fontColor"];
+} & UnstyledProp;
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
  * This creates a complete set of props for the root element, combining

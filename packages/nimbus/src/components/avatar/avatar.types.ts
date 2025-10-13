@@ -5,7 +5,9 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-type AvatarRecipeProps = RecipeProps<"avatar"> & UnstyledProp;
+type AvatarRecipeProps = {
+  size?: RecipeProps<"avatar">["size"];
+} & UnstyledProp;
 
 export type AvatarRootProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 

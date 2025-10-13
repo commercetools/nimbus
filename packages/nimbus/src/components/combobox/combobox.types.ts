@@ -13,7 +13,11 @@ import type {
 } from "react-aria-components";
 import type React from "react";
 
-type ComboBoxRecipeVariantProps = SlotRecipeProps<"combobox">;
+type ComboBoxRecipeVariantProps = {
+  size?: SlotRecipeProps<"combobox">["size"];
+  variant?: SlotRecipeProps<"combobox">["variant"];
+  selectionMode?: SlotRecipeProps<"combobox">["selectionMode"];
+};
 
 // ============================================================
 // Root Component (`<ComboBox.Root>`)

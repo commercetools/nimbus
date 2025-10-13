@@ -2,7 +2,10 @@ import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
 
-type AlertRecipeProps = SlotRecipeProps<"alert">;
+type AlertRecipeProps = {
+  tone?: SlotRecipeProps<"alert">["tone"];
+  variant?: SlotRecipeProps<"alert">["variant"];
+};
 
 // ============================================================
 // Root Component (`<Alert>`)

@@ -10,7 +10,10 @@ import type { DateFieldProps } from "react-aria-components";
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-type DateInputRecipeProps = SlotRecipeProps<"dateInput"> & UnstyledProp;
+type DateInputRecipeProps = {
+  size?: SlotRecipeProps<"dateInput">["size"];
+  variant?: SlotRecipeProps<"dateInput">["variant"];
+} & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.

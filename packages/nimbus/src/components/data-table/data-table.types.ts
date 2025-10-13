@@ -18,11 +18,10 @@ import type {
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-type DataTableSlotRecipeProps = SlotRecipeProps<"datatable"> &
-  UnstyledProp & {
-    truncated?: boolean;
-    density?: "default" | "condensed";
-  };
+type DataTableSlotRecipeProps = {
+  truncated?: SlotRecipeProps<"dataTable">["truncated"];
+  density?: SlotRecipeProps<"dataTable">["density"];
+} & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
@@ -131,26 +130,12 @@ export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
 
 export type DataTableDensity = "default" | "condensed";
 
-type DataTableRecipeVariantProps = {
-  /**
-   * Truncated variant
-   * @default false
-   */
-  truncated?: boolean;
-  /**
-   * Density variant
-   * @default "default"
-   */
-  density?: "default" | "condensed";
-};
-
 /**
  * Combines the root props with Chakra UI's recipe variant props.
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
-  DataTableRecipeVariantProps;
+type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data">;
 
 /**
  * Main props interface for the DataTable component.

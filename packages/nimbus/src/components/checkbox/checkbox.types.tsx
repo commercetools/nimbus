@@ -2,7 +2,9 @@ import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 
-type CheckboxRecipeProps = SlotRecipeProps<"checkbox">;
+type CheckboxRecipeProps = {
+  size?: SlotRecipeProps<"checkbox">["size"];
+};
 
 export type CheckboxRootProps = Omit<
   HTMLChakraProps<"label", CheckboxRecipeProps>,

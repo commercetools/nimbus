@@ -2,10 +2,9 @@ import type { DateValue } from "@internationalized/date";
 import type { CalendarProps as AriaCalendarProps } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-export type CalendarRootSlotProps = HTMLChakraProps<
-  "div",
-  SlotRecipeProps<"calendar">
->;
+type CalendarRecipeProps = SlotRecipeProps<"calendar">;
+
+export type CalendarRootSlotProps = HTMLChakraProps<"div", CalendarRecipeProps>;
 
 export type CalendarHeaderSlotProps = HTMLChakraProps<"div">;
 export type CalendarGridsSlotProps = HTMLChakraProps<"div">;

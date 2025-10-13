@@ -8,7 +8,10 @@ import type {
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-type LoadingSpinnerRecipeProps = RecipeProps<"loadingSpinner"> & UnstyledProp;
+type LoadingSpinnerRecipeProps = {
+  size?: RecipeProps<"loadingSpinner">["size"];
+  tone?: RecipeProps<"loadingSpinner">["tone"];
+} & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.

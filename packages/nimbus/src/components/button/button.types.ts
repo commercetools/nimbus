@@ -9,7 +9,11 @@ import type {
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the button element.
  */
-type ButtonRecipeProps = RecipeProps<"button"> & UnstyledProp;
+type ButtonRecipeProps = {
+  size?: RecipeProps<"button">["size"];
+  variant?: RecipeProps<"button">["variant"];
+  tone?: RecipeProps<"button">["tone"];
+} & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.

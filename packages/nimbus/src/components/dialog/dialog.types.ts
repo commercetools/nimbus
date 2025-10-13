@@ -4,7 +4,10 @@ import { type ModalOverlayProps } from "react-aria-components";
 import type { IconButtonProps } from "../icon-button";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-type DialogRecipeProps = SlotRecipeProps<"dialog">;
+type DialogRecipeProps = {
+  placement?: SlotRecipeProps<"dialog">["placement"];
+  scrollBehavior?: SlotRecipeProps<"dialog">["scrollBehavior"];
+};
 
 export type DialogRootSlotProps = HTMLChakraProps<"div", DialogRecipeProps>;
 

@@ -4,7 +4,11 @@ import type { ToggleButtonProps as AriaToggleButtonProps } from "react-aria-comp
 /**
  * Base recipe props interface.
  */
-export type ToggleButtonRecipeProps = RecipeProps<"toggleButton">;
+export type ToggleButtonRecipeProps = {
+  size?: RecipeProps<"toggleButton">["size"];
+  variant?: RecipeProps<"toggleButton">["variant"];
+  tone?: RecipeProps<"toggleButton">["tone"];
+};
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
