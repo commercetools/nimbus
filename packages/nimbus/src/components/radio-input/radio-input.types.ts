@@ -4,23 +4,24 @@ import type {
   RadioProps as RaRadioProps,
 } from "react-aria-components";
 
-type RadioGroupProps = Omit<RaRadioGroupProps, "children"> & {
+type RadioGroupProps = Omit<RaRadioGroupProps, "children" | "orientation"> & {
   children?: React.ReactNode;
 };
 
-type RadioInputRecipeVariantProps = {
-  /**
-   * Orientation variant
-   * @default "vertical"
-   */
-  orientation?: "horizontal" | "vertical";
+type RadioInputRecipeProps = {
+  orientation?: RecipeProps<"radioInput">["orientation"];
 };
 
-export type RadioInputRootSlotProps = HTMLChakraProps<"div">;
+export type RadioInputRootSlotProps = HTMLChakraProps<
+  "div",
+  RadioInputRecipeProps
+>;
 
-export type RadioInputRootProps = RadioInputRecipeVariantProps &
-  RadioGroupProps &
-  Omit<RadioInputRootSlotProps, keyof RadioGroupProps>;
+export type RadioInputRootProps = Omit<
+  RadioInputRootSlotProps,
+  keyof RadioGroupProps
+> &
+  RadioGroupProps;
 
 export type RadioInputOptionSlotProps = HTMLChakraProps<
   "span",
