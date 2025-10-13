@@ -308,14 +308,23 @@ capabilities.
 
 ### Testing Strategy
 
-The testing system uses Vitest with Storybook integration and browser-based
-testing:
+The testing system uses Vitest with two distinct test types:
 
-- Stories serve as both documentation AND tests via play functions
+**Component Testing (Storybook stories with play functions):**
+
+- Stories serve as both maintainer documentation AND tests via play functions
 - Browser testing runs in headless Chromium with Playwright
-- Component tests are story-based, not unit tests
+- **ALL component behavior, interactions, and visual states are tested in
+  Storybook**
 - **Critical**: Interactive components MUST have play functions that test user
   interactions
+
+**Unit Testing (utilities and hooks only):**
+
+- Fast JSDOM-based tests for utilities, hooks, and non-component logic
+- All component testing happens in Storybook stories with play functions
+- Unit tests focus exclusively on pure functions, custom hooks, and business
+  logic
 
 ### Build Dependencies
 

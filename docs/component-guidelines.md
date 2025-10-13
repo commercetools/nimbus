@@ -27,13 +27,16 @@ detailed guidelines:
 - **[Type Definitions ({component}.types.ts)](./file-type-guidelines/types.md)** -
   TypeScript interfaces and props
 - **[Stories ({component}.stories.tsx)](./file-type-guidelines/stories.md)** -
-  Storybook stories and interaction tests
-- **[Unit Tests ({component}.test.tsx)](./file-type-guidelines/unit-testing.md)** -
-  Fast, isolated tests for component behavior
+  Storybook stories and interaction tests (required for all components)
 - **[Documentation ({component}.mdx)](./file-type-guidelines/documentation.md)** -
   Component documentation
 - **[i18n ({component}.i18n.ts)](./file-type-guidelines/i18n.md)** -
   Internationalization and translations (when needed)
+
+### Testing Files
+
+- **[Unit Tests ({utility}.test.ts)](./file-type-guidelines/unit-testing.md)** -
+  Fast, isolated tests for utilities and hooks only (components use Storybook stories)
 
 ### Styling System Files (When Needed)
 
@@ -75,11 +78,12 @@ detailed guidelines:
 6. **[Create Slots](./file-type-guidelines/slots.md)** - Add slot components if
    needed
 7. **[Write Stories](./file-type-guidelines/stories.md)** - Add Storybook
-   stories with tests
-8. **[Write Unit Tests](./file-type-guidelines/unit-testing.md)** - Add fast JSDOM-based tests
-9. **[Document](./file-type-guidelines/documentation.md)** - Create MDX
+   stories with play functions for testing
+8. **[Document](./file-type-guidelines/documentation.md)** - Create MDX
    documentation
-10. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
+9. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
+
+**Note**: All component behavior is tested in Storybook stories with play functions. Unit tests are reserved for utilities and hooks only.
 
 ### 🎨 Adding Styling to Components
 

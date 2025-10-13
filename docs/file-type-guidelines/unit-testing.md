@@ -5,32 +5,34 @@
 
 ## Purpose
 
-Unit test files (`{component-name}.test.tsx` or `{utility-name}.test.ts`) provide fast, isolated testing of component behavior and utility functions using JSDOM. Unit tests complement Storybook interaction tests by focusing on implementation details, edge cases, and non-visual behavior.
+Unit test files (`{utility-name}.test.ts` or `{hook-name}.test.ts`) provide fast, isolated testing of **utility functions and React hooks** using JSDOM. Unit tests are exclusively for non-component logic.
+
+**IMPORTANT**: All component behavior, interactions, and visual states are tested in Storybook stories with play functions. Unit tests are reserved for utilities and hooks only.
 
 ## When to Use
 
-### Create Unit Tests When:
+Unit tests are exclusively for non-component code:
 
-- Testing **implementation details** not visible in Storybook
-- Verifying **accessibility attributes** (ARIA, data attributes)
-- Testing **edge cases and error conditions**
-- Testing **utility functions and helpers**
-- Testing **React hooks** in isolation
-- Testing **conditional rendering logic**
-- Testing **prop combinations** efficiently
+- **Utility functions and helpers** - Pure functions, formatters, validators, data transformers
+- **React hooks** - Custom hooks tested in isolation with `renderHook`
+- **Business logic** - Calculations, algorithms, data processing
+- **Validation functions** - Input validators, schema validators
+- **Helper modules** - String manipulation, date formatting, number formatting
+
+**For components**: Use Storybook stories with play functions to test all component behavior, interactions, visual states, and accessibility.
 
 ### Unit Tests vs Storybook Tests
 
 | Aspect | Unit Tests | Storybook Tests |
 |--------|------------|-----------------|
-| **Environment** | JSDOM (fast, simulated) | Real browser (slow, accurate) |
-| **Purpose** | Implementation verification | Visual behavior & interactions |
+| **Environment** | JSDOM (fast, simulated) | Real browser (accurate) |
+| **Purpose** | Utility/hook logic verification | Component behavior & interactions |
 | **Speed** | Very fast (~ms per test) | Slower (~seconds per story) |
-| **Focus** | Props, state, logic | UI, user flows, visual states |
-| **Coverage** | Edge cases, error handling | Happy paths, user scenarios |
-| **Required** | For complex components | For ALL interactive components |
+| **Focus** | Pure functions, hooks | UI, user flows, visual states, a11y |
+| **Use For** | Utilities, hooks only | ALL components |
+| **Required** | Only for utilities/hooks | For ALL interactive components |
 
-**Best Practice**: Write both unit tests and Storybook tests. They serve different purposes and complement each other.
+**Testing Strategy**: Components are testable in JSDOM (for consumers using JSDOM), but Nimbus tests all component behavior exclusively in Storybook stories with play functions.
 
 ## Testing Infrastructure
 
@@ -110,40 +112,85 @@ export default defineConfig({
 
 ## File Structure
 
-### Basic Test File
+### Basic Test File for Utility Functions
 
 ```typescript
-// component-name.test.tsx
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, userEvent } from "@/test/utils";
-import { ComponentName } from "./component-name";
+// format-currency.test.ts
+import { describe, it, expect } from "vitest";
+import { formatCurrency } from "./format-currency";
 
-describe("ComponentName", () => {
-  describe("Base behavior", () => {
-    it("renders with children", () => {
-      render(<ComponentName>Test content</ComponentName>);
+describe("formatCurrency", () => {
+  describe("USD formatting", () => {
+    it("formats whole numbers", () => {
+      expect(formatCurrency(1000, "USD")).toBe("$1,000.00");
+    });
 
-      expect(screen.getByText("Test content")).toBeInTheDocument();
+    it("formats decimals", () => {
+      expect(formatCurrency(1234.56, "USD")).toBe("$1,234.56");
+    });
+
+    it("handles negative values", () => {
+      expect(formatCurrency(-500, "USD")).toBe("-$500.00");
     });
   });
 
-  describe("Props", () => {
-    it("forwards data attributes", () => {
-      render(<ComponentName data-testid="test">Content</ComponentName>);
+  describe("Edge cases", () => {
+    it("handles zero", () => {
+      expect(formatCurrency(0, "USD")).toBe("$0.00");
+    });
 
-      const element = screen.getByTestId("test");
-      expect(element).toHaveAttribute("data-testid", "test");
+    it("handles very large numbers", () => {
+      expect(formatCurrency(1000000000, "USD")).toBe("$1,000,000,000.00");
+    });
+  });
+});
+```
+
+### Basic Test File for React Hooks
+
+```typescript
+// use-pagination.test.ts
+import { describe, it, expect } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { usePagination } from "./use-pagination";
+
+describe("usePagination", () => {
+  describe("Initialization", () => {
+    it("starts at page 1 by default", () => {
+      const { result } = renderHook(() => usePagination({ totalPages: 10 }));
+
+      expect(result.current.currentPage).toBe(1);
+    });
+
+    it("respects defaultPage option", () => {
+      const { result } = renderHook(() =>
+        usePagination({ totalPages: 10, defaultPage: 5 })
+      );
+
+      expect(result.current.currentPage).toBe(5);
     });
   });
 
-  describe("Interactions", () => {
-    it("handles click events", async () => {
-      const onPress = vi.fn();
-      render(<ComponentName onPress={onPress}>Click me</ComponentName>);
+  describe("Navigation", () => {
+    it("navigates to next page", () => {
+      const { result } = renderHook(() => usePagination({ totalPages: 10 }));
 
-      await userEvent.click(screen.getByRole("button"));
+      act(() => {
+        result.current.goToNext();
+      });
 
-      expect(onPress).toHaveBeenCalledTimes(1);
+      expect(result.current.currentPage).toBe(2);
+    });
+
+    it("does not go beyond last page", () => {
+      const { result } = renderHook(() => usePagination({ totalPages: 10 }));
+
+      act(() => {
+        result.current.goToPage(10);
+        result.current.goToNext();
+      });
+
+      expect(result.current.currentPage).toBe(10);
     });
   });
 });
@@ -156,336 +203,335 @@ describe("ComponentName", () => {
 Use nested `describe` blocks to organize tests by feature area:
 
 ```typescript
-describe("Button", () => {
-  describe("Base", () => {
-    // Basic rendering and element tests
+describe("formatDate", () => {
+  describe("ISO format", () => {
+    // ISO date formatting tests
   });
 
-  describe("Disabled", () => {
-    // Disabled state tests
+  describe("Locale-specific", () => {
+    // Locale formatting tests
   });
 
-  describe("AsLink", () => {
-    // Polymorphic component tests
+  describe("Edge cases", () => {
+    // Invalid dates, null handling
+  });
+});
+
+describe("useDebounce", () => {
+  describe("Basic functionality", () => {
+    // Standard debounce behavior
   });
 
-  describe("WithRef", () => {
-    // Ref forwarding tests
+  describe("Cleanup", () => {
+    // Unmount and cleanup tests
+  });
+
+  describe("Edge cases", () => {
+    // Rapid updates, zero delay
   });
 });
 ```
 
 ### Test Utilities
 
-Import from the centralized test utilities module:
+For hook testing, use React Testing Library's `renderHook`:
 
 ```typescript
-import { render, screen, userEvent, waitFor, within } from "@/test/utils";
+import { renderHook, act, waitFor } from "@testing-library/react";
 ```
 
 **Key utilities**:
 
-- `render` - Automatically wraps components with `NimbusProvider`
-- `renderWithoutProvider` - Original RTL render without provider
-- `screen` - Query the entire document
-- `userEvent` - Simulate user interactions (preferred over fireEvent)
+- `renderHook` - Renders a hook in a test component
+- `act` - Wraps state updates for proper React lifecycle
 - `waitFor` - Wait for async operations
-- `within` - Query within a specific element
-
-### Custom Render Function
-
-The custom `render` function automatically wraps components with `NimbusProvider`:
-
-```typescript
-// src/test/utils.tsx
-const renderWithProvider = (ui: ReactNode, options?: RenderOptions) => {
-  return rtlRender(<NimbusProvider>{ui}</NimbusProvider>, options);
-};
-
-export { renderWithProvider as render };
-```
+- `cleanup` - Automatically called after each test
 
 **Usage**:
 
 ```typescript
-// ✅ Automatically includes NimbusProvider
-render(<Button>Click me</Button>);
+// ✅ Basic hook testing
+const { result } = renderHook(() => useCustomHook());
+expect(result.current.value).toBe(expectedValue);
 
-// ✅ Use renderWithoutProvider if NimbusProvider is not needed
-import { renderWithoutProvider } from "@/test/utils";
-renderWithoutProvider(<PureComponent />);
+// ✅ Hook with state updates
+const { result } = renderHook(() => useCounter());
+act(() => {
+  result.current.increment();
+});
+expect(result.current.count).toBe(1);
+
+// ✅ Async hook testing
+const { result } = renderHook(() => useFetchData());
+await waitFor(() => {
+  expect(result.current.isLoading).toBe(false);
+});
 ```
 
 ## Common Test Patterns
 
-### Testing Component Rendering
+### Testing Pure Utility Functions
 
 ```typescript
-describe("Base rendering", () => {
-  it("uses correct HTML element", () => {
-    render(<Button data-testid="btn">Click me</Button>);
+// format-price.test.ts
+import { describe, it, expect } from "vitest";
+import { formatPrice } from "./format-price";
 
-    const button = screen.getByTestId("btn");
-    expect(button.tagName).toBe("BUTTON");
+describe("formatPrice", () => {
+  it("formats positive numbers", () => {
+    expect(formatPrice(1234.56)).toBe("$1,234.56");
   });
 
-  it("renders children", () => {
-    render(<Button>Click me</Button>);
+  it("formats negative numbers", () => {
+    expect(formatPrice(-1234.56)).toBe("-$1,234.56");
+  });
 
-    expect(screen.getByText("Click me")).toBeInTheDocument();
+  it("handles zero", () => {
+    expect(formatPrice(0)).toBe("$0.00");
+  });
+
+  it("rounds to two decimals", () => {
+    expect(formatPrice(1234.567)).toBe("$1,234.57");
   });
 });
 ```
 
-### Testing Props and Attributes
+### Testing Functions with Side Effects
 
 ```typescript
-describe("Props", () => {
-  it("forwards data attributes", () => {
-    render(<Button data-testid="test" data-custom="value">Button</Button>);
+// logger.test.ts
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { logError } from "./logger";
 
-    const button = screen.getByTestId("test");
-    expect(button).toHaveAttribute("data-custom", "value");
+describe("logError", () => {
+  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  it("forwards ARIA attributes", () => {
-    render(<Button aria-label="Close dialog">X</Button>);
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
+  });
 
-    const button = screen.getByRole("button");
-    expect(button).toHaveAttribute("aria-label", "Close dialog");
+  it("logs error message", () => {
+    logError("Test error");
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Test error");
+  });
+
+  it("logs error with context", () => {
+    logError("Test error", { userId: "123" });
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Test error", {
+      userId: "123",
+    });
   });
 });
 ```
 
-### Testing Interactions
+### Testing React Hooks - State Management
 
 ```typescript
-describe("Interactions", () => {
-  it("handles click events", async () => {
-    const onPress = vi.fn();
-    render(<Button onPress={onPress}>Click me</Button>);
+// use-toggle.test.ts
+import { describe, it, expect } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useToggle } from "./use-toggle";
 
-    const button = screen.getByRole("button");
-    await userEvent.click(button);
+describe("useToggle", () => {
+  it("initializes with false by default", () => {
+    const { result } = renderHook(() => useToggle());
 
-    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(result.current.value).toBe(false);
   });
 
-  it("supports keyboard navigation", async () => {
-    render(<Button>Press me</Button>);
+  it("initializes with provided value", () => {
+    const { result } = renderHook(() => useToggle(true));
 
-    await userEvent.tab();
-
-    const button = screen.getByRole("button");
-    expect(button).toHaveFocus();
+    expect(result.current.value).toBe(true);
   });
 
-  it("activates with Enter key", async () => {
-    const onPress = vi.fn();
-    render(<Button onPress={onPress}>Press Enter</Button>);
+  it("toggles value", () => {
+    const { result } = renderHook(() => useToggle());
 
-    await userEvent.tab();
-    await userEvent.keyboard("{Enter}");
+    act(() => {
+      result.current.toggle();
+    });
 
-    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(result.current.value).toBe(true);
+
+    act(() => {
+      result.current.toggle();
+    });
+
+    expect(result.current.value).toBe(false);
   });
 
-  it("activates with Space key", async () => {
-    const onPress = vi.fn();
-    render(<Button onPress={onPress}>Press Space</Button>);
+  it("sets value directly", () => {
+    const { result } = renderHook(() => useToggle());
 
-    await userEvent.tab();
-    await userEvent.keyboard(" ");
+    act(() => {
+      result.current.setValue(true);
+    });
 
-    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(result.current.value).toBe(true);
   });
 });
 ```
 
-### Testing Disabled State
+### Testing React Hooks - Side Effects
 
 ```typescript
-describe("Disabled", () => {
-  it("prevents click events", async () => {
-    const onPress = vi.fn();
-    render(<Button isDisabled onPress={onPress}>Disabled</Button>);
+// use-local-storage.test.ts
+import { describe, it, expect, beforeEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useLocalStorage } from "./use-local-storage";
 
-    const button = screen.getByRole("button");
-    await userEvent.click(button);
-
-    expect(onPress).not.toHaveBeenCalled();
+describe("useLocalStorage", () => {
+  beforeEach(() => {
+    localStorage.clear();
   });
 
-  it("prevents focus", async () => {
-    render(<Button isDisabled>Disabled</Button>);
+  it("reads initial value from localStorage", () => {
+    localStorage.setItem("test-key", JSON.stringify("stored-value"));
 
-    await userEvent.tab();
+    const { result } = renderHook(() => useLocalStorage("test-key", "default"));
 
-    const button = screen.getByRole("button");
-    expect(button).not.toHaveFocus();
+    expect(result.current[0]).toBe("stored-value");
   });
 
-  it("sets accessibility attributes", () => {
-    render(<Button isDisabled data-testid="btn">Disabled</Button>);
-
-    const button = screen.getByTestId("btn");
-    expect(button).toHaveAttribute("aria-disabled", "true");
-    expect(button).toHaveAttribute("data-disabled", "true");
-  });
-});
-```
-
-### Testing Polymorphic Components
-
-```typescript
-describe("AsLink", () => {
-  it("renders as anchor element", () => {
-    render(
-      <Button as="a" href="/" data-testid="link">
-        Link Button
-      </Button>
+  it("uses default value when key not found", () => {
+    const { result } = renderHook(() =>
+      useLocalStorage("test-key", "default-value")
     );
 
-    const link = screen.getByTestId("link");
-    expect(link.tagName).toBe("A");
+    expect(result.current[0]).toBe("default-value");
   });
-});
 
-describe("WithAsChild", () => {
-  it("renders custom child element", () => {
-    render(
-      <Button asChild data-testid="custom">
-        <a href="/">Custom Link</a>
-      </Button>
-    );
+  it("updates localStorage when value changes", () => {
+    const { result } = renderHook(() => useLocalStorage("test-key", "initial"));
 
-    const link = screen.getByTestId("custom");
-    expect(link.tagName).toBe("A");
+    act(() => {
+      result.current[1]("updated");
+    });
+
+    expect(localStorage.getItem("test-key")).toBe(JSON.stringify("updated"));
   });
 });
 ```
 
-### Testing Ref Forwarding
+### Testing React Hooks - Cleanup
 
 ```typescript
-import { createRef } from "react";
+// use-interval.test.ts
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useInterval } from "./use-interval";
 
-describe("WithRef", () => {
-  it("forwards ref to underlying element", () => {
-    const ref = createRef<HTMLButtonElement>();
+describe("useInterval", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
 
-    render(<Button ref={ref}>Button</Button>);
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
-    const button = screen.getByRole("button");
-    expect(ref.current).toBe(button);
+  it("calls callback at specified interval", () => {
+    const callback = vi.fn();
+    renderHook(() => useInterval(callback, 1000));
+
+    expect(callback).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(2);
+  });
+
+  it("cleans up interval on unmount", () => {
+    const callback = vi.fn();
+    const { unmount } = renderHook(() => useInterval(callback, 1000));
+
+    vi.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    unmount();
+
+    vi.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(1); // Not called again after unmount
   });
 });
 ```
 
-### Testing Utility Functions
+### Testing Validation Functions
 
 ```typescript
-// noop.test.ts
-import { describe, it, expect, vi } from "vitest";
-import { noop } from "./noop";
+// validate-email.test.ts
+import { describe, it, expect } from "vitest";
+import { validateEmail } from "./validate-email";
 
-describe("noop", () => {
-  it("is a function", () => {
-    expect(typeof noop).toBe("function");
+describe("validateEmail", () => {
+  it("accepts valid email addresses", () => {
+    expect(validateEmail("user@example.com")).toBe(true);
+    expect(validateEmail("first.last@domain.co.uk")).toBe(true);
+    expect(validateEmail("user+tag@example.com")).toBe(true);
   });
 
-  it("returns undefined", () => {
-    const result = noop();
-    expect(result).toBeUndefined();
+  it("rejects invalid email addresses", () => {
+    expect(validateEmail("")).toBe(false);
+    expect(validateEmail("notanemail")).toBe(false);
+    expect(validateEmail("@example.com")).toBe(false);
+    expect(validateEmail("user@")).toBe(false);
   });
 
-  it("does not throw when called", () => {
-    expect(() => noop()).not.toThrow();
-  });
-
-  it("works as a callback", () => {
-    const mockFn = vi.fn(noop);
-    mockFn();
-    expect(mockFn).toHaveBeenCalledOnce();
+  it("handles edge cases", () => {
+    expect(validateEmail(null as any)).toBe(false);
+    expect(validateEmail(undefined as any)).toBe(false);
   });
 });
 ```
 
-## Querying Elements
-
-### Query Priority
-
-Follow Testing Library's query priority for better accessibility-focused tests:
-
-1. **Accessible queries** (preferred):
-   - `getByRole` - Queries by ARIA role
-   - `getByLabelText` - Queries by label text
-   - `getByPlaceholderText` - Queries by placeholder
-   - `getByText` - Queries by text content
-
-2. **Test ID queries** (fallback):
-   - `getByTestId` - Queries by data-testid attribute
-
-```typescript
-// ✅ Preferred: Query by role
-const button = screen.getByRole("button", { name: "Submit" });
-
-// ✅ Good: Query by label
-const input = screen.getByLabelText("Email address");
-
-// ⚠️ Acceptable fallback: Query by test ID
-const element = screen.getByTestId("custom-element");
-```
-
-### Query Variants
-
-- `getBy*` - Throws if element not found (synchronous)
-- `queryBy*` - Returns null if not found (for asserting non-existence)
-- `findBy*` - Returns Promise, waits for element (async)
-
-```typescript
-// ✅ Assert element exists
-expect(screen.getByRole("button")).toBeInTheDocument();
-
-// ✅ Assert element does not exist
-expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-// ✅ Wait for async element
-const dialog = await screen.findByRole("dialog");
-expect(dialog).toBeInTheDocument();
-```
 
 ## Async Testing
 
 ### When to Use `waitFor`
 
-Use `waitFor` when testing asynchronous behavior:
+Use `waitFor` when testing asynchronous operations in hooks or utilities:
 
 ```typescript
-it("shows loading state then content", async () => {
-  render(<AsyncComponent />);
+// use-fetch-data.test.ts
+it("loads data asynchronously", async () => {
+  const { result } = renderHook(() => useFetchData("/api/data"));
 
-  expect(screen.getByText("Loading...")).toBeInTheDocument();
+  expect(result.current.isLoading).toBe(true);
 
   await waitFor(() => {
-    expect(screen.getByText("Content loaded")).toBeInTheDocument();
+    expect(result.current.isLoading).toBe(false);
   });
+
+  expect(result.current.data).toBeDefined();
 });
 ```
 
-### User Event (Async)
-
-All `userEvent` methods are async and should be awaited:
+### Testing Async Utilities
 
 ```typescript
-// ✅ Correct: await user interactions
-await userEvent.click(button);
-await userEvent.type(input, "text");
-await userEvent.keyboard("{Enter}");
-await userEvent.tab();
+// async-validator.test.ts
+it("validates data asynchronously", async () => {
+  const result = await validateAsync({ email: "test@example.com" });
 
-// ❌ Incorrect: missing await
-userEvent.click(button); // Will cause timing issues
+  expect(result.isValid).toBe(true);
+  expect(result.errors).toHaveLength(0);
+});
+
+it("handles validation errors", async () => {
+  const result = await validateAsync({ email: "invalid" });
+
+  expect(result.isValid).toBe(false);
+  expect(result.errors).toContain("Invalid email format");
+});
 ```
 
 ## Mocking
@@ -495,28 +541,56 @@ userEvent.click(button); // Will cause timing issues
 ```typescript
 import { vi } from "vitest";
 
-it("calls callback when clicked", async () => {
-  const onClick = vi.fn();
-  render(<Button onPress={onClick}>Click me</Button>);
+// Mock callback in utility function
+it("calls callback with processed data", () => {
+  const callback = vi.fn();
+  processData([1, 2, 3], callback);
 
-  await userEvent.click(screen.getByRole("button"));
-
-  expect(onClick).toHaveBeenCalledTimes(1);
+  expect(callback).toHaveBeenCalledTimes(3);
+  expect(callback).toHaveBeenCalledWith(1);
 });
 ```
 
 ### Mocking Modules
 
 ```typescript
-// Mock external module
-vi.mock("./external-module", () => ({
-  externalFunction: vi.fn(() => "mocked value"),
+// Mock external API module
+vi.mock("./api-client", () => ({
+  fetchUser: vi.fn(() => Promise.resolve({ id: "123", name: "Test User" })),
 }));
 
-// Mock specific import
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => vi.fn(),
+// Mock browser APIs
+vi.mock("./browser-storage", () => ({
+  getItem: vi.fn(),
+  setItem: vi.fn(),
 }));
+```
+
+### Mocking Timers
+
+```typescript
+import { vi, beforeEach, afterEach } from "vitest";
+
+describe("debounce", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("delays function execution", () => {
+    const callback = vi.fn();
+    const debounced = debounce(callback, 1000);
+
+    debounced();
+    expect(callback).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+});
 ```
 
 ## Best Practices
@@ -526,87 +600,77 @@ vi.mock("react-router-dom", () => ({
 - **Use descriptive test names** - Test names should clearly state what is being tested
 - **One assertion per test** - Keep tests focused on a single behavior
 - **Arrange-Act-Assert pattern** - Structure tests clearly:
-  1. Arrange: Set up test data and render component
-  2. Act: Perform the action being tested
+  1. Arrange: Set up test data and dependencies
+  2. Act: Execute the function or hook
   3. Assert: Verify the expected outcome
 
 ```typescript
-it("disables button when isDisabled prop is true", () => {
+it("formats currency with proper decimals", () => {
   // Arrange
-  const onPress = vi.fn();
-  render(<Button isDisabled onPress={onPress}>Click me</Button>);
+  const amount = 1234.5;
+  const currency = "USD";
 
   // Act
-  const button = screen.getByRole("button");
-  button.click();
+  const result = formatCurrency(amount, currency);
 
   // Assert
-  expect(onPress).not.toHaveBeenCalled();
+  expect(result).toBe("$1,234.50");
 });
 ```
 
-### Accessibility Testing
+### Testing Pure Functions
 
-- **Test ARIA attributes** - Verify proper aria-* attributes
-- **Test keyboard navigation** - Ensure Tab, Enter, Space work correctly
-- **Test focus management** - Verify focus states and focus trapping
-- **Test screen reader text** - Verify aria-label, aria-describedby
+- **Focus on inputs and outputs** - Pure functions are deterministic
+- **Test edge cases** - Null, undefined, empty values, extremes
+- **Test boundary conditions** - Min/max values, zero, negative numbers
+- **Avoid implementation details** - Test behavior, not how it's implemented
 
 ```typescript
-describe("Accessibility", () => {
-  it("has correct role", () => {
-    render(<Button>Click me</Button>);
-    expect(screen.getByRole("button")).toBeInTheDocument();
+describe("clamp", () => {
+  it("returns value within range", () => {
+    expect(clamp(5, 0, 10)).toBe(5);
   });
 
-  it("supports keyboard activation", async () => {
-    const onPress = vi.fn();
-    render(<Button onPress={onPress}>Press me</Button>);
-
-    await userEvent.tab();
-    await userEvent.keyboard("{Enter}");
-
-    expect(onPress).toHaveBeenCalled();
+  it("clamps to minimum", () => {
+    expect(clamp(-5, 0, 10)).toBe(0);
   });
 
-  it("announces disabled state", () => {
-    render(<Button isDisabled data-testid="btn">Disabled</Button>);
-
-    const button = screen.getByTestId("btn");
-    expect(button).toHaveAttribute("aria-disabled", "true");
+  it("clamps to maximum", () => {
+    expect(clamp(15, 0, 10)).toBe(10);
   });
 });
 ```
 
-### Don't Test Implementation Details
+### Testing Hooks
 
-Focus on behavior, not implementation:
+- **Use renderHook** - Proper React lifecycle handling
+- **Wrap state updates in act** - Ensures proper batching
+- **Test cleanup** - Verify useEffect cleanup functions run
+- **Test dependencies** - Ensure hooks respond to prop/state changes
 
 ```typescript
-// ❌ Avoid: Testing internal state
-expect(component.state.isOpen).toBe(true);
+it("cleans up on unmount", () => {
+  const cleanup = vi.fn();
+  const { unmount } = renderHook(() => useCustomEffect(cleanup));
 
-// ✅ Preferred: Test observable behavior
-expect(screen.getByRole("dialog")).toBeInTheDocument();
+  unmount();
 
-// ❌ Avoid: Testing CSS classes
-expect(button).toHaveClass("button--primary");
-
-// ✅ Preferred: Test visual result via accessibility
-expect(button).toHaveAttribute("data-variant", "primary");
+  expect(cleanup).toHaveBeenCalled();
+});
 ```
 
-### Avoid Snapshots for Components
+### Avoid Snapshots
 
-Snapshot tests are fragile and provide little value for components:
+Snapshot tests are fragile and provide little value:
 
 ```typescript
 // ❌ Avoid: Snapshot testing
-expect(container).toMatchSnapshot();
+expect(result).toMatchSnapshot();
 
 // ✅ Preferred: Specific assertions
-expect(screen.getByRole("button")).toHaveAttribute("type", "button");
-expect(screen.getByText("Click me")).toBeInTheDocument();
+expect(result.status).toBe("success");
+expect(result.data).toHaveLength(3);
+expect(result.errors).toBeUndefined();
 ```
 
 ## Running Tests
@@ -642,44 +706,43 @@ pnpm test src/components/button/button.test.tsx
 
 ## Coverage
 
-### What to Cover
+### Test Coverage Focus
 
-- **Happy path** - Normal usage scenarios
-- **Edge cases** - Boundary conditions, empty states
-- **Error states** - Invalid props, error handling
-- **Accessibility** - ARIA attributes, keyboard navigation
-- **Interactions** - User events, state changes
-- **Variants** - All visual and behavioral variants
+Unit tests should cover these areas for utilities and hooks:
 
-### What NOT to Cover
+- **Happy path** - Normal usage scenarios and expected inputs
+- **Edge cases** - Null, undefined, empty values, boundary conditions
+- **Error states** - Invalid inputs and error handling paths
+- **Async behavior** - Loading states, success cases, and error cases
+- **Side effects** - Cleanup functions, subscriptions, timers
+- **Return values** - All possible return types and states
+- **Hook lifecycle** - Mounting, updating, unmounting behavior
 
-- **Styling** - Visual appearance (use Storybook tests instead)
-- **Third-party libraries** - Assume React Aria, Chakra UI work correctly
-- **TypeScript types** - Type checking happens at compile time
-- **Implementation details** - Internal state, private methods
+**Scope**: Unit tests are for utility functions and React hooks. Component behavior is tested in Storybook stories with play functions.
 
 ## Related Guidelines
 
-- [Stories](./stories.md) - Storybook interaction tests
-- [Main Component](./main-component.md) - Component implementation
-- [Hooks](./hooks.md) - Testing custom hooks
+- [Stories](./stories.md) - Storybook interaction tests for components
+- [Hooks](./hooks.md) - Hook implementation patterns
+- [Utils and Constants](./utils-and-constants.md) - Utility function patterns
 
 ## Validation Checklist
 
-- [ ] Test file exists with `.test.tsx` or `.test.ts` extension
-- [ ] File located alongside component or utility being tested
-- [ ] Imports from `@/test/utils` (includes NimbusProvider)
-- [ ] Uses `describe` blocks to organize tests
+- [ ] Test file exists with `.test.ts` or `.test.tsx` extension
+- [ ] File located alongside utility or hook being tested
+- [ ] **Testing utilities or hooks only** (components use Storybook stories)
+- [ ] Uses `describe` blocks to organize tests by feature area
 - [ ] Test names clearly describe behavior being tested
-- [ ] All user interactions use `userEvent` (not fireEvent)
-- [ ] All `userEvent` calls are awaited
-- [ ] Accessibility attributes tested (ARIA, data-* attributes)
-- [ ] Keyboard navigation tested (Tab, Enter, Space)
-- [ ] Disabled state tested (prevents interaction and focus)
-- [ ] Queries follow accessibility priority (role, label, text)
+- [ ] Uses `renderHook` for testing hooks
+- [ ] State updates wrapped in `act` for hooks
+- [ ] Edge cases covered (null, undefined, empty values)
+- [ ] Error handling tested
+- [ ] Async behavior properly handled with `waitFor`
+- [ ] Cleanup tested for hooks with side effects
 - [ ] Tests focus on behavior, not implementation
-- [ ] No snapshot tests for components
-- [ ] Mocks used appropriately for callbacks and external modules
+- [ ] Uses specific assertions instead of snapshots
+- [ ] Mocks used appropriately for external dependencies
+- [ ] Timers mocked when testing debounce/throttle/intervals
 
 ---
 
