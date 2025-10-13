@@ -1,59 +1,16 @@
-import {
-  type HTMLChakraProps,
-  type RecipeVariantProps,
-  type UnstyledProp,
-  createSlotRecipeContext,
-} from "@chakra-ui/react/styled-system";
-import {
-  Button as RaButton,
-  Input as RaInput,
-  type InputProps as RaInputProps,
-} from "react-aria-components";
-import type { AriaButtonProps } from "react-aria";
-
-import { numberInputRecipe } from "./number-input.recipe";
-
-export interface NumberInputRecipeProps
-  extends RecipeVariantProps<typeof numberInputRecipe>,
-    UnstyledProp {}
-
-export type NumberInputRootSlotProps = HTMLChakraProps<
-  "div",
-  NumberInputRecipeProps
-> & {
-  name?: string;
-};
-
-export type NumberInputLeadingElementSlotProps = HTMLChakraProps<
-  "div",
-  NumberInputRecipeProps
->;
-
-export type NumberInputTrailingElementSlotProps = HTMLChakraProps<
-  "div",
-  NumberInputRecipeProps
->;
-
-export type NumberInputInputSlotProps = HTMLChakraProps<
-  "input",
-  NumberInputRecipeProps
-> &
-  RaInputProps;
-
-export type NumberInputIncrementButtonSlotProps = HTMLChakraProps<
-  "button",
-  NumberInputRecipeProps
-> &
-  AriaButtonProps;
-
-export type NumberInputDecrementButtonSlotProps = HTMLChakraProps<
-  "button",
-  NumberInputRecipeProps
-> &
-  AriaButtonProps;
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import { Button as RaButton, Input as RaInput } from "react-aria-components";
+import type {
+  NumberInputRootSlotProps,
+  NumberInputLeadingElementSlotProps,
+  NumberInputTrailingElementSlotProps,
+  NumberInputInputSlotProps,
+  NumberInputIncrementButtonSlotProps,
+  NumberInputDecrementButtonSlotProps,
+} from "./number-input.types";
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  recipe: numberInputRecipe,
+  key: "numberInput",
 });
 
 /**
