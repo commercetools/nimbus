@@ -1,22 +1,24 @@
-import type { TextInputRootProps } from "./text-input.slots";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextFieldProps } from "react-aria-components";
 
-type TextInputRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
-  /**
-   * Variant variant
-   * @default "solid"
-   */
-  variant?: "solid" | "ghost";
+type TextInputRecipeProps = {
+  size?: SlotRecipeProps<"textInput">["size"];
+  variant?: SlotRecipeProps<"textInput">["variant"];
 };
 
-export type TextInputProps = TextInputRecipeVariantProps &
-  Omit<TextFieldProps, "ref"> &
-  Omit<TextInputRootProps, keyof TextFieldProps | "as" | "asChild"> & {
+export type TextInputRootProps = HTMLChakraProps<"div", TextInputRecipeProps>;
+
+export type TextInputLeadingElementProps = HTMLChakraProps<"div">;
+
+export type TextInputInputProps = HTMLChakraProps<"input">;
+
+export type TextInputTrailingElementProps = HTMLChakraProps<"div">;
+
+export type TextInputProps = Omit<
+  TextInputRootProps,
+  keyof TextFieldProps | "as" | "asChild"
+> &
+  Omit<TextFieldProps, "ref"> & {
     /**
      * React ref to be forwarded to the input element
      */
