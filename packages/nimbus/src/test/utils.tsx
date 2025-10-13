@@ -19,13 +19,12 @@ const renderWithProvider = (
 };
 
 // Re-export everything from @testing-library/react
+// Note: This includes act from @testing-library/react, which is the correct
+// act to use in tests (it wraps React's act with additional testing utilities)
 export * from "@testing-library/react";
 
 // Export userEvent instance
 export const userEvent = baseUserEvent.setup();
-
-// Export act from react
-export { act } from "react";
 
 // Override the default render with our custom renderWithProvider
 // This allows tests to just import { render } from "@/test/utils"
