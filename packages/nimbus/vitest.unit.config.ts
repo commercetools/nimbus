@@ -18,7 +18,7 @@ export default defineConfig(async () => {
         include: ["src/**/*.{test,spec}.{ts,tsx}"],
         exclude: ["src/**/*.stories.{ts,tsx}", "node_modules", "dist"],
         globals: true,
-        setupFiles: ["./src/test-utils/setup.ts"],
+        setupFiles: ["./src/test/unit-test-setup.ts"],
       },
     })
   );
