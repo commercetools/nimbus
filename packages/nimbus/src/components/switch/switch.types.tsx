@@ -1,13 +1,15 @@
-import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaCheckboxProps } from "react-aria";
 
-type SwitchRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
-};
+type SwitchRecipeProps = SlotRecipeProps<"switch">;
+
+export type SwitchRootProps = HTMLChakraProps<"label", SwitchRecipeProps>;
+
+export type SwitchLabelProps = HTMLChakraProps<"span">;
+
+export type SwitchTrackProps = HTMLChakraProps<"span">;
+
+export type SwitchThumbProps = HTMLChakraProps<"span">;
 
 /**
  * List of props that should be excluded from the root props when combining with ARIA props
@@ -21,16 +23,13 @@ export type ExcludedSwitchProps =
   | "validate";
 
 /**
- * Props for the Switch component root element.
- */
-export type SwitchRootProps = HTMLChakraProps<"label">;
-
-/**
  * Main props interface for the Switch component.
  * Combines root element props with ARIA toggle functionality props.
  */
-export type SwitchProps = SwitchRecipeVariantProps &
-  Omit<SwitchRootProps, ExcludedSwitchProps | "onChange"> &
+export type SwitchProps = Omit<
+  SwitchRootProps,
+  ExcludedSwitchProps | "onChange"
+> &
   Omit<AriaCheckboxProps, ExcludedSwitchProps> & {
     /**
      * The content to display next to the switch.
