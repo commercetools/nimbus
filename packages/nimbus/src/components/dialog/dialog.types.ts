@@ -1,5 +1,3 @@
-import { type RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { dialogSlotRecipe } from "./dialog.recipe";
 import { type ModalOverlayProps } from "react-aria-components";
 import type { IconButtonProps } from "../icon-button";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";

@@ -47,11 +47,12 @@ export type SelectRootProps = SelectRootSlotProps &
   };
 
 // Fix the incompatible event handler types by using a more specific type
-export type SelectOptionsProps<T> = RaListBoxProps<T> &
-  Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>>;
+export interface SelectOptionsProps<T>
+  extends RaListBoxProps<T>,
+    Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}
 
-export type SelectOptionProps<T> = Omit<
-  RaListBoxItemProps<T>,
+export type SelectOptionProps = Omit<
+  RaListBoxItemProps,
   | "onClick"
   | "translate"
   | "onBlur"
@@ -61,7 +62,7 @@ export type SelectOptionProps<T> = Omit<
   | "onMouseDown"
   | "onMouseUp"
 > &
-  Omit<SelectOptionSlotProps, keyof RaListBoxItemProps<T>> & {
+  Omit<SelectOptionSlotProps, keyof RaListBoxItemProps> & {
     /**
      * React ref to be forwarded to the option element
      */
