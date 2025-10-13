@@ -3497,20 +3497,17 @@ export const BaseField: Story = {
 };
 
 export const WithErrorsField: Story = {
-  args: {
-    touched: true,
-    errors: { missing: true, format: true },
-    isRequired: true,
-  },
-  render: (args) => {
+  render: () => {
     const [value, setValue] = useState<DateRange | null>(null);
     return (
       <DateRangePickerField
-        {...args}
+        touched={true}
         label="Date Range"
         description="Select a start and end date"
         aria-label="Select a date range"
         value={value}
+        isRequired
+        errors={{ missing: true, format: true }}
         onChange={setValue}
       />
     );
@@ -3556,15 +3553,12 @@ export const WithErrorsField: Story = {
 };
 
 export const WithInfoField: Story = {
-  args: {
-    info: "Date ranges are inclusive of both start and end dates.",
-  },
-  render: (args) => {
+  render: () => {
     const [value, setValue] = useState<DateRange | null>(null);
     return (
       <DateRangePickerField
-        {...args}
         label="Date Range"
+        info="Date ranges are inclusive of both start and end dates."
         description="Select a start and end date"
         aria-label="Select a date range"
         isRequired

@@ -49,7 +49,7 @@ export const DateRangePickerField = forwardRef<
   return (
     <FormField.Root
       id={id}
-      direction={direction}
+      direction={direction as "row" | "column"}
       size={size}
       isInvalid={hasErrors}
       isRequired={isRequired}

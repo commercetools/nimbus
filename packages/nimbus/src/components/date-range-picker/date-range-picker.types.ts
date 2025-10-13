@@ -75,10 +75,7 @@ export interface DateRangePickerTimeInputProps {
  * Combines DateRangePicker functionality with form field features like labels,
  * descriptions, error handling, and validation feedback.
  */
-export type DateRangePickerFieldProps = Omit<
-  DateRangePickerProps,
-  "direction" | "size"
-> & {
+export type DateRangePickerFieldProps = DateRangePickerProps & {
   // Field identification
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.
@@ -134,17 +131,4 @@ export type DateRangePickerFieldProps = Omit<
    * Indicates that the field is displaying read-only content
    */
   isReadOnly?: boolean;
-
-  // Layout
-  /**
-   * Direction of the form field layout
-   * @default "column"
-   */
-  direction?: "row" | "column";
-
-  /**
-   * Size of the form field
-   * @default "md"
-   */
-  size?: "sm" | "md";
 };
