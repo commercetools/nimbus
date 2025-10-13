@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
-
+import { extractStyleProps } from "@/utils/extractStyleProps";
+import { chakra } from "@chakra-ui/react/styled-system";
 import {
   ListBoxSection as RaListBoxSection,
   Header as RaHeader,
@@ -12,6 +13,7 @@ export const SelectOptionGroup = <T extends object>(
   props: SelectOptionGroupProps<T> & { ref?: React.Ref<HTMLDivElement> }
 ) => {
   const { ref, label, items, children, ...restProps } = props;
+  const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   // Validate that children is a function when items is provided
   if (items && typeof children !== "function") {
@@ -21,24 +23,26 @@ export const SelectOptionGroup = <T extends object>(
   }
 
   return (
-    <RaListBoxSection ref={ref} {...restProps}>
-      <SelectOptionGroupSlot asChild>
-        <RaHeader>{label}</RaHeader>
-      </SelectOptionGroupSlot>
+    <chakra.section {...styleProps} asChild>
+      <RaListBoxSection ref={ref} {...functionalProps}>
+        <SelectOptionGroupSlot asChild>
+          <RaHeader>{label}</RaHeader>
+        </SelectOptionGroupSlot>
 
-      {items ? (
-        <Collection items={items}>
-          {(item: T) => {
-            if (typeof children === "function") {
-              return children(item);
-            }
-            return null;
-          }}
-        </Collection>
-      ) : (
-        (children as ReactNode)
-      )}
-    </RaListBoxSection>
+        {items ? (
+          <Collection items={items}>
+            {(item: T) => {
+              if (typeof children === "function") {
+                return children(item);
+              }
+              return null;
+            }}
+          </Collection>
+        ) : (
+          (children as ReactNode)
+        )}
+      </RaListBoxSection>
+    </chakra.section>
   );
 };
 
