@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import type { HTMLChakraProps } from "@chakra-ui/react";
 
+export type FieldErrorsMessageProps = HTMLChakraProps<"div">;
+
 /**
  * Error object type - compatible with UI-Kit FieldErrors
  * Only entries with truthy values will be rendered as errors
