@@ -12,14 +12,16 @@ import {
   type TagProps as RaTagProps,
 } from "react-aria-components";
 
-type TagGroupRecipeVariantProps = SlotRecipeProps<"taggroup">;
+type TagGroupRecipeVariantProps = {
+  size?: SlotRecipeProps<"taggroup">["size"];
+};
 
 // ============================================================
 // Root Component (`<TagGroup.Root>`)
 // ============================================================
 
 /** Base Chakra styling props for the root `div` slot. */
-type TagGroupRootSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+type TagGroupRootSlotProps = HTMLChakraProps<"div", TagGroupRecipeVariantProps>;
 
 /** Combined props for the root element (Chakra styles + Aria behavior). */
 type TagGroupRootProps = TagGroupRootSlotProps & RaTagGroupProps;
