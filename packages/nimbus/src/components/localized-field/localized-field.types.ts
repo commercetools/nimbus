@@ -1,6 +1,35 @@
 import type { ReactNode, FocusEvent } from "react";
-import type { LocalizedFieldRootSlotProps } from "./localized-field.slots";
 import type { TValue, TCustomEvent, TCurrencyCode } from "../money-input";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+type LocalizedFieldRecipeProps = {
+  size?: SlotRecipeProps<"localizedField">["size"];
+  type?: SlotRecipeProps<"localizedField">["type"];
+};
+
+export type LocalizedFieldRootSlotProps = HTMLChakraProps<
+  "fieldset",
+  LocalizedFieldRecipeProps
+>;
+
+export type LocalizedFieldLabelSlotProps = HTMLChakraProps<"label">;
+
+export type LocalizedFieldInfoDialogSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldFieldsContainerSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldDescriptionSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldErrorSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldToggleButtonContainerSlotProps =
+  HTMLChakraProps<"div">;
+
+export type LocalizedFieldLocaleFieldRootSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldLocaleFieldLabelSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldLocaleFieldInputSlotProps = HTMLChakraProps<"div">;
 
 type LocalizedFieldRecipeVariantProps = {
   /** Size variant */
