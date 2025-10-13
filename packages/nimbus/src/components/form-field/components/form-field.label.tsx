@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { FormFieldContext } from "./form-field.context";
-import type { FormFieldLabelSlotProps } from "../form-field.slots";
+import type { FormFieldLabelSlotProps } from "../form-field.types";
 
 export const FormFieldLabel = ({
   children,
