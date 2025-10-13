@@ -13,7 +13,7 @@ import type {
 } from "./data-table.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "datatable",
+  key: "dataTable",
 });
 
 /**
