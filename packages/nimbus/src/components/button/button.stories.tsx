@@ -61,9 +61,6 @@ export const Base: Story = {
       await expect(button).toHaveAttribute("aria-label", "test-button");
     });
 
-    // ATTENTION: react-aria does some complicated science,
-    // if there is a **KEYSTROKE** before the click (like a tab-key aiming to focus the button),
-    // the first click is not counted as a valid click
     await step("Is clickable", async () => {
       button.click();
       await expect(onPress).toHaveBeenCalledTimes(1);

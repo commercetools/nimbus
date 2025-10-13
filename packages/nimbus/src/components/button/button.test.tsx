@@ -44,9 +44,6 @@ describe("Button", () => {
       );
 
       const button = screen.getByTestId("test");
-      // ATTENTION: react-aria does some complicated science,
-      // if there is a **KEYSTROKE** before the click (like a tab-key aiming to focus the button),
-      // the first click is not counted as a valid click
       button.click();
       expect(onPress).toHaveBeenCalledTimes(1);
       button.blur();
