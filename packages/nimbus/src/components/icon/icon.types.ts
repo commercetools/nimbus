@@ -1,29 +1,36 @@
-import type { IconRootSlotProps } from "./icon.slots";
-import type { BoxProps } from "../box";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-type IconRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl";
-};
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the svg element.
+ */
+type IconRecipeProps = RecipeProps<"icon"> & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+
+export type IconRootSlotProps = HTMLChakraProps<"svg", IconRecipeProps>;
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type IconVariantProps = IconRecipeVariantProps &
-  Omit<
-    IconRootSlotProps,
-    | keyof React.SVGProps<SVGSVGElement> // excludes the 3 bazillion possible svg-props from the props-table
-    | "css"
-    | "unstyled"
-    | "asChild"
-    | "recipe"
-    | "size"
-  >;
+type IconVariantProps = Omit<
+  IconRootSlotProps,
+  | keyof React.SVGProps<SVGSVGElement> // excludes the 3 bazillion possible svg-props from the props-table
+  | "css"
+  | "unstyled"
+  | "asChild"
+  | "recipe"
+>;
 
 /**
  * Main props interface for the Icon component.
@@ -39,11 +46,11 @@ export type IconProps = IconVariantProps & {
   /**
    * Colors the icon, accepts a color token from the theme or a custom value
    */
-  color?: BoxProps["color"];
+  color?: IconRootSlotProps["color"];
   /**
    * Accepts a React component to be rendered as the icon .
    */
-  as?: BoxProps["as"];
+  as?: IconRootSlotProps["as"];
   /**
    * Ref to the icon element
    */

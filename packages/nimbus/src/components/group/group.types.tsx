@@ -5,7 +5,7 @@ import {
 } from "react-aria-components";
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
+  RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
 
@@ -13,7 +13,7 @@ import type {
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the div element.
  */
-type GroupRecipeProps = SlotRecipeProps<"group"> & UnstyledProp;
+type GroupRecipeProps = RecipeProps<"group"> & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
