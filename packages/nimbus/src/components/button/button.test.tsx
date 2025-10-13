@@ -34,11 +34,7 @@ describe("Button", () => {
 
   describe("Props", () => {
     it("should accept type prop", () => {
-      render(
-        <Button type="submit" variant="surface">
-          Submit
-        </Button>
-      );
+      render(<Button type="submit">Submit</Button>);
 
       const button = screen.getByRole("button");
       expect(button).toHaveAttribute("type", "submit");
