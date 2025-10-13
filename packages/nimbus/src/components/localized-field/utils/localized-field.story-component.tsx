@@ -33,7 +33,7 @@ type FieldTypeProps = {
 } & FieldDisplayConfig;
 
 // State shape for component
-interface LocalizedFieldStoryComponentProps {
+type LocalizedFieldStoryComponentProps = {
   /** Type of localized field to render, each type should have corresponding config object */
   types: LocalizedFieldTypes[];
   id?: string;
@@ -49,10 +49,10 @@ interface LocalizedFieldStoryComponentProps {
   isRequired?: LocalizedFieldProps["isRequired"];
   isDisabled?: LocalizedFieldProps["isDisabled"];
   isReadOnly?: LocalizedFieldProps["isReadOnly"];
-}
+};
 
 // State shape for the reducer
-interface LocalizedFieldState {
+type LocalizedFieldState = {
   text?: FieldDisplayConfig & { value: LocalizedString } & { touched: boolean };
   multiLine?: FieldDisplayConfig & { value: LocalizedString } & {
     touched: boolean;
@@ -63,7 +63,7 @@ interface LocalizedFieldState {
   money?: FieldDisplayConfig & { value: LocalizedCurrency } & {
     touched: boolean;
   };
-}
+};
 
 // Action types for the reducer
 type LocalizedFieldAction =

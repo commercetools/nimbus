@@ -13,13 +13,14 @@ import {
 
 import { mergeRefs } from "@chakra-ui/react";
 
-export interface MakeElementFocusableProps
-  extends PropsWithChildren<FocusableOptions<HTMLElement>> {
+export type MakeElementFocusableProps = PropsWithChildren<
+  FocusableOptions<HTMLElement>
+> & {
   /**
    * React ref to be forwarded to the underlying element
    */
   ref?: React.Ref<HTMLElement>;
-}
+};
 
 /**
  * MakeElementFocusable

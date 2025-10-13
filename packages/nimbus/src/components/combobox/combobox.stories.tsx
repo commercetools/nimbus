@@ -74,19 +74,19 @@ const sectionedItems = [
 ];
 
 // Type definitions for complex options
-interface PlanOption {
+type PlanOption = {
   uuid: number;
   type: string;
   description: string;
   price: string;
   features: string[];
-}
+};
 
-interface PlanGroup {
+type PlanGroup = {
   name: string;
   id: string;
   children: PlanOption[];
-}
+};
 
 const complexOptionsWithGroups: PlanGroup[] = [
   {

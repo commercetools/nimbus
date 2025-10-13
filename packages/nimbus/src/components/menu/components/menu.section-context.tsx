@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
 
-export interface MenuSectionContextValue {
+export type MenuSectionContextValue = {
   selectionMode?: "single" | "multiple" | "none";
-}
+};
 /**
  * Why is a second context (MenuSectionContext) needed?
  *
