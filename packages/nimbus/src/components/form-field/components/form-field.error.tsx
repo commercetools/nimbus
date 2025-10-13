@@ -9,8 +9,6 @@ export const FormFieldError = ({
   const { setContext } = useContext(FormFieldContext);
 
   useEffect(() => {
-    console.log("Setting error:", children);
-    
     setContext((prevContext) => ({
       ...prevContext,
       error: children,
