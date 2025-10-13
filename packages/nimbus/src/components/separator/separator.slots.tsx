@@ -1,9 +1,7 @@
 import { createRecipeContext } from "@chakra-ui/react";
-
-import { separatorRecipe } from "./separator.recipe";
 import type { SeparatorRootProps } from "./separator.types";
 
-const { withContext } = createRecipeContext({ recipe: separatorRecipe });
+const { withContext } = createRecipeContext({ key: "separator" });
 
 export const SeparatorRoot = withContext<HTMLDivElement, SeparatorRootProps>(
   "div"

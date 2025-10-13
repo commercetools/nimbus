@@ -10,6 +10,7 @@ import { linkRecipe } from "@/components/link/link.recipe";
 import { loadingSpinnerRecipe } from "@/components/loading-spinner/loading-spinner.recipe";
 import { popoverRecipe } from "@/components/popover/popover.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
+import { separatorRecipe } from "@/components/separator/separator.recipe";
 import { toggleButtonRecipe } from "@/components/toggle-button/toggle-button.recipe";
 import { toolbarRecipe } from "@/components/toolbar/toolbar.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
@@ -27,6 +28,7 @@ export const recipes = {
   loadingSpinner: loadingSpinnerRecipe,
   popover: popoverRecipe,
   radioInput: radioInputSlotRecipe,
+  separator: separatorRecipe,
   toggleButton: toggleButtonRecipe,
   toolbar: toolbarRecipe,
   tooltip: tooltipRecipe,
