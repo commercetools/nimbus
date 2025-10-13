@@ -1,23 +1,20 @@
-import type { ToggleButtonRootProps } from "./toggle-button.slots";
+import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import type { ToggleButtonProps as AriaToggleButtonProps } from "react-aria-components";
 
-type ToggleButtonRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "xs" | "md" | "2xs";
-  /**
-   * Variant variant
-   * @default "outline"
-   */
-  variant?: "outline" | "ghost";
-  /**
-   * Tone variant
-   * @default "primary"
-   */
-  tone?: "primary" | "critical" | "neutral" | "info";
-};
+/**
+ * Base recipe props interface.
+ */
+export type ToggleButtonRecipeProps = RecipeProps<"toggleButton">;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+export type ToggleButtonRootProps = HTMLChakraProps<
+  "button",
+  ToggleButtonRecipeProps
+>;
 
 /**
  * Additional properties we want to exclude from the ToggleButton component.
@@ -25,11 +22,13 @@ type ToggleButtonRecipeVariantProps = {
  */
 type ExcludedProps =
   // chakra-ui props we don't want exposed
-  "css" | "colorScheme" | "unstyled" | "recipe" | "as" | "asChild";
+  "css" | "colorScheme" | "recipe" | "as" | "asChild";
 
-export type ToggleButtonProps = ToggleButtonRecipeVariantProps &
-  AriaToggleButtonProps &
-  Omit<ToggleButtonRootProps, keyof AriaToggleButtonProps | ExcludedProps> & {
+export type ToggleButtonProps = Omit<
+  ToggleButtonRootProps,
+  keyof AriaToggleButtonProps | ExcludedProps
+> &
+  AriaToggleButtonProps & {
     /**
      * Ref to the underlying button element
      */
