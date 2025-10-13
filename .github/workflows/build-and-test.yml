@@ -32,5 +32,3 @@ jobs:
       - name: Run tests
         run: pnpm test
         timeout-minutes: 5
-        env:
-          NODE_ENV: production
