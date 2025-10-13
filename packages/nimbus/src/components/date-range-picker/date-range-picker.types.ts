@@ -4,7 +4,8 @@ import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
 import type { DateRangePickerProps as ReactAriaDateRangePickerProps } from "react-aria-components";
 import type { DateValue } from "react-aria";
-import type { TFieldErrors, TErrorRenderer } from "@/components/field-errors";
+
+import type { TFieldErrors } from "../field-errors";
 
 /**
  * Additional properties we want to exclude from the DateRangePicker component.
@@ -74,7 +75,10 @@ export interface DateRangePickerTimeInputProps {
  * Combines DateRangePicker functionality with form field features like labels,
  * descriptions, error handling, and validation feedback.
  */
-export interface DateRangePickerFieldProps extends DateRangePickerProps {
+export type DateRangePickerFieldProps = Omit<
+  DateRangePickerProps,
+  "direction" | "size"
+> & {
   // Field identification
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.
@@ -105,17 +109,11 @@ export interface DateRangePickerFieldProps extends DateRangePickerProps {
 
   // Validation and errors
   /**
-   * A map of errors. Error messages for known errors are rendered automatically.
-   * Unknown errors will be forwarded to `renderError`
+   * Error object - only truthy values will be rendered
+   * Compatible with UI-Kit FieldErrors format
    */
   errors?: TFieldErrors;
-
-  /**
-   * Called with custom errors. This function can return a message which will be wrapped in an ErrorMessage.
-   * It can also return null to show no error.
-   */
-  renderError?: TErrorRenderer;
-
+  renderError?: (errorKey: string) => ReactNode;
   /**
    * Indicates whether the field was touched. Errors will only be shown when the field was touched.
    */
@@ -149,4 +147,4 @@ export interface DateRangePickerFieldProps extends DateRangePickerProps {
    * @default "md"
    */
   size?: "sm" | "md";
-}
+};
