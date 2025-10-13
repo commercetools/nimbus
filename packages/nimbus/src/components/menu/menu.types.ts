@@ -8,14 +8,30 @@ import type {
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import type { MenuTriggerSlotProps } from "./menu.slots";
-import { menuSlotRecipe } from "./menu.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+type MenuRecipeProps = SlotRecipeProps<"menu">;
+
+export type MenuRootSlotProps = HTMLChakraProps<"div", MenuRecipeProps>;
+
+export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
+
+export type MenuPopoverSlotProps = HTMLChakraProps<"div">;
+
+export type MenuContentSlotProps = HTMLChakraProps<"div">;
+
+export type MenuItemSlotProps = HTMLChakraProps<"div">;
+
+export type MenuSectionSlotProps = HTMLChakraProps<"div">;
+
+export type MenuSectionLabelSlotProps = HTMLChakraProps<"div">;
+
+export type MenuSubmenuSlotProps = HTMLChakraProps<"div">;
 
 // Root component that wraps MenuTrigger
 export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
   Omit<RaMenuProps<object>, "children"> &
-  RecipeVariantProps<typeof menuSlotRecipe> & {
+  MenuRootSlotProps & {
     /**
      * The trigger element and menu content
      */
