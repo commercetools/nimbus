@@ -65,6 +65,7 @@
     "@storybook/addon-docs": "catalog:tooling",
     "@storybook/addon-vitest": "catalog:tooling",
     "@storybook/react-vite": "catalog:tooling",
+    "@testing-library/jest-dom": "catalog:tooling",
     "@testing-library/react": "catalog:tooling",
     "@testing-library/user-event": "catalog:tooling",
     "@types/escape-html": "^1.0.4",
