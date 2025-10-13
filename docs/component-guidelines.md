@@ -28,6 +28,8 @@ detailed guidelines:
   TypeScript interfaces and props
 - **[Stories ({component}.stories.tsx)](./file-type-guidelines/stories.md)** -
   Storybook stories and interaction tests
+- **[Unit Tests ({component}.test.tsx)](./file-type-guidelines/unit-testing.md)** -
+  Fast, isolated tests for component behavior
 - **[Documentation ({component}.mdx)](./file-type-guidelines/documentation.md)** -
   Component documentation
 - **[i18n ({component}.i18n.ts)](./file-type-guidelines/i18n.md)** -
@@ -74,9 +76,10 @@ detailed guidelines:
    needed
 7. **[Write Stories](./file-type-guidelines/stories.md)** - Add Storybook
    stories with tests
-8. **[Document](./file-type-guidelines/documentation.md)** - Create MDX
+8. **[Write Unit Tests](./file-type-guidelines/unit-testing.md)** - Add fast JSDOM-based tests
+9. **[Document](./file-type-guidelines/documentation.md)** - Create MDX
    documentation
-9. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
+10. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
 
 ### 🎨 Adding Styling to Components
 

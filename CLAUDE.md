@@ -87,13 +87,17 @@ pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/dat
 ### Testing
 
 ```bash
-# Run all tests
+# Run all tests (both unit and Storybook tests)
 pnpm test
 
-# Run Storybook tests (interactive components)
+# Run only unit tests (JSDOM-based, fast)
+pnpm test:unit
+
+# Run only Storybook tests (browser-based, slower)
 pnpm test:storybook
 
-# Run tests for specific component (from nimbus package)
+# Run specific test file
+pnpm --filter @commercetools/nimbus test component-name.test.tsx
 pnpm --filter @commercetools/nimbus test component-name.stories.tsx --reporter=basic
 
 # Run tests with different reporters
@@ -102,6 +106,12 @@ pnpm --filter @commercetools/nimbus test component-name.stories.tsx --silent
 
 # Run specific test pattern
 pnpm --filter @commercetools/nimbus test --testNamePattern="Component.*TestName"
+
+# Run tests in watch mode
+pnpm --filter @commercetools/nimbus test --watch
+
+# Run tests with coverage
+pnpm --filter @commercetools/nimbus test --coverage
 ```
 
 ### Code Quality
@@ -200,8 +210,11 @@ This project follows strict development standards detailed in the documentation:
 
 - **Styling**: Chakra UI v3 with design token-based recipes
   @docs/file-type-guidelines/recipes.md
-- **Testing**: Storybook interaction testing required
-  @docs/file-type-guidelines/stories.md
+- **Testing**:
+  - Storybook interaction tests (browser-based, required for interactive
+    components) @docs/file-type-guidelines/stories.md
+  - Unit tests (JSDOM-based, fast isolated tests)
+    @docs/file-type-guidelines/unit-testing.md
 - **TypeScript**: Strict typing with comprehensive interfaces
   @docs/file-type-guidelines/types.md
 - **Documentation**: JSDoc comments required for all code
