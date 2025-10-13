@@ -119,6 +119,18 @@ describe("Button", () => {
       await userEvent.tab();
       expect(button).not.toHaveFocus();
     });
+
+    it("Sets aria-disabled and data-disabled attributes", () => {
+      render(
+        <Button isDisabled data-testid="test">
+          Disabled Button
+        </Button>
+      );
+
+      const button = screen.getByTestId("test");
+      expect(button).toHaveAttribute("aria-disabled", "true");
+      expect(button).toHaveAttribute("data-disabled", "true");
+    });
   });
 
   describe("AsLink", () => {
