@@ -3,7 +3,7 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createRecipeContext,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
 
 import { iconRecipe } from "../icon/icon.recipe";
 
@@ -12,16 +12,18 @@ import { iconRecipe } from "../icon/icon.recipe";
  * with the unstyled prop option for the svg element.
  * We reuse the icon recipe for consistent styling with Icon component.
  */
-interface InlineSvgRecipeProps extends RecipeProps<"svg">, UnstyledProp {}
+type InlineSvgRecipeProps = RecipeProps<"svg"> & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface InlineSvgRootSlotProps
-  extends HTMLChakraProps<"svg", InlineSvgRecipeProps> {}
+
+export type InlineSvgRootSlotProps = HTMLChakraProps<
+  "svg",
+  InlineSvgRecipeProps
+>;
 
 const { withContext } = createRecipeContext({ recipe: iconRecipe });
 

@@ -54,16 +54,16 @@ export const SplitButton = (props: SplitButtonProps) => {
    */
 
   // Type guards for safe prop access
-  interface MenuItemProps {
+  type MenuItemProps = {
     id: string;
     children: React.ReactNode;
     isDisabled?: boolean;
     isCritical?: boolean;
-  }
+  };
 
-  interface ComponentWithChildren {
+  type ComponentWithChildren = {
     children: React.ReactNode;
-  }
+  };
 
   // Check if element is a Menu.Item with required props
   const isMenuItemWithId = (

@@ -1,23 +1,39 @@
-import type { CardRootProps } from "./card.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { cardRecipe } from "./card.recipe";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
 /**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
  */
-type CardVariantProps = CardRootProps &
-  RecipeVariantProps<typeof cardRecipe> & {
-    [key: `data-${string}`]: unknown;
-  };
+type CardRecipeProps = {
+  cardPadding?: SlotRecipeProps<"card">["cardPadding"];
+  borderStyle?: SlotRecipeProps<"card">["borderStyle"];
+  elevation?: SlotRecipeProps<"card">["elevation"];
+  backgroundStyle?: SlotRecipeProps<"card">["backgroundStyle"];
+} & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+
+export type CardRootProps = HTMLChakraProps<"div", CardRecipeProps>;
+
+export type CardHeaderProps = HTMLChakraProps<"div">;
+
+export type CardContentProps = HTMLChakraProps<"div">;
 
 /**
  * Main props interface for the Card component.
- * Extends CardVariantProps to include both root props and variant props,
+ * Extends CardRecipeVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface CardProps extends CardVariantProps {
+export type CardProps = CardRootProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+  [key: `data-${string}`]: unknown;
+};

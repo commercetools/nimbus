@@ -1,9 +1,24 @@
-import type { ScopedSearchInputRootSlotProps } from "./scoped-search-input.slots";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+type ScopedSearchInputRecipeProps = {
+  size?: SlotRecipeProps<"scopedSearchInput">["size"];
+};
+
+export type ScopedSearchInputRootSlotProps = HTMLChakraProps<
+  "div",
+  ScopedSearchInputRecipeProps
+>;
+
+export type ScopedSearchInputContainerSlotProps = HTMLChakraProps<"div">;
+
+export type ScopedSearchInputSelectWrapperSlotProps = HTMLChakraProps<"div">;
+
+export type ScopedSearchInputSearchWrapperSlotProps = HTMLChakraProps<"div">;
 
 /**
  * Value structure for ScopedSearchInput
  */
-export interface ScopedSearchInputValue {
+export type ScopedSearchInputValue = {
   /**
    * The text in the search input
    */
@@ -12,12 +27,12 @@ export interface ScopedSearchInputValue {
    * The selected option key from the select dropdown
    */
   option: string;
-}
+};
 
 /**
  * Option definition for the select dropdown
  */
-export interface ScopedSearchInputOption {
+export type ScopedSearchInputOption = {
   /**
    * Display label for the option
    */
@@ -30,12 +45,12 @@ export interface ScopedSearchInputOption {
    * Whether the option is disabled
    */
   isDisabled?: boolean;
-}
+};
 
 /**
  * Option group definition for grouped options
  */
-export interface ScopedSearchInputOptionGroup {
+export type ScopedSearchInputOptionGroup = {
   /**
    * Group label
    */
@@ -44,13 +59,12 @@ export interface ScopedSearchInputOptionGroup {
    * Options in this group
    */
   options: ScopedSearchInputOption[];
-}
+};
 
-export interface ScopedSearchInputProps
-  extends Omit<
-    ScopedSearchInputRootSlotProps,
-    "value" | "onSubmit" | "as" | "asChild"
-  > {
+export type ScopedSearchInputProps = Omit<
+  ScopedSearchInputRootSlotProps,
+  "value" | "onSubmit" | "as" | "asChild"
+> & {
   /**
    * The current value (controlled)
    */
@@ -150,4 +164,4 @@ export interface ScopedSearchInputProps
    * ID of element labeling the component
    */
   "aria-labelledby"?: string;
-}
+};

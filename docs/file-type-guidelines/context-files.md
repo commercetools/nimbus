@@ -38,13 +38,13 @@ complex compositions.
 // Example context pattern (illustrative)
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
-interface AccordionContextValue {
+type AccordionContextValue = {
   expandedItems: Set<string>;
   toggleItem: (id: string) => void;
   allowMultiple: boolean;
 }
 
-interface AccordionProviderProps {
+type AccordionProviderProps = {
   children: ReactNode;
   allowMultiple?: boolean;
   defaultExpanded?: string[];
@@ -234,13 +234,13 @@ export const useMenuContext = () => {
 // tabs-context.tsx
 import { createContext, useState, type ReactNode } from "react";
 
-interface TabsContextValue {
+type TabsContextValue = {
   selectedTab: string;
   setSelectedTab: (id: string) => void;
   orientation: 'horizontal' | 'vertical';
 }
 
-interface TabsProviderProps {
+type TabsProviderProps = {
   children: ReactNode;
   value?: string;
   defaultValue?: string;
@@ -369,7 +369,7 @@ For performance optimization with large contexts:
 ```typescript
 import { useContext } from "react";
 
-interface ComponentContextValue {
+type ComponentContextValue = {
   isOpen: boolean;
   data: any[];
   // ... other values

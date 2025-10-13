@@ -4,7 +4,7 @@ import type {
   FormFieldErrorSlotProps,
   FormFieldInputSlotProps,
   FormFieldLabelSlotProps,
-} from "../form-field.slots";
+} from "../form-field.types";
 
 export type FormFieldContextPayloadType = {
   label: ReactNode;

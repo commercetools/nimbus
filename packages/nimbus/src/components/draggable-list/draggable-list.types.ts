@@ -1,17 +1,26 @@
 import type { ReactNode, Ref } from "react";
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { FormFieldProps } from "@/components";
 import type {
   GridListProps,
   GridListItemProps,
   Key,
 } from "react-aria-components";
-import { draggableListSlotRecipe } from "./draggable-list.recipe";
-import type { DraggableListItemSlotProps } from "./draggable-list.slots";
 
+type DraggableListRecipeProps = {
+  size?: SlotRecipeProps<"draggableList">["size"];
+};
+
+export type DraggableListRootSlotProps = HTMLChakraProps<
+  "div",
+  DraggableListRecipeProps
+>;
+
+export type DraggableListItemSlotProps = HTMLChakraProps<"div">;
+
+export type DraggableListItemContentSlotProps = HTMLChakraProps<"div">;
+
+export type DraggableListEmptySlotProps = HTMLChakraProps<"div">;
 /**
  * Base data shape for draggable list items
  *
@@ -34,49 +43,45 @@ export type DraggableListItemData = {
  *
  * @template T - Type for item data displayed in the list. Items array type is `T[]`.
  */
-export interface DraggableListRootProps<T extends DraggableListItemData>
-  extends Omit<
-      GridListProps<T>,
-      "autoFocus" | "className" | "style" | "translate" | "renderEmptyState"
-    >,
-    Omit<
-      HTMLChakraProps<
-        "div",
-        RecipeVariantProps<typeof draggableListSlotRecipe>
-      >,
-      "children" | "slot"
-    > {
-  /**
-   * Array of items to display in the list.
-   * If `children` is not provided, each item must have both `key` and `label` properties.
-   */
-  items?: T[];
-  /**
-   * Callback fired when the list is updated by drag-and-drop or item removal
-   * @param updatedItems - The new array of items after the update
-   */
-  onUpdateItems?: (updatedItems: T[]) => void;
-  /**
-   * Ref to the root container element
-   */
-  ref?: Ref<HTMLDivElement>;
-  /**
-   * Whether to show a remove button for each item.
-   * When an item is removed, `onUpdateItems` is called with the updated list.
-   * @default false
-   */
-  removableItems?: boolean;
-  /**
-   * Custom render function for list items.
-   * If not provided, items will be rendered using their `key` and `label` properties.
-   */
-  children?: GridListProps<T>["children"];
-  /**
-   * Content to display when the list is empty
-   * @default "drop items here"
-   */
-  renderEmptyState?: ReactNode;
-}
+export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
+  GridListProps<T>,
+  "autoFocus" | "className" | "style" | "translate" | "renderEmptyState"
+> &
+  Omit<
+    HTMLChakraProps<"div", SlotRecipeProps<"draggableList">>,
+    "children" | "slot"
+  > & {
+    /**
+     * Array of items to display in the list.
+     * If `children` is not provided, each item must have both `key` and `label` properties.
+     */
+    items?: T[];
+    /**
+     * Callback fired when the list is updated by drag-and-drop or item removal
+     * @param updatedItems - The new array of items after the update
+     */
+    onUpdateItems?: (updatedItems: T[]) => void;
+    /**
+     * Ref to the root container element
+     */
+    ref?: Ref<HTMLDivElement>;
+    /**
+     * Whether to show a remove button for each item.
+     * When an item is removed, `onUpdateItems` is called with the updated list.
+     * @default false
+     */
+    removableItems?: boolean;
+    /**
+     * Custom render function for list items.
+     * If not provided, items will be rendered using their `key` and `label` properties.
+     */
+    children?: GridListProps<T>["children"];
+    /**
+     * Content to display when the list is empty
+     * @default "drop items here"
+     */
+    renderEmptyState?: ReactNode;
+  };
 
 /**
  * Props for the DraggableList.Item component
@@ -86,31 +91,30 @@ export interface DraggableListRootProps<T extends DraggableListItemData>
  *
  * @template T - Type for the item's data object
  */
-export interface DraggableListItemProps<T extends DraggableListItemData>
-  extends Omit<
-      GridListItemProps<T>,
-      "className" | "onClick" | "style" | "translate"
-    >,
-    Omit<DraggableListItemSlotProps, "children"> {
-  /**
-   * The unique identifier for the item
-   */
-  id?: string;
-  /**
-   * Ref to the item container element
-   */
-  ref?: Ref<HTMLDivElement>;
-  /**
-   * The content to display for this item
-   */
-  children?: ReactNode;
-  /**
-   * Callback fired when the remove button is pressed.
-   * The remove button is only rendered when this callback is provided.
-   * @param key - The key of the item being removed
-   */
-  onRemoveItem?: (key: Key) => void;
-}
+export type DraggableListItemProps<T extends DraggableListItemData> = Omit<
+  GridListItemProps<T>,
+  "className" | "onClick" | "style" | "translate"
+> &
+  Omit<DraggableListItemSlotProps, "children"> & {
+    /**
+     * The unique identifier for the item
+     */
+    id?: string;
+    /**
+     * Ref to the item container element
+     */
+    ref?: Ref<HTMLDivElement>;
+    /**
+     * The content to display for this item
+     */
+    children?: ReactNode;
+    /**
+     * Callback fired when the remove button is pressed.
+     * The remove button is only rendered when this callback is provided.
+     * @param key - The key of the item being removed
+     */
+    onRemoveItem?: (key: Key) => void;
+  };
 
 /**
  * Data shape for items used in DraggableList.Field
@@ -121,10 +125,10 @@ export interface DraggableListItemProps<T extends DraggableListItemData>
  * @property key - Unique identifier for the item (required)
  * @property label - Display content for the item (required)
  */
-export interface DraggableListFieldItemData extends DraggableListItemData {
+export type DraggableListFieldItemData = DraggableListItemData & {
   key: string;
   label: string;
-}
+};
 
 /**
  * Props for the DraggableList.Field component
@@ -137,25 +141,25 @@ export interface DraggableListFieldItemData extends DraggableListItemData {
  *
  * @template T - Type for item data, must extend DraggableListFieldItemData
  */
-export interface DraggableListFieldProps<T extends DraggableListFieldItemData>
-  extends Omit<DraggableListRootProps<T>, "children" | "direction">,
-    Omit<FormFieldProps, "slot"> {
-  /**
-   * The form field label (required)
-   *
-   * If a visible label is not necessary, use `DraggableList.Root`
-   */
-  label: ReactNode;
-  /**
-   * Optional description text displayed below the label
-   */
-  description?: ReactNode;
-  /**
-   * Error message to display when validation fails
-   */
-  error?: ReactNode;
-  /**
-   * Optional info box content for additional context
-   */
-  infoBox?: ReactNode;
-}
+export type DraggableListFieldProps<T extends DraggableListFieldItemData> =
+  Omit<DraggableListRootProps<T>, "children" | "direction"> &
+    Omit<FormFieldProps, "slot"> & {
+      /**
+       * The form field label (required)
+       *
+       * If a visible label is not necessary, use `DraggableList.Root`
+       */
+      label: ReactNode;
+      /**
+       * Optional description text displayed below the label
+       */
+      description?: ReactNode;
+      /**
+       * Error message to display when validation fails
+       */
+      error?: ReactNode;
+      /**
+       * Optional info box content for additional context
+       */
+      infoBox?: ReactNode;
+    };

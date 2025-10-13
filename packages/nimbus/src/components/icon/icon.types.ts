@@ -1,7 +1,22 @@
-import type { IconRootSlotProps } from "./icon.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { iconRecipe } from "./icon.recipe";
-import type { BoxProps } from "../box";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the svg element.
+ */
+type IconRecipeProps = RecipeProps<"icon"> & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+
+export type IconRootSlotProps = HTMLChakraProps<"svg", IconRecipeProps>;
 
 /**
  * Combines the root props with Chakra UI's recipe variant props.
@@ -15,15 +30,14 @@ type IconVariantProps = Omit<
   | "unstyled"
   | "asChild"
   | "recipe"
-> &
-  RecipeVariantProps<typeof iconRecipe>;
+>;
 
 /**
  * Main props interface for the Icon component.
  * Extends IconVariantProps to include both root props and variant props,
  * while adding support for React children.
  */
-export interface IconProps extends IconVariantProps {
+export type IconProps = IconVariantProps & {
   /**
    * Accepts only a single child - an icon-component or SVG html-element.
    * Alternatively, as shorthand, use the `as` property.
@@ -32,11 +46,11 @@ export interface IconProps extends IconVariantProps {
   /**
    * Colors the icon, accepts a color token from the theme or a custom value
    */
-  color?: BoxProps["color"];
+  color?: IconRootSlotProps["color"];
   /**
    * Accepts a React component to be rendered as the icon .
    */
-  as?: BoxProps["as"];
+  as?: IconRootSlotProps["as"];
   /**
    * Ref to the icon element
    */
@@ -47,4 +61,4 @@ export interface IconProps extends IconVariantProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/slot
    */
   slot?: string | null | undefined;
-}
+};

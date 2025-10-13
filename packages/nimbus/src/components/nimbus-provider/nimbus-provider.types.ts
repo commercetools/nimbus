@@ -29,11 +29,11 @@ import type { ThemeProviderProps } from "next-themes";
  * }
  */
 
-// Base interface for router options that can be extended via module augmentation
+// Base type for router options that can be extended via module augmentation
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface NimbusRouterOptionsBase {
+export type NimbusRouterOptionsBase = {
   // This can be augmented by consumers via module augmentation
-}
+};
 
 // Default router options type (can be overridden via module augmentation)
 export type RouterOptions = NimbusRouterOptionsBase extends {
@@ -45,13 +45,13 @@ export type RouterOptions = NimbusRouterOptionsBase extends {
     any;
 
 // Enhanced router configuration with proper typing
-export interface TypedNimbusRouterConfig {
+export type TypedNimbusRouterConfig = {
   navigate: (href: string, routerOptions?: RouterOptions) => void;
   useHref?: (href: string) => string;
-}
+};
 
-// Router configuration interface matching react-aria's expectations
-export interface NimbusRouterConfig {
+// Router configuration type matching react-aria's expectations
+export type NimbusRouterConfig = {
   /**
    * Function to programmatically navigate to a new route.
    * This should be the navigate function from your client-side router.
@@ -79,14 +79,13 @@ export interface NimbusRouterConfig {
    * <NimbusProvider router={{ navigate, useHref }} />
    */
   useHref?: (href: string) => string;
-}
+};
 
 // Color mode provider props
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ColorModeProviderProps extends ThemeProviderProps {}
+export type ColorModeProviderProps = ThemeProviderProps;
 
 // Main provider props
-export interface NimbusProviderProps extends ColorModeProviderProps {
+export type NimbusProviderProps = ColorModeProviderProps & {
   /**
    * Optional locale for internationalization.
    * Expects a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., 'en-US', 'de-DE', 'fr-FR').
@@ -100,4 +99,4 @@ export interface NimbusProviderProps extends ColorModeProviderProps {
    * - `useHref`: Optional function to transform hrefs (useful for base paths).
    */
   router?: NimbusRouterConfig | TypedNimbusRouterConfig;
-}
+};

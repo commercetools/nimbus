@@ -1,7 +1,40 @@
 import type { ReactNode, FocusEvent } from "react";
-import type { ConditionalValue } from "@chakra-ui/react/styled-system";
-import type { LocalizedFieldRootSlotProps } from "./localized-field.slots";
-import type { TValue, TCustomEvent, TCurrencyCode } from "@/components";
+import type { TValue, TCustomEvent, TCurrencyCode } from "../money-input";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+type LocalizedFieldRecipeProps = {
+  size?: SlotRecipeProps<"localizedField">["size"];
+  type?: SlotRecipeProps<"localizedField">["type"];
+};
+
+export type LocalizedFieldRootSlotProps = HTMLChakraProps<
+  "fieldset",
+  LocalizedFieldRecipeProps
+>;
+
+export type LocalizedFieldLabelSlotProps = HTMLChakraProps<"label">;
+
+export type LocalizedFieldInfoDialogSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldFieldsContainerSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldDescriptionSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldErrorSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldToggleButtonContainerSlotProps =
+  HTMLChakraProps<"div">;
+
+export type LocalizedFieldLocaleFieldRootSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldLocaleFieldLabelSlotProps = HTMLChakraProps<"div">;
+
+export type LocalizedFieldLocaleFieldInputSlotProps = HTMLChakraProps<"div">;
+
+type LocalizedFieldRecipeVariantProps = {
+  /** Size variant */
+  size?: "md" | "sm";
+};
 
 /**
  * Object that contains the translation of a string for each locale.
@@ -49,120 +82,123 @@ export type LocalizedFieldChangeEvent = {
   };
 };
 
-export interface LocalizedFieldProps
-  extends Omit<LocalizedFieldRootSlotProps, "onChange" | "onBlur" | "onFocus"> {
-  /**
-   * Type of input displayed in locale fields
-   * default: 'text'
-   */
-  type?: "text" | "multiLine" | "richText" | "money";
-  /**
-   * HTML `id` property for field group.
-   * Each locale field's `id` will be suffixed with its' locale, e.g.:
-   * `${id}.${lang}` i.e. `foo.en`
-   */
-  id?: string;
-  /**
-   * HTML `name` property for field group.
-   * Each locale field's `name` will be suffixed with its' locale, e.g.:
-   * `${name}.${lang}` i.e. `foo.en`
-   */
-  name?: string;
-  /** Locale or currency whose input field is displayed when field group is collapsed */
-  defaultLocaleOrCurrency: string | TCurrencyCode;
-  /** Input values for each locale or currency */
-  valuesByLocaleOrCurrency: LocalizedString | LocalizedCurrency;
-  /** Input placeholders for each locale or currency */
-  placeholdersByLocaleOrCurrency?: LocalizedString;
-  /** Field decriptions for each locale or currency */
-  descriptionsByLocaleOrCurrency?: LocaleFieldData;
-  /** Field warnings for each locale or currency */
-  warningsByLocaleOrCurrency?: LocaleFieldData;
-  /** Field errors for each locale or currency */
-  errorsByLocaleOrCurrency?: LocaleFieldData;
-  /**
-   * Label for field group (all locales).
-   * If a label is not provided, you must provide an `aria-label`
-   */
-  label?: ReactNode;
-  /** Hint/help tooltip (infoBox) for field group (all locales) */
-  hint?: ReactNode;
-  /** Description for field group (all locales) */
-  description?: ReactNode;
-  /** Warning for field group (all locales) */
-  warning?: ReactNode;
-  /**
-   * For compatibility with UI Kit FieldWarnings
-   * A map of warnings. Warning messages for known warnings are rendered automatically.
-   * <br/>
-   * Unknown warnings will be forwarded to renderWarning.
-   */
-  warnings?: Record<string, boolean>;
-  /**
-   * For compatibility with UI Kit FieldWarnings
-   * Called with custom warnings, as renderWarning(key, warning). This function can return a message which will be wrapped in a WarningMessage.
-   * <br />
-   * It can also return null to show no warning.
-   */
-  renderWarning?: (key: string, warning?: boolean) => ReactNode;
-  /** Error for field group (all locales) */
-  error?: ReactNode;
-  /**
-   * For compatibility with UI Kit FieldErrors
-   * A map of errors. Error messages for known errors are rendered automatically.
-   * <br />
-   * Unknown errors will be forwarded to `renderError`
-   */
-  errors?: Record<string, boolean>;
-  /**
-   * For compatibility with UI Kit FieldErrors
-   * Called with custom errors. This function can return a message which will be wrapped in an ErrorMessage. It can also return null to show no error.
-   */
-  renderError?: (key: string, error?: boolean) => ReactNode;
-  /**
-   * Indicates whether the field was touched.
-   * Errors will only be shown when the field was touched.
-   */
-  touched?: boolean;
-  /** True if the field is a required field */
-  isRequired?: boolean;
-  /** True if the field is disabled */
-  isDisabled?: boolean;
-  /** True if the field is read only  */
-  isReadOnly?: boolean;
-  /** Change handler for each locale's input */
-  onChange: (e: LocalizedFieldChangeEvent) => void;
-  /** Blur handler for each locale's input */
-  onBlur?: (
-    e: FocusEvent<Element, Element> | TCustomEvent,
-    locale: string
-  ) => void;
-  /** Focus handler for each locale's input */
-  onFocus?: (
-    e: FocusEvent<Element, Element> | TCustomEvent,
-    locale: string
-  ) => void;
-  /**
-   * Controls whether field group is expanded on mount.
-   * Default: `false` (closed)
-   */
-  defaultExpanded?: boolean;
-  /**
-   * Controls whether all locale or currency input fields should be displayed.
-   * Removes show/hide toggle controls and displays all locales if `true`.
-   * Default: `false`
-   */
-  displayAllLocalesOrCurrencies?: boolean;
-  /**
-   * HTML `data-` attributes for locale fields.
-   * Each field's `data-` attribute will be suffixed with its' locale, e.g.:
-   * `${name}.${lang}` i.e. `foo.en`
-   */
-  ["data-test"]?: string;
-  ["data-testid"]?: string;
-  ["data-track-component"]?: string;
-  // TODO: do we need `hasHighPrecisionBadge` for type="money"
-}
+export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
+  Omit<
+    LocalizedFieldRootSlotProps,
+    "onChange" | "onBlur" | "onFocus" | "size"
+  > & {
+    /**
+     * Type of input displayed in locale fields
+     * default: 'text'
+     */
+    type?: "text" | "multiLine" | "richText" | "money";
+    /**
+     * HTML `id` property for field group.
+     * Each locale field's `id` will be suffixed with its' locale, e.g.:
+     * `${id}.${lang}` i.e. `foo.en`
+     */
+    id?: string;
+    /**
+     * HTML `name` property for field group.
+     * Each locale field's `name` will be suffixed with its' locale, e.g.:
+     * `${name}.${lang}` i.e. `foo.en`
+     */
+    name?: string;
+    /** Locale or currency whose input field is displayed when field group is collapsed */
+    defaultLocaleOrCurrency: string | TCurrencyCode;
+    /** Input values for each locale or currency */
+    valuesByLocaleOrCurrency: LocalizedString | LocalizedCurrency;
+    /** Input placeholders for each locale or currency */
+    placeholdersByLocaleOrCurrency?: LocalizedString;
+    /** Field decriptions for each locale or currency */
+    descriptionsByLocaleOrCurrency?: LocaleFieldData;
+    /** Field warnings for each locale or currency */
+    warningsByLocaleOrCurrency?: LocaleFieldData;
+    /** Field errors for each locale or currency */
+    errorsByLocaleOrCurrency?: LocaleFieldData;
+    /**
+     * Label for field group (all locales).
+     * If a label is not provided, you must provide an `aria-label`
+     */
+    label?: ReactNode;
+    /** Hint/help tooltip (infoBox) for field group (all locales) */
+    hint?: ReactNode;
+    /** Description for field group (all locales) */
+    description?: ReactNode;
+    /** Warning for field group (all locales) */
+    warning?: ReactNode;
+    /**
+     * For compatibility with UI Kit FieldWarnings
+     * A map of warnings. Warning messages for known warnings are rendered automatically.
+     * <br/>
+     * Unknown warnings will be forwarded to renderWarning.
+     */
+    warnings?: Record<string, boolean>;
+    /**
+     * For compatibility with UI Kit FieldWarnings
+     * Called with custom warnings, as renderWarning(key, warning). This function can return a message which will be wrapped in a WarningMessage.
+     * <br />
+     * It can also return null to show no warning.
+     */
+    renderWarning?: (key: string, warning?: boolean) => ReactNode;
+    /** Error for field group (all locales) */
+    error?: ReactNode;
+    /**
+     * For compatibility with UI Kit FieldErrors
+     * A map of errors. Error messages for known errors are rendered automatically.
+     * <br />
+     * Unknown errors will be forwarded to `renderError`
+     */
+    errors?: Record<string, boolean>;
+    /**
+     * For compatibility with UI Kit FieldErrors
+     * Called with custom errors. This function can return a message which will be wrapped in an ErrorMessage. It can also return null to show no error.
+     */
+    renderError?: (key: string, error?: boolean) => ReactNode;
+    /**
+     * Indicates whether the field was touched.
+     * Errors will only be shown when the field was touched.
+     */
+    touched?: boolean;
+    /** True if the field is a required field */
+    isRequired?: boolean;
+    /** True if the field is disabled */
+    isDisabled?: boolean;
+    /** True if the field is read only  */
+    isReadOnly?: boolean;
+    /** Change handler for each locale's input */
+    onChange: (e: LocalizedFieldChangeEvent) => void;
+    /** Blur handler for each locale's input */
+    onBlur?: (
+      e: FocusEvent<Element, Element> | TCustomEvent,
+      locale: string
+    ) => void;
+    /** Focus handler for each locale's input */
+    onFocus?: (
+      e: FocusEvent<Element, Element> | TCustomEvent,
+      locale: string
+    ) => void;
+    /**
+     * Controls whether field group is expanded on mount.
+     * Default: `false` (closed)
+     */
+    defaultExpanded?: boolean;
+    /**
+     * Controls whether all locale or currency input fields should be displayed.
+     * Removes show/hide toggle controls and displays all locales if `true`.
+     * Default: `false`
+     */
+    displayAllLocalesOrCurrencies?: boolean;
+    /**
+     * HTML `data-` attributes for locale fields.
+     * Each field's `data-` attribute will be suffixed with its' locale, e.g.:
+     * `${name}.${lang}` i.e. `foo.en`
+     */
+    ["data-test"]?: string;
+    ["data-testid"]?: string;
+    ["data-track-component"]?: string;
+    // TODO: do we need `hasHighPrecisionBadge` for type="money"
+  };
 
 /** internal type for object containing all data for a single locale */
 export type MergedLocaleFieldData = {
@@ -175,7 +211,8 @@ export type MergedLocaleFieldData = {
   autoFocus?: boolean;
 };
 
-export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
+export type LocalizedFieldLocaleFieldProps = LocalizedFieldRecipeVariantProps &
+  MergedLocaleFieldData &
   Pick<
     LocalizedFieldProps,
     | "onChange"
@@ -194,5 +231,4 @@ export type LocalizedFieldLocaleFieldProps = MergedLocaleFieldData &
     | "data-track-component"
   > & {
     isInvalid?: boolean;
-    size: ConditionalValue<"md" | "sm" | undefined>;
   };

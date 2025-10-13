@@ -187,7 +187,7 @@ Support both patterns when:
 - Forms or inputs involved
 
 ```typescript
-interface Props {
+type Props = {
   value?: string; // Controlled
   defaultValue?: string; // Uncontrolled
   onChange?: (value: string) => void;

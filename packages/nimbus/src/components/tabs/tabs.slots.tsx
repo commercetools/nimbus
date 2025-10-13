@@ -1,5 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
-import { tabsSlotRecipe } from "./tabs.recipe";
+import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
   TabsRootSlotProps,
   TabsListSlotProps,
@@ -9,7 +8,7 @@ import type {
 } from "./tabs.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: tabsSlotRecipe,
+  key: "tabs",
 });
 
 /**

@@ -1,15 +1,15 @@
-import { tabsSlotRecipe } from "./tabs.recipe";
+import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
-import {
-  type HTMLChakraProps,
-  type RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
+type TabsRecipeProps = {
+  orientation?: SlotRecipeProps<"tabs">["orientation"];
+  placement?: SlotRecipeProps<"tabs">["placement"];
+  size?: SlotRecipeProps<"tabs">["size"];
+};
 
 /**
- * Root props interface that extends React Aria's tabs props with our recipe props.
+ * Root props type that extends React Aria's tabs props with our recipe props.
  */
-export interface TabsRootSlotProps
-  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
   /**
    * The children of the Tabs component.
    */
@@ -30,52 +30,42 @@ export interface TabsRootSlotProps
    * The keyboard activation of the Tabs component.
    */
   keyboardActivation?: "automatic" | "manual";
-  /**
-   * The orientation of the Tabs component.
-   */
-  orientation?: "horizontal" | "vertical";
-  /**
-   * The placement of the Tabs component.
-   */
-  placement?: "start" | "end";
-  /**
-   * The size of the Tabs component.
-   */
-  size?: "sm" | "md" | "lg";
-}
+};
 
-export interface TabsListSlotProps
-  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+export type TabsListSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
   children?: React.ReactNode;
-}
+};
 
-export interface TabsTabSlotProps
-  extends HTMLChakraProps<"button", RecipeVariantProps<typeof tabsSlotRecipe>> {
+export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps> & {
   id?: string;
   isDisabled?: boolean;
-}
+};
 
-export interface TabsPanelsSlotProps
-  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+export type TabsPanelsSlotProps = HTMLChakraProps<
+  "div",
+  SlotRecipeProps<"tabs">
+> & {
   children?: React.ReactNode;
-}
+};
 
-export interface TabsPanelSlotProps
-  extends HTMLChakraProps<"div", RecipeVariantProps<typeof tabsSlotRecipe>> {
+export type TabsPanelSlotProps = HTMLChakraProps<
+  "div",
+  SlotRecipeProps<"tabs">
+> & {
   id?: string;
-}
+};
 
 /**
  * Tabs recipe variant props for direction and placement configuration
  */
-type TabsVariantProps = RecipeVariantProps<typeof tabsSlotRecipe> & {
+type TabsVariantProps = SlotRecipeProps<"tabs"> & {
   [key: `data-${string}`]: unknown;
 };
 
 /**
  * Props for individual tab item component
  */
-export interface TabItemProps {
+export type TabItemProps = {
   /**
    * The id of the tab item
    */
@@ -92,69 +82,51 @@ export interface TabItemProps {
    * Whether the tab item is disabled
    */
   isDisabled?: boolean;
-}
+};
 
 /**
- * Main props interface for the Tabs root component.
+ * Main props type for the Tabs root component.
  * Combines React Aria tabs props with our styling variants.
  */
-export interface TabsProps extends TabsRootSlotProps, TabsVariantProps {
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
-  /**
-   * Direction of the tabs layout
-   * @default "horizontal"
-   */
-  orientation?: "horizontal" | "vertical";
-  /**
-   * Placement of the tab list relative to panels
-   * @default "start"
-   */
-  placement?: "start" | "end";
-  /**
-   * Size of the tabs affecting padding and font size
-   * @default "md"
-   */
-  size?: "sm" | "md" | "lg";
-  /**
-   * Array of tab items for collection rendering
-   * When provided, tabs will be rendered automatically from this data
-   */
-  tabs?: TabItemProps[];
-}
+export type TabsProps = TabsRootSlotProps &
+  TabsVariantProps & {
+    children?: React.ReactNode;
+    ref?: React.Ref<HTMLDivElement>;
+    tabs?: TabItemProps[];
+  };
 
 /**
  * Props for individual tab list component
  */
-export interface TabListProps extends TabsListSlotProps {
+export type TabListProps = TabsListSlotProps & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 /**
  * Props for individual tab component
  */
-export interface TabProps extends TabsTabSlotProps {
+export type TabProps = TabsTabSlotProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   isDisabled?: boolean;
-}
+};
 
 /**
  * Props for tab panels container component
  */
-export interface TabPanelsProps extends TabsPanelsSlotProps {
+export type TabPanelsProps = TabsPanelsSlotProps & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 /**
  * Props for individual tab panel component
  */
-export interface TabPanelProps extends TabsPanelSlotProps {
+export type TabPanelProps = TabsPanelSlotProps & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};

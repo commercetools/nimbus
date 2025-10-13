@@ -1,10 +1,11 @@
 import type { TextInputProps } from "../text-input/text-input.types";
 
 /**
- * Interface for PasswordInput component props
+ * Type for PasswordInput component props
  * Extends TextInputProps but omits the type prop since it's controlled internally
- * We want to keep this as an explicit interface to allow for future additions
+ * We want to keep this as an explicit type to allow for future additions
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PasswordInputProps
-  extends Omit<TextInputProps, "type" | "trailingElement"> {}
+export type PasswordInputProps = Omit<
+  TextInputProps,
+  "type" | "trailingElement"
+>;

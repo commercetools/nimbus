@@ -4,10 +4,10 @@ import {
 } from "@chakra-ui/react/text";
 import { TextContext, useContextProps } from "react-aria-components";
 
-export interface TextProps extends Omit<ChakraTextProps, "slot"> {
+export type TextProps = Omit<ChakraTextProps, "slot"> & {
   ref?: React.Ref<HTMLElement>;
   slot?: string | null | undefined;
-}
+};
 
 /**
  * # Text

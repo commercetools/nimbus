@@ -1,9 +1,9 @@
 import { useEffect, useCallback } from "react";
 import type { RefObject } from "react";
 
-interface UseAutogrowOptions {
+type UseAutogrowOptions = {
   enabled?: boolean;
-}
+};
 
 /**
  * Hook for managing textarea autogrow behavior

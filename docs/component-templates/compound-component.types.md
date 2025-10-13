@@ -25,7 +25,7 @@ import {
  * Props for the ComponentName.Root component
  * Root handles all configuration, variants, and state management
  */
-export interface ComponentNameRootProps extends ComponentNameRootSlotProps {
+export type ComponentNameRootProps = ComponentNameRootSlotProps & {
   /**
    * Whether the component is open (controlled)
    */
@@ -48,7 +48,7 @@ export interface ComponentNameRootProps extends ComponentNameRootSlotProps {
  * Props for ComponentName.Trigger
  * Sub-components only define behavioral props
  */
-export interface ComponentNameTriggerProps extends ComponentNameTriggerSlotProps {
+export type ComponentNameTriggerProps = ComponentNameTriggerSlotProps & {
   /**
    * ARIA label for accessibility
    */
@@ -61,7 +61,7 @@ export interface ComponentNameTriggerProps extends ComponentNameTriggerSlotProps
 /**
  * Props for ComponentName.Item
  */
-export interface ComponentNameItemProps extends ComponentNameItemSlotProps {
+export type ComponentNameItemProps = ComponentNameItemSlotProps & {
   /**
    * Unique item value
    */
@@ -83,13 +83,13 @@ export interface ComponentNameItemProps extends ComponentNameItemSlotProps {
 // Hook Types (if component exports custom hooks)
 // =============================================================================
 
-export interface UseComponentNameOptions {
+export type UseComponentNameOptions = {
   defaultIsOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   // Add hook-specific options...
 }
 
-export interface UseComponentNameReturn {
+export type UseComponentNameReturn = {
   isOpen: boolean;
   open: () => void;
   close: () => void;
@@ -101,7 +101,7 @@ export interface UseComponentNameReturn {
 // Context Types (if component uses context for state sharing)
 // =============================================================================
 
-export interface ComponentNameContextValue {
+export type ComponentNameContextValue = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;

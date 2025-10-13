@@ -1,24 +1,27 @@
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
-import type { CheckboxRootProps } from "./checkbox.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { checkboxSlotRecipe } from "./checkbox.recipe";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type CheckboxVariantProps = CheckboxRootProps &
-  RecipeVariantProps<typeof checkboxSlotRecipe> &
+type CheckboxRecipeProps = {
+  size?: SlotRecipeProps<"checkbox">["size"];
+};
+
+export type CheckboxRootProps = Omit<
+  HTMLChakraProps<"label", CheckboxRecipeProps>,
+  keyof RaCheckboxProps
+> &
   RaCheckboxProps;
+
+export type CheckboxLabelProps = HTMLChakraProps<"span">;
+
+export type CheckboxIndicatorProps = HTMLChakraProps<"span">;
 
 /**
  * Main props interface for the Checkbox component.
- * Extends CheckboxVariantProps to include both root props and variant props,
- * while adding support for React children.
+ * Extends CheckboxRootProps (which includes SlotRecipeProps and RaCheckboxProps),
+ * while adding support for React children and ref forwarding.
  */
-export interface CheckboxProps extends Omit<CheckboxVariantProps, "children"> {
-  ref?: Ref<RaCheckboxProps>;
+export type CheckboxProps = CheckboxRootProps & {
+  ref?: Ref<HTMLLabelElement>;
   children?: ReactNode;
-}
+};

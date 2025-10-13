@@ -115,12 +115,12 @@ Define types based on visibility:
 
 ```typescript
 // component-name.types.ts
-export interface UseComponentNameOptions {
+export type UseComponentNameOptions = {
   defaultValue?: string;
   onChange?: (value: string) => void;
 }
 
-export interface UseComponentNameReturn {
+export type UseComponentNameReturn = {
   value: string;
   setValue: (value: string) => void;
 }
@@ -130,7 +130,7 @@ export interface UseComponentNameReturn {
 
 ```typescript
 // hooks/use-internal-helper.ts
-interface InternalState {
+type InternalState = {
   // Internal types here
 }
 

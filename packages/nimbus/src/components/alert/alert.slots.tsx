@@ -1,5 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
-import { alertRecipe } from "./alert.recipe";
+import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
   AlertActionsProps,
   AlertDescriptionProps,
@@ -10,7 +9,7 @@ import type {
 } from "./alert.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: alertRecipe,
+  key: "alert",
 });
 
 export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(

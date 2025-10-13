@@ -1,27 +1,16 @@
 import type { ReactNode, RefObject } from "react";
 import type { AriaButtonProps } from "react-aria";
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import type { collapsibleMotionSlotRecipe } from "./collapsible-motion.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================================
 // BASE TYPES
 // ============================================================================
 
 /**
- * Type definition for the CollapsibleMotion slot recipe
- * This is the foundation for all recipe-based styling
- */
-export type CollapsibleMotionSlotRecipe = typeof collapsibleMotionSlotRecipe;
-
-/**
  * Recipe variant props extracted from the slot recipe
  * These control the visual variants available in the recipe system
  */
-export type CollapsibleMotionRecipeProps =
-  RecipeVariantProps<CollapsibleMotionSlotRecipe>;
+export type CollapsibleMotionRecipeProps = SlotRecipeProps<"collapsibleMotion">;
 
 // ============================================================================
 // SLOT TYPES
@@ -47,7 +36,7 @@ export type CollapsibleMotionRootSlotProps = HTMLChakraProps<
  * Note: Only includes properties that are actually consumed by child components.
  * React Aria handles state management internally through buttonProps/panelProps.
  */
-export interface CollapsibleMotionContextValue {
+export type CollapsibleMotionContextValue = {
   /** Whether the collapsible is disabled */
   isDisabled: boolean;
   /** Whether the content is currently expanded */
@@ -58,7 +47,7 @@ export interface CollapsibleMotionContextValue {
   panelProps: React.HTMLAttributes<HTMLDivElement>;
   /** Panel ref for React Aria (needs to be attached to the panel container) */
   panelRef: RefObject<HTMLDivElement | null>;
-}
+};
 
 // ============================================================================
 // COMPOUND COMPONENT PROPS
@@ -69,8 +58,7 @@ export interface CollapsibleMotionContextValue {
  * The main container that manages disclosure state and provides context to child components
  * Extends recipe props to inherit styling variants
  */
-export interface CollapsibleMotionRootProps
-  extends CollapsibleMotionRecipeProps {
+export type CollapsibleMotionRootProps = CollapsibleMotionRootSlotProps & {
   /**
    * The child components (Trigger and Content)
    */
@@ -100,15 +88,14 @@ export interface CollapsibleMotionRootProps
    * Data attributes for testing and analytics
    */
   [key: `data-${string}`]: unknown;
-}
+};
 
 /**
  * Props for CollapsibleMotion.Trigger component
  * The clickable element that toggles the disclosure state
  * Extends button HTML attributes for direct button rendering
  */
-export interface CollapsibleMotionTriggerProps
-  extends HTMLChakraProps<"button"> {
+export type CollapsibleMotionTriggerProps = HTMLChakraProps<"button"> & {
   /**
    * The trigger element content (typically text or icons)
    */
@@ -118,16 +105,16 @@ export interface CollapsibleMotionTriggerProps
    * @default false
    */
   asChild?: boolean;
-}
+};
 
 /**
  * Props for CollapsibleMotion.Content component
  * The collapsible content container with Chakra UI styling support
  * Extends HTML div attributes to support all standard div props
  */
-export interface CollapsibleMotionContentProps extends HTMLChakraProps<"div"> {
+export type CollapsibleMotionContentProps = HTMLChakraProps<"div"> & {
   /**
    * The content to be collapsed/expanded
    */
   children: ReactNode;
-}
+};

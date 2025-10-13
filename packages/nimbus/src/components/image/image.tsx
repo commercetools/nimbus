@@ -3,8 +3,7 @@ import {
   type ImageProps as ChakraImageProps,
 } from "@chakra-ui/react/image";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ImageProps extends ChakraImageProps {}
+export type ImageProps = ChakraImageProps;
 
 /**
  * # Image

@@ -6,10 +6,10 @@ import type React from "react";
 import { useObjectRef } from "react-aria";
 import { KbdRootSlot } from "./kbd.slots";
 
-export interface KbdProps extends Omit<ChakraKbdProps, "slot"> {
+export type KbdProps = Omit<ChakraKbdProps, "slot"> & {
   ref?: React.Ref<HTMLElement>;
   slot?: string | null | undefined;
-}
+};
 
 /**
  * # Kbd

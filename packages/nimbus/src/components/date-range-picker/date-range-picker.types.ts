@@ -1,8 +1,29 @@
-import type { DateRangePickerRootProps } from "./date-range-picker.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
 import type { DateRangePickerProps as ReactAriaDateRangePickerProps } from "react-aria-components";
 import type { DateValue } from "react-aria";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type DateRangePickerRecipeProps = {
+  size?: SlotRecipeProps<"dateRangePicker">["size"];
+  variant?: SlotRecipeProps<"dateRangePicker">["variant"];
+} & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+export type DateRangePickerRootProps = HTMLChakraProps<
+  "div",
+  DateRangePickerRecipeProps
+>;
 
 /**
  * Additional properties we want to exclude from the DateRangePicker component.
@@ -29,39 +50,37 @@ type ExcludedProps =
  * We extend React Aria's DateRangePickerProps and add the size/variant props
  * that we want to pass through to the DateInput components.
  */
-export interface DateRangePickerProps
-  extends Omit<ReactAriaDateRangePickerProps<DateValue>, ExcludedProps>,
-    Omit<
-      DateRangePickerRootProps,
-      keyof ReactAriaDateRangePickerProps<DateValue> | ExcludedProps
-    >,
-    RecipeVariantProps<typeof dateRangePickerSlotRecipe> {
-  /**
-   * Whether the calendar popover should be open by default (uncontrolled).
-   */
-  defaultOpen?: boolean;
+export type DateRangePickerProps = Omit<
+  DateRangePickerRootProps,
+  keyof ReactAriaDateRangePickerProps<DateValue> | ExcludedProps
+> &
+  Omit<ReactAriaDateRangePickerProps<DateValue>, ExcludedProps> & {
+    /**
+     * Whether the calendar popover should be open by default (uncontrolled).
+     */
+    defaultOpen?: boolean;
 
-  /**
-   * Whether the calendar popover is open (controlled).
-   */
-  isOpen?: boolean;
+    /**
+     * Whether the calendar popover is open (controlled).
+     */
+    isOpen?: boolean;
 
-  /**
-   * Handler that is called when the calendar popover's open state changes.
-   */
-  onOpenChange?: (isOpen: boolean) => void;
+    /**
+     * Handler that is called when the calendar popover's open state changes.
+     */
+    onOpenChange?: (isOpen: boolean) => void;
 
-  /**
-   * Whether to hide the time zone information when using ZonedDateTime values.
-   * This prop is forwarded to both the main date inputs and footer time inputs.
-   */
-  hideTimeZone?: boolean;
-}
+    /**
+     * Whether to hide the time zone information when using ZonedDateTime values.
+     * This prop is forwarded to both the main date inputs and footer time inputs.
+     */
+    hideTimeZone?: boolean;
+  };
 
 /**
  * Props for the DateRangePickerTimeInput component.
  */
-export interface DateRangePickerTimeInputProps {
+export type DateRangePickerTimeInputProps = {
   hideTimeZone?: boolean;
   hourCycle?: 12 | 24;
-}
+};

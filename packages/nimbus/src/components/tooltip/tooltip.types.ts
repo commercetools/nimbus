@@ -1,8 +1,22 @@
 import type { PropsWithChildren } from "react";
 import type { TooltipProps as RATooltipProps } from "react-aria-components";
-import type { TooltipRootProps } from "./tooltip.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { tooltipRecipe } from "./tooltip.recipe";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+/**
+ * Base recipe props type that combines Chakra UI's recipe props
+ */
+type TooltipRecipeProps = RecipeProps<"tooltip"> & UnstyledProp;
+
+/**
+ * Root props type that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+export type TooltipRootProps = HTMLChakraProps<"div", TooltipRecipeProps>;
 
 /**
  * For use in components that use the polymorphic `as` and `asChild` props
@@ -27,13 +41,12 @@ type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
  * - a11y/state related props from react-aria-components Tooltip
  */
 type TooltipVariantProps = ExcludePolymorphicFromProps<
-  TooltipRootProps & RecipeVariantProps<typeof tooltipRecipe> & RATooltipProps
+  TooltipRootProps & RATooltipProps
 >;
 
 /**
- * Main props interface for the Tooltip components
+ * Main props type for the Tooltip components
  * Extends TooltipVariantProps to include root props, variant props,
  * and react-aria props, while adding support for React children.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TooltipProps extends PropsWithChildren<TooltipVariantProps> {}
+export type TooltipProps = PropsWithChildren<TooltipVariantProps>;

@@ -1,8 +1,33 @@
-import type { DateInputRootProps } from "./date-input.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { dateInputSlotRecipe } from "./date-input.recipe";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 import type { DateValue } from "react-aria";
 import type { DateFieldProps } from "react-aria-components";
+
+/**
+ * Base recipe props interface that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type DateInputRecipeProps = {
+  size?: SlotRecipeProps<"dateInput">["size"];
+  variant?: SlotRecipeProps<"dateInput">["variant"];
+} & UnstyledProp;
+
+/**
+ * Root props interface that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ *
+ * We exclude props that conflict with React Aria's DateFieldProps:
+ * - onChange: HTML's FormEventHandler vs React Aria's (value: DateValue | null) => void
+ * - value/defaultValue: HTML's string[] vs React Aria's DateValue | null
+ */
+export type DateInputRootProps = Omit<
+  HTMLChakraProps<"div", DateInputRecipeProps>,
+  "onChange" | "value" | "defaultValue"
+>;
 
 /**
  * Additional properties we want to exclude from the DateInput component.
@@ -31,19 +56,18 @@ type ExcludedProps =
  * 2. Merge with DateInputRootProps, excluding conflicting keys
  * 3. Add recipe variant props
  */
-export interface DateInputProps
-  extends DateFieldProps<DateValue>,
-    Omit<DateInputRootProps, keyof DateFieldProps<DateValue> | ExcludedProps>,
-    RecipeVariantProps<typeof dateInputSlotRecipe> {
-  /**
-   * Optional element to display at the start of the input
-   * Will respect text direction (left in LTR, right in RTL)
-   */
-  leadingElement?: React.ReactNode;
+export type DateInputProps = DateInputRootProps &
+  DateFieldProps<DateValue> &
+  Omit<DateInputRootProps, keyof DateFieldProps<DateValue> | ExcludedProps> & {
+    /**
+     * Optional element to display at the start of the input
+     * Will respect text direction (left in LTR, right in RTL)
+     */
+    leadingElement?: React.ReactNode;
 
-  /**
-   * Optional element to display at the end of the input
-   * Will respect text direction (right in LTR, left in RTL)
-   */
-  trailingElement?: React.ReactNode;
-}
+    /**
+     * Optional element to display at the end of the input
+     * Will respect text direction (right in LTR, left in RTL)
+     */
+    trailingElement?: React.ReactNode;
+  };

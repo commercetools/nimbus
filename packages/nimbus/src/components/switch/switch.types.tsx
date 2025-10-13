@@ -1,9 +1,15 @@
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import { switchSlotRecipe } from "./switch.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaCheckboxProps } from "react-aria";
+
+type SwitchRecipeProps = SlotRecipeProps<"switch">;
+
+export type SwitchRootProps = HTMLChakraProps<"label", SwitchRecipeProps>;
+
+export type SwitchLabelProps = HTMLChakraProps<"span">;
+
+export type SwitchTrackProps = HTMLChakraProps<"span">;
+
+export type SwitchThumbProps = HTMLChakraProps<"span">;
 
 /**
  * List of props that should be excluded from the root props when combining with ARIA props
@@ -15,17 +21,6 @@ export type ExcludedSwitchProps =
   | "validationState"
   | "validationBehavior"
   | "validate";
-
-/**
- * Props for the Switch component root element.
- * Includes all HTML props for the label element and recipe variant props.
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SwitchRootProps
-  extends HTMLChakraProps<
-    "label",
-    RecipeVariantProps<typeof switchSlotRecipe>
-  > {}
 
 /**
  * Main props interface for the Switch component.

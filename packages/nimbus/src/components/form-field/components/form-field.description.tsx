@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { FormFieldContext } from "./form-field.context";
-import type { FormFieldDescriptionSlotProps } from "../form-field.slots";
+import type { FormFieldDescriptionSlotProps } from "../form-field.types";
 
 export const FormFieldDescription = ({
   children,

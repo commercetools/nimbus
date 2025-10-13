@@ -12,14 +12,14 @@
  * - Maps block type IDs to user-friendly labels and Chakra UI styling props
  * - Ensures consistent styling across the editor and UI controls
  */
-export interface TextStyleDefinition {
+export type TextStyleDefinition = {
   id: string;
   label: string;
   props: {
     textStyle: string;
     fontWeight: string;
   };
-}
+};
 
 export const textStyles: TextStyleDefinition[] = [
   {

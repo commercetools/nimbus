@@ -3,10 +3,10 @@ import {
   type StackProps as ChakraStackProps,
 } from "@chakra-ui/react/stack";
 
-export interface StackProps extends ChakraStackProps {
+export type StackProps = ChakraStackProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 /**
  * # Stack

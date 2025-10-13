@@ -3,12 +3,14 @@ import {
   type VisuallyHiddenProps as ReactAriaVisuallyHiddenProps,
 } from "react-aria";
 
-export interface VisuallyHiddenProps
-  extends Omit<ReactAriaVisuallyHiddenProps, "elementType"> {
+export type VisuallyHiddenProps = Omit<
+  ReactAriaVisuallyHiddenProps,
+  "elementType"
+> & {
   /** specifies the element type to render, use `span` for inline content
    * and `div` for block content */
   as?: "span" | "div";
-}
+};
 
 /**
  * # VisuallyHidden

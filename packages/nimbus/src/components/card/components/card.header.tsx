@@ -1,9 +1,7 @@
 import { useContext, useEffect } from "react";
-import {
-  CardHeader as CardHeaderSlot,
-  type CardHeaderProps,
-} from "../card.slots";
+import { CardHeader as CardHeaderSlot } from "../card.slots";
 import { CardContext } from "./card.root";
+import type { CardHeaderProps } from "../card.types";
 
 export const CardHeader = ({ children, ...props }: CardHeaderProps) => {
   const context = useContext(CardContext);

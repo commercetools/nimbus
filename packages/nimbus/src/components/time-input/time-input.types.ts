@@ -1,13 +1,41 @@
-import type { TimeInputRootProps } from "./time-input.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { timeInputRecipe } from "./time-input.recipe";
 import type { TimeFieldProps } from "react-aria-components";
 import type { TimeValue } from "react-aria";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+/**
+ * Base recipe props type that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type TimeInputRecipeProps = {
+  size?: SlotRecipeProps<"timeInput">["size"];
+  variant?: SlotRecipeProps<"timeInput">["variant"];
+} & UnstyledProp;
+
+/**
+ * Root props type that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+
+export type TimeInputRootProps = HTMLChakraProps<"div", TimeInputRecipeProps>;
+
+export type TimeInputLeadingElementProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
+
+export type TimeInputTrailingElementProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
 
 /**
  * Properties from TimeFieldProps that would conflict with similarly named
- * properties in TimeInputRootProps. We use this to prevent TypeScript interface
- * merging conflicts by prioritizing the TimeFieldProps implementation.
+ * properties in TimeInputRootProps.
  *
  * Examples include: value, defaultValue, onChange, onBlur, onFocus, etc.
  */
@@ -33,24 +61,25 @@ type ExcludedProps =
   | "asChild";
 
 /**
- * Main props interface for the TimeInput component.
+ * Main props type for the TimeInput component.
  *
  * We use Omit to remove:
  * 1. Conflicting props from TimeInputRootProps to avoid TypeScript errors
  * 2. Explicitly excluded props that we don't want users to access
  */
-export interface TimeInputProps
-  extends Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
-    Omit<TimeFieldProps<TimeValue>, ExcludedProps>,
-    RecipeVariantProps<typeof timeInputRecipe> {
-  /**
-   * Optional element to display at the start of the input
-   * Will respect text direction (left in LTR, right in RTL)
-   */
-  leadingElement?: React.ReactNode;
-  /**
-   * Optional element to display at the end of the input
-   * Will respect text direction (right in LTR, left in RTL)
-   */
-  trailingElement?: React.ReactNode;
-}
+export type TimeInputProps = Omit<
+  TimeInputRootProps,
+  ConflictingFieldStateProps | ExcludedProps
+> &
+  Omit<TimeFieldProps<TimeValue>, ExcludedProps> & {
+    /**
+     * Optional element to display at the start of the input
+     * Will respect text direction (left in LTR, right in RTL)
+     */
+    leadingElement?: React.ReactNode;
+    /**
+     * Optional element to display at the end of the input
+     * Will respect text direction (right in LTR, left in RTL)
+     */
+    trailingElement?: React.ReactNode;
+  };

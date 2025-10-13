@@ -13,10 +13,10 @@ import type {
 } from "./money-input.types";
 
 // Props for the MoneyInputExample wrapper component
-interface MoneyInputExampleProps extends Partial<MoneyInputProps> {
+type MoneyInputExampleProps = Partial<MoneyInputProps> & {
   initialValue?: TValue;
   currencies?: string[];
-}
+};
 
 const meta: Meta<typeof MoneyInput> = {
   title: "Components/MoneyInput",

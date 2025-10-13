@@ -1,33 +1,12 @@
-import {
-  type HTMLChakraProps,
-  type RecipeVariantProps,
-  type UnstyledProp,
-  createSlotRecipeContext,
-} from "@chakra-ui/react/styled-system";
-
-import { multilineTextInputRecipe } from "./multiline-text-input.recipe";
-
-export interface MultilineTextInputRecipeProps
-  extends RecipeVariantProps<typeof multilineTextInputRecipe>,
-    UnstyledProp {}
-
-export type MultilineTextInputRootSlotProps = HTMLChakraProps<
-  "div",
-  MultilineTextInputRecipeProps
->;
-
-export type MultilineTextInputLeadingElementProps = HTMLChakraProps<
-  "div",
-  MultilineTextInputRecipeProps
->;
-
-export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
-  "textarea",
-  MultilineTextInputRecipeProps
->;
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import type {
+  MultilineTextInputRootSlotProps,
+  MultilineTextInputLeadingElementProps,
+  MultilineTextInputTextAreaSlotProps,
+} from "./multiline-text-input.types";
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  recipe: multilineTextInputRecipe,
+  key: "multilineTextInput",
 });
 
 /**

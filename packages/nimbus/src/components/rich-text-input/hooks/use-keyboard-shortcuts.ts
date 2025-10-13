@@ -21,9 +21,9 @@ import { HOTKEYS } from "../constants";
 import { toggleMark } from "../utils/slate-helpers";
 import { Softbreaker } from "../utils/slate-helpers";
 
-export interface UseKeyboardShortcutsProps {
+export type UseKeyboardShortcutsProps = {
   editor: Editor;
-}
+};
 
 export const useKeyboardShortcuts = ({ editor }: UseKeyboardShortcutsProps) => {
   const handleKeyDown = useCallback(
