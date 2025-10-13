@@ -4,6 +4,12 @@
   "main": "dist/commercetools-nimbus-tokens.cjs.js",
   "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/commercetools-nimbus-tokens.esm.js",
+      "require": "./dist/commercetools-nimbus-tokens.cjs.js"
+    }
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
