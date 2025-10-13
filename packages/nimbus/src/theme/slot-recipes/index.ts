@@ -20,6 +20,12 @@ import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
 import { searchInputSlotRecipe } from "@/components/search-input/search-input.recipe";
 import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/scoped-search-input.recipe";
+import { draggableListSlotRecipe } from "@/components/draggable-list/draggable-list.recipe";
+import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
+import { menuSlotRecipe } from "@/components/menu/menu.recipe";
+import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
+import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 
 /**
  * Keys for the slotRecipes object MUST be a valid JS identifier!!!!!!!!!!
@@ -32,12 +38,6 @@ import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/sc
  *
  * Silent failure results in there being no generated types for slot recipes, and causes all kinds of
  * false typescript errors that are really hard to debug. */
-import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
-import { menuSlotRecipe } from "@/components/menu/menu.recipe";
-import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
-import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
-import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
-
 export const slotRecipes = {
   dialog: dialogSlotRecipe,
   list: listSlotRecipe,
@@ -66,4 +66,5 @@ export const slotRecipes = {
   collapsibleMotion: collapsibleMotionSlotRecipe,
   searchInput: searchInputSlotRecipe,
   scopedSearchInput: scopedSearchInputSlotRecipe,
+  draggableList: draggableListSlotRecipe,
 };
