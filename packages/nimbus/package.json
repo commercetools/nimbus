@@ -18,6 +18,9 @@
     },
     "./package.json": "./package.json",
     "./setup-jsdom-polyfills": {
+      "import": {
+        "default": "./dist/setup-jsdom-polyfills.es.js"
+      },
       "require": {
         "default": "./dist/setup-jsdom-polyfills.cjs"
       }
