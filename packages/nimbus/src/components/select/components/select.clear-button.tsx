@@ -9,7 +9,6 @@ import { useIntl } from "react-intl";
 export const SelectClearButton = () => {
   const state = useContext(SelectStateContext);
   const intl = useIntl();
-
   if (!state?.selectedKey) {
     return null;
   }
@@ -21,13 +20,13 @@ export const SelectClearButton = () => {
   return (
     <ClearPressResponder>
       <IconButton
+        slot={null}
         pointerEvents="all"
         size="2xs"
         variant="ghost"
         aria-label={intl.formatMessage(messages.clearSelection)}
         aria-labelledby=""
         onPress={onPressRequest}
-        slot={null}
       >
         <CloseIcon />
       </IconButton>

@@ -1,4 +1,4 @@
-export { MoneyInput } from "./money-input";
+export * from "./money-input";
 export type {
   TValue,
   TMoneyValue,

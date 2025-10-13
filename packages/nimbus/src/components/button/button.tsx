@@ -18,10 +18,14 @@ export const Button = (props: ButtonProps) => {
   // create a local ref (because the consumer may not provide a forwardedRef)
   const localRef = useRef<HTMLButtonElement>(null);
   // merge the local ref with a potentially forwarded ref
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const baseRef = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   // Consume context props based on slot (this enables slot-aware behavior)
-  const [contextProps] = useContextProps(rest, ref, ButtonContext);
+  const [contextProps, contextRef] = useContextProps(
+    rest,
+    baseRef,
+    ButtonContext
+  );
 
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
@@ -33,7 +37,7 @@ export const Button = (props: ButtonProps) => {
       ...contextProps,
       elementType,
     },
-    ref
+    contextRef
   );
 
   const componentProps = mergeProps(contextProps, buttonProps, {
@@ -49,7 +53,7 @@ export const Button = (props: ButtonProps) => {
 
   return (
     <ButtonRoot
-      ref={ref}
+      ref={contextRef}
       {...componentProps}
       aria-disabled={componentProps.isDisabled || undefined}
       data-disabled={componentProps.isDisabled || undefined}
