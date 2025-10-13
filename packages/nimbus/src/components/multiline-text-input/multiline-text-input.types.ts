@@ -1,25 +1,35 @@
-import type { MultilineTextInputRootSlotProps } from "./multiline-text-input.slots";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 import type { TextFieldProps } from "react-aria-components";
 
-type MultilineTextInputRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
-  /**
-   * Variant variant
-   * @default "solid"
-   */
-  variant?: "solid" | "ghost";
-};
+export type MultilineTextInputRecipeProps = {
+  size?: SlotRecipeProps<"multilineTextInput">["size"];
+  variant?: SlotRecipeProps<"multilineTextInput">["variant"];
+} & UnstyledProp;
 
-export type MultilineTextInputProps = MultilineTextInputRecipeVariantProps &
-  TextFieldProps &
-  Omit<
-    MultilineTextInputRootSlotProps,
-    keyof TextFieldProps | "as" | "asChild"
-  > & {
+export type MultilineTextInputRootSlotProps = HTMLChakraProps<
+  "div",
+  MultilineTextInputRecipeProps
+>;
+
+export type MultilineTextInputLeadingElementProps = HTMLChakraProps<
+  "div",
+  MultilineTextInputRecipeProps
+>;
+
+export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
+  "textarea",
+  MultilineTextInputRecipeProps
+>;
+
+export type MultilineTextInputProps = Omit<
+  MultilineTextInputRootSlotProps,
+  keyof TextFieldProps | "as" | "asChild"
+> &
+  TextFieldProps & {
     ref?: React.Ref<HTMLTextAreaElement>;
     /**
      * When true, the textarea will automatically grow in height to fit its content.
