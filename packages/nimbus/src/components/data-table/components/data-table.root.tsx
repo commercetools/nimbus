@@ -17,7 +17,7 @@ export const DataTableRoot = function DataTableRoot<
   const {
     ref: forwardedRef,
     columns = [],
-    data = [],
+    rows = [],
     visibleColumns,
     search,
     sortDescriptor: controlledSortDescriptor,
@@ -70,8 +70,8 @@ export const DataTableRoot = function DataTableRoot<
   }, [columns, visibleColumns]);
 
   const filteredRows = useMemo(
-    () => (search ? filterRows(data, search, activeColumns, nestedKey) : data),
-    [data, search, activeColumns, nestedKey]
+    () => (search ? filterRows(rows, search, activeColumns, nestedKey) : rows),
+    [rows, search, activeColumns, nestedKey]
   );
 
   const sortedRows = useMemo(
@@ -127,7 +127,7 @@ export const DataTableRoot = function DataTableRoot<
   const contextValue: DataTableContextValue<T> = useMemo(
     () => ({
       columns,
-      data,
+      rows,
       visibleColumns,
       search,
       sortDescriptor,
@@ -160,7 +160,7 @@ export const DataTableRoot = function DataTableRoot<
     }),
     [
       columns,
-      data,
+      rows,
       visibleColumns,
       search,
       sortDescriptor,

@@ -23,7 +23,7 @@ export interface DataTableContextValue<
   T extends object = Record<string, unknown>,
 > {
   columns: DataTableColumnItem<T>[];
-  data: DataTableRowItem<T>[];
+  rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   search?: string;
@@ -100,7 +100,7 @@ export type DataTableDensity = "default" | "condensed";
  * This allows the component to accept both structural props from Root
  * and styling variants from the recipe.
  */
-type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data"> &
+type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "rows"> &
   RecipeVariantProps<typeof dataTableSlotRecipe>;
 
 /**
@@ -116,7 +116,7 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   ref?: React.Ref<HTMLDivElement>;
   columns: DataTableColumnItem<T>[];
   unstyled?: boolean;
-  data: DataTableRowItem<T>[];
+  rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;

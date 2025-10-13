@@ -95,7 +95,7 @@ export const sortableColumns: DataTableColumnItem[] = [
   },
 ];
 
-export const data: DataTableRowItem[] = [
+export const rows: DataTableRowItem[] = [
   { id: "1", name: "Alice", age: 30, role: "Admin", class: "special" },
   { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
   { id: "3", name: "Carol", age: 28, role: "User", class: "common" },
@@ -744,7 +744,7 @@ export const modifiedFetchedData = fetchData.map((item) => ({
       </Heading>
       <DataTable
         columns={nestedTableColumns}
-        data={item.sky}
+        rows={item.sky}
         allowsSorting={true}
         isResizable={true}
         onRowClick={() => {}}

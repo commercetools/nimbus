@@ -23,7 +23,7 @@ import { DataTable } from "./data-table";
 import {
   columns,
   sortableColumns,
-  data,
+  rows,
   mcMockData,
   mcColumns,
   longTextData,
@@ -286,16 +286,16 @@ const DataTableWithModals = ({
   });
 
   const [tableData, setTableData] = useState<DataTableRowItem[]>(
-    props.data || []
+    props.rows || []
   );
   const [dataVersion, setDataVersion] = useState(0);
 
   useEffect(() => {
-    if (props.data) {
-      setTableData(props.data);
+    if (props.rows) {
+      setTableData(props.rows);
       setDataVersion(0);
     }
-  }, [props.data]);
+  }, [props.rows]);
 
   const handleRowClick = onRowClick
     ? (row: DataTableRowItem) => {
@@ -322,7 +322,7 @@ const DataTableWithModals = ({
     <>
       <DataTable
         {...props}
-        data={tableData}
+        rows={tableData}
         onRowClick={handleRowClick}
         key={`table-v${dataVersion}`} // Force re-render when data changes
       />
@@ -402,7 +402,7 @@ export const Base: Story = {
   ),
   args: {
     columns: mcColumns,
-    data: mcMockData,
+    rows: mcMockData,
     allowsSorting: true,
     isResizable: true,
     selectionMode: "multiple",
@@ -649,7 +649,7 @@ export const ColumnManager: Story = {
       </>
     );
   },
-  args: { columns, data },
+  args: { columns, rows },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -836,7 +836,7 @@ export const ColumnManager: Story = {
 
 export const CustomColumn: Story = {
   render: (args) => <DataTableWithModals {...args} onRowClick={() => {}} />,
-  args: { columns, data },
+  args: { columns, rows },
 };
 
 export const SearchAndHighlight: Story = {
@@ -861,7 +861,7 @@ export const SearchAndHighlight: Story = {
       </Stack>
     );
   },
-  args: { columns, data },
+  args: { columns, rows },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -1103,7 +1103,7 @@ export const AdjustableColumns: Story = {
   },
   args: {
     columns,
-    data,
+    rows,
   },
 };
 
@@ -1128,7 +1128,7 @@ export const Condensed: Story = {
       </Stack>
     );
   },
-  args: { columns, data },
+  args: { columns, rows },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -1346,7 +1346,7 @@ export const StickyHeader: Story = {
   },
   args: {
     columns,
-    data: [...data],
+    rows: [...rows],
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -1501,7 +1501,7 @@ export const ClickableRows: Story = {
       </Stack>
     );
   },
-  args: { columns, data },
+  args: { columns, rows },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -1734,7 +1734,7 @@ export const WithSorting: Story = {
   },
   args: {
     columns: sortableColumns,
-    data,
+    rows,
     allowsSorting: true,
     ["aria-label"]: "Sorting Example",
   },
@@ -1800,7 +1800,7 @@ export const ControlledSorting: Story = {
   },
   args: {
     columns: sortableColumns,
-    data,
+    rows,
     allowsSorting: true,
   },
 };
@@ -1831,7 +1831,7 @@ export const SortingWithSearch: Story = {
   },
   args: {
     columns: sortableColumns,
-    data,
+    rows,
     allowsSorting: true,
   },
 };
@@ -2000,7 +2000,7 @@ export const SelectionShowcase: Story = {
         </Stack>
         <DataTableWithModals
           columns={sortableColumns}
-          data={data}
+          rows={rows}
           search={search}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
@@ -2278,7 +2278,7 @@ export const TextTruncation: Story = {
   },
   args: {
     columns: truncationColumns,
-    data: longTextData,
+    rows: longTextData,
     allowsSorting: true,
   },
   play: async ({ canvasElement, step }) => {
@@ -2322,7 +2322,7 @@ export const MultilineHeaders: Story = {
   render: (args) => <DataTableWithModals {...args} />,
   args: {
     columns: multilineHeadersColumns,
-    data: multilineHeadersData,
+    rows: multilineHeadersData,
     allowsSorting: true,
     isResizable: true,
     onRowClick: () => {},
@@ -2346,7 +2346,7 @@ export const WithFooter: Story = {
         data-testid="footer-content"
       >
         <Text fontWeight="bold" data-testid="total-items">
-          Total: {data.length} items
+          Total: {rows.length} items
         </Text>
         <Stack
           direction="row"
@@ -2379,7 +2379,7 @@ export const WithFooter: Story = {
 
         <DataTableWithModals
           columns={columns}
-          data={data}
+          rows={rows}
           allowsSorting={true}
           selectionMode="multiple"
           footer={footerContent}
@@ -2415,7 +2415,7 @@ export const WithFooter: Story = {
 
     await step("Footer displays correct content", async () => {
       const totalItems = canvas.getByTestId("total-items");
-      expect(totalItems).toHaveTextContent(`Total: ${data.length} items`);
+      expect(totalItems).toHaveTextContent(`Total: ${rows.length} items`);
 
       const pageInfo = canvas.getByTestId("page-info");
       expect(pageInfo).toHaveTextContent("Page 1 of 1");
@@ -2444,7 +2444,7 @@ export const HorizontalScrolling: Story = {
         {/* Container with fixed width to force horizontal scrolling */}
         <DataTableWithModals
           columns={manyColumns}
-          data={wideData}
+          rows={wideData}
           isResizable={true}
           allowsSorting={true}
           maxHeight="400px"
@@ -2548,7 +2548,7 @@ export const FlexibleNestedChildren: Story = {
         accessor: (row) => row.class as React.ReactNode,
       },
     ],
-    data: flexibleNestedData,
+    rows: flexibleNestedData,
     allowsSorting: true,
     isResizable: true,
     maxHeight: "400px",
@@ -2604,7 +2604,7 @@ export const NoNestedContent: Story = {
         accessor: (row) => row.status as React.ReactNode,
       },
     ],
-    data: [
+    rows: [
       {
         id: "parent-1",
         name: "Parent Item 1",
@@ -2698,7 +2698,7 @@ export const NestedTable: Story = {
           row.distance as React.ReactNode,
       },
     ],
-    data: modifiedFetchedData,
+    rows: modifiedFetchedData,
     nestedKey: "sky", // Custom nested key
     allowsSorting: true,
     isResizable: true,
@@ -2886,7 +2886,7 @@ export const AllFeatures: Story = {
           </Heading>
           <DataTableWithModals
             columns={nestedComprehensiveTableColumns}
-            data={item.children as DataTableRowItem[]}
+            rows={item.children as DataTableRowItem[]}
             allowsSorting={true}
             isResizable={true}
             onRowClick={() => {}}
@@ -3101,7 +3101,7 @@ export const AllFeatures: Story = {
         >
           <DataTableWithModals
             columns={comprehensiveColumns}
-            data={modifiedComprehensiveData}
+            rows={modifiedComprehensiveData}
             visibleColumns={visibleColumns}
             search={search}
             selectedKeys={selectedKeys}
@@ -3224,7 +3224,7 @@ export const DisabledRowsShowcase: Story = {
             Controls
           </Heading>
           <Flex gap="300" flexWrap="wrap">
-            {data.map((row) => (
+            {rows.map((row) => (
               <Button
                 key={row.id}
                 onPress={() => toggleDisabled(row.id)}
@@ -3286,7 +3286,7 @@ export const DisabledRowsShowcase: Story = {
         {/* DataTable */}
         <DataTableWithModals
           columns={sortableColumns}
-          data={data}
+          rows={rows}
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
           disabledKeys={disabledKeys}
@@ -3328,7 +3328,7 @@ export const RowPinning: Story = {
         </Text>
         <DataTable
           columns={sortableColumns}
-          data={data}
+          rows={rows}
           pinnedRows={pinnedRows}
           onPinToggle={handlePinToggle}
           allowsSorting={true}
@@ -3514,7 +3514,7 @@ export const RowPinningEdgeCases: Story = {
         </Text>
         <DataTable
           columns={sortableColumns}
-          data={data.slice(0, 5)} // Use smaller dataset for edge case testing
+          rows={rows.slice(0, 5)} // Use smaller dataset for edge case testing
           pinnedRows={pinnedRows}
           onPinToggle={handlePinToggle}
           selectedKeys={selectedKeys}
