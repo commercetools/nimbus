@@ -33,6 +33,7 @@ import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { tableSlotRecipe } from "@/components/table/table.recipe";
 import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
+import { timeInputRecipe } from "@/components/time-input/time-input.recipe";
 import { buttonGroupRecipe } from "@/components/toggle-button-group/toggle-button-group.recipe";
 
 /**
@@ -82,5 +83,6 @@ export const slotRecipes = {
   switch: switchSlotRecipe,
   table: tableSlotRecipe,
   taggroup: tagGroupSlotRecipe,
+  timeInput: timeInputRecipe,
   toggleButtonGroup: buttonGroupRecipe,
 };

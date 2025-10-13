@@ -1,19 +1,37 @@
-import type { TimeInputRootProps } from "./time-input.slots";
 import type { TimeFieldProps } from "react-aria-components";
 import type { TimeValue } from "react-aria";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-type TimeInputRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "sm" | "md";
-  /**
-   * Variant variant
-   * @default "solid"
-   */
-  variant?: "solid" | "ghost";
-};
+/**
+ * Base recipe props type that combines Chakra UI's recipe props
+ * with the unstyled prop option for the div element.
+ */
+type TimeInputRecipeProps = {
+  size?: SlotRecipeProps<"timeInput">["size"];
+  variant?: SlotRecipeProps<"timeInput">["variant"];
+} & UnstyledProp;
+
+/**
+ * Root props type that extends Chakra's HTML props with our recipe props.
+ * This creates a complete set of props for the root element, combining
+ * HTML attributes, Chakra's styling system, and our custom recipe props.
+ */
+
+export type TimeInputRootProps = HTMLChakraProps<"div", TimeInputRecipeProps>;
+
+export type TimeInputLeadingElementProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
+
+export type TimeInputTrailingElementProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
 
 /**
  * Properties from TimeFieldProps that would conflict with similarly named
@@ -49,8 +67,10 @@ type ExcludedProps =
  * 1. Conflicting props from TimeInputRootProps to avoid TypeScript errors
  * 2. Explicitly excluded props that we don't want users to access
  */
-export type TimeInputProps = TimeInputRecipeVariantProps &
-  Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps> &
+export type TimeInputProps = Omit<
+  TimeInputRootProps,
+  ConflictingFieldStateProps | ExcludedProps
+> &
   Omit<TimeFieldProps<TimeValue>, ExcludedProps> & {
     /**
      * Optional element to display at the start of the input
