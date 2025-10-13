@@ -8,10 +8,9 @@ import type {
   MoneyInputAmountInputSlotProps,
   MoneyInputBadgeSlotProps,
 } from "./money-input.types";
-import { moneyInputRecipe } from "./money-input.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: moneyInputRecipe,
+  key: "moneyInput",
 });
 
 export const MoneyInputRootSlot = withProvider<

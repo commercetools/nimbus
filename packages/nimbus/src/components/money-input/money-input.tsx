@@ -101,7 +101,7 @@ import messages from "./money-input.i18n";
  * - **Accessibility compliant** following WCAG 2.1 AA standards
  * - **Dual API support** for backward compatibility and modern development
  */
-export const MoneyInputComponent = (props: MoneyInputProps) => {
+export const MoneyInput = (props: MoneyInputProps) => {
   const {
     id,
     name,
@@ -367,26 +367,15 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   );
 };
 
-MoneyInputComponent.displayName = "MoneyInput";
-
-// Create the main export with static methods
-type MoneyInputType = typeof MoneyInputComponent & {
-  // Static methods preserved from UI Kit
-  convertToMoneyValue: typeof transformFormInputToMoneyValue;
-  parseMoneyValue: typeof formatMoneyValueForDisplay;
-  isEmpty: typeof isEmpty;
-  isHighPrecision: typeof isHighPrecision;
-  getAmountInputId: (id?: string) => string | undefined;
-  getCurrencyDropdownId: (id?: string) => string | undefined;
-};
-
-export const MoneyInput = MoneyInputComponent as MoneyInputType;
-
 // Static methods for UI-Kit compatibility and internal utilities
-MoneyInput.getAmountInputId = (id) => getMoneyGroupAttribute(id, "amount");
-MoneyInput.getCurrencyDropdownId = (id) =>
+MoneyInput.getAmountInputId = (id?: string) =>
+  getMoneyGroupAttribute(id, "amount");
+MoneyInput.getCurrencyDropdownId = (id?: string) =>
   getMoneyGroupAttribute(id, "currencyCode");
 MoneyInput.convertToMoneyValue = transformFormInputToMoneyValue;
 MoneyInput.parseMoneyValue = formatMoneyValueForDisplay;
 MoneyInput.isEmpty = isEmpty;
 MoneyInput.isHighPrecision = isHighPrecision;
+
+// Display name
+MoneyInput.displayName = "MoneyInput";
