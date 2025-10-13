@@ -1,5 +1,20 @@
 import type { Ref, FocusEventHandler } from "react";
-import type { RichTextInputRootSlotProps } from "./rich-text-input.slots";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+type RichTextInputRecipeProps = SlotRecipeProps<"richTextInput">;
+
+export type RichTextInputRootSlotProps = HTMLChakraProps<
+  "div",
+  RichTextInputRecipeProps & UnstyledProp
+>;
+
+export type RichTextInputToolbarSlotProps = HTMLChakraProps<"div">;
+
+export type RichTextInputEditableSlotProps = HTMLChakraProps<"div">;
 
 type DefaultExcludedProps = "css" | "asChild" | "as" | "onChange";
 
