@@ -9,9 +9,13 @@ import type {
 // ============================================================
 
 type CardRecipeProps = {
+  /** Internal padding variant for the card content */
   cardPadding?: SlotRecipeProps<"card">["cardPadding"];
+  /** Border style variant (outline, none, etc.) */
   borderStyle?: SlotRecipeProps<"card">["borderStyle"];
+  /** Elevation shadow level for the card */
   elevation?: SlotRecipeProps<"card">["elevation"];
+  /** Background style variant (white, gray, etc.) */
   backgroundStyle?: SlotRecipeProps<"card">["backgroundStyle"];
 } & UnstyledProp;
 

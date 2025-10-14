@@ -6,7 +6,15 @@ import type { SearchFieldProps as RaSearchFieldProps } from "react-aria-componen
 // ============================================================
 
 type SearchInputRecipeProps = {
+  /**
+   * Size variant of the search input
+   * @default "md"
+   */
   size?: SlotRecipeProps<"searchInput">["size"];
+  /**
+   * Visual style variant of the search input
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"searchInput">["variant"];
 };
 
@@ -32,6 +40,12 @@ export type SearchInputProps = Omit<
   keyof RaSearchFieldProps | "as" | "asChild"
 > &
   Omit<RaSearchFieldProps, "ref"> & {
+    /**
+     * Ref forwarding to the input element
+     */
     ref?: React.Ref<HTMLInputElement>;
+    /**
+     * Placeholder text for the search input
+     */
     placeholder?: string;
   };

@@ -7,7 +7,9 @@ import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 // ============================================================
 
 type LocalizedFieldRecipeProps = {
+  /** Size variant of the localized field */
   size?: SlotRecipeProps<"localizedField">["size"];
+  /** Input type variant (text, multiLine, richText, money) */
   type?: SlotRecipeProps<"localizedField">["type"];
 };
 

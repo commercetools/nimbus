@@ -7,7 +7,9 @@ import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 // ============================================================
 
 type DialogRecipeProps = {
+  /** Placement of the dialog in the viewport */
   placement?: SlotRecipeProps<"dialog">["placement"];
+  /** How scrolling behavior is handled when content overflows */
   scrollBehavior?: SlotRecipeProps<"dialog">["scrollBehavior"];
 };
 

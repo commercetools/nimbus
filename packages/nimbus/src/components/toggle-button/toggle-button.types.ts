@@ -6,8 +6,20 @@ import type { ToggleButtonProps as RaToggleButtonProps } from "react-aria-compon
 // ============================================================
 
 type ToggleButtonRecipeProps = {
+  /**
+   * Size variant of the toggle button
+   * @default "md"
+   */
   size?: RecipeProps<"toggleButton">["size"];
+  /**
+   * Visual style variant of the toggle button
+   * @default "outline"
+   */
   variant?: RecipeProps<"toggleButton">["variant"];
+  /**
+   * Color tone palette for the toggle button
+   * @default "primary"
+   */
   tone?: RecipeProps<"toggleButton">["tone"];
 };
 
@@ -35,5 +47,8 @@ export type ToggleButtonProps = Omit<
   keyof RaToggleButtonProps | ExcludedProps
 > &
   RaToggleButtonProps & {
+    /**
+     * Ref forwarding to the button element
+     */
     ref?: React.Ref<HTMLButtonElement>;
   };

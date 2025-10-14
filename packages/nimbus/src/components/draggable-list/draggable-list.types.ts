@@ -12,6 +12,10 @@ import type {
 // ============================================================
 
 type DraggableListRecipeProps = {
+  /**
+   * Size variant of the draggable list
+   * @default "md"
+   */
   size?: SlotRecipeProps<"draggableList">["size"];
 };
 

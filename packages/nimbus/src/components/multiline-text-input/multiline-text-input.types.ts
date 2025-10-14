@@ -10,7 +10,15 @@ import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
 // ============================================================
 
 export type MultilineTextInputRecipeProps = {
+  /**
+   * Size variant of the multiline text input
+   * @default "md"
+   */
   size?: SlotRecipeProps<"multilineTextInput">["size"];
+  /**
+   * Visual style variant of the multiline text input
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"multilineTextInput">["variant"];
 } & UnstyledProp;
 
@@ -42,9 +50,27 @@ export type MultilineTextInputProps = Omit<
   keyof RaTextFieldProps | "as" | "asChild"
 > &
   RaTextFieldProps & {
+    /**
+     * Ref forwarding to the textarea element
+     */
     ref?: React.Ref<HTMLTextAreaElement>;
+    /**
+     * Whether the textarea should automatically adjust its height based on content
+     * @default false
+     */
     autoGrow?: boolean;
+    /**
+     * Number of visible text rows
+     * @default 3
+     */
     rows?: number;
+    /**
+     * Optional element to display at the start of the textarea
+     * Respects text direction (left in LTR, right in RTL)
+     */
     leadingElement?: React.ReactNode;
+    /**
+     * Placeholder text for the textarea
+     */
     placeholder?: string;
   };

@@ -9,7 +9,15 @@ import type {
 // ============================================================
 
 type FormFieldRecipeProps = {
+  /**
+   * Size variant of the form field
+   * @default "md"
+   */
   size?: SlotRecipeProps<"formField">["size"];
+  /**
+   * Layout direction for label and input positioning
+   * @default "column"
+   */
   direction?: SlotRecipeProps<"formField">["direction"];
 };
 
@@ -37,19 +45,36 @@ export type FormFieldPopoverSlotProps = HTMLChakraProps<"div">;
 // ============================================================
 
 export type FormFieldProps = FormFieldRootSlotProps & {
+  /**
+   * Form field content (label, input, description, error)
+   */
   children?: React.ReactNode;
-  /** true if the field is a required field */
+  /**
+   * Whether the field is required for form submission
+   * @default false
+   */
   isRequired?: boolean;
-  /** true if the field is invalid */
+  /**
+   * Whether the field has a validation error
+   * @default false
+   */
   isInvalid?: boolean;
-  /** true if the field is disabled */
+  /**
+   * Whether the field is disabled
+   * @default false
+   */
   isDisabled?: boolean;
-  /** true, if the field is read only  */
+  /**
+   * Whether the field is read-only
+   * @default false
+   */
   isReadOnly?: boolean;
-  /** id passed to the field's input component*/
+  /**
+   * Unique identifier for the input element
+   */
   id?: string;
   /**
-   * React ref to be forwarded to the root element
+   * Ref forwarding to the root element
    */
   ref?: React.Ref<HTMLDivElement>;
 };

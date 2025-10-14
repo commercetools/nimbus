@@ -10,8 +10,19 @@ import type {
 // ============================================================
 
 type ButtonRecipeProps = {
+  /**
+   * Size variant of the button
+   * @default "md"
+   */
   size?: RecipeProps<"button">["size"];
+  /**
+   * Visual style variant of the button
+   * @default "subtle"
+   */
   variant?: RecipeProps<"button">["variant"];
+  /**
+   * Color tone palette for the button
+   */
   tone?: RecipeProps<"button">["tone"];
 } & UnstyledProp;
 
@@ -32,7 +43,16 @@ export type ButtonRootSlotProps = Omit<
 
 export type ButtonProps = Omit<ButtonRootSlotProps, keyof RaButtonProps> &
   RaButtonProps & {
+    /**
+     * Data attributes for testing or custom metadata
+     */
     [key: `data-${string}`]: unknown;
+    /**
+     * Slot name for React Aria Components composition
+     */
     slot?: string | null | undefined;
+    /**
+     * Ref forwarding to the button element
+     */
     ref?: React.Ref<HTMLButtonElement>;
   };

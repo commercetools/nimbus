@@ -10,7 +10,13 @@ import type { AriaLinkOptions } from "react-aria";
 // ============================================================
 
 type LinkRecipeProps = {
+  /**
+   * Size variant of the link
+   */
   size?: RecipeProps<"link">["size"];
+  /**
+   * Font color variant of the link
+   */
   fontColor?: RecipeProps<"link">["fontColor"];
 } & UnstyledProp;
 
@@ -37,6 +43,12 @@ type LinkVariantProps = Omit<
 // ============================================================
 
 export type LinkProps = LinkVariantProps & {
+  /**
+   * Content to display inside the link
+   */
   children?: React.ReactNode;
+  /**
+   * Ref forwarding to the anchor element
+   */
   ref?: React.Ref<HTMLAnchorElement>;
 };

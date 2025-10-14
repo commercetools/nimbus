@@ -5,7 +5,7 @@ import type { ThemeProviderProps } from "next-themes";
 // ============================================================
 
 /**
- * TypeScript module augmentation for Nimbus router configuration.
+ * TypeScript module augmentation interface for Nimbus router configuration.
  *
  * This allows consumers to extend the router configuration types
  * to match their specific router framework, providing better type safety.
@@ -102,16 +102,16 @@ export type ColorModeProviderProps = ThemeProviderProps;
  */
 export type NimbusProviderProps = ColorModeProviderProps & {
   /**
-   * Optional locale for internationalization.
-   * Expects a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., 'en-US', 'de-DE', 'fr-FR').
-   * Defaults to the user's browser locale if not provided.
+   * Locale for internationalization support
+   * Expects a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., 'en-US', 'de-DE', 'fr-FR')
+   * @default User's browser locale
    */
   locale?: string;
   /**
-   * Optional router configuration object for client-side navigation.
-   * When provided, all nimbus components with href props will use client-side routing.
-   * - `navigate`: Function to programmatically navigate to routes.
-   * - `useHref`: Optional function to transform hrefs (useful for base paths).
+   * Router configuration for client-side navigation
+   * When provided, all Nimbus components with href props will use client-side routing
+   * - `navigate`: Function to programmatically navigate to routes
+   * - `useHref`: Optional function to transform hrefs (useful for base paths)
    */
   router?: NimbusRouterConfig | TypedNimbusRouterConfig;
 };

@@ -10,6 +10,10 @@ import type { AriaProgressBarProps } from "react-aria";
 // ============================================================
 
 type ProgressBarRecipeProps = {
+  /**
+   * Size variant of the progress bar
+   * @default "md"
+   */
   size?: SlotRecipeProps<"progressBar">["size"];
   /**
    * Whether the progress bar represents an active, ongoing process.
@@ -18,8 +22,20 @@ type ProgressBarRecipeProps = {
    * @default true
    */
   isDynamic?: SlotRecipeProps<"progressBar">["isDynamic"];
+  /**
+   * Whether the progress is indeterminate (unknown duration)
+   * @default false
+   */
   isIndeterminate?: SlotRecipeProps<"progressBar">["isIndeterminate"];
+  /**
+   * Visual style variant of the progress bar
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"progressBar">["variant"];
+  /**
+   * Layout configuration for label and value positioning
+   * @default "stacked"
+   */
   layout?: SlotRecipeProps<"progressBar">["layout"];
 } & UnstyledProp;
 
@@ -60,9 +76,8 @@ export type ProgressBarProps = Omit<ProgressBarRootSlotProps, ExcludedProps> & {
    * Ref forwarding to the root element
    */
   ref?: React.Ref<HTMLDivElement>;
-
   /**
-   * Format options for the progress bar.
+   * Format options for the progress bar value display
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
    * @default { style: "percent" }
    */

@@ -7,6 +7,10 @@ import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 // ============================================================
 
 type CheckboxRecipeProps = {
+  /**
+   * Size variant of the checkbox
+   * @default "md"
+   */
   size?: SlotRecipeProps<"checkbox">["size"];
 };
 
@@ -29,6 +33,12 @@ export type CheckboxIndicatorSlotProps = HTMLChakraProps<"span">;
 // ============================================================
 
 export type CheckboxProps = CheckboxRootSlotProps & {
+  /**
+   * Ref forwarding to the label element
+   */
   ref?: Ref<HTMLLabelElement>;
+  /**
+   * The label content to display next to the checkbox
+   */
   children?: ReactNode;
 };

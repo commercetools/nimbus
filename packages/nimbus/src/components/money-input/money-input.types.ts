@@ -8,6 +8,10 @@ export type { TValue, TCurrencyCode, TMoneyValue } from "./utils";
 // ============================================================
 
 type MoneyInputRecipeProps = {
+  /**
+   * Size variant of the money input
+   * @default "md"
+   */
   size?: SlotRecipeProps<"moneyInput">["size"];
 };
 

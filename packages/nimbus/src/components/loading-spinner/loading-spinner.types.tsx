@@ -9,7 +9,15 @@ import type {
 // ============================================================
 
 type LoadingSpinnerRecipeProps = {
+  /**
+   * Size variant of the loading spinner
+   * @default "sm"
+   */
   size?: RecipeProps<"loadingSpinner">["size"];
+  /**
+   * Color tone palette for the loading spinner
+   * @default "primary"
+   */
   tone?: RecipeProps<"loadingSpinner">["tone"];
 } & UnstyledProp;
 
@@ -35,5 +43,8 @@ type LoadingSpinnerVariantProps = LoadingSpinnerRootSlotProps & {
 // ============================================================
 
 export type LoadingSpinnerProps = LoadingSpinnerVariantProps & {
+  /**
+   * Ref forwarding to the root element
+   */
   ref?: React.Ref<HTMLDivElement>;
 };

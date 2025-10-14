@@ -24,6 +24,12 @@ export type SeparatorRootSlotProps = HTMLChakraProps<
 // ============================================================
 
 export type SeparatorProps = SeparatorRootSlotProps & {
+  /**
+   * Data attributes for testing or custom metadata
+   */
   [key: `data-${string}`]: unknown;
+  /**
+   * Ref forwarding to the root element
+   */
   ref?: React.Ref<HTMLDivElement>;
 };

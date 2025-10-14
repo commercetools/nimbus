@@ -19,7 +19,9 @@ import type {
 // ============================================================
 
 type DataTableSlotRecipeProps = {
+  /** Whether to truncate cell content with ellipsis */
   truncated?: SlotRecipeProps<"dataTable">["truncated"];
+  /** Density variant controlling row height and padding */
   density?: SlotRecipeProps<"dataTable">["density"];
 } & UnstyledProp;
 

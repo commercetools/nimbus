@@ -41,9 +41,11 @@ export type SwitchProps = Omit<
 > &
   Omit<AriaCheckboxProps, ExcludedSwitchProps> & {
     /**
-     * The content to display next to the switch.
-     * Can be a string or React node.
+     * The label content to display next to the switch
      */
     children?: React.ReactNode;
+    /**
+     * Ref forwarding to the input element
+     */
     ref?: React.Ref<HTMLInputElement>;
   };

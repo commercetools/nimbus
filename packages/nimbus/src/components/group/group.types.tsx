@@ -41,6 +41,9 @@ export interface GroupProps
       | "onHoverStart"
       | "onHoverEnd"
     > {
+  /**
+   * Ref forwarding to the root element
+   */
   ref?: Ref<typeof RaGroup>;
 }
 

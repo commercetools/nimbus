@@ -11,7 +11,9 @@ import type { DateFieldProps as RaDateFieldProps } from "react-aria-components";
 // ============================================================
 
 type DateInputRecipeProps = {
+  /** Size variant of the date input */
   size?: SlotRecipeProps<"dateInput">["size"];
+  /** Visual style variant of the date input */
   variant?: SlotRecipeProps<"dateInput">["variant"];
 } & UnstyledProp;
 
@@ -53,6 +55,8 @@ export type DateInputProps = Omit<
   keyof RaDateFieldProps<DateValue> | ExcludedProps
 > &
   Omit<RaDateFieldProps<DateValue>, ExcludedProps> & {
+    /** Optional element to display at the start of the input */
     leadingElement?: React.ReactNode;
+    /** Optional element to display at the end of the input */
     trailingElement?: React.ReactNode;
   };

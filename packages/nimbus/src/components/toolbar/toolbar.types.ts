@@ -11,8 +11,11 @@ import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
 // ============================================================
 
 type ToolbarRecipeProps = {
+  /** Size variant of the toolbar */
   size?: RecipeProps<"toolbar">["size"];
+  /** Layout orientation of the toolbar */
   orientation?: RecipeProps<"toolbar">["orientation"];
+  /** Visual style variant of the toolbar */
   variant?: RecipeProps<"toolbar">["variant"];
 } & UnstyledProp;
 

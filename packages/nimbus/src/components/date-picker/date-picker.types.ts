@@ -12,7 +12,12 @@ import type {
 // ============================================================
 
 type DatePickerRecipeProps = {
+  /**
+   * Size variant of the date picker
+   * @default "md"
+   */
   size?: SlotRecipeProps<"datePicker">["size"];
+  /** Visual style variant of the date picker */
   variant?: SlotRecipeProps<"datePicker">["variant"];
 } & UnstyledProp;
 

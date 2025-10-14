@@ -9,6 +9,10 @@ import type {
 // ============================================================
 
 type RadioInputRecipeProps = {
+  /**
+   * Layout orientation for radio options
+   * @default "vertical"
+   */
   orientation?: RecipeProps<"radioInput">["orientation"];
 };
 
@@ -34,6 +38,7 @@ type RadioGroupPropsSubset = Omit<
   RaRadioGroupProps,
   "children" | "orientation"
 > & {
+  /** Radio options to display */
   children?: React.ReactNode;
 };
 

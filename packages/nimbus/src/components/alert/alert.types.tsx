@@ -7,7 +7,9 @@ import type { ButtonProps } from "../button";
 // ============================================================
 
 type AlertRecipeProps = {
+  /** Color tone palette for the alert */
   tone?: SlotRecipeProps<"alert">["tone"];
+  /** Visual style variant of the alert */
   variant?: SlotRecipeProps<"alert">["variant"];
 };
 

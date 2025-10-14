@@ -11,7 +11,9 @@ import type {
 // ============================================================
 
 type TimeInputRecipeProps = {
+  /** Size variant of the time input */
   size?: SlotRecipeProps<"timeInput">["size"];
+  /** Visual style variant of the time input */
   variant?: SlotRecipeProps<"timeInput">["variant"];
 } & UnstyledProp;
 
@@ -61,6 +63,8 @@ export type TimeInputProps = Omit<
   ConflictingFieldStateProps | ExcludedProps
 > &
   Omit<RaTimeFieldProps<TimeValue>, ExcludedProps> & {
+    /** Optional element to display at the start of the input */
     leadingElement?: React.ReactNode;
+    /** Optional element to display at the end of the input */
     trailingElement?: React.ReactNode;
   };

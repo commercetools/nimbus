@@ -5,8 +5,20 @@ import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 // ============================================================
 
 type TabsRecipeProps = {
+  /**
+   * Layout orientation of the tabs
+   * @default "horizontal"
+   */
   orientation?: SlotRecipeProps<"tabs">["orientation"];
+  /**
+   * Placement of the tab list relative to panels
+   * @default "start"
+   */
   placement?: SlotRecipeProps<"tabs">["placement"];
+  /**
+   * Size variant of the tabs
+   * @default "md"
+   */
   size?: SlotRecipeProps<"tabs">["size"];
 };
 

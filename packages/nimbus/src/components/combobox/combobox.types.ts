@@ -18,8 +18,20 @@ import type React from "react";
 // ============================================================
 
 type ComboBoxRecipeVariantProps = {
+  /**
+   * Size variant of the combobox
+   * @default "md"
+   */
   size?: SlotRecipeProps<"combobox">["size"];
+  /**
+   * Visual style variant of the combobox
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"combobox">["variant"];
+  /**
+   * Selection mode for the combobox
+   * @default "single"
+   */
   selectionMode?: SlotRecipeProps<"combobox">["selectionMode"];
 };
 
