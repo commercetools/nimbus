@@ -4,7 +4,7 @@ import {
   type CurrencyCode,
   type MoneyInputValue,
   type MoneyValue,
-  type TFieldErrors,
+  type FieldErrorsData,
   MoneyInput,
 } from "@/components";
 import { messages } from "../localized-field.i18n";
@@ -18,7 +18,7 @@ type LanguagesSplitByDefaultLocale = {
 type TouchedLocalizedString = { [locale: string]: boolean };
 
 type CustomFormikErrors<Values> = {
-  [K in keyof Values]?: TFieldErrors;
+  [K in keyof Values]?: FieldErrorsData;
 };
 
 export const RequiredValueErrorMessage = () => (

@@ -13,9 +13,23 @@ export type FieldErrorsRootSlotProps = HTMLChakraProps<"div"> & {
    */
   id?: string;
   /**
-   * ARIA role for the container
+   * Error object - only truthy values will be rendered
+   * Compatible with UI-Kit FieldErrors format
    */
-  role?: string;
+  errors?: FieldErrorsData;
+
+  /**
+   * Whether error messages should be visible
+   * @deprecated This prop will be automatically handled by the component
+   */
+  isVisible?: boolean;
+
+  /**
+   * Custom error renderer function
+   * Return null to fall back to renderDefaultError or built-in errors
+   */
+  renderError?: TErrorRenderer;
+
   /**
    * Error message content to display
    */
