@@ -281,8 +281,6 @@ export const WithName: Story = {
     placeholder: "Enter your email",
   },
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Name attribute is applied to FormField.Root", async () => {
       const formField = canvasElement.querySelector('[name="user-email"]');
       await expect(formField).toBeInTheDocument();
