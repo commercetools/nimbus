@@ -56,7 +56,7 @@ export const DateRangePickerField = forwardRef<
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
     >
-      {label && <FormField.Label>{label}</FormField.Label>}
+      <FormField.Label>{label}</FormField.Label>
       <FormField.Input>
         <DateRangePicker
           size={size}
