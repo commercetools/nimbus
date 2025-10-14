@@ -1,1 +1,1 @@
-export * from "../../components/text-input-field";
+export * from "./text-input-field";

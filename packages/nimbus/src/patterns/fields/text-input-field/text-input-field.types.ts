@@ -1,5 +1,5 @@
-import type { TextInputProps } from "../text-input";
-import type { FormFieldProps } from "../form-field/form-field.types";
+import type { TextInputProps } from "@/components/text-input";
+import type { FormFieldProps } from "@/components/form-field";
 import type { ReactNode } from "react";
 
 /**
