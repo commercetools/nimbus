@@ -10,15 +10,15 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "checkbox",
 });
 
-export const CheckboxRoot = withProvider<HTMLLabelElement, CheckboxRootSlotProps>(
-  RaCheckbox,
-  "root"
-);
+export const CheckboxRoot = withProvider<
+  HTMLLabelElement,
+  CheckboxRootSlotProps
+>(RaCheckbox, "root");
 
-export const CheckboxLabel = withContext<HTMLSpanElement, CheckboxLabelSlotProps>(
-  "span",
-  "label"
-);
+export const CheckboxLabel = withContext<
+  HTMLSpanElement,
+  CheckboxLabelSlotProps
+>("span", "label");
 
 export const CheckboxIndicator = withContext<
   HTMLSpanElement,
