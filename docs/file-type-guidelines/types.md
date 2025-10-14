@@ -202,12 +202,8 @@ Components are classified into four tiers based on complexity. Understanding you
 Every types file follows this sequential reading order for maximum clarity:
 
 ```typescript
-/**
- * Type definitions for the {ComponentName} component.
- *
- * {Brief description of component purpose and functionality}
- * Component tier: {1, 2, 3, or 4} ({Category})
- */
+// Start directly with imports (no file-level JSDoc preamble)
+import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
@@ -238,21 +234,26 @@ Every types file follows this sequential reading order for maximum clarity:
 ### Basic Props Type (Tier 1)
 
 ```typescript
-/**
- * Type definitions for the Button component.
- *
- * A foundational interactive button component.
- * Component tier: 1 (Simple)
- */
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
 type ButtonRecipeProps = {
-  /** Size variant @default "md" */
+  /**
+   * Size variant of the button
+   * @default "md"
+   */
   size?: RecipeProps<"button">["size"];
-  /** Visual style variant @default "solid" */
+  /**
+   * Visual style variant of the button
+   * @default "solid"
+   */
   variant?: RecipeProps<"button">["variant"];
 } & UnstyledProp;
 
@@ -284,13 +285,6 @@ export type ButtonProps = ButtonRootSlotProps & {
 ### Compound Component Pattern (Tier 3)
 
 ```typescript
-/**
- * Type definitions for the Menu component.
- *
- * A compound component for dropdown menus with React Aria accessibility.
- * Component tier: 3 (Compound)
- */
-
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type {
   MenuProps as RaMenuProps,
@@ -373,21 +367,27 @@ export type MenuItemProps = MenuItemSlotProps & RaMenuItemProps & {
 ### Complex Component Pattern (Tier 4)
 
 ```typescript
-/**
- * Type definitions for the DataTable component.
- *
- * A complex data table with sorting, selection, and filtering.
- * Component tier: 4 (Complex composition)
- */
+import type { ReactNode } from "react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
 type DataTableRecipeProps = {
-  /** Density variant @default "default" */
+  /**
+   * Density variant controlling row height and padding
+   * @default "default"
+   */
   density?: SlotRecipeProps<"dataTable">["density"];
-  /** Whether to truncate cell content @default false */
+  /**
+   * Whether to truncate cell content with ellipsis
+   * @default false
+   */
   truncated?: SlotRecipeProps<"dataTable">["truncated"];
 } & UnstyledProp;
 
@@ -395,7 +395,7 @@ type DataTableRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type DataTableRootProps = HTMLChakraProps<"div", DataTableRecipeProps>;
+export type DataTableRootSlotProps = HTMLChakraProps<"div", DataTableRecipeProps>;
 export type DataTableTableSlotProps = HTMLChakraProps<"table">;
 // ... additional slot props
 
@@ -437,7 +437,7 @@ export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
  * Main props for the DataTable component.
  */
 export type DataTableProps<T extends object = Record<string, unknown>> =
-  DataTableRootProps & {
+  DataTableRootSlotProps & {
     /** Column configuration array */
     columns: DataTableColumnItem<T>[];
     /** Row data array */
@@ -578,17 +578,11 @@ export type TabsProps = TabsSlotProps & {
 
 ### Required Documentation
 
-**JSDoc is required for every property within types**, and file-level JSDoc is required for all types files:
+**JSDoc is required for every property within types**:
 
 ```typescript
-/**
- * Type definitions for the Button component.
- *
- * A foundational interactive button component.
- * Component tier: 1 (Simple)
- */
+import type { ButtonSlotProps } from "./button.slots";
 
-// JSDoc on individual types is optional (but recommended for complex types)
 export type ButtonProps = ButtonSlotProps & {
   /**
    * Whether the button is in a loading state
@@ -624,10 +618,10 @@ export type UsePaginationOptions = {
 
 ### Documentation Standards
 
-- **Required:** File-level JSDoc with component description and tier classification
+- **No file-level JSDoc preambles** - Types files start directly with imports
 - **Required:** JSDoc comments for every property within types
 - **Optional:** JSDoc comments on individual type definitions
-- Add `@default` tag for props with defaults
+- Add `@default` tag for props with defaults (especially recipe props)
 - Use `@example` for complex props
 - Add `@deprecated` for legacy props
 - Include `@see` for related documentation
@@ -710,10 +704,6 @@ export type CustomComponentProps = {
 // button.types.ts
 import { type ButtonSlotProps } from "./button.slots";
 
-/**
- * Type definitions for the Button component.
- * Component tier: 1 (Simple)
- */
 export type ButtonProps = ButtonSlotProps & {
   /**
    * Loading state
@@ -733,11 +723,6 @@ export type ButtonProps = ButtonSlotProps & {
 ```typescript
 // menu.types.ts
 import { type MenuRootSlotProps, type MenuItemSlotProps } from "./menu.slots";
-
-/**
- * Type definitions for the Menu component.
- * Component tier: 3 (Compound)
- */
 
 // Root component handles configuration and state
 export type MenuRootProps = MenuRootSlotProps & {
@@ -781,11 +766,6 @@ export type MenuItemProps = MenuItemSlotProps & {
 
 ```typescript
 // date-picker.types.ts
-/**
- * Type definitions for the DatePicker component.
- * Component tier: 4 (Complex composition)
- */
-
 export type DatePickerProps = {
   /**
    * Current date value
@@ -870,7 +850,6 @@ export type UseDatePickerReturn = {
 
 ### File Structure
 - [ ] Types file exists with `.ts` extension
-- [ ] File-level JSDoc with component description and tier classification
 - [ ] Section dividers in correct order (Recipe → Slot → Helper → Main)
 - [ ] **Only consumer-facing types in `{component-name}.types.ts`**
 - [ ] **Internal types colocated with their usage**
@@ -891,10 +870,9 @@ export type UseDatePickerReturn = {
 - [ ] Conflicts explicitly documented in Helper Types section
 
 ### Documentation
-- [ ] **File-level JSDoc required with tier classification**
 - [ ] **JSDoc comments for all properties within types**
 - [ ] JSDoc comments for types when they are complex or public-facing (optional)
-- [ ] Default values documented with `@default`
+- [ ] Default values documented with `@default` (especially recipe props)
 - [ ] Complex props have `@example` tags
 - [ ] Event handlers properly typed
 
