@@ -18,6 +18,7 @@ import {
   Select,
   Box,
   Flex,
+  Badge,
 } from "@/components";
 import { DataTable } from "./data-table";
 import {
@@ -41,6 +42,7 @@ import {
 
 import type {
   DataTableRowItem,
+  DataTableColumnItem,
   SortDescriptor,
   DataTableProps,
 } from "./data-table.types";
@@ -2295,10 +2297,9 @@ export const TextTruncation: Story = {
         });
 
         const innerDiv = descriptionCell[0].querySelector("div");
-
+        // TODO: VRT would be a better assertion here.
         // Check if the inner div has the data-truncated attribute -
         // This is the best we can do for now since technically the dom has the full text, we cannot compare texts to see if it is truncated.
-        // VRT would be a better assertion here.
         expect(innerDiv).toHaveAttribute("data-truncated", "true");
       }
     );
@@ -3572,4 +3573,191 @@ export const RowPinningEdgeCases: Story = {
     //   });
     // });
   },
+};
+
+/**
+ * ## Table Settings Manager
+ *
+ * This story demonstrates the DataTable.Manager component that allows users to:
+ * - Show/hide columns
+ * - Reorder visible columns via drag and drop
+ * - Reset columns to their default state
+ *
+ * The settings are opened via a gear icon button and displayed in a drawer.
+ */
+export const WithTableManager: Story = {
+  render: () => {
+    const [visibleColumns, setVisibleColumns] = useState<string[] | undefined>(
+      undefined
+    );
+
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "product-name",
+        header: "Product name",
+        accessor: (row) => row.name as React.ReactNode,
+        isSortable: true,
+        isVisible: true,
+      },
+      {
+        id: "sku",
+        header: "SKU",
+        accessor: (row) => row.sku as React.ReactNode,
+        isSortable: true,
+        isVisible: true,
+      },
+      {
+        id: "status",
+        header: "Status",
+        accessor: (row) => (
+          <Badge
+            colorPalette={
+              row.status === "Published"
+                ? "success"
+                : row.status === "Modified"
+                  ? "warning"
+                  : "neutral"
+            }
+            size="xs"
+          >
+            {row.status as string}
+          </Badge>
+        ),
+        isSortable: false,
+        isVisible: true,
+      },
+      {
+        id: "category",
+        header: "Category",
+        accessor: (row) => row.category as React.ReactNode,
+        isVisible: false,
+      },
+      {
+        id: "inventory",
+        header: "Inventory",
+        accessor: (row) => row.inventory as React.ReactNode,
+        isVisible: false,
+      },
+      {
+        id: "price",
+        header: "Price",
+        accessor: (row) => row.price as React.ReactNode,
+        isVisible: false,
+      },
+      {
+        id: "store",
+        header: "Store",
+        accessor: (row) => row.store as React.ReactNode,
+        isVisible: false,
+      },
+      {
+        id: "country",
+        header: "Country",
+        accessor: (row) => row.country as React.ReactNode,
+        isVisible: false,
+      },
+      {
+        id: "custom-attr",
+        header: "Custom attribute that breaks into 2 lines",
+        accessor: (row) => row.customAttr as React.ReactNode,
+        isVisible: false,
+      },
+    ];
+
+    const managerRows: DataTableRowItem[] = [
+      {
+        id: "1",
+        name: "Midnight Bloom Silk Blouse",
+        sku: "MID-BLM-SLK-BLS",
+        status: "Published",
+        category: "Clothing",
+        inventory: 120,
+        price: "$89.99",
+        store: "Main Store",
+        country: "USA",
+        customAttr: "Premium",
+      },
+      {
+        id: "2",
+        name: "Urban Canvas Denim",
+        sku: "URB-CAN-DNM",
+        status: "Modified",
+        category: "Clothing",
+        inventory: 85,
+        price: "$129.99",
+        store: "Downtown",
+        country: "Canada",
+        customAttr: "Standard",
+      },
+      {
+        id: "3",
+        name: "Coastal Breeze Linen Pants",
+        sku: "COS-BRZ-LIN-PNT",
+        status: "Published",
+        category: "Clothing",
+        inventory: 200,
+        price: "$79.99",
+        store: "Beach Shop",
+        country: "USA",
+        customAttr: "Eco-friendly",
+      },
+      {
+        id: "4",
+        name: "Rustic Knit Merino",
+        sku: "SUN-STR-COT",
+        status: "Modified",
+        category: "Clothing",
+        inventory: 150,
+        price: "$99.99",
+        store: "Main Store",
+        country: "UK",
+        customAttr: "Premium",
+      },
+      {
+        id: "5",
+        name: "Sunset Stripes Cotton Tee",
+        sku: "FOR-TRL-HIK-LGS",
+        status: "Modified",
+        category: "Clothing",
+        inventory: 95,
+        price: "$49.99",
+        store: "Outlet",
+        country: "USA",
+        customAttr: "Standard",
+      },
+    ];
+
+    const handleColumnsChange = (updatedColumns: DataTableColumnItem[]) => {
+      const visibleIds = updatedColumns
+        .filter((col) => col.isVisible !== false)
+        .map((col) => col.id);
+      setVisibleColumns(visibleIds);
+    };
+
+    return (
+      <Stack direction="column" gap="400">
+        <DataTable.Root
+          columns={managerColumns}
+          rows={managerRows}
+          visibleColumns={visibleColumns}
+          onColumnsChange={handleColumnsChange}
+          allowsSorting={true}
+        >
+          <Flex justifyContent="space-between" width="100%">
+            <Heading as="h3" size="lg">
+              Table settings
+            </Heading>
+            <Box p="200">
+              <DataTable.Manager />
+            </Box>
+          </Flex>
+          <DataTable.Table aria-label="Products table">
+            <DataTable.Header aria-label="Products table header" />
+            <DataTable.Body aria-label="Products table body" />
+          </DataTable.Table>
+        </DataTable.Root>
+      </Stack>
+    );
+  },
+  args: {},
 };

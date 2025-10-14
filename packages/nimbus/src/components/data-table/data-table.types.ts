@@ -54,6 +54,8 @@ export interface DataTableContextValue<
   pinnedRows: Set<string>;
   onPinToggle?: (rowId: string) => void;
   togglePin: (id: string) => void;
+  onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+  onVisibilityChange?: (visibleColumnIds: string[]) => void;
 }
 
 export type SortDirection = RaSortDirection;
@@ -146,6 +148,8 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
+  onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+  onVisibilityChange?: (visibleColumnIds: string[]) => void;
 }
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */

@@ -24,14 +24,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
   className: "nimbus-data-table",
   base: {
     root: {
-      colorPalette: "slate",
+      width: "100%",
       display: "block",
       borderRadius: "8px",
-      border: "1px solid {colors.neutral.3}",
-      boxShadow: "1",
       overflow: "auto",
       contain: "layout style",
-      width: "100%",
       // CSS custom properties for pinned row shadows
       "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
       "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
@@ -199,8 +196,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // Multiline header truncation using webkit line clamp
     },
     table: {
-      width: "fit-content",
+      // width: "fit-content",
       tableLayout: "fixed",
+      border: "1px solid {colors.neutral.3}",
+      boxShadow: "1",
+      colorPalette: "slate",
+      borderRadius: "8px",
+      width: "100%",
     },
     header: {
       background: "colorPalette.2",
