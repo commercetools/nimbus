@@ -28,26 +28,30 @@ import type { DateRangePickerFieldProps } from "./date-range-picker-field.types"
 export const DateRangePickerField = forwardRef<
   HTMLDivElement,
   DateRangePickerFieldProps
->(function DateRangePickerField({
-  id,
-  label,
-  description,
-  info,
-  errors,
-  renderError,
-  touched = false,
-  isRequired = false,
-  isDisabled = false,
-  isReadOnly = false,
-  direction = "column",
-  size = "md",
-  ...dateRangePickerProps
-}) {
+>(function DateRangePickerField(
+  {
+    id,
+    label,
+    description,
+    info,
+    errors,
+    renderError,
+    touched = false,
+    isRequired = false,
+    isDisabled = false,
+    isReadOnly = false,
+    direction = "column",
+    size = "md",
+    ...dateRangePickerProps
+  },
+  ref
+) {
   // Determine if we should show errors
   const hasErrors = touched && errors && Object.values(errors).some(Boolean);
 
   return (
     <FormField.Root
+      ref={ref}
       id={id}
       direction={direction as "row" | "column"}
       size={size}
