@@ -7,6 +7,9 @@ import type { ReactNode } from "react";
  *
  * Combines TextInput functionality with form field features like labels,
  * descriptions, error handling, and validation feedback.
+ *
+ * Style props (margin, padding, width, etc.) are applied to the input element.
+ * Functional props (aria-*, data-*, id, isRequired, etc.) are applied to the form field wrapper.
  */
 export interface TextInputFieldProps
   extends Omit<TextInputProps, "type">,
@@ -15,9 +18,9 @@ export interface TextInputFieldProps
       "isRequired" | "isInvalid" | "isDisabled" | "isReadOnly" | "id"
     > {
   /**
-   * Label text for the input field
+   * Label text for the input field (required for accessibility)
    */
-  label?: ReactNode;
+  label: ReactNode;
 
   /**
    * Description text that appears below the input
@@ -31,7 +34,9 @@ export interface TextInputFieldProps
   infoBox?: ReactNode;
 
   /**
-   * Array of error messages to display
+   * Error object - only truthy values will be rendered
+   * Compatible with FieldErrors format
+   * @see {@link https://github.com/commercetools/nimbus/blob/main/packages/nimbus/src/components/field-errors/field-errors.types.ts#L8}
    */
-  errors?: string[];
+  errors?: Record<string, boolean>;
 }
