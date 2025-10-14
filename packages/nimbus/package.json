@@ -54,7 +54,7 @@
     "next-themes": "catalog:react",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
-    "react-hotkeys-hook": "^4.6.1",
+    "react-hotkeys-hook": "^5.2.0",
     "react-stately": "catalog:react",
     "react-use": "^17.5.1",
     "slate": "^0.75.0",
