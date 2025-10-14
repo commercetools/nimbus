@@ -47,7 +47,7 @@
     "remark-flexible-toc": "^1.2.3",
     "remark-gfm": "^4.0.0",
     "remark-mark-highlight": "^0.1.1",
-    "slug": "^11.0.0",
+    "slug": "^11.0.1",
     "to-vfile": "^8.0.0",
     "vite-plugin-markdown": "^2.2.0",
     "vite-tsconfig-paths": "^5.1.3",
