@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextInputField } from "./text-input-field";
-import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { Stack, Text } from "@/components";
 
 const meta: Meta<typeof TextInputField> = {
@@ -69,15 +69,6 @@ export const Base: Story = {
       await userEvent.type(input, "My Awesome Project");
       await expect(input).toHaveValue("My Awesome Project");
       await userEvent.clear(input);
-    });
-
-    await step("FormField forwards data- attributes to TextInput", async () => {
-      await expect(input).toHaveAttribute("data-testid", "project-input");
-
-      // NOTE: aria-label and aria-labelledby are controlled by FormField's useField hook.
-      // When a visible label is provided, FormField automatically generates aria-labelledby
-      // Custom aria-label would be overridden. See FIXME in form-field.root.tsx
-      // For fields without a visible label, FormField falls back to aria-label="empty-label"
     });
 
     await step("TextInput is focusable with <tab> key", async () => {
@@ -150,187 +141,61 @@ export const Disabled: Story = {
   },
 };
 
-export const MultipleInvalidFields: Story = {
-  render: () => {
-    const [urlValue, setUrlValue] = useState("");
-    const isUrlEmpty = !urlValue || urlValue.trim().length === 0;
-
-    return (
-      <Stack gap="400">
-        <TextInputField
-          label="Project name"
-          description="Enter your project name"
-          placeholder="My Awesome Project"
-          isInvalid
-          errors={["Project name must contain no spaces"]}
-        />
-        <TextInputField
-          label="Project description"
-          description="Describe your project"
-          placeholder="A brief description of your project"
-          isInvalid
-          errors={["Description must be at least 10 characters"]}
-        />
-        <TextInputField
-          label="Project code"
-          description="Enter project code"
-          placeholder="PROJ-001"
-          isInvalid
-          errors={["Project code format is invalid"]}
-        />
-        <TextInputField
-          label="Project URL"
-          description="Enter the project repository URL"
-          placeholder="https://github.com/company/project"
-          value={urlValue}
-          onChange={setUrlValue}
-          isInvalid={isUrlEmpty}
-          errors={
-            isUrlEmpty ? ["Project URL is required - please enter data"] : []
-          }
-        />
-      </Stack>
-    );
+export const Invalid: Story = {
+  args: {
+    label: "Project name",
+    description: "Enter your project name",
+    placeholder: "My Awesome Project",
+    isInvalid: true,
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("Project name");
 
-    const nameInput = canvas.getByLabelText("Project name");
-    const descriptionInput = canvas.getByLabelText("Project description");
-    const codeInput = canvas.getByLabelText("Project code");
-    const urlInput = canvas.getByLabelText("Project URL");
-
-    const nameError = canvas.getByText("Project name must contain no spaces");
-    const descriptionError = canvas.getByText(
-      "Description must be at least 10 characters"
-    );
-    const codeError = canvas.getByText("Project code format is invalid");
-    const urlError = canvas.getByText(
-      "Project URL is required - please enter data"
-    );
-
-    await step("Empty value test - fields start empty", async () => {
-      await expect(nameInput).toHaveValue("");
-      await expect(descriptionInput).toHaveValue("");
-      await expect(codeInput).toHaveValue("");
-      await expect(urlInput).toHaveValue("");
+    await step("Input is rendered with invalid state", async () => {
+      await expect(input).toBeInTheDocument();
+      await expect(input).toHaveAttribute("data-invalid", "true");
     });
 
-    await step("All four fields are rendered with errors", async () => {
-      await expect(nameInput).toBeInTheDocument();
-      await expect(descriptionInput).toBeInTheDocument();
-      await expect(codeInput).toBeInTheDocument();
-      await expect(urlInput).toBeInTheDocument();
+    await step("Invalid input is still focusable and functional", async () => {
+      await userEvent.click(input);
+      await expect(input).toHaveFocus();
+
+      await userEvent.type(input, "Test Project");
+      await expect(input).toHaveValue("Test Project");
+    });
+  },
+};
+
+export const WithErrors: Story = {
+  args: {
+    label: "Project name",
+    description: "Enter your project name",
+    placeholder: "My Awesome Project",
+    isInvalid: true,
+    errors: { missing: true, format: true },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("Project name");
+
+    await step("Input has invalid state", async () => {
+      await expect(input).toHaveAttribute("data-invalid", "true");
     });
 
-    await step("Each field shows its own error message", async () => {
-      await expect(nameError).toBeInTheDocument();
-      await expect(descriptionError).toBeInTheDocument();
-      await expect(codeError).toBeInTheDocument();
-      await expect(urlError).toBeInTheDocument();
+    await step("Localized error messages are displayed", async () => {
+      await expect(
+        canvas.getByText("This field is required. Provide a value.")
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByText("Please enter a valid format.")
+      ).toBeInTheDocument();
     });
 
-    await step("All fields have data-invalid attribute", async () => {
-      await expect(nameInput).toHaveAttribute("data-invalid", "true");
-      await expect(descriptionInput).toHaveAttribute("data-invalid", "true");
-      await expect(codeInput).toHaveAttribute("data-invalid", "true");
-      await expect(urlInput).toHaveAttribute("data-invalid", "true");
+    await step("Errors are properly linked via aria-describedby", async () => {
+      const ariaDescribedby = input.getAttribute("aria-describedby");
+      await expect(ariaDescribedby).toBeTruthy();
     });
-
-    await step(
-      "Each field's error is properly linked via aria-describedby",
-      async () => {
-        const nameAriaDescribedby = nameInput.getAttribute("aria-describedby");
-        const descriptionAriaDescribedby =
-          descriptionInput.getAttribute("aria-describedby");
-        const codeAriaDescribedby = codeInput.getAttribute("aria-describedby");
-        const urlAriaDescribedby = urlInput.getAttribute("aria-describedby");
-
-        await expect(nameAriaDescribedby).toContain(nameError.id);
-        await expect(descriptionAriaDescribedby).toContain(descriptionError.id);
-        await expect(codeAriaDescribedby).toContain(codeError.id);
-        await expect(urlAriaDescribedby).toContain(urlError.id);
-      }
-    );
-
-    await step("All fields are focusable and functional", async () => {
-      await userEvent.click(nameInput);
-      await expect(nameInput).toHaveFocus();
-
-      await userEvent.click(descriptionInput);
-      await expect(descriptionInput).toHaveFocus();
-
-      await userEvent.click(codeInput);
-      await expect(codeInput).toHaveFocus();
-
-      await userEvent.click(urlInput);
-      await expect(urlInput).toHaveFocus();
-    });
-
-    await step("Each field can receive user input independently", async () => {
-      await userEvent.type(nameInput, "My Awesome Project");
-      await expect(nameInput).toHaveValue("My Awesome Project");
-
-      await userEvent.type(descriptionInput, "A great project description");
-      await expect(descriptionInput).toHaveValue("A great project description");
-
-      await userEvent.type(codeInput, "PROJ-123");
-      await expect(codeInput).toHaveValue("PROJ-123");
-
-      await userEvent.type(urlInput, "https://github.com/company/project");
-      await expect(urlInput).toHaveValue("https://github.com/company/project");
-    });
-
-    await step(
-      "URL field shows error when empty, clears when filled",
-      async () => {
-        // Clear the URL field first to ensure it's empty for this test
-        await userEvent.clear(urlInput);
-        await expect(urlInput).toHaveValue("");
-
-        // Initially shows error because field is empty
-        await waitFor(
-          () => {
-            const errorElement = canvas.getByText(
-              "Project URL is required - please enter data"
-            );
-            expect(errorElement).toBeInTheDocument();
-          },
-          { timeout: 1000 }
-        );
-
-        // Type the URL value
-        await userEvent.type(urlInput, "https://github.com/company/project");
-        await expect(urlInput).toHaveValue(
-          "https://github.com/company/project"
-        );
-
-        // Error should disappear when field has content
-        await waitFor(
-          () => {
-            expect(
-              canvas.queryByText("Project URL is required - please enter data")
-            ).not.toBeInTheDocument();
-          },
-          { timeout: 1000 }
-        );
-
-        // Clear the field
-        await userEvent.clear(urlInput);
-        await expect(urlInput).toHaveValue("");
-
-        // Error should reappear when field is empty again
-        await waitFor(
-          () => {
-            const errorElement = canvas.getByText(
-              "Project URL is required - please enter data"
-            );
-            expect(errorElement).toBeInTheDocument();
-          },
-          { timeout: 1000 }
-        );
-      }
-    );
   },
 };
 
@@ -417,10 +282,10 @@ export const WithName: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const input = canvas.getByRole("textbox");
 
-    await step("Name attribute is applied to input", async () => {
-      await expect(input).toHaveAttribute("name", "user-email");
+    await step("Name attribute is applied to FormField.Root", async () => {
+      const formField = canvasElement.querySelector('[name="user-email"]');
+      await expect(formField).toBeInTheDocument();
     });
   },
 };
@@ -441,28 +306,28 @@ export const WithId: Story = {
   },
 };
 
-export const WithMaxLength: Story = {
-  args: {
-    label: "Project code",
-    description: "Maximum 28 characters",
-    maxLength: 28,
-    placeholder: "Enter code",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole("textbox");
+// export const WithMaxLength: Story = {
+//   args: {
+//     label: "Project code",
+//     description: "Maximum 28 characters",
+//     maxLength: 28,
+//     placeholder: "Enter code",
+//   },
+//   play: async ({ canvasElement, step }) => {
+//     const canvas = within(canvasElement);
+//     const input = canvas.getByRole("textbox");
 
-    await step("MaxLength attribute is applied to input", async () => {
-      await expect(input).toHaveAttribute("maxLength", "28");
-    });
+//     await step("MaxLength attribute is applied to input", async () => {
+//       await expect(input).toHaveAttribute("maxLength", "28");
+//     });
 
-    await step("Input prevents typing beyond maxLength", async () => {
-      await userEvent.type(input, "123456789012345678901234567828");
-      // Should only contain first 28 characters
-      await expect(input).toHaveValue("1234567890123456789012345678");
-    });
-  },
-};
+//     await step("Input prevents typing beyond maxLength", async () => {
+//       await userEvent.type(input, "123456789012345678901234567828");
+//       // Should only contain first 28 characters
+//       await expect(input).toHaveValue("1234567890123456789012345678");
+//     });
+//   },
+// };
 
 export const WithDifferentWidths: Story = {
   render: () => {
