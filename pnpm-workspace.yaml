@@ -4,7 +4,7 @@ packages:
 
 catalog:
   express-rate-limit: ^8.0.1
-  dompurify: ^3.2.7
+  dompurify: ^3.3.0
   react-intl: ^7.1.14
 
 catalogMode: strict
