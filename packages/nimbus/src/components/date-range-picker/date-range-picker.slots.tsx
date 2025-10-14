@@ -2,7 +2,7 @@ import {
   type HTMLChakraProps,
   createSlotRecipeContext,
 } from "@chakra-ui/react";
-import type { DateRangePickerRootProps } from "./date-range-picker.types";
+import type { DateRangePickerRootSlotProps } from "./date-range-picker.types";
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -15,7 +15,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
  */
 export const DateRangePickerRootSlot = withProvider<
   HTMLDivElement,
-  DateRangePickerRootProps
+  DateRangePickerRootSlotProps
 >("div", "root");
 
 /**

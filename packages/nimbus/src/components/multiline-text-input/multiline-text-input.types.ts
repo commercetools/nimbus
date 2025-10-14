@@ -3,19 +3,27 @@ import type {
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { TextFieldProps } from "react-aria-components";
+import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
 export type MultilineTextInputRecipeProps = {
   size?: SlotRecipeProps<"multilineTextInput">["size"];
   variant?: SlotRecipeProps<"multilineTextInput">["variant"];
 } & UnstyledProp;
 
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
 export type MultilineTextInputRootSlotProps = HTMLChakraProps<
   "div",
   MultilineTextInputRecipeProps
 >;
 
-export type MultilineTextInputLeadingElementProps = HTMLChakraProps<
+export type MultilineTextInputLeadingElementSlotProps = HTMLChakraProps<
   "div",
   MultilineTextInputRecipeProps
 >;
@@ -25,26 +33,18 @@ export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
   MultilineTextInputRecipeProps
 >;
 
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type MultilineTextInputProps = Omit<
   MultilineTextInputRootSlotProps,
-  keyof TextFieldProps | "as" | "asChild"
+  keyof RaTextFieldProps | "as" | "asChild"
 > &
-  TextFieldProps & {
+  RaTextFieldProps & {
     ref?: React.Ref<HTMLTextAreaElement>;
-    /**
-     * When true, the textarea will automatically grow in height to fit its content.
-     * This works in addition to the default draggable resize behavior.
-     */
     autoGrow?: boolean;
-    /**
-     * Number of visible text lines for the control.
-     * @default 1
-     */
     rows?: number;
-    /**
-     * Optional element to display at the start of the input
-     * Will respect text direction (left in LTR, right in RTL)
-     */
     leadingElement?: React.ReactNode;
     placeholder?: string;
   };

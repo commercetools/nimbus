@@ -7,12 +7,24 @@ import type {
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type AccordionRecipeProps = SlotRecipeProps<"accordion">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type AccordionRootSlotProps = HTMLChakraProps<
   "div",
   AccordionRecipeProps
 >;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
 
 /**
  * For use in components that use the polymorphic `as` and `asChild` props
@@ -28,8 +40,12 @@ export type AccordionRootSlotProps = HTMLChakraProps<
  */
 type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
 
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 /**
- * Props for the Accordion Root component.
+ * Props for the Accordion.Root component.
  * Controls the overall accordion container and behavior.
  */
 export type AccordionRootProps = AccordionRootSlotProps &
@@ -41,7 +57,7 @@ export type AccordionRootProps = AccordionRootSlotProps &
   };
 
 /**
- * Props for individual Accordion Item components.
+ * Props for the Accordion.Item component.
  */
 export type AccordionItemProps = ExcludePolymorphicFromProps<
   RaDisclosureProps & HTMLChakraProps<"div">
@@ -55,7 +71,7 @@ export type AccordionItemProps = ExcludePolymorphicFromProps<
 };
 
 /**
- * Props for Accordion Header component.
+ * Props for the Accordion.Header component.
  * Displays the clickable header that expands/collapses content.
  */
 export type AccordionHeaderProps = ExcludePolymorphicFromProps<
@@ -68,7 +84,7 @@ export type AccordionHeaderProps = ExcludePolymorphicFromProps<
 };
 
 /**
- * Props for Accordion Content component.
+ * Props for the Accordion.Content component.
  * Contains the collapsible content area.
  */
 export type AccordionContentProps = ExcludePolymorphicFromProps<

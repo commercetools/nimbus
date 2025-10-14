@@ -1,6 +1,6 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
-  ProgressBarRootProps,
+  ProgressBarRootSlotProps,
   ProgressBarTrackSlotProps,
   ProgressBarFillSlotProps,
   ProgressBarLabelSlotProps,
@@ -14,7 +14,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
 // ProgressBar Root - Main container
 export const ProgressBarRootSlot = withProvider<
   HTMLDivElement,
-  ProgressBarRootProps
+  ProgressBarRootSlotProps
 >("div", "root");
 
 // ProgressBar Track - Background bar

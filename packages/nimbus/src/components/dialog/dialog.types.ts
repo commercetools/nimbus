@@ -1,11 +1,19 @@
-import { type ModalOverlayProps } from "react-aria-components";
+import { type ModalOverlayProps as RaModalOverlayProps } from "react-aria-components";
 import type { IconButtonProps } from "../icon-button";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
 type DialogRecipeProps = {
   placement?: SlotRecipeProps<"dialog">["placement"];
   scrollBehavior?: SlotRecipeProps<"dialog">["scrollBehavior"];
 };
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type DialogRootSlotProps = HTMLChakraProps<"div", DialogRecipeProps>;
 
@@ -26,6 +34,19 @@ export type DialogFooterSlotProps = HTMLChakraProps<"footer">;
 export type DialogTitleSlotProps = HTMLChakraProps<"h2">;
 
 export type DialogCloseTriggerSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+/**
+ * Scroll behavior variants for the dialog
+ */
+export type DialogScrollBehavior = "inside" | "outside";
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 /**
  * Props for the Dialog.Root component
@@ -58,20 +79,20 @@ export type DialogRootProps = DialogRootSlotProps & {
    * If true, clicking outside the dialog or pressing Escape will close it.
    * @default true
    */
-  isDismissable?: ModalOverlayProps["isDismissable"];
+  isDismissable?: RaModalOverlayProps["isDismissable"];
 
   /**
    * Whether keyboard dismissal (Escape key) is disabled.
    * If true, pressing Escape will NOT close the dialog.
    * @default false
    */
-  isKeyboardDismissDisabled?: ModalOverlayProps["isKeyboardDismissDisabled"];
+  isKeyboardDismissDisabled?: RaModalOverlayProps["isKeyboardDismissDisabled"];
 
   /**
    * Function to determine whether the dialog should close when interacting outside.
    * Receives the event and returns true to allow closing, false to prevent.
    */
-  shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
+  shouldCloseOnInteractOutside?: RaModalOverlayProps["shouldCloseOnInteractOutside"];
 
   /**
    * Callback fired when the dialog open state changes
@@ -212,7 +233,3 @@ export type DialogCloseTriggerProps = Omit<IconButtonProps, "aria-label"> & {
    */
   "aria-label"?: string;
 };
-/**
- * Scroll behavior variants for the dialog
- */
-export type DialogScrollBehavior = "inside" | "outside";

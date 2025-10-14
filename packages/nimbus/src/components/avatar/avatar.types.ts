@@ -5,48 +5,31 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type AvatarRecipeProps = {
   size?: RecipeProps<"avatar">["size"];
 } & UnstyledProp;
 
-export type AvatarRootProps = HTMLChakraProps<"div", AvatarRecipeProps>;
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
-export type AvatarComponentProps = HTMLAttributes<HTMLDivElement> & {
-  /**
-   * The first name used to show initials
-   */
-  firstName: string;
-  /**
-   * The last name used to show initials
-   */
-  lastName: string;
-  /**
-   * The image URL
-   */
-  src?: string;
-  /**
-   * Alt text for the avatar image
-   */
-  alt?: string;
-  /**
-   * If the avatar is disabled
-   */
-  isDisabled?: boolean;
-};
+export type AvatarRootSlotProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 
-type AvatarRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "md" | "xs" | "2xs";
-};
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-type FunctionalAvatarProps = AvatarRootProps &
-  AvatarComponentProps &
-  AvatarRecipeVariantProps;
-
-export type AvatarProps = FunctionalAvatarProps & {
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
-};
+export type AvatarProps = AvatarRootSlotProps &
+  HTMLAttributes<HTMLDivElement> & {
+    firstName: string;
+    lastName: string;
+    src?: string;
+    alt?: string;
+    isDisabled?: boolean;
+    children?: React.ReactNode;
+    ref?: React.Ref<HTMLDivElement>;
+  };

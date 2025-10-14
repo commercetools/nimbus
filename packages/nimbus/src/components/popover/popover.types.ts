@@ -5,8 +5,20 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-export type PopoverRecipeProps = RecipeProps<"popover"> & UnstyledProp;
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-export type PopoverSlotProps = HTMLChakraProps<"div", PopoverRecipeProps>;
+type PopoverRecipeProps = RecipeProps<"popover"> & UnstyledProp;
 
-export type PopoverProps = RaPopoverProps & PopoverSlotProps;
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type PopoverRootSlotProps = HTMLChakraProps<"div", PopoverRecipeProps>;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type PopoverProps = RaPopoverProps & PopoverRootSlotProps;

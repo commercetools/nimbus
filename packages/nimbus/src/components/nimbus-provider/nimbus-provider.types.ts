@@ -1,5 +1,9 @@
 import type { ThemeProviderProps } from "next-themes";
 
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 /**
  * TypeScript module augmentation for Nimbus router configuration.
  *
@@ -28,7 +32,6 @@ import type { ThemeProviderProps } from "next-themes";
  *   }
  * }
  */
-
 // Base type for router options that can be extended via module augmentation
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type NimbusRouterOptionsBase = {
@@ -44,13 +47,17 @@ export type RouterOptions = NimbusRouterOptionsBase extends {
   : // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any;
 
-// Enhanced router configuration with proper typing
+/**
+ * Enhanced router configuration with proper typing
+ */
 export type TypedNimbusRouterConfig = {
   navigate: (href: string, routerOptions?: RouterOptions) => void;
   useHref?: (href: string) => string;
 };
 
-// Router configuration type matching react-aria's expectations
+/**
+ * Router configuration type matching react-aria's expectations
+ */
 export type NimbusRouterConfig = {
   /**
    * Function to programmatically navigate to a new route.
@@ -81,10 +88,18 @@ export type NimbusRouterConfig = {
   useHref?: (href: string) => string;
 };
 
-// Color mode provider props
+/**
+ * Color mode provider props inherited from next-themes
+ */
 export type ColorModeProviderProps = ThemeProviderProps;
 
-// Main provider props
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+/**
+ * Main props for the NimbusProvider component
+ */
 export type NimbusProviderProps = ColorModeProviderProps & {
   /**
    * Optional locale for internationalization.

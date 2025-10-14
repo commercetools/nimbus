@@ -4,39 +4,34 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the svg element.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type IconRecipeProps = RecipeProps<"icon"> & UnstyledProp;
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type IconRootSlotProps = HTMLChakraProps<"svg", IconRecipeProps>;
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type IconVariantProps = Omit<
   IconRootSlotProps,
-  | keyof React.SVGProps<SVGSVGElement> // excludes the 3 bazillion possible svg-props from the props-table
+  | keyof React.SVGProps<SVGSVGElement>
   | "css"
   | "unstyled"
   | "asChild"
   | "recipe"
 >;
 
-/**
- * Main props interface for the Icon component.
- * Extends IconVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
 export type IconProps = IconVariantProps & {
   /**
    * Accepts only a single child - an icon-component or SVG html-element.

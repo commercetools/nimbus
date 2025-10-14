@@ -2,26 +2,33 @@ import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type CheckboxRecipeProps = {
   size?: SlotRecipeProps<"checkbox">["size"];
 };
 
-export type CheckboxRootProps = Omit<
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type CheckboxRootSlotProps = Omit<
   HTMLChakraProps<"label", CheckboxRecipeProps>,
   keyof RaCheckboxProps
 > &
   RaCheckboxProps;
 
-export type CheckboxLabelProps = HTMLChakraProps<"span">;
+export type CheckboxLabelSlotProps = HTMLChakraProps<"span">;
 
-export type CheckboxIndicatorProps = HTMLChakraProps<"span">;
+export type CheckboxIndicatorSlotProps = HTMLChakraProps<"span">;
 
-/**
- * Main props interface for the Checkbox component.
- * Extends CheckboxRootProps (which includes SlotRecipeProps and RaCheckboxProps),
- * while adding support for React children and ref forwarding.
- */
-export type CheckboxProps = CheckboxRootProps & {
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type CheckboxProps = CheckboxRootSlotProps & {
   ref?: Ref<HTMLLabelElement>;
   children?: ReactNode;
 };

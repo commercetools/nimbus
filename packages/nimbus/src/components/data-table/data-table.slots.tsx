@@ -7,7 +7,7 @@ import type {
   DataTableCellSlotProps,
   DataTableColumnSlotProps,
   DataTableHeaderSlotProps,
-  DataTableRootProps,
+  DataTableRootSlotProps,
   DataTableRowSlotProps,
   DataTableTableSlotProps,
 } from "./data-table.types";
@@ -21,10 +21,10 @@ const { withProvider, withContext } = createSlotRecipeContext({
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
 // Wrapper slot for react aria `ResizableTableContainer` component
-export const DataTableRoot = withProvider<HTMLDivElement, DataTableRootProps>(
-  "div",
-  "root"
-);
+export const DataTableRoot = withProvider<
+  HTMLDivElement,
+  DataTableRootSlotProps
+>("div", "root");
 
 export const DataTableTableSlot = withContext<
   HTMLTableElement,

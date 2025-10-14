@@ -4,10 +4,18 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-export type FormFieldRecipeProps = {
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type FormFieldRecipeProps = {
   size?: SlotRecipeProps<"formField">["size"];
   direction?: SlotRecipeProps<"formField">["direction"];
 };
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type FormFieldRootSlotProps = HTMLChakraProps<
   "div",
@@ -24,11 +32,10 @@ export type FormFieldErrorSlotProps = HTMLChakraProps<"div">;
 
 export type FormFieldPopoverSlotProps = HTMLChakraProps<"div">;
 
-/**
- * Main props interface for the FormField component.
- * Extends FormFieldVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type FormFieldProps = FormFieldRootSlotProps & {
   children?: React.ReactNode;
   /** true if the field is a required field */

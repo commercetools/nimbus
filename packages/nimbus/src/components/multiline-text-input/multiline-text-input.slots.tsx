@@ -1,7 +1,7 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
   MultilineTextInputRootSlotProps,
-  MultilineTextInputLeadingElementProps,
+  MultilineTextInputLeadingElementSlotProps,
   MultilineTextInputTextAreaSlotProps,
 } from "./multiline-text-input.types";
 
@@ -20,7 +20,7 @@ export const MultilineTextInputRootSlot = withProvider<
 
 export const MultilineTextInputLeadingElementSlot = withContext<
   HTMLDivElement,
-  MultilineTextInputLeadingElementProps
+  MultilineTextInputLeadingElementSlotProps
 >("div", "leadingElement");
 
 export const MultilineTextInputTextAreaSlot = withContext<

@@ -3,9 +3,9 @@ import {
   createSlotRecipeContext,
 } from "@chakra-ui/react";
 import type {
-  TimeInputRootProps,
-  TimeInputLeadingElementProps,
-  TimeInputTrailingElementProps,
+  TimeInputRootSlotProps,
+  TimeInputLeadingElementSlotProps,
+  TimeInputTrailingElementSlotProps,
 } from "./time-input.types";
 
 // Correctly destructure from createSlotRecipeContext based on project examples
@@ -19,17 +19,17 @@ const { withProvider, withContext } = createSlotRecipeContext({
  */
 export const TimeInputRootSlot = withProvider<
   HTMLDivElement,
-  TimeInputRootProps
+  TimeInputRootSlotProps
 >("div", "root");
 
 export const TimeInputLeadingElementSlot = withContext<
   HTMLDivElement,
-  TimeInputLeadingElementProps
+  TimeInputLeadingElementSlotProps
 >("div", "leadingElement");
 
 export const TimeInputTrailingElementSlot = withContext<
   HTMLDivElement,
-  TimeInputTrailingElementProps
+  TimeInputTrailingElementSlotProps
 >("div", "trailingElement");
 
 /**

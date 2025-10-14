@@ -7,10 +7,18 @@ import {
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-export type SelectRecipeProps = {
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type SelectRecipeProps = {
   size?: SlotRecipeProps<"select">["size"];
   variant?: SlotRecipeProps<"select">["variant"];
 };
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type SelectRootSlotProps = HTMLChakraProps<
   "div",
@@ -26,6 +34,10 @@ export type SelectOptionsSlotProps = HTMLChakraProps<"div">;
 export type SelectOptionSlotProps = HTMLChakraProps<"div">;
 
 export type SelectOptionGroupSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type SelectRootProps = SelectRootSlotProps &
   RaSelectProps & {
@@ -46,7 +58,6 @@ export type SelectRootProps = SelectRootSlotProps &
     ref?: React.Ref<HTMLDivElement>;
   };
 
-// Fix the incompatible event handler types by using a more specific type
 export interface SelectOptionsProps<T>
   extends RaListBoxProps<T>,
     Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}

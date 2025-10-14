@@ -1,8 +1,8 @@
 import { type ButtonProps } from "../button";
 
-/**
- * Main props interface for the IconButton component.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type IconButtonProps = ButtonProps & {
   /** explains the intended action, required for accessibility */

@@ -6,7 +6,15 @@ import type {
 import type { ButtonProps } from "../button";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type SplitButtonRecipeProps = SlotRecipeProps<"splitButton">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type SplitButtonRootSlotProps = HTMLChakraProps<
   "div",
@@ -19,7 +27,9 @@ export type SplitButtonPrimaryButtonSlotProps = HTMLChakraProps<"button">;
 
 export type SplitButtonTriggerSlotProps = HTMLChakraProps<"button">;
 
-// Main component props
+// ============================================================
+// MAIN PROPS
+// ============================================================
 export type SplitButtonProps = SplitButtonRecipeProps &
   Pick<ButtonProps, "size" | "tone" | "variant" | "isDisabled"> &
   Omit<RaMenuTriggerProps, "trigger" | "children"> &

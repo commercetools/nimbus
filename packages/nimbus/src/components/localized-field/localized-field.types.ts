@@ -2,10 +2,18 @@ import type { ReactNode, FocusEvent } from "react";
 import type { TValue, TCustomEvent, TCurrencyCode } from "../money-input";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type LocalizedFieldRecipeProps = {
   size?: SlotRecipeProps<"localizedField">["size"];
   type?: SlotRecipeProps<"localizedField">["type"];
 };
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type LocalizedFieldRootSlotProps = HTMLChakraProps<
   "fieldset",
@@ -31,8 +39,11 @@ export type LocalizedFieldLocaleFieldLabelSlotProps = HTMLChakraProps<"div">;
 
 export type LocalizedFieldLocaleFieldInputSlotProps = HTMLChakraProps<"div">;
 
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type LocalizedFieldRecipeVariantProps = {
-  /** Size variant */
   size?: "md" | "sm";
 };
 
@@ -81,6 +92,10 @@ export type LocalizedFieldChangeEvent = {
     value: TCustomEvent["target"]["value"];
   };
 };
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
   Omit<

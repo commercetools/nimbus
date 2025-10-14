@@ -1,14 +1,19 @@
 import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type TabsRecipeProps = {
   orientation?: SlotRecipeProps<"tabs">["orientation"];
   placement?: SlotRecipeProps<"tabs">["placement"];
   size?: SlotRecipeProps<"tabs">["size"];
 };
 
-/**
- * Root props type that extends React Aria's tabs props with our recipe props.
- */
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
 export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
   /**
    * The children of the Tabs component.
@@ -55,16 +60,14 @@ export type TabsPanelSlotProps = HTMLChakraProps<
   id?: string;
 };
 
-/**
- * Tabs recipe variant props for direction and placement configuration
- */
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type TabsVariantProps = SlotRecipeProps<"tabs"> & {
   [key: `data-${string}`]: unknown;
 };
 
-/**
- * Props for individual tab item component
- */
 export type TabItemProps = {
   /**
    * The id of the tab item
@@ -84,10 +87,10 @@ export type TabItemProps = {
   isDisabled?: boolean;
 };
 
-/**
- * Main props type for the Tabs root component.
- * Combines React Aria tabs props with our styling variants.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type TabsProps = TabsRootSlotProps &
   TabsVariantProps & {
     children?: React.ReactNode;
