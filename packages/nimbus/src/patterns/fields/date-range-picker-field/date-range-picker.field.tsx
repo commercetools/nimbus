@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { FormField, FieldErrors } from "@/components";
-import type { DateRangePickerFieldProps } from "../date-range-picker.types";
+import type { DateRangePickerFieldProps } from "./date-range-picker-field.types";
 
 /**
  * # DateRangePickerField
