@@ -40,7 +40,6 @@ const createDateRangePickerHelpers = (canvas: any, target?: HTMLElement) => {
   const context = target ? within(target) : canvas;
 
   return {
-    // DateRangePicker elements
     getDateSegments: () => context.getAllByRole("spinbutton"),
     getCalendarButton: () =>
       context.findByRole("button", { name: /calendar/i }),
