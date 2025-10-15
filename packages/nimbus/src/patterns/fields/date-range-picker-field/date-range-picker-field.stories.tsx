@@ -38,7 +38,7 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
 };
 
 const meta: Meta<typeof DateRangePickerField> = {
-  title: "Patterns/Fields/DateRangePickerField",
+  title: "patterns/fields/DateRangePickerField",
   component: DateRangePickerField,
   parameters: { layout: "centered" },
   tags: ["autodocs"],
