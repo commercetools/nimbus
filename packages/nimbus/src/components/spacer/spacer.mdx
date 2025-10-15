@@ -1,0 +1,156 @@
+---
+id: Components-Spacer
+title: Spacer
+description: A simple layout component that occupies leftover available space in flex containers
+order: 999
+menu:
+  - Components
+  - Layout
+  - Spacer
+tags:
+  - component
+  - layout
+  - flex
+---
+
+# Spacer
+
+A simple layout component that automatically fills available space in flex layouts using `flexGrow: 1`.
+
+## Overview
+
+Spacer is a utility component designed to create flexible spacing between elements in flex layouts. It automatically expands to fill any remaining space, making it perfect for creating navigation bars, toolbars, and other layouts where you need to push elements apart.
+
+### Key Features
+
+- **Automatic Space Filling**: Uses `flexGrow: 1` to occupy all available space
+- **Works in Any Direction**: Supports both horizontal and vertical flex layouts
+- **Flexible Styling**: Can accept any Chakra UI Box props for custom styling
+- **Zero Configuration**: Works out of the box with no required props
+
+## Variables
+
+Get familiar with the features.
+
+### Basic Usage
+
+The most common use case is pushing elements to opposite ends of a container.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="solid">Left</Button>
+    <Spacer />
+    <Button variant="outline">Right</Button>
+  </Stack>
+)
+```
+
+### Navigation Layout
+
+Create navigation-style layouts with multiple element groups.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="ghost">Home</Button>
+    <Button variant="ghost">About</Button>
+    <Button variant="ghost">Services</Button>
+    <Spacer />
+    <Button variant="ghost">Profile</Button>
+    <Button variant="solid">Sign In</Button>
+  </Stack>
+)
+```
+
+### Multiple Spacers
+
+Use multiple spacers to distribute space evenly between elements.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="outline">First</Button>
+    <Spacer />
+    <Button variant="outline">Second</Button>
+    <Spacer />
+    <Button variant="outline">Third</Button>
+  </Stack>
+)
+```
+
+### Vertical Layout
+
+Spacer works in vertical layouts too.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" height="400px" width="200px" borderWidth="1px" borderRadius="200">
+    <Box padding="400" backgroundColor="neutral.3" borderRadius="200 200 0 0">
+      Header
+    </Box>
+    <Spacer />
+    <Box padding="400" backgroundColor="neutral.3" borderRadius="0 0 200 200">
+      Footer
+    </Box>
+  </Stack>
+)
+```
+
+### With Custom Styling
+
+Spacer accepts all Chakra UI Box props for custom styling.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="solid">Start</Button>
+    <Spacer backgroundColor="primary.3" borderRadius="200" minHeight="40px" />
+    <Button variant="solid">End</Button>
+  </Stack>
+)
+```
+
+## Guidelines
+
+Use this component strategically to create flexible layouts.
+
+### Best practices
+
+- **Use in Flex Containers**: Spacer only works within flex or grid layouts (Stack, HStack, VStack, etc.)
+- **Semantic HTML**: Spacer renders a `<div>` element, so use it appropriately in your document structure
+- **Multiple Spacers**: When using multiple spacers, they will divide the available space equally
+- **Custom Styling**: You can pass any Box props to customize appearance when needed
+
+### When to use
+
+> [!TIP]\
+> When to use
+
+- **Navigation Bars**: Separate logo from menu items or push actions to the right
+- **Toolbars**: Group related tools with flexible spacing between groups
+- **Card Footers**: Push action buttons to opposite ends
+- **Forms**: Create space between form sections or buttons
+- **Headers**: Separate title from actions or utilities
+
+> [!CAUTION]\
+> When not to use
+
+- **Fixed Spacing**: Use Stack's `gap` prop or Box's `margin` for consistent, fixed spacing
+- **Non-Flex Layouts**: Spacer requires a flex or grid parent to work
+- **Complex Grids**: Use CSS Grid for two-dimensional layouts instead
+- **Content Spacing**: Don't use for spacing within text content - use typography components
+
+## Specs
+
+<PropsTable id="Spacer" />
+
+## Accessibility
+
+Spacer is a presentational component with no accessibility concerns as it contains no interactive elements or semantic meaning.
+
+### Best Practices
+
+- **Semantic Structure**: Spacer should not affect document semantics or screen reader navigation
+- **Visual Only**: The spacing created by Spacer is purely visual and should not convey meaning
+- **Alternative Approaches**: If spacing conveys important information, consider using semantic HTML elements with appropriate ARIA attributes
