@@ -1,6 +1,8 @@
 import { Box, Link as NimbusLink } from "@commercetools/nimbus";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import { OpenInNew } from "@commercetools/nimbus-icons";
+import { useAtom } from "jotai";
+import { activeRouteAtom } from "@/atoms/route";
 
 type LinkProps = DetailedHTMLProps<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -8,6 +10,7 @@ type LinkProps = DetailedHTMLProps<
 >;
 
 export const Link = ({ children, ...rest }: LinkProps) => {
+  const [, setActiveRoute] = useAtom(activeRouteAtom);
   const isExternal = rest.href?.startsWith("http");
   const isDocsLink = rest.href?.startsWith("/");
 
@@ -19,8 +22,17 @@ export const Link = ({ children, ...rest }: LinkProps) => {
     : {};
 
   if (isDocsLink) {
+    const route = rest.href.substring(1);
+
     return (
-      <NimbusLink href={rest.href.substring(1)} {...rest}>
+      <NimbusLink
+        {...rest}
+        // Don't pass href to prevent default navigation
+        href={undefined}
+        onPress={() => {
+          setActiveRoute(route);
+        }}
+      >
         {children}
       </NimbusLink>
     );
