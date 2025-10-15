@@ -7,7 +7,7 @@ import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
 
 const meta: Meta<typeof Button> = {
-  title: "components/Buttons/Button",
+  title: "Components/Buttons/Button",
   component: Button,
 };
 

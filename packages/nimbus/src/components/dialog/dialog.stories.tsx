@@ -17,7 +17,7 @@ import {
 } from "@/components";
 
 const meta: Meta<typeof Dialog.Root> = {
-  title: "components/Overlay/Dialog",
+  title: "Components/Overlay/Dialog",
   component: Dialog.Root,
   tags: ["autodocs"],
   argTypes: {

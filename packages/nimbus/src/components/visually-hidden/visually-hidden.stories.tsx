@@ -21,7 +21,7 @@ const invisibleCssProps = {
  * Makes it visible if focused.
  */
 const meta: Meta<typeof VisuallyHidden> = {
-  title: "utils/VisuallyHidden",
+  title: "Utils/VisuallyHidden",
   component: VisuallyHidden,
 };
 

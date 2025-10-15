@@ -9,7 +9,7 @@ import { within, expect } from "storybook/test";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Grid> = {
-  title: "components/Grid",
+  title: "Components/Grid",
   component: Grid,
 };
 

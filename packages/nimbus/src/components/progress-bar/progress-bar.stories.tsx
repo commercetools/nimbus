@@ -20,7 +20,7 @@ const colors: Array<
  * - component: references the component being documented
  */
 const meta: Meta<typeof ProgressBar> = {
-  title: "components/ProgressBar",
+  title: "Components/ProgressBar",
   component: ProgressBar,
 };
 

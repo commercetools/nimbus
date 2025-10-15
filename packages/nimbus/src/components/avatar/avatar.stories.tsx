@@ -10,7 +10,7 @@ import { Button, Stack } from "@/components";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Avatar> = {
-  title: "components/Avatar",
+  title: "Components/Avatar",
   component: Avatar,
 };
 

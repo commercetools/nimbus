@@ -20,7 +20,7 @@ const placements = {
 const allPlacements = Object.values(placements).flatMap((x) => x);
 
 const meta: Meta<typeof Tooltip.Content> = {
-  title: "components/tooltip/Tooltip",
+  title: "Components/Tooltip/Tooltip",
   component: Tooltip.Content,
   argTypes: {
     placement: {

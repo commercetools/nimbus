@@ -10,7 +10,7 @@ import { Box } from "../box";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Tabs.Root> = {
-  title: "components/Tabs",
+  title: "Components/Tabs",
   component: Tabs.Root,
   argTypes: {
     orientation: {

@@ -4,7 +4,7 @@ import { within, expect } from "storybook/test";
 import { Tooltip, MakeElementFocusable } from "@/components";
 
 const meta: Meta<typeof MakeElementFocusable> = {
-  title: "components/Tooltip/MakeElementFocusable",
+  title: "Components/Tooltip/MakeElementFocusable",
   component: MakeElementFocusable,
   render: (args) => (
     <Tooltip.Root delay={0} closeDelay={0}>

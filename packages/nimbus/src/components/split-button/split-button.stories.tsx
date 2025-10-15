@@ -6,7 +6,7 @@ import { Menu } from "@/components/menu";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof SplitButton> = {
-  title: "components/Buttons/SplitButton",
+  title: "Components/Buttons/SplitButton",
   component: SplitButton,
   parameters: {},
   tags: ["autodocs"],

@@ -11,7 +11,7 @@ import { FormField } from "@/components/form-field";
  * - component: references the component being documented
  */
 const meta: Meta<typeof RadioInput.Root> = {
-  title: "components/RadioInput",
+  title: "Components/RadioInput",
   component: RadioInput.Root,
 };
 

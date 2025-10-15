@@ -10,7 +10,7 @@ const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
 const tones: LoadingSpinnerProps["tone"][] = ["primary", "white"];
 
 const meta: Meta<typeof LoadingSpinner> = {
-  title: "components/LoadingSpinner",
+  title: "Components/LoadingSpinner",
   component: LoadingSpinner,
 };
 

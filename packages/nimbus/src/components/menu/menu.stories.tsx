@@ -50,7 +50,7 @@ import {
 } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof Menu.Root> = {
-  title: "components/Menu",
+  title: "Components/Menu",
   component: Menu.Root,
   parameters: {},
   tags: ["autodocs"],

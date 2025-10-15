@@ -30,7 +30,7 @@ import { AddReaction, Search } from "@commercetools/nimbus-icons";
  * - component: references the component being documented
  */
 const meta: Meta<typeof ComboBox.Root> = {
-  title: "components/ComboBox",
+  title: "Components/ComboBox",
   component: ComboBox.Root,
 };
 

@@ -10,7 +10,7 @@ import { within, expect } from "storybook/test";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Group> = {
-  title: "components/Group",
+  title: "Components/Group",
   component: Group,
 };
 

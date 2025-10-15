@@ -10,7 +10,7 @@ const borderStyles: CardProps["borderStyle"][] = ["none", "outlined"];
 const backgroundStyles: CardProps["backgroundStyle"][] = ["default", "muted"];
 
 const meta: Meta<typeof Card.Root> = {
-  title: "components/Card",
+  title: "Components/Card",
   component: Card.Root,
 };
 

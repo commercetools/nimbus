@@ -43,7 +43,7 @@ import {
 import { LocalizedFieldStoryComponent } from "./utils/localized-field.story-component";
 
 const meta: Meta<typeof LocalizedField> = {
-  title: "components/LocalizedField",
+  title: "Components/LocalizedField",
   component: LocalizedField,
   parameters: {
     a11y: {

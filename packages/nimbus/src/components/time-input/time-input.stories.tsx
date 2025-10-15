@@ -32,7 +32,7 @@ const inventionOfTheInternet = parseZonedDateTime(
  * - component: references the component being documented
  */
 const meta: Meta<typeof TimeInput> = {
-  title: "components/TimeInput",
+  title: "Components/TimeInput",
   component: TimeInput,
 };
 

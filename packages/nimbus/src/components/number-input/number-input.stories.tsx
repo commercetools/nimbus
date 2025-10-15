@@ -13,7 +13,7 @@ import {
 } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof NumberInput> = {
-  title: "components/NumberInput",
+  title: "Components/NumberInput",
   component: NumberInput,
 };
 

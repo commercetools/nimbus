@@ -17,6 +17,7 @@ variations, test interactions, and ensure accessibility compliance.
 - Test interactive behavior with play functions
 - Validate accessibility
 - Provide usage examples
+- Use a StartCase value for meta.title
 
 ## File Structure
 
