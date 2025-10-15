@@ -1,7 +1,8 @@
 ---
 id: Components-DateRangePicker
 title: DateRangePicker
-description: Allows users to select a start and end date from a calendar interface.
+description:
+  Allows users to select a start and end date from a calendar interface.
 documentState: InitialDraft
 order: 999
 menu:
@@ -12,82 +13,206 @@ tags:
   - component
 ---
 
-# DateRangePicker
+# Date range picker
 
-Allows users to select a start and end date from a calendar interface.
+Date range pickers allow users to select a range of dates.
 
-## Basic usage
+## Overview
 
-[Explain the basic usage / usecase of the component].
+Date range pickers allow users to select a range of dates. The component
+includes two date input fields for start and end dates, and a calendar that
+appears on focus. This component uses a single input field to contain both the
+start and end dates. There are two offered sizes, the default being medium for
+most use cases.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5818-15879)
+
+## Variables
+
+Get familiar with the features.
+
+### Visual options
+
+#### Medium
 
 ```jsx-live
-const App = () => <DateRangePicker>I am DateRangePicker!</DateRangePicker>
-```
-{/* 
-
-### Sizes
-
-Available sizes.
-
-```jsx-live
-const App = () => {
-
-  const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs', '2xs'];
-
-  return (
-    <Stack direction="horizontal" alignItems="center">
-      {sizes.map(size => (
-        <DateRangePicker key={size} size={size}>'{size}' DateRangePicker</DateRangePicker>
-      ))}
-    </Stack>
-  )
-}
+const App = () => <DateRangePicker size="md" width="1/2" />
 ```
 
-### Variants
-
-Available variants.
+#### Small
 
 ```jsx-live
-const App = () => {
-
-  const variants = ['solid', 'subtle', 'outline', 'ghost', 'plain'];
-
-  return (
-    <Stack direction="horizontal">
-      {variants.map(variant => (
-        <DateRangePicker key={variant} variant={variant}>'{variant}' DateRangePicker</DateRangePicker>
-      ))}
-    </Stack>
-  )
-}
+const App = () => <DateRangePicker size="sm" width="1/2" />
 ```
 
-### Colors
+## Guidelines
 
-[Explain usage with different colors/semantics.]
+Date range picker guidelines establish a standardized approach for creating
+intuitive and accessible date input components, ensuring consistency in
+presentation and interaction for selecting dates across all applications.
 
-```jsx-live
-const App = () => {
-  const variants = ["solid", "subtle", "outline", "ghost", "link", "plain"];
-  const colors = ["neutral", "primary", "info", "positive", "warning", "critical"];
+### Best practices
 
-  return (
-    <Stack>
-      {colors.map((color) => (
-        <Stack key={color} direction="horizontal">
-          {variants.map((variant) => (
-            <DateRangePicker colorPalette={color} key={variant} variant={variant}>
-              '{variant}' DateRangePicker
-            </DateRangePicker>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-``` */}
+- **Allow manual input:** Provide flexibility by allowing users to manually type
+  dates into the input fields.
+- **Disable invalid dates:** Prevent errors by disabling dates that are not
+  selectable (e.g., a return date before a departure date or past dates for a
+  future booking).
+- **Show clear feedback:** Use visual highlights for the selected start and end
+  dates, as well as all the days in between, to provide a clear representation
+  of the range.
+- **Ensure easy navigation:** Make the calendar simple to navigate with clear
+  controls for moving between months and years.
+- **Provide error messages:** Include clear, concise error messages to inform
+  users of any validation issues.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Specific date selection required:** When users need to choose a particular
+  date, such as a birth month or events that span common holidays days.
+- **Date-related tasks:** For features involving scheduling, filtering by date,
+  setting deadlines, or defining date ranges.
+- **Standardized input format:** To ensure users enter dates in a consistent and
+  predictable format, reducing data entry errors.
+- **Visual calendar navigation:** When users benefit from a visual
+  representation of a calendar to navigate and select dates, especially for date
+  ranges or when the day of the week is relevant.
+- **Accessibility needs:** To provide an accessible alternative to manual text
+  input for users with disabilities, including keyboard navigation and screen
+  reader support.
+- **Clear date context:** When the dates are a primary piece of information and
+  needs to be explicitly chosen.
+
+> [!CAUTION]\
+> When not to use
+
+- **Selecting a single date:** Use a date picker instead.
+- **Complex date inputs:** Use separate date and time input fields for greater
+  clarity.
+- **Approximate or vague dates:** When the exact date is not critical, and users
+  might only know a month or year (consider a select dropdown or a less specific
+  input).
+- **Dates far in the past or future:** For dates like birthdates, consider a
+  direct text input with clear formatting hints or segmented inputs
+  (month/day/year) to avoid excessive calendar navigation. However, a date
+  picker can still be suitable if well-implemented with year selection.
+- **Simple "today" or "now" selection:** For actions that simply require the
+  current date or time, a button or automated function might be more efficient.
+- **Limited screen real estate:** On very constrained interfaces, a compact text
+  input with a clear format might be preferred over an expanded calendar, though
+  accessibility should still be a priority.
+- **High frequency of typing known dates:** If users frequently know the exact
+  date they need to enter and typing is faster for them, a well-formatted text
+  input with validation might be sufficient alongside (or instead of) a date
+  picker. (e.g. birthdays)
+- **Binary "yes/no" for date-related options:** For simple choices like "Remind
+  me?" (implying the current date/time), a checkbox or switch might be more
+  appropriate.
+
+### Labels and messaging
+
+Clear labels and concise messaging are crucial for a date input to ensure users
+understand what date information is required and how to provide it correctly.
+
+> [!TIP]\
+> **Do**
+>
+> - Do use a clear and descriptive label (e.g., "Date of Birth," "Event Date").
+> - Do provide clear formatting hints (e.g., MM/DD/YYYY) as placeholder text or
+>   helper text.
+> - Do validate the input and provide clear error messages for incorrect formats
+>   or invalid dates.
+
+![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't rely solely on placeholder text for the label.
+> - Don't use ambiguous date formats without clear guidance.
+> - Don't fail to provide feedback on invalid input.
+
+![labels and messaging - don'ts](/images/date-picker/labels-and-messaging-dont.png)
+
+### Interaction and selection
+
+The ideal date range picker interaction offers a seamless experience through
+intuitive calendar navigation, clear visual feedback on selection, and the
+flexibility of both direct typing and visual selection to accommodate user
+preferences and accessibility needs.
+
+> [!TIP]\
+> **Do**
+>
+> - Do highlight the current date in the calendar picker for reference.
+> - Do provide a visual calendar picker for easy selection, especially for
+>   non-familiar dates or date ranges.
+> - Do allow manual text input as an alternative for users who prefer it or know
+>   the date.
+> - Do clearly indicate the selected date(s) in the calendar.
+> - Do enable easy navigation between months and years in the calendar.
+> - Do consider providing preset date ranges (e.g., "Last Week," "Next Month")
+>   when relevant.
+
+![interaction and selection - do's](/images/date-range-picker/interaction-and-selection-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use it for selecting vague or non-specific timeframes (e.g., "sometime
+>   next year").
+> - Don't force users to only use the calendar picker if they prefer typing.
+> - Don't use it for simple "today" selections where a button might suffice.
+> - Don't auto-advance between date segments (day/month/year) in text input, as
+>   it can hinder error correction.
+> - Don't make calendar navigation cumbersome.
+
+![interaction and selection - don'ts](/images/date-range-picker/interaction-and-selection-dont.png)
 
 ## Props
 
 <PropsTable id="DateRangePicker" />
+````
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <DateRangePicker aria-label="Enter date range" />
+```
+
+### Accessibility Standards
+
+- Always provide a visible label for the input.
+- Clearly associate the label with the input using the for attribute on the
+  <label> and a matching id on the input element.
+- Ensure sufficient color contrast for all elements (text, borders, icons, focus
+  indicators).
+- Clearly indicate the focused state.
+- Support keyboard navigation:
+  - Use Tab to navigate to and from the date input.
+  - Use Enter or Space to open/close the date picker (if applicable).
+  - Use arrow keys to navigate within the calendar grid (if a date picker is
+    provided).
+  - Allow users to select dates using Enter or Space.
+- Communicate errors clearly, using both visual cues (e.g., color) and
+  descriptive error messages.
+- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).
+- Ensure screen readers announce the selected date and any navigation changes
+  within a date picker.
+- Provide an accessible way to clear the date input.
+
+### Resources
+
+- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DateRangePicker.html)
+- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)
