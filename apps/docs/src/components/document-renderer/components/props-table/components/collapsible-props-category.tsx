@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import { PropsCategoryTable } from "./props-category-table";
 import type { PropItem, PropCategory } from "../types";
+import { ArrowForwardIos } from "@commercetools/nimbus-icons";
 
 interface CollapsiblePropsCategoryProps {
   /** Category identifier */
@@ -27,7 +28,6 @@ interface CollapsiblePropsCategoryProps {
  * Uses CollapsibleMotion for smooth expand/collapse animation
  */
 export const CollapsiblePropsCategory = ({
-  category,
   displayName,
   props,
   componentId,
@@ -62,7 +62,7 @@ export const CollapsiblePropsCategory = ({
               transform={isExpanded ? "rotate(90deg)" : "rotate(0deg)"}
               transition="transform 0.2s"
             >
-              ▶
+              <ArrowForwardIos />
             </Box>
 
             {/* Category name */}
