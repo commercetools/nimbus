@@ -1,6 +1,6 @@
 {
   "Nimbus.Alert.dismiss": {
-    "developer_comment": "aria-label for dismiss button in alert",
+    "developer_comment": "aria-label for the dismiss button in an alert",
     "string": "Dismiss"
   },
   "Nimbus.DatePicker.Time.enterTime": {
@@ -30,6 +30,18 @@
   "Nimbus.Dialog.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
     "string": "Close dialog"
+  },
+  "Nimbus.DraggableList.emptyMessage": {
+    "developer_comment": "message displayed when drag-and-drop enabled list is empty",
+    "string": "drop items here"
+  },
+  "Nimbus.DraggableList.removeButtonLabel": {
+    "developer_comment": "label for button that removes an item from the list",
+    "string": "remove item"
+  },
+  "Nimbus.Drawer.closeTrigger": {
+    "developer_comment": "aria-label for the default close trigger button",
+    "string": "Close drawer"
   },
   "Nimbus.FieldErrors.duplicateValue": {
     "developer_comment": "Error message for duplicate value validation",

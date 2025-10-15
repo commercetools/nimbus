@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools-nimbus/i18n",
+  "name": "@commercetools/nimbus-i18n",
   "description": "All translation messages from the Nimbus design system.",
   "version": "1.0.1",
   "bugs": "https://github.com/commercetools/nimbus/issues",
