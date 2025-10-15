@@ -78,7 +78,7 @@ cd packages/i18n
 pnpm build
 
 # Or from root
-pnpm --filter @commercetools-nimbus/i18n build
+pnpm --filter @commercetools/nimbus-i18n build
 
 # Or use the formatjs CLI directly from root
 pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/data packages/i18n/compiled-data
@@ -224,7 +224,8 @@ For comprehensive file review procedures, see @docs/file-review-protocol.md
 
 ### Key Architectural Patterns
 
-For comprehensive architectural patterns, component decision matrices, React Aria integration strategies, and styling system architecture, see:
+For comprehensive architectural patterns, component decision matrices, React
+Aria integration strategies, and styling system architecture, see:
 
 - **Multi-layered Architecture & React Aria Integration**:
   @docs/file-type-guidelines/architecture-decisions.md
@@ -237,7 +238,8 @@ For complete development rules, patterns, and requirements, see:
 
 - **Recipe Registration & Styling Rules**: @docs/file-type-guidelines/recipes.md
 - **Testing Requirements**: @docs/file-type-guidelines/stories.md
-- **Compound Component Patterns**: @docs/file-type-guidelines/compound-components.md
+- **Compound Component Patterns**:
+  @docs/file-type-guidelines/compound-components.md
 - **Type Safety Guidelines**: @docs/file-type-guidelines/types.md
 - **Internationalization**: @docs/file-type-guidelines/i18n.md
 
@@ -272,14 +274,22 @@ tasks:
 
 ### Agent-Driven Development Workflow
 
-**Use specialized agents proactively in an iterative cycle for all component development:**
+**Use specialized agents proactively in an iterative cycle for all component
+development:**
 
-1. **Research Phase** (nimbus-researcher): Gather requirements, patterns, library documentation, and architectural guidance before writing any code
-2. **Implementation Phase** (nimbus-coder): Write code strictly according to the guidelines and patterns identified in research
-3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus standards and guidelines
-4. **Iteration**: If review identifies non-compliance or improvement areas, return to implementation phase and repeat until all standards are met
+1. **Research Phase** (nimbus-researcher): Gather requirements, patterns,
+   library documentation, and architectural guidance before writing any code
+2. **Implementation Phase** (nimbus-coder): Write code strictly according to the
+   guidelines and patterns identified in research
+3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus
+   standards and guidelines
+4. **Iteration**: If review identifies non-compliance or improvement areas,
+   return to implementation phase and repeat until all standards are met
 
-Invoke agents autonomously when task complexity warrants it - don't wait for explicit user requests. The goal is to leverage automation intelligently by recognizing when a task's scope or requirements align with an agent's capabilities.
+Invoke agents autonomously when task complexity warrants it - don't wait for
+explicit user requests. The goal is to leverage automation intelligently by
+recognizing when a task's scope or requirements align with an agent's
+capabilities.
 
 ## Development Workflow Best Practices
 
@@ -305,5 +315,5 @@ Understanding build order is crucial:
 
 ### Component Development Workflow
 
-For detailed development workflows, implementation steps, and common pitfalls, see:
-@docs/component-guidelines.md
+For detailed development workflows, implementation steps, and common pitfalls,
+see: @docs/component-guidelines.md
