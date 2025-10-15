@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useId, useLocale } from "react-aria";
+import { designTokens } from "@commercetools/nimbus-tokens";
 import { useIntl, FormattedMessage } from "react-intl";
 import {
   NumberInput,
@@ -341,28 +342,27 @@ export const MoneyInput = (props: MoneyInputProps) => {
             step={undefined}
           />
         </MoneyInputAmountInputSlot>
+        {/* High Precision Badge */}
+        {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
+          <MoneyInputBadgeSlot>
+            <Tooltip.Root delay={0} closeDelay={0}>
+              <MakeElementFocusable>
+                <Box
+                  as={HighPrecision}
+                  id={highPrecisionBadgeId}
+                  color={isDisabled ? "neutral.8" : "neutral.11"}
+                  aria-label={intl.formatMessage(messages.highPrecisionPrice)}
+                  // Position the badge correctly as we don't want layout shift that occurs with trailingElement use in the underlying NumberInput
+                  transform={`translateX(-${designTokens.spacing["1200"]})`}
+                />
+              </MakeElementFocusable>
+              <Tooltip.Content placement="top">
+                <FormattedMessage {...messages.highPrecisionPrice} />
+              </Tooltip.Content>
+            </Tooltip.Root>
+          </MoneyInputBadgeSlot>
+        )}
       </MoneyInputContainerSlot>
-
-      {/* High Precision Badge */}
-      {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
-        <MoneyInputBadgeSlot>
-          <Tooltip.Root delay={0} closeDelay={0}>
-            <MakeElementFocusable>
-              <Box
-                as={HighPrecision}
-                id={highPrecisionBadgeId}
-                color={isDisabled ? "neutral.8" : "neutral.11"}
-                aria-label={intl.formatMessage(messages.highPrecisionPrice)}
-                // TODO: this is a hack to position the badge correctly until we have trailingElement support
-                transform="translateX(-100px) translateY(2px)"
-              />
-            </MakeElementFocusable>
-            <Tooltip.Content placement="top">
-              <FormattedMessage {...messages.highPrecisionPrice} />
-            </Tooltip.Content>
-          </Tooltip.Root>
-        </MoneyInputBadgeSlot>
-      )}
     </MoneyInputRootSlot>
   );
 };

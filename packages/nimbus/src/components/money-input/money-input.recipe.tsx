@@ -71,7 +71,6 @@ export const moneyInputRecipe = defineSlotRecipe({
         zIndex: 2,
       },
     },
-    // TODO: tackle this once "trailing element" is save to be rebased on top of
     badge: {
       position: "absolute",
       top: "0",
