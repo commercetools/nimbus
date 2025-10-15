@@ -26,7 +26,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     root: {
       width: "100%",
       display: "block",
-      borderRadius: "8px",
       overflow: "auto",
       contain: "layout style",
       // CSS custom properties for pinned row shadows

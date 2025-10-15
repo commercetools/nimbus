@@ -3743,7 +3743,7 @@ export const WithTableManager: Story = {
           onColumnsChange={handleColumnsChange}
           allowsSorting={true}
         >
-          <Flex justifyContent="space-between" width="100%">
+          <Flex justifyContent="space-between" alignItems="center" width="100%">
             <Heading as="h3" size="lg">
               Table settings
             </Heading>

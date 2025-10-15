@@ -1,13 +1,16 @@
 import { useState, useMemo, useEffect } from "react";
 import { useIntl } from "react-intl";
-import { Drawer } from "../../drawer/drawer";
-import { Tabs } from "../../tabs/tabs";
-import { DraggableList } from "../../draggable-list/draggable-list";
-import { Button, IconButton, Flex } from "@/components";
-import { Stack, Box, Text, HStack } from "@chakra-ui/react";
+import {
+  Button,
+  IconButton,
+  Flex,
+  DraggableList,
+  Drawer,
+  Tabs,
+} from "@/components";
+import { Stack, Box, Text } from "@chakra-ui/react";
 import {
   Settings,
-  Close,
   Refresh,
   ViewWeek,
   ViewDay,
@@ -99,38 +102,6 @@ export const DataTableManager = ({
     setHiddenColumns(hiddenColumnItems);
   }, [visibleColumnItems, hiddenColumnItems]);
 
-  const handleMoveToHidden = (columnId: string) => {
-    const column = visibleColumns.find((col) => col.id === columnId);
-    if (column) {
-      setVisibleColumns(visibleColumns.filter((col) => col.id !== columnId));
-      setHiddenColumns([...hiddenColumns, column]);
-
-      // Notify parent of change
-      if (onColumnsChange) {
-        const updatedColumns = allColumns.map((col) =>
-          col.id === columnId ? { ...col, isVisible: false } : col
-        );
-        onColumnsChange(updatedColumns);
-      }
-    }
-  };
-
-  const handleMoveToVisible = (columnId: string) => {
-    const column = hiddenColumns.find((col) => col.id === columnId);
-    if (column) {
-      setHiddenColumns(hiddenColumns.filter((col) => col.id !== columnId));
-      setVisibleColumns([...visibleColumns, column]);
-
-      // Notify parent of change
-      if (onColumnsChange) {
-        const updatedColumns = allColumns.map((col) =>
-          col.id === columnId ? { ...col, isVisible: true } : col
-        );
-        onColumnsChange(updatedColumns);
-      }
-    }
-  };
-
   const handleResetColumns = () => {
     // Reset to original column order and visibility
     const resetVisible: ColumnListItem[] = [];
@@ -209,7 +180,7 @@ export const DataTableManager = ({
                   ),
                   panelContent: (
                     <Stack gap="400" mt="400">
-                      <Flex gap="400" width="100%">
+                      <Flex gap="400" width="100%" mb="800">
                         {/* Hidden Columns Section */}
                         <Box>
                           <Stack direction="row" alignItems="center" mb="200">
@@ -218,54 +189,29 @@ export const DataTableManager = ({
                               {formatMessage(messages.hiddenColumns)}
                             </Text>
                           </Stack>
-                          {hiddenColumns.length === 0 ? (
-                            <Text fontSize="sm" color="gray.9">
-                              {formatMessage(messages.noHiddenColumns)}
-                            </Text>
-                          ) : (
-                            <DraggableList.Root
-                              items={hiddenColumns.map((item) => ({
+                          <DraggableList.Root
+                            h="full"
+                            items={hiddenColumns.map(
+                              (item: ColumnListItem) => ({
                                 key: item.key,
                                 id: item.id,
                                 label: item.label,
-                              }))}
-                              onUpdateItems={() => handleVisibleColumnsReorder}
-                              aria-label={formatMessage(
-                                messages.hiddenColumnsAriaLabel
-                              )}
-                            >
-                              {(item) => (
-                                <DraggableList.Item
-                                  key={item.key}
-                                  id={item.id as string}
-                                >
-                                  <HStack
-                                    width="100%"
-                                    justifyContent="space-between"
-                                    px="200"
-                                  >
-                                    <Text fontSize="sm" flex="1">
-                                      {item.label}
-                                    </Text>
-                                    <IconButton
-                                      variant="ghost"
-                                      size="2xs"
-                                      tone="primary"
-                                      aria-label={formatMessage(
-                                        messages.hideColumn
-                                      )}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleMoveToVisible(item.id);
-                                      }}
-                                    >
-                                      <Close />
-                                    </IconButton>
-                                  </HStack>
-                                </DraggableList.Item>
-                              )}
-                            </DraggableList.Root>
-                          )}
+                              })
+                            )}
+                            onUpdateItems={(items) =>
+                              handleVisibleColumnsReorder(
+                                items as ColumnListItem[]
+                              )
+                            }
+                            aria-label={formatMessage(
+                              messages.hiddenColumnsAriaLabel
+                            )}
+                            renderEmptyState={
+                              <Text fontSize="sm" color="gray.9">
+                                {formatMessage(messages.noHiddenColumns)}
+                              </Text>
+                            }
+                          />
                         </Box>
 
                         {/* Visible Columns Section */}
@@ -277,47 +223,22 @@ export const DataTableManager = ({
                             </Text>
                           </Stack>
                           <DraggableList.Root
+                            removableItems
+                            h="full"
                             items={visibleColumns.map((item) => ({
                               key: item.key,
                               id: item.id,
                               label: item.label,
                             }))}
-                            onUpdateItems={() => handleVisibleColumnsReorder}
+                            onUpdateItems={(items) =>
+                              handleVisibleColumnsReorder(
+                                items as ColumnListItem[]
+                              )
+                            }
                             aria-label={formatMessage(
                               messages.visibleColumnsAria
                             )}
-                          >
-                            {(item) => (
-                              <DraggableList.Item
-                                key={item.key}
-                                id={item.id as string}
-                              >
-                                <HStack
-                                  width="100%"
-                                  justifyContent="space-between"
-                                  px="200"
-                                >
-                                  <Text fontSize="sm" flex="1">
-                                    {item.label}
-                                  </Text>
-                                  <IconButton
-                                    variant="ghost"
-                                    size="2xs"
-                                    tone="primary"
-                                    aria-label={formatMessage(
-                                      messages.hideColumn
-                                    )}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMoveToHidden(item.id);
-                                    }}
-                                  >
-                                    <Close />
-                                  </IconButton>
-                                </HStack>
-                              </DraggableList.Item>
-                            )}
-                          </DraggableList.Root>
+                          />
                         </Box>
                       </Flex>
 
