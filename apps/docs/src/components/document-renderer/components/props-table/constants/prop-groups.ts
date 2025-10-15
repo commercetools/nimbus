@@ -54,6 +54,8 @@ export const PROP_GROUPS: PropGroupConfig[] = [
       "defaultInputValue",
       "onInputChange",
       "formatOptions",
+      "focusedValue",
+      "defaultFocusedValue",
     ],
   },
   {
@@ -129,7 +131,15 @@ export const PROP_GROUPS: PropGroupConfig[] = [
     category: "styling",
     displayName: "Styling",
     order: 9,
-    matchers: ["style", "className"],
+    matchers: [
+      "style",
+      "className",
+      // TODO: almost all recipes have this props in common and they affect
+      // the look, so I am putting them here for now
+      "size",
+      "variant",
+      "unstyled",
+    ],
   },
   {
     category: "forms",
