@@ -41,7 +41,7 @@ export const PropsCategoryTable = ({
             <Table.Row key={[componentId, item.name].join("-")}>
               {/* Prop name with required indicator */}
               <Table.Cell display="flex" justifyContent="flex-start">
-                <Text fontWeight="600">
+                <Text fontFamily="mono" fontWeight="600">
                   {item.name}
                   {item.required && (
                     <Box
