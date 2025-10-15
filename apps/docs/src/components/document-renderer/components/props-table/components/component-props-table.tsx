@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { typesAtom } from "../../../../../atoms/types.ts";
 import type { PropItem } from "../types";
-import { hasChakraStyleProps, groupProps } from "../utils";
+import { groupProps } from "../utils";
 import { PROP_GROUPS, DEFAULT_EXPANDED } from "../constants";
 import { StylePropsSupportBanner } from "./style-props-banner";
 import { CollapsiblePropsCategory } from "./collapsible-props-category";
@@ -35,9 +35,8 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
   }, [propsTableData]);
 
   // Check if component supports Chakra UI style props
-  const supportsStyleProps = useMemo(() => {
-    return hasChakraStyleProps(propsArr);
-  }, [propsArr]);
+  // Use metadata from types.json instead of checking props
+  const supportsStyleProps = propsTableData?.supportsStyleProps ?? false;
 
   // Group props into categories (automatically filters out style props)
   const groupedProps = useMemo(() => {
@@ -55,9 +54,19 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
     );
   }
 
-  // No props found - show message
+  // No props found - show style props banner if supported, or message
   if (propsArr.length === 0) {
-    return <Text>No props found for this component.</Text>;
+    return (
+      <Stack direction="column" gap="0">
+        {/* Show banner if component supports Chakra UI style props */}
+        {supportsStyleProps && <StylePropsSupportBanner />}
+
+        {/* Show message only if no style props support */}
+        {!supportsStyleProps && (
+          <Text>No component-specific props found for this component.</Text>
+        )}
+      </Stack>
+    );
   }
 
   // Render style props banner (if supported) and grouped collapsible categories

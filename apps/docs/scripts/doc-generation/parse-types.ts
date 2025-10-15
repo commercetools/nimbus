@@ -1,6 +1,7 @@
 import fs from "fs";
 import debounce from "lodash/debounce";
 import docgen from "react-docgen-typescript";
+import { processComponentTypes } from "./process-types";
 
 export const flog = (str) => {
   console.log("\x1b[32m%s\x1b[0m", `\n  ➜ ${str}\n`);
@@ -12,56 +13,18 @@ const compiledTypesFile = "./src/data/types.json";
 const fileToGrabTypesFrom: string = "./../../packages/nimbus/src/index.ts";
 
 const writeDocs = debounce(() => {
+  // Step 1: Parse ALL props (no filtering at parse time)
   const options = {
     savePropValueAsString: true,
-    propFilter: (prop) => {
-      // React Key attribute
-      const isReactKeyAttribute = prop.name === "key";
-      // All HTML attributes
-      const isHTMLAttribute = prop.parent?.name === "HTMLAttributes";
-      // HTML-Event listener
-      const isDOMAttribute = prop.parent?.name === "DOMAttributes";
-      // ButtonHTMLAttributes
-      const isButtonAttribue = prop.parent?.name === "ButtonHTMLAttributes";
-      // GlobalDOMEvents
-      const isGlobalDOMEvent = prop.parent?.name === "GlobalDOMEvents";
-      // GlobalDOMAttribute
-      const isGlobalDOMAttribute = prop.parent?.name === "GlobalDOMAttributes";
-      // Chakra related props
-      const isChakraSystemProperty = prop.parent?.name === "SystemProperties";
-      const isChakraCondition = prop.parent?.name === "Conditions";
-      const isSlotRecipeDefinition = prop.name === "recipe";
-      // Default accessibility props
-      const isAriaAttribute = prop.parent?.name === "AriaAttributes";
-      /**
-       * Fallback props: When standard HTML attribute names (e.g., "height") are
-       * repurposed for style APIs, their actual DOM equivalents are generated
-       * as "HtmlProps" (e.g., "htmlHeight") to avoid conflicts.
-       */
-      const isHtmlFallbackProp = prop.parent?.name === "HtmlProps";
-
-      // Exclude redundant props
-      if (
-        isReactKeyAttribute ||
-        isHTMLAttribute ||
-        isDOMAttribute ||
-        isButtonAttribue ||
-        isGlobalDOMEvent ||
-        isGlobalDOMAttribute ||
-        isAriaAttribute ||
-        isChakraSystemProperty ||
-        isChakraCondition ||
-        isSlotRecipeDefinition ||
-        isHtmlFallbackProp
-      ) {
-        return false;
-      }
-      return true;
-    },
+    // No propFilter - parse everything first
   };
-  const res = docgen.parse(fileToGrabTypesFrom, options);
+  const rawTypes = docgen.parse(fileToGrabTypesFrom, options);
 
-  fs.writeFileSync(compiledTypesFile, JSON.stringify(res, null, 2));
+  // Step 2: Process in memory (enrich + filter in single pass)
+  const processedTypes = processComponentTypes(rawTypes);
+
+  // Step 3: Single write to disk
+  fs.writeFileSync(compiledTypesFile, JSON.stringify(processedTypes, null, 2));
   flog("[TSX] Prop tables updated");
 }, 500);
 
