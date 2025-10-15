@@ -11,10 +11,9 @@ import type { CollapsibleMotionRootProps } from "../collapsible-motion.types";
  * This component contains all the state management logic and provides context to
  * CollapsibleMotion.Trigger and CollapsibleMotion.Content components.
  */
-export const CollapsibleMotionRoot = forwardRef<
-  HTMLDivElement,
-  CollapsibleMotionRootProps
->(
+export const CollapsibleMotionRoot: React.ForwardRefExoticComponent<
+  CollapsibleMotionRootProps & React.RefAttributes<HTMLDivElement>
+> = forwardRef<HTMLDivElement, CollapsibleMotionRootProps>(
   (
     {
       children,

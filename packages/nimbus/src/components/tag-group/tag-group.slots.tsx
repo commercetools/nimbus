@@ -1,9 +1,5 @@
 import type { ReactElement } from "react";
-import {
-  createSlotRecipeContext,
-  type WithProviderOptions,
-  type WithContextOptions,
-} from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react";
 
 import {
   TagGroup as RaTagGroup,
@@ -18,35 +14,14 @@ import type {
   TagGroupTagComponent,
   TagGroupTagProps,
 } from "./tag-group.types";
+import type { SlotComponent } from "../utils/slot-types";
 
-type TagListSlotNames = "root" | "tagList" | "tag";
-
-export const {
-  withProvider,
-  withContext,
-}: {
-  withProvider: <T, P>(
-    Component: React.ElementType<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-    slot: TagListSlotNames,
-    options?: WithProviderOptions<P>
-  ) => React.ForwardRefExoticComponent<
-    React.PropsWithoutRef<P> & React.RefAttributes<T>
-  >;
-  withContext: <T, P>(
-    Component: React.ElementType<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-    slot?: TagListSlotNames,
-    options?: WithContextOptions<P>
-  ) => React.ForwardRefExoticComponent<
-    React.PropsWithoutRef<P> & React.RefAttributes<T>
-  >;
-} = createSlotRecipeContext({
+const { withProvider, withContext } = createSlotRecipeContext({
   key: "taggroup",
 });
 
-export const TagGroupRootSlot = withProvider<typeof RaTagGroup, TagGroupProps>(
-  RaTagGroup,
-  "root"
-);
+export const TagGroupRootSlot: SlotComponent<typeof RaTagGroup, TagGroupProps> =
+  withProvider<typeof RaTagGroup, TagGroupProps>(RaTagGroup, "root");
 
 export const TagGroupTagListSlot = <T extends object>(
   props: TagGroupTagListProps<T>

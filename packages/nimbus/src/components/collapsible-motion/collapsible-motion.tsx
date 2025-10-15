@@ -9,7 +9,13 @@ export {
   CollapsibleMotionContent as _CollapsibleMotionContent,
 };
 
-export const CollapsibleMotion = {
+type CollapsibleMotionNamespace = {
+  Root: typeof CollapsibleMotionRoot;
+  Trigger: typeof CollapsibleMotionTrigger;
+  Content: typeof CollapsibleMotionContent;
+};
+
+export const CollapsibleMotion: CollapsibleMotionNamespace = {
   Root: CollapsibleMotionRoot,
   Trigger: CollapsibleMotionTrigger,
   Content: CollapsibleMotionContent,
