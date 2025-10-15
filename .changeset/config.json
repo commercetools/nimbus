@@ -9,7 +9,7 @@
   "commit": false,
   "fixed": [
     [
-      "@commercetools-nimbus/i18n",
+      "@commercetools/nimbus-i18n",
       "@commercetools/nimbus",
       "@commercetools/nimbus-tokens",
       "@commercetools/nimbus-icons"
