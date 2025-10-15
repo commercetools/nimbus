@@ -7,7 +7,7 @@ export type FieldErrorsMessageProps = HTMLChakraProps<"div">;
  * Error object type - compatible with UI-Kit FieldErrors
  * Only entries with truthy values will be rendered as errors
  */
-export type TFieldErrors = Record<string, boolean>;
+export type FieldErrorsData = Record<string, boolean>;
 
 /**
  * Function to render custom error messages
@@ -33,7 +33,7 @@ export type FieldErrorsProps = FieldErrorsRootProps & {
    * Error object - only truthy values will be rendered
    * Compatible with UI-Kit FieldErrors format
    */
-  errors?: TFieldErrors;
+  errors?: FieldErrorsData;
 
   /**
    * Whether error messages should be visible
