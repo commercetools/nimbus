@@ -8,19 +8,20 @@ export const StylePropsSupportBanner = () => {
     <Box
       mb="600"
       padding="400"
-      backgroundColor="primary.subtle"
+      colorPalette="positive"
+      backgroundColor="colorPalette.subtle"
       borderRadius="200"
       borderLeft="4px solid"
-      borderColor="primary.9"
+      borderColor="colorPalette.9"
     >
       <Stack direction="row" gap="200" alignItems="center">
-        <Text fontSize="400" fontWeight="600" color="primary.11">
+        <Text fontSize="400" fontWeight="600" color="colorPalette.11">
           ✓ Style Props Supported
         </Text>
       </Stack>
-      <Text fontSize="350" color="primary.11" mt="100">
-        This component accepts all Chakra UI style props for custom styling
-        (margin, padding, color, layout, etc.).
+      <Text fontSize="350" color="colorPalette.11" mt="100">
+        This component accepts style props for custom styling (margin, padding,
+        color, layout, etc.).
       </Text>
     </Box>
   );

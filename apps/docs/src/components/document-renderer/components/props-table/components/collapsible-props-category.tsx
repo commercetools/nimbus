@@ -52,22 +52,8 @@ export const CollapsiblePropsCategory = ({
           alignItems="center"
           justifyContent="space-between"
           width="100%"
-          padding="300 400"
-          backgroundColor={isExpanded ? "neutral.2" : "neutral.1"}
-          borderRadius="200"
-          border="1px solid"
-          borderColor="neutral.6"
           cursor="pointer"
-          transition="all 0.2s"
-          _hover={{
-            backgroundColor: "neutral.3",
-            borderColor: "neutral.7",
-          }}
-          _focusVisible={{
-            outline: "2px solid",
-            outlineColor: "primary.9",
-            outlineOffset: "2px",
-          }}
+          focusRing="outside"
         >
           <Stack direction="row" gap="300" alignItems="center">
             {/* Chevron icon */}
@@ -80,13 +66,13 @@ export const CollapsiblePropsCategory = ({
             </Box>
 
             {/* Category name */}
-            <Text fontSize="450" fontWeight="600" textTransform="capitalize">
+            <Text textStyle="lg" fontWeight="600" textTransform="capitalize">
               {displayName}
             </Text>
           </Stack>
 
           {/* Props count badge */}
-          <Badge size="sm" tone="neutral" variant="subtle">
+          <Badge size="xs" tone="neutral" variant="subtle">
             {props.length}
           </Badge>
         </CollapsibleMotion.Trigger>

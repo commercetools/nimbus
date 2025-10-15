@@ -15,7 +15,6 @@ interface PropsCategoryTableProps {
 export const PropsCategoryTable = ({
   props,
   componentId,
-  categoryTitle,
 }: PropsCategoryTableProps) => {
   if (props.length === 0) {
     return null;
@@ -23,17 +22,6 @@ export const PropsCategoryTable = ({
 
   return (
     <Box mb="600">
-      {/* Category heading */}
-      <Text
-        as="h3"
-        fontSize="500"
-        fontWeight="600"
-        mb="300"
-        textTransform="capitalize"
-      >
-        {categoryTitle}
-      </Text>
-
       {/* Props table */}
       <Table.Root variant="outline">
         <Table.ColumnGroup>
