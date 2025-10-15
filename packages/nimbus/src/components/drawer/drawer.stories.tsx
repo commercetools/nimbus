@@ -17,7 +17,7 @@ import {
 } from "@/components";
 
 const meta: Meta<typeof Drawer.Root> = {
-  title: "components/Overlay/Drawer",
+  title: "Components/Overlay/Drawer",
   component: Drawer.Root,
   tags: ["autodocs"],
   argTypes: {

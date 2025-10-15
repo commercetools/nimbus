@@ -375,7 +375,7 @@ const DataTableWithModals = ({
  * - component: references the component being documented
  */
 const meta: Meta<object> = {
-  title: "components/DataTable",
+  title: "Components/DataTable",
   component: DataTable,
 };
 

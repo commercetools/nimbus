@@ -4,7 +4,7 @@ import { Stack } from "@/components";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 const meta: Meta<typeof Checkbox> = {
-  title: "components/Checkbox",
+  title: "Components/Checkbox",
   component: Checkbox,
 };
 

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Stack, Box, Text } from "@/components";
 
 const meta: Meta<typeof Pagination> = {
-  title: "components/Pagination",
+  title: "Components/Pagination",
   component: Pagination,
 
   argTypes: {

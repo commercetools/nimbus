@@ -11,7 +11,7 @@ import { within, expect } from "storybook/test";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Icon> = {
-  title: "components/Icon",
+  title: "Components/Icon",
   component: Icon,
 };
 

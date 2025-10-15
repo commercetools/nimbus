@@ -4,7 +4,7 @@ import { Box, Stack } from "@/components";
 import { within, expect } from "storybook/test";
 
 const meta: Meta<typeof Separator> = {
-  title: "components/Separator",
+  title: "Components/Separator",
   component: Separator,
 };
 

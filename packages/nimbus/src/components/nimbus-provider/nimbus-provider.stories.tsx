@@ -9,7 +9,7 @@ import type { DateValue } from "react-aria";
 import type { NimbusRouterConfig } from "./nimbus-provider.types";
 
 const meta: Meta<typeof NimbusProvider> = {
-  title: "components/NimbusProvider",
+  title: "Components/NimbusProvider",
   component: NimbusProvider,
 };
 

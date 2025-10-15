@@ -41,7 +41,7 @@ async function dragItem(
 }
 
 const meta: Meta<typeof DraggableList.Root> = {
-  title: "components/DraggableList",
+  title: "Components/DraggableList",
   tags: ["autodocs"],
 };
 

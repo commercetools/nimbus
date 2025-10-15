@@ -50,6 +50,12 @@ const preview: Preview = {
     docs: {
       container: CustomDocsContainer,
     },
+    options: {
+      /* @see https://storybook.js.org/docs/writing-stories/naming-components-and-hierarchy#sorting-stories **/
+      storySort: {
+        order: ["Components", "Patterns", "Utils", "Hooks"],
+      },
+    },
   },
   tags: ["autodocs", "a11y-test"],
   decorators: [

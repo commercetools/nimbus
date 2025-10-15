@@ -6,7 +6,7 @@ import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
 const meta: Meta<typeof IconToggleButton> = {
-  title: "components/Buttons/IconToggleButton",
+  title: "Components/Buttons/IconToggleButton",
   component: IconToggleButton,
 };
 

@@ -16,7 +16,7 @@ const colors: Array<
  * - component: references the component being documented
  */
 const meta: Meta<typeof Badge> = {
-  title: "components/Badge",
+  title: "Components/Badge",
   component: Badge,
 };
 

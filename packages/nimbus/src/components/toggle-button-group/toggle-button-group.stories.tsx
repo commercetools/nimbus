@@ -8,7 +8,7 @@ import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
  * Storybook metadata configuration
  */
 const meta: Meta<typeof ToggleButtonGroup.Root> = {
-  title: "components/Buttons/ToggleButtonGroup",
+  title: "Components/Buttons/ToggleButtonGroup",
   component: ToggleButtonGroup.Root,
 };
 

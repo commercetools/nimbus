@@ -13,7 +13,7 @@ import { TagGroup } from "./tag-group";
  * - component: references the component being documented
  */
 const meta: Meta<typeof TagGroup.Root> = {
-  title: "components/TagGroup",
+  title: "Components/TagGroup",
   component: TagGroup.Root,
 };
 

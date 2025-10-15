@@ -7,7 +7,7 @@ import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
 import { AddReaction, Search, AddBox } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof MultilineTextInput> = {
-  title: "components/MultilineTextInput",
+  title: "Components/MultilineTextInput",
   component: MultilineTextInput,
 };
 

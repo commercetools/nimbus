@@ -12,7 +12,7 @@ const fontColors: LinkProps["fontColor"][] = ["primary", "inherit"];
  * The Link component allows a user to navigate to a different page or resource.
  */
 const meta: Meta<typeof Link> = {
-  title: "components/Link",
+  title: "Components/Link",
   component: Link,
 };
 

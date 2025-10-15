@@ -5,7 +5,7 @@ import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { Box, Stack, Text, FormField } from "@/components";
 
 const meta: Meta<typeof SearchInput> = {
-  title: "components/SearchInput",
+  title: "Components/SearchInput",
   component: SearchInput,
 };
 

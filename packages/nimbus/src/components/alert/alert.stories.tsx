@@ -14,7 +14,7 @@ const variants: AlertProps["variant"][] = ["flat", "outlined"];
  * - component: references the component being documented
  */
 const meta: Meta<typeof Alert.Root> = {
-  title: "components/Alert",
+  title: "Components/Alert",
   component: Alert.Root,
 };
 

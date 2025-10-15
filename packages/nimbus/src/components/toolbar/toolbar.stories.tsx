@@ -38,7 +38,7 @@ import {
 import { useState } from "react";
 
 const meta: Meta<typeof Toolbar> = {
-  title: "Components / Toolbar",
+  title: "Components/Toolbar",
   component: Toolbar,
   argTypes: {
     orientation: {

@@ -13,7 +13,7 @@ import { useAsyncList } from "react-stately";
  * Storybook metadata configuration
  */
 const meta: Meta<typeof Select.Root> = {
-  title: "components/Select",
+  title: "Components/Select",
   component: Select.Root,
 };
 

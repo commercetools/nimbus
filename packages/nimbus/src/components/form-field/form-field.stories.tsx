@@ -4,7 +4,7 @@ import { Box, TextInput, Select, Stack } from "@/components";
 import { userEvent, within, expect } from "storybook/test";
 
 const meta: Meta<typeof FormField.Root> = {
-  title: "components/FormField",
+  title: "Components/FormField",
   component: FormField.Root,
   argTypes: {
     direction: {

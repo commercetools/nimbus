@@ -27,7 +27,7 @@ const UseHotkeysDemo = ({
 };
 
 const meta: Meta<typeof UseHotkeysDemo> = {
-  title: "Hooks/useHotkeys",
+  title: "Hooks/UseHotkeys",
   component: UseHotkeysDemo,
   parameters: {
     layout: "centered",

@@ -8,7 +8,7 @@ import { userEvent, within, expect } from "storybook/test";
  * Storybook metadata configuration
  */
 const meta: Meta<typeof FieldErrors> = {
-  title: "components/FieldErrors",
+  title: "Components/FieldErrors",
   component: FieldErrors,
   parameters: {
     docs: {
