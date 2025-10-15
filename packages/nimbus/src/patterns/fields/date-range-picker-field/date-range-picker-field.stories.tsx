@@ -12,18 +12,11 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
   return {
     // Core elements
     getLabel: () => context.getByText(/Date Range/),
-    getDescription: () => context.queryByText(/Select a start and end date/),
-    getInfoButton: () => context.queryByLabelText("__MORE INFO"),
-    getErrorAlert: () => context.queryByRole("alert"),
-    getRequiredAsterisk: () => context.queryByText("*"),
 
     // DateRangePicker elements
     getDateRangeGroup: () => context.getByRole("group"),
     getDateSegments: () => context.getAllByRole("spinbutton"),
-    getCalendarButton: () => context.getByRole("button", { name: /calendar/i }),
     getClearButton: () => context.getByRole("button", { name: /clear/i }),
-    getClearButtonIfExists: () =>
-      context.queryByRole("button", { name: /clear/i }),
 
     // Actions
     openCalendar: async () => {
@@ -82,7 +75,7 @@ export const Base: Story = {
       await expect(label).toBeInTheDocument();
 
       // Should have description
-      const description = helpers.getDescription();
+      const description = canvas.queryByText(/Select a start and end date/);
       await expect(description).toBeInTheDocument();
 
       // Should have DateRangePicker group
@@ -98,11 +91,13 @@ export const Base: Story = {
         await expect(segments).toHaveLength(6);
 
         // Should have calendar button
-        const calendarButton = helpers.getCalendarButton();
+        const calendarButton = canvas.getByRole("button", {
+          name: /calendar/i,
+        });
         await expect(calendarButton).toBeInTheDocument();
 
         // Clear button should be hidden initially (no value)
-        const clearButton = helpers.getClearButtonIfExists();
+        const clearButton = canvas.queryByRole("button", { name: /clear/i });
         await expect(clearButton).not.toBeInTheDocument();
       }
     );
@@ -175,7 +170,7 @@ export const WithErrors: Story = {
     await step(
       "Error messages are displayed when field is touched",
       async () => {
-        const errorAlert = helpers.getErrorAlert();
+        const errorAlert = canvas.queryByRole("alert");
         await expect(errorAlert).toBeInTheDocument();
 
         // Should show built-in error messages for known error types
@@ -191,7 +186,7 @@ export const WithErrors: Story = {
       const label = helpers.getLabel();
       await expect(label).toBeInTheDocument();
 
-      const asterisk = helpers.getRequiredAsterisk();
+      const asterisk = canvas.queryByText("*");
       await expect(asterisk).toBeInTheDocument();
 
       const segments = helpers.getDateSegments();
@@ -221,7 +216,7 @@ export const WithInfo: Story = {
     const helpers = createFieldHelpers(canvas);
 
     await step("Info button is present and functional", async () => {
-      const infoButton = helpers.getInfoButton();
+      const infoButton = canvas.queryByLabelText("__MORE INFO");
       await expect(infoButton).toBeInTheDocument();
     });
 
