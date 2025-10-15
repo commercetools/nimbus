@@ -29,9 +29,9 @@ import {
   isEmpty,
 } from "./utils";
 import type {
-  TCustomEvent,
+  CustomEvent,
   MoneyInputProps,
-  TCurrencyCode,
+  CurrencyCode,
 } from "./money-input.types";
 import messages from "./money-input.i18n";
 
@@ -79,7 +79,7 @@ import messages from "./money-input.i18n";
  *     if (name?.endsWith(".amount")) {
  *       setValue(prev => ({ ...prev, amount: value as string }));
  *     } else if (name?.endsWith(".currencyCode")) {
- *       setValue(prev => ({ ...prev, currencyCode: value as TCurrencyCode }));
+ *       setValue(prev => ({ ...prev, currencyCode: value as CurrencyCode }));
  *     }
  *   };
  *
@@ -95,7 +95,7 @@ import messages from "./money-input.i18n";
  *
  * ## Features
  *
- * - **Type-safe currency handling** with TCurrencyCode enum
+ * - **Type-safe currency handling** with CurrencyCode enum
  * - **High precision support** for values exceeding standard currency precision
  * - **Automatic locale formatting** using React Aria NumberField
  * - **Accessibility compliant** following WCAG 2.1 AA standards
@@ -176,7 +176,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       const stringValue = newValue.toString();
 
       // Support legacy API
-      const event: TCustomEvent = {
+      const event: CustomEvent = {
         target: {
           id: amountInputId,
           name: amountInputName,
@@ -194,7 +194,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
   );
 
   const handleAmountFocus = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: amountInputId,
         name: amountInputName,
@@ -205,7 +205,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
   }, [onFocus, value.amount, id, name]);
 
   const handleAmountBlur = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: amountInputId,
         name: amountInputName,
@@ -218,7 +218,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
   const handleCurrencyChange = useCallback(
     (currencyCode: string) => {
       // Support legacy API
-      const event: TCustomEvent = {
+      const event: CustomEvent = {
         target: {
           id: currencySelectId,
           name: currencySelectName,
@@ -230,16 +230,16 @@ export const MoneyInput = (props: MoneyInputProps) => {
       // Support modern APIs
       const newValueObject = {
         ...value,
-        currencyCode: currencyCode as TCurrencyCode,
+        currencyCode: currencyCode as CurrencyCode,
       };
       onValueChange?.(newValueObject);
-      onCurrencyChange?.(currencyCode as TCurrencyCode);
+      onCurrencyChange?.(currencyCode as CurrencyCode);
     },
     [onChange, onValueChange, onCurrencyChange, value, id, name]
   );
 
   const handleCurrencyFocus = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: currencySelectId,
         name: currencySelectName,
@@ -250,7 +250,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
   }, [onFocus, value.currencyCode, id, name]);
 
   const handleCurrencyBlur = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: currencySelectId,
         name: currencySelectName,

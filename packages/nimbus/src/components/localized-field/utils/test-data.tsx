@@ -1,4 +1,4 @@
-import type { TCurrencyCode } from "@/components";
+import type { CurrencyCode } from "@/components";
 import type {
   LocalizedString,
   LocalizedCurrency,
@@ -103,9 +103,9 @@ export const baseCurrencies = ["USD", "CNY", "EUR"];
 
 export const baseCurrencyData: LocalizedStoryData = {
   values: {
-    USD: { amount: "10.55", currencyCode: "USD" as TCurrencyCode },
-    CNY: { amount: "85.55", currencyCode: "CNY" as TCurrencyCode },
-    EUR: { amount: "8.55", currencyCode: "EUR" as TCurrencyCode },
+    USD: { amount: "10.55", currencyCode: "USD" as CurrencyCode },
+    CNY: { amount: "85.55", currencyCode: "CNY" as CurrencyCode },
+    EUR: { amount: "8.55", currencyCode: "EUR" as CurrencyCode },
   },
   placeholders: {
     USD: "Enter an amount",

@@ -1,7 +1,7 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { TValue, TCurrencyCode } from "./utils";
+import type { MoneyInputValue, CurrencyCode } from "./utils";
 
-export type { TValue, TCurrencyCode, TMoneyValue } from "./utils";
+export type { MoneyInputValue, CurrencyCode, MoneyValue } from "./utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -32,7 +32,7 @@ export type MoneyInputBadgeSlotProps = HTMLChakraProps<"div">;
 // HELPER TYPES
 // ============================================================
 
-export type TCustomEvent = {
+export type CustomEvent = {
   target: {
     id?: string;
     name?: string;
@@ -105,7 +105,7 @@ export type MoneyInputProps = Omit<
   /**
    * Value of the input. Consists of the currency code and an amount. `amount` is a string representing the amount. A dot has to be used as the decimal separator.
    */
-  value: TValue;
+  value: MoneyInputValue;
   /**
    * List of possible currencies. When not provided or empty, the component renders a label with the value's currency instead of a dropdown.
    */
@@ -113,21 +113,21 @@ export type MoneyInputProps = Omit<
   /**
    * Called when input is blurred
    */
-  onBlur?: (event: TCustomEvent) => void;
+  onBlur?: (event: CustomEvent) => void;
   /**
    * Called when input is focused
    */
-  onFocus?: (event: TCustomEvent) => void;
+  onFocus?: (event: CustomEvent) => void;
   /**
    * Called with the event of the input or dropdown when either the currency or the amount have changed.
    * @deprecated Use onValueChange, onAmountChange, or onCurrencyChange for better type safety and developer experience.
    */
-  onChange?: (event: TCustomEvent) => void;
+  onChange?: (event: CustomEvent) => void;
   /**
    * Modern API: Called when the complete value (amount + currency) changes.
    * This is the recommended handler for most use cases.
    */
-  onValueChange?: (value: TValue) => void;
+  onValueChange?: (value: MoneyInputValue) => void;
   /**
    * Modern API: Called when only the amount changes.
    * Use this for granular control over amount changes.
@@ -137,7 +137,7 @@ export type MoneyInputProps = Omit<
    * Modern API: Called when only the currency changes.
    * Use this for granular control over currency changes.
    */
-  onCurrencyChange?: (currencyCode: TCurrencyCode) => void;
+  onCurrencyChange?: (currencyCode: CurrencyCode) => void;
   /**
    * Indicates that the input cannot be modified (e.g not authorized, or changes currently saving).
    */
