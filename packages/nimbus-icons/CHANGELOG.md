@@ -1,5 +1,21 @@
 # @commercetools/nimbus-icons
 
+## 2.0.0
+
+### Minor Changes
+
+- [#436](https://github.com/commercetools/nimbus/pull/436)
+  [`3810148`](https://github.com/commercetools/nimbus/commit/3810148a76d6cf740656c26ca3be057c7952c296)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Create MoneyInput component
+  and component custom icon
+
+### Patch Changes
+
+- [#517](https://github.com/commercetools/nimbus/pull/517)
+  [`90d6d2a`](https://github.com/commercetools/nimbus/commit/90d6d2af786e697e2f2f6bbbb11c93159105837a)
+  Thanks [@dependabot](https://github.com/apps/dependabot)! - Update @types/node
+  to v24.7.1 and specify it as a dev dependency in `nimbus-tokens`
+
 ## 1.0.1
 
 ### Patch Changes
