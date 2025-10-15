@@ -18,7 +18,7 @@ import { useDataTableContext } from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
-interface DataTableManagerProps {
+export interface DataTableManagerProps {
   /** Position of the settings button - can be a render prop for custom positioning */
   renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
   /** Callback when columns are reordered or visibility changes */
