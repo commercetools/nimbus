@@ -5,15 +5,16 @@ import type {
   SwitchTrackSlotProps,
   SwitchThumbSlotProps,
 } from "./switch.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "switch",
 });
 
-export const SwitchRootSlot = withProvider<
+export const SwitchRootSlot: SlotComponent<
   HTMLLabelElement,
   SwitchRootSlotProps
->("label", "root");
+> = withProvider<HTMLLabelElement, SwitchRootSlotProps>("label", "root");
 
 export const SwitchLabelSlot = withContext<
   HTMLSpanElement,

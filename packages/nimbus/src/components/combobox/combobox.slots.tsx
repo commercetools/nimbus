@@ -15,13 +15,18 @@ import type {
   ComboBoxMultiSelectRootSlotProps,
   ComboBoxSingleSelectRootSlotProps,
 } from "./combobox.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "combobox",
 });
 
 // ComboBox Root
-export const ComboBoxRootSlot = withProvider<
+export const ComboBoxRootSlot: SlotComponent<
+  HTMLDivElement,
+  | ComboBoxMultiSelectRootSlotProps<object>
+  | ComboBoxSingleSelectRootSlotProps<object>
+> = withProvider<
   HTMLDivElement,
   | ComboBoxMultiSelectRootSlotProps<object>
   | ComboBoxSingleSelectRootSlotProps<object>
@@ -45,10 +50,10 @@ export const ComboBoxButtonGroupSlot = withContext<
 >("div", "buttonGroup");
 
 // Popover container (multi-select)
-export const ComboBoxPopoverSlot = withContext<
+export const ComboBoxPopoverSlot: SlotComponent<
   HTMLDivElement,
   ComboBoxPopoverSlotProps
->("div", "popover");
+> = withContext<HTMLDivElement, ComboBoxPopoverSlotProps>("div", "popover");
 
 // Multi-select input (in popover)
 export const ComboBoxMultiSelectInputSlot = withContext<

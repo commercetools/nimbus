@@ -6,6 +6,7 @@ import type {
   TabsPanelsSlotProps,
   TabsPanelSlotProps,
 } from "./tabs.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "tabs",
@@ -30,12 +31,10 @@ export const TabsTabSlot = withContext<HTMLButtonElement, TabsTabSlotProps>(
   "tab"
 );
 
-export const TabsPanelsSlot = withContext<HTMLDivElement, TabsPanelsSlotProps>(
-  "div",
-  "panels"
-);
+export const TabsPanelsSlot: SlotComponent<
+  HTMLDivElement,
+  TabsPanelsSlotProps
+> = withContext<HTMLDivElement, TabsPanelsSlotProps>("div", "panels");
 
-export const TabsPanelSlot = withContext<HTMLDivElement, TabsPanelSlotProps>(
-  "div",
-  "panel"
-);
+export const TabsPanelSlot: SlotComponent<HTMLDivElement, TabsPanelSlotProps> =
+  withContext<HTMLDivElement, TabsPanelSlotProps>("div", "panel");

@@ -3,15 +3,16 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react";
 import type { AccordionRootSlotProps } from "./accordion.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "accordion",
 });
 
-export const AccordionRootSlot = withProvider<
+export const AccordionRootSlot: SlotComponent<
   HTMLDivElement,
   AccordionRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, AccordionRootSlotProps>("div", "root");
 
 export const AccordionDisclosureSlot = withContext<
   HTMLDivElement,

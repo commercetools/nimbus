@@ -4,6 +4,7 @@ import {
   type UnstyledProp,
   createRecipeContext,
 } from "@chakra-ui/react";
+import type { SlotComponent } from "../utils/slot-types";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
@@ -24,4 +25,5 @@ const { withContext } = createRecipeContext({ key: "kbd" });
  * Root component that provides the styling context for the Icon component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const KbdRootSlot = withContext<HTMLElement, KbdRootSlotProps>("kbd");
+export const KbdRootSlot: SlotComponent<HTMLElement, KbdRootSlotProps> =
+  withContext<HTMLElement, KbdRootSlotProps>("kbd");
