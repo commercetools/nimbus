@@ -47,6 +47,24 @@
       "value": "Close dialog"
     }
   ],
+  "Nimbus.DraggableList.emptyMessage": [
+    {
+      "type": 0,
+      "value": "drop items here"
+    }
+  ],
+  "Nimbus.DraggableList.removeButtonLabel": [
+    {
+      "type": 0,
+      "value": "remove item"
+    }
+  ],
+  "Nimbus.Drawer.closeTrigger": [
+    {
+      "type": 0,
+      "value": "Close drawer"
+    }
+  ],
   "Nimbus.FieldErrors.duplicateValue": [
     {
       "type": 0,
