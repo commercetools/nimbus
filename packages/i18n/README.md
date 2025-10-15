@@ -25,7 +25,7 @@ multiple formats. It's designed to be consumed directly by importing JSON files.
 ## Installation
 
 ```bash
-pnpm add @commercetools-nimbus/i18n
+pnpm add @commercetools/nimbus-i18n
 ```
 
 ## Usage
