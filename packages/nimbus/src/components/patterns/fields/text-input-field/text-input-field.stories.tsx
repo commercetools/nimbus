@@ -5,7 +5,7 @@ import { userEvent, within, expect, fn } from "storybook/test";
 import { Stack, Text } from "@/components";
 
 const meta: Meta<typeof TextInputField> = {
-  title: "components/TextInputField",
+  title: "patterns/fields/TextInputField",
   component: TextInputField,
 };
 
