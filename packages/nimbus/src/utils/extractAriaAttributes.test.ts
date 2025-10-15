@@ -9,7 +9,7 @@ describe("extractAriaAttributes", () => {
       "aria-expanded": true,
       className: "test-class",
       id: "test-id",
-      onClick: jest.fn(),
+      onClick: () => {},
     };
 
     const [ariaAttributes, otherProps] = extractAriaAttributes(props);
