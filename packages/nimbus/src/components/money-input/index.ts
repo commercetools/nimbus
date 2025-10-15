@@ -1,7 +1,7 @@
 export * from "./money-input";
 export type {
-  TValue,
-  TMoneyValue,
-  TCurrencyCode,
-  TCustomEvent,
+  MoneyInputValue,
+  MoneyValue,
+  CurrencyCode,
+  CustomEvent,
 } from "./money-input.types";

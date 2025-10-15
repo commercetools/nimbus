@@ -2,8 +2,8 @@ import currencies from "./currencies";
 import {
   parseStringToMoneyValue,
   extractDecimalAmount,
-  type TMoneyValue,
-  type TValue,
+  type MoneyValue,
+  type MoneyInputValue,
 } from "./parsing-utilities";
 
 // Replace lodash/has with native implementation
@@ -19,7 +19,10 @@ export function getMoneyGroupAttribute(
   return attr && inputType ? `${attr}.${inputType}` : undefined;
 }
 
-export const transformFormInputToMoneyValue = (value: TValue, locale: string) =>
+export const transformFormInputToMoneyValue = (
+  value: MoneyInputValue,
+  locale: string
+) =>
   parseStringToMoneyValue(
     typeof value.amount === "string" ? value.amount.trim() : "",
     locale,
@@ -27,9 +30,9 @@ export const transformFormInputToMoneyValue = (value: TValue, locale: string) =>
   );
 
 export const formatMoneyValueForDisplay = (
-  moneyValue: TMoneyValue,
+  moneyValue: MoneyValue,
   locale: string
-): TValue => {
+): MoneyInputValue => {
   if (!moneyValue) return { currencyCode: "", amount: "" };
 
   console.warn(
@@ -87,7 +90,7 @@ export const formatMoneyValueForDisplay = (
   return { amount, currencyCode: moneyValue.currencyCode };
 };
 
-export const isEmpty = (formValue: TValue) => {
+export const isEmpty = (formValue: MoneyInputValue) => {
   return (
     !formValue ||
     formValue?.amount?.trim() === "" ||
@@ -95,7 +98,10 @@ export const isEmpty = (formValue: TValue) => {
   );
 };
 
-export const isHighPrecision = (formValue: TValue, locale: string): boolean => {
+export const isHighPrecision = (
+  formValue: MoneyInputValue,
+  locale: string
+): boolean => {
   if (isEmpty(formValue)) {
     return false;
   }
