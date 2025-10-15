@@ -10,15 +10,16 @@ import type {
   CalendarMonthTitleSlotProps,
   CalendarRootSlotProps,
 } from "./calendar.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "calendar",
 });
 
-export const CalendarRootSlot = withProvider<
+export const CalendarRootSlot: SlotComponent<
   HTMLDivElement,
   CalendarRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, CalendarRootSlotProps>("div", "root");
 
 export const CalendarHeaderSlot = withContext<
   HTMLDivElement,

@@ -9,24 +9,30 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type GroupRecipeProps = RecipeProps<"group"> & UnstyledProp;
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type GroupSlotProps = HTMLChakraProps<"div", GroupRecipeProps>;
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type GroupRootSlotProps = HTMLChakraProps<"div", GroupRecipeProps>;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
 
 type DefaultExcludedProps = "css" | "asChild" | "as" | "colorScheme";
 
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export interface GroupProps
-  extends Omit<GroupSlotProps, DefaultExcludedProps>,
-    // Manually picking all the supported props
+  extends Omit<GroupRootSlotProps, DefaultExcludedProps>,
     Pick<
       RaGroupProps,
       | "isDisabled"
@@ -35,8 +41,13 @@ export interface GroupProps
       | "onHoverStart"
       | "onHoverEnd"
     > {
+  /**
+   * Ref forwarding to the root element
+   */
   ref?: Ref<typeof RaGroup>;
 }
 
-/** Type signature for the main `Group` component. */
+/**
+ * Type signature for the main Group component.
+ */
 export type GroupComponent = FC<GroupProps>;

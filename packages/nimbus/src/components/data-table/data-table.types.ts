@@ -14,35 +14,31 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type DataTableSlotRecipeProps = {
+  /** Whether to truncate cell content with ellipsis */
   truncated?: SlotRecipeProps<"dataTable">["truncated"];
+  /** Density variant controlling row height and padding */
   density?: SlotRecipeProps<"dataTable">["density"];
 } & UnstyledProp;
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
-export type DataTableRootProps = HTMLChakraProps<
+export type DataTableRootSlotProps = HTMLChakraProps<
   "div",
   DataTableSlotRecipeProps
 >;
 
-// Wrapper slot for react aria `Table` component
 export type DataTableTableSlotProps = Omit<
   HTMLChakraProps<"table">,
   "translate"
 > & {
   translate?: "yes" | "no";
-  /**
-   * React ref to be forwarded to the table element
-   */
   ref?: React.Ref<HTMLTableElement>;
 };
 
@@ -51,6 +47,47 @@ export type DataTableColumnSlotProps = HTMLChakraProps<"th">;
 export type DataTableBodySlotProps = HTMLChakraProps<"tbody">;
 export type DataTableRowSlotProps = HTMLChakraProps<"tr">;
 export type DataTableCellSlotProps = HTMLChakraProps<"td">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+export type SortDirection = RaSortDirection;
+
+export type SortDescriptor = {
+  column: string;
+  direction: SortDirection;
+};
+
+export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
+  id: string;
+  header: ReactNode;
+  accessor: (row: T) => ReactNode;
+  render?: (cell: {
+    value: unknown;
+    row: T;
+    column: DataTableColumnItem<T>;
+  }) => ReactNode;
+  isVisible?: boolean;
+  isResizable?: boolean;
+  width?: number | null;
+  defaultWidth?: number | null;
+  minWidth?: number | null;
+  maxWidth?: number | null;
+  sticky?: boolean;
+  isSortable?: boolean;
+  isRowHeader?: boolean;
+  headerIcon?: ReactNode;
+  [key: string]: unknown;
+};
+
+export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
+  id: string;
+  isDisabled?: boolean;
+  [key: string]: unknown;
+};
+
+export type DataTableDensity = "default" | "condensed";
 
 export type DataTableContextValue<T extends object = Record<string, unknown>> =
   {
@@ -91,57 +128,11 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     togglePin: (id: string) => void;
   };
 
-export type SortDirection = RaSortDirection;
+type DataTableVariantProps = Omit<DataTableRootSlotProps, "columns" | "data">;
 
-export type SortDescriptor = {
-  column: string;
-  direction: SortDirection;
-};
-
-export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
-  id: string;
-  header: ReactNode;
-  accessor: (row: T) => ReactNode;
-  render?: (cell: {
-    value: unknown;
-    row: T;
-    column: DataTableColumnItem<T>;
-  }) => ReactNode;
-  isVisible?: boolean;
-  isResizable?: boolean;
-  width?: number | null;
-  defaultWidth?: number | null;
-  minWidth?: number | null;
-  maxWidth?: number | null;
-  sticky?: boolean;
-  isSortable?: boolean;
-  isRowHeader?: boolean;
-  headerIcon?: ReactNode;
-  [key: string]: unknown;
-};
-
-export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
-  id: string;
-  isDisabled?: boolean;
-  // Children can now be either nested table rows OR arbitrary React content
-  // Note: The actual nested key is flexible and specified via nestedKey prop
-  [key: string]: unknown;
-};
-
-export type DataTableDensity = "default" | "condensed";
-
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type DataTableVariantProps = Omit<DataTableRootProps, "columns" | "data">;
-
-/**
- * Main props interface for the DataTable component.
- * Extends DataTableVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
 export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   DataTableVariantProps,
   "truncated"

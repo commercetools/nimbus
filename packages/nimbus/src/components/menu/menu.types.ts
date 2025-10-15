@@ -10,7 +10,15 @@ import type {
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type MenuRecipeProps = SlotRecipeProps<"menu">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type MenuRootSlotProps = HTMLChakraProps<"div", MenuRecipeProps>;
 
@@ -27,6 +35,10 @@ export type MenuSectionSlotProps = HTMLChakraProps<"div">;
 export type MenuSectionLabelSlotProps = HTMLChakraProps<"div">;
 
 export type MenuSubmenuSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 // Root component that wraps MenuTrigger
 export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &

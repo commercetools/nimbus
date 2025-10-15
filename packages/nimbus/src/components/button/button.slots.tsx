@@ -2,7 +2,7 @@ import { createRecipeContext } from "@chakra-ui/react";
 import { buttonRecipe } from "./button.recipe";
 import shouldForwardProp from "@emotion/is-prop-valid";
 import { system } from "@/theme";
-import type { ButtonRootProps } from "./button.types";
+import type { ButtonRootSlotProps } from "./button.types";
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
@@ -12,7 +12,7 @@ const { withContext } = createRecipeContext({
  * Root component that provides the styling context for the Button component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
+export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootSlotProps>(
   "button",
   {
     defaultProps: {

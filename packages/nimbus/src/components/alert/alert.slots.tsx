@@ -1,10 +1,10 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
-  AlertActionsProps,
+  AlertActionsSlotProps,
   AlertDescriptionProps,
   AlertDismissButtonProps,
-  AlertIconProps,
-  AlertRootProps,
+  AlertIconSlotProps,
+  AlertRootSlotProps,
   AlertTitleProps,
 } from "./alert.types";
 
@@ -12,7 +12,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "alert",
 });
 
-export const AlertRoot = withProvider<HTMLDivElement, AlertRootProps>(
+export const AlertRoot = withProvider<HTMLDivElement, AlertRootSlotProps>(
   "div",
   "root"
 );
@@ -27,12 +27,12 @@ export const AlertDescription = withContext<
   AlertDescriptionProps
 >("div", "description");
 
-export const AlertIcon = withContext<HTMLDivElement, AlertIconProps>(
+export const AlertIcon = withContext<HTMLDivElement, AlertIconSlotProps>(
   "div",
   "icon"
 );
 
-export const AlertActions = withContext<HTMLDivElement, AlertActionsProps>(
+export const AlertActions = withContext<HTMLDivElement, AlertActionsSlotProps>(
   "div",
   "actions"
 );

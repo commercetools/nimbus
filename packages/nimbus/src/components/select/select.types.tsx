@@ -7,10 +7,24 @@ import {
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-export type SelectRecipeProps = {
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type SelectRecipeProps = {
+  /**
+   * Size variant of the select
+   */
   size?: SlotRecipeProps<"select">["size"];
+  /**
+   * Visual style variant of the select
+   */
   variant?: SlotRecipeProps<"select">["variant"];
 };
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type SelectRootSlotProps = HTMLChakraProps<
   "div",
@@ -27,26 +41,37 @@ export type SelectOptionSlotProps = HTMLChakraProps<"div">;
 
 export type SelectOptionGroupSlotProps = HTMLChakraProps<"div">;
 
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type SelectRootProps = SelectRootSlotProps &
   RaSelectProps & {
-    /** set to true if Select is currently busy with something */
+    /**
+     * Whether the select is in a loading state
+     * @default false
+     */
     isLoading?: boolean;
-    /** Children must be ReactNode, no render props/functions allowed */
+    /**
+     * Children elements (must be ReactNode, no render props/functions allowed)
+     */
     children: ReactNode;
     /**
-     * Optional element to display at the start of the input
-     * Will respect text direction (left in LTR, right in RTL)
+     * Optional element to display at the start of the input field
+     * Respects text direction (left in LTR, right in RTL)
      */
     leadingElement?: ReactNode;
-    /** Whether the select should show a clear button when a value is selected */
+    /**
+     * Whether to show a clear button when a value is selected
+     * @default false
+     */
     isClearable?: boolean;
     /**
-     * React ref to be forwarded to the root element
+     * Ref forwarding to the root element
      */
     ref?: React.Ref<HTMLDivElement>;
   };
 
-// Fix the incompatible event handler types by using a more specific type
 export interface SelectOptionsProps<T>
   extends RaListBoxProps<T>,
     Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}
@@ -64,13 +89,15 @@ export type SelectOptionProps = Omit<
 > &
   Omit<SelectOptionSlotProps, keyof RaListBoxItemProps> & {
     /**
-     * React ref to be forwarded to the option element
+     * Ref forwarding to the option element
      */
     ref?: React.Ref<HTMLDivElement>;
   };
 
 export type SelectOptionGroupProps<T> = RaListBoxSectionProps<T> &
   Omit<SelectOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> & {
-    /** the label for the section */
+    /**
+     * Label text for the option group section
+     */
     label: string;
   };

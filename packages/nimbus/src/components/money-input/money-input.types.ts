@@ -3,11 +3,21 @@ import type { TValue, TCurrencyCode } from "./utils";
 
 export type { TValue, TCurrencyCode, TMoneyValue } from "./utils";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type MoneyInputRecipeProps = {
+  /**
+   * Size variant of the money input
+   * @default "md"
+   */
   size?: SlotRecipeProps<"moneyInput">["size"];
 };
 
-// Slot prop types
+// ============================================================
+// SLOT PROPS
+// ============================================================
 export type MoneyInputRootSlotProps = HTMLChakraProps<
   "div",
   MoneyInputRecipeProps
@@ -17,6 +27,10 @@ export type MoneyInputCurrencySelectSlotProps = HTMLChakraProps<"div">;
 export type MoneyInputCurrencyLabelSlotProps = HTMLChakraProps<"label">;
 export type MoneyInputAmountInputSlotProps = HTMLChakraProps<"input">;
 export type MoneyInputBadgeSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
 
 export type TCustomEvent = {
   target: {
@@ -73,7 +87,9 @@ export type ExcludedSlotProps =
   // It's best if we don't use step at all to preserve high precision.
   | "step";
 
-// Main component API interface - extends slot props to include style props
+// ============================================================
+// MAIN PROPS
+// ============================================================
 export type MoneyInputProps = Omit<
   MoneyInputRootSlotProps,
   ExcludedSlotProps

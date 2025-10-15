@@ -10,15 +10,16 @@ import type {
   RangeCalendarGridBodySlotProps,
   RangeCalendarCellSlotProps,
 } from "./range-calendar.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "rangeCalendar",
 });
 
-export const RangeCalendarRootSlot = withProvider<
+export const RangeCalendarRootSlot: SlotComponent<
   HTMLDivElement,
   RangeCalendarRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, RangeCalendarRootSlotProps>("div", "root");
 
 export const RangeCalendarHeaderSlot = withContext<
   HTMLDivElement,

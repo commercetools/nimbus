@@ -12,59 +12,52 @@ import {
   type TagProps as RaTagProps,
 } from "react-aria-components";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type TagGroupRecipeVariantProps = {
+  /**
+   * Size variant of the tag group
+   * @default "lg"
+   */
   size?: SlotRecipeProps<"taggroup">["size"];
 };
 
 // ============================================================
-// Root Component (`<TagGroup.Root>`)
+// SLOT PROPS
 // ============================================================
 
-/** Base Chakra styling props for the root `div` slot. */
 type TagGroupRootSlotProps = HTMLChakraProps<"div", TagGroupRecipeVariantProps>;
 
-/** Combined props for the root element (Chakra styles + Aria behavior). */
-type TagGroupRootProps = TagGroupRootSlotProps & RaTagGroupProps;
+type TagGroupTagListSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
-/** Final external props for the `<TagGroup>` component, including `children`. */
+type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+type TagGroupRootProps = TagGroupRootSlotProps & RaTagGroupProps;
 export type TagGroupProps = TagGroupRecipeVariantProps &
   Omit<TagGroupRootProps, "size"> & {
     ref?: Ref<typeof RaTagGroup>;
   };
 
-/** Type signature for the main `TagGroup` component. */
 export type TagGroupRootComponent = FC<TagGroupProps>;
 
-// ============================================================
-// TagList Sub-Component (`<TagGroup.TagList>`)
-// ============================================================
-
-/** Base Chakra styling props for the root `div` slot. */
-type TagGroupTagListSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
-/** Combined props for the tagList element (Chakra styles + Aria behavior + Recipe variants). */
 export type TagGroupTagListProps<T extends object> = RaTagListProps<T> &
   Omit<TagGroupTagListSlotProps, keyof RaTagListProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };
 
-/** Type signature for the `TagGroup.TagList` sub-component. */
 export type TagGroupTagListComponent<T extends object> = FC<
   TagGroupTagListProps<T>
 >;
 
-// ============================================================
-// Tag Sub-Component (`<TagGroup.Tag>`)
-// ============================================================
-
-/** Base Chakra styling props for the root `div` slot. */
-type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
-
-/** Combined props for the tag element (Chakra styles + Aria behavior + Recipe variants). */
 export type TagGroupTagProps = RaTagProps &
   Omit<TagGroupTagSlotProps, keyof RaTagProps> & {
     ref?: Ref<typeof RaTag>;
   };
 
-/** Type signature for the `TagGroup.Tag` sub-component. */
 export type TagGroupTagComponent = FC<TagGroupTagProps>;

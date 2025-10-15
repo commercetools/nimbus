@@ -1,7 +1,7 @@
 import { createRecipeContext } from "@chakra-ui/react";
 import shouldForwardProp from "@emotion/is-prop-valid";
 import { system } from "@/theme";
-import type { ToggleButtonRootProps } from "./toggle-button.types";
+import type { ToggleButtonRootSlotProps } from "./toggle-button.types";
 
 const { withContext } = createRecipeContext({
   key: "toggleButton",
@@ -13,7 +13,7 @@ const { withContext } = createRecipeContext({
  */
 export const ToggleButtonRoot = withContext<
   HTMLButtonElement,
-  ToggleButtonRootProps
+  ToggleButtonRootSlotProps
 >("button", {
   defaultProps: {
     type: "button",

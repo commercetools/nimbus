@@ -6,38 +6,43 @@ import type {
 } from "@chakra-ui/react";
 import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
 
-/**
- * Base recipe props type that combines Chakra UI's recipe props
- * with the unstyled prop option for the toolbar recipe.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type ToolbarRecipeProps = {
+  /** Size variant of the toolbar */
   size?: RecipeProps<"toolbar">["size"];
+  /** Layout orientation of the toolbar */
   orientation?: RecipeProps<"toolbar">["orientation"];
+  /** Visual style variant of the toolbar */
   variant?: RecipeProps<"toolbar">["variant"];
 } & UnstyledProp;
 
-/**
- * Root props type that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type ToolbarSlotProps = Omit<
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ToolbarRootSlotProps = Omit<
   HTMLChakraProps<"div", ToolbarRecipeProps>,
   "translate"
 > & {
   translate?: "yes" | "no";
 };
 
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type DefaultExcludedProps = "css" | "asChild" | "as";
 
-// Root toolbar component
+// ============================================================
+// MAIN PROPS
+// ============================================================
 export type ToolbarProps = Omit<
-  ToolbarSlotProps,
+  ToolbarRootSlotProps,
   DefaultExcludedProps | "children" | "slot"
 > &
-  // Some RA props are incompatible / not supported
-  // orientation: can change based on breakpoint
-  // className & style: RA accepts a fn (a pattern we don't want to support, yet)
   Omit<RaToolbarProps, "orientation" | "className" | "style"> & {
     ref?: Ref<HTMLDivElement>;
   };

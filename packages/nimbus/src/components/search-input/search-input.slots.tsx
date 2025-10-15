@@ -1,8 +1,8 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
-  SearchInputRootProps,
-  SearchInputLeadingElementProps,
-  SearchInputInputProps,
+  SearchInputRootSlotProps,
+  SearchInputLeadingElementSlotProps,
+  SearchInputInputSlotProps,
 } from "./search-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -11,15 +11,15 @@ const { withProvider, withContext } = createSlotRecipeContext({
 
 export const SearchInputRootSlot = withProvider<
   HTMLDivElement,
-  SearchInputRootProps
+  SearchInputRootSlotProps
 >("div", "root");
 
 export const SearchInputLeadingElementSlot = withContext<
   HTMLDivElement,
-  SearchInputLeadingElementProps
+  SearchInputLeadingElementSlotProps
 >("div", "leadingElement");
 
 export const SearchInputInputSlot = withContext<
   HTMLInputElement,
-  SearchInputInputProps
+  SearchInputInputSlotProps
 >("input", "input");

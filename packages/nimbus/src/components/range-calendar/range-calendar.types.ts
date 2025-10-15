@@ -1,12 +1,20 @@
 import type { DateValue } from "@internationalized/date";
-import type { RangeCalendarProps as AriaRangeCalendarProps } from "react-aria-components";
+import type { RangeCalendarProps as RaRangeCalendarProps } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
 type RangeCalendarRecipeProps = SlotRecipeProps<"rangeCalendar">;
 
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
 export type RangeCalendarRootSlotProps = HTMLChakraProps<
   "div",
-  RangeCalendarRecipeProps & AriaRangeCalendarProps<DateValue>
+  RangeCalendarRecipeProps & RaRangeCalendarProps<DateValue>
 >;
 
 export type RangeCalendarHeaderSlotProps = HTMLChakraProps<"div">;
@@ -25,23 +33,24 @@ export type RangeCalendarGridBodySlotProps = HTMLChakraProps<"tbody">;
 
 export type RangeCalendarCellSlotProps = HTMLChakraProps<"td">;
 
-/**
- * Range value type for date ranges
- */
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 export type RangeValue<T> = {
   start: T;
   end: T;
 };
 
-/**
- * Additional properties we want to exclude from the RangeCalendar component.
- * These are either deprecated or not intended for use in this component.
- */
 type ExcludedProps = "as" | "style" | "createCalendar";
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type RangeCalendarProps<T extends DateValue> = Omit<
   RangeCalendarRootSlotProps,
-  keyof AriaRangeCalendarProps<DateValue> | ExcludedProps
+  keyof RaRangeCalendarProps<DateValue> | ExcludedProps
 > &
-  Omit<AriaRangeCalendarProps<T>, ExcludedProps> &
+  Omit<RaRangeCalendarProps<T>, ExcludedProps> &
   SlotRecipeProps<"rangeCalendar">;

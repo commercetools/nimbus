@@ -9,16 +9,15 @@ import type {
   MenuSectionLabelSlotProps,
   MenuSubmenuSlotProps,
 } from "./menu.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "menu",
 });
 
 // Menu Root
-export const MenuRootSlot = withProvider<HTMLDivElement, MenuRootSlotProps>(
-  "div",
-  "root"
-);
+export const MenuRootSlot: SlotComponent<HTMLDivElement, MenuRootSlotProps> =
+  withProvider<HTMLDivElement, MenuRootSlotProps>("div", "root");
 
 // Menu Trigger
 export const MenuTriggerSlot = withContext<

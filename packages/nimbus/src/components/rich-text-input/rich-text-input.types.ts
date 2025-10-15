@@ -5,7 +5,15 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type RichTextInputRecipeProps = SlotRecipeProps<"richTextInput">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type RichTextInputRootSlotProps = HTMLChakraProps<
   "div",
@@ -16,7 +24,15 @@ export type RichTextInputToolbarSlotProps = HTMLChakraProps<"div">;
 
 export type RichTextInputEditableSlotProps = HTMLChakraProps<"div">;
 
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type DefaultExcludedProps = "css" | "asChild" | "as" | "onChange";
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type RichTextInputProps = Omit<
   RichTextInputRootSlotProps,

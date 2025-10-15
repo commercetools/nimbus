@@ -1,31 +1,32 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import type {
-  SwitchRootProps,
-  SwitchLabelProps,
-  SwitchTrackProps,
-  SwitchThumbProps,
+  SwitchRootSlotProps,
+  SwitchLabelSlotProps,
+  SwitchTrackSlotProps,
+  SwitchThumbSlotProps,
 } from "./switch.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "switch",
 });
 
-export const SwitchRootSlot = withProvider<HTMLLabelElement, SwitchRootProps>(
-  "label",
-  "root"
-);
+export const SwitchRootSlot: SlotComponent<
+  HTMLLabelElement,
+  SwitchRootSlotProps
+> = withProvider<HTMLLabelElement, SwitchRootSlotProps>("label", "root");
 
-export const SwitchLabelSlot = withContext<HTMLSpanElement, SwitchLabelProps>(
-  "span",
-  "label"
-);
+export const SwitchLabelSlot = withContext<
+  HTMLSpanElement,
+  SwitchLabelSlotProps
+>("span", "label");
 
-export const SwitchTrackSlot = withContext<HTMLSpanElement, SwitchTrackProps>(
-  "span",
-  "track"
-);
+export const SwitchTrackSlot = withContext<
+  HTMLSpanElement,
+  SwitchTrackSlotProps
+>("span", "track");
 
-export const SwitchThumbSlot = withContext<HTMLSpanElement, SwitchThumbProps>(
-  "span",
-  "thumb"
-);
+export const SwitchThumbSlot = withContext<
+  HTMLSpanElement,
+  SwitchThumbSlotProps
+>("span", "thumb");

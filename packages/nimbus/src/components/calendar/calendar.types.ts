@@ -1,8 +1,16 @@
 import type { DateValue } from "@internationalized/date";
-import type { CalendarProps as AriaCalendarProps } from "react-aria-components";
+import type { CalendarProps as RaCalendarProps } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type CalendarRecipeProps = SlotRecipeProps<"calendar">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type CalendarRootSlotProps = HTMLChakraProps<"div", CalendarRecipeProps>;
 
@@ -15,14 +23,18 @@ export type CalendarHeaderCellSlotProps = HTMLChakraProps<"th">;
 export type CalendarGridBodySlotProps = HTMLChakraProps<"tbody">;
 export type CalendarCellSlotProps = HTMLChakraProps<"td">;
 
-/**
- * Additional properties we want to exclude from the TimeInput component.
- * These are either deprecated or not intended for use in this component.
- */
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type ExcludedProps = "as" | "asChild" | "style" | "createCalendar";
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type CalendarProps<T extends DateValue> = Omit<
   CalendarRootSlotProps,
-  keyof AriaCalendarProps<DateValue> | ExcludedProps
+  keyof RaCalendarProps<DateValue> | ExcludedProps
 > &
-  Omit<AriaCalendarProps<T>, ExcludedProps>;
+  Omit<RaCalendarProps<T>, ExcludedProps>;

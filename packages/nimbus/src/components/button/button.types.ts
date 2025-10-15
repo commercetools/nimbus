@@ -1,43 +1,58 @@
-import type { AriaButtonProps } from "react-aria";
+import type { AriaButtonProps as RaButtonProps } from "react-aria";
 import type {
   HTMLChakraProps,
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the button element.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type ButtonRecipeProps = {
+  /**
+   * Size variant of the button
+   * @default "md"
+   */
   size?: RecipeProps<"button">["size"];
+  /**
+   * Visual style variant of the button
+   * @default "subtle"
+   */
   variant?: RecipeProps<"button">["variant"];
+  /**
+   * Color tone palette for the button
+   */
   tone?: RecipeProps<"button">["tone"];
 } & UnstyledProp;
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type ButtonRootProps = Omit<
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ButtonRootSlotProps = Omit<
   HTMLChakraProps<"button", ButtonRecipeProps>,
   "slot"
 > & {
-  // insure that the `ButtonRoot` component doesn't give a type error
   slot?: string | null | undefined;
 };
 
-/** combine chakra-button props with aria-button props */
-type FunctionalButtonProps = AriaButtonProps &
-  Omit<ButtonRootProps, keyof AriaButtonProps | "slot"> & {
-    [key: `data-${string}`]: unknown;
-  };
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-export type ButtonProps = ButtonRootProps &
-  FunctionalButtonProps & {
-    // we need 'null' as a valid slot value for use with components from react-aria-components,
-    // in react-aria slots "An explicit null value indicates that the local props completely override all props received from a parent."
+export type ButtonProps = Omit<ButtonRootSlotProps, keyof RaButtonProps> &
+  RaButtonProps & {
+    /**
+     * Data attributes for testing or custom metadata
+     */
+    [key: `data-${string}`]: unknown;
+    /**
+     * Slot name for React Aria Components composition
+     */
     slot?: string | null | undefined;
+    /**
+     * Ref forwarding to the button element
+     */
     ref?: React.Ref<HTMLButtonElement>;
   };

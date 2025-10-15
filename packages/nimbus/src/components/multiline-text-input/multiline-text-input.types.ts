@@ -3,19 +3,35 @@ import type {
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { TextFieldProps } from "react-aria-components";
+import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
 export type MultilineTextInputRecipeProps = {
+  /**
+   * Size variant of the multiline text input
+   * @default "md"
+   */
   size?: SlotRecipeProps<"multilineTextInput">["size"];
+  /**
+   * Visual style variant of the multiline text input
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"multilineTextInput">["variant"];
 } & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type MultilineTextInputRootSlotProps = HTMLChakraProps<
   "div",
   MultilineTextInputRecipeProps
 >;
 
-export type MultilineTextInputLeadingElementProps = HTMLChakraProps<
+export type MultilineTextInputLeadingElementSlotProps = HTMLChakraProps<
   "div",
   MultilineTextInputRecipeProps
 >;
@@ -25,26 +41,36 @@ export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
   MultilineTextInputRecipeProps
 >;
 
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type MultilineTextInputProps = Omit<
   MultilineTextInputRootSlotProps,
-  keyof TextFieldProps | "as" | "asChild"
+  keyof RaTextFieldProps | "as" | "asChild"
 > &
-  TextFieldProps & {
+  RaTextFieldProps & {
+    /**
+     * Ref forwarding to the textarea element
+     */
     ref?: React.Ref<HTMLTextAreaElement>;
     /**
-     * When true, the textarea will automatically grow in height to fit its content.
-     * This works in addition to the default draggable resize behavior.
+     * Whether the textarea should automatically adjust its height based on content
+     * @default false
      */
     autoGrow?: boolean;
     /**
-     * Number of visible text lines for the control.
-     * @default 1
+     * Number of visible text rows
+     * @default 3
      */
     rows?: number;
     /**
-     * Optional element to display at the start of the input
-     * Will respect text direction (left in LTR, right in RTL)
+     * Optional element to display at the start of the textarea
+     * Respects text direction (left in LTR, right in RTL)
      */
     leadingElement?: React.ReactNode;
+    /**
+     * Placeholder text for the textarea
+     */
     placeholder?: string;
   };

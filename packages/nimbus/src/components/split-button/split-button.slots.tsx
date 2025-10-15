@@ -5,16 +5,17 @@ import type {
   SplitButtonPrimaryButtonSlotProps,
   SplitButtonTriggerSlotProps,
 } from "./split-button.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "splitButton",
 });
 
 // Root Container
-export const SplitButtonRootSlot = withProvider<
+export const SplitButtonRootSlot: SlotComponent<
   HTMLDivElement,
   SplitButtonRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, SplitButtonRootSlotProps>("div", "root");
 
 // Button Group Container
 export const SplitButtonButtonGroupSlot = withContext<

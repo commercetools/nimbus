@@ -5,48 +5,57 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type AvatarRecipeProps = {
+  /**
+   * Size variant of the avatar
+   * @default "md"
+   */
   size?: RecipeProps<"avatar">["size"];
 } & UnstyledProp;
 
-export type AvatarRootProps = HTMLChakraProps<"div", AvatarRecipeProps>;
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
-export type AvatarComponentProps = HTMLAttributes<HTMLDivElement> & {
-  /**
-   * The first name used to show initials
-   */
-  firstName: string;
-  /**
-   * The last name used to show initials
-   */
-  lastName: string;
-  /**
-   * The image URL
-   */
-  src?: string;
-  /**
-   * Alt text for the avatar image
-   */
-  alt?: string;
-  /**
-   * If the avatar is disabled
-   */
-  isDisabled?: boolean;
-};
+export type AvatarRootSlotProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 
-type AvatarRecipeVariantProps = {
-  /**
-   * Size variant
-   * @default "md"
-   */
-  size?: "md" | "xs" | "2xs";
-};
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-type FunctionalAvatarProps = AvatarRootProps &
-  AvatarComponentProps &
-  AvatarRecipeVariantProps;
-
-export type AvatarProps = FunctionalAvatarProps & {
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
-};
+export type AvatarProps = AvatarRootSlotProps &
+  HTMLAttributes<HTMLDivElement> & {
+    /**
+     * First name for generating initials
+     */
+    firstName: string;
+    /**
+     * Last name for generating initials
+     */
+    lastName: string;
+    /**
+     * Image source URL for the avatar
+     */
+    src?: string;
+    /**
+     * Alternative text for the avatar image
+     */
+    alt?: string;
+    /**
+     * Whether the avatar is disabled
+     * @default false
+     */
+    isDisabled?: boolean;
+    /**
+     * Custom content to override default avatar rendering
+     */
+    children?: React.ReactNode;
+    /**
+     * Ref forwarding to the root element
+     */
+    ref?: React.Ref<HTMLDivElement>;
+  };

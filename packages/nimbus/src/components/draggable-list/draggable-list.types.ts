@@ -2,14 +2,26 @@ import type { ReactNode, Ref } from "react";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { FormFieldProps } from "@/components";
 import type {
-  GridListProps,
-  GridListItemProps,
+  GridListProps as RaGridListProps,
+  GridListItemProps as RaGridListItemProps,
   Key,
 } from "react-aria-components";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type DraggableListRecipeProps = {
+  /**
+   * Size variant of the draggable list
+   * @default "md"
+   */
   size?: SlotRecipeProps<"draggableList">["size"];
 };
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
 export type DraggableListRootSlotProps = HTMLChakraProps<
   "div",
@@ -21,6 +33,11 @@ export type DraggableListItemSlotProps = HTMLChakraProps<"div">;
 export type DraggableListItemContentSlotProps = HTMLChakraProps<"div">;
 
 export type DraggableListEmptySlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 /**
  * Base data shape for draggable list items
  *
@@ -36,6 +53,24 @@ export type DraggableListItemData = {
 } & Record<string, unknown>;
 
 /**
+ * Data shape for items used in DraggableList.Field
+ *
+ * Extends DraggableListItemData with required key and label properties.
+ * This ensures all items have the necessary data for default rendering in form fields.
+ *
+ * @property key - Unique identifier for the item (required)
+ * @property label - Display content for the item (required)
+ */
+export type DraggableListFieldItemData = DraggableListItemData & {
+  key: string;
+  label: string;
+};
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+/**
  * Props for the DraggableList.Root component
  *
  * The root component that provides context and state management for the draggable list.
@@ -44,7 +79,7 @@ export type DraggableListItemData = {
  * @template T - Type for item data displayed in the list. Items array type is `T[]`.
  */
 export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
-  GridListProps<T>,
+  RaGridListProps<T>,
   "autoFocus" | "className" | "style" | "translate" | "renderEmptyState"
 > &
   Omit<
@@ -75,7 +110,7 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
      * Custom render function for list items.
      * If not provided, items will be rendered using their `key` and `label` properties.
      */
-    children?: GridListProps<T>["children"];
+    children?: RaGridListProps<T>["children"];
     /**
      * Content to display when the list is empty
      * @default "drop items here"
@@ -92,7 +127,7 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
  * @template T - Type for the item's data object
  */
 export type DraggableListItemProps<T extends DraggableListItemData> = Omit<
-  GridListItemProps<T>,
+  RaGridListItemProps<T>,
   "className" | "onClick" | "style" | "translate"
 > &
   Omit<DraggableListItemSlotProps, "children"> & {
@@ -115,20 +150,6 @@ export type DraggableListItemProps<T extends DraggableListItemData> = Omit<
      */
     onRemoveItem?: (key: Key) => void;
   };
-
-/**
- * Data shape for items used in DraggableList.Field
- *
- * Extends DraggableListItemData with required key and label properties.
- * This ensures all items have the necessary data for default rendering in form fields.
- *
- * @property key - Unique identifier for the item (required)
- * @property label - Display content for the item (required)
- */
-export type DraggableListFieldItemData = DraggableListItemData & {
-  key: string;
-  label: string;
-};
 
 /**
  * Props for the DraggableList.Field component

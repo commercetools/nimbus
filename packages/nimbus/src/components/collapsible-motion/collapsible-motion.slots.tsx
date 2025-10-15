@@ -3,15 +3,16 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react";
 import type { CollapsibleMotionRootSlotProps } from "./collapsible-motion.types";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "collapsibleMotion",
 });
 
-export const CollapsibleMotionRootSlot = withProvider<
+export const CollapsibleMotionRootSlot: SlotComponent<
   HTMLDivElement,
   CollapsibleMotionRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, CollapsibleMotionRootSlotProps>("div", "root");
 
 export const CollapsibleMotionTriggerSlot = withContext<
   HTMLButtonElement,

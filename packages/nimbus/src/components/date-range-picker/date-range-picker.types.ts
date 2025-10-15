@@ -1,42 +1,46 @@
-import type { DateRangePickerProps as ReactAriaDateRangePickerProps } from "react-aria-components";
-import type { DateValue } from "react-aria";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
+import type { DateValue } from "react-aria";
+import type { DateRangePickerProps as RaDateRangePickerProps } from "react-aria-components";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type DateRangePickerRecipeProps = {
+  /**
+   * Size variant of the date range picker
+   * @default "md"
+   */
   size?: SlotRecipeProps<"dateRangePicker">["size"];
+  /**
+   * Visual style variant of the date range picker
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"dateRangePicker">["variant"];
 } & UnstyledProp;
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type DateRangePickerRootProps = HTMLChakraProps<
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type DateRangePickerRootSlotProps = HTMLChakraProps<
   "div",
   DateRangePickerRecipeProps
 >;
 
-/**
- * Additional properties we want to exclude from the DateRangePicker component.
- * These are either deprecated or not intended for use in this component.
- */
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type ExcludedProps =
-  // deprecated
   | "validationState"
-  // handled by <FormField> component
   | "label"
   | "description"
   | "errorMessage"
-  // chakra-ui props we don't want exposed
   | "css"
   | "colorScheme"
   | "unstyled"
@@ -44,17 +48,15 @@ type ExcludedProps =
   | "as"
   | "asChild";
 
-/**
- * Main props interface for the DateRangePicker component.
- *
- * We extend React Aria's DateRangePickerProps and add the size/variant props
- * that we want to pass through to the DateInput components.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type DateRangePickerProps = Omit<
-  DateRangePickerRootProps,
-  keyof ReactAriaDateRangePickerProps<DateValue> | ExcludedProps
+  DateRangePickerRootSlotProps,
+  keyof RaDateRangePickerProps<DateValue> | ExcludedProps
 > &
-  Omit<ReactAriaDateRangePickerProps<DateValue>, ExcludedProps> & {
+  Omit<RaDateRangePickerProps<DateValue>, ExcludedProps> & {
     /**
      * Whether the calendar popover should be open by default (uncontrolled).
      */

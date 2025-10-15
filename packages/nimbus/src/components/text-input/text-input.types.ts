@@ -1,38 +1,63 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { TextFieldProps } from "react-aria-components";
+import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
 type TextInputRecipeProps = {
+  /**
+   * Size variant of the text input
+   * @default "md"
+   */
   size?: SlotRecipeProps<"textInput">["size"];
+  /**
+   * Visual style variant of the text input
+   * @default "solid"
+   */
   variant?: SlotRecipeProps<"textInput">["variant"];
 };
 
-export type TextInputRootProps = HTMLChakraProps<"div", TextInputRecipeProps>;
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
-export type TextInputLeadingElementProps = HTMLChakraProps<"div">;
+export type TextInputRootSlotProps = HTMLChakraProps<
+  "div",
+  TextInputRecipeProps
+>;
 
-export type TextInputInputProps = HTMLChakraProps<"input">;
+export type TextInputLeadingElementSlotProps = HTMLChakraProps<"div">;
 
-export type TextInputTrailingElementProps = HTMLChakraProps<"div">;
+export type TextInputInputSlotProps = HTMLChakraProps<"input">;
+
+export type TextInputTrailingElementSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type TextInputProps = Omit<
-  TextInputRootProps,
-  keyof TextFieldProps | "as" | "asChild"
+  TextInputRootSlotProps,
+  keyof RaTextFieldProps | "as" | "asChild"
 > &
-  Omit<TextFieldProps, "ref"> & {
+  Omit<RaTextFieldProps, "ref"> & {
     /**
-     * React ref to be forwarded to the input element
+     * Ref forwarding to the input element
      */
     ref?: React.Ref<HTMLInputElement>;
     /**
      * Optional element to display at the start of the input
-     * Will respect text direction (left in LTR, right in RTL)
+     * Respects text direction (left in LTR, right in RTL)
      */
     leadingElement?: React.ReactNode;
-
     /**
      * Optional element to display at the end of the input
-     * Will respect text direction (right in LTR, left in RTL)
+     * Respects text direction (right in LTR, left in RTL)
      */
     trailingElement?: React.ReactNode;
+    /**
+     * Placeholder text for the input
+     */
     placeholder?: string;
   };

@@ -1,11 +1,16 @@
 import { type ButtonProps } from "../button";
 
-/**
- * Main props interface for the IconButton component.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type IconButtonProps = ButtonProps & {
-  /** explains the intended action, required for accessibility */
+  /**
+   * Required accessible label explaining the intended action
+   */
   "aria-label": string;
+  /**
+   * Ref forwarding to the button element
+   */
   ref?: React.Ref<HTMLButtonElement>;
 };

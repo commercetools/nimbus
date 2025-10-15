@@ -1,20 +1,29 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaCheckboxProps } from "react-aria";
 
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
 type SwitchRecipeProps = SlotRecipeProps<"switch">;
 
-export type SwitchRootProps = HTMLChakraProps<"label", SwitchRecipeProps>;
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
-export type SwitchLabelProps = HTMLChakraProps<"span">;
+export type SwitchRootSlotProps = HTMLChakraProps<"label", SwitchRecipeProps>;
 
-export type SwitchTrackProps = HTMLChakraProps<"span">;
+export type SwitchLabelSlotProps = HTMLChakraProps<"span">;
 
-export type SwitchThumbProps = HTMLChakraProps<"span">;
+export type SwitchTrackSlotProps = HTMLChakraProps<"span">;
 
-/**
- * List of props that should be excluded from the root props when combining with ARIA props
- */
-export type ExcludedSwitchProps =
+export type SwitchThumbSlotProps = HTMLChakraProps<"span">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type ExcludedSwitchProps =
   | "asChild"
   | "isIndeterminate"
   | "colorScheme"
@@ -22,19 +31,21 @@ export type ExcludedSwitchProps =
   | "validationBehavior"
   | "validate";
 
-/**
- * Main props interface for the Switch component.
- * Combines root element props with ARIA toggle functionality props.
- */
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type SwitchProps = Omit<
-  SwitchRootProps,
+  SwitchRootSlotProps,
   ExcludedSwitchProps | "onChange"
 > &
   Omit<AriaCheckboxProps, ExcludedSwitchProps> & {
     /**
-     * The content to display next to the switch.
-     * Can be a string or React node.
+     * The label content to display next to the switch
      */
     children?: React.ReactNode;
+    /**
+     * Ref forwarding to the input element
+     */
     ref?: React.Ref<HTMLInputElement>;
   };

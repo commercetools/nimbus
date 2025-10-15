@@ -1,40 +1,54 @@
 import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
-import type { ToggleButtonProps as AriaToggleButtonProps } from "react-aria-components";
+import type { ToggleButtonProps as RaToggleButtonProps } from "react-aria-components";
 
-/**
- * Base recipe props interface.
- */
-export type ToggleButtonRecipeProps = {
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type ToggleButtonRecipeProps = {
+  /**
+   * Size variant of the toggle button
+   * @default "md"
+   */
   size?: RecipeProps<"toggleButton">["size"];
+  /**
+   * Visual style variant of the toggle button
+   * @default "outline"
+   */
   variant?: RecipeProps<"toggleButton">["variant"];
+  /**
+   * Color tone palette for the toggle button
+   * @default "primary"
+   */
   tone?: RecipeProps<"toggleButton">["tone"];
 };
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-export type ToggleButtonRootProps = HTMLChakraProps<
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ToggleButtonRootSlotProps = HTMLChakraProps<
   "button",
   ToggleButtonRecipeProps
 >;
 
-/**
- * Additional properties we want to exclude from the ToggleButton component.
- * These are chakra-ui props we don't want exposed for non-polymorphic components.
- */
-type ExcludedProps =
-  // chakra-ui props we don't want exposed
-  "css" | "colorScheme" | "recipe" | "as" | "asChild";
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type ExcludedProps = "css" | "colorScheme" | "recipe" | "as" | "asChild";
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 export type ToggleButtonProps = Omit<
-  ToggleButtonRootProps,
-  keyof AriaToggleButtonProps | ExcludedProps
+  ToggleButtonRootSlotProps,
+  keyof RaToggleButtonProps | ExcludedProps
 > &
-  AriaToggleButtonProps & {
+  RaToggleButtonProps & {
     /**
-     * Ref to the underlying button element
+     * Ref forwarding to the button element
      */
     ref?: React.Ref<HTMLButtonElement>;
   };
