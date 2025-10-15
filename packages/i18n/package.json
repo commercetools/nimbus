@@ -1,7 +1,7 @@
 {
   "name": "@commercetools/nimbus-i18n",
   "description": "All translation messages from the Nimbus design system.",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "bugs": "https://github.com/commercetools/nimbus/issues",
   "repository": {
     "type": "git",
@@ -9,21 +9,13 @@
     "directory": "packages/i18n"
   },
   "homepage": "https://nimbus-documentation.vercel.app/home",
-  "keywords": [
-    "typescript",
-    "design-system",
-    "react",
-    "nimbus"
-  ],
+  "keywords": ["typescript", "design-system", "react", "nimbus"],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "sideEffects": false,
-  "files": [
-    "data",
-    "compiled-data"
-  ],
+  "files": ["data", "compiled-data"],
   "scripts": {
     "build": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast data compiled-data"
   }
