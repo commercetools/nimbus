@@ -14,8 +14,10 @@ import { analyzer } from "vite-bundle-analyzer";
 const createEntries = async () => {
   // Only index files are turned into entrypoints, as we don't want to include test files, storybook stories, etc.
   const entries = new Map<string, string>();
-  // Build a glob containing each index.ts file in src/components
-  const componentEntryPoints = await glob("src/components/**/index.ts");
+  // Build a glob containing each index.ts file in src/components or src/patterns
+  const componentEntryPoints = await glob(
+    "src/{components,patterns}/**/index.ts"
+  );
   // Declare an entrypoint for each component's index file. This enables consuming applications to only bundle the components imported into their app, instead of requiring that consumers bundle all components if they use any component.
   for (const file of componentEntryPoints) {
     // Get the name of the folder containing the index file to maintain semi-unique file/entrypoint names
