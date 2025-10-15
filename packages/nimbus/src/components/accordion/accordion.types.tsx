@@ -6,6 +6,7 @@ import type {
   DisclosurePanelProps as RaDisclosurePanelProps,
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
+import type { ExcludePolymorphicFromProps } from "@/components/utils/type-helpers";
 
 // ============================================================
 // RECIPE PROPS
@@ -21,24 +22,6 @@ export type AccordionRootSlotProps = HTMLChakraProps<
   "div",
   AccordionRecipeProps
 >;
-
-// ============================================================
-// HELPER TYPES
-// ============================================================
-
-/**
- * For use in components that use the polymorphic `as` and `asChild` props
- * internally, but do not make them available to the consumer.
- *
- * Long rambling background:
- * React-Aria's components cannot be configured to use `as` and `asChild` internally,
- * and cannot be directly styled by chakra's styledSystem. Therefore components
- * from `react-aria-components` should be wrapped in a chakra `withContext`
- * root component to set the styles onto the `r-a-c` component using `asChild`.
- * This means that we need to allow polymorphism internally, but should not
- * allow it in the external props api since it would not work.
- */
-type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
 
 // ============================================================
 // MAIN PROPS
