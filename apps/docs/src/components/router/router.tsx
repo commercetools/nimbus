@@ -23,48 +23,51 @@ export const RouterProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // INITIALIZATION: On mount, sync atom FROM browser URL (one-time only)
   useEffect(() => {
-    const handleRouteChange = () => {
-      const route = location.pathname.slice(1);
+    const currentRoute = location.pathname.slice(1) || "home";
+    setActiveRoute(currentRoute);
+    // Handle hash fragment on initial page load
+    handleHashFragment();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps = run once on mount
+
+  // NAVIGATION: When activeRoute changes programmatically, sync browser TO atom
+  useEffect(() => {
+    // Skip if activeRoute is still empty (initialization not complete)
+    if (!activeRoute) return;
+
+    const currentBrowserRoute = location.pathname.slice(1);
+
+    // Only update browser if atom value differs from browser
+    // (means user navigated programmatically via setActiveRoute)
+    if (currentBrowserRoute !== activeRoute) {
+      history.pushState({ activeRoute }, "", "/" + activeRoute);
+      scrollToAnchor("root");
+      handleHashFragment();
+    }
+  }, [activeRoute]);
+
+  // BROWSER NAVIGATION: Handle back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = location.pathname.slice(1) || "home";
       setActiveRoute(route);
-      // Handle hash fragment when route changes
       handleHashFragment();
     };
 
-    window.addEventListener("popstate", handleRouteChange);
-    // Also listen for hashchange events
-    window.addEventListener("hashchange", handleHashFragment);
+    const handleHashChange = () => {
+      handleHashFragment();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("hashchange", handleHashChange);
 
     return () => {
-      window.removeEventListener("popstate", handleRouteChange);
-      window.removeEventListener("hashchange", handleHashFragment);
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [activeRoute, setActiveRoute]);
-
-  useEffect(() => {
-    if (!activeRoute) {
-      setActiveRoute("home");
-    }
-
-    const currentRoute = location.pathname.slice(1);
-    const routeChanged = currentRoute !== activeRoute;
-
-    if (routeChanged) {
-      // When route changes, we should clear any existing hash
-      history.pushState({ activeRoute }, "", "/" + activeRoute);
-
-      // Reset scroll position to top when changing routes
-      scrollToAnchor("root");
-
-      // After route change is processed, handle hash fragment
-      handleHashFragment();
-    }
-  }, [activeRoute, setActiveRoute]);
-
-  // Handle hash fragment on initial page load
-  useEffect(() => {
-    handleHashFragment();
-  }, []);
+  }, [setActiveRoute]);
 
   return <>{children}</>;
 };
