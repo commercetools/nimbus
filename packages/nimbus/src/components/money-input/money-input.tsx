@@ -10,7 +10,7 @@ import {
   MakeElementFocusable,
 } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import currenciesData from "./utils/currencies";
 import {
   MoneyInputRootSlot,

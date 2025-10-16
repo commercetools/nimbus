@@ -5,7 +5,7 @@ import { CollapsibleMotionTriggerSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionTriggerProps } from "../collapsible-motion.types";
 import { Button as RaButton } from "react-aria-components";
 import { chakra } from "@chakra-ui/react/styled-system";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 /**
  * CollapsibleMotion.Trigger - The trigger button that toggles the collapsible content
  *

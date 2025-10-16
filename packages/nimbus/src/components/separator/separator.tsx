@@ -2,7 +2,7 @@ import { Separator as RaSeparator } from "react-aria-components";
 import { useRecipe } from "@chakra-ui/react";
 import { SeparatorRoot } from "./separator.slots";
 import type { SeparatorProps } from "./separator.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import { separatorRecipe } from "./separator.recipe";
 
 /**

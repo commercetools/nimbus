@@ -1,7 +1,7 @@
 import { Header } from "react-aria-components";
 import { MenuSectionLabelSlot } from "../menu.slots";
 import type { MenuSectionLabelProps } from "../menu.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 /**
  * Used in MenuSection for rendering the `label` property.

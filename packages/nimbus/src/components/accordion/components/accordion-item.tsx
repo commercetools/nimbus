@@ -1,7 +1,7 @@
 import { AccordionDisclosureSlot } from "../accordion.slots";
 import { Disclosure as RaDisclosure } from "react-aria-components";
 import type { AccordionItemProps } from "../accordion.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const AccordionItem = ({
   children,

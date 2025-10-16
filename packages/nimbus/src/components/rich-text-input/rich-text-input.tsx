@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSlotRecipe } from "@chakra-ui/react";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import { RichTextInputRootSlot } from "./rich-text-input.slots";
 import {
   RichTextEditor,

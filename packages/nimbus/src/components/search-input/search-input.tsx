@@ -9,7 +9,7 @@ import {
 import { useIntl } from "react-intl";
 import { Search, Close } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import { searchInputSlotRecipe } from "./search-input.recipe";
 import {
   SearchInputRootSlot,

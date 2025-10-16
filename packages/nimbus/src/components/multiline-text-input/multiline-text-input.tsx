@@ -3,7 +3,7 @@ import { mergeRefs } from "@chakra-ui/react";
 import { useRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
 import { TextArea } from "react-aria-components";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 import {
   MultilineTextInputRootSlot,

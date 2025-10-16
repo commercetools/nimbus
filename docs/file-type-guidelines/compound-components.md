@@ -53,10 +53,10 @@ export const Menu = {
   Trigger: MenuTrigger,
   Content: MenuContent,
 };
-
 ```
 
-Note: Every compound component must have a Root component as the first property to provide configuration and state management.
+Note: Every compound component must have a Root component as the first property
+to provide configuration and state management.
 
 ### 3. Root Accepts Configuration
 
@@ -72,13 +72,18 @@ The Root component receives all theme and component configuration:
 
 ### Important: Root Implementation Patterns Vary
 
-While all compound components must have a Root component, **the internal implementation varies significantly**:
+While all compound components must have a Root component, **the internal
+implementation varies significantly**:
 
-- **React Aria Components**: Root may wrap React Aria providers (Menu wraps MenuTrigger, Select wraps Select)
-- **Custom Context**: Root may provide custom context without React Aria (Alert, Card)
+- **React Aria Components**: Root may wrap React Aria providers (Menu wraps
+  MenuTrigger, Select wraps Select)
+- **Custom Context**: Root may provide custom context without React Aria (Alert,
+  Card)
 - **Hybrid**: Root may combine both patterns (ComboBox)
 
-The examples in this document show different patterns to illustrate this diversity. When implementing a new compound component, choose the pattern that best fits your requirements.
+The examples in this document show different patterns to illustrate this
+diversity. When implementing a new compound component, choose the pattern that
+best fits your requirements.
 
 ## File Structure
 
@@ -101,7 +106,8 @@ menu/
 
 ### Root Component Implementation
 
-Root components vary significantly based on their requirements. Here are common patterns:
+Root components vary significantly based on their requirements. Here are common
+patterns:
 
 #### Pattern 1: React Aria Component Wrapper (Menu Example)
 
@@ -113,7 +119,7 @@ import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { MenuTrigger as RaMenuTrigger } from 'react-aria-components';
 import { MenuRootSlot } from '../menu.slots';
 import type { MenuRootProps } from '../menu.types';
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const MenuRoot = (props: MenuRootProps) => {
   // Standard pattern: Split recipe variants
@@ -145,7 +151,7 @@ import { createContext, useMemo, useState } from 'react';
 import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { AlertRootSlot } from '../alert.slots';
 import type { AlertRootProps } from '../alert.types';
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const AlertContext = createContext<AlertContextValue | undefined>(undefined);
 
@@ -178,8 +184,10 @@ AlertRoot.displayName = 'Alert.Root';
 
 **Root components follow this sequential pattern:**
 
-1. **First: Split recipe variants** using `useSlotRecipe` and `splitVariantProps` (if component has recipes)
-2. **Second: Extract style props** from remaining props using `extractStyleProps`
+1. **First: Split recipe variants** using `useSlotRecipe` and
+   `splitVariantProps` (if component has recipes)
+2. **Second: Extract style props** from remaining props using
+   `extractStyleProps`
 3. **Forward recipe props + style props** to slot components
 4. **Forward functional props** to React Aria or underlying components
 
@@ -189,7 +197,8 @@ AlertRoot.displayName = 'Alert.Root';
 2. **Forward style props** to slot components
 3. **Forward functional props** to React Aria or underlying components
 
-This ensures consistent behavior across the design system and proper prop forwarding.
+This ensures consistent behavior across the design system and proper prop
+forwarding.
 
 ### Sub-Component Implementation
 
@@ -200,7 +209,7 @@ Sub-components should support flexible composition and avoid hardcoding content:
 import { Button } from 'react-aria-components';
 import { MenuTriggerSlot } from '../menu.slots';
 import type { MenuTriggerProps } from '../menu.types';
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const MenuTrigger = ({ children, asChild, ref, ...props }: MenuTriggerProps) => {
   // Standard pattern: Extract and forward style props
@@ -253,7 +262,8 @@ MenuItem.displayName = "Menu.Item";
 
 ### Using React Aria State
 
-React Aria components often handle state management internally. Here's a simplified example:
+React Aria components often handle state management internally. Here's a
+simplified example:
 
 ```typescript
 // components/select.root.tsx - Simplified for clarity
@@ -261,7 +271,7 @@ import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { Select as RaSelect } from 'react-aria-components';
 import { SelectRootSlot } from '../select.slots';
 import type { SelectRootProps } from '../select.types';
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const SelectRoot = (props: SelectRootProps) => {
   // Standard pattern: Split recipe variants
@@ -294,7 +304,9 @@ export const SelectRoot = (props: SelectRootProps) => {
 };
 ```
 
-**Note**: Actual implementations may be significantly more complex with conditional rendering, multiple internal slots, loading states, and custom validation logic. See the actual `select.root.tsx` for a production example.
+**Note**: Actual implementations may be significantly more complex with
+conditional rendering, multiple internal slots, loading states, and custom
+validation logic. See the actual `select.root.tsx` for a production example.
 
 ### Custom Context for State Sharing
 
@@ -347,7 +359,9 @@ export const MenuRoot = (props) => {
 ## Type Definitions
 
 For comprehensive type patterns and examples for compound components, see:
-- **[Type Definitions Guidelines](./types.md)** - Props interfaces for Root and sub-components
+
+- **[Type Definitions Guidelines](./types.md)** - Props interfaces for Root and
+  sub-components
 
 ## When to Use Compound vs Single
 
@@ -375,6 +389,7 @@ For comprehensive type patterns and examples for compound components, see:
 ## Validation Checklist
 
 ### Structure
+
 - [ ] `components/` directory exists
 - [ ] Main file contains exports only
 - [ ] **`.Root` component exists and is first property**
@@ -383,18 +398,22 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] Components index file exports all parts
 
 ### Standard Patterns
-- [ ] **Root uses `useSlotRecipe` and `splitVariantProps`** (for recipe-based components)
+
+- [ ] **Root uses `useSlotRecipe` and `splitVariantProps`** (for recipe-based
+      components)
 - [ ] **All components use `extractStyleProps`** to separate style props
 - [ ] **Style props forwarded to slot components**
 - [ ] **Functional props forwarded to React Aria or underlying components**
 - [ ] Display names set for all components (Pattern: `ComponentName.PartName`)
 
 ### Props & Types
+
 - [ ] Root accepts variant/size/theme props via recipe
 - [ ] Props interfaces defined in types file
 - [ ] Proper prop destructuring and forwarding
 
 ### Integration
+
 - [ ] React Aria integration where needed
 - [ ] Context provided by Root if state sharing required
 - [ ] Refs properly forwarded with `useObjectRef` if needed

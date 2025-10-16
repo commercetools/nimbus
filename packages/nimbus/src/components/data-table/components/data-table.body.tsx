@@ -1,6 +1,6 @@
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import type { DataTableBodyProps, DataTableRowItem } from "../data-table.types";
 import { DataTableBodySlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";

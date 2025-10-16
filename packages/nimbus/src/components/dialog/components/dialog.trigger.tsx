@@ -1,7 +1,7 @@
 import { Button as RaButton } from "react-aria-components";
 import { DialogTriggerSlot } from "../dialog.slots";
 import type { DialogTriggerProps } from "../dialog.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import { chakra } from "@chakra-ui/react/styled-system";
 
 export const DialogTrigger = ({

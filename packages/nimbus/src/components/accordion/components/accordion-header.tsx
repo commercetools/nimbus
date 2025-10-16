@@ -8,7 +8,7 @@ import { Flex } from "@/components";
 import { KeyboardArrowRight } from "@commercetools/nimbus-icons";
 import { Button as RaButton } from "react-aria-components";
 import type { AccordionHeaderProps } from "../accordion.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const AccordionHeader = ({
   children,

@@ -5,7 +5,7 @@ import {
   useTableOptions,
 } from "react-aria-components";
 import { Box, Checkbox } from "@/components";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import type {
   DataTableHeaderProps,
   DataTableColumnItem,

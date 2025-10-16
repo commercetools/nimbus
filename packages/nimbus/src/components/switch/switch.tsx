@@ -4,7 +4,7 @@ import { useFocusRing, useSwitch, useObjectRef, mergeProps } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { VisuallyHidden } from "@/components";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import type { SwitchProps } from "./switch.types";
 import {
   SwitchRootSlot,

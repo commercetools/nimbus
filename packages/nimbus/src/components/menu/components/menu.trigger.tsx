@@ -1,7 +1,7 @@
 import { Button } from "react-aria-components";
 import { MenuTriggerSlot } from "../menu.slots";
 import type { MenuTriggerProps } from "../menu.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 import type { ReactNode } from "react";
 
 export const MenuTrigger = ({

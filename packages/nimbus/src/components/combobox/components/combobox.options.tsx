@@ -1,7 +1,7 @@
 import { ListBox as RaListBox } from "react-aria-components";
 import { ComboBoxOptionsSlot } from "../combobox.slots";
 import type { ComboBoxOptionsProps } from "../combobox.types";
-import { extractStyleProps } from "@/utils/extract-style-props";
+import { extractStyleProps } from "@/utils";
 
 export const ComboBoxOptions = <T extends object>({
   children,
