@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { I18nProvider } from "react-aria";
-import { Box, FormField, Text } from "@/components";
+import { Box, FormField, Stack, Text } from "@/components";
 import { MoneyInput } from "./money-input";
 
 import type {
@@ -21,9 +21,6 @@ type MoneyInputExampleProps = Partial<MoneyInputProps> & {
 const meta: Meta<typeof MoneyInput> = {
   title: "Components/MoneyInput",
   component: MoneyInput,
-  parameters: {
-    layout: "centered",
-  },
   tags: ["autodocs"],
 };
 
@@ -60,7 +57,7 @@ const MoneyInputExample = ({
   };
 
   return (
-    <div style={{ minHeight: "200px", width: "400px" }}>
+    <div style={{ minHeight: "200px" }}>
       <MoneyInput
         value={value}
         currencies={currencies}
@@ -577,6 +574,40 @@ export const CurrencyFormattingTest: Story = {
     // Verify high precision badge is shown
     const highPrecisionBadge = canvas.getByLabelText(/high precision price/i);
     expect(highPrecisionBadge).toBeInTheDocument();
+  },
+};
+
+/**
+ * Custom Width
+ * Demonstrates MoneyInput at different widths: 512px, 768px, and full
+ */
+export const CustomWidth: Story = {
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400">
+        <Text>Width: 512px</Text>
+        <MoneyInputExample
+          {...args}
+          width="512px"
+          initialValue={{ amount: "456.78", currencyCode: "EUR" }}
+        />
+        <Text>Width: 768px</Text>
+        <MoneyInputExample
+          {...args}
+          width="768px"
+          initialValue={{ amount: "123.45", currencyCode: "USD" }}
+        />
+        <Text>Width: full</Text>
+        <MoneyInputExample
+          {...args}
+          width="full"
+          initialValue={{ amount: "789.01", currencyCode: "GBP" }}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    hasHighPrecisionBadge: true,
   },
 };
 
