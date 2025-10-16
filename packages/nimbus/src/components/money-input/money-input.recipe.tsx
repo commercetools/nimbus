@@ -12,7 +12,6 @@ export const moneyInputRecipe = defineSlotRecipe({
   className: "nimbus-money-input",
   base: {
     root: {
-      width: "full",
       position: "relative",
       fontFamily: "inherit",
       "& .nimbus-select__trigger": {
@@ -40,6 +39,7 @@ export const moneyInputRecipe = defineSlotRecipe({
     },
     container: {
       display: "inline-flex",
+      width: "full",
       alignItems: "stretch",
       position: "relative",
     },
@@ -65,6 +65,7 @@ export const moneyInputRecipe = defineSlotRecipe({
       },
     },
     amountInput: {
+      flex: "1",
       borderLeftRadius: "0",
       // Ensure focus ring is visible above currency select
       _focusWithin: {
@@ -87,6 +88,7 @@ export const moneyInputRecipe = defineSlotRecipe({
       sm: {
         root: {
           fontSize: "fontSize.20",
+          minWidth: "280px",
           "& .nimbus-select__trigger": {
             width: "2600",
           },
@@ -105,8 +107,9 @@ export const moneyInputRecipe = defineSlotRecipe({
       md: {
         root: {
           fontSize: "fontSize.30",
+          minWidth: "360px",
           "& .nimbus-select__trigger": {
-            width: "2800",
+            width: "3200",
           },
         },
         currencySelect: {
