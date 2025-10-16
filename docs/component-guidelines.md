@@ -35,7 +35,7 @@ detailed guidelines:
 
 ### Testing Files
 
-- **[Unit Tests ({utility}.test.ts)](./file-type-guidelines/unit-testing.md)** -
+- **[Unit Tests ({utility}.spec.ts)](./file-type-guidelines/unit-testing.md)** -
   Fast, isolated tests for utilities and hooks only (components use Storybook stories)
 
 ### Styling System Files (When Needed)

@@ -130,12 +130,7 @@ export default defineConfig(async () => {
         // Don't declare types for stories and tests in bundle.
         // This should not be necessary since we do not export these file types in our indexes,
         // and `rollupTypes: true` means types are built for the rollup output in `/dist`, not the files in `/src`, but it's good to have a safeguard.
-        exclude: [
-          "src/**/*.stories.*",
-          "src/**/*.test.*",
-          "src/**/*.spec.*",
-          "src/test/**/*",
-        ],
+        exclude: ["src/**/*.stories.*", "src/**/*.spec.*", "src/test/**/*"],
       })
     );
     // Run analyzer if the ANALYZE_BUNDLE env var is present

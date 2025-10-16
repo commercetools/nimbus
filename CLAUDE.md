@@ -97,7 +97,7 @@ pnpm test:unit
 pnpm test:storybook
 
 # Run specific test file
-pnpm --filter @commercetools/nimbus test component-name.test.tsx
+pnpm --filter @commercetools/nimbus test component-name.spec.tsx
 pnpm --filter @commercetools/nimbus test component-name.stories.tsx --reporter=basic
 
 # Run tests with different reporters

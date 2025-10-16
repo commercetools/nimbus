@@ -5,7 +5,7 @@
 
 ## Purpose
 
-Unit test files (`{utility-name}.test.ts` or `{hook-name}.test.ts`) provide fast, isolated testing of **utility functions and React hooks** using JSDOM. Unit tests are exclusively for non-component logic.
+Unit test files (`{utility-name}.spec.ts` or `{hook-name}.spec.ts`) provide fast, isolated testing of **utility functions and React hooks** using JSDOM. Unit tests are exclusively for non-component logic.
 
 **IMPORTANT**: All component behavior, interactions, and visual states are tested in Storybook stories with play functions. Unit tests are reserved for utilities and hooks only.
 
@@ -60,7 +60,7 @@ export default defineConfig({
   test: {
     name: "unit",
     environment: "jsdom",                                    // Use JSDOM instead of real browser
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],            // Test file patterns
+    include: ["src/**/*.spec.{ts,tsx}"],                    // Test file patterns
     exclude: ["src/**/*.stories.{ts,tsx}", "node_modules"], // Exclude Storybook tests
     globals: true,                                          // Enable global test APIs
     setupFiles: ["./src/test/unit-test-setup.ts"],         // Setup file runs before tests
@@ -115,7 +115,7 @@ export default defineConfig({
 ### Basic Test File for Utility Functions
 
 ```typescript
-// format-currency.test.ts
+// format-currency.spec.ts
 import { describe, it, expect } from "vitest";
 import { formatCurrency } from "./format-currency";
 
@@ -149,7 +149,7 @@ describe("formatCurrency", () => {
 ### Basic Test File for React Hooks
 
 ```typescript
-// use-pagination.test.ts
+// use-pagination.spec.ts
 import { describe, it, expect } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { usePagination } from "./use-pagination";
@@ -273,7 +273,7 @@ await waitFor(() => {
 ### Testing Pure Utility Functions
 
 ```typescript
-// format-price.test.ts
+// format-price.spec.ts
 import { describe, it, expect } from "vitest";
 import { formatPrice } from "./format-price";
 
@@ -299,7 +299,7 @@ describe("formatPrice", () => {
 ### Testing Functions with Side Effects
 
 ```typescript
-// logger.test.ts
+// logger.spec.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { logError } from "./logger";
 
@@ -333,7 +333,7 @@ describe("logError", () => {
 ### Testing React Hooks - State Management
 
 ```typescript
-// use-toggle.test.ts
+// use-toggle.spec.ts
 import { describe, it, expect } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useToggle } from "./use-toggle";
@@ -382,7 +382,7 @@ describe("useToggle", () => {
 ### Testing React Hooks - Side Effects
 
 ```typescript
-// use-local-storage.test.ts
+// use-local-storage.spec.ts
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useLocalStorage } from "./use-local-storage";
@@ -423,7 +423,7 @@ describe("useLocalStorage", () => {
 ### Testing React Hooks - Cleanup
 
 ```typescript
-// use-interval.test.ts
+// use-interval.spec.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useInterval } from "./use-interval";
@@ -468,7 +468,7 @@ describe("useInterval", () => {
 ### Testing Validation Functions
 
 ```typescript
-// validate-email.test.ts
+// validate-email.spec.ts
 import { describe, it, expect } from "vitest";
 import { validateEmail } from "./validate-email";
 
@@ -501,7 +501,7 @@ describe("validateEmail", () => {
 Use `waitFor` when testing asynchronous operations in hooks or utilities:
 
 ```typescript
-// use-fetch-data.test.ts
+// use-fetch-data.spec.ts
 it("loads data asynchronously", async () => {
   const { result } = renderHook(() => useFetchData("/api/data"));
 
@@ -518,7 +518,7 @@ it("loads data asynchronously", async () => {
 ### Testing Async Utilities
 
 ```typescript
-// async-validator.test.ts
+// async-validator.spec.ts
 it("validates data asynchronously", async () => {
   const result = await validateAsync({ email: "test@example.com" });
 
@@ -685,7 +685,7 @@ pnpm test
 pnpm test --project unit
 
 # Run specific test file
-pnpm test button.test.tsx
+pnpm test button.spec.tsx
 
 # Run tests in watch mode
 pnpm test --watch
@@ -701,7 +701,7 @@ pnpm test --coverage
 pnpm test --testNamePattern="Button.*disabled"
 
 # Run tests in specific file
-pnpm test src/components/button/button.test.tsx
+pnpm test src/components/button/button.spec.tsx
 ```
 
 ## Coverage
@@ -728,7 +728,7 @@ Unit tests should cover these areas for utilities and hooks:
 
 ## Validation Checklist
 
-- [ ] Test file exists with `.test.ts` or `.test.tsx` extension
+- [ ] Test file exists with `.spec.ts` or `.spec.tsx` extension
 - [ ] File located alongside utility or hook being tested
 - [ ] **Testing utilities or hooks only** (components use Storybook stories)
 - [ ] Uses `describe` blocks to organize tests by feature area

@@ -15,7 +15,7 @@ export default defineConfig(async () => {
         // Unit tests use JSDOM instead of real browser
         environment: "jsdom",
         // Standard test file patterns
-        include: ["src/**/*.{test,spec}.{ts,tsx}"],
+        include: ["src/**/*.spec.{ts,tsx}"],
         exclude: ["src/**/*.stories.{ts,tsx}", "node_modules", "dist"],
         globals: true,
         setupFiles: ["./src/test/unit-test-setup.ts"],

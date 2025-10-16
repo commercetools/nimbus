@@ -9,7 +9,7 @@ Determine the file type by extension and location:
 
 - `*.mdx` → Documentation file
 - `*.stories.tsx` → Storybook stories
-- `*.test.tsx` or `*.test.ts` → Unit tests
+- `*.spec.tsx` or `*.spec.ts` → Unit tests
 - `*.recipe.ts` → Chakra UI recipe
 - `*.slots.tsx` → Slot components
 - `*.types.ts` → Type definitions
