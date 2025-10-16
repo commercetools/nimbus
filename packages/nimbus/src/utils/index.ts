@@ -1,2 +1,3 @@
-export { extractStyleProps } from "./extractStyleProps";
+export { extractAriaAttributes } from "./extract-aria-attributes";
+export { extractStyleProps } from "./extract-style-props";
 export { noop } from "./noop";

@@ -9,7 +9,7 @@ import {
   DrawerContentSlot,
 } from "../drawer.slots";
 import type { DrawerContentProps } from "../drawer.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { useDrawerRootContext } from "./drawer.context";
 
 export const DrawerContent = (props: DrawerContentProps) => {

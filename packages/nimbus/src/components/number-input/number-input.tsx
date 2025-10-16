@@ -8,7 +8,7 @@ import {
   KeyboardArrowUp,
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,

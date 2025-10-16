@@ -8,7 +8,7 @@ import {
 } from "react-aria-components";
 import { useListData } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { messages } from "../draggable-list.i18n";
 import {
   DraggableListRootSlot,

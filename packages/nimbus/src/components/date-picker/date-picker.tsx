@@ -16,7 +16,7 @@ import {
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { datePickerSlotRecipe } from "./date-picker.recipe";
 import type { DatePickerProps } from "./date-picker.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { DateInput, Calendar, IconButton, Box } from "@/components";
 import { DatePickerTimeInput } from "./components/date-picker.time-input";
 import { DatePickerCustomContext } from "./components/date-picker.custom-context";

@@ -1,6 +1,6 @@
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { Check, Remove as Minus } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import type { CheckboxProps } from "./checkbox.types";
 import type { CheckboxRenderProps } from "react-aria-components";
 import {

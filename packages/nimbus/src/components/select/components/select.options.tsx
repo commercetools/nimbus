@@ -1,7 +1,7 @@
 import { ListBox as RaListBox } from "react-aria-components";
 import { SelectOptionsSlot } from "./../select.slots";
 import type { SelectOptionsProps } from "../select.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const SelectOptions = <T extends object>(
   props: SelectOptionsProps<T> & { ref?: React.Ref<HTMLDivElement> }

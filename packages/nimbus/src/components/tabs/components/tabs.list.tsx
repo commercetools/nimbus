@@ -1,5 +1,5 @@
 import { TabList as RATabList } from "react-aria-components";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { TabsListSlot } from "../tabs.slots";
 import { Tab } from "./tabs.tab";
 import type { TabListProps, TabItemProps } from "../tabs.types";

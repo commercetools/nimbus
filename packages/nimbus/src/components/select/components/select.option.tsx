@@ -1,7 +1,7 @@
 import { ListBoxItem as RaListBoxItem } from "react-aria-components";
 import { SelectOptionSlot } from "./../select.slots";
 import type { SelectOptionProps } from "../select.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const SelectOption = (props: SelectOptionProps) => {
   const { ref, ...restProps } = props;

@@ -4,7 +4,7 @@ import {
 } from "react-aria-components";
 import { MenuSectionSlot } from "../menu.slots";
 import type { MenuSectionProps } from "../menu.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { useMenuContext } from "./menu.context";
 import { MenuSectionProvider } from "./menu.section-context";
 import { MenuSectionLabel } from "./menu.section-label";

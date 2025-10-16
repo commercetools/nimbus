@@ -6,7 +6,7 @@ import {
   ComboBoxOptionContentSlot,
 } from "../combobox.slots";
 import type { ComboBoxOptionProps } from "../combobox.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const ComboBoxOption = <T extends object>({
   children,

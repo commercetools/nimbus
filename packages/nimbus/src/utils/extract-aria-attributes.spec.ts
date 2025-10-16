@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractAriaAttributes } from "./extractAriaAttributes";
+import { extractAriaAttributes } from "./extract-aria-attributes";
 
 describe("extractAriaAttributes", () => {
   it("should extract aria attributes from props", () => {

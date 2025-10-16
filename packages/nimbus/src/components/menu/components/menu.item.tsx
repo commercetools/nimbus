@@ -1,7 +1,7 @@
 import { MenuItem as RaMenuItem } from "react-aria-components";
 import { MenuItemSlot } from "../menu.slots";
 import type { MenuItemProps } from "../menu.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { ChevronRight } from "@commercetools/nimbus-icons";
 import { Icon } from "@/components/icon";
 

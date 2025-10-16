@@ -8,7 +8,7 @@ import { RangeCalendarGrids } from "./components/range-calendar.grids";
 import { RangeCalendarHeader } from "./components/range-calendar.header";
 import { rangeCalendarSlotRecipe } from "./range-calendar.recipe";
 import { useRecipe } from "@chakra-ui/react/styled-system";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { RangeCalendarCustomContext } from "./components/range-calendar.custom-context";
 
 export const RangeCalendar = (props: RangeCalendarProps<DateValue>) => {

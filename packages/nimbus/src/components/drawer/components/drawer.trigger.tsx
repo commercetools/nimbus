@@ -1,7 +1,7 @@
 import { Button as RaButton } from "react-aria-components";
 import { DrawerTriggerSlot } from "../drawer.slots";
 import type { DrawerTriggerProps } from "../drawer.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { chakra } from "@chakra-ui/react/styled-system";
 
 export const DrawerTrigger = ({

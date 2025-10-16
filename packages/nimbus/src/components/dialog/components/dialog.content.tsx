@@ -9,7 +9,7 @@ import {
   DialogContentSlot,
 } from "../dialog.slots";
 import type { DialogContentProps } from "../dialog.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { useDialogRootContext } from "./dialog.context";
 
 export const DialogContent = (props: DialogContentProps) => {

@@ -4,7 +4,7 @@ import { ComboBoxRootSlot } from "../combobox.slots";
 import { SingleSelectRoot } from "./combobox.single-select-root";
 import { MultiSelectRoot } from "./combobox.multi-select-root";
 import type { ComboBoxRootProps } from "../combobox.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 /**
  * # ComboBox

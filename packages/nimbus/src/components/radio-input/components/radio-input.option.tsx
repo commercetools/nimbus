@@ -3,7 +3,7 @@ import {
   RadioButtonChecked,
   RadioButtonUnchecked,
 } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import type { RadioInputOptionProps } from "../radio-input.types";
 import { RadioInputOptionSlot } from "../radio-input.slots";
 import { useFocusRing } from "react-aria";

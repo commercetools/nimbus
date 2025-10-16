@@ -17,7 +17,7 @@ import {
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
 import type { DateRangePickerProps } from "./date-range-picker.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { DateInput, RangeCalendar, IconButton, Text } from "@/components";
 import { DateRangePickerTimeInput } from "./components/date-range-picker.time-input";
 import { DateRangePickerCustomContext } from "./components/date-range-picker.custom-context";

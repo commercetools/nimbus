@@ -113,7 +113,7 @@ import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { MenuTrigger as RaMenuTrigger } from 'react-aria-components';
 import { MenuRootSlot } from '../menu.slots';
 import type { MenuRootProps } from '../menu.types';
-import { extractStyleProps } from '@/utils/extractStyleProps';
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const MenuRoot = (props: MenuRootProps) => {
   // Standard pattern: Split recipe variants
@@ -145,7 +145,7 @@ import { createContext, useMemo, useState } from 'react';
 import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { AlertRootSlot } from '../alert.slots';
 import type { AlertRootProps } from '../alert.types';
-import { extractStyleProps } from '@/utils/extractStyleProps';
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const AlertContext = createContext<AlertContextValue | undefined>(undefined);
 
@@ -200,7 +200,7 @@ Sub-components should support flexible composition and avoid hardcoding content:
 import { Button } from 'react-aria-components';
 import { MenuTriggerSlot } from '../menu.slots';
 import type { MenuTriggerProps } from '../menu.types';
-import { extractStyleProps } from '@/utils/extractStyleProps';
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const MenuTrigger = ({ children, asChild, ref, ...props }: MenuTriggerProps) => {
   // Standard pattern: Extract and forward style props
@@ -261,7 +261,7 @@ import { useSlotRecipe } from '@chakra-ui/react/styled-system';
 import { Select as RaSelect } from 'react-aria-components';
 import { SelectRootSlot } from '../select.slots';
 import type { SelectRootProps } from '../select.types';
-import { extractStyleProps } from '@/utils/extractStyleProps';
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 export const SelectRoot = (props: SelectRootProps) => {
   // Standard pattern: Split recipe variants

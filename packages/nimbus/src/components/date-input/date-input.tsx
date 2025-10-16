@@ -14,7 +14,7 @@ import {
 import { useRecipe } from "@chakra-ui/react/styled-system";
 import { dateInputSlotRecipe } from "./date-input.recipe";
 import type { DateInputProps } from "./date-input.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 /**
  * # DateInput

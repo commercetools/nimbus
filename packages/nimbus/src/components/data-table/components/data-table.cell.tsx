@@ -2,7 +2,7 @@ import {
   Cell as RaCell,
   ButtonContext as RaButtonContext,
 } from "react-aria-components";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import type { DataTableCellProps } from "../data-table.types";
 import { DataTableCellSlot } from "../data-table.slots";
 

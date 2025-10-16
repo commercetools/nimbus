@@ -5,7 +5,7 @@ import {
   useChakraContext,
   useRecipe,
 } from "@chakra-ui/react";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 import { toolbarRecipe } from "./toolbar.recipe.ts";
 import { Toolbar as RaToolbar } from "react-aria-components";
 

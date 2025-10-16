@@ -15,7 +15,7 @@ import {
   ProgressBarValueSlot,
 } from "./progress-bar.slots";
 import type { ProgressBarProps } from "./progress-bar.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 /**
  * ProgressBar

@@ -24,7 +24,7 @@ import {
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectRootProps } from "./../select.types";
 import { selectSlotRecipe } from "../select.recipe";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils/extract-style-props";
 
 /**
  * # Select
