@@ -4,11 +4,11 @@ import {
   Icon,
   TextInput,
   MoneyInput,
-  type TCustomEvent,
+  type CustomEvent,
   MultilineTextInput,
   RichTextInput,
-  type TValue,
-  type TCurrencyCode,
+  type MoneyInputValue,
+  type CurrencyCode,
 } from "@/components";
 import { WarningAmber } from "@commercetools/nimbus-icons";
 import {
@@ -62,8 +62,8 @@ export const LocalizedFieldLocaleField = ({
   const getInputValue = () => {
     if (type === "money") {
       return inputValueFromProps
-        ? (inputValueFromProps as TValue)
-        : ({ amount: "", currencyCode: localeOrCurrency } as TValue);
+        ? (inputValueFromProps as MoneyInputValue)
+        : ({ amount: "", currencyCode: localeOrCurrency } as MoneyInputValue);
     }
     return inputValueFromProps ? inputValueFromProps : "";
   };
@@ -71,7 +71,7 @@ export const LocalizedFieldLocaleField = ({
   const inputValue = getInputValue();
 
   const handleChange = useCallback(
-    (value: string | TCustomEvent | undefined) => {
+    (value: string | CustomEvent | undefined) => {
       // The `MoneyInput` onChange event value is a custom value,
       // and the `MoneyInput` modifies the input id and name since it is in a `group`,
       // so we need to build a separate return object for the MoneInput to return
@@ -83,7 +83,7 @@ export const LocalizedFieldLocaleField = ({
               id: value.target.id,
               name: value.target.name,
               locale: undefined,
-              currency: localeOrCurrency as TCurrencyCode,
+              currency: localeOrCurrency as CurrencyCode,
               value: value.target.value,
             }
           : { id, name, locale: localeOrCurrency, currency: undefined, value },
@@ -120,12 +120,12 @@ export const LocalizedFieldLocaleField = ({
             <InputComponent
               {...otherProps}
               size={size}
-              value={inputValue as string & TValue}
+              value={inputValue as string & MoneyInputValue}
               onChange={handleChange}
-              onBlur={(e: React.FocusEvent | TCustomEvent) =>
+              onBlur={(e: React.FocusEvent | CustomEvent) =>
                 onBlur?.(e, localeOrCurrency)
               }
-              onFocus={(e: React.FocusEvent | TCustomEvent) =>
+              onFocus={(e: React.FocusEvent | CustomEvent) =>
                 onFocus?.(e, localeOrCurrency)
               }
               isRequired={isRequired}

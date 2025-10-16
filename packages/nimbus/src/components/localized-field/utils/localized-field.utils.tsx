@@ -1,9 +1,9 @@
 import { FormattedMessage } from "react-intl";
 import {
   FormField,
-  type TCurrencyCode,
-  type TValue,
-  type TMoneyValue,
+  type CurrencyCode,
+  type MoneyInputValue,
+  type MoneyValue,
   type TFieldErrors,
   MoneyInput,
 } from "@/components";
@@ -77,8 +77,8 @@ export const sortLocalesByDefaultLocaleLanguage = (
 };
 
 export const sortCurrencies = (
-  defaultCurrency: TCurrencyCode,
-  allCurrencies: TCurrencyCode[]
+  defaultCurrency: CurrencyCode,
+  allCurrencies: CurrencyCode[]
 ) => {
   const remainingCurrencies = allCurrencies.filter(
     (currency) => currency !== defaultCurrency
@@ -167,18 +167,18 @@ export function toFieldErrors<FormValues>(
 }
 
 export const convertToMoneyValues = (
-  values: TValue[],
+  values: MoneyInputValue[],
   currency: string
-): Array<TMoneyValue | null> =>
-  Object.values(values).map<TMoneyValue | null>((value) => {
+): Array<MoneyValue | null> =>
+  Object.values(values).map<MoneyValue | null>((value) => {
     return MoneyInput.convertToMoneyValue(value, currency);
   });
 
 export const parseMoneyValues = (
-  moneyValues: TMoneyValue[] = [],
+  moneyValues: MoneyValue[] = [],
   locale: string
-): Record<TCurrencyCode, TValue> =>
-  moneyValues.reduce<Record<TCurrencyCode, TValue>>(
+): Record<CurrencyCode, MoneyInputValue> =>
+  moneyValues.reduce<Record<CurrencyCode, MoneyInputValue>>(
     (allValues, moneyValue) => {
       const value = MoneyInput.parseMoneyValue(moneyValue, locale);
       return {
@@ -186,23 +186,23 @@ export const parseMoneyValues = (
         [value.currencyCode]: value,
       };
     },
-    {} as Record<TCurrencyCode, TValue>
+    {} as Record<CurrencyCode, MoneyInputValue>
   );
 
 export const getHighPrecisionCurrencies = (
-  values: Record<TCurrencyCode, TValue>,
+  values: Record<CurrencyCode, MoneyInputValue>,
   locale: string
-): TCurrencyCode[] => {
-  const typedCurrencyCodes = Object.keys(values) as TCurrencyCode[];
+): CurrencyCode[] => {
+  const typedCurrencyCodes = Object.keys(values) as CurrencyCode[];
   return typedCurrencyCodes.filter((currencyCode) =>
     MoneyInput.isHighPrecision(values[currencyCode], locale)
   );
 };
 
 export const getEmptyCurrencies = (
-  values: Record<TCurrencyCode, TValue>
-): TCurrencyCode[] => {
-  const typedCurrencyCodes = Object.keys(values) as TCurrencyCode[];
+  values: Record<CurrencyCode, MoneyInputValue>
+): CurrencyCode[] => {
+  const typedCurrencyCodes = Object.keys(values) as CurrencyCode[];
   return typedCurrencyCodes.filter((currencyCode) =>
     MoneyInput.isEmpty(values[currencyCode])
   );

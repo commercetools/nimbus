@@ -2,28 +2,25 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { I18nProvider } from "react-aria";
-import { Box, FormField, Text } from "@/components";
+import { Box, FormField, Stack, Text } from "@/components";
 import { MoneyInput } from "./money-input";
 
 import type {
-  TValue,
-  TCurrencyCode,
-  TCustomEvent,
+  MoneyInputValue,
+  CurrencyCode,
+  CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
 
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
-  initialValue?: TValue;
+  initialValue?: MoneyInputValue;
   currencies?: string[];
 };
 
 const meta: Meta<typeof MoneyInput> = {
   title: "Components/MoneyInput",
   component: MoneyInput,
-  parameters: {
-    layout: "centered",
-  },
   tags: ["autodocs"],
 };
 
@@ -42,9 +39,9 @@ const MoneyInputExample = ({
   currencies = DEFAULT_CURRENCIES,
   ...props
 }: MoneyInputExampleProps) => {
-  const [value, setValue] = useState<TValue>(initialValue);
+  const [value, setValue] = useState<MoneyInputValue>(initialValue);
 
-  const handleChange = (event: TCustomEvent) => {
+  const handleChange = (event: CustomEvent) => {
     if (!event.target.name) return;
 
     if (event.target.name.endsWith(".amount")) {
@@ -54,13 +51,13 @@ const MoneyInputExample = ({
     if (event.target.name.endsWith(".currencyCode")) {
       setValue((prev) => ({
         ...prev,
-        currencyCode: event.target.value as TCurrencyCode | "",
+        currencyCode: event.target.value as CurrencyCode | "",
       }));
     }
   };
 
   return (
-    <div style={{ minHeight: "200px", width: "400px" }}>
+    <div style={{ minHeight: "200px" }}>
       <MoneyInput
         value={value}
         currencies={currencies}
@@ -581,17 +578,51 @@ export const CurrencyFormattingTest: Story = {
 };
 
 /**
+ * Custom Width
+ * Demonstrates MoneyInput at different widths: 512px, 768px, and full
+ */
+export const CustomWidth: Story = {
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400">
+        <Text>Width: 512px</Text>
+        <MoneyInputExample
+          {...args}
+          width="512px"
+          initialValue={{ amount: "456.78", currencyCode: "EUR" }}
+        />
+        <Text>Width: 768px</Text>
+        <MoneyInputExample
+          {...args}
+          width="768px"
+          initialValue={{ amount: "123.45", currencyCode: "USD" }}
+        />
+        <Text>Width: full</Text>
+        <MoneyInputExample
+          {...args}
+          width="full"
+          initialValue={{ amount: "789.01", currencyCode: "GBP" }}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    hasHighPrecisionBadge: true,
+  },
+};
+
+/**
  * Basic FormField Integration
  * Simple demonstration of MoneyInput within FormField with label and description
  */
 export const FormFieldBasic: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "USD",
     });
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
     };
 
@@ -642,13 +673,13 @@ export const FormFieldBasic: Story = {
  */
 export const FormFieldValidation: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "EUR",
     });
     const [isInvalid, setIsInvalid] = useState(false);
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
       // Simple validation: require amount > 0
       setIsInvalid(!newValue.amount || parseFloat(newValue.amount) <= 0);
@@ -704,7 +735,7 @@ export const FormFieldValidation: Story = {
  */
 export const FormFieldReadOnly: Story = {
   render: () => {
-    const [value] = useState<TValue>({
+    const [value] = useState<MoneyInputValue>({
       amount: "250.75",
       currencyCode: "GBP",
     });
@@ -744,7 +775,7 @@ export const FormFieldReadOnly: Story = {
  */
 export const FormFieldDisabled: Story = {
   render: () => {
-    const [value] = useState<TValue>({
+    const [value] = useState<MoneyInputValue>({
       amount: "100.00",
       currencyCode: "JPY",
     });
@@ -783,12 +814,12 @@ export const FormFieldDisabled: Story = {
  */
 export const FormFieldHighPrecision: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "KWD",
     });
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
     };
 
@@ -844,13 +875,13 @@ export const FormFieldHighPrecision: Story = {
  */
 export const ModernApiTest: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "USD",
     });
     const [events, setEvents] = useState<string[]>([]);
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
       setEvents((prev) => [
         ...prev,
@@ -862,7 +893,7 @@ export const ModernApiTest: Story = {
       setEvents((prev) => [...prev, `onAmountChange: ${amount}`]);
     };
 
-    const handleCurrencyChange = (currencyCode: TCurrencyCode) => {
+    const handleCurrencyChange = (currencyCode: CurrencyCode) => {
       setEvents((prev) => [...prev, `onCurrencyChange: ${currencyCode}`]);
     };
 

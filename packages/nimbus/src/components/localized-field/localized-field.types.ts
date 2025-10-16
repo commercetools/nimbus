@@ -1,5 +1,9 @@
 import type { ReactNode, FocusEvent } from "react";
-import type { TValue, TCustomEvent, TCurrencyCode } from "../money-input";
+import type {
+  MoneyInputValue,
+  CustomEvent,
+  CurrencyCode,
+} from "../money-input";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
@@ -73,7 +77,7 @@ export type LocalizedString = { [locale: string]: string | undefined };
  * }
  */
 export type LocalizedCurrency = {
-  [currencyCode: string]: TValue | undefined;
+  [currencyCode: string]: MoneyInputValue | undefined;
 };
 /**
  * Object that maps field data to a specific locale.
@@ -90,8 +94,8 @@ export type LocalizedFieldChangeEvent = {
     id?: string;
     name?: string;
     locale?: string;
-    currency?: TCurrencyCode;
-    value: TCustomEvent["target"]["value"];
+    currency?: CurrencyCode;
+    value: CustomEvent["target"]["value"];
   };
 };
 
@@ -122,7 +126,7 @@ export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
      */
     name?: string;
     /** Locale or currency whose input field is displayed when field group is collapsed */
-    defaultLocaleOrCurrency: string | TCurrencyCode;
+    defaultLocaleOrCurrency: string | CurrencyCode;
     /** Input values for each locale or currency */
     valuesByLocaleOrCurrency: LocalizedString | LocalizedCurrency;
     /** Input placeholders for each locale or currency */
@@ -187,12 +191,12 @@ export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
     onChange: (e: LocalizedFieldChangeEvent) => void;
     /** Blur handler for each locale's input */
     onBlur?: (
-      e: FocusEvent<Element, Element> | TCustomEvent,
+      e: FocusEvent<Element, Element> | CustomEvent,
       locale: string
     ) => void;
     /** Focus handler for each locale's input */
     onFocus?: (
-      e: FocusEvent<Element, Element> | TCustomEvent,
+      e: FocusEvent<Element, Element> | CustomEvent,
       locale: string
     ) => void;
     /**
@@ -219,8 +223,8 @@ export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
 
 /** internal type for object containing all data for a single locale */
 export type MergedLocaleFieldData = {
-  localeOrCurrency: string | TCurrencyCode;
-  inputValue: string | TValue | undefined;
+  localeOrCurrency: string | CurrencyCode;
+  inputValue: string | MoneyInputValue | undefined;
   placeholder?: string;
   description?: ReactNode;
   warning?: ReactNode;
