@@ -58,12 +58,10 @@ export * from "./menu.types";
 The TypeScript configuration allows both styles
 (`allowImportingTsExtensions: true`), but the codebase shows a clear preference:
 
-- **Dominant pattern (~80%)**: Omit extensions - `export * from "./menu"`
-- **Legacy pattern (~20%)**: Include extensions - `export * from "./button.tsx"`
+- **Dominant pattern (100%)**: Omit extensions - `export * from "./menu"`
 
-**Recommendation**: Prefer omitting extensions to match the majority of the
-codebase. Only include extensions if you have specific tooling requirements or
-are updating an existing component that uses them.
+**Always Required**: Omit extensions to ensure proper type resolution in the
+build.
 
 ## Best Practices
 

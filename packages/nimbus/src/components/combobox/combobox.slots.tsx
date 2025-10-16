@@ -2,6 +2,7 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   ComboBoxValueSlotProps,
   ComboBoxButtonGroupSlotProps,
@@ -15,7 +16,6 @@ import type {
   ComboBoxMultiSelectRootSlotProps,
   ComboBoxSingleSelectRootSlotProps,
 } from "./combobox.types";
-import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "combobox",
