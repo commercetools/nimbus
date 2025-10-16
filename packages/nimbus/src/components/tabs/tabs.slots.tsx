@@ -6,7 +6,7 @@ import type {
   TabsPanelsSlotProps,
   TabsPanelSlotProps,
 } from "./tabs.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "tabs",

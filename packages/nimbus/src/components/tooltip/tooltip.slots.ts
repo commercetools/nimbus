@@ -1,7 +1,7 @@
 import { createRecipeContext } from "@chakra-ui/react";
 
 import type { TooltipRootSlotProps } from "./tooltip.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withContext } = createRecipeContext({ key: "tooltip" });
 

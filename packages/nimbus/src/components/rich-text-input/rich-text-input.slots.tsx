@@ -4,7 +4,7 @@ import type {
   RichTextInputToolbarSlotProps,
   RichTextInputEditableSlotProps,
 } from "./rich-text-input.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "richTextInput",

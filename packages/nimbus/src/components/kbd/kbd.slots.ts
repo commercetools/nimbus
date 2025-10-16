@@ -4,7 +4,7 @@ import {
   type UnstyledProp,
   createRecipeContext,
 } from "@chakra-ui/react";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props

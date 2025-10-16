@@ -1,6 +1,6 @@
 import { createRecipeContext } from "@chakra-ui/react";
 import type { SeparatorRootSlotProps } from "./separator.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withContext } = createRecipeContext({ key: "separator" });
 

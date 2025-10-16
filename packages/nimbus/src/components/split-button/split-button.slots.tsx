@@ -5,7 +5,7 @@ import type {
   SplitButtonPrimaryButtonSlotProps,
   SplitButtonTriggerSlotProps,
 } from "./split-button.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "splitButton",

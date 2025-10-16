@@ -10,7 +10,7 @@ import type {
   CalendarMonthTitleSlotProps,
   CalendarRootSlotProps,
 } from "./calendar.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "calendar",

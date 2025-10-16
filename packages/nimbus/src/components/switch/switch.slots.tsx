@@ -5,7 +5,7 @@ import type {
   SwitchTrackSlotProps,
   SwitchThumbSlotProps,
 } from "./switch.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "switch",

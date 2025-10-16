@@ -15,7 +15,7 @@ import type {
   ComboBoxMultiSelectRootSlotProps,
   ComboBoxSingleSelectRootSlotProps,
 } from "./combobox.types";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "combobox",
