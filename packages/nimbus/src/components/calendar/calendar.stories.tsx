@@ -1,5 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Calendar, type CalendarProps, Stack, Text } from "@commercetools/nimbus";
+import {
+  Box,
+  Calendar,
+  type CalendarProps,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import {
   today,
   getLocalTimeZone,

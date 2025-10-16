@@ -1,5 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Accordion, Avatar, Button, Checkbox, Flex } from "@commercetools/nimbus";
+import {
+  Accordion,
+  Avatar,
+  Button,
+  Checkbox,
+  Flex,
+} from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
 const meta: Meta<typeof Accordion.Root> = {

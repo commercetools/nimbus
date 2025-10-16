@@ -1,9 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  IconButton,
-  type IconButtonProps,
-  Stack,
-} from "@commercetools/nimbus";
+import { IconButton, type IconButtonProps, Stack } from "@commercetools/nimbus";
 import { Apps as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef } from "react";
 import { expect, fn, within, userEvent } from "storybook/test";
