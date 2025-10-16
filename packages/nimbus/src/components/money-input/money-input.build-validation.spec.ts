@@ -22,6 +22,8 @@ import type {
   MoneyInputProps,
   TValue,
   TCurrencyCode,
+  // comment this out to pass CI, just to illustrate the issue
+  ThisTypeWillFailAsItDoesntExistInTheBuiltPackage,
 } from "@commercetools/nimbus";
 
 describe("MoneyInput Build Validation", () => {
