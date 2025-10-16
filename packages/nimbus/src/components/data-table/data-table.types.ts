@@ -18,7 +18,6 @@ import type {
   DataTableRowSlotProps,
   DataTableCellSlotProps,
 } from "./data-table.slots";
-
 export interface DataTableContextValue<
   T extends object = Record<string, unknown>,
 > {
@@ -54,7 +53,7 @@ export interface DataTableContextValue<
   pinnedRows: Set<string>;
   onPinToggle?: (rowId: string) => void;
   togglePin: (id: string) => void;
-  onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+  onColumnsChange?: (columns: TColumnListItem[]) => void;
   onVisibilityChange?: (visibleColumnIds: string[]) => void;
 }
 
@@ -188,3 +187,12 @@ export type DataTableCellProps = RaCellProps &
     ref?: Ref<HTMLTableCellElement>;
     isDisabled?: boolean;
   };
+
+/**
+ * Type for column list items used in the DataTable.Manager component
+ * with DraggableList for managing column visibility and order.
+ */
+export type TColumnListItem = {
+  id: string;
+  label: React.ReactNode;
+};

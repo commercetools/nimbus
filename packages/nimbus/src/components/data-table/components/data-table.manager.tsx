@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { useIntl } from "react-intl";
 import {
   Button,
@@ -18,22 +18,13 @@ import {
   Visibility,
 } from "@commercetools/nimbus-icons";
 import { useDataTableContext } from "./data-table.context";
-import type { DataTableColumnItem } from "../data-table.types";
+import type { TColumnListItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
-export interface DataTableManagerProps {
-  /** Position of the settings button - can be a render prop for custom positioning */
+export type DataTableManagerProps = {
+  // /** Position of the settings button - can be a render prop for custom positioning */
   renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
-  /** Callback when columns are reordered or visibility changes */
-  onColumnsChange?: (columns: DataTableColumnItem[]) => void;
-}
-
-interface ColumnListItem {
-  key: string;
-  label: React.ReactNode;
-  id: string;
-  column: DataTableColumnItem;
-}
+};
 
 /**
  * # DataTable.Manager
@@ -53,94 +44,47 @@ interface ColumnListItem {
  * </DataTable.Root>
  * ```
  */
-export const DataTableManager = ({
-  renderTrigger,
-  onColumnsChange,
-}: DataTableManagerProps) => {
+export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();
   const { formatMessage } = useIntl();
 
   // Get all columns from context
   const allColumns = context.columns;
+  const { visibleColumns, onColumnsChange } = context;
+  const hiddenColumns = allColumns.filter(
+    (col) => !visibleColumns?.includes(col.id)
+  );
 
-  // Separate visible and hidden columns
-  const { visibleColumnItems, hiddenColumnItems } = useMemo(() => {
-    const visible: ColumnListItem[] = [];
-    const hidden: ColumnListItem[] = [];
+  if (!visibleColumns || !hiddenColumns) {
+    return null;
+  }
 
-    allColumns.forEach((col) => {
-      const item: ColumnListItem = {
-        key: col.id,
-        label: col.header,
-        id: col.id,
-        column: col,
-      };
+  // const handleResetColumns = () => {
+  //   // Reset to original column order and visibility
+  //   const resetVisible: TColumnListItem[] = [];
+  //   const resetHidden: TColumnListItem[] = [];
 
-      const isVisible = context.visibleColumns
-        ? context.visibleColumns.includes(col.id)
-        : col.isVisible !== false;
+  //   allColumns.forEach((col) => {
+  //     const item: TColumnListItem = {
+  //       key: col.id,
+  //       label: col.header,
+  //       id: col.id,
+  //       column: col,
+  //     };
 
-      if (isVisible) {
-        visible.push(item);
-      } else {
-        hidden.push(item);
-      }
-    });
+  //     if (col.isVisible !== false) {
+  //       resetVisible.push(item);
+  //     } else {
+  //       resetHidden.push(item);
+  //     }
+  //   });
 
-    return { visibleColumnItems: visible, hiddenColumnItems: hidden };
-  }, [allColumns, context.visibleColumns]);
-
-  const [visibleColumns, setVisibleColumns] =
-    useState<ColumnListItem[]>(visibleColumnItems);
-  const [hiddenColumns, setHiddenColumns] =
-    useState<ColumnListItem[]>(hiddenColumnItems);
-
-  // Update local state when context changes
-  useEffect(() => {
-    setVisibleColumns(visibleColumnItems);
-    setHiddenColumns(hiddenColumnItems);
-  }, [visibleColumnItems, hiddenColumnItems]);
-
-  const handleResetColumns = () => {
-    // Reset to original column order and visibility
-    const resetVisible: ColumnListItem[] = [];
-    const resetHidden: ColumnListItem[] = [];
-
-    allColumns.forEach((col) => {
-      const item: ColumnListItem = {
-        key: col.id,
-        label: col.header,
-        id: col.id,
-        column: col,
-      };
-
-      if (col.isVisible !== false) {
-        resetVisible.push(item);
-      } else {
-        resetHidden.push(item);
-      }
-    });
-
-    setVisibleColumns(resetVisible);
-    setHiddenColumns(resetHidden);
-
-    // Notify parent of reset
-    if (onColumnsChange) {
-      onColumnsChange(allColumns);
-    }
-  };
-
-  const handleVisibleColumnsReorder = (items: ColumnListItem[]) => {
-    setVisibleColumns(items);
-
-    // Notify parent of reorder
-    if (onColumnsChange) {
-      const reorderedColumns = items.map((item) => item.column);
-      const hiddenColumnsData = hiddenColumns.map((item) => item.column);
-      onColumnsChange([...reorderedColumns, ...hiddenColumnsData]);
-    }
-  };
+  //   // Notify parent of reset
+  //   if (onColumnsChange) {
+  //     onColumnsChange(allColumns);
+  //   }
+  // };
 
   const defaultTrigger = (
     <IconButton
@@ -191,18 +135,15 @@ export const DataTableManager = ({
                           </Stack>
                           <DraggableList.Root
                             h="full"
-                            items={hiddenColumns.map(
-                              (item: ColumnListItem) => ({
-                                key: item.key,
-                                id: item.id,
-                                label: item.label,
-                              })
-                            )}
-                            onUpdateItems={(items) =>
-                              handleVisibleColumnsReorder(
-                                items as ColumnListItem[]
+                            items={allColumns
+                              .filter(
+                                (item) => !visibleColumns?.includes(item.id)
                               )
-                            }
+                              .map((item) => ({
+                                key: item.id,
+                                id: item.id,
+                                label: item.header,
+                              }))}
                             aria-label={formatMessage(
                               messages.hiddenColumnsAriaLabel
                             )}
@@ -225,16 +166,22 @@ export const DataTableManager = ({
                           <DraggableList.Root
                             removableItems
                             h="full"
-                            items={visibleColumns.map((item) => ({
-                              key: item.key,
-                              id: item.id,
-                              label: item.label,
-                            }))}
-                            onUpdateItems={(items) =>
-                              handleVisibleColumnsReorder(
-                                items as ColumnListItem[]
+                            items={allColumns
+                              .filter((item) =>
+                                visibleColumns?.includes(item.id)
                               )
-                            }
+                              .map((item) => ({
+                                key: item.id,
+                                id: item.id,
+                                label: item.header,
+                              }))}
+                            onUpdateItems={(
+                              updatedItems: TColumnListItem[]
+                            ) => {
+                              if (onColumnsChange) {
+                                onColumnsChange(updatedItems);
+                              }
+                            }}
                             aria-label={formatMessage(
                               messages.visibleColumnsAria
                             )}
@@ -248,7 +195,7 @@ export const DataTableManager = ({
                           variant="ghost"
                           tone="primary"
                           size="md"
-                          onClick={handleResetColumns}
+                          // onClick={handleResetColumns}
                         >
                           <Refresh />
                           {formatMessage(messages.reset)}

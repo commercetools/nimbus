@@ -3587,24 +3587,22 @@ export const RowPinningEdgeCases: Story = {
  */
 export const WithTableManager: Story = {
   render: () => {
-    const [visibleColumns, setVisibleColumns] = useState<string[] | undefined>(
-      undefined
-    );
+    // const [visibleColumns, setVisibleColumns] = useState<string[] | undefined>(
+    //   undefined
+    // );
 
-    const managerColumns: DataTableColumnItem[] = [
+    const initialVisibleColumns: DataTableColumnItem[] = [
       {
         id: "product-name",
         header: "Product name",
         accessor: (row) => row.name as React.ReactNode,
         isSortable: true,
-        isVisible: true,
       },
       {
         id: "sku",
         header: "SKU",
         accessor: (row) => row.sku as React.ReactNode,
         isSortable: true,
-        isVisible: true,
       },
       {
         id: "status",
@@ -3624,44 +3622,45 @@ export const WithTableManager: Story = {
           </Badge>
         ),
         isSortable: false,
-        isVisible: true,
       },
       {
         id: "category",
         header: "Category",
         accessor: (row) => row.category as React.ReactNode,
-        isVisible: false,
       },
       {
         id: "inventory",
         header: "Inventory",
         accessor: (row) => row.inventory as React.ReactNode,
-        isVisible: false,
       },
+    ];
+
+    const initialHiddenColumns: DataTableColumnItem[] = [
       {
         id: "price",
         header: "Price",
         accessor: (row) => row.price as React.ReactNode,
-        isVisible: false,
       },
       {
         id: "store",
         header: "Store",
         accessor: (row) => row.store as React.ReactNode,
-        isVisible: false,
       },
       {
         id: "country",
         header: "Country",
         accessor: (row) => row.country as React.ReactNode,
-        isVisible: false,
       },
       {
         id: "custom-attr",
         header: "Custom attribute that breaks into 2 lines",
         accessor: (row) => row.customAttr as React.ReactNode,
-        isVisible: false,
       },
+    ];
+
+    const initialColumnsState = [
+      ...initialVisibleColumns,
+      ...initialHiddenColumns,
     ];
 
     const managerRows: DataTableRowItem[] = [
@@ -3727,21 +3726,22 @@ export const WithTableManager: Story = {
       },
     ];
 
+    const [visibleColumns, setVisibleColumns] = useState<
+      DataTableProps["columns"]
+    >(initialVisibleColumns);
+
     const handleColumnsChange = (updatedColumns: DataTableColumnItem[]) => {
-      const visibleIds = updatedColumns
-        .filter((col) => col.isVisible !== false)
-        .map((col) => col.id);
-      setVisibleColumns(visibleIds);
+      setVisibleColumns(updatedColumns);
     };
 
     return (
       <Stack direction="column" gap="400">
         <DataTable.Root
-          columns={managerColumns}
+          columns={initialColumnsState}
           rows={managerRows}
-          visibleColumns={visibleColumns}
-          onColumnsChange={handleColumnsChange}
+          visibleColumns={visibleColumns.map((col) => col.id)}
           allowsSorting={true}
+          onColumnsChange={handleColumnsChange}
         >
           <Flex justifyContent="space-between" alignItems="center" width="100%">
             <Heading as="h3" size="lg">
