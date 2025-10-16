@@ -68,10 +68,9 @@ Every component must have these files:
 
 1. Main component file
 2. Type definitions
-3. Storybook stories
-4. Unit tests
-5. Documentation (MDX)
-6. Barrel export (index)
+3. Storybook stories (with play functions for interactive components)
+4. Documentation (MDX)
+5. Barrel export (index)
 
 ### Conditionally Required
 
@@ -81,6 +80,7 @@ Based on component needs:
 - **Compound structure**: When component has multiple parts
 - **Hooks**: When complex logic needs encapsulation
 - **Context**: When state needs to be shared between parts
+- **Unit tests**: For logic that cannot be practically covered in Storybook tests (utilities, hooks, algorithms)
 
 ### Optional
 
@@ -97,8 +97,7 @@ For complex components only:
 - main-component.md
 - types.md
 - recipes.md
-- stories.md
-- unit-testing.md
+- stories.md (covers all component behavior)
 - documentation.md
 
 ### Interactive Component (e.g., Button)
@@ -107,8 +106,7 @@ For complex components only:
 - types.md
 - recipes.md
 - slots.md
-- stories.md (with play functions)
-- unit-testing.md (accessibility, interactions)
+- stories.md (with play functions for all interactions and accessibility)
 - documentation.md
 
 ### Compound Component (e.g., Menu)
@@ -116,8 +114,7 @@ For complex components only:
 - compound-components.md
 - types.md
 - slots.md
-- stories.md (with interaction tests)
-- unit-testing.md (prop forwarding, edge cases)
+- stories.md (with play functions for all interactions and accessibility)
 - documentation.md
 
 ### Complex Component (e.g., DatePicker)
@@ -126,7 +123,7 @@ For complex components only:
 - hooks.md
 - context-files.md
 - utils-and-constants.md
-- unit-testing.md (comprehensive coverage)
+- unit-testing.md (for logic not covered by Storybook: custom hooks, utility functions, algorithms)
 
 ---
 
