@@ -1,2 +1,2 @@
-export * from "./button.tsx";
-export * from "./button.types.ts";
+export * from "./button";
+export * from "./button.types";

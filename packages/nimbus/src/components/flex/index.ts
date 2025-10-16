@@ -1,1 +1,1 @@
-export * from "./flex.tsx";
+export * from "./flex";

@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "2.0.1-rc2",
+  "version": "2.0.1-rc3",
   "main": "./dist/index.cjs",
   "module": "./dist/index.es.js",
   "type": "module",
