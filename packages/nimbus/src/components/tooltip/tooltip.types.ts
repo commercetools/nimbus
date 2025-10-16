@@ -5,7 +5,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { ExcludePolymorphicFromProps } from "@/components/utils/type-helpers";
+import type { OmitPolymorphicProps } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -23,7 +23,7 @@ export type TooltipRootSlotProps = HTMLChakraProps<"div", TooltipRecipeProps>;
 // HELPER TYPES
 // ============================================================
 
-type TooltipVariantProps = ExcludePolymorphicFromProps<
+type TooltipVariantProps = OmitPolymorphicProps<
   TooltipRootSlotProps & RaTooltipProps
 >;
 

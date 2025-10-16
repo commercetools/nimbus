@@ -6,7 +6,7 @@ import type {
   DisclosurePanelProps as RaDisclosurePanelProps,
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
-import type { ExcludePolymorphicFromProps } from "@/components/utils/type-helpers";
+import type { OmitPolymorphicProps } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -42,7 +42,7 @@ export type AccordionRootProps = AccordionRootSlotProps &
 /**
  * Props for the Accordion.Item component.
  */
-export type AccordionItemProps = ExcludePolymorphicFromProps<
+export type AccordionItemProps = OmitPolymorphicProps<
   RaDisclosureProps & HTMLChakraProps<"div">
 > & {
   /** The accordion item content (Header and Content components) */
@@ -57,7 +57,7 @@ export type AccordionItemProps = ExcludePolymorphicFromProps<
  * Props for the Accordion.Header component.
  * Displays the clickable header that expands/collapses content.
  */
-export type AccordionHeaderProps = ExcludePolymorphicFromProps<
+export type AccordionHeaderProps = OmitPolymorphicProps<
   RaButtonProps & HTMLChakraProps<"div">
 > & {
   /** The header content to display */
@@ -70,7 +70,7 @@ export type AccordionHeaderProps = ExcludePolymorphicFromProps<
  * Props for the Accordion.Content component.
  * Contains the collapsible content area.
  */
-export type AccordionContentProps = ExcludePolymorphicFromProps<
+export type AccordionContentProps = OmitPolymorphicProps<
   RaDisclosurePanelProps & HTMLChakraProps<"div">
 > & {
   /** The content to display when expanded */

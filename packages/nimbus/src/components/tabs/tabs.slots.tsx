@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   TabsRootSlotProps,
   TabsListSlotProps,
@@ -6,7 +7,6 @@ import type {
   TabsPanelsSlotProps,
   TabsPanelSlotProps,
 } from "./tabs.types";
-import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "tabs",

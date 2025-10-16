@@ -1,11 +1,11 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   SplitButtonRootSlotProps,
   SplitButtonButtonGroupSlotProps,
   SplitButtonPrimaryButtonSlotProps,
   SplitButtonTriggerSlotProps,
 } from "./split-button.types";
-import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "splitButton",

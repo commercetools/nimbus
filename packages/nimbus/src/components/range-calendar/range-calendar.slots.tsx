@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   RangeCalendarRootSlotProps,
   RangeCalendarHeaderSlotProps,
@@ -10,7 +11,6 @@ import type {
   RangeCalendarGridBodySlotProps,
   RangeCalendarCellSlotProps,
 } from "./range-calendar.types";
-import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "rangeCalendar",

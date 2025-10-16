@@ -1,12 +1,11 @@
 import type { ReactElement } from "react";
 import { createSlotRecipeContext } from "@chakra-ui/react";
-
 import {
   TagGroup as RaTagGroup,
   TagList as RaTagList,
   Tag as RaTag,
 } from "react-aria-components";
-
+import type { SlotComponent } from "@/type-utils";
 import type {
   TagGroupProps,
   TagGroupTagListComponent,
@@ -14,7 +13,6 @@ import type {
   TagGroupTagComponent,
   TagGroupTagProps,
 } from "./tag-group.types";
-import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "taggroup",

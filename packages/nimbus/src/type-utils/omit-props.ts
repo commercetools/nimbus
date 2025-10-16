@@ -1,9 +1,9 @@
 /**
- * Utility type helpers for Nimbus components
+ * Utility type helpers for omitting props from consumer-facing component prop types
  */
 
 /**
- * Excludes polymorphic props (`as` and `asChild`) from a type.
+ * Omit polymorphic props (`as` and `asChild`) from a type.
  *
  * **Use case:** For components that use the polymorphic `as` and `asChild` props
  * internally, but do not make them available to the consumer.
@@ -16,15 +16,15 @@
  * This means that we need to allow polymorphism internally, but should not
  * allow it in the external props API since it would not work.
  *
- * @template T - The type to exclude polymorphic props from
+ * @template T - The type to omit polymorphic props from
  *
  * @example
  * ```typescript
- * export type AccordionItemProps = ExcludePolymorphicFromProps<
+ * export type AccordionItemProps = OmitPolymorphicProps<
  *   RaDisclosureProps & HTMLChakraProps<"div">
  * > & {
  *   children: ReactNode;
  * };
  * ```
  */
-export type ExcludePolymorphicFromProps<T> = Omit<T, "as" | "asChild">;
+export type OmitPolymorphicProps<T> = Omit<T, "as" | "asChild">;
