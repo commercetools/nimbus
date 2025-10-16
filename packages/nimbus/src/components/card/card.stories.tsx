@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card } from "./card";
-import { Stack } from "./../stack";
-import type { CardProps } from "./card.types";
+import { Card, type CardProps, Stack } from "@commercetools/nimbus";
 import { within, expect, userEvent } from "storybook/test";
 
 const cardPaddings: CardProps["cardPadding"][] = ["sm", "md", "lg"];

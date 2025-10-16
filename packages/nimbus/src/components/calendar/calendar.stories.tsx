@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Calendar } from "./index";
-import type { CalendarProps } from "./calendar.types";
+import { Box, Calendar, type CalendarProps, Stack, Text } from "@commercetools/nimbus";
 import {
   today,
   getLocalTimeZone,
@@ -8,7 +7,6 @@ import {
 } from "@internationalized/date";
 
 import { I18nProvider } from "react-aria";
-import { Box, Stack, Text } from "@/components";
 import { useState } from "react";
 
 const meta: Meta<typeof Calendar> = {

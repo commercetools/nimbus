@@ -2,8 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { I18nProvider } from "react-aria";
-import { Box, FormField, Text } from "@/components";
-import { MoneyInput } from "./money-input";
+import {
+  Box,
+  FormField,
+  MoneyInput,
+  Text,
+} from "@commercetools/nimbus";
 
 import type {
   TValue,

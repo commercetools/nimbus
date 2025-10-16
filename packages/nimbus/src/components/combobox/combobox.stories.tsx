@@ -11,17 +11,17 @@ import {
   waitFor,
 } from "storybook/test";
 import {
+  Box,
+  Button,
+  ComboBox,
+  type ComboBoxRootProps,
+  Flex,
   FormField,
+  Icon,
+  RadioInput,
   Stack,
   Text,
-  Box,
-  Flex,
-  RadioInput,
-  Button,
-  Icon,
-} from "@/components";
-import { ComboBox } from "./combobox";
-import type { ComboBoxRootProps } from "./combobox.types";
+} from "@commercetools/nimbus";
 import { AddReaction, Search } from "@commercetools/nimbus-icons";
 
 /**

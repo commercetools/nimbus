@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Spacer } from "./spacer";
-import { Button } from "@/components/button";
-import { Stack } from "@/components/stack";
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Spacer, Stack } from "@commercetools/nimbus";
 
 const meta: Meta<typeof Spacer> = {
   title: "Components/Spacer",

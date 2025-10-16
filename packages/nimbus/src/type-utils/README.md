@@ -64,14 +64,14 @@ Contains utility types for omitting specific props from component interfaces.
 
 ## Important Guidelines
 
-### ✅ DO:
+### ✅ DO
 
 - Place shared type utilities used across multiple components here
 - Use the path alias `@/type-utils` for imports
 - Export new types through `index.ts`
 - Document the purpose of new utility types
 
-### ❌ DON'T:
+### ❌ DON'T
 
 - Place component-specific types here (those belong in component `.types.tsx`
   files)

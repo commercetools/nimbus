@@ -1,14 +1,19 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DatePicker } from "./date-picker";
-import { I18nProvider } from "react-aria";
-import { Button, Stack, FormField, Text } from "@/components";
 import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+
+import { I18nProvider, type DateValue } from "react-aria";
 import {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import type { DateValue } from "react-aria";
+import {
+  Button,
+  DatePicker,
+  FormField,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**

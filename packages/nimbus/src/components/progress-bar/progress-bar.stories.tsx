@@ -1,11 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useEffect } from "react";
-import { ProgressBar } from "./progress-bar";
-import { Stack } from "./../stack";
-import type { ProgressBarProps } from "./progress-bar.types";
+import {
+  Box,
+  Button,
+  Flex,
+  ProgressBar,
+  type ProgressBarProps,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
-import { Box, Flex, Text } from "@/components";
-import { Button } from "../button";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
 const variants: ProgressBarProps["variant"][] = ["solid", "contrast"];

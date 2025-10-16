@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "../box";
-import { Stack } from "./stack";
+import { Box, Stack } from "@commercetools/nimbus";
 
 const meta: Meta<typeof Stack> = {
   title: "Components/Stack",

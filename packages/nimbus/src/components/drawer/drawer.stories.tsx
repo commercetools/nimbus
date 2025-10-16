@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fireEvent } from "storybook/test";
 import { useState } from "react";
-import { Drawer } from "./drawer";
 import {
   Button,
+  Code,
+  Drawer,
+  FormField,
+  Kbd,
+  PasswordInput,
+  Select,
+  Separator,
   Stack,
   Switch,
   Text,
   TextInput,
-  PasswordInput,
-  FormField,
-  Select,
-  Kbd,
-  Code,
-  Separator,
-} from "@/components";
+} from "@commercetools/nimbus";
 
 const meta: Meta<typeof Drawer.Root> = {
   title: "Components/Overlay/Drawer",

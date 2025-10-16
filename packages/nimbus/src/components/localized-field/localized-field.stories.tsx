@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect, userEvent } from "storybook/test";
-import { Stack, Text, type TValue } from "@/components";
-import { LocalizedField } from "./index";
+import {
+  LocalizedField,
+  Stack,
+  Text,
+  type TValue,
+} from "@commercetools/nimbus";
 import {
   baseLocales,
   baseCurrencies,

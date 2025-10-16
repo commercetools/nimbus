@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { VisuallyHidden } from "./visually-hidden";
-import { Button } from "@/components";
+import { Button, VisuallyHidden } from "@commercetools/nimbus";
 import { expect, userEvent, within } from "storybook/test";
 
 // CSS property combination, that makes content invisible to the viewer

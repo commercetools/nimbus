@@ -47,11 +47,20 @@ const external = [
   "react-dom",
   "react-intl",
   "react/jsx-runtime",
-
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
-  // TODO: evaluate whether it makes more sense for `react-aria` and related packages to be bundled w/the library as they are currently,
-  //       or declared as peer deps to reduce unintentional code duplication if a consuming app already has react-aria related libraries installed (eg @internationalized/date or react-stately).
+  // Slate dependencies for RichTextInput
+  // These are externalized because immer (slate's dependency) uses internal singletons that break when bundled
+  "slate",
+  "slate-react",
+  "slate-history",
+  "slate-hyperscript",
+  // React Aria dependencies
+  // Externalized to prevent bundling issues and ensure consistent behavior across the app
+  "react-aria",
+  "react-aria-components",
+  "react-stately",
+  "@react-aria/interactions",
 
   // Internal packages
   // TODO: Icons from @commercetools/nimbus-icons should be tree-shakeable, it might make more sense to just bundle the necessary icons with their components, and not care whether this package is installed in consuming apps.

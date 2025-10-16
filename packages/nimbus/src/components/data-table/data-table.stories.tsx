@@ -8,18 +8,18 @@ import React, {
 import { type Selection } from "react-aria-components";
 import { within, expect, waitFor, userEvent } from "storybook/test";
 import {
-  Stack,
-  TextInput,
-  Dialog,
+  Box,
   Button,
   Checkbox,
-  Heading,
-  Text,
-  Select,
-  Box,
+  DataTable,
+  Dialog,
   Flex,
-} from "@/components";
-import { DataTable } from "./data-table";
+  Heading,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from "@commercetools/nimbus";
 import {
   columns,
   sortableColumns,

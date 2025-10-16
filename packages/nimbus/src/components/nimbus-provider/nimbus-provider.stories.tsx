@@ -1,7 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { NimbusProvider } from "./nimbus-provider";
-import { useColorMode, useColorModeValue } from "@/hooks";
-import { Button, Text, Stack, Box, Link, DateInput } from "@/components";
+import {
+  Box,
+  Button,
+  DateInput,
+  Link,
+  NimbusProvider,
+  Stack,
+  Text,
+  useColorMode,
+  useColorModeValue,
+} from "@commercetools/nimbus";
 import { useState } from "react";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { CalendarDate } from "@internationalized/date";
