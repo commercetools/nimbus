@@ -121,8 +121,9 @@ contexts and screen sizes while adhering to accessibility standards.
   - **Ensure proper alignment:** Pay attention to pixel grid alignment for
     crispness, especially at smaller sizes.
 - **Usability & Interaction:**
-  - **Provide clear states:** Design distinct visual states for interactive
-    icons (e.g., hover, focus, active, disabled).
+  - **Provide clear states:** Ideally, if using an icon as an interactive
+    element, use the [Icon button](components/inputs/iconbutton) to enable
+    distinct visual states (e.g., hover, focus, active, disabled).
   - **Ensure sufficient target size:** Make clickable icons large enough for
     easy interaction, especially on touch devices (minimum 44x44px target area).
 - **Accessibility:**
@@ -195,6 +196,10 @@ contexts and screen sizes while adhering to accessibility standards.
 Accessibility ensures that digital content and functionality are usable by
 everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <Icon size="xs"><Icons.SentimentSatisfied /></Icon>;
+```
 
 ### Accessibility Standards
 
