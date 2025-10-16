@@ -18,6 +18,9 @@
     },
     "./package.json": "./package.json",
     "./setup-jsdom-polyfills": {
+      "import": {
+        "default": "./dist/setup-jsdom-polyfills.es.js"
+      },
       "require": {
         "default": "./dist/setup-jsdom-polyfills.cjs"
       }
@@ -65,10 +68,12 @@
     "@storybook/addon-docs": "catalog:tooling",
     "@storybook/addon-vitest": "catalog:tooling",
     "@storybook/react-vite": "catalog:tooling",
+    "@testing-library/jest-dom": "catalog:tooling",
     "@testing-library/react": "catalog:tooling",
     "@testing-library/user-event": "catalog:tooling",
     "@types/escape-html": "^1.0.4",
     "@types/is-hotkey": "^0.1.10",
+    "@types/jsdom": "catalog:tooling",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
@@ -79,6 +84,7 @@
     "axe-core": "^4.11.0",
     "dompurify": "catalog:",
     "glob": "catalog:tooling",
+    "jsdom": "catalog:tooling",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
@@ -101,7 +107,7 @@
     "build": "pnpm run build-theme-typings && pnpm run build:lib",
     "build:lib": "vite build",
     "dev": "vite build --watch",
-    "test": "vitest",
+    "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",

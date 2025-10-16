@@ -15,7 +15,9 @@ and examples.
 - **[main-component.md](./main-component.md)** - Main component file patterns
 - **[types.md](./types.md)** - TypeScript type definitions
 - **[stories.md](./stories.md)** - Storybook stories and tests
+- **[unit-testing.md](./unit-testing.md)** - Unit tests with Vitest and JSDOM
 - **[documentation.md](./documentation.md)** - MDX documentation
+- **[i18n.md](./i18n.md)** - Internationalization messages
 
 ### Styling System
 
@@ -66,7 +68,7 @@ Every component must have these files:
 
 1. Main component file
 2. Type definitions
-3. Storybook stories
+3. Storybook stories (with play functions for interactive components)
 4. Documentation (MDX)
 5. Barrel export (index)
 
@@ -78,6 +80,7 @@ Based on component needs:
 - **Compound structure**: When component has multiple parts
 - **Hooks**: When complex logic needs encapsulation
 - **Context**: When state needs to be shared between parts
+- **Unit tests**: For logic that cannot be practically covered in Storybook tests (utilities, hooks, algorithms)
 
 ### Optional
 
@@ -94,7 +97,7 @@ For complex components only:
 - main-component.md
 - types.md
 - recipes.md
-- stories.md
+- stories.md (covers all component behavior)
 - documentation.md
 
 ### Interactive Component (e.g., Button)
@@ -103,7 +106,7 @@ For complex components only:
 - types.md
 - recipes.md
 - slots.md
-- stories.md (with play functions)
+- stories.md (with play functions for all interactions and accessibility)
 - documentation.md
 
 ### Compound Component (e.g., Menu)
@@ -111,7 +114,7 @@ For complex components only:
 - compound-components.md
 - types.md
 - slots.md
-- stories.md (with interaction tests)
+- stories.md (with play functions for all interactions and accessibility)
 - documentation.md
 
 ### Complex Component (e.g., DatePicker)
@@ -120,6 +123,7 @@ For complex components only:
 - hooks.md
 - context-files.md
 - utils-and-constants.md
+- unit-testing.md (for logic not covered by Storybook: custom hooks, utility functions, algorithms)
 
 ---
 
