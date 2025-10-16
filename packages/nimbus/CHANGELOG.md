@@ -1,5 +1,19 @@
 # @commercetools/nimbus
 
+## 2.0.1
+
+### Patch Changes
+
+- [#543](https://github.com/commercetools/nimbus/pull/543)
+  [`d20c689`](https://github.com/commercetools/nimbus/commit/d20c68922d99d2f97a0c2fcaebd1e1a8c7101523)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Updates vite type
+  resolution settings to colocate types with component code in `/dist`. Ensures
+  all utility types are exported in `/dist`. Removes all file extensions from
+  exported file paths in indexes for proper type resolution.
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.0.1
+  - @commercetools/nimbus-icons@2.0.1
+
 ## 2.0.0
 
 ### Minor Changes
