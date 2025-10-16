@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import { chakra } from "@chakra-ui/react/styled-system";
 import {
   ListBoxSection as RaListBoxSection,

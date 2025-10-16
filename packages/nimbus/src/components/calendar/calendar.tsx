@@ -8,7 +8,7 @@ import { CalendarGrids } from "./components/calendar.grids";
 import { CalendarHeader } from "./components/calendar.header";
 import { calendarSlotRecipe } from "./calendar.recipe";
 import { useRecipe } from "@chakra-ui/react/styled-system";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import { CalendarCustomContext } from "./components/calendar.custom-context";
 
 /**

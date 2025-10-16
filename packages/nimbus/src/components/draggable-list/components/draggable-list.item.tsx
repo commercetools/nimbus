@@ -2,7 +2,7 @@ import { useIntl } from "react-intl";
 import { GridListItem } from "react-aria-components";
 import { Close, DragIndicator } from "@commercetools/nimbus-icons";
 import { Checkbox, IconButton } from "@/components";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import { messages } from "../draggable-list.i18n";
 import {
   DraggableListItemSlot,

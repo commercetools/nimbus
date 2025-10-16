@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";

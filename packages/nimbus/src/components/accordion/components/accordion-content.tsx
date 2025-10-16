@@ -1,7 +1,7 @@
 import { AccordionPanelSlot } from "../accordion.slots";
 import { DisclosurePanel as RaDisclosurePanel } from "react-aria-components";
 import type { AccordionContentProps } from "../accordion.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 
 // Create Content component
 export const AccordionContent = ({
