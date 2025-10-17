@@ -51,7 +51,7 @@ const DocumentRendererComponent = () => {
           </Flex>
 
           <Box pb="2400">
-            <MdxStringRenderer content={content} />
+            <MdxStringRenderer key={meta.route} content={content} />
           </Box>
         </Stack>
       </Box>
