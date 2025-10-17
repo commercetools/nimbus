@@ -94,7 +94,7 @@ export const InContext: Story = {
           isSelected={liked}
           onChange={setLiked}
           aria-label="Like"
-          tone="critical"
+          colorPalette="critical"
         >
           <ThumbUp />
         </IconToggleButton>
@@ -102,7 +102,7 @@ export const InContext: Story = {
           isSelected={starred}
           onChange={setStarred}
           aria-label="Star"
-          tone="info"
+          colorPalette="info"
         >
           <Star />
         </IconToggleButton>
@@ -110,7 +110,7 @@ export const InContext: Story = {
           isSelected={bookmarked}
           onChange={setBookmarked}
           aria-label="Bookmark"
-          tone="primary"
+          colorPalette="primary"
         >
           <Bookmark />
         </IconToggleButton>
