@@ -40,14 +40,14 @@ catalogs:
     "@testing-library/jest-dom": ^6.9.1
     "@testing-library/user-event": ^14.6.1
     "@testing-library/react": ^16.3.0
-    playwright: ^1.56.0
+    playwright: ^1.56.1
     vitest: ^3.2.4
-    storybook: ^9.1.10
-    eslint-plugin-storybook: ^9.1.10
-    "@storybook/addon-a11y": ^9.1.10
-    "@storybook/addon-docs": ^9.1.10
-    "@storybook/addon-vitest": ^9.1.10
-    "@storybook/react-vite": ^9.1.10
+    storybook: ^9.1.12
+    eslint-plugin-storybook: ^9.1.12
+    "@storybook/addon-a11y": ^9.1.12
+    "@storybook/addon-docs": ^9.1.12
+    "@storybook/addon-vitest": ^9.1.12
+    "@storybook/react-vite": ^9.1.12
     "@vueless/storybook-dark-mode": ^9.0.9
     jsdom: ^27.0.0
     "@types/jsdom": ^27.0.0
