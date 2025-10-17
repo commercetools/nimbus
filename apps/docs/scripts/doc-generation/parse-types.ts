@@ -1,6 +1,7 @@
 import fs from "fs";
 import debounce from "lodash/debounce";
 import docgen from "react-docgen-typescript";
+import { processComponentTypes } from "./process-types";
 
 export const flog = (str) => {
   console.log("\x1b[32m%s\x1b[0m", `\n  ➜ ${str}\n`);
@@ -12,33 +13,18 @@ const compiledTypesFile = "./src/data/types.json";
 const fileToGrabTypesFrom: string = "./../../packages/nimbus/src/index.ts";
 
 const writeDocs = debounce(() => {
+  // Step 1: Parse ALL props (no filtering at parse time)
   const options = {
     savePropValueAsString: true,
-    propFilter: (prop) => {
-      const isDOMAttribute = prop.parent?.name === "DOMAttributes";
-      const isChackraSystemProperty = prop.parent?.name === "SystemProperties";
-      const isAriaAttribute = prop.parent?.name === "AriaAttributes";
-      const isHtmlProp = prop.parent?.name === "HtmlProps";
-      const isHtmlAttr = prop.parent?.name === "HTMLAttributes";
-      // Chakra Conditions
-      const isChakraCondition = prop.parent?.name === "Conditions";
-      // Exclude redundant props
-      if (
-        isDOMAttribute ||
-        isChackraSystemProperty ||
-        isChakraCondition ||
-        isAriaAttribute ||
-        isHtmlProp ||
-        isHtmlAttr
-      ) {
-        return false;
-      }
-      return true;
-    },
+    // No propFilter - parse everything first
   };
-  const res = docgen.parse(fileToGrabTypesFrom, options);
+  const rawTypes = docgen.parse(fileToGrabTypesFrom, options);
 
-  fs.writeFileSync(compiledTypesFile, JSON.stringify(res, null, 2));
+  // Step 2: Process in memory (enrich + filter in single pass)
+  const processedTypes = processComponentTypes(rawTypes);
+
+  // Step 3: Single write to disk
+  fs.writeFileSync(compiledTypesFile, JSON.stringify(processedTypes, null, 2));
   flog("[TSX] Prop tables updated");
 }, 500);
 

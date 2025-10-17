@@ -10,6 +10,11 @@ import { MenuSectionProvider } from "./menu.section-context";
 import { MenuSectionLabel } from "./menu.section-label";
 import type { ReactNode } from "react";
 
+/**
+ * Menu.Section - A group of related menu items with an optional label
+ *
+ * @supportsStyleProps
+ */
 export const MenuSection = <T extends object = object>({
   children,
   ref,

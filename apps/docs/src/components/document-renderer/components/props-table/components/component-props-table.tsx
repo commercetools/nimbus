@@ -1,31 +1,31 @@
-import { Box, Code, Table, Text } from "@commercetools/nimbus";
+import { Box, Stack, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
+import { useMemo } from "react";
 import { typesAtom } from "../../../../../atoms/types.ts";
-import { ReactNode, useMemo } from "react";
-import { MdxStringRenderer } from "../../../mdx-string-renderer.tsx";
-import { DefaultValue } from "./default-value.tsx";
+import type { PropItem } from "../types";
+import { groupProps } from "../utils";
+import { PROP_GROUPS, DEFAULT_EXPANDED } from "../constants";
+import { StylePropsSupportBanner } from "./style-props-banner";
+import { CollapsiblePropsCategory } from "./collapsible-props-category";
 
-interface PropItem {
-  name: string;
-  type?: {
-    name?: string;
-  };
-  description: string;
-  required: boolean;
-  defaultValue: ReactNode | { value?: string | number | boolean | null };
-}
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 
 export const ComponentPropsTable = ({ id }: { id: string }) => {
+  // Get all type definitions from global atom
   const typesArr = useAtomValue(typesAtom);
+
+  // Find the type definition for this specific component
   const propsTableData = useMemo(() => {
     return typesArr.find((v) => v.displayName === id);
   }, [typesArr, id]);
 
+  // Convert props object to array for easier manipulation
   const propsArr = useMemo<PropItem[]>(() => {
     if (!propsTableData?.props) return [];
 
     return Object.keys(propsTableData.props).map((key) => {
-      // Using type assertion to safely access properties
       const prop =
         propsTableData.props[key as keyof typeof propsTableData.props];
       return {
@@ -34,7 +34,16 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
     });
   }, [propsTableData]);
 
-  // If the component with the given ID is not found, display an error message
+  // Check if component supports Chakra UI style props
+  // Use metadata from types.json instead of checking props
+  const supportsStyleProps = propsTableData?.supportsStyleProps ?? false;
+
+  // Group props into categories (automatically filters out style props)
+  const groupedProps = useMemo(() => {
+    return groupProps(propsArr);
+  }, [propsArr]);
+
+  // Component not found - show error
   if (!propsTableData) {
     return (
       <Box padding="400" backgroundColor="critical.subtle" borderRadius="4">
@@ -45,58 +54,38 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
     );
   }
 
-  return (
-    <Box>
-      {propsArr.length > 0 ? (
-        <Table.Root variant="outline">
-          <Table.ColumnGroup>
-            <Table.Column width="1/4" />
-            <Table.Column width="2/4" />
-            <Table.Column width="1/4" />
-          </Table.ColumnGroup>
-          <Table.Header>
-            <Table.Row>
-              <Table.ColumnHeader>name</Table.ColumnHeader>
-              <Table.ColumnHeader>type / description</Table.ColumnHeader>
-              <Table.ColumnHeader>default</Table.ColumnHeader>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {propsArr.map((item) => (
-              <Table.Row key={[id, item.name].join("-")}>
-                <Table.Cell display="flex" justifyContent="flex-start">
-                  <Text fontWeight="600">
-                    {item.name}
-                    {item.required ? (
-                      <Box
-                        as="sup"
-                        title="required"
-                        display="inline-block"
-                        color="critical.10"
-                        cursor="help"
-                      >
-                        *
-                      </Box>
-                    ) : (
-                      ""
-                    )}
-                  </Text>
-                </Table.Cell>
-                <Table.Cell>
-                  <Code mb="200">{item.type?.name || "unknown"}</Code>
-                  <MdxStringRenderer content={item.description} />
-                </Table.Cell>
+  // No props found - show style props banner if supported, or message
+  if (propsArr.length === 0) {
+    return (
+      <Stack direction="column" gap="0">
+        {/* Show banner if component supports Chakra UI style props */}
+        {supportsStyleProps && <StylePropsSupportBanner />}
 
-                <Table.Cell display="flex" justifyContent="flex-start">
-                  <DefaultValue value={item.defaultValue} />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Root>
-      ) : (
-        <Text>No props found for this component.</Text>
-      )}
-    </Box>
+        {/* Show message only if no style props support */}
+        {!supportsStyleProps && (
+          <Text>No component-specific props found for this component.</Text>
+        )}
+      </Stack>
+    );
+  }
+
+  // Render style props banner (if supported) and grouped collapsible categories
+  return (
+    <Stack direction="column" gap="0">
+      {/* Show banner if component supports Chakra UI style props */}
+      {supportsStyleProps && <StylePropsSupportBanner />}
+
+      {/* Render all prop categories dynamically in order */}
+      {PROP_GROUPS.sort((a, b) => a.order - b.order).map((group) => (
+        <CollapsiblePropsCategory
+          key={group.category}
+          category={group.category}
+          displayName={group.displayName}
+          props={groupedProps[group.category]}
+          componentId={id}
+          isDefaultExpanded={DEFAULT_EXPANDED.has(group.category)}
+        />
+      ))}
+    </Stack>
   );
 };

@@ -1,4 +1,4 @@
-import { Box, Text, Stack, Button } from "@commercetools/nimbus";
+import { Box, Text, Tabs } from "@commercetools/nimbus";
 import { useMemo, useState, useEffect } from "react";
 import * as nimbus from "@commercetools/nimbus";
 // Keep the import even though it's commented out in the render for now
@@ -118,28 +118,39 @@ export const PropsTable = ({ id }: { id: string }) => {
 
       {exportInfo.exists && (
         <Box>
-          {/* Only show component selection for compound components */}
+          {/* Compound components: show tabs for each sub-component */}
           {exportInfo.isCompoundComponent &&
             exportInfo.componentTypes &&
             exportInfo.componentTypes.length > 0 && (
               <Box my="400">
-                <Stack direction="row" wrap="wrap">
-                  {exportInfo.componentTypes.map((cid) => (
-                    <Button
-                      key={cid}
-                      size="xs"
-                      tone={selectedComponent === cid ? "primary" : "neutral"}
-                      variant={selectedComponent === cid ? "solid" : "ghost"}
-                      onPress={() => setSelectedComponent(cid)}
-                    >
-                      {cid.split(id).join(id + ".")}
-                    </Button>
-                  ))}
-                </Stack>
+                <Tabs.Root
+                  selectedKey={selectedComponent}
+                  onSelectionChange={(key: string | number) =>
+                    setSelectedComponent(key as string)
+                  }
+                >
+                  <Tabs.List flexWrap="wrap">
+                    {exportInfo.componentTypes.map((cid) => (
+                      <Tabs.Tab key={cid} id={cid}>
+                        {cid.split(id).join(id + ".")}
+                      </Tabs.Tab>
+                    ))}
+                  </Tabs.List>
+                  <Tabs.Panels pt="400">
+                    {exportInfo.componentTypes.map((cid) => (
+                      <Tabs.Panel key={cid} id={cid}>
+                        <ComponentPropsTable id={cid} />
+                      </Tabs.Panel>
+                    ))}
+                  </Tabs.Panels>
+                </Tabs.Root>
               </Box>
             )}
 
-          {selectedComponent && <ComponentPropsTable id={selectedComponent} />}
+          {/* Single components: show props table directly */}
+          {!exportInfo.isCompoundComponent &&
+            exportInfo.isComponent &&
+            selectedComponent && <ComponentPropsTable id={selectedComponent} />}
           {/* <pre>{JSON.stringify(exportInfo, null, 2)}</pre> */}
         </Box>
       )}
