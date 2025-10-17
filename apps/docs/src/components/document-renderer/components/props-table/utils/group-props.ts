@@ -1,10 +1,9 @@
 import type { PropItem, GroupedProps } from "../types";
 import { categorizeProp } from "./categorize-props";
-import { filterStyleProps } from "./filter-props";
 
 /**
  * Groups props array into categorized objects based on React Aria's grouping system
- * Automatically filters out Chakra UI style props
+ * Props are pre-filtered at documentation generation time
  * Sorts props alphabetically within each category
  */
 export const groupProps = (props: PropItem[]): GroupedProps => {
@@ -23,11 +22,8 @@ export const groupProps = (props: PropItem[]): GroupedProps => {
     advanced: [],
   };
 
-  // Filter out style props before categorizing
-  const filteredProps = filterStyleProps(props);
-
-  // Categorize each prop
-  filteredProps.forEach((prop) => {
+  // Categorize each prop (props are already filtered upstream)
+  props.forEach((prop) => {
     const category = categorizeProp(prop.name);
     grouped[category].push(prop);
   });

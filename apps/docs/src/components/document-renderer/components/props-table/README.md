@@ -16,14 +16,12 @@ props-table/
 │   └── index.ts                     # Component exports
 ├── constants/           # Static configuration
 │   ├── accessibility-props.ts       # Accessibility prop names
-│   ├── chakra-style-props.ts        # Chakra UI style props list
 │   └── index.ts                     # Constants exports
 ├── types/              # TypeScript definitions
 │   ├── prop-types.ts                # PropItem, PropCategory, GroupedProps
 │   └── index.ts                     # Type exports
 ├── utils/              # Pure utility functions
 │   ├── categorize-props.ts          # Prop categorization logic
-│   ├── filter-props.ts              # Style prop filtering
 │   ├── group-props.ts               # Prop grouping logic
 │   └── index.ts                     # Utils exports
 ├── props-table.tsx     # Root component (compound component selector)
@@ -59,17 +57,17 @@ Each category is collapsible with smooth animations. Empty categories are automa
 - User preferences persist during session
 
 ### 3. **Chakra UI Style Props Detection**
-- Automatically detects if a component supports Chakra UI style props
+- Automatically detects if a component supports Chakra UI style props via `@supportsStyleProps` JSDoc tag
 - Displays a visual banner when style props are supported
-- Filters out ~200+ Chakra style props from the tables to avoid clutter
+- Chakra style props (~200+) are filtered at documentation generation time to avoid clutter
 - Provides a clear indicator without listing every CSS property
 
 ### 4. **Modular Architecture**
 The component is split into focused modules:
 
 - **Types**: TypeScript interfaces and type definitions (PropCategory, GroupedProps, PropMatcher, PropGroupConfig)
-- **Constants**: Static configuration (prop groups, default expansion state, style props)
-- **Utils**: Pure functions for categorization, filtering, and grouping
+- **Constants**: Static configuration (prop groups, default expansion state)
+- **Utils**: Pure functions for categorization and grouping
 - **Components**: React components for rendering (ComponentPropsTable, CollapsiblePropsCategory, PropsCategoryTable)
 
 ## Usage
@@ -157,16 +155,9 @@ export const ACCESSIBILITY_PROPS = new Set([
 ]);
 ```
 
-### Adding Chakra Style Props
+### Filtering Additional Props
 
-Edit `constants/chakra-style-props.ts`:
-
-```typescript
-export const CHAKRA_STYLE_PROPS = new Set([
-  // ... existing props
-  "yourNewStyleProp",  // Add here
-]);
-```
+Chakra style props are filtered at documentation generation time in `scripts/doc-generation/filter-props.ts`. To filter additional prop types, update the filtering logic there rather than at runtime.
 
 ## Component Hierarchy
 
@@ -190,10 +181,9 @@ PropsTable (selector for compound components)
 - **Prop group configuration?** → `constants/prop-groups.ts` (add/modify categories here)
 - **Default expanded categories?** → `constants/prop-groups.ts` (modify DEFAULT_EXPANDED)
 - **Prop categorization logic?** → `utils/categorize-props.ts` (rarely needed - uses config)
-- **Style prop filtering?** → `utils/filter-props.ts`
+- **Prop filtering at generation time?** → `scripts/doc-generation/filter-props.ts`
 - **Grouping logic?** → `utils/group-props.ts` (rarely needed - uses config)
 - **Accessibility prop list?** → `constants/accessibility-props.ts`
-- **Chakra style props list?** → `constants/chakra-style-props.ts`
 - **Banner appearance?** → `components/style-props-banner.tsx`
 - **Category collapsible UI?** → `components/collapsible-props-category.tsx`
 - **Table rendering?** → `components/props-category-table.tsx`
