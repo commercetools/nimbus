@@ -69,15 +69,3 @@ export const shouldFilterProp = (prop: PropItem): boolean => {
   // Keep all other props
   return true;
 };
-
-/**
- * Check if a prop is a Chakra UI style prop.
- * Used to determine if component supports Chakra style props.
- */
-export const isChakraStyleProp = (prop: PropItem): boolean => {
-  return (
-    prop.parent?.name === "SystemProperties" ||
-    prop.parent?.name === "Conditions" ||
-    prop.parent?.name === "JsxStyleProps"
-  );
-};

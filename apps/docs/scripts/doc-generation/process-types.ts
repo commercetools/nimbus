@@ -6,46 +6,17 @@
 import type { ComponentDoc, Props } from "react-docgen-typescript";
 import { shouldFilterProp } from "./filter-props";
 
-type PropItem = Props[string];
-
 /**
- * Check if component supports Chakra style props by looking for
- * Chakra-specific props that survive filtering (css, as, asChild, unstyled).
- * These props indicate Chakra UI integration.
- *
- * If a component has zero props, it's likely a thin wrapper around a Chakra
- * component (like Image), so we default to true.
- */
-const hasChakraIntegration = (
-  filteredProps: Record<string, PropItem>
-): boolean => {
-  const propNames = Object.keys(filteredProps);
-
-  // If component has no props at all, assume it's a Chakra wrapper
-  // (react-docgen can't expand external type aliases)
-  if (propNames.length === 0) {
-    return true;
-  }
-
-  // Otherwise, check for Chakra-specific props
-  const chakraProps = ["css", "as", "asChild", "unstyled"];
-  return chakraProps.some((propName) => propName in filteredProps);
-};
-
-/**
- * Enrich component with metadata based on analyzing its props.
+ * Enrich component with metadata based on JSDoc tags and props.
  * This adds aggregate information about the component at the top level.
  *
+ * @param component - The component doc from react-docgen-typescript
  * @param filteredProps - The props object after filtering
  * @returns Component-level metadata
  */
-const enrichComponent = (
-  filteredProps: Record<string, PropItem>
-): Record<string, unknown> => {
-  // Check if component supports Chakra UI style props
-  // We check filtered props because some components (like Image) are
-  // thin wrappers where react-docgen can't expand external types
-  const supportsStyleProps = hasChakraIntegration(filteredProps);
+const enrichComponent = (component: ComponentDoc): Record<string, unknown> => {
+  // Check if component has @supportsStyleProps JSDoc tag
+  const supportsStyleProps = "supportsStyleProps" in (component.tags || {});
 
   // Future enrichment examples:
   // - hasReactAriaProps: check for React Aria parent names
@@ -80,8 +51,8 @@ export const processComponentTypes = (
       )
     );
 
-    // Step 2: Generate component-level metadata from filtered props
-    const metadata = enrichComponent(filteredProps);
+    // Step 2: Generate component-level metadata from JSDoc tags and filtered props
+    const metadata = enrichComponent(component, filteredProps);
 
     // Step 3: Return component with metadata and filtered props
     return {

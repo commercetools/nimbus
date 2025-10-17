@@ -5,6 +5,11 @@ import { extractStyleProps } from "@/utils";
 import { ChevronRight } from "@commercetools/nimbus-icons";
 import { Icon } from "@/components/icon";
 
+/**
+ * Menu.Item - A selectable item within a Menu
+ *
+ * @supportsStyleProps
+ */
 export const MenuItem = ({
   children,
   isCritical,
