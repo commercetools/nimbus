@@ -172,19 +172,19 @@ const App = () => (
 );
 ```
 
-### Tone
+### Color Palette
 
 #### Primary (default)
 
-The default tone for most toggle buttons.
+The default colorPalette for most toggle buttons.
 
 ```jsx-live
 const App = () => (
   <Stack gap="400" align="center" direction="row">
-    <ToggleButton tone="primary">
+    <ToggleButton colorPalette="primary">
       Primary
     </ToggleButton>
-    <ToggleButton tone="primary" isSelected>
+    <ToggleButton colorPalette="primary" isSelected>
       Selected
     </ToggleButton>
   </Stack>
@@ -198,10 +198,10 @@ Use for secondary or less prominent toggles.
 ```jsx-live
 const App = () => (
   <Stack gap="400" align="center" direction="row">
-    <ToggleButton tone="neutral">
+    <ToggleButton colorPalette="neutral">
       Neutral
     </ToggleButton>
-    <ToggleButton tone="neutral" isSelected>
+    <ToggleButton colorPalette="neutral" isSelected>
       Selected
     </ToggleButton>
   </Stack>
@@ -215,10 +215,10 @@ Use for toggles that represent destructive or warning states.
 ```jsx-live
 const App = () => (
   <Stack gap="400" align="center" direction="row">
-    <ToggleButton tone="critical">
+    <ToggleButton colorPalette="critical">
       Critical
     </ToggleButton>
-    <ToggleButton tone="critical" isSelected>
+    <ToggleButton colorPalette="critical" isSelected>
       Selected
     </ToggleButton>
   </Stack>
@@ -232,10 +232,10 @@ Use for informational or help-related toggles.
 ```jsx-live
 const App = () => (
   <Stack gap="400" align="center" direction="row">
-    <ToggleButton tone="info">
+    <ToggleButton colorPalette="info">
       Info
     </ToggleButton>
-    <ToggleButton tone="info" isSelected>
+    <ToggleButton colorPalette="info" isSelected>
       Selected
     </ToggleButton>
   </Stack>

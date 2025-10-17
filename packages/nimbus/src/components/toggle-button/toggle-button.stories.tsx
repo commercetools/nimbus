@@ -180,11 +180,15 @@ export const Tones: Story = {
             <Box width="100px">{tone as string}:</Box>
             {variants.map((variant) => (
               <Stack key={variant} gap="400" align="center" direction="row">
-                <ToggleButton tone={tone} width="128px" variant={variant}>
+                <ToggleButton
+                  colorPalette={tone}
+                  width="128px"
+                  variant={variant}
+                >
                   {variant}
                 </ToggleButton>
                 <ToggleButton
-                  tone={tone}
+                  colorPalette={tone}
                   width="128px"
                   variant={variant}
                   isSelected
@@ -192,7 +196,7 @@ export const Tones: Story = {
                   selected
                 </ToggleButton>
                 <ToggleButton
-                  tone={tone}
+                  colorPalette={tone}
                   width="128px"
                   variant={variant}
                   isDisabled
