@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "./box";
+import { Box } from "@commercetools/nimbus";
 
 const meta: Meta<typeof Box> = {
   title: "Components/Box",

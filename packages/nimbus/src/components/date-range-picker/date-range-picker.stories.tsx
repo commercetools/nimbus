@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DateRangePicker } from "./date-range-picker";
-import { I18nProvider } from "react-aria";
-import { Button, Stack, FormField, Text } from "@/components";
 import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import {} from "./date-range-picker";
+import { I18nProvider, type DateValue } from "react-aria";
+import { Button, FormField, Stack, Text } from "@commercetools/nimbus";
+import { DateRangePicker } from "./date-range-picker";
 import {
   getLocalTimeZone,
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import type { DateValue } from "react-aria";
 import type { RangeValue } from "@/components/range-calendar";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 

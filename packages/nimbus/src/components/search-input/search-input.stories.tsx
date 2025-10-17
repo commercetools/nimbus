@@ -1,8 +1,13 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { SearchInput } from "./search-input";
+import {
+  Box,
+  FormField,
+  SearchInput,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { Box, Stack, Text, FormField } from "@/components";
 
 const meta: Meta<typeof SearchInput> = {
   title: "Components/SearchInput",

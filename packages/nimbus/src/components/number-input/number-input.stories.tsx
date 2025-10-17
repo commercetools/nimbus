@@ -1,9 +1,16 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { I18nProvider } from "react-aria";
+import {
+  Box,
+  FormField,
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Stack, Text, FormField, Icon, IconButton } from "@/components";
 import {
   AddReaction,
   Search,

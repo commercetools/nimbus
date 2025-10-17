@@ -1,7 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DateInput } from "./date-input";
-import type { DateInputProps } from "./date-input.types";
-import { Button, FormField, Stack, Text, Icon, IconButton } from "@/components";
+import {
+  Button,
+  DateInput,
+  type DateInputProps,
+  FormField,
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import {
   CalendarDate,
   CalendarDateTime,

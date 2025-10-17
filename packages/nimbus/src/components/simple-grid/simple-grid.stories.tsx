@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "../box";
-import { SimpleGrid } from "./simple-grid";
+import { Box, SimpleGrid } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 /**

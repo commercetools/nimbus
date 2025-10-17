@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ToggleButton } from "./toggle-button";
-import { Box, Stack, Text } from "@/components";
+import { Box, Stack, Text, ToggleButton } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState, createRef } from "react";

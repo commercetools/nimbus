@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { RangeCalendar } from "./index";
-import type { RangeCalendarProps, RangeValue } from "./range-calendar.types";
+import {
+  Box,
+  RangeCalendar,
+  type RangeCalendarProps,
+  type RangeValue,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import {
   today,
   getLocalTimeZone,
@@ -8,7 +14,6 @@ import {
 } from "@internationalized/date";
 
 import { I18nProvider } from "react-aria";
-import { Box, Stack, Text } from "@/components";
 import { useState } from "react";
 
 const meta: Meta<typeof RangeCalendar> = {

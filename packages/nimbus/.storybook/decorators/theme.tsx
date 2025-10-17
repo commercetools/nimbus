@@ -3,7 +3,7 @@ import { type StoryContext } from "@storybook/react-vite";
 import { DARK_MODE_EVENT_NAME } from "@vueless/storybook-dark-mode";
 import { useEffect, useState } from "react";
 import { addons } from "storybook/preview-api";
-import { NimbusProvider } from "../../src";
+import { NimbusProvider } from "@commercetools/nimbus";
 
 // get channel to listen to event emitter
 const channel = addons.getChannel();

@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
-import { Group } from "../group";
-
-import { InlineSvg } from "./inline-svg";
+import { Group, InlineSvg } from "@commercetools/nimbus";
 
 const meta: Meta<typeof InlineSvg> = {
   title: "Components/InlineSvg",

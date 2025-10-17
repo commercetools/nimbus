@@ -1,9 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Stack, Icon } from "@/components";
-import { PasswordInput } from "./password-input";
 import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect, userEvent } from "storybook/test";
-import { Text } from "@/components";
+import { Box, Icon, PasswordInput, Stack, Text } from "@commercetools/nimbus";
 import { AddReaction } from "@commercetools/nimbus-icons";
 
 export default {

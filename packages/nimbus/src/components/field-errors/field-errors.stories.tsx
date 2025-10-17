@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, FormField, Stack, TextInput } from "@/components";
-import { FieldErrors } from "./field-errors";
+import {
+  Button,
+  FieldErrors,
+  FormField,
+  Stack,
+  TextInput,
+} from "@commercetools/nimbus";
 import React from "react";
 import { userEvent, within, expect } from "storybook/test";
 

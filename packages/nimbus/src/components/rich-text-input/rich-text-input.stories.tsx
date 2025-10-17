@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
-import { RichTextInput } from "./rich-text-input";
-import { Box } from "@/components";
+import { RichTextInput, Box } from "@commercetools/nimbus";
 
 const meta = {
   title: "Components/RichTextInput",

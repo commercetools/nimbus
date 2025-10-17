@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox } from "./checkbox";
-import { Stack } from "@/components";
+import { Checkbox, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 const meta: Meta<typeof Checkbox> = {

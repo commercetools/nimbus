@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Link } from "./link";
-import { Stack, Text } from "@/components";
-import type { LinkProps } from "./link.types";
+import { Link, type LinkProps, Stack, Text } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef } from "react";
 

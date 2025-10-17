@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "../box";
-import { Grid } from "./grid";
+import { Box, Grid } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 /**

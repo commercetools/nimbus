@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import { useState } from "react";
-import { Dialog } from "./dialog";
 import {
   Button,
+  Code,
+  Dialog,
+  FormField,
+  Kbd,
+  PasswordInput,
+  Select,
+  Separator,
   Stack,
   Switch,
   Text,
   TextInput,
-  PasswordInput,
-  FormField,
-  Select,
-  Kbd,
-  Code,
-  Separator,
-} from "@/components";
+} from "@commercetools/nimbus";
 
 const meta: Meta<typeof Dialog.Root> = {
   title: "Components/Overlay/Dialog",

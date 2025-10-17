@@ -12,8 +12,7 @@ component-name, componentName
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within, expect } from "storybook/test";
 import { useState } from "react";
-import { ComponentName } from "./component-name";
-import { Stack } from "@/components";
+import { ComponentName, Stack } from "@commercetools/nimbus";
 
 const meta: Meta<typeof ComponentName.Root> = {
   title: "Components/{CATEGORY}/ComponentName",
