@@ -70,28 +70,74 @@ const App = () => (
 )
 ```
 
-### Size
+### Color Palette
 
-There are three sizes to toggle buttons, the default size is medium (md), extra
-small (xs), and 2x-small (2xs).
+#### Primary (default)
+
+The default colorPalette for most toggle buttons.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="row" gap="400" alignItems="start">
-    <ToggleButton size="md">
-      <Icons.PushPin />
-      Pin favorite
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton colorPalette="primary">
+      Primary
     </ToggleButton>
-    <ToggleButton size="xs">
-      <Icons.PushPin />
-      Pin favorite
-    </ToggleButton>
-    <ToggleButton size="2xs">
-      <Icons.PushPin />
-      Pin favorite
+    <ToggleButton colorPalette="primary" isSelected>
+      Selected
     </ToggleButton>
   </Stack>
-)
+);
+```
+
+#### Neutral
+
+Use for secondary or less prominent toggles.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton colorPalette="neutral">
+      Neutral
+    </ToggleButton>
+    <ToggleButton colorPalette="neutral" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+#### Critical
+
+Use for toggles that represent destructive or warning states.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton colorPalette="critical">
+      Critical
+    </ToggleButton>
+    <ToggleButton colorPalette="critical" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
+```
+
+#### Info
+
+Use for informational or help-related toggles.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton colorPalette="info">
+      Info
+    </ToggleButton>
+    <ToggleButton colorPalette="info" isSelected>
+      Selected
+    </ToggleButton>
+  </Stack>
+);
 ```
 
 ## Guidelines

@@ -57,13 +57,10 @@ export const toggleButtonRecipe = defineRecipe({
         },
       },
     },
-    tone: {
-      ...buttonRecipe.variants?.tone,
-    },
   },
   defaultVariants: {
     size: "md",
     variant: "outline",
-    tone: "primary",
+    colorPalette: "primary",
   },
 });
