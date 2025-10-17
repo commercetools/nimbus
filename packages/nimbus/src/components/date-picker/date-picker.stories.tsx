@@ -7,13 +7,8 @@ import {
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import {
-  Button,
-  DatePicker,
-  FormField,
-  Stack,
-  Text,
-} from "@commercetools/nimbus";
+import { Button, FormField, Stack, Text } from "@commercetools/nimbus";
+import { DatePicker } from "./date-picker";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**

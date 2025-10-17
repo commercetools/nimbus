@@ -56,11 +56,11 @@ const external = [
   "slate-history",
   "slate-hyperscript",
   // React Aria dependencies
-  // Externalized to prevent bundling issues and ensure consistent behavior across the app
-  "react-aria",
-  "react-aria-components",
-  "react-stately",
-  "@react-aria/interactions",
+  // Externalized to prevent bundling issues and ensure consistent behavior across the app - ON HOLD
+  // "react-aria",
+  // "react-aria-components",
+  // "react-stately",
+  // "@react-aria/interactions",
 
   // Internal packages
   // TODO: Icons from @commercetools/nimbus-icons should be tree-shakeable, it might make more sense to just bundle the necessary icons with their components, and not care whether this package is installed in consuming apps.

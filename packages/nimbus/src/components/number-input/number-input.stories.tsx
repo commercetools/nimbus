@@ -6,10 +6,10 @@ import {
   FormField,
   Icon,
   IconButton,
-  NumberInput,
   Stack,
   Text,
 } from "@commercetools/nimbus";
+import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
 import {
   AddReaction,

@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   Button,
   Code,
-  Drawer,
   FormField,
   Kbd,
   PasswordInput,
@@ -14,7 +13,8 @@ import {
   Switch,
   Text,
   TextInput,
-} from "@commercetools/nimbus";
+} from "@/components";
+import { Drawer } from "./drawer";
 
 const meta: Meta<typeof Drawer.Root> = {
   title: "Components/Overlay/Drawer",

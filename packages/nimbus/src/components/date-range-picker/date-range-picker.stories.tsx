@@ -2,14 +2,8 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {} from "./date-range-picker";
 import { I18nProvider, type DateValue } from "react-aria";
-import {
-  Button,
-  DateRangePicker,
-  FormField,
-  Stack,
-  Text,
-} from "@commercetools/nimbus";
-
+import { Button, FormField, Stack, Text } from "@commercetools/nimbus";
+import { DateRangePicker } from "./date-range-picker";
 import {
   getLocalTimeZone,
   CalendarDate,
