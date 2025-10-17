@@ -1,22 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import {
-  Button,
-  IconButton,
-  Flex,
-  DraggableList,
-  Drawer,
-  Tabs,
-} from "@/components";
-import { Stack, Box, Text } from "@chakra-ui/react";
-import {
-  Settings,
-  Refresh,
-  ViewWeek,
-  ViewDay,
-  VisibilityOff,
-  Visibility,
-} from "@commercetools/nimbus-icons";
+import { IconButton, Drawer, Tabs } from "@/components";
+import { Box, Text } from "@chakra-ui/react";
+import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
+import VisibleColumnsPanel from "./data-table-visible-columns-panel";
 import { useDataTableContext } from "./data-table.context";
 import type { TColumnListItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
@@ -44,15 +31,15 @@ export type DataTableManagerProps = {
  * </DataTable.Root>
  * ```
  */
+
 export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();
   const { formatMessage } = useIntl();
 
   // Get all columns from context
-  const allColumns = context.columns;
-  const { visibleColumns, onColumnsChange } = context;
-  const hiddenColumns = allColumns.filter(
+  const { columns, visibleColumns, onColumnsChange } = context;
+  const hiddenColumns = columns.filter(
     (col) => !visibleColumns?.includes(col.id)
   );
 
@@ -60,31 +47,39 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
     return null;
   }
 
-  // const handleResetColumns = () => {
-  //   // Reset to original column order and visibility
-  //   const resetVisible: TColumnListItem[] = [];
-  //   const resetHidden: TColumnListItem[] = [];
+  // Handle when visible columns are updated (reordered or removed)
+  const handleVisibleColumnsUpdate = (updatedItems: TColumnListItem[]) => {
+    // Also notify about column order changes if callback is provided
+    if (onColumnsChange) {
+      onColumnsChange(updatedItems);
+    }
+  };
 
-  //   allColumns.forEach((col) => {
-  //     const item: TColumnListItem = {
-  //       key: col.id,
-  //       label: col.header,
-  //       id: col.id,
-  //       column: col,
-  //     };
+  const hiddenItems = useMemo(() => {
+    return columns
+      .filter((item) => !visibleColumns?.includes(item.id))
+      .map((item) => ({
+        key: item.id,
+        id: item.id,
+        label: item.header,
+      }));
+  }, [visibleColumns, columns]);
 
-  //     if (col.isVisible !== false) {
-  //       resetVisible.push(item);
-  //     } else {
-  //       resetHidden.push(item);
-  //     }
-  //   });
+  const visibleItems = useMemo(
+    () =>
+      columns
+        .filter((item) => visibleColumns?.includes(item.id))
+        .map((item) => ({
+          key: item.id,
+          id: item.id,
+          label: item.header,
+        })),
+    [columns, visibleColumns]
+  );
 
-  //   // Notify parent of reset
-  //   if (onColumnsChange) {
-  //     onColumnsChange(allColumns);
-  //   }
-  // };
+  const handleResetColumns = () => {
+    //TODO: Reset to original column order and visibility
+  };
 
   const defaultTrigger = (
     <IconButton
@@ -123,85 +118,14 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
                     </>
                   ),
                   panelContent: (
-                    <Stack gap="400" mt="400">
-                      <Flex gap="400" width="100%" mb="800">
-                        {/* Hidden Columns Section */}
-                        <Box>
-                          <Stack direction="row" alignItems="center" mb="200">
-                            <VisibilityOff />
-                            <Text fontWeight="700" fontSize="sm">
-                              {formatMessage(messages.hiddenColumns)}
-                            </Text>
-                          </Stack>
-                          <DraggableList.Root
-                            h="full"
-                            items={allColumns
-                              .filter(
-                                (item) => !visibleColumns?.includes(item.id)
-                              )
-                              .map((item) => ({
-                                key: item.id,
-                                id: item.id,
-                                label: item.header,
-                              }))}
-                            aria-label={formatMessage(
-                              messages.hiddenColumnsAriaLabel
-                            )}
-                            renderEmptyState={
-                              <Text fontSize="sm" color="gray.9">
-                                {formatMessage(messages.noHiddenColumns)}
-                              </Text>
-                            }
-                          />
-                        </Box>
-
-                        {/* Visible Columns Section */}
-                        <Box>
-                          <Stack direction="row" alignItems="center" mb="200">
-                            <Visibility />
-                            <Text fontWeight="700" fontSize="sm">
-                              {formatMessage(messages.visibleColumnsList)}
-                            </Text>
-                          </Stack>
-                          <DraggableList.Root
-                            removableItems
-                            h="full"
-                            items={allColumns
-                              .filter((item) =>
-                                visibleColumns?.includes(item.id)
-                              )
-                              .map((item) => ({
-                                key: item.id,
-                                id: item.id,
-                                label: item.header,
-                              }))}
-                            onUpdateItems={(
-                              updatedItems: TColumnListItem[]
-                            ) => {
-                              if (onColumnsChange) {
-                                onColumnsChange(updatedItems);
-                              }
-                            }}
-                            aria-label={formatMessage(
-                              messages.visibleColumnsAria
-                            )}
-                          />
-                        </Box>
-                      </Flex>
-
-                      {/* Reset Button */}
-                      <Box>
-                        <Button
-                          variant="ghost"
-                          tone="primary"
-                          size="md"
-                          // onClick={handleResetColumns}
-                        >
-                          <Refresh />
-                          {formatMessage(messages.reset)}
-                        </Button>
-                      </Box>
-                    </Stack>
+                    <>
+                      <VisibleColumnsPanel
+                        hiddenItems={hiddenItems}
+                        visibleItems={visibleItems}
+                        handleVisibleColumnsUpdate={handleVisibleColumnsUpdate}
+                        handleResetColumns={handleResetColumns}
+                      />
+                    </>
                   ),
                 },
                 {

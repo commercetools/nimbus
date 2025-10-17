@@ -60,4 +60,82 @@ export const messages = defineMessages({
       "title for the layout settings section in the data table manager",
     defaultMessage: "Layout settings",
   },
+  layoutSettingsAriaLabel: {
+    id: "data-table.manager.layout-settings-aria-label",
+    description:
+      "aria-label for the layout settings section in the data table manager",
+    defaultMessage: "Layout settings section",
+  },
+  textVisibility: {
+    id: "data-table.manager.text-visibility",
+    description:
+      "title for the text visibility section in the data table manager layout",
+    defaultMessage: "Text visibility",
+  },
+  textVisibilityAriaLabel: {
+    id: "data-table.manager.text-visibility-aria-label",
+    description:
+      "aria-label for the text visibility section in the data table manager layout",
+    defaultMessage: "Text visibility section",
+  },
+  fullText: {
+    id: "data-table.manager.full-text",
+    description:
+      "title for the full text section in the data table manager layout",
+    defaultMessage: "Full text",
+  },
+  fullTextAriaLabel: {
+    id: "data-table.manager.full-text-aria-label",
+    description:
+      "aria-label for the full text section in the data table manager layout",
+    defaultMessage: "Full text section",
+  },
+  TextPreviews: {
+    id: "data-table.manager.text-previews",
+    description:
+      "title for the text previews section in the data table manager layout",
+    defaultMessage: "Text previews",
+  },
+  TextPreviewsAriaLabel: {
+    id: "data-table.manager.text-previews-aria-label",
+    description:
+      "aria-label for the text previews section in the data table manager layout",
+    defaultMessage: "Text previews section",
+  },
+  RowDensity: {
+    id: "data-table.manager.row-density",
+    description:
+      "title for the row density section in the data table manager layout",
+    defaultMessage: "Row density",
+  },
+  RowDensityAriaLabel: {
+    id: "data-table.manager.row-density-aria-label",
+    description:
+      "aria-label for the row density section in the data table manager layout",
+    defaultMessage: "Row density section",
+  },
+  comfortable: {
+    id: "data-table.manager.comfortable",
+    description:
+      "title for the comfortable togglebutton in the data table manager layout",
+    defaultMessage: "Comfortable",
+  },
+  comfortableAriaLabel: {
+    id: "data-table.manager.comfortable-aria-label",
+    description:
+      "aria-label for the comfortable togglebutton in the data table manager layout",
+    defaultMessage: "Comfortable section",
+  },
+  compact: {
+    id: "data-table.manager.compact",
+    description:
+      "title for the compact togglebutton in the data table manager layout",
+    defaultMessage: "Compact",
+  },
+  compactAriaLabel: {
+    id: "data-table.manager.compact-aria-label",
+    description:
+      "aria-label for the compact togglebutton in the data table manager layout",
+    defaultMessage: "Compact section",
+  },
 });
