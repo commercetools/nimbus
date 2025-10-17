@@ -1,0 +1,171 @@
+---
+id: Components-tooltip-dev
+title: Tooltip Engineering Guidelines
+description: Engineering guideline for using the Nimbus Tooltip component
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Feedback
+  - TooltipDev
+tags:
+  - component
+  - engineering
+  - migration
+---
+
+# Tooltip Component
+
+Tooltips is a compound component that displays informative text when users hover over or focus on an element.
+
+## Component Anatomy [Optional for simple components]
+
+Component Anatomy here - image with parts and description as can be seen on [combobox](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5311-13804&p=f&m=dev) for example
+
+![](/images/tooltip/tooltip.png)
+
+## Component Usage
+
+### How to Import
+
+```tsx
+import { Tooltip } from '@commercetools/nimbus';
+```
+
+### Basic Example
+
+A minimal, copy-and-paste example of the tooltip in its simplest form: edit the placement in code code interface to different positions of choice (top, left, right, etc) 
+
+```jsx-live-dev
+// Example: A basic tooltip
+const App = () => (
+<Tooltip.Root placement="top">
+  <Button>Hover me</Button>
+    <Tooltip.Content
+      placement="top"
+      maxWidth="300px"
+      backgroundColor="blue"
+      color="white"
+    >
+      This is a helpful tooltip
+    </Tooltip.Content>
+</Tooltip.Root>
+)
+```
+
+### Common props and Variations
+
+#### Placement Options
+Control where the tooltip appears relative to its trigger: change the placement to any of these options to reposition the tooltip:
+```"top" | "top left" | "top right" | "top start" | "top end" | "bottom" | "bottom left" | "bottom right" | "bottom start" | "bottom end" | "left" | "left top" | "left bottom" | "right" | "right top" | "right bottom" | "start" | "start top" | "start bottom" | "end" | "end top" | "end bottom"```
+
+```jsx-live-dev
+const App = () => (
+<Tooltip.Root>
+  <Button>Tooltip placement</Button>
+  <Tooltip.Content placement="top">Tooltip on top</Tooltip.Content>
+</Tooltip.Root>
+)
+```
+
+#### Offset Options
+
+Control the tooltip offset:
+```offset```
+
+```jsx-live-dev
+const App = () => (
+<Tooltip.Root>
+  <Button>Tooltip placement</Button>
+  <Tooltip.Content offset={50}>Tooltip on top</Tooltip.Content>
+</Tooltip.Root>
+)
+```
+
+```...Add example snippets for each relevant component prop```
+
+## Testing Strategies and Best Practices
+
+#### 1. Unit Testing with React Testing Library
+> [!CAUTION]\
+> **Note**
+>
+> - if you are using app-kit as your initial setup and for your entry point, then the provider is already available. You won't be needing the setup below..  
+
+**Recommended Testing Library Setup:**
+```tsx
+import { render, screen, userEvent } from '@testing-library/react';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { IntlProvider } from 'react-intl';
+import { Tooltip, Button } from '@commercetools/nimbus';
+
+// Test wrapper with required providers
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <IntlProvider locale="en" messages={{}} defaultLocale="en">
+    <NimbusProvider>
+      {children}
+    </NimbusProvider>
+  </IntlProvider>
+);
+
+// Custom render function
+const renderWithProviders = (ui: React.ReactElement) => 
+  render(ui, { wrapper: TestWrapper });
+```
+
+#### 2. Storybook Integration for Testing
+
+Use the [Nimbus storybook Tooltip component story](https://nimbus-storybook-6l4m4g78g-commercetools.vercel.app/?path=/docs/components-tooltip-tooltip--docs) as a playground for visual testing of the component. 
+
+#### 3. Regression tests
+
+### 4. Accessibility requirements
+
+Nimbus Tooltip automatically handles most accessibility requirements, but developers should be aware of these basic requirements:
+- Add `aria-label` to enable proper definition of the alert component.
+- Ensure `aria-describedby` is present for error messages.
+- Include `role="alert"` for critical notifications.
+
+## Quick Reference Summary
+
+### Design Guidelines
+For essential patterns and guidelines, see the [Tooltip design guideline]((https://Nimbus-docs/components/feedback/tooltip))
+
+### Code Patterns
+
+#### Hooks
+```tsx
+// Custom Hook Pattern
+const useTooltip = (content: string, options = {}) => { ...};
+
+// Using the Custom Hook
+const MyComponent = () => {
+  const { tooltipProps, contentProps } = useTooltip(
+    "This action will save your changes",
+    { placement: "bottom", delay: 300 }
+  );
+
+  return (
+    <Tooltip.Root {...tooltipProps}>
+      <Button>Save</Button>
+      <Tooltip.Content {...contentProps} />
+    </Tooltip.Root>
+  );
+};
+```
+
+
+### API Reference
+
+<PropsTable id="Tooltip" />
+
+<br/>
+
+### Need Help?
+Join `#nimbus-migration` on Slack or check the [Nimbus Storybook](https://nimbus.commercetools.com/?path=/story/components-tooltip) for live examples.
+
+**Additional Resources:**
+- [Tooltip design guideline](https://Nimbus-docs/components/feedback/tooltip)
+- [React-Aria Tooltip Docs](https://react-spectrum.adobe.com/react-aria/Tooltip.html#tooltip)
+- [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+- [Figma Design Library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m)
