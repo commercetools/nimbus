@@ -3,7 +3,7 @@
  * Applies metadata enrichment and filtering in a single in-memory pass.
  */
 
-import type { ComponentDoc, Props } from "react-docgen-typescript";
+import type { ComponentDoc } from "react-docgen-typescript";
 import { shouldFilterProp } from "./filter-props";
 
 /**
@@ -52,7 +52,7 @@ export const processComponentTypes = (
     );
 
     // Step 2: Generate component-level metadata from JSDoc tags and filtered props
-    const metadata = enrichComponent(component, filteredProps);
+    const metadata = enrichComponent(component);
 
     // Step 3: Return component with metadata and filtered props
     return {
