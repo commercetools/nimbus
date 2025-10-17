@@ -15,7 +15,7 @@ props-table/
 │   ├── default-value.tsx            # Default value renderer
 │   └── index.ts                     # Component exports
 ├── constants/           # Static configuration
-│   ├── accessibility-props.ts       # Accessibility prop names
+│   ├── prop-groups.ts               # Prop group definitions
 │   └── index.ts                     # Constants exports
 ├── types/              # TypeScript definitions
 │   ├── prop-types.ts                # PropItem, PropCategory, GroupedProps
@@ -140,21 +140,6 @@ export const DEFAULT_EXPANDED = new Set<PropCategory>([
 ]);
 ```
 
-### Adding Accessibility Props
-
-Edit `constants/accessibility-props.ts`:
-
-```typescript
-export const ACCESSIBILITY_PROPS = new Set([
-  "role",
-  "id",
-  "tabIndex",
-  "excludeFromTabOrder",
-  "preventFocusOnPress",
-  "yourNewProp",  // Add here
-]);
-```
-
 ### Filtering Additional Props
 
 Chakra style props are filtered at documentation generation time in `scripts/doc-generation/filter-props.ts`. To filter additional prop types, update the filtering logic there rather than at runtime.
@@ -183,7 +168,6 @@ PropsTable (selector for compound components)
 - **Prop categorization logic?** → `utils/categorize-props.ts` (rarely needed - uses config)
 - **Prop filtering at generation time?** → `scripts/doc-generation/filter-props.ts`
 - **Grouping logic?** → `utils/group-props.ts` (rarely needed - uses config)
-- **Accessibility prop list?** → `constants/accessibility-props.ts`
 - **Banner appearance?** → `components/style-props-banner.tsx`
 - **Category collapsible UI?** → `components/collapsible-props-category.tsx`
 - **Table rendering?** → `components/props-category-table.tsx`
