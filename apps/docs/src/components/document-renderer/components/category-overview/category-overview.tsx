@@ -26,8 +26,15 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
 
   // If no document found for this route, don't render
   if (!activeDoc) {
+    console.log("[CategoryOverview] No activeDoc found");
     return null;
   }
+
+  console.log("[CategoryOverview] Rendering with:", {
+    route: activeDoc.meta.route,
+    menu: activeDoc.meta.menu,
+    menuLength: activeDoc.meta.menu.length,
+  });
 
   // Get the current category (first item in the menu array)
   const currentCategory = activeDoc.meta.menu[0];
@@ -35,6 +42,12 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
   // If there's a second level in the menu, use that for a more specific category
   const subcategory =
     activeDoc.meta.menu.length > 1 ? activeDoc.meta.menu[1] : null;
+
+  console.log("[CategoryOverview] Filter params:", {
+    currentCategory,
+    subcategory,
+    totalDocs: Object.values(documentation).length,
+  });
 
   // Find all documents that are in the same category
   const categoryDocs = Object.values(documentation).filter((doc) => {
@@ -58,12 +71,20 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     );
   });
 
+  console.log("[CategoryOverview] Filtered docs:", {
+    count: categoryDocs.length,
+    routes: categoryDocs.map((d) => d.meta.route),
+  });
+
   // Sort the documents by their order property
   const sortedDocs = [...categoryDocs].sort((a, b) => {
     return (a.meta.order || 999) - (b.meta.order || 999);
   });
 
   if (sortedDocs.length === 0) {
+    console.log(
+      "[CategoryOverview] WARNING: No documents found after filtering!"
+    );
     return (
       <Box my="600">
         <Text>No documents found in this category.</Text>
@@ -122,7 +143,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     <Box my="600">
       <Stack gap="0" direction="row" wrap="wrap">
         {sortedDocs.map((doc) => (
-          <Box width="1/4" pr="200" pb="200">
+          <Box width="1/4" pr="200" pb="200" key={doc.meta.route}>
             <Link unstyled href={doc.meta.route}>
               <Card.Root
                 key={doc.meta.route}
