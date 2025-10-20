@@ -1,15 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DateRangePicker } from "./date-range-picker";
-import { I18nProvider } from "react-aria";
-import { Button, Stack, FormField, Text } from "@/components";
 import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  Button,
+  DateRangePicker,
+  FormField,
+  NimbusI18nProvider,
+  Stack,
+  Text,
+  type DateValue,
+} from "@commercetools/nimbus";
 import {
   getLocalTimeZone,
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import type { DateValue } from "react-aria";
 import type { RangeValue } from "@/components/range-calendar";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
@@ -24,9 +29,9 @@ const meta: Meta<typeof DateRangePicker> = {
   component: DateRangePicker,
   decorators: [
     (Story) => (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Story />
-      </I18nProvider>
+      </NimbusI18nProvider>
     ),
   ],
 };
@@ -2706,7 +2711,7 @@ export const MultipleLocales: Story = {
       <Stack direction="column" gap="600" alignItems="start">
         <Stack direction="column" gap="200" alignItems="start">
           <Text fontWeight="700">English (US) - 12-hour format</Text>
-          <I18nProvider locale="en-US">
+          <NimbusI18nProvider locale="en-US">
             <DateRangePicker
               {...args}
               granularity="minute"
@@ -2716,12 +2721,12 @@ export const MultipleLocales: Story = {
               }}
               aria-label="US English range picker"
             />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="200" alignItems="start">
           <Text fontWeight="700">German (DE) - 24-hour format</Text>
-          <I18nProvider locale="de-DE">
+          <NimbusI18nProvider locale="de-DE">
             <DateRangePicker
               {...args}
               granularity="minute"
@@ -2731,12 +2736,12 @@ export const MultipleLocales: Story = {
               }}
               aria-label="DE German range picker"
             />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="200" alignItems="start">
           <Text fontWeight="700">Spanish (ES) - Different date format</Text>
-          <I18nProvider locale="es-ES">
+          <NimbusI18nProvider locale="es-ES">
             <DateRangePicker
               {...args}
               granularity="minute"
@@ -2746,7 +2751,7 @@ export const MultipleLocales: Story = {
               }}
               aria-label="ES Spanish range picker"
             />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
       </Stack>
     );

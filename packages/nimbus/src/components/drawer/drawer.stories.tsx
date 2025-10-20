@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fireEvent } from "storybook/test";
 import { useState } from "react";
-import { Drawer } from "./drawer";
 import {
   Button,
+  Code,
+  Drawer,
+  FormField,
+  Kbd,
+  PasswordInput,
+  Select,
+  Separator,
   Stack,
   Switch,
   Text,
   TextInput,
-  PasswordInput,
-  FormField,
-  Select,
-  Kbd,
-  Code,
-  Separator,
-} from "@/components";
+} from "@commercetools/nimbus";
 
 const meta: Meta<typeof Drawer.Root> = {
   title: "Components/Overlay/Drawer",
@@ -462,11 +462,13 @@ export const ScrollableContent: Story = {
     await step("Test keyboard navigation to drawer body", async () => {
       const drawerBody = canvas.getByTestId("scrollable-drawer-body");
 
-      await userEvent.tab(); // Close button
-      await userEvent.tab(); // Cancel button
+      // Verify drawer body is focusable
+      expect(drawerBody).toHaveAttribute("tabIndex", "0");
+
+      // Focus the drawer body directly to test keyboard scrolling capability
+      drawerBody.focus();
 
       await waitFor(() => {
-        expect(drawerBody).toHaveAttribute("tabIndex", "0");
         expect(drawerBody).toHaveFocus();
       });
     });

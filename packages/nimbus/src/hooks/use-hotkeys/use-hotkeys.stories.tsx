@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useHotkeys } from "./use-hotkeys";
+import { useHotkeys } from "@commercetools/nimbus";
 import { userEvent, expect, fn } from "storybook/test";
 import { useState } from "react";
 

@@ -1,9 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Select } from "./select";
-import { Text, Stack, Box, Icon } from "@/components";
-import type { Key } from "react-aria";
+import {
+  Box,
+  Icon,
+  Select,
+  type SelectRootProps,
+  Stack,
+  Text,
+  type Key,
+} from "@commercetools/nimbus";
 import { useState } from "react";
-import { type SelectRootProps } from "./select.types";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
 

@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { useState } from "react";
-import { Flex } from "@/components";
-import { DraggableList } from "./draggable-list";
+import { DraggableList, Flex } from "@commercetools/nimbus";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
 
 /**

@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ToggleButtonGroup } from "./toggle-button-group";
-import { Stack } from "../stack";
+import { Stack, ToggleButtonGroup } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
 

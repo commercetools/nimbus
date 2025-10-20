@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
-import { Tooltip, Button, Stack, type TooltipProps } from "@/components";
+import {
+  Button,
+  Stack,
+  Tooltip,
+  type TooltipProps,
+} from "@commercetools/nimbus";
 
 const placements = {
   top: ["top", "top left", "top right", "top start", "top end"],

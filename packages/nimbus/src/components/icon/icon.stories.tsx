@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Icon } from "./icon";
-import { Stack } from "./../stack";
+import { Icon, type IconProps, Stack } from "@commercetools/nimbus";
 import { Bathtub } from "@commercetools/nimbus-icons";
-import type { IconProps } from "./icon.types";
 import { within, expect } from "storybook/test";
 
 /**
