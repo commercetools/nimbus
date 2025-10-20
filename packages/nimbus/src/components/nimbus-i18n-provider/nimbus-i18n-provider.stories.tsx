@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { within, expect } from "storybook/test";
 import {
   NimbusI18nProvider,
   DatePicker,
   NumberInput,
   Stack,
   Text,
+  type NimbusI18nProviderProps,
 } from "@commercetools/nimbus";
 
 const meta: Meta<typeof NimbusI18nProvider> = {
@@ -33,10 +35,12 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     locale: "en-US",
-    children: (
+  },
+  render: (args: NimbusI18nProviderProps) => (
+    <NimbusI18nProvider {...args}>
       <Stack direction="column" gap="400">
         <Text>Locale: English (US)</Text>
-        <DatePicker label="Select Date" />
+        <DatePicker aria-label="Select Date" />
         <NumberInput
           aria-label="Amount"
           defaultValue={1234.56}
@@ -47,7 +51,20 @@ export const Default: Story = {
           }}
         />
       </Stack>
-    ),
+    </NimbusI18nProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify US number formatting", async () => {
+      const numberInput = canvas.getByLabelText("Amount");
+      expect(numberInput).toHaveValue("$1,234.56");
+    });
+
+    await step("Verify date input is present", async () => {
+      const dateInput = canvas.getByLabelText("Select Date");
+      expect(dateInput).toBeInTheDocument();
+    });
   },
 };
 
@@ -58,10 +75,12 @@ export const Default: Story = {
 export const German: Story = {
   args: {
     locale: "de-DE",
-    children: (
+  },
+  render: (args: NimbusI18nProviderProps) => (
+    <NimbusI18nProvider {...args}>
       <Stack direction="column" gap="400">
         <Text>Locale: Deutsch (DE)</Text>
-        <DatePicker label="Datum wählen" />
+        <DatePicker aria-label="Datum wählen" />
         <NumberInput
           aria-label="Betrag"
           defaultValue={1234.56}
@@ -72,7 +91,24 @@ export const German: Story = {
           }}
         />
       </Stack>
-    ),
+    </NimbusI18nProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Verify German number formatting (comma decimal separator)",
+      async () => {
+        const numberInput = canvas.getByLabelText("Betrag");
+        // German uses comma as decimal separator, period for thousands, and non-breaking space before €
+        expect(numberInput).toHaveValue("1.234,56\u00A0€");
+      }
+    );
+
+    await step("Verify date input is present", async () => {
+      const dateInput = canvas.getByLabelText("Datum wählen");
+      expect(dateInput).toBeInTheDocument();
+    });
   },
 };
 
@@ -83,10 +119,12 @@ export const German: Story = {
 export const Spanish: Story = {
   args: {
     locale: "es-ES",
-    children: (
+  },
+  render: (args: NimbusI18nProviderProps) => (
+    <NimbusI18nProvider {...args}>
       <Stack direction="column" gap="400">
         <Text>Locale: Español (ES)</Text>
-        <DatePicker label="Seleccionar fecha" />
+        <DatePicker aria-label="Seleccionar fecha" />
         <NumberInput
           aria-label="Cantidad"
           defaultValue={1234.56}
@@ -97,21 +135,23 @@ export const Spanish: Story = {
           }}
         />
       </Stack>
-    ),
-  },
+    </NimbusI18nProvider>
+  ),
 };
 
 /**
  * French locale example.
- * Date format: DD/MM/YYYY, number format: 1 234,56
+ * Date format: DD/MM/YYYY, number format: 1 234,56 (space as thousands separator)
  */
 export const French: Story = {
   args: {
     locale: "fr-FR",
-    children: (
+  },
+  render: (args: NimbusI18nProviderProps) => (
+    <NimbusI18nProvider {...args}>
       <Stack direction="column" gap="400">
         <Text>Locale: Français (FR)</Text>
-        <DatePicker label="Sélectionner la date" />
+        <DatePicker aria-label="Sélectionner la date" />
         <NumberInput
           aria-label="Montant"
           defaultValue={1234.56}
@@ -122,8 +162,8 @@ export const French: Story = {
           }}
         />
       </Stack>
-    ),
-  },
+    </NimbusI18nProvider>
+  ),
 };
 
 /**
@@ -133,10 +173,12 @@ export const French: Story = {
 export const PortugueseBrazil: Story = {
   args: {
     locale: "pt-BR",
-    children: (
+  },
+  render: (args: NimbusI18nProviderProps) => (
+    <NimbusI18nProvider {...args}>
       <Stack direction="column" gap="400">
         <Text>Locale: Português (BR)</Text>
-        <DatePicker label="Selecionar data" />
+        <DatePicker aria-label="Selecionar data" />
         <NumberInput
           aria-label="Quantidade"
           defaultValue={1234.56}
@@ -147,21 +189,23 @@ export const PortugueseBrazil: Story = {
           }}
         />
       </Stack>
-    ),
-  },
+    </NimbusI18nProvider>
+  ),
 };
 
 /**
  * Japanese locale example.
- * Date format: YYYY/MM/DD, number format: 1,234.56
+ * Date format: YYYY/MM/DD, number format: 1,234 (no decimals for JPY)
  */
 export const Japanese: Story = {
   args: {
     locale: "ja-JP",
-    children: (
+  },
+  render: (args: NimbusI18nProviderProps) => (
+    <NimbusI18nProvider {...args}>
       <Stack direction="column" gap="400">
         <Text>Locale: 日本語 (JP)</Text>
-        <DatePicker label="日付を選択" />
+        <DatePicker aria-label="日付を選択" />
         <NumberInput
           aria-label="金額"
           defaultValue={1234}
@@ -172,7 +216,24 @@ export const Japanese: Story = {
           }}
         />
       </Stack>
-    ),
+    </NimbusI18nProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Verify Japanese number formatting (no decimal places for JPY)",
+      async () => {
+        const numberInput = canvas.getByLabelText("金額");
+        // Japanese Yen doesn't use decimal places and uses full-width Yen symbol
+        expect(numberInput).toHaveValue("￥1,234");
+      }
+    );
+
+    await step("Verify date input is present", async () => {
+      const dateInput = canvas.getByLabelText("日付を選択");
+      expect(dateInput).toBeInTheDocument();
+    });
   },
 };
 
@@ -195,9 +256,9 @@ export const CompareLocales: Story = {
           <NimbusI18nProvider key={code} locale={code}>
             <Stack direction="column" gap="200">
               <Text fontWeight="600">{name}</Text>
-              <DatePicker label="Date" />
+              <DatePicker aria-label={`Date ${code}`} />
               <NumberInput
-                aria-label="Price"
+                aria-label={`Price ${code}`}
                 defaultValue={currency === "JPY" ? 1234 : 1234.56}
                 minValue={0}
                 formatOptions={{
@@ -210,5 +271,39 @@ export const CompareLocales: Story = {
         ))}
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify all locale number formats are different", async () => {
+      const usInput = canvas.getByLabelText("Price en-US");
+      const gbInput = canvas.getByLabelText("Price en-GB");
+      const deInput = canvas.getByLabelText("Price de-DE");
+      const jpInput = canvas.getByLabelText("Price ja-JP");
+
+      // US format: $1,234.56
+      expect(usInput).toHaveValue("$1,234.56");
+
+      // UK format: £1,234.56
+      expect(gbInput).toHaveValue("£1,234.56");
+
+      // German format: 1.234,56 € (period for thousands, comma for decimal, non-breaking space before €)
+      expect(deInput).toHaveValue("1.234,56\u00A0€");
+
+      // Japanese format: ￥1,234 (no decimals, full-width Yen symbol)
+      expect(jpInput).toHaveValue("￥1,234");
+    });
+
+    await step("Verify all date inputs are present", async () => {
+      const usDate = canvas.getByLabelText("Date en-US");
+      const gbDate = canvas.getByLabelText("Date en-GB");
+      const deDate = canvas.getByLabelText("Date de-DE");
+      const jpDate = canvas.getByLabelText("Date ja-JP");
+
+      expect(usDate).toBeInTheDocument();
+      expect(gbDate).toBeInTheDocument();
+      expect(deDate).toBeInTheDocument();
+      expect(jpDate).toBeInTheDocument();
+    });
   },
 };
