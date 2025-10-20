@@ -15,7 +15,6 @@ export const moneyInputRecipe = defineSlotRecipe({
       position: "relative",
       fontFamily: "inherit",
       "& .nimbus-select__trigger": {
-        width: "2800",
         borderRightRadius: "0",
         // Show all but the right shadow
         boxShadow:
@@ -89,9 +88,6 @@ export const moneyInputRecipe = defineSlotRecipe({
         root: {
           fontSize: "fontSize.20",
           minWidth: "280px",
-          "& .nimbus-select__trigger": {
-            width: "2600",
-          },
         },
         currencySelect: {
           padding: "0 spacing.20",
@@ -108,9 +104,6 @@ export const moneyInputRecipe = defineSlotRecipe({
         root: {
           fontSize: "fontSize.30",
           minWidth: "360px",
-          "& .nimbus-select__trigger": {
-            width: "3200",
-          },
         },
         currencySelect: {
           padding: "0 spacing.25",
