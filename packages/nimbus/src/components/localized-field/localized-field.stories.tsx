@@ -6,7 +6,6 @@ import {
   Text,
   type MoneyInputValue,
 } from "@commercetools/nimbus";
-import { LocalizedField } from "./index";
 import {
   baseLocales,
   baseCurrencies,
