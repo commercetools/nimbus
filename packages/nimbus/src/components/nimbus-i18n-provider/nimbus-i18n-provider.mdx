@@ -1,13 +1,13 @@
 ---
-id: Components-I18nProvider
-title: I18nProvider
+id: Components-NimbusI18nProvider
+title: NimbusI18nProvider
 description:
   Provides internationalization context for React Aria components (dates, numbers, etc.)
 order: 999
 menu:
   - Components
   - Utilities
-  - I18nProvider
+  - NimbusI18nProvider
 tags:
   - component
   - i18n
@@ -16,13 +16,13 @@ tags:
   - react-aria
 ---
 
-# I18nProvider
+# NimbusI18nProvider
 
-The I18nProvider component provides internationalization (i18n) context for React Aria components in your Nimbus application. It controls how dates, numbers, and other locale-specific content is formatted across all React Aria-based components.
+The NimbusI18nProvider component provides internationalization (i18n) context for React Aria components in your Nimbus application. It controls how dates, numbers, and other locale-specific content is formatted across all React Aria-based components.
 
 ## Overview
 
-I18nProvider is a proxy component that wraps React Aria's I18nProvider, making it easy to set the locale for all React Aria components like DatePicker, Calendar, and NumberInput. This ensures consistent formatting across your application.
+NimbusI18nProvider is a proxy component that wraps React Aria's I18nProvider, making it easy to set the locale for all React Aria components like DatePicker, Calendar, and NumberInput. This ensures consistent formatting across your application.
 
 ### Key Features
 
@@ -42,16 +42,16 @@ Get familiar with the features.
 
 ### Basic Usage
 
-Wrap your application with I18nProvider to set the locale for React Aria components:
+Wrap your application with NimbusI18nProvider to set the locale for React Aria components:
 
 ```jsx-live
 const App = () => (
-  <I18nProvider locale="en-US">
+  <NimbusI18nProvider locale="en-US">
     <Stack direction="column" gap="400">
       <Text>This app uses US English formatting</Text>
       <DatePicker label="Select Date" />
     </Stack>
-  </I18nProvider>
+  </NimbusI18nProvider>
 );
 ```
 
@@ -86,7 +86,7 @@ const App = () => {
         </Button>
       </Stack>
 
-      <I18nProvider locale={locale}>
+      <NimbusI18nProvider locale={locale}>
         <Stack direction="column" gap="400">
           <Text fontWeight="600">Current Locale: {locale}</Text>
           <DatePicker label="Select Date" />
@@ -100,7 +100,7 @@ const App = () => {
             }}
           />
         </Stack>
-      </I18nProvider>
+      </NimbusI18nProvider>
     </Stack>
   );
 };
@@ -108,42 +108,42 @@ const App = () => {
 
 ### Multiple Providers
 
-You can nest I18nProviders to use different locales in different parts of your app:
+You can nest NimbusI18nProviders to use different locales in different parts of your app:
 
 ```jsx-live
 const App = () => (
   <Stack direction="column" gap="600">
-    <I18nProvider locale="en-US">
+    <NimbusI18nProvider locale="en-US">
       <Stack direction="column" gap="200">
         <Text fontWeight="600">US Section</Text>
         <DatePicker label="Date" />
       </Stack>
-    </I18nProvider>
+    </NimbusI18nProvider>
 
-    <I18nProvider locale="de-DE">
+    <NimbusI18nProvider locale="de-DE">
       <Stack direction="column" gap="200">
         <Text fontWeight="600">German Section</Text>
         <DatePicker label="Datum" />
       </Stack>
-    </I18nProvider>
+    </NimbusI18nProvider>
 
-    <I18nProvider locale="ja-JP">
+    <NimbusI18nProvider locale="ja-JP">
       <Stack direction="column" gap="200">
         <Text fontWeight="600">Japanese Section</Text>
         <DatePicker label="日付" />
       </Stack>
-    </I18nProvider>
+    </NimbusI18nProvider>
   </Stack>
 );
 ```
 
 ## Guidelines
 
-Use I18nProvider strategically to support international date and number formatting.
+Use NimbusI18nProvider strategically to support international date and number formatting.
 
 ### Best practices
 
-- **Wrap at root level**: Place I18nProvider at the root of your application to provide i18n context to all React Aria components
+- **Wrap at root level**: Place NimbusI18nProvider at the root of your application to provide i18n context to all React Aria components
 - **Use BCP47 codes**: Always use proper BCP47 language tags (e.g., 'en-US', 'de-DE', 'fr-FR')
 - **Regional specificity**: Include region codes when formatting differs by region (e.g., 'en-US' vs 'en-GB')
 - **Dynamic locale**: Allow users to switch locales at runtime for better user experience
@@ -163,13 +163,13 @@ Use I18nProvider strategically to support international date and number formatti
 > [!CAUTION]\
 > When not to use
 
-- **Single locale apps**: If your app only targets one locale, you may not need I18nProvider
+- **Single locale apps**: If your app only targets one locale, you may not need NimbusI18nProvider
 - **Text translation**: This component doesn't handle UI text translation (use react-intl or similar for that)
 - **Non-React Aria components**: This only affects React Aria components, not general HTML or other component libraries
 
 ## Specs
 
-<PropsTable id="I18nProvider" />
+<PropsTable id="NimbusI18nProvider" />
 
 ## Accessibility
 

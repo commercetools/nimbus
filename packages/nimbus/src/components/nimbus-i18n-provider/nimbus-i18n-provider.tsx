@@ -1,5 +1,5 @@
 import { I18nProvider as RaI18nProvider } from "react-aria";
-import type { NimbusI18nProviderProps } from "./i18n-provider.types";
+import type { NimbusI18nProviderProps } from "./nimbus-i18n-provider.types";
 
 /**
  * NimbusI18nProvider component that provides internationalization context for React Aria components.
