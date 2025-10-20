@@ -1,20 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Box,
-  Button,
-  DateInput,
-  Link,
   NimbusProvider,
-  Stack,
+  IntlProvider,
+  Button,
   Text,
+  Stack,
+  Box,
+  Link,
+  DateInput,
   useColorMode,
   useColorModeValue,
-  type DateValue,
 } from "@commercetools/nimbus";
 import { useState } from "react";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { CalendarDate } from "@internationalized/date";
+import type { DateValue } from "react-aria";
 import type { NimbusRouterConfig } from "./nimbus-provider.types";
+import { useIntl } from "react-intl";
 
 const meta: Meta<typeof NimbusProvider> = {
   title: "Components/NimbusProvider",
@@ -180,6 +182,91 @@ export const WithLocale: Story = {
     await step("Date is formatted according to locale", async () => {
       const text = dateText.textContent;
       await expect(text).toMatch("1.7.2025");
+    });
+  },
+};
+
+/**
+ * WithMultipleLocales story - Demonstrates multiple locales on a single page
+ */
+export const WithMultipleLocales: Story = {
+  //TODO: expand on this when we have translations up and running.
+  render: () => {
+    const LocaleDisplay = ({ label }: { label: string }) => {
+      const intl = useIntl();
+      return (
+        <Box
+          p="400"
+          border="solid-25"
+          borderColor="neutral.3"
+          borderRadius="400"
+        >
+          <Text data-testid={`${label}-locale`}>
+            {label}: {intl.locale}
+          </Text>
+        </Box>
+      );
+    };
+
+    return (
+      <NimbusProvider locale="en">
+        <Box p="600" data-testid="multiple-locales-content">
+          <Stack gap="400">
+            <Text>Multiple locales on one page</Text>
+
+            <LocaleDisplay label="English" />
+
+            <IntlProvider locale="de">
+              <LocaleDisplay label="German" />
+            </IntlProvider>
+
+            <IntlProvider locale="es">
+              <LocaleDisplay label="Spanish" />
+            </IntlProvider>
+
+            <IntlProvider locale="ja">
+              <LocaleDisplay label="Japanese" />
+            </IntlProvider>
+
+            <IntlProvider locale="it">
+              <LocaleDisplay label="Italian" />
+            </IntlProvider>
+          </Stack>
+        </Box>
+      </NimbusProvider>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Content renders without errors", async () => {
+      const content = canvas.getByTestId("multiple-locales-content");
+      await expect(content).toBeInTheDocument();
+    });
+
+    await step("English section uses NimbusProvider's locale", async () => {
+      const locale = canvas.getByTestId("English-locale");
+      await expect(locale).toHaveTextContent("English: en");
+    });
+
+    await step("German section uses its own IntlProvider", async () => {
+      const locale = canvas.getByTestId("German-locale");
+      await expect(locale).toHaveTextContent("German: de");
+    });
+
+    await step("Spanish section uses its own IntlProvider", async () => {
+      const locale = canvas.getByTestId("Spanish-locale");
+      await expect(locale).toHaveTextContent("Spanish: es");
+    });
+
+    await step("Japanese section uses its own IntlProvider", async () => {
+      const locale = canvas.getByTestId("Japanese-locale");
+      await expect(locale).toHaveTextContent("Japanese: ja");
+    });
+
+    await step("Italian section uses its own IntlProvider", async () => {
+      const locale = canvas.getByTestId("Italian-locale");
+      await expect(locale).toHaveTextContent("Italian: it");
     });
   },
 };
