@@ -1,4 +1,5 @@
 import { useAtomValue } from "jotai";
+import { Suspense, FC } from "react";
 import { activeDocAtom } from "@/atoms/active-doc";
 import { documentationAtom } from "@/atoms/documentation";
 import {
@@ -10,17 +11,23 @@ import {
   Stack,
   Text,
 } from "@commercetools/nimbus";
-import { FC } from "react";
 import * as Icons from "@commercetools/nimbus-icons";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
  * To be used in MDX files to show titles and descriptions of documents in the active category.
+ *
+ * This component reads from async atoms and integrates with React Suspense for proper
+ * loading state handling. The parent Suspense boundary catches the thrown Promise
+ * during initial data loading.
  */
-export const CategoryOverview: FC = ({ variant }) => {
+const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
+  // useAtomValue on async atoms will throw a Promise (caught by Suspense) while loading,
+  // then return the resolved value once loaded
   const activeDoc = useAtomValue(activeDocAtom);
   const documentation = useAtomValue(documentationAtom);
 
+  // After Suspense resolves, check if we have valid data
   if (!activeDoc) {
     return null;
   }
@@ -151,5 +158,18 @@ export const CategoryOverview: FC = ({ variant }) => {
         ))}
       </Stack>
     </Box>
+  );
+};
+
+/**
+ * Public export with Suspense boundary to handle async atom loading.
+ * This ensures the component properly handles the async nature of the documentation
+ * and active document atoms, providing a loading state while data is being fetched.
+ */
+export const CategoryOverview: FC<{ variant?: string }> = (props) => {
+  return (
+    <Suspense fallback={<Box>Loading categories...</Box>}>
+      <CategoryOverviewContent {...props} />
+    </Suspense>
   );
 };
