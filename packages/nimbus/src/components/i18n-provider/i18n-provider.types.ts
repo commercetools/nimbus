@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { I18nProviderProps } from "react-aria";
 
 // ============================================================
 // MAIN PROPS
@@ -13,10 +13,10 @@ export type NimbusI18nProviderProps = {
    * BCP47 language code for internationalization (e.g., 'en-US', 'de-DE', 'es-ES')
    * This affects how dates, numbers, and other locale-specific content is formatted.
    */
-  locale: string;
+  locale?: I18nProviderProps["locale"];
 
   /**
    * Child components to be wrapped with i18n context
    */
-  children: ReactNode;
+  children: I18nProviderProps["children"];
 };
