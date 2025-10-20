@@ -26,8 +26,7 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
       });
       await userEvent.click(calendarButton);
       await waitFor(async () => {
-        const calendar = within(document.body).getByRole("application");
-        await expect(calendar).toBeInTheDocument();
+        await within(document.body).getByRole("application");
       });
     },
 
@@ -82,10 +81,9 @@ export const Base: Story = {
         await expect(segments).toHaveLength(6);
 
         // Should have calendar button
-        const calendarButton = canvas.getByRole("button", {
+        await canvas.findByRole("button", {
           name: /calendar/i,
         });
-        await expect(calendarButton).toBeInTheDocument();
 
         // Clear button should be hidden initially (no value)
         const clearButton = canvas.queryByRole("button", { name: /clear/i });
@@ -129,8 +127,7 @@ export const Base: Story = {
       await helpers.openCalendar();
 
       // Calendar should be open
-      const calendar = within(document.body).getByRole("application");
-      await expect(calendar).toBeInTheDocument();
+      await within(document.body).findByRole("application");
 
       // Close calendar
       await userEvent.keyboard("{Escape}");
@@ -159,8 +156,7 @@ export const WithErrors: Story = {
     await step(
       "Error messages are displayed when field is touched",
       async () => {
-        const errorAlert = canvas.queryByRole("alert");
-        await expect(errorAlert).toBeInTheDocument();
+        await canvas.findByRole("alert");
 
         // Should show built-in error messages for known error types
         await canvas.findByText(/field is required/i);
@@ -196,17 +192,13 @@ export const WithInfo: Story = {
     const helpers = createFieldHelpers(canvas);
 
     await step("Info button is present and functional", async () => {
-      const infoButton = canvas.queryByLabelText("__MORE INFO");
-      await expect(infoButton).toBeInTheDocument();
+      await canvas.findByLabelText("__MORE INFO");
     });
 
     await step("Info popover opens and displays content", async () => {
       await helpers.openInfoPopover();
 
-      const infoContent = within(document.body).getByText(
-        /Date ranges are inclusive/
-      );
-      await expect(infoContent).toBeInTheDocument();
+      await within(document.body).findByText(/Date ranges are inclusive/);
     });
 
     await step("Field functionality works with info present", async () => {
@@ -217,8 +209,7 @@ export const WithInfo: Story = {
       await expect(segments).toHaveLength(6);
 
       await helpers.openCalendar();
-      const calendar = within(document.body).getByRole("application");
-      await expect(calendar).toBeInTheDocument();
+      await within(document.body).findByRole("application");
     });
   },
 };
