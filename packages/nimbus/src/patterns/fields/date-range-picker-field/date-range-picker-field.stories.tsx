@@ -11,12 +11,13 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
 
   return {
     // Core elements
-    getLabel: () => context.getByText(/Date Range/),
+    getLabel: async () => await context.findByText(/Date Range/),
 
     // DateRangePicker elements
-    getDateRangeGroup: () => context.getByRole("group"),
-    getDateSegments: () => context.getAllByRole("spinbutton"),
-    getClearButton: () => context.getByRole("button", { name: /clear/i }),
+    getDateRangeGroup: async () => await context.findByRole("group"),
+    getDateSegments: async () => await context.findAllByRole("spinbutton"),
+    getClearButton: async () =>
+      await context.findByRole("button", { name: /clear/i }),
 
     // Actions
     openCalendar: async () => {
@@ -31,7 +32,7 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
     },
 
     openInfoPopover: async () => {
-      const infoButton = context.getByLabelText("__MORE INFO");
+      const infoButton = await context.findByLabelText("__MORE INFO");
       await userEvent.click(infoButton);
     },
   };
@@ -56,14 +57,7 @@ type Story = StoryObj<typeof DateRangePickerField>;
 export const Base: Story = {
   render: (args) => {
     const [value, setValue] = useState<DateRange | null>(null);
-    return (
-      <DateRangePickerField
-        aria-label="Select a date range"
-        {...args}
-        value={value}
-        onChange={setValue}
-      />
-    );
+    return <DateRangePickerField {...args} value={value} onChange={setValue} />;
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -71,23 +65,20 @@ export const Base: Story = {
 
     await step("Renders proper FormField structure with label", async () => {
       // Should have the label
-      const label = helpers.getLabel();
-      await expect(label).toBeInTheDocument();
+      await helpers.getLabel();
 
       // Should have description
-      const description = canvas.queryByText(/Select a start and end date/);
-      await expect(description).toBeInTheDocument();
+      await canvas.findByText(/Select a start and end date/);
 
       // Should have DateRangePicker group
-      const dateGroup = helpers.getDateRangeGroup();
-      await expect(dateGroup).toBeInTheDocument();
+      await helpers.getDateRangeGroup();
     });
 
     await step(
       "DateRangePicker components are properly integrated",
       async () => {
         // Should have 6 date segments (start: month/day/year, end: month/day/year)
-        const segments = helpers.getDateSegments();
+        const segments = await helpers.getDateSegments();
         await expect(segments).toHaveLength(6);
 
         // Should have calendar button
@@ -103,11 +94,10 @@ export const Base: Story = {
     );
 
     await step("Form field accessibility is properly configured", async () => {
-      const segments = helpers.getDateSegments();
+      const segments = await helpers.getDateSegments();
 
       // DateRangePicker group should exist and be accessible
-      const dateGroup = helpers.getDateRangeGroup();
-      await expect(dateGroup).toBeInTheDocument();
+      await helpers.getDateRangeGroup();
 
       // All segments should be accessible
       for (const segment of segments) {
@@ -116,12 +106,11 @@ export const Base: Story = {
 
       // FormField should provide proper labeling via aria-labelledby or similar
       // (The exact mechanism depends on how FormField connects labels to inputs)
-      const label = helpers.getLabel();
-      await expect(label).toBeInTheDocument();
+      await helpers.getLabel();
     });
 
     await step("Date input functionality works", async () => {
-      const segments = helpers.getDateSegments();
+      const segments = await helpers.getDateSegments();
 
       // Type in first segment (start month)
       await userEvent.click(segments[0]);
@@ -174,31 +163,22 @@ export const WithErrors: Story = {
         await expect(errorAlert).toBeInTheDocument();
 
         // Should show built-in error messages for known error types
-        const missingError = canvas.getByText(/field is required/i);
-        await expect(missingError).toBeInTheDocument();
+        await canvas.findByText(/field is required/i);
 
-        const formatError = canvas.getByText(/Please enter a valid format/i);
-        await expect(formatError).toBeInTheDocument();
+        await canvas.findByText(/Please enter a valid format/i);
       }
     );
 
     await step("Field structure remains intact with errors", async () => {
-      const label = helpers.getLabel();
-      await expect(label).toBeInTheDocument();
+      helpers.getLabel();
+      await canvas.findByText("*");
 
-      const asterisk = canvas.queryByText("*");
-      await expect(asterisk).toBeInTheDocument();
-
-      const segments = helpers.getDateSegments();
+      const segments = await helpers.getDateSegments();
       await expect(segments).toHaveLength(6);
     });
 
     await step("Error state affects DateRangePicker appearance", async () => {
-      const dateGroup = helpers.getDateRangeGroup();
-
-      // The parent FormField should have invalid state
-      // which gets passed down to the DateRangePicker
-      await expect(dateGroup).toBeInTheDocument();
+      await helpers.getDateRangeGroup();
     });
   },
 };
@@ -233,12 +213,47 @@ export const WithInfo: Story = {
       // Close any open popovers first
       await userEvent.keyboard("{Escape}");
 
-      const segments = helpers.getDateSegments();
+      const segments = await helpers.getDateSegments();
       await expect(segments).toHaveLength(6);
 
       await helpers.openCalendar();
       const calendar = within(document.body).getByRole("application");
       await expect(calendar).toBeInTheDocument();
+    });
+  },
+};
+
+export const WithAriaDescribedBy: Story = {
+  args: {
+    info: "Date ranges are inclusive of both start and end dates.",
+    ["aria-describedby"]: "test-text",
+    touched: true,
+    errors: { missing: true, format: true },
+    isRequired: true,
+  },
+  render: (args) => {
+    const [value, setValue] = useState<DateRange | null>(null);
+    return <DateRangePickerField {...args} value={value} onChange={setValue} />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const helpers = createFieldHelpers(canvas);
+
+    await step("renders description, errors, and info", async () => {
+      await canvas.findByText(/Date Range/i);
+      await canvas.findByText(/field is required/i);
+      await canvas.findByText(/Please enter a valid format/i);
+      await canvas.findByLabelText("__MORE INFO");
+      await canvas.findByRole("alert");
+
+      // Test aria-describedby attribute on the date range group
+      const dateGroup = await helpers.getDateRangeGroup();
+      await expect(dateGroup).toHaveAttribute("aria-describedby");
+    });
+
+    await step("Info popover opens and displays content", async () => {
+      await helpers.openInfoPopover();
+      await within(document.body).findByText(/Date ranges are inclusive/);
     });
   },
 };

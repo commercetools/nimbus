@@ -67,7 +67,6 @@ export const DateRangePickerField = forwardRef<
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           {...dateRangePickerProps}
-          data-testid="date-range-picker-field"
         />
       </FormField.Input>
 
