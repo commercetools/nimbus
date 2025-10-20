@@ -20,27 +20,26 @@ export const MdxStringRenderer: FC<{
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null
   );
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  const [currentContent, setCurrentContent] = useState(content);
+  const [isEvaluating, setIsEvaluating] = useState(true);
+  const [renderedContent, setRenderedContent] = useState(content);
 
   useEffect(() => {
-    // If content has changed, mark as evaluating and clear old content
-    if (content !== currentContent) {
-      setIsEvaluating(true);
-      setCurrentContent(content);
-    }
+    // Mark as evaluating and clear old content when content changes
+    setIsEvaluating(true);
 
     void evaluate(content, {
       ...runtime,
       remarkPlugins: [remarkGfm, remarkMark],
     }).then((r) => {
       setMdxContent(() => r.default);
+      setRenderedContent(content);
       setIsEvaluating(false);
     });
-  }, [content, currentContent]);
+  }, [content]);
 
   // Don't render stale content while evaluating new content
-  if (isEvaluating) {
+  // Only render if the evaluated content matches the current content
+  if (isEvaluating || renderedContent !== content) {
     return null;
   }
 

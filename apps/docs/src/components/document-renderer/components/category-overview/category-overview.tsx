@@ -2,6 +2,7 @@ import { useAtomValue } from "jotai";
 import { Suspense, FC } from "react";
 import { activeDocAtom } from "@/atoms/active-doc";
 import { documentationAtom } from "@/atoms/documentation";
+import { activeRouteAtom } from "@/atoms/route";
 import {
   Box,
   Card,
@@ -26,9 +27,16 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
   // then return the resolved value once loaded
   const activeDoc = useAtomValue(activeDocAtom);
   const documentation = useAtomValue(documentationAtom);
+  const activeRoute = useAtomValue(activeRouteAtom);
 
   // After Suspense resolves, check if we have valid data
   if (!activeDoc) {
+    return null;
+  }
+
+  // CRITICAL: Validate that activeDoc matches the current route
+  // This prevents rendering with stale atom data during navigation
+  if (activeDoc.meta.route !== activeRoute) {
     return null;
   }
 
