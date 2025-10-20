@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
-import { I18nProvider } from "react-aria";
-import { Box, FormField, Text } from "@commercetools/nimbus";
-import { MoneyInput } from "./money-input";
+import {
+  Box,
+  FormField,
+  NimbusI18nProvider,
+  MoneyInput,
+  Text,
+} from "@commercetools/nimbus";
 
 import type {
   TValue,
@@ -388,7 +392,7 @@ export const CurrencySwitchingTest: Story = {
 
 export const EULocaleFormattingExample: Story = {
   render: (args) => (
-    <I18nProvider locale="de-DE">
+    <NimbusI18nProvider locale="de-DE">
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
           EU Locale Formatting (de-DE) - High Precision
@@ -418,7 +422,7 @@ export const EULocaleFormattingExample: Story = {
           {...args}
         />
       </div>
-    </I18nProvider>
+    </NimbusI18nProvider>
   ),
   args: {
     hasHighPrecisionBadge: true,
@@ -430,7 +434,7 @@ export const EULocaleFormattingExample: Story = {
     const badges = canvas.getAllByLabelText(/high precision price/i);
     expect(badges).toHaveLength(3);
 
-    // With German locale I18nProvider, React Aria formats with German conventions
+    // With German locale NimbusI18nProvider, React Aria formats with German conventions
     const inputs = await canvas.findAllByRole("textbox", {
       name: /Amount/i,
     });
@@ -596,7 +600,7 @@ export const FormFieldBasic: Story = {
     };
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root>
             <FormField.Label>Product Price</FormField.Label>
@@ -614,7 +618,7 @@ export const FormFieldBasic: Story = {
             </FormField.Description>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -655,7 +659,7 @@ export const FormFieldValidation: Story = {
     };
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root isInvalid={isInvalid} isRequired>
             <FormField.Label>Required Price (with validation)</FormField.Label>
@@ -676,7 +680,7 @@ export const FormFieldValidation: Story = {
             </FormField.Error>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -710,7 +714,7 @@ export const FormFieldReadOnly: Story = {
     });
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root isReadOnly>
             <FormField.Label>Read-only Price</FormField.Label>
@@ -726,7 +730,7 @@ export const FormFieldReadOnly: Story = {
             </FormField.Description>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -750,7 +754,7 @@ export const FormFieldDisabled: Story = {
     });
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root isDisabled>
             <FormField.Label>Disabled Price</FormField.Label>
@@ -766,7 +770,7 @@ export const FormFieldDisabled: Story = {
             </FormField.Description>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -793,7 +797,7 @@ export const FormFieldHighPrecision: Story = {
     };
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root>
             <FormField.Label>High Precision Price</FormField.Label>
@@ -823,7 +827,7 @@ export const FormFieldHighPrecision: Story = {
             </FormField.InfoBox>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {

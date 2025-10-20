@@ -3,6 +3,7 @@ import {
   Box,
   Calendar,
   type CalendarProps,
+  NimbusI18nProvider,
   Stack,
   Text,
 } from "@commercetools/nimbus";
@@ -12,7 +13,6 @@ import {
   type DateValue,
 } from "@internationalized/date";
 
-import { I18nProvider } from "react-aria";
 import { useState } from "react";
 
 const meta: Meta<typeof Calendar> = {
@@ -61,9 +61,9 @@ export const Autofocus: Story = {
 
 export const GermanCalendar: Story = {
   render: (args: CalendarProps<DateValue>) => (
-    <I18nProvider locale="de-DE">
+    <NimbusI18nProvider locale="de-DE">
       <Calendar {...args} />
-    </I18nProvider>
+    </NimbusI18nProvider>
   ),
 };
 

@@ -1,0 +1,201 @@
+---
+id: Components-NimbusI18nProvider
+title: NimbusI18nProvider
+description:
+  Provides internationalization context for React Aria components (dates, numbers, etc.)
+order: 999
+menu:
+  - Components
+  - Utilities
+  - NimbusI18nProvider
+tags:
+  - component
+  - i18n
+  - internationalization
+  - provider
+  - react-aria
+---
+
+# NimbusI18nProvider
+
+The NimbusI18nProvider component provides internationalization (i18n) context for React Aria components in your Nimbus application. It controls how dates, numbers, and other locale-specific content is formatted across all React Aria-based components.
+
+## Overview
+
+NimbusI18nProvider is a proxy component that wraps React Aria's I18nProvider, making it easy to set the locale for all React Aria components like DatePicker, Calendar, and NumberInput. This ensures consistent formatting across your application.
+
+### Key Features
+
+- **Locale-aware formatting**: Controls date, number, and currency formatting based on locale
+- **React Aria integration**: Built specifically for React Aria components
+- **BCP47 locale codes**: Supports standard language-region codes (e.g., 'en-US', 'de-DE')
+- **Type-safe**: Full TypeScript support
+- **Automatic propagation**: Locale settings cascade to all child React Aria components
+
+### Resources
+
+[React Aria I18nProvider Docs](https://react-spectrum.adobe.com/react-aria/I18nProvider.html)
+
+## Variables
+
+Get familiar with the features.
+
+### Basic Usage
+
+Wrap your application with NimbusI18nProvider to set the locale for React Aria components:
+
+```jsx-live
+const App = () => (
+  <NimbusI18nProvider locale="en-US">
+    <Stack direction="column" gap="400">
+      <Text>This app uses US English formatting</Text>
+      <DatePicker label="Select Date" />
+    </Stack>
+  </NimbusI18nProvider>
+);
+```
+
+### Different Locales
+
+Change the locale prop to switch formatting:
+
+```jsx-live
+const App = () => {
+  const [locale, setLocale] = React.useState("en-US");
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200" wrap="wrap">
+        <Button onClick={() => setLocale("en-US")} size="sm">
+          English (US)
+        </Button>
+        <Button onClick={() => setLocale("en-GB")} size="sm">
+          English (UK)
+        </Button>
+        <Button onClick={() => setLocale("de-DE")} size="sm">
+          Deutsch
+        </Button>
+        <Button onClick={() => setLocale("es-ES")} size="sm">
+          Español
+        </Button>
+        <Button onClick={() => setLocale("fr-FR")} size="sm">
+          Français
+        </Button>
+        <Button onClick={() => setLocale("ja-JP")} size="sm">
+          日本語
+        </Button>
+      </Stack>
+
+      <NimbusI18nProvider locale={locale}>
+        <Stack direction="column" gap="400">
+          <Text fontWeight="600">Current Locale: {locale}</Text>
+          <DatePicker label="Select Date" />
+          <NumberInput
+            label="Amount"
+            defaultValue={1234.56}
+            minValue={0}
+            formatOptions={{
+              style: "currency",
+              currency: locale.startsWith("ja") ? "JPY" : locale.startsWith("en-GB") ? "GBP" : "USD"
+            }}
+          />
+        </Stack>
+      </NimbusI18nProvider>
+    </Stack>
+  );
+};
+```
+
+### Multiple Providers
+
+You can nest NimbusI18nProviders to use different locales in different parts of your app:
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="600">
+    <NimbusI18nProvider locale="en-US">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">US Section</Text>
+        <DatePicker label="Date" />
+      </Stack>
+    </NimbusI18nProvider>
+
+    <NimbusI18nProvider locale="de-DE">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">German Section</Text>
+        <DatePicker label="Datum" />
+      </Stack>
+    </NimbusI18nProvider>
+
+    <NimbusI18nProvider locale="ja-JP">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Japanese Section</Text>
+        <DatePicker label="日付" />
+      </Stack>
+    </NimbusI18nProvider>
+  </Stack>
+);
+```
+
+## Guidelines
+
+Use NimbusI18nProvider strategically to support international date and number formatting.
+
+### Best practices
+
+- **Wrap at root level**: Place NimbusI18nProvider at the root of your application to provide i18n context to all React Aria components
+- **Use BCP47 codes**: Always use proper BCP47 language tags (e.g., 'en-US', 'de-DE', 'fr-FR')
+- **Regional specificity**: Include region codes when formatting differs by region (e.g., 'en-US' vs 'en-GB')
+- **Dynamic locale**: Allow users to switch locales at runtime for better user experience
+- **Consistent currency**: When formatting currency, ensure the currency code matches the locale expectations
+
+### When to use
+
+> [!TIP]\
+> When to use
+
+- **International applications**: When your app serves users in multiple countries
+- **Date formatting**: When you need locale-appropriate date formats (MM/DD/YYYY vs DD.MM.YYYY)
+- **Number formatting**: When you need locale-appropriate number separators (1,234.56 vs 1.234,56)
+- **Currency formatting**: When displaying prices in different currencies and formats
+- **React Aria components**: When using DatePicker, Calendar, NumberInput, or other React Aria date/number components
+
+> [!CAUTION]\
+> When not to use
+
+- **Single locale apps**: If your app only targets one locale, you may not need NimbusI18nProvider
+- **Text translation**: This component doesn't handle UI text translation (use react-intl or similar for that)
+- **Non-React Aria components**: This only affects React Aria components, not general HTML or other component libraries
+
+## Specs
+
+<PropsTable id="NimbusI18nProvider" />
+
+## Accessibility
+
+This component ensures locale-appropriate formatting for screen reader users.
+
+### Locale Codes
+
+Accepts any valid BCP47 language tag, including but not limited to:
+
+- `en-US` - English (United States)
+- `en-GB` - English (United Kingdom)
+- `de-DE` - German (Germany)
+- `es-ES` - Spanish (Spain)
+- `fr-FR` - French (France)
+- `ja-JP` - Japanese (Japan)
+- `zh-CN` - Chinese (Simplified, China)
+- `pt-BR` - Portuguese (Brazil)
+
+### Screen Reader Support
+
+- Dates and numbers are announced in locale-appropriate formats
+- Screen readers use the specified locale for pronunciation
+- Ensures ARIA labels reflect locale conventions
+
+### Best Practices
+
+- Always provide a valid BCP47 locale code
+- Use region-specific codes when formatting differs (e.g., date order, decimal separators)
+- Test with actual screen readers to verify proper pronunciation

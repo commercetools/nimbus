@@ -6,8 +6,8 @@ import {
   type SelectRootProps,
   Stack,
   Text,
+  type Key,
 } from "@commercetools/nimbus";
-import type { Key } from "react-aria";
 import { useState } from "react";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
