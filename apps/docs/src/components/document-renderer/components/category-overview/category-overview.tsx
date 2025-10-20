@@ -1,6 +1,5 @@
 import { useAtomValue } from "jotai";
 import { Suspense, FC } from "react";
-import { activeDocAtom } from "@/atoms/active-doc";
 import { documentationAtom } from "@/atoms/documentation";
 import { activeRouteAtom } from "@/atoms/route";
 import {
@@ -23,20 +22,18 @@ import * as Icons from "@commercetools/nimbus-icons";
  * during initial data loading.
  */
 const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
-  // useAtomValue on async atoms will throw a Promise (caught by Suspense) while loading,
-  // then return the resolved value once loaded
-  const activeDoc = useAtomValue(activeDocAtom);
+  // Read only the data we need directly - avoid derived atoms
   const documentation = useAtomValue(documentationAtom);
   const activeRoute = useAtomValue(activeRouteAtom);
 
-  // After Suspense resolves, check if we have valid data
-  if (!activeDoc) {
-    return null;
-  }
+  // Look up the current document directly from the documentation object
+  // This avoids race conditions with the derived activeDocAtom
+  const activeDoc = Object.values(documentation).find(
+    (doc) => doc.meta.route === activeRoute
+  );
 
-  // CRITICAL: Validate that activeDoc matches the current route
-  // This prevents rendering with stale atom data during navigation
-  if (activeDoc.meta.route !== activeRoute) {
+  // If no document found for this route, don't render
+  if (!activeDoc) {
     return null;
   }
 

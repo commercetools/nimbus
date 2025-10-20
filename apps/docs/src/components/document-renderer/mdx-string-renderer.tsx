@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { evaluate } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
@@ -17,31 +17,43 @@ const runtime = { jsx, jsxs, Fragment } as Runtime;
 export const MdxStringRenderer: FC<{
   content?: string;
 }> = ({ content = "" }) => {
-  const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
-    () => () => null
-  );
-  const [isEvaluating, setIsEvaluating] = useState(true);
-  const [renderedContent, setRenderedContent] = useState(content);
+  const [mdxState, setMdxState] = useState<{
+    content: string;
+    component: ReactMDXContent;
+  } | null>(null);
+
+  const evaluatingRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // Mark as evaluating and clear old content when content changes
-    setIsEvaluating(true);
+    // Skip if we're already evaluating this content
+    if (evaluatingRef.current === content) {
+      return;
+    }
+
+    // Mark this content as being evaluated
+    evaluatingRef.current = content;
 
     void evaluate(content, {
       ...runtime,
       remarkPlugins: [remarkGfm, remarkMark],
     }).then((r) => {
-      setMdxContent(() => r.default);
-      setRenderedContent(content);
-      setIsEvaluating(false);
+      // Only update if this is still the content we want
+      // (user might have navigated away during evaluation)
+      if (evaluatingRef.current === content) {
+        setMdxState({
+          content,
+          component: r.default,
+        });
+        evaluatingRef.current = null;
+      }
     });
   }, [content]);
 
-  // Don't render stale content while evaluating new content
-  // Only render if the evaluated content matches the current content
-  if (isEvaluating || renderedContent !== content) {
+  // Don't render if we haven't evaluated yet or if content has changed
+  if (!mdxState || mdxState.content !== content) {
     return null;
   }
 
+  const MdxContent = mdxState.component;
   return <MdxContent components={components} />;
 };
