@@ -4,10 +4,12 @@ import {
   DateInput,
   type DateInputProps,
   FormField,
+  NimbusI18nProvider,
   Icon,
   IconButton,
   Stack,
   Text,
+  type DateValue,
 } from "@commercetools/nimbus";
 import {
   CalendarDate,
@@ -15,8 +17,6 @@ import {
   ZonedDateTime,
 } from "@internationalized/date";
 import { useState } from "react";
-import type { DateValue } from "react-aria";
-import { I18nProvider } from "react-aria";
 import {
   CalendarMonth,
   Close,
@@ -393,7 +393,7 @@ export const Granularity: Story = {
     return (
       <>
         {["en-US", "de-DE"].map((locale) => (
-          <I18nProvider locale={locale} key={locale}>
+          <NimbusI18nProvider locale={locale} key={locale}>
             <Stack direction="column" gap="400" alignItems="start" mb="800">
               <Text fontWeight="700">{locale}</Text>
               <Text>Granularity: day (date only)</Text>
@@ -429,7 +429,7 @@ export const Granularity: Story = {
                 data-testid="granularity-second"
               />
             </Stack>
-          </I18nProvider>
+          </NimbusI18nProvider>
         ))}
       </>
     );
@@ -1067,7 +1067,7 @@ export const GermanLocale: Story = {
     );
 
     return (
-      <I18nProvider locale="de-DE">
+      <NimbusI18nProvider locale="de-DE">
         <Stack direction="column" gap="600" alignItems="start">
           <Text fontWeight="700">German Locale (de-DE) Examples</Text>
 
@@ -1219,7 +1219,7 @@ export const GermanLocale: Story = {
             </Text>
           </Stack>
         </Stack>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
 };

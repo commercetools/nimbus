@@ -1,15 +1,15 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { I18nProvider } from "react-aria";
 import {
   Box,
   FormField,
+  NimbusI18nProvider,
   Icon,
   IconButton,
+  NumberInput,
   Stack,
   Text,
 } from "@commercetools/nimbus";
-import { NumberInput } from "./number-input";
 import { userEvent, within, expect } from "storybook/test";
 import {
   AddReaction,
@@ -691,7 +691,7 @@ export const LocaleFormatting: Story = {
           Locale-based Number Formatting
         </Text>
         <Text mb={4} fontSize="sm" color="gray.600">
-          NumberInput respects I18nProvider locale for consistent formatting
+          NumberInput respects NimbusI18nProvider locale for consistent formatting
         </Text>
       </Box>
 
@@ -718,7 +718,7 @@ export const LocaleFormatting: Story = {
         </Stack>
       </Box>
 
-      <I18nProvider locale="de-DE">
+      <NimbusI18nProvider locale="de-DE">
         <Box>
           <Text mb={2} fontSize="md" fontWeight="medium">
             German Locale (de-DE) - Periods for thousands, comma for decimals
@@ -744,7 +744,7 @@ export const LocaleFormatting: Story = {
             </Box>
           </Stack>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     </div>
   ),
   play: async ({ canvasElement }) => {

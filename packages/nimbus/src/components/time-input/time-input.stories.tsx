@@ -3,16 +3,16 @@ import {
   Box,
   Button,
   FormField,
+  NimbusI18nProvider,
   Icon,
   IconButton,
   Stack,
   Text,
   TimeInput,
+  type TimeValue,
 } from "@commercetools/nimbus";
 import { parseZonedDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
-import type { TimeValue } from "react-aria";
-import { I18nProvider } from "react-aria";
 import { userEvent, within, expect, fn } from "storybook/test";
 import {
   AddReaction,
@@ -1043,30 +1043,30 @@ export const DifferentLocales: Story = {
       <Stack direction="column" gap="800">
         <Stack direction="column" gap="400">
           <Text fontWeight="600">German (de-DE)</Text>
-          <I18nProvider locale="de-DE">
+          <NimbusI18nProvider locale="de-DE">
             <TimeInput {...args} aria-label="German locale" />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="400">
           <Text fontWeight="600">French (fr-FR)</Text>
-          <I18nProvider locale="fr-FR">
+          <NimbusI18nProvider locale="fr-FR">
             <TimeInput {...args} aria-label="French locale" />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="400">
           <Text fontWeight="600">Japanese (ja-JP)</Text>
-          <I18nProvider locale="ja-JP">
+          <NimbusI18nProvider locale="ja-JP">
             <TimeInput {...args} aria-label="Japanese locale" />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="400">
           <Text fontWeight="600">Arabic (ar-SA)</Text>
-          <I18nProvider locale="ar-SA">
+          <NimbusI18nProvider locale="ar-SA">
             <TimeInput {...args} aria-label="Arabic locale" />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
       </Stack>
     );

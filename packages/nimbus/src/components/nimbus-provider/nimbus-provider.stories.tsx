@@ -9,11 +9,11 @@ import {
   Text,
   useColorMode,
   useColorModeValue,
+  type DateValue,
 } from "@commercetools/nimbus";
 import { useState } from "react";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { CalendarDate } from "@internationalized/date";
-import type { DateValue } from "react-aria";
 import type { NimbusRouterConfig } from "./nimbus-provider.types";
 
 const meta: Meta<typeof NimbusProvider> = {

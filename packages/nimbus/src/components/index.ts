@@ -8,6 +8,7 @@ export * from "./field-errors";
 export * from "./flex";
 export * from "./group";
 export * from "./heading";
+export * from "./i18n-provider";
 export * from "./icon-button";
 export * from "./icon-toggle-button";
 export * from "./image";
