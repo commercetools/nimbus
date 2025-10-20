@@ -1,7 +1,6 @@
 import { useAtomValue } from "jotai";
 import { Suspense, FC } from "react";
 import { documentationAtom } from "@/atoms/documentation";
-import { activeRouteAtom } from "@/atoms/route";
 import {
   Box,
   Card,
@@ -12,25 +11,18 @@ import {
   Text,
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
+import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
  * To be used in MDX files to show titles and descriptions of documents in the active category.
  *
- * This component reads from async atoms and integrates with React Suspense for proper
- * loading state handling. The parent Suspense boundary catches the thrown Promise
- * during initial data loading.
+ * This component uses the useActiveDoc hook which provides direct lookup to avoid
+ * race conditions with derived async atoms during navigation.
  */
 const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
-  // Read only the data we need directly - avoid derived atoms
   const documentation = useAtomValue(documentationAtom);
-  const activeRoute = useAtomValue(activeRouteAtom);
-
-  // Look up the current document directly from the documentation object
-  // This avoids race conditions with the derived activeDocAtom
-  const activeDoc = Object.values(documentation).find(
-    (doc) => doc.meta.route === activeRoute
-  );
+  const activeDoc = useActiveDoc();
 
   // If no document found for this route, don't render
   if (!activeDoc) {

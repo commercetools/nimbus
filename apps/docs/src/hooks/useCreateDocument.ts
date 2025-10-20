@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { useAtomValue } from "jotai";
-import { activeDocAtom } from "@/atoms/active-doc.ts";
 import { sluggify } from "@/utils/sluggify.ts";
 import axios from "axios";
 import { mdxDocumentPayloadSchema } from "@/schemas/mdx-document";
 import yaml from "js-yaml";
+import { useActiveDoc } from "./useActiveDoc";
 
 /**
  * Hook to handle the creation of a new document.
  */
 export const useCreateDocument = () => {
-  const activeDoc = useAtomValue(activeDocAtom);
+  const activeDoc = useActiveDoc();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [menuLabel, setMenuLabel] = useState("");

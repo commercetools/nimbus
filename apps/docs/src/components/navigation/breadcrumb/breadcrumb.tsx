@@ -1,15 +1,14 @@
-import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { Box, Link } from "@commercetools/nimbus";
-import { activeDocAtom } from "../../../atoms/active-doc";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
+import { useActiveDoc } from "../../../hooks/useActiveDoc";
 
 /**
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
  */
 export const BreadcrumbNav = () => {
-  const activeDoc = useAtomValue(activeDocAtom);
+  const activeDoc = useActiveDoc();
 
   // Memoize the breadcrumb parts to avoid unnecessary recalculations
   const parts: BreadcrumbItem[] = useMemo(() => {
