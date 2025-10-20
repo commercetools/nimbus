@@ -49,7 +49,7 @@ catalogs:
     "@storybook/addon-vitest": ^9.1.10
     "@storybook/react-vite": ^9.1.10
     "@vueless/storybook-dark-mode": ^9.0.9
-    jsdom: ^27.0.0
+    jsdom: ^27.0.1
     "@types/jsdom": ^27.0.0
   react:
     "@types/react": ^19.0.0
