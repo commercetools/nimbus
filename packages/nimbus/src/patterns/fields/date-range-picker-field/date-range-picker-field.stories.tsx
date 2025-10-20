@@ -240,7 +240,18 @@ export const WithAriaDescribedBy: Story = {
       // Test aria-describedby attribute on the date range group
       const dateGroup = await helpers.getDateRangeGroup();
       await expect(dateGroup).toHaveAttribute("aria-describedby");
-      // use good test here
+
+      // Ensure that aria-describedby includes IDs for description and error messages
+      const description = await canvas.findByText(
+        /Select a start and end date/i
+      );
+      const error = await canvas.findByText(/Please enter a valid format/i);
+      await expect(dateGroup.getAttribute("aria-describedby")).toContain(
+        error.id
+      );
+      await expect(dateGroup.getAttribute("aria-describedby")).toContain(
+        description.id
+      );
     });
 
     await step("Info popover opens and displays content", async () => {
