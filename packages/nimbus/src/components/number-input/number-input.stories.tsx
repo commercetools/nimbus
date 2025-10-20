@@ -691,7 +691,8 @@ export const LocaleFormatting: Story = {
           Locale-based Number Formatting
         </Text>
         <Text mb={4} fontSize="sm" color="gray.600">
-          NumberInput respects NimbusI18nProvider locale for consistent formatting
+          NumberInput respects NimbusI18nProvider locale for consistent
+          formatting
         </Text>
       </Box>
 
