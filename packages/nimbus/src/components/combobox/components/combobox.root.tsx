@@ -11,7 +11,6 @@ import { extractStyleProps } from "@/utils";
  *
  * A combo box combines a text input with a dropdown list, allowing users to filter a list of options to items matching a query.
  *
- * @supportsStyleProps
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/combobox}
  */
 export const ComboBoxRoot = <T extends object>({

@@ -4,11 +4,6 @@ import type { MenuTriggerProps } from "../menu.types";
 import { extractStyleProps } from "@/utils";
 import type { ReactNode } from "react";
 
-/**
- * Menu.Trigger - The button or element that opens the menu
- *
- * @supportsStyleProps
- */
 export const MenuTrigger = ({
   children,
   asChild,
