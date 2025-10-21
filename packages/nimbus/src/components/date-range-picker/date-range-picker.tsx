@@ -88,7 +88,6 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
               />
               <DateRangePickerTriggerSlot>
                 <IconButton
-                  tone="primary"
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="clear"
@@ -97,7 +96,6 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                   <Close />
                 </IconButton>
                 <IconButton
-                  tone="primary"
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="calendarToggle"

@@ -67,7 +67,6 @@ export const DatePicker = (props: DatePickerProps) => {
                   <Box>
                     {/* @ts-expect-error react aria is adding the aria-label prop */}
                     <IconButton
-                      tone="primary"
                       variant="ghost"
                       size={overlayButtonSize}
                       slot="clear"
@@ -76,7 +75,6 @@ export const DatePicker = (props: DatePickerProps) => {
                     </IconButton>
                     {/* @ts-expect-error react aria is adding the aria-label prop */}
                     <IconButton
-                      tone="primary"
                       variant="ghost"
                       size={overlayButtonSize}
                       slot="calendarToggle"

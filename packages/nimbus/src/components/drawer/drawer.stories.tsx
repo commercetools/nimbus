@@ -77,9 +77,7 @@ export const Default: Story = {
           </Drawer.Body>
           <Drawer.Footer>
             <Button slot="close">Cancel</Button>
-            <Button variant="solid" tone="primary">
-              Save
-            </Button>
+            <Button variant="solid">Save</Button>
           </Drawer.Footer>
         </Drawer.Content>
       </Drawer.Root>
@@ -201,9 +199,7 @@ export const ButtonAsTrigger: Story = {
   render: (args) => (
     <Drawer.Root {...args}>
       <Drawer.Trigger asChild>
-        <Button variant="solid" tone="primary">
-          Open with Custom Button
-        </Button>
+        <Button variant="solid">Open with Custom Button</Button>
       </Drawer.Trigger>
 
       <Drawer.Content>
@@ -219,10 +215,10 @@ export const ButtonAsTrigger: Story = {
           </Text>
         </Drawer.Body>
         <Drawer.Footer>
-          <Button variant="outline" tone="primary" slot="close" autoFocus>
+          <Button variant="outline" slot="close" autoFocus>
             Cancel
           </Button>
-          <Button variant="solid" tone="primary" slot="close">
+          <Button variant="solid" slot="close">
             Confirm
           </Button>
         </Drawer.Footer>
@@ -430,7 +426,7 @@ export const ScrollableContent: Story = {
           <Button variant="outline" slot="close">
             Cancel
           </Button>
-          <Button variant="solid" tone="primary" slot="close">
+          <Button variant="solid" slot="close">
             Confirm
           </Button>
         </Drawer.Footer>
@@ -629,12 +625,11 @@ export const LoginForm: Story = {
               </Stack>
             </Drawer.Body>
             <Drawer.Footer>
-              <Button variant="outline" tone="primary" slot="close">
+              <Button variant="outline" slot="close">
                 Cancel
               </Button>
               <Button
                 variant="solid"
-                tone="primary"
                 isDisabled={!username || !password || !loginReason}
                 onClick={handleSubmit}
               >

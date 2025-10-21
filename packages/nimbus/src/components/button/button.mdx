@@ -35,7 +35,7 @@ Deep dive into implementation details and access the Nimbus design library.
 
 #### Primary actions
 
-Primary tone, filled style, medium size. For the principal call to action on the
+Primary colorPalette, filled style, medium size. For the principal call to action on the
 page. Primary buttons should only appear once per screen.
 
 - **A solid button** should be used as a primary action on a page used to
@@ -45,7 +45,7 @@ page. Primary buttons should only appear once per screen.
 
 ```jsx-live
 const App = () => (
-  <Button colorPalette="primary" size="md" variant="solid">
+  <Button colorPalette="primary size="md" variant="solid">
    <Icons.Add />
    Primary action
  </Button>
@@ -54,7 +54,7 @@ const App = () => (
 
 #### Secondary actions
 
-Primary tone, outline style, medium size. Represents a less important or
+Primary color palette, outline style, medium size. Represents a less important or
 alternative action compared to the primary button.
 
 - **An outlined button** should be used as for secondary actions that are less
@@ -63,7 +63,7 @@ alternative action compared to the primary button.
 
 ```jsx-live
 const App = () => (
-  <Button tone="primary" colorPalette="primary" variant="outline" size="md">
+  <Button colorPalette="primary" variant="outline" size="md">
    <Icons.Replay />
    Secondary action
  </Button>
@@ -72,7 +72,7 @@ const App = () => (
 
 #### Tertiary actions
 
-Primary tone, link styled, xsmall size. For lesser-performed actions or a
+Primary color palette, link styled, xsmall size. For lesser-performed actions or a
 collection of actions — those that users are unlikely to perform.
 
 - **Ghost buttons** are used when you want a button to be visible but less
@@ -87,10 +87,10 @@ collection of actions — those that users are unlikely to perform.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" alignItems="center">
-    <Button tone="primary" size="md" variant="ghost">
+    <Button size="md" variant="ghost">
       Filter
     </Button>
-    <Button tone="primary" size="xs" variant="link">
+    <Button size="xs" variant="link">
       Expand options
       <Icons.KeyboardArrowDown />
    </Button>
@@ -114,22 +114,22 @@ our guidelines.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       <Icons.SentimentSatisfied />
       Solid
       <Icons.SentimentSatisfied />
     </Button>
-    <Button tone="primary" size="md" variant="outline">
+    <Button size="md" variant="outline">
       <Icons.SentimentSatisfied />
       Outline
       <Icons.SentimentSatisfied />
    </Button>
-    <Button tone="primary" size="md" variant="ghost">
+    <Button size="md" variant="ghost">
       <Icons.SentimentSatisfied />
       Ghost
       <Icons.SentimentSatisfied />
    </Button>
-    <Button tone="primary" size="md" variant="link">
+    <Button size="md" variant="link">
       <Icons.SentimentSatisfied />
       Link
       <Icons.SentimentSatisfied />
@@ -146,7 +146,7 @@ This is the default and preferred size for buttons.
 
 ```jsx-live
 const App = () => (
-  <Button colorPalette="primary" size="md" variant="solid">
+  <Button size="md" variant="solid">
    Save
  </Button>
 )
@@ -159,7 +159,7 @@ sparingly.
 
 ```jsx-live
 const App = () => (
- <Button colorPalette="primary" size="xs" variant="solid">
+ <Button size="xs" variant="solid">
    Apply filters
  </Button>
 )
@@ -172,23 +172,23 @@ where the size constraint is tightest.
 
 ```jsx-live
 const App = () => (
-  <Button colorPalette="primary" size="2xs" variant="ghost">
+  <Button size="2xs" variant="ghost">
    <Icons.Edit />
    Edit Filters
  </Button>
 )
 ```
 
-### Tone
+### Color Palette
 
 #### Primary
 
-This is the default tone for the primary button. This styling should be used
+This is the default `colorPalette` for the primary button. This styling should be used
 most commonly for all actions.
 
 ```jsx-live
 const App = () => (
-  <Button tone="primary" size="md" variant="solid">
+  <Button size="md" variant="solid">
     <Icons.SentimentSatisfied />
       Button
     <Icons.SentimentSatisfied />
@@ -202,7 +202,7 @@ Use this button when the user is approaching a permanent destructive action.
 
 ```jsx-live
 const App = () => (
-  <Button tone="critical" size="md" variant="solid">
+  <Button colorPalette="critical" size="md" variant="solid">
     <Icons.SentimentSatisfied />
       Button
     <Icons.SentimentSatisfied />
@@ -257,12 +257,12 @@ contributing to a cohesive and predictable user experience.
 take. For example, it might be used to save changes, submit a form, or emphasize
 a key action like adding a discount.
 
-**Secondary and tertiary** (primary toned outline and linked styling) buttons
+**Secondary and tertiary** (primary color palette with outline and linked styling) buttons
 are used when there's already a primary action on the page. They're for less
 prominent actions, like canceling changes, supporting the primary action, going
 back in a process, or expanding/collapsing information.
 
-**Critically toned buttons** are reserved for destructive actions, such as
+**Buttons with 'critical' color palette** are reserved for destructive actions, such as
 deleting something or removing a connection.
 
 > [!TIP]\
@@ -309,23 +309,23 @@ with drop downs and right pointing arrows.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       <Icons.Undo />
       Revert
     </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       <Icons.FileUpload />
       Upload
    </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       <Icons.Add />
       Add product
    </Button>
-    <Button tone="primary" size="md" variant="outline">
+    <Button size="md" variant="outline">
       <Icons.ArrowBack />
       Previous
    </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       Next
       <Icons.ArrowForward />
    </Button>
@@ -343,17 +343,17 @@ const App = () => (
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       <Icons.Upload />
        Delete
       <Icons.Upload />
     </Button>
-    <Button tone="critical" size="md" variant="solid">
+    <Button colorPalette="critical" size="md" variant="solid">
       <Icons.Clear />
         Add discount
       <Icons.Clear />
     </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       Revert
       <Icons.Undo />
     </Button>
@@ -372,7 +372,7 @@ const App = () => (
 const App = () => (
   <Stack direction="horizontal">
     <Stack>
-      <Button tone="primary" size="md" variant="outline">
+      <Button size="md" variant="outline">
         Save changes
         <Icons.KeyboardArrowDown />
       </Button>
@@ -387,7 +387,7 @@ const App = () => (
       </Card.Root>
     </Stack>
     <Stack>
-      <Button tone="primary" size="md" variant="solid">
+      <Button size="md" variant="solid">
         <Icons.FileUpload />
         Export categories
         <Icons.KeyboardArrowDown />
@@ -433,7 +433,7 @@ const App = () => (
       ))}
     </Stack>
     <Stack>
-      <Button tone="primary" size="md" variant="solid">
+      <Button size="md" variant="solid">
         <Icons.KeyboardArrowDown />
         Export categories
         <Icons.FileUpload />
@@ -466,14 +466,14 @@ choices or actions in a compact and organized way.
 ```jsx-live
   const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" as="a" size="md" variant="link">
+    <Button as="a" size="md" variant="link">
       Cancel and close
     </Button>
-    <Button tone="primary" size="md" variant="outline">
+    <Button size="md" variant="outline">
       <Icons.Undo />
       Revert
     </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       Save changes
     </Button>
   </Stack>
@@ -484,19 +484,19 @@ choices or actions in a compact and organized way.
 > **Don't**
 >
 > - Avoid stacking actions.
-> - Don’t use two filled primary toned buttons in the same area.
+> - Don’t use two buttons with the primary color palette in the same area.
 
 ```jsx-live
   const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" colorPalette="primary" variant="solid">
       Save changes
     </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" colorPalette="primary" variant="solid">
       <Icons.Undo />
       Revert
     </Button>
-    <Button tone="primary" size="md" variant="ghost">
+    <Button size="md" colorPalette="primary" variant="ghost">
       Cancel and close
     </Button>
   </Stack>
@@ -514,11 +514,11 @@ choices or actions in a compact and organized way.
 ```jsx-live
   const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" size="md" variant="outline">
+    <Button size="md" variant="outline">
       <Icons.Undo />
       Revert
     </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       Save
     </Button>
   </Stack>
@@ -535,13 +535,13 @@ choices or actions in a compact and organized way.
 ```jsx-live
   const App = () => (
   <Stack direction="horizontal">
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       Cancel!
     </Button>
-    <Button tone="primary" size="md" variant="solid">
+    <Button size="md" variant="solid">
       Save.
     </Button>
-    <Button tone="primary" as="a" size="sm" variant="link">
+    <Button as="a" size="sm" variant="link">
       External link
       <Icons.Launch />
     </Button>
@@ -581,7 +581,7 @@ information shown.
        letterSpacing: "1px",
      }}>Trigger</span>
   </div>
-    <Button tone="primary" as="a" size="2xs" variant="link" marginLeft="220px">
+    <Button as="a" size="2xs" variant="link" marginLeft="220px">
       <Icons.KeyboardArrowDown />
       expand
     </Button>
@@ -616,7 +616,7 @@ information shown.
        letterSpacing: "1px",
      }}>Trigger</span>
   </div>
-    <Button tone="primary" as="a" size="md" variant="link" marginLeft="200px">
+    <Button as="a" size="md" variant="link" marginLeft="200px">
       expand
       <Icons.KeyboardArrowDown />
     </Button>
@@ -638,7 +638,7 @@ accessible experience regardless of the user's input method or device.
 
 ```jsx-live
 const App = () => (
-  <Button tone="primary" size="md" variant="solid" onPress={() => alert("clicked!")}>
+  <Button size="md" variant="solid" onPress={() => alert("clicked!")}>
     Click me... with your keyboard
   </Button>
 )

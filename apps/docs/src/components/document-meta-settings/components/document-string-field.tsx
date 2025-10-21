@@ -102,7 +102,7 @@ export const DocumentStringField = ({
           }}
           aria-label={`Save ${metaProperty}`}
         >
-          {busy ? <LoadingSpinner tone="white" /> : <Save />}
+          {busy ? <LoadingSpinner colorPalette="white" /> : <Save />}
         </IconButton>
       </Flex>
     </Stack>

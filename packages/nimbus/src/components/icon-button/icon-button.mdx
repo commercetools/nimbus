@@ -41,7 +41,7 @@ don't compete with a primary action on the page.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="ghost" tone="primary">
+    <IconButton variant="ghost" colorPalette="primary">
       <Icons.Edit/>
     </IconButton>
   );
@@ -56,7 +56,7 @@ actions by the user.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="solid" tone="primary">
+    <IconButton variant="solid" colorPalette="primary">
       <Icons.Edit/>
     </IconButton>
   );
@@ -71,7 +71,7 @@ to represent icon toggles and within data tables.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="outline" tone="primary">
+    <IconButton variant="outline" colorPalette="primary">
       <Icons.Edit/>
     </IconButton>
   );
@@ -91,7 +91,7 @@ These are the default and preferred size for icon buttons.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="solid" tone="primary" size="md">
+    <IconButton variant="solid" colorPalette="primary" size="md">
       <Icons.Edit/>
     </IconButton>
   );
@@ -105,7 +105,7 @@ Placed in a small dense content areas, e.g., in pop-over or inside a data table.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="solid" tone="primary" size="xs">
+    <IconButton variant="solid" colorPalette="primary" size="xs">
       <Icons.Edit/>
     </IconButton>
   );
@@ -120,24 +120,24 @@ filter badges.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="solid" tone="primary" size="2xs">
+    <IconButton variant="solid" colorPalette="primary" size="2xs">
       <Icons.Edit/>
     </IconButton>
   );
 };
 ```
 
-### Tone
+### Color Palette
 
 #### Primary
 
-This is the default tone for the icon button. This styling should be used most
+This is the default color palette for the icon button. This styling should be used most
 commonly for all actions.
 
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="ghost" tone="primary">
+    <IconButton variant="ghost" colorPalette="primary">
       <Icons.ViewColumn/>
     </IconButton>
   );
@@ -152,7 +152,7 @@ action. See guidelines for more information.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton variant="ghost" tone="critical">
+    <IconButton variant="ghost" colorPalette="critical">
       <Icons.Delete/>
     </IconButton>
   );
@@ -168,7 +168,7 @@ that do not have a label must have a tooltip. Go to tooltips for more informatio
 const App = () => {
   return (
     <Tooltip.Root delay={0} closeDelay={0}>
-      <IconButton variant="ghost" tone="primary">
+      <IconButton variant="ghost" colorPalette="primary">
         <Icons.Edit/>
       </IconButton>
       <Tooltip.Content>
@@ -267,7 +267,7 @@ contributing to a cohesive and predictable user experience.
 - Interfaces are complex.
 - Testing reveals confusion.
 
-### Tone and style usage
+### Color palette and style usage
 
 Icons that are on the left are the best placement. Icons are used to lead the
 user to the right action quickly by scanning. Ok ways to break this rule are
@@ -281,10 +281,10 @@ They are often seen next to tables, fields, and toolbars.
 const App = () => {
   return (
     <Stack direction="horizontal" justifyContent="center">
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.ViewColumn />
       </IconButton>
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.Clear />
       </IconButton>
     </Stack>
@@ -301,10 +301,10 @@ most commonly seen in groups of two representing views that can be toggled.
 const App = () => {
   return (
     <Stack direction="horizontal" justifyContent="center">
-      <IconButton tone="primary" variant="solid">
+      <IconButton colorPalette="primary" variant="solid">
         <Icons.Edit />
       </IconButton>
-      <IconButton tone="primary" variant="outline">
+      <IconButton colorPalette="primary" variant="outline">
         <Icons.Add />
       </IconButton>
     </Stack>
@@ -312,7 +312,7 @@ const App = () => {
 }
 ```
 
-#### Critically toned
+#### Critical color palette
 
 Reserved for destructive actions, such as deleting something or removing a
 connection.
@@ -321,13 +321,13 @@ connection.
 const App = () => {
   return (
     <Stack direction="horizontal" justifyContent="center">
-      <IconButton tone="critical" variant="outline">
+      <IconButton colorPalette="critical" variant="outline">
         <Icons.Delete />
       </IconButton>
-      <IconButton tone="critical" variant="solid">
+      <IconButton colorPalette="critical" variant="solid">
         <Icons.Delete />
       </IconButton>
-      <IconButton tone="critical" variant="ghost">
+      <IconButton colorPalette="critical" variant="ghost">
         <Icons.Delete />
       </IconButton>
     </Stack>
@@ -376,16 +376,16 @@ choices or actions in a compact and organized way.
 const App = () => {
   return (
     <Stack direction="horizontal" gap="0">
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.Edit />
       </IconButton>
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.PushPin />
       </IconButton>
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.Delete />
       </IconButton>
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.MoreVert />
       </IconButton>
     </Stack>
@@ -403,16 +403,16 @@ const App = () => {
 const App = () => {
   return (
     <Stack direction="horizontal">
-      <IconButton tone="primary" variant="solid">
+      <IconButton colorPalette="primary" variant="solid">
         <Icons.MoreVert />
       </IconButton>
-      <Button tone="primary" variant="solid">
+      <Button colorPalette="primary" variant="solid">
         Save changes
       </Button>
-      <IconButton tone="primary" variant="solid">
+      <IconButton colorPalette="primary" variant="solid">
         <Icons.ManageSearch />
       </IconButton>
-      <Button tone="primary" variant="solid">
+      <Button colorPalette="primary" variant="solid">
         <Icons.Undo />
         Revert
       </Button>
@@ -431,7 +431,7 @@ const App = () => {
 ```jsx-live
 const App = () => {
   return (
-    <ToggleButtonGroup.Root tone="primary" selectedKeys={["left"]}>
+    <ToggleButtonGroup.Root colorPalette="primary" selectedKeys={["left"]}>
       <ToggleButtonGroup.Button id="left">
         <Icons.AccountTree />
       </ToggleButtonGroup.Button>
@@ -454,10 +454,10 @@ const App = () => {
 const App = () => {
   return (
     <Stack direction="horizontal" gap="100">
-      <IconButton tone="primary" variant="solid">
+      <IconButton colorPalette="primary" variant="solid">
         <Icons.AccountTree />
       </IconButton>
-      <IconButton tone="primary" variant="outline">
+      <IconButton colorPalette="primary" variant="outline">
         <Icons.Search />
       </IconButton>
     </Stack>
@@ -474,10 +474,10 @@ const App = () => {
 const App = () => {
   return (
     <Stack direction="horizontal" gap="100">
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.Edit />
       </IconButton>
-      <IconButton tone="primary" variant="ghost">
+      <IconButton colorPalette="primary" variant="ghost">
         <Icons.Delete />
       </IconButton>
     </Stack>
@@ -494,10 +494,10 @@ const App = () => {
 const App = () => {
   return (
     <Stack direction="horizontal" gap="100">
-      <IconButton tone="primary" variant="solid">
+      <IconButton colorPalette="primary" variant="solid">
         <Icons.Edit />
       </IconButton>
-      <IconButton tone="primary" variant="solid">
+      <IconButton colorPalette="primary" variant="solid">
         <Icons.Delete />
       </IconButton>
     </Stack>
@@ -519,7 +519,7 @@ const App = () => {
   return (
     <Stack width="185px">
       <Tooltip.Root delay={0} closeDelay={0} isOpen>
-        <IconButton variant="ghost" tone="primary" alignSelf="end">
+        <IconButton variant="ghost" colorPalette="primary" alignSelf="end">
           <Icons.ViewColumn />
         </IconButton>
         <Tooltip.Content placement="top" offset={-37} crossOffset={-100}>
@@ -559,7 +559,7 @@ const App = () => {
   return (
     <Stack width="144px">
       <Tooltip.Root delay={0} closeDelay={0} isOpen>
-        <IconButton variant="ghost" tone="primary" alignSelf="end">
+        <IconButton variant="ghost" colorPalette="primary" alignSelf="end">
           <Icons.ViewColumn />
         </IconButton>
         <Tooltip.Content placement="top" offset={-70} crossOffset={-40}>
@@ -584,7 +584,7 @@ const App = () => {
       </Select.Root>
       <Box>
         <Tooltip.Root delay={0} closeDelay={0} isOpen>
-          <IconButton variant="ghost" tone="primary">
+          <IconButton variant="ghost" colorPalette="primary">
             <Icons.ViewColumn />
           </IconButton>
           <Tooltip.Content placement="bottom" crossOffset={50} offset={-25}>
@@ -612,7 +612,7 @@ regardless of the user's input method or device.
 ```jsx-live
 const App = () => {
   return (
-    <IconButton tone="primary" variant="solid" onPress={() => alert('Button pressed!')}>
+    <IconButton colorPalette="primary" variant="solid" onPress={() => alert('Button pressed!')}>
       <Icons.Edit />
     </IconButton>
   )

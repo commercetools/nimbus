@@ -16,6 +16,11 @@ type ToggleButtonRecipeProps = {
    * @default "outline"
    */
   variant?: RecipeProps<"toggleButton">["variant"];
+  /**
+   * Color palette variant of the toggle button
+   * @default "primary"
+   */
+  colorPalette?: RecipeProps<"toggleButton">["colorPalette"];
 };
 
 // ============================================================

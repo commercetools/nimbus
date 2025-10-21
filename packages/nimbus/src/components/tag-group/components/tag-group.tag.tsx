@@ -25,7 +25,7 @@ export const TagGroupTag: TagGroupTagComponent = ({
                 size="2xs"
                 variant={isSelected ? "solid" : "ghost"}
                 slot="remove"
-                tone={isSelected ? undefined : "neutral"}
+                colorPalette={isSelected ? undefined : "neutral"}
                 aria-label={intl.formatMessage(messages.removeTag)}
               >
                 <CloseIcon />

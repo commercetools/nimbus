@@ -62,7 +62,7 @@ Use of the title is optional, use if it gives greater clarity to the user.
 ```jsx-live
 const App = () => (
   <Stack direction="column">
-    <Alert.Root tone="critical" variant="outlined">
+    <Alert.Root colorPalette="critical" variant="outlined">
       <Alert.Title>Lorem Ipsum</Alert.Title>
       <Alert.Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
@@ -76,7 +76,7 @@ const App = () => (
       <Alert.DismissButton />
     </Alert.Root>
 
-    <Alert.Root tone="info" variant="outlined">
+    <Alert.Root colorPalette="info" variant="outlined">
       <Alert.Title>Lorem Ipsum</Alert.Title>
       <Alert.Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
@@ -84,14 +84,14 @@ const App = () => (
       <Alert.DismissButton />
     </Alert.Root>
 
-    <Alert.Root tone="warning" variant="outlined">
+    <Alert.Root colorPalette="warning" variant="outlined">
       <Alert.Title>Lorem Ipsum</Alert.Title>
       <Alert.Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
       </Alert.Description>
     </Alert.Root>
 
-    <Alert.Root tone="positive" variant="outlined">
+    <Alert.Root colorPalette="positive" variant="outlined">
       <Alert.Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
       </Alert.Description>
@@ -110,7 +110,7 @@ variant.
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="positive" variant="outlined" width="8000">
+  <Alert.Root colorPalette="positive" variant="outlined" width="8000">
     <Alert.Title>Success! Your Account is Verified</Alert.Title>
     <Alert.Description>
       Congratulations! Your account has been successfully verified. You now have full access to all features.
@@ -130,7 +130,7 @@ const App = () => (
   <Stack direction="column" alignItems="start">
     <Text fontWeight="500">Email</Text>
     <TextInput type="email" />
-    <Alert.Root tone="positive" variant="flat">
+    <Alert.Root colorPalette="positive" variant="flat">
       <Alert.Description>
         Email is verified
       </Alert.Description>
@@ -147,7 +147,7 @@ The width is flexible, intended for many inline placements and page wide areas.
 const App = () => (
   <Grid templateColumns="repeat(6, 1fr)" gap="400">
     <Grid.Item colSpan={2}>
-      <Alert.Root tone="critical" variant="outlined">
+      <Alert.Root colorPalette="critical" variant="outlined">
         <Alert.Description>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
         </Alert.Description>
@@ -155,7 +155,7 @@ const App = () => (
     </Grid.Item>
 
     <Grid.Item colSpan={3}>
-      <Alert.Root tone="critical" variant="outlined">
+      <Alert.Root colorPalette="critical" variant="outlined">
         <Alert.Description>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
         </Alert.Description>
@@ -163,7 +163,7 @@ const App = () => (
     </Grid.Item>
 
     <Grid.Item colSpan={6}>
-      <Alert.Root tone="critical" variant="outlined">
+      <Alert.Root colorPalette="critical" variant="outlined">
         <Alert.Description>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <Link>Read more</Link>
         </Alert.Description>
@@ -177,7 +177,7 @@ const App = () => (
 );
 ```
 
-### Tone
+### Color Palette
 
 #### Positive
 
@@ -188,14 +188,14 @@ messages.
 ```jsx-live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
-    <Alert.Root tone="positive" variant="outlined">
+    <Alert.Root colorPalette="positive" variant="outlined">
       <Alert.Title>Success! Your Account is Verified</Alert.Title>
       <Alert.Description>
         Congratulations! Your account has been successfully verified. You now have full access to all features.
       </Alert.Description>
     </Alert.Root>
 
-    <Alert.Root tone="positive" variant="flat">
+    <Alert.Root colorPalette="positive" variant="flat">
       <Alert.Title>Success! Your Account is Verified</Alert.Title>
       <Alert.Description>
         Congratulations! Your account has been successfully verified. You now have full access to all features.
@@ -214,14 +214,14 @@ information for users.
 ```jsx-live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
-    <Alert.Root tone="info" variant="outlined">
+    <Alert.Root colorPalette="info" variant="outlined">
       <Alert.Title>New Feature Available</Alert.Title>
       <Alert.Description>
         We've added a new 'Smart Suggestions' feature to help you find relevant content faster. <Link>Check it out in your settings.</Link>
       </Alert.Description>
     </Alert.Root>
 
-    <Alert.Root tone="info" variant="flat">
+    <Alert.Root colorPalette="info" variant="flat">
       <Alert.Title>New Feature Available</Alert.Title>
       <Alert.Description>
         We've added a new 'Smart Suggestions' feature to help you find relevant content faster. <Link>Check it out in your settings.</Link>
@@ -240,14 +240,14 @@ confirmation.
 ```jsx-live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
-    <Alert.Root tone="warning" variant="outlined">
+    <Alert.Root colorPalette="warning" variant="outlined">
       <Alert.Title>Low Storage Space</Alert.Title>
       <Alert.Description>
         Your device is running low on storage. Some features may be disabled until you free up space. <Link>Manage storage.</Link>
       </Alert.Description>
     </Alert.Root>
 
-    <Alert.Root tone="warning" variant="flat">
+    <Alert.Root colorPalette="warning" variant="flat">
       <Alert.Title>Low Storage Space</Alert.Title>
       <Alert.Description>
         Your device is running low on storage. Some features may be disabled until you free up space. <Link>Manage storage.</Link>
@@ -266,14 +266,14 @@ immediately.
 ```jsx-live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
-    <Alert.Root tone="critical" variant="outlined">
+    <Alert.Root colorPalette="critical" variant="outlined">
       <Alert.Title>Payment Processing Error</Alert.Title>
       <Alert.Description>
         A payment processing error occurred for order #12345. Please <Link>verify your payment gateway settings</Link> immediately to prevent further issues.
       </Alert.Description>
     </Alert.Root>
 
-    <Alert.Root tone="critical" variant="flat">
+    <Alert.Root colorPalette="critical" variant="flat">
       <Alert.Title>Payment Processing Error</Alert.Title>
       <Alert.Description>
         A payment processing error occurred for order #12345. Please <Link>verify your payment gateway settings</Link> immediately to prevent further issues.
@@ -308,7 +308,7 @@ their workflow.
     used as toasts.
 - **Accessibility and design:** Maintain consistent styling, use color and icons
   effectively, and ensure alerts are accessible to all users. For example, do
-  not use the information tone to communicate a critical error.
+  not use the information colorPalette to communicate a critical error.
 
 ### Usage
 
@@ -320,7 +320,7 @@ users to a point where alert messages are ignored.
 
 - **Do use alerts for important information:** Reserve alerts for critical,
   urgent, or highly relevant messages that require user attention.
-- **Do choose the right alert type:** Match the alert's tone and visual style to
+- **Do choose the right alert type:** Match the alert's colorPalette and visual style to
   the severity of the message (positive, informational, warning, critical).
 - **Do provide clear and concise messages:** Write messages that are easy to
   understand and avoid jargon.
@@ -350,15 +350,15 @@ users to a point where alert messages are ignored.
 - **Don't make them too hard to dismiss:** Ensure that the user can easily close
   an alert.
 
-### Use the correct tone
+### Use the correct colorPalette
 
-Ensure that you choose the correct tone that will suit your message best. If you
+Ensure that you choose the correct colorPalette that will suit your message best. If you
 choose the wrong type, it will confuse users.
 
 > [!TIP]\
 > **Do**
 >
-> - This message correctly aligns message with the tone needed to let the user
+> - This message correctly aligns message with the colorPalette needed to let the user
 >   know the information should be taken seriously.
 > - There is enough detailed information for the user to understand the issue
 >   and how to perform next steps to correct it.
@@ -367,7 +367,7 @@ choose the wrong type, it will confuse users.
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="critical" variant="outlined">
+  <Alert.Root colorPalette="critical" variant="outlined">
     <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Description>
       A payment processing error occurred for order #12345. Please <Link>verify your
@@ -383,7 +383,7 @@ const App = () => (
 > [!CAUTION]\
 > **Don't**
 >
-> - This message does not align with the correct tone needed.
+> - This message does not align with the correct colorPalette needed.
 > - There isn’t enough information for the user to understand how to fix the
 >   issue, or what went wrong. Provide more detailed information and advice to
 >   clear the error.
@@ -393,7 +393,7 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="positive" variant="outlined">
+  <Alert.Root colorPalette="positive" variant="outlined">
     <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Actions>
       <Button variant="outline">Dismiss</Button>
@@ -426,7 +426,7 @@ Alerts should not hover or lay on top of other elements.
 ```jsx-live
 const App = () => (
   <Stack direction="column" width="8000">
-    <Alert.Root tone="critical" variant="outlined">
+    <Alert.Root colorPalette="critical" variant="outlined">
       <Alert.Title>Account needs validation</Alert.Title>
       <Alert.Description>
         To edit these fields you must first validate your account. Please check your email.
@@ -456,7 +456,7 @@ const App = () => (
       <TextInput isInvalid />
     </Stack>
 
-   <Alert.Root tone="critical" variant="outlined" width="9600" position="relative" top="-500" left="500">
+   <Alert.Root colorPalette="critical" variant="outlined" width="9600" position="relative" top="-500" left="500">
       <Alert.Title>Product price mode error</Alert.Title>
       <Alert.Description>
         This price mode has not been defined.
@@ -482,7 +482,7 @@ const App = () => (
   <Stack direction="column">
     <Text fontWeight="500">Customer group</Text>
     <TextInput isDisabled />
-    <Alert.Root tone="warning" variant="flat">
+    <Alert.Root colorPalette="warning" variant="flat">
       <Alert.Description>You do not have access to edit this field</Alert.Description>
     </Alert.Root>
   </Stack>
@@ -501,7 +501,7 @@ const App = () => (
   <Stack direction="column">
     <Text fontWeight="500">Customer group</Text>
     <TextInput isInvalid />
-    <Alert.Root tone="critical" variant="flat" position="relative" top="-1000" width="8000">
+    <Alert.Root colorPalette="critical" variant="flat" position="relative" top="-1000" width="8000">
       <Alert.Description>This customer group does not exist or may have been deleted. Try again.</Alert.Description>
     </Alert.Root>
   </Stack>
@@ -520,7 +520,7 @@ cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => (
-  <Alert.Root tone="critical" variant="outlined">
+  <Alert.Root colorPalette="critical" variant="outlined">
     <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Description>
       A payment processing error occurred for order #12345. Please <Link>verify your

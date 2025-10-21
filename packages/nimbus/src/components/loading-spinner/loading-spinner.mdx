@@ -57,11 +57,7 @@ const App = () => <LoadingSpinner aria-label="Loading content" />
 This is the default spinner animation to be used on dark backgrounds.
 
 ```jsx-live
-const App = () => (
-  <Box backgroundColor="neutral.10" padding="400">
-    <LoadingSpinner aria-label="Loading content" tone="white" />
-  </Box>
-)
+const App = () => <Stack backgroundColor="neutral.8"><LoadingSpinner aria-label="Loading content" colorPalette="white" /></Stack>
 ```
 
 ### Size
@@ -154,17 +150,15 @@ within elements.
 > - If the time expected to complete is short, no language is needed.
 
 ```jsx-live
-const App = () => (
-  <Stack direction="row" gap="400" alignItems="center">
-    <Button tone="primary" variant="solid" isDisabled>
-      <LoadingSpinner size="xs" tone="white" aria-label="Saving" />
-      Saving...
-    </Button>
-    <Button tone="primary" variant="solid" isDisabled>
-      <LoadingSpinner size="xs" tone="white" aria-label="Processing" />
-    </Button>
-  </Stack>
-)
+const App = () => <Flex gap="200">
+  <Button colorPalette="primary" variant="solid" isDisabled>
+    <LoadingSpinner colorPalette="white" /> 
+    Saving...
+  </Button> 
+  <Button colorPalette="primary" variant="solid" isDisabled>
+    <LoadingSpinner colorPalette="white" />
+  </Button>
+</Flex>
 ```
 
 > [!CAUTION]\
@@ -175,9 +169,9 @@ const App = () => (
 >   areas, to avoid confusing the user.
 
 ```jsx-live
-const App = () => (
-  <Button tone="primary" variant="solid">
-    <LoadingSpinner size="xs" tone="white" aria-label="Remembering details" />
+const App = () => <Flex gap="200">
+  <Button colorPalette="primary" variant="solid">
+    <LoadingSpinner colorPalette="white" /> 
     Remembering details...
   </Button>
 )

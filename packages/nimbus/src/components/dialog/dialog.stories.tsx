@@ -80,9 +80,7 @@ export const Default: Story = {
           </Dialog.Body>
           <Dialog.Footer>
             <Button slot="close">Cancel</Button>
-            <Button variant="solid" tone="primary">
-              Save
-            </Button>
+            <Button variant="solid">Save</Button>
           </Dialog.Footer>
         </Dialog.Content>
       </Dialog.Root>
@@ -204,9 +202,7 @@ export const ButtonAsTrigger: Story = {
   render: (args) => (
     <Dialog.Root {...args}>
       <Dialog.Trigger asChild>
-        <Button variant="solid" tone="primary">
-          Open with Custom Button
-        </Button>
+        <Button variant="solid">Open with Custom Button</Button>
       </Dialog.Trigger>
 
       <Dialog.Content>
@@ -222,10 +218,10 @@ export const ButtonAsTrigger: Story = {
           </Text>
         </Dialog.Body>
         <Dialog.Footer>
-          <Button variant="outline" tone="primary" slot="close" autoFocus>
+          <Button variant="outline" slot="close" autoFocus>
             Cancel
           </Button>
-          <Button variant="solid" tone="primary" slot="close">
+          <Button variant="solid" slot="close">
             Confirm
           </Button>
         </Dialog.Footer>
@@ -400,7 +396,7 @@ export const ScrollBehavior: Story = {
               <Button ml="auto" slot="close">
                 Decline
               </Button>
-              <Button mr="auto" tone="primary" variant="solid">
+              <Button mr="auto" variant="solid">
                 Accept
               </Button>
             </Dialog.Footer>
@@ -796,12 +792,11 @@ export const LoginForm: Story = {
               </Stack>
             </Dialog.Body>
             <Dialog.Footer>
-              <Button variant="outline" tone="primary" slot="close">
+              <Button variant="outline" slot="close">
                 Cancel
               </Button>
               <Button
                 variant="solid"
-                tone="primary"
                 isDisabled={!username || !password || !loginReason}
                 onPress={handleSubmit}
               >

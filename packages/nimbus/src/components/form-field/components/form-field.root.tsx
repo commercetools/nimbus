@@ -133,7 +133,7 @@ export const FormFieldRoot = function FormFieldRoot({
                     <IconButton
                       aria-label="__MORE INFO"
                       size="2xs"
-                      tone="info"
+                      colorPalette="info"
                       variant="link"
                     >
                       <HelpOutline />

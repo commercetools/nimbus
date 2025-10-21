@@ -45,7 +45,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
       },
     },
 
-    tone: {
+    colorPalette: {
       primary: {
         button: { colorPalette: "primary" },
       },

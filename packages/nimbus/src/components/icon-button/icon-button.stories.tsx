@@ -29,10 +29,11 @@ const variants: IconButtonProps["variant"][] = [
   "link",
 ];
 
-const tones: IconButtonProps["tone"][] = [
+const colorPalettes: IconButtonProps["colorPalette"][] = [
   "primary",
   "neutral",
   "critical",
+  "info",
 ] as const;
 
 /**
@@ -133,9 +134,9 @@ export const Variants: Story = {
 };
 
 /**
- * Showcase Tones
+ * Showcase Color Palettes
  */
-export const Tones: Story = {
+export const ColorPalettes: Story = {
   args: {
     children: <DemoIcon />,
     ["aria-label"]: "test-button",
@@ -143,9 +144,9 @@ export const Tones: Story = {
   render: (args) => {
     return (
       <Stack>
-        {tones.map((tone) => (
+        {colorPalettes.map((colorPalette) => (
           <Stack
-            key={tone as string}
+            key={colorPalette as string}
             direction="row"
             gap="400"
             alignItems="center"
@@ -155,7 +156,7 @@ export const Tones: Story = {
                 key={variant as string}
                 {...args}
                 variant={variant}
-                tone={tone}
+                colorPalette={colorPalette}
               />
             ))}
           </Stack>
