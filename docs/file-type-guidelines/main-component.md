@@ -311,6 +311,90 @@ export const ComponentName = {
 };
 ````
 
+### Style Props Support Tag
+
+Components that accept Chakra UI style props (margin, padding, color, etc.) **must** include the `@supportsStyleProps` JSDoc tag:
+
+````typescript
+/**
+ * ComponentName - Brief description
+ *
+ * @supportsStyleProps
+ */
+export const ComponentName = (props: ComponentNameProps) => {
+  // Implementation forwards style props to underlying styled component
+  return (
+    <ComponentSlot {...props}>
+      {/* implementation */}
+    </ComponentSlot>
+  );
+};
+````
+
+**Purpose**: This tag enables automated documentation generation behavior:
+- Filters ~200+ Chakra style props from API documentation tables to reduce clutter
+- Displays a visual banner in documentation indicating style prop support
+- Clearly communicates to users that standard Chakra UI style props (margin, padding, color, etc.) can be used
+
+**When Required** - Add this tag if the component supports Chakra UI style props through ANY of these patterns:
+- ✅ Component type extends `HTMLChakraProps` (directly or via slot props)
+- ✅ Component uses `extractStyleProps()` and forwards style props to slot components
+- ✅ Component forwards all props to an underlying Chakra/Nimbus component that supports style props
+- ✅ Component wraps a slot component that accepts style props
+
+**Key Indicator**: If users can pass `margin`, `padding`, `backgroundColor`, or other Chakra style props to your component and they work, add the tag.
+
+**Applies To**:
+- Root components in compound component patterns
+- Sub-components that accept and forward style props (Item, Header, Content, etc.)
+- Single components that extend HTMLChakraProps or slot props
+- Wrapper components that forward props to styled children
+
+**Examples**:
+
+```typescript
+// Pattern 1: Using extractStyleProps
+/**
+ * Accordion.Root - Provides state management for accordion
+ *
+ * @supportsStyleProps
+ */
+export const AccordionRoot = (props: AccordionRootProps) => {
+  const recipe = useSlotRecipe({ key: "accordion" });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+  const [styleProps, raProps] = extractStyleProps(restRecipeProps);
+
+  return (
+    <AccordionRootSlot {...recipeProps} {...styleProps} asChild>
+      <RaDisclosureGroup {...raProps} />
+    </AccordionRootSlot>
+  );
+};
+
+// Pattern 2: Forwarding all props to styled component
+/**
+ * Card.Header - Header section of the card
+ *
+ * @supportsStyleProps
+ */
+export const CardHeader = (props: CardHeaderProps) => {
+  return (
+    <CardHeaderSlot {...props}>
+      {props.children}
+    </CardHeaderSlot>
+  );
+};
+
+// Pattern 3: Forwarding to underlying Nimbus component
+/**
+ * CustomButton - Specialized button wrapper
+ *
+ * @supportsStyleProps
+ */
+export const CustomButton = (props: CustomButtonProps) => {
+  return <Button {...props} variant="special" />;
+};
+```
 
 ## Related Guidelines
 
@@ -329,6 +413,7 @@ export const ComponentName = {
 - [ ] DisplayName set for all exported components
 - [ ] React Aria imports use `Ra` prefix
 - [ ] JSDoc documentation included
+- [ ] **`@supportsStyleProps` tag added if component accepts Chakra UI style props**
 - [ ] Internal exports for react-docgen (compound)
 - [ ] Types re-exported appropriately
 - [ ] i18n messages imported if component has user-facing text

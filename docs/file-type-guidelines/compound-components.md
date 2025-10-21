@@ -402,6 +402,7 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] **Root uses `useSlotRecipe` and `splitVariantProps`** (for recipe-based
       components)
 - [ ] **All components use `extractStyleProps`** to separate style props
+- [ ] **`@supportsStyleProps` JSDoc tag added to all components that accept Chakra UI style props**
 - [ ] **Style props forwarded to slot components**
 - [ ] **Functional props forwarded to React Aria or underlying components**
 - [ ] Display names set for all components (Pattern: `ComponentName.PartName`)
