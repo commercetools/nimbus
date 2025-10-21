@@ -21,23 +21,15 @@ export const Toc = () => {
     5: "900",
   };
 
-  // Handle TOC link clicks
+  // Handle TOC link clicks - simplified to just use hash navigation
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     headingId: string
   ) => {
     e.preventDefault();
 
-    // Update the URL hash without full page reload
-    if (history.pushState) {
-      history.pushState(null, "", `#${headingId}`);
-    } else {
-      // Fallback for older browsers
-      window.location.hash = headingId;
-    }
-
-    // Use the router's scroll to anchor functionality
-    scrollToAnchor(headingId);
+    // Update the URL hash - this will trigger the router's hashchange handler
+    window.location.hash = headingId;
   };
 
   if (!activeToc || activeToc.length === 0) {

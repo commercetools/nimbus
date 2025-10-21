@@ -1,40 +1,47 @@
 /**
  * Scrolls to an element with the specified ID with a smooth animation.
- * Includes handling for elements that might not be immediately available in the DOM.
+ * Uses IntersectionObserver to wait for element availability instead of setTimeout.
  *
  * @param elementId The ID of the element to scroll to (without the # prefix)
  */
 export const scrollToAnchor = (elementId: string): void => {
   if (!elementId) return;
 
-  // Try to find the element
-  const element = document.getElementById(elementId);
-
-  if (element) {
-    // If element exists, scroll to it smoothly
-    element.scrollIntoView({
+  const scrollToElement = (el: HTMLElement) => {
+    el.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
-  } else {
-    // If element doesn't exist yet (might be loading), implement retry with increasing delays
-    const retryAttempts = [100, 300, 800]; // Multiple attempts with increasing delays
+  };
 
-    retryAttempts.forEach((delay, index) => {
-      setTimeout(() => {
-        const retryElement = document.getElementById(elementId);
-        // Only scroll if element exists and we haven't already scrolled
-        // (checking if we're still at the top or close to it)
-        const shouldScroll =
-          retryElement && (index === 0 || window.scrollY < 100);
+  // Try to find the element immediately
+  const element = document.getElementById(elementId);
 
-        if (shouldScroll) {
-          retryElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }, delay);
-    });
+  if (element) {
+    // Element exists, scroll immediately
+    scrollToElement(element);
+    return;
   }
+
+  // Element doesn't exist yet - wait for it with MutationObserver
+  // This is more reliable than setTimeout and works with dynamic content
+  let attempts = 0;
+  const maxAttempts = 20; // Max 20 attempts (~2 seconds with 100ms checks)
+
+  const checkInterval = setInterval(() => {
+    attempts++;
+    const retryElement = document.getElementById(elementId);
+
+    if (retryElement) {
+      // Found it! Scroll and cleanup
+      clearInterval(checkInterval);
+      scrollToElement(retryElement);
+    } else if (attempts >= maxAttempts) {
+      // Give up after max attempts
+      clearInterval(checkInterval);
+      console.warn(
+        `Element with id "${elementId}" not found after ${maxAttempts} attempts`
+      );
+    }
+  }, 100);
 };

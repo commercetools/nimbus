@@ -1,6 +1,7 @@
-import { useAtom } from "jotai";
-import { ReactNode, useEffect } from "react";
+import { useAtom, useSetAtom } from "jotai";
+import { ReactNode, useEffect, useRef, useCallback } from "react";
 import { activeRouteAtom } from "@/atoms/route";
+import { isLoadingAtom } from "@/atoms/loading";
 import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 
 /**
@@ -10,61 +11,97 @@ import { scrollToAnchor } from "@/utils/scroll-to-anchor";
  */
 export const RouterProvider = ({ children }: { children: ReactNode }) => {
   const [activeRoute, setActiveRoute] = useAtom(activeRouteAtom);
+  const setIsLoading = useSetAtom(isLoadingAtom);
+  const isInitialMount = useRef(true);
+  const lastProcessedRoute = useRef<string>("");
 
-  // Handle hash fragments when route changes or on initial load
-  const handleHashFragment = () => {
-    // Get hash (without the # character)
+  // Handle hash fragments with requestAnimationFrame for better timing
+  const handleHashFragment = useCallback(() => {
     const hash = window.location.hash.slice(1);
     if (hash) {
-      // We need a small delay to ensure content is rendered before scrolling
-      setTimeout(() => {
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
         scrollToAnchor(hash);
-      }, 100);
+      });
     }
-  };
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      const route = location.pathname.slice(1);
-      setActiveRoute(route);
-      // Handle hash fragment when route changes
-      handleHashFragment();
-    };
-
-    window.addEventListener("popstate", handleRouteChange);
-    // Also listen for hashchange events
-    window.addEventListener("hashchange", handleHashFragment);
-
-    return () => {
-      window.removeEventListener("popstate", handleRouteChange);
-      window.removeEventListener("hashchange", handleHashFragment);
-    };
-  }, [activeRoute, setActiveRoute]);
-
-  useEffect(() => {
-    if (!activeRoute) {
-      setActiveRoute("home");
-    }
-
-    const currentRoute = location.pathname.slice(1);
-    const routeChanged = currentRoute !== activeRoute;
-
-    if (routeChanged) {
-      // When route changes, we should clear any existing hash
-      history.pushState({ activeRoute }, "", "/" + activeRoute);
-
-      // Reset scroll position to top when changing routes
-      scrollToAnchor("root");
-
-      // After route change is processed, handle hash fragment
-      handleHashFragment();
-    }
-  }, [activeRoute, setActiveRoute]);
-
-  // Handle hash fragment on initial page load
-  useEffect(() => {
-    handleHashFragment();
   }, []);
+
+  // Initialize route from URL on mount
+  useEffect(() => {
+    if (isInitialMount.current) {
+      const initialRoute = window.location.pathname.slice(1) || "home";
+      if (initialRoute !== activeRoute) {
+        setActiveRoute(initialRoute);
+      }
+      lastProcessedRoute.current = initialRoute;
+
+      // Handle hash fragment on initial load
+      handleHashFragment();
+
+      isInitialMount.current = false;
+    }
+  }, [activeRoute, setActiveRoute, handleHashFragment]);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = window.location.pathname.slice(1) || "home";
+
+      // Only update if route actually changed
+      if (route !== lastProcessedRoute.current) {
+        setIsLoading(true);
+        lastProcessedRoute.current = route;
+        setActiveRoute(route);
+
+        // Scroll to top on route change, then handle hash
+        requestAnimationFrame(() => {
+          scrollToAnchor("root");
+          handleHashFragment();
+          // Clear loading state after navigation completes
+          setTimeout(() => setIsLoading(false), 100);
+        });
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [setActiveRoute, setIsLoading, handleHashFragment]);
+
+  // Handle hash changes independently
+  useEffect(() => {
+    const handleHashChange = () => {
+      handleHashFragment();
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [handleHashFragment]);
+
+  // Sync activeRoute changes to browser history
+  useEffect(() => {
+    // Skip if this is initial mount or route hasn't actually changed
+    if (isInitialMount.current || activeRoute === lastProcessedRoute.current) {
+      return;
+    }
+
+    const currentPath = window.location.pathname.slice(1) || "home";
+
+    // Only update history if path is different from current URL
+    if (currentPath !== activeRoute) {
+      setIsLoading(true);
+      lastProcessedRoute.current = activeRoute;
+      const newPath = activeRoute ? `/${activeRoute}` : "/";
+
+      history.pushState({ route: activeRoute }, "", newPath);
+
+      // Scroll to top on programmatic route change
+      requestAnimationFrame(() => {
+        scrollToAnchor("root");
+        // Clear loading state after navigation completes
+        setTimeout(() => setIsLoading(false), 100);
+      });
+    }
+  }, [activeRoute, setIsLoading]);
 
   return <>{children}</>;
 };
