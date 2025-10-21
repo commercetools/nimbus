@@ -9,18 +9,18 @@ import {
 } from "@commercetools/nimbus-icons";
 import { messages } from "../data-table.i18n";
 import { useDataTableContext } from "./data-table.context";
+import type { DataTableProps } from "../data-table.types";
 
-export type DataTableManagerProps = {
-  // /** Position of the settings button - can be a render prop for custom positioning */
-  renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
-};
-
-const LayoutSettingsPanel = () => {
+const LayoutSettingsPanel = ({
+  onSettingsChange,
+}: {
+  onSettingsChange?: DataTableProps["onSettingsChange"];
+}) => {
   const { formatMessage } = useIntl();
   const context = useDataTableContext();
 
   // Local state for text visibility and row density
-  // In a real implementation, these would be controlled via DataTable props
+  // TODO: Would be controlled via DataTable props
   const [textVisibility, setTextVisibility] = useState<"full" | "preview">(
     "full"
   );
@@ -32,8 +32,7 @@ const LayoutSettingsPanel = () => {
     const selected = Array.from(keys)[0] as "full" | "preview";
     if (selected) {
       setTextVisibility(selected);
-      // TODO: Implement callback to update isTruncated in DataTable context
-      // This would typically be done via an onLayoutChange callback
+      onSettingsChange?.("toggleTextVisibility");
     }
   };
 
@@ -41,8 +40,7 @@ const LayoutSettingsPanel = () => {
     const selected = Array.from(keys)[0] as "comfortable" | "compact";
     if (selected) {
       setRowDensity(selected);
-      // TODO: Implement callback to update density in DataTable context
-      // This would typically be done via an onLayoutChange callback
+      onSettingsChange?.("toggleRowDensity");
     }
   };
 

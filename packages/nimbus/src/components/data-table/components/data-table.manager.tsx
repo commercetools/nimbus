@@ -5,7 +5,7 @@ import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import VisibleColumnsPanel from "./data-table-visible-columns-panel";
 import LayoutSettingsPanel from "./data-table-layout-settings-panel";
 import { useDataTableContext } from "./data-table.context";
-import type { TColumnListItem } from "../data-table.types";
+import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
 export type DataTableManagerProps = {
@@ -38,7 +38,8 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   const { formatMessage } = useIntl();
 
   // Get all columns from context
-  const { columns, visibleColumns, onColumnsChange } = context;
+  const { columns, visibleColumns, onColumnsChange, onSettingsChange } =
+    context;
   const hiddenColumns = columns.filter(
     (col) => !visibleColumns?.includes(col.id)
   );
@@ -48,10 +49,20 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   }
 
   // Handle when visible columns are updated (reordered or removed)
-  const handleVisibleColumnsUpdate = (updatedItems: TColumnListItem[]) => {
+  const handleVisibleColumnsUpdate = (
+    updatedItems: DataTableColumnItem<Record<string, unknown>>[]
+  ) => {
     // Also notify about column order changes if callback is provided
     if (onColumnsChange) {
       onColumnsChange(updatedItems);
+    }
+  };
+
+  const handleSettingsChange = (
+    action: "toggleTextVisibility" | "toggleRowDensity"
+  ) => {
+    if (onSettingsChange) {
+      onSettingsChange(action);
     }
   };
 
@@ -121,6 +132,7 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
                     <VisibleColumnsPanel
                       hiddenItems={hiddenItems}
                       visibleItems={visibleItems}
+                      // @ts-expect-error - TODO: fix types error here!
                       handleVisibleColumnsUpdate={handleVisibleColumnsUpdate}
                       handleResetColumns={handleResetColumns}
                     />
@@ -134,8 +146,23 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
                       {formatMessage(messages.layoutSettings)}
                     </>
                   ),
-                  panelContent: <LayoutSettingsPanel />,
+                  panelContent: (
+                    <LayoutSettingsPanel
+                      onSettingsChange={handleSettingsChange}
+                    />
+                  ),
                 },
+                // TODO: Add custom settings tab here!
+                // {
+                //   id: "custom-settings",
+                //   tabLabel: (
+                //     <>
+                //       {props.icon}
+                //       {props.label}
+                //     </>
+                //   ),
+                //   panelContent: props.panelContent,
+                // },
               ]}
             />
           </Drawer.Body>

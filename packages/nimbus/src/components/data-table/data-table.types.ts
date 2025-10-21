@@ -24,6 +24,9 @@ export interface DataTableContextValue<
   columns: DataTableColumnItem<T>[];
   rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
+  onSettingsChange?: (
+    action: "toggleTextVisibility" | "toggleRowDensity"
+  ) => void; // TODO: Add type for settings change
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   search?: string;
   sortDescriptor?: SortDescriptor;
@@ -53,7 +56,7 @@ export interface DataTableContextValue<
   pinnedRows: Set<string>;
   onPinToggle?: (rowId: string) => void;
   togglePin: (id: string) => void;
-  onColumnsChange?: (columns: TColumnListItem[]) => void;
+  onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
   onVisibilityChange?: (visibleColumnIds: string[]) => void;
 }
 
@@ -148,7 +151,9 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
   onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
-  onVisibilityChange?: (visibleColumnIds: string[]) => void;
+  onSettingsChange?: (
+    action: "toggleTextVisibility" | "toggleRowDensity"
+  ) => void;
 }
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */

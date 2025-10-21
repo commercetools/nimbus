@@ -42,7 +42,7 @@ export const DataTableRoot = function DataTableRoot<
     defaultPinnedRows,
     onPinToggle,
     onColumnsChange,
-    onVisibilityChange,
+    onSettingsChange,
     children,
     ...rest
   } = props;
@@ -160,7 +160,7 @@ export const DataTableRoot = function DataTableRoot<
       onPinToggle,
       togglePin,
       onColumnsChange,
-      onVisibilityChange,
+      onSettingsChange,
     }),
     [
       columns,
@@ -195,7 +195,7 @@ export const DataTableRoot = function DataTableRoot<
       onPinToggle,
       togglePin,
       onColumnsChange,
-      onVisibilityChange,
+      onSettingsChange,
     ]
   );
 

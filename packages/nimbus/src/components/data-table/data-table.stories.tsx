@@ -3729,9 +3729,21 @@ export const WithTableManager: Story = {
     const [visibleColumns, setVisibleColumns] = useState<
       DataTableProps["columns"]
     >(initialVisibleColumns);
+    const [isTruncated, setIsTruncated] = useState(false);
+    const [density, setDensity] = useState<"default" | "condensed">("default");
 
     const handleColumnsChange = (updatedColumns: DataTableColumnItem[]) => {
       setVisibleColumns(updatedColumns);
+    };
+
+    const handleSettingsChange = (
+      action: "toggleTextVisibility" | "toggleRowDensity"
+    ) => {
+      if (action === "toggleTextVisibility") {
+        setIsTruncated(!isTruncated);
+      } else if (action === "toggleRowDensity") {
+        setDensity(density === "condensed" ? "default" : "condensed");
+      }
     };
 
     return (
@@ -3741,7 +3753,10 @@ export const WithTableManager: Story = {
           rows={managerRows}
           visibleColumns={visibleColumns.map((col) => col.id)}
           allowsSorting={true}
+          isTruncated={isTruncated}
+          density={density}
           onColumnsChange={handleColumnsChange}
+          onSettingsChange={handleSettingsChange}
         >
           <Flex justifyContent="space-between" alignItems="center" width="100%">
             <Heading as="h3" size="lg">
