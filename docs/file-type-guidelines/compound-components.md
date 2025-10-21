@@ -241,20 +241,13 @@ MenuTrigger.displayName = 'Menu.Trigger';
 
 ### JSDoc Tags in Implementation Files (CRITICAL)
 
-**Dual-Location Requirement for JSDoc Tags:**
+**Implementation File JSDoc Requirement:**
 
-JSDoc tags like `@supportsStyleProps` serve two different purposes and must be placed in **two locations**:
+JSDoc tags like `@supportsStyleProps` must be placed **directly above the component function** in implementation files (e.g., `components/menu.trigger.tsx`) for `react-docgen-typescript` to extract metadata for documentation generation.
 
-1. **In the main export file namespace object** (e.g., `menu.tsx`) - For developer reference when reading code
-2. **In the implementation file directly above the component function** (e.g., `components/menu.trigger.tsx`) - For `react-docgen-typescript` to extract metadata
+#### Parser Behavior
 
-#### Why Both Locations Are Required
-
-The `react-docgen-typescript` parser:
-- ✅ **DOES extract** JSDoc tags from component function definitions in implementation files
-- ❌ **DOES NOT extract** JSDoc tags from namespace object comments in the main export file
-
-This means JSDoc tags in the namespace object are for **human developers only**. They appear in IDE tooltips and code documentation but are **not processed by the doc generation pipeline**.
+The `react-docgen-typescript` parser extracts JSDoc tags from component function definitions in implementation files. Place the `@supportsStyleProps` tag in individual subcomponent implementation files where the parser can process it.
 
 #### Implementation File JSDoc Pattern
 
@@ -285,7 +278,7 @@ MenuTrigger.displayName = 'Menu.Trigger';
 
 #### Main Export File Namespace JSDoc
 
-The main export file also documents each part with JSDoc for developer convenience:
+The main export file documents each part with JSDoc for developer convenience (IDE tooltips and code readability):
 
 ```typescript
 // menu.tsx
@@ -295,8 +288,6 @@ export const Menu = {
    *
    * The trigger element that opens the menu when activated.
    * Handles keyboard and mouse interactions for menu activation.
-   *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -310,11 +301,7 @@ export const Menu = {
 };
 ```
 
-#### Summary
-
-- **Namespace object JSDoc** → Developer reference, IDE tooltips, code readability
-- **Implementation file JSDoc** → Doc generation pipeline, `types.json` metadata extraction
-- **Both are required** for complete documentation coverage
+**Note**: Place `@supportsStyleProps` tags in implementation files for documentation generation. The parser extracts metadata from implementation files, not namespace objects.
 
 ### Components Index File
 
@@ -481,14 +468,13 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] **Each part has JSDoc documentation directly above it**
 - [ ] **JSDoc includes heading (# ComponentName.Part)**
 - [ ] **JSDoc includes purpose description**
-- [ ] **`@supportsStyleProps` tag present if part accepts Chakra UI style props**
 - [ ] **JSDoc includes `@example` block for each part**
 
 ### Documentation (in implementation files)
 
 - [ ] **Each component implementation has JSDoc directly above the component function**
 - [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (required for doc generation)
-- [ ] **Implementation JSDoc matches namespace object JSDoc where applicable**
+- [ ] **`@supportsStyleProps` tag placed in implementation files where parser can extract it**
 
 ### Standard Patterns
 

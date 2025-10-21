@@ -87,7 +87,6 @@ export const Menu = {
    * The root component that provides context and state management for the menu.
    * Must wrap all menu parts (Trigger, Content, Item) to coordinate their behavior.
    *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -106,7 +105,6 @@ export const Menu = {
    * The trigger element that opens the menu when activated.
    * Handles keyboard and mouse interactions for menu activation.
    *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -123,7 +121,6 @@ export const Menu = {
    * The container for menu items and sections.
    * Handles positioning, portal rendering, and keyboard navigation.
    *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -143,7 +140,6 @@ export const Menu = {
    * An individual menu item that can be selected by the user.
    * Supports keyboard navigation, disabled states, and custom actions.
    *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -168,29 +164,29 @@ export {
 
 ### Documenting Compound Component Parts
 
-**CRITICAL**: Each part in a compound component namespace object **MUST** have JSDoc documentation directly above it in the main export file. This documentation serves as the primary API reference for developers.
+**CRITICAL**: Each part in a compound component namespace object **MUST** have
+JSDoc documentation directly above it in the main export file. This
+documentation serves as the primary API reference for developers.
 
 #### Required JSDoc Structure for Each Part
 
 Every compound component part must include:
 
 1. **Heading**: Start with `# ComponentName.Part` format
-2. **Description**: Brief explanation of the part's purpose and when to use it (1-3 sentences)
-3. **Style Props Tag**: Include `@supportsStyleProps` if the part accepts Chakra UI style props
-4. **Example**: Show typical usage with `@example` block
+2. **Description**: Brief explanation of the part's purpose and when to use it
+   (1-3 sentences)
+3. **Example**: Show typical usage with `@example` block
 
 #### JSDoc Template for Compound Component Parts
 
 Use this template for documenting compound component parts:
 
-```typescript
+````typescript
 /**
  * # ComponentName.PartName
  *
  * [Brief description of what this part does and its purpose within the component.]
  * [Additional context about behavior, state, or interactions if needed.]
- *
- * @supportsStyleProps  // Include ONLY if part accepts Chakra UI style props
  *
  * @example
  * ```tsx
@@ -200,124 +196,90 @@ Use this template for documenting compound component parts:
  * ```
  */
 PartName: ComponentPartName,
-```
+````
 
-#### When to Include `@supportsStyleProps`
-
-Add the `@supportsStyleProps` tag if the part:
-- Extends `HTMLChakraProps` (directly or via slot props)
-- Uses `extractStyleProps()` and forwards style props to slot components
-- Forwards all props to an underlying styled component
-- Accepts margin, padding, color, or other Chakra UI style props
-
-**Omit the tag** if the part:
-- Only accepts functional props (callbacks, state, data)
-- Wraps a React Aria component without forwarding style props
-- Is a pure logic component with no styling
+**Note**: Place `@supportsStyleProps` tags directly above component functions in
+implementation files for documentation generation. The parser extracts metadata
+from implementation files (see
+[Compound Components Guidelines](./compound-components.md#jsdoc-tags-in-implementation-files-critical)).
 
 #### Common Part Types and Description Patterns
 
 Use these patterns as starting points for different part types:
 
 **Root Components:**
-```typescript
+
+````typescript
 /**
  * # ComponentName.Root
  *
  * The root component that provides context and state management for the [component].
  * Must wrap all [component] parts to coordinate their behavior.
  *
- * @supportsStyleProps
+ * @example
+ * ```tsx
+ * <ComponentName.Root>
+ *   <ComponentName.Trigger>Open</ComponentName.Trigger>
+ *   <ComponentName.Content>...</ComponentName.Content>
+ * </ComponentName.Root>
+ * ```
  */
-```
+````
 
 **Trigger Components:**
-```typescript
+
+````typescript
 /**
  * # ComponentName.Trigger
  *
  * The trigger element that [opens/toggles/activates] the [component] when activated.
  * Handles keyboard and mouse interactions for [component] activation.
  *
- * @supportsStyleProps
+ * @example
+ * ```tsx
+ * <ComponentName.Trigger>Open [Component]</ComponentName.Trigger>
+ * ```
  */
-```
+````
 
 **Content/Container Components:**
-```typescript
+
+````typescript
 /**
  * # ComponentName.Content
  *
  * The container for [component] [items/sections/content].
  * Handles positioning, portal rendering, and keyboard navigation.
  *
- * @supportsStyleProps
+ * @example
+ * ```tsx
+ * <ComponentName.Content>
+ *   {/* Content here */}
+ * </ComponentName.Content>
+ * ```
  */
-```
+````
 
 **Item Components:**
-```typescript
+
+````typescript
 /**
  * # ComponentName.Item
  *
  * An individual [item/option/entry] within the [component].
  * Supports keyboard navigation, disabled states, and custom actions.
  *
- * @supportsStyleProps
+ * @example
+ * ```tsx
+ * <ComponentName.Item value="item-1">Item Label</ComponentName.Item>
+ * ```
  */
-```
-
-**Header/Title Components:**
-```typescript
-/**
- * # ComponentName.Header
- *
- * The header section of the [component], typically containing the title and actions.
- * Provides consistent spacing and layout for [component] headers.
- *
- * @supportsStyleProps
- */
-```
-
-**Body/Main Components:**
-```typescript
-/**
- * # ComponentName.Body
- *
- * The main content area of the [component].
- * Handles overflow, scrolling, and content layout.
- *
- * @supportsStyleProps
- */
-```
-
-**Footer/Actions Components:**
-```typescript
-/**
- * # ComponentName.Footer
- *
- * The footer section, typically containing action buttons or controls.
- * Provides consistent spacing and alignment for [component] actions.
- *
- * @supportsStyleProps
- */
-```
-
-**Close/Dismiss Components:**
-```typescript
-/**
- * # ComponentName.CloseTrigger
- *
- * A button that closes/dismisses the [component] when activated.
- * Automatically handles close behavior through React Aria's context.
- *
- * @supportsStyleProps
- */
-```
+````
 
 #### Complete Working Example
 
-See the Dialog component for a complete reference implementation of compound component part documentation:
+See the Dialog component for a complete reference implementation of compound
+component part documentation:
 
 ````typescript
 /**
@@ -345,7 +307,6 @@ export const Dialog = {
    * The root component that provides context and state management for the dialog.
    * Uses React Aria's DialogTrigger for accessibility and keyboard interaction.
    *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -361,8 +322,6 @@ export const Dialog = {
    *
    * The trigger element that opens the dialog when activated.
    * Uses React Aria's Button for accessibility and keyboard support.
-   *
-   * @supportsStyleProps
    *
    * @example
    * ```tsx
@@ -593,9 +552,10 @@ export const ComponentName = {
 
 ### Style Props Support Tag
 
-Components that accept Chakra UI style props (margin, padding, color, etc.) **must** include the `@supportsStyleProps` JSDoc tag:
+Components that accept Chakra UI style props (margin, padding, color, etc.)
+**must** include the `@supportsStyleProps` JSDoc tag:
 
-````typescript
+```typescript
 /**
  * ComponentName - Brief description
  *
@@ -609,24 +569,26 @@ export const ComponentName = (props: ComponentNameProps) => {
     </ComponentSlot>
   );
 };
-````
+```
 
-**Purpose**: This tag enables automated documentation generation behavior:
-- Filters ~200+ Chakra style props from API documentation tables to reduce clutter
-- Displays a visual banner in documentation indicating style prop support
-- Clearly communicates to users that standard Chakra UI style props (margin, padding, color, etc.) can be used
+**When Required** - Add this tag if the component supports Chakra UI style props
+through ANY of these patterns:
 
-**When Required** - Add this tag if the component supports Chakra UI style props through ANY of these patterns:
 - ✅ Component type extends `HTMLChakraProps` (directly or via slot props)
-- ✅ Component uses `extractStyleProps()` and forwards style props to slot components
-- ✅ Component forwards all props to an underlying Chakra/Nimbus component that supports style props
+- ✅ Component uses `extractStyleProps()` and forwards style props to slot
+  components
+- ✅ Component forwards all props to an underlying Chakra/Nimbus component that
+  supports style props
 - ✅ Component wraps a slot component that accepts style props
 
-**Key Indicator**: If users can pass `margin`, `padding`, `backgroundColor`, or other Chakra style props to your component and they work, add the tag.
+**Key Indicator**: If users can pass `margin`, `padding`, `backgroundColor`, or
+other Chakra style props to your component and they work, add the tag.
 
 **Applies To**:
+
 - Root components in compound component patterns
-- Sub-components that accept and forward style props (Item, Header, Content, etc.)
+- Sub-components that accept and forward style props (Item, Header, Content,
+  etc.)
 - Single components that extend HTMLChakraProps or slot props
 - Wrapper components that forward props to styled children
 
@@ -701,12 +663,15 @@ export const CustomButton = (props: CustomButtonProps) => {
 ### JSDoc Documentation
 
 - [ ] Main component has JSDoc with description and example
-- [ ] **For compound components: Each part has JSDoc documentation in main file**
+- [ ] **For compound components: Each part has JSDoc documentation in main
+      file**
 - [ ] **Each part's JSDoc includes heading (# ComponentName.Part)**
 - [ ] **Each part's JSDoc includes purpose description (1-3 sentences)**
-- [ ] **`@supportsStyleProps` tag included for parts that accept Chakra UI style props**
 - [ ] **Each part's JSDoc includes `@example` block showing usage**
-- [ ] Main component `@supportsStyleProps` tag added if applicable
+- [ ] **`@supportsStyleProps` tag placed in implementation files** (for doc
+      generation)
+- [ ] Main component `@supportsStyleProps` tag added if applicable (single
+      components only)
 
 ### Exports
 
