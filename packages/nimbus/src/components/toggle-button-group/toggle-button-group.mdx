@@ -48,7 +48,7 @@ This is the default size.
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Medium size example (default)" selectedKeys={["md-day"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Medium size example (default)" selectedKeys={["md-day"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="md-day"><Icons.ViewDay />Day</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="md-week"><Icons.CalendarViewWeek />Week</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="md-month"><Icons.CalendarViewMonth />Month</ToggleButtonGroup.Button>
@@ -62,7 +62,7 @@ This size is for compact placements.
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root size="xs" aria-label="X-Small size example" selectedKeys={["xs-day"]} tone="primary">
+  <ToggleButtonGroup.Root size="xs" aria-label="X-Small size example" selectedKeys={["xs-day"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="xs-day"><Icons.ViewDay />Day</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="xs-week"><Icons.CalendarViewWeek />Week</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="xs-month"><Icons.CalendarViewMonth />Month</ToggleButtonGroup.Button>
@@ -80,7 +80,7 @@ Button groups with icons and labels are used to present a set of related actions
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="li-processing">
       <Icons.RotateRight /> Processing
     </ToggleButtonGroup.Button>
@@ -103,7 +103,7 @@ Button groups with just labels provide explicit understanding of each option. Th
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Just labels example" selectedKeys={["label-inactive"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Just labels example" selectedKeys={["label-inactive"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="label-active">
       Active promotions
     </ToggleButtonGroup.Button>
@@ -123,7 +123,7 @@ Messages potential problems or situations that require user attention to prevent
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Just icons example" selectedKeys={["icon-copy"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Just icons example" selectedKeys={["icon-copy"]} colorPalette="primary">
     <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="icon-edit" aria-label="Edit view">
         <Icons.Edit />
@@ -191,7 +191,7 @@ To allow users to switch between different display views (e.g., grid view, list 
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Select view" selectedKeys={["view-list"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Select view" selectedKeys={["view-list"]} colorPalette="primary">
     <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="view-grid" aria-label="Grid View">
         <Icons.Apps />
@@ -222,7 +222,7 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Select view (Bad Example)" selectedKeys={["view-confusing2"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Select view (Bad Example)" selectedKeys={["view-confusing2"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="view-confusing1" aria-label="Confusing Icon 1">
       <Icons.Apartment />
     </ToggleButtonGroup.Button>
@@ -248,7 +248,7 @@ In data tables or lists, button groups can be used to filter or sort content.
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Filter status" selectedKeys={["filter-accepted"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Filter status" selectedKeys={["filter-accepted"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="filter-drafts">
       Drafts (6)
     </ToggleButtonGroup.Button>
@@ -270,7 +270,7 @@ const App = () => (
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Filter status (Bad Example)" selectedKeys={["filter-granted"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Filter status (Bad Example)" selectedKeys={["filter-granted"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="filter-compositions">
       Compositions
     </ToggleButtonGroup.Button>
@@ -296,7 +296,7 @@ Accessibility ensures that digital content and functionality are usable by every
 
 ```jsx-live
 const App = () => (
-  <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} tone="primary">
+  <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} colorPalette="primary">
     <Tooltip.Root delay={0} closeDelay={0}>
       <ToggleButtonGroup.Button id="li-processing">
         <Icons.RotateRight /> Processing

@@ -110,7 +110,6 @@ export const InContext: Story = {
           isSelected={bookmarked}
           onChange={setBookmarked}
           aria-label="Bookmark"
-          colorPalette="primary"
         >
           <Bookmark />
         </IconToggleButton>

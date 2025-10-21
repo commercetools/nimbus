@@ -33,7 +33,7 @@ export const alertRecipe = defineSlotRecipe({
   },
 
   variants: {
-    tone: {
+    colorPalette: {
       critical: {
         root: { colorPalette: "critical" },
       },

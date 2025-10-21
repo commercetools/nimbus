@@ -72,10 +72,10 @@ export const WithHeaderItemsToRight: Story = {
         <Accordion.Header>
           Second Item
           <Accordion.HeaderRightContent>
-            <Button tone="critical" m="100">
+            <Button colorPalette="critical" m="100">
               First action
             </Button>
-            <Button tone="neutral" m="100">
+            <Button colorPalette="neutral" m="100">
               Second Action
             </Button>
           </Accordion.HeaderRightContent>

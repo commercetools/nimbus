@@ -22,9 +22,9 @@ type ToggleButtonGroupRecipeVariantProps = {
    */
   size?: "xs" | "md";
   /**
-   * Tone variant
+   * Color palette variant
    */
-  tone?: "primary" | "critical" | "neutral";
+  colorPalette?: "primary" | "critical" | "neutral";
 };
 
 // ============================================================
@@ -53,7 +53,7 @@ type ToggleButtonGroupRootCombinedProps = ToggleButtonGroupRootSlotProps &
 // ============================================================
 
 export type ToggleButtonGroupProps = ToggleButtonGroupRecipeVariantProps &
-  Omit<ToggleButtonGroupRootCombinedProps, "size" | "tone"> & {
+  Omit<ToggleButtonGroupRootCombinedProps, "size" | "colorPalette"> & {
     ref?: React.Ref<typeof RaToggleButtonGroup>;
   };
 

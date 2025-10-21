@@ -9,7 +9,10 @@ import { within, expect } from "storybook/test";
 
 const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
 
-const tones: LoadingSpinnerProps["tone"][] = ["primary", "white"];
+const colorPalettes: LoadingSpinnerProps["colorPalette"][] = [
+  "primary",
+  "white",
+];
 
 const meta: Meta<typeof LoadingSpinner> = {
   title: "Components/LoadingSpinner",
@@ -65,19 +68,19 @@ export const Sizes: Story = {
 };
 
 /**
- * One tone for a light background and one for a dark background
+ * One color palette for a light background and one for a dark background
  */
-export const Tones: Story = {
+export const ColorPalettes: Story = {
   render: (args) => {
     return (
       <Box backgroundColor="blackAlpha.5">
         <Stack direction="row" gap="400" alignItems="center">
-          {tones.map((tone) => (
+          {colorPalettes.map((colorPalette) => (
             <LoadingSpinner
               aria-label="Loading even more data"
-              key={tone as string}
+              key={colorPalette as string}
               {...args}
-              tone={tone}
+              colorPalette={colorPalette}
             />
           ))}
         </Stack>

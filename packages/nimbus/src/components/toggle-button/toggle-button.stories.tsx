@@ -17,7 +17,7 @@ const sizes = ["md", "xs", "2xs"] as const;
 
 const variants = ["outline", "ghost"] as const;
 
-const tones = ["primary", "neutral", "critical", "info"] as const;
+const colorPalettes = ["primary", "neutral", "critical", "info"] as const;
 
 export const Base: Story = {
   args: {
@@ -170,24 +170,24 @@ export const Variants: Story = {
   },
 };
 
-export const Tones: Story = {
+export const ColorPalettes: Story = {
   render: () => {
     return (
       <Stack direction="column" gap="400">
-        {tones.map((tone) => (
-          <Stack key={tone} gap="400" align="center">
-            <Box width="100px">{tone as string}:</Box>
+        {colorPalettes.map((colorPalette) => (
+          <Stack key={colorPalette} gap="400" align="center">
+            <Box width="100px">{colorPalette as string}:</Box>
             {variants.map((variant) => (
               <Stack key={variant} gap="400" align="center" direction="row">
                 <ToggleButton
-                  colorPalette={tone}
+                  colorPalette={colorPalette}
                   width="128px"
                   variant={variant}
                 >
                   {variant}
                 </ToggleButton>
                 <ToggleButton
-                  colorPalette={tone}
+                  colorPalette={colorPalette}
                   width="128px"
                   variant={variant}
                   isSelected
@@ -195,7 +195,7 @@ export const Tones: Story = {
                   selected
                 </ToggleButton>
                 <ToggleButton
-                  colorPalette={tone}
+                  colorPalette={colorPalette}
                   width="128px"
                   variant={variant}
                   isDisabled

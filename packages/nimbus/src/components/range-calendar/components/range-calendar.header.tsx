@@ -38,7 +38,7 @@ export const RangeCalendarHeader = () => {
             slot={showRangeLabel ? "previous" : "previous-month"}
             size="xs"
             variant="ghost"
-            tone="primary"
+            colorPalette="primary"
           >
             <KeyboardArrowLeft />
           </IconButton>
@@ -56,7 +56,7 @@ export const RangeCalendarHeader = () => {
             slot={showRangeLabel ? "next" : "next-month"}
             size="xs"
             variant="ghost"
-            tone="primary"
+            colorPalette="primary"
           >
             <KeyboardArrowRight />
           </IconButton>
@@ -68,7 +68,7 @@ export const RangeCalendarHeader = () => {
             slot="previous-year"
             size="xs"
             variant="ghost"
-            tone="primary"
+            colorPalette="primary"
           >
             <KeyboardArrowLeft />
           </IconButton>
@@ -82,7 +82,12 @@ export const RangeCalendarHeader = () => {
             slot="year"
           />
           {/* @ts-expect-error - custom-context will add aria-label via the "slot" prop */}
-          <IconButton slot="next-year" size="xs" variant="ghost" tone="primary">
+          <IconButton
+            slot="next-year"
+            size="xs"
+            variant="ghost"
+            colorPalette="primary"
+          >
             <KeyboardArrowRight />
           </IconButton>
         </Stack>

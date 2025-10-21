@@ -162,15 +162,15 @@ Choose from different visual styles to match your design system.
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" gap="400" wrap="wrap">
-    <SplitButton variant="solid" tone="primary" onAction={(id) => {}} aria-label="More actions">
+    <SplitButton variant="solid" colorPalette="primary" onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Action 1</Menu.Item>
       <Menu.Item id="action2">Action 2</Menu.Item>
     </SplitButton>
-    <SplitButton variant="outline" tone="primary" onAction={(id) => {}} aria-label="More actions">
+    <SplitButton variant="outline" colorPalette="primary" onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Action 1</Menu.Item>
       <Menu.Item id="action2">Action 2</Menu.Item>
     </SplitButton>
-    <SplitButton variant="ghost" tone="primary" onAction={(id) => {}} aria-label="More actions">
+    <SplitButton variant="ghost" colorPalette="primary" onAction={(id) => {}} aria-label="More actions">
       <Menu.Item id="action1">Action 1</Menu.Item>
       <Menu.Item id="action2">Action 2</Menu.Item>
     </SplitButton>
@@ -293,7 +293,7 @@ const App = () => (
 - **Flexible Content**: Supports icons through the icon prop and rich menu
   content
 - **Accessible**: Built-in ARIA attributes and screen reader support
-- **Visual Variants**: Multiple size, variant, and tone options
+- **Visual Variants**: Multiple size, variant, and colorPalette options
 - **Critical Action Support**: Visual highlighting for destructive menu items
 - **Focus Management**: Proper focus trapping and restoration
 - **Smart Fallbacks**: Handles disabled items and empty menus gracefully

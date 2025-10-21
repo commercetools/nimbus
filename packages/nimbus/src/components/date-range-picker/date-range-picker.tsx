@@ -85,7 +85,6 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
               <DateRangePickerTriggerSlot>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
-                  tone="primary"
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="clear"
@@ -94,7 +93,6 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 </IconButton>
                 {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
-                  tone="primary"
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="calendarToggle"

@@ -31,7 +31,7 @@ export type SplitButtonTriggerSlotProps = HTMLChakraProps<"button">;
 // MAIN PROPS
 // ============================================================
 export type SplitButtonProps = SplitButtonRecipeProps &
-  Pick<ButtonProps, "size" | "tone" | "variant" | "isDisabled"> &
+  Pick<ButtonProps, "size" | "colorPalette" | "variant" | "isDisabled"> &
   Omit<RaMenuTriggerProps, "trigger" | "children"> &
   Required<Pick<RaMenuProps<object>, "onAction">> & {
     /**

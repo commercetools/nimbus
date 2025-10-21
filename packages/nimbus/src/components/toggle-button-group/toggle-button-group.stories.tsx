@@ -27,10 +27,14 @@ const defaultChildren = (
 );
 
 type ToggleButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
-type ToggleButtonGroupTone = "primary" | "critical" | "neutral"; // Replace with actual derived type
+type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
 
 const sizes: ToggleButtonGroupSize[] = ["md", "xs"];
-const tones: ToggleButtonGroupTone[] = ["primary", "critical", "neutral"];
+const colorPalettes: ToggleButtonGroupColorPalette[] = [
+  "primary",
+  "critical",
+  "neutral",
+];
 
 /**
  * Base story
@@ -40,7 +44,7 @@ const tones: ToggleButtonGroupTone[] = ["primary", "critical", "neutral"];
 export const Base: Story = {
   args: {
     size: "md",
-    tone: "primary",
+    colorPalette: "primary",
     children: defaultChildren,
     onSelectionChange: fn(),
     "aria-label": "Test Button Group",
@@ -272,21 +276,21 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Tones - Minimal test focusing on rendering
+ * Showcase Color Palettes - Minimal test focusing on rendering
  */
-export const Tones: Story = {
+export const ColorPalettes: Story = {
   args: {
     size: "md",
     onSelectionChange: fn(),
   },
   render: (args) => (
     <Stack>
-      {tones.map((tone) => (
+      {colorPalettes.map((colorPalette) => (
         <ToggleButtonGroup.Root
-          key={tone}
+          key={colorPalette}
           {...args}
-          tone={tone}
-          aria-label={`Tone ${tone} Group`}
+          colorPalette={colorPalette}
+          aria-label={`Color Palette ${colorPalette} Group`}
         >
           <ToggleButtonGroup.Button id="left" aria-label="Start Button">
             <DemoIcon />
@@ -304,9 +308,9 @@ export const Tones: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     // Ensure all groups render
-    await step("Render groups for each tone", async () => {
+    await step("Render groups for each color palette", async () => {
       const groups = canvas.getAllByRole("radiogroup");
-      await expect(groups).toHaveLength(tones.length);
+      await expect(groups).toHaveLength(colorPalettes.length);
       // Optionally check a button exists in each
       await expect(
         within(groups[0]).getAllByRole("radio").length

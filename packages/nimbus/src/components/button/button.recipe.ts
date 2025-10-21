@@ -166,20 +166,6 @@ export const buttonRecipe = defineRecipe({
         },
       },
     },
-    tone: {
-      primary: {
-        colorPalette: "primary",
-      },
-      critical: {
-        colorPalette: "critical",
-      },
-      neutral: {
-        colorPalette: "neutral",
-      },
-      info: {
-        colorPalette: "info",
-      },
-    },
   },
   defaultVariants: {
     size: "md",

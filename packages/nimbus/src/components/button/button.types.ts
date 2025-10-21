@@ -21,9 +21,9 @@ type ButtonRecipeProps = {
    */
   variant?: RecipeProps<"button">["variant"];
   /**
-   * Color tone palette for the button
+   * Color palette for the button
    */
-  tone?: RecipeProps<"button">["tone"];
+  colorPalette?: RecipeProps<"button">["colorPalette"];
 } & UnstyledProp;
 
 // ============================================================

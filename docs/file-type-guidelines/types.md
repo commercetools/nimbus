@@ -208,7 +208,7 @@ import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 // ============================================================
 // RECIPE PROPS
 // ============================================================
-// Styling variants (size, variant, tone, etc.)
+// Styling variants (size, variant, colorPalette, etc.)
 // Only present when component has custom styling recipes
 
 // ============================================================
@@ -494,7 +494,7 @@ export type UseButtonReturn = {
   /* ... */
 };
 
-// Note: Recipe variants (variant, size, tone) are automatically inherited
+// Note: Recipe variants (variant, size, colorPalette) are automatically inherited
 // when extending slot props - no explicit declarations needed
 ```
 
@@ -534,7 +534,7 @@ export type BoxProps = BoxSlotProps & {
 
 Slot props automatically include recipe variants through Chakra UI's `RecipeProps`
 type. When your component props type extends a slot props type, it
-inherits all recipe variants (like `variant`, `size`, `tone`) without needing
+inherits all recipe variants (like `variant`, `size`, `colorPalette`) without needing
 explicit declarations.
 
 ```typescript
@@ -542,7 +542,7 @@ import { type ButtonSlotProps } from "./button.slots";
 
 // ✅ Good - extends slot props (which automatically include recipe variants)
 // ButtonSlotProps extends RecipeProps<"button">, so ButtonProps inherits
-// all recipe variants like variant, size, tone, etc.
+// all recipe variants like variant, size, colorPalette, etc.
 export type ButtonProps = ButtonSlotProps & {
   // Component-specific props only
   isLoading?: boolean;

@@ -30,7 +30,7 @@ export const SplitButton = (props: SplitButtonProps) => {
   const {
     size = "md",
     variant = "solid",
-    tone,
+    colorPalette,
     isDisabled = false,
     "aria-label": ariaLabel,
     onAction,
@@ -40,7 +40,7 @@ export const SplitButton = (props: SplitButtonProps) => {
     icon,
   } = props;
 
-  const buttonProps = { size, variant, tone };
+  const buttonProps = { size, variant, colorPalette };
 
   /**
    * CORE CONCEPT: In split button mode, we need to populate the primary button
