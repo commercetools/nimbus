@@ -41,6 +41,8 @@ export const Menu = {
 };
 ```
 
+**IMPORTANT**: Each part must have JSDoc documentation in the main file. See [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts) for detailed documentation requirements.
+
 ### 2. Root Component is MANDATORY
 
 **Every compound component MUST have a `.Root` component** as the first
@@ -237,6 +239,83 @@ export const MenuTrigger = ({ children, asChild, ref, ...props }: MenuTriggerPro
 MenuTrigger.displayName = 'Menu.Trigger';
 ```
 
+### JSDoc Tags in Implementation Files (CRITICAL)
+
+**Dual-Location Requirement for JSDoc Tags:**
+
+JSDoc tags like `@supportsStyleProps` serve two different purposes and must be placed in **two locations**:
+
+1. **In the main export file namespace object** (e.g., `menu.tsx`) - For developer reference when reading code
+2. **In the implementation file directly above the component function** (e.g., `components/menu.trigger.tsx`) - For `react-docgen-typescript` to extract metadata
+
+#### Why Both Locations Are Required
+
+The `react-docgen-typescript` parser:
+- ✅ **DOES extract** JSDoc tags from component function definitions in implementation files
+- ❌ **DOES NOT extract** JSDoc tags from namespace object comments in the main export file
+
+This means JSDoc tags in the namespace object are for **human developers only**. They appear in IDE tooltips and code documentation but are **not processed by the doc generation pipeline**.
+
+#### Implementation File JSDoc Pattern
+
+Each component implementation file must include JSDoc directly above the component export:
+
+```typescript
+// components/menu.trigger.tsx
+import { Button } from 'react-aria-components';
+import { MenuTriggerSlot } from '../menu.slots';
+import type { MenuTriggerProps } from '../menu.types';
+
+/**
+ * Menu.Trigger - The button or element that opens the menu
+ *
+ * @supportsStyleProps
+ */
+export const MenuTrigger = ({
+  children,
+  asChild,
+  ref,
+  ...props
+}: MenuTriggerProps) => {
+  // Implementation...
+};
+
+MenuTrigger.displayName = 'Menu.Trigger';
+```
+
+#### Main Export File Namespace JSDoc
+
+The main export file also documents each part with JSDoc for developer convenience:
+
+```typescript
+// menu.tsx
+export const Menu = {
+  /**
+   * # Menu.Trigger
+   *
+   * The trigger element that opens the menu when activated.
+   * Handles keyboard and mouse interactions for menu activation.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Menu.Root>
+   *   <Menu.Trigger>Options</Menu.Trigger>
+   *   <Menu.Content>...</Menu.Content>
+   * </Menu.Root>
+   * ```
+   */
+  Trigger: MenuTrigger,
+};
+```
+
+#### Summary
+
+- **Namespace object JSDoc** → Developer reference, IDE tooltips, code readability
+- **Implementation file JSDoc** → Doc generation pipeline, `types.json` metadata extraction
+- **Both are required** for complete documentation coverage
+
 ### Components Index File
 
 ```typescript
@@ -397,12 +476,25 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] All sub-components in separate files
 - [ ] Components index file exports all parts
 
+### Documentation (in main file)
+
+- [ ] **Each part has JSDoc documentation directly above it**
+- [ ] **JSDoc includes heading (# ComponentName.Part)**
+- [ ] **JSDoc includes purpose description**
+- [ ] **`@supportsStyleProps` tag present if part accepts Chakra UI style props**
+- [ ] **JSDoc includes `@example` block for each part**
+
+### Documentation (in implementation files)
+
+- [ ] **Each component implementation has JSDoc directly above the component function**
+- [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (required for doc generation)
+- [ ] **Implementation JSDoc matches namespace object JSDoc where applicable**
+
 ### Standard Patterns
 
 - [ ] **Root uses `useSlotRecipe` and `splitVariantProps`** (for recipe-based
       components)
 - [ ] **All components use `extractStyleProps`** to separate style props
-- [ ] **`@supportsStyleProps` JSDoc tag added to all components that accept Chakra UI style props**
 - [ ] **Style props forwarded to slot components**
 - [ ] **Functional props forwarded to React Aria or underlying components**
 - [ ] Display names set for all components (Pattern: `ComponentName.PartName`)

@@ -81,9 +81,78 @@ export type * from "./menu.types";
  * ```
  */
 export const Menu = {
+  /**
+   * # Menu.Root
+   *
+   * The root component that provides context and state management for the menu.
+   * Must wrap all menu parts (Trigger, Content, Item) to coordinate their behavior.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Menu.Root>
+   *   <Menu.Trigger>Open Menu</Menu.Trigger>
+   *   <Menu.Content>
+   *     <Menu.Item>Edit</Menu.Item>
+   *   </Menu.Content>
+   * </Menu.Root>
+   * ```
+   */
   Root: MenuRoot, // ⚠️ MUST BE FIRST - primary entry point
+  /**
+   * # Menu.Trigger
+   *
+   * The trigger element that opens the menu when activated.
+   * Handles keyboard and mouse interactions for menu activation.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Menu.Root>
+   *   <Menu.Trigger>Options</Menu.Trigger>
+   *   <Menu.Content>...</Menu.Content>
+   * </Menu.Root>
+   * ```
+   */
   Trigger: MenuTrigger,
+  /**
+   * # Menu.Content
+   *
+   * The container for menu items and sections.
+   * Handles positioning, portal rendering, and keyboard navigation.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Menu.Root>
+   *   <Menu.Trigger>Options</Menu.Trigger>
+   *   <Menu.Content>
+   *     <Menu.Item>Edit</Menu.Item>
+   *     <Menu.Item>Delete</Menu.Item>
+   *   </Menu.Content>
+   * </Menu.Root>
+   * ```
+   */
   Content: MenuContent,
+  /**
+   * # Menu.Item
+   *
+   * An individual menu item that can be selected by the user.
+   * Supports keyboard navigation, disabled states, and custom actions.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Menu.Content>
+   *   <Menu.Item onAction={() => console.log('Edit')}>Edit</Menu.Item>
+   *   <Menu.Item isDisabled>Delete</Menu.Item>
+   * </Menu.Content>
+   * ```
+   */
   Item: MenuItem,
   // ... other exports
 };
@@ -94,6 +163,217 @@ export {
   MenuTrigger as _MenuTrigger,
   MenuItem as _MenuItem,
   // ... other internal exports
+};
+````
+
+### Documenting Compound Component Parts
+
+**CRITICAL**: Each part in a compound component namespace object **MUST** have JSDoc documentation directly above it in the main export file. This documentation serves as the primary API reference for developers.
+
+#### Required JSDoc Structure for Each Part
+
+Every compound component part must include:
+
+1. **Heading**: Start with `# ComponentName.Part` format
+2. **Description**: Brief explanation of the part's purpose and when to use it (1-3 sentences)
+3. **Style Props Tag**: Include `@supportsStyleProps` if the part accepts Chakra UI style props
+4. **Example**: Show typical usage with `@example` block
+
+#### JSDoc Template for Compound Component Parts
+
+Use this template for documenting compound component parts:
+
+```typescript
+/**
+ * # ComponentName.PartName
+ *
+ * [Brief description of what this part does and its purpose within the component.]
+ * [Additional context about behavior, state, or interactions if needed.]
+ *
+ * @supportsStyleProps  // Include ONLY if part accepts Chakra UI style props
+ *
+ * @example
+ * ```tsx
+ * <ComponentName.Root>
+ *   <ComponentName.PartName>[relevant example]</ComponentName.PartName>
+ * </ComponentName.Root>
+ * ```
+ */
+PartName: ComponentPartName,
+```
+
+#### When to Include `@supportsStyleProps`
+
+Add the `@supportsStyleProps` tag if the part:
+- Extends `HTMLChakraProps` (directly or via slot props)
+- Uses `extractStyleProps()` and forwards style props to slot components
+- Forwards all props to an underlying styled component
+- Accepts margin, padding, color, or other Chakra UI style props
+
+**Omit the tag** if the part:
+- Only accepts functional props (callbacks, state, data)
+- Wraps a React Aria component without forwarding style props
+- Is a pure logic component with no styling
+
+#### Common Part Types and Description Patterns
+
+Use these patterns as starting points for different part types:
+
+**Root Components:**
+```typescript
+/**
+ * # ComponentName.Root
+ *
+ * The root component that provides context and state management for the [component].
+ * Must wrap all [component] parts to coordinate their behavior.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Trigger Components:**
+```typescript
+/**
+ * # ComponentName.Trigger
+ *
+ * The trigger element that [opens/toggles/activates] the [component] when activated.
+ * Handles keyboard and mouse interactions for [component] activation.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Content/Container Components:**
+```typescript
+/**
+ * # ComponentName.Content
+ *
+ * The container for [component] [items/sections/content].
+ * Handles positioning, portal rendering, and keyboard navigation.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Item Components:**
+```typescript
+/**
+ * # ComponentName.Item
+ *
+ * An individual [item/option/entry] within the [component].
+ * Supports keyboard navigation, disabled states, and custom actions.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Header/Title Components:**
+```typescript
+/**
+ * # ComponentName.Header
+ *
+ * The header section of the [component], typically containing the title and actions.
+ * Provides consistent spacing and layout for [component] headers.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Body/Main Components:**
+```typescript
+/**
+ * # ComponentName.Body
+ *
+ * The main content area of the [component].
+ * Handles overflow, scrolling, and content layout.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Footer/Actions Components:**
+```typescript
+/**
+ * # ComponentName.Footer
+ *
+ * The footer section, typically containing action buttons or controls.
+ * Provides consistent spacing and alignment for [component] actions.
+ *
+ * @supportsStyleProps
+ */
+```
+
+**Close/Dismiss Components:**
+```typescript
+/**
+ * # ComponentName.CloseTrigger
+ *
+ * A button that closes/dismisses the [component] when activated.
+ * Automatically handles close behavior through React Aria's context.
+ *
+ * @supportsStyleProps
+ */
+```
+
+#### Complete Working Example
+
+See the Dialog component for a complete reference implementation of compound component part documentation:
+
+````typescript
+/**
+ * Dialog
+ * ============================================================
+ * A foundational dialog component for overlays that require user attention.
+ * Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
+ *
+ * @example
+ * ```tsx
+ * <Dialog.Root>
+ *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+ *   <Dialog.Content>
+ *     <Dialog.Header>
+ *       <Dialog.Title>Title</Dialog.Title>
+ *     </Dialog.Header>
+ *   </Dialog.Content>
+ * </Dialog.Root>
+ * ```
+ */
+export const Dialog = {
+  /**
+   * # Dialog.Root
+   *
+   * The root component that provides context and state management for the dialog.
+   * Uses React Aria's DialogTrigger for accessibility and keyboard interaction.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Dialog.Root>
+   *   <Dialog.Trigger>Open</Dialog.Trigger>
+   *   <Dialog.Content>...</Dialog.Content>
+   * </Dialog.Root>
+   * ```
+   */
+  Root: DialogRoot,
+  /**
+   * # Dialog.Trigger
+   *
+   * The trigger element that opens the dialog when activated.
+   * Uses React Aria's Button for accessibility and keyboard support.
+   *
+   * @supportsStyleProps
+   *
+   * @example
+   * ```tsx
+   * <Dialog.Root>
+   *   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+   *   <Dialog.Content>...</Dialog.Content>
+   * </Dialog.Root>
+   * ```
+   */
+  Trigger: DialogTrigger,
+  // ... other parts with similar documentation
 };
 ````
 
@@ -406,18 +686,32 @@ export const CustomButton = (props: CustomButtonProps) => {
 
 ## Validation Checklist
 
+### General
+
 - [ ] Main component file exists
 - [ ] For compound: exports only, no implementation
 - [ ] For compound: `.Root` is FIRST property
 - [ ] For single: implementation present
 - [ ] DisplayName set for all exported components
 - [ ] React Aria imports use `Ra` prefix
-- [ ] JSDoc documentation included
-- [ ] **`@supportsStyleProps` tag added if component accepts Chakra UI style props**
-- [ ] Internal exports for react-docgen (compound)
 - [ ] Types re-exported appropriately
 - [ ] i18n messages imported if component has user-facing text
 - [ ] All aria-labels use intl.formatMessage
+
+### JSDoc Documentation
+
+- [ ] Main component has JSDoc with description and example
+- [ ] **For compound components: Each part has JSDoc documentation in main file**
+- [ ] **Each part's JSDoc includes heading (# ComponentName.Part)**
+- [ ] **Each part's JSDoc includes purpose description (1-3 sentences)**
+- [ ] **`@supportsStyleProps` tag included for parts that accept Chakra UI style props**
+- [ ] **Each part's JSDoc includes `@example` block showing usage**
+- [ ] Main component `@supportsStyleProps` tag added if applicable
+
+### Exports
+
+- [ ] Internal exports for react-docgen (compound components only)
+- [ ] All parts properly exported with underscore prefix for react-docgen
 
 ---
 
