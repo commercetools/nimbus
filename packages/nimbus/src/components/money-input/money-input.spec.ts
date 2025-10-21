@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { MoneyInput } from "./money-input";
-import type { TCurrencyCode } from "./money-input.types";
+import type { CurrencyCode } from "./money-input.types";
 
 describe("MoneyInput Static Methods", () => {
   // Helper to capture console warnings
@@ -41,7 +41,7 @@ describe("MoneyInput Static Methods", () => {
       it("Returns null for invalid currency code", () => {
         expect(
           MoneyInput.convertToMoneyValue(
-            { amount: "1", currencyCode: "FOO" as TCurrencyCode },
+            { amount: "1", currencyCode: "FOO" as CurrencyCode },
             "en"
           )
         ).toBe(null);
@@ -275,7 +275,7 @@ describe("MoneyInput Static Methods", () => {
         try {
           MoneyInput.parseMoneyValue(
             {
-              currencyCode: "INVALID" as TCurrencyCode,
+              currencyCode: "INVALID" as CurrencyCode,
               centAmount: 100,
               fractionDigits: 2,
               type: "centPrecision",

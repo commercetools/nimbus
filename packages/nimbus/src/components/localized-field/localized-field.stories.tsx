@@ -4,7 +4,7 @@ import {
   LocalizedField,
   Stack,
   Text,
-  type TValue,
+  type MoneyInputValue,
 } from "@commercetools/nimbus";
 import {
   baseLocales,
@@ -195,7 +195,7 @@ export const Base: Story = {
         async () => {
           for await (const currency of baseCurrencies) {
             const currentValue = (
-              baseStoryProps.money.fieldData.values[currency] as TValue
+              baseStoryProps.money.fieldData.values[currency] as MoneyInputValue
             ).amount;
             const placeholderValue =
               baseStoryProps.money.fieldData.placeholders?.[currency];

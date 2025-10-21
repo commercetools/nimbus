@@ -1,31 +1,31 @@
 import currencies from "./currencies";
 
-export type TCurrencyCode = keyof typeof currencies;
+export type CurrencyCode = keyof typeof currencies;
 
-type TMoneyConditionalProps =
+type MoneyConditionalProps =
   | { type: "highPrecision"; preciseAmount: number }
   | {
       type: "centPrecision";
       preciseAmount?: never;
     };
 
-export type TMoneyValue = {
-  currencyCode: TCurrencyCode;
+export type MoneyValue = {
+  currencyCode: CurrencyCode;
   centAmount: number;
   fractionDigits: number;
-} & TMoneyConditionalProps;
+} & MoneyConditionalProps;
 
-export type TValue = {
+export type MoneyInputValue = {
   amount: string;
-  currencyCode: TCurrencyCode | "";
+  currencyCode: CurrencyCode | "";
 };
 
 // Currency parsing utilities for MoneyInput static methods
 export const parseStringToMoneyValue = (
   rawAmount: string,
   locale: string,
-  currencyCode?: TCurrencyCode | ""
-): TMoneyValue | null => {
+  currencyCode?: CurrencyCode | ""
+): MoneyValue | null => {
   if (!currencyCode) return null;
 
   const currency = currencies[currencyCode];
@@ -98,15 +98,15 @@ export const parseStringToMoneyValue = (
 };
 
 export const createNullMoneyValue = (
-  currencyCode: TCurrencyCode
-): TMoneyValue => ({
+  currencyCode: CurrencyCode
+): MoneyValue => ({
   type: "centPrecision",
   currencyCode,
   centAmount: NaN,
   fractionDigits: 2,
 });
 
-export const extractDecimalAmount = (moneyValue: TMoneyValue) =>
+export const extractDecimalAmount = (moneyValue: MoneyValue) =>
   moneyValue.type === "highPrecision"
     ? moneyValue.preciseAmount / 10 ** moneyValue.fractionDigits
     : moneyValue.centAmount /
