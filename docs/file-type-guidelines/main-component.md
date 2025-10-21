@@ -62,9 +62,6 @@ import { MenuTrigger } from "./components/menu.trigger";
 import { MenuItem } from "./components/menu.item";
 // ... other imports
 
-// Re-export types
-export type * from "./menu.types";
-
 /**
  * Menu
  * ============================================================
@@ -417,8 +414,6 @@ Badge.displayName = 'Badge';
 import { SelectRoot } from "./components/select-root";
 import { SelectTrigger } from "./components/select-trigger";
 import { SelectOption } from "./components/select-option";
-
-export type * from "./select.types";
 
 /**
  * Select
