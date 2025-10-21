@@ -17,17 +17,13 @@ export const useActiveDoc = (): MdxFileFrontmatter | undefined => {
   const documentation = useAtomValue(documentationAtom);
   const activeRoute = useAtomValue(activeRouteAtom);
 
-  const activeDoc = useMemo(() => {
-    const doc = Object.values(documentation).find(
-      (doc) => doc.meta.route === activeRoute
-    );
-    console.log("[useActiveDoc] Looking up:", {
-      activeRoute,
-      found: !!doc,
-      foundRoute: doc?.meta.route,
-    });
-    return doc;
-  }, [documentation, activeRoute]);
+  const activeDoc = useMemo(
+    () =>
+      Object.values(documentation).find(
+        (doc) => doc.meta.route === activeRoute
+      ),
+    [documentation, activeRoute]
+  );
 
   return activeDoc;
 };
