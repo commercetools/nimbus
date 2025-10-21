@@ -1,6 +1,5 @@
 import { useIntl } from "react-intl";
-import { Button, Flex, DraggableList } from "@/components";
-import { Stack, Box, Text } from "@chakra-ui/react";
+import { Button, Flex, Stack, Box, Text, DraggableList } from "@/components";
 import {
   Refresh,
   VisibilityOff,

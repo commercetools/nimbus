@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { IconButton, Drawer, Tabs } from "@/components";
-import { Box, Text } from "@chakra-ui/react";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import VisibleColumnsPanel from "./data-table-visible-columns-panel";
+import LayoutSettingsPanel from "./data-table-layout-settings-panel";
 import { useDataTableContext } from "./data-table.context";
 import type { TColumnListItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
@@ -118,14 +118,12 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
                     </>
                   ),
                   panelContent: (
-                    <>
-                      <VisibleColumnsPanel
-                        hiddenItems={hiddenItems}
-                        visibleItems={visibleItems}
-                        handleVisibleColumnsUpdate={handleVisibleColumnsUpdate}
-                        handleResetColumns={handleResetColumns}
-                      />
-                    </>
+                    <VisibleColumnsPanel
+                      hiddenItems={hiddenItems}
+                      visibleItems={visibleItems}
+                      handleVisibleColumnsUpdate={handleVisibleColumnsUpdate}
+                      handleResetColumns={handleResetColumns}
+                    />
                   ),
                 },
                 {
@@ -136,14 +134,7 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
                       {formatMessage(messages.layoutSettings)}
                     </>
                   ),
-                  panelContent: (
-                    <Box mt="400">
-                      {/* //TODO: Add layout settings content */}
-                      <Text fontSize="sm" color="gray.9">
-                        <>Layout settings here</>
-                      </Text>
-                    </Box>
-                  ),
+                  panelContent: <LayoutSettingsPanel />,
                 },
               ]}
             />
