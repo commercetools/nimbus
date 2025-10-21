@@ -9,6 +9,7 @@ import { StickySidebar } from "./components/navigation/sticky-sidebar.tsx";
 import { RouterProvider } from "./components/router";
 import { useAtom } from "jotai";
 import { activeRouteAtom } from "./atoms/route";
+import { Suspense } from "react";
 
 function App() {
   const [, setActiveRoute] = useAtom(activeRouteAtom);
@@ -21,7 +22,6 @@ function App() {
             <Box position="sticky" top="0" zIndex="1" bg="neutral.1">
               <AppNavBar />
             </Box>
-
             <Flex zIndex="0" flexGrow="1" flexShrink="1">
               <StickySidebar
                 as="nav"
@@ -32,9 +32,10 @@ function App() {
                 pt="600"
                 id="sidebar-left"
               >
-                <Menu />
+                <Suspense fallback={<Box>Loading...</Box>}>
+                  <Menu />
+                </Suspense>
               </StickySidebar>
-
               <Flex
                 id="main"
                 as="main"
@@ -44,9 +45,10 @@ function App() {
                 pt="800"
                 px="1600"
               >
-                <DocumentRenderer />
+                <Suspense fallback={<Box>Loading...</Box>}>
+                  <DocumentRenderer />
+                </Suspense>
               </Flex>
-
               <StickySidebar
                 width="8000"
                 borderLeft="solid-25"
@@ -58,12 +60,32 @@ function App() {
               >
                 <Stack gap="800">
                   <DevOnly>
-                    <DocumentMetaSettings />
+                    <Suspense fallback={<Box>Loading...</Box>}>
+                      <DocumentMetaSettings />
+                    </Suspense>
                   </DevOnly>
-                  <Toc />
+                  <Suspense fallback={<Box>Loading...</Box>}>
+                    <Toc />
+                  </Suspense>
                 </Stack>
               </StickySidebar>
             </Flex>
+            <StickySidebar
+              width="8000"
+              borderLeft="solid-25"
+              borderColor="neutral.3"
+              flexShrink="0"
+              px="400"
+              pt="600"
+              id="sidebar-right"
+            >
+              <Stack gap="800">
+                <DevOnly>
+                  <DocumentMetaSettings />
+                </DevOnly>
+                <Toc />
+              </Stack>
+            </StickySidebar>
           </Flex>
         </>
       </NimbusProvider>

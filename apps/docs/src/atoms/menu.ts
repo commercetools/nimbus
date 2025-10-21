@@ -145,9 +145,10 @@ function orderMenuItems(
 
 /**
  * Atom to manage the menu state.
+ * Async since it derives from the async documentationAtom.
  */
-export const menuAtom = atom((get) => {
-  const docsObj = get(documentationAtom);
+export const menuAtom = atom(async (get) => {
+  const docsObj = await get(documentationAtom);
   const items: MdxFileFrontmatter["meta"][] = Object.keys(docsObj).map(
     (key) => docsObj[key].meta
   );

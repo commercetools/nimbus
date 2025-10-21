@@ -1,5 +1,4 @@
 import { atom } from "jotai";
-import json from "./../data/docs.json";
 import { MdxFileFrontmatter } from "../types";
 
 /**
@@ -13,9 +12,11 @@ type RepoPath = string;
 type DocumentationJson = Record<RepoPath, MdxFileFrontmatter>;
 
 /**
- * Atom to manage the documentation state.
- * It uses the JSON data imported from docs.json.
+ * Async atom to manage the documentation state.
+ * Uses dynamic import to properly handle module loading in production builds.
+ * This prevents race conditions where components render before data is available.
  */
-export const documentationAtom = atom<DocumentationJson>(
-  json as DocumentationJson
-);
+export const documentationAtom = atom<Promise<DocumentationJson>>(async () => {
+  const module = await import("./../data/docs.json");
+  return module.default as DocumentationJson;
+});

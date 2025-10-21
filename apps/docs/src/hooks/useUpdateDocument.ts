@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useAtomValue } from "jotai";
-import { activeDocAtom } from "@/atoms/active-doc";
 import axios from "axios";
 import { mdxDocumentPayloadSchema } from "@/schemas/mdx-document";
 import yaml from "js-yaml";
 import { MdxFileFrontmatterPayload } from "@/types";
+import { useActiveDoc } from "./useActiveDoc";
 
 /**
  * Type for the payload used in the handleSubmit function.
@@ -18,7 +17,7 @@ type HandleSubmitPayload = {
  * Hook to handle the updating of an existing document.
  */
 export const useUpdateDocument = () => {
-  const activeDoc = useAtomValue(activeDocAtom);
+  const activeDoc = useActiveDoc();
   const [isLoading, setIsLoading] = useState(false);
 
   /**

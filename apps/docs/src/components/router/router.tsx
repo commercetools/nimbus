@@ -4,6 +4,18 @@ import { activeRouteAtom } from "@/atoms/route";
 import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 
 /**
+ * Normalizes a route by removing leading/trailing slashes and handling empty routes.
+ * @param route - The route string to normalize
+ * @returns Normalized route string
+ */
+const normalizeRoute = (route: string): string => {
+  // Remove leading and trailing slashes
+  const cleaned = route.replace(/^\/+|\/+$/g, "");
+  // Empty route becomes "home"
+  return cleaned || "home";
+};
+
+/**
  * RouterProvider handles all routing-related functionality for the application,
  * including managing the active route state, handling browser history,
  * and scroll position for hash fragments.
@@ -25,7 +37,7 @@ export const RouterProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const handleRouteChange = () => {
-      const route = location.pathname.slice(1);
+      const route = normalizeRoute(location.pathname);
       setActiveRoute(route);
       // Handle hash fragment when route changes
       handleHashFragment();
@@ -46,7 +58,7 @@ export const RouterProvider = ({ children }: { children: ReactNode }) => {
       setActiveRoute("home");
     }
 
-    const currentRoute = location.pathname.slice(1);
+    const currentRoute = normalizeRoute(location.pathname);
     const routeChanged = currentRoute !== activeRoute;
 
     if (routeChanged) {

@@ -1,13 +1,11 @@
 import { Stack } from "@commercetools/nimbus";
 import { DocumentActionButtons } from "./components/document-action-buttons";
 import { LifecycleStateSelector } from "./components/lifecycle-state-selector";
-import { useAtomValue } from "jotai";
-import { activeDocAtom } from "@/atoms/active-doc";
-
 import { DocumentStringField } from "./components/document-string-field";
+import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 export const DocumentMetaSettings = () => {
-  const activeDocument = useAtomValue(activeDocAtom);
+  const activeDocument = useActiveDoc();
   if (!activeDocument) return null;
   return (
     <Stack>
