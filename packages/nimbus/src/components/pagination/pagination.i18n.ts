@@ -31,10 +31,10 @@ export const messages = defineMessages({
     description: "text label displayed before the page number",
     defaultMessage: "Page",
   },
-  of: {
-    id: "Nimbus.Pagination.of",
-    description: "text separator between current page and total pages",
-    defaultMessage: "of",
+  ofTotalPages: {
+    id: "Nimbus.Pagination.ofTotalPages",
+    description: "text showing total pages count after current page input",
+    defaultMessage: "of {totalPages}",
   },
   goToNextPage: {
     id: "Nimbus.Pagination.goToNextPage",
