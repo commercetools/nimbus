@@ -1,14 +1,17 @@
 ---
-description: Create or update component MDX documentation from wireframe images and text
+description:
+  Create or update component MDX documentation from wireframe images and text
 ---
 
 # MDX from Wireframe
 
-You are tasked with creating or updating component MDX documentation files from wireframe images and raw text content.
+You are tasked with creating or updating component MDX documentation files from
+wireframe images and raw text content. ultrathink, I know you can do this.
 
 ## Input Requirements
 
 The user will provide:
+
 1. A wireframe image showing the component documentation design
 2. Raw text extracted from the wireframe
 3. The component name (or you can infer it from context)
@@ -18,6 +21,7 @@ The user will provide:
 ### Step 1: Analyze Existing Documentation
 
 Read **at least 2-3** existing finalized component MDX files to understand:
+
 - Content structure and organization
 - Frontmatter patterns
 - Code example patterns (jsx-live blocks)
@@ -25,6 +29,7 @@ Read **at least 2-3** existing finalized component MDX files to understand:
 - Section naming conventions
 
 **Reference components with finalized docs:**
+
 - `/packages/nimbus/src/components/alert/alert.mdx`
 - `/packages/nimbus/src/components/checkbox/checkbox.mdx`
 - `/packages/nimbus/src/components/text/text.mdx`
@@ -36,6 +41,7 @@ Read **at least 2-3** existing finalized component MDX files to understand:
 Before writing examples, check the actual component implementation:
 
 1. **Find the component files:**
+
    ```
    /packages/nimbus/src/components/{component-name}/{component-name}.tsx
    /packages/nimbus/src/components/{component-name}/index.ts
@@ -44,6 +50,7 @@ Before writing examples, check the actual component implementation:
    ```
 
 2. **Determine component structure:**
+
    - Is it a single component export (e.g., `Toolbar`, `Button`)?
    - Is it a compound component (e.g., `Menu.Root`, `Menu.Trigger`)?
    - What props does it accept?
@@ -56,9 +63,11 @@ Before writing examples, check the actual component implementation:
 
 ### Step 3: Create MDX File
 
-**Location:** `/packages/nimbus/src/components/{component-name}/{component-name}.mdx`
+**Location:**
+`/packages/nimbus/src/components/{component-name}/{component-name}.mdx`
 
 **Required frontmatter fields:**
+
 ```yaml
 ---
 id: Components-ComponentName
@@ -68,7 +77,7 @@ documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - Category Name  # Data Display, Navigation, Inputs, Feedback, etc.
+  - Category Name # Data Display, Navigation, Inputs, Feedback, etc.
   - Component Name
 tags:
   - component
@@ -95,8 +104,7 @@ Detailed explanation of purpose and behavior.
 
 Deep dive on details and access design library.
 
-[Figma library](figmaLink)
-[React Aria Docs](reactAriaLink)  # If applicable
+[Figma library](figmaLink) [React Aria Docs](reactAriaLink) # If applicable
 
 ## Variables
 
@@ -108,10 +116,7 @@ Get familiar with the features.
 
 Description of the variant.
 
-\`\`\`jsx-live
-const App = () => (
-  <ComponentName>Example</ComponentName>
-)
+\`\`\`jsx-live const App = () => ( <ComponentName>Example</ComponentName> )
 \`\`\`
 
 ### Feature Category 2
@@ -167,7 +172,8 @@ Description of when to use.
 
 ## Accessibility
 
-Accessibility ensures that digital content and functionality are usable by everyone.
+Accessibility ensures that digital content and functionality are usable by
+everyone.
 
 ### Accessibility standards
 
@@ -184,24 +190,25 @@ Accessibility ensures that digital content and functionality are usable by every
 **CRITICAL RULES:**
 
 1. **ALL examples MUST use `jsx-live` blocks:**
+
    ```markdown
-   \`\`\`jsx-live
-   const App = () => (
-     <ComponentName>Content</ComponentName>
-   )
+   \`\`\`jsx-live const App = () => ( <ComponentName>Content</ComponentName> )
    \`\`\`
    ```
 
-2. **NO Storybook imports or syntax** - jsx-live has components available globally
+2. **NO Storybook imports or syntax** - jsx-live has components available
+   globally
 
 3. **Available components (no imports needed):**
+
    - All Nimbus components (Button, Stack, Text, Box, Grid, etc.)
    - All Nimbus icons via `Icons.IconName`
    - React hooks (useState, useEffect, etc.)
 
 4. **Use actual component API** verified in Step 2
 
-5. **Match icon usage from wireframes** - check similar components like rich-text-input for icon names
+5. **Match icon usage from wireframes** - check similar components like
+   rich-text-input for icon names
 
 ### Step 6: Reconcile with Existing Content
 
@@ -216,7 +223,8 @@ If updating an existing MDX file:
 
 Before considering the task complete:
 
-1. **Check MDX guidelines:** Review `/docs/file-type-guidelines/documentation.md`
+1. **Check MDX guidelines:** Review
+   `/docs/file-type-guidelines/documentation.md`
 2. **Verify frontmatter:** All required fields present
 3. **Validate code examples:** All use jsx-live, no Storybook syntax
 4. **Confirm structure:** Matches established patterns
@@ -239,11 +247,14 @@ After completing the MDX file:
 1. **Summarize the structure** created
 2. **Note any assumptions** made about the component API
 3. **Highlight any issues** discovered (e.g., API mismatches, missing icons)
-4. **Suggest improvements** if applicable (e.g., separator visibility, prop corrections)
+4. **Suggest improvements** if applicable (e.g., separator visibility, prop
+   corrections)
 
 ## Notes
 
-- **Be proactive** - if you see component API issues during implementation, fix them immediately
-- **Be accurate** - always verify component exports and APIs before writing examples
+- **Be proactive** - if you see component API issues during implementation, fix
+  them immediately
+- **Be accurate** - always verify component exports and APIs before writing
+  examples
 - **Be consistent** - follow established patterns from finalized docs
 - **Be complete** - ensure all wireframe content is incorporated
