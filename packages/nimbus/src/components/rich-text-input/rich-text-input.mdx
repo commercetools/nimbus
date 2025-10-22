@@ -193,38 +193,6 @@ cognitive, and physical limitations.
 
 ### Accessibility standards
 
-The RichTextInput component follows WCAG 2.1 AA guidelines and implements proper
-accessibility features:
-
-#### Semantic Markup
-
-Ensure the editor outputs semantic HTML (e.g., `<h1>`, `<ul>`, `<strong>`) to be
-correctly interpreted by screen readers.
-
-#### Keyboard Access
-
-- All toolbar controls are accessible via the Tab key
-- Users can navigate and apply formatting without a mouse
-- Standard keyboard shortcuts are supported (Cmd/Ctrl+B for bold, Cmd/Ctrl+I for
-  italic, Cmd/Ctrl+U for underline)
-
-#### ARIA
-
-Apply appropriate ARIA attributes to the toolbar and its controls, such as:
-
-- `aria-label` for toggle icon buttons
-- `role="toolbar"` for the formatting toolbar
-- `role="textbox"` for the editable area
-- `aria-disabled` for disabled states
-
-#### Focus Management
-
-- Clear focus indicators for all interactive elements
-- Focus remains within the text area after formatting actions
-- Logical tab order through toolbar controls
-
-#### Screen Reader Support
-
-- Proper labels for all toolbar buttons and controls
-- Text style dropdown shows style names clearly
-- State changes are announced appropriately
+- **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`, `<ul>`, `<strong>`) to be correctly interpreted by screen readers.
+- **Keyboard Access:** Ensure all toolbar controls are accessible via the tab key. Users must be able to navigate and apply formatting without a mouse.
+- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls, such as aria-label for toggle icon buttons.
