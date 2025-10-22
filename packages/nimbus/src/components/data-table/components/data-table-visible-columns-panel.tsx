@@ -44,11 +44,15 @@ const VisibleColumnsPanel = ({
     setSearchValue(value);
   };
 
-  console.log("searchValue", searchValue, {
-    hiddenItems: hiddenItems.filter((item) =>
-      item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
-    ),
-  });
+  const searchedHiddenItems = hiddenItems.filter((item) =>
+    item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const handleRemoveItem = (id: string) => {
+    // Remove the item from visible columns and update parent
+    const updatedVisibleItems = visibleItems.filter((item) => item.id !== id);
+    handleVisibleColumnsUpdate(updatedVisibleItems);
+  };
 
   return (
     <Stack gap="400" mt="400">
@@ -76,6 +80,7 @@ const VisibleColumnsPanel = ({
               borderRadius="0"
               borderBottom="1px solid {colors.neutral.3}"
               placeholder={formatMessage(messages.searchHiddenColumns)}
+              aria-label={formatMessage(messages.searchHiddenColumns)}
               onChange={handleSearch}
               value={searchValue}
             />
@@ -84,23 +89,25 @@ const VisibleColumnsPanel = ({
               borderColor="none"
               h="full"
               p="0"
-              items={hiddenItems.filter((item) =>
-                item.label
-                  ?.toString()
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase())
-              )}
-              // onUpdateItems={(updatedItems) => {
-              // console.log("updatedItems", updatedItems);
-              // setHiddenItems(updatedItems);
-              // }}
+              items={searchValue.length > 0 ? searchedHiddenItems : hiddenItems}
               aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
                   {formatMessage(messages.noHiddenColumns)}
                 </Text>
               }
-            />
+            >
+              {(item) => (
+                <DraggableList.Item
+                  py="100"
+                  key={item.id}
+                  id={item.id}
+                  aria-label={item.label?.toString() ?? item.id}
+                >
+                  {item.label}
+                </DraggableList.Item>
+              )}
+            </DraggableList.Root>
           </Stack>
         </Box>
 
@@ -119,7 +126,19 @@ const VisibleColumnsPanel = ({
             items={visibleItems}
             onUpdateItems={handleVisibleColumnsUpdate}
             aria-label={formatMessage(messages.visibleColumnsAria)}
-          />
+          >
+            {(item) => (
+              <DraggableList.Item
+                py="100"
+                key={item.id}
+                id={item.id}
+                onRemoveItem={() => handleRemoveItem(item.id)}
+                aria-label={item.label?.toString() ?? item.id}
+              >
+                {item.label}
+              </DraggableList.Item>
+            )}
+          </DraggableList.Root>
         </Box>
       </SimpleGrid>
 
@@ -130,6 +149,7 @@ const VisibleColumnsPanel = ({
           tone="primary"
           size="md"
           onClick={handleResetColumns}
+          aria-label={formatMessage(messages.reset)}
         >
           <Refresh />
           {formatMessage(messages.reset)}
