@@ -21,10 +21,9 @@ type ButtonRecipeProps = {
    */
   variant?: RecipeProps<"button">["variant"];
   /**
-   * Color palette for the button
+   * Color palette for the button, mimics Chakra's tone property
    */
-  colorPalette?: RecipeProps<"button">["tone"];
-  // TODO: is this correct? 'colorPalette' is not in Chakra's RecipeProps
+  colorPalette?: "primary" | "critical" | "neutral" | "info" | undefined;
 } & UnstyledProp;
 
 // ============================================================
