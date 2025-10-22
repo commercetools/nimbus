@@ -5,6 +5,118 @@
       "value": "Dismiss"
     }
   ],
+  "Nimbus.Avatar.avatarLabel": [
+    {
+      "type": 0,
+      "value": "Avatar image for "
+    },
+    {
+      "type": 1,
+      "value": "fullName"
+    }
+  ],
+  "Nimbus.Calendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Next month"
+    }
+  ],
+  "Nimbus.Calendar.nextYear": [
+    {
+      "type": 0,
+      "value": "Next year"
+    }
+  ],
+  "Nimbus.Calendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Previous month"
+    }
+  ],
+  "Nimbus.Calendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Previous year"
+    }
+  ],
+  "Nimbus.ComboBox.clearSelection": [
+    {
+      "type": 0,
+      "value": "Clear selection"
+    }
+  ],
+  "Nimbus.ComboBox.comboboxDialog": [
+    {
+      "type": 0,
+      "value": "Combobox dialog"
+    }
+  ],
+  "Nimbus.ComboBox.filterOptions": [
+    {
+      "type": 0,
+      "value": "Filter combobox options"
+    }
+  ],
+  "Nimbus.ComboBox.options": [
+    {
+      "type": 0,
+      "value": "Combobox options"
+    }
+  ],
+  "Nimbus.ComboBox.selectedValues": [
+    {
+      "type": 0,
+      "value": "Selected values"
+    }
+  ],
+  "Nimbus.ComboBox.toggleCombobox": [
+    {
+      "type": 0,
+      "value": "Toggle combobox"
+    }
+  ],
+  "Nimbus.DataTable.dataTable": [
+    {
+      "type": 0,
+      "value": "Data table"
+    }
+  ],
+  "Nimbus.DataTable.dataTableBody": [
+    {
+      "type": 0,
+      "value": "Data table body"
+    }
+  ],
+  "Nimbus.DataTable.dataTableHeader": [
+    {
+      "type": 0,
+      "value": "Data table header"
+    }
+  ],
+  "Nimbus.DataTable.expandRows": [
+    {
+      "type": 0,
+      "value": "Expand rows"
+    }
+  ],
+  "Nimbus.DataTable.pinRows": [
+    {
+      "type": 0,
+      "value": "Pin rows"
+    }
+  ],
+  "Nimbus.DataTable.resizeColumn": [
+    {
+      "type": 0,
+      "value": "Resize column"
+    }
+  ],
+  "Nimbus.DataTable.selectRow": [
+    {
+      "type": 0,
+      "value": "Select row"
+    }
+  ],
   "Nimbus.DatePicker.Time.enterTime": [
     {
       "type": 0,
@@ -39,6 +151,84 @@
     {
       "type": 0,
       "value": "Clear input value"
+    }
+  ],
+  "Nimbus.DateRangePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Clear input value"
+    }
+  ],
+  "Nimbus.DateRangePicker.clearSelection": [
+    {
+      "type": 0,
+      "value": "Clear date range"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTime": [
+    {
+      "type": 0,
+      "value": "End time"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeHour": [
+    {
+      "type": 0,
+      "value": "End time (hour)"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "End time (hour and minute)"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "End time (hour, minute, and second)"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeLabel": [
+    {
+      "type": 0,
+      "value": "End time"
+    }
+  ],
+  "Nimbus.DateRangePicker.openCalendar": [
+    {
+      "type": 0,
+      "value": "Open calendar"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTime": [
+    {
+      "type": 0,
+      "value": "Start time"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeHour": [
+    {
+      "type": 0,
+      "value": "Start time (hour)"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Start time (hour and minute)"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Start time (hour, minute, and second)"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeLabel": [
+    {
+      "type": 0,
+      "value": "Start time"
     }
   ],
   "Nimbus.Dialog.closeTrigger": [
@@ -227,6 +417,54 @@
       "value": "Increment"
     }
   ],
+  "Nimbus.Pagination.currentPage": [
+    {
+      "type": 0,
+      "value": "Current page"
+    }
+  ],
+  "Nimbus.Pagination.goToNextPage": [
+    {
+      "type": 0,
+      "value": "Go to next page"
+    }
+  ],
+  "Nimbus.Pagination.goToPreviousPage": [
+    {
+      "type": 0,
+      "value": "Go to previous page"
+    }
+  ],
+  "Nimbus.Pagination.itemsPerPage": [
+    {
+      "type": 0,
+      "value": "Items per page"
+    }
+  ],
+  "Nimbus.Pagination.itemsPerPageText": [
+    {
+      "type": 0,
+      "value": "items per page"
+    }
+  ],
+  "Nimbus.Pagination.of": [
+    {
+      "type": 0,
+      "value": "of"
+    }
+  ],
+  "Nimbus.Pagination.page": [
+    {
+      "type": 0,
+      "value": "Page"
+    }
+  ],
+  "Nimbus.Pagination.pagination": [
+    {
+      "type": 0,
+      "value": "Pagination"
+    }
+  ],
   "Nimbus.PasswordInput.hide": [
     {
       "type": 0,
@@ -237,6 +475,174 @@
     {
       "type": 0,
       "value": "Show password"
+    }
+  ],
+  "Nimbus.RangeCalendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Next month"
+    }
+  ],
+  "Nimbus.RangeCalendar.nextYear": [
+    {
+      "type": 0,
+      "value": "Next year"
+    }
+  ],
+  "Nimbus.RangeCalendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Previous month"
+    }
+  ],
+  "Nimbus.RangeCalendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Previous year"
+    }
+  ],
+  "Nimbus.RichTextInput.bold": [
+    {
+      "type": 0,
+      "value": "Bold"
+    }
+  ],
+  "Nimbus.RichTextInput.bulletedList": [
+    {
+      "type": 0,
+      "value": "Bulleted list"
+    }
+  ],
+  "Nimbus.RichTextInput.code": [
+    {
+      "type": 0,
+      "value": "Code"
+    }
+  ],
+  "Nimbus.RichTextInput.headingFive": [
+    {
+      "type": 0,
+      "value": "Heading 5"
+    }
+  ],
+  "Nimbus.RichTextInput.headingFour": [
+    {
+      "type": 0,
+      "value": "Heading 4"
+    }
+  ],
+  "Nimbus.RichTextInput.headingOne": [
+    {
+      "type": 0,
+      "value": "Heading 1"
+    }
+  ],
+  "Nimbus.RichTextInput.headingThree": [
+    {
+      "type": 0,
+      "value": "Heading 3"
+    }
+  ],
+  "Nimbus.RichTextInput.headingTwo": [
+    {
+      "type": 0,
+      "value": "Heading 2"
+    }
+  ],
+  "Nimbus.RichTextInput.italic": [
+    {
+      "type": 0,
+      "value": "Italic"
+    }
+  ],
+  "Nimbus.RichTextInput.listFormatting": [
+    {
+      "type": 0,
+      "value": "List formatting"
+    }
+  ],
+  "Nimbus.RichTextInput.moreFormattingOptions": [
+    {
+      "type": 0,
+      "value": "More formatting options"
+    }
+  ],
+  "Nimbus.RichTextInput.moreStyles": [
+    {
+      "type": 0,
+      "value": "More styles"
+    }
+  ],
+  "Nimbus.RichTextInput.numberedList": [
+    {
+      "type": 0,
+      "value": "Numbered list"
+    }
+  ],
+  "Nimbus.RichTextInput.paragraph": [
+    {
+      "type": 0,
+      "value": "Paragraph"
+    }
+  ],
+  "Nimbus.RichTextInput.quote": [
+    {
+      "type": 0,
+      "value": "Quote"
+    }
+  ],
+  "Nimbus.RichTextInput.redo": [
+    {
+      "type": 0,
+      "value": "Redo"
+    }
+  ],
+  "Nimbus.RichTextInput.strikethrough": [
+    {
+      "type": 0,
+      "value": "Strikethrough"
+    }
+  ],
+  "Nimbus.RichTextInput.subscript": [
+    {
+      "type": 0,
+      "value": "Subscript"
+    }
+  ],
+  "Nimbus.RichTextInput.superscript": [
+    {
+      "type": 0,
+      "value": "Superscript"
+    }
+  ],
+  "Nimbus.RichTextInput.textFormatting": [
+    {
+      "type": 0,
+      "value": "Text formatting"
+    }
+  ],
+  "Nimbus.RichTextInput.textStyle": [
+    {
+      "type": 0,
+      "value": "Text style"
+    }
+  ],
+  "Nimbus.RichTextInput.textStyleMenu": [
+    {
+      "type": 0,
+      "value": "Text style menu"
+    }
+  ],
+  "Nimbus.RichTextInput.underline": [
+    {
+      "type": 0,
+      "value": "Underline"
+    }
+  ],
+  "Nimbus.RichTextInput.undo": [
+    {
+      "type": 0,
+      "value": "Undo"
     }
   ],
   "Nimbus.ScopedSearchInput.clearButton": [
@@ -273,6 +679,18 @@
     {
       "type": 0,
       "value": "Clear selection"
+    }
+  ],
+  "Nimbus.SplitButton.noActionsAvailable": [
+    {
+      "type": 0,
+      "value": "No actions available"
+    }
+  ],
+  "Nimbus.TagGroup.removeTag": [
+    {
+      "type": 0,
+      "value": "Remove tag"
     }
   ]
 }
