@@ -1,12 +1,15 @@
 import { Flex, Text, TimeInput } from "@/components";
 import { useContext, useRef, useEffect } from "react";
 import { DateRangePickerStateContext } from "react-aria-components";
+import { useIntl } from "react-intl";
+import { messages } from "../date-range-picker.i18n";
 import type { DateRangePickerTimeInputProps } from "../date-range-picker.types";
 
 export const DateRangePickerTimeInput = ({
   hideTimeZone,
   hourCycle,
 }: DateRangePickerTimeInputProps) => {
+  const intl = useIntl();
   const dateRangePickerState = useContext(DateRangePickerStateContext);
   const { granularity, value } = dateRangePickerState!;
   const timeInputRef = useRef<HTMLDivElement>(null);
@@ -76,14 +79,13 @@ export const DateRangePickerTimeInput = ({
     >
       {/* Start DateInput with separate label */}
       <Flex alignItems="center" gap="200">
-        {/* TODO: translate hardcoded string */}
         <Text
           textStyle="xs"
           fontWeight="500"
           color="neutral.12"
           minWidth="fit-content"
         >
-          Start time
+          {intl.formatMessage(messages.startTimeLabel)}
         </Text>
         <TimeInput
           slot="startTimeInput"
@@ -96,14 +98,13 @@ export const DateRangePickerTimeInput = ({
 
       {/* End DateInput with separate label */}
       <Flex alignItems="center" gap="200">
-        {/* TODO: translate hardcoded string */}
         <Text
           textStyle="xs"
           fontWeight="500"
           color="neutral.12"
           minWidth="fit-content"
         >
-          End time
+          {intl.formatMessage(messages.endTimeLabel)}
         </Text>
         <TimeInput
           slot="endTimeInput"

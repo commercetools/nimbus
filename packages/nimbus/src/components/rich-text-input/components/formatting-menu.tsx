@@ -1,4 +1,5 @@
 import { useSlate } from "slate-react";
+import { useIntl } from "react-intl";
 import { Menu, IconButton, Text, Box, Tooltip } from "@/components";
 import {
   MoreHoriz,
@@ -7,12 +8,14 @@ import {
 } from "@commercetools/nimbus-icons";
 import { usePreservedSelection } from "../hooks/use-preserved-selection";
 import { useFormattingState } from "../hooks/use-formatting-state";
+import { messages } from "../rich-text-input.i18n";
 
 export type FormattingMenuProps = {
   isDisabled?: boolean;
 };
 
 export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
+  const intl = useIntl();
   const editor = useSlate();
   const withPreservedSelection = usePreservedSelection(editor);
 
@@ -32,38 +35,44 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label="More formatting options"
+            aria-label={intl.formatMessage(messages.moreFormattingOptions)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
           >
             <MoreHoriz />
           </IconButton>
         </Menu.Trigger>
-        <Tooltip.Content placement="top">More styles</Tooltip.Content>
+        <Tooltip.Content placement="top">
+          {intl.formatMessage(messages.moreStyles)}
+        </Tooltip.Content>
       </Tooltip.Root>
       <Menu.Content>
         <Menu.Item id="strikethrough">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <FormatStrikethrough />
-            <Text textStyle="sm">Strikethrough</Text>
+            <Text textStyle="sm">
+              {intl.formatMessage(messages.strikethrough)}
+            </Text>
           </Box>
         </Menu.Item>
         <Menu.Item id="code">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Code />
-            <Text textStyle="sm">Code</Text>
+            <Text textStyle="sm">{intl.formatMessage(messages.code)}</Text>
           </Box>
         </Menu.Item>
         <Menu.Item id="superscript">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Text>X²</Text>
-            <Text textStyle="sm">Superscript</Text>
+            <Text textStyle="sm">
+              {intl.formatMessage(messages.superscript)}
+            </Text>
           </Box>
         </Menu.Item>
         <Menu.Item id="subscript">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Text>X₂</Text>
-            <Text textStyle="sm">Subscript</Text>
+            <Text textStyle="sm">{intl.formatMessage(messages.subscript)}</Text>
           </Box>
         </Menu.Item>
       </Menu.Content>

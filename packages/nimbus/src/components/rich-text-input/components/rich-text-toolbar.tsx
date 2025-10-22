@@ -1,4 +1,5 @@
 import { useSlate } from "slate-react";
+import { useIntl } from "react-intl";
 import {
   Toolbar,
   Menu,
@@ -25,8 +26,9 @@ import {
 import { toggleMark } from "../utils/slate-helpers";
 import { usePreservedSelection } from "../hooks/use-preserved-selection";
 import { useToolbarState } from "../hooks/use-toolbar-state";
-import { textStyles } from "../constants";
+import { getTextStyles } from "../constants";
 import { FormattingMenu } from "./formatting-menu";
+import { messages } from "../rich-text-input.i18n";
 
 export type RichTextToolbarProps = {
   isDisabled?: boolean;
@@ -35,8 +37,12 @@ export type RichTextToolbarProps = {
 export const RichTextToolbar = ({
   isDisabled = false,
 }: RichTextToolbarProps) => {
+  const intl = useIntl();
   const editor = useSlate();
   const withPreservedSelection = usePreservedSelection(editor);
+
+  // Get localized text styles
+  const textStyles = getTextStyles(intl);
 
   // Use the toolbar state hook for all state management
   const {
@@ -48,12 +54,12 @@ export const RichTextToolbar = ({
     selectedListKeys,
     hasUndos,
     hasRedos,
-  } = useToolbarState({ withPreservedSelection });
+  } = useToolbarState({ withPreservedSelection, textStyles });
 
   return (
     <Toolbar
       orientation="horizontal"
-      aria-label="Text formatting"
+      aria-label={intl.formatMessage(messages.textFormatting)}
       width="full"
       overflow="hidden"
       size="xs"
@@ -73,7 +79,7 @@ export const RichTextToolbar = ({
               _hover={{ bg: "primary.2" }}
               isDisabled={isDisabled}
               onMouseDown={(event) => event.preventDefault()}
-              aria-label="Text style menu"
+              aria-label={intl.formatMessage(messages.textStyleMenu)}
             >
               <Box display="flex" alignItems="center" gap="200" px="200">
                 <Box display="flex" alignItems="center" gap="200" flexGrow="1">
@@ -84,7 +90,9 @@ export const RichTextToolbar = ({
                 <KeyboardArrowDown />
               </Box>
             </Menu.Trigger>
-            <Tooltip.Content placement="top">Text style</Tooltip.Content>
+            <Tooltip.Content placement="top">
+              {intl.formatMessage(messages.textStyle)}
+            </Tooltip.Content>
           </Tooltip.Root>
           <Menu.Content>
             {textStyles.map((style) => (
@@ -115,37 +123,43 @@ export const RichTextToolbar = ({
             id="bold"
             size="xs"
             variant="ghost"
-            aria-label="Bold"
+            aria-label={intl.formatMessage(messages.bold)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() => toggleMark(editor, "bold"))}
           >
             <FormatBold />
-            <VisuallyHidden>Bold</VisuallyHidden>
+            <VisuallyHidden>{intl.formatMessage(messages.bold)}</VisuallyHidden>
           </IconToggleButton>
-          <Tooltip.Content placement="top">Bold</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.bold)}
+          </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
           <IconToggleButton
             id="italic"
             size="xs"
             variant="ghost"
-            aria-label="Italic"
+            aria-label={intl.formatMessage(messages.italic)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() => toggleMark(editor, "italic"))}
           >
             <FormatItalic />
-            <VisuallyHidden>Italic</VisuallyHidden>
+            <VisuallyHidden>
+              {intl.formatMessage(messages.italic)}
+            </VisuallyHidden>
           </IconToggleButton>
-          <Tooltip.Content placement="top">Italic</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.italic)}
+          </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
           <IconToggleButton
             id="underline"
             size="xs"
             variant="ghost"
-            aria-label="Underline"
+            aria-label={intl.formatMessage(messages.underline)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() =>
@@ -153,9 +167,13 @@ export const RichTextToolbar = ({
             )}
           >
             <FormatUnderlined />
-            <VisuallyHidden>Underline</VisuallyHidden>
+            <VisuallyHidden>
+              {intl.formatMessage(messages.underline)}
+            </VisuallyHidden>
           </IconToggleButton>
-          <Tooltip.Content placement="top">Underline</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.underline)}
+          </Tooltip.Content>
         </Tooltip.Root>
       </ToggleButtonGroup.Root>
 
@@ -169,7 +187,7 @@ export const RichTextToolbar = ({
         selectionMode="single"
         selectedKeys={selectedListKeys}
         onSelectionChange={handleListToggle}
-        aria-label="List formatting"
+        aria-label={intl.formatMessage(messages.listFormatting)}
         isDisabled={isDisabled}
       >
         <Tooltip.Root delay={0} closeDelay={0}>
@@ -177,26 +195,30 @@ export const RichTextToolbar = ({
             id="bulleted-list"
             size="xs"
             variant="ghost"
-            aria-label="Bulleted List"
+            aria-label={intl.formatMessage(messages.bulletedList)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
           >
             <FormatListBulleted />
           </IconToggleButton>
-          <Tooltip.Content placement="top">Bulleted list</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.bulletedList)}
+          </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
           <IconToggleButton
             id="numbered-list"
             size="xs"
             variant="ghost"
-            aria-label="Numbered List"
+            aria-label={intl.formatMessage(messages.numberedList)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
           >
             <FormatListNumbered />
           </IconToggleButton>
-          <Tooltip.Content placement="top">Numbered list</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.numberedList)}
+          </Tooltip.Content>
         </Tooltip.Root>
       </ToggleButtonGroup.Root>
 
@@ -208,29 +230,33 @@ export const RichTextToolbar = ({
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label="Undo"
+            aria-label={intl.formatMessage(messages.undo)}
             isDisabled={!hasUndos || isDisabled}
             onPress={withPreservedSelection(() => editor.undo())}
             onMouseDown={(event) => event.preventDefault()}
           >
             <Undo />
-            <VisuallyHidden>Undo</VisuallyHidden>
+            <VisuallyHidden>{intl.formatMessage(messages.undo)}</VisuallyHidden>
           </IconButton>
-          <Tooltip.Content placement="top">Undo</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.undo)}
+          </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label="Redo"
+            aria-label={intl.formatMessage(messages.redo)}
             isDisabled={!hasRedos || isDisabled}
             onPress={withPreservedSelection(() => editor.redo())}
             onMouseDown={(event) => event.preventDefault()}
           >
             <Redo />
-            <VisuallyHidden>Redo</VisuallyHidden>
+            <VisuallyHidden>{intl.formatMessage(messages.redo)}</VisuallyHidden>
           </IconButton>
-          <Tooltip.Content placement="top">Redo</Tooltip.Content>
+          <Tooltip.Content placement="top">
+            {intl.formatMessage(messages.redo)}
+          </Tooltip.Content>
         </Tooltip.Root>
       </Group>
     </Toolbar>

@@ -1,4 +1,5 @@
 import { useRef, useCallback, useEffect } from "react";
+import { useIntl } from "react-intl";
 import {
   Row as RaRow,
   Collection as RaCollection,
@@ -21,6 +22,7 @@ import {
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
+import { messages } from "../data-table.i18n";
 
 /**
  * Determines if a click event originated from an interactive element within a table row.
@@ -78,6 +80,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
   ref,
   ...props
 }: DataTableRowProps<T>) => {
+  const intl = useIntl();
   const {
     activeColumns,
     search,
@@ -351,7 +354,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 <Checkbox
                   name="select-row"
                   slot="selection"
-                  aria-label="select row"
+                  aria-label={intl.formatMessage(messages.selectRow)}
                 />
               </Box>
             </DataTableCell>

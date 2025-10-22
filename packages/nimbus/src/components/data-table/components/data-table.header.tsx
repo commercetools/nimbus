@@ -1,4 +1,5 @@
 import { VisuallyHidden } from "react-aria";
+import { useIntl } from "react-intl";
 import {
   TableHeader as RaTableHeader,
   Collection as RaCollection,
@@ -13,6 +14,7 @@ import type {
 import { DataTableHeaderSlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
+import { messages } from "../data-table.i18n";
 
 export const DataTableHeader = <
   T extends DataTableColumnItem = DataTableColumnItem,
@@ -20,6 +22,7 @@ export const DataTableHeader = <
   ref,
   ...props
 }: DataTableHeaderProps<T>) => {
+  const intl = useIntl();
   const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
     useDataTableContext();
   // This can also be used to see if drag'n'drop is enabled
@@ -55,10 +58,12 @@ export const DataTableHeader = <
             maxWidth={selectionBehavior === "toggle" ? 24 : 72}
             minWidth={selectionBehavior === "toggle" ? 24 : 72}
             allowsSorting={false}
-            aria-label="Expand rows"
+            aria-label={intl.formatMessage(messages.expandRows)}
             isInternalColumn={true}
           >
-            <VisuallyHidden>Expand rows</VisuallyHidden>
+            <VisuallyHidden>
+              {intl.formatMessage(messages.expandRows)}
+            </VisuallyHidden>
           </DataTableColumn>
         )}
         <RaCollection items={activeColumns}>
@@ -95,9 +100,11 @@ export const DataTableHeader = <
           minWidth={72}
           allowsSorting={false}
           isInternalColumn={true}
-          aria-label="Pin rows"
+          aria-label={intl.formatMessage(messages.pinRows)}
         >
-          <VisuallyHidden>Pin rows</VisuallyHidden>
+          <VisuallyHidden>
+            {intl.formatMessage(messages.pinRows)}
+          </VisuallyHidden>
         </DataTableColumn>
       </RaTableHeader>
     </DataTableHeaderSlot>

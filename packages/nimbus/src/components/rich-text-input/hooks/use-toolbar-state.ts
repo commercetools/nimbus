@@ -18,7 +18,11 @@ import { useMemo, useCallback } from "react";
 import { Editor } from "slate";
 import { useSlate } from "slate-react";
 import type { Key } from "react-aria";
-import { textStyles, blockTypes, type BlockType } from "../constants";
+import {
+  blockTypes,
+  type BlockType,
+  type TextStyleDefinition,
+} from "../constants";
 import {
   isMarkActive,
   isBlockActive,
@@ -28,10 +32,12 @@ import type { CustomElement } from "../utils/types";
 
 export type UseToolbarStateProps = {
   withPreservedSelection: (fn: () => void) => () => void;
+  textStyles: TextStyleDefinition[];
 };
 
 export const useToolbarState = ({
   withPreservedSelection,
+  textStyles,
 }: UseToolbarStateProps) => {
   const editor = useSlate();
 

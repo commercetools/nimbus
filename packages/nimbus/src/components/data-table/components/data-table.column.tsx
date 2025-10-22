@@ -1,4 +1,5 @@
 import { ColumnResizer, Column as RaColumn } from "react-aria-components";
+import { useIntl } from "react-intl";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Flex, Separator } from "@/components";
 import { extractStyleProps } from "@/utils";
@@ -9,6 +10,7 @@ import {
   DataTableColumnResizer,
 } from "../data-table.slots";
 import type { DataTableColumnComponent } from "../data-table.types";
+import { messages } from "../data-table.i18n";
 
 export const DataTableColumn: DataTableColumnComponent = ({
   children,
@@ -20,6 +22,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
   maxWidth,
   ...otherProps
 }) => {
+  const intl = useIntl();
   const { sortDescriptor, isResizable } = useDataTableContext();
   const isActive = sortDescriptor?.column === column?.id;
   const isColumnResizable =
@@ -69,7 +72,9 @@ export const DataTableColumn: DataTableColumnComponent = ({
                 </DataTableHeaderSortIcon>
               )}
               {isColumnResizable && (
-                <ColumnResizer aria-label="Resize column">
+                <ColumnResizer
+                  aria-label={intl.formatMessage(messages.resizeColumn)}
+                >
                   {({ isResizing, isFocused, isHovered }) => (
                     <DataTableColumnResizer
                       data-resizing={isResizing}

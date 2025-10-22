@@ -1,4 +1,5 @@
 import React from "react";
+import { useIntl } from "react-intl";
 import { Button } from "@/components/button";
 import { IconButton } from "@/components/icon-button";
 import { Menu } from "@/components/menu";
@@ -10,6 +11,7 @@ import {
   SplitButtonPrimaryButtonSlot,
   SplitButtonTriggerSlot,
 } from "./split-button.slots";
+import { messages } from "./split-button.i18n";
 import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
 
 // Re-export types
@@ -27,6 +29,7 @@ export type * from "./split-button.types";
  * Use with Menu.Item, Menu.Section, and Separator components for content.
  */
 export const SplitButton = (props: SplitButtonProps) => {
+  const intl = useIntl();
   const {
     size = "md",
     variant = "solid",
@@ -148,8 +151,7 @@ export const SplitButton = (props: SplitButtonProps) => {
 
     return (
       primaryMenuItem || {
-        // TODO: Localize this
-        content: "No actions available",
+        content: intl.formatMessage(messages.noActionsAvailable),
         isDisabled: true,
         actionId: null,
       }

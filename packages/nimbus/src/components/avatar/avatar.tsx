@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Image } from "@chakra-ui/react/image";
+import { useIntl } from "react-intl";
+import { Image } from "@commercetools/nimbus";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
+import { messages } from "./avatar.i18n";
 
 function getInitials(firstName: string, lastName: string) {
   return (
@@ -10,6 +12,7 @@ function getInitials(firstName: string, lastName: string) {
 }
 
 export const Avatar = (props: AvatarProps) => {
+  const intl = useIntl();
   const { ref, firstName, lastName, src, alt, ...rest } = props;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -17,7 +20,7 @@ export const Avatar = (props: AvatarProps) => {
   const fullName = `${firstName} ${lastName}`;
 
   const sharedProps = {
-    "aria-label": `${fullName} avatar`,
+    "aria-label": intl.formatMessage(messages.avatarLabel, { fullName }),
     ref,
     ...rest,
   };
