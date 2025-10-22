@@ -18,7 +18,7 @@ type LoadingSpinnerRecipeProps = {
    * Color palette for the loading spinner
    * @default "primary"
    */
-  colorPalette?: RecipeProps<"loadingSpinner">["colorPalette"];
+  colorPalette?: RecipeProps<"loadingSpinner">["tone"];
 } & UnstyledProp;
 
 // ============================================================
