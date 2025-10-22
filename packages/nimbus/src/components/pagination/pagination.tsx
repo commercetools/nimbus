@@ -125,7 +125,7 @@ export const Pagination = (props: PaginationProps) => {
           )}
           <Text color="neutral.12">
             {intl.formatMessage(messages.ofTotalPages, {
-              totalPages: pagination.totalPages,
+              totalPages: intl.formatNumber(pagination.totalPages),
             })}
           </Text>
         </Flex>
