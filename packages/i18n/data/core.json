@@ -295,9 +295,9 @@
     "developer_comment": "text label displayed next to the page size selector",
     "string": "items per page"
   },
-  "Nimbus.Pagination.of": {
-    "developer_comment": "text separator between current page and total pages",
-    "string": "of"
+  "Nimbus.Pagination.ofTotalPages": {
+    "developer_comment": "text showing total pages count after current page input",
+    "string": "of {totalPages}"
   },
   "Nimbus.Pagination.page": {
     "developer_comment": "text label displayed before the page number",
@@ -427,10 +427,6 @@
     "developer_comment": "aria-label and tooltip for the undo button",
     "string": "Undo"
   },
-  "Nimbus.ScopedSearchInput.clearButton": {
-    "developer_comment": "aria-label for clear button",
-    "string": "Clear search"
-  },
   "Nimbus.ScopedSearchInput.searchLabel": {
     "developer_comment": "Default aria-label for search input",
     "string": "Search"
@@ -438,10 +434,6 @@
   "Nimbus.ScopedSearchInput.selectLabel": {
     "developer_comment": "Default aria-label for select dropdown",
     "string": "Filter by"
-  },
-  "Nimbus.ScopedSearchInput.submitButton": {
-    "developer_comment": "aria-label for submit button",
-    "string": "Submit search"
   },
   "Nimbus.SearchInput.clearInput": {
     "developer_comment": "aria-label for search input clear button",
