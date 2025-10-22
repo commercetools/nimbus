@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useIntl } from "react-intl";
-import { Image } from "@commercetools/nimbus";
+import { Image } from "@/components";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots.tsx";
 import { messages } from "./avatar.i18n";
