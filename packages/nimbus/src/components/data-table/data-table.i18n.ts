@@ -138,4 +138,10 @@ export const messages = defineMessages({
       "aria-label for the compact togglebutton in the data table manager layout",
     defaultMessage: "Compact section",
   },
+  searchHiddenColumns: {
+    id: "data-table.manager.search-hidden-columns",
+    description:
+      "placeholder for the search input in the hidden columns section in the data table manager",
+    defaultMessage: "Search...",
+  },
 });

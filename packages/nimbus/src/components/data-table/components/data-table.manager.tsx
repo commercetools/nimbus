@@ -13,25 +13,6 @@ export type DataTableManagerProps = {
   renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
 };
 
-/**
- * # DataTable.Manager
- *
- * A settings panel that allows users to manage table columns visibility and layout.
- * Opens in a drawer with tabs for "Visible columns" and "Layout settings".
- * Uses drag-and-drop to reorder columns.
- *
- * @example
- * ```tsx
- * <DataTable.Root columns={columns} rows={rows}>
- *   <DataTable.Manager />
- *   <DataTable.Table>
- *     <DataTable.Header />
- *     <DataTable.Body />
- *   </DataTable.Table>
- * </DataTable.Root>
- * ```
- */
-
 export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();

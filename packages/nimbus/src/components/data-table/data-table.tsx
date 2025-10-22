@@ -54,6 +54,24 @@ export const DataTable = Object.assign(DataTableBase, {
   Row: DataTableRow,
   Cell: DataTableCell,
   Footer: DataTableFooter,
+  /**
+   * # DataTable.Manager
+   *
+   * A settings panel that allows users to manage table columns visibility and layout.
+   * Opens in a drawer with tabs for "Visible columns" and "Layout settings".
+   * Uses drag-and-drop to reorder columns.
+   *
+   * @example
+   * ```tsx
+   * <DataTable.Root columns={columns} rows={rows}>
+   *   <DataTable.Manager />
+   *   <DataTable.Table>
+   *     <DataTable.Header />
+   *     <DataTable.Body />
+   *   </DataTable.Table>
+   * </DataTable.Root>
+   * ```
+   */
   Manager: DataTableManager,
   ExpandButton: DataTableExpandButton,
   NestedIcon: DataTableNestedIcon,
