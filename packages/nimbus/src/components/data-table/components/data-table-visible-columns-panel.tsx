@@ -93,15 +93,16 @@ const VisibleColumnsPanel = ({
             <SearchInput
               w="full"
               variant="ghost"
-              // boxShadow="none"
-              // borderRadius="0"
-              // borderBottom="1px solid {colors.neutral.3}"
               placeholder={formatMessage(messages.searchHiddenColumns)}
               aria-label={formatMessage(messages.searchHiddenColumns)}
               onChange={handleSearch}
               value={searchValue}
             />
-            <Separator colorPalette="neutral.3" />
+            <Separator
+              colorPalette="primary"
+              border="{sizes.25} solid"
+              borderColor="colorPalette.3"
+            />
             <DraggableList.Root
               border="none"
               borderColor="none"
