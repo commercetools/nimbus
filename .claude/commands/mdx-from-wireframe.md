@@ -36,6 +36,10 @@ Read **at least 2-3** existing finalized component MDX files to understand:
 - `/packages/nimbus/src/components/avatar/avatar.mdx`
 - `/packages/nimbus/src/components/form-field/form-field.mdx`
 
+**Reference documentation:**
+
+- `/docs/file-type-guidelines/documentation.md`
+
 ### Step 2: Verify Component API
 
 Before writing examples, check the actual component implementation:
@@ -234,7 +238,7 @@ Before considering the task complete:
 
 - ❌ Using compound component syntax when component is single export
 - ❌ Using Storybook imports or Canvas components in MDX
-- ❌ Forgetting to wrap icons in IconButton components
+- ❌ Forgetting to wrap interactive icons in IconButton components
 - ❌ Using non-existent component props or variants
 - ❌ Copying placeholder text instead of using wireframe content
 - ❌ Missing required frontmatter fields
