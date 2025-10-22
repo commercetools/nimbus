@@ -11,14 +11,4 @@ export const messages = defineMessages({
     description: "Default aria-label for search input",
     defaultMessage: "Search",
   },
-  submitButton: {
-    id: "Nimbus.ScopedSearchInput.submitButton",
-    description: "aria-label for submit button",
-    defaultMessage: "Submit search",
-  },
-  clearButton: {
-    id: "Nimbus.ScopedSearchInput.clearButton",
-    description: "aria-label for clear button",
-    defaultMessage: "Clear search",
-  },
 });
