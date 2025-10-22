@@ -127,7 +127,8 @@ export const TagRemoval: Story = {
     });
 
     await step("Tags - mouse removal", async () => {
-      const removeKangarooButton = within(kangaroo).getByLabelText("Remove");
+      const removeKangarooButton =
+        within(kangaroo).getByLabelText("Remove tag");
       await userEvent.click(removeKangarooButton);
       expect(args.onRemove).toHaveBeenCalled();
       expect(kangaroo).not.toBeInTheDocument();
