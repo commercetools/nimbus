@@ -3,7 +3,7 @@ import { useContext, useRef, useEffect } from "react";
 import { DatePickerStateContext } from "react-aria-components";
 import type { DatePickerTimeInputProps } from "../date-picker.types";
 import { FormattedMessage } from "react-intl";
-import messages from "../date-picker.i18n";
+import { messages } from "../date-picker.i18n";
 
 export const DatePickerTimeInput = ({
   hideTimeZone,

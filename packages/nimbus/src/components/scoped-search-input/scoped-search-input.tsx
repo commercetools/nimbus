@@ -17,7 +17,7 @@ import type {
   ScopedSearchInputOptionGroup,
 } from "./scoped-search-input.types";
 import { isEmpty } from "./utils/helpers";
-import messages from "./scoped-search-input.i18n";
+import { messages } from "./scoped-search-input.i18n";
 
 export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
   const {

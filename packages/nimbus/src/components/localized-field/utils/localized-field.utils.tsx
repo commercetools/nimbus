@@ -7,7 +7,7 @@ import {
   type TFieldErrors,
   MoneyInput,
 } from "@/components";
-import messages from "../localized-field.i18n";
+import { messages } from "../localized-field.i18n";
 import type { LocalizedString } from "../localized-field.types";
 
 type LanguagesSplitByDefaultLocale = {
