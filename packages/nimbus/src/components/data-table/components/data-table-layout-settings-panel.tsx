@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useIntl } from "react-intl";
-import { ToggleButtonGroup, Text, SimpleGrid } from "@/components";
+import {
+  ToggleButtonGroup,
+  Text,
+  SimpleGrid,
+  Toolbar,
+  IconToggleButton,
+} from "@/components";
 import {
   WrapText,
   ShortText,
@@ -70,21 +76,34 @@ const LayoutSettingsPanel = ({
           md: 3,
         }}
       >
-        <ToggleButtonGroup.Root
-          tone="primary"
-          selectedKeys={[textVisibility]}
-          onSelectionChange={handleTextVisibilityChange}
-          aria-label={formatMessage(messages.textVisibilityAriaLabel)}
-        >
-          <ToggleButtonGroup.Button id="full">
-            <WrapText />
-            {formatMessage(messages.fullText)}
-          </ToggleButtonGroup.Button>
-          <ToggleButtonGroup.Button id="preview">
-            <ShortText />
-            {formatMessage(messages.TextPreviews)}
-          </ToggleButtonGroup.Button>
-        </ToggleButtonGroup.Root>
+        <Toolbar orientation="horizontal" variant="outline" size="xs">
+          <ToggleButtonGroup.Root
+            selectedKeys={[textVisibility]}
+            onSelectionChange={handleTextVisibilityChange}
+            aria-label={formatMessage(messages.textVisibilityAriaLabel)}
+          >
+            <IconToggleButton
+              id="full"
+              size="xs"
+              aria-label={formatMessage(messages.fullText)}
+              variant="ghost"
+              px="300"
+            >
+              <WrapText />
+              {formatMessage(messages.fullText)}
+            </IconToggleButton>
+            <IconToggleButton
+              id="preview"
+              size="xs"
+              aria-label={formatMessage(messages.TextPreviews)}
+              variant="ghost"
+              px="300"
+            >
+              <ShortText />
+              {formatMessage(messages.TextPreviews)}
+            </IconToggleButton>
+          </ToggleButtonGroup.Root>
+        </Toolbar>
       </SimpleGrid.Item>
       {/* Row density section */}
       <SimpleGrid.Item
@@ -101,21 +120,35 @@ const LayoutSettingsPanel = ({
           md: 3,
         }}
       >
-        <ToggleButtonGroup.Root
-          tone="primary"
-          selectedKeys={[rowDensity]}
-          onSelectionChange={handleRowDensityChange}
-          aria-label={formatMessage(messages.RowDensityAriaLabel)}
-        >
-          <ToggleButtonGroup.Button id="comfortable">
-            <DensitySmall />
-            {formatMessage(messages.comfortable)}
-          </ToggleButtonGroup.Button>
-          <ToggleButtonGroup.Button id="compact">
-            <FormatAlignJustify />
-            {formatMessage(messages.compact)}
-          </ToggleButtonGroup.Button>
-        </ToggleButtonGroup.Root>
+        <Toolbar orientation="horizontal" variant="outline" size="xs">
+          <ToggleButtonGroup.Root
+            tone="primary"
+            selectedKeys={[rowDensity]}
+            onSelectionChange={handleRowDensityChange}
+            aria-label={formatMessage(messages.RowDensityAriaLabel)}
+          >
+            <IconToggleButton
+              id="comfortable"
+              size="xs"
+              variant="ghost"
+              aria-label={formatMessage(messages.comfortable)}
+              px="300"
+            >
+              <DensitySmall />
+              {formatMessage(messages.comfortable)}
+            </IconToggleButton>
+            <IconToggleButton
+              id="compact"
+              size="xs"
+              variant="ghost"
+              aria-label={formatMessage(messages.compact)}
+              px="300"
+            >
+              <FormatAlignJustify />
+              {formatMessage(messages.compact)}
+            </IconToggleButton>
+          </ToggleButtonGroup.Root>
+        </Toolbar>
       </SimpleGrid.Item>
     </SimpleGrid>
   );

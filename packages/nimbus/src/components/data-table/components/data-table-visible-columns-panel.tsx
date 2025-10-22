@@ -1,4 +1,6 @@
+import { useEffect, useCallback } from "react";
 import { useIntl } from "react-intl";
+import { useListData } from "react-stately";
 import {
   Button,
   SimpleGrid,
@@ -7,6 +9,7 @@ import {
   Text,
   DraggableList,
   SearchInput,
+  Separator,
 } from "@/components";
 import {
   Refresh,
@@ -33,7 +36,10 @@ const VisibleColumnsPanel = ({
   handleVisibleColumnsUpdate: (updatedItems: TColumnListItem[]) => void;
   handleResetColumns: () => void;
 }) => {
+  const visibleItemsList = useListData({ initialItems: visibleItems });
+  const hiddenItemsList = useListData({ initialItems: hiddenItems });
   const [searchValue, setSearchValue] = useState("");
+  const [searchedHiddenItems, setSearchedHiddenItems] = useState(hiddenItems);
   const { formatMessage } = useIntl();
 
   if (!hiddenItems || !visibleItems) {
@@ -44,15 +50,25 @@ const VisibleColumnsPanel = ({
     setSearchValue(value);
   };
 
-  const searchedHiddenItems = hiddenItems.filter((item) =>
-    item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
-  );
+  useEffect(() => {
+    setSearchedHiddenItems(
+      hiddenItemsList.items.filter((item) =>
+        item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+  }, [searchValue, hiddenItemsList.items]);
 
-  const handleRemoveItem = (id: string) => {
-    // Remove the item from visible columns and update parent
-    const updatedVisibleItems = visibleItems.filter((item) => item.id !== id);
-    handleVisibleColumnsUpdate(updatedVisibleItems);
-  };
+  const handleRemoveItem = useCallback(
+    (key: string) => {
+      const item = visibleItemsList.getItem(key);
+      if (item) {
+        hiddenItemsList.append(item);
+        setSearchedHiddenItems([...hiddenItemsList.items]);
+      }
+      visibleItemsList.remove(key);
+    },
+    [visibleItemsList.remove, searchedHiddenItems]
+  );
 
   return (
     <Stack gap="400" mt="400">
@@ -76,20 +92,22 @@ const VisibleColumnsPanel = ({
           >
             <SearchInput
               w="full"
-              boxShadow="none"
-              borderRadius="0"
-              borderBottom="1px solid {colors.neutral.3}"
+              variant="ghost"
+              // boxShadow="none"
+              // borderRadius="0"
+              // borderBottom="1px solid {colors.neutral.3}"
               placeholder={formatMessage(messages.searchHiddenColumns)}
               aria-label={formatMessage(messages.searchHiddenColumns)}
               onChange={handleSearch}
               value={searchValue}
             />
+            <Separator colorPalette="neutral.3" />
             <DraggableList.Root
               border="none"
               borderColor="none"
               h="full"
               p="0"
-              items={searchValue.length > 0 ? searchedHiddenItems : hiddenItems}
+              items={searchedHiddenItems}
               aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
@@ -123,7 +141,7 @@ const VisibleColumnsPanel = ({
             p="400"
             removableItems
             h="full"
-            items={visibleItems}
+            items={visibleItemsList.items}
             onUpdateItems={handleVisibleColumnsUpdate}
             aria-label={formatMessage(messages.visibleColumnsAria)}
           >
