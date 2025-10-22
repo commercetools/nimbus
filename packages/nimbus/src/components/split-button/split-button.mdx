@@ -2,31 +2,29 @@
 id: Components-SplitButton
 title: SplitButton
 description:
-  A button that combines a primary action with a dropdown menu of related
-  actions.
-lifecycleState: Alpha
+  A split button merges a main action with a dropdown for related, less common actions.
+documentState: InitialDraft
 order: 999
 menu:
   - Components
-  - Actions
+  - Inputs
   - SplitButton
 tags:
   - component
+  - splitButton
+  - inputs
+  - controls
 figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5748-39095&t=N9rn8aDkNAPrLOn4-1
 ---
 
 # SplitButton
 
-A button that combines a primary action with a dropdown menu of related actions,
-providing a flexible and accessible way to group related functionality.
+A split button merges a main action with a dropdown for related, less common actions.
 
 ## Overview
 
-The SplitButton component addresses the need for interfaces that require a
-dominant action with several less frequently used, but still important, related
-options. It provides a separate primary action button and a dropdown trigger for
-additional options.
+A split button merges a main action that is immediate with a secondary dropdown menu that holds related actions that are used less often. This component provides quick access to essential functions while offering a complete list of options, all while saving space.
 
 ### Resources
 
@@ -34,23 +32,26 @@ Deep dive on details and access design library.
 
 [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5748-39095&t=N9rn8aDkNAPrLOn4-1)
 
-### Variables
+## Variables
 
 Get familiar with the features.
 
-## Basic usage
+### Visuals
 
-The basic SplitButton with a primary action and dropdown menu items.
+#### Solid
+
+Most common styling of the split button. Try to keep only one solid primary toned button in an area for user clarity for the most important task. Too many in an area can cause confusion.
 
 ```jsx-live
 const App = () => {
   return (
     <SplitButton
+      variant="solid"
+      tone="primary"
       onAction={(actionId) => alert(`Action: ${actionId}`)}
-      aria-label="More save options"
-      icon={<Icons.Save />}
+      aria-label="More publish options"
     >
-      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="publish">Publish</Menu.Item>
       <Menu.Item id="save-publish">Save and Publish</Menu.Item>
       <Menu.Item id="save-next">Save and Open Next</Menu.Item>
     </SplitButton>
@@ -58,157 +59,100 @@ const App = () => {
 }
 ```
 
-### Document management actions
+#### Outlined
 
-A typical document management scenario with various file operations.
+Outlined styled buttons are for secondary or less important actions.
 
 ```jsx-live
 const App = () => {
   return (
     <SplitButton
+      variant="outline"
+      tone="primary"
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More publish options"
+    >
+      <Menu.Item id="publish">Publish</Menu.Item>
+      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+    </SplitButton>
+  );
+}
+```
+
+#### Ghost
+ 
+Ghost styled buttons are helpful for UI simplification. You will find these in smaller sizes within places like toolbars.
+
+```jsx-live
+const App = () => {
+  return (
+    <SplitButton
+      variant="ghost"
+      tone="primary"
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More publish options"
+    >
+      <Menu.Item id="publish">Publish</Menu.Item>
+      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+    </SplitButton>
+  );
+}
+```
+
+### Icons and placement
+
+Using icons with split buttons is possible, both on the right and left side. Please keep consistency in mind for icons and placements with other patterns that are nearby. 
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" gap="400" alignItems="center">
+    <SplitButton
+      tone="primary"
       onAction={(actionId) => alert(`Action: ${actionId}`)}
       aria-label="More document actions"
       icon={<Icons.Share />}
     >
       <Menu.Item id="share">Share Document</Menu.Item>
       <Menu.Item id="copy-link">Copy Link</Menu.Item>
-      <Menu.Item id="email">Send via Email</Menu.Item>
-      <Menu.Item id="download">Download PDF</Menu.Item>
-      <Menu.Item id="print">Print Document</Menu.Item>
     </SplitButton>
-  );
-}
-```
-
-### Task actions with critical action
-
-Common task management actions showing how critical (destructive) actions are
-highlighted.
-
-```jsx-live
-const App = () => {
-  return (
     <SplitButton
+      tone="primary"
       onAction={(actionId) => alert(`Action: ${actionId}`)}
-      aria-label="More task actions"
-      icon={<Icons.Edit />}
+      aria-label="Even more document actions"
+      icon={<Icons.Share />}
     >
-      <Menu.Item id="complete">Complete Task</Menu.Item>
-      <Menu.Item id="edit">Edit Task</Menu.Item>
-      <Menu.Item id="duplicate">Duplicate Task</Menu.Item>
-      <Menu.Item id="archive">Archive Task</Menu.Item>
-      <Menu.Separator />
-      <Menu.Item id="delete" isCritical>Delete Task</Menu.Item>
+      <Menu.Item id="share-again">Share Document</Menu.Item>
+      <Menu.Item id="copy-link-again">Copy Link</Menu.Item>
     </SplitButton>
-  );
-}
+    </Stack>
+  )
+
 ```
 
-### Organized menu sections
+### Size
 
-Use Menu.Section to organize related actions into groups.
-
-```jsx-live
-const App = () => (
-  <SplitButton
-    onAction={(actionId) => alert(`Action: ${actionId}`)}
-    aria-label="More import and export actions"
-  >
-    <Menu.Item id="import-export">Import / Export</Menu.Item>
-    <Menu.Section label="Add Items">
-      <Menu.Item id="add-product">Add Product</Menu.Item>
-      <Menu.Item id="add-category">Add Category</Menu.Item>
-      <Menu.Item id="add-customer">Add Customer</Menu.Item>
-    </Menu.Section>
-    <Menu.Section label="Import">
-      <Menu.Item id="import-csv">Import from CSV</Menu.Item>
-      <Menu.Item id="import-drive">Import from Drive</Menu.Item>
-    </Menu.Section>
-    <Menu.Section label="Export">
-      <Menu.Item id="export-csv">Export to CSV</Menu.Item>
-      <Menu.Item id="export-drive">Export to Drive</Menu.Item>
-    </Menu.Section>
-  </SplitButton>
-)
-```
-
-### Size variants
-
-The component supports different sizes to match your interface scale.
+There are three sizes to switch buttons, the default size is medium (md), extra small (xs), and 2x-small (2xs).
 
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" gap="400" alignItems="center">
-    <SplitButton size="2xs" onAction={(id) => {}} aria-label="More options">
-      <Menu.Item id="option1">Option 1</Menu.Item>
+    <SplitButton tone="primary" size="md" onAction={(id) => {}} aria-label="publish options">
+      <Menu.Item id="publish">Publish</Menu.Item>
       <Menu.Item id="option2">Option 2</Menu.Item>
     </SplitButton>
-    <SplitButton size="xs" onAction={(id) => {}} aria-label="More options">
-      <Menu.Item id="option1">Option 1</Menu.Item>
+    <SplitButton tone="primary" size="xs" onAction={(id) => {}} aria-label="publish options">
+      <Menu.Item id="publish">Publish</Menu.Item>
       <Menu.Item id="option2">Option 2</Menu.Item>
     </SplitButton>
-    <SplitButton size="md" onAction={(id) => {}} aria-label="More options">
-      <Menu.Item id="option1">Option 1</Menu.Item>
+    <SplitButton tone="primary" size="2xs" onAction={(id) => {}} aria-label="publish options">
+      <Menu.Item id="publish">Publish</Menu.Item>
       <Menu.Item id="option2">Option 2</Menu.Item>
     </SplitButton>
   </Stack>
 )
 ```
-
-### Style variants
-
-Choose from different visual styles to match your design system.
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400" wrap="wrap">
-    <SplitButton variant="solid" tone="primary" onAction={(id) => {}} aria-label="More actions">
-      <Menu.Item id="action1">Action 1</Menu.Item>
-      <Menu.Item id="action2">Action 2</Menu.Item>
-    </SplitButton>
-    <SplitButton variant="outline" tone="primary" onAction={(id) => {}} aria-label="More actions">
-      <Menu.Item id="action1">Action 1</Menu.Item>
-      <Menu.Item id="action2">Action 2</Menu.Item>
-    </SplitButton>
-    <SplitButton variant="ghost" tone="primary" onAction={(id) => {}} aria-label="More actions">
-      <Menu.Item id="action1">Action 1</Menu.Item>
-      <Menu.Item id="action2">Action 2</Menu.Item>
-    </SplitButton>
-  </Stack>
-)
-```
-
-### Disabled states
-
-You can disable the entire component or individual menu items.
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400">
-    <SplitButton onAction={(id) => {}} aria-label="More actions">
-      <Menu.Item id="available">Available Action</Menu.Item>
-      <Menu.Item id="disabled" isDisabled>Disabled Item</Menu.Item>
-      <Menu.Item id="another">Another Action</Menu.Item>
-    </SplitButton>
-    <SplitButton isDisabled onAction={(id) => {}} aria-label="More actions">
-      <Menu.Item id="action1">Disabled Action</Menu.Item>
-      <Menu.Item id="action2">Another Action</Menu.Item>
-    </SplitButton>
-  </Stack>
-)
-```
-
-## How it works
-
-The SplitButton component provides a split-action interface:
-
-1. **Primary Button**: Automatically executes the first enabled Menu.Item action
-2. **Dropdown Trigger**: Separate arrow button opens the dropdown menu with all
-   actions
-3. **Smart Selection**: If the first Menu.Item is disabled, automatically
-   selects the next enabled one
-4. **Menu Actions**: Selecting items from the dropdown triggers the `onAction`
-   callback
 
 ## Guidelines
 
@@ -218,85 +162,88 @@ comprehensive functionality.
 
 ### Best practices
 
-- **Order Actions by Priority**: Place the most common or important action first
-  in your Menu.Items
-- **Related Actions**: Group logically related actions in the dropdown menu
-- **Appropriate Grouping**: Use Menu.Section to organize complex action sets
-- **Consistent Labeling**: Use clear, action-oriented labels that match your
-  application's terminology
-- **Critical Actions**: Use the `isCritical` prop for destructive actions
-- **Accessible Labels**: Provide meaningful aria-labels for screen readers
+- **Clear primary action:** The main button segment must perform the most common or default action immediately upon being clicked. The label must be clear and action-oriented.
+  - **If there is no default action** and you still want to use a button with a dropdown menu, consider using the menu component with a regular button (with a dropdown icon) as a trigger. In this case, the dropdown menu will open always when clicking the button and no default action will be triggered. Especially useful when all actions are equally important
+- **Visual distinction:** Clearly separate the primary action button from the dropdown trigger. This visually communicates that the two segments perform different functions.
+- **Dropdown content:** Keep the list of secondary actions concise and logically ordered (by frequency or relevance).
+- **State persistence:** When a user selects a secondary action from the dropdown, consider making that action the new primary button action if the user is likely to repeat it, or if it fits the new context.
+- **Sizing and responsiveness:** Ensure both the primary button and the dropdown trigger have adequate touch target sizes. The dropdown menu should be positioned to avoid obscuring important content and should adapt well on mobile devices.
 
 ### Usage
 
 > [!TIP]\
 > When to use
-
-- When you have one dominant action with several related but less frequent
-  options
-- For document or data management interfaces with multiple export/save options
-- In task management systems where actions are contextually related
-- When you need to consolidate multiple related buttons to save space
-- For workflows where the primary action is clear but alternatives are valuable
+- **Primary action focus:** Use a split button when one specific action (e.g., "Save," "Download") is performed significantly more often than its related alternatives (e.g., "Save and Share," "Download as PDF").
+- **Contextual actions:** The dropdown menu must contain actions that are directly related to the primary button's function.
+- **Space efficiency:** Use split buttons in toolbars or dense interfaces where presenting every option as a full button would lead to clutter.
 
 > [!CAUTION]\
 > When not to use
+- **When all actions are equally important:** Don't use a split button if all the related actions are performed with equal frequency or importance. Grouping them this way implies hierarchy where none exists, and a simple button group or vertical menu list might be clearer.
+- **When actions are unrelated:** Avoid grouping actions that have no logical connection under the same component. The primary button and all dropdown options must share a clear, single context.
+- **When the primary action changes frequently:** If the default action changes based on complex context or user state, constantly swapping the main button label can confuse the user and create visual instability. Use a standard dropdown menu where all options, including the default, are consistently located inside.
+- **When discovery Is crucial:** If users must know all available options (e.g., legally required export formats), burying them in a secondary dropdown menu is a poor choice. Displaying them as separate full buttons or in an obvious button group is better.
+- **For primary navigation:** A split button is an action control, not a primary navigation tool. Using it to link to major sections can confuse users about whether they are performing an action or moving to a new page.
+- **When screen space Is not an issue:** If you have ample space, displaying the top two or three most common actions as individual, labeled buttons can sometimes be faster and more transparent than hiding them in a dropdown.
+- **When the dropdown contains complex controls:** Avoid filling the dropdown with complex inputs, multi-step forms, or large amounts of text. A split button dropdown should only contain simple, single-click actions.
 
-- When actions are unrelated or serve different purposes
-- For navigation between different sections or pages
-- When all actions are equally important (use separate buttons or a Menu
-  instead)
-- For simple binary choices (use a toggle or two separate buttons)
-- When the primary action isn't clearly more important than alternatives
+### Split buttons in use
 
-### Writing guidelines
-
-- Use sentence case for all button and menu item labels
-- Start with strong action verbs (e.g., "Save Document", "Export Data")
-- Keep the primary button label concise but specific
-- Use parallel structure for related dropdown items
-- Avoid redundant words between primary and dropdown actions
-- Include clarifying text for potentially destructive actions
-
-### Critical actions
-
-Use the `isCritical` prop on Menu.Item to highlight destructive or irreversible
-actions.
+> [!TIP]\
+> Do
+>- Do prioritize the primary action. Ensure the main, large section performs the most common or default action immediately upon being clicked.
+>- Do group related actions. Include only closely related actions in the secondary dropdown menu.
+>- Do keep the dropdown menu concise. It should contain simple, single-click actions, not complex forms or long text.
 
 ```jsx-live
-const App = () => (
-  <SplitButton
-    onAction={(actionId) => alert(`Action: ${actionId}`)}
-    aria-label="More account actions"
-  >
-    <Menu.Item id="update">Update Account</Menu.Item>
-    <Menu.Item id="password">Change Password</Menu.Item>
-    <Menu.Item id="export">Export My Data</Menu.Item>
-    <Menu.Item id="deactivate">Deactivate Account</Menu.Item>
-    <Separator />
-    <Menu.Item id="delete" isCritical>Delete Account</Menu.Item>
-  </SplitButton>
-);
+const App = () => {
+  return (
+    <SplitButton
+      variant="solid"
+      tone="primary"
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More publish options"
+    >
+      <Menu.Item id="publish">Publish changes</Menu.Item>
+      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+    </SplitButton>
+  );
+}
+```
+
+> [!CAUTION]\
+> Don't
+>- Don’t add icons that don’t make sense with the action. If one uses an icon, all options should have a corresponding icon. Don’t use icons on both sides. 
+>- Don't dynamically swap the primary button's function based on minor changes in the user's state.
+>- Don't group actions that have different contexts or objectives.
+>- Don't use a split button as a primary site navigation tool.
+>- Don't hide legally required or critical options in the dropdown.
+>- Don't use the dropdown to house long forms, multi-step processes, or complex configuration settings.
+
+```jsx-live
+const App = () => {
+  return (
+    <SplitButton
+      variant="solid"
+      tone="primary"
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="ridiculous actions"
+      icon={<Icons.Snowshoeing/>}
+    >
+      <Menu.Item id="download">Download Report</Menu.Item>
+      <Menu.Item id="buy-socks">Buy Socks</Menu.Item>
+      <Menu.Item id="delete-account">Delete Account</Menu.Item>
+      <Menu.Item id="go-home">Go to Homepage</Menu.Item>
+      <Menu.Item id="accept-terms">Accept Terms</Menu.Item>
+    </SplitButton>
+  );
+}
 ```
 
 ## Specs
 
-### Features
-
-- **Split Button Interface**: Primary action button with dropdown trigger
-- **Automatic Selection**: Smart primary action selection from the first enabled
-  Menu.Item
-- **Menu Integration**: Built on top of the Menu component for dropdown
-  functionality
-- **Keyboard Navigation**: Full keyboard support with Tab, Enter, Space, Arrow
-  keys, and Escape
-- **Flexible Content**: Supports icons through the icon prop and rich menu
-  content
-- **Accessible**: Built-in ARIA attributes and screen reader support
-- **Visual Variants**: Multiple size, variant, and tone options
-- **Critical Action Support**: Visual highlighting for destructive menu items
-- **Focus Management**: Proper focus trapping and restoration
-- **Smart Fallbacks**: Handles disabled items and empty menus gracefully
+Lorem ipsum
 
 ### Properties
 
@@ -304,58 +251,28 @@ const App = () => (
 
 ## Accessibility
 
-The SplitButton component is built with accessibility in mind, providing full
-keyboard navigation and screen reader support for both the primary action and
-dropdown functionality.
-
-### Keyboard interactions
-
-- **Tab**: Navigate to the primary button, then to the dropdown trigger
-- **Enter/Space**: Activate the focused button or open the dropdown
-- **Arrow Keys**: Navigate between dropdown menu items when open
-- **Escape**: Close the dropdown menu and return focus to trigger
-- **Home/End**: Jump to first/last dropdown item
-
-### ARIA attributes
-
-The component automatically applies appropriate ARIA attributes:
-
-- `role="button"` on the primary button and dropdown trigger
-- `aria-expanded` on the dropdown trigger to indicate menu state
-- `aria-haspopup="menu"` on the dropdown trigger
-- `role="menu"` on the dropdown menu container
-- `role="menuitem"` on individual menu items
-- `aria-label` support for custom accessibility labels
-
-### Focus management
-
-- Focus moves logically from primary button to dropdown trigger
-- When dropdown opens, focus moves to the first menu item
-- Focus is trapped within the dropdown when open
-- Focus returns to the dropdown trigger when the menu closes
-- Disabled states properly prevent focus and interaction
-
-### Screen reader support
-
-The component provides comprehensive screen reader support:
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
 ```jsx-live
-const App = () => (
-  <SplitButton
-    aria-label="More sending options"
-    onAction={(actionId) => alert(`Action: ${actionId}`)}
-  >
-    <Menu.Item id="send">Send Message</Menu.Item>
-    <Menu.Item id="schedule">Schedule Send</Menu.Item>
-    <Menu.Item id="draft">Save as Draft</Menu.Item>
-    <Menu.Item id="template">Save as Template</Menu.Item>
-  </SplitButton>
-);
+const App = () => {
+  return (
+    <SplitButton
+      variant="solid"
+      tone="primary"
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More publish options"
+    >
+      <Menu.Item id="publish">Publish</Menu.Item>
+      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+    </SplitButton>
+  );
+}
 ```
 
-### Resources
+## Accessibility Standards
 
-- [React Aria Menu](https://react-spectrum.adobe.com/react-aria/Menu.html)
-- [React Aria Button](https://react-spectrum.adobe.com/react-aria/Button.html)
-- [WAI-ARIA Menu Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)
-- [WAI-ARIA Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
+- **Keyboard Navigation:** The component must be fully keyboard accessible. The Tab key should focus on the primary button first.
+- **Dual Focus:** The primary action and the dropdown trigger must be treated as two distinct focusable elements or as a single component where the arrow key can be used to open the menu once the button is focused.
+- **ARIA Roles:** The primary button uses role="button". The dropdown trigger should use role="button" combined with aria-haspopup="true" to indicate that it controls a pop-up menu.
+- **Labeling:** Provide clear, unique aria-label text for both the primary action and the dropdown trigger to ensure screen readers convey the intended function of each segment.
