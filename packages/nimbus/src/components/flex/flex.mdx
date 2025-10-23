@@ -1,8 +1,7 @@
 ---
-id: Flex
+id: Components-Flex
 title: Flex
-description:
-  the Flex component is used to create layouts based on css display flex
+description: A layout component that provides flexbox-based layouts with simplified CSS flexbox properties.
 documentState: InitialDraft
 order: 999
 menu:
@@ -10,32 +9,258 @@ menu:
   - Layout
   - Flex
 tags:
+  - component
   - flex
   - flexbox
   - layout
   - container
-  - div
-  - low level
 ---
 
 # Flex
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec
-nunc tincidunt tincidunt. Nullam nec pur
+Flex is a layout component that provides flexbox-based layouts with simplified CSS flexbox properties. It's based on the [Chakra UI Flex component](https://www.chakra-ui.com/docs/components/flex) and supports all style props for rapid UI development.
 
-## Usage
+## Overview
+
+The Flex component is a Box component with `display: flex` applied by default. It provides a convenient way to create flexible layouts without manually setting display properties. Use Flex when you need precise control over alignment, distribution, and spacing of child elements.
+
+### Key Features
+
+- **Flexible Layouts**: Built-in flexbox support for responsive designs
+- **Alignment Control**: Easy horizontal and vertical alignment of children
+- **Gap Support**: Simplified spacing between flex items
+- **Direction Control**: Horizontal or vertical layouts with `direction` prop
+- **Full Style Props**: Access to all Chakra UI system props
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Chakra UI Flex Docs](https://www.chakra-ui.com/docs/components/flex)
+
+## Import
 
 ```jsx
 import { Flex } from "@commercetools/nimbus";
+```
 
-const Component = () => (
-  <Flex>
-    <p>Content</p>
+## Examples
+
+Get familiar with the features.
+
+### Basic Usage
+
+```jsx-live
+const App = () => (
+  <Flex p="400" bg="primary.3">
+    <Box p="200" bg="primary.7">Item 1</Box>
+    <Box p="200" bg="primary.7">Item 2</Box>
+    <Box p="200" bg="primary.7">Item 3</Box>
   </Flex>
 );
 ```
 
-## Second subheading
+### With Direction
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec
-nunc tincidunt tincidunt. Nullam nec pur
+Control the flex direction using the `direction` prop:
+
+```jsx-live
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="500" mb="200">Row (Horizontal)</Text>
+      <Flex direction="row" gap="200" p="400" bg="primary.3">
+        <Box p="200" bg="primary.7">Item 1</Box>
+        <Box p="200" bg="primary.7">Item 2</Box>
+        <Box p="200" bg="primary.7">Item 3</Box>
+      </Flex>
+    </Box>
+    <Box>
+      <Text fontWeight="500" mb="200">Column (Vertical)</Text>
+      <Flex direction="column" gap="200" p="400" bg="primary.3">
+        <Box p="200" bg="primary.7">Item 1</Box>
+        <Box p="200" bg="primary.7">Item 2</Box>
+        <Box p="200" bg="primary.7">Item 3</Box>
+      </Flex>
+    </Box>
+  </Stack>
+);
+```
+
+### With Alignment
+
+Use `justify` and `align` props to control alignment:
+
+```jsx-live
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="500" mb="200">Center Alignment</Text>
+      <Flex
+        justify="center"
+        align="center"
+        p="400"
+        bg="primary.3"
+        minHeight="200px"
+      >
+        <Box p="200" bg="primary.7">Centered Item</Box>
+      </Flex>
+    </Box>
+    <Box>
+      <Text fontWeight="500" mb="200">Space Between</Text>
+      <Flex
+        justify="space-between"
+        align="center"
+        p="400"
+        bg="primary.3"
+      >
+        <Box p="200" bg="primary.7">Start</Box>
+        <Box p="200" bg="primary.7">End</Box>
+      </Flex>
+    </Box>
+  </Stack>
+);
+```
+
+### With Gap
+
+Control spacing between flex items using the `gap` prop:
+
+```jsx-live
+const App = () => (
+  <Flex gap="400" p="400" bg="primary.3">
+    <Box p="200" bg="primary.7" flex="1">Item 1</Box>
+    <Box p="200" bg="primary.7" flex="1">Item 2</Box>
+    <Box p="200" bg="primary.7" flex="1">Item 3</Box>
+  </Flex>
+);
+```
+
+### With Wrap
+
+Enable wrapping when items exceed container width:
+
+```jsx-live
+const App = () => (
+  <Flex wrap="wrap" gap="200" p="400" bg="primary.3">
+    <Box p="200" bg="primary.7" width="150px">Item 1</Box>
+    <Box p="200" bg="primary.7" width="150px">Item 2</Box>
+    <Box p="200" bg="primary.7" width="150px">Item 3</Box>
+    <Box p="200" bg="primary.7" width="150px">Item 4</Box>
+    <Box p="200" bg="primary.7" width="150px">Item 5</Box>
+    <Box p="200" bg="primary.7" width="150px">Item 6</Box>
+  </Flex>
+);
+```
+
+### Responsive Layout
+
+Combine Flex with responsive props for adaptive layouts:
+
+```jsx-live
+const App = () => (
+  <Flex
+    direction={{ base: "column", md: "row" }}
+    gap="400"
+    p="400"
+    bg="primary.3"
+  >
+    <Box p="400" bg="primary.7" flex="1">Column 1</Box>
+    <Box p="400" bg="primary.7" flex="1">Column 2</Box>
+    <Box p="400" bg="primary.7" flex="1">Column 3</Box>
+  </Flex>
+);
+```
+
+### With asChild
+
+Use the `asChild` prop to apply Flex styles to any child element while maintaining the child's functionality:
+
+```jsx-live
+const App = () => (
+  <Flex p="400" bg="primary.3" gap="200" asChild>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </Flex>
+);
+```
+
+## Guidelines
+
+Use Flex component strategically to enhance layout flexibility.
+
+### Best Practices
+
+- **Use for flexible layouts**: When you need alignment control and flexible spacing between items
+- **Prefer Stack for simple layouts**: Use Stack component for simpler vertical or horizontal stacking with consistent spacing
+- **Combine with responsive props**: Use responsive values to adapt layouts across breakpoints
+- **Control wrapping**: Use `wrap` prop when items should flow to new lines
+- **Set flex properties on children**: Use `flex`, `flexGrow`, `flexShrink`, and `flexBasis` on child elements for proportional sizing
+
+### When to Use
+
+> [!TIP]\
+> When to use
+
+- **Complex alignments**: When you need precise control over horizontal and vertical alignment
+- **Dynamic spacing**: When spacing between items needs to adapt based on content
+- **Responsive layouts**: When layout direction should change based on screen size
+- **Item distribution**: When items need equal spacing, space-between, or space-around distribution
+
+> [!CAUTION]\
+> When not to use
+
+- **Simple stacking**: Use Stack component for basic vertical or horizontal stacking
+- **Grid layouts**: Use Grid component when you need two-dimensional layouts
+- **No layout control needed**: Use Box when you don't need flexbox-specific properties
+
+## Props
+
+The Flex component accepts all system props from Chakra UI, including:
+
+### Flexbox Props
+- `direction` - Flex direction (row, column, row-reverse, column-reverse)
+- `wrap` - Whether flex items should wrap (wrap, nowrap, wrap-reverse)
+- `justify` - Justify content (flex-start, center, flex-end, space-between, space-around, space-evenly)
+- `align` - Align items (flex-start, center, flex-end, stretch, baseline)
+- `gap` - Gap between flex items (uses design tokens)
+
+### Common Props
+- Space props (margin, padding)
+- Color props (background, color)
+- Layout props (width, height)
+- Border props
+- Position props
+- Shadow props
+
+## Accessibility
+
+Flex renders a `div` element by default but can be changed to any other HTML element using the `as` prop to maintain semantic HTML structure.
+
+### Semantic HTML
+
+Use appropriate HTML elements with the `as` prop for better accessibility:
+
+```jsx-live
+const App = () => (
+  <Stack gap="400">
+    <Flex as="nav" gap="400" p="400" bg="primary.3">
+      <a href="#link1">Link 1</a>
+      <a href="#link2">Link 2</a>
+    </Flex>
+    <Flex as="article" direction="column" gap="200" p="400" bg="primary.3">
+      <Text as="h2" fontWeight="500">Article Title</Text>
+      <Text>Article content goes here.</Text>
+    </Flex>
+  </Stack>
+);
+```
+
+### Screen Reader Support
+
+- The Flex component itself has no specific ARIA attributes
+- Use semantic HTML elements via the `as` prop for better screen reader experience
+- Ensure interactive children have proper labels and roles
