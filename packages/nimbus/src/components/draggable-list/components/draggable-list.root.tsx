@@ -61,10 +61,14 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     if (!dequal(items, list.items)) {
       isSyncingFromPropsRef.current = true;
 
-      // Remove all items
+      // Performance Note: Full list replacement (remove all + append all) is O(n) for both
+      // operations. For large lists with frequent updates, a diffing algorithm could optimize
+      // this to only update changed items. However, for typical use cases, the simplicity and
+      // correctness of full replacement outweighs the performance cost.
       const keysToRemove = list.items.map((item) => getKey(item));
+      // Remove all current list items
       list.remove(...keysToRemove);
-      // Append new list
+      // Add all items from props
       list.append(...items);
 
       // Preserve selected keys for items that still exist in the updated items
@@ -79,11 +83,20 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
       // Update lastNotifiedItemsRef to prevent notification effect from reverting parent state
       lastNotifiedItemsRef.current = items;
 
-      // Reset flag after React finishes updates
+      // Timing Note: queueMicrotask schedules the callback after the current synchronous
+      // execution completes but before the next event loop tick. This ensures the flag is
+      // reset after React processes all state updates from this effect. Using useLayoutEffect
+      // would be more deterministic but could block paint. The current approach is acceptable
+      // because the flag only guards against re-entrancy, not critical state updates.
       queueMicrotask(() => {
         isSyncingFromPropsRef.current = false;
       });
     }
+    // Dependency Explanation: list methods (list.remove, list.append, list.setSelectedKeys)
+    // and list.items are intentionally NOT included to prevent infinite loops. We only want
+    // to sync when the external `items` prop or `getKey` function changes, not when the
+    // list's internal state changes. Including list would cause this effect to run on every
+    // internal list update, creating an infinite sync loop.
   }, [items, getKey]);
 
   // Notify parent of internal list changes (but not during external sync)
