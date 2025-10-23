@@ -98,7 +98,11 @@ export const AppNavBarSearch = () => {
                   asChild
                 >
                   {/** TODO: TextInput should actually work here, try again once it's fixed*/}
-                  <Input autoFocus placeholder="Type to search..." />
+                  <Input
+                    autoFocus
+                    placeholder="Type to search..."
+                    onBlur={() => setQuery("")}
+                  />
                 </Box>
               </Flex>
               <Box mx="-600">
