@@ -97,21 +97,20 @@ pnpm test:unit
 pnpm test:storybook
 
 # Run specific test file
-pnpm --filter @commercetools/nimbus test component-name.spec.tsx
-pnpm --filter @commercetools/nimbus test component-name.stories.tsx --reporter=basic
+pnpm test packages/nimbus/src/components/button/button.spec.tsx
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
 
-# Run tests with different reporters
-pnpm --filter @commercetools/nimbus test component-name.stories.tsx --reporter=verbose
-pnpm --filter @commercetools/nimbus test component-name.stories.tsx --silent
+# Run tests with minimal console output
+pnpm test --silent
 
 # Run specific test pattern
-pnpm --filter @commercetools/nimbus test --testNamePattern="Component.*TestName"
+pnpm test --testNamePattern="Component.*TestName"
 
 # Run tests in watch mode
-pnpm --filter @commercetools/nimbus test --watch
+pnpm test --watch
 
 # Run tests with coverage
-pnpm --filter @commercetools/nimbus test --coverage
+pnpm test --coverage
 ```
 
 ### Code Quality
@@ -151,9 +150,9 @@ pnpm -r --filter './packages/*' build
 pnpm -r --filter './packages/*' typecheck
 
 # Component-specific testing patterns
-pnpm --filter @commercetools/nimbus test button.stories.tsx --reporter=basic
-pnpm --filter @commercetools/nimbus test menu.stories.tsx --silent
-pnpm --filter @commercetools/nimbus test pagination.stories.tsx --reporter=verbose
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
+pnpm test packages/nimbus/src/components/menu/menu.stories.tsx
+pnpm test packages/nimbus/src/components/pagination/pagination.stories.tsx
 ```
 
 ### Release Management
@@ -325,6 +324,78 @@ The testing system uses Vitest with two distinct test types:
 - All component testing happens in Storybook stories with play functions
 - Unit tests focus exclusively on pure functions, custom hooks, and business
   logic
+
+### Testing Workflow
+
+**CRITICAL: Storybook tests run against the built bundle, NOT source files.**
+
+#### Development vs Testing Mode
+
+The Storybook configuration has two distinct modes:
+
+- **Development mode** (`pnpm start:storybook`): Uses source alias for HMR
+  - Alias: `@commercetools/nimbus` → `packages/nimbus/src`
+  - Enables instant feedback while editing components
+  - Changes reflect immediately without rebuilding
+
+- **Testing mode** (`pnpm test:storybook`): Uses built bundle
+  - Alias: None - imports from `packages/nimbus/dist`
+  - Tests run against production-like code
+  - Ensures tests validate actual published behavior
+
+#### Testing Your Changes
+
+To test component changes in Storybook tests, follow this workflow:
+
+```bash
+# 1. Make your changes to component source files
+# 2. Build the package to update the dist folder
+pnpm --filter @commercetools/nimbus build
+
+# 3. Run Storybook tests
+pnpm test:storybook
+
+# Or run specific test file
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
+```
+
+**Why build is required:**
+
+- Tests import from `@commercetools/nimbus` which resolves to `dist/` during
+  testing
+- Without building, tests run against stale code from previous build
+- This matches how consumers use the package (from `node_modules`)
+
+#### Detection Logic
+
+The system detects test mode via environment variables:
+
+- **`VITEST_WORKER_ID`**: Automatically set by Vitest when running tests
+- **`VITEST=true`**: Manual override for forcing test mode
+
+**Manual Override Example:**
+```bash
+# Force test mode (use built bundle) even in development
+VITEST=true pnpm start:storybook
+
+# Normal development mode (use source files with HMR)
+pnpm start:storybook
+```
+
+#### Developer Visibility
+
+Storybook logs which mode is active on startup:
+- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
+- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+
+This helps confirm whether your changes require a build before testing.
+
+#### Common Pitfalls
+
+- ❌ **Making changes and immediately running tests** - Tests will use old code
+- ❌ **Expecting HMR in test mode** - Tests intentionally use built bundle
+- ✅ **Build first, then test** - Ensures tests validate actual changes
+- ✅ **Use `pnpm start:storybook` for rapid iteration** - Live preview with HMR
 
 ### Build Dependencies
 
