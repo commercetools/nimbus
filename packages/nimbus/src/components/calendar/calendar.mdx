@@ -22,14 +22,15 @@ a single date.
 ## Overview
 
 The calendar component is most often used within the popover component when a
-user interacts with a date input. Easily toggle between month, year, and single day selection.
+user interacts with a date input. Easily toggle between month, year, and single
+day selection.
 
 ### Resources
 
 Deep dive on details and access design library.
 
-[Figma Link](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15651)
-[Storybook Link](https://nimbus-storybook.vercel.app/?path=/docs/components-date-calendar--docs)
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15651)
+[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-calendar--docs)
 
 ## Variables
 
@@ -47,40 +48,56 @@ const App = () => <Calendar aria-label="Enter a date" />
 
 ## Guidelines
 
-Calendar guidelines focus on creating intuitive and accessible interfaces for viewing, navigating, and interacting with dates and events.
+Calendar guidelines focus on creating intuitive and accessible interfaces for
+viewing, navigating, and interacting with dates and events.
 
 ### Best practices
 
-- **Clear visual hierarchy:** Distinguished between days, weeks, months, and years. Highlight the current date and any selected dates.
-- **Intuitive navigation:** Clear controls to move between different time periods (days, weeks, months, years).
-- **Clear labels and instructions:** Clear labels for navigation controls and any interactive elements within the calendar.
-
+- **Clear visual hierarchy:** Distinguished between days, weeks, months, and
+  years. Highlight the current date and any selected dates.
+- **Intuitive navigation:** Clear controls to move between different time
+  periods (days, weeks, months, years).
+- **Clear labels and instructions:** Clear labels for navigation controls and
+  any interactive elements within the calendar.
 
 ### Usage
 
-A calendar is used to visually display and manage time-based information, allowing users to view, schedule, and interact with dates. A common way this component is used is within the popover, and paired with the date input.
+A calendar is used to visually display and manage time-based information,
+allowing users to view, schedule, and interact with dates. A common way this
+component is used is within the popover, and paired with the date input.
 
 > [!TIP]\
 > When to use
 
 - **Scheduling:** When users need to select specific dates and times.
-- **Visualizing time-based data:** To display data or to filter data in a corresponding visual.
-- **Browsing dates:** When users need to navigate through different days, weeks, or months to find a specific date or time.
-- **Contextual awareness of dates:** When the day of the week or the relationship between dates is important for decision-making.
-- **Recurring events:** To allow users to set up and manage events that repeat on a regular basis.
+- **Visualizing time-based data:** To display data or to filter data in a
+  corresponding visual.
+- **Browsing dates:** When users need to navigate through different days, weeks,
+  or months to find a specific date or time.
+- **Contextual awareness of dates:** When the day of the week or the
+  relationship between dates is important for decision-making.
+- **Recurring events:** To allow users to set up and manage events that repeat
+  on a regular basis.
 
 > [!CAUTION]\
 > When not to use
 
-- **Simple date input:** If users already know the specific date (e.g., date of birth) and typing it in a formatted field is quicker and easier.
-- **Selecting a single "today" or "now":** For actions that inherently refer to the current date and time, a button or automatic function is more efficient.
-- **Limited screen space:** On very small interfaces, a compact date input or a simplified selection method might be necessary.
-- **Linear processes:** For step-by-step workflows where date selection is just one field, a calendar might be an unnecessary interruption.
-- **Non-time-related data:** For displaying or managing information that isn't tied to specific dates or times.
+- **Simple date input:** If users already know the specific date (e.g., date of
+  birth) and typing it in a formatted field is quicker and easier.
+- **Selecting a single "today" or "now":** For actions that inherently refer to
+  the current date and time, a button or automatic function is more efficient.
+- **Limited screen space:** On very small interfaces, a compact date input or a
+  simplified selection method might be necessary.
+- **Linear processes:** For step-by-step workflows where date selection is just
+  one field, a calendar might be an unnecessary interruption.
+- **Non-time-related data:** For displaying or managing information that isn't
+  tied to specific dates or times.
 
 #### Keeping interactions simple
 
-Simple calendar interactions are vital because they minimize user effort and cognitive load, allowing for quick and efficient time management, the calendar's primary function.
+Simple calendar interactions are vital because they minimize user effort and
+cognitive load, allowing for quick and efficient time management, the calendar's
+primary function.
 
 > [!TIP]\
 > **Do**
@@ -90,10 +107,7 @@ Simple calendar interactions are vital because they minimize user effort and cog
 > - Ensure navigation controls are clearly labeled and their function is
 >   obvious.
 
-
-```jsx-live
-const App = () => <Calendar aria-label="Enter a date" />
-```
+![interaction - do's](/images/calendar/calendar-interactions-do.png)
 
 > [!CAUTION]\
 > **Don't**
@@ -107,7 +121,7 @@ const App = () => <Calendar aria-label="Enter a date" />
 > - Don't auto-submit on date selection. Avoid automatically submitting forms or
 >   triggering actions immediately after a date is selected.
 
-![](/images/calendar/calendar-interactions-dont.png)
+![interaction - dont's](/images/calendar/calendar-interactions-dont.png)
 
 ### Properties
 
@@ -118,7 +132,6 @@ const App = () => <Calendar aria-label="Enter a date" />
 Accessibility ensures that digital content and functionality are usable by
 everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
-
 
 ```jsx-live
 const App = () => <Calendar aria-label="Enter a date" />
