@@ -41,22 +41,6 @@ Deep dive on details and access design library.
 
 Get familiar with the features.
 
-### Live demo
-
-```jsx-live
-const App = () => {
-  const [value, setValue] = React.useState("");
-
-  return (
-    <RichTextInput
-      value={value}
-      onChange={setValue}
-      placeholder="Start typing and try the formatting tools..."
-    />
-  );
-};
-```
-
 ### Toolbar features
 
 Users can change type styles, toggle bold, italics, underline, strikethrough,
@@ -127,8 +111,6 @@ rich text inputs within Nimbus.
 Rich text inputs should be used in areas where a user knows that a longer
 response or description is expected.
 
-### When to use
-
 > [!TIP]\
 > When to use
 >
@@ -140,8 +122,6 @@ response or description is expected.
 > - **Structuring content:** With bulleted or numbered lists.
 > - **Embedding external elements:** Like links, images, or videos within other
 >   content.
-
-### When not to use
 
 > [!CAUTION]\
 > When not to use
@@ -157,7 +137,7 @@ response or description is expected.
 >   style guide should be the only source of formatting (e.g., when there is
 >   passing through of styling and content to another site).
 
-### Tags and tag group in use
+### Rich text input in use
 
 > [!TIP]\
 > **Do**
@@ -193,6 +173,20 @@ cognitive, and physical limitations.
 
 ### Accessibility standards
 
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState("");
+
+  return (
+    <RichTextInput
+      value={value}
+      onChange={setValue}
+      placeholder="Start typing..."
+    />
+  );
+};
+```
+
 - **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`, `<ul>`, `<strong>`) to be correctly interpreted by screen readers.
 - **Keyboard Access:** Ensure all toolbar controls are accessible via the tab key. Users must be able to navigate and apply formatting without a mouse.
-- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls, such as aria-label for toggle icon buttons.
+- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls, such as `aria-label` for toggle icon buttons.
