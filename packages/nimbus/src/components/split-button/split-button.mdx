@@ -101,13 +101,12 @@ const App = () => {
 }
 ```
 
-### Icons and placement
+### Icons
 
-Using icons with split buttons is possible, both on the right and left side. Please keep consistency in mind for icons and placements with other patterns that are nearby. 
+Keep consistency in mind for icons and consider other patterns that are nearby. 
 
 ```jsx-live
 const App = () => (
-  <Stack direction="horizontal" gap="400" alignItems="center">
     <SplitButton
       tone="primary"
       onAction={(actionId) => alert(`Action: ${actionId}`)}
@@ -117,16 +116,6 @@ const App = () => (
       <Menu.Item id="share">Share Document</Menu.Item>
       <Menu.Item id="copy-link">Copy Link</Menu.Item>
     </SplitButton>
-    <SplitButton
-      tone="primary"
-      onAction={(actionId) => alert(`Action: ${actionId}`)}
-      aria-label="Even more document actions"
-      icon={<Icons.Share />}
-    >
-      <Menu.Item id="share-again">Share Document</Menu.Item>
-      <Menu.Item id="copy-link-again">Copy Link</Menu.Item>
-    </SplitButton>
-    </Stack>
   )
 
 ```
