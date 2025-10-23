@@ -4,7 +4,7 @@
  * This module provides convenient access to commonly used types from
  * third-party libraries that are used across multiple Nimbus components.
  */
-
+import type { ConditionalValue } from "@chakra-ui/react";
 /**
  * Date value type from @internationalized/date
  * Used by: Calendar, DatePicker, DateInput, DateRangePicker
@@ -22,3 +22,13 @@ export type { TimeValue } from "react-aria";
  * Used by: Select, ComboBox, Menu, TagGroup, DataTable, and other collection components
  */
 export type { Key } from "react-aria-components";
+
+type SemanticColorPalette =
+  | "primary"
+  | "neutral"
+  | "info"
+  | "positive"
+  | "warning"
+  | "critical";
+
+export type SemanticPalettesOnly = ConditionalValue<SemanticColorPalette>;

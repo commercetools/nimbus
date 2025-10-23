@@ -3,6 +3,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
+import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
 
 // ============================================================
 // RECIPE PROPS
@@ -14,11 +15,6 @@ type LoadingSpinnerRecipeProps = {
    * @default "sm"
    */
   size?: RecipeProps<"loadingSpinner">["size"];
-  /**
-   * Color palette for the loading spinner
-   * @default "primary"
-   */
-  colorPalette?: "primary" | "white" | undefined;
 } & UnstyledProp;
 
 // ============================================================
@@ -27,8 +23,10 @@ type LoadingSpinnerRecipeProps = {
 
 export type LoadingSpinnerRootSlotProps = Omit<
   HTMLChakraProps<"div", LoadingSpinnerRecipeProps>,
-  "as" | "asChild"
->;
+  "as" | "asChild" | "colorPalette"
+> & {
+  colorPalette?: "primary" | "white";
+};
 
 // ============================================================
 // HELPER TYPES
