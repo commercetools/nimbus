@@ -215,7 +215,7 @@ export const LocalizedField = ({
                 id={moreDetailsButtonId}
                 aria-label={formatMessage(messages.infoBoxTriggerAriaLabel)}
                 size="2xs"
-                tone="info"
+                colorPalette="info"
                 variant="link"
               >
                 <HelpOutline />

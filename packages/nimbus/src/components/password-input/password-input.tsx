@@ -30,7 +30,7 @@ export const PasswordInput = (props: PasswordInputProps) => {
           <IconButton
             size={size === "md" ? "xs" : "2xs"}
             variant="ghost"
-            tone="primary"
+            colorPalette="primary"
             aria-label={
               showPassword
                 ? intl.formatMessage(messages.hide)

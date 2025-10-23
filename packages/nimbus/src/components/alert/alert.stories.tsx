@@ -2,7 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { Alert, type AlertProps, Button, Stack } from "@commercetools/nimbus";
 
-const tones: AlertProps["tone"][] = ["critical", "info", "warning", "positive"];
+const colorPalettes: AlertProps["colorPalette"][] = [
+  "critical",
+  "info",
+  "warning",
+  "positive",
+];
 const variants: AlertProps["variant"][] = ["flat", "outlined"];
 
 /**
@@ -34,7 +39,7 @@ const mockOnDismiss = fn();
  */
 export const Base: Story = {
   args: {
-    tone: "positive",
+    colorPalette: "positive",
     variant: "outlined",
     "data-testid": "base-alert",
     children: (
@@ -84,17 +89,17 @@ export const Base: Story = {
   },
 };
 
-export const TonesShowcase: Story = {
-  name: "Showcase: Tones",
+export const ColorPalettesShowcase: Story = {
+  name: "Showcase: colorPalettes",
   render: () => (
     <Stack direction="column" gap="400" alignItems="flex-start">
-      {tones.map((tone) => (
+      {colorPalettes.map((colorPalette) => (
         <Alert.Root
-          key={`alert-${tone as string}`}
-          tone={tone}
+          key={`alert-${colorPalette as string}`}
+          colorPalette={colorPalette}
           variant="outlined"
         >
-          <Alert.Title>Alert Title ({tone as string})</Alert.Title>
+          <Alert.Title>Alert Title ({colorPalette as string})</Alert.Title>
           <Alert.Description>Alert Description</Alert.Description>
           <Alert.Actions>
             <Stack direction="row" gap="8px" alignItems="center">
@@ -102,7 +107,7 @@ export const TonesShowcase: Story = {
             </Stack>
           </Alert.Actions>
           <Alert.DismissButton
-            onPress={() => alert(`Dismissed ${tone as string}`)}
+            onPress={() => alert(`Dismissed ${colorPalette as string}`)}
           />
         </Alert.Root>
       ))}
@@ -114,21 +119,21 @@ export const VariantsShowcase: Story = {
   name: "Showcase: Variants",
   render: () => (
     <Stack direction="column" gap="400" alignItems="flex-start">
-      {tones.map((tone) => (
+      {colorPalettes.map((colorPalette) => (
         <Stack
-          key={`stack-${tone as string}`}
+          key={`stack-${colorPalette as string}`}
           direction="row"
           gap="400"
           width="100%"
         >
           {variants.map((variant) => (
             <Alert.Root
-              key={`alert-${tone as string}-${variant as string}`}
-              tone={tone}
+              key={`alert-${colorPalette as string}-${variant as string}`}
+              colorPalette={colorPalette}
               variant={variant}
             >
               <Alert.Title>
-                {tone as string} / {variant as string}
+                {colorPalette as string} / {variant as string}
               </Alert.Title>
               <Alert.Description>Desc.</Alert.Description>
               <Alert.DismissButton onPress={() => alert("Dismissed")} />
@@ -143,7 +148,7 @@ export const VariantsShowcase: Story = {
 export const TitleOnly: Story = {
   name: "Composition: Title Only",
   args: {
-    tone: "positive",
+    colorPalette: "positive",
     variant: "outlined",
     "data-testid": "alert-title-only",
     children: (
@@ -176,7 +181,7 @@ export const TitleOnly: Story = {
 export const DescriptionOnly: Story = {
   name: "Composition: Description Only",
   args: {
-    tone: "info",
+    colorPalette: "info",
     variant: "flat",
     "data-testid": "alert-desc-only",
     children: (
@@ -207,7 +212,7 @@ export const DescriptionOnly: Story = {
 export const TitleAndActions: Story = {
   name: "Composition: Title and Actions",
   args: {
-    tone: "warning",
+    colorPalette: "warning",
     variant: "outlined",
     "data-testid": "alert-title-actions",
     children: (
@@ -254,7 +259,7 @@ const mockDismissNoActions = fn();
 export const NoActions: Story = {
   name: "Composition: Title, Description, Dismiss (No Actions)",
   args: {
-    tone: "positive",
+    colorPalette: "positive",
     variant: "outlined",
     "data-testid": "alert-no-actions",
     children: (

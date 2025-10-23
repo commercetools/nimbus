@@ -85,7 +85,7 @@ Every types file follows this sequential structure with section dividers:
 // ============================================================
 // RECIPE PROPS
 // ============================================================
-// Styling variants (size, variant, tone, etc.)
+// Styling variants (size, variant, colorPalette, etc.)
 // Only present when component has custom styling recipes
 
 // ============================================================

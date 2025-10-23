@@ -4,6 +4,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
+import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
 
 // ============================================================
 // RECIPE PROPS
@@ -20,10 +21,6 @@ type ButtonRecipeProps = {
    * @default "subtle"
    */
   variant?: RecipeProps<"button">["variant"];
-  /**
-   * Color tone palette for the button
-   */
-  tone?: RecipeProps<"button">["tone"];
 } & UnstyledProp;
 
 // ============================================================
@@ -32,9 +29,10 @@ type ButtonRecipeProps = {
 
 export type ButtonRootSlotProps = Omit<
   HTMLChakraProps<"button", ButtonRecipeProps>,
-  "slot"
+  "slot" | "colorPalette"
 > & {
   slot?: string | null | undefined;
+  colorPalette?: Exclude<SemanticPalettesOnly, "warning">;
 };
 
 // ============================================================

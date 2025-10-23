@@ -161,7 +161,7 @@ Style props are excellent for:
 - Applying a specific color from the token palette directly (e.g.,
   `color="primary.11"`).
 - Overriding a particular aspect of a component's appearance when a more general
-  theming prop (like `variant` or `tone`) doesn't cover the specific need, or
+  theming prop (like `variant` or `colorPalette`) doesn't cover the specific need, or
   when a highly localized, one-off style is required.
 
 ```tsx
@@ -221,7 +221,7 @@ behavior. This is primarily achieved through the `as` or `asChild` props.
   import { Button } from "@commercetools/nimbus";
   import { Link } from "your-router-library"; // Fictional router Link
 
-  <Button variant="solid" tone="primary" asChild>
+  <Button variant="solid" colorPalette="primary" asChild>
     <Link to="/some-page">Navigate</Link>
   </Button>;
 
@@ -240,7 +240,7 @@ apply common, pre-defined visual treatments.
 
 These theming props are the primary way to align components with the established
 Nimbus design language and ensure a consistent look and feel. They encapsulate
-sets of styles related to a component's variants, sizes, or semantic tones.
+sets of styles related to a component's variants, sizes, or semantic `colorPalette`s.
 
 Common theming props include:
 
@@ -250,8 +250,6 @@ Common theming props include:
 - `textStyle`: Specifically for text-based components like `Text` or `Heading`,
   this prop applies a predefined typographic style (which includes font size,
   weight, line height, etc.) like `body`, `caption`, `h1`, etc.
-- `tone`: Typically used to convey semantic meaning or state through color
-  (e.g., `primary`, `neutral`, `critical` for a `Button` or `Alert`).
 - `colorPalette`: This prop is used to apply a specific color scheme to a
   component when the color isn't necessarily tied to a semantic meaning (like
   `success` or `warning`). Instead, it offers a way to achieve visual variation
@@ -267,10 +265,10 @@ function ThemedComponents() {
   return (
     <>
       <Text textStyle="caption">I look like a caption</Text>
-      <Button variant="solid" tone="primary" size="lg">
+      <Button variant="solid" colorPalette="primary" size="lg">
         Large Primary Button
       </Button>
-      <Button variant="outline" tone="critical" size="xs">
+      <Button variant="outline" colorPalette="critical" size="xs">
         xSmall Critical Outline
       </Button>
       <Badge colorPalette="blue">Blue Badge</Badge>
@@ -329,7 +327,7 @@ import { IconCheckCircle } from "@commercetools/nimbus-icons";
 
 function ComponentsWithIcons() {
   return (
-    <Button variant="solid" tone="primary">
+    <Button variant="solid" colorPalette="primary">
       <IconCheckCircle /> Submit
     </Button>
   );

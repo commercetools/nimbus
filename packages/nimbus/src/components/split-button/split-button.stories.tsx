@@ -231,7 +231,7 @@ export const SplitButtonVariants: Story = {
           <SplitButton
             size="2xs"
             variant="solid"
-            tone="primary"
+            colorPalette="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button save actions"
             icon={<Save />}
@@ -243,7 +243,7 @@ export const SplitButtonVariants: Story = {
           <SplitButton
             size="xs"
             variant="solid"
-            tone="primary"
+            colorPalette="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button save actions"
             icon={<Save />}
@@ -255,7 +255,7 @@ export const SplitButtonVariants: Story = {
           <SplitButton
             size="md"
             variant="solid"
-            tone="primary"
+            colorPalette="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button save actions"
             icon={<Save />}
@@ -272,7 +272,7 @@ export const SplitButtonVariants: Story = {
         <Stack direction="row" gap="400" wrap="wrap">
           <SplitButton
             variant="solid"
-            tone="primary"
+            colorPalette="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button solid actions"
             icon={<Save />}
@@ -283,7 +283,7 @@ export const SplitButtonVariants: Story = {
 
           <SplitButton
             variant="subtle"
-            tone="neutral"
+            colorPalette="neutral"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button subtle actions"
             icon={<Save />}
@@ -294,7 +294,7 @@ export const SplitButtonVariants: Story = {
 
           <SplitButton
             variant="outline"
-            tone="primary"
+            colorPalette="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button outline actions"
             icon={<Save />}
@@ -305,7 +305,7 @@ export const SplitButtonVariants: Story = {
 
           <SplitButton
             variant="outline"
-            tone="critical"
+            colorPalette="critical"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button outline critical actions"
             icon={<Save />}
@@ -316,7 +316,7 @@ export const SplitButtonVariants: Story = {
 
           <SplitButton
             variant="ghost"
-            tone="primary"
+            colorPalette="primary"
             onAction={(id) => alert(`${id} clicked!`)}
             aria-label="Split button ghost actions"
             icon={<Save />}

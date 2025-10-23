@@ -14,11 +14,6 @@ type LoadingSpinnerRecipeProps = {
    * @default "sm"
    */
   size?: RecipeProps<"loadingSpinner">["size"];
-  /**
-   * Color tone palette for the loading spinner
-   * @default "primary"
-   */
-  tone?: RecipeProps<"loadingSpinner">["tone"];
 } & UnstyledProp;
 
 // ============================================================
@@ -27,8 +22,10 @@ type LoadingSpinnerRecipeProps = {
 
 export type LoadingSpinnerRootSlotProps = Omit<
   HTMLChakraProps<"div", LoadingSpinnerRecipeProps>,
-  "as" | "asChild"
->;
+  "as" | "asChild" | "colorPalette"
+> & {
+  colorPalette?: "primary" | "white";
+};
 
 // ============================================================
 // HELPER TYPES

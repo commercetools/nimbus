@@ -128,7 +128,9 @@ export const PropsTable = ({ id }: { id: string }) => {
                     <Button
                       key={cid}
                       size="xs"
-                      tone={selectedComponent === cid ? "primary" : "neutral"}
+                      colorPalette={
+                        selectedComponent === cid ? "primary" : "neutral"
+                      }
                       variant={selectedComponent === cid ? "solid" : "ghost"}
                       onPress={() => setSelectedComponent(cid)}
                     >

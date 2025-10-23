@@ -267,7 +267,7 @@ base: {
 
 // ✅ Color palette usage examples
 variants: {
-  tone: {
+  colorPalette: {
     primary: {
       backgroundColor: "primary.9",      // Semantic palette
       color: "primary.contrast",

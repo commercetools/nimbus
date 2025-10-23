@@ -23,7 +23,7 @@ export const TagGroupTag: TagGroupTagComponent = ({
                 size="2xs"
                 variant={isSelected ? "solid" : "ghost"}
                 slot="remove"
-                tone={isSelected ? undefined : "neutral"}
+                colorPalette={isSelected ? undefined : "neutral"}
               >
                 <CloseIcon />
               </IconButton>

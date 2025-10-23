@@ -128,7 +128,7 @@ export const LeadingElements: Story = {
           leadingElement: (
             <IconButton
               size={size === "sm" ? "2xs" : "xs"}
-              tone="primary"
+              colorPalette="primary"
               variant="ghost"
               aria-label="input options"
               mt="-100"

@@ -53,7 +53,7 @@ export const loadingSpinnerRecipe = defineRecipe({
       },
     },
 
-    tone: {
+    colorPalette: {
       primary: {
         colorPalette: "ctvioletAlpha",
       },
@@ -65,6 +65,5 @@ export const loadingSpinnerRecipe = defineRecipe({
 
   defaultVariants: {
     size: "sm",
-    tone: "primary",
   },
 });
