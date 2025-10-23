@@ -63,12 +63,16 @@ export const DataTableRoot = function DataTableRoot<
   const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
 
   const activeColumns = useMemo(() => {
-    const activeCols = columns.filter(
-      (col) =>
-        (visibleColumns ? visibleColumns.includes(col.id) : true) &&
-        col.isVisible !== false
-    );
-    return activeCols;
+    if (!visibleColumns) {
+      return columns;
+    }
+
+    const columnMap = new Map(columns.map((col) => [col.id, col]));
+
+    // Map visibleColumns IDs to column objects, preserving the order from visibleColumns
+    return visibleColumns
+      .map((id) => columnMap.get(id))
+      .filter((col): col is NonNullable<typeof col> => col !== undefined);
   }, [columns, visibleColumns]);
 
   const filteredRows = useMemo(

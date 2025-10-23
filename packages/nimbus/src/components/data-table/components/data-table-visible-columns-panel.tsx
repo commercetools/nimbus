@@ -1,6 +1,6 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useIntl } from "react-intl";
-import { useListData } from "react-stately";
+import type { Key } from "react-aria-components";
 import {
   Button,
   SimpleGrid,
@@ -18,11 +18,15 @@ import {
 } from "@commercetools/nimbus-icons";
 import type { TColumnListItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
-import { useState } from "react";
 
 export type DataTableManagerProps = {
   // /** Position of the settings button - can be a render prop for custom positioning */
   renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
+};
+
+// Type for items with onRemoveItem provided by DraggableList.Root
+type TColumnListItemWithRemove = TColumnListItem & {
+  onRemoveItem?: (key: Key) => void;
 };
 
 const VisibleColumnsPanel = ({
@@ -36,8 +40,6 @@ const VisibleColumnsPanel = ({
   handleVisibleColumnsUpdate: (updatedItems: TColumnListItem[]) => void;
   handleResetColumns: () => void;
 }) => {
-  const visibleItemsList = useListData({ initialItems: visibleItems });
-  const hiddenItemsList = useListData({ initialItems: hiddenItems });
   const [searchValue, setSearchValue] = useState("");
   const [searchedHiddenItems, setSearchedHiddenItems] = useState(hiddenItems);
   const { formatMessage } = useIntl();
@@ -46,28 +48,77 @@ const VisibleColumnsPanel = ({
     return null;
   }
 
+  // Update searched items when hidden items change
+  useEffect(() => {
+    setSearchedHiddenItems(
+      hiddenItems.filter((item) =>
+        item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+  }, [hiddenItems, searchValue]);
+
   const handleSearch = (value: string) => {
     setSearchValue(value);
   };
 
-  useEffect(() => {
-    setSearchedHiddenItems(
-      hiddenItemsList.items.filter((item) =>
-        item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
-      )
-    );
-  }, [searchValue, hiddenItemsList.items]);
+  /**
+   * Handles updates to the hidden columns list when items are dragged between lists
+   * updatedSearchedItems - The updated list of items in the hidden columns (filtered by search)
+   */
+  const handleHiddenColumnsListUpdate = useCallback(
+    (updatedSearchedItems: TColumnListItem[]) => {
+      const currentHiddenIds = new Set(hiddenItems.map((item) => item.id));
+      const updatedSearchedIds = new Set(
+        updatedSearchedItems.map((item) => item.id)
+      );
 
-  const handleRemoveItem = useCallback(
-    (key: string) => {
-      const item = visibleItemsList.getItem(key);
-      if (item) {
-        hiddenItemsList.append(item);
-        setSearchedHiddenItems([...hiddenItemsList.items]);
+      // Find items that were removed from hidden (dragged to visible)
+      const removedFromHidden = hiddenItems.filter(
+        (item) => !updatedSearchedIds.has(item.id)
+      );
+
+      // Find items that were added to hidden (dragged from visible)
+      const addedToHidden = updatedSearchedItems.filter(
+        (item) => !currentHiddenIds.has(item.id)
+      );
+
+      // Calculate new visible items list
+      let newVisibleItems = [...visibleItems];
+
+      // Items removed from hidden should be added to visible
+      if (removedFromHidden.length > 0) {
+        newVisibleItems = [...newVisibleItems, ...removedFromHidden];
       }
-      visibleItemsList.remove(key);
+
+      // Items added to hidden should be removed from visible
+      if (addedToHidden.length > 0) {
+        const addedIds = new Set(addedToHidden.map((item) => item.id));
+        newVisibleItems = newVisibleItems.filter(
+          (item) => !addedIds.has(item.id)
+        );
+      }
+
+      // Update parent with new visible items
+      handleVisibleColumnsUpdate(newVisibleItems);
     },
-    [visibleItemsList.remove, searchedHiddenItems]
+    [hiddenItems, visibleItems, handleVisibleColumnsUpdate]
+  );
+
+  /**
+   * Handles updates to the visible columns list when items are:
+   * - Reordered within the list
+   * - Dragged from hidden to visible
+   * - Dragged from visible to hidden
+   * - Removed via the remove button (handled by DraggableList.Root)
+   * updatedVisibleItems - The updated list of visible column items with new order/content
+   */
+  const handleVisibleColumnsListUpdate = useCallback(
+    (updatedVisibleItems: TColumnListItem[]) => {
+      // Simply pass through the updated list - this preserves the new order from reordering
+      // or updates from drag-and-drop operations between lists
+      handleVisibleColumnsUpdate(updatedVisibleItems);
+    },
+    [handleVisibleColumnsUpdate]
   );
 
   return (
@@ -109,6 +160,7 @@ const VisibleColumnsPanel = ({
               h="full"
               p="0"
               items={searchedHiddenItems}
+              onUpdateItems={handleHiddenColumnsListUpdate}
               aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
@@ -142,21 +194,27 @@ const VisibleColumnsPanel = ({
             p="400"
             removableItems
             h="full"
-            items={visibleItemsList.items}
-            onUpdateItems={handleVisibleColumnsUpdate}
+            items={visibleItems}
+            onUpdateItems={handleVisibleColumnsListUpdate}
             aria-label={formatMessage(messages.visibleColumnsAria)}
           >
-            {(item) => (
-              <DraggableList.Item
-                py="100"
-                key={item.id}
-                id={item.id}
-                onRemoveItem={() => handleRemoveItem(item.id)}
-                aria-label={item.label?.toString() ?? item.id}
-              >
-                {item.label}
-              </DraggableList.Item>
-            )}
+            {(item) => {
+              // Cast to include onRemoveItem provided by DraggableList.Root when removableItems is true
+              const itemWithRemove = item as TColumnListItemWithRemove;
+              return (
+                <DraggableList.Item
+                  py="100"
+                  key={itemWithRemove.id}
+                  id={itemWithRemove.id}
+                  onRemoveItem={itemWithRemove.onRemoveItem}
+                  aria-label={
+                    itemWithRemove.label?.toString() ?? itemWithRemove.id
+                  }
+                >
+                  {itemWithRemove.label}
+                </DraggableList.Item>
+              );
+            }}
           </DraggableList.Root>
         </Box>
       </SimpleGrid>

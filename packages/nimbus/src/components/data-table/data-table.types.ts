@@ -76,7 +76,6 @@ export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
     row: T;
     column: DataTableColumnItem<T>;
   }) => ReactNode;
-  isVisible?: boolean;
   isResizable?: boolean;
   width?: number | null;
   defaultWidth?: number | null;
