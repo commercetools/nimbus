@@ -1,12 +1,9 @@
+import type { PropItem } from "react-docgen-typescript";
 /**
  * Prop filtering logic extracted from react-docgen-typescript parsing.
  * Filters out inherited HTML, React, Chakra, and ARIA props to show only
  * component-specific props in documentation.
  */
-
-// Allow any prop item structure from react-docgen-typescript
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type PropItem = any;
 
 /**
  * Determines whether a prop should be filtered out of documentation.
