@@ -52,8 +52,8 @@ const App = () => {
       aria-label="More publish options"
     >
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
-      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
   );
 }
@@ -73,8 +73,8 @@ const App = () => {
       aria-label="More publish options"
     >
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
-      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
   );
 }
@@ -94,8 +94,8 @@ const App = () => {
       aria-label="More publish options"
     >
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
-      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
   );
 }
@@ -113,8 +113,9 @@ const App = () => (
       aria-label="More document actions"
       icon={<Icons.Share />}
     >
-      <Menu.Item id="share">Share Document</Menu.Item>
-      <Menu.Item id="copy-link">Copy Link</Menu.Item>
+      <Menu.Item id="publish">Publish</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
   )
 
@@ -129,15 +130,18 @@ const App = () => (
   <Stack direction="horizontal" gap="400" alignItems="center">
     <SplitButton tone="primary" size="md" onAction={(id) => {}} aria-label="publish options">
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="option2">Option 2</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
     <SplitButton tone="primary" size="xs" onAction={(id) => {}} aria-label="publish options">
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="option2">Option 2</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
     <SplitButton tone="primary" size="2xs" onAction={(id) => {}} aria-label="publish options">
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="option2">Option 2</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
   </Stack>
 )
@@ -171,9 +175,9 @@ comprehensive functionality.
 - **When all actions are equally important:** Don't use a split button if all the related actions are performed with equal frequency or importance. Grouping them this way implies hierarchy where none exists, and a simple button group or vertical menu list might be clearer.
 - **When actions are unrelated:** Avoid grouping actions that have no logical connection under the same component. The primary button and all dropdown options must share a clear, single context.
 - **When the primary action changes frequently:** If the default action changes based on complex context or user state, constantly swapping the main button label can confuse the user and create visual instability. Use a standard dropdown menu where all options, including the default, are consistently located inside.
-- **When discovery Is crucial:** If users must know all available options (e.g., legally required export formats), burying them in a secondary dropdown menu is a poor choice. Displaying them as separate full buttons or in an obvious button group is better.
+- **When discovery is crucial:** If users must know all available options (e.g., legally required export formats), burying them in a secondary dropdown menu is a poor choice. Displaying them as separate full buttons or in an obvious button group is better.
 - **For primary navigation:** A split button is an action control, not a primary navigation tool. Using it to link to major sections can confuse users about whether they are performing an action or moving to a new page.
-- **When screen space Is not an issue:** If you have ample space, displaying the top two or three most common actions as individual, labeled buttons can sometimes be faster and more transparent than hiding them in a dropdown.
+- **When screen space is not an issue:** If you have ample space, displaying the top two or three most common actions as individual, labeled buttons can sometimes be faster and more transparent than hiding them in a dropdown.
 - **When the dropdown contains complex controls:** Avoid filling the dropdown with complex inputs, multi-step forms, or large amounts of text. A split button dropdown should only contain simple, single-click actions.
 
 ### Split buttons in use
@@ -193,9 +197,9 @@ const App = () => {
       onAction={(actionId) => alert(`Action: ${actionId}`)}
       aria-label="More publish options"
     >
-      <Menu.Item id="publish">Publish changes</Menu.Item>
-      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
-      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
+      <Menu.Item id="schedule-publish">Schedule publish date</Menu.Item>
+      <Menu.Item id="revert">Revert to last save</Menu.Item>
     </SplitButton>
   );
 }
@@ -221,10 +225,9 @@ const App = () => {
       icon={<Icons.Snowshoeing/>}
     >
       <Menu.Item id="download">Download Report</Menu.Item>
-      <Menu.Item id="buy-socks">Buy Socks</Menu.Item>
-      <Menu.Item id="delete-account">Delete Account</Menu.Item>
+      <Menu.Item id="edit-permissions">Edit user permissions</Menu.Item>
       <Menu.Item id="go-home">Go to Homepage</Menu.Item>
-      <Menu.Item id="accept-terms">Accept Terms</Menu.Item>
+      <Menu.Item id="send-email">⭐️ Send email update</Menu.Item>
     </SplitButton>
   );
 }
@@ -252,8 +255,8 @@ const App = () => {
       aria-label="More publish options"
     >
       <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="save-publish">Save and Publish</Menu.Item>
-      <Menu.Item id="save-next">Save and Open Next</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
     </SplitButton>
   );
 }
