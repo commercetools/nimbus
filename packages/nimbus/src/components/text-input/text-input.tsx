@@ -2,11 +2,7 @@ import { useEffect, useRef } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
-import {
-  Input,
-  TextFieldContext,
-  useContextProps,
-} from "react-aria-components";
+import { Input, InputContext, useContextProps } from "react-aria-components";
 import { extractStyleProps } from "@/utils";
 import { textInputSlotRecipe } from "./text-input.recipe";
 import {
@@ -37,19 +33,37 @@ export const TextInput = (props: TextInputProps) => {
 
   const rootRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLInputElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const baseRef = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
-  // Consume context props based on slot (this enables slot-aware behavior)
+  /**
+   * Consume context props from InputContext when TextInput is used
+   * as a child of React Aria components (e.g., within SearchField, Form).
+   * This enables proper slot-aware behavior and prop composition, allowing
+   * TextInput to work seamlessly within React Aria's component hierarchy.
+   */
   const [contextProps, contextRef] = useContextProps(
     otherProps,
-    ref,
-    TextFieldContext
+    baseRef,
+    InputContext
   );
+
+  // Type assertion needed because useContextProps returns DOM props that aren't in the type definition
+  const contextPropsWithDOMAttrs = contextProps as typeof contextProps & {
+    disabled?: boolean;
+    readOnly?: boolean;
+    required?: boolean;
+  };
+
   const { inputProps } = useTextField(
-    contextProps,
-    contextRef as React.RefObject<HTMLInputElement>
+    {
+      ...contextPropsWithDOMAttrs,
+      isDisabled: contextPropsWithDOMAttrs.disabled,
+      isReadOnly: contextPropsWithDOMAttrs.readOnly,
+      isRequired: contextPropsWithDOMAttrs.required,
+    },
+    contextRef
   );
 
   const stateProps = {
@@ -92,7 +106,7 @@ export const TextInput = (props: TextInputProps) => {
         </TextInputLeadingElementSlot>
       )}
       <TextInputInputSlot asChild>
-        <Input ref={ref} {...inputProps} />
+        <Input ref={contextRef} {...inputProps} />
       </TextInputInputSlot>
       {trailingElement && (
         <TextInputTrailingElementSlot>

@@ -17,6 +17,7 @@ import {
   AddBox,
   Close,
 } from "@commercetools/nimbus-icons";
+import { TextField as RaTextField, Label } from "react-aria-components";
 
 const meta: Meta<typeof TextInput> = {
   title: "Components/TextInput",
@@ -461,6 +462,56 @@ export const InputTypes: Story = {
           <TextInput key={type} {...args} placeholder={type} type={type} />
         ))}
       </Stack>
+    );
+  },
+};
+
+/**
+ * Demonstrates TextInput consuming context from React Aria's TextField.
+ * This validates the useContextProps integration.
+ */
+export const WithinReactAriaContext: Story = {
+  render: () => {
+    return (
+      <RaTextField
+        isRequired
+        isReadOnly
+        isDisabled
+        aria-label="context-test-field"
+      >
+        <Label style={{ display: "block", marginBottom: "8px" }}>
+          Email Address
+        </Label>
+        <TextInput type="email" placeholder="Enter your email" />
+      </RaTextField>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText("Enter your email");
+
+    await step(
+      "TextInput consumes required prop from TextField context",
+      async () => {
+        // Verify TextInput receives required attribute from TextField context
+        await expect(input).toHaveAttribute("aria-required", "true");
+      }
+    );
+
+    await step(
+      "TextInput consumes disabled prop from TextField context",
+      async () => {
+        // Verify TextInput receives disabled attribute from TextField context
+        await expect(input).toBeDisabled();
+      }
+    );
+
+    await step(
+      "TextInput consumes readonly prop from TextField context",
+      async () => {
+        // Verify TextInput receives readonly attribute from TextField context
+        await expect(input).toHaveAttribute("readonly");
+      }
     );
   },
 };
