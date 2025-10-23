@@ -18,12 +18,6 @@ const enrichComponent = (component: ComponentDoc): Record<string, unknown> => {
   // Check if component has @supportsStyleProps JSDoc tag
   const supportsStyleProps = "supportsStyleProps" in (component.tags || {});
 
-  // Future enrichment examples:
-  // - hasReactAriaProps: check for React Aria parent names
-  // - propCategoryBreakdown: count props by category
-  // - deprecationWarnings: list deprecated props
-  // - requiredPropsCount: count required props
-
   return {
     supportsStyleProps,
   };
