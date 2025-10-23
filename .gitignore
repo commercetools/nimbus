@@ -180,3 +180,5 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
+# Local AI settings
+.claude/settings.local.json
