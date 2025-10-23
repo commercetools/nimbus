@@ -92,6 +92,28 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
      */
     items?: T[];
     /**
+     * Function to extract a unique key from each item when items do not have a `key` or `id` field.
+     * Defaults to using `item.key` or `item.id`.
+     *
+     * **Important:** Wrap this function in `useCallback` to prevent unnecessary re-synchronization
+     * of the list state. If this function's identity changes on every render, it will trigger
+     * the internal sync effect, potentially causing performance issues.
+     *
+     * @param item - The item to extract the key from
+     * @returns The unique key for the item
+     * @default useCallback((item) => (item.key ?? item.id), [])
+     * @example
+     * ```tsx
+     * // ✅ Good: Memoized with useCallback
+     * const getKey = useCallback((item) => item.name, []);
+     * <DraggableList.Root items={items} getKey={getKey} />
+     *
+     * // ❌ Bad: Inline function creates new identity on every render
+     * <DraggableList.Root items={items} getKey={(item) => item.name} />
+     * ```
+     */
+    getKey?: (item: T) => Key;
+    /**
      * Callback fired when the list is updated by drag-and-drop or item removal
      * @param updatedItems - The new array of items after the update
      */

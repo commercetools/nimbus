@@ -20,6 +20,9 @@ variations, test interactions, and ensure accessibility compliance.
 - Use a StartCase value for meta.title
 - Use Nimbus components for any additional UI necessary in stories
 - Import components and component types from `@commercetools/nimbus`
+- Always use Nimbus components when building the UI for story components
+- Always prefer finding elements via their accessible attributes instead of
+  using `data-testid`
 
 ## File Structure
 

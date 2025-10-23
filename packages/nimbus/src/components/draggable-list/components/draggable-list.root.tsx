@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useIntl } from "react-intl";
 import {
   GridList,
@@ -8,6 +8,7 @@ import {
 } from "react-aria-components";
 import { useListData } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { dequal } from "dequal";
 import { extractStyleProps } from "@/utils";
 import { messages } from "../draggable-list.i18n";
 import {
@@ -22,10 +23,14 @@ import { DraggableListItem } from "./draggable-list.item";
 
 const DRAGGABLE_LIST_DATA_FORMAT = "nimbus-draggable-list-item";
 
+const defaultGetKey = <T extends DraggableListItemData>(item: T): Key =>
+  (item.key as Key) ?? item.id;
+
 export const DraggableListRoot = <T extends DraggableListItemData>({
   children,
   ref,
   items = [],
+  getKey = defaultGetKey,
   onUpdateItems,
   removableItems,
   renderEmptyState: renderEmptyStateFromProps,
@@ -35,11 +40,81 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   const renderEmptyState =
     renderEmptyStateFromProps ?? formatMessage(messages.emptyMessage);
 
-  const list = useListData({ initialItems: items });
+  const list = useListData({
+    initialItems: items,
+    getKey,
+  });
 
-  // Notify parent whenever list.items changes
+  // Track if we're currently syncing from external changes
+  const isSyncingFromPropsRef = useRef(false);
+  // Track the last items we sent to parent to avoid syncing them back
+  const lastNotifiedItemsRef = useRef<T[]>(items ?? []);
+
+  // Sync external items prop changes with internal list state
   useEffect(() => {
-    onUpdateItems?.(list.items);
+    // Performance: Skip sync if shallow equality check passes (same array reference)
+    if (items === lastNotifiedItemsRef.current) {
+      return;
+    }
+    // Skip sync if these are the exact items we just sent to parent (deep equality)
+    if (dequal(items, lastNotifiedItemsRef.current)) {
+      return;
+    }
+    // If items from props and list.items are not deeply equal,
+    // remove all current items from list.items and replace them with items from props
+    if (!dequal(items, list.items)) {
+      isSyncingFromPropsRef.current = true;
+
+      // Performance Note: Full list replacement (remove all + append all) is O(n) for both
+      // operations. For large lists with frequent updates, a diffing algorithm could optimize
+      // this to only update changed items. However, for typical use cases, the simplicity and
+      // correctness of full replacement outweighs the performance cost.
+      const keysToRemove = list.items.map((item) => getKey(item));
+      // Remove all current list items
+      list.remove(...keysToRemove);
+      // Add all items from props
+      list.append(...items);
+
+      // Preserve selected keys for items that still exist in the updated items
+      if (list.selectedKeys !== "all" && list.selectedKeys.size > 0) {
+        const newItemKeys = new Set(items.map((item) => getKey(item)));
+        const updatedSelectedKeys = new Set(
+          [...list.selectedKeys].filter((key) => newItemKeys.has(key))
+        );
+        list.setSelectedKeys(updatedSelectedKeys);
+      }
+
+      // Update lastNotifiedItemsRef to prevent notification effect from reverting parent state
+      lastNotifiedItemsRef.current = items;
+
+      // Timing Note: queueMicrotask schedules the callback after the current synchronous
+      // execution completes but before the next event loop tick. This ensures the flag is
+      // reset after React processes all state updates from this effect. A cleanup function
+      // prevents the microtask from executing if the effect re-runs or component unmounts.
+      let cancelled = false;
+      queueMicrotask(() => {
+        if (!cancelled) {
+          isSyncingFromPropsRef.current = false;
+        }
+      });
+
+      return () => {
+        cancelled = true;
+      };
+    }
+    // Dependency Explanation: list methods (list.remove, list.append, list.setSelectedKeys)
+    // and list.items are intentionally NOT included to prevent infinite loops. We only want
+    // to sync when the external `items` prop or `getKey` function changes, not when the
+    // list's internal state changes. Including list would cause this effect to run on every
+    // internal list update, creating an infinite sync loop.
+  }, [items, getKey]);
+
+  // Notify parent of internal list changes (but not during external sync)
+  useEffect(() => {
+    if (!isSyncingFromPropsRef.current) {
+      lastNotifiedItemsRef.current = list.items;
+      onUpdateItems?.(list.items);
+    }
   }, [list.items, onUpdateItems]);
 
   const { dragAndDropHooks } = useDragAndDrop<T>({

@@ -29,7 +29,7 @@
     "start": "pnpm run start:docs & pnpm run start:storybook",
     "start:docs": "pnpm --filter './apps/docs' run dev",
     "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
-    "test": "DEBUG_PRINT_LIMIT=10 pnpm vitest run",
+    "test": "pnpm vitest run",
     "test:unit": "pnpm vitest run --project=unit",
     "test:storybook": "pnpm vitest run --project=storybook"
   },
