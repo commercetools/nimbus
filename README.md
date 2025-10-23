@@ -22,6 +22,11 @@
       - [Complete Build](#complete-build)
       - [Targeted Builds](#targeted-builds)
     - [Creating New Components](#creating-new-components)
+  - [🧪 Testing](#-testing)
+    - [Test Types](#test-types)
+    - [Running Tests](#running-tests)
+    - [Testing Workflow (IMPORTANT)](#testing-workflow-important)
+    - [Common Testing Patterns](#common-testing-patterns)
   - [🛠️ Project Management](#️-project-management)
     - [Initialize or Reset](#initialize-or-reset)
     - [Working with Tokens](#working-with-tokens)
@@ -134,6 +139,151 @@ pnpm build:docs
 # Build only the design tokens
 pnpm build:tokens
 ```
+
+### Creating New Components
+
+For detailed guidance on creating new components, see the
+[Component Guidelines](./docs/component-guidelines.md).
+
+## 🧪 Testing
+
+Nimbus uses Vitest for testing with two distinct test types that serve different
+purposes.
+
+### Test Types
+
+#### 1. Storybook Tests (Component Tests)
+
+- **Purpose**: Test component behavior, interactions, and visual states
+- **Environment**: Real browser (headless Chromium with Playwright)
+- **Use for**: ALL component testing - buttons, forms, dialogs, menus, etc.
+- **Location**: `*.stories.tsx` files with `play` functions
+- **Speed**: Slower (~seconds per story)
+
+#### 2. Unit Tests
+
+- **Purpose**: Test utility functions and React hooks in isolation
+- **Environment**: JSDOM (fast, simulated browser environment)
+- **Use for**: Pure functions, custom hooks, validators, formatters
+- **Location**: `*.spec.ts` or `*.spec.tsx` files
+- **Speed**: Very fast (~milliseconds per test)
+
+### Running Tests
+
+```bash
+# Run all tests (unit + Storybook)
+pnpm test
+
+# Run only unit tests (fast)
+pnpm test:unit
+
+# Run only Storybook tests (slower, browser-based)
+pnpm test:storybook
+
+# Run specific test file
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
+
+# Run tests with minimal console output
+pnpm test --silent
+
+# Run tests in watch mode (unit tests only)
+pnpm test:unit --watch
+
+# Run with coverage
+pnpm test --coverage
+```
+
+### Testing Workflow (IMPORTANT)
+
+> [!IMPORTANT] **Storybook tests run against the BUILT bundle, not source
+> files.**
+
+#### Why Building is Required
+
+The Storybook configuration operates in two distinct modes:
+
+| Mode            | Command                | Imports From           | Purpose                   |
+| --------------- | ---------------------- | ---------------------- | ------------------------- |
+| **Development** | `pnpm start:storybook` | Source files (`src/`)  | Live editing with HMR     |
+| **Testing**     | `pnpm test:storybook`  | Built bundle (`dist/`) | Test production-like code |
+
+During testing, imports resolve to the built bundle in `packages/nimbus/dist/`.
+This ensures:
+
+- Tests validate actual published behavior
+- Tests match how consumers use the package
+- Tests catch build-related issues
+
+#### Correct Testing Workflow
+
+```bash
+# ❌ WRONG - Tests will use stale code
+# Make changes to component
+pnpm test:storybook  # Tests old code!
+
+# ✅ CORRECT - Build first, then test
+# 1. Make changes to component
+# 2. Build the package
+pnpm build:packages
+
+# 3. Run tests
+pnpm test:storybook
+
+# Or combine in one command
+pnpm build:packages && pnpm test:storybook
+```
+
+#### Detection Logic
+
+The system automatically detects test mode via:
+
+- `configType === 'DEVELOPMENT'` - Set by Vite based on command
+- `VITEST_WORKER_ID` - Set automatically by Vitest when running tests
+- `VITEST=true` - Manual override for forcing test mode
+
+**Manual Override Example:**
+```bash
+# Force test mode (use built bundle) even in development
+VITEST=true pnpm start:storybook
+
+# Normal development mode (use source files with HMR)
+pnpm start:storybook
+```
+
+When test mode is detected, Storybook uses the built bundle instead of source files.
+
+**Developer Visibility:**
+
+Storybook logs which mode is active on startup:
+- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
+- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+
+This helps confirm whether your changes require a build before testing.
+
+### Common Testing Patterns
+
+```bash
+# Quick iteration cycle for component changes
+pnpm --filter @commercetools/nimbus build && pnpm test:storybook
+
+# Test specific component
+pnpm --filter @commercetools/nimbus build && pnpm test packages/nimbus/src/components/menu/menu.stories.tsx
+
+# Unit tests don't need building (they import source directly)
+pnpm test:unit --watch
+
+# Full test suite
+pnpm test
+```
+
+#### Common Pitfalls
+
+| Issue                                | Solution                                    |
+| ------------------------------------ | ------------------------------------------- |
+| ❌ Tests pass but changes don't show | Build the package before testing            |
+| ❌ Tests fail after working locally  | Ensure `pnpm build` was run                 |
+| ❌ Expecting HMR during tests        | Use `pnpm start:storybook` for live preview |
+| ✅ Build → Test → Iterate            | This is the correct workflow                |
 
 ## 🛠️ Project Management
 

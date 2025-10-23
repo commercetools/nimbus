@@ -1,5 +1,6 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import { join, dirname } from "path";
+import { join, dirname, resolve } from "path";
+import { mergeConfig } from "vite";
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -61,6 +62,37 @@ const config: StorybookConfig = {
       },
     },
   },
-  optimizeDeps: {},
+  async viteFinal(config, { configType }) {
+    // Only use source alias during development (pnpm start:storybook)
+    // This enables HMR while ensuring tests use the built bundle
+    // Check both configType and VITEST environment to ensure tests use built bundle
+    // Vitest automatically sets VITEST_WORKER_ID when running tests
+    const isTest =
+      !!process.env.VITEST_WORKER_ID || process.env.VITEST === "true";
+    const isDevelopment = configType === "DEVELOPMENT" && !isTest;
+
+    // Type safety: validate configType
+    if (configType !== "DEVELOPMENT" && configType !== "PRODUCTION") {
+      console.warn(
+        `[Storybook] Unexpected configType: "${configType}". Expected "DEVELOPMENT" or "PRODUCTION".`
+      );
+    }
+
+    // Developer visibility: log which mode is active
+    const mode = isDevelopment
+      ? "DEVELOPMENT (HMR enabled, using source files)"
+      : "PRODUCTION/TEST (using built bundle)";
+    console.log(`[Storybook] Running in ${mode}`);
+
+    return mergeConfig(config, {
+      resolve: {
+        alias: isDevelopment
+          ? {
+              "@commercetools/nimbus": resolve(__dirname, "../src"),
+            }
+          : {},
+      },
+    });
+  },
 };
 export default config;
