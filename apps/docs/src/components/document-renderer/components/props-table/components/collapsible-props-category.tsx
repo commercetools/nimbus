@@ -7,12 +7,10 @@ import {
 } from "@commercetools/nimbus";
 import { useState } from "react";
 import { PropsCategoryTable } from "./props-category-table";
-import type { PropItem, PropCategory } from "../types";
+import type { PropItem } from "../types";
 import { ArrowForwardIos } from "@commercetools/nimbus-icons";
 
 interface CollapsiblePropsCategoryProps {
-  /** Category identifier */
-  category: PropCategory;
   /** Category display name */
   displayName: string;
   /** Props to display in this category */
