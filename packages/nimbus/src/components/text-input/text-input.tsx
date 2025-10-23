@@ -49,19 +49,20 @@ export const TextInput = (props: TextInputProps) => {
     InputContext
   );
 
-  // Type assertion needed because useContextProps returns DOM props that aren't in the type definition
-  const contextPropsWithDOMAttrs = contextProps as typeof contextProps & {
-    disabled?: boolean;
-    readOnly?: boolean;
-    required?: boolean;
-  };
+  // Type guards to validate DOM props exist at runtime
+  const hasDisabled = (obj: unknown): obj is { disabled: boolean } =>
+    typeof obj === "object" && obj !== null && "disabled" in obj;
+  const hasReadOnly = (obj: unknown): obj is { readOnly: boolean } =>
+    typeof obj === "object" && obj !== null && "readOnly" in obj;
+  const hasRequired = (obj: unknown): obj is { required: boolean } =>
+    typeof obj === "object" && obj !== null && "required" in obj;
 
   const { inputProps } = useTextField(
     {
-      ...contextPropsWithDOMAttrs,
-      isDisabled: contextPropsWithDOMAttrs.disabled,
-      isReadOnly: contextPropsWithDOMAttrs.readOnly,
-      isRequired: contextPropsWithDOMAttrs.required,
+      isDisabled: hasDisabled(contextProps) ? contextProps.disabled : undefined,
+      isReadOnly: hasReadOnly(contextProps) ? contextProps.readOnly : undefined,
+      isRequired: hasRequired(contextProps) ? contextProps.required : undefined,
+      ...contextProps,
     },
     contextRef
   );

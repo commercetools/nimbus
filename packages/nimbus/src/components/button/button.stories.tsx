@@ -3,6 +3,7 @@ import { Box, Button, type ButtonProps, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
+import { ButtonContext } from "react-aria-components";
 
 const meta: Meta<typeof Button> = {
   title: "Components/Buttons/Button",
@@ -355,5 +356,29 @@ export const SmokeTest: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+/**
+ * Demonstrates Button consuming context from React Aria's ButtonContext.
+ * This validates the useContextProps integration.
+ */
+export const WithinReactAriaContext: Story = {
+  render: () => {
+    return (
+      <ButtonContext.Provider value={{ isDisabled: true }}>
+        <Button>Disabled by Context</Button>
+      </ButtonContext.Provider>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Button consumes disabled prop from ButtonContext", async () => {
+      const button = canvas.getByRole("button");
+
+      // Verify Button receives disabled attribute from ButtonContext
+      await expect(button).toHaveAttribute("aria-disabled", "true");
+    });
   },
 };

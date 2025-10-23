@@ -32,10 +32,9 @@ export const Button = (props: ButtonProps) => {
     ButtonContext
   );
 
-  // Type assertion needed because useContextProps returns DOM props that aren't in the type definition
-  const contextPropsWithDOMAttrs = contextProps as typeof contextProps & {
-    disabled?: boolean;
-  };
+  // Type guard to validate disabled prop exists at runtime
+  const hasDisabled = (obj: unknown): obj is { disabled: boolean } =>
+    typeof obj === "object" && obj !== null && "disabled" in obj;
 
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
@@ -43,8 +42,8 @@ export const Button = (props: ButtonProps) => {
 
   const { buttonProps } = useButton(
     {
-      ...contextPropsWithDOMAttrs,
-      isDisabled: contextPropsWithDOMAttrs.disabled,
+      ...contextProps,
+      isDisabled: hasDisabled(contextProps) ? contextProps.disabled : undefined,
       elementType,
     },
     contextRef
