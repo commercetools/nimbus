@@ -102,12 +102,19 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
         cancelled = true;
       };
     }
-    // Dependency Explanation: list methods (list.remove, list.append, list.setSelectedKeys)
-    // and list.items are intentionally NOT included to prevent infinite loops. We only want
-    // to sync when the external `items` prop or `getKey` function changes, not when the
-    // list's internal state changes. Including list would cause this effect to run on every
-    // internal list update, creating an infinite sync loop.
-  }, [items, getKey]);
+    // Dependency Explanation: Only `items` is included as a dependency.
+    //
+    // Excluded dependencies:
+    // - list methods (list.remove, list.append, list.setSelectedKeys) and list.items:
+    //   Intentionally excluded to prevent infinite loops. Including these would cause this
+    //   effect to run on every internal list update, creating an infinite sync loop.
+    //
+    // - getKey: Intentionally excluded because it should be stable (either the default
+    //   function or a memoized callback). If getKey changes on every render due to not
+    //   being memoized, including it would cause unnecessary re-syncs. This effect should
+    //   primarily respond to changes in the `items` prop, not the key extraction function.
+    //   If getKey does need to change mid-lifecycle, it indicates a parent component bug.
+  }, [items]);
 
   // Notify parent of internal list changes (but not during external sync)
   useEffect(() => {
