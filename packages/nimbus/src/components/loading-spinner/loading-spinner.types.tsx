@@ -3,7 +3,6 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
 
 // ============================================================
 // RECIPE PROPS
