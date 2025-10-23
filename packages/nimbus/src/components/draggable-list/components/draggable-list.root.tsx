@@ -23,11 +23,14 @@ import { DraggableListItem } from "./draggable-list.item";
 
 const DRAGGABLE_LIST_DATA_FORMAT = "nimbus-draggable-list-item";
 
+const defaultGetKey = <T extends DraggableListItemData>(item: T): Key =>
+  (item.key as Key) ?? item.id;
+
 export const DraggableListRoot = <T extends DraggableListItemData>({
   children,
   ref,
   items = [],
-  getKey = (item) => (item.key as Key) ?? item.id,
+  getKey = defaultGetKey,
   onUpdateItems,
   removableItems,
   renderEmptyState: renderEmptyStateFromProps,
@@ -58,10 +61,20 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     if (!dequal(items, list.items)) {
       isSyncingFromPropsRef.current = true;
 
-      list.setSelectedKeys(new Set());
+      // Remove all items
       const keysToRemove = list.items.map((item) => getKey(item));
       list.remove(...keysToRemove);
+      // Append new list
       list.append(...items);
+
+      // Preserve selected keys for items that still exist in the updated items
+      if (list.selectedKeys !== "all" && list.selectedKeys.size > 0) {
+        const newItemKeys = new Set(items.map((item) => getKey(item)));
+        const updatedSelectedKeys = new Set(
+          [...list.selectedKeys].filter((key) => newItemKeys.has(key))
+        );
+        list.setSelectedKeys(updatedSelectedKeys);
+      }
 
       // Update lastNotifiedItemsRef to prevent notification effect from reverting parent state
       lastNotifiedItemsRef.current = items;
@@ -79,7 +92,7 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
       lastNotifiedItemsRef.current = list.items;
       onUpdateItems?.(list.items);
     }
-  }, [list.items, onUpdateItems, getKey]);
+  }, [list.items, onUpdateItems]);
 
   const { dragAndDropHooks } = useDragAndDrop<T>({
     // Provide item data to drag'n'drop handler

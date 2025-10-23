@@ -92,10 +92,11 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
      */
     items?: T[];
     /**
-     * Function to extract a unique key from each item.
-     * Defaults to using `item.key` or falling back to `item.id`.
+     * Function to extract a unique key from each item when items do not have a `key` or `id` field.
+     * Defaults to using `item.key` or `item.id`.
      * @param item - The item to extract the key from
      * @returns The unique key for the item
+     * @example (item) => item.name
      * @default (item) => item.key ?? item.id
      */
     getKey?: (item: T) => Key;
