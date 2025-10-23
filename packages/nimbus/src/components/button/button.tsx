@@ -20,21 +20,31 @@ export const Button = (props: ButtonProps) => {
   // merge the local ref with a potentially forwarded ref
   const baseRef = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  // Consume context props based on slot (this enables slot-aware behavior)
+  /**
+   * Consume context props from ButtonContext when Button is used
+   * as a child of React Aria components (e.g., within ToggleButton, Toolbar).
+   * This enables proper slot-aware behavior and prop composition, allowing
+   * Button to work seamlessly within React Aria's component hierarchy.
+   */
   const [contextProps, contextRef] = useContextProps(
     rest,
     baseRef,
     ButtonContext
   );
 
+  // Type assertion needed because useContextProps returns DOM props that aren't in the type definition
+  const contextPropsWithDOMAttrs = contextProps as typeof contextProps & {
+    disabled?: boolean;
+  };
+
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
-
   const elementType = as || (asChild ? "a" : "button") || "button";
 
   const { buttonProps } = useButton(
     {
-      ...contextProps,
+      ...contextPropsWithDOMAttrs,
+      isDisabled: contextPropsWithDOMAttrs.disabled,
       elementType,
     },
     contextRef
