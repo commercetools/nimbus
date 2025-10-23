@@ -2,7 +2,11 @@ import { useEffect, useRef } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
-import { Input } from "react-aria-components";
+import {
+  Input,
+  TextFieldContext,
+  useContextProps,
+} from "react-aria-components";
 import { extractStyleProps } from "@/utils";
 import { textInputSlotRecipe } from "./text-input.recipe";
 import {
@@ -36,7 +40,17 @@ export const TextInput = (props: TextInputProps) => {
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
-  const { inputProps } = useTextField(otherProps, ref);
+
+  // Consume context props based on slot (this enables slot-aware behavior)
+  const [contextProps, contextRef] = useContextProps(
+    otherProps,
+    ref,
+    TextFieldContext
+  );
+  const { inputProps } = useTextField(
+    contextProps,
+    contextRef as React.RefObject<HTMLInputElement>
+  );
 
   const stateProps = {
     "data-disabled": inputProps.disabled ? "true" : undefined,
