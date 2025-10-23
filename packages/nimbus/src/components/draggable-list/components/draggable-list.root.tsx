@@ -48,11 +48,15 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   // Track if we're currently syncing from external changes
   const isSyncingFromPropsRef = useRef(false);
   // Track the last items we sent to parent to avoid syncing them back
-  const lastNotifiedItemsRef = useRef<T[]>(items);
+  const lastNotifiedItemsRef = useRef<T[]>(items ?? []);
 
   // Sync external items prop changes with internal list state
   useEffect(() => {
-    // Skip sync if these are the exact items we just sent to parent
+    // Performance: Skip sync if shallow equality check passes (same array reference)
+    if (items === lastNotifiedItemsRef.current) {
+      return;
+    }
+    // Skip sync if these are the exact items we just sent to parent (deep equality)
     if (dequal(items, lastNotifiedItemsRef.current)) {
       return;
     }
@@ -85,12 +89,18 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
 
       // Timing Note: queueMicrotask schedules the callback after the current synchronous
       // execution completes but before the next event loop tick. This ensures the flag is
-      // reset after React processes all state updates from this effect. Using useLayoutEffect
-      // would be more deterministic but could block paint. The current approach is acceptable
-      // because the flag only guards against re-entrancy, not critical state updates.
+      // reset after React processes all state updates from this effect. A cleanup function
+      // prevents the microtask from executing if the effect re-runs or component unmounts.
+      let cancelled = false;
       queueMicrotask(() => {
-        isSyncingFromPropsRef.current = false;
+        if (!cancelled) {
+          isSyncingFromPropsRef.current = false;
+        }
       });
+
+      return () => {
+        cancelled = true;
+      };
     }
     // Dependency Explanation: list methods (list.remove, list.append, list.setSelectedKeys)
     // and list.items are intentionally NOT included to prevent infinite loops. We only want
