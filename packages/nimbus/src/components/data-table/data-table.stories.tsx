@@ -20,6 +20,7 @@ import {
   Flex,
 } from "@/components";
 import { DataTable } from "./data-table";
+import { UPDATE_ACTIONS } from "./constants";
 import {
   columns,
   sortableColumns,
@@ -3605,12 +3606,18 @@ export const WithTableManager: Story = {
     };
 
     const handleSettingsChange = (
-      action: "toggleTextVisibility" | "toggleRowDensity"
+      action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
     ) => {
-      if (action === "toggleTextVisibility") {
-        setIsTruncated(!isTruncated);
-      } else if (action === "toggleRowDensity") {
-        setDensity(density === "condensed" ? "default" : "condensed");
+      if (!action) {
+        return;
+      }
+      switch (action) {
+        case UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY:
+          setIsTruncated(!isTruncated);
+          break;
+        case UPDATE_ACTIONS.TOGGLE_ROW_DENSITY:
+          setDensity(density === "condensed" ? "default" : "condensed");
+          break;
       }
     };
 

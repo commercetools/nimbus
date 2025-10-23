@@ -7,6 +7,7 @@ import {
   Toolbar,
   IconToggleButton,
 } from "@/components";
+import { UPDATE_ACTIONS } from "../constants";
 import {
   WrapText,
   ShortText,
@@ -38,7 +39,7 @@ const LayoutSettingsPanel = ({
     const selected = Array.from(keys)[0] as "full" | "preview";
     if (selected) {
       setTextVisibility(selected);
-      onSettingsChange?.("toggleTextVisibility");
+      onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY);
     }
   };
 
@@ -46,7 +47,7 @@ const LayoutSettingsPanel = ({
     const selected = Array.from(keys)[0] as "comfortable" | "compact";
     if (selected) {
       setRowDensity(selected);
-      onSettingsChange?.("toggleRowDensity");
+      onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_ROW_DENSITY);
     }
   };
 

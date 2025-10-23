@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useIntl } from "react-intl";
-import { IconButton, Drawer, Tabs } from "@/components";
+import { IconButton, Drawer, Tabs, UPDATE_ACTIONS } from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import VisibleColumnsPanel from "./data-table-visible-columns-panel";
 import LayoutSettingsPanel from "./data-table-layout-settings-panel";
@@ -81,7 +81,7 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   );
 
   const handleSettingsChange = (
-    action: "toggleTextVisibility" | "toggleRowDensity"
+    action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
   ) => {
     if (onSettingsChange) {
       onSettingsChange(action);

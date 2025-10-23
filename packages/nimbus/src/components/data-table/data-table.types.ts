@@ -18,6 +18,7 @@ import type {
   DataTableRowSlotProps,
   DataTableCellSlotProps,
 } from "./data-table.slots";
+import type { UPDATE_ACTIONS } from "./constants";
 export interface DataTableContextValue<
   T extends object = Record<string, unknown>,
 > {
@@ -25,8 +26,8 @@ export interface DataTableContextValue<
   rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
   onSettingsChange?: (
-    action: "toggleTextVisibility" | "toggleRowDensity"
-  ) => void; // TODO: Add type for settings change
+    action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
+  ) => void;
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   search?: string;
   sortDescriptor?: SortDescriptor;
@@ -151,7 +152,7 @@ export interface DataTableProps<T extends object = Record<string, unknown>>
   onPinToggle?: (rowId: string) => void;
   onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
   onSettingsChange?: (
-    action: "toggleTextVisibility" | "toggleRowDensity"
+    action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
   ) => void;
 }
 
