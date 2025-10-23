@@ -2,10 +2,6 @@ packages:
   - packages/*
   - apps/*
 
-catalog:
-  express-rate-limit: ^8.0.1
-  dompurify: ^3.3.0
-
 catalogMode: strict
 
 catalogs:
@@ -24,6 +20,7 @@ catalogs:
     eslint-plugin-prettier: ^5.5.4
     eslint-plugin-react-hooks: ^5.2.0
     eslint-plugin-react-refresh: ^0.4.24
+    express-rate-limit: ^8.0.1
     prettier: ^3.6.2
     "@preconstruct/cli": ^2.8.12
     "@vitejs/plugin-react": ^5.0.4
@@ -69,6 +66,8 @@ catalogs:
     "@internationalized/date": ^3.10.0
     react-intl: ^7.1.13
   utils:
+    dequal: ^2.0.3
+    dompurify: ^3.3.0
     lodash: ^4.17.21
     "@types/lodash": ^4.17.20
     "@types/node": ^24.7.1

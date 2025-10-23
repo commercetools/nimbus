@@ -27,7 +27,7 @@
     "axios": "^1.12.2",
     "chokidar": "^4.0.1",
     "express": "^4.21.2",
-    "express-rate-limit": "catalog:",
+    "express-rate-limit": "catalog:tooling",
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",

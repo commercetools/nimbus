@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useIntl } from "react-intl";
 import {
   GridList,
@@ -8,6 +8,7 @@ import {
 } from "react-aria-components";
 import { useListData } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { dequal } from "dequal";
 import { extractStyleProps } from "@/utils";
 import { messages } from "../draggable-list.i18n";
 import {
@@ -26,6 +27,7 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   children,
   ref,
   items = [],
+  getKey = (item) => (item.key as Key) ?? item.id,
   onUpdateItems,
   removableItems,
   renderEmptyState: renderEmptyStateFromProps,
@@ -35,12 +37,49 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   const renderEmptyState =
     renderEmptyStateFromProps ?? formatMessage(messages.emptyMessage);
 
-  const list = useListData({ initialItems: items });
+  const list = useListData({
+    initialItems: items,
+    getKey,
+  });
 
-  // Notify parent whenever list.items changes
+  // Track if we're currently syncing from external changes
+  const isSyncingFromPropsRef = useRef(false);
+  // Track the last items we sent to parent to avoid syncing them back
+  const lastNotifiedItemsRef = useRef<T[]>(items);
+
+  // Sync external items prop changes with internal list state
   useEffect(() => {
-    onUpdateItems?.(list.items);
-  }, [list.items, onUpdateItems]);
+    // Skip sync if these are the exact items we just sent to parent
+    if (dequal(items, lastNotifiedItemsRef.current)) {
+      return;
+    }
+    // If items from props and list.items are not deeply equal,
+    // remove all current items from list.items and replace them with items from props
+    if (!dequal(items, list.items)) {
+      isSyncingFromPropsRef.current = true;
+
+      list.setSelectedKeys(new Set());
+      const keysToRemove = list.items.map((item) => getKey(item));
+      list.remove(...keysToRemove);
+      list.append(...items);
+
+      // Update lastNotifiedItemsRef to prevent notification effect from reverting parent state
+      lastNotifiedItemsRef.current = items;
+
+      // Reset flag after React finishes updates
+      queueMicrotask(() => {
+        isSyncingFromPropsRef.current = false;
+      });
+    }
+  }, [items, getKey]);
+
+  // Notify parent of internal list changes (but not during external sync)
+  useEffect(() => {
+    if (!isSyncingFromPropsRef.current) {
+      lastNotifiedItemsRef.current = list.items;
+      onUpdateItems?.(list.items);
+    }
+  }, [list.items, onUpdateItems, getKey]);
 
   const { dragAndDropHooks } = useDragAndDrop<T>({
     // Provide item data to drag'n'drop handler
