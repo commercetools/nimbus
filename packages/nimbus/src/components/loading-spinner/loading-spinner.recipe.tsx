@@ -65,6 +65,5 @@ export const loadingSpinnerRecipe = defineRecipe({
 
   defaultVariants: {
     size: "sm",
-    colorPalette: "primary",
   },
 });
