@@ -113,29 +113,29 @@ response or description is expected.
 
 > [!TIP]\
 > When to use
->
-> - **Editing long-form content:** Such as product descriptions, knowledge base
->   articles, or email bodies, where visual hierarchy and style are necessary
->   for readability.
-> - **Formatting text:** Such as applying bold, italics, underlines, or specific
->   heading levels.
-> - **Structuring content:** With bulleted or numbered lists.
-> - **Embedding external elements:** Like links, images, or videos within other
->   content.
+
+- **Editing long-form content:** Such as product descriptions, knowledge base
+  articles, or email bodies, where visual hierarchy and style are necessary for
+  readability.
+- **Formatting text:** Such as applying bold, italics, underlines, or specific
+  heading levels.
+- **Structuring content:** With bulleted or numbered lists.
+- **Embedding external elements:** Like links, images, or videos within other
+  content.
 
 > [!CAUTION]\
 > When not to use
->
-> - **Short answers:** Or single-line inputs, such as names, titles, or search
->   queries.
-> - **Specific data entry:** Unformatted text is required, like SKUs, passwords,
->   or simple codes.
-> - **Plain text communication:** Such as chat messages or comments, where
->   formatting options can clutter the interface or distract from the
->   conversation.
-> - **Inputs that need to be strictly controlled:** Where the application's
->   style guide should be the only source of formatting (e.g., when there is
->   passing through of styling and content to another site).
+
+- **Short answers:** Or single-line inputs, such as names, titles, or search
+  queries.
+- **Specific data entry:** Unformatted text is required, like SKUs, passwords,
+  or simple codes.
+- **Plain text communication:** Such as chat messages or comments, where
+  formatting options can clutter the interface or distract from the
+  conversation.
+- **Inputs that need to be strictly controlled:** Where the application's style
+  guide should be the only source of formatting (e.g., when there is passing
+  through of styling and content to another site).
 
 ### Rich text input in use
 
@@ -187,6 +187,9 @@ const App = () => {
 };
 ```
 
-- **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`, `<ul>`, `<strong>`) to be correctly interpreted by screen readers.
-- **Keyboard Access:** Ensure all toolbar controls are accessible via the tab key. Users must be able to navigate and apply formatting without a mouse.
-- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls, such as `aria-label` for toggle icon buttons.
+- **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`,
+  `<ul>`, `<strong>`) to be correctly interpreted by screen readers.
+- **Keyboard Access:** Ensure all toolbar controls are accessible via the tab
+  key. Users must be able to navigate and apply formatting without a mouse.
+- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls,
+  such as `aria-label` for toggle icon buttons.
